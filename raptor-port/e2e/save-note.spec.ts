@@ -560,13 +560,33 @@ for (const [label, viewport, touch] of SIZES) {
        his size from its first frame (floatwin.ts records it, and the next drawing marks the window placed); made as tall
        as the screen allows, so the warning's cap — 36px shorter — would bite at every desktop size were it to reach the
        window. */
-    if (!touch) test('a changes window he has resized keeps its place and size when the warning comes and when it goes', async ({ page }) => {
+    /* …BUT A WINDOW HE HAS ONLY RESIZED, NEVER MOVED, MOVES DOWN BELOW THE WARNING (his D1523, 30 Oct 26 — "Q5 ok";
+       [WIN-RESIZED-OVER-RETRY]). Where the top bar is two lines (1200, 1366) a resized changes window kept its top just under
+       the bar, and the warning's line grew under it: "Not saved" and Retry lay under the window. Its place was the app's, not
+       his — so it now opens below the bar's foot as an unmoved window does, keeping the width he chose and the height he chose
+       while that fits; its foot stays on the screen; and once the warning goes it is back where it was, at its size. */
+    if (!touch) test('a changes window he has only resized moves below the warning, leaves Retry pressable, and is back at its size when it goes', async ({ page }) => {
       await login(page)
       await go(page, 'editsched')
       await page.locator('#histBtn').click()
       await expect(page.locator(CHG)).toBeVisible()
       await resizeWin(page, CHG, -60)
-      await keepsItsBox(page, CHG, 'the resized changes window', BAR)
+      const b0 = await winBox(page, CHG)
+      await failSaves(page)
+      await expect.poll(async () => (await look(page, BAR)).seen, { message: 'the warning is whole and on top' }).toBe(true)
+      const band = (await page.locator(BAR).first().boundingBox())!
+      await expect.poll(async () => (await winBox(page, CHG))[1], { message: 'the window starts below the warning' }).toBeGreaterThanOrEqual(Math.round(band.y + band.height))
+      const rb = (await page.locator(BAR + ' button').boundingBox())!
+      const hit = await page.evaluate(([x, y]) => (document.elementFromPoint(x, y) as HTMLElement | null)?.closest('.savestat button') ? 'Retry' : 'something else', [rb.x + rb.width / 2, rb.y + rb.height / 2])
+      expect(hit, 'what is at Retry’s middle with the resized changes window open').toBe('Retry')
+      const b1 = await winBox(page, CHG)
+      expect(b1[0], 'it keeps its left edge').toBe(b0[0])
+      expect(b1[2], 'it keeps the width he chose').toBe(b0[2])
+      expect(b1[1] + b1[3], 'its foot stays on the screen').toBeLessThanOrEqual(viewport.height)
+      await page.waitForTimeout(400)   // long enough for a cap to have been recorded as "his size", were it to be
+      await page.evaluate(() => { (window as any).__lsRefuse = false })
+      await expect(page.locator(BAR)).toHaveCount(0, { timeout: 40_000 })
+      await expect.poll(() => winBox(page, CHG), { message: 'once the warning has gone: its place and the size he chose' }).toEqual(b0)
     })
     if (!touch) test('an ALL AVAIL window he has moved and resized keeps its place and size when the warning comes and when it goes', async ({ page }) => {
       await login(page)

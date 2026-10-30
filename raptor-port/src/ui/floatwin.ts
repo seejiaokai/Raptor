@@ -20,7 +20,9 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { putBack, refit } from './kbscroll'
 
-export type FloatBox = { x: number, y: number, w: number, h: number, phone?: boolean }
+/* `moved` — he dragged the window by its bar, so where it stands is his. A box without it has only a SIZE of his (resized by
+   its corner, never moved): its place stays the app's (his D1523 — below the top bar and a failed save's band) */
+export type FloatBox = { x: number, y: number, w: number, h: number, phone?: boolean, moved?: boolean }
 
 /* WHICH FLOATING WINDOW IS IN FRONT (Astra DP-10): two windows may overlap (the ALL AVAIL window and the changes
    window); the one pressed last comes forward. Two bounded layers — 411 in front, 410 behind — so neither ever climbs
@@ -91,6 +93,18 @@ export const BOARD_BAR = {
    THE BOARD'S BAR (owner D1106, 21 Oct 26 — [FLOATWIN-BOARD-BAR]): the corner lay over its right end at every desktop
    width (its foot 106 at 1366 and wider, 145 at 1200, 186 at 1024), covering the bell, Insights and ✓ Done; so over
    the open board a window he has not placed opens 8px below the board's bar, by the same rule as the top bar's. */
+/* where a window the app places must start, so that it lies under none of the bars — the top bar (with a failed save's
+   band, which is part of it), the board's bar, the board's preview bar (`clear`) — 8px below the lowest it meets; 0 when it
+   meets none and the stylesheet's corner stands. `r` is the window where the stylesheet put it. */
+function clearTop(n: HTMLElement, r: DOMRect, clear?: () => Element | null): number {
+  let top = 0
+  for (const c of [...barsUnder(n, r), clear ? clear() : null]) {
+    if (!c) continue
+    const q = c.getBoundingClientRect()
+    if (q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top) top = Math.max(top, Math.round(q.bottom + 8))
+  }
+  return top
+}
 const BARS = (): Element[] => [document.getElementById('burger')?.closest('.topbar'), document.querySelector('#schedBoard:not([hidden]) .sb-top')]
   .filter((b): b is Element => !!b)
 function barsUnder(n: HTMLElement, r: DOMRect): Element[] {
@@ -140,13 +154,7 @@ export function useFloatWin(opts: {
          end on the screen. Only `top` and `max-height` are written — never width or height — so the ResizeObserver
          below never mistakes this for a size he chose, and the next place() with no bar clears both again. */
       if (phone) return
-      const r = n.getBoundingClientRect()
-      let top = 0
-      for (const c of [...barsUnder(n, r), opts.clear ? opts.clear() : null]) {
-        if (!c) continue
-        const q = c.getBoundingClientRect()
-        if (q.left < r.right && q.right > r.left && q.top < r.bottom && q.bottom > r.top) top = Math.max(top, Math.round(q.bottom + 8))
-      }
+      const top = clearTop(n, n.getBoundingClientRect(), opts.clear)
       if (top) {
         n.style.top = top + 'px'
         n.style.maxHeight = Math.max(0, window.innerHeight - top - 12) + 'px'
@@ -164,6 +172,22 @@ export function useFloatWin(opts: {
     }
     n.style.right = 'auto'; n.style.bottom = 'auto'
     n.style.width = b.w + 'px'; n.style.height = b.h + 'px'
+    if (!b.moved) {
+      /* RESIZED, NEVER MOVED (his D1523, 30 Oct 26 — [WIN-RESIZED-OVER-RETRY]): the size is his, the place the app's. Where
+         the top bar is two lines (1200, 1366) such a window kept the top it had under the bar, and a failed save's band
+         grew under it — "Not saved" and Retry lay under the window. So its top is worked out as an unplaced window's is:
+         the stylesheet's corner, or 8px below the lowest bar it meets; its left edge and its size stay his. Where it has
+         moved down, its foot is held on the screen by a cap — which the ResizeObserver below never records as his size. */
+      n.style.top = ''
+      const r0 = n.getBoundingClientRect()
+      const top = clearTop(n, r0, opts.clear)
+      const y0 = top || Math.round(r0.top)
+      const room = Math.max(0, window.innerHeight - y0 - 12)
+      n.style.maxHeight = top && b.h > room ? room + 'px' : ''
+      n.style.top = y0 + 'px'
+      n.style.left = Math.min(Math.max(0, b.x), Math.max(0, window.innerWidth - n.getBoundingClientRect().width)) + 'px'
+      return
+    }
     /* measured AFTER the size is written, so the stylesheet's max-width and max-height have had their say */
     const r = n.getBoundingClientRect()
     const x = Math.min(Math.max(0, b.x), Math.max(0, window.innerWidth - r.width))
@@ -200,7 +224,11 @@ export function useFloatWin(opts: {
       if (!b && !n.style.width && !n.style.height) return
       const r = n.getBoundingClientRect()
       if (b && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - b.h) < 1) return
-      setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false })
+      /* a window only resized, held shorter by place()'s cap while it stands lower (D1523): the cap is not his size */
+      const cap = parseFloat(n.style.maxHeight)
+      if (b && !b.moved && cap && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - cap) < 1 && b.h > cap) return
+      /* a size he chose keeps whether he had moved it */
+      setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false, ...(b && b.moved ? { moved: true } : {}) })
     })
     ro.observe(n)
     return () => ro.disconnect()
@@ -234,7 +262,7 @@ export function useFloatWin(opts: {
     const d = drag.current, n = el.current
     if (d && d.moved && n) {
       const r = n.getBoundingClientRect()
-      setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: phoneLayout() })
+      setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: phoneLayout(), moved: true })
     }
     drag.current = null
     if (d && !d.moved) { place(); requestAnimationFrame(refit) }   // a tap, not a drag: back above the keys (kbscroll.ts)

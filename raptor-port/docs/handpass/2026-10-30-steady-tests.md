@@ -93,3 +93,36 @@ Each changed spec run in full (the `raptor` project — the only one either runs
 run 3: 74 passed (48.7 s); none flaky, none retried. The full check is GitHub's run of the pull request (D1086).
 
 **His answer (30 Oct 26, "Q5 ok" — D1523):** a window he has resized but never moved moves down below the failed save's band, as a window not yet placed does; `[WIN-RESIZED-OVER-RETRY]` is to build.
+
+## 5. His D1523 built — a window only resized moves below the "Not saved" band (30 Oct 26, the day after)
+
+**The change:** a floating window's remembered box now says whether he MOVED it by its bar (`src/ui/floatwin.ts` — `moved`, set
+by a real drag; a resize keeps what the box already said). A window only resized keeps the width and height he chose and its left
+edge, but its top is worked out as an unplaced window's is: the stylesheet's corner, or 8px below the lowest bar it meets — the top
+bar with a failed save's band, the board's bar, the board's preview bar. Where that lowers it, a cap holds its foot on the screen,
+and the size-watcher never saves the capped height as his size. A window he moved keeps its place (D587).
+
+**Tier: WALK** — §5: 4 a shared drawer, yes (every movable window — the changes window, ALL AVAIL, the other floating windows);
+the rest no (nothing saved, no roles, no warnings; the box is session memory). **Sizing (§7.0):** the walk is the two-line top bar at
+his PC's widths, 1366 × 700 and 1200 × 800, and 1440 × 900 (one line), at 1.25, with a real mouse: one window resized, one moved;
+a phone keeps its bottom panel (untouched — the phone branch returns before the new rule).
+
+**Red first:** `e2e/save-note.spec.ts` "a changes window he has only resized moves below the warning, leaves Retry pressable, and
+is back at its size when it goes" replaced the night's "…resized keeps its place and size…" (D1523 changed what it pins): it failed
+at 1200 and 1366 on the old code ("the warning is whole and on top": false), passed at 1440 — as measured that night. **Break test:**
+the guard that keeps the cap from being saved as his size taken out — caught at 1200 and 1366 ("once the warning has gone: its place
+and the size he chose"). **Gates on his PC, under the lock:** `save-note.spec.ts` 58/58; `availwin.spec.ts` + `changeswin.spec.ts`
+34/34; every unit test that reads a window, 48 files, 1398/1398; the build the walk drove. The full check is GitHub's run (D1086).
+
+**The walk** (`scripts/handpass/win-resized-retry-walk.mjs`; the failing save made as the browser test makes it — storage refusing,
+a crew change through the one write path — the one thing no control can do; Retry pressed with the mouse at its middle):
+
+| Size | Resized only | Moved |
+|---|---|---|
+| 1366 × 700 | at 112 → 148 under the band (36), width 320 kept, foot 688; Retry at its middle; back to 112 and 576 tall | kept its box through the band |
+| 1200 × 800 | at 112 → 148, width 320 kept, foot 788; Retry pressed; back to 112 and 676 tall | kept its box |
+| 1440 × 900 | at 96 (the band ends at 93) — not moved, Retry already clear; size kept | kept its box |
+
+Every picture that decides a row opened by the host. **Walk:** `docs/handpass/2026-10-30-steady-tests.md` §5 · 12 pictures
+(`docs/img/handpass/2026-10-30-steady-tests/d1523/`) · 2 surfaces (the changes window resized, moved) at 3 desktop sizes · 6 checks,
+6 as expected · the ALL AVAIL window carried by the browser tests (the same body)

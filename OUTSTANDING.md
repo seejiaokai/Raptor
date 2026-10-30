@@ -153,7 +153,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
 - [TRAFFIC-WIN-COVERS-UNDO] — with the Traffic window open the top bar's Undo cannot be pressed (older; found 21 Oct 26).
-- [WIN-RESIZED-OVER-RETRY] — a changes or ALL AVAIL window he has only resized lies over "Not saved — Retry" when a save fails, where the top bar is two lines (older; found 30 Oct 26) — his look first.
+- [WIN-RESIZED-OVER-RETRY] — BUILT 30 Oct 26 on pull request 593 (D1523: a window only resized moves below the "Not saved" band; one moved keeps its place); archive once live.
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [BOARD-ESCAPE-CLOSE] — Escape does not close the Scheduler Board, though the design guide says Escape closes what opened last (found by the walk of 24 Oct 26; older).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
@@ -268,6 +268,7 @@ unless he says otherwise; Opus 5.5, high effort; a fresh chat.
 
 ### [WIN-RESIZED-OVER-RETRY] A window he has only resized lies over the failed-save warning's Retry (found 30 Oct 26 by the steady-tests job; older; low)
 **RULED 30 Oct 26 (his "Q5 ok" — D1523): move such a window down below the band, as a window not yet placed is; to build.**
+**BUILT 30 Oct 26 on `claude/steady-tests-1030` (pull request 593) — to archive once live.** A window's box now says whether he MOVED it (`raptor-port/src/ui/floatwin.ts`, `moved`); one only resized keeps his size and left edge and is placed under the bars as an unplaced one is, a cap holding its foot on the screen that is never saved as his size. Red first (`e2e/save-note.spec.ts`, "…only resized moves below the warning…": failed at 1200 and 1366), a break test (the cap guard taken out: caught), the window tests green (1398 unit, 34 + 58 browser), walked at 1366, 1200 and 1440 (`scripts/handpass/win-resized-retry-walk.mjs`, pictures `raptor-port/docs/img/handpass/2026-10-30-steady-tests/d1523/`; evidence `raptor-port/docs/handpass/2026-10-30-steady-tests.md` §5).
 On a desktop where the top bar runs to two lines (on his PC 1200 and 1366 wide), the changes window and the ALL AVAIL window open just
 under the bar. Resized by its corner and never moved, a window keeps the size he chose — right — but its top with it, because a size
 he chose marks it placed (`raptor-port/src/ui/floatwin.ts`, `data-placed`). When a save then fails, the bar grows by the warning's line
