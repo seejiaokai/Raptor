@@ -263,6 +263,7 @@ pokes out sideways; the phone untouched; the next frame measures the final width
 faithful; lesson 74 corrected to mark his question's "yes" as the agent's reading. Its one open question — does the crew
 panel's ‹ day › change its width without a redraw? — pressed three times at 1600: the panel stays 247 wide, the foot bar
 spans the week, the page window-wide.
+**His look (30 Oct 26):** *"Looks right"* — the fix approved on the preview of aa0205c1a.
 **His look at the three previews (30 Oct 26):** *"those looks right"* — read as his look at 591's iPhone items, 592's AM / PM
 and 593's Retry.
 
