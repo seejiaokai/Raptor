@@ -2,7 +2,7 @@
    the airspace/traffic popup. Content strings are the reference's, verbatim.
    The Manage-users modal moved to the Admin page whole (23 Aug 26) —
    ui/AdminPage.tsx. */
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 import { DAYS } from '../engine/data'
 import { shortYear } from '../engine/inputs'
 import { PEOPLE } from '../engine/people'
@@ -16,7 +16,7 @@ import { esc, afterSchedMutate, dayDisplaysOfficial, CURPAGE, DPREV } from '../s
 import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
-import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, setAirKey } from './pops'
+import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, AIRRID, setAirKey, reKeyAir } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
@@ -119,27 +119,55 @@ export function insightsHTML() {
 /* ---- airspace / traffic popup — renderAir + airEdit verbatim. Traffic is a
    scheduled airspace booking like any other field on the board, so it has to
    earn an amendment mark and a history step (the tr: funnel). ---- */
-function findGo(key: any) { const [di, gi] = key.split('|'); return DAYS[+di] && DAYS[+di].waves[+gi] }
+/* THE WAVE THE WINDOW IS FOR — found by its own hidden id where it has moved ([TRAFFIC-WIN-COVERS-UNDO], 30 Oct 26). The
+   top bar's Undo and Redo work with the window up, so an undo can put a wave back in front of this one (its place, 'gi',
+   is then another wave's) or take this one away. The window follows the wave by the id it had when it opened (pops.ts
+   AIRRID), writing its new place, and finds nothing when the wave is gone — the window then closes, never showing another
+   wave's traffic in this one's place. A wave with no id yet (an old test's hand-made day) is found by its place, as
+   before. */
+function airGo(): any {
+  if (!AIRKEY) return null
+  const [di, gi] = String(AIRKEY).split('|')
+  const d = DAYS[+di!]
+  if (!d) return null
+  const ws = (d.waves || []) as any[], w = ws[+gi!]
+  if (!AIRRID || (w && w.rid === AIRRID)) return w || null
+  const j = ws.findIndex(x => x && x.rid === AIRRID)
+  if (j < 0) return null
+  reKeyAir(`${+di!}|${j}`)
+  return ws[j]
+}
 /* THE LIST AS IT STOOD, kept here rather than read back at commit time. The
    three handlers below all write `traffic` in place BEFORE airEdit runs — the
    typing one has to, because a React-controlled list would repaint under the
    caret — so by the time the commit happens the old value is already gone and
    the edit log had nothing to diff. Taken when the popup opens and refreshed
-   on every commit, which is exactly the window a "before" has to span. */
+   on every commit, which is exactly the window a "before" has to span — and
+   refreshed again whenever a change made BEHIND the window redraws its list (an
+   undo pressed in the top bar, 30 Oct 26): kept from before it, the next line
+   typed would be logged as changed from a value the undo had already taken away. */
 let TRWAS: string[] = []
 function trText(g: any) { return (((g && g.traffic) || []) as any[]).join(' · ') }
 function airEdit() {
-  if (!AIRKEY) return; const [di, gi] = String(AIRKEY).split('|')
-  const now = trText(findGo(AIRKEY))
+  const g = airGo()
+  if (!g) return; const [di, gi] = String(AIRKEY).split('|')
+  const now = trText(g)
   markEdit(`tr:${+di!}.${+gi!}`, TRWAS.join(' · '), now)
-  TRWAS = (((findGo(AIRKEY) || {}).traffic || []) as any[]).slice()
+  TRWAS = ((g.traffic || []) as any[]).slice()
   afterSchedMutate(); notify()
 }
+/* THE BAR OVER THE WINDOW: the Scheduler Board's own while it is open (it lies over the top bar), else the top bar */
+const AIR_BAR = () => document.querySelector('#schedBoard:not([hidden]) .sb-top') || document.getElementById('burger')?.closest('.topbar') || null
+/* the two buttons of the bar a press on which leaves the window open — the top bar's pair and the board's */
+const AIR_KEEPS = '#undoBtn, #redoBtn, #sbUndo, #sbRedo'
 export function AirPop() {
   useVersion()
   const bodyRef = useRef<HTMLDivElement>(null)
-  const open = AIRKEY != null
-  const g = open ? findGo(AIRKEY) : null
+  const popRef = useRef<HTMLDivElement>(null)
+  const g = AIRKEY != null ? airGo() : null
+  const open = g != null
+  /* a wave an undo took away: the window goes with it (no note — the wave itself has gone from the screen) */
+  useLayoutEffect(() => { if (AIRKEY != null && !airGo()) setAirKey(null) })
   /* the opening snapshot for the edit log. Keyed on AIRKEY, NOT on every
      render: the effect below deliberately has no dependency list, and
      re-snapshotting on an unrelated repaint would quietly adopt the half-typed
@@ -165,6 +193,9 @@ export function AirPop() {
     const boxes = body.querySelectorAll<HTMLInputElement>('[data-airi]')
     if (admin && body.dataset.airkey === String(AIRKEY) && body.dataset.airadmin === '1' && boxes.length === traffic.length
       && traffic.every((a: any, i: number) => boxes[i].value === String(a))) return
+    /* the list is being drawn from the model again — so the model is the "before" of the next line typed, unless a line
+       is being typed right now (its keystrokes are already in the list, and its "before" is the one taken earlier) */
+    if (!body.contains(document.activeElement)) TRWAS = traffic.slice()
     body.dataset.airkey = String(AIRKEY)
     body.dataset.airadmin = admin ? '1' : '0'
     if (admin) {
@@ -179,22 +210,59 @@ export function AirPop() {
       body.innerHTML = `<div class="airview">` + (traffic.length ? traffic.map((a: any) => `<div><span class="adot"></span>${esc(a)}</div>`).join('') : '<span style="color:var(--ink-3)">No traffic booked.</span>') + `</div>`
     }
   })
+  /* THE BAR STAYS PRESSABLE OVER THIS WINDOW ([TRAFFIC-WIN-COVERS-UNDO], found by the walk of 21 Oct 26; the agent's
+     placing, 30 Oct 26, under the window rules D641 and D686). The window's veil covered the whole screen, the top bar
+     with it, so its Undo and Redo could not be pressed while a line of traffic was being put right. The veil now starts
+     at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while the board is open — measured as
+     it opens, on a resize and whenever the bar's height changes (a failed save's band, the highlight strip); the box is
+     held inside what is left, never under the bar. Undo and Redo then work with the window open, and what they change
+     is read back into its list (the redraw above). Any OTHER control of the bar — a page tab, the bell, the changes
+     clock, the menu, ✓ Done — first closes the window, as a press outside it on the veil does, and then does its own
+     job: what they open is drawn under this veil's layer, and a window left over a page it does not belong to would
+     edit a wave nobody is looking at. A page or week change closes it too (pops.ts AIRKEY_NAV) — the keys' own route
+     to a page tab, or an undo that lands on another page. */
+  useLayoutEffect(() => {
+    const n = popRef.current
+    if (!n || !open) return
+    const place = () => {
+      const bar = AIR_BAR()
+      const b = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0
+      n.style.top = b > 0 ? b + 'px' : ''
+    }
+    place()
+    window.addEventListener('resize', place)
+    const bar = AIR_BAR()
+    const ro = bar && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null
+    if (ro && bar) ro.observe(bar)
+    return () => { window.removeEventListener('resize', place); if (ro) ro.disconnect() }
+  })
+  useEffect(() => {
+    if (!open) return
+    const press = (e: MouseEvent) => {
+      const t = e.target as HTMLElement | null
+      if (!t || typeof t.closest !== 'function' || !t.closest('.topbar, #schedBoard .sb-top')) return
+      if (t.closest(AIR_KEEPS)) return
+      setAirKey(null); notify()
+    }
+    document.addEventListener('click', press, true)
+    return () => document.removeEventListener('click', press, true)
+  }, [open])
   if (!open) return <div className="airpop" id="airpop" hidden />
   const close = () => { setAirKey(null); notify() }
   const admin = isAdmin()
   return (
-    <div className="airpop" id="airpop" onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
+    <div className="airpop air-below" id="airpop" ref={popRef} onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
       <div className="airpop-box">
         <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" onClick={close}>✕</button></div>
         <div className="airpop-body" id="airBody" ref={bodyRef}
-          onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i) return; findGo(AIRKEY).traffic[+i.dataset.airi!] = i.value }}
+          onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i) return; const gg = airGo(); if (gg && gg.traffic) gg.traffic[+i.dataset.airi!] = i.value }}
           onBlur={e => { if ((e.target as HTMLElement).closest('[data-airi]')) airEdit() }}
           onClick={e => {
             const del = (e.target as HTMLElement).closest('[data-airdel]') as HTMLElement | null
-            if (del) { const gg = findGo(AIRKEY); gg.traffic.splice(+del.dataset.airdel!, 1); airEdit() }
+            if (del) { const gg = airGo(); if (!gg || !gg.traffic) return; gg.traffic.splice(+del.dataset.airdel!, 1); airEdit() }
           }} />
         {admin && <div className="airpop-foot" data-admin="">
-          <button className="abtn" id="airAdd" onClick={() => { const gg = findGo(AIRKEY); gg.traffic = gg.traffic || []; gg.traffic.push('1 X … / … / … / …'); airEdit() }}>Add row</button>
+          <button className="abtn" id="airAdd" onClick={() => { const gg = airGo(); if (!gg) return; gg.traffic = gg.traffic || []; gg.traffic.push('1 X … / … / … / …'); airEdit() }}>Add row</button>
           <button className="abtn primary" id="airDone" onClick={close}>Done</button>
         </div>}
       </div>

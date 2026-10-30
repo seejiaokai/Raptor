@@ -82,11 +82,16 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
    on screen where there are two. */
 let opener: (() => HTMLElement | null) | null = null
 export function noteOpener(el: HTMLElement | null): void {
-  if (!el) { opener = null; return }
+  opener = el ? locate(el) : null
+}
+/* how to find a control again once a string redraw may have replaced it — the same node while it is still on the page,
+   else by its id, else by its first data attribute (the one shown on screen where there are two); shared with the
+   Scheduler Board's own way back (ui/boardescape.ts) */
+export function locate(el: HTMLElement): () => HTMLElement | null {
   const q = (v: string) => v.replace(/["\\]/g, '\\$&')
   const da = [...el.attributes].find(x => x.name.startsWith('data-'))
   const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]` : ''
-  opener = () => {
+  return () => {
     if (el.isConnected) return el
     if (!sel) return null
     const all = [...document.querySelectorAll<HTMLElement>(sel)]

@@ -415,6 +415,9 @@
 .airpop{position:fixed;inset:0;z-index:460;background:rgba(4,7,10,.55);display:flex;align-items:center;justify-content:center;padding:22px}
 .airpop[hidden]{display:none}
 .airpop-box{background:var(--panel);border:1px solid var(--edge);border-radius:14px;width:520px;max-width:100%;max-height:80vh;overflow:auto}
+/* the Traffic window's veil starts at the foot of the bar over it, so its bar's Undo and Redo can be pressed ([TRAFFIC-WIN-COVERS-UNDO],
+   ui/Modals.tsx AirPop — `top` is set there): the box is held inside what is left, never under the bar */
+.airpop.air-below>.airpop-box{max-height:min(80vh,100%)}
 .airpop-head{padding:12px 15px;border-bottom:1px solid var(--edge);display:flex;align-items:center}
 .airpop-head b{font-size:15px;font-weight:700}
 /* THE ✕ SITS IN THE HEAD'S CORNER, on every window of this family (the design look's L2, owner D830 — 13 Oct 26). Nothing

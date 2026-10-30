@@ -21,7 +21,8 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus } from './sheetfocus'
+import { useSheetFocus, locate } from './sheetfocus'
+import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
@@ -106,6 +107,31 @@ export function SchedBoard() {
       if (menu.getBoundingClientRect().left < 4) menu.classList.remove('end')
     }
   }, [moreOpen])
+
+  /* ESCAPE CLOSES THE BOARD AS ✓ DONE DOES, with the keyboard nowhere or on a button and nothing over the board
+     ([BOARD-ESCAPE-CLOSE], 30 Oct 26 — the rules and why: ui/boardescape.ts). Listening only while the board is open.
+     AND THE KEYBOARD COMES BACK (the design guide §2 — "the keyboard returns to the button that opened a thing"): where
+     it was when the board opened — a control of the week behind, found again by its id or data attribute after the
+     week's string redraw (sheetfocus.ts locate) — once the board closes by any way out, unless something else has taken
+     it meanwhile. The day's date that opens the board takes no keyboard (filed, [BOARD-OPEN-BY-KEYS]), so after a
+     press on it the keyboard was nowhere, and nowhere is where it goes back to: off the board's own buttons, now
+     hidden. Not on a page change (the week is no longer on screen). */
+  useEffect(() => {
+    if (!open) return
+    const off = wireBoardEscape()
+    const was = document.activeElement as HTMLElement | null
+    const back = was && was !== document.body && was.isConnected && !rootRef.current?.contains(was) ? locate(was) : null
+    return () => {
+      off()
+      if (CURPAGE !== 'editsched') return
+      const now = document.activeElement as HTMLElement | null
+      const inBoard = !!now && !!rootRef.current?.contains(now)
+      if (now && now !== document.body && !inBoard) return
+      const to = back ? back() : null
+      if (to && to.isConnected) to.focus({ preventScroll: true })
+      else if (inBoard) now!.blur()
+    }
+  }, [open])
 
   /* PINCH TO ZOOM THE DAY — the desktop layout on a phone (owner D1107, D1109, 21 Oct 26; [BOARD-PHONE-PINCH-ZOOM]). Two
      fingers on the day (.sb-main — the panels, the waves and the side column) zoom it, never the bar above it, which
@@ -644,8 +670,8 @@ export function SchedBoard() {
               wave is created now, and it is reachable on desktop too. */}
           <button className="abtn primary" id="sbDone" onClick={() => closeScheduler()}><span className="bi">✓</span><span className="bl"> Done</span></button>
           {/* ✕ CLOSE IS GONE (owner D349, 28 Sep 26 — "What does tick or close do? is it the same function?"; told yes,
-              he approved "✓ Done only"): ✓ Done is the one way out. (Escape does NOT close the board — found by the walk of
-              24 Oct 26; this line used to say it did. Filed: OUTSTANDING.md [BOARD-ESCAPE-CLOSE].) */}
+              he approved "✓ Done only"): ✓ Done is the one button out, and Escape does what it does ([BOARD-ESCAPE-CLOSE],
+              30 Oct 26 — ui/boardescape.ts; boardescape.test.tsx proves it). */}
         </div>
         {/* THE HIGHLIGHT CHIPS STRIP (owner, 23 Aug 26) — the same HlChips the
             two week pages render, so a chip lit here is lit there. Rendered

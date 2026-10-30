@@ -1,0 +1,534 @@
+[
+ {
+  "world": "D",
+  "id": "E1a",
+  "what": "the board is open, the keyboard nowhere",
+  "result": "PASS",
+  "seen": "{\"where\":\"nowhere\",\"ring\":\"\"}"
+ },
+ {
+  "world": "D",
+  "id": "E1",
+  "what": "Escape with the keyboard nowhere closes the board (Edit Schedule's week behind it)",
+  "result": "PASS",
+  "seen": "board up: false, page editsched"
+ },
+ {
+  "world": "D",
+  "id": "E2a",
+  "what": "✓ Done closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "D",
+  "id": "E2",
+  "what": "Done, reopen, then Escape: closed again",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "D",
+  "id": "E3a",
+  "what": "Escape in a take-off box: the old time back, the box left, the board kept (D1011)",
+  "result": "PASS",
+  "seen": "typed \"2359\", after Escape \"10:35\" (was \"10:35\"), board up true, keyboard nowhere"
+ },
+ {
+  "world": "D",
+  "id": "E3",
+  "what": "the second Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "D",
+  "id": "E4a",
+  "what": "Escape with the Traffic window over the board: both stay",
+  "result": "PASS",
+  "seen": "board true, traffic true"
+ },
+ {
+  "world": "D",
+  "id": "E4b",
+  "what": "Escape with the changes window over the board: the board stays",
+  "result": "PASS",
+  "seen": "changes window up true, board true"
+ },
+ {
+  "world": "D",
+  "id": "E4",
+  "what": "with the windows gone, Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "D",
+  "id": "E5a",
+  "what": "Tab reaches a button of the board, its focus ring drawn",
+  "result": "PASS",
+  "seen": "{\"where\":\"sbCal\",\"inBoard\":true,\"ring\":\"1.6px solid rgb(59, 198, 232)\"}"
+ },
+ {
+  "world": "D",
+  "id": "E5",
+  "what": "Escape from a board button closes the board; the keyboard is off the closed board",
+  "result": "PASS",
+  "seen": "board up false, keyboard {\"where\":\"nowhere\",\"ring\":\"\"}"
+ },
+ {
+  "world": "D",
+  "id": "T1a",
+  "what": "the Traffic window opens below the top bar, the bar not veiled",
+  "result": "PASS",
+  "seen": "{\"boxTop\":265,\"boxFoot\":422,\"barFoot\":103,\"vh\":584}"
+ },
+ {
+  "world": "D",
+  "id": "T1b",
+  "what": "a press at the top bar's Undo meets Undo (not the veil)",
+  "result": "PASS",
+  "seen": "{\"found\":true,\"isIt\":true,\"over\":\"bi\"}"
+ },
+ {
+  "world": "D",
+  "id": "T1",
+  "what": "Undo with the window open: it stays open, the added line gone from it",
+  "result": "PASS",
+  "seen": "lines 1 → 2 → 1, window up true"
+ },
+ {
+  "world": "D",
+  "id": "T2",
+  "what": "Redo puts it back, read into the window",
+  "result": "PASS",
+  "seen": "2 lines"
+ },
+ {
+  "world": "D",
+  "id": "T3r",
+  "what": "RECORDED — Undo pressed while a line is still being typed (greyed at the press)",
+  "result": "RECORDED",
+  "seen": "Undo greyed at the press: true; after it the line reads \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\""
+ },
+ {
+  "world": "D",
+  "id": "T3",
+  "what": "a line typed and left, then the top bar's Undo: the typing taken back, the window open",
+  "result": "PASS",
+  "seen": "typed \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H X9\", after Undo \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\" (was \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\")"
+ },
+ {
+  "world": "D",
+  "id": "T4",
+  "what": "the bell with the Traffic window open: the window closes, the bell's list is on top",
+  "result": "PASS",
+  "seen": "traffic up false, list {\"found\":true,\"isIt\":true,\"over\":\"bl-empty\"}"
+ },
+ {
+  "world": "D",
+  "id": "T5",
+  "what": "a press on the veil below the bar still closes the window",
+  "result": "PASS",
+  "seen": "at 6,432: traffic up false"
+ },
+ {
+  "world": "D",
+  "id": "T6",
+  "what": "with fifteen lines the box stays below the bar and on the screen",
+  "result": "PASS",
+  "seen": "{\"boxTop\":125,\"boxFoot\":562,\"barFoot\":103,\"vh\":584}"
+ },
+ {
+  "world": "D",
+  "id": "T6b",
+  "what": "fourteen presses of Undo with the window open take the fourteen lines back",
+  "result": "PASS",
+  "seen": "1 lines (was 1)"
+ },
+ {
+  "world": "D",
+  "id": "T7a",
+  "what": "over the board the window opens below the board's own bar",
+  "result": "PASS",
+  "seen": "{\"boxTop\":266,\"boxFoot\":423,\"barFoot\":105,\"vh\":584}"
+ },
+ {
+  "world": "D",
+  "id": "T7",
+  "what": "the board's Undo, pressed over the window, takes the line back; the window stays",
+  "result": "PASS",
+  "seen": "meets {\"found\":true,\"isIt\":true,\"over\":\"bi\"}, 1 → 1"
+ },
+ {
+  "world": "D",
+  "id": "T8",
+  "what": "✓ Done with the Traffic window open: the window closes, then the board",
+  "result": "PASS",
+  "seen": "traffic false, board false"
+ },
+ {
+  "world": "D",
+  "id": "T9",
+  "what": "a page tab with the window open: Inputs opens, the window closed",
+  "result": "PASS",
+  "seen": "page inputs, traffic false"
+ },
+ {
+  "world": "D",
+  "id": "T10",
+  "what": "View-only Sched: the window opens below the top bar, a press at the bell meets the bell",
+  "result": "PASS",
+  "seen": "{\"boxTop\":265,\"boxFoot\":422,\"barFoot\":103,\"vh\":584} undo {\"found\":true,\"isIt\":true,\"over\":\"[object SVGAnimatedString]\"}"
+ },
+ {
+  "world": "D",
+  "id": "ERR",
+  "what": "no console error, page error or 4xx",
+  "result": "PASS",
+  "seen": "none"
+ },
+ {
+  "world": "P",
+  "id": "E1a",
+  "what": "the board is open, the keyboard nowhere",
+  "result": "PASS",
+  "seen": "{\"where\":\"nowhere\",\"ring\":\"\"}"
+ },
+ {
+  "world": "P",
+  "id": "E1",
+  "what": "Escape with the keyboard nowhere closes the board (Edit Schedule's week behind it)",
+  "result": "PASS",
+  "seen": "board up: false, page editsched"
+ },
+ {
+  "world": "P",
+  "id": "E2a",
+  "what": "✓ Done closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "P",
+  "id": "E2",
+  "what": "Done, reopen, then Escape: closed again",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "P",
+  "id": "E3a",
+  "what": "Escape in a take-off box: the old time back, the box left, the board kept (D1011)",
+  "result": "PASS",
+  "seen": "typed \"2359\", after Escape \"12:40\" (was \"12:40\"), board up true, keyboard nowhere"
+ },
+ {
+  "world": "P",
+  "id": "E3",
+  "what": "the second Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "P",
+  "id": "E4a",
+  "what": "Escape with the Traffic window over the board: both stay",
+  "result": "PASS",
+  "seen": "board true, traffic true"
+ },
+ {
+  "world": "P",
+  "id": "E4b",
+  "what": "Escape with the changes window over the board: the board stays",
+  "result": "PASS",
+  "seen": "changes window up true, board true"
+ },
+ {
+  "world": "P",
+  "id": "E4c",
+  "what": "Escape with the ⋯ menu open: the menu closes, the board stays",
+  "result": "PASS",
+  "seen": "menu before true, after false, board true"
+ },
+ {
+  "world": "P",
+  "id": "E4",
+  "what": "with the windows gone, Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "P",
+  "id": "T1a",
+  "what": "the Traffic window opens below the top bar, the bar not veiled",
+  "result": "PASS",
+  "seen": "{\"boxTop\":381,\"boxFoot\":542,\"barFoot\":49,\"vh\":874}"
+ },
+ {
+  "world": "P",
+  "id": "T1b",
+  "what": "a press at the top bar's Undo meets Undo (not the veil)",
+  "result": "PASS",
+  "seen": "{\"found\":true,\"isIt\":true,\"over\":\"bi\"}"
+ },
+ {
+  "world": "P",
+  "id": "T1",
+  "what": "Undo with the window open: it stays open, the added line gone from it",
+  "result": "PASS",
+  "seen": "lines 1 → 2 → 1, window up true"
+ },
+ {
+  "world": "P",
+  "id": "T2",
+  "what": "Redo puts it back, read into the window",
+  "result": "PASS",
+  "seen": "2 lines"
+ },
+ {
+  "world": "P",
+  "id": "T3r",
+  "what": "RECORDED — Undo pressed while a line is still being typed (greyed at the press)",
+  "result": "RECORDED",
+  "seen": "Undo greyed at the press: true; after it the line reads \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\""
+ },
+ {
+  "world": "P",
+  "id": "T3",
+  "what": "a line typed and left, then the top bar's Undo: the typing taken back, the window open",
+  "result": "PASS",
+  "seen": "typed \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H X9\", after Undo \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\" (was \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\")"
+ },
+ {
+  "world": "P",
+  "id": "T4",
+  "what": "the bell with the Traffic window open: the window closes, the bell's list is on top",
+  "result": "PASS",
+  "seen": "traffic up false, list {\"found\":true,\"isIt\":true,\"over\":\"bl-empty\"}"
+ },
+ {
+  "world": "P",
+  "id": "T5",
+  "what": "a press on the veil below the bar still closes the window",
+  "result": "PASS",
+  "seen": "at 6,552: traffic up false"
+ },
+ {
+  "world": "P",
+  "id": "T6",
+  "what": "with fifteen lines the box stays below the bar and on the screen",
+  "result": "PASS",
+  "seen": "{\"boxTop\":157,\"boxFoot\":766,\"barFoot\":49,\"vh\":874}"
+ },
+ {
+  "world": "P",
+  "id": "T6b",
+  "what": "fourteen presses of Undo with the window open take the fourteen lines back",
+  "result": "PASS",
+  "seen": "1 lines (was 1)"
+ },
+ {
+  "world": "P",
+  "id": "T7a",
+  "what": "over the board the window opens below the board's own bar",
+  "result": "PASS",
+  "seen": "{\"boxTop\":394,\"boxFoot\":555,\"barFoot\":75,\"vh\":874}"
+ },
+ {
+  "world": "P",
+  "id": "T7",
+  "what": "the board's Undo, pressed over the window, takes the line back; the window stays",
+  "result": "PASS",
+  "seen": "meets {\"found\":true,\"isIt\":true,\"over\":\"bi\"}, 1 → 1"
+ },
+ {
+  "world": "P",
+  "id": "T8",
+  "what": "✓ Done with the Traffic window open: the window closes, then the board",
+  "result": "PASS",
+  "seen": "traffic false, board false"
+ },
+ {
+  "world": "P",
+  "id": "ERR",
+  "what": "no console error, page error or 4xx",
+  "result": "PASS",
+  "seen": "none"
+ },
+ {
+  "world": "PW",
+  "id": "W0",
+  "what": "the board in its Desktop layout on the phone",
+  "result": "PASS",
+  "seen": "sb-wide on the board"
+ },
+ {
+  "world": "PW",
+  "id": "E1a",
+  "what": "the board is open, the keyboard nowhere",
+  "result": "PASS",
+  "seen": "{\"where\":\"nowhere\",\"ring\":\"\"}"
+ },
+ {
+  "world": "PW",
+  "id": "E1",
+  "what": "Escape with the keyboard nowhere closes the board (Edit Schedule's week behind it)",
+  "result": "PASS",
+  "seen": "board up: false, page editsched"
+ },
+ {
+  "world": "PW",
+  "id": "E2a",
+  "what": "✓ Done closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "PW",
+  "id": "E2",
+  "what": "Done, reopen, then Escape: closed again",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "PW",
+  "id": "E3a",
+  "what": "Escape in a take-off box: the old time back, the box left, the board kept (D1011)",
+  "result": "PASS",
+  "seen": "typed \"2359\", after Escape \"12:40\" (was \"12:40\"), board up true, keyboard nowhere"
+ },
+ {
+  "world": "PW",
+  "id": "E3",
+  "what": "the second Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "PW",
+  "id": "E4a",
+  "what": "Escape with the Traffic window over the board: both stay",
+  "result": "PASS",
+  "seen": "board true, traffic true"
+ },
+ {
+  "world": "PW",
+  "id": "E4b",
+  "what": "Escape with the changes window over the board: the board stays",
+  "result": "PASS",
+  "seen": "changes window up true, board true"
+ },
+ {
+  "world": "PW",
+  "id": "E4c",
+  "what": "Escape with the ⋯ menu open: the menu closes, the board stays",
+  "result": "PASS",
+  "seen": "menu before true, after false, board true"
+ },
+ {
+  "world": "PW",
+  "id": "E4",
+  "what": "with the windows gone, Escape closes the board",
+  "result": "PASS",
+  "seen": "board up: false"
+ },
+ {
+  "world": "PW",
+  "id": "T1a",
+  "what": "the Traffic window opens below the top bar, the bar not veiled",
+  "result": "PASS",
+  "seen": "{\"boxTop\":381,\"boxFoot\":542,\"barFoot\":49,\"vh\":874}"
+ },
+ {
+  "world": "PW",
+  "id": "T1b",
+  "what": "a press at the top bar's Undo meets Undo (not the veil)",
+  "result": "PASS",
+  "seen": "{\"found\":true,\"isIt\":true,\"over\":\"bi\"}"
+ },
+ {
+  "world": "PW",
+  "id": "T1",
+  "what": "Undo with the window open: it stays open, the added line gone from it",
+  "result": "PASS",
+  "seen": "lines 1 → 2 → 1, window up true"
+ },
+ {
+  "world": "PW",
+  "id": "T2",
+  "what": "Redo puts it back, read into the window",
+  "result": "PASS",
+  "seen": "2 lines"
+ },
+ {
+  "world": "PW",
+  "id": "T3r",
+  "what": "RECORDED — Undo pressed while a line is still being typed (greyed at the press)",
+  "result": "RECORDED",
+  "seen": "Undo greyed at the press: true; after it the line reads \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\""
+ },
+ {
+  "world": "PW",
+  "id": "T3",
+  "what": "a line typed and left, then the top bar's Undo: the typing taken back, the window open",
+  "result": "PASS",
+  "seen": "typed \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H X9\", after Undo \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\" (was \"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\")"
+ },
+ {
+  "world": "PW",
+  "id": "T4",
+  "what": "the bell with the Traffic window open: the window closes, the bell's list is on top",
+  "result": "PASS",
+  "seen": "traffic up false, list {\"found\":true,\"isIt\":true,\"over\":\"bl-empty\"}"
+ },
+ {
+  "world": "PW",
+  "id": "T5",
+  "what": "a press on the veil below the bar still closes the window",
+  "result": "PASS",
+  "seen": "at 6,552: traffic up false"
+ },
+ {
+  "world": "PW",
+  "id": "T6",
+  "what": "with fifteen lines the box stays below the bar and on the screen",
+  "result": "PASS",
+  "seen": "{\"boxTop\":157,\"boxFoot\":766,\"barFoot\":49,\"vh\":874}"
+ },
+ {
+  "world": "PW",
+  "id": "T6b",
+  "what": "fourteen presses of Undo with the window open take the fourteen lines back",
+  "result": "PASS",
+  "seen": "1 lines (was 1)"
+ },
+ {
+  "world": "PW",
+  "id": "T7a",
+  "what": "over the board the window opens below the board's own bar",
+  "result": "PASS",
+  "seen": "{\"boxTop\":394,\"boxFoot\":555,\"barFoot\":75,\"vh\":874}"
+ },
+ {
+  "world": "PW",
+  "id": "T7",
+  "what": "the board's Undo, pressed over the window, takes the line back; the window stays",
+  "result": "PASS",
+  "seen": "meets {\"found\":true,\"isIt\":true,\"over\":\"bi\"}, 1 → 1"
+ },
+ {
+  "world": "PW",
+  "id": "T8",
+  "what": "✓ Done with the Traffic window open: the window closes, then the board",
+  "result": "PASS",
+  "seen": "traffic false, board false"
+ },
+ {
+  "world": "PW",
+  "id": "ERR",
+  "what": "no console error, page error or 4xx",
+  "result": "PASS",
+  "seen": "none"
+ }
+]
