@@ -1,10 +1,18 @@
 /* ============ WEEK / DAY ============ */
 .week{display:flex;gap:14px;padding:2px 20px 30px;overflow-x:auto;align-items:flex-start;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
-/* floating left/right arrows to pan the week horizontally (desktop) */
-.week-nav{position:fixed;top:52%;transform:translateY(-50%);z-index:150;width:38px;height:70px;border:1px solid var(--edge);background:rgba(20,24,29,.82);backdrop-filter:blur(5px);color:var(--ink-2);font-size:26px;font-weight:700;line-height:1;cursor:pointer;border-radius:12px;display:flex;align-items:center;justify-content:center;opacity:.75;transition:opacity .15s,border-color .15s,color .15s}
-.week-nav:hover{opacity:1;border-color:var(--accent);color:var(--accent)}
-.week-nav.prev{left:8px}
-.week-nav.next{right:8px}
+/* floating left/right arrows to pan the week horizontally (desktop).
+   His D1526 (30 Oct 26 — "sliding tab but make it still slightly transparent"): at rest each is a slim tab, 14 × 70, flush
+   on the window's edge, so it lies over the front day's border and margin only (its words start 31 in) and covers none of
+   the day; while the pointer is near — inside the full arrow's own footprint plus 24px, set by pan.ts as `.near` — or a key
+   reaches it, it slides out to the full 38-wide arrow, lit, and stays slightly see-through (0.9, never solid: D1522). It
+   opens from the edge, so pressed again and again it never moves (D1122). No slide under reduced motion. Never on :hover —
+   Safari holds a tapped button in hover, so on an iPad on its side a tap left it open over the day (the fresh read's
+   finding, pinned by the walk's step E1); `.near` already covers every mouse hover, the open arrow lying inside its zone. */
+.week-nav{position:fixed;top:52%;transform:translateY(-50%);z-index:150;width:14px;height:70px;padding:0;overflow:hidden;border:1px solid var(--edge);background:rgba(20,24,29,.82);backdrop-filter:blur(5px);color:var(--ink-2);font-size:15px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:.75;transition:width .16s ease-out,font-size .16s ease-out,opacity .15s,border-color .15s,color .15s}
+.week-nav.near,.week-nav:focus-visible{width:38px;font-size:26px;opacity:.9;border-color:var(--accent);color:var(--accent)}
+.week-nav.prev{left:0;border-left:none;border-radius:0 8px 8px 0}
+.week-nav.next{right:0;border-right:none;border-radius:8px 0 0 8px}
+@media (prefers-reduced-motion:reduce){.week-nav{transition:none}}
 .week-nav[hidden]{display:none}
 @media (max-width:820px){.week-nav{display:none!important}}
 /* ---- sticky horizontal scroll bar, tagged to the bottom of the viewport (desktop) ---- */

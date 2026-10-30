@@ -198,6 +198,45 @@ files 270 passed; the build green. GitHub's run: see the pull request.
 | Quals' edge sliver at a fractional zoom | filed `[QUALS-ZOOM-EDGE-SLIVER]` (older) |
 | The sweep's own false readings | fixed in the probe (aa7b9b60a) |
 
+## The week arrows built — his D1526 (30 Oct 26, the day after)
+
+**The change:** his answer to the arrows page — *"sliding tab but make it still slightly transparent"* (his option D, drawn as
+`scripts/handpass/week-arrows-draw-d.mjs`). At rest each ‹ › is a slim tab, 14 × 70, flush on the window's edge, over the front
+day's border and margin only; while the pointer is inside the full arrow's footprint plus 24px, or a key reaches it, it slides
+out to the full 38-wide arrow, lit, at 0.9 (still see-through, never solid — D1522); back when the pointer leaves. Code:
+`src/ui/scheduler/03-week.css` (the look), `src/ui/pan.ts` (the near rule, one class, `.near`). **Tier: WALK** — §5's
+questions 1, 2, 3, 7, 8 NO (no OIL, record, saved data, roles or warnings); 4 YES (one control on two pages), 5 YES (a new
+way the control opens).
+**Roll-call — every place the arrows are drawn or meet something:** View-only Sched (has it), Edit Schedule (has it), a
+phone and up to 820 wide (must not — the floating arrows are desktop only; walked), the failed-save band (moves them down —
+walked), the changes and ALL AVAIL windows on the right edge (above them, z-index 410 over 150 — walked), a puck drag
+carried to the edge (walked), the keyboard (walked), every other page (hidden — walked, A6).
+**Red first:** 5 unit tests (6 after the read) (`src/ui/pan.test.tsx`, two failing on the old arrows) and one browser test
+(`e2e/geometry.spec.ts`, failing on the old 38-wide arrow) before the build; then 35/35 and the browser test with the 42
+other week and arrow tests, 43/43. The red run is the break test: the browser test fails on today's arrows.
+**The walk** (`scripts/handpass/week-arrows-walk.mjs`, pictures `docs/img/handpass/2026-10-30-week-arrows/walk/`), checked
+against §7.11's lessons (two speeds, a state left and come back to, a press beside an open window, more than one page):
+17/17 — at rest both tabs 14 wide on the edges at 0.75; a slow approach and a fast swipe each open it and leaving closes it;
+› pressed three times without moving stays open and in place, a day a press (2 → 3 → 4 → 5); the keyboard opens it and Enter
+steps a day; left open, the page left and come back to, it is slim again; at 1366 under the "Not saved" band it opens where
+it now is; Edit Schedule the same; the changes window on the right stays above it; an iPhone and 820 wide draw none; no page
+errors. The host opened every deciding picture (rest, open, keyboard).
+**The fresh read (Opus, blind — D790):** one low finding — on a touch screen wider than 820 a finger tap held the tab open,
+because the stylesheet also opened it on hover and a browser keeps a tapped button in hover. Fixed red first: Chromium's
+emulation does not hold a tap's hover, so the case is pinned in the walk under WebKit (step E1, iPad on its side — failed on
+the build, 38 wide after the tap). Removing the hover opening was not enough: WebKit then sends a pretend mouse move to the
+tapped spot, which the near rule took for a mouse; a mouse move within a second of a finger touching is now ignored (unit
+test added, failing first). **The fix's narrow reads (§5 — the same fresh reader, who did not write the fix):** round 2 found a
+finger held over a second then lifted still left it open (the echo follows the lift) — the lift and a cancel now count too;
+round 3 found that closing on the finger's press could shrink an arrow the mouse had opened from under the tap on a touch
+laptop — both arrows now close on the lift, never the press. Each red first in the unit tests; round 3 is the last (the cap),
+with nothing left open. Re-walk 19/19; browser tests 44/44; unit 38/38. The read also found the short line of D1526
+faithful to its full row (D138).
+**Found, not this change's:** a man dragged with a mouse to the left or right edge of Edit Schedule never pans the week
+sideways — measured the same with today's arrows, with the new tab and with no arrows at all; filed `[WEEK-DRAG-EDGE-PAN]`.
+
 ## Walk:
 
 `Walk: docs/handpass/2026-10-30-scroll-pinned.md · 81 pictures · 15 surfaces · 57 orders · MISSING: 0 (the week arrows a question for him; three older pinch finds filed)`
+
+`Walk (D1526, the week arrows): docs/handpass/2026-10-30-scroll-pinned.md §The week arrows built · 13 pictures · 2 surfaces (View-only Sched, Edit Schedule) + the phone, 820 and an iPad on its side by finger · 19 checks · MISSING: 0 (a mouse drag never pans the week sideways — older, filed [WEEK-DRAG-EDGE-PAN])`

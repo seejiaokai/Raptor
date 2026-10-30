@@ -243,8 +243,14 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   "I still prefer these", of the full-screen before and after). The floating ‹ arrow (`.week-nav`, fixed 8px in, 38px
   wide) sits over the first few pixels of that day, by his choice: it can cover the start of an opened "⚠ N issues"
   list and of the front day's first line. A 54px room was built ([VIEW-ARROW-OVER-LIST], 26 Sep 26) and taken out before
-  it merged (`[ARROW-ROOM-OUT]`); do not put it back, nor the lighter idea first named with it (the arrow fading until
-  the pointer is near), without his ask. The build's roll-call of every landing is the five-flags evidence sheet §3d.
+  it merged (`[ARROW-ROOM-OUT]`); do not put it back without his ask. The build's roll-call of every landing is the
+  five-flags evidence sheet §3d. **Since D1526 (30 Oct 26 — his ask) the arrows are a slim tab** (14 × 70, flush on the
+  window's edge, over the front day's border and margin only — its words start 31 in) that slides out to the full 38-wide
+  arrow while the pointer is inside that arrow's footprint plus 24px, or a key reaches it, and back when it leaves; open, it
+  stays slightly see-through (0.9). Never on :hover, and a mouse move within a second of a finger touching or lifting is ignored (a lifted finger closes both) — a
+  tapped button keeps its hover, and Safari sends a pretend mouse move to the tapped spot, either of which held it open
+  after a tap on an iPad on its side. Pressed again and again it stays open and in place (D1122). The rule is one class,
+  `.near`, set by `pan.ts` from the pointer; the look is `03-week.css`.
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a

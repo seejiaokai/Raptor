@@ -5800,3 +5800,94 @@ for(const width of [390,1440]) {
     }
   })
 }
+
+/* D1526 (30 Oct 26 — "sliding tab but make it still slightly transparent"): the desktop week's ‹ › arrows are a slim tab,
+   14 × 70, flush on the window's edge, over the front day's border and margin only; the pointer near (the full arrow's
+   38 × 70 footprint plus 24px) slides it out to the full arrow, still slightly see-through (0.9); pressed again and again it
+   stays open and in place (D1122); no slide under reduced motion. The drawing that is the spec:
+   scripts/handpass/week-arrows-draw-d.mjs. */
+test('D1526 the week arrows are a slim edge tab that slides out when the pointer comes near', async ({ page }) => {
+  await page.setViewportSize({ width: 1536, height: 730 })
+  await login(page)
+  await go(page, 'viewsched')
+  const nav = (id: string) => page.evaluate(i => {
+    const b = document.getElementById(i)!, r = b.getBoundingClientRect(), cs = getComputedStyle(b)
+    return { left: Math.round(r.left), right: Math.round(r.right), width: Math.round(r.width), mid: Math.round(r.top + r.height / 2),
+      opacity: +cs.opacity, near: b.classList.contains('near'), edge: document.documentElement.clientWidth }
+  }, id)
+  const width = (id: string) => nav(id).then(n => n.width)
+  await page.mouse.move(700, 120)
+  await expect.poll(() => width('weekPrev')).toBe(14)
+  const p0 = await nav('weekPrev'), n0 = await nav('weekNext')
+  expect(p0.left, '‹ flush on the left edge').toBe(0)
+  expect(n0.right, '› flush on the right edge').toBe(n0.edge)
+  expect(n0.width, '› slim at rest').toBe(14)
+  expect(p0.opacity, 'see-through at rest, as today').toBeCloseTo(0.75, 2)
+
+  /* at rest the left tab lies over no word of the front day: nothing with text of its own under its box */
+  const under = await page.evaluate(() => {
+    const b = document.getElementById('weekPrev')!, r = b.getBoundingClientRect(); b.style.pointerEvents = 'none'
+    const words: string[] = []
+    for (let y = r.top + 2; y < r.bottom - 1; y += 4) for (let x = r.left + 1; x < r.right; x += 3) {
+      const e = document.elementFromPoint(x, y); if (!e || e.closest('.week-nav')) continue
+      const own = [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent!.trim()).join('')
+      if (own) words.push(own)
+    }
+    b.style.pointerEvents = ''
+    return words
+  })
+  expect(under, 'the slim ‹ tab covers none of the front day\'s words').toEqual([])
+
+  await page.mouse.move(48, p0.mid)
+  await expect.poll(() => width('weekPrev')).toBe(38)
+  const p1 = await nav('weekPrev')
+  expect(p1.left, 'it opens from the edge, not moving').toBe(0)
+  expect(p1.opacity, 'open, still slightly see-through').toBeCloseTo(0.9, 2)
+  expect(await width('weekNext'), 'the other stays slim').toBe(14)
+
+  await page.mouse.move(5, p0.mid - 140)
+  await expect.poll(() => width('weekPrev'), 'at the edge, well above it: slim again').toBe(14)
+
+  /* pressed three times without moving the pointer: open and in the same place each time */
+  await page.mouse.move(n0.edge - 19, n0.mid)
+  await expect.poll(() => width('weekNext')).toBe(38)
+  const at = await nav('weekNext')
+  for (let i = 0; i < 3; i++) {
+    await page.mouse.down(); await page.mouse.up()
+    await page.waitForTimeout(250)
+    const n = await nav('weekNext')
+    expect([n.left, n.width, n.near], `press ${i + 1}`).toEqual([at.left, 38, true])
+  }
+
+  /* Edit Schedule draws the same tab */
+  await page.mouse.move(700, 120)
+  await go(page, 'editsched')
+  await expect.poll(() => width('weekPrev')).toBe(14)
+
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  const dur = await page.evaluate(() => getComputedStyle(document.getElementById('weekPrev')!).transitionDuration)
+  expect(dur.split(',').every(d => parseFloat(d) === 0), 'no slide under reduced motion').toBe(true)
+  await page.emulateMedia({ reducedMotion: null })
+})
+
+/* D1526: a finger tap on the slim tab steps the week. (The fresh read's finding — Safari keeps a tapped button in its
+   hover state, so a tab that opened on :hover stayed open after a tap on an iPad on its side — needs WebKit to show: this
+   suite's Chromium does not hold a tap's hover. It is pinned in the walk, scripts/handpass/week-arrows-walk.mjs step E1.) */
+test('D1526 a finger tap on the slim week arrow steps the day and leaves it slim', async ({ browser }) => {
+  const ctx = await browser.newContext({ viewport: { width: 1180, height: 820 }, hasTouch: true })
+  const page = await ctx.newPage()
+  await login(page)
+  await go(page, 'viewsched')
+  const w = () => page.evaluate(() => Math.round(document.getElementById('weekPrev')!.getBoundingClientRect().width))
+  const nx = () => page.evaluate(() => Math.round(document.getElementById('weekNext')!.getBoundingClientRect().width))
+  await expect.poll(nx).toBe(14)
+  const b = (await page.locator('#weekNext').boundingBox())!
+  const sl = () => page.evaluate(() => Math.round(document.getElementById('vWeek')!.scrollLeft))
+  const s0 = await sl()
+  await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2)
+  await expect.poll(sl, 'the tap stepped the week').not.toBe(s0)
+  await page.waitForTimeout(400)
+  expect(await nx(), 'after the tap the › tab is slim again, not held open by the tap').toBe(14)
+  expect(await w(), 'the ‹ tab untouched').toBe(14)
+  await ctx.close()
+})

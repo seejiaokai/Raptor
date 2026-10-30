@@ -1,0 +1,137 @@
+[
+ {
+  "name": "A1 at rest: both slim tabs, flush on the edges, see-through",
+  "result": "PASS",
+  "said": "‹ 0+14, › ends 1536 of 1536, 0.75",
+  "pics": [
+   "a1-rest-left",
+   "a1-rest-right"
+  ]
+ },
+ {
+  "name": "A2 a slow approach from the week opens ‹ to the full arrow, still slightly see-through",
+  "result": "PASS",
+  "said": "‹ 0+38 at 0.9",
+  "pics": [
+   "a2-open-left"
+  ]
+ },
+ {
+  "name": "A3 a fast swipe straight to the edge opens it, straight back closes it",
+  "result": "PASS",
+  "said": "14 → 38 → 14",
+  "pics": []
+ },
+ {
+  "name": "A4 › pressed three times without moving: open, in place, a day a press",
+  "result": "PASS",
+  "said": "front day 2 → 3 → 4 → 5; boxes [[1498,38,true],[1498,38,true],[1498,38,true]]",
+  "pics": [
+   "a4-pressed-right"
+  ]
+ },
+ {
+  "name": "A5 reached by the keyboard it opens, and Enter steps a day",
+  "result": "PASS",
+  "said": "focus shown true, width 38, front day 5 → 4",
+  "pics": [
+   "a5-keyboard-left"
+  ]
+ },
+ {
+  "name": "A6 left open, the page left and come back to: hidden away, slim again on return",
+  "result": "PASS",
+  "said": "away shown false; back 14 near false",
+  "pics": []
+ },
+ {
+  "name": "A — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "B1 moved down by the \"Not saved\" band, it opens where it now is",
+  "result": "PASS",
+  "said": "top 329 → 365; open 38; above it 14",
+  "pics": [
+   "b1-band-open-left"
+  ]
+ },
+ {
+  "name": "B — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "C1 Edit Schedule draws the same slim tab",
+  "result": "PASS",
+  "said": "‹ 0+14",
+  "pics": [
+   "c1-rest-left"
+  ]
+ },
+ {
+  "name": "C2 a man dragged to the left edge with the arrow open under it: the drag behaves as it does today (no sideways pan; Escape puts him back)",
+  "result": "PASS",
+  "said": "scroll 1128 → 1128; arrow 38 wide during the drag; ghost gone after Escape true",
+  "pics": [
+   "c2-drag-at-edge"
+  ]
+ },
+ {
+  "name": "C3 with the changes window open on the right, the pointer inside it near the edge reaches the window, not the arrow",
+  "result": "PASS",
+  "said": "window [1140,96,1520,656]; under the pointer: window",
+  "pics": [
+   "c3-window-right"
+  ]
+ },
+ {
+  "name": "C — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "D1 an iPhone (402) draws no floating arrows",
+  "result": "PASS",
+  "said": "‹ shown false, › shown false",
+  "pics": [
+   "d1-phone"
+  ]
+ },
+ {
+  "name": "D — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "D2 hidden at 820 wide, the slim tab at 821",
+  "result": "PASS",
+  "said": "820 shown false; 821 14",
+  "pics": []
+ },
+ {
+  "name": "D2 — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "E1 an iPad on its side: a finger tap on › steps the day and the tab stays slim (Safari holds a tapped button in hover)",
+  "result": "PASS",
+  "said": "scroll 0 → 564; › 14 wide after the tap",
+  "pics": [
+   "e1-ipad-after-tap"
+  ]
+ },
+ {
+  "name": "E — no page errors",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
