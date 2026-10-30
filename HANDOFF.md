@@ -20,6 +20,18 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/jolly-volhard-4458db -->
+### `claude/jolly-volhard-4458db` — [WEEK-DRAG-EDGE-PAN]: his D1529 built, walked, pull request 595 open — written 31 Oct 26 — verify before use
+- **Put to him first** with marked pictures and three choices (https://claude.ai/artifact/313NUfzzM3XrGKu6T3QYbv); his answer
+  "A — a day at a time" is D1529 (`.claude/rules/decisions/scheduler.md`; home `raptor-port/docs/ui-contracts.md`).
+- **Built:** `src/ui/drag.ts` `weekStepLoop` (a mouse drag held at Edit Schedule's week side steps the week a day after half a
+  second, counted from where the week came to rest; over the week, an arrow or the board's bare margin; stops at Monday and
+  Sunday), `src/ui/pan.ts` `panDays(dir, cross)`. Red first (`src/ui/weekdragstep.test.tsx` 10), a browser test
+  (`e2e/geometry.spec.ts`), walked 18/18 after two fixes (`scripts/handpass/week-drag-step-walk.mjs`; evidence
+  `raptor-port/docs/handpass/2026-10-31-week-drag-edge-pan.md`). Auto-fix was switched on by the app and switched off (D1090).
+- **Next:** the fresh code read's dispositions (in the sheet), GitHub's run green on the last push, his look on the preview,
+  then his "merge live". Nothing else waits on this branch.
+<!-- /now -->
 <!-- now:claude/lw-scroll-pinned-sweep -->
 ### `claude/lw-scroll-pinned-sweep` — the night of 30 Oct 26 and its day after: D1525 and D1523 built and green; the week arrows BUILT on this branch (his D1526); four pull requests open, none merged — written 30 Oct 26 15:30 — verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change. (Compacted once, 30 Oct 26 about 12:00.)

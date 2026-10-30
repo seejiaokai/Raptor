@@ -2878,3 +2878,33 @@ reset mode disables before reusing it.
 **Suggested improvement:** the guard reads `/c/…` (Git Bash's form) as the same path as `C:/…` and `C:\…`; until then, the line in `raptor-port/CLAUDE.md` §Build & verify and the guard's message say "written `C:/…`".
 
 **Principle:** A guard that checks a path must accept every spelling the shell it guards accepts, or its refusal sends the agent to do what it already did.
+
+### Observation 752: A walk script's "cancel" assumed Escape puts a dragged man back — it does not
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [WEEK-DRAG-EDGE-PAN] walk (D1529), Edit Schedule, a mouse drag held at the week's side
+**Skill:** New skill candidate: none — the walk-script guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** internal
+**Phase/Area:** a walk step's clean-up between scenarios
+
+**Issue:** the walk ended each held drag with "Escape, then let go", copied from the arrows' walk. Nothing in the drag code listens for Escape, so each "cancel" dropped the man wherever the mouse was; later pictures showed Thursday's "3 changes" from the walk's own drops. The measurements were taken before the release, so no result was wrong — but a later step could have measured a day the walk itself had changed.
+
+**Suggested improvement:** `docs/walk-scripts.md` gains a line: a step that cancels a gesture checks the cancel worked (the store unchanged, or the changes count unchanged) — or ends the gesture by a move that is a no-op by construction (back onto the man's own seat) — never assumes a key does it.
+
+**Principle:** A clean-up step in a test script is itself a claim about the app; verify it like any other, or choose one that cannot change the state.
+
+### Observation 753: A unit test of a frame-loop gesture sent two moves inside one frame
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [WEEK-DRAG-EDGE-PAN], `src/ui/weekdragstep.test.tsx` with fake timers and fake frames
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the red test for behaviour driven by a requestAnimationFrame loop
+
+**Issue:** the test moved the pointer out of an edge band and straight back in with no time between; the loop never saw the pointer outside, so the "left the band" state never happened and the test failed against correct code. One trace found it.
+
+**Suggested improvement:** in the test-writing guidance: when the code under test samples state once a frame, every intermediate position the test means to exist gets at least one frame (advance the fake clock between events).
+
+**Principle:** A test drives the code at the code's own sampling rate; an event the sampler never sees did not happen.
