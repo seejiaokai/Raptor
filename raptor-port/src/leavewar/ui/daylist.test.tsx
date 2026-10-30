@@ -3,11 +3,12 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { awardsOnDay, closeDates, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
+import { awardsOnDay, closeDates, getState, ingestDutyCredit, initStore, lwEditLists, rawState, setCell, setDayAward, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
+import { DayListSheet } from './DayList'
 
 beforeEach(() => { initStore(memoryBackend()) })
 
@@ -69,9 +70,9 @@ describe('the tap list', () => {
     const lines = within(list).getAllByRole('listitem')
     expect(lines).toHaveLength(2)
     /* round 3 (D1327, D1328): each line led by its box, only its half and state beside it */
-    expect(lines[0]!.querySelector('.dl-main')!.textContent).toBe('Morning · approved')
+    expect(lines[0]!.querySelector('.dl-main')!.textContent).toBe('AM · approved')   // D1525
     expect(lines[0]!.querySelector('.dl-box .c')!.textContent).toBe('LL')
-    expect(lines[1]!.querySelector('.dl-main')!.textContent).toBe('Afternoon · approved')
+    expect(lines[1]!.querySelector('.dl-main')!.textContent).toBe('PM · approved')
     expect(lines[1]!.querySelector('.dl-box .c')!.textContent).toBe('OIL')
   })
 
@@ -143,6 +144,36 @@ describe('the tap list', () => {
     const seen = screen.getAllByText('OK, seen')[0]!
     fireEvent.click(seen)
     expect((rawState().wars[0]!.recs[P]?.[D] ?? []).some(r => r.kind === 'notice')).toBe(false)
+  })
+
+  /* his D1525: a replaced half-day bid names its half after its code — "LL (AM)", never "<LL" */
+  it('a replaced MORNING bid’s notice reads "LL (AM) bid was replaced"', () => {
+    setRole('admin')
+    expect(setCell(P, D, '*LL')).toBe(true)
+    const req = rawState().wars[0]!.recs[P]![D]![0]!
+    act(() => {
+      lwEditLists([{ personId: P, date: D, drop: [req.id], add: [{ id: 'n-am', kind: 'notice', code: '*LL', was: 'pending', byType: 'ATT C', byWho: 'an admin', seq: 8, at: '2026-02-01' } as any] }])
+    })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const t = screen.getByTestId('daylist').textContent || ''
+    expect(t).toContain('LL (AM) bid was replaced by ATT C (an admin)')
+    expect(t).not.toContain('<LL')
+  })
+
+  /* his D1525: his own live half-day bid, named in the clash line, reads "LL (AM)" — never "<LL (morning)" */
+  it('his own clashing morning bid: "Your LL (AM) bid is still live"', () => {
+    fileAbsence(P, '*OL', D)                 // planted raw: a morning leave filed on the Inputs page
+    act(() => { lwEditLists([{ personId: P, date: D, drop: [], add: [{ id: 'q-am', kind: 'request', code: '*LL', state: 'pending' } as any] }]) })
+    act(() => { setRole('member'); setViewer(P) })
+    syncAbsences()
+    const st = getState()
+    const view = st.views[P]![D]!
+    expect(view.conflicts.length, 'the two mornings clash').toBeGreaterThan(0)
+    render(<DayListSheet personId={P} callsign="Dusk" date={D} view={view} role="member" viewer={P} period={st.period} onClose={() => {}} />)
+    const line = screen.getByTestId('daylist-clash').textContent || ''
+    expect(line).toContain('Your LL (AM) bid is still live')
+    expect(line).not.toContain('morning')
   })
 })
 

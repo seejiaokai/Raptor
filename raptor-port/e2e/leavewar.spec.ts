@@ -7066,7 +7066,9 @@ test('on a tablet and a desktop the clash note stays the strip under the open-da
   await expect(page.locator('[data-testid="clash-line"]'), 'no phone line').toHaveCount(0)
   const rows = (await strip.locator('.row').allTextContents()).map(t => t.replace(/ /g, ' ').replace(/\s+/g, ' ').trim())
   expect(rows).toHaveLength(2)
-  for (const t of rows) expect(t).toMatch(/^.+ · Sat 18 Jul · Weekend\/PH work earns \*?[FH]O\*?, but the day holds (LL|OL)\. Decide the bid ›$/)
+  /* each credit as its box draws it — its star after its code, a half in words, never the stored "*HO"
+     ([LW-HALF-DAY-WORDS-LEFT], D1306) */
+  for (const t of rows) expect(t).toMatch(/^.+ · Sat 18 Jul · Weekend\/PH work earns (FO\*|HO\* \((AM|PM)\)), but the day holds (LL|OL)\. Decide the bid ›$/)
   expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(false)
   const who = rows[0]!.split(' · ')[0]!
   await page.locator('[data-testid="clash-go-0"]').click()

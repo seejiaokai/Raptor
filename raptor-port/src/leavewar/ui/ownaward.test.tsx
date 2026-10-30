@@ -56,7 +56,7 @@ describe('his own award opens read only on any day not open for him (D261)', () 
     asMember()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
-    expectReadOnlyAward('SIM', 'Not given', 'half a day, morning')   // an HO names its half (D1164) — given with none picked, the morning
+    expectReadOnlyAward('SIM', 'Not given', 'half a day, AM')   // an HO names its half (D1164) — given with none picked, the morning
   })
 
   /* was PUBLISHED: the stages went (D1177). A day closed while OTHER days of the same period stay open. */
@@ -65,7 +65,7 @@ describe('his own award opens read only on any day not open for him (D261)', () 
     asMember()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
-    expectReadOnlyAward('SIM', 'Not given', 'half a day, morning')   // an HO names its half (D1164) — given with none picked, the morning
+    expectReadOnlyAward('SIM', 'Not given', 'half a day, AM')   // an HO names its half (D1164) — given with none picked, the morning
   })
 
   /* was DRAFT: the stages went (D1177). The other way a day inside the open dates is shut to him: it is before his
@@ -75,7 +75,7 @@ describe('his own award opens read only on any day not open for him (D261)', () 
     asMember()
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${ME}-${INSIDE}`))
-    expectReadOnlyAward('SIM', 'Not given', 'half a day, morning')   // an HO names its half (D1164) — given with none picked, the morning
+    expectReadOnlyAward('SIM', 'Not given', 'half a day, AM')   // an HO names its half (D1164) — given with none picked, the morning
   })
 
   it('its ✕ closes it', () => {

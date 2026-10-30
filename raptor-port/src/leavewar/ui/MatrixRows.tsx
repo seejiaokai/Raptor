@@ -8,9 +8,9 @@
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
 import { addDays, boxText, canEditRow, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
-import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, recordsAt, reqRunKey } from '../state/store'
+import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, reqRunKey } from '../state/store'
 import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
-import type { RequestRec } from '../engine/warrecs'
+import type { RequestRec, WarRec } from '../engine/warrecs'
 import { FigureCell, figWords } from './FigureCell'
 import { NamePuck } from './NamePuck'
 import { isCommitCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
@@ -189,6 +189,8 @@ type PersonRowProps = {
   grid: Grid
   states: States
   views: Views
+  /** the current war's records (`recs`) — each month is handed its man's own slice, what the joined bar reads */
+  recs: Readonly<Record<string, Readonly<Record<string, readonly WarRec[]>>>> | undefined
   role: Role
   viewer: string | null
   deciding: boolean
@@ -224,6 +226,8 @@ type PersonMonthProps = {
   /** the day views ([ARCH-STACK] step 4) — the corner mark and leave dated
    *  outside the person's time in the squadron read them */
   views: Views
+  /** HIS war records by date — what the joined bar reads for a bid's run key (`entryKey`) */
+  recs: PersonRecs
   role: Role
   viewer: string | null
   deciding: boolean
@@ -259,23 +263,27 @@ function pairPlaces(mainPortion: string | undefined, second: Contrib): [Place, P
    a day in the MIDDLE holding a second entry breaks the bar (busy B: that day exactly as today). The code shows once, at the
    start of each piece. Classes only, on the boxes already drawn — no element is added (D991, performance). */
 type JoinBox = { key: string | null; where: string }
-function entryKey(personId: string, date: string, c: Contrib): string | null {
+/** One man's war records by date — the current war's `recs[pid]` (periods never overlap, so it is the war that holds every
+ *  date the grid draws). The joined bar reads a bid's run key from HERE, a prop, never from the store
+ *  ([LW-MONTH-MEMO-UNPINNED], 30 Oct 26): what a month draws must arrive in what its memo compares. */
+export type PersonRecs = Readonly<Record<string, readonly WarRec[]>> | undefined
+function entryKey(date: string, c: Contrib, recs: PersonRecs): string | null {
   if (c.kind === 'absence') return `a:${c.id}`
   if (c.kind === 'request') {
-    const r = recordsAt(personId, date).find(x => x.id === c.id && x.kind === 'request') as RequestRec | undefined
+    const r = (recs?.[date] ?? []).find(x => x.id === c.id && x.kind === 'request') as RequestRec | undefined
     return r ? `r:${reqRunKey(r)}` : null
   }
   return null
 }
-function dayBoxes(personId: string, date: string, v: DayView | undefined): JoinBox[] {
+function dayBoxes(date: string, v: DayView | undefined, recs: PersonRecs): JoinBox[] {
   const es = v ? v.all.filter(c => c.kind !== 'notice') : []
   if (!es.length || es.length > 2) return []
   const p0 = portionOf(es[0]!.win)
   const main = p0 === 'am' ? 'top' : p0 === 'pm' ? 'bot' : 'whole'
-  if (es.length === 1) return [{ key: entryKey(personId, date, es[0]!), where: main }]
+  if (es.length === 1) return [{ key: entryKey(date, es[0]!, recs), where: main }]
   const two = pairPlaces(p0, es[1]!)
-  if (!two) return [{ key: entryKey(personId, date, es[0]!), where: main }]
-  return [{ key: entryKey(personId, date, es[0]!), where: two[0] }, { key: entryKey(personId, date, es[1]!), where: two[1] }]
+  if (!two) return [{ key: entryKey(date, es[0]!, recs), where: main }]
+  return [{ key: entryKey(date, es[0]!, recs), where: two[0] }, { key: entryKey(date, es[1]!, recs), where: two[1] }]
 }
 const ROW = (w: string) => (w === 'top' ? 't' : w === 'bot' ? 'b' : w === 'whole' || w === 'left' || w === 'right' ? 'f' : '')
 /** whether the box `a` (on a day) joins the box `b` on the next day — `aRunStarts` / `bRunEnds`: no box of the key the day
@@ -290,12 +298,15 @@ function meets(a: JoinBox, b: JoinBox, aRunStarts: boolean, bRunEnds: boolean): 
   return true
 }
 /** the join classes of each box of one day: ' jl' (joined to the day before), ' jr' (to the day after) */
-export function joinClasses(personId: string, date: string, views: Record<string, DayView> | undefined): string[] {
-  const here = dayBoxes(personId, date, views?.[date])
+/* A DAY'S JOIN READS ITS NEIGHBOURS — up to TWO days either side (`has` below), across a month's edge too — so a month's memo
+   compares those days as well (`sameDays`, JOIN_REACH). */
+export const JOIN_REACH = 2
+export function joinClasses(date: string, views: Record<string, DayView> | undefined, recs: PersonRecs): string[] {
+  const here = dayBoxes(date, views?.[date], recs)
   if (!here.length) return []
   const prevD = addDays(date, -1), nextD = addDays(date, 1)
-  const prev = dayBoxes(personId, prevD, views?.[prevD]), next = dayBoxes(personId, nextD, views?.[nextD])
-  const has = (d: string, key: string | null) => !!key && dayBoxes(personId, d, views?.[d]).some(x => x.key === key)
+  const prev = dayBoxes(prevD, views?.[prevD], recs), next = dayBoxes(nextD, views?.[nextD], recs)
+  const has = (d: string, key: string | null) => !!key && dayBoxes(d, views?.[d], recs).some(x => x.key === key)
   return here.map(b => {
     const l = prev.some(x => meets(x, b, !has(addDays(prevD, -1), x.key), !has(nextD, b.key)))
     const r = next.some(x => meets(b, x, !has(prevD, b.key), !has(addDays(nextD, 1), x.key)))
@@ -313,7 +324,7 @@ export const setPhWidth = (el: HTMLElement, w: string) => {
   s.width = w; s.minWidth = w; s.maxWidth = w
 }
 
-export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, role, viewer, deciding, movedShown, shown, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
+export const PersonRow = memo(function PersonRow({ p, version, period, monthDays, grid, states, views, recs, role, viewer, deciding, movedShown, shown, evKind, lockedCols, quals, me, arranging, dragging, over, api, padL, padR, phL, phR }: PersonRowProps) {
   // THE TWO SMALL LINES BESIDE HIS NAME (the M5a build spec §1.4, finding 12): his LVE War bal on top — a bid comes off
   // at once (D1153), below zero shown red, never refused — and under it his LL and OL days in the View period, approved
   // and pending, as charged (the drawings' Ranger "12.5 / 7.5"). Both read the one engine, cached by the store until
@@ -414,6 +425,7 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
           grid={grid}
           states={states}
           views={views}
+          recs={recs?.[p.id]}
           role={role}
           viewer={viewer}
           deciding={deciding}
@@ -442,18 +454,33 @@ function sameMonth(a: PersonMonthProps, b: PersonMonthProps): boolean {
     a.deciding === b.deciding && a.movedShown === b.movedShown && a.evKind === b.evKind && a.lockedCols === b.lockedCols &&
     a.api === b.api && sameDays(a, b, id)
 }
-/* …and where his slice did change (a bid of his), only the days of THIS month are asked — a cell reads its own day and
-   nothing of its neighbours (checked: no day of a month reads another day's record), so a bid redraws its own month alone */
+/* …and where his slice did change (a bid of his), only the days THIS month's cells read are asked, so a bid redraws only the
+   months whose cells read the day it changed.
+   WHAT A MONTH'S CELLS READ ([LW-MONTH-MEMO-UNPINNED], 30 Oct 26). Each cell reads its own day's code, state and view — and,
+   since his D1359's joined bar (25 Oct 26), its NEIGHBOURS' views up to JOIN_REACH days either side, ACROSS A MONTH'S EDGE
+   (a leave of 1–3 Dec drew 1 Dec as the bar's start, and 30 Nov approved beside it left December's 1 Dec a start, its code
+   shown and its left edge rounded, until something else redrew December), and the run key of each bid it joins (its code,
+   state, remarks, till tick and documents — the store's `reqRunKey`), which no grid, state or view carries (one remark typed
+   over two bids left them two boxes while Approvals read them as one leave). So the views and his records are asked over
+   the month's days and JOIN_REACH days each side; the code and state over the month's own days, which alone read them. The
+   comment this replaces said "a cell reads its own day and nothing of its neighbours" — true when written (M3 §4, 23 Oct
+   26), false from the joined bar on. Pinned: matrix-rows-memo.test.tsx (an untouched month still skips; a neighbour's change,
+   and a run key's, still redraw). */
 function sameDays(a: PersonMonthProps, b: PersonMonthProps, id: string): boolean {
-  const ag = a.grid[id], bg = b.grid[id], as = a.states[id], bs = b.states[id], av = a.views[id], bv = b.views[id]
-  if (ag === bg && as === bs && av === bv) return true
+  const ag = a.grid[id], bg = b.grid[id], as = a.states[id], bs = b.states[id], av = a.views[id], bv = b.views[id], ar = a.recs, br = b.recs
+  if (ag === bg && as === bs && av === bv && ar === br) return true
   /* a day's view the merge rebuilt with the same content (it rebuilds every dated record of his on a write — measured) is
      the same day: compared by content, only where the object changed */
   const same = (x: unknown, y: unknown) => x === y || (x != null && y != null && JSON.stringify(x) === JSON.stringify(y))
-  for (const d of a.days) if (!same(ag?.[d.date], bg?.[d.date]) || !same(as?.[d.date], bs?.[d.date]) || !same(av?.[d.date], bv?.[d.date])) return false
+  for (const d of a.days) if (!same(ag?.[d.date], bg?.[d.date]) || !same(as?.[d.date], bs?.[d.date])) return false
+  const first = a.days[0]?.date, last = a.days[a.days.length - 1]?.date
+  if (!first || !last) return true
+  for (let d = addDays(first, -JOIN_REACH), end = addDays(last, JOIN_REACH); d <= end; d = addDays(d, 1)) {
+    if (!same(av?.[d], bv?.[d]) || !same(ar?.[d], br?.[d])) return false
+  }
   return true
 }
-export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, views, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
+export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, states, views, recs, role, viewer, deciding, movedShown, evKind, lockedCols, api }: PersonMonthProps) {
   return (
     <>
       {days.map(d => {
@@ -538,7 +565,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
         const wide = text.replace('*', '').length > 3 ? ' wide w4' : text.replace('*', '').length > 2 ? ' wide' : ''   // four letters (ATCH — D1375) a step smaller still
         /* the joined bar (D1359): its classes; a day the drag selects shows as today — its own box, its code, the cyan */
-        const joins = live ? joinClasses(p.id, d.date, views[p.id]) : []   // a day the drag selects undoes them in the stylesheet (td.selcell)
+        const joins = live ? joinClasses(d.date, views[p.id], recs) : []   // a day the drag selects undoes them in the stylesheet (td.selcell)
         const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
         const portionClass = ''
         const second = two ? entries[1]! : null

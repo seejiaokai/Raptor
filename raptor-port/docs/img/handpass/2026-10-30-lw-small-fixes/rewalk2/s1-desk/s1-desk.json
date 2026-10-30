@@ -1,0 +1,68 @@
+[
+ {
+  "id": "S1-2 a run Delete posting keeps the date rule",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "PO from 2026-10-26; deleted by the posting true; 22 Oct line lit \"approved\"; 28 Oct said \"He posted out on 26 Oct: refuse or delete it\"",
+  "pics": [
+   "s1-2-a-postout-sheet",
+   "s1-2-b-approvals"
+  ]
+ },
+ {
+  "id": "S1-6 (a) Redo after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved \"approved\", Undo → inputs 0; Redo enabled false; after Redo his leave inputs 0; said \"INCO deleted\"",
+  "pics": [
+   "s1-6-a-after-redo"
+  ]
+ },
+ {
+  "id": "S1-6 (b) Undo of a send-back after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after the second tap his inputs 0; after Undo 0; said \"A later change touches the same thing and can’t be undone.\"",
+  "pics": [
+   "s1-6-b-after-undo"
+  ]
+ },
+ {
+  "id": "S1-6 (c) Redo of an Auto-approve placement after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed approved 1; after Undo 0; Redo offered false; after Redo his leave 0",
+  "pics": [
+   "s1-6c-after-redo"
+  ]
+ },
+ {
+  "id": "S1-2 (b) a run Delete posting: the Redo of his day before the date goes back, as the live door approves it",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "his leave 4 → approved 5 → Undo 4; deleted by the posting true; Redo offered true → 5; said [\"Undid: a decision on a bid\",\"Redid: a decision on a bid\"]",
+  "pics": [
+   "s1-2b-after-redo"
+  ]
+ },
+ {
+  "id": "S1-2 (c) a Delete posting run late: his day between its date and the run day — Redo refused, as the live door",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved 4 → 5; deleted from 2026-10-30 (the posting dated 26 Oct); Redo offered false → his leave 4; the live Approve then said \"He posted out on 26 Oct: refuse or delete it\"",
+  "pics": [
+   "s1-2c-gap-day"
+  ]
+ },
+ {
+  "id": "S1-6 (d) an Inputs-page lengthening of his approved leave: Redo after his delete goes through (D321 (10))",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "iid imvu1z8bv5o0u6p; lengthened (the war's mark kept) true; Undo true; Redo offered true → lengthened again true; said [\"Drifter deleted\",\"Redid: a personal input\"]",
+  "pics": [
+   "s1-6d-a-window",
+   "s1-6d-a-lengthened",
+   "s1-6d-b-after-redo"
+  ]
+ }
+]

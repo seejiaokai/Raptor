@@ -56,10 +56,12 @@ const WAY_OUT: Record<ClashWayOut, string> = {
  *  kept). Where the leave in the way is one the war APPROVED the sentence says so (r7-19): it is why the instruction is
  *  to change the approved leave rather than decide a bid. */
 export function clashWhat(c: SyncClash): string {
-  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidCode}`
+  /* each code as the grid's box draws it ([LW-HALF-DAY-WORDS-LEFT] — sync.ts clashCodeShown), the stored one only where a
+     clash was built without it */
+  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidShown ?? c.bidCode}`
   return c.kind === 'duty'
-    ? `Weekend/PH work earns ${c.inputCode}, but the day holds ${held}`
-    : `The input is ${c.inputCode}, but the bid is ${held}`
+    ? `Weekend/PH work earns ${c.inputShown ?? c.inputCode}, but the day holds ${held}`
+    : `The input is ${c.inputShown ?? c.inputCode}, but the bid is ${held}`
 }
 
 /* THE TABS' TWO SMALL GLYPHS, in the line style of the app's icons (ui/icons.tsx — the Inputs page's tabs wear them). */

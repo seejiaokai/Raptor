@@ -143,13 +143,13 @@ describe('a day holding two war-approved halves (M2)', () => {
     return decideRequests([{ personId: 'bane', to: 'approved', parts: [{ date, recId: r.id, code, state: 'pending' }] }])[0]!
   }
   const fresh = () => { NOTICES.length = 0; T(9) }
-  /* (a line prints the kind without its half's star — "LL approved" — as every Leave War line does) */
+  /* (a line prints the kind with its half after it as AM / PM — "LL (AM) approved" — since his D1525, 30 Oct 26) */
 
   it('(a) the afternoon approved, then the morning: ONE line, "approved" — never "deleted" beside it', () => {
     approve('LL*')
     fresh()
     expect(approve('*LL').kind).toBe('done')
-    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL approved · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL (AM) approved · Saber'])   // the half after the code (D1525)
   })
 
   it('(b) an approval that extends an older morning leave, on a day whose afternoon a later leave holds: "approved", not "bid deleted"', () => {
@@ -157,7 +157,7 @@ describe('a day holding two war-approved halves (M2)', () => {
     approve('LL*')                     // the afternoon leave, A, filed later
     fresh()
     expect(approve('*LL').kind).toBe('done')    // extends K onto D
-    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL approved · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL (AM) approved · Saber'])
   })
 
   it('(c) one half of a two-half day put back to a bid tells him so, whichever Input is older', () => {
@@ -166,7 +166,7 @@ describe('a day holding two war-approved halves (M2)', () => {
     fresh()
     const parts = (pm as any).parts as DecidePart[]
     expect(decideRequests([{ personId: 'bane', parts, to: 'pending' }])[0]!.kind).toBe('done')
-    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL put back to a bid · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL (PM) put back to a bid · Saber'])
   })
 
   it('(c, the other half) the older morning put back tells him so too', () => {
@@ -174,14 +174,14 @@ describe('a day holding two war-approved halves (M2)', () => {
     approve('LL*')
     fresh()
     expect(decideRequests([{ personId: 'bane', parts: (am as any).parts, to: 'pending' }])[0]!.kind).toBe('done')
-    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL put back to a bid · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL (AM) put back to a bid · Saber'])
   })
 
   it('"Approve what I enter" beside an approved afternoon (D1422): "added and approved" only', () => {
     approve('LL*')
     fresh()
     placeApproved([{ personId: 'bane', date: D }], '*LL')
-    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL added and approved · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Wed 4 Feb · LL (AM) added and approved · Saber'])
   })
 })
 
@@ -326,7 +326,7 @@ describe('the scenario designer’s faults (★5, ★6, ★7)', () => {
     NOTICES.length = 0
     T(9)
     expect(setCell('bane', DAYS[0]!, '*OL')).toBe(true)
-    expect(lines('bane').sort()).toEqual(['Your leave · Tue 3 Feb · LL bid changed to OL · Saber', 'Your leave · Tue 3 Feb · LL bid deleted · Saber'])
+    expect(lines('bane').sort()).toEqual(['Your leave · Tue 3 Feb · LL (PM) bid deleted · Saber', 'Your leave · Tue 3 Feb · LL bid changed to OL · Saber'])   // the afternoon named PM (D1525)
   })
   it('★6 "Approve what I enter" placing another kind over his pending bid names the kind placed', () => {
     ranger(); expect(setCell('bane', DAYS[0]!, 'LL')).toBe(true); saber()

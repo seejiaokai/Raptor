@@ -12,7 +12,7 @@
 //     they change (`lw.reqmeta` — the one change the commit lets through on a closed day, perms.ts onlyChangesWords).
 
 import { useState } from 'react'
-import { displayCell, type RequestRec } from '../engine'
+import { codeInWords, type RequestRec } from '../engine'
 import { fileStraight, setCell, setRequestWords } from '../state/store'
 import { DutyButtons } from './LeaveButtons'
 import { MoreButton } from './BidBits'
@@ -25,7 +25,6 @@ import { dayLabel } from './dates'
 export const CLOSED_NOTE = 'Bidding is closed. To change your leave, seek management’s approval, then file it on the Inputs page. Your approved leave updates here by itself.'
 export const PENDING_NOTE = 'Your bid is pending a decision. Delete it if you no longer want it.'
 
-const portionWord = (code: string) => (code.startsWith('*') ? 'Morning' : code.endsWith('*') ? 'Afternoon' : 'Whole day')
 
 export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: {
   personId: string
@@ -74,7 +73,8 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
             <div className="bidsheet-row" key={r.id}>
               <span className="lab">Your bid</span>
               <span className="cn-bid" data-testid={`closed-bid-${r.id}`}>
-                <b className="cn-code">{displayCell(r.code).replace(/[<>]/g, '')}</b> {portionWord(r.code)} · pending
+                {/* "LL (AM) · pending", a whole day "LL · pending" (his D1525 — the half after the code, AM / PM) */}
+                <b className="cn-code">{codeInWords(r.code)}</b> · pending
               </span>
             </div>
           ))}
