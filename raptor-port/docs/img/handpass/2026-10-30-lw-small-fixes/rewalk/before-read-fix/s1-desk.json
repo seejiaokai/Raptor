@@ -1,0 +1,20 @@
+[
+ {
+  "id": "S1-6 (c) Redo of an Auto-approve placement after his delete",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "placed approved 1; after Undo 0; Redo offered true; after Redo his leave 1",
+  "pics": [
+   "s1-6c-after-redo"
+  ]
+ },
+ {
+  "id": "S1-2 (b) a run Delete posting: the Redo of his day before the date goes back, as the live door approves it",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "his leave 4 → approved 5 → Undo 4; deleted by the posting true; Redo offered false → 4; said [\"Undid: a decision on a bid\"]",
+  "pics": [
+   "s1-2b-after-redo"
+  ]
+ }
+]

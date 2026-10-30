@@ -1,0 +1,75 @@
+[
+ {
+  "id": "S4-1 premise",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1–3 Dec one bar: 29 Nov (empty) | 30 Nov (empty) | 1 Dec LL jr | 2 Dec LL jl jr | 3 Dec LL jl",
+  "pics": [
+   "s41-a1-dec-run"
+  ]
+ },
+ {
+  "id": "S4-1 approved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "placed true; one joined bar 30 Nov–3 Dec expected (30 Nov jr, 1 Dec jl): 29 Nov (empty) | 30 Nov LL jr | 1 Dec LL jl jr | 2 Dec LL jl jr | 3 Dec LL jl",
+  "pics": [
+   "s41-a2-after-30nov"
+  ]
+ },
+ {
+  "id": "S4-1 heals on a December redraw",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "after a bid on 21 Dec: 29 Nov (empty) | 30 Nov LL jr | 1 Dec LL jl jr | 2 Dec LL jl jr | 3 Dec LL jl",
+  "pics": [
+   "s41-a3-after-dec-bid"
+  ]
+ },
+ {
+  "id": "S4-1 Undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "30 Nov empty, 1 Dec the bar's start: 29 Nov (empty) | 30 Nov (empty) | 1 Dec LL jr | 2 Dec LL jl jr | 3 Dec LL jl",
+  "pics": [
+   "s41-a4-undo"
+  ]
+ },
+ {
+  "id": "S4-1 pending run",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pending bids with no words: one key — joined at 1 Dec expected: 30 Nov LL jr | 1 Dec LL jl jr | 2 Dec LL jl",
+  "pics": [
+   "s41-b1-pending"
+  ]
+ },
+ {
+  "id": "S4-1 delete 30 Nov",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "1 Dec the start, nothing joined to the left: 30 Nov (empty) | 1 Dec LL jr | 2 Dec LL jl (day-tapped choice true)",
+  "pics": [
+   "s41-b2-deleted-30nov"
+  ]
+ },
+ {
+  "id": "S4-2 premise",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "two boxes, not joined: 10 Nov LL | 11 Nov LL",
+  "pics": [
+   "s42-a1-two-bids"
+  ]
+ },
+ {
+  "id": "S4-2 (a) one remark over both",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "ONE joined bar expected: 10 Nov LL jr | 11 Nov LL jl; Approvals lists 1 line(s) for him: Vector C LL Tue 10 – Wed 11 Nov › 2 days 31 W 17 30 Oct 03:3",
+  "pics": [
+   "s42-a2-one-remark",
+   "s42-a3-approvals"
+  ]
+ }
+]

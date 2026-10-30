@@ -710,6 +710,13 @@ export function OilTracker({ person, onClose, onGranted }: {
 
   return (
     <Sheet testid="oil-sheet" label="OIL tracker" onClose={onClose} full>
+      {/* EVERYTHING OVER THE LIST IS ONE SOLID SURFACE (his D1518, 29 Oct 26 — the pinned-part sweep, 30 Oct 26): the head,
+          the tools row, and the legend or the date picker when open stand still while the list scrolls under its top edge.
+          Apart, they had no fill of their own and stood a few pixels off one another and off the list, so a list drawn past
+          its top (his iPhone's spill on the Balances page, which shares this pinch — D1519) showed over the chips and in the
+          strips between. In one box, in the sheet's own colour and stacked over the list, nothing of the list can show
+          there (oiltracker.css .oil-top); the list keeps what it draws inside its box too. */}
+      <div className="oil-top">
       <div className="bidsheet-hd">
         <span className="who">OIL TRACKER</span>
         <span className="dt">{admin ? 'one row per person · the oldest credit is used first' : 'one row per person'}</span>
@@ -753,6 +760,7 @@ export function OilTracker({ person, onClose, onGranted }: {
           {admin ? ' Tap a name (or drag down several) to credit them below; tap a credit you gave to edit it.' : ''}
         </div>
       )}
+      </div>
       <div ref={wrapRef} className="oil-wrap" data-testid="oil-list">
         <table className="oil-grid" style={zoom !== 1 ? { zoom } : undefined}>
           <thead>

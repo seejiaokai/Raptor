@@ -112,7 +112,9 @@ describe('every clash line names where it can be undone — the words of record 
     const c = theClash()
     expect(c.kind).toBe('duty')
     expect(c.wayOut).toBe('bid')
-    expect(stripLine()).toBe(`${cs('plasma')} · Sat 18 Jul · Weekend/PH work earns ${c.inputCode}, but the day holds LL. Decide the bid ›`)
+    /* the credit printed as its box draws it — the star after its code (D1306; [LW-HALF-DAY-WORDS-LEFT]) */
+    expect(stripLine()).toBe(`${cs('plasma')} · Sat 18 Jul · Weekend/PH work earns ${c.inputShown}, but the day holds LL. Decide the bid ›`)
+    expect(c.inputShown).toBe('FO*')
   })
 
   it('leave the war approved: "Change the approved leave" (D1177 narrowing D827)', () => {
@@ -288,7 +290,7 @@ describe('on a phone the note is a line of its own that opens its list (D805, D8
       ['clash-who', cs('plasma')],
       ['clash-day', 'Sat 18 Jul'],
       ['clash-do', 'Decide the bid ›'],
-      ['clash-what', `Weekend/PH work earns ${c.inputCode}, but the day holds LL`],
+      ['clash-what', 'Weekend/PH work earns FO*, but the day holds LL'],   // the phone's list prints what the desktop's line does
     ])
   })
 

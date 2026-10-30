@@ -240,6 +240,10 @@ export function Matrix() {
   const version = useVersion()
   const { people, period, grid, states, views, spans: rowSpans, requirements, role, viewer, eventDefs, openings, ledger, wars, figureOrder, eventRows, focusDate, focusSeq, focusSoft, focusQuiet, qualCatalog, groupColors } = getState()
   const dates = period.days.map(d => d.date)
+  /* the war on screen's own records — each month of a row is handed its man's slice, what the joined bar reads (D1359;
+     MatrixRows entryKey). Periods never overlap, so this war holds every date the grid draws. The store keeps each man's
+     slice the same object until a write of his (engine/warrecs.ts withList) — the month's memo compares it. */
+  const curRecs = wars.find(w => w.period.id === period.id)?.recs
   // Memoized on the store objects (the store replaces what it writes, so
   // identity IS change): rules-as-data made a day's evaluation walk every
   // rule's own filter, and paying that for all 365 days again on every
@@ -3834,6 +3838,7 @@ export function Matrix() {
                         grid={grid}
                         states={states}
                         views={views}
+                        recs={curRecs}
                         role={role}
                         viewer={viewer}
                         deciding={deciding}

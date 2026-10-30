@@ -76,7 +76,8 @@ export interface UndoHooks {
      man back (state/person-delete.ts deletedRestoreProblem) can NEVER be taken — a delete is final — so the dispatcher
      passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
      records), and the button never stalls behind it. The sentence, or null. */
-  deadRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
+  /* (`entry` — the step itself: what it was, where it was made; person-delete.ts tells a war step's approval by its module) */
+  deadRefusal?(changes: Change[], dir: 'undo' | 'redo', entry?: UndoEntry): string | null
   /* D148 (24 Sep 26) — "if someone else has since changed the very same thing, Undo refuses and SAYS WHO". The name a
      person goes by on screen (his callsign), or null — through a hook so the timeline stays free of the roster
      (the change-recording plan B6.3). */
@@ -762,7 +763,7 @@ function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'
         /* THE RULES AGAIN, INSIDE, before any write (the change-recording plan §11.3 — Astra's red team 2): the view-snap
            ran between the first ask and here (a week loaded, projections ran), so the world the first ask saw may have
            moved. A refusal now rolls back nothing, because nothing was written — and keeps its own words. */
-        const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir))
+        const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir, entry)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir))
         if (again) throw new CmdRefused(again)
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
@@ -823,7 +824,7 @@ function missingStores(changes: Change[]): string[] {
 function deadFor(e: UndoEntry, dir: 'undo' | 'redo'): string | null {
   const k = dir === 'undo' ? '__deadU' : '__deadR'
   if ((e as any)[k]) return (e as any)[k]
-  const r = hooks.deadRefusal ? hooks.deadRefusal(dir === 'undo' ? e.inverse : e.forward, dir) : null
+  const r = hooks.deadRefusal ? hooks.deadRefusal(dir === 'undo' ? e.inverse : e.forward, dir, e) : null
   if (r) (e as any)[k] = r
   return r
 }

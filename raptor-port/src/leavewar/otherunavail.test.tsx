@@ -412,7 +412,7 @@ describe('an Attach filed from the war (D1378–D1380)', () => {
 })
 
 /* A HALF-DAY OTHER HELD (his D1353, D1371 — drawn by lw-1025-q7.mjs SET c2): a tap on the day opens the bid window on the
-   free half, with one line for the held half — the Other's box, "Morning", its remarks, and where it is changed */
+   free half, with one line for the held half — the Other's box, "AM" (his D1525, narrowing D1371's "Morning"), its remarks, and where it is changed */
 describe('the free half beside a half-day Other (D1353, D1371)', () => {
   beforeEach(() => {
     INPUTS.length = 0; JSON.parse(ISNAP).forEach((i: any) => INPUTS.push(i))
@@ -432,7 +432,7 @@ describe('the free half beside a half-day Other (D1353, D1371)', () => {
     const s = screen.getByTestId('bid-picker')
     expect(within(s).getByTestId('portion-pm').getAttribute('aria-pressed')).toBe('true')
     const line = within(s).getByTestId('bid-heldhalf')
-    expect(line.textContent).toContain('Morning')
+    expect(line.textContent).toContain('OTHAM')   // its box, then AM (D1525)
     expect(line.textContent).toContain('“Board of inquiry”')
     expect(line.textContent).toContain('change it on the Inputs page')
     expect(line.querySelector('.c.k-unav')?.textContent).toBe('OTH')

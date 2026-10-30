@@ -437,7 +437,8 @@
     height:clamp(180px,55vh,440px);z-index:120;display:flex;align-items:stretch;
     width:max-content;max-width:78vw;padding:8px 0 12px 0;
     border:1px solid var(--edge);border-right:none;border-radius:12px 0 0 12px;
-    background:rgba(11,13,16,.965);backdrop-filter:blur(8px);
+    /* solid, in the colour it showed over the page (D1518 — the pinned-part sweep, 30 Oct 26) */
+    background:var(--bg);
     box-shadow:-14px 0 34px -18px rgba(0,0,0,.95);
     transform:translate(calc(100% - 30px),-50%);transition:transform .2s ease}
   /* PARKED, THE HANDLE MUST NOT EAT A SCROLL (fix, 11 Aug 26 — the owner's

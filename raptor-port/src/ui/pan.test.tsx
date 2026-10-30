@@ -599,3 +599,93 @@ describe('only a real resize re-lands the week', () => {
     expect(resizeRelands(Object.assign(new Event('resize'), { saveBand: true }), 1200), 'a band resize never re-lands').toBe(false)
   })
 })
+
+/* D1526 (30 Oct 26 — his "sliding tab but make it still slightly transparent"): the desktop week's ‹ › arrows are a slim
+   tab on the window's edge that slides out to the full arrow while the pointer is near — inside the full arrow's own
+   38 × 70 footprint plus 24px — and back when it leaves. The look is the stylesheet's (measured in the browser suite);
+   here the rule that sets `.near`, through the live document listener, with each arrow's box stubbed. */
+describe('D1526 the week arrows slide out when the pointer comes near', () => {
+  const box = (left: number, right: number) => ({ left, right, top: 345, bottom: 415, width: right - left, height: 70, x: left, y: 345, toJSON() {} })
+  const move = (x: number, y: number, pointerType = 'mouse', type = 'pointermove', related: any = undefined) => {
+    const e = new MouseEvent(type, { clientX: x, clientY: y, bubbles: true, relatedTarget: related ?? null })
+    Object.defineProperty(e, 'pointerType', { value: pointerType })
+    document.dispatchEvent(e)
+  }
+  const near = () => [$('#weekPrev').classList.contains('near'), $('#weekNext').classList.contains('near')]
+  /* an earlier test's initPan()/stop() pair takes the shared document listeners off, so each test here puts them on
+     (adding the same listener twice is a no-op) and takes them off after */
+  let stop: (() => void) | undefined
+  afterEach(() => { stop?.(); stop = undefined })
+  const wire = async (page: 'viewsched' | 'editsched' | 'inputs' = 'viewsched') => {
+    stop = initPan()
+    await act(async () => { view.setPage(page); notify() })
+    updateWeekNav()
+    $('#weekPrev').getBoundingClientRect = () => box(0, 14) as any
+    $('#weekNext').getBoundingClientRect = () => box(window.innerWidth - 14, window.innerWidth) as any
+    move(500, 380)
+  }
+
+  it('near the left arrow opens it; away closes it; the right one the same', async () => {
+    await wire()
+    expect(near(), 'at rest').toEqual([false, false])
+    move(48, 380); expect(near(), '48 from the left edge, level with the arrow').toEqual([true, false])
+    move(62, 322); expect(near(), 'the corner of the zone — 38 + 24 in, 24 above the arrow').toEqual([true, false])
+    move(300, 380); expect(near(), 'out in the week').toEqual([false, false])
+    move(window.innerWidth - 48, 380); expect(near(), '48 from the right edge').toEqual([false, true])
+    move(window.innerWidth - 300, 380); expect(near(), 'away again').toEqual([false, false])
+  })
+
+  it('at the edge but well above or below the arrow it stays slim', async () => {
+    await wire()
+    move(5, 380 - 140); expect(near(), '140 above').toEqual([false, false])
+    move(5, 380 + 140); expect(near(), '140 below').toEqual([false, false])
+    move(70, 380); expect(near(), 'just past the zone sideways').toEqual([false, false])
+  })
+
+  it('leaving the window closes it', async () => {
+    await wire()
+    move(20, 380); expect(near()).toEqual([true, false])
+    move(-1, 380, 'mouse', 'pointerout', null); expect(near(), 'the pointer left the window').toEqual([false, false])
+  })
+
+  it('a finger does not open it (no hover on a touch screen)', async () => {
+    await wire()
+    move(20, 380, 'touch'); expect(near()).toEqual([false, false])
+  })
+
+  it('the pretend mouse move a browser sends after a finger tap does not open it; a real mouse later does', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    await wire()
+    move(1010, 380, 'touch', 'pointerdown')
+    move(1010, 380, 'mouse')          // Safari's compatibility move, at the tapped spot, right after the tap
+    expect(near(), 'right after a tap').toEqual([false, false])
+    vi.setSystemTime(Date.now() + 1500)
+    move(1010, 380, 'mouse')
+    expect(near(), 'a mouse moved a while later').toEqual([false, true])
+  })
+
+  it('a finger held more than a second then lifted: the move after the lift still does not open it', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    await wire()
+    move(1010, 380, 'touch', 'pointerdown')
+    vi.setSystemTime(Date.now() + 1500)
+    move(1010, 380, 'touch', 'pointerup')
+    move(1010, 380, 'mouse')          // the compatibility move follows the lift
+    expect(near(), 'right after a long press is let go').toEqual([false, false])
+  })
+
+  it('a finger tapping an arrow the mouse opened: it stays open under the finger until the finger lifts', async () => {
+    vi.useFakeTimers({ toFake: ['Date'] })
+    await wire()
+    vi.setSystemTime(Date.now() + 5000)
+    move(1010, 380, 'mouse'); expect(near(), 'the mouse opened ›').toEqual([false, true])
+    move(1000, 380, 'touch', 'pointerdown'); expect(near(), 'the finger down: still open, so the tap lands on it').toEqual([false, true])
+    move(1000, 380, 'touch', 'pointerup'); expect(near(), 'the finger up: slim again').toEqual([false, false])
+  })
+
+  it('on a page without the arrows nothing is opened', async () => {
+    await wire('inputs')
+    move(20, 380); expect(near()).toEqual([false, false])
+    await act(async () => { view.setPage('viewsched'); notify() })
+  })
+})

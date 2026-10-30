@@ -1,0 +1,47 @@
+[
+ {
+  "id": "S1-1 premise",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "NEWBY (post-in 1 Nov) pending LL on 28 Oct: cell LL:s-w; Approvals count 14",
+  "pics": [
+   "s1-1-a-pending"
+  ]
+ },
+ {
+  "id": "S1-1 Approve refused",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "deleted true; count 14 → 14; his line \"NEWBY C LL 28 Oct › Approve Refuse 1 day −1 30 Oct 03:38 · by Saber\"; Approve said \"Posted out — refuse or delete it\"; leave inputs written for him: 0",
+  "pics": [
+   "s1-1-b-approvals-after-delete",
+   "s1-1-c-approve-pressed"
+  ]
+ },
+ {
+  "id": "S1-1 Refuse works",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "after Refuse: lit \"refused\" \"NEWBY C LL 28 Oct › Approve Refused 30 Oct 03:38 · by Saber\"",
+  "pics": [
+   "s1-1-d-refused"
+  ]
+ },
+ {
+  "id": "S1-1 the name the line shows",
+  "size": "phone",
+  "verdict": "RECORDED",
+  "said": "\"NEWBY C LL 28 Oct › Approve Refuse 1 day\"; a man with no row has no cell to delete the bid from: Refuse is the way",
+  "pics": []
+ },
+ {
+  "id": "S1-9 the new NEWBY approves, the old stays refused",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "new id pmvty54b3qiedqk; new line lit \"approved\", his leave inputs 1; old man's 0; lines: pmvty54b3qiedqk: NEWBY C LL 28 Oct › Approve Refuse 1 day −1 30 Oct []",
+  "pics": [
+   "s1-9-a-two-newbys",
+   "s1-9-b-new-approved"
+  ]
+ }
+]

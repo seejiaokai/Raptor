@@ -1,0 +1,50 @@
+[
+ {
+  "id": "S2-4 the credited sheet’s title reads as the box",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "published true; box FO*:whole:s-a; title \"FO* · approved\"",
+  "pics": [
+   "s2-4-a-credit-box",
+   "s2-4-b-sheet"
+  ]
+ },
+ {
+  "id": "S2-6 (a) the bid window lights AM on a morning box (D1331)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "box LL:top:s-w; lit portion-am:AM | bid-LL:<LL12",
+  "pics": [
+   "s2-6-a-window"
+  ]
+ },
+ {
+  "id": "S2-6 (a) a change from that window keeps its half",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after OL: OL:top:s-w",
+  "pics": [
+   "s2-6-b-ol-keeps-half"
+  ]
+ },
+ {
+  "id": "S2-9 a send-back keeps the morning (the stored code untouched)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved OL:top:s-a → sent back OL:top:s-w; Approvals: Ranger IP OL Thu 12 Nov, AM › 0.5 day 12 P 27.5 30",
+  "pics": [
+   "s2-9-a-sent-back",
+   "s2-9-b-approvals"
+  ]
+ },
+ {
+  "id": "S2-1 the clash note names the credit as the box does",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "plasma 2026-07-18: leave LL:whole:s-a → after publishing LL:left:s-a,FO*:right:s-a; the note: \"Fable · Sat 18 Jul · Weekend/PH work earns FO*, but the day holds approved LL. Change the approved leave ›\" (1 line(s))",
+  "pics": [
+   "s2-1-a-day",
+   "s2-1-b-clash-note"
+  ]
+ }
+]

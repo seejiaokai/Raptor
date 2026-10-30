@@ -1,0 +1,54 @@
+[
+ {
+  "id": "S3-3 (a) a filing that lands over another man’s bid says it once",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid OL:s-w:whole → after LL:s-a:whole; notes said: [\"This replaces Ranger's OL bid on 17 Nov on the Leave War · Input added\"]",
+  "pics": [
+   "s3-3-a-filed",
+   "s3-3-b-grid"
+  ]
+ },
+ {
+  "id": "S3-5 Undo of that filing: the bid back, the note not said again",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Undo OL:s-w:whole; notes said: [\"Undid: a personal input\"]",
+  "pics": [
+   "s3-5-a-undo"
+  ]
+ },
+ {
+  "id": "S3-5 Redo",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "after Redo LL:s-a:whole; notes said: [\"Redid: a personal input\"]",
+  "pics": []
+ },
+ {
+  "id": "S3-1 a refused filing: refused, nothing said of the bid, the bid stays",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "medical {\"stillOpen\":false,\"err\":\"\"}; day before C:s-a:top,OL:s-w:bot; the LL: {\"stillOpen\":true,\"err\":\"\"}; notes said: [\"Redid: a personal input\",\"Ranger is on ATT C on 18 Nov (00:00–12:00) — leave can't go over a medical\"]; day after C:s-a:top,OL:s-w:bot",
+  "pics": [
+   "s3-1-a-refused",
+   "s3-1-b-grid"
+  ]
+ },
+ {
+  "id": "S3-1 the same filing again (lesson 16)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"stillOpen\":true,\"err\":\"\"}; said [\"Ranger is on ATT C on 18 Nov (00:00–12:00) — leave can't go over a medical\"]",
+  "pics": []
+ },
+ {
+  "id": "S3-7 the war’s own filing says nothing of the bid",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "CSE offered true; day now CSE:s-a:undefined,LL:s-w:undefined; notes said: [\"Ranger is on ATT C on 18 Nov (00:00–12:00) — leave can't go over a medical\"]",
+  "pics": [
+   "s3-7-a-course"
+  ]
+ }
+]

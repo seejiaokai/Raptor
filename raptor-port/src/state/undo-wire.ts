@@ -381,7 +381,8 @@ export function installGlobalUndo(): void {
        roster, the accounts' guards, a man still named somewhere (state/roster-restore.ts) */
     restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
-    deadRefusal: (changes) => deletedRestoreProblem(changes as any),
+    /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
+    deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),
     /* D148 — the refusal says who: the callsign he goes by (a rename moves nothing, so it is read live) */
     seenOverlay,
     nameOf: (a) => (a.personId != null && (PEOPLE as any)[a.personId] ? String((PEOPLE as any)[a.personId].cs) : null),

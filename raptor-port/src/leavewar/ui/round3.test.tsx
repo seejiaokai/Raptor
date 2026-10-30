@@ -324,8 +324,8 @@ describe('round 3 — the day\'s list of a day with two entries (D1315, D1327–
     const a = screen.getByTestId(`dl-a-${ll.iid}`), b = screen.getByTestId(`dl-a-${med.iid}`)
     expect(a.querySelector('.leg-box .c')!.className).toMatch(/\bk-ll\b.*\bs-a\b.*\btop\b/)
     expect(b.querySelector('.leg-box .c')!.className).toMatch(/\bk-med\b.*\bbot\b.*\braptor\b/)
-    expect(a.querySelector('.dl-main')!.textContent).toBe('Morning · approved')
-    expect(b.querySelector('.dl-main')!.textContent).toBe('Afternoon · change it on the Inputs page')
+    expect(a.querySelector('.dl-main')!.textContent).toBe('AM · approved')   // D1525
+    expect(b.querySelector('.dl-main')!.textContent).toBe('PM · change it on the Inputs page')
     expect(screen.getByTestId('daylist').textContent).not.toContain('local leave')
     expect(screen.getByTestId('daylist').textContent).not.toContain('no flying but may still work')
   })
@@ -367,7 +367,7 @@ describe('round 3 — the day\'s list of a day with two entries (D1315, D1327–
     fireEvent.click(cell())
     const rec = rawState().wars[0]!.recs[P]![D]!.find(x => x.kind === 'request')!
     const line = screen.getByTestId(`dl-r-${rec.id}`)
-    expect(line.querySelector('.dl-main')!.textContent).toBe('Morning · pending')
+    expect(line.querySelector('.dl-main')!.textContent).toBe('AM · pending')
     const box = within(line).getByRole('textbox') as HTMLTextAreaElement
     fireEvent.change(box, { target: { value: 'Waiting on the form' } })
     fireEvent.blur(box)
@@ -480,10 +480,10 @@ describe('round 3 — the walk’s finds', () => {
     render(<Matrix />)
     fireEvent.click(cell())
     const order = () => [...screen.getByTestId('daylist').querySelectorAll(':scope > li .dl-main')].map(e => e.textContent ?? '')
-    expect(order()[0]).toMatch(/^Morning/)
+    expect(order()[0]).toMatch(/^AM/)
     fireEvent.click(screen.getByTestId(`dl-approve-${am.iid}`))
-    expect(order()[0]).toMatch(/^Morning · pending/)
-    expect(order()[1]).toMatch(/^Afternoon · approved/)
+    expect(order()[0]).toMatch(/^AM · pending/)
+    expect(order()[1]).toMatch(/^PM · approved/)
   })
 
   it('a tap outside the open ⋯ menu only closes it — it never presses what it lands on (X9)', () => {

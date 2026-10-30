@@ -20,6 +20,7 @@ export function updateWeekNav() {
   const p = $('weekPrev'), n = $('weekNext')
   if (p) (p as any).hidden = !on
   if (n) (n as any).hidden = !on
+  if (!on) { setNear(p, false); setNear(n, false) }   // shown again later, they come back slim (D1526)
   hsSync()
 }
 /* one click = exactly one day box. Measured from the live layout (box + gap) so
@@ -629,6 +630,38 @@ export function resizeRelands(e: Event | null, width: number): boolean {
   lastResizeW = width
   return real
 }
+/* His D1526 (30 Oct 26): the week's ‹ › are slim tabs on the window's edge that slide out while the pointer is NEAR —
+   inside the full arrow's own 38 × 70 footprint plus 24px — and back when it leaves (the look: 03-week.css). One class,
+   `.near`. A cheap test first: the pointer anywhere but the two edge strips measures nothing, so a drag or a move across
+   the week never forces a layout. A finger has no hover, so touch is left alone (a tap on the tab still presses it). */
+const NAV_ZONE = 38 + 24
+function setNear(b: HTMLElement | null, on: boolean) { if (b && b.classList.contains('near') !== on) b.classList.toggle('near', on) }
+/* After a finger tap a browser sends a pretend mouse move to the tapped spot (Safari on an iPad on its side: the tap
+   on the slim tab came back as a "mouse" move over it and held it open over the day — the fresh read's finding, the
+   walk's step E1). A mouse move within a second of a finger touching or lifting is that echo, never a mouse coming near —
+   the lift too, since the echo follows it and a press can be held longer than a second (the fix's narrow read). */
+let navTouchAt = -Infinity
+/* a finger lifted also means no mouse is near: both slide back (one a mouse had opened would otherwise sit open through
+   the second its echoes are ignored) — on the lift, never the press: shrunk under a landing finger, the arrow would lose
+   the tap (the fix's round-3 read) */
+function onNavTouch(e: PointerEvent) {
+  if (e.pointerType !== 'touch') return
+  navTouchAt = Date.now()
+  if (e.type !== 'pointerdown') { setNear($('weekPrev'), false); setNear($('weekNext'), false) }
+}
+function onNavPointer(e: PointerEvent) {
+  if (e.pointerType === 'touch' || Date.now() - navTouchAt < 1000) return
+  const p = $('weekPrev'), n = $('weekNext')
+  const x = e.clientX, y = e.clientY, edge = window.innerWidth
+  for (const [b, left] of [[p, true], [n, false]] as const) {
+    if (!b || (b as any).hidden || (left ? x > NAV_ZONE + 40 : x < edge - NAV_ZONE - 40)) { setNear(b, false); continue }
+    const r = b.getBoundingClientRect()
+    const inX = left ? x <= r.left + NAV_ZONE : x >= r.right - NAV_ZONE
+    setNear(b, inX && y >= r.top - 24 && y <= r.bottom + 24)
+  }
+}
+/* the pointer left the window: both slide back */
+function onNavOut(e: PointerEvent) { if (!e.relatedTarget) { setNear($('weekPrev'), false); setNear($('weekNext'), false) } }
 function onResize(e?: Event) { updateWeekNav(); syncPeekOnResize(); if (!resizeRelands(e || null, window.innerWidth)) return; clearTimeout(relandT); relandT = setTimeout(relandWeekAfterResize, 120) }
 
 export function initPan() {
@@ -650,6 +683,9 @@ export function initPan() {
      glide would lose its corridor mid-flight. */
   if (trk) trk.addEventListener('pointerdown', onTrackGrab)
   window.addEventListener('resize', onResize)
+  document.addEventListener('pointermove', onNavPointer, { passive: true })
+  for (const t of ['pointerdown', 'pointerup', 'pointercancel']) document.addEventListener(t, onNavTouch as EventListener, { passive: true, capture: true })
+  document.addEventListener('pointerout', onNavOut, { passive: true })
   updateWeekNav()
   /* on a phone, jump to today's column, as bootApp does. Guard scrollIntoView:
      jsdom has none, and this is a DEFERRED call (120ms) that can land after the
@@ -684,6 +720,9 @@ export function initPan() {
     document.removeEventListener('touchstart', onWeekTouchStart)
     document.removeEventListener('touchmove', onWeekTouchMove)
     document.removeEventListener('touchend', onWeekTouchEnd)
+    document.removeEventListener('pointermove', onNavPointer)
+    for (const t of ['pointerdown', 'pointerup', 'pointercancel']) document.removeEventListener(t, onNavTouch as EventListener, { capture: true })
+    document.removeEventListener('pointerout', onNavOut)
     document.removeEventListener('touchcancel', onWeekTouchEnd)
     if (trk) trk.removeEventListener('scroll', onTrackScroll)
     if (trk) trk.removeEventListener('pointerdown', onTrackGrab)
