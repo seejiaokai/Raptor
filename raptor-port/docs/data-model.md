@@ -1580,6 +1580,14 @@ them, when they are built (`OUTSTANDING.md` `[DB-SYNC-MODEL]`) — the drift tes
 the app, so the rename waits for the build. `ChangeBatch` has its row since it was built (`[DB-READINESS]` group A,
 phase 4.1, 30 Sep 26); so has `AccessRequestSeen` (phase 4.4).
 
+**The posting pass — the app's own change to a `Person` (`[SYSTEM-PASS-SAVES-ROSTER]`, D1510's security read, built
+31 Oct 26).** A posting out runs by itself on its date (D229) as the app, not as a person — at the database step a service
+account, which no role row above limits. It updates or deletes a `Person` (and suspends or deletes his `User`) only in the
+changeset that carries out that man's posting — his posting record (`LeavePersonProfile`) changes in the same changeset —
+and never any other person's row. The app's commit gate holds it (`src/state/perms.ts` `ownershipViolation`; the pass
+itself first puts the roster in memory back to what is saved — `src/leavewar/sync.ts` `runPoOutcomes`), pinned by
+`src/leavewar/postout-roster.test.ts`.
+
 **Who owns each table's rows — fixed when a table is created, and not changeable afterwards (29 Sep 26, round 2,
 Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an

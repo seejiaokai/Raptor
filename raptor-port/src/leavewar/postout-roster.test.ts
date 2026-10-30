@@ -21,7 +21,7 @@ import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
 import { accountsLoad, signIn, sessionFor } from '../state/accounts'
-import { commandStream } from '../command'
+import { commandStream, commitProjection } from '../command'
 import type { CommitEnvelope } from '../command'
 import { peopleStore } from '../state/people-settings-commit'
 import { ownershipViolation } from '../state/perms'
@@ -153,6 +153,22 @@ describe('an ordinary change made in the app is never lost or reverted by the pa
     expect(getState().postOuts.bane!.poDone).toBe('2026-07-15')
     const envs = commandStream().slice(n)
     expect(envs.every(e => peopleIn(e).every(id => id === 'bane'))).toBe(true)
+  })
+})
+
+describe('woken inside a command the app itself runs, the pass waits and runs as its own command after it', () => {
+  it('raised inside a projection’s reducer: its own `lw.postoutRun`, after the projection, the stray change not saved', () => {
+    postAhead('bane', 'overseas')
+    P('rocky').quals.mgmt = true
+    const n = commandStream().length
+    const r: any = commitProjection({ type: 'lw.sync', scope: { module: 'lw' } as any, apply: () => { runPoOutcomes() } })
+    expect(r.ok, 'the projection itself goes through').toBe(true)
+    const envs = passEnvs(n)
+    expect(envs, 'the pass ran as its own command').toHaveLength(1)
+    expect(peopleIn(envs[0]!)).toEqual(['bane'])
+    expect(P('bane').archived).toBe(true)
+    expect(saved('rocky').quals.mgmt).toBeFalsy()
+    expect(P('rocky').quals.mgmt).toBeFalsy()
   })
 })
 
