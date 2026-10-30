@@ -237,7 +237,8 @@ been chosen and built without a picture first — lesson 73 in the design guide'
 look exactly: frosted at 0.75, grey edge and arrow. Drawn close up three ways at the same spot
 (`scripts/handpass/week-arrows-look.mjs`, `docs/img/handpass/2026-10-30-week-arrows/look/`: the old arrow, as first built,
 now) and put to him on the arrows page; the browser test now asserts 0.75, the old glass and no blue; browser tests 44/44,
-walk 19/19. The read also found the short line of D1526
+walk 19/19.
+**His look (30 Oct 26):** *"Looks right"* — the arrows approved as built, on the preview of 728baf5fd. The read also found the short line of D1526
 faithful to its full row (D138).
 **Found, not this change's:** a man dragged with a mouse to the left or right edge of Edit Schedule never pans the week
 sideways — measured the same with today's arrows, with the new tab and with no arrows at all; filed `[WEEK-DRAG-EDGE-PAN]`.
