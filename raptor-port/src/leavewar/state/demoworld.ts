@@ -22,6 +22,7 @@
 // and re-keying it would corrupt it.
 
 import { INPUTS, filingOf, inpId } from '../../engine/inputs'
+import type { Input } from '../../engine/schema'
 import { addDays, parseCell, seedPeople, SEED_ABSENCES, warHolding, type Ledger, type ManningRule, type Person, type Recs } from '../engine'
 import type { Balances, BalKind, GradeHists, SnapEntry, TypedBal } from '../engine/leaveyear'
 import { inputRowFor } from '../absences'
@@ -64,7 +65,11 @@ export const DEMO_MAP: Record<string, string> = {
 /* The demo's member-filed rows ([ARCH-STACK] step 4 — every approved or filed
    absence is an Input now; the seed's own list is `SEED_ABSENCES`, filed below
    together with the demo OIL story's taken days). */
-const DEMO_RAPTOR_INPUTS: any[] = [
+/* the Inputs list, typed once at the Leave War's edge: the engine's INPUTS is untyped (a word-for-word port — D1537), and
+   its declared shape is the schema's Input; read through this each time, as the engine may replace the list */
+const inputs = (): Input[] => INPUTS
+
+const DEMO_RAPTOR_INPUTS: Input[] = [
   /* SPLICE's medical is MEMBER-FILED (owner, 13 Sep 26): the war can no longer
      create medical, so the demo shows it as the member's OWN Inputs filing — the
      ATT C / OML rows show on the war (read from the Inputs) as read-only cells, the
@@ -327,7 +332,7 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
   if (demo) {
     installDemoOil(DEMO_OIL)
     /* the browser tests' switch (e2e/app.ts openLeaveWar): they stand on the empty block a real squadron gets (D669) */
-    if (!(typeof window !== 'undefined' && (window as any).__lwNoDemoCounters === true)) installDemoCounters(DEMO_COUNTERS)
+    if (!(typeof window !== 'undefined' && (window as Window & { __lwNoDemoCounters?: boolean }).__lwNoDemoCounters === true)) installDemoCounters(DEMO_COUNTERS)
     installDemoOil(DEMO_WALK)
     remapPersonKeys(DEMO_MAP)
     /* M5a's walk: Ranger's requests (his real id — nothing to re-key), then every man's typed figures and grade */
@@ -357,7 +362,7 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
       /* filed where its kind lands, as a course filed on the Inputs page or from the war is (D1372 — sync.ts): the demo's
          course stands under Unavailable, so the war counts it (it asks only Unavailable, D1389 — the night's code read F1) */
       if (filingOf(row.type, 'u')) row.acc = 'u'
-      if (INPUTS.some((x: any) => x.person === row.person && x.date === row.date && x.yr === row.yr && x.type === row.type)) continue
+      if (inputs().some(x => x.person === row.person && x.date === row.date && x.yr === row.yr && x.type === row.type)) continue
       inpId(row)
       INPUTS.push(row)
     }
@@ -371,8 +376,8 @@ export function installDemoWorld(hadStoredWars: boolean, seedDemo = true): void 
     for (const rec of DEMO_RAPTOR_INPUTS) {
       /* Guarded per person+date+type, the seedDemoSans idiom — a second boot
          against the same INPUTS array must not double-file. */
-      const already = INPUTS.some(
-        (x: any) => x.person === rec.person && x.date === rec.date && x.type === rec.type,
+      const already = inputs().some(
+        x => x.person === rec.person && x.date === rec.date && x.type === rec.type,
       )
       if (already) continue
       const row = { ...rec }

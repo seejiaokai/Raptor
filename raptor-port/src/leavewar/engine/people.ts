@@ -15,9 +15,10 @@ export type PostOutcome = 'overseas' | 'delete' | 'sans' | 'none'
 export const POST_OUTCOMES: PostOutcome[] = ['overseas', 'delete', 'sans', 'none']
 /* the outcome a posting record carries, reading an older record's archive switch the old way (D56 — tolerant, never
    migrated): switch on = overseas (archived), off = none */
-export function outcomeOf(p: { poOutcome?: any; poArchive?: boolean } | null | undefined): PostOutcome | undefined {
+const isPostOutcome = (v: unknown): v is PostOutcome => (POST_OUTCOMES as readonly unknown[]).includes(v)
+export function outcomeOf(p: { poOutcome?: unknown; poArchive?: boolean } | null | undefined): PostOutcome | undefined {
   if (!p) return undefined
-  if (POST_OUTCOMES.includes(p.poOutcome)) return p.poOutcome
+  if (isPostOutcome(p.poOutcome)) return p.poOutcome
   if (p.poArchive === true) return 'overseas'
   if (p.poArchive === false) return 'none'
   return undefined

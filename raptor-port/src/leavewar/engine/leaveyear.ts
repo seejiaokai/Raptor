@@ -190,7 +190,7 @@ const isHalfIn = (n: unknown): n is number => typeof n === 'number' && Number.is
  *  `by` a string, `snap` [date, half] pairs, and no other field. Null for anything else. */
 export function readTypedBalShape(x: unknown, kind: string): TypedBal | null {
   if (!x || typeof x !== 'object' || Array.isArray(x) || !isBalKind(kind)) return null
-  const v = x as any
+  const v = x as { amount?: unknown; cf?: unknown; day?: unknown; by?: unknown; snap?: unknown }
   if (Object.keys(v).some(k => !['amount', 'cf', 'day', 'by', 'snap'].includes(k))) return null
   if (!isHalfIn(v.amount) || typeof v.day !== 'string' || !ISO.test(v.day) || typeof v.by !== 'string' || !Array.isArray(v.snap)) return null
   if (v.cf !== undefined && (kind !== 'LVE' || !isHalfIn(v.cf) || v.cf < 0 || v.cf > Math.max(v.amount, 0))) return null
@@ -347,12 +347,13 @@ const MED_CODES: readonly string[] = ['ATTC', 'HL', 'OML']
 /* approved records of these codes, a whole day 1 and a half .5, every day of the week — medical and duty away are not
    charged against a balance, so weekends count (reading 20) */
 function calendarDays(days: DayRecs, codes: readonly string[], from: string, to: string): number {
+  const want = new Set(codes)
   let n = 0
   for (const [d, list] of days) {
     if (d < from || d > to) continue
     let am = false, pm = false
     for (const c of list) {
-      if (c.kind !== 'absence' || c.spill || !codes.includes(c.code)) continue
+      if (c.kind !== 'absence' || c.spill || !want.has(c.code)) continue
       const p = portionOf(c.win)
       if (p !== 'pm') am = true
       if (p !== 'am') pm = true

@@ -56,8 +56,11 @@ export function dayWhatIf(
   const was = evaluateDay(war.people, war.grid, war.states, war.requirements, date, war.views)
   const now = evaluateDay(war.people, war.grid, war.states, war.requirements, date, after)
   const turned: DayWhatIf['turned'] = []
+  /* each rule's FIRST result before the change, as a find over the list would answer it */
+  const wasOf = new Map<string, (typeof was.results)[number]>()
+  for (const x of was.results) if (!wasOf.has(x.ruleId)) wasOf.set(x.ruleId, x)
   for (const r of now.results) {
-    const b = was.results.find(x => x.ruleId === r.ruleId)
+    const b = wasOf.get(r.ruleId)
     if (r.verdict === 'ok' || RANK[r.verdict] <= RANK[b?.verdict ?? 'ok']) continue
     turned.push({ ruleId: r.ruleId, label: r.label, before: b ? b.have : r.have, after: r.have, level: r.verdict })
   }

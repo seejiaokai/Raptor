@@ -53,7 +53,7 @@ describe('seed', () => {
 
   it('evaluates every seeded day without throwing — against the eleven counters the app used to start with', () => {
     const people = seedPeople()
-    const reqs = { default: { rules: JSON.parse(JSON.stringify(ELEVEN_COUNTERS)) }, overrides: {} }
+    const reqs = { default: { rules: ELEVEN_COUNTERS.map(r => structuredClone(r)) }, overrides: {} }
     const src = seedSources()[0]!
     for (const day of seedPeriod().days) {
       expect(['ok', 'amber', 'red']).toContain(evaluateDay(people, src.grid, src.states, reqs, day.date, src.views).verdict)

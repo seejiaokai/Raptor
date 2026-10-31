@@ -701,18 +701,18 @@ function readManningRules(x: unknown): ManningRule[] | null {
    The same `^\d{4}-\d{2}-\d{2}$` shape `setPostOut`/`setPostIn` demand at the
    write, so the reader now asks for exactly what the writer promises. */
 const isDay = (v: unknown): v is string => typeof v === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v)
-const dateEnd = (v: unknown): boolean => v === null || isDay(v)
+const dateEnd = (v: unknown): v is string | null => v === null || isDay(v)
 /* D320 ([ONE-DOOR], 27 Sep 26): his closed earlier stints, read as the writers promise them — each `{ from: day | null,
    to: day }` with `from <= to`, oldest first, each ending before the next begins, and the last ending before the
    current stint begins (whose start must then be a day). Anything else is dropped WHOLE (tolerant — D56: a stored list
    the writers never produce is demo data, never repaired by guessing), leaving the current stint as it is. */
-function readPast(v: any): Stint[] | undefined {
+function readPast(v: Record<string, unknown>): Stint[] | undefined {
   const raw = v.past
   if (!Array.isArray(raw) || !raw.length) return undefined
   const out: Stint[] = []
   for (const e of raw as unknown[]) {
     if (!isPlainObject(e)) return undefined
-    const s = e as any
+    const s = e
     if (!dateEnd(s.from) || !isDay(s.to)) return undefined
     if (s.from !== null && s.from > s.to) return undefined
     const prev = out[out.length - 1]
@@ -730,9 +730,10 @@ function readPostOuts(x: unknown): Record<string, Person> | null {
     if (!dateEnd(v.from) || !dateEnd(v.to)) continue
     const past = readPast(v)
     if (!isDay(v.from) && !isDay(v.to) && !past) continue
-    const rec: any = { ...v }
+    const rec: Record<string, unknown> = { ...v }
     if (past) rec.past = past; else delete rec.past
-    out[id] = rec as Person
+    /* the record as stored, its id and callsign and its two ends checked above — the shape the writers give a window */
+    out[id] = rec as unknown as Person
   }
   return out
 }
@@ -857,7 +858,7 @@ function readWar(x: unknown): LeaveWar | null {
       days: readDays,
       bands: readBands,
       /* its place among the wars ([DB-READINESS] group A, phase 3); a bad one is dropped and re-minted */
-      ...(typeof (period as any).ord === 'number' && Number.isFinite((period as any).ord) ? { ord: (period as any).ord as number } : {}),
+      ...(typeof p.ord === 'number' && Number.isFinite(p.ord) ? { ord: p.ord } : {}),
     },
     recs: readRecsOrNull,
   }
@@ -914,11 +915,13 @@ function readStored<T>(key: string, parse: (x: unknown) => T | null): T | null {
 /* the one exact shape rule lives in the engine, so the gate asks the same one (the security read's finding 1) */
 export const readTypedBal = readTypedBalShape
 export function readGradeHist(x: unknown): GradeHists[string] | null {
-  if (!isPlainObject(x) || !Array.isArray((x as any).hist)) return null
+  if (!isPlainObject(x)) return null
+  const hist: unknown = x.hist
+  if (!Array.isArray(hist)) return null
   const out: GradeHists[string] = []
-  for (const e of (x as any).hist) {
-    if (!isPlainObject(e) || !isDay((e as any).from) || !((e as any).id === null || (typeof (e as any).id === 'string' && (e as any).id))) return null
-    out.push({ id: (e as any).id, from: (e as any).from })
+  for (const e of hist as unknown[]) {
+    if (!isPlainObject(e) || !isDay(e.from) || !(e.id === null || (typeof e.id === 'string' && e.id))) return null
+    out.push({ id: e.id as string | null, from: e.from })
   }
   return out
 }
@@ -927,11 +930,14 @@ export function readGrades(x: unknown): GradeDef[] | null {
   const out: GradeDef[] = []
   for (const g of x) {
     if (!isPlainObject(g)) return null
-    const v = g as any
+    const v = g
     if (typeof v.id !== 'string' || !v.id || typeof v.name !== 'string' || typeof v.order !== 'number' || !Array.isArray(v.days)) return null
-    if (!v.days.every((d: any) => isPlainObject(d) && typeof d.n === 'number' && Number.isFinite(d.n) && isDay(d.from))) return null
-    if (v.goneFrom !== undefined && !isDay(v.goneFrom)) return null
-    out.push({ id: v.id, name: v.name, order: v.order, days: v.days.map((d: any) => ({ n: d.n, from: d.from })), ...(v.goneFrom ? { goneFrom: v.goneFrom } : {}) })
+    const days = v.days as unknown[]
+    if (!days.every(d => isPlainObject(d) && typeof d.n === 'number' && Number.isFinite(d.n) && isDay(d.from))) return null
+    const goneFrom = v.goneFrom
+    if (goneFrom !== undefined && !isDay(goneFrom)) return null
+    /* every day checked above: a finite `n` and a date `from` */
+    out.push({ id: v.id, name: v.name, order: v.order, days: (days as Array<{ n: number; from: string }>).map(d => ({ n: d.n, from: d.from })), ...(goneFrom ? { goneFrom } : {}) })
   }
   return out
 }
@@ -946,7 +952,7 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
   const balances: Balances = {}
   const gradeHist: GradeHists = {}
   const skipped: string[] = []
-  const parse = (k: string): any => { try { return JSON.parse(backend.read(k) ?? 'null') } catch { return undefined } }
+  const parse = (k: string): unknown => { try { return JSON.parse(backend.read(k) ?? 'null') } catch { return undefined } }
   for (const k of backend.keys()) {
     if (k.startsWith(WAR)) {
       const w = readWar({ period: parse(k), recs: {} })
@@ -957,7 +963,8 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
       /* a hand-typed award from before awards were ledger entries is retired demo data (D401) — skipped, as readRecs does */
       if (isPlainObject(x) && isRetiredAward(x)) continue
       const rec = at && isPlainObject(x) && x.id === at.recId && typeof x.pid === 'string' && x.pid && isDay(x.date) ? readRec(x) : null
-      if (at && rec) recRows.push({ key: k, warId: at.warId, pid: x.pid, date: x.date, rec })
+      /* a record is read only from a value whose pid and date passed the checks above */
+      if (at && rec) { const { pid, date } = x as { pid: string; date: string }; recRows.push({ key: k, warId: at.warId, pid, date, rec }) }
       else skipped.push(k)
     } else if (k.startsWith(LEDGER)) {
       const e = readLedger([parse(k)])?.[0]
@@ -965,7 +972,8 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
       else skipped.push(k)
     } else if (k.startsWith(OPENING)) {
       const o = parseOpeningKey(k), n = parse(k)
-      if (o && readOpenings({ [o.pid]: { [o.counter]: n } })) (openings[o.pid] ??= {})[o.counter as CounterName] = n
+      /* the figure is stored only once readOpenings has read it as one (a finite number) */
+      if (o && readOpenings({ [o.pid]: { [o.counter]: n } })) (openings[o.pid] ??= {})[o.counter as CounterName] = n as number
       else skipped.push(k)
     } else if (k.startsWith(BALANCE)) {
       const at = parseBalanceKey(k), b = at ? readTypedBal(parse(k), at.kind) : null
@@ -991,8 +999,11 @@ function readWorldRows(): { wars: LeaveWar[]; openings: Openings; ledger: Ledger
   }
   const recOrder = byOrd((r: WarRec) => r.id)
   recRows.sort((a, b) => recOrder(a.rec, b.rec))
+  /* each id's FIRST war, as a find over the list would answer it */
+  const warOf = new Map<string, LeaveWar>()
+  for (const w of wars) if (!warOf.has(w.period.id)) warOf.set(w.period.id, w)
   for (const { key, warId, pid, date, rec } of recRows) {
-    const war = wars.find(w => w.period.id === warId)
+    const war = warOf.get(warId)
     const list = war ? ((war.recs[pid] ??= {})[date] ??= []) : null
     if (!list || listProblem([...list, rec])) { skipped.push(key); continue }
     list.push(rec)
@@ -1029,7 +1040,7 @@ function writeWorldRows(recordsOnly = false): void {
    own order (the picker's — the order they were created in) the same way. Records are REPLACED, never mutated: the
    committed world is the undo's before-image. */
 function placeRecords(prev: State | null, s: State): State {
-  const outOfOrder = (list: readonly any[], idOf: (r: any) => string): boolean => {
+  const outOfOrder = <T extends { ord?: number }>(list: readonly T[], idOf: (r: T) => string): boolean => {
     const cmp = byOrd(idOf)
     return list.some((r, i) => typeof r.ord !== 'number' || (i > 0 && cmp(list[i - 1], r) >= 0))
   }
@@ -1067,7 +1078,7 @@ export const leavewarConverter: Converter = {
   name: 'leavewar',
   collections: ['leavewar'],
   convert(snap) {
-    const lw: Record<string, string> = (snap as any).leavewar ?? {}
+    const lw: Record<string, string> = snap.leavewar ?? {}
     const json = (k: string): unknown => { try { return JSON.parse(lw[k]!) } catch { return undefined } }
     const recs: Array<{ collection: string; id: string; value: unknown }> = []
     const replaced: string[] = []
@@ -1087,7 +1098,7 @@ export const leavewarConverter: Converter = {
     }
     const openings = lw.openings != null ? readOpenings(json('openings')) : null
     if (openings) {
-      for (const pid of Object.keys(openings)) for (const c of Object.keys(openings[pid]!)) recs.push({ collection: 'lw.opening', id: `${pid}:${c}`, value: (openings[pid] as any)[c] })
+      for (const pid of Object.keys(openings)) for (const c of Object.keys(openings[pid]!)) recs.push({ collection: 'lw.opening', id: `${pid}:${c}`, value: openings[pid]![c as CounterName] })
       replaced.push('openings')
     }
     const ledger = lw.ledger != null ? readLedger(json('ledger')) : null
@@ -1419,7 +1430,7 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
   /* M5a — one record per typed figure and per person's grade, each its own row (state/rows.ts) */
   for (const pid of Object.keys(s.balances)) {
     const row = s.balances[pid] || {}
-    for (const k of Object.keys(row)) m.set(`lw.balance/${pid}:${k}`, { collection: 'lw.balance', id: `${pid}:${k}`, value: (row as any)[k] })
+    for (const k of Object.keys(row)) m.set(`lw.balance/${pid}:${k}`, { collection: 'lw.balance', id: `${pid}:${k}`, value: row[k as BalKind] })
   }
   for (const pid of Object.keys(s.gradeHist)) m.set(`lw.grade/${pid}`, { collection: 'lw.grade', id: pid, value: { hist: s.gradeHist[pid] } })
   for (const pid of Object.keys(s.postOuts)) m.set(`lw.postouts/${pid}`, { collection: 'lw.postouts', id: pid, value: s.postOuts[pid] })
@@ -1440,6 +1451,12 @@ function lwDecompose(s: State): Map<string, CmdRecordEntry> {
   return m
 }
 
+/* the `lw.config` record as lwDecompose writes it — and as one from an older build reads: no names (before D1193), no
+   grades list or lock (before M5a) */
+type LwConfigRecord = Pick<State, 'eventDefs' | 'figureOrder' | 'rosterOrder' | 'manningOrder' | 'manningHidden' | 'figureHidden'
+  | 'groupDefs' | 'groupPriority' | 'groupPriorityCustom' | 'groupColors' | 'requirements' | 'eventRows' | 'showSans'>
+  & { reqNames?: ReqNames; grades?: GradeDef[]; balLock?: boolean }
+
 /* [CMDL-FINISH] §3 — apply ONE decomposed LW record onto a MUTABLE state clone
    (write() clones first, so mutating in place here never touches the captured
    baseline). Cell/bid ids are `${warId}:${pid}:${date}`; warId may itself carry
@@ -1449,8 +1466,8 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
   if (coll === 'lw.war') {
     const ix = s.wars.findIndex(w => w.period.id === e.id)
     if (e.op === 'delete') { if (ix >= 0) s.wars.splice(ix, 1) }
-    else if (ix >= 0) s.wars[ix].period = e.value as any
-    else s.wars.push({ period: e.value as any, recs: {} } as any)
+    else if (ix >= 0) s.wars[ix].period = e.value as Period
+    else s.wars.push({ period: e.value as Period, recs: {} })
     return
   }
   if (coll === 'lw.cell') {
@@ -1465,46 +1482,46 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
   switch (coll) {
     case 'lw.ledger': {
       /* one entry: replaced in place, appended when new, removed on a delete — the order of the rest kept */
-      const cur = (s as any).ledger as Ledger
+      const cur = s.ledger
       const ix = cur.findIndex(x => x.id === e.id)
-      if (e.op === 'delete') { if (ix >= 0) (s as any).ledger = cur.filter(x => x.id !== e.id) }
-      else if (ix >= 0) (s as any).ledger = cur.map(x => (x.id === e.id ? e.value as LedgerEntry : x))
-      else (s as any).ledger = [...cur, e.value as LedgerEntry]
+      if (e.op === 'delete') { if (ix >= 0) s.ledger = cur.filter(x => x.id !== e.id) }
+      else if (ix >= 0) s.ledger = cur.map(x => (x.id === e.id ? e.value as LedgerEntry : x))
+      else s.ledger = [...cur, e.value as LedgerEntry]
       return
     }
     case 'lw.opening': {
       /* one opening balance: `<pid>:<counter>`, the counter from the RIGHT */
       const i = e.id.lastIndexOf(':'), pid = e.id.slice(0, i), c = e.id.slice(i + 1)
-      const openings = { ...((s as any).openings as Openings) }
+      const openings = { ...s.openings }
       const row: Record<string, number> = { ...(openings[pid] || {}) } as Record<string, number>
       if (e.op === 'delete') delete row[c]; else row[c] = e.value as number
       if (Object.keys(row).length) openings[pid] = row; else delete openings[pid]
-      ;(s as any).openings = openings
+      ;s.openings = openings
       return
     }
     case 'lw.balance': {
       /* one typed figure: `<pid>:<kind>`, the kind from the RIGHT */
       const i = e.id.lastIndexOf(':'), pid = e.id.slice(0, i), k = e.id.slice(i + 1)
-      const all = { ...((s as any).balances as Balances) }
+      const all = { ...s.balances }
       const row: Record<string, TypedBal> = { ...(all[pid] || {}) } as Record<string, TypedBal>
       if (e.op === 'delete') delete row[k]; else row[k] = e.value as TypedBal
       if (Object.keys(row).length) all[pid] = row; else delete all[pid]
-      ;(s as any).balances = all
+      ;s.balances = all
       return
     }
     case 'lw.grade': {
-      const all = { ...((s as any).gradeHist as GradeHists) }
-      if (e.op === 'delete') delete all[e.id]; else all[e.id] = (e.value as any).hist
-      ;(s as any).gradeHist = all
+      const all = { ...s.gradeHist }
+      if (e.op === 'delete') delete all[e.id]; else all[e.id] = (e.value as { hist: GradeHists[string] }).hist
+      ;s.gradeHist = all
       return
     }
     case 'lw.label': {
-      const labels = { ...((s as any).persLabels as Record<string, string>) }
+      const labels = { ...s.persLabels }
       if (e.op === 'delete') delete labels[e.id]; else labels[e.id] = e.value as string
-      ;(s as any).persLabels = labels
+      ;s.persLabels = labels
       return
     }
-    case 'lw.oilpolicy': (s as any).oilPolicy = e.value; return
+    case 'lw.oilpolicy': s.oilPolicy = e.value as OilPolicy; return
     /* [CMDL-FINISH] CMDLF-002 — DEFERRED to [GLOBAL-UNDO]. Restoring postOuts sets
        the record, but the people posting-WINDOWS on the roster are a projection:
        reprojectRoster carries each window from the CURRENT person (ex.from/to), not
@@ -1517,15 +1534,15 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
        path restores postOuts at this step. */
     case 'lw.postouts': {
       /* one man's window (per person since [DB-READINESS] group A, phase 3) */
-      const po = { ...((s as any).postOuts as Record<string, Person>) }
+      const po = { ...s.postOuts }
       if (e.op === 'delete') delete po[e.id]; else po[e.id] = e.value as Person
-      ;(s as any).postOuts = po
+      ;s.postOuts = po
       return
     }
-    case 'lw.current': (s as any).currentId = e.value; return
+    case 'lw.current': s.currentId = e.value as string; return
     case 'lw.config': {
-      const v = e.value as any
-      Object.assign(s as any, {
+      const v = e.value as LwConfigRecord
+      Object.assign(s, {
         eventDefs: v.eventDefs, figureOrder: v.figureOrder, rosterOrder: v.rosterOrder,
         manningOrder: v.manningOrder, manningHidden: v.manningHidden,
         figureHidden: v.figureHidden, groupDefs: v.groupDefs, groupPriority: v.groupPriority,
@@ -1556,6 +1573,7 @@ export const lwStore: CmdEnlistableStore = {
      the transaction boundary under the lock (a restore must push NO LW undo step).
      Called only from a reducer that already enlisted lwStore. */
   write(entries: CmdRecordEntry[]): void {
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the restored world must read exactly as a reload reads it: this clone drops keys set to undefined (as saving does), which structuredClone would keep
     const next = JSON.parse(JSON.stringify(state)) as State   // fields are all JSON-durable (rawPersist proves it)
     /* [CMDL-FINISH] Fable#8 — apply lw.war entries FIRST: a cell/bid record whose
        war does not exist yet is dropped by applyLwRecord, so a restore set that
@@ -1568,6 +1586,7 @@ export const lwStore: CmdEnlistableStore = {
          a later in-place live edit corrupt that snapshot. Cell/bid values are
          strings (primitives, no aliasing), so clone only object values. */
       const val = e.value
+      // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the same as the world's clone above: the record lands as saving would store it, keys set to undefined dropped
       applyLwRecord(next, (val && typeof val === 'object') ? { ...e, value: JSON.parse(JSON.stringify(val)) } : e)
     }
     state = withCurrent(next)
@@ -1686,7 +1705,7 @@ function persistNotify(): void {
       cmdDeferEffect(rawNotify)
     },
   })
-  if ((r as any).ok === false) rawNotify()   // a rejected edit reverted the model; re-read the grid + toast idiom
+  if ('ok' in r && r.ok === false) rawNotify()   // a rejected edit reverted the model; re-read the grid + toast idiom
 }
 
 /* [CMDL-FINISH] F4-1/M3 — coalesce an IDLE multi-cell reconcile (week-nav
@@ -2042,13 +2061,13 @@ function dated(p: Person): Person {
  *  deletePersonOnWar enlists this store); the command's gate has decided, so no role check here. */
 export function forgetPersonFrom(id: string, iso: string, frozen: Person | null = null): void {
   const wars = state.wars.map(w => {
-    const pr = (w.recs as any)?.[id]
+    const pr = w.recs?.[id]
     if (!pr) return w
-    const kept: any = {}
+    const kept: Recs[string] = {}
     let n = 0
     for (const d of Object.keys(pr)) { if (d < iso) kept[d] = pr[d]; else n++ }
     if (!n) return w
-    return { ...w, recs: { ...(w.recs as any), [id]: kept } }
+    return { ...w, recs: { ...w.recs, [id]: kept } }
   })
   const last = addDays(iso, -1)
   const had = state.people.some(p => p.id === id)
@@ -3113,7 +3132,7 @@ function gesture<T>(type: string, fn: () => T, opts: { warId?: string; note?: st
       cmdDeferEffect(() => rawPersist())
     },
   })
-  if ((r as any).ok === false) { REFUSED?.(); rawNotify() }
+  if ('ok' in r && r.ok === false) { REFUSED?.(); rawNotify() }
   return out
 }
 /* what a refused gesture must re-derive before its repaint (the absence index,
@@ -3154,7 +3173,8 @@ export function lwEditLists(edits: Array<{ personId: string; date: string; drop:
  *  (a filed absence, worked time, another request on the same time)?
  *  `ignore` leaves out records the write is about to replace. */
 function occupiedFor(c: Contrib, personId: string, date: string, ignore: readonly WarRec[] = []): boolean {
-  const staying = listAt(personId, date).filter(r => !ignore.includes(r))
+  const ignored = new Set(ignore)
+  const staying = listAt(personId, date).filter(r => !ignored.has(r))
   /* WORK ALWAYS LANDS; only a REQUEST is barred here.
      A CREDIT is work, and the owner ruled on 20 Sep 26 that work lands on a
      leave day and the day is flagged — so an admin typing FO/HO onto someone's
@@ -3224,7 +3244,8 @@ export function cellProblem(personId: string, date: string, code: string): strin
   const replaced = liveRequestsOn(list, portion)
   if (replaced.length === 1 && replaced[0]!.code === clean) return null
   const c: Contrib = { id: 'new', kind: 'request', code: parseCell(clean)!.type, win: requestWin(clean), state: 'pending' }
-  const staying = list.filter(r => !replaced.includes(r as RequestRec))
+  const replacedSet = new Set<WarRec>(replaced)
+  const staying = list.filter(r => !replacedSet.has(r))
   const blocker = [...recContribs(staying), ...absencesAt(personId, date)].find(o => barsWrite(c, o))
   if (!blocker) return null
   if (isSickCode(blocker.code)) {
@@ -3257,6 +3278,9 @@ export function restoreBlocker(
   absOf: (personId: string, date: string) => readonly Contrib[] = absencesAt,
 ): string | null {
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  /* each id's FIRST war, as a find over the list would answer it */
+  const warOf = new Map<string, LeaveWar>()
+  for (const w of state.wars) if (!warOf.has(w.period.id)) warOf.set(w.period.id, w)
   for (const ch of changes) {
     if (ch.collection !== 'lw.cell' || ch.op === 'delete' || !Array.isArray(ch.after)) continue
     /* the id read from the right, as applyLwRecord reads it — a war id may carry a colon */
@@ -3264,7 +3288,7 @@ export function restoreBlocker(
     const rest = ch.id.slice(0, iDate), iPid = rest.lastIndexOf(':')
     if (iDate < 0 || iPid < 0) continue
     const date = ch.id.slice(iDate + 1), personId = rest.slice(iPid + 1), warId = rest.slice(0, iPid)
-    const war = state.wars.find(w => w.period.id === warId)
+    const war = warOf.get(warId)
     const now = new Map(((war?.recs || {})[personId]?.[date] || []).map((r: WarRec) => [r.id, r] as const))
     for (const r of ch.after as WarRec[]) {
       if (r.kind !== 'request' || (r as RequestRec).state === 'refused') continue
@@ -3278,6 +3302,7 @@ export function restoreBlocker(
       const c: Contrib = { id: r.id, kind: 'request', code: cell.type, win: requestWin((r as RequestRec).code), state: (r as RequestRec).state }
       const blocker = absOf(personId, date).find(o => barsWrite(c, o))
       if (!blocker) continue
+      // eslint-disable-next-line react-doctor/js-index-maps -- runs at most once a call: the line after it returns, so an index of the roster would cost more than this one look
       const who = state.people.find(p => p.id === personId)?.callsign ?? personId
       const name = blocker.code === 'ATTC' ? 'ATT C' : blocker.code
       return `Can’t ${dir} that — ${who}’s ${name} now holds ${+date.slice(8)} ${MON[+date.slice(5, 7) - 1]}, and a bid can’t go over it.`
@@ -3306,7 +3331,8 @@ export function setCell(personId: string, date: string, code: string, words?: Re
     const pend = ownPendingOnClosedDay(personId, date)
     if (!pend.length) return false
     const list = listAt(personId, date)
-    return gesture('lw.edit', () => putList(personId, date, list.filter(r => !pend.includes(r as RequestRec))))
+    const pendSet = new Set<WarRec>(pend)
+    return gesture('lw.edit', () => putList(personId, date, list.filter(r => !pendSet.has(r))))
   }
   if (!dayWritable(date)) return false
   if (isMedical(clean)) return false
@@ -3356,7 +3382,8 @@ export function setCell(personId: string, date: string, code: string, words?: Re
   const rec: RequestRec = { id: newRecId(), kind: 'request', code: clean, state: 'pending', ...carry, ...stamp }
   /* a bid written here is a placing act for the bubble's count (`actCount` — this write is no gesture of its own) */
   actSeq++
-  return putList(personId, date, [...list.filter(r => !replaced.includes(r as RequestRec)), rec])
+  const replacedSet = new Set<WarRec>(replaced)
+  return putList(personId, date, [...list.filter(r => !replacedSet.has(r)), rec])
 }
 
 /** A REQUEST'S OWN WORDS AND PAPERS (owner D1210, D1226, D1150, D1159; M3 5.9, 5.10): what a bid window writes with a
@@ -3571,7 +3598,8 @@ function clearRequestsAt(personId: string, date: string, awards = false): boolea
   if (!dayWritable(date)) {
     /* closed for him: his own pending bids only (D1225) */
     const pend = ownPendingOnClosedDay(personId, date)
-    return pend.length > 0 && putList(personId, date, listAt(personId, date).filter(r => !pend.includes(r as RequestRec)))
+    const pendSet = new Set<WarRec>(pend)
+    return pend.length > 0 && putList(personId, date, listAt(personId, date).filter(r => !pendSet.has(r)))
   }
   const list = listAt(personId, date)
   const next = list.filter(r => r.kind !== 'request')
@@ -4201,7 +4229,8 @@ function decideRequest(personId: string, date: string, recId: string, bid: BidSt
     const halves = portionOfCode(r.code)
     const older = rest.filter((x): x is RequestRec => x.kind === 'request' && x.state === 'refused' &&
       (halves === 'full' || portionOfCode(x.code) === 'full' || portionOfCode(x.code) === halves))
-    rest = rest.filter(x => !older.includes(x as RequestRec))
+    const olderSet = new Set<WarRec>(older)
+    rest = rest.filter(x => !olderSet.has(x))
   } else if (r.state === 'refused') {
     /* reconsidering a refusal: it becomes undecided again, so it must not share
        a half with another undecided request */
@@ -4212,7 +4241,8 @@ function decideRequest(personId: string, date: string, recId: string, bid: BidSt
   /* the decided record keeps ITS PLACE on the day ([DB-READINESS] group A, the group-wide walk — W3 finding 2): moved to
      the end of the list, it put the day out of order and the record beside it was given a new place — its row
      rewritten by a decision about another, and a stale tab's write of it brought back a record someone had deleted */
-  return putList(personId, date, list.filter(x => x === r || rest.includes(x)).map(x => (x === r ? next : x)))
+  const restSet = new Set(rest)
+  return putList(personId, date, list.filter(x => x === r || restSet.has(x)).map(x => (x === r ? next : x)))
 }
 
 /** "OK, seen" on a replaced-bid notice — the person or an admin. Clears every
@@ -5300,7 +5330,9 @@ export function deleteGrade(id: string): boolean {
 /** a person's grade (D1486, D1490 — counts from the next 1 Jan; a second change the same day replaces the first) */
 export function setPersonGrade(pid: string, id: string | null): boolean {
   if (state.role !== 'admin') return false
-  if (id !== null && !liveGrades().some(g => g.id === id)) return false
+  /* the grade it moves to — one of the live grades, every one of which is on the list (liveGrades) */
+  const target = id === null ? null : liveGrades().find(g => g.id === id)
+  if (id !== null && !target) return false
   if ((gradeOf(pid)?.id ?? null) === id) return false
   const today = memberToday()
   const hist = [...(state.gradeHist[pid] ?? [])]
@@ -5308,7 +5340,7 @@ export function setPersonGrade(pid: string, id: string | null): boolean {
   if (hist.length && hist[hist.length - 1]!.from === today) hist[hist.length - 1] = { id, from: today }
   else hist.push({ id, from: today })
   gesture('lw.grade', () => { state = withCurrent({ ...state, gradeHist: { ...state.gradeHist, [pid]: hist } }); persistNotify() },
-    { note: JSON.stringify({ from: was, to: id ? gradesList().find(g => g.id === id)!.name : 'No grade' }) })
+    { note: JSON.stringify({ from: was, to: id && target ? target.name : 'No grade' }) })
   return state.gradeHist[pid] === hist
 }
 /** "Lock for members" (D1220, D1247, D1488) — the admin's one switch */
