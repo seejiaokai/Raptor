@@ -1,9 +1,8 @@
-# Evidence sheet — the posting pass's roster save and a deleted man's Undo / Redo (31 Oct 26) — DRAFT, walk to come
+# Evidence sheet — the posting pass's roster save and a deleted man's Undo / Redo (31 Oct 26)
 
 **The change:** two backlog items, one batch of one area (D485, D1087) — `[SYSTEM-PASS-SAVES-ROSTER]` and
 `[LW-DELETED-RESTORE-OVERREFUSE]`. Branch `claude/lw-roster-restore-fixes`, cut from `origin/main` at 36827f127. Built on the
-night of 30–31 Oct 26 (an unattended run, job 2 — D596). The builder wrote this draft up to the walk; the walk, the reads
-and the rest of the sheet are still to come (§9).
+night of 30–31 Oct 26 (an unattended run, job 2 — D596). Pull request 597. The builder wrote it up to the walk; the walker's run, the reads, two fix rounds and the closing are in §7 to §10.
 
 1. **The posting pass saves only its own change to the roster.** The pass (`leavewar/sync.ts runPoOutcomes`, the command
    `lw.postoutRun`) runs as the app itself, which the commit gate lets through; its people store diffs against the SAVED
@@ -142,7 +141,7 @@ clock runs the pass at all.
 | The documents check (`npm run docsize`); the rule check (`npm run rulecheck`) | his PC | both OK (the rule check also says Q11 is now covered and may leave its baseline — older than this change, not touched here) |
 | The full set | GitHub's run of the pull request (D1086) | owed — the pull request is the host's to open |
 
-## 5. The walk — the scenarios (to run; EXPECTED on the fixed build, and on `origin/main`'s)
+## 5. The walk — the scenarios (EXPECTED on the fixed build, and on `origin/main`'s; the results in §9)
 
 The world: the demo, saved in a fresh browser (never `?fresh=1`), the browser's clock from **Wed 4 Nov 26 09:00** (Singapore),
 running. Days: his approved LL on Mon 26 Oct; a Delete posting dated Fri 30 Oct, run late on 4 Nov (he is deleted from 4 Nov,
@@ -256,14 +255,16 @@ another check answered first in its tests; a test written for each ("another man
 account put back as seeded …", "the posted man's own row left signed in …"), each red on its break. **Whole list re-run:
 23 of 23 CAUGHT**; no source touched.
 
-## 8. The reads — owed
+## 8. The reads (D790 — Opus, fresh and blind; D1411 — a security read; D903 — no Fable; no ChatGPT reader while it is out, D761)
 
-- A fresh, blind Opus code read of the change (D790; never this chat), handed the finished code and this sheet with the walk's
-  results, asked for absences — what the changed paths no longer run, every twin path (Undo AND Redo; the pass run alone,
-  queued, joined, deferred).
-- **A security read (D1411)** — the change touches the commit gate (what the app's own pass may write to a person): one more
-  fresh reader looking only for holes.
-- No ChatGPT reader while they are out (D761): the job goes on the backlog's list of jobs read without one.
+| Read | On | What it found | What was done |
+|---|---|---|---|
+| The fresh code read (`parts/lw-rr1031/read-opus.md`) | 80310343f + the tests to 7d0c12b24 | **no findings** (D489); three tidiness notes | note 2 (a stale comment in `person-delete.ts`) corrected in fix round 1; note 1 filed `[SYSTEM-ACTOR-ONE-TEST]`; note 3 left (acceptable) |
+| The security read (`parts/lw-rr1031/read-security.md`) | 7d0c12b24 | 1 Medium at the database step (the gate's rule looser than the pass: matched by id alone, account rows not asked; and the pass runs in every browser); 2 Low (the war's and the inputs' own passes unchecked); 3 Low (a console body marked `special` escaped the put-back); 4 two older admin-side leads | fix round 1: the rule tightened (`postingPassViolation` — the posting's own done mark, the outcome's fields, the posted men's accounts), the put-back skips only ALL / ALL AVAIL, the restore check asks an input on any day from his cutoff (that lead reproduced); filed `[SERVER-SIDE-PASSES]` (1(b), 2) and `[LW-DELETED-REDO-NETSUM]` (the other lead, reproduced, reachable from no screen — its test `it.fails`) |
+| Its narrow read of fix round 1 (`parts/lw-rr1031/read-fix1.md`) | 63e1660d6 | 1 Medium — the accounts' first-write allowance decided from the changeset alone (any new account at any role) | fix round 2: the first write tied to the seeded list (§9) |
+| Its narrow read of fix round 2 (`parts/lw-rr1031/read-fix2.md`) | 5a2e552f5 | the opening closed for the database step; 1 Low, this build only — the first write checked row by row, never that the whole seeded list is there | filed `[POSTPASS-FIRSTWRITE-WHOLE-SEED]` with the reader's exact fix — not built: the cap of about three fix rounds (the order §5), out of the app's reach |
+
+**The last round:** 5a2e552f5. What carries the rest: the four filed items.
 
 ## 9. Walk
 
@@ -340,5 +341,24 @@ sentence. **A runtime path changed** (the commit gate judges every pass in the a
 desktop on the rebuilt build by the builder (a script run; the host opens the deciding pictures): **4 / 4 PASS**,
 `after/s2-desk-fix2/`. None of them writes an account (Drifter has no sign-in) — the account rows are carried by the unit
 tests' real passes.
+
+## 10. Closing
+
+**Fix rounds:** two (63e1660d6, 5a2e552f5), each red first, each followed by its narrow read; the cap reached at the third read.
+**Re-walks:** RR-C1's and RR-P4's pictures re-taken framed (`after/s1-desk-retake/`, `after/s2-desk-retake/`); RR-P1 to RR-P4
+at the desktop after each fix round, 4 / 4 both times (`after/s2-desk-fix1/`, `after/s2-desk-fix2/`) — script runs by the
+builder, the deciding pictures the host's to open. **Breaks:** 23 / 23 (§7). **Filed:** `[LW-DELETED-REDO-NETSUM]`,
+`[SERVER-SIDE-PASSES]`, `[SYSTEM-ACTOR-ONE-TEST]`, `[POSTPASS-FIRSTWRITE-WHOLE-SEED]`. **Questions for him:** none. **The
+ledger:** its row added (`docs/walk-ledger.md`, 31 Oct 26). **Still to come:** GitHub's run of pull request 597 on its last
+commit, his look, his "merge live".
+
+**Walk:** `docs/handpass/2026-10-31-lw-roster-restore.md` · 86 pictures (`docs/img/handpass/2026-10-31-lw-roster-restore/`) · 7
+surfaces (the Leave War grid and its bid window's Move and Post out, Approvals, the Inputs page's calendar and leave window,
+Admin → Users, Quals, the top bar's Undo / Redo) · 10 scenarios — the fixed build desktop 10 / 10 and phone 4 / 4, `origin/main`
+the 3 faults seen (RR-A, RR-B, RR-P1) at both sizes and the 7 unchanged as expected, re-walks 4 / 4 after each fix round · breaks
+23 / 23 · the cases carried by a test listed in §6 · MISSING: none open — 4 filed
+
+`Docs: OUTSTANDING 149 items (+4 −0) · DECISIONS D1–D1528 · homes OK`
+`docsize: OK`
 
 Rulings: none this job.
