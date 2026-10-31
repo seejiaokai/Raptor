@@ -207,7 +207,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
-- [REACT-DOCTOR-CLEANUP] — the code check's clean-up batch before new feature work: the errors, the missed updates, the whole Tracker (D1534).
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
@@ -267,22 +266,6 @@ no-import shape kept so the Tracker could leave without Raptor, and the "a stand
 `docs/tracker/known-gaps.md`. **To do:** list each, say whether anything still uses it (a test, the smoke suite
 `scripts/tracker/smoke.mjs`, the boot), and remove or simplify it with its tests; nothing a person sees changes. **Place:** with
 the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
-
-### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
-**What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the
-app, and every finding in the Tracker (`src/tracker/` — about 150: its core, windows and side panel); then the code check run
-again to show the count falling. New and changed code follows the check's rules from now on; the plan's point 4 (a lint script
-running it, its settings file in `raptor-port/`) is built with it, and the standing rule gets its line in `raptor-port/CLAUDE.md`
-at that build. The other areas' remaining findings ride with each area's next batch (D490). Full bug-check order; anything that
-would change what a person sees is shown to him first (D853). The findings list: the move plan §3
-(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
-batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
-**BUILT 31 Oct 26** on `claude/react-doctor-cleanup`, pull request 603: 288 findings — 204 fixed, 84 kept with their reason in the
-code (`raptor-port/docs/handpass/parts/rdc1031/dispositions.md`); the app's errors 60 → 0, missed updates 42 → 0, the Tracker
-195 → 0; `npm run lint`, `lint:changed`, `doctor.config.json` and the standing line in `raptor-port/CLAUDE.md`. FULL check:
-113/113 screens identical, 28 behaviour rows the same on both builds, the Tracker's stored world carried old → new
-byte-identical; the code reads' one fault fixed red first (evidence `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`).
-Left for later: [CODE-CHECK-CI], [AVAILWIN-SETUP-SLOW], [TRK-STANDALONE-LEFTOVERS]. Waiting on his "merge live".
 
 ### [AIRCRAFT-TYPE-SETTING] Each deployment set to its aircraft type by a setting (D1536, 31 Oct 26)
 **What:** one code base serves every aircraft type (D1100, D1101); each deployment — F-15, F-16, F-35, each with its own
