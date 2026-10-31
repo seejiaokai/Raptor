@@ -5,6 +5,7 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { SANS_IDS } from '../../engine/people'
 import { seedPeople } from '../engine'
+import { lockedOnWar } from '../engine/dayview'
 import { DEMO_MAP, installDemoWorld } from './demoworld'
 import { projectPeople, qualCatalogue } from './raptorRoster'
 import { getState, initStore } from './store'
@@ -164,7 +165,8 @@ describe('installDemoWorld', () => {
     // now sits on the mapped person, still Raptor's.
     const mapped = DEMO_MAP.tata
     expect(wars[0].grid[mapped]['2026-01-09']).toBe('OIL')
-    expect(wars[0].states[mapped]['2026-01-09']).toEqual({ state: 'approved', source: 'raptor' })
+    expect(wars[0].states[mapped]['2026-01-09']).toEqual({ state: 'approved' })
+    expect(lockedOnWar((wars[0] as any).views?.[mapped]?.['2026-01-09']), 'still locked on the war — asked of its own entry ([LW-LOCKMARK])').toBe(true)
   })
 
   it('applies the seed demo overlay — the posting-out date rides the mapped person', () => {

@@ -2,7 +2,7 @@ import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRe
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
-import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
+import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
 import { PersonWindow } from './PersonWindow'
@@ -3415,7 +3415,7 @@ export function Matrix() {
   const openCourse = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && openView.all.length === 1
     && openView.all[0]!.kind === 'absence' && openView.all[0]!.code === 'CSE' && canBidOn(open.id, open.date)
     ? heldCourse(openView) : null
-  const openFreeHalf = open && raptorOwns(states, open.id, open.date)
+  const openFreeHalf = open && lockedOnWar(openView)
     && canBidOn(open.id, open.date)
     ? freeHalfBeside(openView)
     : null
@@ -4072,7 +4072,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && raptorOwns(states, open.id, open.date) && !openFreeHalf && !openWorkOnly && !openCourse && (
+      {open && !listOpen && !canRemark && lockedOnWar(openView) && !openFreeHalf && !openWorkOnly && !openCourse && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -4114,7 +4114,7 @@ export function Matrix() {
           answer first, as before. The posting days (before he joined, after he left) are his too. */}
       {open && !listOpen && !canRemark && role !== 'admin' && canEditRow(role, viewer, open.id)
         && !canBidOn(open.id, open.date)
-        && !raptorOwns(states, open.id, open.date)
+        && !lockedOnWar(openView)
         && !(openCredit && ownAwardAlone(openView, viewer, open.id)) && (
         <ClosedNoteSheet
           key={`cn-${open.id}-${open.date}`}
@@ -4428,7 +4428,7 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!raptorOwns(states, open.id, open.date) || !!openFreeHalf || openWorkOnly || !!openCourse)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openCourse)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}

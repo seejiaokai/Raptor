@@ -2,7 +2,7 @@
    the row-drag configurations, the row-only predicates, the figures beside a name, where a box sits and the joined bar,
    a placeholder's width. A move, not a rewrite — every line as it stood there; the components that draw the rows
    (`PersonRow`, `PersonMonth`) and their memo compares stay in MatrixRows.tsx (`docs/performance.md` §E). */
-import { addDays, canEditRow, isBiddable, raptorOwns, type Period, type Grid, type States, type Role, type FigureLines } from '../engine'
+import { addDays, canEditRow, isBiddable, legacyViews, lockedOnWar, type Period, type Grid, type States, type Role, type FigureLines } from '../engine'
 import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, reqRunKey } from '../state/store'
 import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
 import type { RequestRec, WarRec } from '../engine/warrecs'
@@ -96,7 +96,9 @@ export function ownAwardAlone(view: DayView | undefined, viewer: string | null, 
  *  row share. Where a tap goes (bid / decide / read-only / remarks) is decided
  *  in the sheet from the same facts; this only says "there is a sheet". */
 export function cellOpenable(states: States, role: Role, viewer: string | null, deciding: boolean, grid: Grid, personId: string, date: string, view?: DayView): boolean {
-  return raptorOwns(states, personId, date) ||
+  /* locked on the war, asked of the day's own entries ([LW-LOCKMARK]); a bare grid with no day views (the engine's own
+     fixtures) is read as one entry a cell */
+  return lockedOnWar(view ?? legacyViews(grid, states)[personId]?.[date]) ||
     /* HIS OWN OIL AWARD, AT ANY TIME (owner, D261, 27 Sep 26 — "3 yes"): it opens read only (`ownAwardPresent`)
        where nothing else would — a day not open for him. Another man's award stays shut to a member. */
     ownAwardPresent(view, viewer, personId) ||

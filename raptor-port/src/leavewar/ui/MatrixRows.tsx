@@ -8,12 +8,12 @@
    Their non-component helpers moved on, whole, to ui/matrixrowparts.ts on 31 Oct 26 (React Doctor, D1534). */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, raptorOwns, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
+import { addDays, boxText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
 import type { WarRec } from '../engine/warrecs'
 import { FigureCell } from './FigureCell'
 import { figWords } from './figwords'
 import { NamePuck } from './NamePuck'
-import { offWar, type Contrib } from '../engine/dayview'
+import { offWar, type Contrib, type DayView } from '../engine/dayview'
 import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
 import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
@@ -386,10 +386,12 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
         // nothing on this screen will change it; `moved` says management
         // shifted this bid off another date.
         /* `raptor` is the main ENTRY's own (`offWar`), never the day's (walker 1's #11, 23 Oct 26): a day holding leave
-           approved on the war and a course filed on the Inputs page is locked as a whole (`raptorOwns`, what a tap and
-           every write ask), but only the course's box wears the edge. */
+           approved on the war and a course filed on the Inputs page is locked as a whole (`dayview.ts lockedOnWar`, what a tap
+           and every write ask), but only the course's box wears the edge. A bare grid with no day views (the engine's own
+           fixtures) is read as one entry a cell ([LW-LOCKMARK]). */
+        const offMain = (dv: DayView | undefined) => !!dv?.main && offWar(dv.main)
         const marks = [
-          (here || outLeave) && code && (view?.main ? offWar(view.main) : raptorOwns(states, p.id, d.date)) ? 'raptor' : '',
+          (here || outLeave) && code && offMain(view ?? legacyViews(grid, states)[p.id]?.[d.date]) ? 'raptor' : '',
           movedShown && (here || outLeave) && code && shiftedFrom(states, p.id, d.date) ? 'moved' : '',
         ].filter(Boolean).join(' ')
         /* BOTH ENDS of the squadron window are tappable (owner answer C, 20

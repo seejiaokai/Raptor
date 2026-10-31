@@ -428,7 +428,7 @@ describe('shifting a bid', () => {
     setCell('dusk', '2026-02-11', 'LL')
     /* Ack is gone (D1158): re-expressed with the decisions that remain: the bid simply waits */
     moveBidVia('dusk', '2026-02-11', '2026-02-18')
-    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending' })
     expect(getState().states.dusk?.['2026-02-11']).toBeUndefined()
   })
 
@@ -448,7 +448,7 @@ describe('shifting a bid', () => {
     setBidState('dusk', '2026-02-11', 'approved')
     expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
     expect(getState().states.dusk['2026-02-18']).toEqual({
-      state: 'approved', source: 'bid', shiftedFrom: '2026-02-11',
+      state: 'approved', shiftedFrom: '2026-02-11',
     })
     expect(getState().grid.dusk?.['2026-02-11']).toBeUndefined()
   })
@@ -460,12 +460,12 @@ describe('shifting a bid', () => {
   it('a waiting bid’s move records no moved trail, open days or closed', () => {
     setCell('dusk', '2026-02-11', 'LL')            // the seed opens 1 Jan – 31 Mar
     expect(moveBidVia('dusk', '2026-02-11', '2026-02-18')).toBe('shifted')
-    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.dusk['2026-02-18']).toEqual({ state: 'pending' })
     expect(getState().states.dusk['2026-02-18'].shiftedFrom).toBeUndefined()
     // the admin closes the period and moves it again → still no trail
     setRole('admin'); closeDates('2026-01-01', '2026-12-31')
     expect(moveBidVia('dusk', '2026-02-18', '2026-02-25')).toBe('shifted')
-    expect(getState().states.dusk['2026-02-25']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.dusk['2026-02-25']).toEqual({ state: 'pending' })
   })
 
   // Never overwrite. Moving one man's leave onto a day he already has
@@ -1820,7 +1820,7 @@ describe('the batch writers (drag-select)', () => {
     expect(getState().grid.ramp?.['2026-01-06']).toBeUndefined()
     expect(getState().grid.ramp['2026-01-10']).toBe('LL')
     // a waiting bid's move carries no moved trail (D1177's reading — the mark is an approved leave's)
-    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending' })
     expect(getState().grid.ramp['2026-01-11']).toBe('LL')
   })
 
@@ -1832,18 +1832,18 @@ describe('the batch writers (drag-select)', () => {
   it('a waiting bid moved records no trail, open or closed; approved leave moved does, on any day', () => {
     setCells(cells('ramp', '2026-01-06', '2026-01-07'), 'LL')       // the seed opens 1 Jan – 31 Mar
     expect(moveCells(cells('ramp', '2026-01-06', '2026-01-07'), 4)).toBe('moved')
-    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.ramp['2026-01-10']).toEqual({ state: 'pending' })
     expect(getState().states.ramp['2026-01-10'].shiftedFrom).toBeUndefined()
     // close the period, then move again → still no trail on a waiting bid
     closeDates('2026-01-01', '2026-12-31')
     expect(moveCells(cells('ramp', '2026-01-10', '2026-01-11'), 4)).toBe('moved')
-    expect(getState().states.ramp['2026-01-14']).toEqual({ state: 'pending', source: 'bid' })
+    expect(getState().states.ramp['2026-01-14']).toEqual({ state: 'pending' })
     // reopen, approve, move → the approved leave wears the trail, open days or not
     openDates('2026-01-01', '2026-03-31')
     setBidStates(cells('ramp', '2026-01-14', '2026-01-15'), 'approved')
     expect(moveCells(cells('ramp', '2026-01-14', '2026-01-15'), 7)).toBe('moved')
-    expect(getState().states.ramp['2026-01-21']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-01-14' })
-    expect(getState().states.ramp['2026-01-22']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-01-15' })
+    expect(getState().states.ramp['2026-01-21']).toEqual({ state: 'approved', shiftedFrom: '2026-01-14' })
+    expect(getState().states.ramp['2026-01-22']).toEqual({ state: 'approved', shiftedFrom: '2026-01-15' })
   })
 
   it('moveCells allows a self-overlapping slide (the block moves over its own days)', () => {
@@ -1927,7 +1927,7 @@ describe('the batch writers (drag-select)', () => {
     expect(moveCells(cells('ramp', '2026-01-06'), 4)).toBe('moved')
     expect(moveCells(cells('ramp', '2026-01-10'), 4)).toBe('moved')
     expect(getState().states.ramp['2026-01-14']).toEqual({
-      state: 'approved', source: 'bid', shiftedFrom: '2026-01-06',
+      state: 'approved', shiftedFrom: '2026-01-06',
     })
   })
 })

@@ -8,6 +8,7 @@
 // publish machinery: SCHED reset to draft and DAYS restored pristine, since
 // these tests publish days and edit duty rows.
 
+import { lockedOnWar } from './engine/dayview'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, DATES } from '../engine/inputs'
 import { DAYS } from '../engine/data'
@@ -57,13 +58,15 @@ const sign = (di: number) => {
 const publish = (di: number) => { sign(di); setDayApproved(di, true) }
 const cellOf = (person: string, date: string) => getState().wars[0].grid[person]?.[date]
 const ownedBy = (person: string, date: string) => getState().wars[0].states[person]?.[date]
+/* [LW-LOCKMARK]: a credit the app worked out locks its day — asked of the day's own entries, the old `source: 'raptor'` mark gone */
+const lockedAt = (person: string, date: string) => lockedOnWar((getState().wars[0] as any).views?.[person]?.[date])
 
 describe('publish drives the credit', () => {
   it('publishing the seed Saturday lands plasma an FO cell, raptor-owned', () => {
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
-    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved' }); expect(lockedAt('plasma', SAT)).toBe(true)
   })
 
   it('an unpublished day earns nothing — a draft duty is not the squadron\'s word (AM48b)', () => {
@@ -87,7 +90,7 @@ describe('publish drives the credit', () => {
     publish(5)
     runOilPass()
     // plasma's Saturday is an SDO desk: a duty row, so the note reads Duty.
-    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor', note: 'Duty' })
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', note: 'Duty' }); expect(lockedAt('plasma', SAT)).toBe(true)
   })
 
   it('a day tagged Off day (management, free) earns nothing — only a weekend or PH does', () => {
@@ -160,7 +163,7 @@ describe('the credit reads EVERY week, not just the loaded one (owner, 29 Aug 26
     loadWeek('20/07/2026')                        // the seed Saturday is off screen now…
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')      // …and the credit stands, read from the week's stash
-    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+    expect(ownedBy('plasma', SAT)).toMatchObject({ state: 'approved' }); expect(lockedAt('plasma', SAT)).toBe(true)
   })
 
   it('a corrupt stash blob PROTECTS its standing credits and throws nothing (P2-REREVIEW-05)', () => {
@@ -196,7 +199,7 @@ describe('an unsupported / unresolvable book protects its landed OIL credits (P2
     expect(dayApproved(5)).toBe(true)
     runOilPass()
     expect(cellOf('plasma', SAT), 'the issued credit stands — no draft substitution, no deletion').toBe('FO')
-    expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
+    expect(lockedAt('plasma', SAT)).toBe(true)
   })
 
   it('a FUTURE-version (am:999) book whose snapshots still resolve is classified unsupported → credit protected (P2-REREVIEW-05)', () => {
@@ -261,7 +264,7 @@ describe('the ownership partition against wires 1+2', () => {
     publish(5)
     runOilPass()
     expect(cellOf('plasma', SAT)).toBe('FO')
-    expect(ownedBy('plasma', SAT)).toMatchObject({ source: 'raptor' })
+    expect(lockedAt('plasma', SAT)).toBe(true)
     expect(getClashes()).toEqual([])
   })
 
@@ -312,7 +315,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     publish(5)
     runOilPass()
     expect(cellOf('bane', SAT)).toBe('FO')
-    expect(ownedBy('bane', SAT)).toMatchObject({ state: 'approved', source: 'raptor' })
+    expect(ownedBy('bane', SAT)).toMatchObject({ state: 'approved' }); expect(lockedAt('bane', SAT)).toBe(true)
   })
 
   it('unanswered and declined mint nothing — no acknowledgment, no credit', () => {
@@ -439,7 +442,7 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
       setPeople(projectPeople())
       runOilPass()
       expect(cellOf('bane', SAT), 'hiding or archiving a man is a display choice, never a refund').toBe('FO')
-      expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
+      expect(lockedAt('bane', SAT)).toBe(true)
     } finally { (PEOPLE as any).bane.archived = was }
   })
 
@@ -450,10 +453,10 @@ describe('OIL11, OIL13 — an acknowledged input credits once the day is PUBLISH
     plant({ person: 'bane', type: 'Duty', date: 'Jul 18', oil: { [SAT]: 1 } })
     publish(5)
     runOilPass()
-    expect(ownedBy('bane', SAT)).toMatchObject({ source: 'raptor' })
+    expect(lockedAt('bane', SAT)).toBe(true)
     lwInitStore(be)                                      // reload from the SAME backend — the reconcile path
     expect(cellOf('bane', SAT)).toBe('FO')
-    expect(ownedBy('bane', SAT), 'ownership survived the load — the reverse sweep can still collect it').toMatchObject({ source: 'raptor' })
+    expect(lockedAt('bane', SAT), 'ownership survived the load — the reverse sweep can still collect it').toBe(true)
   })
 })
 
