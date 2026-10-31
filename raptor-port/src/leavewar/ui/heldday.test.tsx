@@ -11,7 +11,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, initStore, setRole, setViewer } from '../state/store'
+import { getState, initStore, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
@@ -175,6 +175,18 @@ describe('what stays as it was', () => {
     fireEvent.click(cell())
     expect(within(sheet()).queryAllByTestId('bid-heldday')).toHaveLength(0)
     expect(within(sheet()).getByTestId('bid-heldhalf')).toBeTruthy()
+  })
+  /* leave dated outside his time in the squadron opens the day's list, every record on its own line (owner answer C,
+     [ARCH-STACK] step 4) — a day filled from the Inputs page there is not this window's (found re-reading the build) */
+  it('a member’s own leave dated after his posting out still opens the day’s list', () => {
+    plant('LL', 'Clearing leave')
+    setPostOut(P, '2026-02-01')
+    setRole('member')
+    setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
+    expect(screen.queryAllByTestId('bid-heldday')).toHaveLength(0)
   })
   it('a member on another man’s filled day gets no window to add to it', () => {
     plant('OML')

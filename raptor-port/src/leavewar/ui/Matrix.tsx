@@ -3380,8 +3380,10 @@ export function Matrix() {
      afternoon — a tap opens the bid window so more can still be added (Grant OIL first), one line on top for each entry. Only
      where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did, unless
      he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
-     day's list, the member's remarks window and the read-only note, each of which it replaces on such a day. */
+     day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
+     day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
   const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
+    && (!openPerson || inSquadron(openPerson, open.date))
     ? inputsFilledDay(openView) : null
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
