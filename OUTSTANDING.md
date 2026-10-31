@@ -190,6 +190,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
+- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived, the screen-design rulings to an area of their own, the Codex guide shortened — its own documents-only job.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -240,6 +241,25 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
+**What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
+the general rulings (`.claude/rules/decisions/how-we-work.md`, 209 lines, 56 KB — the biggest), the unscoped rule files
+(`shipping.md`, `record-decisions.md`, `doc-structure.md`, `bug-check.md`, `plain-language.md`), `AGENTS.md` (written for
+Codex, but loaded into every Claude chat too) and the memory index; `raptor-port/CLAUDE.md` (~30 KB) loads too once any
+file under `raptor-port/` is read. The rest of the start is the app's own tools and instructions. **To do, as he approved:**
+(1) archive every general ruling a later one restates in full — 65 carry "changed by", only the wholly restated ones go,
+each pair checked by one fresh reader (D971, DECISIONS.md step 2); (2) move the screen-design rulings (the gear, the pencil,
+search boxes, the top bar, arrows, pinned bars, bands, rings — about 20 lines, ~8 KB) into a new rulings area with the
+design guide's paths (`.claude/rules/ui-design.md`), its full-text file, map row and byte tripwire (`--move-rows`; a new area
+per record-decisions.md); (3) shorten `AGENTS.md` to what Codex needs at its door, the rest in a Codex-only file it opens;
+(4) look for any other always-loaded passage no job needs where it sits (D141) — moved whole, never reworded (D138).
+**Never:** a read a job needs (D68); a ruling's meaning changed. **Checks:** `npm run docsize`; one fresh reader on every
+move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usage on an empty chat) and told to him.
+**Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
+is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
+the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
+
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a

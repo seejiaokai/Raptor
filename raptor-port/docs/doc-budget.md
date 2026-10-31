@@ -27,7 +27,12 @@ trims nothing before he rules; D68, D136, D138 and D141 are the test of every op
 **The rule that makes tiering work: a tier-0 file may not contain a tier-2 explanation.** It carries
 the decision in one line and a pointer. That is the whole job of an index.
 
-**Not measured again after the Leave War's M1 (D1262, 22 Oct 26 — "dont need to trim it yet since we done a trim
+**Trimmed again (D1554, 1 Nov 26 — "Yes as recommended"; it replaces D1262's hold below):** what a chat loads at its
+start is cut where no job reads it — the every-chat rulings a later one restates in full archived, the screen-design
+rulings moved to an area loaded only for screen work, the Codex guide shortened (filed as [START-LOAD-TRIM]) — never a
+read a job needs (D68). After an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff.
+
+*As it stood:* **Not measured again after the Leave War's M1 (D1262, 22 Oct 26 — "dont need to trim it yet since we done a trim
 recently"; it replaces D1261's measure): raised again only on his word.**
 
 ## 2. Record the DECISION, not the transcript
