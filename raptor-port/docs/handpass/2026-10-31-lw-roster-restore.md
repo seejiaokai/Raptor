@@ -249,6 +249,13 @@ round, so it was retargeted at the new rule. Each new gate condition has a test 
 (the five written for 9, 11, 13, 17 and 18 after the fix, proved by their breaks). **Whole list: 20 of 20 CAUGHT**; the runner
 left no source touched.
 
+**Fix round 2 (31 Oct 26, after the narrow read of the round-1 fix — §9):** breaks 15, 16 and 17 retargeted (their lines
+were rewritten), 18 made unique, three added — 21 a first-write row need not be the seed's own, 22 its on / offBy not asked,
+23 a row of no seeded account allowed. First run 20 of 23: breaks 15, 17 and 22 stayed green — reading (1), each a condition
+another check answered first in its tests; a test written for each ("another man's stored account suspended …", "a seeded
+account put back as seeded …", "the posted man's own row left signed in …"), each red on its break. **Whole list re-run:
+23 of 23 CAUGHT**; no source touched.
+
 ## 8. The reads — owed
 
 - A fresh, blind Opus code read of the change (D790; never this chat), handed the finished code and this sheet with the walk's
@@ -316,5 +323,22 @@ rebuilt fixed build, `after/s2-desk-fix1/` — **4 / 4 PASS**, no console or pag
 `rr-p1-c-quals-after-reload.png` (Ace's Management empty after the reload), `rr-p4-c-users.png` (no Drifter between Diesel and
 Echo). The account path of the tightened rule (a posted man with a sign-in) is carried by the unit tests' real passes — the walk's
 Drifter has none.
+
+**Fix round 2 (31 Oct 26) — the narrow read of 63e1660d6 (`parts/lw-rr1031/read-fix1.md`), one Medium:** the accounts'
+first-write allowance was decided from the changeset alone, so a pass could add any account at any role, and the posted man's
+own new row skipped the owner, role and name check. **Chosen fix — the reader's:** on that first write each new row must be the
+seeded list's own row (`state/accounts.ts seedAccounts`): id, name, role and owner the seed's, no other field, the posted man's
+suspended (`on` off, `offBy` posting), every other as seeded; a row put beside rows already stored is refused. *Why not "the
+pass never makes the first write" (the accounts saved before any pass):* saving them first is itself a write the app makes
+under its own name at boot, unjudged, and it changes how every store's accounts load ("no rows" means the seeded list) — a wider
+change than the rule, with its own rule to write; tied to the seed, the rule is as strict, and on a shared store there are no
+seeds, so it allows nothing there. Red first (each "… expects to receive a string, but got object" — the gate let it through):
+the reader's exploit (a SANS pass with a new admin account), the posted man's own new row with another role, the same given to
+another man, another seeded account changed on the way. Kept passing: the real first write (Overseas with his account
+suspended, never saved before), stored-account suspension. §11 corrected to what the code checks, with the database-step
+sentence. **A runtime path changed** (the commit gate judges every pass in the app), so RR-P1 to RR-P4 were re-run at the
+desktop on the rebuilt build by the builder (a script run; the host opens the deciding pictures): **4 / 4 PASS**,
+`after/s2-desk-fix2/`. None of them writes an account (Drifter has no sign-in) — the account rows are carried by the unit
+tests' real passes.
 
 Rulings: none this job.

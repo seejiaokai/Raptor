@@ -28,6 +28,9 @@ import { SESSION, ME, setEffectiveRole } from './auth'
 import { store } from '../engine/hooks'
 import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, leadOf, onlyNamed, holds, placeHeld, placeOf } from '../engine/inputs'
 import { voidedOil } from '../engine/oil'
+/* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
+   made only when a command is judged, never as the module loads) */
+import { seedAccounts } from './accounts'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 
@@ -1001,10 +1004,16 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
   /* THE FIRST WRITE OF THE ACCOUNTS STORES THE WHOLE LIST (state/accounts.ts writeAccounts — a store that has never written
      them holds the seeded list in memory, and the loader reads "no rows" as the seeded list, so the first write puts every
-     row): a row another man's that this pass PUTS where none was stored is allowed only while no account row in it was
-     stored before — that first write — never beside rows already stored */
+     row). A row put where none was stored is allowed only on that first write — no account row in the changeset stored
+     before — and only as the SEEDED list's own row (accounts.ts seedAccounts): its id, name, role and owner the seed's; the
+     posted man's suspended (on off, offBy 'po'), every other man's as seeded. Decided from the changeset alone it let a pass
+     create any account at any role (the narrow read of 63e1660d6, `docs/handpass/parts/lw-rr1031/read-fix1.md` 1). On a
+     shared store there are no seeds (seedAccounts is empty), so the allowance does not exist there. */
   const acctRows = env.changes.filter(c => c.collection === 'settings' && String(c.id).startsWith('account:'))
   const firstStore = acctRows.length > 0 && acctRows.every(c => c.before == null)
+  const seeds = firstStore ? seedAccounts() : []
+  /* a Delete on that first write leaves his seeded account out of the list it stores: his request and bell rows go with it */
+  for (const a of seeds) if (posted.get(String(a.pid)) === 'delete') accounts.set(String(a.id), a)
   for (const c of env.changes) {
     if (c.collection === 'people') {
       const outcome = posted.get(String(c.id))
@@ -1025,10 +1034,20 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       if (!marked) return refuse(c)
     } else if (c.collection === 'settings' && String(c.id).startsWith('account:')) {
       const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
-      const pid = String((b && b.pid) ?? (f && f.pid) ?? '')
-      if (!posted.has(pid)) { if (firstStore && !b && c.op === 'put') continue; return refuse(c) }
-      if (f && b && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
-      if (b) accounts.set(String(c.id).slice('account:'.length), b)
+      const rowId = String(c.id).slice('account:'.length)
+      if (!b) {
+        const seed: any = f && c.op === 'put' ? seeds.find(a => String(a.id) === rowId) : null
+        if (!seed) return refuse(c)
+        const keys = ['id', 'name', 'role', 'pid', 'on', 'offBy']
+        if (Object.keys(f).some(k => !keys.includes(k))) return refuse(c)
+        if (!['id', 'name', 'role', 'pid'].every(k => JSON.stringify(f[k]) === JSON.stringify(seed[k]))) return refuse(c)
+        const ok = posted.has(String(seed.pid)) ? f.on === false && f.offBy === 'po' : f.on === seed.on && f.offBy == null
+        if (!ok) return refuse(c)
+        continue
+      }
+      if (!posted.has(String(b.pid ?? ''))) return refuse(c)
+      if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
+      accounts.set(rowId, b)
     }
   }
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's

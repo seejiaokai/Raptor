@@ -268,7 +268,8 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     expect(ownershipViolation(e)).toMatch(/people\/rocky/)
   })
   it('a delete mark cleared beside a posting’s done mark is refused', () => {
-    const e = realPass('bane', 'overseas')
+    /* a SANS pass writes no account row, so the person's own check is the one that answers */
+    const e = realPass('bane', 'sans')
     const r = JSON.parse(JSON.stringify(P('rocky')))
     e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: '2026-07-13', poOutcome: 'delete' }, after: { to: '2026-07-13', poOutcome: 'delete', poDone: '2026-07-14' } } as any)
     e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: { ...r, deleted: true, deletedFrom: '2026-07-01', archived: true, archivedBy: 'del' }, after: { ...r, deleted: false, archived: false } } as any)
@@ -321,6 +322,52 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     const e = storedAccountsPass()
     e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz8', before: null, after: { id: 'zz8', name: 'evil', role: 'admin', pid: 'rocky', on: true } } as any)
     expect(ownershipViolation(e)).toMatch(/settings\/account:zz8/)
+  })
+  /* THE NARROW READ OF 63e1660d6 (`docs/handpass/parts/lw-rr1031/read-fix1.md` 1): the first-write allowance was decided
+     from the changeset alone — every new row has no before-image — so a pass could create any account at any role, and the
+     posted man's own new row skipped the owner, role and name check. The first write is now the seeded list itself. */
+  it('the reader’s exploit: a SANS pass with a new admin account beside it is refused', () => {
+    const e = realPass('rocky', 'sans')
+    expect(e.changes.some(c => c.collection === 'settings'), 'a SANS pass writes no account row').toBe(false)
+    e.changes.push({ op: 'put', collection: 'settings', id: 'account:zz8', before: null, after: { id: 'zz8', name: 'evil', role: 'admin', pid: 'rocky', on: true } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/account:zz8/)
+  })
+  it('on the accounts’ first write, the posted man’s own new row with another role is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const acc: any = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')
+    expect(acc.before == null, 'the first write: no row stored before').toBe(true)
+    acc.after = { ...acc.after, role: 'admin' }
+    expect(ownershipViolation(e)).toMatch(/settings\/account:acus/)
+  })
+  it('on the accounts’ first write, the posted man’s own new row given to another man is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const acc: any = e.changes.find(c => c.collection === 'settings' && (c.after as any)?.pid === 'bane')
+    acc.after = { ...acc.after, pid: 'casper' }
+    expect(ownershipViolation(e)).toMatch(/settings\/account:acus/)
+  })
+  it('on the accounts’ first write, another seeded account changed on the way is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const acc: any = e.changes.find(c => c.collection === 'settings' && c.id === 'account:achex')
+    expect(acc, 'the first write stores every seeded account').toBeTruthy()
+    acc.after = { ...acc.after, role: 'admin' }
+    expect(ownershipViolation(e)).toMatch(/settings\/account:achex/)
+  })
+  it('another man’s stored account suspended in the pass (only on and offBy changed) is refused', () => {
+    const e = realPass('rocky', 'sans')
+    const row = { id: 'acus', name: 'us', role: 'main', pid: 'bane', on: true }
+    e.changes.push({ op: 'put', collection: 'settings', id: 'account:acus', before: row, after: { ...row, on: false, offBy: 'po' } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/account:acus/)
+  })
+  it('once the accounts are stored, a seeded account put back as seeded is refused (the first-write allowance is the first write only)', () => {
+    const e = storedAccountsPass()
+    e.changes.push({ op: 'put', collection: 'settings', id: 'account:achex', before: null, after: { id: 'achex', name: 'hex', role: 'main', pid: 'rocky', on: true } } as any)
+    expect(ownershipViolation(e)).toMatch(/settings\/account:achex/)
+  })
+  it('on the accounts’ first write, the posted man’s own row left signed in (not suspended) is refused', () => {
+    const e = realPass('bane', 'overseas')
+    const acc: any = e.changes.find(c => c.collection === 'settings' && c.id === 'account:acus')
+    acc.after = { ...acc.after, on: true }; delete acc.after.offBy
+    expect(ownershipViolation(e)).toMatch(/settings\/account:acus/)
   })
   it('any other settings row in the pass is refused', () => {
     const e = storedAccountsPass()

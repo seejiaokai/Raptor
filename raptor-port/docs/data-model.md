@@ -1587,8 +1587,12 @@ its done mark set to that posting's own date (the day after his last day in), a 
 who never arrived, the record removed; that man's `Person` row in that outcome's own fields alone, its mark set —
 Overseas Sqn `archived`, `archivedBy` = posting, `archivedOn`; SANS `san`, the SANS qualification, `sanQ`, `sanBy` =
 posting; Delete `deleted`, `deletedFrom`, `archived`, `archivedBy` = delete; his `User` (suspended, or deleted with an
-`AccessRequest` under its sign-in name and his `AccessRequestSeen`) — and no other person's rows (a store that has never
-saved the accounts saves the whole list on its first write). The app's commit gate holds it (`src/state/perms.ts`
+`AccessRequest` under its sign-in name and his `AccessRequestSeen`) — and no other person's rows. One exception, the demo's:
+a store that has never saved the accounts holds the seeded list, and the pass's first account write stores that whole list —
+so on that first write alone (no account row in the changeset stored before) each new row must be the seeded list's own row,
+its id, name, role and owner the seed's, the posted man's suspended and every other as seeded. At the database step the
+accounts are made at set-up, before any pass can run, and there are no seeds, so the allowance does not carry over. The app's
+commit gate holds it (`src/state/perms.ts`
 `postingPassViolation`; the pass itself first puts the roster in memory back to what is saved — `src/leavewar/sync.ts`
 `runPoOutcomes`), pinned by `src/leavewar/postout-roster.test.ts`. **At the database step the pass runs on the server**, never
 under a credential a browser holds (`[SERVER-SIDE-PASSES]`, with the war's and the inputs' own passes).

@@ -167,10 +167,10 @@
  },
  {
   "n": 15,
-  "name": "fix round 1: another man's account row allowed",
+  "name": "fix round 1: another man's account row allowed — retargeted in fix round 2",
   "file": "src/state/perms.ts",
-  "find": "      if (!posted.has(pid)) { if (firstStore && !b && c.op === 'put') continue; return refuse(c) }",
-  "put": "      if (!posted.has(pid)) continue",
+  "find": "      if (!posted.has(String(b.pid ?? ''))) return refuse(c)\n",
+  "put": "",
   "tests": [
    "src/leavewar/postout-roster.test.ts",
    "src/leavewar/postout-outcomes.test.ts",
@@ -179,9 +179,9 @@
  },
  {
   "n": 16,
-  "name": "fix round 1: the posted man's account may change its role, owner or name",
+  "name": "fix round 1: the posted man's account may change its role, owner or name — retargeted in fix round 2",
   "file": "src/state/perms.ts",
-  "find": "      if (f && b && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)\n",
+  "find": "      if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)\n",
   "put": "",
   "tests": [
    "src/leavewar/postout-roster.test.ts",
@@ -191,10 +191,10 @@
  },
  {
   "n": 17,
-  "name": "fix round 1: a new account row allowed beside stored rows (the first-write allowance widened)",
+  "name": "fix round 1: a new account row allowed beside stored rows (the first-write allowance widened) — retargeted in fix round 2 (the seeds offered beyond the first write)",
   "file": "src/state/perms.ts",
-  "find": "if (firstStore && !b && c.op === 'put') continue",
-  "put": "if (!b && c.op === 'put') continue",
+  "find": "  const seeds = firstStore ? seedAccounts() : []",
+  "put": "  const seeds = seedAccounts()",
   "tests": [
    "src/leavewar/postout-roster.test.ts",
    "src/leavewar/postout-outcomes.test.ts",
@@ -205,8 +205,8 @@
   "n": 18,
   "name": "fix round 1: any other settings row allowed",
   "file": "src/state/perms.ts",
-  "find": "    if (!ok) return refuse(c)\n",
-  "put": "",
+  "find": "      || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length))))\n    if (!ok) return refuse(c)\n",
+  "put": "      || (id.startsWith('reqseen:') && accounts.has(id.slice('reqseen:'.length))))\n",
   "tests": [
    "src/leavewar/postout-roster.test.ts",
    "src/leavewar/postout-outcomes.test.ts",
@@ -234,6 +234,42 @@
   "tests": [
    "src/leavewar/deletednorow.test.ts",
    "src/state/person-delete.test.ts"
+  ]
+ },
+ {
+  "n": 21,
+  "name": "fix round 2: a first-write row need not be the seed's own (id, name, role, owner)",
+  "file": "src/state/perms.ts",
+  "find": "        if (!['id', 'name', 'role', 'pid'].every(k => JSON.stringify(f[k]) === JSON.stringify(seed[k]))) return refuse(c)\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 22,
+  "name": "fix round 2: a first-write row's on / offBy not asked (posted man suspended, others as seeded)",
+  "file": "src/state/perms.ts",
+  "find": "        if (!ok) return refuse(c)\n",
+  "put": "",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
+  ]
+ },
+ {
+  "n": 23,
+  "name": "fix round 2: a first-write row of no seeded account allowed",
+  "file": "src/state/perms.ts",
+  "find": "        if (!seed) return refuse(c)\n",
+  "put": "        if (!seed) continue\n",
+  "tests": [
+   "src/leavewar/postout-roster.test.ts",
+   "src/leavewar/postout-outcomes.test.ts",
+   "src/leavewar/poarchive.test.ts"
   ]
  }
 ]
