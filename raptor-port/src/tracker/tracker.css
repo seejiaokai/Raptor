@@ -514,7 +514,7 @@ svg.perf .edgehit{pointer-events:none}
 .card h3 .hbtns button{text-transform:none;letter-spacing:0}
 .bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin:3px 0 8px}.bar>div{height:100%;background:linear-gradient(90deg,var(--flight),var(--acad))}
 .kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed var(--line)}
-.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
+.kv:last-child{border-bottom:0}.kv span:first-child,.kv b>.evchip:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
 .big{display:flex;gap:8px;flex-wrap:wrap}.big .num{flex:1;min-width:60px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px}
 .big .num .v{font-size:20px;font-weight:700}.big .num .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
 .flexbar{padding:8px 10px;border-radius:8px;font-weight:700;color:#fff;text-align:center;font-size:13px}
