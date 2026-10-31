@@ -118,7 +118,9 @@ if (process.env.LW_WIDE_LETTERS) {
    The three posting-out tests below dated their posting 20 days from the real today and skipped once that left the demo
    war's 2026 (from 12 Dec 26). */
 const PINNED = '@pinned-today'
-const PIN_T0 = '2026-11-04T09:00:00+08:00'
+/* noon in Greenwich: still 4 Nov in every time zone from UTC−11 to UTC+11, whatever machine runs it (the fresh code read's
+   note B — the browser takes the machine's zone) */
+const PIN_T0 = '2026-11-04T12:00:00Z'
 test.beforeEach(async ({ page }) => {
   if (test.info().tags.includes(PINNED)) await page.clock.install({ time: new Date(PIN_T0) })
   await openLeaveWar(page)

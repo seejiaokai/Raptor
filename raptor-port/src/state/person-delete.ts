@@ -290,6 +290,23 @@ export function applyDelete(id: string, cutoff: string): void {
    war from `from` and writes war-approved leave for him there (the Undo of a send-back). */
 function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, module: string | undefined, id: string, from: string): boolean {
   const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
+  /* THE DAYS FROM `from` A REQUEST OF HIS IS TAKEN OFF BY THE STEP — gone from the step altogether, never carried to another
+     day (a move carries a bid with its own id). ONE reading for both directions (the fresh code read's finding 1, 1 Nov 26:
+     the Undo judged it one record at a time, so the Undo of a block move carrying his approved leave and his bid read as a
+     bid taken off the day it had landed on, beside approved leave written back — refused, though the live Move refuses no
+     posting day). */
+  const takenDays = (): Set<string> => {
+    const reqsOf = (list: any) => (Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id))
+    const before = new Map<string, string>(), after = new Set<string>()
+    for (const ch of changes || []) if (ch && ch.collection === 'lw.cell') {
+      const parts = String(ch.id || '').split(':')
+      if (parts[parts.length - 2] !== id) continue
+      const day = parts[parts.length - 1]!
+      for (const r of reqsOf(ch.before)) if (day >= from) before.set(r, day)
+      if (ch.op !== 'delete') for (const r of reqsOf(ch.after)) after.add(r)
+    }
+    return new Set([...before].filter(([r]) => !after.has(r)).map(([, day]) => day))
+  }
   if (dir === 'redo') {
     if (module !== 'lw') return false
     const all = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
@@ -312,16 +329,7 @@ function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, modul
        carries a bid with its own id and lands approved leave only where no live bid stands (sync.ts doorMoveApproved,
        'occupied'); a re-typed approved leave (decideApproved) takes no request; a filing (doorFile) writes no war mark;
        the inputs door's swap of a bid for a notice is an Inputs-page step, never `lw` (finding B, above). */
-    const reqsOf = (list: any) => (Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id))
-    const before = new Map<string, string>(), after = new Set<string>()
-    for (const ch of changes || []) if (ch && ch.collection === 'lw.cell') {
-      const parts = String(ch.id || '').split(':')
-      if (parts[parts.length - 2] !== id) continue
-      const day = parts[parts.length - 1]!
-      for (const r of reqsOf(ch.before)) if (day >= from) before.set(r, day)
-      if (ch.op !== 'delete') for (const r of reqsOf(ch.after)) after.add(r)
-    }
-    const taken = new Set([...before].filter(([r]) => !after.has(r)).map(([, day]) => day))
+    const taken = takenDays()
     if (!taken.size) return false
     /* his war-approved leave's time on each day (minutes, its half or the whole day), before the step and after it */
     const winsOn = (side: 'before' | 'after'): Map<string, Array<readonly [number, number]>> => {
@@ -347,15 +355,7 @@ function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, modul
     const had = winsOn('before'), has = winsOn('after')
     return [...taken].some(d => (has.get(d) ?? []).some(([a, b]) => !covered(had.get(d) ?? [], a, b)))
   }
-  const takesBid = (changes || []).some(ch => {
-    if (!ch || ch.collection !== 'lw.cell') return false
-    const parts = String(ch.id || '').split(':')
-    if (parts[parts.length - 2] !== id || parts[parts.length - 1]! < from) return false
-    const reqIds = (list: any) => new Set((Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id)))
-    const now = reqIds(ch.before), left = ch.op === 'delete' ? new Set<string>() : reqIds(ch.after)
-    return [...now].some(r => !left.has(r))
-  })
-  if (!takesBid) return false
+  if (!takenDays().size) return false
   return (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && lwDays(ch.after) > 0)
 }
 

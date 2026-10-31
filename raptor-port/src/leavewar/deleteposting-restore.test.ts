@@ -240,6 +240,39 @@ describe('one step: his refused morning approved and his afternoon of the same d
   })
 })
 
+/* THE FRESH CODE READ'S FINDING 1 (1 Nov 26): the Undo branch judged "a request taken off" one record at a time, so a block
+   move that carries his approved leave AND his pending bid read, on its Undo, as a bid taken off a refused day beside
+   war-approved leave written there — and the Undo was refused, though the live Move refuses no posting day. A request
+   carried to another day by the same step is not taken (the Redo branch's whole-step rule, now both directions'). */
+describe('a block move of his approved leave and his bid across the date is no approval, either way', () => {
+  const moveBlock = () => {
+    setCell('bane', AFTER, 'LL'); approve('bane', AFTER)
+    setCell('bane', AFTER2, 'LL')
+    expect(moveCells([{ personId: 'bane', date: AFTER }, { personId: 'bane', date: AFTER2 }], 2)).toBe('moved')
+    expect(warDays('bane')).toEqual(['Jul 22'])
+    expect(req('bane', '2026-07-23').state).toBe('pending')
+  }
+  it('moved, the Delete posting set, Undo: goes — the leave back on 20 Jul, the bid on 21 Jul; Redo: goes', () => {
+    moveBlock()
+    post()
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect(warDays('bane')).toEqual(['Jul 20'])
+    expect(req('bane', AFTER2).state).toBe('pending')
+    expect(globalRedo().ok).toBe(true)
+    expect(warDays('bane')).toEqual(['Jul 22'])
+  })
+  it('the posting set first, then moved (the live Move goes), Undo: goes', () => {
+    setCell('bane', AFTER, 'LL'); approve('bane', AFTER)
+    setCell('bane', AFTER2, 'LL')
+    post()
+    expect(moveCells([{ personId: 'bane', date: AFTER }, { personId: 'bane', date: AFTER2 }], 2), 'the live Move').toBe('moved')
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect(warDays('bane')).toEqual(['Jul 20'])
+  })
+})
+
 describe('Undo of a send-back after his posting out is set', () => {
   it('approve, the second tap sends it back, post him out (Delete), Undo: refused — the approval is not put back', () => {
     setCell('bane', AFTER2, 'LL')

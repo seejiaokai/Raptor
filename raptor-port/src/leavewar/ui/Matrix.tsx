@@ -136,8 +136,6 @@ function sameStuck(
 
 /* the bid bubble's reading and its words (`BubbleFlags`, `worsenedRows`, `bubbleParts`, `bubbleWords`): ui/bubblewords.ts */
 
-/** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
- *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
 /** ONE ENTRY OF A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — a course's first, D1395): its code, its half or hours,
  *  its typed remarks — none where they stand in the window's own Remarks box (`ownWords`, his own leave — D1552) — and
  *  where it is attached ("To"), for the bid window's line */
@@ -160,9 +158,11 @@ function heldLine(c: Contrib, portion: Portion, hours: readonly [number, number]
     ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}),
   }
 }
-/* …built by `heldLine`, the held day's own body ([LW-HELDHALF-WORDS], 1 Nov 26): its words with their "till <date>" (D948)
-   and its documents as chips (D1150) — it printed the typed words alone. Its half is the one the free half is not; no
-   hours, so the line reads AM or PM after its box (D1371, D1525) */
+/** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371), for the free half's one line; null where the
+ *  held half is anything else (a leave keeps its sentence). Built by `heldLine`, the held day's own body
+ *  ([LW-HELDHALF-WORDS], 1 Nov 26): its words with their "till <date>" (D948) and its documents as chips (D1150) — it printed
+ *  the typed words alone. Its half is the one the free half is not; no hours, so the line reads AM or PM after its box
+ *  (D1371, D1525). */
 function heldCommitment(v: DayView | undefined, free: Portion): HeldLine | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
   if (!c) return null
