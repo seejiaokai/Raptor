@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1551 | 31 Oct 26 | Whenever he asks for a feature or one is designed, the agent says at once if it cannot be done — or only differently, or with a paid licence or the IT side — on the platform the app is moving to (a Power Apps code app on Dataverse, on his M365 — D1532, D1536), so he can skip it before work is spent. |
 | D1540 | 31 Oct 26 | The project's own secrets scan becomes a required check on `main`: a pull request cannot merge until the scan has passed; he switches it on himself in GitHub's settings, from the steps the agent gives him. |
 | D1539 | 31 Oct 26 | React Doctor's "no new finding" check is built to run by itself as D1536 says — a GitHub check on every pull request, and a run at the end of every working session — in a fresh chat; this is his permission to change the project's hooks and settings for the session run, read by one fresh reader before it is switched on. |
 | D1537 | 31 Oct 26 | The app's code moves to strict checking of every value's kind — new code strict from the start, the screens, saved data and the Leave War fixed area by area as each is next worked on — but the rules engine stays word for word, its checks switched off, protected by the original app's 728 tests. |
