@@ -68,7 +68,7 @@ const feb = (type = 'Meeting') => INPUTS.filter((r: any) => r.type === type && S
 const the = (type = 'Meeting') => { const l = feb(type); expect(l, `one ${type}`).toHaveLength(1); return l[0] }
 /* what each man's day reads of it: is his line late? (the late mark of ONE man of several — his entry's own date) */
 const late = (r: any): Record<string, boolean> => Object.fromEntries(inputLines([r]).map((l: any) => [l.person, isLateInput(l)]))
-const copy = (x: any) => JSON.parse(JSON.stringify(x))
+const copy = (x: any) => structuredClone(x)
 const stamps = (r: any) => ({ by: r.by, at: r.at, modBy: r.modBy, modAt: r.modAt })
 const raw = (fn: () => void): boolean => writeInputs(fn)
 const cmds = () => commandStream().length
