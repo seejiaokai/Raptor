@@ -89,6 +89,7 @@ export function EventRows({
               /* its full text where the bar is wide enough, else its short form (the plan §3.12) */
               const fits = band.text.length <= span * BAND_CH_PER_DAY
               cells.push(
+                // eslint-disable-next-line react-doctor/click-events-have-key-events -- an event cell, one a day across the year: a key handler and Tab stop on each would add work to every month's draw and bury the page's controls; every event is reached from the keyboard in the Events list (⚙ Settings), and its name is the cell's label
                 <td
                   key={d.date}
                   colSpan={span}
@@ -133,6 +134,7 @@ export function EventRows({
               span++
             }
             cells.push(
+              // eslint-disable-next-line react-doctor/click-events-have-key-events -- a blocked run's reason, one cell among a year of event cells that take no Tab stop (the cells below say why); a Tab stop for these alone would make the row's only ones, and an admin reaches the Event window from the keyboard through the Events list (⚙ Settings)
               <td
                 key={d.date}
                 colSpan={span}
@@ -148,6 +150,7 @@ export function EventRows({
           }
           const work = (dayEventKind(d, line) ?? classifyEvent(defs, text)) === 'work'
           cells.push(
+            // eslint-disable-next-line react-doctor/click-events-have-key-events -- an event cell, one a day across the year: a key handler and Tab stop on each would add work to every month's draw and bury the page's controls; every event is reached and added from the keyboard in the Events list (⚙ Settings), and a filled cell's name is its label
             <td
               key={d.date}
               className={`ev${text ? ' has tap' : ''}${work ? ' work' : ''}${editable ? ' editable' : ''}`}

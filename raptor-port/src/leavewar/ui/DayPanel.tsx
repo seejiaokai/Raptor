@@ -18,15 +18,8 @@ import { useVersion } from './useStore'
 import { FloatWin } from '../../ui/FloatWindow'
 import { dayLabel } from './dates'
 import { LeaveLine } from './LeaveLine'
-
-/* ── the open day: one listener set ── */
-let OPEN: string | null = null
-const subs = new Set<() => void>()
-const emit = () => { for (const f of subs) f() }
-export function openDayPanel(iso: string): void { OPEN = iso; emit() }
-export function closeDayPanel(): void { if (OPEN) { OPEN = null; emit() } }
-export const dayPanelDate = (): string | null => OPEN
-const subscribe = (f: () => void) => { subs.add(f); return () => { subs.delete(f) } }
+/* the open day: one listener set (ui/daypanelopen.ts) */
+import { closeDayPanel, dayPanelDate, openDayPanel, subscribeDayPanel as subscribe } from './daypanelopen'
 
 const fig = (n: number | null) => (n === null ? '–' : String(Math.round(n * 2) / 2))
 
@@ -67,6 +60,7 @@ function DayPanel({ iso }: { iso: string }) {
         {d.covered && !d.open && <p className="lwday-note" data-testid="lwday-closed">Not open for bidding</p>}
         {d.events.length > 0 && (
           <ul className="lwday-events" data-testid="lwday-events">
+            {/* eslint-disable-next-line react-doctor/no-array-index-as-key -- an event here is its words alone, with no id, and two may read alike; each line holds nothing of its own and the list is drawn whole for the day */}
             {d.events.map((e, i) => <li key={i}>{e}</li>)}
           </ul>
         )}

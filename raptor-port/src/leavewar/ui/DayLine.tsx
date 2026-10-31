@@ -9,12 +9,10 @@
    amber or red (his D1296). ROUND 3 (his D1313, D1314): only what is amber or red is named, the Available row included,
    side by side on one line — "Available P 28 → 26 · amber · OPSP 12 → 11 · amber" — else the calm line alone. */
 
-import type { Portion } from '../engine'
 import { worstWhatIf, type DayWhatIf } from '../engine/whatif'
 import { dayLabel } from './dates'
 
-/** the code the line asks with: any leave, at the half picked ('*LL' a morning, 'LL*' an afternoon) */
-export const dayLineCode = (portion: Portion): string => (portion === 'am' ? '*LL' : portion === 'pm' ? 'LL*' : 'LL')
+/* the code the line asks with: `dayLineCode` (ui/daylinecode.ts) */
 
 /** a figure as the grid writes it: halves ".5", never "½" (D1246) */
 const fig = (n: number) => String(Math.round(n * 2) / 2)

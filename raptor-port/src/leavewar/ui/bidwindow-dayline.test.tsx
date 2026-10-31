@@ -3,7 +3,8 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { getState, initStore, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
-import { DayLine, dayLineCode } from './DayLine'
+import { DayLine } from './DayLine'
+import { dayLineCode } from './daylinecode'
 import type { DayWhatIf } from '../engine/whatif'
 
 /* THE BID WINDOWS' DAY LINE (owner D1144, D1213; M3, batch 5; round 3 — his D1313, D1314): at the window's top, what the

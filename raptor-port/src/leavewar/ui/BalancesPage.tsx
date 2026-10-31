@@ -34,7 +34,7 @@ import { wirePinch } from '../../ui/pinchzoom'
 import { fixedOrigin } from '../../ui/kbscroll'
 import { askLw, setBalancesUp } from './lwnav'
 import { LW_ZOOM_MAX, roundZoom } from './lwzoom'
-import { rowInWindow } from './Matrix'
+import { rowInWindow } from './rowinwindow'
 import { groupColorOf } from './groupColor'
 import { GradesSheet } from './GradesSheet'
 import { usePhone } from './phone'
@@ -43,7 +43,7 @@ import './balances.css'
 
 /** A figure as the page writes it: halves .5 (D1246), a minus sign, never a hyphen — the app's one helper, kept in the
  *  figure box's module so the grid and the bid windows write a figure through the same words (FigureCell.tsx). */
-import { figWords } from './FigureCell'
+import { figWords } from './figwords'
 export { figWords }
 /** what a box's words read as a number — "−2", "-2", "17.5", "+3"; NaN for anything else (the store's refusal names it) */
 const readFig = (t: string) => { const s = t.trim().replace(/^\+/, '').replace(/^[−–]/, '-'); return /^-?(\d+(\.\d*)?|\.\d+)$/.test(s) ? Number(s) : NaN }

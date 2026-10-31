@@ -278,8 +278,8 @@ function wireGesture<A, P>(wrap: HTMLElement, spec: GestureSpec<A, P>): () => vo
   let armed = false
   let pid = -1
   let sx = 0, sy = 0
-  let holdTimer: any = null
-  let slowTimer: any = null       // fires at SLOWARM; flips slowReady
+  let holdTimer: ReturnType<typeof setTimeout> | null = null
+  let slowTimer: ReturnType<typeof setTimeout> | null = null       // fires at SLOWARM; flips slowReady
   let slowReady = false           // the finger has been down long enough that a
                                   // slide now reads as a slow drag, not a flick
   let painted = new Set<string>()  // ids currently wearing spec.cls

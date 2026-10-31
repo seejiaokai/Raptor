@@ -30,7 +30,7 @@ import { projectPeople } from './state/raptorRoster'
 import { warIdentityIfHidden, wireLeaveWarSync } from './sync'
 import { figuresOf, linesOfWar, ownDays } from './approvals'
 import { myLeaveOf } from './ui/myleave'
-import { nameFigures, nameLines } from './ui/MatrixRows'
+import { nameFigures, nameLines } from './ui/matrixrowparts'
 import { balanceLabel, belowZeroAsk, goesBelow } from './ui/belowzero'
 
 const mem: Record<string, string> = {}

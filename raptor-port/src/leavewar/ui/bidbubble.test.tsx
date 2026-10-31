@@ -17,7 +17,8 @@ import { ruleHave } from '../engine'
 import { actCount, filedSince, fileStraight, getState, initStore, lwHistInit, lwUndo, recordsAt, saveManningRule, setBidStates, setCell, setRequestWords, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
 import { memoryBackend } from '../state/storage'
-import { bubbleParts, bubbleWords, Matrix, worsenedRows, type BubbleFlags } from './Matrix'
+import { Matrix } from './Matrix'
+import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags } from './bubblewords'
 
 // Seed: ASICS has a pending half day of LL on 23 Jan (moveone.test.tsx's chip).
 const PENDING = 'cell-asics-2026-01-23'

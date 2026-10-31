@@ -17,6 +17,7 @@ import { useVersion } from './useStore'
 import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
+import { clashWhat } from './clashwhat'
 import './chrome.css'
 
 /** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
@@ -52,17 +53,7 @@ const WAY_OUT: Record<ClashWayOut, string> = {
   war: 'Change the approved leave',
   inputs: 'Change the leave on Inputs',
 }
-/** What clashes, as a sentence — today's words less the name and the date, which stand beside it (D825: every key word
- *  kept). Where the leave in the way is one the war APPROVED the sentence says so (r7-19): it is why the instruction is
- *  to change the approved leave rather than decide a bid. */
-export function clashWhat(c: SyncClash): string {
-  /* each code as the grid's box draws it ([LW-HALF-DAY-WORDS-LEFT] — sync.ts clashCodeShown), the stored one only where a
-     clash was built without it */
-  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidShown ?? c.bidCode}`
-  return c.kind === 'duty'
-    ? `Weekend/PH work earns ${c.inputShown ?? c.inputCode}, but the day holds ${held}`
-    : `The input is ${c.inputShown ?? c.inputCode}, but the bid is ${held}`
-}
+/* what clashes, as a sentence: `clashWhat` (ui/clashwhat.ts) */
 
 /* THE TABS' TWO SMALL GLYPHS, in the line style of the app's icons (ui/icons.tsx — the Inputs page's tabs wear them). */
 function GridGlyph() {
@@ -110,6 +101,7 @@ function BalGlyph() {
 /* the period list's last line, "+ New period" (D1244) — a value no period id can be */
 const NEW_PERIOD = '\u0000new'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one row of small, separate branches (the tabs, View, My leave, ⚙, the new-period ask), each drawn once; split, the same few values would only be passed down
 export function Topbar() {
   useVersion()
   const { period, wars, role, viewer, people } = getState()
@@ -280,6 +272,7 @@ function nextLabel(iso: string): string {
  *  everyone, standing on the grid card above the month buttons (`full/r19-nav-*`, `full/r21-rows-*`). The grid hands it
  *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
  *  before Legend ("Done" while rearranging; the zoom pair went when pinch to zoom replaced it — [LW-PHONE-PINCH-ZOOM], D1228, D1276). */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the bar's chips, its two pop-outs and the clash note share one set of state (the red days, which pop-out is open, where each hangs); its length is mostly the Legend's plain list, markup rather than logic
 export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
   const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of
@@ -487,11 +480,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
           that disagreed with the login would be a lie. Do not re-add it. */}
       {showList && (
         <>
-          <div className="umscrim" data-testid="undermanned-scrim" onClick={() => setListOpen(false)} />
-          <div
+          {/* a tap outside closes the list and does nothing else; Escape closes it from the keyboard (the handler above) */}
+          <div className="umscrim" data-testid="undermanned-scrim" role="presentation" onClick={() => setListOpen(false)} />
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; this list hangs off its chip over the app's own scrim, layered on purpose */}
+          <div role="dialog"
             className="umlist"
             data-testid="undermanned-list"
-            role="dialog"
             aria-label="Under-manned days"
             style={at ? { left: at.left, top: at.top } : undefined}
           >
@@ -534,11 +528,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
       </button>
       {legOpen && (
         <>
-          <div className="umscrim" data-testid="legend-scrim" onClick={() => setLegOpen(false)} />
-          <div
+          {/* a tap outside closes the Legend and does nothing else; Escape closes it from the keyboard (the handler above) */}
+          <div className="umscrim" data-testid="legend-scrim" role="presentation" onClick={() => setLegOpen(false)} />
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; the Legend hangs off its button over the app's own scrim, layered on purpose */}
+          <div role="dialog"
             className="leglist"
             data-testid="legend"
-            role="dialog"
             aria-label="What the colours and marks mean"
             style={legAt ? { left: legAt.left, top: legAt.top } : undefined}
           >
