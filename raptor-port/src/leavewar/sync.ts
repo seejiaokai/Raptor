@@ -500,7 +500,9 @@ export function bidHeldWhy(personId: string, date: string, recId: string): strin
   const rec = war ? recsAt(war.recs, personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId) : undefined
   return rec ? heldWhy(personId, date, rec) : null
 }
-/* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
+/* REPLACED 31 Oct 26 BY HIS D1541 (see `postingOutWhy` below): the posting date now refuses no leave, but a Delete posting's,
+   so read what follows as the history of the date rule that a Delete posting still keeps.
+   His D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
    even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
    out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them.
    ONE DATE RULE, WHETHER THE POSTING HAS RUN OR NOT (the fixes' round 2 — the host's reading of D1436's full row, 28 Oct 26:

@@ -59,7 +59,9 @@ export const FigureCell = memo(function FigureCell({
      the render that sees the change, so the box never paints the new number without its flash first */
   const [prev, setPrev] = useState({ id: figure.id, person: personId, top: lines.top })
   const [flash, setFlash] = useState(false)
-  if (prev.id !== figure.id || prev.person !== personId || prev.top !== lines.top) {
+  /* (`Object.is`, as the effect's own dependency check was: a figure that were ever NaN must not count as changed on every
+     render and loop — the fresh read of 31 Oct 26, its point 4) */
+  if (prev.id !== figure.id || prev.person !== personId || !Object.is(prev.top, lines.top)) {
     if (prev.id === figure.id && prev.person === personId) setFlash(true)
     setPrev({ id: figure.id, person: personId, top: lines.top })
   }

@@ -218,6 +218,7 @@ Leave War opens on its bidding window, not on today, so a "same session" read ta
 reload" read taken after a month button compare January with December, and an archived man rightly counts in one and
 not the other ([LW-GROUPS-STALE-AFTER-ARCHIVE], 21 Oct 26 — filed as a fault, found on 27 Oct 26 to be this;
 `docs/handpass/parts/lw-small-1027/groups-diagnosis.md`).
+**Three of a walk's own making (the Leave War fixes' re-walk, 31 Oct 26 — `docs/handpass/2026-10-31-lw-fixes.md`):** (a) the test browser's WebKit on Windows keeps no file in the browser's own database (IndexedDB refuses a stored Blob — Chromium keeps it), so every phone walk there shows "Couldn't save that document — your browser storage may be full…" once the demo world writes its documents: a fact about the test browser, not the app — his iPhone's Safari keeps them; (b) the app writes a no-break space before a link's "›" (`'\u00a0›'`), so a check that compares the words with an ordinary space fails on right words — normalise it first; (c) a member's own day is a bid window only while his dates are open (D1177): closed, it opens his leave's Remarks window (D1354), so a check of the Duration row must know which window it is reading.
 
 ## 8. When nothing on screen should change
 

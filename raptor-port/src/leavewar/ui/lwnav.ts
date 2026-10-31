@@ -68,8 +68,11 @@ export function takeRingAsk(): { personId: string; date: string } | null { const
    Approvals ›" for a man with no row on the grid (a SANS man while SANS is off the war, an archived man) opens Approvals with
    his request on that day ringed — the grid cannot open a day on a row it does not draw. The page takes the ask once, rings
    the line holding that day and scrolls it into view (ApprovalsPage.tsx). View state only — not saved, not undone. */
-let apprRing: { personId: string; date: string } | null = null
-export function askApprRing(a: { personId: string; date: string }) { apprRing = a; ping() }
+/* `code`: the bid's own code, as the clash names it — two bids of his on one day are two lines, and the clash's is the one
+   rung (the fresh read's F2, 31 Oct 26) */
+export interface ApprRingAsk { personId: string; date: string; code?: string }
+let apprRing: ApprRingAsk | null = null
+export function askApprRing(a: ApprRingAsk) { apprRing = a; ping() }
 /** whether a ring is waiting — read without taking it, so a render React throws away takes nothing */
-export const apprRingAsked = (): { personId: string; date: string } | null => apprRing
-export function takeApprRing(): { personId: string; date: string } | null { const a = apprRing; apprRing = null; return a }
+export const apprRingAsked = (): ApprRingAsk | null => apprRing
+export function takeApprRing(): ApprRingAsk | null { const a = apprRing; apprRing = null; return a }

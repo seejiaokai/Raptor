@@ -19,7 +19,9 @@ const SIZE = F.SIZE
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
 console.log('[lw-fx1031-3 v2]', SIZE, 'today', L.TODAY)
-F.clearMine(`r3a-${SIZE}-`); F.clearMine(`r3b-${SIZE}-`); F.clearMine(`r3c-${SIZE}-`); F.clearMine(`r3c2-${SIZE}-`); F.clearMine(`r3-fileform-${SIZE}`)
+/* only the pictures of the scenarios this run walks are emptied (ONLY=r3d must not wipe R3a–R3c's) */
+for (const t of ['r3a', 'r3b', 'r3c', 'r3c2', 'r3d']) if (want(t)) F.clearMine(`${t}-${SIZE}-`)
+if (!ONLY.length) F.clearMine(`r3-fileform-${SIZE}`)
 const D2 = L.day(8), D2B = L.day(9), D3 = L.day(7)
 const errsAll = []
 
@@ -157,7 +159,11 @@ async function r3b() {
   await L.openCell(w, id, D2B)
   note('3 the window tapped as the member', await winState(w)); await L.shot(w, pre + '3-window-member')
   const dm3 = await durState(w)
-  F.check('R3b-3 a morning filed on the Inputs page: only PM offered (the member)', SIZE, !dm3.full && !dm3.am && !!dm3.pm?.on, JSON.stringify(dm3), [pre + '3-window-member'])
+  /* his November dates are not open for him (D1177), so his own day opens his leave's Remarks window (D1354), as on main —
+     the check is that no window offers him the held morning or a whole day; where his dates are open, only PM */
+  const root3 = (await winState(w))?.root
+  F.check('R3b-3 a morning filed on the Inputs page: neither Whole day nor AM offered (the member)', SIZE,
+    !dm3.full && !dm3.am && (!!dm3.pm?.on || root3 === 'remarks-sheet'), JSON.stringify({ window: root3, ...dm3 }), [pre + '3-window-member'])
   await F.settle(w)
   /* as the admin */
   await L.signOut(w); await L.signInSaved(w, 'admin'); await L.toWar(w); await L.openGrid(w); await L.reachCell(w, id, D2B)
@@ -217,7 +223,8 @@ async function r3c(medType = 'OML', tag = 'r3c') {
   const apprSel = st ? await P.evaluate(() => { const b = [...document.querySelectorAll('[data-testid="decide-approve"],[data-testid^="dl-approve-"]')].find(e => e.getBoundingClientRect().width > 0); if (!b) return null; b.setAttribute('data-fxpress', '1'); return '[data-fxpress="1"]' }) : null
   const apprBtn = apprSel ? await P.evaluate(() => { const b = document.querySelector('[data-fxpress="1"]'); return { disabled: b.disabled, title: b.title, opacity: getComputedStyle(b).opacity } }) : null
   const others = await P.evaluate(() => [...document.querySelectorAll('[data-testid="decide-refuse"],[data-testid^="dl-refuse-"],[data-testid^="dl-clear-"],[data-testid="sel-clear"]')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.dataset.testid + (e.disabled ? '(disabled)' : '')))
-  const holder = medType
+  /* the holder as the grid's box writes it — ATT B and ATT C are his B and C (engine/codes.ts boxText) */
+  const holder = ({ 'ATT B': 'B', 'ATT C': 'C' })[medType] || medType
   F.check(`${tag.toUpperCase()}-4 D1544 the refused bid's Approve greyed under ${medType}, its title naming the holder; Refuse and Delete there`, SIZE,
     !!apprBtn && apprBtn.disabled && +apprBtn.opacity < 1 && apprBtn.title === `${holder} holds ${L.dm(D3)}, so the bid can’t be approved` && others.some(t => /refuse/.test(t) && !/disabled/.test(t)) && others.some(t => /clear/.test(t)),
     JSON.stringify({ approve: apprBtn, others }), [pre + '4-window-d3'])
@@ -237,10 +244,59 @@ async function r3c(medType = 'OML', tag = 'r3c') {
   await w.ctx.close()
 }
 
-for (const [id, fn] of [['r3a', r3a], ['r3b', r3b], ['r3c', () => r3c('OML', 'r3c')], ['r3c2', () => r3c('ATT C', 'r3c2')]]) {
+/* ---------------- R3d — the fresh read's F1 (31 Oct 26): a refused leave of several days, a medical on its middle day ---------------- */
+async function r3d() {
+  const tag = 'r3d', pre = `${tag}-${SIZE}-`; const log = []
+  const note = (k, v) => { log.push([k, v]); console.log(`  ${tag} ${k}:`, typeof v === 'string' ? v : JSON.stringify(v)) }
+  const D4 = L.day(14), D5 = L.day(15), D6 = L.day(16)
+  const w = await F.world('admin'); const P = w.page
+  const id = await L.pidOf(P, 'Ranger')
+  note('who', `Ranger (${id}), ${D4}…${D6} (${L.dm(D4)}–${L.dm(D6)})`)
+  /* three next-door pending LL, each placed in the one-day window (Auto-approve off) — one leave on Approvals (D1339, D1346) */
+  const placed = []
+  for (const d of [D4, D5, D6]) placed.push(await L.pendingLL(w, id, d))
+  await F.toApprovals(w)
+  const before = await F.apprRead(w, id)
+  const i = before.findIndex(l => l.text.includes(L.dm(D4).split(' ')[0]) && l.text.includes(L.dm(D6).split(' ')[0]))
+  const pressed = i >= 0 ? await L.apprPress(w, id, 'appr-refuse', i) : false
+  await P.waitForTimeout(400)
+  await L.shot(w, pre + '1-approvals-refused')
+  note('1 three pending LL placed, refused as one line', { placed, lineIndex: i, pressed, lines: await F.apprRead(w, id) })
+  /* the member files a medical on the middle day */
+  await L.signOut(w); await L.signInSaved(w, 'member')
+  w.tag = 'd-'
+  const f = await fileOnInputs(w, D5, opts => (opts.map(x => x.trim()).includes('OML') ? 'OML' : opts[opts.length - 1]), null)
+  note('2 the member filed OML on the middle day', f)
+  /* back as the admin: the first day tapped — the whole leave's window */
+  await L.signOut(w); await L.signInSaved(w, 'admin'); await L.toWar(w); await L.openGrid(w); await L.reachCell(w, id, D4)
+  await L.rowShot(w, id, L.day(12), L.day(18), pre + '3-row')
+  note('3 his cells', { d4: await F.cellWords(w, id, D4), d5: await F.cellWords(w, id, D5), d6: await F.cellWords(w, id, D6) })
+  await L.openCell(w, id, D4)
+  await L.shot(w, pre + '4-window-all')
+  const all = await P.evaluate(() => {
+    const vis = e => e && e.getBoundingClientRect().width > 0
+    const ap = [...document.querySelectorAll('[data-testid="decide-approve"]')].find(vis)
+    const sc = [...document.querySelectorAll('[data-testid="scope-all"]')].find(vis)
+    return { scopeAll: sc ? sc.getAttribute('aria-pressed') : null, scopeText: sc ? sc.innerText.trim() : null, approve: ap ? { disabled: ap.disabled, title: ap.title, opacity: getComputedStyle(ap).opacity } : null }
+  })
+  F.check('R3d-4 F1 / D1544 a refused leave opened whole, a medical on one of its days: Approve greyed, naming that day', SIZE,
+    all.scopeAll === 'true' && !!all.approve && all.approve.disabled && +all.approve.opacity < 1 && all.approve.title === `OML holds ${L.dm(D5)}, so the bid can’t be approved`,
+    JSON.stringify(all), [pre + '4-window-all'])
+  /* the day tapped alone: nothing over it, so Approve is offered */
+  if (all.scopeAll) { await L.press(w, L.T('scope-day')); await P.waitForTimeout(300) }
+  await L.shot(w, pre + '5-window-day')
+  const one = await P.evaluate(() => { const ap = [...document.querySelectorAll('[data-testid="decide-approve"]')].find(e => e.getBoundingClientRect().width > 0); return ap ? { disabled: ap.disabled, title: ap.title } : null })
+  F.check('R3d-5 the day tapped alone, nothing over it: Approve offered', SIZE, !!one && !one.disabled, JSON.stringify(one), [pre + '5-window-day'])
+  await F.settle(w)
+  errsAll.push(...w.errs.map(e => tag + ' ' + e)); note('errors', w.errs.length ? w.errs : 'none')
+  L.rec('R3D a refused leave of several days, a medical on its middle day', SIZE, 'RECORDED', log.map(([k, v]) => k + ': ' + (typeof v === 'string' ? v : JSON.stringify(v))).join(' || '), [])
+  await w.ctx.close()
+}
+
+for (const [id, fn] of [['r3a', r3a], ['r3b', r3b], ['r3c', () => r3c('OML', 'r3c')], ['r3c2', () => r3c('ATT C', 'r3c2')], ['r3d', r3d]]) {
   if (!want(id)) continue
   try { await fn() } catch (e) { console.log(`  ${id} STEP-ERROR (NOT WALKED beyond here):`, String(e).split('\n')[0].slice(0, 400)); errsAll.push(id + ' STEP-ERROR ' + String(e).split('\n')[0].slice(0, 200)) }
 }
-L.writeResults(`r3-${SIZE}`)
+L.writeResults(ONLY.length ? `r3-${SIZE}-${ONLY.join("-")}` : `r3-${SIZE}`)
 console.log('ALL ERRORS:', errsAll.length ? errsAll : 'none')
 await L.closeBrowser()

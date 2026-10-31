@@ -31,7 +31,7 @@ import { clashPairOrder, getClashes, installAbsenceDoor, runOilPass, syncAbsence
 import { LeaveWarPage } from './LeaveWarPage'
 import { StageBar } from './ui/Chrome'
 import { ApprovalsPage } from './ui/ApprovalsPage'
-import { apprMode, setApprMode, takeApprRing } from './ui/lwnav'
+import { apprMode, askApprRing, setApprMode, takeApprRing } from './ui/lwnav'
 import { PHONE_QUERY } from './ui/phone'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -427,7 +427,7 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     const seq = getState().focusSeq
     fireEvent.click(getByTestId('clash-go-0'))
     expect(apprMode(), 'the Approvals page is up').toBe('page')
-    expect(takeApprRing(), 'his request on that day is the one to ring').toEqual({ personId: 'plasma', date: SAT })
+    expect(takeApprRing(), 'his request on that day is the one to ring').toEqual({ personId: 'plasma', date: SAT, code: 'LL' })
     expect(getState().focusSeq, 'no day opened on a row that is not there').toBe(seq)
     expect(CURPAGE).toBe('leavewar')
   })
@@ -441,6 +441,21 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     const line = page.getByTestId('appr-line-plasma')
     expect(line.className, 'ringed with the war\'s just-added mark').toContain('lw-ring')
     expect(takeApprRing(), 'the ask is taken once').toBeNull()
+  })
+
+  /* THE FRESH READ'S F2 (31 Oct 26): two bids of his on the one day (an afternoon OL placed first, then a morning LL) are two
+     lines on Approvals; the ring asked for the clash's own bid rings that line, never the other one of the day */
+  it('two bids of his on the day: the ring lands on the clash\'s own bid, not the other', () => {
+    setCell('plasma', SAT, 'OL*')
+    setCell('plasma', SAT, '*LL')
+    noRow()
+    askApprRing({ personId: 'plasma', date: SAT, code: '*LL' })
+    const page = render(<ApprovalsPage shown={true} />)
+    const lines = page.getAllByTestId('appr-line-plasma')
+    expect(lines.length, 'two lines, one a bid').toBe(2)
+    const ringed = lines.filter(l => l.className.includes('lw-ring'))
+    expect(ringed).toHaveLength(1)
+    expect(flat(ringed[0]!.querySelector('[data-testid="appr-box"]'))).toBe('LL')
   })
 
   it('leave the war approved: "Change the leave on Inputs ›" — its own window there', () => {
@@ -461,7 +476,7 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     expect(flat(container.querySelector('[data-testid="clash-row-0"] .clash-do'))).toBe('Decide it in Approvals ›')
     fireEvent.click(getByTestId('clash-row-0'))
     expect(apprMode()).toBe('page')
-    expect(takeApprRing()).toEqual({ personId: 'plasma', date: SAT })
+    expect(takeApprRing()).toEqual({ personId: 'plasma', date: SAT, code: 'LL' })
   })
 
   it('a man WITH a row keeps today\'s links', () => {

@@ -15,7 +15,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { decideRequests, getState, initStore, recordsAt, setBidStates, setCell, setRole } from '../state/store'
+import { decideRequests, getState, initStore, recordsAt, setBidStates, setCell, setCellRange, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import type { RequestRec } from '../engine'
@@ -146,6 +146,27 @@ describe('D1544 — Approve on a refused bid under a medical: greyed, and the re
     const rf = (screen.queryByTestId(`dl-refuse-${r.id}`) ?? screen.queryByTestId('decide-refuse')) as HTMLButtonElement
     expect(rf.disabled, 'Refuse stays').toBe(false)
     expect(screen.queryByTestId(`dl-clear-${r.id}`) ?? screen.queryByTestId('sel-clear') ?? screen.queryByText('Delete'), 'Delete stays').not.toBeNull()
+  })
+
+  /* THE FRESH READ'S F1 (31 Oct 26): a refused leave of several days opens WHOLE from a day the medical does not hold (D1461),
+     and Approve there decides the whole leave as one line — all or nothing — so one held day makes the whole press refuse.
+     D1544's reading (1): greyed wherever the refused bid's Approve stands — the whole-leave window too. */
+  it('a refused leave of several days opened whole: Approve greyed when a medical holds one of its days, naming it', () => {
+    INPUTS.length = 0
+    const days = ['2026-02-10', '2026-02-11', '2026-02-12']
+    expect(setCellRange(P, days[0]!, days[2]!, 'LL').written).toBe(3)
+    setBidStates(days.map(date => ({ personId: P, date })), 'refused')
+    fileAbsence(P, 'OML', days[1]!)
+    render(<Matrix />)
+    fireEvent.click(cell(days[0]!))
+    const s = within(sheet())
+    expect(s.getByTestId('scope-all').getAttribute('aria-pressed'), 'the whole leave is what the window acts on').toBe('true')
+    const ap = s.getByTestId('decide-approve') as HTMLButtonElement
+    expect(ap.disabled).toBe(true)
+    expect(ap.title).toBe('OML holds 11 Feb, so the bid can\u2019t be approved')
+    /* …and the day tapped alone, with nothing over it, can still be approved */
+    fireEvent.click(s.getByTestId('scope-day'))
+    expect((s.getByTestId('decide-approve') as HTMLButtonElement).disabled).toBe(false)
   })
 
   it('a refused bid with nothing over it keeps Approve pressable', () => {

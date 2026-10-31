@@ -325,7 +325,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
       if (c.wayOut === 'war' && c.iid && openInputWindow(c.iid)) return
       if (c.wayOut === 'bid') {
         if (c.war && c.war !== period.id) selectWar(c.war)
-        askApprRing({ personId: c.person, date: c.date })
+        askApprRing({ personId: c.person, date: c.date, code: c.bidCode })
         askLw({ kind: 'grid' })
         setApprMode('page')
         return

@@ -76,7 +76,7 @@ const apprState = () => P.evaluate(() => {
   const up = !!pg && !pg.hidden && pg.getBoundingClientRect().height > 0
   return { up, ringed: up ? [...pg.querySelectorAll('.appr-line.lw-ring')].map(e => e.dataset.testid) : [], ringInView: up ? [...pg.querySelectorAll('.appr-line.lw-ring')].some(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight }) : false }
 })
-const linkWords = n => JSON.stringify(n.links || n.rows || [])
+const linkWords = n => JSON.stringify(n.links || n.rows || []).replace(/ /g, ' ')   /* the app writes a no-break space before its › */
 async function closeAll() {
   await L.closeWin(w)
   for (const id of ['dl-close']) if (await L.vis(P, L.T(id))) await L.press(w, L.T(id))

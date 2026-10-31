@@ -426,9 +426,13 @@ export function BidPicker({
   }
   const held = heldAny && covers(portion) ? heldAny : null
   /* APPROVE ON A BID WHOSE TIME A MEDICAL OR LEAVE NOW HOLDS (his D1544): greyed and not pressable, its title the war's own
-     refusal naming the holder ("OML holds 11 Nov, so the bid can't be approved"); Refuse and Delete stay. The one day only —
-     on "All" or a range Approve decides many days and each refusal is said on the press. */
-  const approveHeld = !span && !whole && heldAny ? bidHeldWhy(personId, date, heldAny.rec.id) : null
+     refusal naming the holder ("OML holds 11 Nov, so the bid can't be approved"); Refuse and Delete stay. On "All" the whole
+     leave is ONE line that is decided all or nothing (`decideRequests`), so one held day greys it too, named by its first held
+     day (the fresh read's F1, 31 Oct 26); "the day tapped" asks only that day. A range picked decides each day for itself and
+     says each refusal on the press, so it is never greyed. */
+  const approveHeld = span ? null
+    : whole ? (whole.kind === 'request' ? whole.parts.map(p => (p.recId ? bidHeldWhy(personId, p.date, p.recId) : null)).find(Boolean) ?? null : null)
+    : heldAny ? bidHeldWhy(personId, date, heldAny.rec.id) : null
   /* the approved leave's own row speaks for the day only while no range widens it (a range's words go with the fill) */
   const leaveRow = !span && !held && !onlyPortion ? approvedRow : null   // never the free half's (the fresh read's R1)
   const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
