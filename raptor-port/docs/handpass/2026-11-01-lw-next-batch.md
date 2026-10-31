@@ -179,7 +179,7 @@ line's code was not touched by the fixes (not re-walked).
 On his PC: the Leave War, state and undo unit tests — 309 files, 5224 passed (20 skipped), after the read's fixes; the build
 clean; the three pinned browser tests 6 / 6 (the runner's date at 20 Dec 26), twice; the code check — no new finding.
 GitHub's run (the full check, D1086): green on `7c0103e17` and `b88727483` (every unit share, the browser checks at desktop and
-phone, the Tracker's, the code check); the run of the last pushed commit: (below, in the closing).
+phone, the Tracker's, the code check), and **green on `60cadd687`, the last commit carrying code** (the fixes of both reads) — every share, seen 2 Nov 26.
 
 ## The closing
 `Walk: docs/handpass/2026-11-01-lw-next-batch.md · 88 pictures · 7 surfaces (the bid window — desktop, iPhone Chromium and WebKit; a member’s window; the document viewer; Approvals; the posting sheet; the drag window; the top bar’s Undo / Redo) · 17 orders · MISSING: 2 fixed (the designer's F1 — the same day's two halves; the read's finding 1 — a block move's Undo, red first, re-walked as DP10)`
