@@ -90,7 +90,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [LW-DELETED-REDO-NETSUM] — for a deleted man, one war step that approves a day his late posting refuses AND sends back another approved day of his adds nothing overall, so its Redo is let through; no screen sends that pair in one step (older; found 31 Oct 26 by a security read).
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -112,10 +111,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
-- [LW-HELDHALF-WORDS] — the free half's line for a commitment (D1371) prints no "till <date>" and no documents, where the day's list and (since [LW-HELD-DAY-ADD]) the held day's lines do; small, the Leave War's next batch.
-- [LW-DELETE-POSTING-RESTORE] — before a Delete posting runs, Redo can put back an approval the live Approve refuses from its date (D1541's one kept refusal).
 - [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); the bell line drawn for him before it is built.
-- [E2E-POSTING-DATES-PIN] — from 12 Dec 26 three Leave War browser tests of a posting out skip themselves (they date the posting 20 days on, inside the 2026 demo war): pin their clock first.
+- [LW-DELETE-POSTING-MOVE-ASK] — a question for him: should a Delete posting's date bar a Move of his approved leave onto days from it, as it bars approving it (D1545)? Recommended no, as built.
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
@@ -313,14 +310,17 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 ### [POSTOUT-RUN-NOTICE] A posting out runs on its date with nobody told (his direction, 31 Oct 26 — D1546)
 **What:** today a posting out runs silently on its date (`leavewar/sync.ts runPoOutcomes` — archived and suspended, deleted, made SANS or transferred), the schedulers told only when it is held back (D306). His direction: never gone silently. **ANSWERED 31 Oct 26 — A (D1547):** it runs on its date and the bells are told; the bell line is drawn for him on the real app before it is built; his idea of an "auto / manual" choice at the Post out sheet was answered with the agent's recommendation (none). **The choice that was put:** (A, recommended) it runs on its date as today and each admin's bell gets one line — "Posting out · Drifter · Mon 14 Nov · archived, account suspended", the outcome's own words, a tap opening his row on Admin → Users; or (B) on its date it waits, his row reading "posting out due", until a scheduler presses Accept — and until then he stays on the roster and the manning. A keeps the date he set as the one decision and never leaves a man half posted out; B adds a step every time and a forgotten Accept keeps a man on the books. **Ripples:** the bell's lines (`state/notices.ts`), the notifications register (P14), the Delete posting's own two taps (D287, D1102) — a Delete may want B even if the rest take A. **Place:** with the people-and-accounts work's next batch (D490), his answer first.
 
-### [E2E-POSTING-DATES-PIN] Three Leave War browser tests of a posting out skip themselves from 12 Dec 26 (found 31 Oct 26, the Leave War fixes' narrow read of the fix rounds, its 3)
-**What:** `e2e/leavewar.spec.ts` — "one-day window, 'Approve what I enter' on a day after his posting-out date … (R3b)", the "kept pending" note said once (R3c-2) and D1541's Overseas case — date the posting 20 days from the real today (a posting still to run, so the man is not deleted under the test — the browser tests run on the real date) and `test.skip` when that date leaves 2026, the demo war's year. From 12 Dec 26 they skip: the on-screen "kept pending — He posts out on …" refusal and the no-stale-note check lose their browser cover while GitHub's run stays green. **Fix:** pin the browser clock in those tests (Playwright's `page.clock.setFixedTime`, set before the app loads) and use fixed 2026 dates — the walk scripts already hold the clock (`scripts/handpass/lw-rr-lib.mjs` T0). **Place:** before 12 Dec 26, with the Leave War's next batch. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` §The reads.
-
-### [LW-HELDHALF-WORDS] The free half's line for a commitment prints no "till" and no documents (found 1 Nov 26, the narrow read of [LW-HELD-DAY-ADD]'s fixes)
-**What happens:** a day whose morning holds an Other (or any commitment) under Unavailable opens the bid window on the afternoon with one line for the morning (D1371); that line prints the Other's typed words only — no "till <date>" (D948) and no document chips (D1150) — where the day's list printed both and, since [LW-HELD-DAY-ADD] (D1548), the held day's lines do. **Cause:** `raptor-port/src/leavewar/ui/Matrix.tsx` `heldCommitment` reads `remarksTyped`, not `remarksShown`, and carries no documents; `ui/BidPicker.tsx` draws `heldOther` without chips. **To do:** build it as `heldLine` does (one body for both lines), red first. Already on the live app before this job; not a fault of it. **Place:** small, with the Leave War's next batch (D490). **Evidence:** `raptor-port/docs/handpass/2026-11-01-lw-held-day.md` §The code read.
-
-### [LW-DELETE-POSTING-RESTORE] Before a Delete posting has run, Redo can put back an approval the live Approve refuses from its date (found 31 Oct 26, the Leave War fixes' fresh code read, its point 1)
-**What happens:** his D1541 lets the posting date refuse no leave, but a posting out with the Delete outcome keeps its refusal from its date (the agent's reading 1 of D1541 — he leaves flying for good, D287). Approve refuses those days (`sync.ts postingOutWhy`: "He posts out on …: refuse or delete it"); Undo / Redo do not, until the posting has run and deleted him: `state/person-delete.ts deletedRestoreProblem` asks only of a man already deleted (`refusedFrom` is null before). So: approve a day after the date, Undo, set a Delete posting dated before that day, Redo — the approval and its war-approved leave come back where the live Approve refuses them. **What is left of `[LW-POSTED-OUT-RESTORE]`** (its other postings were closed by D1541, which refuses nothing for them). **The scenario:** the 13 tests of the reverted 057ca75ab (the restore refusal for a posting), re-run with the Delete outcome. **Place:** low, with the Leave War's next batch (D490) — — D1541's reading 1 confirmed by his D1545 (31 Oct 26), so this is to build. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` §The reads.
+### [LW-DELETE-POSTING-MOVE-ASK] A question: should a Delete posting's date bar a Move of his approved leave too? (found 1 Nov 26, the next batch's scenario designer, S20)
+**What happens:** his D1545 refuses APPROVING the leave of a man whose posting out has the Delete outcome, from the posting's
+date — Approve, Approve all, the bid windows and Auto-approve. The bid window's Move (and the drag window's) still carries his
+leave approved earlier onto days from that date: walked 1 Nov 26 (`raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`
+DP6-live, DP10 — 6 Nov moved to 10 Nov over a posting dated 9 Nov, it lands). The same holds for a man already deleted
+([LW-DELETED-RESTORE-OVERREFUSE], built on the live Move going through). Undo and Redo agree with the live Move today.
+**The question for him (D994 — when he next looks at the Leave War):** should a Delete posting's date also refuse a Move of
+his approved leave onto days from it? **Recommended: no, leave as built** — the leave was approved before the posting; a move
+changes its days, not whether it was approved, and he can still delete it. If yes: `leavewar/sync.ts doorMoveApproved` and
+`moveRecordsProblem` ask `postingOutWhy` for each landing day, the restore refusal's Redo of a move follows, and the walk's
+DP6 / DP10 change their expected lines. **Place:** a question, nothing waits on it.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
@@ -470,21 +470,6 @@ pass join it unjudged and put nothing back. No production `seed` or `remote` com
 **The reader's fix:** key the wait on `parent.actor?.role === 'system'`, so the two agree; a test with a system-actor parent
 of another origin. **Place:** before the first `seed` or `remote` command is written (the database step); not built now.
 Source: `raptor-port/docs/handpass/parts/lw-rr1031/read-opus.md`.
-
-### [LW-DELETED-REDO-NETSUM] A deleted man's Redo: one war step approving a refused day and sending back another is let through (found 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`, 4)
-
-**What happens:** Ranger has approved LL on 10 Jul and a pending LL on 13 Jul; ONE war step approves 13 Jul and sends 10 Jul
-back (`decideRequests` with both lines); Undo; a Delete posting dated 12 Jul runs late (15 Jul), so his 13 Jul is refused
-live; Redo puts the approval of 13 Jul back. **Cause:** `state/person-delete.ts deletedRestoreProblem` counts a war step's
-war-approved days as a net sum (overall, and from the first refused day): +1 on 13 Jul and −1 on 10 Jul sum to nothing. The
-code before the second fix round summed the same way (older). **Reach:** no screen sends an approval and a send-back in one
-step — Approvals, Approve all, the bid windows and the day's list each decide one way at a time — so it is reached only by
-calling the writer directly. **The test:** `raptor-port/src/leavewar/deletednorow.test.ts`, "one war step approving his
-refused 13 Jul and sending back his 10 Jul …", marked `it.fails` while the fault stands (it goes red the day it is fixed).
-**Why filed, not fixed:** the likely fix — for a war step's Redo, also refuse when it takes a request of his off a day from
-the first refused day and writes his war-approved leave there (the Undo's request test, with its day) — must first be
-checked against every war writer so it never refuses a move the live door allows (RR-A); not obviously right in a fix
-round. **Place:** with the next Leave War batch; small; nothing waits on it.
 
 ### [LINE-ICONS-ELSEWHERE-ASK] Other lists that may want D1512's edit and cross icons (named 29 Oct 26, D852)
 

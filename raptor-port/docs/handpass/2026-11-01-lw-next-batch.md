@@ -146,11 +146,52 @@ The per-day rule's step (no screen makes it — the item); Approve all and the d
 carried); a Delete posting run late between two Redos (carried — `deletednorow.test.ts` "the posting runs late"); his real
 iPhone (the look card).
 
-## The code read
-(to be written when it returns)
+## The code read (fresh, blind Opus — D790 — report whole in `parts/lw-nb1101/read-opus.md`)
+Handed `b88727483`, this sheet after the walk and the designer's report. **One finding, two notes, all dispositioned:**
+- **Finding 1 (confirmed-new, reached by this change):** the Undo of ONE move carrying his approved leave AND his pending bid
+  (the drag window's Move over the two days) was refused once his Delete posting was set — the Undo branch judged a request
+  "taken off" one record at a time, so the bid leaving the day it had landed on read as taken, beside approved leave written
+  back; the live Move refuses no posting day. **Reproduced on screen first** on the build before the fix (`r1-before/`, DP10:
+  "Can’t undo that — Drifter posts out on 9 Nov…"), red first in `deleteposting-restore.test.ts` (2 cases), **fixed**
+  (`fcae6c072` — both directions read "taken" over the whole step, `takenDays`), re-walked green (`rewalk-desk/dp10-*`). A
+  deleted man's twin could not be made: after a posting runs late the Undo of a step before it meets the run's own "a later
+  change touches the same thing" first.
+- **Note A (a refused-for-now step blocks the older ones):** consistent with the app's other refusals asked fresh (a medical
+  filed since, the roster's); the step can pass again once the posting changes, unlike a deleted man's (passed over for
+  good). Kept as built — the agent's technical call.
+- **Note B (the pinned clock read the machine's zone):** fixed — the pin is noon in Greenwich (4 Nov in every zone from UTC−11
+  to UTC+11); the three tests re-run with the runner's date at 20 Dec 26: 6 of 6 passed.
+- **Tidiness:** the stale comment above `heldCommitment` fixed; the two duplicate filters became one (`takenDays`);
+  `postingRestoreWhy` working out the date again — left (one cheap line, its words stay the live door's).
+
+**The narrow read of the fixes** (§5 "a fix is new code" — fresh Opus, handed only `b88727483` and `fcae6c072` and the findings;
+report whole in `parts/lw-nb1101/read-fix.md`): **0 findings**; both fixes right and complete for the doors that exist (a
+send-back and Approve → Refuse mint a new request id, so their Undos stay refused; only a move carries an id). Its three
+missing twins pinned (`60cadd687`): the same-day mixed step's Undo refused, Approve then Refuse's Undo refused, a block move
+carrying its bid back before the date goes — all green as written. Its residual risk named, not a finding: a step that folded
+two images of one cell could hide a request; no war door does. One round; the read cap not reached.
+
+## The re-walk (the fixed build, `fcae6c072`'s bundle — `rewalk-desk/`, `rewalk-phone/`)
+The whole posting script: desk 12 / 12 PASS (DP10 included), phone (WebKit) 11 / 11 PASS; DP6-live RECORDED both. The held
+line's code was not touched by the fixes (not re-walked).
 
 ## Gates
-(to be written)
+On his PC: the Leave War, state and undo unit tests — 309 files, 5224 passed (20 skipped), after the read's fixes; the build
+clean; the three pinned browser tests 6 / 6 (the runner's date at 20 Dec 26), twice; the code check — no new finding.
+GitHub's run (the full check, D1086): green on `7c0103e17` and `b88727483` (every unit share, the browser checks at desktop and
+phone, the Tracker's, the code check); the run of the last pushed commit: (below, in the closing).
+
+## The closing
+`Walk: docs/handpass/2026-11-01-lw-next-batch.md · 88 pictures · 7 surfaces (the bid window — desktop, iPhone Chromium and WebKit; a member’s window; the document viewer; Approvals; the posting sheet; the drag window; the top bar’s Undo / Redo) · 17 orders · MISSING: 2 fixed (the designer's F1 — the same day's two halves; the read's finding 1 — a block move's Undo, red first, re-walked as DP10)`
+`Docs: OUTSTANDING 149 items (+2 −4, −4 all in ARCHIVE) · DECISIONS D1–D1554 (new: D1554) · homes OK`
+`docsize: OK`
+
+The non-substitution checklist (§12): the tier written; the rulings swept, none in conflict; the roll-call with no blank; the
+production build driven at both widths (desktop at his PC's 1536 at 1.25, an iPhone in WebKit and Chromium); the fixtures made
+through the app's own controls (the Inputs page's form, the bid window, Approvals, the posting sheet, the drag window); every
+surface seen and operated; the orders walked or carried by a named test; the leave written or not, read from the saved
+Inputs; one red per wire; the gates green; the reads reconciled; this sheet with its pictures and what was not walked; **his
+look still to come.**
 
 ## His look card
 1. Tap a day whose morning holds an Other filed under Unavailable over two days with a document: the line under PM reads
