@@ -15,44 +15,16 @@
 //     that do not overlap are allowed).
 // Everything that decides what the combination MEANS is `engine/dayview.ts`.
 
-import { INPUTS, dateOrd, inpType, inpWin, inputLines, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
-import { PEOPLE } from '../engine/people'
-import type { Input, Person as RaptorPerson } from '../engine/schema'
+import { dateOrd, inpType, inpWin, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
 import { addDays } from './engine'
 import { AM, PM, FULL, type Contrib, type Win } from './engine/dayview'
 import type { Portion } from './engine'
 
-/* ---- THE SCHEDULE'S RECORDS, TYPED ONCE AT THE WAR'S EDGE -----------------
-   The schedule's live lists (engine/inputs.ts INPUTS, engine/people.ts PEOPLE) are typed `any` by the word-for-word
-   engine. The Leave War reads them HERE as the records they hold, so no body on this side has to guess (D1537). */
+/* the Leave War's typed doorway to the schedule's inputs and roster lives in ./schedrecs (see its head); passed on from
+   here so every import of it stays as it was */
+export { warInputs, warLines, rosterBody, type WarInput, type InputRead } from './schedrecs'
+import type { WarInput, InputRead } from './schedrecs'
 
-/** An Input as the Leave War reads and writes it: the schedule's record (engine/schema.ts `Input`) and the fields kept on
- *  it beyond the schema's list — a till tick of its own (`till`, D953), the war's moved-from marks (`lwMoved`), the placer
- *  of the request it was approved from (`lwBy`, `lwAt` — M4 8.6) and an overseas duty put on the Ground Programme
- *  (`odGround`). Its `type` is the catalogue code as stored, read as words; `mod` and `allday` are absent on a row this
- *  layer has just built without them, and on a thin stored one. */
-export type WarInput = Omit<Input, 'type' | 'mod' | 'allday'> & {
-  type: string
-  mod?: string
-  allday?: boolean
-  till?: boolean
-  lwMoved?: Record<string, string>
-  lwBy?: string
-  lwAt?: number
-  odGround?: boolean
-}
-/** WHAT THE READERS BELOW ASK OF A ROW — any of an Input's fields, each of any kind: they read rows of every age (a seed
- *  literal, a stored record, a restore's after-image, a test's own row) and ask of each field only what it holds. */
-export type InputRead = { readonly [K in keyof WarInput]?: unknown }
-
-/** The schedule's inputs — the live list itself, never a copy: a push, a splice or a field written through it is written
- *  to the list. Read at every call, so a list put in its place is the one read. */
-export const warInputs = (): WarInput[] => INPUTS
-/** One line a named person of each input — the input's fields with `person` his id (engine/inputs.ts inputLines, frozen):
- *  of the live inputs, or of a list handed in. */
-export const warLines = (list?: readonly InputRead[]): readonly WarInput[] => inputLines(list)
-/** A person of the schedule's roster by his id (engine/schema.ts `Person`) — undefined for an id it does not hold. */
-export const rosterBody = (id: string): RaptorPerson | undefined => PEOPLE[id]
 
 /* 'Feb 11' -> '2026-02-11', through dateOrd so the two directions cannot
    disagree about what a label means. Null for anything unreadable. `yr` is

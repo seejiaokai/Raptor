@@ -1,0 +1,27 @@
+[
+ {
+  "id": "R3d-4 F1 / D1544 a refused leave opened whole, a medical on one of its days: Approve greyed, naming that day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"scopeAll\":\"true\",\"scopeText\":\"All 3 days\",\"approve\":{\"disabled\":true,\"title\":\"OML holds 19 Nov, so the bid can’t be approved\",\"opacity\":\"0.45\"}}",
+  "pics": [
+   "r3d-desk-4-window-all"
+  ]
+ },
+ {
+  "id": "R3d-5 the day tapped alone, nothing over it: Approve offered",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"disabled\":false,\"title\":\"\"}",
+  "pics": [
+   "r3d-desk-5-window-day"
+  ]
+ },
+ {
+  "id": "R3D a refused leave of several days, a medical on its middle day",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "who: Ranger (bane), 2026-11-18…2026-11-20 (18 Nov–20 Nov) || 1 three pending LL placed, refused as one line: {\"placed\":[true,true,true],\"lineIndex\":5,\"pressed\":true,\"lines\":[{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Wed 18 – Fri 20 Nov › 4 Nov 09:00 · by Saber Approve Refused\",\"lit\":\"refused\",\"why\":null,\"buttons\":[\"appr-dates:Wed 18 – Fri 20 Nov ›\",\"appr-approve:Approve\",\"appr-refuse:Refused\"]}]} || 2 the member filed OML on the middle day: {\"options\":\"LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other\",\"chose\":\"OML\",\"dateButton\":\"dcal-d is-sel|true\",\"saidAfterSave\":[],\"formStillOpen\":false,\"dayWindowStayedOpenAfterAdd\":true} || 3 his cells: {\"d4\":\"LL:s-r\",\"d5\":\"OML:s-a,LL:s-r\",\"d6\":\"LL:s-r\"} || errors: none",
+  "pics": []
+ }
+]

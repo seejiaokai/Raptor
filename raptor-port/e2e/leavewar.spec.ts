@@ -7625,16 +7625,30 @@ test('with "Pick dates…" open, a tap on the empty card beside or under the cal
    window gave way to the day's list at once and the reason it was kept pending ("He posts out on …: refuse or delete it")
    was never seen (lesson 3 of the order's §7.11: what tells the person it happened). The real route, as the walker took it:
    the posted-out day's "Place leave or OIL here instead…", the tick on, LL. */
+/* HIS D1541 (31 Oct 26): a posting out as Overseas Sqn refuses no leave any more — only a posting with the Delete outcome keeps
+   its refusal from its date (the agent's reading 1, put to him). So the route is the same, the posting a Delete one, dated
+   20 days from today so it is still to run (the man is not deleted under the test; the browser tests run on the real date). */
+const isoIn = (n: number) => { const d = new Date(); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+const MONTH_BTN = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+const dmOf = (iso: string) => `${+iso.slice(8, 10)} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+iso.slice(5, 7) - 1]}`
+async function postOutThenPlace(page: Page, outcome: 'delete' | 'overseas', poDate: string) {
+  await page.locator(`[data-testid="month-${MONTH_BTN[+poDate.slice(5, 7) - 1]}"]`).click()
+  await page.locator(`[data-testid="cell-slipway-${poDate}"]`).click()
+  await pressMore(page, 'bid-postout')
+  await page.locator(`[data-testid="po-${outcome}"]`).click()
+  await page.locator('[data-testid="po-confirm"]').click()
+  if (outcome === 'delete') await page.locator('[data-testid="po-confirm"]').click()   // a Delete asks twice (D287)
+  await expect(page.locator(`[data-testid="cell-slipway-${poDate}"]`)).toHaveClass(/gone/)
+  const next = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10) + 1)
+  const day = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`
+  await page.locator(`[data-testid="cell-slipway-${day}"]`).click()
+}
 test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  await page.locator('[data-testid="month-JUN"]').click()
-  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
-  await pressMore(page, 'bid-postout')
-  await page.locator('[data-testid="po-overseas"]').click()          // off the manpower, nothing else: he stays on the grid
-  await page.locator('[data-testid="po-confirm"]').click()
-  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
-  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  const po = isoIn(20)
+  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await postOutThenPlace(page, 'delete', po)
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
   await expect(tick).toBeVisible()
@@ -7642,9 +7656,26 @@ test('one-day window, "Approve what I enter" on a day after his posting-out date
   await page.getByTestId('bid-LL').click()
   /* his balance may go below zero: the same leave again goes ahead (the window's own ask) */
   if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
-  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), 'the reason stands where he looks after the press').toBeVisible()
+  const said = new RegExp(`kept pending — He posts out on ${dmOf(po)}: refuse or delete it`)
+  await expect(page.getByText(said), 'the reason stands where he looks after the press').toBeVisible()
   await page.waitForTimeout(500)
-  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun: refuse or delete it/), '…and stays, settled').toBeVisible()
+  await expect(page.getByText(said), '…and stays, settled').toBeVisible()
+})
+
+/* …AND D1541'S OWN CASE: an Overseas posting refuses nothing — the leave placed on a day after it, Auto-approve on, lands
+   approved, and no "kept pending" note is raised */
+test('one-day window, "Approve what I enter" after an Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)', async ({ page }) => {
+  await lwRole(page, 'admin')
+  if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
+  await postOutThenPlace(page, 'overseas', '2026-06-15')
+  await page.locator('[data-testid="postout-place"]').click()
+  const tick = page.getByTestId('bid-approve-tick')
+  await expect(tick).toBeVisible()
+  if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
+  await page.getByTestId('bid-LL').click()
+  if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
+  await expect(page.locator('[data-testid="cell-slipway-2026-06-16"] .c.s-a'), 'his LL approved on the day after the posting').toBeVisible()
+  await expect(page.getByText(/kept pending/), 'nothing kept pending').toHaveCount(0)
 })
 
 /* THE FIXES' ROUND 3c, R3c-2 (the third blind read's 3): round 3b's "kept pending" note was kept by CELL until another cell
@@ -7657,24 +7688,21 @@ test('one-day window, "Approve what I enter" on a day after his posting-out date
 test('the "kept pending" note is said once: the same open day’s list, back after a Delete, shows no stale note (R3c-2)', async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  await page.locator('[data-testid="month-JUN"]').click()
-  await page.locator('[data-testid="cell-slipway-2026-06-15"]').click()
-  await pressMore(page, 'bid-postout')
-  await page.locator('[data-testid="po-overseas"]').click()
-  await page.locator('[data-testid="po-confirm"]').click()
-  await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
-  await page.locator('[data-testid="cell-slipway-2026-06-16"]').click()
+  const po = isoIn(20)
+  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await postOutThenPlace(page, 'delete', po)                    // D1541: a Delete posting is the one that still refuses
+  const day = isoIn(21)
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
   await expect(tick).toBeVisible()
   if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
   await page.getByTestId('bid-LL').click()
   if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
-  await expect(page.getByText(/kept pending — He post(s|ed) out on 15 Jun/), 'said once, after the press (R3b)').toBeVisible()
+  await expect(page.getByText(new RegExp(`kept pending — He posts out on ${dmOf(po)}`)), 'said once, after the press (R3b)').toBeVisible()
   /* the list's own Delete: the bid goes, the same day stays open, on its window again */
   await page.locator('[data-testid^="dl-clear-"]').first().click()
   await expect(page.getByTestId('bid-approve-tick')).toBeVisible()
-  await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-06-16', 'OL'))      // a bid arriving from elsewhere
+  await page.evaluate(d => (window as any).lwSetCell('slipway', d, 'OL'), day)      // a bid arriving from elsewhere
   await expect(page.getByTestId('daylist'), 'the day’s list again, the OL pending').toBeVisible()
   await page.waitForTimeout(300)
   await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
