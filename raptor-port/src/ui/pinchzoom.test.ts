@@ -251,6 +251,28 @@ describe('pinch to zoom', () => {
     expect([band.style.transform, band.style.transformOrigin, band.style.clipPath, corner.style.transform]).toEqual(['', '', '', ''])
     t.off(); band.remove(); corner.remove()
   })
+  /* [LW-PINCH-IN-CORNER] (the pinch walk, 30 Oct 26): part-way down the Leave War, a pinch in grew the date row and its
+     corner down while the names' frozen copy was clipped at the date row's OLD foot, so its rows were drawn over the
+     corner's lower part until the lift. The floor given as a row (top 0, foot 40) follows that row's foot as it is
+     drawn: held at its top on a pinch in, carried down with the picture on a pinch out, and grown by the stretch. */
+  it('a floor that is a row’s foot follows the row as it stretches: held at its top and grown on a pinch in, carried down on a pinch out ([LW-PINCH-IN-CORNER])', () => {
+    const band = document.createElement('div'); document.body.appendChild(band)
+    const t = setup({ alsoY: () => [band, null], floor: () => ({ top: 0, foot: 40 }) })
+    /* a pinch IN to 1.5, slid 20 down: the picture would carry the row's top to −30, so it is held at 0, and its foot is
+       0 + 1.5 × 40 = 60 — the band's own line 100 + ((60 − 20) − 100) / 1.5 is drawn there */
+    pinchSliding(t.surface)
+    expect(band.style.clipPath).toBe(`inset(${100 + ((60 - 20) - 100) / 1.5}px 0px 0px 0px)`)
+    fire(t.surface, 'touchend', [])
+    expect(band.style.clipPath).toBe('')
+    /* a pinch OUT to half, slid 20 down: the row's top is carried to 100 + 0.5 × (0 − 100) + 20 = 70 and its foot to
+       70 + 0.5 × 40 = 90 — the band's line 100 + ((90 − 20) − 100) / 0.5 */
+    fire(t.surface, 'touchstart', [[100, 100]])
+    fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+    fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+    expect(band.style.clipPath).toBe(`inset(${100 + ((90 - 20) - 100) / 0.5}px 0px 0px 0px)`)
+    fire(t.surface, 'touchend', [])
+    t.off(); band.remove()
+  })
   it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
     let calls = 0
     const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did

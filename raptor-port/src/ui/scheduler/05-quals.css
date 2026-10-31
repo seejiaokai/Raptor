@@ -99,6 +99,12 @@
 .qfixed .qtbl.qfixed-anim{animation:qx-follow linear both;animation-timeline:--qx;will-change:transform;
   -webkit-backface-visibility:hidden;backface-visibility:hidden}
 .qfixed-frozen{position:absolute;top:0;left:0;bottom:0;overflow:clip;z-index:2;background:var(--panel-2)}
+/* WHILE THE FINGERS PINCH (QualsPage wirePinch, D1110 — [QUALS-PINCH-MID], 30 Oct 26; the Leave War's `.mxfixed.lw-pinching`):
+   the pinned row's contents stretch with the table from the box's top, so the box clips only sideways and lets them grow
+   down on a pinch in — clipped at its old height, the headings were cut in half until the lift — and on a pinch out it is
+   see-through below the shrunken row, so the rows show under it rather than a strip of the box and its shadow. Only while
+   the fingers are down. */
+.qfixed.q-pinching{overflow-x:clip;overflow-y:visible;background:transparent;box-shadow:none}
 @keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
 /* the mirror table drops the grid's own left margin/min-width — it is sized to
    the measured widths (table-layout:fixed) and positioned by the fixed wrapper */

@@ -1360,7 +1360,14 @@ export function Matrix() {
       alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
       alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
       alsoY: () => [bandRef.current],
-      floor: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().bottom ?? -Infinity,
+      /* the names copy is never drawn above the date row's foot — the foot as the date row is drawn while the fingers move,
+         held at its top and grown on a pinch in, carried down on a pinch out ([LW-PINCH-IN-CORNER], the pinch walk of
+         30 Oct 26: read once, the line stood at the old foot, and part-way down a pinch in drew the names' rows over the
+         lower part of the stretched corner and date row). The pinch works it out from the stretch, never by measuring. */
+      floor: () => {
+        const r = wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect()
+        return r ? { top: r.top, foot: r.bottom } : -Infinity
+      },
       keep: () => [mstickRef.current],
       edges: true,
       /* THE SPOT UNDER THE FINGERS IS A DAY AND A ROW (the walk, 23 Oct 26): across, the date column whose heading

@@ -132,8 +132,13 @@ export type PinchOpts = {
    *  part-way down the page (owner D1288, 23 Oct 26). Never where the zoomed thing sits in a window fixed over the page. */
   scrollPage?: boolean
   /** a screen line nothing of `alsoY` is drawn above while the fingers move — the Leave War's date row's foot, so its
-   *  names copy, growing up on a pinch in, never covers the pinned date row or the month buttons (D1287). Read once. */
-  floor?: () => number
+   *  names copy, growing up on a pinch in, never covers the pinned date row or the month buttons (D1287). Read once.
+   *  Given as `{ top, foot }` — a row INSIDE the zoomed thing held from rising, as a `pin` with `y: 'up'` (the date row) —
+   *  the line is that row's foot as the row is drawn while the fingers move: down with the picture or held at its top
+   *  (`top`, carried by the page's own scroll), and grown by the stretch. Worked out from the stretch, never measured
+   *  per frame (D991): read at the start only, it stood at the row's old foot, and on a pinch in part-way down the names'
+   *  rows were drawn over the lower part of the stretched corner and date row ([LW-PINCH-IN-CORNER], 30 Oct 26). */
+  floor?: () => number | { top: number; foot: number }
   /** where Ctrl+scroll (a desktop's trackpad pinch included) zooms the same way, the stretch laid out once the burst
    *  ends (D1228) — none where it is not given */
   wheel?: HTMLElement
@@ -160,6 +165,8 @@ type Live = {
   ins: { el: HTMLElement; o: number; z: number }[]
   tops: { el: HTMLElement; ox: number; top: number }[]
   floor: number
+  /** the top of the row the floor is the foot of (`floor` given as `{ top, foot }`), NaN for a fixed line */
+  floorTop: number
   /** the zoomed thing sits in a window fixed over the page (the OIL tab): the page behind it never scrolls for it */
   fixed: boolean
   /** a Ctrl+scroll burst, not two fingers */
@@ -253,13 +260,17 @@ export function wirePinch(opts: PinchOpts): () => void {
       const ty = c.y === 'up' ? Math.max(0, wantY) : wantY
       c.el.style.translate = `${tx}px ${ty}px`
     }
+    /* the floor, where it is a row's foot: the row's top goes where a cell held from rising goes — the picture's place
+       S + k(T − S) + d, or its own top carried by the page's scroll, whichever is lower — and the row is k times as tall */
+    const floor = Number.isNaN(live.floorTop) ? live.floor
+      : Math.max(live.sy + live.k * (live.floorTop - live.sy) + dy, live.floorTop + S) + live.k * (live.floor - live.floorTop)
     /* a box pinned to the left edge: stretched about the fingers' height only, from its own left — and, with a floor,
        never drawn above it (a clip in its own units, worked back through its stretch) */
     for (const a of live.ys) {
       a.el.style.transformOrigin = `0px ${a.oy}px`
       a.el.style.transform = `translate(0px, ${dyp / a.s}px) scale(${live.k})`
-      if (live.floor > -Infinity) {
-        const cut = a.oy + ((live.floor - dyp - a.top) / a.s - a.oy) / live.k
+      if (floor > -Infinity) {
+        const cut = a.oy + ((floor - dyp - a.top) / a.s - a.oy) / live.k
         a.el.style.clipPath = cut > 0 ? `inset(${cut}px 0px 0px 0px)` : ''
       }
     }
@@ -362,7 +373,9 @@ export function wirePinch(opts: PinchOpts): () => void {
     for (let n: HTMLElement | null = t; n && n !== document.body; n = n.parentElement) {
       if (getComputedStyle(n).position === 'fixed') { fixed = true; break }
     }
-    const floor = opts.floor ? opts.floor() : -Infinity
+    const fl = opts.floor ? opts.floor() : -Infinity
+    const floor = typeof fl === 'number' ? fl : fl.foot
+    const floorTop = typeof fl === 'number' ? NaN : fl.top
     let edge: Live['edge'] = null
     if (opts.edges) {
       const winRoom = fixed ? 0 : window.scrollY || 0
@@ -384,7 +397,7 @@ export function wirePinch(opts: PinchOpts): () => void {
       const keepH = keep.reduce((a, c) => { const q = c.el.getBoundingClientRect(); return q.bottom <= p.y ? a + q.height : a }, 0)
       edge = { top: r.top, left: r.left, roomX, roomY, keepH, bottom: r.bottom, minBottom, right: r.right, minRight, winRoom, y0: window.scrollY || 0 }
     }
-    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, pin, ys, tl, ins, tops, floor, fixed, wheel, edge, lo }
+    live = { z0, d0: Math.max(1, p.d), sx: p.x, sy: p.y, cx: p.x, cy: p.y, k: 1, anchor, anchorY, fx, fy, ox: (p.x - r.left) / z0, oy: (p.y - r.top) / z0, spacer: holdWidth(t), also, xy, keep, pin, ys, tl, ins, tops, floor, floorTop, fixed, wheel, edge, lo }
     t.style.willChange = 'transform'
     /* a finger that landed off the surface lifts off it too: its touchend goes there, so the pinch listens on the page
        until it ends (the code read's finding 6) */

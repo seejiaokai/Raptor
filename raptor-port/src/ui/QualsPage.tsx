@@ -675,14 +675,44 @@ export function QualsPage() {
         cancelColDrag.current?.()
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = 'paused'
+        document.querySelector('#page-quals .qfixed')?.classList.add('q-pinching')
       },
       onEnd: () => {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = ''
+        document.querySelector('#page-quals .qfixed')?.classList.remove('q-pinching')
       },
-      /* the pinned heading row's CONTENTS stretch with the table while the fingers move (the code read's finding 7), not
-         its box: the box keeps the table's edges and clips them, as the table's own box does (the fix round's finding 2) */
-      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll, #page-quals .qfixed > .qfixed-frozen')],
+      /* THE HEADING ROW AND THE NAME COLUMN STAY PINNED AND LINED UP WHILE THE FINGERS MOVE (D1110; [QUALS-PINCH-MID], the
+         pinch walk of 30 Oct 26 — part-way down, a pinch out opened an empty band between the pinned heading row and the
+         shrinking table, and a pinch in carried the name column off the left edge with the stretched picture, both until
+         the lift). The Leave War's answer to the same two (D1287, D1288), the app's one pinch body:
+         · the page scrolls with the pinch as far as the lift's scroll would take it, so the table's top and the bars above
+           it move together and no band opens (`scrollPage`, which rides `edges`: the picture never floats down or right
+           of where the lift's scroll can bring it back);
+         · the name cells are held at the table's left edge, growing and shrinking about it; the heading row's cells
+           follow the rows down but never rise over the bars above them, its name heading held at the left (`pin`);
+         · the pinned heading row's copy under the top bar: its days stretch with the table (`also` — the code read's
+           finding 7: its box keeps the table's edges and clips them sideways, the fix round's finding 2), its still copy of
+           the name heading grows from its own corner, held at the left (`alsoTL`); while the fingers are down its box lets
+           them grow down and is see-through under a shrunken row (05-quals.css `.qfixed.q-pinching`). */
+      edges: true,
+      scrollPage: true,
+      pin: () => {
+        const t = tblRef.current
+        if (!t) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean | 'up' }[] = []
+        for (const th of t.querySelectorAll<HTMLElement>(':scope > thead th')) out.push({ el: th, x: th.dataset.sort === 'cs', y: 'up' })
+        for (const td of t.querySelectorAll<HTMLElement>(':scope > tbody td.qname')) out.push({ el: td, x: true, y: false })
+        return out
+      },
+      /* the pinned block's corner: the table's left edge (the wrap's — the name column's place at rest) and the heading
+         row's top */
+      pinAt: () => ({
+        x: wrapRef.current?.getBoundingClientRect().left ?? 0,
+        y: tblRef.current?.tHead?.getBoundingClientRect().top ?? 0,
+      }),
+      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll')],
+      alsoTL: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-frozen')],
     })
   }, [])
 
