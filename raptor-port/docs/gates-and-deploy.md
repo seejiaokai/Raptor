@@ -15,9 +15,51 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
-- **A secrets scan joins the checks (his D1408, 27 Oct 26 — to build, [REVIEW-LAYERS]):** a pull request that adds a
-  password, key or access code to any file does not merge; the whole history is scanned once, and a key found there is
-  changed, not only deleted. The repo is public for now (D106).
+- **A secrets scan joins the checks (his D1408, 27 Oct 26 — built 31 Oct 26 on `claude/secrets-scan-scorecard`, [REVIEW-LAYERS]
+  step 4):** a pull request that adds a password, key or access code to any file does not merge; the whole history is
+  scanned once, and a key found there is changed, not only deleted. The repo is public for now (D106).
+  - **What it is:** `.github/workflows/secrets-scan.yml`, the check `secrets scan`. It runs gitleaks 8.30.1 (MIT
+    licence; the program itself, pinned by version and checksum — not the gitleaks *action*, which wants a paid key for
+    an organisation), on every pull request into `main` and every push to it, with **no path filter**, so a notes-only
+    pull request — which skips `deploy.yml` — is scanned too. It asks only to read the code.
+  - **What it scans:** a pull request's own commits (base..head), each commit's added lines; a push's commits; for both,
+    what landed — each merge against its first parent, so a line only a conflict resolution adds is read too; and the
+    **whole history**, every commit of every branch, on a manual run (Actions → Secrets scan → Run workflow) and by itself
+    whenever a change touches the scan's own files (the workflow, `.gitleaksignore`, `raptor-port/scripts/secrets-scan.mjs`,
+    `raptor-port/scripts/secrets-scan-selftest.mjs`) — so the pull request that brings it ran the one full scan D1408 asks
+    for, and the push that lands it runs it again. Pictures, video and other binary files are left out of the read.
+  - **Red or not:** a finding in the change is red — the merge gate. A finding in the history is red on a manual run; on a
+    pull request or a push it is a warning on the run with every fingerprint in its summary, and does not hold that pull
+    request back (it did not add it). Expect some: the walk logs hold the app's own random record ids, which can read as
+    keys (a forecast against the current files with gitleaks' rule found nine such, all ids or picture names).
+  - **The logs are public**, so every gitleaks run passes `--redact` (the value reads `REDACTED`), none runs verbose or at
+    debug level (that level logs the value itself), the report is never uploaded, and the summary prints only the rule,
+    file, line, commit and fingerprint. **Every scan is one command, `raptor-port/scripts/secrets-scan.mjs`**, which runs
+    gitleaks, prints the summary and decides red or green itself, and is red too if gitleaks could not run, wrote no
+    report or read nothing (0 commits scanned where git shows added lines). **Before every scan a self-test runs that same
+    code** over throwaway repositories holding clearly fake secrets made from pieces at run time: red on the planted commit
+    with both rules and no eight characters of either printed, green on a clean commit, a merge-only fake found by the
+    landed pass, history a warning on a pull request and red on a manual run; `node raptor-port/scripts/secrets-scan-selftest.mjs
+    --self-check` proves it on his PC with stand-in scanners (no gitleaks there) and checks the workflow keeps every promise
+    above. **Trap (fix round 1, 31 Oct 26):** GitHub runs a `run:` step as `bash -e` — `set -uo pipefail` does not switch
+    `-e` off — so a scan run in the shell ended the step at gitleaks' exit 1, before its summary; keep every scan inside the
+    script.
+  - **How to read a red run:** open the run's summary — each finding is a rule, a file, a line, a commit and a
+    fingerprint, never the value. Look at that line **on his PC** (`git show <commit>:<file>`), never in a log, a chat or a
+    pull request. A real password, key or access code: it is **changed at its source first** (a new one issued, the old
+    switched off) — deleting the line is not enough, because the history is public and keeps the old one (D1408) — his to
+    do, put to him; only then does its fingerprint go in `.gitleaksignore`. Not a secret (an example, a test value, an id
+    that looks like a key): its fingerprint goes in `.gitleaksignore` with a comment saying what it is, who judged it and
+    when. Changing that file makes the next run scan the whole history again.
+  - **GitHub's own scanning is OFF on this repository** (read 31 Oct 26: secret scanning, push protection, their two
+    extras and Dependabot's security updates all "disabled"), and `main` has **no protection and no rulesets** — so today a
+    red `secrets scan` stops a merge only because nothing merges red (the shipping rules), not because GitHub refuses it.
+    Making it a required check, and switching GitHub's own scanning on, are repository settings — his to approve, never
+    the agent's: the steps are in `OUTSTANDING.md` `[REVIEW-LAYERS]`.
+  - **Traps:** the check's name appears in a ruleset's list only after it has run once; a required check must never be
+    one that a path filter can skip (the `deploy.yml` legs), or a notes-only pull request could never merge. If the repo
+    goes private again, this job runs on GitHub's machines and is billed by the minute (D89 moved only `deploy.yml` to his
+    PC), and a whole-history read downloads about 4.3 GB each time.
 - **The checks run on HIS PC** (D89, 23 Sep 26): ONE job, `pc` in `.github/workflows/deploy.yml`, a Windows service.
   The way back to GitHub's own parallel jobs: the repo variable `CI_ON_GITHUB=true`. Take the runner OFF this repo
   before any collaborator is added (Astra SEC-101, `[REPO-PRIVATE]`). Where it lives and how it was set up:
