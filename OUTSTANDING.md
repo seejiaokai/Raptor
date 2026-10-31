@@ -205,6 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
+- [REACT-DOCTOR-CLEANUP] — the code check's clean-up batch before new feature work: the errors, the missed updates, the whole Tracker (D1534).
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
@@ -236,6 +237,16 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
+**What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the
+app, and every finding in the Tracker (`src/tracker/` — about 150: its core, windows and side panel); then the code check run
+again to show the count falling. New and changed code follows the check's rules from now on; the plan's point 4 (a lint script
+running it, its settings file in `raptor-port/`) is built with it, and the standing rule gets its line in `raptor-port/CLAUDE.md`
+at that build. The other areas' remaining findings ride with each area's next batch (D490). Full bug-check order; anything that
+would change what a person sees is shown to him first (D853). The findings list: the move plan §3
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
+batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
 
 ### [M365-HOSTING-TRIAL] The app on his own M365 with no database — a hosting trial (D1532, 31 Oct 26)
 **What:** at a good stopping point in the Tracker's work (the agent proposes it, he agrees first), the app is put on his own
