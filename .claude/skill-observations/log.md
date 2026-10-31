@@ -2908,3 +2908,33 @@ reset mode disables before reusing it.
 **Suggested improvement:** in the test-writing guidance: when the code under test samples state once a frame, every intermediate position the test means to exist gets at least one frame (advance the fake clock between events).
 
 **Principle:** A test drives the code at the code's own sampling rate; an event the sampler never sees did not happen.
+
+### Observation 754: The app switches Auto-fix on for every new pull request, not once a session
+
+**Status:** OPEN
+**Date:** 31 Oct 26
+**Session context:** the overnight run of 31 Oct 26 (four pull requests, 596–599)
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 2, pull requests
+
+**Issue:** each `gh pr create` was followed by the app switching "Auto-fix pull requests" on for that pull request; it had to be switched off four times (D1090), and one Vercel status comment arrived as a "review comment" event before the switch-off landed.
+
+**Suggested improvement:** the overnight guide's pull-request line: right after opening any pull request, read the app's monitor state and switch Auto-fix off for that pull request, every time; a Vercel bot status comment relayed as a review comment needs no reply.
+
+**Principle:** A standing setting that a tool re-applies per object is enforced per object, at the moment the object is made.
+
+### Observation 755: Walk checks that only read for what must not be drawn pass a blank screen
+
+**Status:** OPEN
+**Date:** 31 Oct 26
+**Session context:** job 4 of the overnight run (the pinch fixes, pull request 599)
+**Skill:** bug-check order (§7.11) / walk scripts
+**Type:** open-source
+**Phase/Area:** the walk's automated checks
+
+**Issue:** twice in one job a scripted check passed a fault the picture showed: first "names never drawn over the corner" passed a names column that was blank mid-pinch; then "no frozen row off its columns" passed a frozen date row that was missing altogether. Both checks asked only that nothing wrong was drawn, never that the right thing was drawn. The host's look at the deciding pictures (D1271) caught both.
+
+**Suggested improvement:** in the walk-script guidance: every check of a clip, a pin or a hide reads both sides — what must not show AND what must show — and a pinch step asserts its own zoom changed.
+
+**Principle:** A check that only forbids can be satisfied by nothing; pair every "must not" with a "must".

@@ -1,0 +1,47 @@
+# The secrets scan's list of findings judged NOT a secret — read by gitleaks in .github/workflows/secrets-scan.yml
+# (his D1408). One fingerprint a line, copied from the red run's summary: commit:file:rule:line (a finding in the
+# history) or file:rule:line (a finding wherever it stands). Never a value — a fingerprint holds none.
+#
+# Before a line goes in, open the file at that commit ON HIS PC (never paste it into a log, a chat or a pull request)
+# and decide:
+#   - a real password, key or access code  → it goes on this list only AFTER it has been changed at its source (a new
+#     key issued, the old one switched off), because the repository is public and the history keeps the old one
+#     whatever is deleted (D1408: "a key found in the history is changed, not only deleted"); his to do, put to him;
+#   - not a secret (a made-up example, a test value, a word that only looks like a key) → the line goes in, with a
+#     comment above it saying what it is and who judged it, and the date.
+# Changing this file makes the next run scan the whole history again.
+
+# --- The first whole-history scan (pull request 598, run of 31 Oct 26): 20 findings, 10 lines each found twice (as
+# committed, and as landed on main by its merge). All in walk logs and evidence files; each line opened on his PC and
+# judged NOT a secret by the agent, 31 Oct 26 — he may check any (the evidence note 2026-10-31-secrets-scorecard.md).
+
+# a walk's picture file names ("…-anarrowkey" read as a key name).
+b31a10e54f43ae2c5972e3cd93b68a96b27c1b7d:raptor-port/docs/img/handpass/2026-10-25-lw-night/w1/w1-a-desk.json:generic-api-key:58
+b31a10e54f43ae2c5972e3cd93b68a96b27c1b7d:raptor-port/docs/handpass/parts/lw-night/w1.md:generic-api-key:26
+169d5d8aa8ec7d3b768da96a0d092805f2ad19e3:raptor-port/docs/handpass/parts/lw-night/w1.md:generic-api-key:26
+169d5d8aa8ec7d3b768da96a0d092805f2ad19e3:raptor-port/docs/img/handpass/2026-10-25-lw-night/w1/w1-a-desk.json:generic-api-key:58
+
+# a walk log: the app's own input record id.
+1a806aa0b6acc42668d9210a29e4e84b07bc1083:raptor-port/docs/handpass/parts/b2-host-walk.txt:generic-api-key:29
+6e1cbfd4350c5c463901107d6fc582d10dede35d:raptor-port/docs/handpass/parts/dbrA-W4-oldread.json:generic-api-key:1
+8d8caff6e374b31336dd01118f30e0d89dcaf928:raptor-port/docs/handpass/parts/b2-host-walk.txt:generic-api-key:29
+7612b19d8a5ec263821231ce2e235fc237c29e5a:raptor-port/docs/handpass/parts/dbrA-W4-oldread.json:generic-api-key:1
+
+# a walk's evidence index: the "sha256" field of a file entry — 64 capital hex characters, the shape of a checksum (one of
+# the index's 913); the rule for Square access tokens read it as one. A Square token is not hex.
+8d6ffffe2d8864d0fdc0c257ce46075a5e7a065d:raptor-port/docs/handpass/2026-10-04-schedule-tab-evidence-r2-index.json:square-access-token:3441
+44de82377dec33719ef6d233ba335298dda05366:raptor-port/docs/handpass/2026-10-04-schedule-tab-evidence-r2-index.json:square-access-token:3441
+
+# a gate log: a traffic line's text key, the app's own row id.
+063806c7d2240322c1615c24a1635aa4177199ae:raptor-port/docs/img/handpass/2026-10-04-phone-desktop-board/adapted.log:generic-api-key:88
+1733098cc17d437f335fe0643ea9bb37b9f021ff:raptor-port/docs/handpass/css-split/gates/gate-adapted.log:generic-api-key:88
+4cfe81a13acf6d0afcdf9c4f2282ec7f8ce4871f:raptor-port/docs/handpass/insights-gates/baseline-audit.log:generic-api-key:29
+4cfe81a13acf6d0afcdf9c4f2282ec7f8ce4871f:raptor-port/docs/handpass/insights-gates/adapted-freeze-1.log:generic-api-key:61
+44de82377dec33719ef6d233ba335298dda05366:raptor-port/docs/handpass/css-split/gates/gate-adapted.log:generic-api-key:88
+44de82377dec33719ef6d233ba335298dda05366:raptor-port/docs/handpass/insights-gates/baseline-audit.log:generic-api-key:29
+44de82377dec33719ef6d233ba335298dda05366:raptor-port/docs/handpass/insights-gates/adapted-freeze-1.log:generic-api-key:61
+44de82377dec33719ef6d233ba335298dda05366:raptor-port/docs/img/handpass/2026-10-04-phone-desktop-board/adapted.log:generic-api-key:88
+
+# a walk's list of the app's own new input record ids.
+6e1cbfd4350c5c463901107d6fc582d10dede35d:raptor-port/docs/handpass/parts/dbrA-W4-newkeys.json:generic-api-key:1
+7612b19d8a5ec263821231ce2e235fc237c29e5a:raptor-port/docs/handpass/parts/dbrA-W4-newkeys.json:generic-api-key:1

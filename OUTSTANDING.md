@@ -91,7 +91,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [LW-POSTED-OUT-RESTORE] — a man posted out but not deleted (overseas, another squadron): Redo can put back an approval of his leave on a day after his posting's date, which Approve refuses (older, also on main; found 30 Oct 26).
-- [LW-DELETED-RESTORE-OVERREFUSE] — two rare cases where Undo / Redo refuses, for a deleted man, a change the live screen still allows (a war move of his approved leave across a late posting's date; an Inputs-page lengthening over his own pending bid) — nothing wrong is written; the reader's exact fixes in the item (found 30 Oct 26, the small fixes' third read).
+- [LW-DELETED-REDO-NETSUM] — for a deleted man, one war step that approves a day his late posting refuses AND sends back another approved day of his adds nothing overall, so its Redo is let through; no screen sends that pair in one step (older; found 31 Oct 26 by a security read).
 - [LW-PINCH-IN-CORNER] — mid-pinch in on the Leave War grid (a phone), the names column's rows are drawn over the stretched corner and date row until the lift (older; found 30 Oct 26). **BUILT 31 Oct 26 on `claude/pinch-fixes-1031`, in pull request 599** — walked, read twice, three fix rounds; his iPhone look is owed — Safari takes no outside touch input, so only his iPhone proves the pinch there.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -137,7 +137,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
 - [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
 - [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
-- [SYSTEM-PASS-SAVES-ROSTER] — the app's own posting pass saves the whole roster as it stands in memory, so a change made outside every command (from a browser's console) rides into it unchecked — a small fix, found by D1510's security read.
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
@@ -169,7 +168,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
+- [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
@@ -206,7 +205,13 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
 
 **Database step — at the end (D473)**
+- [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
+- [REACT-DOCTOR-CLEANUP] — the code check's clean-up batch before new feature work: the errors, the missed updates, the whole Tracker (D1534).
+- [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
+- [SYSTEM-ACTOR-ONE-TEST] — "the app itself" is decided two ways (the posting pass's wait by a command's origin, the commit gate by its actor); make them one before any seed or remote commit exists.
+- [POSTPASS-FIRSTWRITE-WHOLE-SEED] — this build only, out of the app's reach: the posting pass's first account write is checked row by row but never that the whole seeded list is there.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
 - [IT-QUESTIONS] — the IT side's written answers (licences, plug-ins, retention, the first admin).
@@ -237,6 +242,31 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
+**What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the
+app, and every finding in the Tracker (`src/tracker/` — about 150: its core, windows and side panel); then the code check run
+again to show the count falling. New and changed code follows the check's rules from now on; the plan's point 4 (a lint script
+running it, its settings file in `raptor-port/`) is built with it, and the standing rule gets its line in `raptor-port/CLAUDE.md`
+at that build. The other areas' remaining findings ride with each area's next batch (D490). Full bug-check order; anything that
+would change what a person sees is shown to him first (D853). The findings list: the move plan §3
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
+batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
+
+### [M365-HOSTING-TRIAL] The app on his own M365 with no database — a hosting trial (D1532, 31 Oct 26)
+**What:** at a good stopping point in the Tracker's work (the agent proposes it, he agrees first), the app is put on his own
+M365 subscription as a Power Apps code app that still saves in the browser as today — no Dataverse — so he can test it
+there himself: Microsoft's sign-in, his iPhone, the Power Apps player. About 1–2 days. Covers the move plan's points that
+add Microsoft's Power Apps add-on to the app and replace the sign-in card with Microsoft's
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`). **Before he buys anything:** confirm his plan includes
+Power Apps (a Microsoft 365 Business plan with a work or school account; a Family or Personal plan does not). Only the app's
+made-up demo data goes there. The database step stays at the end (D473).
+
+### [M365-MOVE-PLAN] The M365 move plan — his strikes owed (written 31 Oct 26, D1530, D1531)
+Every point of the SWiFT build-and-deploy kit set against Raptor, numbered in the recommended order, with React Doctor's
+count: `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`. Waiting on him: the points he strikes, the
+his-call points, and whether new code follows the code check's rules. Nothing on it is built until he says so; the kit's
+red flags, its Vercel rule and its private-project rule are set aside (D1530).
+
 ### [WEEK-DRAG-EDGE-PAN] A man dragged with a mouse to the edge of Edit Schedule never pans the week sideways (found 30 Oct 26, the arrows' walk)
 On a desktop, a man's name dragged with a mouse and held at the left or right edge of Edit Schedule's week scrolls the page
 up and down at the top and foot, but never pans the week sideways, so he can only be dropped on a day already in view.
@@ -262,9 +292,6 @@ before building** (whether a held drag at the week's side should step the days a
 ### [QUALS-ZOOM-EDGE-SLIVER] Quals after a pinch: a one-pixel sliver at the name column's left edge (found 30 Oct 26, the pinch walk — D1518)
 **What:** after a pinch out then in (the zoom left at 0.978), the table scrolled sideways, a one-screen-pixel sliver of the cell scrolled under the name column (the OCU rows' "OCU") shows at the column's left edge, in Chrome at 3x — picture `raptor-port/docs/img/handpass/2026-10-30-scroll-pinned/pinch/quals-zoomed-edge-sliver.png`. In layout the column covers that point (the browser's hit test answers the name cell); only the pixels show it, and a shadow in the column's colour to its left did not cover it, so the cause is in how the browser draws a sticky cell inside a zoomed table, not yet found. Older than the scroll job. **To do:** find the cause (a zoom snapped to whole screen pixels is one thing to try), a pixel check of the column's left edge at a fractional zoom, red first; whether his iPhone shows it — his look.
 
-### [LW-DELETED-RESTORE-OVERREFUSE] For a deleted man, Undo / Redo refuses two changes the live screen allows (found 30 Oct 26, the small fixes' third read — `raptor-port/docs/handpass/parts/lw-sf1030/read-fix2.md`)
-**What happens (both LOW, both over-refusals — nothing is written that the live door refuses):** (A) after a Delete posting that ran late, the Redo of a war move of his approved leave that crosses the posting's date (10 → 13 Jul, posting 12 Jul run 15 Jul) is refused "… has been deleted — that change can't be undone" and passed over for good, though the same move live goes through — new in the job's second fix round (d30c6a369: `lwDays` counts only days from the first refused day, so a move that crosses it reads as adding days); (B) the Redo of an admin's Inputs-page lengthening of his war-approved leave over his own pending bid, after his delete, is refused the same way, though the live edit is allowed (D321 (10)) — the inputs door's bid-for-notice swap trips the request test; older in the job (14403cf57), not on `main`. **To do — the reader's exact fixes, `state/person-delete.ts deletedRestoreProblem`:** (A) in the `dir === 'redo' && module === 'lw'` branch refuse only when the step adds days overall AND adds days from the first refused day (the code in the read); (B) `continue` after the war count for any Redo (only war steps approve — the read's writer survey), keeping the request test for Undo; a pin each (the read's two scenarios). **Why filed, not built (the night of 30 Oct 26):** the job's third read — the cap of about three fix rounds (the bug-check order §5) was reached, and both faults refuse rather than let anything wrong in. **Place:** with the next Leave War batch; small, no answer needed.
-
 ### [LW-POSTED-OUT-RESTORE] A man posted out but not deleted: Redo can put back an approval on a day after his posting's date (found 30 Oct 26, the small fixes' narrow read, its observation)
 **What happens:** a man with a posting out that is not a Delete (overseas, another squadron, archive) — an approval of his leave on a day after his posting's date, made before the posting was set, then undone; the posting set (run or not); Redo puts the approval back and writes the war-approved leave, where the live Approve refuses it ("He posts out on 1 Mar: refuse or delete it" — D1436). Reproduced by the reader in a scratch test with an Overseas posting (`raptor-port/docs/handpass/parts/lw-sf1030/read-fix1.md`, "Observation"). **Older:** on `main` too — neither restore refusal reads posting dates. **Why it was not built with the small fixes** (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §12, the narrow read): D1436 rules the Approvals list's Approve, and its "wherever leave is approved" is the agent's reading about the doors, not about Undo / Redo; D321 (8) makes a posting out no Undo step; and the deleted man's restore refusal is cached on the step for good ("a delete is final"), which a posting — moved, taken back by "Undo post out", or turned SANS — is not. **The likely shape:** a refusal in the uncached restore check (`state/undo-wire.ts restoreRefusal`, beside D1263's closed-day rule) that asks the live door's own posting test (`leavewar/sync.ts postingOutWhy` / `refusedFrom`) for every day the step's Redo adds — one body with Approve — with a test for each twin path: a posting moved earlier and later, taken back, turned SANS, run and not yet run, an Undo of a send-back, a place-and-approve. **Ask him first** whether Undo / Redo should keep the posting's date rule (recommended: yes — the two doors agree, D754), with a picture. **Place:** low; nothing waits on it; a stored case is not a finding (D56), only new Redos are.
 
@@ -286,6 +313,24 @@ it once; (7) the way back: putting the previous live version back on Vercel, che
 **For the full security review, from M4's security read (27 Oct 26 — `raptor-port/docs/handpass/parts/lw-m4/security-read.md` §Lower):** (a) older than M4 — on an open day of his own row a member's command may write a war record of ANY kind, an OIL credit (`{kind:'credit', code:'FO', oil:'auto'}`) among them, and the war adds such credits up (`dayview.ts earnsOil`); whether the schedule's credit pass rewrites a forged one was not confirmed; (b) one admin can write another admin's Approvals marker (`apprseen:`), the same pattern as the `reqseen:` row — no fix, a note; (c) a member's notice text is never compared with what his change did (a line about his own input that misdescribes it) — the war's line kinds are refused since M4.
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
+**Steps (1) and (4) BUILT the night of 31 Oct 26 on `claude/secrets-scan-scorecard`** (not merged; evidence
+`raptor-port/docs/handpass/2026-10-31-secrets-scorecard.md`). (1) `raptor-port/scripts/scorecard.mjs`; the baseline,
+scorecard 1, `raptor-port/docs/superpowers/plans/2026-10-31-scorecard-1.md` (18–31 Oct: 17 of his finds not said to be on a
+preview, 1 change redone, 61 merges); the next is due 14 Nov 26 (D1409 — the agent's standing job). (4)
+`.github/workflows/secrets-scan.yml` + its self-test `raptor-port/scripts/secrets-scan-selftest.mjs` + `.gitleaksignore`;
+how it works and how to read a red run: `raptor-port/docs/gates-and-deploy.md` §Now (D1408). **Owed before it counts as
+proven:** its first run on GitHub (the self-test with the real gitleaks, and the whole-history scan, which runs on that
+same pull request) — read its summary, triage each history finding as that section says. **His to approve, never done by
+the agent (repository settings — read only on 31 Oct 26: GitHub's own secret scanning and push protection OFF, `main`
+unprotected, no rulesets):** (a) make `secrets scan` a required check — GitHub → the repository → Settings → Rules →
+Rulesets → New ruleset → New branch ruleset; name "main"; Enforcement: Active; Target branches: Add target → Include
+default branch; tick "Require status checks to pass", Add checks → type `secrets scan` → pick it (source GitHub Actions;
+it is listed only once it has run once); no other rule; Create. Only that check, never a `deploy.yml` leg (a path filter
+skips those on a notes-only pull request, which could then never merge); an admin is held by it too unless put on its
+bypass list. (b) switch on GitHub's own scanning, free on a public repository — Settings → "Code security" (GitHub
+has also called the page "Advanced Security"; the agent did not open it) → Secret scanning (or "Secret Protection"):
+Enable, then Push protection: Enable; it refuses a push carrying a known provider's key before it lands, which
+the check above cannot (it sees the key only once pushed). Recommended: both.
 
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
 **What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
@@ -362,9 +407,57 @@ build batches). **It decides together:** [LEAVE-YEAR] (yearly balances), [LW-SOR
 each with its own bug check. **21 Oct 26:** round 1 answered (D1141-D1144); his list of 22 points recorded (D1145-D1156); next, a full mock-up of the new Leave War in a fresh chat, with the design skill. **21 Oct 26, later:** the full mock-up published (https://claude.ai/artifact/6xaVkA1QHg7UmevMBRFaT9); round 2 answered (D1157-D1160: the year grid kept, Ack gone, the one Document button, a half day's box filling its half), question 2 redrawn his way and put again with 4b (two whole-day entries on one day), 5 and 6 as round 3.
 **The night of 21–22 Oct 26 (/overnight, D1204–D1207):** the person window, "since your last visit" and the Settings window drawn (`full/r6-*`); the whole design red-teamed by two fresh, blind Opus readers (the note's §10 — fixes settled, twelve questions for him in three rounds, §10.3); every screen as it will be drawn (`full/r7-*`, D1206); the build plan written for his approval (`raptor-port/docs/superpowers/plans/2026-10-22-leave-war-overhaul-build-plan.md`, five merges); the owed fresh read done. **Next:** his answers to §10.3 (Q5 and Q6 before the first merge) and his approval of the plan.
 
-### [SYSTEM-PASS-SAVES-ROSTER] The posting pass saves every unsaved roster change, unchecked (found 29 Oct 26 by D1510's security read)
+### [SERVER-SIDE-PASSES] Every pass the app runs under its own name runs on the server at the database step (filed 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`)
 
-The posting pass (`raptor-port/src/leavewar/sync.ts`, the `lw.postoutRun` command, around line 2184) commits as the app itself (the system actor, which the commit gate `perms.ts ownershipViolation` lets through) and enlists the people store, whose before-image is the last SAVED roster; its finish saves the whole live roster. So any change made to a person in memory outside every command — only possible from a browser's console today — is saved with it, past the own-row rule (D149, D218, D1510). Not D1510's to fix (older, and console-only), but the database step translates this gate. **Fix:** before the pass enlists the people store, put the roster back to its saved baseline; and a hard rule that a `lw.postoutRun` change to `people` touches only the men due to post out. Red first; the security read's report is quoted in `raptor-port/docs/handpass/2026-10-29-lw-m5b.md` §10.
+**What:** today the app's own passes run in every signed-in browser, a member's too, and commit as the app itself, which
+the commit gate does not limit by role: the posting pass (`raptor-port/src/leavewar/sync.ts runPoOutcomes`, `lw.postoutRun`
+— runs from every notify through `lwSyncTurn`), the war's sync projection (`leavewar/state/store.ts`, `lw.sync`) and the
+inputs projection (`writeInputsBatchProjection`). Translated as they stand, the database would need a service account a
+member's browser could use. **The rule for the database step:** each such pass runs on the server (a scheduled flow or a
+server-side handler), never under a credential a browser holds, and is limited to the rows it owns — the posting pass to
+the men whose posting it carries out, as the commit gate's `postingPassViolation` (`state/perms.ts`) and
+`raptor-port/docs/data-model.md` §11 already say for that one pass. **Sources:**
+`raptor-port/docs/handpass/parts/lw-rr1031/read-security.md` findings 1(b) (Medium at the database step) and 2 (Low — the
+war's and the inputs' projections). **Place:** the database step (D473); nothing to build before it.
+
+### [POSTPASS-FIRSTWRITE-WHOLE-SEED] The posting pass's first account write: each row checked, never the whole list (found 31 Oct 26 by the fix read; not built at the cap; unreachable from the app)
+
+**What:** the commit gate's rule for the posting pass (`raptor-port/src/state/perms.ts postingPassViolation`) checks each row
+of the accounts' first write against the seeded list, but never that the whole seeded list is there. (a) A pass changeset
+carrying only Ranger's suspended seed row passes; the loader then reads the stored rows, so every other seeded account is
+gone, admins included. (b) With some rows stored and a seeded account deleted by an admin, a changeset putting only that row
+back passes the "first write" test (every row in it has no before-image) and it returns at its seeded role. **Cause:** "first
+write" is still judged from the rows present. **The reader's exact fix:** when `firstStore` is true, require a put for every
+row of `seedAccounts()` except a Delete's posted man. **Reach:** this build only — no path in the app produces such a changeset
+(the pass's own first write stores the whole list); at the database step the accounts are made at set-up and there are no
+seeds (`raptor-port/docs/data-model.md` §11). **Why filed:** found 31 Oct 26 by the security reader's narrow read of fix round
+2 (`raptor-port/docs/handpass/parts/lw-rr1031/read-fix2.md`), not built at the cap of about three fix rounds (the bug-check
+order §5). **Place:** with the next Leave War or accounts batch; small; nothing waits on it.
+
+### [SYSTEM-ACTOR-ONE-TEST] "The app itself" is decided in two places — make them one (filed 31 Oct 26 — the code read of `claude/lw-roster-restore-fixes`, tidiness note 1)
+
+**What:** the posting pass's wait under another command (`raptor-port/src/leavewar/sync.ts runPoOutcomes`) keys on
+`parent.origin === 'projection'`; the commit gate (`state/perms.ts ownershipViolation`) keys on `actor.role === 'system'`. A
+command run as the app itself with another origin — a `seed`, or a `remote` change at the database step — would let the
+pass join it unjudged and put nothing back. No production `seed` or `remote` command exists today, so nothing can reach it.
+**The reader's fix:** key the wait on `parent.actor?.role === 'system'`, so the two agree; a test with a system-actor parent
+of another origin. **Place:** before the first `seed` or `remote` command is written (the database step); not built now.
+Source: `raptor-port/docs/handpass/parts/lw-rr1031/read-opus.md`.
+
+### [LW-DELETED-REDO-NETSUM] A deleted man's Redo: one war step approving a refused day and sending back another is let through (found 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`, 4)
+
+**What happens:** Ranger has approved LL on 10 Jul and a pending LL on 13 Jul; ONE war step approves 13 Jul and sends 10 Jul
+back (`decideRequests` with both lines); Undo; a Delete posting dated 12 Jul runs late (15 Jul), so his 13 Jul is refused
+live; Redo puts the approval of 13 Jul back. **Cause:** `state/person-delete.ts deletedRestoreProblem` counts a war step's
+war-approved days as a net sum (overall, and from the first refused day): +1 on 13 Jul and −1 on 10 Jul sum to nothing. The
+code before the second fix round summed the same way (older). **Reach:** no screen sends an approval and a send-back in one
+step — Approvals, Approve all, the bid windows and the day's list each decide one way at a time — so it is reached only by
+calling the writer directly. **The test:** `raptor-port/src/leavewar/deletednorow.test.ts`, "one war step approving his
+refused 13 Jul and sending back his 10 Jul …", marked `it.fails` while the fault stands (it goes red the day it is fixed).
+**Why filed, not fixed:** the likely fix — for a war step's Redo, also refuse when it takes a request of his off a day from
+the first refused day and writes his war-approved leave there (the Undo's request test, with its day) — must first be
+checked against every war writer so it never refuses a move the live door allows (RR-A); not obviously right in a fix
+round. **Place:** with the next Leave War batch; small; nothing waits on it.
 
 ### [LINE-ICONS-ELSEWHERE-ASK] Other lists that may want D1512's edit and cross icons (named 29 Oct 26, D852)
 
@@ -1888,6 +1981,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The night of 31 Oct 26 (D1531) — the M365 move plan page (`claude/m365-move-plan`); [SYSTEM-PASS-SAVES-ROSTER] with [LW-DELETED-RESTORE-OVERREFUSE] (saved data, who may write it — `claude/lw-roster-restore-fixes`); the secrets scan and scorecard (D1408, D1409 — `claude/secrets-scan-scorecard`); the pinch fixes (`claude/pinch-fixes-1031`) | each: one fresh, blind Opus reader (D790, D903); job 2 also the security read (D1411) | Astra's and Sol 6.1's reads (job 2's two, D590) |
 | The Leave War small fixes — a deleted man's leftover bid refused at every door and in Undo / Redo (saved data: an approval writes a leave input), the clash note's and credited sheet's codes, the month's memo across its edge; FULL-checked on the night of 29–30 Oct 26 on `claude/lw-small-fixes-1030` (pull request 592) | the scenario design and the code read: fresh, blind Opus readers (D790); the two fix rounds' narrow reads: fresh Opus readers (the second still owed at the time of writing) | Astra's scenario design and Astra's and Sol 6.1's reads of the finished code (saved data) |
 | The Leave War overhaul's M5b — the admin's set-up (D1499–D1502): a saved built-in Quals column, holidays imported by file (saved data, one Undo step), the import an admin's only; FULL-checked 29 Oct 26 on `claude/leave-war-m5b-iphone-balances-1402b7` (pull request 588) | the security read (D1411); one fresh, blind Opus reader of the finished code (D790) and one of its fixes; the scenarios designed by a fresh Opus helper | Astra's and Sol 6.1's two reads of the finished code, and the other provider's scenario design (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`) |
 | The drawing check's guide wording (D1494) — the bug-check order §7.0 and §7.10, walk-scripts §10 — drafted 29 Oct 26 on `claude/drawing-check-b783bd` (`raptor-port/docs/superpowers/specs/2026-10-29-drawing-check-guide-wording.md`), not yet in the guides | one fresh, blind Opus reader (16 findings, all taken) | the guide change's two reads (D70: Astra and Sol 6.1) |

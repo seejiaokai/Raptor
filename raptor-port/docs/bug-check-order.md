@@ -1022,6 +1022,8 @@ Every two weeks the agent puts one page to him: the faults he found after a chan
 redone within two weeks, and the merges in those two weeks — each beside the two weeks before. Speed counts only while
 the first two hold. The first scorecard is the baseline,
 taken before [REVIEW-LAYERS] changes how work merges.
+**Made by** `node raptor-port/scripts/scorecard.mjs --end <date> --list` (how each number is counted: its header); **the
+scorecards:** 1, the baseline — `docs/superpowers/plans/2026-10-31-scorecard-1.md`; each later one a page beside it.
 
 ---
 

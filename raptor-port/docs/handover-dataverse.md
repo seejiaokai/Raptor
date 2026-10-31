@@ -29,6 +29,24 @@ functions and Power Automate flows; what the 2,000-row reading limit is).
   still addressed by position inside the app, which is our concern, not
   yours — the id is what your keys map onto.
 
+## The SWiFT kit (D1530, 31 Oct 26)
+
+He has the SWiFT build-and-deploy kit — the guide for apps the PPCoE puts on MINDEF M365 (a Power Apps code app, tables
+in Dataverse built from a written table list). Read against it on 31 Oct 26, Raptor fits its road in shape (one doorway
+for every save, the table list written on our side, screens switched inside the app, nothing loaded from outside).
+**Set aside for now, on his order (D1530):** all its red flags, its rule against hosting on Vercel, and its rule that the
+GitHub project be private — Vercel and the public project stay until he says otherwise. Its other points are not yet
+ruled. Its own files, marked OFFICIAL (CLOSED), are kept out of this public project — the agent's reading, not
+checked with him.
+**React Doctor**, the kit's code check, may be run on Raptor to count its findings for the move plan (D1531) — a count
+and a list, nothing fixed without his word; whether new code follows its rules is his to rule once he has seen the count.
+It may be run the kit's way, its findings sent to the tool's maker for the score (D1533) — nothing goes to RAiD or the PPCoE.
+**The order (D1532):** building goes on and the database step stays at the end (D473); at a good stopping point in the
+Tracker's work the app is first put on his own M365 with no database — a hosting trial, saving in the browser as today
+— so he can test it there himself (`OUTSTANDING.md` [M365-HOSTING-TRIAL]).
+**The move plan** — every point of the kit set against Raptor, numbered for him to strike, with React Doctor's count:
+`docs/superpowers/plans/2026-10-31-m365-move-plan.md` (`[M365-MOVE-PLAN]`).
+
 ## Read in this order
 
 1. **`data-schema.md` — what the app stores today.** Every record, every

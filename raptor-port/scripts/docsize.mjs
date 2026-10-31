@@ -263,7 +263,11 @@ const RULING_BYTES = [
      drawing check and a mock-up standardised to the app) and D1507-D1509 (M5b's look), merged with code while the size
      check was deferred (D29); every line live (D136), and what a chat loads is not trimmed without his word (D1262).
      The spent and restated rows are still [RULINGS-SPENT-PASS]'s. Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 54000],
+  /* how-we-work 54000 -> 56000 (31 Oct 26, the records of the night of 31 Oct): 54,231 bytes with D1530-D1533 (the SWiFT
+     kit set aside in part, React Doctor's permissions, the M365 hosting trial before the database step); D1531 stays live
+     (its "nothing fixed without his word" and "not added to the project's tools" still hold), every line live (D136), and
+     what a chat loads is not trimmed without his word (D1262). Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 56000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
