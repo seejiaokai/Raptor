@@ -68,10 +68,38 @@ one into a public log), so each carries its own proof below, run red as well as 
   extras and Dependabot's security updates all disabled. `…/branches/main` — not protected; `…/rulesets` — none. The two
   settings steps are his to approve: `OUTSTANDING.md` `[REVIEW-LAYERS]`.
 
+## Fix round 1 — the fresh read (`parts/secrets1031/read-opus.md`) and the first GitHub run (pull request 598)
+
+The first run: self-test PASS with the real gitleaks; change scan 2 commits, nothing found; history 5,193 commits read,
+4,598 scanned, **10 found** — and the step went red with no summary, so nobody has their fingerprints.
+
+1. **HIGH — fixed.** GitHub runs a `run:` step as `bash -e`; gitleaks' exit 1 ended it before `status=$?`, the summary
+   and the warning. Now every scan is one command, `raptor-port/scripts/secrets-scan.mjs change|history`, which runs
+   gitleaks (no shell), prints the summary and decides red or green itself; no shell step runs gitleaks any more, and
+   `--self-check` fails if one does. Shown on his PC: the runner started from `bash -e -c` with a scanner that fails
+   still printed its summary, then exited 1.
+2. **MEDIUM — fixed.** The self-test now imports and runs that same `scan()`: the same arguments, the same `--log-opts`
+   (a range, the binary files left out, the landed pass), the same summary and decision, over throwaway repositories with
+   two and three commits and a merge. A scan is red by itself on "read nothing" — 0 commits scanned where git shows
+   added lines in the same read (`--self-check`: a stand-in that reads nothing is caught, and turns a clean range red).
+3. **LOW — fixed.** Merges: `--cc` is out, because gitleaks' diff reader (go-gitdiff 0.9.1, read at its source) reads
+   only `diff --git` headers and a combined diff has `diff --cc`; so a second pass, `-m --first-parent --merges`, reads
+   each merge against its first parent (go-gitdiff takes the commit id up to the first space, so `commit X (from Y)`
+   parses). On a pull request it reads the merge GitHub tests (base..GITHUB_SHA — the pull request's net change); on a
+   push, main's pushed line; in the history, main's merges. A history finding the second pass repeats is listed again,
+   marked "as landed". The self-test's merge case: a fake only a conflict resolution adds is missed by the commits pass
+   and found by the landed pass (real git, stand-in scanner on his PC; the real gitleaks on GitHub).
+4. **LOW — fixed.** The concurrency group carries the event, so a manual run and a push to main cannot cancel each other.
+
+**Local proof, after the fixes:** `node scripts/secrets-scan-selftest.mjs --self-check` — 6 of 6 PASS (the workflow's
+promises; good accepted; leaky, lax and blind caught; read-nothing red by itself). `npm run docsize` OK.
+
+**The 10 history findings will be sorted after the next run**, once its summary lists them (rule, file, line, commit,
+fingerprint): each judged on his PC, never in a log, as `raptor-port/docs/gates-and-deploy.md` §Now (D1408) says.
+
 ## Owed
 
-- **The first GitHub run** of the new check, on the pull request that brings it: the self-test with the real gitleaks
-  (it must print "found, as it should" twice and PASS), the change scan green, and the whole-history scan's summary read
-  and each finding triaged as `raptor-port/docs/gates-and-deploy.md` §Now (D1408) says. Its time is to be written into
-  the workflow's timeout comment.
-- **A fresh reader** of the workflow, the two scripts and this sheet (the coordinating chat's).
+- **The next GitHub run** of the check: the self-test with the real gitleaks (it must print "found, as it should" twice
+  and PASS — now including the merge case), the change scan green, the history summary listing its findings, and the
+  sort of each. Its time is to be written into the workflow's timeout comment.
+- **A narrow read of fix round 1** (the bug-check order §5, "a fix is new code").

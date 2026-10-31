@@ -22,9 +22,10 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     licence; the program itself, pinned by version and checksum — not the gitleaks *action*, which wants a paid key for
     an organisation), on every pull request into `main` and every push to it, with **no path filter**, so a notes-only
     pull request — which skips `deploy.yml` — is scanned too. It asks only to read the code.
-  - **What it scans:** a pull request's own commits (base..head), each commit's added lines; a push's commits; and the
+  - **What it scans:** a pull request's own commits (base..head), each commit's added lines; a push's commits; for both,
+    what landed — each merge against its first parent, so a line only a conflict resolution adds is read too; and the
     **whole history**, every commit of every branch, on a manual run (Actions → Secrets scan → Run workflow) and by itself
-    whenever a change touches the scan's own files (the workflow, `.gitleaksignore`,
+    whenever a change touches the scan's own files (the workflow, `.gitleaksignore`, `raptor-port/scripts/secrets-scan.mjs`,
     `raptor-port/scripts/secrets-scan-selftest.mjs`) — so the pull request that brings it ran the one full scan D1408 asks
     for, and the push that lands it runs it again. Pictures, video and other binary files are left out of the read.
   - **Red or not:** a finding in the change is red — the merge gate. A finding in the history is red on a manual run; on a
@@ -33,10 +34,16 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     keys (a forecast against the current files with gitleaks' rule found nine such, all ids or picture names).
   - **The logs are public**, so every gitleaks run passes `--redact` (the value reads `REDACTED`), none runs verbose or at
     debug level (that level logs the value itself), the report is never uploaded, and the summary prints only the rule,
-    file, line, commit and fingerprint. **Before every scan a self-test** commits two clearly fake secrets, made from
-    pieces at run time, into a throwaway repository and requires the scan to fail on both, print no eight characters of
-    either, and pass a clean repository; `node raptor-port/scripts/secrets-scan-selftest.mjs --self-check` proves the
-    self-test itself on his PC with stand-in scanners (no gitleaks there) and checks the workflow keeps every promise above.
+    file, line, commit and fingerprint. **Every scan is one command, `raptor-port/scripts/secrets-scan.mjs`**, which runs
+    gitleaks, prints the summary and decides red or green itself, and is red too if gitleaks could not run, wrote no
+    report or read nothing (0 commits scanned where git shows added lines). **Before every scan a self-test runs that same
+    code** over throwaway repositories holding clearly fake secrets made from pieces at run time: red on the planted commit
+    with both rules and no eight characters of either printed, green on a clean commit, a merge-only fake found by the
+    landed pass, history a warning on a pull request and red on a manual run; `node raptor-port/scripts/secrets-scan-selftest.mjs
+    --self-check` proves it on his PC with stand-in scanners (no gitleaks there) and checks the workflow keeps every promise
+    above. **Trap (fix round 1, 31 Oct 26):** GitHub runs a `run:` step as `bash -e` — `set -uo pipefail` does not switch
+    `-e` off — so a scan run in the shell ended the step at gitleaks' exit 1, before its summary; keep every scan inside the
+    script.
   - **How to read a red run:** open the run's summary — each finding is a rule, a file, a line, a commit and a
     fingerprint, never the value. Look at that line **on his PC** (`git show <commit>:<file>`), never in a log, a chat or a
     pull request. A real password, key or access code: it is **changed at its source first** (a new one issued, the old
