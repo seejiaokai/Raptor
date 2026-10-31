@@ -255,6 +255,12 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   tapped button keeps its hover, and Safari sends a pretend mouse move to the tapped spot, either of which held it open
   after a tap on an iPad on its side. Pressed again and again it stays open and in place (D1122). The rule is one class,
   `.near`, set by `pan.ts` from the pointer; the look is `03-week.css`.
+- **A man held at the week's side steps the week a day** (owner, D1529, 31 Oct 26 — "A — a day at a time"): on Edit
+  Schedule a mouse drag held in the app's mouse edge band at the week's left or right edge waits about half a second, then
+  steps the week one day exactly as one press of ‹ / › does (the front day flush at the left, D275), and again while held;
+  a name only passing through the band (every crew-panel name crosses the right one) moves nothing; it stops at Monday and
+  Sunday — a held man is never carried into another week. The finger's drag and the page's up-and-down edge scroll are
+  unchanged. Answers [WEEK-DRAG-EDGE-PAN] under the design guide's drag rule (D895).
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
   its 25 Aug follow-up "make sure it's not just an easy fix"). `panDays` fires a

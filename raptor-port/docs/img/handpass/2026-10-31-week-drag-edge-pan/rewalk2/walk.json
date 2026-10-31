@@ -1,0 +1,127 @@
+[
+ {
+  "name": "W1 held at the right side: nothing for the first moment, then the week steps one day",
+  "result": "PASS",
+  "said": "at 0.3 s 0; stepped after 856 ms to 563; front Tuesday",
+  "pics": [
+   "w1-one-day"
+  ]
+ },
+ {
+  "name": "W2 still held: it steps a second day; moved away, it stops on a whole day",
+  "result": "PASS",
+  "said": "1128 (Wednesday at the front)",
+  "pics": []
+ },
+ {
+  "name": "W3 away from the side nothing more moves",
+  "result": "PASS",
+  "said": "1128",
+  "pics": []
+ },
+ {
+  "name": "W4 after the steps, the cell under him on Thursday is marked, and he lands there",
+  "result": "PASS",
+  "said": "marked true; ALL AVAIL in Thursday's row true",
+  "pics": [
+   "w4-over-thursday",
+   "w4-dropped-thursday"
+  ]
+ },
+ {
+  "name": "W5 a name passing through the side moves nothing — fast, or a third of a second slow",
+  "result": "PASS",
+  "said": "after the fast pass 0, after the slow pass 0",
+  "pics": []
+ },
+ {
+  "name": "W6 held at the left over the ‹ arrow: the week steps back a day",
+  "result": "PASS",
+  "said": "1128, Wednesday at the front; the arrow 38 wide",
+  "pics": [
+   "w6-left-one-day"
+  ]
+ },
+ {
+  "name": "W7 held on at the left: it walks back to Monday and stops there — no other week",
+  "result": "PASS",
+  "said": "0, Monday, week 13/07/2026",
+  "pics": [
+   "w7-monday-end"
+  ]
+ },
+ {
+  "name": "W8 Sunday at the front, held at the right: nothing moves, no other week",
+  "result": "PASS",
+  "said": "3384, Sunday, week 13/07/2026",
+  "pics": []
+ },
+ {
+  "name": "W9 held over the crew panel beside the week: nothing moves",
+  "result": "PASS",
+  "said": "0",
+  "pics": []
+ },
+ {
+  "name": "W10 with the page scrolled part-way down, the side still steps a day",
+  "result": "PASS",
+  "said": "563; page scrolled 600",
+  "pics": []
+ },
+ {
+  "name": "W11 held over the changes window at the week's side: nothing moves",
+  "result": "PASS",
+  "said": "0; window 1140–1520",
+  "pics": [
+   "w11-over-window"
+  ]
+ },
+ {
+  "name": "W12 with the crew panel hidden, held at the window's right edge, the week steps a day",
+  "result": "PASS",
+  "said": "563; week right 1510",
+  "pics": [
+   "w12-panel-hidden"
+  ]
+ },
+ {
+  "name": "W13 a press of › still moves one day",
+  "result": "PASS",
+  "said": "564",
+  "pics": []
+ },
+ {
+  "name": "W14 no page errors on his PC's size",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "X1 at 1366 wide: held at the right side, the week steps a day",
+  "result": "PASS",
+  "said": "563 (a day 564); week 0–1089",
+  "pics": [
+   "x1-1366-one-day"
+  ]
+ },
+ {
+  "name": "X2 no page errors at 1366",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "Y1 at 800 wide (no desktop arrows), a mouse held at the right moves nothing new",
+  "result": "PASS",
+  "said": "12 → 12",
+  "pics": [
+   "y1-800-wide"
+  ]
+ },
+ {
+  "name": "Y2 no page errors at 800",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
