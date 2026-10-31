@@ -1,0 +1,13 @@
+[
+ {
+  "id": "RR-P4 a Delete posting runs the next morning and is saved",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "posting 2026-11-05: \"On 5 Nov the app deletes him automatically. Days he flew keep his puck.\"; his row \"Drifter A 24 OL FO OIL FO HO OIL OIL OIL PO PO PO PO PO PO PO PO PO PO PO PO PO \"; deleted before the date false; the next morning true; after a reload true; his Admin → Users row null",
+  "pics": [
+   "rr-p4-a-postout",
+   "rr-p4-b-next-morning",
+   "rr-p4-c-users"
+  ]
+ }
+]

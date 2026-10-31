@@ -1,0 +1,11 @@
+[
+ {
+  "id": "RR-C1 the Redo of an approval after his delete stays refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; deleted true; Redo offered false; his leave on 26 Oct after Redo 0",
+  "pics": [
+   "rr-c1-after-redo"
+  ]
+ }
+]

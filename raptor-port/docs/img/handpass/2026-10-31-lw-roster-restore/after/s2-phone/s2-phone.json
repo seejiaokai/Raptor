@@ -1,0 +1,24 @@
+[
+ {
+  "id": "RR-P1 a change made outside every command is not saved by the posting pass",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "posting 2026-11-05: \"On 5 Nov: archived.\"; before the date archived false; Ace's Management saved false; planted in memory; the next morning: Drifter archived true (po); Ace's Management in memory false; after a reload, on Quals false; Admin → Users \"Drifter no sign-in · Pilot · CAT A Archived 5 Nov 26 by his posting (Overseas Sqn)\"",
+  "pics": [
+   "rr-p1-a-postout",
+   "rr-p1-b-next-morning",
+   "rr-p1-c-quals-after-reload",
+   "rr-p1-d-users"
+  ]
+ },
+ {
+  "id": "RR-P2 an admin’s Quals tick made as the posting comes due is saved; the posting runs",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "Ace's TF false → ticked true → after a reload true; Drifter archived true → after a reload true",
+  "pics": [
+   "rr-p2-a-ticked",
+   "rr-p2-b-after-reload"
+  ]
+ }
+]
