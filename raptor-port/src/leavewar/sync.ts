@@ -502,6 +502,26 @@ function postingOutWhy(personId: string, date: string): string | null {
   const on = dayMon(from)
   return postedOutBy(personId) ? `He posted out on ${on}: refuse or delete it` : `He posts out on ${on}: refuse or delete it`
 }
+/** FROM WHICH DAY A POSTING OUT REFUSES HIS LEAVE, FOR A MAN NOT DELETED ([LW-POSTED-OUT-RESTORE], 31 Oct 26): the day the
+ *  live door refuses from (`postingOutFrom`, D1436), so Undo and Redo never put back an approval Approve now refuses (D754).
+ *  Null where no posting refuses anything — none set, or a SANS posting (D283) — and for a man deleted, whose refusal is
+ *  `refusedFrom`'s, decided once and kept (a delete is final). A posting can move, be taken back or turn SANS, so the restore
+ *  check that reads this (state/person-delete.ts postingRestoreProblem) is asked fresh on every Undo and Redo. */
+export function postingRefusedFrom(personId: string): string | null {
+  return deletedMan(personId) ? null : postingOutFrom(personId)
+}
+/** the men a posting out may refuse: every man on the war with a posting window, and every posting record kept */
+export function postingOutIds(): string[] {
+  const s = getState()
+  return [...new Set([...s.people.filter(p => !!p.to).map(p => p.id), ...Object.keys(s.postOuts)])]
+}
+/** the restore's refusal, in the live door's terms (`postingOutWhy`) */
+export function postingRestoreWhy(personId: string, dir: 'undo' | 'redo'): string | null {
+  const from = postingRefusedFrom(personId)
+  if (!from) return null
+  const cs = rosterCallsign(personId) ?? getState().people.find(p => p.id === personId)?.callsign ?? personId
+  return `Can’t ${dir} that — ${cs} ${postedOutBy(personId) ? 'posted' : 'posts'} out on ${dayMon(from)}, so leave from that day can’t be approved`
+}
 /* WHY `doorDecideApproved` WOULD SKIP ONE ITEM (the same one body, M4 8.3) */
 function decideApprovedWhy(it: { personId: string; date: string; iid: string }, prot: Set<string> = lockedDates()): string | null {
   const row = warLeaveRow(it)
