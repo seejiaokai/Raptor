@@ -71,9 +71,7 @@ export interface UndoHooks {
      filed on — a war record beside an Inputs record, no shared key — stood on the sick day. The module that owns a
      rule answers here: the sentence that refuses the restore, or null. Asked BEFORE the view snaps, so a refusal moves
      nothing. */
-  /* (`entry` — the step itself, as deadRefusal has it: a posting out's refusal tells a war step's approval by its module —
-     state/person-delete.ts postingRestoreProblem) */
-  restoreRefusal?(changes: Change[], dir: 'undo' | 'redo', entry?: UndoEntry): string | null
+  restoreRefusal?(changes: Change[], dir: 'undo' | 'redo'): string | null
   /* [POST-OUT-OUTCOMES] (the plan's Round 2, Astra round-2 2, Fable round-2 1): a step whose restore would put a DELETED
      man back (state/person-delete.ts deletedRestoreProblem) can NEVER be taken — a delete is final — so the dispatcher
      passes over it when it chooses the next step (it stays in the list, still guarding older steps that share its
@@ -765,7 +763,7 @@ function restoreCommit(entry: UndoEntry, changes: Change[], dir: 'undo' | 'redo'
         /* THE RULES AGAIN, INSIDE, before any write (the change-recording plan §11.3 — Astra's red team 2): the view-snap
            ran between the first ask and here (a week loaded, projections ran), so the world the first ask saw may have
            moved. A refusal now rolls back nothing, because nothing was written — and keeps its own words. */
-        const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir, entry)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir, entry))
+        const again = (hooks.deadRefusal && hooks.deadRefusal(changes, dir, entry)) || (hooks.restoreRefusal && hooks.restoreRefusal(changes, dir))
         if (again) throw new CmdRefused(again)
         const relock = hooks.reinstallLocks ? hooks.reinstallLocks() : undefined
         try {
@@ -913,7 +911,7 @@ export function globalUndo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'undo') }
   const conflict = undoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'undo', conflict.text) : conflict.text }
-  const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo', entry) : null   // W3-F8
+  const ruleU = hooks.restoreRefusal ? hooks.restoreRefusal(entry.inverse, 'undo') : null   // W3-F8
   if (ruleU) return { ok: false, reason: ruleU }
   // C7(b) — refuse an unrestorable closure BEFORE the view-snap moves anything.
   if (missingStores(entry.inverse).length) return { ok: false, reason: plainRestoreReason() }
@@ -940,7 +938,7 @@ export function globalRedo(): UndoResult {
   if (!mayReverse(entry, currentActor())) return { ok: false, reason: reverseRefusal(entry, 'redo') }
   const conflict = redoConflictOf(entry)
   if (conflict) return { ok: false, reason: conflict.sticky ? sayBlocked(entry, 'redo', conflict.text) : conflict.text }
-  const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo', entry) : null   // W3-F8
+  const ruleR = hooks.restoreRefusal ? hooks.restoreRefusal(entry.forward, 'redo') : null   // W3-F8
   if (ruleR) return { ok: false, reason: ruleR }
   if (missingStores(entry.forward).length) return { ok: false, reason: plainRestoreReason() }
   snap(entry, 'redo')
