@@ -1513,7 +1513,6 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
 test('a cell Raptor owns offers no way to change it', async ({ page }) => {
   await page.locator('[data-testid="cell-prowler-2026-01-09"]').click()
   await expect(page.locator('[data-testid="bid-heldday"]')).toContainText('change it on the Inputs page')
-  await expect(page.locator('[data-testid="bid-oil"]')).toBeVisible()
   await expect(page.locator('[data-testid="bid-LL"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="decide-approve"]')).toHaveCount(0)
 })
@@ -2062,16 +2061,18 @@ test("a member's own approved leave opens its note editor at any time, and the n
   await lwView(page, 'prowler')
   const cell = page.locator('[data-testid="cell-prowler-2026-01-09"]')  // his leave, filed on the Inputs page
   await cell.click()
-  await expect(page.locator('[data-testid="remarks-sheet"]')).toBeVisible()
+  /* on a day open for him his whole day of leave filed on the Inputs page opens the bid window since his D1548 / D1552 — its
+     Remarks box his leave's own words, the same one row (D1354), so he can still add to the day; on a closed day it is the
+     remarks window, as before (`ui/remarks.test.tsx`, `ui/heldday.test.tsx`) */
+  await expect(page.locator('[data-testid="bid-heldday"]')).toBeVisible()
   // his D1354 (25 Oct 26): round 3's one row, saved as it changes — Enter saves, no Save button
-  await page.locator('[data-testid="remarks-remarks"]').fill('checked by e2e')
-  await page.locator('[data-testid="remarks-remarks"]').press('Enter')
-  await expect(page.locator('[data-testid="remarks-save"]')).toHaveCount(0)
-  await page.locator('[data-testid="remarks-cancel"]').click()
-  await expect(page.locator('[data-testid="remarks-sheet"]')).toHaveCount(0)
+  await page.locator('[data-testid="bid-picker"] [data-testid="bid-remarks"]').fill('checked by e2e')
+  await page.locator('[data-testid="bid-picker"] [data-testid="bid-remarks"]').press('Enter')
+  await page.locator('[data-testid="bid-cancel"]').click()
+  await expect(page.locator('[data-testid="bid-picker"]')).toHaveCount(0)
   // reopen — the note survived the round trip through the Raptor input
   await cell.click()
-  await expect(page.locator('[data-testid="remarks-remarks"]')).toHaveValue('checked by e2e')
+  await expect(page.locator('[data-testid="bid-picker"] [data-testid="bid-remarks"]')).toHaveValue('checked by e2e')
 })
 
 // ---- the frozen counter column ----

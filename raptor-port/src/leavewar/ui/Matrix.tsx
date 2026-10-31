@@ -1,6 +1,6 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { isCommitCode, type Contrib, type DayView } from '../engine/dayview'
+import { isCommitCode, isLeaveCode, isSickCode, type Contrib, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
@@ -3431,8 +3431,16 @@ export function Matrix() {
      me to add additional input from there?") opened the bid window, the course's line on top; since his D1548 every day
      filled from the Inputs page does (`openHeld`, above). Each entry's line: its box, its half, its typed words — but his
      own leave's words stand in the window's Remarks box, where he changes them today (D1354, D1552), so its line leaves them out */
+  /* (only where one leave fills the day — where his remarks window opened before; a day of two halves opened the day's
+     list, its words read only, and one box could hold only one of them — the scenario designer's 4) */
+  const openHeldOwn = !!openHeld && openHeld.held.length === 1 && role !== 'admin' && !!remarkRow && String(remarkRow.iid) === openHeld.held[0]!.c.id
   const openHeldLines = openHeld
-    ? openHeld.held.map(h => heldLine(h.c, h.portion, h.hours, role !== 'admin' && !!remarkRow && String(remarkRow.iid) === h.c.id))
+    ? openHeld.held.map(h => heldLine(h.c, h.portion, h.hours, openHeldOwn))
+    : null
+  /* A HALF HELD BY LEAVE OR A MEDICAL BESIDE A HALF THE WAR TAKES LEAVE OVER (an OD, a course, an Other — the scenario
+     designer's 1): Whole day greyed and the other half offered, as D1543 does beside approved leave */
+  const openHeldLeave = openHeld && !openHeld.noLeave
+    ? (() => { const h = openHeld.held.find(x => x.portion !== 'full' && (isLeaveCode(x.c.code) || isSickCode(x.c.code))); return h ? { half: h.portion as 'am' | 'pm', code: h.c.code } : null })()
     : null
   const openFreeHalf = open && lockedOnWar(openView)
     && canBidOn(open.id, open.date)
@@ -4456,7 +4464,7 @@ export function Matrix() {
              changed on the Inputs page (the fresh read's R1, round 3's check) */
           /* …and on a day filled from the Inputs page, his own leave's (D1552 — what his remarks window held, D1354); an admin
              reads the entry's words in its line there, as the note never let him change them here */
-          approvedRow={openFreeHalf ? null : openHeld ? (role !== 'admin' ? remarkRow : null) : adminNoteRow}
+          approvedRow={openFreeHalf ? null : openHeld ? (openHeldOwn ? remarkRow : null) : adminNoteRow}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
@@ -4468,6 +4476,7 @@ export function Matrix() {
           heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}
           heldDays={openHeldLines}
           noLeave={!!openHeld?.noLeave}
+          heldLeave={openHeldLeave}
           heldOther={openFreeHalf ? heldCommitment(openView) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out

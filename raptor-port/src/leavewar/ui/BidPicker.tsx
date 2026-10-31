@@ -102,6 +102,7 @@ export function BidPicker({
   heldOther,
   heldDays,
   noLeave = false,
+  heldLeave,
   approvedRow,
   dayState,
   onClose,
@@ -200,6 +201,9 @@ export function BidPicker({
   /** THE WAR TAKES NO LEAVE OVER WHAT HOLDS THE DAY (his D1552 — leave or a medical, `dayview.ts barsWrite`): the eight leave
    *  buttons are not drawn while the window acts on the one day; a range picked brings them back for the days around it */
   noLeave?: boolean
+  /** ONE HALF HELD BY LEAVE OR A MEDICAL filed on the Inputs page, the other by what the war takes leave over (an OD, a
+   *  course, an Other): Whole day greyed and the other half offered, as beside approved leave (his D1543) */
+  heldLeave?: { half: 'am' | 'pm'; code: string } | null
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
@@ -216,7 +220,8 @@ export function BidPicker({
      changed from it keeps its half. A whole day, and every other day, still opens on "Whole day". */
   /* (never on a day filled from the Inputs page: its leave is the Inputs page's, named in its line, not the war's to light — D1548) */
   const dayLeave = !onlyPortion && !heldDays?.length ? leaveOn(current, decide?.state ?? dayState) : null
-  const [portion, setPortion] = useState<Portion>(onlyPortion ?? dayLeave?.portion ?? 'full')
+  /* (beside a half of Inputs leave the other half opens lit — Whole day is greyed there, D1543) */
+  const [portion, setPortion] = useState<Portion>(onlyPortion ?? (heldLeave ? (heldLeave.half === 'am' ? 'pm' : 'am') : dayLeave?.portion ?? 'full'))
   /* "APPROVE WHAT I ENTER" (D1147, D1186; D1302): an admin's switch in the title bar, remembered on this device until he
      changes it — on where he never has (BidBits.tsx useApproveMemory) */
   const isAdmin = getState().role === 'admin'
@@ -233,9 +238,13 @@ export function BidPicker({
      only the free half (`onlyPortion`). A leave pressed with the held half lit says which half to pick, in place of the war's
      "already taken … clear it first". A pending bid on a half is not this: it is re-typed from its window, as before. Only on
      the one day — a range picked widens the Duration to days this one half does not speak for. */
-  const heldHalf: 'am' | 'pm' | null = !span && dayLeave && dayLeave.portion !== 'full' && (decide?.state ?? dayState) === 'approved' ? dayLeave.portion : null
-  const heldHalfSay = heldHalf && dayLeave
-    ? `The ${heldHalf === 'am' ? 'morning' : 'afternoon'} is ${codeInWords(dayLeave.type)}. Pick ${heldHalf === 'am' ? 'PM' : 'AM'} to place the ${heldHalf === 'am' ? 'afternoon' : 'morning'}.`
+  /* …and beside a half of leave or a medical filed on the Inputs page, its other half an OD, a course or an Other (`heldLeave`) */
+  const heldHalf: 'am' | 'pm' | null = span ? null
+    : heldLeave ? heldLeave.half
+    : dayLeave && dayLeave.portion !== 'full' && (decide?.state ?? dayState) === 'approved' ? dayLeave.portion : null
+  const heldType = heldLeave ? heldLeave.code : dayLeave?.type
+  const heldHalfSay = heldHalf && heldType
+    ? `The ${heldHalf === 'am' ? 'morning' : 'afternoon'} is ${codeInWords(heldType)}. Pick ${heldHalf === 'am' ? 'PM' : 'AM'} to place the ${heldHalf === 'am' ? 'afternoon' : 'morning'}.`
     : ''
   /* A LEAVE OF SEVERAL DAYS OPENS WHOLE (his D1448, D1461 — version 2): the leave the day tapped belongs to (the store's
      `leaveRunAt` — the joined bar's entry, the Approvals list's line), and the choice at the Duration row's right end of

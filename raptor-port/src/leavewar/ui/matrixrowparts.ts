@@ -80,7 +80,7 @@ export function freeHalfBeside(v: DayView | undefined): Portion | null {
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
 }
 
-/** A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — [LW-HELD-DAY-ADD]; widening D1395's course day): every entry on it
+/** A DAY FILLED FROM THE Inputs page (his D1548, D1553 — [LW-HELD-DAY-ADD]; widening D1395's course day): every entry on it
  *  an absence filed there (`offWar` — leave not approved on the war, a medical, a course, an overseas duty, a commitment under
  *  Unavailable), between them holding both halves of the day — one entry over the whole day, or a morning and an afternoon —
  *  and nothing flagged. A tap there opens the bid window with one line for each, so more can still be added (Grant OIL first).

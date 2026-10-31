@@ -1,0 +1,260 @@
+[
+ {
+  "id": "D1-open",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line: OMLWhole day“Medical leave — grounded”· change it on the Inputs page",
+  "pics": [
+   "d1-gambit-oml.png"
+  ]
+ },
+ {
+  "id": "D1-buttons",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "leave grid false, Grant OIL true, Approve false, Delete false, Move false",
+  "pics": []
+ },
+ {
+  "id": "D2-grant",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "pressed \"Give HO\"; window closed; cell now OML HO",
+  "pics": [
+   "d2-gambit-after-grant.png"
+  ]
+ },
+ {
+  "id": "D3-reopen",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "reopened with the award: daylist-sheet",
+  "pics": [
+   "d3-gambit-reopen.png"
+  ]
+ },
+ {
+  "id": "D4-undo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after Undo the cell reads OML; a tap opens bid-picker",
+  "pics": []
+ },
+ {
+  "id": "D5-range",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "leave grid back with the range: true; note \"1 day not written: already holding leave or a medical.\"; 24 Jul LL; 23 Jul OML",
+  "pics": [
+   "d5-range-note.png"
+  ]
+ },
+ {
+  "id": "D6-leave",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line: LLWhole day“Local leave”· change it on the Inputs page; Remarks box \"\"",
+  "pics": [
+   "d6-quill-ll.png"
+  ]
+ },
+ {
+  "id": "D7-od",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line: ODWhole day“Overseas duty — exercise, off island”· change it on the Inputs page; leave buttons true",
+  "pics": [
+   "d7-nomad-od.png"
+  ]
+ },
+ {
+  "id": "D7-leave-over-od",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell now LL OD; window closed",
+  "pics": [
+   "d7-nomad-after.png"
+  ]
+ },
+ {
+  "id": "D8-other",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line: OTH06:00–18:00“Station board”· change it on the Inputs page",
+  "pics": [
+   "d8-comet-other.png"
+  ]
+ },
+ {
+  "id": "D9-halves",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened bid-picker; lines: LLAM“Dentist run”· change it on the Inputs page | OMLPM“Medically down”· change it on the Inputs page",
+  "pics": [
+   "d9-drifter-halves.png"
+  ]
+ },
+ {
+  "id": "D10-behind",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "window closed; cyan marks left on nothing",
+  "pics": [
+   "d10-behind.png"
+  ]
+ },
+ {
+  "id": "D11-hours",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line: C09:00–14:00“Clinic”· change it on the Inputs page",
+  "pics": [
+   "d11-cobra-hours.png"
+  ]
+ },
+ {
+  "id": "D12-file-od",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after OD: OML OD; after Undo: OML",
+  "pics": []
+ },
+ {
+  "id": "D13-mixed",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "lines LLAM“School run”· change it on the Inputs page | OTH13:00–17:00“Station board”· change it on the Inputs page; Whole day greyed true; PM lit true; OIL saved: OIL 721-1439 (approved on the war); cell draws LL +2",
+  "pics": [
+   "d13-hex-mixed.png",
+   "d13-hex-after.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "P1-open",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line OMLWhole day“Medical leave — grounded”· change it on the Inputs page",
+  "pics": [
+   "p1-chromium-gambit-oml.png"
+  ]
+ },
+ {
+  "id": "P2-range-onoff",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "range on: window 231–860 of 874, leave buttons false; back off: 608–860; no sideways scroll true",
+  "pics": [
+   "p2-chromium-range-on.png"
+  ]
+ },
+ {
+  "id": "P1-in-view",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "cell 581–600, window 608–860 of 874",
+  "pics": []
+ },
+ {
+  "id": "P-errors",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "P1-open",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line OMLWhole day“Medical leave — grounded”· change it on the Inputs page",
+  "pics": [
+   "p1-webkit-gambit-oml.png"
+  ]
+ },
+ {
+  "id": "P2-range-onoff",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "range on: window 237–860 of 874, leave buttons false; back off: 614–860; no sideways scroll true",
+  "pics": [
+   "p2-webkit-range-on.png"
+  ]
+ },
+ {
+  "id": "P1-in-view",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "cell 589–607, window 614–860 of 874",
+  "pics": []
+ },
+ {
+  "id": "P-errors",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "M1-open",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line LLWhole day· change it on the Inputs page; box \"Family wedding\"; Grant OIL false",
+  "pics": [
+   "m1-ranger-open.png"
+  ]
+ },
+ {
+  "id": "M2-words",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "his leave's remarks now: Family wedding, Penang",
+  "pics": []
+ },
+ {
+  "id": "M3-more",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "the ⋯ holds: Attach",
+  "pics": [
+   "m3-ranger-more.png"
+  ]
+ },
+ {
+  "id": "M4-closed",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "opened remarks-sheet",
+  "pics": [
+   "m4-ranger-closed.png"
+  ]
+ },
+ {
+  "id": "M5-other-man",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "opened raptor-sheet",
+  "pics": [
+   "m5-gambit-as-member.png"
+  ]
+ },
+ {
+  "id": "M-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "K1-keys",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "focus in the window on open: held day false, a free day false (the same); Tab reaches bid-approve-tick → bid-cancel → bid-remarks → bid-till → BUTTON → portion-full → portion-am → portion-pm → span-range → bid-file-CSE → bid-file-OD → bid-oil; Escape closes it",
+  "pics": []
+ }
+]

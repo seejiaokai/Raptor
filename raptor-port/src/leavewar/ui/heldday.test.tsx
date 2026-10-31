@@ -15,6 +15,8 @@ import { getState, initStore, setPostOut, setRole, setViewer } from '../state/st
 import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
 import { Matrix } from './Matrix'
+import { inputsFilledDay } from './matrixrowparts'
+import type { Contrib, DayView } from '../engine/dayview'
 
 const ISNAP = JSON.stringify(INPUTS)
 const P = 'slammed'
@@ -165,6 +167,70 @@ describe('a morning and an afternoon both filed on the Inputs page (D1553)', () 
     expect(ls.find(l => l.includes('LL'))).toContain('AM')
     expect(ls.find(l => l.includes('OML'))).toContain('PM')
     expect(within(sheet()).queryByTestId('bid-leave-grid'), 'leave and a medical hold both halves').toBeNull()
+  })
+  /* THE SCENARIO DESIGNER'S 1 (the bug check, 1 Nov 26): a morning of leave beside an afternoon overseas duty — leave may go
+     over the OD, never over the leave, so the window does what D1543 does beside approved leave: Whole day greyed, the
+     afternoon offered and lit, the morning's leave named if pressed */
+  it('a morning of leave beside an afternoon OD: Whole day greyed, the afternoon lit, a leave lands there', () => {
+    plant('LL', '', { half: 'am' })
+    plant('OD', 'Exercise', { half: 'pm', iid: 'h-OD-pm' })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(lines()).toHaveLength(2)
+    expect((within(sheet()).getByTestId('portion-full') as HTMLButtonElement).disabled, 'Whole day greyed').toBe(true)
+    expect(within(sheet()).getByTestId('portion-pm').getAttribute('aria-pressed'), 'the free-of-leave half lit').toBe('true')
+    fireEvent.click(within(sheet()).getByTestId('bid-OL'))
+    const all = getState().views[P]?.[D]?.all ?? []
+    expect(all.filter(c => c.code === 'OL'), 'the OL landed on the afternoon').toHaveLength(1)
+  })
+  it('the same, the morning picked: a leave pressed names the morning’s leave, nothing is written', () => {
+    plant('LL', '', { half: 'am' })
+    plant('OD', 'Exercise', { half: 'pm', iid: 'h-OD-pm' })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    fireEvent.click(within(sheet()).getByTestId('portion-am'))
+    fireEvent.click(within(sheet()).getByTestId('bid-OL'))
+    expect(within(sheet()).getByTestId('span-note').textContent).toBe('The morning is LL. Pick PM to place the afternoon.')
+    expect((getState().views[P]?.[D]?.all ?? []).filter(c => c.code === 'OL')).toHaveLength(0)
+  })
+  /* the designer's 4: a member's two halves of his own leave — before, the day's list showed both words read only; one box
+     could hold only one of them, so the words stay in their lines, read only, as the list had them */
+  it('a member’s own two halves of leave: each line keeps its words, the Remarks box is for what he adds', () => {
+    plant('LL', 'Dentist run', { half: 'am' })
+    plant('OL', 'Ferry', { half: 'pm', iid: 'h-OL-pm' })
+    setRole('member')
+    setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    const ls = lines()
+    expect(ls.find(l => l.includes('LL'))).toContain('Dentist run')
+    expect(ls.find(l => l.includes('OL'))).toContain('Ferry')
+    expect((within(sheet()).getByTestId('bid-remarks') as HTMLInputElement).value).toBe('')
+  })
+})
+
+/* THE DAYS THAT MUST NOT TAKE THIS PATH (the designer's 14, 15): anything the war wrote on the day too, a clash, a spill from
+   the night before, a third entry, or leave the war approved — each opens what it opened before */
+describe('inputsFilledDay — only a day filled from the Inputs page', () => {
+  const abs = (code: string, win: readonly [number, number], o: Partial<Contrib> = {}): Contrib => ({ id: `a-${code}-${win[0]}`, kind: 'absence', code, win, ...o })
+  const view = (all: Contrib[], o: Partial<DayView> = {}): DayView => ({ main: all[0] ?? null, all, code: null, state: null, mark: '', amber: false, conflicts: [], clashTails: [], charges: [], away: 0, annualFull: false, ...o } as unknown as DayView)
+  const AMw = [0, 720] as const, PMw = [721, 1439] as const, FULLw = [0, 1439] as const
+  it('one whole entry, or a morning and an afternoon, filed there: yes', () => {
+    expect(inputsFilledDay(view([abs('OML', FULLw)]))?.noLeave).toBe(true)
+    expect(inputsFilledDay(view([abs('OD', FULLw)]))?.noLeave).toBe(false)
+    expect(inputsFilledDay(view([abs('LL', AMw), abs('OML', PMw)]))?.held.map(h => h.portion)).toEqual(['am', 'pm'])
+  })
+  it('leave the war approved: no', () => expect(inputsFilledDay(view([abs('LL', FULLw, { lw: true })]))).toBeNull())
+  it('beside the app’s own OIL credit, an award, or a bid: no', () => {
+    expect(inputsFilledDay(view([abs('OML', FULLw), { id: 'c', kind: 'credit', code: 'FO', win: FULLw, auto: true }]))).toBeNull()
+    expect(inputsFilledDay(view([abs('OML', FULLw), { id: 'w', kind: 'credit', code: 'HO', win: AMw }]))).toBeNull()
+    expect(inputsFilledDay(view([abs('LL', AMw), { id: 'r', kind: 'request', code: 'OL', win: PMw, state: 'pending' }]))).toBeNull()
+  })
+  it('a clash, a spill from the night before, three entries, a half left free: no', () => {
+    expect(inputsFilledDay(view([abs('OML', FULLw)], { amber: true }))).toBeNull()
+    expect(inputsFilledDay(view([abs('OD', FULLw, { spill: true })]))).toBeNull()
+    expect(inputsFilledDay(view([abs('LL', AMw), abs('OML', PMw), abs('OD', PMw)]))).toBeNull()
+    expect(inputsFilledDay(view([abs('LL', AMw)]))).toBeNull()
   })
 })
 
