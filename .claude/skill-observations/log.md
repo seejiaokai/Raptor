@@ -3028,3 +3028,19 @@ reset mode disables before reusing it.
 **Suggested improvement:** In The Method, step 1: after staging, assert each staged record is ON SCREEN in the today state (the cell holds its box, the window names it) before any proposal is drawn, and draw "today" for every role the change touches before designing the proposed state, since a role may already have a window of its own there.
 
 **Principle:** A fixture is staged only when the screen shows it; check the today picture's premise as strictly as the proposal's, and look at today for each role before deciding what changes.
+
+
+### Observation 762: The overnight guide's "wait inside the turn" meets helpers that launch in the background
+
+**Status:** OPEN
+**Date:** 2026-11-01
+**Session context:** The night of 1–2 Nov 26 (Leave War batch + start-load trim), run from the owner's phone.
+**Skill:** overnight
+**Type:** internal
+**Phase/Area:** Part 1 step 9 and Part 2 ("wait on a long run INSIDE the turn … never by ending the turn"); D1416 (each job to one fresh helper inside the night's chat)
+
+**Issue:** D1416 sends each job to a helper inside the night's chat, but the Agent tool here launches helpers in the background and returns at once, so the night's chat cannot wait for one in a foreground call; ending the turn is the only way to wait. The chat bridged the gap with a 30-minute silent Monitor timer re-armed on each expiry, plus the keep-awake hold (`until: session_idle`). It worked (the helper ran ~1 h 50 min and reported back), but the guide does not say so, and the job-1 helper's pull request also came up with the app's Auto-fix switched ON by itself (D1090 — switched off at once).
+
+**Suggested improvement:** In step 9 / Part 2, say how to wait on a background helper: keep-awake `session_idle`, then a silent re-armed Monitor timer as the heartbeat (no polling of the helper's transcript); and after any helper opens a pull request, check Auto-fix (`ccd_pr get_status`) and switch it off (D1090).
+
+**Principle:** A rule about how to wait must name the waiting mechanism the tools actually offer; when a delegated step opens a pull request, the coordinator re-applies the project's PR switches itself.
