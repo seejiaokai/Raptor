@@ -396,10 +396,12 @@ describe('a cell Raptor owns', () => {
   // Seed: TATA's OIL on 9 Jan came in through Raptor's input tab.
   const RAPTOR = 'cell-tata-2026-01-09'
 
-  it('opens a sheet that explains itself rather than offering a picker', () => {
+  /* since his D1548 / D1552 an admin's tap opens the bid window so more can be added, its line explaining the day ("change
+     it on the Inputs page") — still no leave offered over it, nothing to delete or decide */
+  it('opens a window that explains itself rather than offering leave', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(RAPTOR))
-    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    expect(screen.getByTestId('bid-heldday').textContent).toContain('change it on the Inputs page')
     expect(screen.queryByTestId('bid-LL')).toBeNull()
     expect(screen.queryByTestId('bid-clear')).toBeNull()
   })
@@ -409,7 +411,7 @@ describe('a cell Raptor owns', () => {
     setRole('admin')
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(RAPTOR))
-    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    expect(screen.getByTestId('bid-heldday')).toBeTruthy()   // the bid window since D1548
     expect(screen.queryByTestId('decide-approve')).toBeNull()
     expect(screen.queryByTestId('decide-refuse')).toBeNull()
   })

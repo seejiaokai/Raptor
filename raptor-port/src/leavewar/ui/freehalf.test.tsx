@@ -70,11 +70,15 @@ describe('a half filed on the Inputs page leaves the other half biddable', () =>
     expect(v?.amber).toBe(false)
   })
 
-  it('a WHOLE day filed on the form still opens the read-only sheet', () => {
+  /* CHANGED by his D1548 (31 Oct 26 — "i cant put anymore inputs when the date is filled from the inputs page"): a WHOLE day
+     filed on the form opens the bid window too, the leave named in its line and no leave offered over it (D1552) — pinned
+     whole in heldday.test.tsx */
+  it('a WHOLE day filed on the form opens the bid window, the leave in its line, no leave offered', () => {
     fileAbsence(P, 'LL', D)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.getByTestId('bid-heldday').textContent).toContain('LL')
+    expect(screen.queryByTestId('bid-leave-grid')).toBeNull()
   })
 
   it('the filed leave itself is still not editable here — the lock is untouched', () => {
@@ -112,12 +116,15 @@ describe('beside a medical recorded with hours', () => {
     INPUTS.unshift({ iid: `m${s}`, person: P, type: 'ATT C', date: 'Feb 10', yr: 2026, allday: false, s, e, remarks: '', mod: '2026-01-01' })
     syncAbsences()
   }
-  it('09:00–14:00 runs into the afternoon: no half is offered — the tap reads the day, it does not bid', () => {
+  /* CHANGED by his D1548: it holds the whole day, so the tap opens the bid window — no half and no leave offered (D1552),
+     its line giving the medical's hours */
+  it('09:00–14:00 runs into the afternoon: no half and no leave is offered — its line gives the hours', () => {
     plantMed(540, 840)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${P}-${D}`))
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
-    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('raptor-sheet')).toBeNull()
+    expect(screen.getByTestId('bid-heldday').textContent).toContain('09:00–14:00')
+    expect(screen.queryByTestId('bid-leave-grid')).toBeNull()
   })
   it('08:00–11:00 leaves the afternoon free, and the afternoon bid lands', () => {
     plantMed(480, 660)

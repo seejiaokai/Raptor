@@ -83,12 +83,14 @@ describe('the remarks editor', () => {
 
   /* WAS "does not open before the war is published" (a tap was then the read-only Raptor sheet). REVERSED by D1177's
      reading, D418 narrowed: "a member adds remarks to his approved leave at any time" — an OPEN day included. */
-  it('opens for his own leave on a day still OPEN for bidding too', () => {
+  /* CHANGED by his D1548 / D1552: on a day still OPEN for him his whole day of leave filed on the Inputs page opens the bid
+     window, so he can still add to it — its Remarks box his leave's own words, as this window held them (D1354) */
+  it('on a day still OPEN for bidding his own leave opens the bid window, its words in the Remarks box', () => {
     setRole('member'); setViewer(PERSON)
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
-    expect(screen.getByTestId('remarks-sheet')).toBeTruthy()
-    expect(screen.queryByTestId('bid-picker')).toBeNull()
+    expect(screen.queryByTestId('remarks-sheet')).toBeNull()
+    expect((screen.getByTestId('bid-remarks') as HTMLInputElement).value, 'his words, the till date its own tick').toBe('Bali')
     expect(screen.queryByTestId('closed-note')).toBeNull()
   })
 
@@ -122,7 +124,9 @@ describe('the remarks editor', () => {
     render(<Matrix />)
     fireEvent.click(screen.getByTestId(CELL))
     expect(screen.queryByTestId('remarks-sheet')).toBeNull()
-    expect(screen.getByTestId('raptor-sheet')).toBeTruthy()
+    /* the bid window since his D1548, the leave read in its line and its Remarks box empty, for what he adds */
+    expect(screen.getByTestId('bid-heldday')).toBeTruthy()
+    expect((screen.getByTestId('bid-remarks') as HTMLInputElement).value).toBe('')
   })
 
   it('is the read-only Raptor sheet, NOT the editor, for a member on someone else’s leave', () => {

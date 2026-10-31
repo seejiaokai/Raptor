@@ -6,7 +6,7 @@ import { addDays, canEditRow, isBiddable, legacyViews, lockedOnWar, type Period,
 import { leaveFiguresOf, leaveWorldOf, moveGroupTo, moveGroupPriorityTo, moveManningRowTo, moveRosterRow, reqRunKey } from '../state/store'
 import { annualUsedIn, type PersonFigures } from '../engine/leaveyear'
 import type { RequestRec, WarRec } from '../engine/warrecs'
-import { isCommitCode, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
+import { AM, FULL, PM, isCommitCode, isLeaveCode, isSickCode, offWar, portionOf, touchesAM, touchesPM, winsOf, type Contrib, type DayView } from '../engine/dayview'
 import type { Portion } from '../engine'
 
 /* The two kinds of row the one drag machine (startRowDrag) can reorder. */
@@ -78,6 +78,34 @@ export function freeHalfBeside(v: DayView | undefined): Portion | null {
   const am = holding.some(c => winsOf(c).some(touchesAM))
   const pm = holding.some(c => winsOf(c).some(touchesPM))
   return am && !pm ? 'pm' : pm && !am ? 'am' : null
+}
+
+/** A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — [LW-HELD-DAY-ADD]; widening D1395's course day): every entry on it
+ *  an absence filed there (`offWar` — leave not approved on the war, a medical, a course, an overseas duty, a commitment under
+ *  Unavailable), between them holding both halves of the day — one entry over the whole day, or a morning and an afternoon —
+ *  and nothing flagged. A tap there opens the bid window with one line for each, so more can still be added (Grant OIL first).
+ *  Null otherwise, and the day behaves as before: a half free is `freeHalfBeside`'s window; a day the war has written on too
+ *  (a bid, an award, the app's own credit), a clash, a spill from the night before or more entries opens what it always did.
+ *  `noLeave` (his D1552): every entry is leave or a medical, over which the war refuses any leave (`dayview.ts barsWrite`), so
+ *  the window draws no leave buttons; over an overseas duty, a course or an Other leave may still go, and they stay. */
+export function inputsFilledDay(v: DayView | undefined): { held: Array<{ c: Contrib; portion: Portion; hours?: readonly [number, number] }>; noLeave: boolean } | null {
+  if (!v || !v.all.length || v.amber || v.all.length > 2) return null
+  if (!v.all.every(c => c.kind === 'absence' && !c.spill && offWar(c))) return null
+  /* both halves held by the REAL hours (the absence-record re-test, W5-F4): a medical recorded 09:00–14:00 is drawn as a
+     morning, yet its hours run into the afternoon, and every door judges by them — so it holds the day, and its line says
+     its hours rather than "AM"; the half each entry holds is what the doors read too */
+  const am = (c: Contrib) => winsOf(c).some(touchesAM), pm = (c: Contrib) => winsOf(c).some(touchesPM)
+  if (!(v.all.some(am) && v.all.some(pm))) return null
+  const held = v.all.map(c => {
+    const ws = winsOf(c), w = ws[0]!
+    const plain = ws.length === 1 && ((w[0] === FULL[0] && w[1] === FULL[1]) || (w[0] === AM[0] && w[1] === AM[1]) || (w[0] === PM[0] && w[1] === PM[1]))
+    const portion: Portion = am(c) && pm(c) ? 'full' : am(c) ? 'am' : 'pm'
+    return { c, portion, ...(plain || ws.length !== 1 ? {} : { hours: [w[0], w[1]] as const }) }
+  })
+  /* two entries: a morning and an afternoon that do not meet (a clash would have flagged the day); one whole entry else */
+  if (held.length === 2 && !(held.some(h => h.portion === 'am') && held.some(h => h.portion === 'pm'))) return null
+  held.sort((a, b) => (a.portion === 'pm' ? 1 : 0) - (b.portion === 'pm' ? 1 : 0))   // the morning's line first
+  return { held, noLeave: held.every(h => isLeaveCode(h.c.code) || isSickCode(h.c.code)) }
 }
 
 /** The day holds one of the viewer's OWN hand-given OIL awards (D261) — the record he may always read back, whatever

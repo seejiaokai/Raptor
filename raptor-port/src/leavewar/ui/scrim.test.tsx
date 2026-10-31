@@ -85,6 +85,8 @@ const SHEETS: { name: string; testid: string; open: () => void; gone?: true }[] 
       // by D1177: it was the published stage's, and an admin's tap too; an admin's tap now opens the decide window)
       INPUTS.push({ iid: 'scrim-rmk', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, allday: true, remarks: 'x' })
       syncAbsences()
+      /* on a day CLOSED for him: on an open day his whole day of leave opens the bid window since his D1548 */
+      setRole('admin'); closeDates('2026-02-11', '2026-02-11')
       setRole('member')
       setViewer('dusk')
       render(<Matrix />)

@@ -71,6 +71,10 @@ function leaveOn(current: string, state?: BidState): { type: string; portion: Po
   return { type: c.type, portion: c.portion }
 }
 
+/** One entry of a day filled from the Inputs page, as the window's top line names it (his D1548, D1553): its code, the half
+ *  it holds, a medical's hours where it was recorded with them, its typed words, where it is attached */
+export type HeldLine = { code: string; portion: Portion; hours?: string; remarks: string; to?: string }
+
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the one-day window's leave, range, OIL, posting and words rows share one set of state, refs and writes (its below-zero ask, its Delete's confirm, the words saved before an action); split, its hooks and the order its effects run in would move
 export function BidPicker({
   callsign,
@@ -96,7 +100,8 @@ export function BidPicker({
   onlyPortion,
   heldBy,
   heldOther,
-  heldDay,
+  heldDays,
+  noLeave = false,
   approvedRow,
   dayState,
   onClose,
@@ -187,10 +192,14 @@ export function BidPicker({
   /** THE HELD HALF IS A COMMITMENT UNDER UNAVAILABLE (his D1371 — an Other, an Attach…): its code and remarks, for the one
    *  line that names it — its box, its half, its remarks and where it is changed — in place of the leave's sentence */
   heldOther?: { code: string; remarks: string; to?: string } | null
-  /** A COURSE HOLDING THE WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY], drawn lw-m3n-draw.mjs d7): a short tap opens this
-   *  window so more can be added (Grant OIL…), with ONE line on top for the course — its box, "Whole day", its remarks,
-   *  and where it is changed — D1371's held-half line widened to a whole day */
-  heldDay?: { code: string; remarks: string; to?: string } | null
+  /** A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — a course's day first, D1395, drawn lw-m3n-draw.mjs d7; every
+   *  such day drawn lw-held-draw.mjs): a short tap opens this window so more can be added (Grant OIL…), with ONE line on top
+   *  for each entry — its box, its half (Whole day, AM, PM, or a medical's hours), its remarks, and where it is changed —
+   *  D1371's held-half line widened to the whole day */
+  heldDays?: readonly HeldLine[] | null
+  /** THE WAR TAKES NO LEAVE OVER WHAT HOLDS THE DAY (his D1552 — leave or a medical, `dayview.ts barsWrite`): the eight leave
+   *  buttons are not drawn while the window acts on the one day; a range picked brings them back for the days around it */
+  noLeave?: boolean
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
@@ -205,7 +214,8 @@ export function BidPicker({
   /* …BUT A HALF DAY OPENS ON ITS OWN HALF (his D1331, round 3): on a day holding half a day of leave the Duration row
      opens with that half lit, AM for a morning, PM for an afternoon, so the window says it is a morning — and a leave
      changed from it keeps its half. A whole day, and every other day, still opens on "Whole day". */
-  const dayLeave = !onlyPortion ? leaveOn(current, decide?.state ?? dayState) : null
+  /* (never on a day filled from the Inputs page: its leave is the Inputs page's, named in its line, not the war's to light — D1548) */
+  const dayLeave = !onlyPortion && !heldDays?.length ? leaveOn(current, decide?.state ?? dayState) : null
   const [portion, setPortion] = useState<Portion>(onlyPortion ?? dayLeave?.portion ?? 'full')
   /* "APPROVE WHAT I ENTER" (D1147, D1186; D1302): an admin's switch in the title bar, remembered on this device until he
      changes it — on where he never has (BidBits.tsx useApproveMemory) */
@@ -699,17 +709,19 @@ export function BidPicker({
       <DayLine days={lineDays} />
       {/* who placed the day's entries and who decided them (M4 8.6 — r7-13): one compact line an entry */}
       {!span && <PlacedLine personId={personId} date={date} />}
-      {heldDay && (
-        <div className="bidsheet-row">
+      {/* keyed by its kind and its half: a day holds one entry a half, or one over the whole day (matrixrowparts inputsFilledDay) */}
+      {heldDays?.map(h => (
+        <div className="bidsheet-row" key={`${h.code}-${h.portion}`}>
           <span className="note bp-wide bp-heldline" data-testid="bid-heldday">
-            <EntryBox code={heldDay.code} fill="a" place="whole" />
-            <span>Whole day</span>
-            {heldDay.to && <span>· {heldDay.to}</span>}
-            {heldDay.remarks && <span className="bp-heldwords">“{heldDay.remarks}”</span>}
+            <EntryBox code={h.code} fill="a" place={h.portion === 'am' ? 'top' : h.portion === 'pm' ? 'bot' : 'whole'} />
+            {/* its half as AM / PM after its box (his D1525), a medical recorded with hours its hours */}
+            <span>{h.hours ?? (h.portion === 'am' ? 'AM' : h.portion === 'pm' ? 'PM' : 'Whole day')}</span>
+            {h.to && <span>· {h.to}</span>}
+            {h.remarks && <span className="bp-heldwords">“{h.remarks}”</span>}
             <span>· change it on the Inputs page</span>
           </span>
         </div>
-      )}
+      ))}
 
       {/* ROUND 3 OF THE WINDOW (his D1311, approved whole — D1332, D1334): its rows carry no labels — each row's buttons say
           what they are, and a screen reader still hears each row's name; the rows stand in one order on every day — what
@@ -881,7 +893,13 @@ export function BidPicker({
         </div>
       )}
 
-      <div className="bidsheet-row" role="group" aria-label="Which leave">
+      {/* NO LEAVE BUTTONS WHERE THE WAR REFUSES LEAVE (his D1552): a day held whole by leave or a medical filed on the Inputs
+          page — absent, not dimmed (greyed, eight of them read as "no balance left"); a range picked brings them back, the
+          held day skipped with its reason. A note meant for this row (a filing refused) stands on its own row instead. */}
+      {noLeave && !span && note && noteAt === 'leave' && (
+        <div className="bidsheet-row"><span className="note warn" data-testid="span-note">{note}</span></div>
+      )}
+      {!(noLeave && !span) && <div className="bidsheet-row" role="group" aria-label="Which leave">
         {/* Straight off the catalogue, so the eight types stay defined in one
             place. Duty, medical and courses are absent by construction —
             they are not leave types, and offering them here would invite a
@@ -894,7 +912,7 @@ export function BidPicker({
         <LeaveButtons portion={portion} onPick={write} filled={approving} lit={lit}
           figure={wouldLeave ? (() => { const ds = selCells().map(c => c.date); return (code: string) => wouldLeave(code, ds)?.after ?? null })() : undefined} />
         {note && noteAt === 'leave' && <span className="note warn" data-testid="span-note">{note}</span>}
-      </div>
+      </div>}
 
       {/* Medical is MEMBER-FILED ONLY (owner, 13 Sep 26, reversing the 17 Aug
           "management marks it" rule): the war no longer offers the medical

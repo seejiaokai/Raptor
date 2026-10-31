@@ -1508,9 +1508,12 @@ test('the Raptor mark is painted, and an ordinary bid carries none', async ({ pa
   expect(parseFloat(plain.width) || 0).toBe(0)
 })
 
+/* since his D1548 / D1552 the admin's tap opens the bid window so more can be added (Grant OIL…), the entry named in its
+   line — still no leave offered over it and nothing to decide */
 test('a cell Raptor owns offers no way to change it', async ({ page }) => {
   await page.locator('[data-testid="cell-prowler-2026-01-09"]').click()
-  await expect(page.locator('[data-testid="raptor-sheet"]')).toBeVisible()
+  await expect(page.locator('[data-testid="bid-heldday"]')).toContainText('change it on the Inputs page')
+  await expect(page.locator('[data-testid="bid-oil"]')).toBeVisible()
   await expect(page.locator('[data-testid="bid-LL"]')).toHaveCount(0)
   await expect(page.locator('[data-testid="decide-approve"]')).toHaveCount(0)
 })
