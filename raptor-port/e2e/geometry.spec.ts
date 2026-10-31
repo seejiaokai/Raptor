@@ -451,6 +451,47 @@ test.describe('the week pans by whole day boxes', () => {
     await page.waitForTimeout(300)
     expect(await settle(page, '#eWeek'), 'an edit holds the scroll').toBe(before)
   })
+
+  /* his D1529 (31 Oct 26 — "A — a day at a time"): a man carried with the mouse and held at the week's side steps the
+     week one day, as one ‹ / › press does, after a short wait; a pass through the side moves nothing; Monday and Sunday
+     are the ends. On his PC's size, with the crew panel open — the week's right side is where it meets the panel. */
+  test('a man held at the week\'s side steps the week a day, and never past Monday (D1529)', async ({ page }) => {
+    await page.setViewportSize({ width: 1536, height: 730 })
+    await login(page)
+    await go(page, 'editsched')
+    await scrollTo(page, '#eWeek', 0)
+    const g = await page.evaluate(() => {
+      const w = document.getElementById('eWeek')!, r = w.getBoundingClientRect()
+      const ds = w.querySelectorAll('.day:not(.peek)')
+      const p = [...document.querySelectorAll('#eRoster .rpuck[data-person] .puck')].map(e => e.getBoundingClientRect()).find(b => b.width && b.top > 250 && b.bottom < 650)
+      return { right: Math.round(r.right), step: Math.round((ds[1] as HTMLElement).offsetLeft - (ds[0] as HTMLElement).offsetLeft),
+        crew: p ? { x: Math.round(p.left + p.width / 2), y: Math.round(p.top + p.height / 2) } : null }
+    })
+    expect(g.crew, 'a man in the crew panel').toBeTruthy()
+    const sl = () => page.evaluate(() => Math.round(document.getElementById('eWeek')!.scrollLeft))
+    await page.mouse.move(g.crew!.x, g.crew!.y); await page.mouse.down()
+    await page.mouse.move(g.right - 12, 420, { steps: 12 })               // through the side, then held there
+    await page.waitForTimeout(250)
+    expect(await sl(), 'not before the wait').toBe(0)
+    await expect.poll(sl, { timeout: 4000, message: 'held: the week steps one day' }).toBeGreaterThanOrEqual(g.step - 2)
+    await page.mouse.move(600, 420, { steps: 4 })                         // away from the side: it stops
+    const one = await settle(page, '#eWeek')
+    const days = Math.round(one / g.step)
+    expect(days, 'at least one day').toBeGreaterThanOrEqual(1)
+    expect(Math.abs(one - days * g.step), 'whole days only — never a part of one').toBeLessThanOrEqual(2)
+    await page.waitForTimeout(800)
+    expect(await sl(), 'away from the side nothing more moves').toBe(one)
+    await page.keyboard.press('Escape'); await page.mouse.up()
+
+    await scrollTo(page, '#eWeek', 0)
+    const wk = await page.evaluate(() => (window as any).CURWEEK)
+    await page.mouse.move(g.crew!.x, g.crew!.y); await page.mouse.down()
+    await page.mouse.move(600, 420, { steps: 8 }); await page.mouse.move(8, 420, { steps: 8 })
+    await page.waitForTimeout(1600)
+    expect(await sl(), 'Monday at the front: held at the left, nothing moves').toBe(0)
+    expect(await page.evaluate(() => (window as any).CURWEEK), 'and no other week loads').toBe(wk)
+    await page.keyboard.press('Escape'); await page.mouse.up()
+  })
 })
 
 test('a hole in a programme row renders no element at all', async ({ page }) => {
