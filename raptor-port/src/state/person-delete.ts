@@ -419,7 +419,9 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
      …AND ONLY A WAR STEP APPROVES (its finding B): every other Redo that takes a request of his and writes war-marked leave
      is the inputs door's swap — an admin's Inputs-page edit that lengthens his war-approved leave over his own pending bid,
      the bid swapped for a notice — which is allowed live after his delete (D321 (10)); the read's survey of every writer
-     found no other. So no Redo falls to the request test; an Undo keeps it. */
+     found no other. So no Redo falls to the request test; an Undo keeps it. (Since 1 Nov 26 both directions read which
+     requests a step takes with one body, over the whole step — `replaysApproval`'s `takenDays` — and a war step's Redo is
+     asked it too, day by day: [LW-DELETED-REDO-NETSUM].) */
   for (const id of gone) {
     const from = refusedFrom(id)
     if (from == null) continue

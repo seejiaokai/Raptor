@@ -273,6 +273,48 @@ describe('a block move of his approved leave and his bid across the date is no a
   })
 })
 
+/* THE NARROW READ OF THE FIXES (1 Nov 26): three branches of the whole-step reading nothing exercised */
+describe('the narrow read’s three: each branch of the whole-step reading pinned', () => {
+  it('the same-day mixed step (morning approved, afternoon sent back), the Delete posting set, Undo: refused — the afternoon is not approved back', () => {
+    setCell('bane', AFTER, 'LL*')
+    const [a] = decideRequests([line('bane', AFTER, 'approved')])
+    expect(a!.kind).toBe('done')
+    post(PO, 'overseas')                                     // an Overseas posting refuses nothing: the step is made
+    setCell('bane', AFTER, '*LL')
+    const out = decideRequests([line('bane', AFTER, 'approved'), { personId: 'bane', to: 'pending', parts: (a as any).parts }])
+    expect(out.map(o => o.kind)).toEqual(['done', 'done'])
+    post(PO, 'delete')
+    const pm = () => INPUTS.some((r: any) => holds(r, 'bane') && r.lw && r.date === 'Jul 20' && (r.half === 'pm' || (r.allday === false && Number(r.s) > 700)))
+    expect(pm()).toBe(false)
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(REFUSED)
+    expect(pm(), 'the afternoon not approved back').toBe(false)
+  })
+  it('Approve, then Refuse (D1428), the Delete posting set, Undo: refused — the approval is not put back', () => {
+    setCell('bane', AFTER, 'LL')
+    const [a] = decideRequests([line('bane', AFTER, 'approved')])
+    expect(a!.kind).toBe('done')
+    expect(decideRequests([{ personId: 'bane', to: 'refused', parts: (a as any).parts }])[0]!.kind).toBe('done')
+    post()
+    const r = globalUndo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(REFUSED)
+    expect(warDays('bane')).toEqual([])
+  })
+  it('a block move whose bid is carried back to a day before the date, the Delete posting set, Undo: goes', () => {
+    setCell('bane', BEFORE, 'LL'); approve('bane', BEFORE)       // approved 16 Jul
+    setCell('bane', '2026-07-17', 'LL')                          // pending 17 Jul
+    expect(moveCells([{ personId: 'bane', date: BEFORE }, { personId: 'bane', date: '2026-07-17' }], 3)).toBe('moved')   // 19 and 20 Jul
+    expect(warDays('bane')).toEqual(['Jul 19'])
+    post()
+    const u = globalUndo()
+    expect(u.ok, u.reason).toBe(true)
+    expect(warDays('bane')).toEqual(['Jul 16'])
+    expect(req('bane', '2026-07-17').state).toBe('pending')
+  })
+})
+
 describe('Undo of a send-back after his posting out is set', () => {
   it('approve, the second tap sends it back, post him out (Delete), Undo: refused — the approval is not put back', () => {
     setCell('bane', AFTER2, 'LL')

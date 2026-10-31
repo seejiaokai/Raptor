@@ -285,6 +285,42 @@ if (want('dp9')) {
     `Auto-approve on ${tick}; said "${kept}"; his leave on ${L.dm(AFTER)} after placing ${n1}, after Undo / Redo ${n2}; the cell draws ${cell?.text}`, ['dp9-a-kept-pending', 'dp9-b-row-after-redo'])
 }
 
+/* ---------- DP10 — the fresh code read's finding 1: his approved 11 Nov and pending 12 Nov dragged together, the drag window's
+   Move to 13–14 Nov with his Delete posting (9 Nov) standing — the live Move goes; then the top bar's Undo: goes (a move is no
+   approval, either way). Desktop only: the drag is a mouse's (a phone's drag-select is its own walk) ---------- */
+if (want('dp10') && SIZE !== 'phone') {
+  await world()
+  const id = await pidOf('Drifter')
+  const D1 = L.day(7), D2 = L.day(8), T1 = L.day(9), T2 = L.day(10)
+  const ap = await approvedOn(id, D1)
+  const bid = await L.pendingLL(w, id, D2)
+  await L.postOutFrom(w, id, PO, 'delete')
+  await L.toWar(w); await L.openGrid(w)
+  const sheet = await L.dragCells(w, [id, D1], [id, D2])
+  const moveOffered = sheet && await L.vis(P, L.T('sel-move'))
+  if (moveOffered) { await L.press(w, L.T('sel-move')); await P.waitForTimeout(450) }
+  await L.reachCell(w, id, T1)
+  await L.press(w, L.T(L.cellId(id, T1))); await P.waitForTimeout(600)
+  if (await L.vis(P, L.T('move-confirm'))) { await L.press(w, L.T('move-confirm')); await P.waitForTimeout(500) }
+  const banner = await L.txt(P, L.T('move-banner'))
+  if (banner) await L.press(w, L.T('move-cancel')).catch(() => {})
+  await L.settle(w)
+  const moved = (await leaveAt(id, T1)).length === 1 && (await leaveAt(id, D1)).length === 0
+  const bidMoved = await P.evaluate(([id, d]) => !!document.querySelector(`[data-testid="cell-${id}-${d}"]`)?.textContent?.includes('LL'), [id, T2])
+  await L.reachCell(w, id, T1)
+  await L.rowShot(w, id, L.day(5), L.day(11), 'dp10-a-after-live-move')
+  await L.settle(w); await L.toWar(w); await L.openGrid(w)
+  const n0 = await saidCount()
+  await L.undo(w)
+  const said = await saidAfter(n0)
+  const back = (await leaveAt(id, D1)).length === 1 && (await leaveAt(id, T1)).length === 0
+  await L.reachCell(w, id, D1)
+  await L.rowShot(w, id, L.day(5), L.day(11), 'dp10-b-after-undo')
+  L.rec('DP10 a block of his approved leave and his bid moved across a Delete posting’s date, then Undo: both go', SIZE,
+    ap && bid && !!moveOffered && moved && back && !said.some(s => /Can’t (undo|redo)/.test(s)) ? 'PASS' : 'FAIL',
+    `approved ${ap}; bid ${bid}; drag window ${sheet}, Move offered ${moveOffered}; banner after "${banner}"; leave moved to ${L.dm(T1)} ${moved}, bid on ${L.dm(T2)} ${bidMoved}; Undo said ${JSON.stringify(said)}; leave back on ${L.dm(D1)} ${back}`, ['dp10-a-after-live-move', 'dp10-b-after-undo'])
+}
+
 console.log('errors:', w?.errs.length ? w.errs : 'none')
 L.rec('errors', SIZE, !w?.errs.length ? 'PASS' : 'FAIL', w?.errs.slice(0, 6).join(' | ') || 'none')
 L.writeResults('post-' + SIZE)
