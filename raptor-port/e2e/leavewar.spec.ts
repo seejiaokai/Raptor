@@ -5931,6 +5931,41 @@ const lwBandHits = (page: Page, x: number, yTo: number) => page.evaluate(([x, yT
 test.describe('mid-pinch, the page moves with the grid and the pinned parts stay whole (D1288; the fix read, 23 Oct 26)', () => {
   test.beforeEach(() => { test.skip(!isPhone(), 'two fingers are a touch screen\'s') })
 
+  /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1 — the same as on Quals since D1288): with the dates frozen under
+     the top bar, a pinch out scrolls the page up with the pinch and the frozen date row unpins; turning back to a pinch in
+     scrolls it down again and the row was pinned anew mid-gesture, at rest over the stretched grid, its widths measured off
+     stretched cells and kept after a lift at the zoom the pinch began at. */
+  test('with the dates frozen, a pinch out that turns back to a pinch in leaves the frozen date row over its columns, mid-gesture and after the lift (the code read, finding 1)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const lineUp = () => page.evaluate(() => {
+      const m = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
+      const real = [...document.querySelectorAll('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th')].map(t => t.getBoundingClientRect())
+      const mir = m ? [...m.querySelectorAll('.mxfixed-scroll tbody.mxhead th')].map(t => t.getBoundingClientRect()) : []
+      const off: string[] = []
+      mir.forEach((r, i) => { const q = real[i]; if (i < 2 || !q || r.right < 0 || r.left > innerWidth || q.width < 2) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
+      return { frozen: !!m, off: off.slice(0, 8), n: off.length, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+    })
+    const zoom = () => page.evaluate(() => parseFloat((document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    const z0 = await zoom()
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    const at = (d: number) => [[200 - d / 2, 450], [200 + d / 2, 450]]
+    await touch('touchStart', [at(230)[0]!]); await page.waitForTimeout(30)
+    await touch('touchStart', at(230)); await page.waitForTimeout(30)
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', at(230 - 150 * i / 8)); await page.waitForTimeout(30) }
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', at(80 + 150 * i / 8)); await page.waitForTimeout(30) }
+    await page.waitForTimeout(150)
+    const mid = await lineUp()
+    await touch('touchEnd', []); await page.waitForTimeout(800)
+    await cdp.detach()
+    const after = await lineUp()
+    expect.soft(mid.off, `mid-gesture, a frozen date row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
+    expect(await zoom(), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
+    expect(after.frozen, 'after the lift the date row is frozen again').toBe(true)
+    expect.soft(after.off, `after the lift, the frozen date row lined up with its columns (${JSON.stringify(after)})`).toEqual([])
+  })
+
   test('part-way down the page, a pinch out opens no band between the month buttons and the date row (D1288)', async ({ page }) => {
     await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
     const bare = await lwMidPinch(page, 230, 520, 220, 120, () => lwBandHits(page, 300, 500))

@@ -377,6 +377,11 @@ export function QualsPage() {
   qzRef.current = qz
   const qzEffRef = useRef(1)
   qzEffRef.current = qzEff
+  /* while two fingers pinch the table (the pinch's onStart → onEnd): the frozen heading row may unpin but is never pinned
+     or measured anew, and `qRepinRef` measures it once the fingers lift (the code read of 31 Oct 26, finding 1 — see the
+     mirror's effect) */
+  const qPinchingRef = useRef(false)
+  const qRepinRef = useRef<() => void>(() => {})
   /* a heading drag pressed by a pinch's first finger is let go when the pinch starts (the code read's finding 3) */
   const cancelColDrag = useRef<(() => void) | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
@@ -676,11 +681,16 @@ export function QualsPage() {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = 'paused'
         document.querySelector('#page-quals .qfixed')?.classList.add('q-pinching')
+        qPinchingRef.current = true
       },
+      /* (called with the stretch already taken off, before the zoom is written: the row is measured at rest; a new zoom
+         measures it again through the mirror effect's own `qzEff`) */
       onEnd: () => {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = ''
         document.querySelector('#page-quals .qfixed')?.classList.remove('q-pinching')
+        qPinchingRef.current = false
+        qRepinRef.current()
       },
       /* THE HEADING ROW AND THE NAME COLUMN STAY PINNED AND LINED UP WHILE THE FINGERS MOVE (D1110; [QUALS-PINCH-MID], the
          pinch walk of 30 Oct 26 — part-way down, a pinch out opened an empty band between the pinned heading row and the
@@ -751,6 +761,13 @@ export function QualsPage() {
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
+        /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the
+           pinch and the row unpins above; turning back to a pinch in scrolls it down again, and the row was pinned anew
+           mid-gesture — drawn at rest over the stretched table (the pinch stretches only the parts it read at its start)
+           with widths measured off stretched cells, kept if the pinch ended at the zoom it began at. While the fingers are
+           down it may unpin, never pin or measure anew; the lift measures it once (`qRepinRef`). And never a stretched
+           table measured, whoever asks (a cell's own box under a stretch is k times its width). */
+        if (qPinchingRef.current || tblRef.current?.style.transform) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
@@ -760,6 +777,7 @@ export function QualsPage() {
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
+    qRepinRef.current = () => pin(true)
     const onScroll = () => pin(false)
     /* a rotate/resize fires BEFORE iOS settles the new viewport, so an immediate
        read takes the OLD geometry — re-measure on the next two frames AND once
@@ -809,6 +827,7 @@ export function QualsPage() {
       window.visualViewport?.removeEventListener('resize', remeasure)
       ro?.disconnect()
       if (watchCellsRef.current === watchCells) watchCellsRef.current = null
+      qRepinRef.current = () => {}
       cancelAnimationFrame(raf); clearTimeout(t)
     }
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh

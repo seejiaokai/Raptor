@@ -270,12 +270,84 @@ chased; for the host to judge. **Not walked, worth one look:** after a tap on a 
 white at 4% with no fill of its own), a pinch out with the heading row frozen makes the pinned row's box see-through
 (`.q-pinching`), so that one heading could show the rows faintly through it mid-pinch. This is worked out from the code, not seen.
 
+## The code read and fix round 2 (the builder, 31 Oct 26)
+
+**The read** — a fresh, blind Opus reader of the code to f416065b8, `docs/handpass/parts/pinch1031/read-opus.md`: everything
+else checked sound (only the grid passes a floor; the cut correct for a box in the page; the floor the same arithmetic as
+the date row's placement every frame; nothing measured per frame; every lift and cancel resets what it set; Ctrl+scroll,
+the memo firewall and Quals' paint order untouched). Two findings, both fixed red first:
+
+1. **A pinch that turns direction** (medium-low; in Quals by this change, in the Leave War since D1288). Part-way down a
+   pinch out scrolls the page up with the pinch and the frozen heading row unpins; the fingers turning back to a pinch in
+   scroll it down again and the row was pinned anew mid-gesture — at rest over the stretched table (the pinch stretches only
+   the parts it read at its start), its column widths measured off stretched cells and kept after a lift at the zoom it
+   began at. **Fix:** a pinching flag (`QualsPage.tsx` `qPinchingRef`, `Matrix.tsx` `pinchingRef`), set by the pinch's
+   onStart and cleared by its onEnd; while it is set the row may unpin but is never pinned or measured anew, and onEnd
+   measures it once (`qRepinRef` / `repinRef` — the stretch is already off then, the zoom not yet written; a new zoom measures
+   it again as before). A stretched table is never measured, whoever asks (a guard on the table's transform). The widths
+   are still read from the cells' boxes, now only ever at rest — not from `offsetWidth` as the reader suggested, because that
+   rounds each column to a whole pixel and thirty columns would drift the headings off by up to 15 px.
+   **Red first** (the branch at f416065b8, Chrome, real fingers; green after):
+   - `e2e/pinchzoom.spec.ts` *"part-way down, a pinch out that turns back to a pinch in leaves the frozen heading row over its
+     columns…"* — mid-gesture and after the lift every heading off: "1: 114/58 over 143/77" … (left/width of the frozen
+     heading over the column's), the widths about 0.76 of the columns'.
+   - `e2e/leavewar.spec.ts` *"with the dates frozen, a pinch out that turns back to a pinch in leaves the frozen date row over
+     its columns…"* — 18 dates off mid-gesture and after the lift ("2: 91/17 over 107/21" …). At 700 down this test could not
+     turn red: there a pinch out never brings the date row back into sight, so the row never unpins; it runs at 260 down,
+     where the row is only just frozen (D1288's own test's place).
+2. **The unit-test gap** (low). The reader's exact case — a box 40 tall held above a floor row `{top 40, foot 80}`, a pinch out
+   with the page scrolling, the cut at 40 + S + k·40 — is added and passes, **but it does not turn red on the break the reader
+   names** (dropping the scroll from the row's held top): with the row flush under the held box the picture's place and the
+   held top carried by the scroll are the same line, so either gives 80. A second case with 20 between the box and the row
+   (`{top 60, foot 100}`) does: `inset(100px …)` on the break, `inset(120px …)` as built. Both are in `src/ui/pinchzoom.test.ts`.
+
+**The walk script, v3:** `pinch1031-walk.mjs` gains **L8** (the dates just frozen, 260 down, a pinch out that turns back to a
+pinch in, lifted at its starting zoom) and **Q9** (Quals 420 down, the same turn), each read mid-gesture and after the lift,
+with "lifted at the zoom it began at" and "frozen again" checks; the Leave War reading gains "the frozen date row over its
+columns" (left and width of every frozen date heading in sight against the grid's), Quals' "every pinned heading over its
+column" now width as well as left; Quals' band scan starts under the top bar (mid-turn the table's own heading row may stand
+above the screen — the script's first v3 run read from −195).
+
+**The re-walk after fix round 2** (the builder's run, nothing else running beside it; the host opens the deciding pictures):
+`after-fix2/chromium/`, `after-fix2/webkit/` — every `*-mid.png`, `L8-lift.png`, `Q9-lift.png` and `results.json`. **Chrome
+267 of 267 checks. WebKit 266 of 267**: L6 mid-pinch, the new line-up reading — each frozen date heading about 360 px right
+of the grid's own for its day, mid-pinch in with the dates frozen; Chrome lines up; after the lift both line up; **origin/main's
+build reads the same in WebKit** (`before-fix2-check`, not kept), so it is older than this job and the reading is new — filed
+`[LW-PINCH-FROZEN-WEBKIT-OFF]`, its picture to be looked at first (it may be how WebKit reports a box under a paused
+scroll-driven animation). **To open:** `after-fix2/chromium/L8-mid.png`, `L8-lift.png`, `Q9-mid.png`, `Q9-lift.png` and their
+`webkit/` twins.
+
+**After fix round 2 (under the lock):** the touched browser tests — `e2e/pinchzoom.spec.ts` and every pinch, Ctrl+scroll,
+Quals, frozen-row and D128x test of `e2e/leavewar.spec.ts` and `e2e/geometry.spec.ts`, three projects: **65 passed, 21
+skipped** (the other size's); the build (typecheck and bundle) green as that run's server; unit, the touched files: **109
+files, 1729 passed, 20 skipped**.
+
+**The rounds:** two fix rounds — round 1 the walk's (L2, L7), round 2 the read's (the turn; the test gap). The last round's
+fixes are carried by their red-first tests and the re-walk above; a narrow read of the round-2 commit is the host's to order
+(§5 "A fix is new code" — the pinching flag is new logic beside the mirror's pin, in two files).
+
+**§7.11 — the lesson from round 1, put to the host for the order** (the walk found it, so it is not one of his finds that D1297
+makes mandatory): *a clip, a cover or a cut-off line is read from both sides — what must be hidden is hidden, AND what must
+show still shows, at several heights down to the fingers — and the walk asks that of every picture whose script passed; a step
+that pinches after another pinch checks that its own pinch changed the zoom (from the smallest zoom a pinch out moves
+nothing).* Round 2 adds a second for the same list: *a gesture whose page scrolls with it is walked turning direction
+before the lift — what the scroll unpins on the way out must not come back mid-gesture on the way in.*
+
 ## Findings and dispositions
 
-*(the host's)*
+| # | Finding | Found by | In this change? | Disposition |
+|---|---|---|---|---|
+| 1 | The names column blank mid-pinch out part-way down and with the dates frozen (L2, L7) | the walk's pictures (the script passed) | yes | fixed red first, round 1 (f416065b8) |
+| 2 | A pinch that turns re-pins the frozen row over the stretched table, its widths measured off stretched cells | the code read | yes on Quals; older on the Leave War (D1288) | fixed red first, round 2 |
+| 3 | The unit tests did not pin the floor row's held top | the code read | yes (test gap) | a case that turns red on the break added, round 2 |
+| 4 | WebKit's T2: the sorted heading's 4% tint read as see-through | the walk (a script reading) | no — the script | the taps script tells it apart (v2) |
+| 5 | WebKit's L1, L2, L4 failing only while the unit suite ran beside the walk | the builder's re-walk | — | timing-bound in WebKit's in-page touches; three quiet runs clean; noted |
+| 6 | WebKit's frozen date row read ~360 px off its columns mid-pinch in (L6) | the round-2 re-walk's new reading | no — origin/main the same | filed `[LW-PINCH-FROZEN-WEBKIT-OFF]` |
+| 7 | Quals' frozen name heading still carried left mid-pinch in, in a browser without scroll-driven animations | the builder, from the code | yes (the part this change leaves) | filed `[QUALS-PINCH-NOSDA-HEAD]`, with the read's tidiness note |
+| 8 | After a tap on a Quals heading (kept "hovered" on an iPhone), a pinch out with the row frozen could show rows faintly through that heading | the builder, from the code | yes (the see-through box) | not seen; for the host's look |
 
 ## The code read
 
 *(a fresh, blind Opus reader — owed)*
 
-`Walk:` *(the host writes it after the walk)*
+`Walk: docs/handpass/2026-10-31-pinch-fixes.md · 155 pictures · 7 surfaces (the Leave War grid and Quals on a phone; the grid and Quals at his PC's size; the OIL tab, Balances, the board's desktop layout and the Tracker in the six-surface pinch) · 4 orders (a pinch in, a pinch out, a pinch out turned back in, a tap then a pinch) · MISSING: 1 filed ([QUALS-PINCH-NOSDA-HEAD])`  — the picture count is every picture the job holds under `docs/img/handpass/2026-10-31-pinch-fixes/`, after-fix2 included.

@@ -1311,11 +1311,16 @@ export function Matrix() {
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
         outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
         outer.classList.add('lw-pinching')
+        pinchingRef.current = true
       },
+      /* (called with the stretch already taken off, before the zoom is written: the frozen row is measured at rest; a new
+         zoom measures it again through the mirror effect's own `zoom`) */
       onEnd: () => {
         const a = anim(); if (a) a.style.animationPlayState = ''
         outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
         outer.classList.remove('lw-pinching')
+        pinchingRef.current = false
+        repinRef.current()
       },
       /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
          the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
@@ -1690,6 +1695,9 @@ export function Matrix() {
   // off the columns beneath). Called on every token change below.
   const remeasureRef = useRef<() => void>(() => {})
   const repinRef = useRef<() => void>(() => {})
+  /* while two fingers pinch the grid (the pinch's onStart → onEnd): the frozen date row may unpin but is never pinned or
+     measured anew; `repinRef` measures it once the fingers lift (the code read of 31 Oct 26, finding 1 — see `pin`) */
+  const pinchingRef = useRef(false)
   // ...and the open-bidding outline (Astra LW-103, pre-existing): the Archive's
   // rows sit ABOVE the dates, so opening it pushes the header and roster down,
   // and the outline — placed off the header — kept its old top until the next
@@ -1970,6 +1978,13 @@ export function Matrix() {
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
+        /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1 — since D1288 scrolls the page with a pinch): with the
+           dates frozen, a pinch out scrolls the page up and the row unpins; turning back to a pinch in scrolls it down
+           again, and the row was pinned anew mid-gesture — drawn at rest over the stretched grid (the pinch stretches only
+           the parts it read at its start) with widths measured off stretched cells, kept if the pinch ended at the zoom
+           it began at. While the fingers are down it may unpin, never pin or measure anew; the lift measures it once
+           (`repinRef`, from the pinch's onEnd). And never a stretched grid measured, whoever asks. */
+        if (pinchingRef.current || (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform)) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()

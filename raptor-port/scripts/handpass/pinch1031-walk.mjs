@@ -17,7 +17,7 @@ const [, , DIST = 'dist', OUT0 = 'C:/pinch1031', ONLY] = process.argv
 const ENGINE = process.env.ENGINE === 'webkit' ? 'webkit' : 'chromium'
 const OUT = join(OUT0, ENGINE)
 mkdirSync(OUT, { recursive: true })
-console.log(`pinch1031-walk v2 — ${ENGINE}, ${DIST}`)
+console.log(`pinch1031-walk v3 — ${ENGINE}, ${DIST}`)
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ORIGIN = 'http://localhost:4196'
 const results = []
@@ -56,12 +56,15 @@ async function fresh(pageName) {
         const now = pts.map(([x, y], i) => mk(i + 1, x, y))
         fire(w.__tt[now.length] || w.__tt[1], now, type === 'touchStart' ? [now[now.length - 1]] : now)
       }, [type, pts])
-  /** two fingers about (cx, cy), d0 → d1 apart, drifting down; `mid` read with them down, `after` once lifted */
-  const pinch = async (name, cx, cy, d0, d1, mid, after) => {
-    const at = i => { const d = d0 + (d1 - d0) * i / 10, dy = i * 3; return [[cx - d / 2, cy + dy], [cx + d / 2, cy + dy * 1.3]] }
+  /** two fingers about (cx, cy), d0 → d1 apart, drifting down; `mid` read with them down, `after` once lifted. With
+   *  `turn`, the fingers go out to d1 and come back to d0 before the lift, level (the code read's finding 1, fix round 2) */
+  const pinch = async (name, cx, cy, d0, d1, mid, after, turn = false) => {
+    const at = turn
+      ? i => { const d = i <= 10 ? d0 + (d1 - d0) * i / 10 : d1 + (d0 - d1) * (i - 10) / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+      : i => { const d = d0 + (d1 - d0) * i / 10, dy = i * 3; return [[cx - d / 2, cy + dy], [cx + d / 2, cy + dy * 1.3]] }
     await touch('touchStart', [at(0)[0]]); await sleep(30)
     await touch('touchStart', at(0)); await sleep(30)
-    for (let i = 1; i <= 10; i++) { await touch('touchMove', at(i)); await sleep(20) }
+    for (let i = 1; i <= (turn ? 20 : 10); i++) { await touch('touchMove', at(i)); await sleep(turn ? 30 : 20) }
     await sleep(120)
     const m = await mid(cy + 30)
     await p.screenshot({ path: join(OUT, `${name}-mid.png`) })
@@ -113,9 +116,18 @@ const lwRead = yTo => {
     if (!hit?.closest('[data-testid="frozen-cols"], td.who, td.grphd, td.catsub-in, [data-testid="sticky-head"] th')) blank.push(`${y} ${hit ? hit.tagName.toLowerCase() + '.' + String(hit.className).split(' ')[0] : 'nothing'}`)
   }
   if (band) band.style.pointerEvents = was
+  /* the frozen date row over its columns — each date heading of the frozen copy in sight against the grid's own, left and
+     width (fix round 2: a pinch that turns pinned the copy anew over the stretched grid, measured off stretched cells) */
+  const realTh = [...document.querySelectorAll('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th')].map(t => t.getBoundingClientRect())
+  const lineOff = []
+  if (sticky) [...sticky.querySelectorAll('.mxfixed-scroll tbody.mxhead th')].forEach((r0, i) => {
+    const r = r0.getBoundingClientRect(), q = realTh[i]
+    if (i < 2 || !q || q.width < 2 || r.right < 0 || r.left > innerWidth) return
+    if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) lineOff.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`)
+  })
   const bandR = band && getComputedStyle(band).visibility !== 'hidden' ? band.getBoundingClientRect() : null
   return {
-    over, blank, stuck: !!sticky, inSight: corner.bottom > bar && corner.top < innerHeight,
+    over, blank, lineOff: lineOff.slice(0, 6), stuck: !!sticky, inSight: corner.bottom > bar && corner.top < innerHeight,
     cornerT: Math.round(corner.top), cornerB: Math.round(corner.bottom), bandT: bandR ? Math.round(bandR.top) : null,
     cornerOff: Math.round((corner.left - wrap.left) * 10) / 10, bandOff: bandR ? Math.round((bandR.left - wrap.left) * 10) / 10 : null,
     frozenOff: frozenCorner ? Math.round((frozenCorner.left - wrap.left) * 10) / 10 : null,
@@ -129,6 +141,7 @@ const lwJudge = (id, when, r) => {
   if (r.inSight) check(id, `${when}: the corner at the grid's left edge`, Math.abs(r.cornerOff) < 1.5, r)
   if (r.bandOff !== null) check(id, `${when}: the names at the grid's left edge`, Math.abs(r.bandOff) < 1.5, r)
   if (r.frozenOff !== null) check(id, `${when}: the frozen dates' corner at the left edge`, Math.abs(r.frozenOff) < 1.5, r)
+  if (r.stuck) check(id, `${when}: the frozen date row over its columns`, r.lineOff.length === 0, r)
 }
 /* the date row at about 150 down the screen, part-way down the page */
 const lwPartWay = async (p, manningOpen) => {
@@ -158,20 +171,25 @@ const LW = [
   ['L5', 'at the top of the page, a pinch OUT', async s => { await s.p.evaluate(() => window.scrollTo(0, 0)); await sleep(300); return [200, 560, 230, 100] }],
   ['L6', 'the dates frozen under the top bar (45% down), a pinch IN', async s => { await s.p.evaluate(() => window.scrollTo(0, Math.round((document.scrollingElement.scrollHeight - innerHeight) * 0.45))); await sleep(500); return [200, 450, 110, 230] }],
   ['L7', 'the dates frozen under the top bar (45% down), a pinch OUT', async s => { await s.p.evaluate(() => window.scrollTo(0, Math.round((document.scrollingElement.scrollHeight - innerHeight) * 0.45))); await sleep(500); return [200, 450, 230, 90] }],
+  ['L8', 'the dates just frozen (260 down), a pinch OUT that turns back to a pinch IN, lifted at the zoom it began at (the code read, finding 1)', async s => { await s.p.evaluate(() => window.scrollTo(0, 260)); await sleep(500); return [200, 450, 230, 80, true] }],
 ]
 if (!ONLY || ONLY === 'lw') for (const [id, what, reach] of LW) {
   const s = await fresh('leavewar')
   try {
     await s.p.waitForSelector('#page-leavewar .mx-wrap [data-testid^="head-"]')
-    const [cx, cy, d0, d1] = await reach(s)
+    const [cx, cy, d0, d1, turn] = await reach(s)
     const rest = await s.p.evaluate(lwRead, cy + 30)
     await s.p.screenshot({ path: join(OUT, `${id}-rest.png`) })
     console.log(`— ${id} ${what} (fingers ${Math.round(cx)},${Math.round(cy)} ${d0}→${d1}; at rest ${JSON.stringify({ cornerT: rest.cornerT, cornerB: rest.cornerB, bandT: rest.bandT, stuck: rest.stuck })})`)
     lwJudge(id, 'at rest', rest)
-    const { m, a } = await s.pinch(id, cx, cy, d0, d1, y => s.p.evaluate(lwRead, y), y => s.p.evaluate(lwRead, y))
+    const { m, a } = await s.pinch(id, cx, cy, d0, d1, y => s.p.evaluate(lwRead, y), y => s.p.evaluate(lwRead, y), !!turn)
     check(id, 'read mid-pinch (the grid stretched as a picture)', m.transformed, m)
     lwJudge(id, 'mid-pinch', m)
     lwJudge(id, 'after the lift', a)
+    if (turn) {
+      check(id, 'lifted at the zoom it began at', Math.abs(a.zoom - rest.zoom) < 0.002, { rest: rest.zoom, after: a.zoom })
+      check(id, 'after the lift the date row is frozen again', a.stuck, a)
+    }
   } catch (e) { check(id, 'NOT WALKED', false, String(e).slice(0, 300)) }
   await done(id, s)
 }
@@ -191,7 +209,10 @@ const qRead = yTo => {
   const isCell = el => !!el.closest('#qtbl td, #qtbl th, [data-testid="qsticky-head"] th')
   const clear = el => { const cs = getComputedStyle(el); return /rgba\(.*,\s*0\)$/.test(cs.backgroundColor) || cs.backgroundColor === 'transparent' }
   const bare = []
-  for (let y = Math.ceil(foot) + 1; y < Math.min(yTo, innerHeight - 4); y += 4) {
+  /* from the heading row's foot, never above the top bar (mid-turn the frozen row may have unpinned while the table's own
+     heading row stands above the screen) */
+  const barB = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  for (let y = Math.max(Math.ceil(foot), Math.ceil(barB)) + 1; y < Math.min(yTo, innerHeight - 4); y += 4) {
     let what = 'nothing'
     for (const el of document.elementsFromPoint(200, y)) {
       if (isCell(el)) { what = null; break }
@@ -201,13 +222,13 @@ const qRead = yTo => {
   }
   const names = [...tbl.querySelectorAll('td.qname')].map(td => td.getBoundingClientRect()).filter(r => r.bottom > foot && r.top < innerHeight)
   const head = (mirror?.querySelector('.qfixed-frozen th[data-sort="cs"]') ?? mirror?.querySelector('th[data-sort="cs"]') ?? tbl.querySelector('thead th[data-sort="cs"]')).getBoundingClientRect()
-  const real = [...tbl.querySelectorAll('thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect().left)
-  const mir = mirror ? [...mirror.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect().left) : []
+  const real = [...tbl.querySelectorAll('thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect())
+  const mir = mirror ? [...mirror.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect()) : []
   return {
     bare, stuck: !!mirror, foot: Math.round(foot), names: names.length,
     namesOff: names.filter(r => Math.abs(r.left - wrap.left) > 1.5).map(r => Math.round(r.left)),
     headOff: Math.round((head.left - wrap.left) * 10) / 10, headWidthOff: names[0] ? Math.round((head.right - names[0].right) * 10) / 10 : null,
-    columnsOff: mir.map((l, i) => Math.round(l - real[i])).filter(d => Math.abs(d) > 3),
+    columnsOff: mir.map((r, i) => (Math.abs(r.left - real[i].left) > 3 || Math.abs(r.width - real[i].width) > 2) ? `${i + 1}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(real[i].left)}/${Math.round(real[i].width)}` : null).filter(Boolean),
     zoom: parseFloat(getComputedStyle(tbl).zoom || '1'), transformed: !!tbl.style.transform,
   }
 }
@@ -216,7 +237,7 @@ const qJudge = (id, when, r) => {
   check(id, `${when}: every name in sight at the table's left edge`, r.names > 0 && r.namesOff.length === 0, r)
   check(id, `${when}: the pinned name heading at the left edge`, Math.abs(r.headOff) < 1.5, r)
   if (r.headWidthOff !== null) check(id, `${when}: the name heading as wide as the names under it`, Math.abs(r.headWidthOff) < 2, r)
-  if (r.stuck) check(id, `${when}: every pinned heading over its column`, r.columnsOff.length === 0, r)
+  if (r.stuck) check(id, `${when}: every pinned heading over its column, as wide as it`, r.columnsOff.length === 0, r)
 }
 const qScroll = (y, x = 0, view = null) => async s => {
   if (view) { await s.p.locator('.segview button', { hasText: view }).first().click(); await sleep(500) }
@@ -232,8 +253,9 @@ const QS = [
   ['Q6', 'part-way down, the table scrolled sideways 150, a pinch OUT', qScroll(420, 150), [200, 450, 230, 80]],
   ['Q7', 'All, 60% down the page (the heading row stays frozen through the pinch), a pinch OUT', qScroll(0.6, 0, 'All'), [200, 500, 200, 110]],
   ['Q8', 'All, 60% down the page, a pinch IN', qScroll(0.6, 0, 'All'), [200, 500, 90, 250]],
+  ['Q9', 'part-way down (420), a pinch OUT that turns back to a pinch IN, lifted at the zoom it began at (the code read, finding 1)', qScroll(420), [200, 450, 230, 80, true]],
 ]
-if (!ONLY || ONLY === 'quals') for (const [id, what, reach, [cx, cy, d0, d1]] of QS) {
+if (!ONLY || ONLY === 'quals') for (const [id, what, reach, [cx, cy, d0, d1, turn]] of QS) {
   const s = await fresh('quals')
   try {
     await s.p.waitForSelector('#qtbl td.qname')
@@ -242,10 +264,14 @@ if (!ONLY || ONLY === 'quals') for (const [id, what, reach, [cx, cy, d0, d1]] of
     await s.p.screenshot({ path: join(OUT, `${id}-rest.png`) })
     console.log(`— ${id} ${what} (fingers ${cx},${cy} ${d0}→${d1}; at rest pinned row ${rest.stuck ? 'frozen under the top bar' : 'the table\'s own'})`)
     qJudge(id, 'at rest', rest)
-    const { m, a } = await s.pinch(id, cx, cy, d0, d1, y => s.p.evaluate(qRead, y), y => s.p.evaluate(qRead, y))
+    const { m, a } = await s.pinch(id, cx, cy, d0, d1, y => s.p.evaluate(qRead, y), y => s.p.evaluate(qRead, y), !!turn)
     check(id, 'read mid-pinch (the table stretched as a picture)', m.transformed, m)
     qJudge(id, 'mid-pinch', m)
     qJudge(id, 'after the lift', a)
+    if (turn) {
+      check(id, 'lifted at the zoom it began at', Math.abs(a.zoom - rest.zoom) < 0.002, { rest: rest.zoom, after: a.zoom })
+      check(id, 'after the lift the heading row is frozen again', a.stuck, a)
+    }
   } catch (e) { check(id, 'NOT WALKED', false, String(e).slice(0, 300)) }
   await done(id, s)
 }

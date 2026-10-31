@@ -306,4 +306,41 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     expect(errs).toEqual([])
     await context.close()
   })
+  /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the pinch
+     (D1288's `scrollPage`), which unpins the heading row frozen under the top bar; the fingers turning back to a pinch in
+     scroll the page down again, and the row was pinned anew mid-gesture — drawn at rest over the stretched table (not one of
+     the parts the pinch stretches, read once at its start), its widths measured off stretched cells; ended at the zoom it
+     began at, nothing measured them again. Mid-gesture a frozen row, if there is one, stands over its columns; after the
+     lift it is as wide as they are, column by column. */
+  test('part-way down, a pinch out that turns back to a pinch in leaves the frozen heading row over its columns, mid-gesture and after the lift (the code read, finding 1)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    const lineUp = () => page.evaluate(() => {
+      const m = document.querySelector('[data-testid="qsticky-head"]')
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')].map(t => t.getBoundingClientRect())
+      const mir = m ? [...m.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].map(t => t.getBoundingClientRect()) : []
+      const off: string[] = []
+      mir.forEach((r, i) => { const q = real[i]; if (!q || r.right < 0 || r.left > innerWidth) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
+      return { frozen: !!m, off, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+    })
+    const z0 = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
+    /* out from 230 to 80 apart, then back to 230 — the zoom it began at — the fingers level */
+    const at = (d: number) => [[200 - d / 2, 450], [200 + d / 2, 450]]
+    await touch(cdp, 'touchStart', [at(230)[0]]); await sleep(30)
+    await touch(cdp, 'touchStart', at(230)); await sleep(30)
+    for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(230 - 150 * i / 8)); await sleep(30) }
+    for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(80 + 150 * i / 8)); await sleep(30) }
+    await sleep(150)
+    const mid = await lineUp()
+    await touch(cdp, 'touchEnd', []); await sleep(700)
+    const after = await lineUp()
+    expect.soft(mid.off, `mid-gesture, a frozen heading row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
+    expect(await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1')), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
+    expect(after.frozen, 'after the lift the heading row is frozen again').toBe(true)
+    expect.soft(after.off, `after the lift, the frozen heading row lined up with its columns (${JSON.stringify(after)})`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
 })

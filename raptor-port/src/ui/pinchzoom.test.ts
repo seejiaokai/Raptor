@@ -300,6 +300,50 @@ describe('pinch to zoom', () => {
       window.scrollTo = to
     }
   })
+  /* THE FLOOR ROW UNDER A HELD BOX (the code read of 31 Oct 26, finding 2): the row's top goes to the lower of the picture's
+     place and its own top carried by the page's scroll — the second wins only where a held box above it (the Leave War's
+     month buttons) keeps its height, and in the two cases above both are the same, so dropping the scroll from it passed
+     them. Here the page is 300 down, a box 40 tall is held above the fingers, and the fingers about (100, 100) go half as
+     far apart and 20 lower: the page scrolls 70 − 40 × 0.5 = 50 with the pinch. */
+  const heldCase = (row: { top: number; foot: number }) => {
+    let y = 300
+    const desc = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    const to = window.scrollTo
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => y })
+    window.scrollTo = ((_x: number, yy: number) => { y = yy }) as typeof window.scrollTo
+    try {
+      const band = document.createElement('div'); document.body.appendChild(band)
+      const held = document.createElement('div')
+      held.getBoundingClientRect = () => ({ left: 0, top: 0, right: 0, bottom: 40, width: 0, height: 40, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect
+      const t = setup({ edges: true, scrollPage: true, keep: () => [held], alsoY: () => [band, null], floor: () => row })
+      t.target.appendChild(held)
+      fire(t.surface, 'touchstart', [[100, 100]])
+      fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+      fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+      const out = { scrolled: 300 - y, clip: band.style.clipPath }
+      fire(t.surface, 'touchend', [])
+      t.off(); band.remove()
+      return out
+    } finally {
+      if (desc) Object.defineProperty(window, 'scrollY', desc); else delete (window as any).scrollY
+      window.scrollTo = to
+    }
+  }
+  it('a floor row right under a held box is cut at its top carried by the page’s scroll plus its stretched height — the reader’s case (the code read, finding 2)', () => {
+    /* the row {top 40, foot 80}: cut at 40 + S + k·40 = 40 + 50 + 20 = 110 on the screen, the band's own line
+       100 + ((110 − 20) − 100) / 0.5 = 80 */
+    const r = heldCase({ top: 40, foot: 80 })
+    expect(r.scrolled, 'the page scrolled with the pinch').toBe(50)
+    expect(r.clip).toBe('inset(80px 0px 0px 0px)')
+  })
+  it('…and with room between the held box and the row, the scroll is what places the row — dropped, the cut stands too high (the code read, finding 2)', () => {
+    /* the row {top 60, foot 100}: the picture would put its top at 100 + 0.5 × (60 − 100) + 20 = 100, its own top carried by
+       the scroll is 60 + 50 = 110, the lower — the cut at 110 + 0.5 × 40 = 130, the band's line 100 + ((130 − 20) − 100) / 0.5
+       = 120; without the scroll it would stand at 120 on the screen, the line at 100 */
+    const r = heldCase({ top: 60, foot: 100 })
+    expect(r.scrolled).toBe(50)
+    expect(r.clip).toBe('inset(120px 0px 0px 0px)')
+  })
   it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
     let calls = 0
     const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did
