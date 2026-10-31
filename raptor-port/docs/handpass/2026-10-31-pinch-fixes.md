@@ -222,6 +222,54 @@ Not run: the desktop taps in WebKit (the script's desktop half is Chrome-only in
 (the script skips them: T1 and T2's zoomed taps are Chrome's). WebKit's lift pictures of L2 show the grid's names squeezed to two letters
 in both builds alike (a WebKit zoom reading; not this change).
 
+## Fix round 1 — the walk's L2 and L7 (the builder, 31 Oct 26)
+
+**The fault (in this change):** part-way down the Leave War, and with the dates frozen, a pinch OUT left the names column blank
+under the date row until the lift (L2: the SXO row down to Saber; L7: nearly the whole screen) — `compare/L2-names-missing-…png`.
+**The cause:** a pinch out part-way down scrolls the page with the pinch (D1288, `scrollPage`), and the names copy sits in the
+page, so that scroll carries it down as well as its own stretch. The names' cut-off line was worked back into the copy's own
+units through its stretch only, not through that scroll, so it stood exactly the page's scroll too low. A pinch in scrolls
+nothing, which is why L1, L3, L4 and L6 were right. The old fixed line had the same blind spot but stood high enough not to
+show. **The fix:** `pinchzoom.ts` works the cut back through both (the picture's whole carry, `dy`, not only the box's own
+translate). Still worked out from the stretch; nothing measured per frame.
+
+**Red first, on the branch before the fix:**
+- `src/ui/pinchzoom.test.ts` *"a floor that is a row's foot is cut where the row is drawn when the page scrolls with a pinch
+  out"* — expected `inset(40px …)`, got `inset(180px …)`.
+- `e2e/leavewar.spec.ts`, the D1287 test's two new steps: *"with the dates frozen, pinching OUT, the names are drawn all the
+  way down to the fingers"* — day cells at 86–116 where names belong; *"part-way down, pinching OUT, …"* — group-row filler and
+  closed-day cells at 277–367. (A first draft of the steps passed the frozen case wrongly: it ran after a pinch out that had
+  left the grid at its smallest zoom, so its pinch out shrank nothing. The step now runs while the grid is zoomed in and checks
+  that its pinch did shrink the grid.)
+
+**Why the script missed it — a lesson for §7.11:** the walk's L2 and L7 checks asked only that nothing of the names was drawn
+where it must NOT be (over the corner); none asked that the names were still drawn where they MUST be. A clip that moved too
+low passes a one-sided check, and the picture shows the hole. **Lesson:** a clip, a cover or a cut-off line is read from both
+sides — what must be hidden is hidden, AND what must show still shows, at several heights down to the fingers — and the walk
+asks that of every picture whose script passed. Also met on the way: a "pinch out" that starts from the smallest zoom moves
+nothing, so a step after one must check that its own pinch changed the zoom. (Put to the host to add to §7.11; not added to
+the order by the builder.)
+
+**The script fixed (v2):** `pinch1031-walk.mjs`'s Leave War reading now scans the names column from the date row's foot to the
+fingers. Each point must be a name, a group heading or another pinned name cell; the frozen row's see-through box is looked
+through. `pinch1031-taps.mjs` (v2) tells a pinned cell's faint tint laid on an opaque fill of its own pinned part (the hovered
+sort heading of WebKit's T2, white at 4% over the pinned row's box) from a real see-through.
+
+**Checks after the fix (under the lock):** the three earlier red-first browser tests and the new steps, in the touched set:
+42 passed, 14 skipped (`e2e/pinchzoom.spec.ts`; every pinch, Ctrl+scroll, Quals and D128x test of `e2e/leavewar.spec.ts` and
+`e2e/geometry.spec.ts`; three projects). The build (typecheck and bundle) ran green as that run's server. Unit, the touched
+files: 109 files, 1727 passed, 20 skipped.
+
+**The re-walk of the Leave War (the builder's run; the host opens the deciding pictures):** `after-fix1/chromium/` and
+`after-fix1/webkit/` — every `L*-mid.png` and `results.json`. Chrome 99 of 99 checks; WebKit 99 of 99, three runs on a quiet
+machine. **To open:** `after-fix1/chromium/L2-mid.png`, `after-fix1/chromium/L7-mid.png`, and their WebKit twins. **Met in
+passing:** two WebKit runs made while the unit suite was running beside them failed L1, L2 and L4 mid-pinch (the corner read
+39–71 left of the grid's edge, the names over it); the same build passed every check three times once the machine was quiet,
+and Chrome passed under the same load. WebKit's touches are made inside the page, and the reading looks timing-bound. Not
+chased; for the host to judge. **Not walked, worth one look:** after a tap on a Quals heading (an iPhone keeps it "hovered",
+white at 4% with no fill of its own), a pinch out with the heading row frozen makes the pinned row's box see-through
+(`.q-pinching`), so that one heading could show the rows faintly through it mid-pinch. This is worked out from the code, not seen.
+
 ## Findings and dispositions
 
 *(the host's)*

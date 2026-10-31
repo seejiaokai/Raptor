@@ -18,7 +18,7 @@ const [, , DIST = 'dist', OUT0 = 'C:/pinch1031', ONLY] = process.argv
 const ENGINE = process.env.ENGINE === 'webkit' ? 'webkit' : 'chromium'
 const OUT = join(OUT0, ENGINE + '-taps')
 mkdirSync(OUT, { recursive: true })
-console.log(`pinch1031-taps v1 — ${ENGINE}, ${DIST}`)
+console.log(`pinch1031-taps v2 — ${ENGINE}, ${DIST}`)
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ORIGIN = 'http://localhost:4197'
 const results = []
@@ -40,15 +40,24 @@ async function fresh(pageName, phone) {
 }
 const done = async (id, s) => { check(id, 'no page errors', s.errs.length === 0, s.errs); await s.ctx.close() }
 
-/* every pinned cell in sight is solid: its own fill fully opaque (or a drawn fill), never faded */
+/* every pinned cell in sight is solid: its own fill fully opaque (or a drawn fill), never faded — or a faint tint of its own
+   (a hovered sort heading, white at 4%, which an iPhone keeps after the tap) laid on an opaque fill of the same pinned part
+   (its row's box): that shows nothing behind it (the walk's WebKit T2 reading, 31 Oct 26) */
 const SOLID = sel => {
+  const alpha = el => { const m = getComputedStyle(el).backgroundColor.match(/rgba?(([^)]*))/); const p = m ? m[1].split(',').map(Number) : []; return p.length === 4 ? p[3] : 1 }
+  const backed = el => {
+    const part = el.closest('[data-testid="qsticky-head"], [data-testid="sticky-head"], [data-testid="frozen-cols"]')
+    if (!part) return false
+    for (let n = el.parentElement; n && part.contains(n); n = n.parentElement) if (alpha(n) === 1 && getComputedStyle(n).backgroundColor !== 'rgba(0, 0, 0, 0)') return true
+    return false
+  }
   const bad = []
   for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect()
     if (!r.width || r.bottom < 0 || r.top > innerHeight || r.right < 0 || r.left > innerWidth) continue
     const cs = getComputedStyle(el), m = cs.backgroundColor.match(/rgba?\(([^)]*)\)/)
     const parts = m ? m[1].split(',').map(Number) : [], a = parts.length === 4 ? parts[3] : 1
-    if ((a < 1 && cs.backgroundImage === 'none') || parseFloat(cs.opacity) < 1) bad.push(`${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]} ${cs.backgroundColor} ${cs.opacity}`)
+    if ((a < 1 && cs.backgroundImage === 'none' && !(a > 0 && backed(el))) || parseFloat(cs.opacity) < 1) bad.push(`${el.tagName.toLowerCase()}.${(el.className || '').toString().split(' ')[0]} ${cs.backgroundColor} ${cs.opacity}`)
   }
   return bad.slice(0, 6)
 }

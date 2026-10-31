@@ -1,0 +1,1792 @@
+[
+ {
+  "id": "L1",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "at rest: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L1",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L1",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L1",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L1",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L1",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 91,
+   "cornerB": 152,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 91,
+   "cornerB": 152,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "after the lift: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 91,
+   "cornerB": 152,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 91,
+   "cornerB": 152,
+   "bandT": 213,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L1",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L2",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "at rest: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 230,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L2",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L2",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L2",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L2",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L2",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "after the lift: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L2",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L3",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 406,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 406,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "at rest: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 406,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 195,
+   "bandT": 406,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 296,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L3",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 296,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L3",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 296,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L3",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 296,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L3",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 150,
+   "cornerB": 228,
+   "bandT": 296,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L3",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -131,
+   "cornerB": -70,
+   "bandT": 299,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -131,
+   "cornerB": -70,
+   "bandT": 299,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -131,
+   "cornerB": -70,
+   "bandT": 299,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "after the lift: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -131,
+   "cornerB": -70,
+   "bandT": 299,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L3",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L4",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "at rest: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 307,
+   "bandT": 155,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L4",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 307,
+   "bandT": 155,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L4",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 307,
+   "bandT": 155,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L4",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 307,
+   "bandT": 155,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L4",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 307,
+   "bandT": 155,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L4",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": true,
+   "cornerT": 37,
+   "cornerB": 98,
+   "bandT": 159,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": true,
+   "cornerT": 37,
+   "cornerB": 98,
+   "bandT": 159,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "after the lift: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": true,
+   "cornerT": 37,
+   "cornerB": 98,
+   "bandT": 159,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": true,
+   "cornerT": 37,
+   "cornerB": 98,
+   "bandT": 159,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "after the lift: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": true,
+   "cornerT": 37,
+   "cornerB": 98,
+   "bandT": 159,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L4",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L5",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "at rest: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 274,
+   "bandT": 309,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L5",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L5",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L5",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L5",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L5",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "after the lift: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 272,
+   "bandT": 291,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L5",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L6",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "at rest: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": 24,
+   "bandT": -258,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L6",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": 24,
+   "bandT": -258,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L6",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": 24,
+   "bandT": -258,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L6",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": 24,
+   "bandT": -258,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L6",
+  "what": "mid-pinch: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": 24,
+   "bandT": -258,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L6",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -373,
+   "cornerB": -312,
+   "bandT": -251,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -373,
+   "cornerB": -312,
+   "bandT": -251,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -373,
+   "cornerB": -312,
+   "bandT": -251,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "after the lift: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -373,
+   "cornerB": -312,
+   "bandT": -251,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 1.4,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L6",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "L7",
+  "what": "at rest: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "at rest: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "at rest: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "at rest: the frozen dates' corner at the left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": true,
+   "inSight": false,
+   "cornerT": -54,
+   "cornerB": -9,
+   "bandT": 26,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": 0,
+   "zoom": 0.8,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "read mid-pinch (the grid stretched as a picture)",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L7",
+  "what": "mid-pinch: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L7",
+  "what": "mid-pinch: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L7",
+  "what": "mid-pinch: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L7",
+  "what": "mid-pinch: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 229,
+   "cornerB": 253,
+   "bandT": 272,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.8,
+   "transformed": true
+  }
+ },
+ {
+  "id": "L7",
+  "what": "after the lift: nothing of the names' frozen copy drawn over the date row's corner or LVE heading",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 185,
+   "cornerB": 228,
+   "bandT": 247,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "after the lift: the names drawn all the way down the column from the date row's foot to the fingers",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 185,
+   "cornerB": 228,
+   "bandT": 247,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "after the lift: the corner at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 185,
+   "cornerB": 228,
+   "bandT": 247,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "after the lift: the names at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "over": [],
+   "blank": [],
+   "stuck": false,
+   "inSight": true,
+   "cornerT": 185,
+   "cornerB": 228,
+   "bandT": 247,
+   "cornerOff": 0,
+   "bandOff": 0,
+   "frozenOff": null,
+   "zoom": 0.426,
+   "transformed": false
+  }
+ },
+ {
+  "id": "L7",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ }
+]

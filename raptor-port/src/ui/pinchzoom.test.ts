@@ -273,6 +273,33 @@ describe('pinch to zoom', () => {
     fire(t.surface, 'touchend', [])
     t.off(); band.remove()
   })
+  /* the walk of 31 Oct 26 (L2, L7): part-way down a pinch OUT scrolls the page with the pinch (D1288), which carries the
+     names copy's own box down by that scroll as well as its stretch; the clip was worked back through the stretch only,
+     so it stood that scroll too low and the names under the date row were not drawn until the lift. In jsdom every box
+     stands at 0; the page is 300 down, the fingers about (100, 100) go half as far apart and 20 lower: the picture's left
+     edge is held (`edges`), the page scrolls 70 with it, and the date row (top 0, foot 40) is carried to 70, its foot to
+     90. The band's own line y is drawn at (0 + 70) + 100 + 0.5 × (y − 100) + (20 − 70): at 90 that is y = 40. */
+  it('a floor that is a row’s foot is cut where the row is drawn when the page scrolls with a pinch out (the walk, L2 and L7, 31 Oct 26)', () => {
+    let y = 300
+    const desc = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    const to = window.scrollTo
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => y })
+    window.scrollTo = ((_x: number, yy: number) => { y = yy }) as typeof window.scrollTo
+    try {
+      const band = document.createElement('div'); document.body.appendChild(band)
+      const t = setup({ edges: true, scrollPage: true, alsoY: () => [band, null], floor: () => ({ top: 0, foot: 40 }) })
+      fire(t.surface, 'touchstart', [[100, 100]])
+      fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+      fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+      expect(y, 'the page scrolled 70 with the pinch').toBe(230)
+      expect(band.style.clipPath).toBe('inset(40px 0px 0px 0px)')
+      fire(t.surface, 'touchend', [])
+      t.off(); band.remove()
+    } finally {
+      if (desc) Object.defineProperty(window, 'scrollY', desc); else delete (window as any).scrollY
+      window.scrollTo = to
+    }
+  })
   it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
     let calls = 0
     const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did

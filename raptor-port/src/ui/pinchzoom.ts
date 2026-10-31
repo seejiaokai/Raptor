@@ -265,12 +265,15 @@ export function wirePinch(opts: PinchOpts): () => void {
     const floor = Number.isNaN(live.floorTop) ? live.floor
       : Math.max(live.sy + live.k * (live.floorTop - live.sy) + dy, live.floorTop + S) + live.k * (live.floor - live.floorTop)
     /* a box pinned to the left edge: stretched about the fingers' height only, from its own left — and, with a floor,
-       never drawn above it (a clip in its own units, worked back through its stretch) */
+       never drawn above it (a clip in its own units, worked back through its stretch AND the page's own scroll: the box
+       is in the page, so the page scrolled S with the pinch has carried it down by S as well as its translate dyp — the
+       two make the picture's d. Worked back through dyp alone the clip stood S too low, and part-way down a pinch out
+       left the names column blank under the date row until the lift — the walk of 31 Oct 26, L2 and L7) */
     for (const a of live.ys) {
       a.el.style.transformOrigin = `0px ${a.oy}px`
       a.el.style.transform = `translate(0px, ${dyp / a.s}px) scale(${live.k})`
       if (floor > -Infinity) {
-        const cut = a.oy + ((floor - dyp - a.top) / a.s - a.oy) / live.k
+        const cut = a.oy + ((floor - dy - a.top) / a.s - a.oy) / live.k
         a.el.style.clipPath = cut > 0 ? `inset(${cut}px 0px 0px 0px)` : ''
       }
     }

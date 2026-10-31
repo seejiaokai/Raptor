@@ -17,7 +17,7 @@ const [, , DIST = 'dist', OUT0 = 'C:/pinch1031', ONLY] = process.argv
 const ENGINE = process.env.ENGINE === 'webkit' ? 'webkit' : 'chromium'
 const OUT = join(OUT0, ENGINE)
 mkdirSync(OUT, { recursive: true })
-console.log(`pinch1031-walk v1 — ${ENGINE}, ${DIST}`)
+console.log(`pinch1031-walk v2 — ${ENGINE}, ${DIST}`)
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ORIGIN = 'http://localhost:4196'
 const results = []
@@ -78,7 +78,12 @@ const done = async (id, s) => { check(id, 'no page errors', s.errs.length === 0,
 /* what is drawn on top over the date row's corner and LVE heading (the grid's own, when in sight) and over the frozen
    copy's corner (when the dates are frozen under the top bar): never the names' frozen copy — and the names, the corner
    and the frozen corner at the grid's left edge. The names copy takes no taps at rest; it is made to for the read only. */
-const lwRead = () => {
+/* …and, read from the other side (fix round 1, 31 Oct 26 — the first walk passed L2 and L7 while their pictures showed the
+   names column blank mid-pinch: this read only asked that nothing of the names was drawn where it must not be): every
+   point down the names column from the date row's foot to the fingers is a name, a group heading or another pinned row's
+   name cell — never a day cell showing through. The frozen date row's own box, see-through below its shrunken row while
+   pinching, is looked through. */
+const lwRead = yTo => {
   const q = s => document.querySelector(s)
   const wrap = q('#page-leavewar .mx-wrap').getBoundingClientRect()
   const corner = q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who').getBoundingClientRect()
@@ -100,10 +105,17 @@ const lwRead = () => {
       if (document.elementFromPoint(x, y)?.closest('[data-testid="frozen-cols"]')) over.push(Math.round(y))
     }
   }
+  const footY = Math.max(Math.ceil((frozenCorner ?? corner).bottom) + 6, Math.ceil(bar) + 6)
+  const blank = []
+  for (let y = footY; y < Math.min(yTo ?? 0, innerHeight - 4); y += 6) {
+    let hit = null
+    for (const el of document.elementsFromPoint(wrap.left + 15, y)) { if (el.closest('[data-testid="sticky-head"]') && !el.closest('th')) continue; hit = el; break }
+    if (!hit?.closest('[data-testid="frozen-cols"], td.who, td.grphd, td.catsub-in, [data-testid="sticky-head"] th')) blank.push(`${y} ${hit ? hit.tagName.toLowerCase() + '.' + String(hit.className).split(' ')[0] : 'nothing'}`)
+  }
   if (band) band.style.pointerEvents = was
   const bandR = band && getComputedStyle(band).visibility !== 'hidden' ? band.getBoundingClientRect() : null
   return {
-    over, stuck: !!sticky, inSight: corner.bottom > bar && corner.top < innerHeight,
+    over, blank, stuck: !!sticky, inSight: corner.bottom > bar && corner.top < innerHeight,
     cornerT: Math.round(corner.top), cornerB: Math.round(corner.bottom), bandT: bandR ? Math.round(bandR.top) : null,
     cornerOff: Math.round((corner.left - wrap.left) * 10) / 10, bandOff: bandR ? Math.round((bandR.left - wrap.left) * 10) / 10 : null,
     frozenOff: frozenCorner ? Math.round((frozenCorner.left - wrap.left) * 10) / 10 : null,
@@ -113,6 +125,7 @@ const lwRead = () => {
 }
 const lwJudge = (id, when, r) => {
   check(id, `${when}: nothing of the names' frozen copy drawn over the date row's corner or LVE heading`, r.over.length === 0, r)
+  check(id, `${when}: the names drawn all the way down the column from the date row's foot to the fingers`, r.blank.length === 0, r)
   if (r.inSight) check(id, `${when}: the corner at the grid's left edge`, Math.abs(r.cornerOff) < 1.5, r)
   if (r.bandOff !== null) check(id, `${when}: the names at the grid's left edge`, Math.abs(r.bandOff) < 1.5, r)
   if (r.frozenOff !== null) check(id, `${when}: the frozen dates' corner at the left edge`, Math.abs(r.frozenOff) < 1.5, r)
@@ -151,11 +164,11 @@ if (!ONLY || ONLY === 'lw') for (const [id, what, reach] of LW) {
   try {
     await s.p.waitForSelector('#page-leavewar .mx-wrap [data-testid^="head-"]')
     const [cx, cy, d0, d1] = await reach(s)
-    const rest = await s.p.evaluate(lwRead)
+    const rest = await s.p.evaluate(lwRead, cy + 30)
     await s.p.screenshot({ path: join(OUT, `${id}-rest.png`) })
     console.log(`— ${id} ${what} (fingers ${Math.round(cx)},${Math.round(cy)} ${d0}→${d1}; at rest ${JSON.stringify({ cornerT: rest.cornerT, cornerB: rest.cornerB, bandT: rest.bandT, stuck: rest.stuck })})`)
     lwJudge(id, 'at rest', rest)
-    const { m, a } = await s.pinch(id, cx, cy, d0, d1, () => s.p.evaluate(lwRead), () => s.p.evaluate(lwRead))
+    const { m, a } = await s.pinch(id, cx, cy, d0, d1, y => s.p.evaluate(lwRead, y), y => s.p.evaluate(lwRead, y))
     check(id, 'read mid-pinch (the grid stretched as a picture)', m.transformed, m)
     lwJudge(id, 'mid-pinch', m)
     lwJudge(id, 'after the lift', a)
