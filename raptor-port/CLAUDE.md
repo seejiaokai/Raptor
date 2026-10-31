@@ -191,7 +191,7 @@ the phone perf budget. Don't convert them to components.
 
 **The Leave War tab is a SECOND app with a SECOND store** — its architecture (its own store and storage seam, what it persists, the one absence record, the four seams that cross the boundary and only four) moved 24 Sep 26, whole, to `../.claude/rules/decisions/leave-war.md` §Architecture, which loads with any Leave War file and with every file where it meets the rest of the app.
 
-**The Tracker tab is a THIRD app with a THIRD store** — its architecture (its own store and storage doorway, the file is a format not a store, stable ids, the three seams, the same access for everyone — D121, the standalone export) moved 24 Sep 26, whole, to `../.claude/rules/decisions/tracker.md` §Architecture, which loads with any Tracker file and with every file where it meets the rest of the app.
+**The Tracker tab is a THIRD app with a THIRD store** — its architecture (its own store and storage doorway, the file is a format not a store, stable ids, the three seams, the same access for everyone — D121; no standalone export any more, D1538) moved 24 Sep 26, whole, to `../.claude/rules/decisions/tracker.md` §Architecture, which loads with any Tracker file and with every file where it meets the rest of the app.
 
 ## Coding conventions
 

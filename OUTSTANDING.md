@@ -127,6 +127,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -240,6 +241,16 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
+**What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
+Tracker is no longer needed: `+ Add` falling back to the bare "Student callsign:" prompt when no roster is handed over
+(`components/Modals.jsx`, the one `people.length` branch), the bare `ocu:` localStorage path in `src/tracker/storage.js` used when no
+storage target is plugged in (also the path of tests that never boot the app — check them first), `role.js`'s and `people.js`'s
+no-import shape kept so the Tracker could leave without Raptor, and the "a standalone export must carry …" notes in
+`docs/tracker/known-gaps.md`. **To do:** list each, say whether anything still uses it (a test, the smoke suite
+`scripts/tracker/smoke.mjs`, the boot), and remove or simplify it with its tests; nothing a person sees changes. **Place:** with
+the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
 
 ### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
 **What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the

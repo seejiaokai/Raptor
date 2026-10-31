@@ -1,5 +1,11 @@
 # TRACKER — known gaps
 
+> **No standalone export any more (owner, D1538, 31 Oct 26 — "The tracker will not be exported anymore. It will live in
+> this app.").** Every passage below that speaks of the standalone Tracker going back out to `seejiaokai/Tracker` — "the
+> standalone rule" (9 Sep 26), and the notes that "a standalone export of the Tracker must carry" Raptor's date box,
+> `ui/kbscroll.ts` or `ui/edgescroll.ts` — no longer binds a change: they are kept as the history of why the code is
+> shaped as it is. The code kept only for a standalone Tracker is filed as [TRK-STANDALONE-LEFTOVERS].
+
 > **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
 > his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the
 > app, then IMPORTS that file into the Tracker. So a Tracker bug that route already removes is not
