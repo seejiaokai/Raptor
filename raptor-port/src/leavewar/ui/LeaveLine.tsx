@@ -23,6 +23,7 @@ function runWords(from: string, to: string): string {
 const fig = (n: number) => String(Math.round(n * 2) / 2)
 const STATE_WORD = { approved: 'Approved', pending: 'Pending', refused: 'Refused', deleted: 'Deleted', unav: '' } as const
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one line, drawn two ways (the day panel's with its puck, the person window's with its dot, who and clip); its branches are each one optional part of that line
 export function LeaveLine({ personId, callsign = '', code, state, from, to, days, testid, noPuck, dates, box, dot, who, clip, onGo }: {
   personId: string
   /** his callsign, where the roster draws no puck for him */
@@ -64,7 +65,9 @@ export function LeaveLine({ personId, callsign = '', code, state, from, to, days
   /* a line that takes the grid there is `ll-tap` — never `go`, the schedule's flying-wave block (scheduler.css `.go`), whose
      rounded card, side margins and cyan bar it wore until his pick of 29 Oct 26 (D1493: flat rows, as drawn) */
   return (
-    <div className={`ll-row${state === 'deleted' ? ' gone' : ''}${onGo ? ' ll-tap' : ''}${dot ? ' new' : ''}`} data-testid={testid} onClick={onGo}>
+    /* role="presentation": the row only widens the pointer's target — the keyboard's and a screen reader's way in is the
+       dates' own button below */
+    <div className={`ll-row${state === 'deleted' ? ' gone' : ''}${onGo ? ' ll-tap' : ''}${dot ? ' new' : ''}`} data-testid={testid} role="presentation" onClick={onGo}>
       <span>{dot && <i className="m5-dot" data-testid={testid ? `${testid}-dot` : undefined} aria-label="New since your last visit" />}</span>
       <span className={`c k-${kindOf(code)} s-${look} ll-box`}>{boxText(code)}</span>
       {/* the keyboard's way in is the dates, a button where the line goes somewhere (the row itself takes the pointer) */}

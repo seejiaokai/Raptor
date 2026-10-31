@@ -6,6 +6,7 @@ import { deleteManningRule } from '../state/store'
 /** Rounds for display only — 4.5 stays 4.5, 4 does not become "4.0". */
 const show = (n: number) => String(Math.round(n * 10) / 10)
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the Manning block's rows follow one row contract with the grid's (performance.md §E: the same cells on every row, the iPhone the gate); split into pieces, that contract would be kept in several places
 export function CountRows({
   verdicts,
   dates,

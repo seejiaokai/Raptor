@@ -29,22 +29,14 @@
 // step. A save the app refuses says why in the strip and keeps the box with what was typed.
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import { dropFlyRun, flyAnswer, getFlyPlan, reqRowNames, setFlyDays, setFlyRun, usePlanVersion, type FlySave } from '../sync'
-import { REQ_NAMES_ORIGINAL } from '../engine'
+import { dropFlyRun, flyAnswer, getFlyPlan, setFlyDays, setFlyRun, usePlanVersion, type FlySave } from '../sync'
 import { dayLabel } from './dates'
+/* the Required rows' names (`reqName`, `reqShort`) and `liftAbove`: ui/flyeditparts.ts, shared with the Required panel */
+import { liftAbove, reqName, reqShort, type ReqRow } from './flyeditparts'
 
-export type ReqRow = 'req-p' | 'req-w'
 export interface FlyEditAt { row: ReqRow; iso: string; touch: boolean }
 type Seat = 'p' | 'w'
 
-/** The Required rows' names as they START — an admin may rename them since D1193 (21 Oct 26, narrowing D668), so a
- *  window that names one reads `reqName` below; the short form is a phone's, shown only while the name is this one. */
-export const REQ_NAME: Record<ReqRow, string> = { 'req-p': REQ_NAMES_ORIGINAL.p, 'req-w': REQ_NAMES_ORIGINAL.w }
-export const REQ_SHORT: Record<ReqRow, string> = { 'req-p': 'Req P', 'req-w': 'Req W' }
-/** a Required row's name as it stands (D1193) */
-export const reqName = (row: ReqRow): string => reqRowNames()[row === 'req-p' ? 'p' : 'w']
-/** what a phone shows for it: the short form while the name is the one it started with, else the name itself */
-export const reqShort = (row: ReqRow): string => { const n = reqName(row); return n === REQ_NAME[row] ? REQ_SHORT[row] : n }
 const MAX_DIGITS = 3
 const digits = (v: string) => v.replace(/\D/g, '').slice(0, MAX_DIGITS)
 /** "Tue 6 Jan" → "6 Jan" */
@@ -52,12 +44,12 @@ const dm = (iso: string) => dayLabel(iso).split(' ').slice(1).join(' ')
 
 /** A day a figure is typed along: day or night flying, on no holiday or Off day. Enter and the pad's ‹ › stop only
  *  on these; any other day is typed by pressing its own cell. */
-export function isFlyingDay(iso: string): boolean {
+function isFlyingDay(iso: string): boolean {
   const a = flyAnswer(iso)
   return !a.kind && (a.cls === 'day' || a.cls === 'night')
 }
 /** the next (dir 1) or previous (dir -1) flying day among the DRAWN dates; null at the end of what is drawn */
-export function stepFlyingDay(dates: readonly string[], iso: string, dir: 1 | -1): string | null {
+function stepFlyingDay(dates: readonly string[], iso: string, dir: 1 | -1): string | null {
   for (let i = dates.indexOf(iso) + dir; i >= 0 && i < dates.length; i += dir) if (isFlyingDay(dates[i]!)) return dates[i]!
   return null
 }
@@ -79,30 +71,10 @@ function bringIntoView(cell: HTMLElement, padTop: number | null) {
   }
   liftAbove(cell, padTop)
 }
-/** UP AND DOWN: scroll the page so `cell` sits clear of whatever is docked at the foot of the screen — the number
- *  pad's top edge, the Required panel's (`floorTop`), or the screen's own foot (null) — and clear of the app's bar at
- *  the head. By the exact distance: "centre it" is not enough on a phone, where the pad takes half the screen (found
- *  by the browser gate: the centred cell sat 6px under the pad). With something docked, ALL FOUR rows are brought
- *  above it where the screen allows: a Required figure is read against the Available one two rows below it. */
-export function liftAbove(cell: HTMLElement, floorTop: number | null): void {
-  const r = cell.getBoundingClientRect()
-  const floor = (floorTop ?? window.innerHeight) - 14
-  const foot = floorTop === null ? r.bottom : Math.max(r.bottom, footOfRows() ?? r.bottom)
-  const dy = foot > floor ? Math.min(foot - floor, r.top - 64) : r.top < 64 ? r.top - 64 : 0
-  if (dy) scrollerOf(cell).scrollBy(0, dy)
-}
-const footOfRows = () => document.querySelector<HTMLElement>('[data-testid="fly-row-avail-w"]')?.getBoundingClientRect().bottom ?? null
+/* UP AND DOWN, clear of whatever is docked at the foot of the screen: `liftAbove` (ui/flyeditparts.ts) */
 /* the foot of the whole BLOCK the four rows stand in — its last row, which since D674 (8 Oct 26) may be a counter the
    admin has put under Available W */
 const footOfBlock = () => document.querySelector<HTMLElement>('[data-testid="fly-row-avail-w"]')?.parentElement?.lastElementChild?.getBoundingClientRect().bottom ?? null
-/* what scrolls the grid up and down: the nearest ancestor that scrolls on that axis, else the page itself */
-function scrollerOf(el: HTMLElement): { scrollBy: (x: number, y: number) => void } {
-  for (let p = el.parentElement; p && p !== document.body; p = p.parentElement) {
-    const oy = getComputedStyle(p).overflowY
-    if ((oy === 'auto' || oy === 'scroll') && p.scrollHeight > p.clientHeight + 1) return p
-  }
-  return window
-}
 
 export function FlyEditor({ at, dates, onMove, onClose }: {
   at: FlyEditAt
@@ -116,8 +88,10 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
   const planV = usePlanVersion()
   /* what the cell shows — the box opens holding it, selected, so the first key replaces it */
   const shown = () => { const v = flyAnswer(at.iso).req[seat]; return v === null ? '' : String(v) }
-  const opened = useRef(shown())
-  const [text, setText] = useState(opened.current)
+  /* read once, as the box opens (a lazy first value — never again on a later paint) */
+  const [first] = useState(shown)
+  const opened = useRef(first)
+  const [text, setText] = useState(first)
   /* on the pad, the first digit REPLACES the figure that was there (what select-all does for the input) */
   const fresh = useRef(true)
   const [mode, setMode] = useState<'day' | 'run'>('day')

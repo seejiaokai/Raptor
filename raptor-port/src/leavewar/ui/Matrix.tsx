@@ -8,7 +8,8 @@ import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from '.
 import { PersonWindow } from './PersonWindow'
 import { openOwnWindow } from '../../state/lwseen'
 import { ringCell } from './cellring'
-import { FigureCell, show } from './FigureCell'
+import { FigureCell } from './FigureCell'
+import { show } from './figwords'
 import { NamePuck } from './NamePuck'
 import { OilTracker } from './OilTracker'
 import { CountRows } from './CountRows'
@@ -24,7 +25,6 @@ import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepT
 import type { PostOutcome } from '../engine'
 import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
-import type { RecordSpans } from '../state/merge'
 import { creditGiver } from '../engine/warrecs'
 import { msSinceInput } from '../../state/idle'
 import { boxOf, frameLift, frameLand, landOn } from '../../ui/lift'
@@ -45,11 +45,16 @@ import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 
 import { availRowNames, availVerdictAt, bidDayLine, dayFacts, docGet, flyMonth, leaveInputAt, openInputDocs, rowDocIds, openDays, postOut, postOutProblem, postingRunsBy, undoPostOut, undoPostOutProblem, warIdentityIfHidden, type DayAnswer } from '../sync'
-import { DayPanelHost, openDayPanel } from './DayPanel'
+import { DayPanelHost } from './DayPanel'
+import { openDayPanel } from './daypanelopen'
 import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
-import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, PersonRow, type QualPill, type RowApi, type RowDragCfg, freeHalfBeside, nameLines, ownAwardAlone, setPhWidth } from './MatrixRows'
+import { PersonRow, type RowApi } from './MatrixRows'
+import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
+import { rowInWindow } from './rowinwindow'
+import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
+import type { Input } from '../../engine/schema'
 import './matrix.css'
 
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
@@ -106,41 +111,7 @@ function monthLabel(date: string): string | null {
   return MONTHS[Number(date.slice(5, 7)) - 1]
 }
 
-/** Whether a person's row rides the roster for a visible month window
- *  ('yyyy-mm|yyyy-mm', or '' meaning no measurement → everyone).
- *
- *  A posted-out person rides every month up to and including the one holding
- *  their last day and drops off after it (owner, 19 Aug 26 — "once I hit the
- *  next month… the row disappears"); a late joiner mirrors it at the other
- *  end. Month granularity on purpose: scrolling inside a month never
- *  reshuffles the rows, only crossing a boundary does.
- *
- *  …AND the row stretches to reach anything the war shows for them outside
- *  those dates (owner, 20 Sep 26 — records may be dated before someone posts
- *  in and after they post out, "because those dates are official dates. But
- *  they can be for e.g still taking leave after or before they post in or
- *  out"). Without it a man posted out in January with clearing leave in
- *  September was charged for that leave and could not be seen — the money and
- *  the screen disagreed. `spans` is merge.ts's per-merge map, so this stays a
- *  lookup; it is a DISPLAY span only, and his own dates — which is what every
- *  manning count reads — are untouched. This narrows the 19 Aug rule above
- *  rather than reversing it: a row with nothing out there still disappears
- *  exactly as it did. */
-export function rowInWindow(p: Person, win: string, spans?: RecordSpans): boolean {
-  if (!win) return true
-  const [first, last] = win.split('|')
-  const span = spans?.get(p.id)
-  const endsAt = p.to === null ? null
-    : span && span.last > p.to.slice(0, 7) ? span.last : p.to.slice(0, 7)
-  const startsAt = p.from === null ? null
-    : span && span.first < p.from.slice(0, 7) ? span.first : p.from.slice(0, 7)
-  /* D320 ([ONE-DOOR], 27 Sep 26): an earlier stint shows his row too — a leave period that holds one of his stints
-     shows him, one he was away for the whole of (and holding no record of his) does not */
-  const inPast = !!p.past && p.past.some(s => s.to.slice(0, 7) >= first! && (s.from === null || s.from.slice(0, 7) <= last!))
-  if (endsAt !== null && endsAt < first!) return inPast
-  if (startsAt !== null && startsAt > last!) return inPast
-  return true
-}
+/* whether a person's row rides the months on screen: `rowInWindow` (ui/rowinwindow.ts) */
 
 /** Whether two frozen-header pins measured the same bar — its box and every
  *  column width, to a hundredth of a pixel. A re-pin that finds nothing moved
@@ -163,75 +134,26 @@ function sameStuck(
    them) — only the on-grid editor is gone. */
 
 
-/** The bid bubble's reading of the grid at one moment (D1227): each row-day at its level (0 clear, 1 amber, 2 red) with its
- *  figure (`have` — D1345, D1364), the days drawn then — the two Available rows are read over the drawn days only — and the
- *  count of the war's gestures (`seq`, so the bubble can tell a filing made since from a bid — D1351). A row-day still
- *  clear is read too, with its figure, so a row a bid turns amber or red can say what it stood at before (D1364). */
-export type BubbleFlags = { m: Map<string, { label: string; lv: number; have?: number }>; drawn: Set<string>; seq?: number }
-/** How a bid made a row worse: it TURNED it (to amber or red, or amber to red), or took it LOWER where it already stood
- *  at that level (D1345) — with the figures of the row-day it hurt most, before and after (D1364), where both are known. */
-export type Worse = { lv: 'amber' | 'red'; how: 'turns' | 'lower'; before?: number; after?: number }
-/** The rows a bid made WORSE between two readings, each at its worst — a row-day turned amber or red, or amber to red; or
- *  (D1345, his report of 25 Oct 26) one already amber or red whose figure went lower. A row that turns on one day and
- *  only goes lower on another reads as turned; red outranks amber; on a tie the day it went lowest speaks. Exported for its
- *  unit test (bidbubble.test.tsx). */
-export function worsenedRows(before: BubbleFlags, now: BubbleFlags): Map<string, Worse> {
-  const worst = new Map<string, Worse>()
-  const rank = (w: Worse) => (w.lv === 'red' ? 2 : 0) + (w.how === 'turns' ? 1 : 0)
-  for (const [k, { label, lv, have }] of now.m) {
-    if (lv < 1) continue
-    /* an Available row's day not drawn when the "before" was read has no "before" — a month drawn while a bid window was
-       open (the page behind it scrolls) is never "turned" by the bid (the code read of 23 Oct 26) */
-    if ((k.startsWith('availp|') || k.startsWith('availw|')) && !before.drawn.has(k.slice(7))) continue
-    const was = before.m.get(k)
-    let how: Worse['how'] | null = null
-    if (lv > (was?.lv ?? 0)) how = 'turns'
-    else if (was && have !== undefined && was.have !== undefined && have < was.have) how = 'lower'
-    if (!how) continue
-    const figs = was?.have !== undefined && have !== undefined ? { before: was.have, after: have } : have !== undefined ? { after: have } : {}
-    const w: Worse = { lv: lv === 2 ? 'red' : 'amber', how, ...figs }
-    const had = worst.get(label)
-    if (!had || rank(w) > rank(had) || (rank(w) === rank(had) && (w.after ?? Infinity) < (had.after ?? Infinity))) worst.set(label, w)
-  }
-  return worst
-}
-/** What was placed or filed, as the bubble names it (D1351, D1356, D1378): a bid, a course, an overseas duty, an Other, an Attach. */
-export type FiledKind = 'CSE' | 'OD' | 'OTH' | 'ATCH' | null
-/** THE BUBBLE'S PARTS (D1360, D1364 — his "Day-line pairs" and "Yes, figures everywhere", 25 Oct 26, narrowing D1345's and
- *  D1351's words): what was placed — "This bid", or after a filing "This overseas duty", "This course", "This Other" — then
- *  each row it lowered with its figures in the bid window's day-line form, "Available P 27 → 26", each pair in its colour;
- *  where the figure before is not known (a row read only now) its figure alone. Exported for its unit test. */
-export function bubbleParts(worse: Map<string, Worse>, filed: FiledKind): { lead: string; pairs: { label: string; fig: string; lv: 'amber' | 'red' }[] } {
-  const lead = filed === 'OD' ? 'This overseas duty' : filed === 'CSE' ? 'This course' : filed === 'OTH' ? 'This Other' : filed === 'ATCH' ? 'This Attach' : 'This bid'
-  /* the bid window's own figures: halves ".5" (D1246) */
-  const f = (n: number) => String(Math.round(n * 2) / 2)
-  const pairs = [...worse].map(([label, w]) => ({
-    label, lv: w.lv,
-    fig: w.before !== undefined && w.after !== undefined ? `${f(w.before)} → ${f(w.after)}` : w.after !== undefined ? f(w.after) : w.lv,
-  }))
-  return { lead, pairs }
-}
-/** The bubble in words — "This bid: IP 16 → 15 · SXO 12 → 11" (D1360) — for a screen reader and the tests. */
-export function bubbleWords(worse: Map<string, Worse>, filed: FiledKind): string {
-  const { lead, pairs } = bubbleParts(worse, filed)
-  return `${lead}: ${pairs.map(p => `${p.label} ${p.fig}`).join(' · ')}`
-}
+/* the bid bubble's reading and its words (`BubbleFlags`, `worsenedRows`, `bubbleParts`, `bubbleWords`): ui/bubblewords.ts */
 
 /** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
  *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
 /** THE COURSE HOLDING A WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY]): its code and typed remarks for the bid window's top line */
+/* the Inputs page's live list, typed once at the Leave War's edge (the schedule's engine keeps it untyped) */
+const inputRows = (): readonly Input[] => INPUTS as Input[]
 function heldCourse(v: DayView): { code: string; remarks: string } {
   const c = v.all[0]!
-  const row = INPUTS.find((r: any) => String(r.iid) === c.id)
+  const row = inputRows().find(r => String(r.iid) === c.id)
   return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '' }
 }
 function heldCommitment(v: DayView | undefined): { code: string; remarks: string; to?: string } | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
   if (!c) return null
-  const row = INPUTS.find((r: any) => String(r.iid) === c.id)
+  const row = inputRows().find(r => String(r.iid) === c.id)
   return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '', ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}) }
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the grid's controller carries measured performance contracts (performance.md §E: the window of months, the memoised rows and months, the memo firewall, its hook and effect order); it is split only by moves that change none of them, as its rows were (MatrixRows.tsx)
 export function Matrix() {
   /* kept in a name (not just subscribed) so store-reading memos below can
      re-derive on every store change — `movers` reads live grid state, and a
@@ -349,6 +271,7 @@ export function Matrix() {
   /* …HANDED OVER ONCE (round 3c, R3c-2 — the third blind read's 3): kept by cell alone, every later day's list of the same
      open cell took it again as its first words — a stale "kept pending" after the bid was deleted and another arrived. The
      list that opens in the same render as the placing has copied it into its own words by now, so it is dropped here. */
+  // eslint-disable-next-line react-doctor/no-effect-chain -- the note is handed over ONCE: it must live for the one commit in which the day's list opens and copies it, and only then be dropped, so the two steps stay a commit apart on purpose
   useEffect(() => { if (keptNote) setKeptNote(null) }, [keptNote])
   /* THE GRID'S BALANCES FOLD IS GONE (D1245, 22 Oct 26 — "n5 as recommended"; narrowing D1185): every balance column
      lives on the Balances tab (the overhaul's M5) and on the grid each name keeps only its LVE figure, so no two things
@@ -988,6 +911,7 @@ export function Matrix() {
   // flipping it (state/screen.ts) never repaints the ~25k-node grid. Seeded from
   // the live signal so a first mount that is ALREADY the current page (a direct
   // visit) starts on-screen, and a hidden pre-warm mount starts off-screen.
+  // eslint-disable-next-line react-doctor/rerender-lazy-ref-init -- isLwOnScreen() only returns one flag of a listener set, so there is nothing to save; a lazy first value would add a hook to the grid's measured set
   const onScreenRef = useRef(isLwOnScreen())
   // The first month the viewport currently overlaps (absolute index, drawn or
   // placeholder), tracked on every scroll event (`measureStrip`) — so when the
@@ -1834,6 +1758,7 @@ export function Matrix() {
     }
   }, [evPeek])
   /* …and it never outlives what it was opened for: a sheet opening over the grid, either move mode starting. */
+  // eslint-disable-next-line react-doctor/no-effect-chain -- a sheet or a move is started from many handlers and the drag machine; this one effect is the one place that closes the event box after any of them, and the grid's effect timing is kept as measured (performance.md §E)
   useEffect(() => { if (eventEdit || moveSel || eventMoveSel) setEvPeek(null) }, [eventEdit, moveSel, eventMoveSel])
 
   /* While the popover is up: it is anchored in screen coordinates, so any scroll
@@ -3789,7 +3714,7 @@ export function Matrix() {
                 let prevCat = ''
                 return roster.map(p => {
                   const g = homeOf(p)
-                  const heads: any[] = []
+                  const heads: ReactNode[] = []
                   if (g !== prevG) {
                     const n = roster.filter(x => homeOf(x) === g).length
                     heads.push(
@@ -4021,6 +3946,7 @@ export function Matrix() {
                        aria-hidden and the real heading above is the accessible
                        control. */
                     <tr key={`b-grp-${item.g}`} data-band-key={`group-${item.g}`} className={`grp ${groupClass(item.g)}${folded.has(item.g) ? ' folded' : ''}`}>
+                      {/* eslint-disable-next-line react-doctor/click-events-have-key-events -- the frozen copy is hidden from the keyboard and screen readers on purpose (aria-hidden, above); the real heading under it is the accessible control, with its own Tab stop and Enter / Space */}
                       <td className="grphd" colSpan={2} onClick={() => toggleFold(item.g)}>
                         <div className="grphd-in">
                           <span className="gsw" style={groupColorOf(item.g, groupColors) ? { background: groupColorOf(item.g, groupColors) } : undefined} />
@@ -4386,6 +4312,7 @@ export function Matrix() {
         if (!text) return null
         const kind = (band ? band.kind : day ? dayEventKind(day, evPeek.line) : null) ?? classifyEvent(eventDefs, text)
         return (
+          // eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; this small box floats over the grid at the event tapped, layered on purpose
           <div className="evpeek" role="dialog" aria-label={text} data-testid="event-peek" style={{ left: evPeek.x, top: evPeek.y }}>
             <div className="evpeek-name">{text}</div>
             <div className="evpeek-meta">

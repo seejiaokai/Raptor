@@ -60,27 +60,20 @@ import {
 } from '../sync'
 import { dayLabel } from './dates'
 import { popAt } from './popat'
-import { FlyEditor, type FlyEditAt, type ReqRow } from './FlyEdit'
+import { FlyEditor, type FlyEditAt } from './FlyEdit'
+import type { ReqRow } from './flyeditparts'
 import { ReqNameForm } from './ReqNameForm'
 import { ReqPanel } from './ReqPanel'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
+import { ROWS, type RowId, type Seat } from './flyrowlist'
 
 /** What the grid's drag hands over, and how the grid tells these rows to let go: a drag over the Required rows calls
  *  `pick`; a pick of anything ELSE on the grid (people's days, an event line) calls `close`. A ref, not state in
  *  Matrix — a pick must not re-render the ~25,000-node grid. */
 export interface FlyPickApi { pick: (sel: ReqSelection) => void; close: () => void }
 
-type Seat = 'p' | 'w'
-type RowId = 'req-p' | 'req-w' | 'avail-p' | 'avail-w'
-const ROWS: readonly { id: RowId; seat: Seat; kind: 'req' | 'avail' }[] = [
-  { id: 'req-p', seat: 'p', kind: 'req' },
-  { id: 'req-w', seat: 'w', kind: 'req' },
-  { id: 'avail-p', seat: 'p', kind: 'avail' },
-  { id: 'avail-w', seat: 'w', kind: 'avail' },
-]
-/** each row's own testid, top to bottom */
-export const FLY_ROW_KEYS: readonly string[] = ROWS.map(r => `fly-row-${r.id}`)
+/* the four rows, top to bottom, and each row's own testid (`FLY_ROW_KEYS`): ui/flyrowlist.ts */
 /* a phone's short form of each row's name — shown only while the name is still the one it started with */
 const AVAIL_DEFAULTS = { p: 'Available P', w: 'Available W' }
 const SHORT: Record<RowId, string> = { 'req-p': 'Req P', 'req-w': 'Req W', 'avail-p': 'Avail P', 'avail-w': 'Avail W' }
@@ -129,6 +122,7 @@ const FlyCells = memo(function FlyCells({ row, cells, onTap }: {
   return (
     <>
       {cells.map(c => (
+        /* eslint-disable-next-line react-doctor/click-events-have-key-events -- a day cell of the four rows, one a day across the year: a key handler and Tab stop on each would add work to every month's draw and bury the page's controls; the day's Required and Available figures are in the day panel, which the date heading row opens from the keyboard */
         <td
           key={c.iso}
           className={`fr ${avail ? 'avail tap' : 'req'}${c.cls}`}
@@ -211,7 +205,9 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   const [edit, setEdit] = useState<FlyEditAt | null>(null)
   /* THE RENAME WINDOW of a Required row (D1193) — an admin's tap on its name; one at a time */
   const [naming, setNaming] = useState<Seat | null>(null)
-  useEffect(() => { if (!admin) setNaming(null) }, [admin])
+  /* …and it closes when the admin's role goes: put right in the same render, so no frame draws it for a member */
+  const [namingAdmin, setNamingAdmin] = useState(admin)
+  if (namingAdmin !== admin) { setNamingAdmin(admin); if (!admin) setNaming(null) }
   const lastPtr = useRef('')
   const adminRef = useRef(admin)
   useLayoutEffect(() => { adminRef.current = admin })
@@ -383,6 +379,7 @@ function Working({ row, iso, x, y }: { row: RowId; iso: string; x: number; y: nu
   const avail = s === 'p' ? f.availP : f.availW
   const dash = (n: number | null) => (n === null ? '–' : show(n))
   return (
+    // eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; this read-only box floats over the grid at the cell tapped, layered on purpose
     <div className="flywork" role="dialog" aria-label={`${s === 'p' ? 'Pilots' : 'WSOs'}, ${dayLabel(iso)}`} data-testid="fly-working" style={{ left: x, top: y }}>
       <div className="flywork-hd">{s === 'p' ? 'Pilots' : 'WSOs'} <span>{dayLabel(iso)}</span></div>
       <div className="flywork-ln" data-testid="fly-working-req"><span>Required</span><b>{a.reqFrom[s] === 'nf' ? 'NF' : dash(a.req[s])}</b></div>

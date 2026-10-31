@@ -111,6 +111,7 @@ const markVerb = (r: ELogRow) => (r.fld === 'moved' ? 'moved' : r.fld === 'kind'
 const markCands = (marks: ELogRow[], from: string, to: string, code: string, half: '' | 'AM' | 'PM', iid?: string): Cand[] =>
   marks.filter(r => {
     if (r.fld === 'deleted' || !r.date) return false
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each mark's own short list of Inputs, asked once for one id; it is a different list for every mark, so a Set would be built for a single look-up
     if (iid && (r.iid === iid || (r.iids ?? []).includes(iid))) return true
     if (!overlaps(r.date, r.end ?? r.date, from, to)) return false
     const cell = parseCell(r.itype ?? '')

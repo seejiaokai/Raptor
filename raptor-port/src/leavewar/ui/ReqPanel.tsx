@@ -19,7 +19,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { dropFlyRun, flyAnswer, getFlyPlan, setFlyDays, setFlyRun, usePlanVersion, useWarFacts, type FlyDayPatch, type FlySave } from '../sync'
 import { dayLabel, shortSpan } from './dates'
-import { liftAbove, REQ_NAME, reqName, reqShort } from './FlyEdit'
+import { liftAbove, REQ_NAME, reqName, reqShort } from './flyeditparts'
 import { useCloseOnCellClick } from './gridclick'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
