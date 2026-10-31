@@ -79,3 +79,5 @@ export function TypeLegend({ shut, front }: { shut?: boolean; front?: () => bool
     </div>}
   </span>
 }
+
+export function PlantedFrame() { return <iframe src="about:blank" title="planted" /> }
