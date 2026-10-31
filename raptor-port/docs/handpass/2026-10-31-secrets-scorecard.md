@@ -97,6 +97,31 @@ promises; good accepted; leaky, lax and blind caught; read-nothing red by itself
 **The 10 history findings will be sorted after the next run**, once its summary lists them (rule, file, line, commit,
 fingerprint): each judged on his PC, never in a log, as `raptor-port/docs/gates-and-deploy.md` §Now (D1408) says.
 
+## The history's findings, sorted (the run on 97263675a, 31 Oct 26)
+
+That run was green: the self-test found both fakes, the change scan was clean, and the history listed **20 findings —
+10 lines, each found twice** (as committed, and again as landed on main by its merge; 4,601 commits scanned, and 439
+merges). Each line was opened on his PC (`git show <commit>:<file>`), read with every long run of letters masked to its
+shape, and judged. No value is written here or anywhere else.
+
+| File | Rule | What it is | Verdict |
+|---|---|---|---|
+| `docs/img/handpass/2026-10-25-lw-night/w1/w1-a-desk.json` line 58 | generic-api-key | a picture's file name (its "…arrowkey" read as a key name) | not a secret |
+| `docs/handpass/parts/lw-night/w1.md` line 26 | generic-api-key | a walk table row naming two pictures | not a secret |
+| `docs/handpass/parts/b2-host-walk.txt` line 29 | generic-api-key | a walk log's `"key"`: the app's own input record id | not a secret |
+| `docs/handpass/parts/dbrA-W4-oldread.json` line 1 | generic-api-key | a walk's stored state: the app's own input record ids | not a secret |
+| `docs/handpass/parts/dbrA-W4-newkeys.json` line 1 | generic-api-key | a walk's list of the app's own new record ids | not a secret |
+| `docs/handpass/2026-10-04-schedule-tab-evidence-r2-index.json` line 3441 | square-access-token | an evidence index's `"sha256"` field — 64 capital hex characters, one of its 913 file checksums | not a secret |
+| `docs/img/handpass/2026-10-04-phone-desktop-board/adapted.log` line 88 | generic-api-key | a gate log's traffic line: `tr:` text key and the app's own row id | not a secret |
+| `docs/handpass/css-split/gates/gate-adapted.log` line 88 | generic-api-key | the same kind of gate log line | not a secret |
+| `docs/handpass/insights-gates/baseline-audit.log` line 29 | generic-api-key | the same kind of gate log line | not a secret |
+| `docs/handpass/insights-gates/adapted-freeze-1.log` line 61 | generic-api-key | the same kind of gate log line | not a secret |
+
+**Real credentials found: none.** All 20 fingerprints (each line's commit and merge) went into `.gitleaksignore`, grouped
+by kind, marked "judged by the agent, 31 Oct 26 — he may check any". Commit-bound fingerprints were chosen, not
+file-and-line ones, so a key later written on the same line of the same file is still caught. Changing that file makes
+the next run scan the whole history again; it should list nothing.
+
 ## Owed
 
 - **The next GitHub run** of the check: the self-test with the real gitleaks (it must print "found, as it should" twice
