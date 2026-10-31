@@ -178,7 +178,49 @@ taken out of the script (its first run).
 
 ## The walk
 
-*(the walker's table: scenario × build × engine, PASS / FAIL, the pictures opened)*
+Walker: Sonnet 5.5, 31 Oct 26. Builds: the fixed build = this branch's head (`dist`, newer than every file under `src`); origin/main's
+(`15b7b2f60`) built in `C:\Users\User\pm1031`. Pictures `docs/img/handpass/2026-10-31-pinch-fixes/`: `before/` (origin/main) and `after/`
+(this branch), each `chromium/` and `webkit/` with every `<id>-mid.png` and `results.json`; `after/<engine>-taps/` the `*-touched.png`;
+`after/six-surfaces/` R1's mids; `compare/` side-by-sides the walker cut. Every mid-pinch picture of both builds in Chrome was opened;
+WebKit's L1, L2, L6, L7 (both builds), and the taps, D1 and R1's mids once. The rest-state and lift pictures were opened only where named.
+
+**The script's result (checks passing), then what the PICTURE shows.** A script PASS with a picture fault is a FAIL here.
+
+| Scenario | Before (origin/main) Chrome · WebKit, script | Before, picture | After Chrome · WebKit, script | After, picture (mid-pinch) |
+|---|---|---|---|---|
+| L1 part-way, Manning folded, pinch in | FAIL · FAIL | Chrome: FAULT — the SXO group row is drawn over the lower part of the corner (corner cut at about 250 of 290); WebKit: no overlap visible though the script says FAIL | PASS · PASS | PASS — corner whole, SXO row below it (`compare/L1-corner-…png`, `after/chromium/L1-mid.png`) |
+| L2 part-way, Manning folded, pinch out | PASS · PASS | fine — names from SXO down | PASS · PASS | **FAIL — the names column is blank from the SXO row down to Saber (the group row and Reaper to Ranger) while the grid cells beside them stay; Chrome and WebKit** (`compare/L2-…png`, `after/*/L2-mid.png`); back after the lift |
+| L3 part-way, Manning open, pinch in | PASS · PASS | fine | PASS · PASS | PASS — names, corner, left edge |
+| L4 top, pinch in | FAIL · FAIL | Chrome: FAULT — the names' first rows over the corner's lower part | PASS · PASS | PASS — names cut at the corner's foot, corner whole |
+| L5 top, pinch out | PASS · PASS | fine | PASS · PASS | PASS |
+| L6 dates frozen, pinch in | PASS · PASS | fine | PASS · PASS | PASS — frozen date row whole and grown, first name row directly under it, no names over its corner, no gap, no see-through (`compare/L6-…png`) |
+| L7 dates frozen (45% down), pinch out | PASS · PASS | fine | PASS · PASS | **FAIL — the names column is blank for the whole screenful, SXO down to Nomad; only the last few rows show at the bottom; Chrome and WebKit** (`compare/L7-…png`); back after the lift |
+| Q1 part-way, pinch out | FAIL · FAIL | FAULT — a band of empty page under the heading row | PASS · PASS | PASS — table directly under the toolbar, no band |
+| Q2 part-way, pinch in | FAIL · FAIL | FAULT — names off the left edge (−159) | PASS · PASS | PASS — names at the left edge under "CALLSIGN/NAME ▲" |
+| Q3 top, pinch in | FAIL · FAIL | FAULT — band, names off | PASS · PASS | PASS |
+| Q4 top, pinch out | FAIL · FAIL | FAULT — names off the left (+137) | PASS · PASS | PASS |
+| Q5 part-way, scrolled sideways, pinch in | FAIL · FAIL | FAULT — names off the left | PASS · PASS | PASS |
+| Q6 same, pinch out | FAIL · FAIL | FAULT — band and names off | PASS · PASS | PASS |
+| Q7 All, 60%, pinch out | FAIL · FAIL | FAULT — band at the heading row's foot, names off (+101) | PASS · PASS | PASS |
+| Q8 All, 60%, pinch in | FAIL · FAIL | FAULT — names off the left | PASS · PASS | PASS |
+
+**Breaks (faults seen on origin/main's build in its pictures, Chrome): 10 of 15 scenarios** — L1, L4, Q1–Q8 (WebKit's own picture shows L1's overlap
+not at all; its script still says FAIL, so WebKit gives 9 of 15 by picture). After: **13 of 15 scenarios clean by picture; L2 and L7 FAIL**
+(names column missing mid-pinch, both engines) although the script passed them.
+
+| Check | Chrome | WebKit | Pictures |
+|---|---|---|---|
+| Walk, after build: 205 checks | 205 / 205 | 205 / 205 | `after/<engine>/*-mid.png`; L2, L7 FAIL by picture |
+| Walk, before build: 207 checks | 185 / 207 (L1, L4, Q1–Q8) | 185 / 207 (same ids) | `before/<engine>/*-mid.png` |
+| T1 Leave War taps (D1281) | PASS — pinned cells solid after each tap, touched and settled | PASS | `after/<engine>-taps/T1-*-touched.png` — nothing see-through, nothing moved |
+| T2 Quals taps | PASS | 18 of 20: T2 pinned-heading-sort FAIL (touched and settled) — the sorted heading's own faint tint (white at 4%) read as not solid; its picture shows a solid heading, same as Chrome → script false alarm | `T2-*-touched.png`; Chrome's `T2-pinched-out.png` |
+| D1 desktop Leave War, Ctrl+scroll | PASS — corner and names at the left edge mid-burst | not run (desktop was Chrome only) | `D1-mid-burst.png` |
+| D2 desktop Quals, Ctrl+scroll | PASS — nothing stretches | not run | `D2-after.png` |
+| R1 six surfaces | all 24 readings 0 leak points | not run | `after/six-surfaces/*-mid.png` — the grid pinch out (`lw-grid-out-mid.png`) shows the same missing names as L2 |
+
+Not run: the desktop taps in WebKit (the script's desktop half is Chrome-only in the sheet's own commands); two-finger taps in WebKit
+(the script skips them: T1 and T2's zoomed taps are Chrome's). WebKit's lift pictures of L2 show the grid's names squeezed to two letters
+in both builds alike (a WebKit zoom reading; not this change).
 
 ## Findings and dispositions
 

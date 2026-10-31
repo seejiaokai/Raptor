@@ -1,0 +1,206 @@
+[
+ {
+  "surface": "lw-grid",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 6
+ },
+ {
+  "surface": "lw-grid",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 6
+ },
+ {
+  "surface": "lw-grid",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 5
+ },
+ {
+  "surface": "lw-grid",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 5
+ },
+ {
+  "surface": "lw-grid",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ },
+ {
+  "surface": "lw-balances",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 32
+ },
+ {
+  "surface": "lw-balances",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 2
+ },
+ {
+  "surface": "lw-balances",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 14
+ },
+ {
+  "surface": "lw-balances",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 14
+ },
+ {
+  "surface": "lw-balances",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ },
+ {
+  "surface": "lw-oil",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 83
+ },
+ {
+  "surface": "lw-oil",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 81
+ },
+ {
+  "surface": "lw-oil",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 38
+ },
+ {
+  "surface": "lw-oil",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 42
+ },
+ {
+  "surface": "lw-oil",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ },
+ {
+  "surface": "quals",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 36
+ },
+ {
+  "surface": "quals",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 36
+ },
+ {
+  "surface": "quals",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 22
+ },
+ {
+  "surface": "quals",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 37
+ },
+ {
+  "surface": "quals",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ },
+ {
+  "surface": "board-wide",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 3
+ },
+ {
+  "surface": "board-wide",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 3
+ },
+ {
+  "surface": "board-wide",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 2
+ },
+ {
+  "surface": "board-wide",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 2
+ },
+ {
+  "surface": "board-wide",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ },
+ {
+  "surface": "tracker",
+  "dir": "out",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 1
+ },
+ {
+  "surface": "tracker",
+  "dir": "out",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 1
+ },
+ {
+  "surface": "tracker",
+  "dir": "in",
+  "when": "mid-pinch",
+  "leaks": [],
+  "parts": 1
+ },
+ {
+  "surface": "tracker",
+  "dir": "in",
+  "when": "after the lift",
+  "leaks": [],
+  "parts": 1
+ },
+ {
+  "surface": "tracker",
+  "when": "page errors",
+  "errors": [],
+  "leaks": []
+ }
+]

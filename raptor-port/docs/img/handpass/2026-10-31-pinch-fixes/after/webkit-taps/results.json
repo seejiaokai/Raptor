@@ -1,0 +1,126 @@
+[
+ {
+  "id": "T1",
+  "what": "manning-open: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-open: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-fold: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-fold: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "month-sep: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "month-sep: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "pinched (WebKit takes no two fingers from outside — the zoomed taps are Chromium's)",
+  "ok": true,
+  "detail": null
+ },
+ {
+  "id": "T1",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-wsos: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-wsos: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-personnel: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-personnel: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-all: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-all: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-pilots: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-pilots: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "pinned-heading-sort: right after the tap, every pinned cell in sight solid",
+  "ok": false,
+  "detail": [
+   "th.insort rgba(255, 255, 255, 0.04) 1"
+  ]
+ },
+ {
+  "id": "T2",
+  "what": "pinned-heading-sort: settled, every pinned cell in sight solid",
+  "ok": false,
+  "detail": [
+   "th.insort rgba(255, 255, 255, 0.04) 1"
+  ]
+ },
+ {
+  "id": "T2",
+  "what": "pinched (Chromium only)",
+  "ok": true,
+  "detail": null
+ },
+ {
+  "id": "T2",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ }
+]
