@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/react-doctor-cleanup -->
+### `claude/react-doctor-cleanup` — [REACT-DOCTOR-CLEANUP] (D1534) built and bug-checked FULL; pull request 603 open, waiting on his "merge live" — written 31 Oct 26 — verify before use
+- **Built:** React Doctor 0.9.18 run the kit's way (D1533; `--no-telemetry` is `--no-score` in 0.9.18, so nothing went to the maker). 288 findings in the batch — 204 fixed, 84 kept with the reason written above each line (`raptor-port/docs/handpass/parts/rdc1031/dispositions.md`, made by `scripts/handpass/rdc-dispositions.mjs`). The app: errors 60 → 0, missed updates 42 → 0, the Tracker 195 → 0 (whole project 1,243 → 952). Four Opus helpers, one area each. Also `npm run lint` / `lint:changed`, `doctor.config.json`, the standing line in `raptor-port/CLAUDE.md`, the Tracker's `setStorageImpl`.
+- **Checked:** evidence `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`. Walk: 113/113 screens identical on main and the branch (pictures, words, errors — `rdc-ab.mjs` / `rdc-compare.mjs`); 28 behaviour rows on both builds (`rdc-behaviour.mjs`), 26 the same and passing, 2 intended differences (13 new Tab stops in the Tracker; a ball editor caption now focuses its box); the Tracker's stored world carried old → new, exports byte-identical. Fresh blind Opus reads (two): the Leave War and scheduler none; the Tracker F1 (a ready "Next event" chip lost its grey — fixed red first, `rdc-evchip.mjs`, re-walked 20/20) and F2 (the outcome table's pairing — fixed). GitHub's run green on 41b328e0a; the fix round's push re-runs it.
+- **His ruling mid-job:** D1538 — the Tracker is not exported any more; filed [TRK-STANDALONE-LEFTOVERS]. Also filed: [CODE-CHECK-CI] (the code check as a GitHub check — point 4's other half), [AVAILWIN-SETUP-SLOW].
+- **Pick up here:** read GitHub's run on the last pushed commit; if green, the job waits only on his "merge live" (D1088: push the closing records, wait for that run, merge, confirm Vercel). After the merge: archive [REACT-DOCTOR-CLEANUP]; this block and the `claude/m365-move-plan` block go at the next tidy. Remove the scratch build at the session scratchpad's `base/` (its `node_modules` is a junction — `rmdir` the junction first).
+- **Opening line:** "Read HANDOFF.md, the block for `claude/react-doctor-cleanup`. Pull request 603 waits on my word; check its run is green and report."
+<!-- /now -->
 <!-- now:claude/m365-move-plan -->
 ### `claude/m365-move-plan` — THE NIGHT OF 31 OCT 26, the morning block: four jobs built and checked, four pull requests (596–599) open, none merged — written 31 Oct 26 11:20 — verify before use
 - **After a compaction:** re-read this block and the files of the step in hand before the next change. (Compacted once, 31 Oct 26 about 05:30, before the night started.)

@@ -1,0 +1,293 @@
+[
+ {
+  "id": "L1",
+  "size": "phone",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L2",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L3",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L3",
+  "size": "phone",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L4",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L5",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L6",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L7",
+  "size": "phone",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L8",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "L9",
+  "size": "phone",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S1",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S2",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S3",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S4",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S5",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S6",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S7",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "S8",
+  "size": "phone",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T1",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T2",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T3",
+  "size": "desktop",
+  "before": "INFO",
+  "after": "INFO",
+  "same": "differs (expected)",
+  "detail": {
+   "before": {
+    "start": "div#board",
+    "list": [
+     "button#fzOut(−)",
+     "button#fzIn(+)",
+     "button#fzReset.sm(reset)",
+     "button#ordCrew.sm(Reorder)",
+     "button#addStu.sm(+ Add)",
+     "button#lastSyll.datebox(Pick a date ▾)",
+     "button#lastCurr.datebox(Pick a date ▾)",
+     "button#courseStart.datebox(Pick a date ▾)",
+     "button#downDays.datebox(— ›)",
+     "input#epwIn(2)",
+     "button#targetIn.datebox(Pick a date ▾)",
+     "button#targetIn2.datebox(Pick a date ▾)",
+     "span#failTitle.failTitle(FAILURES)",
+     "button#setLullBtn.sm(+ Set lull period)",
+     "button#copyLullBtn.sm(⧉ Copy to…)",
+     "button#szOut(−)",
+     "button#szIn(+)",
+     "button#szReset.sm(reset)",
+     "body"
+    ],
+    "stops": 19
+   },
+   "after": {
+    "start": "div#board",
+    "list": [
+     "button#fzOut(−)",
+     "button#fzIn(+)",
+     "button#fzReset.sm(reset)",
+     "button#ordCrew.sm(Reorder)",
+     "button#addStu.sm(+ Add)",
+     "button.ren(Rename this studen)",
+     "button.x(Remove this studen)",
+     "button.ren(Rename this studen)",
+     "button.x(Remove this studen)",
+     "button.branch(CFT-01)",
+     "button.branch(IAT-01)",
+     "button.branch(TR(S)-1)",
+     "button.branch(TR-1(P))",
+     "button.chip(ST-01)",
+     "button.chip(ST-02)",
+     "button#lastSyll.datebox(Pick a date ▾)",
+     "button#lastCurr.datebox(Pick a date ▾)",
+     "button#courseStart.datebox(Pick a date ▾)",
+     "button#downDays.datebox(— ›)",
+     "input#epwIn(2)",
+     "button#targetIn.datebox(Pick a date ▾)",
+     "button#targetIn2.datebox(Pick a date ▾)",
+     "button#failTitle.failTitle(FAILURES)",
+     "button.chip(ST-02)",
+     "button.lullopen(06/07/26 → 10/07/2)",
+     "button.x(×)",
+     "button#setLullBtn.sm(+ Set lull period)",
+     "button#copyLullBtn.sm(⧉ Copy to…)",
+     "button#szOut(−)",
+     "button#szIn(+)",
+     "button#szReset.sm(reset)",
+     "body"
+    ],
+    "stops": 32
+   }
+  }
+ },
+ {
+  "id": "T4",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T5",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T6",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T7",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T8",
+  "size": "desktop",
+  "before": "INFO",
+  "after": "INFO",
+  "same": "differs (expected)",
+  "detail": {
+   "before": {
+    "captions": [
+     "label:Text",
+     "label:Colour / type",
+     "label:Number (badge)",
+     "label:Crew",
+     "label:Prereq links",
+     "label:Prerequisites (note)"
+    ],
+    "focusOnOpen": "body",
+    "focusAfterCaption:Number (badge)": "body",
+    "focusAfterCaption:Crew": "body",
+    "focusAfterCaption:Text": "body"
+   },
+   "after": {
+    "captions": [
+     "label:Text",
+     "label:Colour / type",
+     "label:Number (badge)",
+     "label:Crew",
+     "label:Prereq links",
+     "label:Prerequisites (note)"
+    ],
+    "focusOnOpen": "body",
+    "focusAfterCaption:Number (badge)": "input#edNum",
+    "focusAfterCaption:Crew": "input#edCrew",
+    "focusAfterCaption:Text": "input#edText"
+   }
+  }
+ },
+ {
+  "id": "T9",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ },
+ {
+  "id": "T10",
+  "size": "desktop",
+  "before": "PASS",
+  "after": "PASS",
+  "same": "same"
+ }
+]

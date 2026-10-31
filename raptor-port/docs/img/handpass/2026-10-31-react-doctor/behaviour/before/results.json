@@ -1,0 +1,857 @@
+{
+ "label": "before",
+ "dist": "C:/Users/User/AppData/Local/Temp/claude/C--Users-User-projects-Raptor--claude-worktrees-react-doctor-cleanup-e72397/eb30646c-c270-41ca-927f-739e4046d782/scratchpad/base/raptor-port/dist",
+ "errors": [],
+ "rows": [
+  {
+   "id": "L1",
+   "size": "phone",
+   "status": "PASS",
+   "m": {
+    "start": "false",
+    "afterTap1": "true",
+    "afterTap2": "false",
+    "firstGroupTop": [
+     309,
+     485,
+     309
+    ],
+    "setBeforeReload": "true",
+    "topBeforeReload": 485,
+    "afterReload": "true",
+    "topAfterReload": 485
+   },
+   "pics": [
+    "phone/L1-start.png",
+    "phone/L1-toggled1-tap.png",
+    "phone/L1-toggled1.png",
+    "phone/L1-toggled2-tap.png",
+    "phone/L1-toggled2.png",
+    "phone/L1-after-reload.png"
+   ]
+  },
+  {
+   "id": "L2",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "lines0": 11,
+    "first": "wolf@Thu 8 Jan ›",
+    "sub": [
+     "11 pending",
+     "10 pending",
+     "11 pending",
+     "11 pending",
+     "10 pending"
+    ],
+    "states": [
+     {
+      "pressed": "false",
+      "word": "Approve"
+     },
+     {
+      "pressed": "true",
+      "word": "Approved"
+     },
+     {
+      "pressed": "false",
+      "word": "Approve"
+     },
+     {
+      "pressed": "true",
+      "word": "Approved"
+     },
+     {
+      "pressed": "false",
+      "word": "Approve"
+     },
+     {
+      "pressed": "true",
+      "word": "Approved"
+     }
+    ],
+    "sameOrderWhileDeciding": true,
+    "febLines": 5,
+    "linesAfterDatesChanged": 10,
+    "litAfterDatesChanged": 0,
+    "firstAfterDatesChanged": "bruise@Fri 23 Jan, AM ›"
+   },
+   "pics": [
+    "desktop/L2-start.png",
+    "desktop/L2-approved.png",
+    "desktop/L2-back-to-pending.png",
+    "desktop/L2-after-undo.png",
+    "desktop/L2-february.png",
+    "desktop/L2-all-again.png"
+   ]
+  },
+  {
+   "id": "L3",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "pickerOpened": true,
+    "dialogAfterPlace": 0,
+    "placedChip": 1,
+    "placedCls": " act hasc",
+    "banner": "Tap a day to move 1 entry\nCancel",
+    "hoverCls": "act mvland",
+    "hoverPreview": true,
+    "confirmShown": 0,
+    "fromChip": 0,
+    "toChip": 1,
+    "toCls": " act hasc",
+    "bannerGone": true,
+    "hasDelete": 1,
+    "toChipAfterDelete": 0,
+    "fromChipAfterDelete": 0
+   },
+   "pics": [
+    "desktop/L3-picker.png",
+    "desktop/L3-placed.png",
+    "desktop/L3-move-banner.png",
+    "desktop/L3-hover-preview.png",
+    "desktop/L3-moved.png",
+    "desktop/L3-delete-window.png",
+    "desktop/L3-deleted.png"
+   ]
+  },
+  {
+   "id": "L3",
+   "size": "phone",
+   "status": "PASS",
+   "m": {
+    "pickerOpened": true,
+    "dialogAfterPlace": 0,
+    "placedChip": 1,
+    "placedCls": " act hasc",
+    "banner": "Tap a day to move 1 entry\nCancel",
+    "stagedCls": "act mvland",
+    "staged": true,
+    "confirmShown": 1,
+    "fromChip": 0,
+    "toChip": 1,
+    "toCls": " act hasc",
+    "bannerGone": true,
+    "hasDelete": 1,
+    "toChipAfterDelete": 0,
+    "fromChipAfterDelete": 0
+   },
+   "pics": [
+    "phone/L3-picker.png",
+    "phone/L3-place-tap.png",
+    "phone/L3-placed.png",
+    "phone/L3-move-banner.png",
+    "phone/L3-target-tap.png",
+    "phone/L3-staged.png",
+    "phone/L3-confirm-tap.png",
+    "phone/L3-moved.png",
+    "phone/L3-delete-window.png",
+    "phone/L3-delete-tap.png",
+    "phone/L3-deleted.png"
+   ]
+  },
+  {
+   "id": "L4",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "initial": "–",
+    "inputOpened": 1,
+    "typedValue": "9",
+    "afterOutside": "9",
+    "inputGone1": true,
+    "typedSecond": "7",
+    "afterEscape": "9",
+    "inputGone2": true
+   },
+   "pics": [
+    "desktop/L4-box-open.png",
+    "desktop/L4-after-outside-press.png",
+    "desktop/L4-typed-seven.png",
+    "desktop/L4-after-escape.png"
+   ]
+  },
+  {
+   "id": "L5",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "before": "01=open 02=open 03=open 04=closed 05=closed 06=closed 07=closed 08=closed 09=closed 10=closed 11=closed 12=closed",
+    "afterDrag": "01=open 02=open 03=open 04=closed 05=closed 06=closed 07=open 08=open 09=closed 10=closed 11=closed 12=closed",
+    "line": "13 Jul – 31 Aug\n50 days",
+    "calendarOpen": 1,
+    "calendarAfterEsc": 0,
+    "windowAfterEsc": 1,
+    "monthsAfterEsc": "01=open 02=open 03=open 04=closed 05=closed 06=closed 07=open 08=open 09=closed 10=closed 11=closed 12=closed"
+   },
+   "pics": [
+    "desktop/L5-window.png",
+    "desktop/L5-after-drag.png",
+    "desktop/L5-calendar-open.png",
+    "desktop/L5-after-escape.png"
+   ]
+  },
+  {
+   "id": "L6",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "focusedBefore": "button[my-leave]",
+    "opened": 1,
+    "focusInside": true,
+    "closed": true,
+    "focusAfter": "button[my-leave]"
+   },
+   "pics": [
+    "desktop/L6-open.png",
+    "desktop/L6-closed.png"
+   ]
+  },
+  {
+   "id": "L7",
+   "size": "phone",
+   "status": "PASS",
+   "m": {
+    "sheetTopBand": true,
+    "tapY": 283,
+    "pickerAfter": 0
+   },
+   "pics": [
+    "phone/L7-open.png",
+    "phone/L7-after-tap-tap.png",
+    "phone/L7-after-tap.png"
+   ]
+  },
+  {
+   "id": "L8",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "label": "Ranger PL",
+    "start": "2",
+    "toastsAfterGood": 0,
+    "savedGood": "7",
+    "toasts": [
+     "Ranger PL not saved: Type a whole number or a half, like 17 or 17.5"
+    ],
+    "afterRefused": "7"
+   },
+   "pics": [
+    "desktop/L8-typed-7.png",
+    "desktop/L8-grid-tab.png",
+    "desktop/L8-reopened.png",
+    "desktop/L8-refused-toast.png"
+   ]
+  },
+  {
+   "id": "L9",
+   "size": "phone",
+   "status": "PASS",
+   "m": {
+    "start": {
+     "zoom": 0.8,
+     "transformed": false,
+     "cornerOff": 0,
+     "bandOff": 0,
+     "scrollLeft": 4011
+    },
+    "out": {
+     "mid": {
+      "zoom": 0.8,
+      "transformed": true,
+      "cornerOff": 0,
+      "bandOff": 0,
+      "scrollLeft": 4011
+     },
+     "after": {
+      "zoom": 1.4,
+      "transformed": false,
+      "cornerOff": 0,
+      "bandOff": 0,
+      "scrollLeft": 6806
+     }
+    },
+    "in": {
+     "mid": {
+      "zoom": 1.4,
+      "transformed": true,
+      "cornerOff": 0,
+      "bandOff": 0,
+      "scrollLeft": 6806
+     },
+     "after": {
+      "zoom": 0.551,
+      "transformed": false,
+      "cornerOff": 0,
+      "bandOff": 0,
+      "scrollLeft": 2659
+     }
+    }
+   },
+   "pics": [
+    "phone/L9-pinch-out-mid.png",
+    "phone/L9-pinch-out-lift-tap.png",
+    "phone/L9-pinch-out-lift.png",
+    "phone/L9-pinch-in-mid.png",
+    "phone/L9-pinch-in-lift-tap.png",
+    "phone/L9-pinch-in-lift.png"
+   ]
+  },
+  {
+   "id": "S1",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "balls0": 210,
+    "balls1": 210,
+    "sameNode": true,
+    "lwScroll1": 3000,
+    "lwScroll2": 3000
+   },
+   "pics": [
+    "desktop/S1-tracker-first.png",
+    "desktop/S1-edit-schedule.png",
+    "desktop/S1-tracker-back.png",
+    "desktop/S1-lw-scrolled.png",
+    "desktop/S1-lw-back.png"
+   ]
+  },
+  {
+   "id": "S2",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "atTop": null,
+    "scrolled": {
+     "top": 57,
+     "left": 20,
+     "width": 1400,
+     "wrapLeft": 20,
+     "wrapWidth": 1400
+    },
+    "scrollY1": 378,
+    "afterResize": {
+     "top": 103,
+     "left": 20,
+     "width": 1160,
+     "wrapLeft": 20,
+     "wrapWidth": 1160
+    },
+    "scrollY2": 424,
+    "backUp": null,
+    "scrollY3": 0
+   },
+   "pics": [
+    "desktop/S2-top.png",
+    "desktop/S2-scrolled.png",
+    "desktop/S2-resized.png",
+    "desktop/S2-back-up.png"
+   ]
+  },
+  {
+   "id": "S3",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "opened": {
+     "l": 1044,
+     "t": 96,
+     "r": 1424,
+     "b": 656,
+     "vw": 1440,
+     "vh": 900,
+     "ok": true
+    },
+    "narrow": {
+     "l": 504,
+     "t": 112,
+     "r": 884,
+     "b": 588,
+     "vw": 900,
+     "vh": 600,
+     "ok": true
+    },
+    "narrower": {
+     "l": 12,
+     "t": 186,
+     "r": 508,
+     "b": 508,
+     "vw": 520,
+     "vh": 520,
+     "ok": true
+    },
+    "boardOpened": {
+     "l": 1044,
+     "t": 114,
+     "r": 1424,
+     "b": 674,
+     "vw": 1440,
+     "vh": 900,
+     "ok": true
+    },
+    "boardNarrow": {
+     "l": 504,
+     "t": 154,
+     "r": 884,
+     "b": 588,
+     "vw": 900,
+     "vh": 600,
+     "ok": true
+    },
+    "boardStillThere": 1
+   },
+   "pics": [
+    "desktop/S3-open.png",
+    "desktop/S3-narrow.png",
+    "desktop/S3-narrower.png",
+    "desktop/S3-board-open.png",
+    "desktop/S3-board-narrow.png"
+   ]
+  },
+  {
+   "id": "S4",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "cardsBefore": 4,
+    "freshBefore": 0,
+    "person": "Saber",
+    "cardsAfter": 5,
+    "fresh": 1,
+    "freshText": "Saber IP ATT C 13 Jul",
+    "freshAttr": true
+   },
+   "pics": [
+    "desktop/S4-before.png",
+    "desktop/S4-new-input.png",
+    "desktop/S4-no-document-ask.png",
+    "desktop/S4-after-save.png"
+   ]
+  },
+  {
+   "id": "S5",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "before": "false",
+    "afterPress": "true",
+    "glyph": "⤡",
+    "afterReload": "true",
+    "glyphAfterReload": "⤡"
+   },
+   "pics": [
+    "desktop/S5-compact.png",
+    "desktop/S5-expanded.png",
+    "desktop/S5-after-reload.png"
+   ]
+  },
+  {
+   "id": "S6",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "key": "crewRest",
+    "standard": "12h",
+    "changed": "10h",
+    "resets": 1,
+    "after": "12h",
+    "focus": "input[crewRest]"
+   },
+   "pics": [
+    "desktop/S6-changed.png",
+    "desktop/S6-after-reset.png"
+   ]
+  },
+  {
+   "id": "S7",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "escapeFocus": "button|air=0|0",
+    "escapeBoardOpen": true,
+    "escapeBoardClosed": true,
+    "escapeFocusAfter": "button|air=0|0",
+    "doneFocus": "button|air=0|0",
+    "doneBoardOpen": true,
+    "doneBoardClosed": true,
+    "doneFocusAfter": "button|air=0|0"
+   },
+   "pics": [
+    "desktop/S7-escape-board.png",
+    "desktop/S7-escape-closed.png",
+    "desktop/S7-done-board.png",
+    "desktop/S7-done-closed.png"
+   ]
+  },
+  {
+   "id": "S8",
+   "size": "phone",
+   "status": "PASS",
+   "m": {
+    "drawerBefore": false,
+    "drawerOpen": true,
+    "drawerClosed": true,
+    "tplWindow": 1,
+    "tplClosed": true,
+    "dialogs": [
+     "draftsModal"
+    ],
+    "dialogsAfter": []
+   },
+   "pics": [
+    "phone/S8-drawer-tap.png",
+    "phone/S8-drawer-open.png",
+    "phone/S8-drawer-closed.png",
+    "phone/S8-templates-menu-tap.png",
+    "phone/S8-manage-tap.png",
+    "phone/S8-templates-window.png",
+    "phone/S8-tpl-done-tap.png",
+    "phone/S8-plans-menu-tap.png",
+    "phone/S8-plandup-tap.png",
+    "phone/S8-plans-menu2-tap.png",
+    "phone/S8-planmanage-tap.png",
+    "phone/S8-drafts-window.png",
+    "phone/S8-drafts-closed.png"
+   ]
+  },
+  {
+   "id": "T1",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "setup": {
+     "fails": "ST-02",
+     "lulls": "06/07/26 → 10/07/26 ×"
+    },
+    "rows": {
+     "event": {
+      "chipFound": true,
+      "roomBelow": true,
+      "scrolled": true,
+      "delta": 60,
+      "afterDrag": {
+       "search": ""
+      },
+      "afterClick": {
+       "search": "CFT-01"
+      },
+      "clickScrolled": false
+     },
+     "failure": {
+      "chipFound": true,
+      "roomBelow": false,
+      "scrolled": true,
+      "delta": -60,
+      "afterDrag": {
+       "bubble": true
+      },
+      "afterClick": {
+       "bubble": true
+      },
+      "clickScrolled": false
+     },
+     "lull": {
+      "chipFound": true,
+      "roomBelow": false,
+      "scrolled": true,
+      "delta": -60,
+      "afterDrag": {
+       "calendar": 0
+      },
+      "afterClick": {
+       "calendar": 1
+      },
+      "clickScrolled": false
+     }
+    }
+   },
+   "pics": [
+    "desktop/T1-event-after-drag.png",
+    "desktop/T1-event-after-click.png",
+    "desktop/T1-failure-after-drag.png",
+    "desktop/T1-failure-after-click.png",
+    "desktop/T1-lull-after-drag.png",
+    "desktop/T1-lull-after-click.png"
+   ]
+  },
+  {
+   "id": "T2",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "scrollDeltaFromX": 0,
+    "dialogAfterDrag": 0,
+    "scrollDeltaFromBlank": 60,
+    "dialog": 1,
+    "dialogMsg": "Remove STUDENT A from 2026?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted.",
+    "studentsAfterCancel": 2
+   },
+   "pics": [
+    "desktop/T2-after-drag.png",
+    "desktop/T2-control-drag-from-blank.png",
+    "desktop/T2-after-click.png"
+   ]
+  },
+  {
+   "id": "T3",
+   "size": "desktop",
+   "status": "INFO",
+   "m": {
+    "start": "div#board",
+    "list": [
+     "button#fzOut(−)",
+     "button#fzIn(+)",
+     "button#fzReset.sm(reset)",
+     "button#ordCrew.sm(Reorder)",
+     "button#addStu.sm(+ Add)",
+     "button#lastSyll.datebox(Pick a date ▾)",
+     "button#lastCurr.datebox(Pick a date ▾)",
+     "button#courseStart.datebox(Pick a date ▾)",
+     "button#downDays.datebox(— ›)",
+     "input#epwIn(2)",
+     "button#targetIn.datebox(Pick a date ▾)",
+     "button#targetIn2.datebox(Pick a date ▾)",
+     "span#failTitle.failTitle(FAILURES)",
+     "button#setLullBtn.sm(+ Set lull period)",
+     "button#copyLullBtn.sm(⧉ Copy to…)",
+     "button#szOut(−)",
+     "button#szIn(+)",
+     "button#szReset.sm(reset)",
+     "body"
+    ],
+    "stops": 19
+   },
+   "pics": [
+    "desktop/T3-last-stop.png"
+   ],
+   "expect": "differs"
+  },
+  {
+   "id": "T4",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "cells": 42,
+    "step1": "Pick the first day of the period.",
+    "step2": "Start 06/07/26 — now pick the last day.",
+    "calendarOpenAfter": 0,
+    "lull": "06/07/26 → 10/07/26 ×"
+   },
+   "pics": [
+    "desktop/T4-calendar-crop.png",
+    "desktop/T4-first-picked-crop.png",
+    "desktop/T4-after-second-day.png"
+   ]
+  },
+  {
+   "id": "T5",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "studentsBefore": 2,
+    "filter0": "",
+    "items": 2,
+    "dialogAfterPick": 0,
+    "studentsAfter": 3,
+    "students": [
+     "1 STUDENT A",
+     "2 STUDENT B",
+     "3 TALISMAN"
+    ],
+    "filterSecond": "",
+    "itemsSecond": 58,
+    "dateSecond": "Mon 13 Jul 26\n▾",
+    "focusSecond": "input#dlgFilter",
+    "dialogClosed": true,
+    "studentsFree": [
+     "1 STUDENT A",
+     "2 STUDENT B",
+     "3 TALISMAN",
+     "4 ZED TEST"
+    ],
+    "promptInput": "STUDENT A",
+    "filterThird": ""
+   },
+   "pics": [
+    "desktop/T5-add-open.png",
+    "desktop/T5-filtered.png",
+    "desktop/T5-picked-and-added.png",
+    "desktop/T5-add-again.png",
+    "desktop/T5-free-text.png",
+    "desktop/T5-free-text-added.png",
+    "desktop/T5-rename-prompt.png"
+   ]
+  },
+  {
+   "id": "T6",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "overall0": "OVERALL — STUDENT A 0.0% COMPLETE 0 DONE 210 REMAINING Flights 0/41 · 0% Acad / Spec 0/106 · 0% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%",
+    "doneDate": "2026-07-08",
+    "fail0": "0",
+    "fail1": "1",
+    "chipAfterPlus": "ST-01",
+    "fail2": "0",
+    "chipAfterMinus": "none",
+    "overall1": "OVERALL — STUDENT A 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%"
+   },
+   "pics": [
+    "desktop/T6-marked.png",
+    "desktop/T6-popup-done-date.png",
+    "desktop/T6-one-failure.png",
+    "desktop/T6-failure-taken-back.png"
+   ]
+  },
+  {
+   "id": "T7",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "lastFlown": {
+     "found": true,
+     "tag": "label",
+     "calendar": 0,
+     "focus": "body"
+    },
+    "courseStart": {
+     "found": true,
+     "tag": "label",
+     "calendar": 0,
+     "focus": "body"
+    }
+   },
+   "pics": [
+    "desktop/T7-lastFlown.png",
+    "desktop/T7-courseStart.png"
+   ],
+   "volatile": [
+    "tag"
+   ],
+   "note": "the caption is a label on the BEFORE build and a span on the AFTER build (intended); its tag is kept out of the comparison"
+  },
+  {
+   "id": "T8",
+   "size": "desktop",
+   "status": "INFO",
+   "m": {
+    "captions": [
+     "label:Text",
+     "label:Colour / type",
+     "label:Number (badge)",
+     "label:Crew",
+     "label:Prereq links",
+     "label:Prerequisites (note)"
+    ],
+    "focusOnOpen": "body",
+    "focusAfterCaption:Number (badge)": "body",
+    "focusAfterCaption:Crew": "body",
+    "focusAfterCaption:Text": "body"
+   },
+   "pics": [
+    "desktop/T8-editor.png",
+    "desktop/T8-after-captions.png"
+   ],
+   "expect": "differs"
+  },
+  {
+   "id": "T9",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "legendBefore": false,
+    "legendOpen": true,
+    "legendEsc": true,
+    "legendOpen2": true,
+    "legendBackdrop": true,
+    "flexBefore": false,
+    "flexOpen": true,
+    "flexFocus": "input[trk-flex-on]",
+    "flexEsc": true,
+    "flexOpen2": true,
+    "flexBackdrop": true
+   },
+   "pics": [
+    "desktop/T9-legend-open.png",
+    "desktop/T9-legend-after-backdrop.png",
+    "desktop/T9-flex-open.png",
+    "desktop/T9-flex-after-backdrop.png"
+   ]
+  },
+  {
+   "id": "T10",
+   "size": "desktop",
+   "status": "PASS",
+   "m": {
+    "ui": {
+     "students": [
+      "1 STUDENT A",
+      "2 STUDENT B",
+      "3 TALISMAN"
+     ],
+     "overall": "OVERALL — TALISMAN 1.0% COMPLETE 2 DONE 208 REMAINING Flights 0/41 · 0% Acad / Spec 2/106 · 2% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%",
+     "fails": "ST-02",
+     "lulls": "06/07/26 → 10/07/26 ×",
+     "crew": "STUDENT A STUDENT B TALISMAN",
+     "detail": "Walk welcome detail Type: Lecture · 2.5 Hrs",
+     "doneDate": "2026-07-08",
+     "doneDate2": "2026-07-09"
+    },
+    "exportNote": "Exported as “OCU-syllabus-WITH-STUDENTS-2026-07-13.json”. It CONTAINS student names and marks, with every chart — a full backup; only send it to someone entitled to see them.",
+    "exportFile": "OCU-syllabus-WITH-STUDENTS-2026-07-13.json",
+    "detail": {
+     "work": {
+      "students": [
+       "1 STUDENT A",
+       "2 STUDENT B",
+       "3 TALISMAN"
+      ],
+      "overall": "OVERALL — TALISMAN 1.0% COMPLETE 2 DONE 208 REMAINING Flights 0/41 · 0% Acad / Spec 2/106 · 2% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%",
+      "fails": "ST-02",
+      "lulls": "06/07/26 → 10/07/26 ×",
+      "crew": "STUDENT A STUDENT B TALISMAN",
+      "detail": "Walk welcome detail Type: Lecture · 2.5 Hrs",
+      "doneDate": "2026-07-08",
+      "doneDate2": "2026-07-09"
+     },
+     "export1Keys": [
+      "format",
+      "version",
+      "savedAt",
+      "contains",
+      "charts",
+      "students"
+     ],
+     "exportNote": "Exported as “OCU-syllabus-WITH-STUDENTS-2026-07-13.json”. It CONTAINS student names and marks, with every chart — a full backup; only send it to someone entitled to see them.",
+     "exportFile": "OCU-syllabus-WITH-STUDENTS-2026-07-13.json",
+     "stateKeys": 27,
+     "reopened": {
+      "students": [
+       "1 STUDENT A",
+       "2 STUDENT B",
+       "3 TALISMAN"
+      ],
+      "overall": "OVERALL — TALISMAN 1.0% COMPLETE 2 DONE 208 REMAINING Flights 0/41 · 0% Acad / Spec 2/106 · 2% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%",
+      "fails": "ST-02",
+      "lulls": "06/07/26 → 10/07/26 ×",
+      "crew": "STUDENT A STUDENT B TALISMAN",
+      "detail": "Walk welcome detail Type: Lecture · 2.5 Hrs",
+      "doneDate": "2026-07-08",
+      "doneDate2": "2026-07-09"
+     },
+     "controlDiff_1_vs_1b": [],
+     "controlDiff_1b_vs_1c": [],
+     "uiSame": true
+    }
+   },
+   "pics": [
+    "desktop/T10-after-work.png",
+    "desktop/T10-reopened-same-build.png"
+   ],
+   "volatile": [
+    "detail"
+   ]
+  }
+ ]
+}

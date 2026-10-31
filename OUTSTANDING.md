@@ -167,6 +167,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CODE-CHECK-CI] — React Doctor's "no new finding" check as a GitHub check on every pull request — the half of the move plan's point 4 not built with the clean-up.
+- [AVAILWIN-SETUP-SLOW] — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -242,6 +244,20 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [CODE-CHECK-CI] React Doctor's "no new finding" check on every pull request (filed 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**What:** the move plan's point 4 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) says the code check joins the checks
+run on every change. Built with the clean-up: `npm run lint` and `npm run lint:changed` (only what a branch changes against `main`,
+proved on its own branch: 70 files read, no new finding) and the standing line in `raptor-port/CLAUDE.md` (D1534). Not built: a job in
+`.github/workflows/deploy.yml` running `lint:changed` on each pull request — it needs `main`'s history on the check machine, which the
+jobs now fetch shallow and without the picture folders (D1091), and its first red needs proving on a planted finding. **Place:** with
+[REVIEW-LAYERS], or on his word.
+
+### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
+run of 142 test files on his PC it timed out once and passed alone. A busy GitHub run could go red with no fault in the app. **To do:**
+give that hook its own longer limit, or load the chunks once for the file in a setup the limit does not cover. **Place:** with the next
+job that touches the tests' set-up.
+
 ### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
 **What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
 Tracker is no longer needed: `+ Add` falling back to the bare "Student callsign:" prompt when no roster is handed over
@@ -261,6 +277,12 @@ at that build. The other areas' remaining findings ride with each area's next ba
 would change what a person sees is shown to him first (D853). The findings list: the move plan §3
 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
 batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
+**BUILT 31 Oct 26** on `claude/react-doctor-cleanup`, pull request 603: 288 findings — 204 fixed, 84 kept with their reason in the
+code (`raptor-port/docs/handpass/parts/rdc1031/dispositions.md`); the app's errors 60 → 0, missed updates 42 → 0, the Tracker
+195 → 0; `npm run lint`, `lint:changed`, `doctor.config.json` and the standing line in `raptor-port/CLAUDE.md`. FULL check:
+113/113 screens identical, 28 behaviour rows the same on both builds, the Tracker's stored world carried old → new
+byte-identical; the code reads' one fault fixed red first (evidence `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`).
+Left for later: [CODE-CHECK-CI], [AVAILWIN-SETUP-SLOW], [TRK-STANDALONE-LEFTOVERS]. Waiting on his "merge live".
 
 ### [AIRCRAFT-TYPE-SETTING] Each deployment set to its aircraft type by a setting (D1536, 31 Oct 26)
 **What:** one code base serves every aircraft type (D1100, D1101); each deployment — F-15, F-16, F-35, each with its own

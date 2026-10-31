@@ -55,12 +55,13 @@ export async function launch() {
 }
 
 /** A fresh context (empty storage = the demo world on first boot). Returns { ctx, page, errors, sink }. */
-export async function newWorld(browser, dist, size, { touch = false } = {}) {
+export async function newWorld(browser, dist, size, { touch = false, storageState } = {}) {
   const ctx = await browser.newContext({
     viewport: size, deviceScaleFactor: 1, reducedMotion: 'reduce', colorScheme: 'light',
     locale: 'en-GB', timezoneId: 'Asia/Singapore',
     ...(touch ? { hasTouch: true, isMobile: true } : {}),
     acceptDownloads: true,
+    ...(storageState ? { storageState } : {}),
   })
   await serve(ctx, dist)
   await ctx.addInitScript(SEED_JS)

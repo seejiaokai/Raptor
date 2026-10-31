@@ -1,0 +1,1006 @@
+{
+ "label": "after2",
+ "dist": "see the label",
+ "steps": [
+  {
+   "id": "trk-chart",
+   "no": "48",
+   "what": "the Tracker flow chart",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "tab Tracker",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/48-trk-chart.png"
+  },
+  {
+   "id": "trk-info-panel",
+   "no": "49",
+   "what": "the Info panel (side panel; the Info tab on a phone)",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "always beside the chart on a desktop",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/49-trk-info-panel.png"
+  },
+  {
+   "id": "trk-show-all",
+   "no": "50",
+   "what": "Show All",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Show All",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset\nAll events — name, crew & prerequisites\nClose\nST\nST-01 Squadron Welcomenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-02 Checklist Introductionnot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-03 CBT Orientationnot done\nType: Lecture / Demo · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-04 Instrument Refresher (ATC BRF)not done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-05 Local Area Orientation / Transition Phase Briefingnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-06 F-15SG Simulator Orientationnot done\nType: Lecture / Orientation · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-09 AHC/BFM/INT Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-10 ACM / LASDT Module Briefingnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-11 Day Air-to-Air Refuelling Briefingnot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-12 TI/DCA Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-13 BSA Module Briefing and Range Pattern Academicsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-14 NTR/SAN Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-15 Surface Attack Tactics Module Briefingnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-16 F-15SG Supervised Preflightnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-16B Air-to-Air Missiles / Gun Inspectionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAW-03, AAW-04, AAW-05\nEdit\nST-17 Air-to-Ground Weapons Inspectionnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-18 End-of-Course Critiquenot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: SAT-2, SATN-1\nEdit\nACG\nACG-01 Course Introduction and Aircraft Overviewnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: ST-01\nEdit\nACG-02 Propulsion Systemnot done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: ACG-01, ST-02\nEdit\nACG-03 Fuel Systemnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-04 Electrical Systemnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-05 Environmental, Canopy, and Stepsnot done\nType: Lecture · 3.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-06 Hydraulic Systemsnot done\nType: Lecture · 3.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-07 Flight Controlsnot done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: ACG-06\nEdit\nACG-08 Warnings and Cautionsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: ACG-03, ACG-04, ACG-05, ACG-07\nEdit\nACG-09 Emergency Procedures and Abnormal Operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: ACG-08\nEdit\nCFT\nCFT-01 Cockpit Familiarisation Trainer-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: ACG-09, ST-06\nEdit\nCFT-02 Cockpit Familiarisation Trainer-02not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-2\nEdit\nCFT-03 Cockpit Familiarisation Trainer-03not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-02\nEdit\nCFT-04 Cockpit Familiarisation Trainer-04not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-03\nEdit\nT\nT-01 Aircraft Generalnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: CFT-01\nEdit\nT-02 Avionics Inot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-05, IAT-01\nEdit\nT-03 Avionics IInot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-10, IAT-02\nEdit\nT-04 Avionics IIInot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-16, IAT-03\nEdit\nT-05 Operationsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: OPS-03, OPS-04\nEdit\nT-06 Air-to-Air Radarnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-04, RDR-05\nEdit\nT-07 Electronic Warfarenot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-05\nEdit\nT-08 Air-to-Air Weaponsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-06, ST-16B\nEdit\nT-09 Aerial Attack Manoeuvringnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AAM-11\nEdit\nT-10 Air-to-Air Sensorsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AAS-04, IAT-08\nEdit\nT-11 Air-to-Ground Radarnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-09\nEdit\nT-12 Air-to-Ground Deliverynot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-10\nEdit\nT-13 Air-to-Ground Sensorsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-07, IAT-11\nEdit\nT-14 Air-to-Ground Weaponsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nAVI\nAVI-01 Avionics Introductionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-01\nEdit\nAVI-02 Multipurpose Colour Displaysnot done\nType: CBT · 3.0 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-03 Up Front Control (UFC)not done\nType: CBT · 3.0 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-04 Radio Communicationnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-05 Avionics Phase Review Inot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-02, AVI-03, AVI-04\nEdit\nAVI-06 ADI, HSI, and HUDnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-07 Embedded Global Positioning System / Inertial Navigation System (EGI)not done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-08 OWS, DVR, HUD Title, and MC / DTMnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-09 Radar Altimeter and Autopilotnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-10 Avionics Phase Review IInot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-06, AVI-09, AVI-08, AVI-07\nEdit\nAVI-11 Built-In Test (BIT)not done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: T-03\nEdit\nAVI-12 FDL/SYS Y Introductionnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-03\nEdit\nAVI-14 Basic Digital Map Systemnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: AVI-12\nEdit\nAVI-15 Degraded Avionics Operationsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-11, AVI-14\nEdit\nAVI-16 Avionics Phase Review IIInot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-15\nEdit\nIAT\nIAT-01 Integrated Avionics Trainer-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-02, AVI-03, AVI-04\nEdit\nIAT-02 Integrated Avionics Trainer-02not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-06, AVI-09, AVI-08, AVI-07\nEdit\nIAT-03 Integrated Avionics Trainer-03not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-15\nEdit\nIAT-04 Integrated Avionics Trainer-04not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: RDR-04\nEdit\nIAT-05 Integrated Avionics Trainer-05not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: EW-02\nEdit\nIAT-06 Integrated Avionics Trainer-06not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAW-03, AAW-04, AAW-05\nEdit\nIAT-07 Integrated Avionics Trainer-07not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAM-05\nEdit\nIAT-08 Integrated Avionics Trainer-08not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAS-03\nEdit\nIAT-09 Integrated Avionics Trainer-09not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGR-04\nEdit\nIAT-10 Integrated Avionics Trainer-10not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGS-03, AGD-06\nEdit\nIAT-11 Integrated Avionics Trainer-11not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGS-06\nEdit\nIAT-12 Integrated Avionics Trainer-12not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: JMP-05\nEdit\nOPS\nOPS-01 Task Management and Crew Coordinationnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-05, IAT-01\nEdit\nOPS-02 Aircraft Handling Characteristics (AHC)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-03 Performance Datanot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-04 Formation Proceduresnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-05 Air-to-Ground chart and low-level planning/preparationnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nOPS-06 Close Air Support (CAS) Proceduresnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nOPS-07 Tactical weapons delivery planningnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nTR(S)\nTR(S)-1 Transition Sims-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: T-04, ST-04, ST-05, OPS-03, OPS-02\nEdit\nTR(S)-2 Transition Sims-2not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-1\nEdit\nTR(S)-3 Transition Sims-3not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-04\nEdit\nTR(S)-4 Transition Sims-4not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-3\nEdit\nTR(S)-5 Transition Sims-5not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-4\nEdit\nTR(S)-6 Transition Sims-6not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-5\nEdit\nTR(S)-7 Transition Sims-7not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-LAO\nEdit\nTR(S)-LAO Transition Sims-Local Area Operationsnot done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-6\nEdit\nRDR\nRDR-01 A/A Radar Introductionnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: T-05\nEdit\nRDR-02 APG-63(v)3 Introductionnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: RDR-01\nEdit\nRDR-03 A/A Modes, Switchology, and Displaysnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: RDR-02\nEdit\nRDR-04 Radar Target Identificationnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: RDR-03\nEdit\nRDR-05 A/A Radar Employmentnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: RDR-04\nEdit\nEW\nEW-01 General Electronic Attacknot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-06\nEdit\nEW-02 IEWSnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: EW-01\nEdit\nAAW\nAAW-01 A/A Programmable Armament Control Set (PACS)not done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: T-07\nEdit\nAAW-02 HUD A/A Displaysnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-07\nEdit\nAAW-03 AIM-120 AMRAAMnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nAAW-04 AIM-9X Sidewindernot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nAAW-05 M61A1 20mm Gunnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nJMP\nJMP-01 Introduction to JMPnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-02 A/A Mission Planningnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-03 A/G Mission Planningnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-04 CWDSnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-05 PGMPSnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-14\nEdit\nEPT\nEPT-01 Purpose: Introduce students to local life support operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nEPT-02 Purpose: Introduce F-15SG ejection seat proceduresnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: EPT-01\nEdit\nAAM\nAAM-01 Performance Managementnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-08\nEdit\nAAM-02 Air-to-Air Mission Tasksnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-01\nEdit\nAAM-03 Interceptsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AAM-02\nEdit\nAAM-04 Introduction to Ground Controlled Intercept (GCI) /ACI Supportnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-03\nEdit\nAAM-05 Intercept Timelinesnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAM-04\nEdit\nAAM-06 Offensive Basic Fighter Manoeuvres (OBFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: IAT-07\nEdit\nAAM-07 Defensive Basic Fighter Manoeuvres (DBFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-06\nEdit\nAAM-08 High Aspect and All Aspect Basic Fighter Manoeuvres (HA/AABFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-07\nEdit\nAAM-09 Low Altitude Awareness Training (LAAT)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-08\nEdit\nAAM-10 Air Combat Manoeuvring (ACM)not done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAM-09\nEdit\nAAM-11 BVR to WVR transitionnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAM-10\nEdit\nAAM-12 2 v X, Launch and Leavenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: T-09\nEdit\nAAM-13 2 v X, Launch and Decidenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAM-12\nEdit\nAAM-14 4-ship Operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nTR\nTR-1(P) Transition-01not done\nType: 1 x F-15SG\nCrew: UP / IP\nPrerequisites: EPT-02, ST-16, JMP-01, TR(S)-3\nEdit\nTR-2 Transition-02not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-1(P), TR(S)-4\nEdit\nTR-3 Transition-03not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP (Senior IP for UP)\nPrerequisites: TR-2, TR(S)-6\nEdit\nTR-4 Transition-4 (Refer to BCTM TR-5(P))not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-3, EPE\nEdit\nTR-5(P) Transition-5not done\nType: 1 x F-15SG\nCrew: UP / IRE\nPrerequisites: TR-4 (P), IEPE, Min 9 hrs on type\nEdit\nTR-6(P) IRTnot done\nType: 1 x F-15SG\nCrew: UP / IRE\nPrerequisites: TR-5 (P), IEPE, Min 9 hours on type\nEdit\nEPE\nEPE Emergency Procedures Evaluationnot done\nType: OFT/AMT\nCrew: UP/UW, FSI/IP/IW + FE\nPrerequisites: TR(S)-7\nEdit\nIEPE/IPC\nIEPE/IPC Instrument Emergency Procedures Evaluation + Proficiency Checknot done\nType: OFT/AMT\nCrew: UP/UW, FSI/IP/IW + FE\nPrerequisites: EPE\nEdit\nAAS\nAAS-01 A/A SYS-Ynot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: IAT-07\nEdit\nAAS-02 A/A Targeting Podnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAS-01\nEdit\nAAS-03 IRSTnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAS-02\nEdit\nAAS-04 A/A JHMCSnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nINT(S)\nINT(S)-1 Intercept Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: IEPE/IPC, IAT-07, ST-11, ST-09\nEdit\nINT(S)-2 Intercept Sims-2not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-1\nEdit\nINT(S)-3 Intercept Sims-3not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-2\nEdit\nINT(S)-4 Intercept Sims-4not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-3, T-10\nEdit\nAHC\nAHC-1 Advanced Handling Characteristicsnot done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-6(P), INT(S)-1\nEdit\nBFM\nBFM-1 Basic Fighting Manoeuvres-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: AHC-1, INT(S)-2, AAM-06\nEdit\nBFM-2 Basic Fighting Manoeuvres-2not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (If cleared crew solo) or IP / UW, UP / IW\nPrerequisites: BFM-1, Crew Solo Checklist, Flown within 7 days of check flight for first crew solo\nEdit\nBFM-3 Basic Fighting Manoeuvres-3not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: BFM-2, AAM-07\nEdit\nBFM-4 Basic Fighting Manoeuvres-4not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (If cleared crew solo) or IP / UW, UP / IW\nPrerequisites: BFM-3 Crew Solo Checklist (if req), Flown within 7 days of check flight for first crew solo or flown within 14 days for subsequent crew solo\nEdit\nBFM-5 Basic Fighting Manoeuvres-5not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: BFM-4, AAM-08, JMP-02\nEdit\nBFM-6 Basic Fighting Manoeuvres-6not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / IW\nPrerequisites: BFM-5\nEdit\nBFM-7 Basic Fighting Manoeuvres-7not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (Crew Solo)\nPrerequisites: BFM-6\nEdit\nACM(S)\nACM(S)-1 Air Combat Manoeuvring Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: LASDT(S)-1, AAM-11\nEdit\nACM(S)-2 Air Combat Manoeuvring Sims-2not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: ACM(S)-1\nEdit\nINT\nINT-1 Intercept-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: BFM-7, INT(S)-4\nEdit\nLASDT(S)\nLASDT(S)-1 Low Altitude Step Down Training Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: INT(S)-4, AAM-09, OPS-05, ST-10\nEdit\nLASDT\nLASDT-1 Low Altitude Stepdown Training-1not done\nType: 1 or 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: INT-1, JMP-03, LASDT(S)-1\nEdit\nLASDT-2 Low Altitude Stepdown Training-2not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-1\nEdit\nLASDT-3 Low Altitude Stepdown Training-3not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-2\nEdit\nACM\nACM-1 Air Combat Manoeuvre-1not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-1, AAM-10\nEdit\nACM-2 Air Combat Manoeuvre-2not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-1\nEdit\nACM-3 Air Combat Manoeuvre-3not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-2, ACM(S)-2\nEdit\nTI(S)\nTI(S)-1 Tactical Intercept Sims-1not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: ACM(S)-2, ST-12, AAM-12\nEdit\nTI(S)-2 Tactical Intercept Sims-2not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: TI(S)-1, AAM-13\nEdit\nTI(S)-3 Tactical Intercept Sims-3not done\nType: AMT\nCrew: IP/IW, UP/UW, in element, MP/MW, MP/MW in the other element\nPrerequisites: TI(S)-2\nEdit\nDCA(S)\nDCA(S)-1 Defensive Counter Air Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: TI(S)-3\nEdit\nTI\nTI-1 Tactical Intercept-1not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-3, TI(S)-2\nEdit\nTI-2 Tactical Intercept-2not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: TI-1, LASDT-3, TI(S)-3\nEdit\nTI-3 Tactical Intercept-3not done\nType: 8 x F-15SG (8-ship plus 4 adversaries, can be effective 3v2 due to fallout) *Can be accomplished in AMT primarily\nCrew: IP / UW, UP / IW (Either element) *UP / UW if conducted in AMT\nPrerequisites: TI-2, AAM-14\nEdit\nDCA\nDCA-1 Defensive Counter Air-1not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout). Live flight preferred but can be accomplished in AMT.\nCrew: IP / IW, UP / UW (Crew solo)\nPrerequisites: TI-3, DCA(S)-1\nEdit\nAGR\nAGR-01 A/G Radar Introductionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-10\nEdit\nAGR-02 APG-63(v)3 A/G Introductionnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGR-01\nEdit\nAGR-03 Modes, Controls, and Displaysnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGR-02\nEdit\nAGR-04 Navigationnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGR-03\nEdit\nAGD\nAGD-01 A/G Programmable Armament Control Set (PACS)not done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-11\nEdit\nAGD-02 Basic Bombingnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGD-01\nEdit\nAGD-03 Designationsnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGD-02\nEdit\nAGD-04 Computed Deliveriesnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AGD-03\nEdit\nAGD-05 Strafe and Non-Computed Deliveriesnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGD-04\nEdit\nAGD-06 Suspension Equipment and Training Ordnancenot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGD-05\nEdit\nAGS\nAGS-01 IR Introductionnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-11\nEdit\nAGS-02 Sniper Targeting Pod Introductionnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGS-01\nEdit\nAGS-03 Sniper Targeting Podnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-02\nEdit\nAGS-04 Sensor Planningnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGW-01\nEdit\nAGS-05 A/G SYS-Y Operationsnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGS-04\nEdit\nAGS-06 Advanced Digital Map Systemnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGS-05\nEdit\nAGS-07 A/G JHMCSnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-06\nEdit\nAGS-08 NAV FLIRnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nAGW\nAGW-01 General Purpose Bombsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: T-12\nEdit\nAGW-02 Laser Guided Bombsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-13\nEdit\nAGW-03 Smart Weaponsnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGW-02\nEdit\nSA(S)\nSA(S)-1 Surface Attack Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: DCA(S)-1, AGW-01, ST-13\nEdit\nSA(S)-2 Surface Attack Sims-2not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-1\nEdit\nSA(S)-3 Surface Attack Sims-3not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGW-02, SA(S)-2\nEdit\nSA(S)-4 Surface Attack Sims-4not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-3\nEdit\nSA(S)-5 Surface Attack Sims-5not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: IAT-12, SA(S)-4\nEdit\nSA(S)-6 Surface Attack Sims-6not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-5, OPS-06\nEdit\nSA(S)-7 Surface Attack Sims-7not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-6\nEdit\nSA\nSA-1 Surface Attack-1not done\nType: 2 x F-15SG (Can be effective with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: DCA-1, SA(S)-2, ST-17, AGS-04, JMP-04, OPS-07\nEdit\nSA-2 Surface Attack-2not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-1, SA(S)-3\nEdit\nSA-3 Surface Attack-3not done\nType: 2 x F-15SG (Can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-2, SA(S)-4\nEdit\nSA-4 Surface Attack-4not done\nType: 2 x F-15SG, (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW *Can be conducted in AMT\nPrerequisites: SA-3, SA(S)-5\nEdit\nSA-5 Surface Attack-5not done\nType: 2 x F-15SG *Can be conducted in AMT\nCrew: IP / UW, UP / IW\nPrerequisites: SA-4, SA(S)-7\nEdit\nSA-6 Surface Attack-6not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (Crew Solo)\nPrerequisites: SA-5\nEdit\nNVG\nNVG-01 Introduction to the NVG Training Coursenot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nNVG-LAB NVG Lab (ANVIL) to replace NVG-01-08not done\nType: Night Lab · 7.5\nCrew: UP/UW, IP/W\nPrerequisites: NVG-01\nEdit\nNTR(S)\nNTR(S)-1 Night Transition Sims-1not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: NVG-LAB, AGS-08, ST-14\nEdit\nNTR\nNTR-1 Night Transition-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: SA-4, NTR(S)-1\nEdit\nNTR-2 Night Transition-2not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IP\nPrerequisites: NTR-1\nEdit\nSAN\nSAN-1 Surface Attack Night-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: SA(S)-7\nEdit\nSAT(S)\nSAT(S)-1 Surface Attack Tactics Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: SA(S)-7, ST-15\nEdit\nSAT(S)-2 Surface Attack Tactics Sims-2not done\nType: AMT\nCrew: IP/IW, UP/UW 2 x CT Crew\nPrerequisites: SAT(S)-1\nEdit\nSAT\nSAT-1 Surface Attack Tactics-1not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-6, SAT(S)-2\nEdit\nSAT-2 Surface Attack Tactics-2not done\nType: 6 x F-15SG (4-ship plus 2 adversaries min, can be effective 3v1 due to fallout)\nCrew: IP / IW, UP / UW (element lead to be instructor pair) IP / UW, UP / IW or IP (if non crew solo)\nPrerequisites: SAT-1\nEdit\nSATN\nSATN-1 Surface Attack Tactics Night-1not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW (IP if 5.0 NVG hours not achieved)\nPrerequisites: NTR-2, SAN-1, SAT(S)-1, SA-6\nEdit\nDAAR\nDAAR-1 Day Air-to-Air Refresher-1not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: INT(S)-2, TR-4 (could be accomplished on TR-4 after demo pro basic formation, with appropriate supervision)\nEdit\nDAAR-2 Day Air-to-Air Refresher-2not done\nType: F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: DAAR-1\nEdit\nNAAR\nNAAR-1 Night Air-to-Air Refresher-1not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: DAAR-2, NTR-2 (can be accomplished anytime after demo pro night formation)\nEdit\nNAAR-2 Night Air-to-Air Refresher-2not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: NAAR-1\nEdit",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/50-trk-show-all.png"
+  },
+  {
+   "id": "trk-legend",
+   "no": "51",
+   "what": "Legend",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Legend",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\nWHAT THE CHART IS TELLING YOU\nTHE CENTRE — THE KIND OF EVENT\nTR-1(P)\nFlight\nST-01\nAcad / Spec\nT-01\nTest\nTR(S)-1\nSim\nCFT-01\nCFT / IAT / EPT\nTHE RING — ONE SLICE PER STUDENT\nST-01\nDCO\nST-01\nDPCO\nST-01\nMarginal\nST-01\nN.A.\nST-01\nNot done\nST-01\nA failure — one red tick each\nST-01\nBlue edge — the student picked in Crew\nST-01\nGold ring — can be flown next\nST-01\nTurquoise ring — found by Find event\nCURRENCY — DAYS SINCE THE LAST FLIGHT\n0–6\nLanding Current — No IP Required\n7 +\nLanding Not Current — IP Required\nAny syllabus flight counts, or a non-syllabus flight put in Last Flown (Currency).\nFLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT\n0–6\nCurrent — no flex required\n7–13\n1 Optional Flex\n14–20\n1 Mando Flex (Convertible)\n21–30\n2 Mando Flex (1 Mando, 1 Convertible)\n31–59\n2 Mando Flex (2 Mando)\n60–119\nShort Refresher Course\n120 +\nRe-course\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/51-trk-legend.png"
+  },
+  {
+   "id": "trk-flex-settings",
+   "no": "52",
+   "what": "flex settings (gear, admin)",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "gear",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\nFlex settings\nadmins only\n✕\nTrack flex\n\nOff: the flex bar and the Legend's flex part go, for everyone.\n\nDAYS SINCE THE LAST SYLLABUS FLIGHT\nFROM\nTO\nFLEX\n0\n6\nCurrent — no flex required\n13\n1 Optional Flex\n20\n1 Mando Flex (Convertible)\n30\n2 Mando Flex (1 Mando, 1 Convertible)\n59\n2 Mando Flex (2 Mando)\n119\nShort Refresher Course\nand over\nRe-course\nCancel\nSave\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/52-trk-flex-settings.png"
+  },
+  {
+   "id": "trk-add-student",
+   "no": "53",
+   "what": "\"+ Add\" student dialog",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "+ Add",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset\nAdd a crew member\nCourse start\nMon 13 Jul 26\n▾\nFrom the squadron roster\nRecon\nPilot · OCU\nTalisman\nPilot · OCU\nWildcard\nPilot · OCU\nTally\nWSO · OCU\nZulu\nWSO · OCU\nAce\nPilot · A\nAnvil\nPilot · IP\nBlade\nPilot · IP\nBolt\nPilot · C\nCinch\nPilot · IP\nCobra\nPilot · IP\nComet\nPilot · IP\nDiesel\nPilot · D\nDrifter\nPilot · A\nForge\nPilot · IP\nGambit\nPilot · C\nHavoc\nPilot · IP\nHunter\nPilot · IP\nJester\nPilot · B\nKraken\nPilot · D\nNomad\nPilot · C\nOutlaw\nPilot · C\nPiston\nPilot · IP\nRanger\nPilot · IP\nReaper\nPilot · IR\nRebel\nPilot · B\nRidge\nPilot · C\nSaber\nPilot · IP\nSaint\nPilot · B\nSidewinder\nPilot · IP\nTorch\nPilot · C\nTrident\nPilot · IP\nVandal\nPilot · IP\nVapor\nPilot · D\nWarden\nPilot · IP\nZenith\nPilot · C\nBasher\nWSO · IW\nCinder\nWSO · B\nCutter\nWSO · C\nDash\nWSO · C\nEcho\nWSO · IW\nFable\nWSO · C\nGhost\nWSO · C\nGrit\nWSO · C\nHex\nWSO · C\nLedger\nWSO · IW\nMarlin\nWSO · A\nOtter\nWSO · D\nPixel\nWSO · D\nQuill\nWSO · IW\nRelay\nWSO · IW\nRune\nWSO · B\nRyder\nWSO · C\nScope\nWSO · IW\nScribe\nWSO · D\nStatic\nWSO · IW\nVector\nWSO · C\nWisp\nWSO · C\nCancel\nOK",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/53-trk-add-student.png"
+  },
+  {
+   "id": "trk-ball-popup",
+   "no": "54",
+   "what": "a ball's marking pop-up (tap an event on the chart)",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "first ball on the chart",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset\nST-01 · STUDENT A\nNot done\nDCO\nDPCO\nMarginal\nN.A.\nClose\nDone on (when marked)\nMon 13 Jul 26\n▾\nFails:\n−\n0\n+\nFailed on\nMon 13 Jul 26\n▾\nSquadron Welcome\nType: Lecture · 3.0 Hrs\nEdit details",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/54-trk-ball-popup.png"
+  },
+  {
+   "id": "trk-date-box",
+   "no": "55",
+   "what": "a date box's calendar popup (Last Flown)",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Last Flown (Syllabus)",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset\nJuly 2026\n›\n13\n‹\n›\nMON\nTUE\nWED\nTHU\nFRI\nSAT\nSUN\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/55-trk-date-box.png"
+  },
+  {
+   "id": "trk-syllabus-menu",
+   "no": "56",
+   "what": "the syllabus menu",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "syllabus pencil",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Edit chart layout\n Duplicate syllabus\n+ Add syllabus\n Rename syllabus\n Reorder syllabi\n Delete syllabus\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nCHART\n−\n100%\n+\nreset\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 485.739990234375,
+     "y": 149.74000549316406,
+     "width": 60.52001953125,
+     "height": 60.52000427246094,
+     "top": 149.74000549316406,
+     "right": 546.260009765625,
+     "bottom": 210.260009765625,
+     "left": 485.739990234375
+    },
+    "bLast": {
+     "x": 87.73999786376953,
+     "y": 10087.740234375,
+     "width": 56.52001190185547,
+     "height": 56.51953125,
+     "top": 10087.740234375,
+     "right": 144.260009765625,
+     "bottom": 10144.259765625,
+     "left": 87.73999786376953
+    },
+    "board": {
+     "sl": 0,
+     "st": 380
+    },
+    "svg": {
+     "x": 16,
+     "y": 120,
+     "width": 880,
+     "height": 10342,
+     "top": 120,
+     "right": 896,
+     "bottom": 10462,
+     "left": 16
+    }
+   },
+   "file": "desktop/56-trk-syllabus-menu.png"
+  },
+  {
+   "id": "trk-edit-layout",
+   "no": "57",
+   "what": "Edit chart layout tools",
+   "size": "desktop",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Edit chart layout",
+   "text": "142\nRAPTOR\nEdit Schedule\nView-only Sched\nInputs\nQuals\nLogic\nLeave War\nTracker\nHelp\nAdmin\n↶\n↷\nInsights\nLogout\nSABER · ADMIN\nCREW \nSTUDENT A\nSTUDENT B\nCOURSE \n26ABSG\nSYLLABUS \n2024\n2026\nTx 2026\nA/G - A/A 2026\n Show All\nLegend\n File ▾\n✕\n⚙\n● saved\n✋ Move\n▣ Select\n→ Connect\n🗑 Delete\n+ Flight\n+ Acad\n+ Test\n+ Sim\n+ CFT/IAT/EPT\n Text\n╱ Line\n❐ Edit lines\n➤ Arrow\n✕ Merge\n⌢ Unmerge\n▣ Select all\nFont \n⤢ Fit\n↺ Reset layout\n📋 Edit events\nDouble-click any pokéball on the chart to edit that event directly.\nMove: drag a ball (snap-aligns to others). Drag empty space to pan.\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n— STUDENT A\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nTwo chips = the flow branches; either can be flown next. Faded and dashed = coming up, but something has to be done first.\nPLANNABLE NOW (SHOWS UP TO 5 ROWS) — STUDENT A\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nLanding currency = days since last currency. Flex requirement uses days since last syllabus flight, so updating currency won’t change it.\nPACE & EXPECTED END\n— STUDENT A\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nBaseline 2 events/wk. Both end-date paces exclude this student’s lull periods.\nFAILURES\n— STUDENT A\nnone\nLULL PERIODS\n— STUDENT A\nnone\n+ Set lull period\n⧉ Copy to…\nPANEL\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 484.9332275390625,
+     "y": 233.3711395263672,
+     "width": 60.3291015625,
+     "height": 60.32908630371094,
+     "top": 233.3711395263672,
+     "right": 545.2623291015625,
+     "bottom": 293.7002258300781,
+     "left": 484.9332275390625
+    },
+    "bLast": {
+     "x": 88.18876647949219,
+     "y": 10140.021484375,
+     "width": 56.34172058105469,
+     "height": 56.3408203125,
+     "top": 10140.021484375,
+     "right": 144.53048706054688,
+     "bottom": 10196.3623046875,
+     "left": 88.18876647949219
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 16,
+     "y": 254.0625,
+     "width": 1060,
+     "height": 634,
+     "top": 254.0625,
+     "right": 1076,
+     "bottom": 888.0625,
+     "left": 16
+    }
+   },
+   "file": "desktop/57-trk-edit-layout.png"
+  },
+  {
+   "id": "trk-chart",
+   "no": "48",
+   "what": "the Tracker flow chart",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "tab Tracker",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\n−\n40%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 203.89599609375,
+     "y": 188.39599609375,
+     "width": 24.207977294921875,
+     "height": 24.207977294921875,
+     "top": 188.39599609375,
+     "right": 228.10397338867188,
+     "bottom": 212.60397338867188,
+     "left": 203.89599609375
+    },
+    "bLast": {
+     "x": 44.69611358642578,
+     "y": 4163.59326171875,
+     "width": 22.607986450195312,
+     "height": 22.60791015625,
+     "top": 4163.59326171875,
+     "right": 67.3041000366211,
+     "bottom": 4186.201171875,
+     "left": 44.69611358642578
+    },
+    "board": {
+     "sl": 0,
+     "st": 324
+    },
+    "svg": {
+     "x": 16,
+     "y": 176.5,
+     "width": 352,
+     "height": 4136.796875,
+     "top": 176.5,
+     "right": 368,
+     "bottom": 4313.296875,
+     "left": 16
+    }
+   },
+   "file": "phone/48-trk-chart.png"
+  },
+  {
+   "id": "trk-info-panel",
+   "no": "49",
+   "what": "the Info panel (side panel; the Info tab on a phone)",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Info tab",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/49-trk-info-panel.png"
+  },
+  {
+   "id": "trk-show-all",
+   "no": "50",
+   "what": "Show All",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Show All",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset\nAll events\nClose\nST\nST-01 Squadron Welcomenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-02 Checklist Introductionnot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-03 CBT Orientationnot done\nType: Lecture / Demo · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-04 Instrument Refresher (ATC BRF)not done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-05 Local Area Orientation / Transition Phase Briefingnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-06 F-15SG Simulator Orientationnot done\nType: Lecture / Orientation · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-09 AHC/BFM/INT Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-10 ACM / LASDT Module Briefingnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-11 Day Air-to-Air Refuelling Briefingnot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-12 TI/DCA Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-13 BSA Module Briefing and Range Pattern Academicsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-14 NTR/SAN Module Briefingnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-15 Surface Attack Tactics Module Briefingnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-16 F-15SG Supervised Preflightnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-16B Air-to-Air Missiles / Gun Inspectionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAW-03, AAW-04, AAW-05\nEdit\nST-17 Air-to-Ground Weapons Inspectionnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nST-18 End-of-Course Critiquenot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: SAT-2, SATN-1\nEdit\nACG\nACG-01 Course Introduction and Aircraft Overviewnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: ST-01\nEdit\nACG-02 Propulsion Systemnot done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: ACG-01, ST-02\nEdit\nACG-03 Fuel Systemnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-04 Electrical Systemnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-05 Environmental, Canopy, and Stepsnot done\nType: Lecture · 3.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-06 Hydraulic Systemsnot done\nType: Lecture · 3.5 Hrs\nCrew: —\nPrerequisites: ACG-02\nEdit\nACG-07 Flight Controlsnot done\nType: Lecture · 4.0 Hrs\nCrew: —\nPrerequisites: ACG-06\nEdit\nACG-08 Warnings and Cautionsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: ACG-03, ACG-04, ACG-05, ACG-07\nEdit\nACG-09 Emergency Procedures and Abnormal Operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: ACG-08\nEdit\nCFT\nCFT-01 Cockpit Familiarisation Trainer-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: ACG-09, ST-06\nEdit\nCFT-02 Cockpit Familiarisation Trainer-02not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-2\nEdit\nCFT-03 Cockpit Familiarisation Trainer-03not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-02\nEdit\nCFT-04 Cockpit Familiarisation Trainer-04not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-03\nEdit\nT\nT-01 Aircraft Generalnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: CFT-01\nEdit\nT-02 Avionics Inot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-05, IAT-01\nEdit\nT-03 Avionics IInot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-10, IAT-02\nEdit\nT-04 Avionics IIInot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-16, IAT-03\nEdit\nT-05 Operationsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: OPS-03, OPS-04\nEdit\nT-06 Air-to-Air Radarnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-04, RDR-05\nEdit\nT-07 Electronic Warfarenot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-05\nEdit\nT-08 Air-to-Air Weaponsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-06, ST-16B\nEdit\nT-09 Aerial Attack Manoeuvringnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AAM-11\nEdit\nT-10 Air-to-Air Sensorsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AAS-04, IAT-08\nEdit\nT-11 Air-to-Ground Radarnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-09\nEdit\nT-12 Air-to-Ground Deliverynot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: IAT-10\nEdit\nT-13 Air-to-Ground Sensorsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-07, IAT-11\nEdit\nT-14 Air-to-Ground Weaponsnot done\nType: Test · 1.5 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nAVI\nAVI-01 Avionics Introductionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-01\nEdit\nAVI-02 Multipurpose Colour Displaysnot done\nType: CBT · 3.0 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-03 Up Front Control (UFC)not done\nType: CBT · 3.0 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-04 Radio Communicationnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-01, ST-03\nEdit\nAVI-05 Avionics Phase Review Inot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-02, AVI-03, AVI-04\nEdit\nAVI-06 ADI, HSI, and HUDnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-07 Embedded Global Positioning System / Inertial Navigation System (EGI)not done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-08 OWS, DVR, HUD Title, and MC / DTMnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-09 Radar Altimeter and Autopilotnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-02\nEdit\nAVI-10 Avionics Phase Review IInot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-06, AVI-09, AVI-08, AVI-07\nEdit\nAVI-11 Built-In Test (BIT)not done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: T-03\nEdit\nAVI-12 FDL/SYS Y Introductionnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-03\nEdit\nAVI-14 Basic Digital Map Systemnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: AVI-12\nEdit\nAVI-15 Degraded Avionics Operationsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-11, AVI-14\nEdit\nAVI-16 Avionics Phase Review IIInot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AVI-15\nEdit\nIAT\nIAT-01 Integrated Avionics Trainer-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-02, AVI-03, AVI-04\nEdit\nIAT-02 Integrated Avionics Trainer-02not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-06, AVI-09, AVI-08, AVI-07\nEdit\nIAT-03 Integrated Avionics Trainer-03not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AVI-15\nEdit\nIAT-04 Integrated Avionics Trainer-04not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: RDR-04\nEdit\nIAT-05 Integrated Avionics Trainer-05not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: EW-02\nEdit\nIAT-06 Integrated Avionics Trainer-06not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAW-03, AAW-04, AAW-05\nEdit\nIAT-07 Integrated Avionics Trainer-07not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAM-05\nEdit\nIAT-08 Integrated Avionics Trainer-08not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AAS-03\nEdit\nIAT-09 Integrated Avionics Trainer-09not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGR-04\nEdit\nIAT-10 Integrated Avionics Trainer-10not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGS-03, AGD-06\nEdit\nIAT-11 Integrated Avionics Trainer-11not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGS-06\nEdit\nIAT-12 Integrated Avionics Trainer-12not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: JMP-05\nEdit\nOPS\nOPS-01 Task Management and Crew Coordinationnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AVI-05, IAT-01\nEdit\nOPS-02 Aircraft Handling Characteristics (AHC)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-03 Performance Datanot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-04 Formation Proceduresnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: OPS-01\nEdit\nOPS-05 Air-to-Ground chart and low-level planning/preparationnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nOPS-06 Close Air Support (CAS) Proceduresnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nOPS-07 Tactical weapons delivery planningnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nTR(S)\nTR(S)-1 Transition Sims-01not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: T-04, ST-04, ST-05, OPS-03, OPS-02\nEdit\nTR(S)-2 Transition Sims-2not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-1\nEdit\nTR(S)-3 Transition Sims-3not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: CFT-04\nEdit\nTR(S)-4 Transition Sims-4not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-3\nEdit\nTR(S)-5 Transition Sims-5not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-4\nEdit\nTR(S)-6 Transition Sims-6not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-5\nEdit\nTR(S)-7 Transition Sims-7not done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-LAO\nEdit\nTR(S)-LAO Transition Sims-Local Area Operationsnot done\nType: OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: TR(S)-6\nEdit\nRDR\nRDR-01 A/A Radar Introductionnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: T-05\nEdit\nRDR-02 APG-63(v)3 Introductionnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: RDR-01\nEdit\nRDR-03 A/A Modes, Switchology, and Displaysnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: RDR-02\nEdit\nRDR-04 Radar Target Identificationnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: RDR-03\nEdit\nRDR-05 A/A Radar Employmentnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: RDR-04\nEdit\nEW\nEW-01 General Electronic Attacknot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-06\nEdit\nEW-02 IEWSnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: EW-01\nEdit\nAAW\nAAW-01 A/A Programmable Armament Control Set (PACS)not done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: T-07\nEdit\nAAW-02 HUD A/A Displaysnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-07\nEdit\nAAW-03 AIM-120 AMRAAMnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nAAW-04 AIM-9X Sidewindernot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nAAW-05 M61A1 20mm Gunnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAW-01, AAW-02\nEdit\nJMP\nJMP-01 Introduction to JMPnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-02 A/A Mission Planningnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-03 A/G Mission Planningnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-04 CWDSnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: —\nEdit\nJMP-05 PGMPSnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-14\nEdit\nEPT\nEPT-01 Purpose: Introduce students to local life support operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nEPT-02 Purpose: Introduce F-15SG ejection seat proceduresnot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: EPT-01\nEdit\nAAM\nAAM-01 Performance Managementnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-08\nEdit\nAAM-02 Air-to-Air Mission Tasksnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-01\nEdit\nAAM-03 Interceptsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AAM-02\nEdit\nAAM-04 Introduction to Ground Controlled Intercept (GCI) /ACI Supportnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-03\nEdit\nAAM-05 Intercept Timelinesnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAM-04\nEdit\nAAM-06 Offensive Basic Fighter Manoeuvres (OBFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: IAT-07\nEdit\nAAM-07 Defensive Basic Fighter Manoeuvres (DBFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-06\nEdit\nAAM-08 High Aspect and All Aspect Basic Fighter Manoeuvres (HA/AABFM)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-07\nEdit\nAAM-09 Low Altitude Awareness Training (LAAT)not done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAM-08\nEdit\nAAM-10 Air Combat Manoeuvring (ACM)not done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAM-09\nEdit\nAAM-11 BVR to WVR transitionnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AAM-10\nEdit\nAAM-12 2 v X, Launch and Leavenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: T-09\nEdit\nAAM-13 2 v X, Launch and Decidenot done\nType: Lecture · 3.0 Hrs\nCrew: —\nPrerequisites: AAM-12\nEdit\nAAM-14 4-ship Operationsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nTR\nTR-1(P) Transition-01not done\nType: 1 x F-15SG\nCrew: UP / IP\nPrerequisites: EPT-02, ST-16, JMP-01, TR(S)-3\nEdit\nTR-2 Transition-02not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-1(P), TR(S)-4\nEdit\nTR-3 Transition-03not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP (Senior IP for UP)\nPrerequisites: TR-2, TR(S)-6\nEdit\nTR-4 Transition-4 (Refer to BCTM TR-5(P))not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-3, EPE\nEdit\nTR-5(P) Transition-5not done\nType: 1 x F-15SG\nCrew: UP / IRE\nPrerequisites: TR-4 (P), IEPE, Min 9 hrs on type\nEdit\nTR-6(P) IRTnot done\nType: 1 x F-15SG\nCrew: UP / IRE\nPrerequisites: TR-5 (P), IEPE, Min 9 hours on type\nEdit\nEPE\nEPE Emergency Procedures Evaluationnot done\nType: OFT/AMT\nCrew: UP/UW, FSI/IP/IW + FE\nPrerequisites: TR(S)-7\nEdit\nIEPE/IPC\nIEPE/IPC Instrument Emergency Procedures Evaluation + Proficiency Checknot done\nType: OFT/AMT\nCrew: UP/UW, FSI/IP/IW + FE\nPrerequisites: EPE\nEdit\nAAS\nAAS-01 A/A SYS-Ynot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: IAT-07\nEdit\nAAS-02 A/A Targeting Podnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AAS-01\nEdit\nAAS-03 IRSTnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AAS-02\nEdit\nAAS-04 A/A JHMCSnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: —\nEdit\nINT(S)\nINT(S)-1 Intercept Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: IEPE/IPC, IAT-07, ST-11, ST-09\nEdit\nINT(S)-2 Intercept Sims-2not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-1\nEdit\nINT(S)-3 Intercept Sims-3not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-2\nEdit\nINT(S)-4 Intercept Sims-4not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: INT(S)-3, T-10\nEdit\nAHC\nAHC-1 Advanced Handling Characteristicsnot done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: TR-6(P), INT(S)-1\nEdit\nBFM\nBFM-1 Basic Fighting Manoeuvres-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: AHC-1, INT(S)-2, AAM-06\nEdit\nBFM-2 Basic Fighting Manoeuvres-2not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (If cleared crew solo) or IP / UW, UP / IW\nPrerequisites: BFM-1, Crew Solo Checklist, Flown within 7 days of check flight for first crew solo\nEdit\nBFM-3 Basic Fighting Manoeuvres-3not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: BFM-2, AAM-07\nEdit\nBFM-4 Basic Fighting Manoeuvres-4not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (If cleared crew solo) or IP / UW, UP / IW\nPrerequisites: BFM-3 Crew Solo Checklist (if req), Flown within 7 days of check flight for first crew solo or flown within 14 days for subsequent crew solo\nEdit\nBFM-5 Basic Fighting Manoeuvres-5not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: BFM-4, AAM-08, JMP-02\nEdit\nBFM-6 Basic Fighting Manoeuvres-6not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / IW\nPrerequisites: BFM-5\nEdit\nBFM-7 Basic Fighting Manoeuvres-7not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (Crew Solo)\nPrerequisites: BFM-6\nEdit\nACM(S)\nACM(S)-1 Air Combat Manoeuvring Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: LASDT(S)-1, AAM-11\nEdit\nACM(S)-2 Air Combat Manoeuvring Sims-2not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: ACM(S)-1\nEdit\nINT\nINT-1 Intercept-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: BFM-7, INT(S)-4\nEdit\nLASDT(S)\nLASDT(S)-1 Low Altitude Step Down Training Sims-1not done\nType: OFT/AMT / AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: INT(S)-4, AAM-09, OPS-05, ST-10\nEdit\nLASDT\nLASDT-1 Low Altitude Stepdown Training-1not done\nType: 1 or 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: INT-1, JMP-03, LASDT(S)-1\nEdit\nLASDT-2 Low Altitude Stepdown Training-2not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-1\nEdit\nLASDT-3 Low Altitude Stepdown Training-3not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-2\nEdit\nACM\nACM-1 Air Combat Manoeuvre-1not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: LASDT-1, AAM-10\nEdit\nACM-2 Air Combat Manoeuvre-2not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-1\nEdit\nACM-3 Air Combat Manoeuvre-3not done\nType: 3 or 4 x F-15SG (2-ship plus adversaries)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-2, ACM(S)-2\nEdit\nTI(S)\nTI(S)-1 Tactical Intercept Sims-1not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: ACM(S)-2, ST-12, AAM-12\nEdit\nTI(S)-2 Tactical Intercept Sims-2not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: TI(S)-1, AAM-13\nEdit\nTI(S)-3 Tactical Intercept Sims-3not done\nType: AMT\nCrew: IP/IW, UP/UW, in element, MP/MW, MP/MW in the other element\nPrerequisites: TI(S)-2\nEdit\nDCA(S)\nDCA(S)-1 Defensive Counter Air Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: TI(S)-3\nEdit\nTI\nTI-1 Tactical Intercept-1not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: ACM-3, TI(S)-2\nEdit\nTI-2 Tactical Intercept-2not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: TI-1, LASDT-3, TI(S)-3\nEdit\nTI-3 Tactical Intercept-3not done\nType: 8 x F-15SG (8-ship plus 4 adversaries, can be effective 3v2 due to fallout) *Can be accomplished in AMT primarily\nCrew: IP / UW, UP / IW (Either element) *UP / UW if conducted in AMT\nPrerequisites: TI-2, AAM-14\nEdit\nDCA\nDCA-1 Defensive Counter Air-1not done\nType: 6 x F-15SG (2-ship plus 4 adversaries, can be effective 2v2 due to fallout). Live flight preferred but can be accomplished in AMT.\nCrew: IP / IW, UP / UW (Crew solo)\nPrerequisites: TI-3, DCA(S)-1\nEdit\nAGR\nAGR-01 A/G Radar Introductionnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: T-10\nEdit\nAGR-02 APG-63(v)3 A/G Introductionnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGR-01\nEdit\nAGR-03 Modes, Controls, and Displaysnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGR-02\nEdit\nAGR-04 Navigationnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGR-03\nEdit\nAGD\nAGD-01 A/G Programmable Armament Control Set (PACS)not done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-11\nEdit\nAGD-02 Basic Bombingnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGD-01\nEdit\nAGD-03 Designationsnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGD-02\nEdit\nAGD-04 Computed Deliveriesnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AGD-03\nEdit\nAGD-05 Strafe and Non-Computed Deliveriesnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGD-04\nEdit\nAGD-06 Suspension Equipment and Training Ordnancenot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGD-05\nEdit\nAGS\nAGS-01 IR Introductionnot done\nType: CBT · 2.0 Hrs\nCrew: —\nPrerequisites: T-11\nEdit\nAGS-02 Sniper Targeting Pod Introductionnot done\nType: Lecture · 2.5 Hrs\nCrew: —\nPrerequisites: AGS-01\nEdit\nAGS-03 Sniper Targeting Podnot done\nType: CBT · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-02\nEdit\nAGS-04 Sensor Planningnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: AGW-01\nEdit\nAGS-05 A/G SYS-Y Operationsnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGS-04\nEdit\nAGS-06 Advanced Digital Map Systemnot done\nType: CBT · 1.0 Hrs\nCrew: —\nPrerequisites: AGS-05\nEdit\nAGS-07 A/G JHMCSnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: AGS-06\nEdit\nAGS-08 NAV FLIRnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nAGW\nAGW-01 General Purpose Bombsnot done\nType: Lecture · 1.5 Hrs\nCrew: —\nPrerequisites: T-12\nEdit\nAGW-02 Laser Guided Bombsnot done\nType: Lecture · 2.0 Hrs\nCrew: —\nPrerequisites: T-13\nEdit\nAGW-03 Smart Weaponsnot done\nType: Lecture · 1.0 Hrs\nCrew: —\nPrerequisites: AGW-02\nEdit\nSA(S)\nSA(S)-1 Surface Attack Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: DCA(S)-1, AGW-01, ST-13\nEdit\nSA(S)-2 Surface Attack Sims-2not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-1\nEdit\nSA(S)-3 Surface Attack Sims-3not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: AGW-02, SA(S)-2\nEdit\nSA(S)-4 Surface Attack Sims-4not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-3\nEdit\nSA(S)-5 Surface Attack Sims-5not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: IAT-12, SA(S)-4\nEdit\nSA(S)-6 Surface Attack Sims-6not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-5, OPS-06\nEdit\nSA(S)-7 Surface Attack Sims-7not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: SA(S)-6\nEdit\nSA\nSA-1 Surface Attack-1not done\nType: 2 x F-15SG (Can be effective with 1)\nCrew: IP / UW, UP / IP\nPrerequisites: DCA-1, SA(S)-2, ST-17, AGS-04, JMP-04, OPS-07\nEdit\nSA-2 Surface Attack-2not done\nType: 2 x F-15SG (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-1, SA(S)-3\nEdit\nSA-3 Surface Attack-3not done\nType: 2 x F-15SG (Can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-2, SA(S)-4\nEdit\nSA-4 Surface Attack-4not done\nType: 2 x F-15SG, (can be effective/incomplete with 1)\nCrew: IP / UW, UP / IW *Can be conducted in AMT\nPrerequisites: SA-3, SA(S)-5\nEdit\nSA-5 Surface Attack-5not done\nType: 2 x F-15SG *Can be conducted in AMT\nCrew: IP / UW, UP / IW\nPrerequisites: SA-4, SA(S)-7\nEdit\nSA-6 Surface Attack-6not done\nType: 2 x F-15SG\nCrew: IP / IW, UP / UW (Crew Solo)\nPrerequisites: SA-5\nEdit\nNVG\nNVG-01 Introduction to the NVG Training Coursenot done\nType: Lecture · 0.5 Hrs\nCrew: —\nPrerequisites: AGW-03\nEdit\nNVG-LAB NVG Lab (ANVIL) to replace NVG-01-08not done\nType: Night Lab · 7.5\nCrew: UP/UW, IP/W\nPrerequisites: NVG-01\nEdit\nNTR(S)\nNTR(S)-1 Night Transition Sims-1not done\nType: AMT (Preferred) / OFT/AMT\nCrew: UP/UW, IP/IW/FSI\nPrerequisites: NVG-LAB, AGS-08, ST-14\nEdit\nNTR\nNTR-1 Night Transition-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: SA-4, NTR(S)-1\nEdit\nNTR-2 Night Transition-2not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IP\nPrerequisites: NTR-1\nEdit\nSAN\nSAN-1 Surface Attack Night-1not done\nType: 2 x F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: SA(S)-7\nEdit\nSAT(S)\nSAT(S)-1 Surface Attack Tactics Sims-1not done\nType: AMT (Preferred) / OFT\nCrew: UP/UW, IP/IW/FSI, 1 x flight lead if flown in AMT if available\nPrerequisites: SA(S)-7, ST-15\nEdit\nSAT(S)-2 Surface Attack Tactics Sims-2not done\nType: AMT\nCrew: IP/IW, UP/UW 2 x CT Crew\nPrerequisites: SAT(S)-1\nEdit\nSAT\nSAT-1 Surface Attack Tactics-1not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW\nPrerequisites: SA-6, SAT(S)-2\nEdit\nSAT-2 Surface Attack Tactics-2not done\nType: 6 x F-15SG (4-ship plus 2 adversaries min, can be effective 3v1 due to fallout)\nCrew: IP / IW, UP / UW (element lead to be instructor pair) IP / UW, UP / IW or IP (if non crew solo)\nPrerequisites: SAT-1\nEdit\nSATN\nSATN-1 Surface Attack Tactics Night-1not done\nType: 4 x F-15SG (2-ship plus 2 adversaries, can be effective 2v1 due to fallout)\nCrew: IP / UW, UP / IW (IP if 5.0 NVG hours not achieved)\nPrerequisites: NTR-2, SAN-1, SAT(S)-1, SA-6\nEdit\nDAAR\nDAAR-1 Day Air-to-Air Refresher-1not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: INT(S)-2, TR-4 (could be accomplished on TR-4 after demo pro basic formation, with appropriate supervision)\nEdit\nDAAR-2 Day Air-to-Air Refresher-2not done\nType: F-15SG\nCrew: IP / UW, UP / IP\nPrerequisites: DAAR-1\nEdit\nNAAR\nNAAR-1 Night Air-to-Air Refresher-1not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: DAAR-2, NTR-2 (can be accomplished anytime after demo pro night formation)\nEdit\nNAAR-2 Night Air-to-Air Refresher-2not done\nType: F-15SG\nCrew: IP/UW, UP/IP\nPrerequisites: NAAR-1\nEdit",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/50-trk-show-all.png"
+  },
+  {
+   "id": "trk-legend",
+   "no": "51",
+   "what": "Legend",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Legend",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\nWHAT THE CHART IS TELLING YOU\nTHE CENTRE — THE KIND OF EVENT\nTR-1(P)\nFlight\nST-01\nAcad / Spec\nT-01\nTest\nTR(S)-1\nSim\nCFT-01\nCFT / IAT / EPT\nTHE RING — ONE SLICE PER STUDENT\nST-01\nDCO\nST-01\nDPCO\nST-01\nMarginal\nST-01\nN.A.\nST-01\nNot done\nST-01\nA failure — one red tick each\nST-01\nBlue edge — the student picked in Crew\nST-01\nGold ring — can be flown next\nST-01\nTurquoise ring — found by Find event\nCURRENCY — DAYS SINCE THE LAST FLIGHT\n0–6\nLanding Current — No IP Required\n7 +\nLanding Not Current — IP Required\nAny syllabus flight counts, or a non-syllabus flight put in Last Flown (Currency).\nFLEX — DAYS SINCE THE LAST SYLLABUS FLIGHT\n0–6\nCurrent — no flex required\n7–13\n1 Optional Flex\n14–20\n1 Mando Flex (Convertible)\n21–30\n2 Mando Flex (1 Mando, 1 Convertible)\n31–59\n2 Mando Flex (2 Mando)\n60–119\nShort Refresher Course\n120 +\nRe-course\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/51-trk-legend.png"
+  },
+  {
+   "id": "trk-flex-settings",
+   "no": "52",
+   "what": "flex settings (gear, admin)",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "gear",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\nFlex settings\nadmins only\n✕\nTrack flex\n\nOff: the flex bar and the Legend's flex part go, for everyone.\n\nDAYS SINCE THE LAST SYLLABUS FLIGHT\nFROM\nTO\nFLEX\n0\n6\nCurrent — no flex required\n13\n1 Optional Flex\n20\n1 Mando Flex (Convertible)\n30\n2 Mando Flex (1 Mando, 1 Convertible)\n59\n2 Mando Flex (2 Mando)\n119\nShort Refresher Course\nand over\nRe-course\nCancel\nSave\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/52-trk-flex-settings.png"
+  },
+  {
+   "id": "trk-add-student",
+   "no": "53",
+   "what": "\"+ Add\" student dialog",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "+ Add",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset\nAdd a crew member\nCourse start\nMon 13 Jul 26\n▾\nFrom the squadron roster\nRecon\nPilot · OCU\nTalisman\nPilot · OCU\nWildcard\nPilot · OCU\nTally\nWSO · OCU\nZulu\nWSO · OCU\nAce\nPilot · A\nAnvil\nPilot · IP\nBlade\nPilot · IP\nBolt\nPilot · C\nCinch\nPilot · IP\nCobra\nPilot · IP\nComet\nPilot · IP\nDiesel\nPilot · D\nDrifter\nPilot · A\nForge\nPilot · IP\nGambit\nPilot · C\nHavoc\nPilot · IP\nHunter\nPilot · IP\nJester\nPilot · B\nKraken\nPilot · D\nNomad\nPilot · C\nOutlaw\nPilot · C\nPiston\nPilot · IP\nRanger\nPilot · IP\nReaper\nPilot · IR\nRebel\nPilot · B\nRidge\nPilot · C\nSaber\nPilot · IP\nSaint\nPilot · B\nSidewinder\nPilot · IP\nTorch\nPilot · C\nTrident\nPilot · IP\nVandal\nPilot · IP\nVapor\nPilot · D\nWarden\nPilot · IP\nZenith\nPilot · C\nBasher\nWSO · IW\nCinder\nWSO · B\nCutter\nWSO · C\nDash\nWSO · C\nEcho\nWSO · IW\nFable\nWSO · C\nGhost\nWSO · C\nGrit\nWSO · C\nHex\nWSO · C\nLedger\nWSO · IW\nMarlin\nWSO · A\nOtter\nWSO · D\nPixel\nWSO · D\nQuill\nWSO · IW\nRelay\nWSO · IW\nRune\nWSO · B\nRyder\nWSO · C\nScope\nWSO · IW\nScribe\nWSO · D\nStatic\nWSO · IW\nVector\nWSO · C\nWisp\nWSO · C\nCancel\nOK",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/53-trk-add-student.png"
+  },
+  {
+   "id": "trk-ball-popup",
+   "no": "54",
+   "what": "a ball's marking pop-up (tap an event on the chart)",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "first ball on the chart",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\n−\n40%\n+\nreset\nST-01 · STUDENT A\nNot done\nDCO\nDPCO\nMarginal\nN.A.\nClose\nDone on (when marked)\nMon 13 Jul 26\n▾\nFails:\n−\n0\n+\nFailed on\nMon 13 Jul 26\n▾\nSquadron Welcome\nType: Lecture · 3.0 Hrs\nEdit details",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 203.89599609375,
+     "y": 188.39599609375,
+     "width": 24.207977294921875,
+     "height": 24.207977294921875,
+     "top": 188.39599609375,
+     "right": 228.10397338867188,
+     "bottom": 212.60397338867188,
+     "left": 203.89599609375
+    },
+    "bLast": {
+     "x": 44.69611358642578,
+     "y": 4163.59326171875,
+     "width": 22.607986450195312,
+     "height": 22.60791015625,
+     "top": 4163.59326171875,
+     "right": 67.3041000366211,
+     "bottom": 4186.201171875,
+     "left": 44.69611358642578
+    },
+    "board": {
+     "sl": 0,
+     "st": 324
+    },
+    "svg": {
+     "x": 16,
+     "y": 176.5,
+     "width": 352,
+     "height": 4136.796875,
+     "top": 176.5,
+     "right": 368,
+     "bottom": 4313.296875,
+     "left": 16
+    }
+   },
+   "file": "phone/54-trk-ball-popup.png"
+  },
+  {
+   "id": "trk-date-box",
+   "no": "55",
+   "what": "a date box's calendar popup (Last Flown)",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Last Flown (Syllabus)",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nSTUDENTS\n Reorder\n+ Add\n1\nSTUDENT A\n2\nSTUDENT B\n26ABSG\nSTUDENT A\nSTUDENT B\nOVERALL\n0.0%\nCOMPLETE\n0\nDONE\n210\nREMAINING\nFlights\n0/41 · 0%\nAcad / Spec\n0/106 · 0%\nSims\n0/31 · 0%\nIAT/CFT/EPT\n0/18 · 0%\nTests\n0/14 · 0%\nNEXT EVENT (FLOW-BASED)\nNext CFT\nCFT-01\nNext IAT\nIAT-01\nNext CPT (sim)\nTR(S)-1\nNext Syllabus Flt\nTR-1(P)\nPLANNABLE NOW\nST-01\nST-02\nCURRENCY & FLEX\nLast Flown (Syllabus)\nPick a date\n▾\nLast Flown (Currency)\nPick a date\n▾\nCourse start\nPick a date\n▾\nNo. of Down Days\n—\n›\nDays since syllabus\n—\nDays since currency\n—\nNo currency date set\nNo flight date set\nPACE & EXPECTED END\nSET PACE\n/wk\n17/07/28\nprojected end\nEND DATE A\nPick a date\n▾\n—\nreq. pace\nEND DATE B\nPick a date\n▾\n—\nreq. pace\nFAILURES\nnone\nLULL PERIODS\nnone\n+ Set lull period\n⧉ Copy to…\n−\n100%\n+\nreset\nLAST FLOWN (SYLLABUS)\nJuly 2026\n›\n13\n‹\n›\nMON\nTUE\nWED\nTHU\nFRI\nSAT\nSUN\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "bLast": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 0,
+     "y": 0,
+     "width": 0,
+     "height": 0,
+     "top": 0,
+     "right": 0,
+     "bottom": 0,
+     "left": 0
+    }
+   },
+   "file": "phone/55-trk-date-box.png"
+  },
+  {
+   "id": "trk-syllabus-menu",
+   "no": "56",
+   "what": "the syllabus menu",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "syllabus pencil",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\n Edit chart layout\n Duplicate syllabus\n+ Add syllabus\n Rename syllabus\n Reorder syllabi\n Delete syllabus\nLegend\n File ▾\n⚙\n● saved\nFlow chart\nInfo\nShow All\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2\n−\n40%\n+\nreset",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 203.89599609375,
+     "y": 188.39599609375,
+     "width": 24.207977294921875,
+     "height": 24.207977294921875,
+     "top": 188.39599609375,
+     "right": 228.10397338867188,
+     "bottom": 212.60397338867188,
+     "left": 203.89599609375
+    },
+    "bLast": {
+     "x": 44.69611358642578,
+     "y": 4163.59326171875,
+     "width": 22.607986450195312,
+     "height": 22.60791015625,
+     "top": 4163.59326171875,
+     "right": 67.3041000366211,
+     "bottom": 4186.201171875,
+     "left": 44.69611358642578
+    },
+    "board": {
+     "sl": 0,
+     "st": 324
+    },
+    "svg": {
+     "x": 16,
+     "y": 176.5,
+     "width": 352,
+     "height": 4136.796875,
+     "top": 176.5,
+     "right": 368,
+     "bottom": 4313.296875,
+     "left": 16
+    }
+   },
+   "file": "phone/56-trk-syllabus-menu.png"
+  },
+  {
+   "id": "trk-edit-layout",
+   "no": "57",
+   "what": "Edit chart layout tools",
+   "size": "phone",
+   "role": "admin",
+   "group": "trk",
+   "reached": true,
+   "how": "Edit chart layout",
+   "text": "142\nRAPTOR\n↶\n↷\nSTUDENT A\nSTUDENT B\n26ABSG\n2024\n2026\nTx 2026\nA/G - A/A 2026\nLegend\n File ▾\n⚙\n● saved\n✋ Move\n▣ Select\n→ Connect\n🗑 Delete\n+ Flight\n+ Acad\n+ Test\n+ Sim\n+ CFT/IAT/EPT\n Text\n╱ Line\n❐ Edit lines\n➤ Arrow\n✕ Merge\n⌢ Unmerge\n▣ Select all\nFont \n⤢ Fit\n↺ Reset layout\n📋 Edit events\nDouble-click any pokéball on the chart to edit that event directly.\nMove: drag a ball (snap-aligns to others). Drag empty space to pan.\nFlow chart\nInfo\nShow All\nST-01\nST-02\nACG-01\nACG-02\nACG-03\nACG-04\nACG-05\nACG-06\nACG-07\nACG-08\nACG-09\nST-06\nCFT-01\nT-01\nST-03\nAVI-01\nAVI-02\nAVI-03\nAVI-04\nIAT-01\nAVI-05\nT-02\nAVI-06\nAVI-07\nAVI-08\nAVI-09\nIAT-02\nAVI-10\nT-03\nAVI-11\nAVI-12A/B\nAVI-14\nAVI-15\nIAT-03\nAVI-16\nT-04\nOPS-01\nOPS-02\nOPS-03\nOPS-04\nST-04\nST-05\nT-05\nTR(S)-1\nRDR-01\nRDR-02\nRDR-03\nRDR-04\nIAT-04\nRDR-05\nT-06\nTR(S)-2\nCFT-02\nCFT-03\nCFT-04\nTR(S)-3\nEW-01\nEW-02\nIAT-05\nAAW-01\nAAW-02\nT-07\nAAW-03\nAAW-04\nAAW-05\nIAT-06\nT-08\nJMP-01\nTR(S)-4\nEPT-01\nEPT-02\nTR(S)-5\nAAM-01\nAAM-02\nAAM-03\nAAM-04\nST-16\nST-16B\nTR-1(P)\nAAM-05\nIAT-07\nTR-2\nTR(S)-6\nTR-3\nTR(S)-LAO\nTR(S)-7\nEPE\nIEPE\nTR-4\nAAS-01\nAAS-02\nAAS-03\nIAT-08\nAAS-04\nT-10\nST-09\nST-11\nINT(S)-1\nTR-5(P)\nTR-6(P)\nAHC-1\nINT(S)-2\nAAM-06\nBFM-1\nINT(S)-3\nBFM-2\nINT(S)-4\nAAM-07\nBFM-3\nJMP-02\nBFM-4\nAAM-08\nAAM-09\nAAM-10\nAAM-11\nACM(S)-1\nBFM-5\nACM(S)-2\nBFM-6\nBFM-7\nST-10\nT-09\nINT-1\nOPS-05\nLASDT(S)-1\nJMP-03\nLASDT-1\nLASDT-2\nACM-1\nACM-2\nST-12\nAAM-12\nTI(S)-1\nAAM-13\nTI(S)-2\nACM-3\nAAM-14\nDCA(S)-1\nTI(S)-3\nTI-1\nLASDT-3\nTI-2\nDCA-1\nTI-3\nAGR-01\nAGR-02\nAGR-03\nAGR-04\nIAT-09\nT-11\nAGD-01\nAGD-02\nAGD-03\nAGD-04\nAGD-05\nAGD-06\nAGS-01\nAGS-02\nAGS-03\nIAT-10\nT-12\nST-13\nAGW-01\nSA(S)-1\nST-17\nAGS-04\nAGS-05\nAGS-06\nIAT-11\nAGS-07\nT-13\nJMP-04\nAGW-02\nAGW-03\nT-14\nSA(S)-2\nSA-1\nSA(S)-3\nSA-2\nSA-3\nSA(S)-4\nJMP-05\nIAT-12\nSA(S)-5\nSA-4\nOPS-06\nSA(S)-6\nSA(S)-7\nSA-5\nSA-6\nST-15\nOPS-07\nNVG-01\nNVG-LAB\nAGS-08\nST-14\nNTR(S)1+IPCW\nNTR-1\nNTR-2\nSAN-1\nSAT(S)-1\nSAT(S)-2\nSAT-1\nSAT-2\nSATN-1\nST-18\nDAAR-1\nDAAR-2\nNAAR-1\nNAAR-2",
+   "errors": [],
+   "geom": {
+    "n": 210,
+    "b0": {
+     "x": 202.8747100830078,
+     "y": 325.10113525390625,
+     "width": 24.075714111328125,
+     "height": 24.07574462890625,
+     "top": 325.10113525390625,
+     "right": 226.95042419433594,
+     "bottom": 349.1768798828125,
+     "left": 202.8747100830078
+    },
+    "bLast": {
+     "x": 44.544654846191406,
+     "y": 4278.5791015625,
+     "width": 22.484458923339844,
+     "height": 22.48388671875,
+     "top": 4278.5791015625,
+     "right": 67.02911376953125,
+     "bottom": 4301.06298828125,
+     "left": 44.544654846191406
+    },
+    "board": {
+     "sl": 0,
+     "st": 0
+    },
+    "svg": {
+     "x": 16,
+     "y": 416.5625,
+     "width": 366,
+     "height": 415,
+     "top": 416.5625,
+     "right": 382,
+     "bottom": 831.5625,
+     "left": 16
+    }
+   },
+   "file": "phone/57-trk-edit-layout.png"
+  }
+ ]
+}
