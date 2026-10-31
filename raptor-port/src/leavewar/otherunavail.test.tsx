@@ -363,7 +363,8 @@ describe('an Attach filed from the war (D1378–D1380)', () => {
     expect(commitNewInput({ person: id, type: 'Attach', allday: true, start: D, end: '', sTime: '06:00', eTime: '18:00', remarks: 'Exercise', title: null, to: '145 Sqn' }, false, undefined, undefined, r => { made = r })).toBe(true)
     const first = render(<Matrix />)
     fireEvent.click(screen.getByTestId(`cell-${id}-${D}`))
-    expect(screen.getByTestId('daylist').textContent).toContain('145 Sqn')
+    /* a whole day of it now opens the bid window, its line naming where (his D1553 — it was the day's list) */
+    expect(screen.getByTestId('bid-heldday').textContent).toContain('145 Sqn')
     first.unmount()
     act(() => { INPUTS.splice(INPUTS.indexOf(made), 1); raptorNotify() })
     expect(fileStraight([{ personId: id, date: '2026-02-12' }], 'ATCH', { remarks: 'Exercise' }, 'am').done).toBe(1)

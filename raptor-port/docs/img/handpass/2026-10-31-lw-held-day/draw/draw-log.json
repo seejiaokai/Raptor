@@ -1,0 +1,77 @@
+[
+ {
+  "id": "p1-desk",
+  "size": "today",
+  "said": "raptor-sheet: Gambit Tue 17 Nov OML ✕ INPUTS PAGE Filed on the Inputs page — change it there, not here."
+ },
+ {
+  "id": "p1-desk",
+  "size": "B",
+  "said": "{\"ok\":true,\"greyed\":8,\"title\":\"GambitTue 17 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p1-desk",
+  "size": "A",
+  "said": "{\"ok\":true,\"greyed\":0,\"title\":\"GambitTue 17 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p1-phone",
+  "size": "today",
+  "said": "raptor-sheet: Gambit Tue 17 Nov OML ✕ INPUTS PAGE Filed on the Inputs page — change it there, not here."
+ },
+ {
+  "id": "p1-phone",
+  "size": "B",
+  "said": "{\"ok\":true,\"greyed\":8,\"title\":\"GambitTue 17 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p1-phone",
+  "size": "A",
+  "said": "{\"ok\":true,\"greyed\":0,\"title\":\"GambitTue 17 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p2",
+  "size": "today",
+  "said": "remarks-sheet: Ranger 24 Nov LL ✕ till 24 Nov Document"
+ },
+ {
+  "id": "p2",
+  "size": "B",
+  "said": "{\"ok\":true,\"greyed\":8,\"title\":\"RangerTue 24 Nov✕\"}"
+ },
+ {
+  "id": "p2",
+  "size": "A",
+  "said": "{\"ok\":true,\"greyed\":0,\"title\":\"RangerTue 24 Nov✕\"}"
+ },
+ {
+  "id": "p3",
+  "size": "today",
+  "said": "raptor-sheet: Nomad Wed 18 Nov OD ✕ INPUTS PAGE Change it on the Inputs page, not here."
+ },
+ {
+  "id": "p3",
+  "size": "proposed",
+  "said": "{\"ok\":true,\"greyed\":0,\"title\":\"NomadWed 18 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p4-other",
+  "size": "today",
+  "said": "daylist-sheet: Comet Tue 17 Nov ✕ OTH Change it on the Inputs page “Station board”"
+ },
+ {
+  "id": "p4-other",
+  "size": "proposed",
+  "said": "{\"ok\":true,\"greyed\":0,\"title\":\"CometTue 17 NovAuto-approve✕\"}"
+ },
+ {
+  "id": "p4-halves",
+  "size": "today",
+  "said": "daylist-sheet: Drifter Tue 24 Nov ✕ LL AM · change it on the Inputs page “Dentist run till 24 Nov” OML PM · change it on the Inputs page “Medically down till 24 Nov”"
+ },
+ {
+  "id": "p4-halves",
+  "size": "proposed",
+  "said": "{\"ok\":true,\"greyed\":8,\"title\":\"DrifterTue 24 NovAuto-approve✕\"}"
+ }
+]

@@ -1,0 +1,28 @@
+[
+ {
+  "id": "F1-doc",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "chips in the line: approval.pdf; after a tap, open: bid-picker, docview-placed",
+  "pics": [
+   "f1-trident-doc.png",
+   "f1-trident-doc-open.png"
+  ]
+ },
+ {
+  "id": "F2-till",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line: OD06:00–18:00“Exercise till 23 Jul”· change it on the Inputs page",
+  "pics": [
+   "f2-havoc-till.png"
+  ]
+ },
+ {
+  "id": "F-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
