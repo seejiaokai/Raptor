@@ -15,6 +15,7 @@ import { RemarksSheet } from './RemarksSheet'
 import { ClosedNoteSheet } from './ClosedNoteSheet'
 import { halfWord } from './awardwords'
 import type { RequestRec } from '../engine'
+import type { Input } from '../../engine/schema'
 
 beforeEach(() => { initStore(memoryBackend()) })
 afterEach(() => { cleanup() })
@@ -40,7 +41,8 @@ describe('the bell names the half after the code (D1525)', () => {
 
 describe('a member’s approved-leave window names its half after the code', () => {
   const title = () => screen.getByTestId('remarks-sheet').querySelector('.bidsheet-hd .cur')!.textContent
-  const row = { iid: 'r1', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, remarks: '' }
+  /* only what the window's title reads — the rest of an input is not drawn here */
+  const row = { iid: 'r1', person: 'dusk', type: 'LL', date: 'Feb 11', yr: 2026, remarks: '' } as Input
   it('a morning: "LL (AM)", never "<LL"', () => {
     render(<RemarksSheet callsign="Dusk" personId="dusk" row={row} code="*LL" onClose={() => {}} />)
     expect(title()).toBe('LL (AM)')

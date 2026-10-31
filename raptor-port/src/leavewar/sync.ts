@@ -3136,7 +3136,8 @@ export function openRequestDocs(r: { personId: string; code: string; from: strin
 /** …AND A LEAVE'S, FILED OR APPROVED, READ ONLY (M4 — the spec's reading 8: every document chip on the war opens the
  *  document; the day's list and the bid windows' Document row): the same viewer on the input itself; its papers change on
  *  the Inputs page or in its own bid window, never from the viewer opened here */
-export function openInputDocs(row: WarInput | null | undefined): boolean {
+/* `row` — an input, or a war request's own words and documents (DayList's read-only line): only its documents are read */
+export function openInputDocs(row: Partial<WarInput> | null | undefined): boolean {
   if (!row || !rowDocIds(row).length) return false
   setDocView({ row, readOnly: true })
   raptorNotify()

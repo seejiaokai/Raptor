@@ -40,7 +40,7 @@ const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct
 const sayD = (d: Date): string => `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`
 const say = (iso: string): string => sayD(new Date(iso + 'T00:00:00Z'))
 /** a run as the Holidays list says it: "Mon 9 – Fri 13 Feb" inside one month, "Thu 31 Dec – Fri 1 Jan" across two */
-export const whenSaid = (from: string, to: string): string => {
+const whenSaid = (from: string, to: string): string => {
   if (to <= from) return say(from)
   return from.slice(0, 7) === to.slice(0, 7) ? `${say(from).replace(/ [A-Za-z]+$/, '')} – ${say(to)}` : `${say(from)} – ${say(to)}`
 }
@@ -49,7 +49,7 @@ export const whenSaid = (from: string, to: string): string => {
  *  touch the name?"), as the drawing found it: every run of up to 60 days from 1 Jan of `year` to the end of the year
  *  after, written as the list writes it, the widest by `width`. Each letter is measured once and a run's width taken as
  *  the sum of its letters', so the 44,000 runs cost no more than adding; the caller measures the winner whole. */
-export function widestWhen(year: number, width: (s: string) => number): string {
+function widestWhen(year: number, width: (s: string) => number): string {
   const ch = new Map<string, number>()
   const w = (s: string) => { let n = 0; for (const c of s) { let v = ch.get(c); if (v === undefined) { v = width(c); ch.set(c, v) } n += v } return n }
   const sameMonth = (a: Date, b: Date) => a.getUTCMonth() === b.getUTCMonth() && a.getUTCFullYear() === b.getUTCFullYear()
@@ -210,6 +210,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
     /* its date in each button's name too, so two events of one name are told apart when read aloud (the read's R5) */
     const when = whenSaid(l.from, l.to)
     return (
+      // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the whole line is a pointer's shortcut to its own Edit button (the pencil), which is the keyboard's route; the line holds its two buttons, so it cannot itself be one
       <div
         key={key}
         className={'hol-line ev-line' + (l.past ? ' is-past' : '') + (fresh === key ? ' innew' : '')}

@@ -32,6 +32,7 @@ function whenColours(t: Threshold): string {
   return `Amber when the day's number drops below ${show(t.amber)} · red below ${show(t.red)}.`
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one counter's read-out — its words, its colour lines and an admin's two boxes — whose branches are the rule's kinds and who is reading; small, and split it would carry the same draft twice
 export function ManningSheet({ ruleId, onClose, onEdit }: {
   ruleId: string
   onClose: () => void

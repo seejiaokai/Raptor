@@ -54,7 +54,7 @@ import { PersonRow, type RowApi } from './MatrixRows'
 import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
 import { rowInWindow } from './rowinwindow'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
-import type { Input } from '../../engine/schema'
+import { warInputs, type WarInput } from '../absences'
 import './matrix.css'
 
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
@@ -140,7 +140,7 @@ function sameStuck(
  *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
 /** THE COURSE HOLDING A WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY]): its code and typed remarks for the bid window's top line */
 /* the Inputs page's live list, typed once at the Leave War's edge (the schedule's engine keeps it untyped) */
-const inputRows = (): readonly Input[] => INPUTS as Input[]
+const inputRows = (): readonly WarInput[] => warInputs()
 function heldCourse(v: DayView): { code: string; remarks: string } {
   const c = v.all[0]!
   const row = inputRows().find(r => String(r.iid) === c.id)

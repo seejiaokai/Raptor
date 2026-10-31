@@ -11,19 +11,13 @@
      the menu first, then the window; a press outside closes it (the popup rule); the keyboard goes back to the ⋯;
    · EntryBox — an entry's code drawn as its coloured box, as the grid draws it, in the Legend's own frame (D1327, his
      lesson 25): the day's list leads each entry with it;
-   · compactSpan — the drag window's dates in a shorter voice ("9–11 Nov", round 3's drawing). */
+   · compactSpan — the drag window's dates in a shorter voice ("9–11 Nov", round 3's drawing) — in bidhelpers.ts, with the
+     switch's stored read, so this file exports only components. */
 
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { boxText, kindOf } from '../engine'
 import { getState } from '../state/store'
-
-/** the key his choice is kept under — per person on the device (one admin's choice is never another's) */
-const approveKey = (viewer: string | null | undefined) => `lw:approve:${viewer || '-'}`   // '-': an admin with no row of his own on the war (D1223's URHO) keeps it for the device
-
-/** the admin's "Approve what I enter", as last left on this device (on where he never changed it — D1186) */
-export function readApprove(viewer = getState().viewer): boolean {
-  try { return localStorage.getItem(approveKey(viewer)) !== 'off' } catch { return true }
-}
+import { approveKey, readApprove } from './bidhelpers'
 
 /** [on, set]: the window's switch, started from what he last left and written back on each change (D1302) */
 export function useApproveMemory(): [boolean, (on: boolean) => void] {
@@ -121,17 +115,4 @@ export function EntryBox({ code, fill, place, auto = false, marks = '' }: {
       <span className={`c k-${kindOf(code)} s-${fill} ${place}${t.replace('*', '').length > 3 ? ' wide w4' : t.replace('*', '').length > 2 ? ' wide' : ''}${marks ? ` ${marks}` : ''}`}>{t}</span>
     </span>
   )
-}
-
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-/** "9–11 Nov" (one month), "30 Nov – 2 Dec" (one year), "30 Dec 26 – 2 Jan 27" (across a year's end, where only the year
- *  tells the span from its mirror); one day reads "9 Nov". The window's own title — the one-day window's "Tue 3 Nov"
- *  carries no year either. */
-export function compactSpan(from: string, to: string): string {
-  const d = (iso: string) => Number(iso.slice(8, 10))
-  const m = (iso: string) => MONTHS[Number(iso.slice(5, 7)) - 1]
-  if (from === to) return `${d(from)} ${m(from)}`
-  if (from.slice(0, 4) !== to.slice(0, 4)) return `${d(from)} ${m(from)} ${from.slice(2, 4)} – ${d(to)} ${m(to)} ${to.slice(2, 4)}`
-  if (from.slice(0, 7) === to.slice(0, 7)) return `${d(from)}–${d(to)} ${m(to)}`
-  return `${d(from)} ${m(from)} – ${d(to)} ${m(to)}`
 }

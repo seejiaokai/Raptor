@@ -16,13 +16,12 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { addGrade, deleteGrade, gradeDaysNow, gradeHolders, gradeNameProblem, liveGrades, moveGrade, renameGrade, setGradeDays } from '../state/store'
 import { FigBox } from './BalancesPage'
+import { deleteAsk } from './gradeswords'
 import { Sheet } from './Sheet'
 import { usePhone } from './phone'
 import { useVersion } from './useStore'
 
 const people = (n: number) => (n === 1 ? '1 person' : `${n} people`)
-/** what Delete asks first ("3 people hold Junior WSO: they become No grade") */
-export const deleteAsk = (n: number, name: string) => `${n === 1 ? '1 person holds' : `${n} people hold`} ${name}: ${n === 1 ? 'he becomes' : 'they become'} No grade`
 const daysProblem = (n: number) => (Number.isFinite(n) && n >= 0 && Number.isInteger(n * 2) ? null : 'Type the days added each 1 Jan, like 36')
 
 /** A GRADE'S NAME BOX: saved on Enter or on leaving it; Escape puts the old name back (the window's own Escape waits for it). */

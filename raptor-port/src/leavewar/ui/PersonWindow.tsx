@@ -32,7 +32,8 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperti
 import { FIGURES, memberToday, type Person } from '../engine'
 import type { BalKind } from '../engine/leaveyear'
 import { balanceProblem, balancesLocked, figureCtxOf, getState, leaveFiguresOf } from '../state/store'
-import { FigBox, figWords, saveTypedFigure } from './BalancesPage'
+import { FigBox } from './BalancesPage'
+import { figWords, saveTypedFigure } from './balancefigs'
 import { LeaveLine } from './LeaveLine'
 import { datesWords, inYear, pastYears, personLeave, type PwLine, type YearPick } from './personleave'
 import { Sheet } from './Sheet'
@@ -109,6 +110,7 @@ function dock(p: HTMLElement): void {
   p.dataset.docked = '1'
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one man's figures and his leave, drawn to its drawings for an admin, his own or another man's; the branches are who is reading — split, the three could drift from the drawings of record
 export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   person: Person
   /** the moment he last opened his own window before this visit (0 — never); null where nothing is new: another man's */

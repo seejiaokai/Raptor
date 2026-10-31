@@ -54,6 +54,7 @@ import { Sheet } from './Sheet'
 import { PALETTE, groupColorOf, isColourable } from './groupColor'
 import './bidpicker.css'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the settings window's groups, who-wins list, colours and event rows share the grid's one drag machine (Matrix hands it in) and one set of state; split, the drag's rows and their state would live apart
 export function SettingsSheet({
   onClose,
   onAddCounter,
@@ -102,8 +103,10 @@ export function SettingsSheet({
   // ([LW-SETTINGS-SMALL]). The page's own on-screen signal (a listener set, not the store — nothing re-renders the grid).
   useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) setArmOrder(false) }), [])
   /* …and when the line greys under it (the grid scrolled to months where the order is the default, an Undo): an armed
-     question never waits on a greyed line to fire on one tap when it lights again (the blind read's L2) */
-  useEffect(() => { if (!handOrder) setArmOrder(false) }, [handOrder])
+     question never waits on a greyed line to fire on one tap when it lights again (the blind read's L2). Taken back while
+     rendering (React's "adjust state when a prop changes"), not in an effect after paint, which drew "Really reset?" greyed
+     for one frame */
+  if (!handOrder && armOrder) setArmOrder(false)
   const chosen = groupsInOrder()
   const offered = offerableGroupList()
   const priority = groupPriorityIds()

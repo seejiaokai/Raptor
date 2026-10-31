@@ -58,7 +58,7 @@ export function LeaveButtons({ portion, onPick, figure, filled, lit = null, test
    first two places of the row under the leaves, Grant OIL the third (an admin's — below, D1349), the ⋯ the fourth. Each is filed
    straight as the input it is (`store.ts fileStraight`), so it wears the filled look and no figure — it stands at once
    and spends nothing. A member sees them on his own row too, open for bidding or not (D1318 "it can go anytime"). */
-export const DUTY_KINDS: readonly { code: string; title: string }[] = [
+const DUTY_KINDS: readonly { code: string; title: string }[] = [
   { code: 'CSE', title: 'Course' },
   { code: 'OD', title: 'Overseas duty' },
 ]

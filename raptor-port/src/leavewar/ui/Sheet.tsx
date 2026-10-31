@@ -541,6 +541,7 @@ export function Sheet({
       {/* NO scrim for a non-blocking window: with nothing mounted, useGridPan arms neither the mouse's interceptor
           nor the touch screen's tap shield (both hang off the scrim's own node), so every press reaches the grid. */}
       {modal && <div ref={scrimRef} className={`sheetscrim${over ? ' raised' : ''}`} data-testid="sheet-scrim" aria-hidden="true" onClick={onScrimClick} />}
+      {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop and focus rules; the Leave War's windows are layered and placed on purpose (a raised window over another, the non-blocking ones) */}
       <div ref={panelRef} className={`bidsheet${narrow ? ' narrow' : ''}${full ? ' full' : ''}${asPage ? ' fullpage' : ''}${modal ? '' : ' nonmodal'}${over ? ' raised' : ''}`} data-testid={testid} role="dialog" aria-label={label}>
         {children}
       </div>

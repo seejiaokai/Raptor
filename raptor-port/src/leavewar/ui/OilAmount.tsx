@@ -4,32 +4,7 @@
    what it gives — "Give HO", "Give FO", "Give FO · 2 days". No morning / afternoon row: which half a granted HO is does not
    matter (D1391); it is drawn in the morning unless the morning is held (store.ts defaultAwardHalf).
    Used by the one-day bid window and the drag window (D1394), so the two cannot drift. */
-/* a figure as the grid writes it: halves .5 (D1246); the half-day pick reads "HO · 0.5", never ½ (his D1397) */
-const halfFigure = (n: number) => String(n)   // never rounded: the button says exactly what is typed
-
-export type OilPick = '0.5' | '1' | ''
-
-/** a typed amount read as a number — "1½" and "1.5" alike; NaN where it is not a number */
-export function oilNumber(s: string): number {
-  const t = s.trim().replace(/\s+/g, '').replace(/½$/, '.5').replace(/^\.5$/, '0.5')
-  return t ? Number(t) : NaN
-}
-/** the amount the row stands for: the typed box when it holds anything, else the lit pick */
-export function oilAmountText(pick: OilPick, other: string): string {
-  return other.trim() ? other : pick
-}
-/** where a row opens for a stored amount: half a day and a day as their picks, any other amount in the box */
-export function oilStart(days: number | null | undefined): { pick: OilPick; other: string } {
-  if (days == null || days === 1) return { pick: '1', other: '' }
-  if (days === 0.5) return { pick: '0.5', other: '' }
-  return { pick: '', other: halfFigure(days) }
-}
-/** what the button says before it is pressed: under a day an HO, a day an FO, more than a day the FO and its days */
-export function oilGiveWords(n: number): string {
-  if (Number.isFinite(n) && n > 0 && n < 1) return 'Give HO'
-  if (Number.isFinite(n) && n > 1) return `Give FO · ${halfFigure(n)} days`
-  return 'Give FO'
-}
+import { oilAmountText, oilGiveWords, oilNumber, type OilPick } from './oilamountwords'
 
 export function OilAmount({ pick, other, onPick, onOther, onGive, testPrefix = 'oil', err }: {
   pick: OilPick
