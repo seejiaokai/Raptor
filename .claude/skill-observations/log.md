@@ -2968,3 +2968,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** before a tool's exit code becomes a gate, read (or test) what it does when its comparison cannot be made; gate on its machine-readable report's own "comparison made" field, and prove the gate red on a planted fault in the real CI copy (shallow, sparse) — not only on the full local checkout.
 
 **Principle:** A gate is only as good as its failure mode: find out what the tool does when it cannot do its job, and make that case red.
+
+### Observation 758: Parallel helpers that each type a shared record give it different shapes, which clash only at the merge
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** the Leave War's strict-checking and React Doctor clean-up, fanned out to four Opus helpers, each in its own worktree on a disjoint set of files.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief for parallel helpers working on one codebase
+
+**Issue:** Each helper was told to replace loose types with real ones in its own files. Two of them met the same untyped record (a leave input) from opposite sides: one introduced a wider "as the war reads it" shape at the shared edge, the other typed its windows with the narrower schema shape. Each helper's own type check was green; the clash surfaced only after both branches were merged — six type errors across five files, settled by hand by the host. A second, smaller clash came from two helpers each re-routing the same moved helper function. Also, the brief's suggested junction command (`cmd //c mklink //J`) was refused in two helpers' shells; they fell back to PowerShell `New-Item -ItemType Junction`.
+
+**Suggested improvement:** In the parallel-dispatch brief, when helpers will add types at boundaries they share, name the ONE canonical type for each shared record up front (or have one helper own the shared edge and finish first); and name which helper owns any helper function another may move. Give the PowerShell junction command as the default.
+
+**Principle:** Partitioning parallel work by file is not enough when the work introduces shared vocabulary (types, moved helpers): decide the shared vocabulary before the fan-out, or the merge becomes the integration step.
