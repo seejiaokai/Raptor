@@ -10,8 +10,10 @@ import { join, dirname } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { run, codeChange } from './code-check-stop.mjs';
-import { read } from '../../raptor-port/scripts/code-check.mjs';
+import { read, doctorArgs, runTool } from '../../raptor-port/scripts/code-check.mjs';
 
+const CLEAN = 'Code check: no new problem in the code changed in this session.';
+const COULD_NOT = "Code check: could not run this time. The pull request's code check still runs.";
 const HOOK = join(dirname(fileURLToPath(import.meta.url)), 'code-check-stop.mjs');
 const g = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); assert.equal(r.status, 0, `git ${a.join(' ')}: ${r.stderr}`); return r.stdout; };
 
@@ -64,7 +66,7 @@ test('a change under src runs once, reports, and is not run again until the code
   const root = project();
   try {
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 2\n');
-    assert.equal(await run({ cwd: root }), 'clean:0');
+    assert.equal(await run({ cwd: root }), CLEAN);
     assert.equal(runs(root), 1);
     const opts = JSON.parse(readFileSync(join(root, 'raptor-port', 'scripts', 'opts.json'), 'utf8'));
     assert.equal(opts.base, 'origin/main'); assert.equal(opts.includeUntracked, true);
@@ -76,7 +78,7 @@ test('a change under src runs once, reports, and is not run again until the code
     assert.equal(await run({ cwd: root }), null, 'a note beside it is not a code change');
     assert.equal(runs(root), 1);
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 3\n');
-    assert.equal(await run({ cwd: root }), 'clean:0');
+    assert.equal(await run({ cwd: root }), CLEAN);
     assert.equal(runs(root), 2);
   } finally { done(root); }
 });
@@ -85,24 +87,10 @@ test('a new, never-added file under src counts, and so does a change to its cont
   const root = project();
   try {
     writeFileSync(join(root, 'raptor-port', 'src', 'b.tsx'), 'export const b = 1\n');
-    assert.equal(await run({ cwd: root }), 'clean:0');
+    assert.equal(await run({ cwd: root }), CLEAN);
     writeFileSync(join(root, 'raptor-port', 'src', 'b.tsx'), 'export const b = 2\n');
-    assert.equal(await run({ cwd: root }), 'clean:0');
+    assert.equal(await run({ cwd: root }), CLEAN);
     assert.equal(runs(root), 2);
-  } finally { done(root); }
-});
-
-test('new findings are named, five at most, the rest counted', async () => {
-  const root = project();
-  try {
-    const findings = Array.from({ length: 7 }, (_, i) => ({ file: `src/f${i}.tsx`, line: i + 1, title: `t${i}` }));
-    answer(root, { status: 'new', newCount: 7, findings, changedFiles: 7, base: 'origin/main' });
-    writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 9\n');
-    const text = await run({ cwd: root });
-    assert.match(text, /^new:7\n/);
-    assert.match(text, /src\/f0\.tsx:1 — t0/); assert.match(text, /src\/f4\.tsx:5 — t4/);
-    assert.doesNotMatch(text, /f5\.tsx/);
-    assert.match(text, /… and 2 more: npm run lint:changed/);
   } finally { done(root); }
 });
 
@@ -111,7 +99,7 @@ test('a run that cannot compare is reported once, not at every turn', async () =
   try {
     answer(root, { status: 'error', reason: 'x', newCount: 0, findings: [], changedFiles: 0, base: 'origin/main' });
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 4\n');
-    assert.equal(await run({ cwd: root }), 'error:0');
+    assert.equal(await run({ cwd: root }), COULD_NOT);
     assert.equal(await run({ cwd: root }), null);
     assert.equal(runs(root), 1);
   } finally { done(root); }
@@ -144,7 +132,7 @@ test('as a program: always exit 0; a systemMessage only when it ran', () => {
     assert.equal(r.status, 0); assert.equal(r.stdout, '');
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 6\n');
     r = go({ cwd: root });
-    assert.equal(r.status, 0); assert.deepEqual(JSON.parse(r.stdout), { systemMessage: 'clean:0' });
+    assert.equal(r.status, 0); assert.deepEqual(JSON.parse(r.stdout), { systemMessage: CLEAN });
     r = spawnSync(process.execPath, [HOOK], { input: 'not json', encoding: 'utf8' });
     assert.equal(r.status, 0); assert.equal(r.stdout, '');
   } finally { done(root); }
@@ -170,7 +158,67 @@ test('the report: a comparison not made is never a pass', () => {
   assert.equal(read(null, 'origin/main').status, 'error');
 });
 
+test('the run is told its own time limit, inside the kill timer (the read\'s finding 1: a killed shell left it running)', () => {
+  const a = doctorArgs({ base: 'origin/main', timeoutMs: 150000, out: 'r.json' });
+  const at = a.indexOf('--max-duration');
+  assert.ok(at > 0, 'React Doctor is given --max-duration');
+  const secs = Number(a[at + 1]);
+  assert.ok(secs >= 10 && secs <= 150 - 15, `it stops itself at least 15 s before the kill (${secs})`);
+  assert.equal(Number(doctorArgs({ base: 'origin/main', timeoutMs: 5000, out: 'r.json' })[at + 1]), 10, 'never under 10 s');
+});
+
+test('an error from React Doctor is told in its own words, not as raw data (the read\'s finding 4)', () => {
+  const r = read({ ...good, error: { message: 'Diff base branch "x" does not exist', name: 'E', sentryEventId: null } }, 'x');
+  assert.equal(r.status, 'error'); assert.match(r.reason, /Diff base branch "x" does not exist/); assert.doesNotMatch(r.reason, /sentryEventId/);
+});
+
+test('a change to React Doctor\'s settings or the project file counts as a new state of the code (the read\'s finding 2)', async () => {
+  const root = project();
+  try {
+    writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 7\n');
+    await run({ cwd: root });
+    for (const [f, body] of [['doctor.config.json', '{"rules":{}}\n'], ['package.json', '{"name":"x"}\n'], ['tsconfig.app.json', '{}\n']]) {
+      const before = runs(root);
+      writeFileSync(join(root, 'raptor-port', f), body);
+      assert.notEqual(await run({ cwd: root }), null, `${f} changed: checked again`);
+      assert.equal(runs(root), before + 1);
+    }
+  } finally { done(root); }
+});
+
+test('the line in the chat is plain words for him — no file names or line numbers (the read\'s finding 3)', async () => {
+  const root = project();
+  try {
+    answer(root, { status: 'new', newCount: 2, findings: [{ file: 'src/x.tsx', line: 3, title: 't' }, { file: 'src/y.tsx', line: 4, title: 'u' }], changedFiles: 2, base: 'origin/main' });
+    writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 8\n');
+    const text = await run({ cwd: root });
+    assert.match(text, /2 new problems/); assert.doesNotMatch(text, /src\/|\.tsx|:\d/);
+  } finally { done(root); }
+});
+
 test('the report: a finding listed but not counted is still counted', () => {
   const r = read({ ...good, diagnostics: [{ filePath: 'a', line: 1, rule: 'r', title: 't' }] }, 'origin/main');
   assert.equal(r.status, 'new'); assert.equal(r.newCount, 1);
+});
+
+test('out of time, the whole tree is stopped — the program and what it started (the read\'s finding 1)', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'cc-tree-'));
+  try {
+    const pids = join(dir, 'pids.txt');
+    const prog = join(dir, 'parent.cjs');
+    writeFileSync(prog, `const { spawn } = require('child_process'); const fs = require('fs');
+const c = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], { stdio: 'ignore' });
+fs.writeFileSync(${JSON.stringify(pids)}, process.pid + ' ' + c.pid); setInterval(() => {}, 1000);`);
+    const started = Date.now();
+    const r = await runTool('node', [prog], { cwd: dir, timeoutMs: 2500 });
+    assert.equal(r.timedOut, true);
+    assert.ok(Date.now() - started < 15000, 'it does not wait on a survivor');
+    const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
+    await new Promise((d) => setTimeout(d, 500));
+    for (const pid of readFileSync(pids, 'utf8').trim().split(' ').map(Number)) assert.equal(alive(pid), false, `process ${pid} still running`);
+  } finally {
+    // a failed run must not leave its survivors behind either
+    try { for (const pid of readFileSync(join(dir, 'pids.txt'), 'utf8').trim().split(' ').map(Number)) try { process.kill(pid); } catch { /* gone */ } } catch { /* never started */ }
+    done(dir);
+  }
 });

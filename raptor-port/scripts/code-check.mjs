@@ -18,7 +18,7 @@
 //
 // Exit codes: 0 no new finding · 1 new findings · 2 could not compare (the tool failed, or the comparison was not made).
 // Usage: node scripts/code-check.mjs [--base <ref>] [--include-untracked]   (from raptor-port/; base defaults to origin/main)
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { appendFileSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join, resolve } from 'node:path'
@@ -34,21 +34,17 @@ const quoteWin = (a) => (/[\s"&|<>^()]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` 
  * Run the check and read its report. Never throws: every failure comes back as `{ status: 'error', reason }`.
  * Returns `{ status: 'clean' | 'new' | 'error', newCount, matchedCount, changedFiles, findings, reason, base }`.
  */
-export function runCheck({ base = 'origin/main', includeUntracked = false, timeoutMs = 10 * 60 * 1000, cwd = PORT } = {}) {
+export async function runCheck({ base = 'origin/main', includeUntracked = false, timeoutMs = 10 * 60 * 1000, cwd = PORT } = {}) {
   let dir = null
   try {
     dir = mkdtempSync(join(tmpdir(), 'code-check-'))
     const out = join(dir, 'report.json')
-    const args = ['-y', `react-doctor@${DOCTOR_VERSION}`, '--no-telemetry', '--no-supply-chain', '--scope', 'changed',
-      '--base', base, '--blocking', 'warning', '--json', '--json-out', out]
-    if (includeUntracked) args.push('--include-untracked')
-    const win = process.platform === 'win32'
-    const run = spawnSync(win ? ['npx', ...args].map(quoteWin).join(' ') : 'npx', win ? [] : args,
-      { cwd, shell: win, encoding: 'utf8', timeout: timeoutMs, maxBuffer: 64 * 1024 * 1024, windowsHide: true })
-    if (run.error) return fail(base, run.error.code === 'ETIMEDOUT' ? `React Doctor took longer than ${Math.round(timeoutMs / 1000)} s` : `React Doctor did not start: ${run.error.message}`)
+    const run = await runTool('npx', doctorArgs({ base, includeUntracked, timeoutMs, out }), { cwd, timeoutMs })
+    if (run.error) return fail(base, `React Doctor did not start: ${run.error.message}`)
+    if (run.timedOut) return fail(base, `React Doctor took longer than ${Math.round(timeoutMs / 1000)} s`)
     let report
     try { report = JSON.parse(readFileSync(out, 'utf8')) } catch {
-      const tail = `${run.stdout || ''}${run.stderr || ''}`.trim().split('\n').slice(-8).join('\n')
+      const tail = run.out.trim().split('\n').slice(-8).join('\n')
       return fail(base, `React Doctor wrote no report (exit ${run.status})${tail ? `:\n${tail}` : ''}`)
     }
     return read(report, base)
@@ -59,12 +55,65 @@ export function runCheck({ base = 'origin/main', includeUntracked = false, timeo
   }
 }
 
+/**
+ * Start a program and wait for it, keeping the last of its output. Past `timeoutMs` the WHOLE tree it started is stopped —
+ * not only the first process: on Windows the run goes through a shell, and a timer that kills only the shell leaves npx,
+ * React Doctor and its linters running on underneath it (the fresh read's finding 1, 31 Oct 26 — proved there). So:
+ * `taskkill /T` on Windows; on Linux and macOS the run is its own process group, and the group is stopped.
+ */
+export function runTool(cmd, args, { cwd, timeoutMs }) {
+  return new Promise((done) => {
+    const win = process.platform === 'win32'
+    let out = ''
+    let timedOut = false
+    let settled = false
+    // once settled, the pipes are let go: a survivor still holding one must never keep this process (or the hook) waiting
+    const finish = (r) => {
+      if (settled) return
+      settled = true; clearTimeout(timer); clearTimeout(grace)
+      try { child.stdout.destroy(); child.stderr.destroy(); child.unref() } catch { /* already closed */ }
+      done({ out, timedOut, ...r })
+    }
+    let grace = null
+    const child = spawn(win ? [cmd, ...args].map(quoteWin).join(' ') : cmd, win ? [] : args,
+      { cwd, shell: win, detached: !win, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] })
+    const keep = (d) => { out = (out + d).slice(-20000) }
+    child.stdout.on('data', keep)
+    child.stderr.on('data', keep)
+    const timer = setTimeout(() => {
+      timedOut = true
+      try {
+        if (win) spawnSync('taskkill', ['/PID', String(child.pid), '/T', '/F'], { windowsHide: true, timeout: 15000 })
+        else process.kill(-child.pid, 'SIGKILL')
+      } catch { /* already gone */ }
+      grace = setTimeout(() => finish({ status: null }), 5000) // a pipe some survivor still holds never keeps us waiting
+    }, timeoutMs)
+    child.on('error', (error) => finish({ error }))
+    child.on('close', (status) => finish({ status }))
+  })
+}
+
+/**
+ * React Doctor's command line. It is also given its own time limit, 15 s inside the kill timer, so that a slow run usually
+ * ends by itself, tidily, and marks its report as not compared (which `read` refuses) before anything has to be stopped.
+ */
+export function doctorArgs({ base, includeUntracked = false, timeoutMs, out }) {
+  const args = ['-y', `react-doctor@${DOCTOR_VERSION}`, '--no-telemetry', '--no-supply-chain', '--scope', 'changed',
+    '--base', base, '--blocking', 'warning', '--max-duration', String(Math.max(10, Math.floor(timeoutMs / 1000) - 15)),
+    '--json', '--json-out', out]
+  if (includeUntracked) args.push('--include-untracked')
+  return args
+}
+
 const fail = (base, reason) => ({ status: 'error', reason, base, newCount: 0, matchedCount: 0, changedFiles: 0, findings: [] })
 
 /** Decide from the report alone. Exported for the self-test of the hook. */
 export function read(report, base) {
   if (!report || typeof report !== 'object') return fail(base, 'the report is empty')
-  if (report.error) return fail(base, `React Doctor reported an error: ${typeof report.error === 'string' ? report.error : JSON.stringify(report.error)}`)
+  if (report.error) {
+    const e = report.error
+    return fail(base, `React Doctor reported an error: ${typeof e === 'string' ? e : e.message || JSON.stringify(e)}`)
+  }
   if (report.baselineDegraded) return fail(base, `React Doctor could not read ${base}'s side, so it compared nothing (its own pass/fail is switched off then)`)
   if (report.mode !== 'baseline' || !report.baseline) return fail(base, `React Doctor did not compare against ${base} (mode "${report.mode}")`)
   const skipped = (report.projects || []).flatMap((p) => p.skippedChecks || [])
@@ -89,19 +138,21 @@ export function sentence(r) {
   return `Code check: ${r.newCount} new finding${r.newCount === 1 ? '' : 's'} in ${files} read against ${r.base} — fix each, or keep it with its reason in a disable comment on the line above (raptor-port/CLAUDE.md §Coding conventions).`
 }
 
-// GitHub's annotation syntax: these three characters must be escaped in a message.
+// GitHub's annotation syntax: these three characters must be escaped in a message, and `:` and `,` too in a property
+// (`file=`, `title=`) — the fresh read's finding 4.
 const esc = (s) => String(s).replace(/%/g, '%25').replace(/\r/g, '%0D').replace(/\n/g, '%0A')
+const escProp = (s) => esc(s).replace(/:/g, '%3A').replace(/,/g, '%2C')
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2)
   const at = argv.indexOf('--base')
   const base = at >= 0 && argv[at + 1] ? argv[at + 1] : 'origin/main'
-  const r = runCheck({ base, includeUntracked: argv.includes('--include-untracked') })
+  const r = await runCheck({ base, includeUntracked: argv.includes('--include-untracked') })
   console.log(sentence(r))
   for (const f of r.findings) console.log(`  ${f.file}:${f.line}  ${f.title}  (${f.rule}, ${f.severity})`)
   if (process.env.GITHUB_ACTIONS === 'true') {
     // a mark on the pull request's changed line, and a short note on the run's summary page
-    for (const f of r.findings) console.log(`::error file=raptor-port/${esc(f.file)},line=${Number(f.line) || 1},title=${esc(f.rule)}::${esc(f.title)}`)
+    for (const f of r.findings) console.log(`::error file=raptor-port/${escProp(f.file)},line=${Number(f.line) || 1},title=${escProp(f.rule)}::${esc(f.title)}`)
     if (r.status === 'error') console.log(`::error title=code check::${esc(r.reason)}`)
     if (process.env.GITHUB_STEP_SUMMARY) {
       const rows = r.findings.map((f) => `| \`raptor-port/${f.file}:${f.line}\` | ${f.title} | \`${f.rule}\` |`)

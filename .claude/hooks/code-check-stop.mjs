@@ -4,7 +4,8 @@
 //
 // At the end of a turn, when this branch changes the app's code (anything under raptor-port/src, against main), it runs
 // React Doctor's "no new finding" check — raptor-port/scripts/code-check.mjs, the same script as `npm run lint:changed` and
-// the pull request's "code check" — and shows the count in the chat. It BLOCKS NOTHING (his D1539, reading 2): it always
+// the pull request's "code check" — and shows the count in the chat, in plain words (the line is his to read: the app shows
+// a Stop hook's message to him and never hands it to the agent). It BLOCKS NOTHING (his D1539, reading 2): it always
 // ends 0 and never holds the turn open for a fix; a red count is stopped where it matters, by the pull request's check.
 //
 // Kept cheap, so it costs nothing on most turns:
@@ -28,10 +29,12 @@ import { spawnSync } from 'node:child_process';
 
 export const BASE = 'origin/main';
 export const RUN_LIMIT_MS = 150 * 1000;
-// the code React Doctor reads; a change to anything else (a note, a picture) neither starts a run nor changes the fingerprint
-const CODE = ['*.ts', '*.tsx', '*.js', '*.jsx', '*.mjs', '*.cjs', '*.html'].map((g) => `raptor-port/${g}`);
+// what React Doctor reads — the code, and its settings and the project's (the fresh read's finding 2: a settings change
+// after a red count must be checked again); a change to anything else (a note, a picture) neither starts a run nor changes
+// the fingerprint
+const CODE = ['*.ts', '*.tsx', '*.js', '*.jsx', '*.mjs', '*.cjs', '*.html', 'doctor.config.json', 'package.json', 'tsconfig*.json']
+  .map((g) => `raptor-port/${g}`);
 const STATE = 'claude-code-check.json';
-const SHOWN = 5; // findings listed by name in the chat; the rest are counted
 
 /** Git Bash hands a folder as `/c/Users/…`; Node on Windows needs `C:/Users/…`. */
 const nativePath = (p) => (process.platform === 'win32' ? String(p).replace(/^\/([a-zA-Z])(\/|$)/, '$1:/') : String(p));
@@ -72,12 +75,16 @@ export function codeChange(cwd) {
 const readState = (gitDir) => { try { return JSON.parse(readFileSync(join(gitDir, STATE), 'utf8')); } catch { return {}; } };
 const writeState = (gitDir, s) => { try { writeFileSync(join(gitDir, STATE), JSON.stringify(s)); } catch { /* next turn just runs again */ } };
 
-/** What to show in the chat for one run's result. */
-export function message(r, sentence) {
-  const lines = [sentence(r)];
-  for (const f of (r.findings || []).slice(0, SHOWN)) lines.push(`  ${f.file}:${f.line} — ${f.title}`);
-  if ((r.findings || []).length > SHOWN) lines.push(`  … and ${r.findings.length - SHOWN} more: npm run lint:changed`);
-  return lines.join('\n');
+/** What to show in the chat for one run's result. The line is shown to HIM, under the turn — a Stop hook's message never
+ *  reaches the agent — so it is plain words, with no file name or line number (the fresh read's finding 3; the rules on
+ *  plain language). The details are one `npm run lint:changed` away, and on the pull request's check. */
+export function message(r) {
+  if (r.status === 'clean') return 'Code check: no new problem in the code changed in this session.';
+  if (r.status === 'new') {
+    const n = r.newCount === 1 ? '1 new problem' : `${r.newCount} new problems`;
+    return `Code check: ${n} in the code changed in this session. The pull request's code check holds the change until ${r.newCount === 1 ? 'it is' : 'each is'} fixed.`;
+  }
+  return "Code check: could not run this time. The pull request's code check still runs.";
 }
 
 /** The whole hook, given its input. Returns the text to show, or null to stay silent. Never throws. */
@@ -89,9 +96,9 @@ export async function run(input, { limitMs = RUN_LIMIT_MS } = {}) {
     const state = readState(change.gitDir);
     if (state.fingerprint === change.fingerprint) return null; // this state of the code was checked and reported already
     const mod = await import(pathToFileURL(join(change.root, 'raptor-port', 'scripts', 'code-check.mjs')).href);
-    const r = mod.runCheck({ base: BASE, includeUntracked: true, timeoutMs: limitMs, cwd: join(change.root, 'raptor-port') });
-    writeState(change.gitDir, { fingerprint: change.fingerprint, at: Date.now(), status: r.status, newCount: r.newCount });
-    return message(r, mod.sentence);
+    const r = await mod.runCheck({ base: BASE, includeUntracked: true, timeoutMs: limitMs, cwd: join(change.root, 'raptor-port') });
+    writeState(change.gitDir, { fingerprint: change.fingerprint, at: Date.now(), status: r.status, newCount: r.newCount, reason: r.reason || null });
+    return message(r);
   } catch {
     return null;
   }
