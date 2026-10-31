@@ -995,7 +995,10 @@ function publishLeaveClashes(): void {
           const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw)
             : wayOut === 'war' ? holders.find(c => c.kind === 'absence' && !!c.lw) : undefined
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), inputShown: clashCodeShown(a), bidShown: clashCodeShown(b), ...(duty ? { kind: 'duty' as const } : {}),
-            wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}) })
+            wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}),
+            /* the bid's own record, whichever side of the pair it stands (the fixes' narrow read, its 1) — what the note's
+               "Decide it in Approvals ›" rings (D1542): `bidCode` is the pair's SECOND side, the bid only against work */
+            ...(() => { const req = [a, b].find(c => c.kind === 'request'); return req ? { reqId: String(req.id) } : {} })() })
         }
       }
     }
@@ -1071,6 +1074,8 @@ export interface SyncClash {
   /** The Input in the way, whose own window the tap opens: for `wayOut: 'inputs'`, and for `wayOut: 'war'` (leave the war
    *  approved) — opened only for a man with no row on the grid (his D1542); a man with a row has his day opened. */
   iid?: string
+  /** A bid in the pair: its own record id (a request's contribution id is its record's) — the line Approvals rings (D1542). */
+  reqId?: string
 }
 
 /* Re-derived on every pass, never persisted — a clash list is a view of two

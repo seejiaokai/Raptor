@@ -7635,7 +7635,11 @@ async function postOutThenPlace(page: Page, outcome: 'delete' | 'overseas', poDa
   await page.locator(`[data-testid="month-${MONTH_BTN[+poDate.slice(5, 7) - 1]}"]`).click()
   await page.locator(`[data-testid="cell-slipway-${poDate}"]`).click()
   await pressMore(page, 'bid-postout')
-  await page.locator(`[data-testid="po-${outcome}"]`).click()
+  /* Overseas Sqn is chosen to start with, and a tap on a chosen chip un-chooses it (the fixes' narrow read, its 2): tapped only
+     when not chosen, and checked chosen before the confirm */
+  const chip = page.locator(`[data-testid="po-${outcome}"]`)
+  if ((await chip.getAttribute('aria-pressed')) !== 'true') await chip.click()
+  await expect(chip).toHaveAttribute('aria-pressed', 'true')
   await page.locator('[data-testid="po-confirm"]').click()
   if (outcome === 'delete') await page.locator('[data-testid="po-confirm"]').click()   // a Delete asks twice (D287)
   await expect(page.locator(`[data-testid="cell-slipway-${poDate}"]`)).toHaveClass(/gone/)
@@ -7667,14 +7671,17 @@ test('one-day window, "Approve what I enter" on a day after his posting-out date
 test('one-day window, "Approve what I enter" after an Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)', async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  await postOutThenPlace(page, 'overseas', '2026-06-15')
+  const po = isoIn(20)
+  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await postOutThenPlace(page, 'overseas', po)                  // dated ahead, as the Delete one: still to run
+  const day = isoIn(21)
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
   await expect(tick).toBeVisible()
   if ((await tick.getAttribute('aria-checked')) !== 'true') await tick.click()
   await page.getByTestId('bid-LL').click()
   if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
-  await expect(page.locator('[data-testid="cell-slipway-2026-06-16"] .c.s-a'), 'his LL approved on the day after the posting').toBeVisible()
+  await expect(page.locator(`[data-testid="cell-slipway-${day}"] .c.s-a`), 'his LL approved on the day after the posting').toBeVisible()
   await expect(page.getByText(/kept pending/), 'nothing kept pending').toHaveCount(0)
 })
 

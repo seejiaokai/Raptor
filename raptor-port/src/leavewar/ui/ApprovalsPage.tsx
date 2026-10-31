@@ -314,7 +314,9 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     const a = takeApprRing()!
     /* his lines holding that day — the one of the clash's own bid first, where it names one (two bids of his on one day) */
     const onDay = rowsRef.current.rows.filter(x => x.msg?.kind !== 'stale' && x.line.personId === a.personId && x.line.parts.some(p => p.date === a.date))
-    const r = onDay.find(x => a.code != null && x.line.parts.some(p => p.date === a.date && p.code === a.code)) ?? onDay[0]
+    /* …by the bid's own record first (the fixes' narrow read, its 1: the code names the bid only against work), then its code */
+    const r = onDay.find(x => a.reqId != null && x.line.parts.some(p => p.date === a.date && p.recId === a.reqId))
+      ?? onDay.find(x => a.code != null && x.line.parts.some(p => p.date === a.date && p.code === a.code)) ?? onDay[0]
     if (!r) return
     if (!inFilter(r.line, filter, seen, mePid)) {
       /* every line shown, as a press on All does (`setFilter`) */

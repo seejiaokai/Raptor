@@ -427,7 +427,7 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     const seq = getState().focusSeq
     fireEvent.click(getByTestId('clash-go-0'))
     expect(apprMode(), 'the Approvals page is up').toBe('page')
-    expect(takeApprRing(), 'his request on that day is the one to ring').toEqual({ personId: 'plasma', date: SAT, code: 'LL' })
+    expect(takeApprRing(), 'his request on that day is the one to ring').toEqual({ personId: 'plasma', date: SAT, code: 'LL', reqId: expect.any(String) })
     expect(getState().focusSeq, 'no day opened on a row that is not there').toBe(seq)
     expect(CURPAGE).toBe('leavewar')
   })
@@ -458,6 +458,30 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     expect(flat(ringed[0]!.querySelector('[data-testid="appr-box"]'))).toBe('LL')
   })
 
+  /* THE FIXES' NARROW READ, ITS 1 (31 Oct 26): the clash's bid code is the pair's second side — the bid only where work is
+     the first side; for a bid against a medical or another leave it is THAT code. So the clash carries the bid's own record
+     (`reqId`), and the ring is asked by it, end to end from the strip: each of his two bids' clashes rings its own line */
+  it('from the strip, each of his two bids\' clashes rings that bid\'s own line, by its record', () => {
+    setCell('plasma', SAT, 'OL*')
+    setCell('plasma', SAT, '*LL')
+    publishSat()
+    noRow()
+    const mine = getClashes().filter(c => c.person === 'plasma' && c.date === SAT)
+    expect(mine.map(c => c.reqId).every(Boolean), 'each clash names its bid\'s own record').toBe(true)
+    for (const want of ['LL', 'OL']) {
+      cleanup(); setApprMode('off'); takeApprRing()
+      const i = getClashes().findIndex(c => c.person === 'plasma' && c.date === SAT && c.bidShown?.startsWith(want))
+      expect(i, `a clash for his ${want}`).toBeGreaterThanOrEqual(0)
+      const strip = render(<StageBar />)
+      fireEvent.click(strip.getByTestId(`clash-go-${i}`))
+      strip.unmount()
+      const page = render(<ApprovalsPage shown={true} />)
+      const ringed = page.getAllByTestId('appr-line-plasma').filter(l => l.className.includes('lw-ring'))
+      expect(ringed, `one line ringed for his ${want}`).toHaveLength(1)
+      expect(flat(ringed[0]!.querySelector('[data-testid="appr-box"]'))).toBe(want)
+    }
+  })
+
   it('leave the war approved: "Change the leave on Inputs ›" — its own window there', () => {
     warLeave(); noRow()
     const leave = INPUTS.find((r: any) => holds(r, 'plasma') && r.lw && r.date === 'Jul 18')!
@@ -476,7 +500,7 @@ describe('a clash for a man with no row goes where it can be dealt with (D1542)'
     expect(flat(container.querySelector('[data-testid="clash-row-0"] .clash-do'))).toBe('Decide it in Approvals ›')
     fireEvent.click(getByTestId('clash-row-0'))
     expect(apprMode()).toBe('page')
-    expect(takeApprRing()).toEqual({ personId: 'plasma', date: SAT, code: 'LL' })
+    expect(takeApprRing()).toEqual({ personId: 'plasma', date: SAT, code: 'LL', reqId: expect.any(String) })
   })
 
   it('a man WITH a row keeps today\'s links', () => {

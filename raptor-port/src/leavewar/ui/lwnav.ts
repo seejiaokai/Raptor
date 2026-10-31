@@ -70,7 +70,7 @@ export function takeRingAsk(): { personId: string; date: string } | null { const
    the line holding that day and scrolls it into view (ApprovalsPage.tsx). View state only — not saved, not undone. */
 /* `code`: the bid's own code, as the clash names it — two bids of his on one day are two lines, and the clash's is the one
    rung (the fresh read's F2, 31 Oct 26) */
-export interface ApprRingAsk { personId: string; date: string; code?: string }
+export interface ApprRingAsk { personId: string; date: string; code?: string; reqId?: string }
 let apprRing: ApprRingAsk | null = null
 export function askApprRing(a: ApprRingAsk) { apprRing = a; ping() }
 /** whether a ring is waiting — read without taking it, so a render React throws away takes nothing */
