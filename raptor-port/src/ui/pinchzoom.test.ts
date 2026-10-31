@@ -251,6 +251,99 @@ describe('pinch to zoom', () => {
     expect([band.style.transform, band.style.transformOrigin, band.style.clipPath, corner.style.transform]).toEqual(['', '', '', ''])
     t.off(); band.remove(); corner.remove()
   })
+  /* [LW-PINCH-IN-CORNER] (the pinch walk, 30 Oct 26): part-way down the Leave War, a pinch in grew the date row and its
+     corner down while the names' frozen copy was clipped at the date row's OLD foot, so its rows were drawn over the
+     corner's lower part until the lift. The floor given as a row (top 0, foot 40) follows that row's foot as it is
+     drawn: held at its top on a pinch in, carried down with the picture on a pinch out, and grown by the stretch. */
+  it('a floor that is a row’s foot follows the row as it stretches: held at its top and grown on a pinch in, carried down on a pinch out ([LW-PINCH-IN-CORNER])', () => {
+    const band = document.createElement('div'); document.body.appendChild(band)
+    const t = setup({ alsoY: () => [band, null], floor: () => ({ top: 0, foot: 40 }) })
+    /* a pinch IN to 1.5, slid 20 down: the picture would carry the row's top to −30, so it is held at 0, and its foot is
+       0 + 1.5 × 40 = 60 — the band's own line 100 + ((60 − 20) − 100) / 1.5 is drawn there */
+    pinchSliding(t.surface)
+    expect(band.style.clipPath).toBe(`inset(${100 + ((60 - 20) - 100) / 1.5}px 0px 0px 0px)`)
+    fire(t.surface, 'touchend', [])
+    expect(band.style.clipPath).toBe('')
+    /* a pinch OUT to half, slid 20 down: the row's top is carried to 100 + 0.5 × (0 − 100) + 20 = 70 and its foot to
+       70 + 0.5 × 40 = 90 — the band's line 100 + ((90 − 20) − 100) / 0.5 */
+    fire(t.surface, 'touchstart', [[100, 100]])
+    fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+    fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+    expect(band.style.clipPath).toBe(`inset(${100 + ((90 - 20) - 100) / 0.5}px 0px 0px 0px)`)
+    fire(t.surface, 'touchend', [])
+    t.off(); band.remove()
+  })
+  /* the walk of 31 Oct 26 (L2, L7): part-way down a pinch OUT scrolls the page with the pinch (D1288), which carries the
+     names copy's own box down by that scroll as well as its stretch; the clip was worked back through the stretch only,
+     so it stood that scroll too low and the names under the date row were not drawn until the lift. In jsdom every box
+     stands at 0; the page is 300 down, the fingers about (100, 100) go half as far apart and 20 lower: the picture's left
+     edge is held (`edges`), the page scrolls 70 with it, and the date row (top 0, foot 40) is carried to 70, its foot to
+     90. The band's own line y is drawn at (0 + 70) + 100 + 0.5 × (y − 100) + (20 − 70): at 90 that is y = 40. */
+  it('a floor that is a row’s foot is cut where the row is drawn when the page scrolls with a pinch out (the walk, L2 and L7, 31 Oct 26)', () => {
+    let y = 300
+    const desc = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    const to = window.scrollTo
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => y })
+    window.scrollTo = ((_x: number, yy: number) => { y = yy }) as typeof window.scrollTo
+    try {
+      const band = document.createElement('div'); document.body.appendChild(band)
+      const t = setup({ edges: true, scrollPage: true, alsoY: () => [band, null], floor: () => ({ top: 0, foot: 40 }) })
+      fire(t.surface, 'touchstart', [[100, 100]])
+      fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+      fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+      expect(y, 'the page scrolled 70 with the pinch').toBe(230)
+      expect(band.style.clipPath).toBe('inset(40px 0px 0px 0px)')
+      fire(t.surface, 'touchend', [])
+      t.off(); band.remove()
+    } finally {
+      if (desc) Object.defineProperty(window, 'scrollY', desc); else delete (window as any).scrollY
+      window.scrollTo = to
+    }
+  })
+  /* THE FLOOR ROW UNDER A HELD BOX (the code read of 31 Oct 26, finding 2): the row's top goes to the lower of the picture's
+     place and its own top carried by the page's scroll — the second wins only where a held box above it (the Leave War's
+     month buttons) keeps its height, and in the two cases above both are the same, so dropping the scroll from it passed
+     them. Here the page is 300 down, a box 40 tall is held above the fingers, and the fingers about (100, 100) go half as
+     far apart and 20 lower: the page scrolls 70 − 40 × 0.5 = 50 with the pinch. */
+  const heldCase = (row: { top: number; foot: number }) => {
+    let y = 300
+    const desc = Object.getOwnPropertyDescriptor(window, 'scrollY')
+    const to = window.scrollTo
+    Object.defineProperty(window, 'scrollY', { configurable: true, get: () => y })
+    window.scrollTo = ((_x: number, yy: number) => { y = yy }) as typeof window.scrollTo
+    try {
+      const band = document.createElement('div'); document.body.appendChild(band)
+      const held = document.createElement('div')
+      held.getBoundingClientRect = () => ({ left: 0, top: 0, right: 0, bottom: 40, width: 0, height: 40, x: 0, y: 0, toJSON: () => ({}) }) as DOMRect
+      const t = setup({ edges: true, scrollPage: true, keep: () => [held], alsoY: () => [band, null], floor: () => row })
+      t.target.appendChild(held)
+      fire(t.surface, 'touchstart', [[100, 100]])
+      fire(t.surface, 'touchstart', [[50, 100], [150, 100]])
+      fire(t.surface, 'touchmove', [[75, 120], [125, 120]])
+      const out = { scrolled: 300 - y, clip: band.style.clipPath }
+      fire(t.surface, 'touchend', [])
+      t.off(); band.remove()
+      return out
+    } finally {
+      if (desc) Object.defineProperty(window, 'scrollY', desc); else delete (window as any).scrollY
+      window.scrollTo = to
+    }
+  }
+  it('a floor row right under a held box is cut at its top carried by the page’s scroll plus its stretched height — the reader’s case (the code read, finding 2)', () => {
+    /* the row {top 40, foot 80}: cut at 40 + S + k·40 = 40 + 50 + 20 = 110 on the screen, the band's own line
+       100 + ((110 − 20) − 100) / 0.5 = 80 */
+    const r = heldCase({ top: 40, foot: 80 })
+    expect(r.scrolled, 'the page scrolled with the pinch').toBe(50)
+    expect(r.clip).toBe('inset(80px 0px 0px 0px)')
+  })
+  it('…and with room between the held box and the row, the scroll is what places the row — dropped, the cut stands too high (the code read, finding 2)', () => {
+    /* the row {top 60, foot 100}: the picture would put its top at 100 + 0.5 × (60 − 100) + 20 = 100, its own top carried by
+       the scroll is 60 + 50 = 110, the lower — the cut at 110 + 0.5 × 40 = 130, the band's line 100 + ((130 − 20) − 100) / 0.5
+       = 120; without the scroll it would stand at 120 on the screen, the line at 100 */
+    const r = heldCase({ top: 60, foot: 100 })
+    expect(r.scrolled).toBe(50)
+    expect(r.clip).toBe('inset(120px 0px 0px 0px)')
+  })
   it('the floor is read once, as the pinch begins — read again from a stretched grid it would creep (the walk, 23 Oct 26)', () => {
     let calls = 0
     const t = setup({ min: () => (++calls === 1 ? 0.5 : 0.1) })   // what a floor measured off the stretched picture did

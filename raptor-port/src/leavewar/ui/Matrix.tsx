@@ -1311,11 +1311,17 @@ export function Matrix() {
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
         outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
         outer.classList.add('lw-pinching')
+        pinchingRef.current = true
       },
+      /* (called with the stretch already taken off, before the zoom is written: the frozen row is measured at rest; a new
+         zoom measures it again through the mirror effect's own `zoom`) */
       onEnd: () => {
         const a = anim(); if (a) a.style.animationPlayState = ''
-        outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
+        const fixedRow = outer.querySelector<HTMLElement>('.mxfixed')
+        if (fixedRow) { fixedRow.classList.remove('lw-pinching'); fixedRow.style.visibility = '' }
         outer.classList.remove('lw-pinching')
+        pinchingRef.current = false
+        repinRef.current()
       },
       /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
          the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
@@ -1360,7 +1366,14 @@ export function Matrix() {
       alsoIn: () => (outer.classList.contains('lw-sda') ? [anim()] : []),
       alsoTL: () => [...outer.querySelectorAll<HTMLElement>(':scope > .mxfixed > .mxfixed-frozen')],
       alsoY: () => [bandRef.current],
-      floor: () => wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect().bottom ?? -Infinity,
+      /* the names copy is never drawn above the date row's foot — the foot as the date row is drawn while the fingers move,
+         held at its top and grown on a pinch in, carried down on a pinch out ([LW-PINCH-IN-CORNER], the pinch walk of
+         30 Oct 26: read once, the line stood at the old foot, and part-way down a pinch in drew the names' rows over the
+         lower part of the stretched corner and date row). The pinch works it out from the stretch, never by measuring. */
+      floor: () => {
+        const r = wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx > tbody.mxhead')?.getBoundingClientRect()
+        return r ? { top: r.top, foot: r.bottom } : -Infinity
+      },
       keep: () => [mstickRef.current],
       edges: true,
       /* THE SPOT UNDER THE FINGERS IS A DAY AND A ROW (the walk, 23 Oct 26): across, the date column whose heading
@@ -1683,6 +1696,9 @@ export function Matrix() {
   // off the columns beneath). Called on every token change below.
   const remeasureRef = useRef<() => void>(() => {})
   const repinRef = useRef<() => void>(() => {})
+  /* while two fingers pinch the grid (the pinch's onStart → onEnd): the frozen date row may unpin but is never pinned or
+     measured anew; `repinRef` measures it once the fingers lift (the code read of 31 Oct 26, finding 1 — see `pin`) */
+  const pinchingRef = useRef(false)
   // ...and the open-bidding outline (Astra LW-103, pre-existing): the Archive's
   // rows sit ABOVE the dates, so opening it pushes the header and roster down,
   // and the outline — placed off the header — kept its old top until the next
@@ -1960,9 +1976,29 @@ export function Matrix() {
       // LOWER edge: the mirror freezes there the instant the real header would
       // slide under it. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* WHILE THE FINGERS ARE DOWN THE FROZEN DATE ROW STAYS AS IT WAS AT THE PINCH'S START (D1287: the pinned parts stay
+         pinned; the code read of 31 Oct 26, finding 1, and the fix rounds 2–3). Since D1288 a pinch out scrolls the page up
+         with the pinch and a pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the
+         stretched grid with widths measured off stretched cells (round 2's find); let go until the lift, no date row stood
+         under the top bar, the first group straight under it (round 3's). So while pinching nothing is mounted, unmounted
+         or measured: a row frozen at the start stays, stretched by the pinch with the grid (`alsoTL`, `alsoIn`, `also`), and
+         is only hidden while the grid's own date row — held from rising, so drawn at its place or lower — is in sight below
+         the top bar (his D1288 picture: never a second date row), shown again the moment that row would pass under it. A
+         row not frozen at the start never needs one: the grid's date row, held from rising, never passes under the top
+         bar. The lift settles it once, from rest (`repinRef`, from the pinch's onEnd). */
+      if (pinchingRef.current) {
+        const fixedRow = mirrorRef.current?.parentElement
+        if (fixedRow) {
+          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
+          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+        }
+        return
+      }
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
+        /* never a stretched grid measured, whoever asks (a cell's own box under a stretch is k times its width) */
+        if (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()

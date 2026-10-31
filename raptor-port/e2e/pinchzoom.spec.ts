@@ -225,4 +225,139 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     expect(errs).toEqual([])
     await context.close()
   })
+
+  /* [QUALS-PINCH-MID] (the pinch walk, 30 Oct 26 — its pictures quals-pinch-out-mid-band.png, quals-pinch-in-mid-names.png):
+     with the page part-way down, a pinch OUT shrank the table about the fingers while the pinned heading row stayed where
+     it was, so an empty band opened between them; a pinch IN carried the name column off the left edge with the stretched
+     picture. Both only while the fingers were down — the lift put them right — so each is read with the fingers DOWN.
+     D1110: the heading row and the name column stay pinned and lined up (the Leave War's D1287, D1288). */
+  const midPinch = async <T>(cdp: CDPSession, cx: number, cy: number, d0: number, d1: number, read: () => Promise<T>): Promise<T> => {
+    const at = (i: number) => { const d = d0 + (d1 - d0) * i / 10; return [[cx - d / 2, cy], [cx + d / 2, cy]] }
+    await touch(cdp, 'touchStart', [at(0)[0]]); await sleep(30)
+    await touch(cdp, 'touchStart', at(0)); await sleep(30)
+    for (let i = 1; i <= 10; i++) { await touch(cdp, 'touchMove', at(i)); await sleep(16) }
+    await sleep(120)
+    const m = await read()
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    return m
+  }
+  /** points down one column, from the pinned heading row's foot (the copy under the top bar while it is up, else the
+   *  table's own heading row, as drawn) to `yTo`, where no cell of the table or of the pinned row is drawn: a band */
+  const bandUnderHeading = (page: Page, x: number, yTo: number) => page.evaluate(([x, yTo]) => {
+    /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+    const m0 = document.querySelector('[data-testid="qsticky-head"]')
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
+    const heads = [...(mirror ?? document.getElementById('qtbl')!.tHead!).querySelectorAll('th')].map(t => t.getBoundingClientRect()).filter(r => r.width > 0)
+    const foot = Math.max(...heads.map(r => r.bottom))
+    const bare: string[] = []
+    for (let y = Math.ceil(foot) + 1; y < yTo; y += 4) {
+      const hit = document.elementFromPoint(x!, y)
+      if (!hit?.closest('#qtbl td, #qtbl th, [data-testid="qsticky-head"] th')) bare.push(`${y} ${hit ? hit.tagName.toLowerCase() + (hit.className && typeof hit.className === 'string' ? '.' + hit.className.split(' ')[0] : '') : 'nothing'}`)
+    }
+    return { foot: Math.round(foot), bare, mirror: !!mirror, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+  }, [x, yTo] as const)
+  /** the name column's left edge against the table's (the wrap's), for every name cell in sight, and the pinned row's
+   *  name heading's left and right against the names' */
+  const namesAtLeft = (page: Page) => page.evaluate(() => {
+    const wrapL = document.querySelector('#page-quals .qwrap')!.getBoundingClientRect().left
+    const names = [...document.querySelectorAll<HTMLElement>('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(r => r.bottom > 60 && r.top < innerHeight)
+    const off = names.filter(r => Math.abs(r.left - wrapL) > 1.5).map(r => Math.round(r.left))
+    const m0 = document.querySelector('[data-testid="qsticky-head"]')
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
+    const head = (mirror?.querySelector('.qfixed-frozen th[data-sort="cs"]') ?? document.querySelector('#qtbl thead th[data-sort="cs"]'))!.getBoundingClientRect()
+    return { wrapL, n: names.length, off, headL: head.left, headR: head.right, nameR: names[0]?.right ?? null, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+  })
+
+  test('part-way down, a pinch out opens no band under the pinned heading row ([QUALS-PINCH-MID], D1110)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]'), 'part-way down, the heading row is pinned under the top bar').toHaveCount(1)
+    const rest = await bandUnderHeading(page, 200, 440)
+    expect(rest.bare, 'at rest, nothing bare under the heading row (the reading is sound)').toEqual([])
+    const out = await midPinch(cdp, 200, 450, 230, 80, async () => ({ band: await bandUnderHeading(page, 200, 440), names: await namesAtLeft(page) }))
+    expect(out.band.transformed, 'read mid-pinch').toBe(true)
+    expect(out.band.bare, `mid-pinch out, no band between the heading row and the rows (${JSON.stringify(out.band)})`).toEqual([])
+    expect(out.names.off, `mid-pinch out, the names at the left edge (${JSON.stringify(out.names)})`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
+  test('part-way down, a pinch in keeps the name column at the left edge, under its heading ([QUALS-PINCH-MID], D1110)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    const rest = await namesAtLeft(page)
+    expect(rest.n, 'names in sight').toBeGreaterThan(3)
+    const inn = await midPinch(cdp, 200, 450, 90, 250, () => namesAtLeft(page))
+    expect(inn.transformed, 'read mid-pinch').toBe(true)
+    expect(inn.n, 'names in sight mid-pinch').toBeGreaterThan(0)
+    expect(inn.off, `mid-pinch in, every name at the table's left edge (${JSON.stringify(inn)})`).toEqual([])
+    expect(Math.abs(inn.headL - inn.wrapL), 'the pinned row\'s name heading at the left edge too').toBeLessThan(1.5)
+    expect(Math.abs(inn.headR - (inn.nameR ?? 0)), 'and as wide as the names under it — lined up').toBeLessThan(2)
+    /* at the top of the page the table's own heading row is in sight: a pinch in holds it there, over the rows, with its
+       name heading at the left (the walk's picture: the heading row and the names both gone until the lift) */
+    await go(page, 'editsched'); await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')   // back at today's size
+    await page.evaluate(() => window.scrollTo(0, 0)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(0)
+    const h0 = await page.evaluate(() => document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top)
+    const top = await midPinch(cdp, 200, 450, 90, 250, async () => ({ ...(await namesAtLeft(page)), headT: await page.evaluate(() => document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top) }))
+    expect(top.off, `at the top, mid-pinch in, the names at the left edge (${JSON.stringify(top)})`).toEqual([])
+    expect(Math.abs(top.headT - h0), 'the heading row held where it stood').toBeLessThan(1.5)
+    expect(Math.abs(top.headL - top.wrapL), 'its name heading at the left').toBeLessThan(1.5)
+    expect(errs).toEqual([])
+    await context.close()
+  })
+  /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the pinch
+     (D1288's `scrollPage`), which unpins the heading row frozen under the top bar; the fingers turning back to a pinch in
+     scroll the page down again, and the row was pinned anew mid-gesture — drawn at rest over the stretched table (not one of
+     the parts the pinch stretches, read once at its start), its widths measured off stretched cells; ended at the zoom it
+     began at, nothing measured them again. Mid-gesture a frozen row, if there is one, stands over its columns; after the
+     lift it is as wide as they are, column by column. */
+  test('part-way down, a pinch out that turns back to a pinch in leaves the frozen heading row over its columns, mid-gesture and after the lift (the code read, finding 1)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    const lineUp = () => page.evaluate(() => {
+      const m = document.querySelector('[data-testid="qsticky-head"]')
+      const real = [...document.querySelectorAll('#qtbl thead tr:last-child > th')].map(t => t.getBoundingClientRect())
+      const mir = m ? [...m.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].map(t => t.getBoundingClientRect()) : []
+      const off: string[] = []
+      mir.forEach((r, i) => { const q = real[i]; if (!q || r.right < 0 || r.left > innerWidth) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
+      /* …and a heading row IS drawn under the top bar (fix round 3 — round 2's turned pinch left none until the lift): the
+         frozen row, shown, or the table's own heading row in sight below the bar — never both (a second heading row) */
+      const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const shown = !!m && getComputedStyle(m).visibility !== 'hidden'
+      const ownTop = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top
+      return { frozen: !!m, shown, ownTop: Math.round(ownTop), bar: Math.round(bar), headingRow: shown || ownTop >= bar - 1, twoRows: shown && ownTop > bar + 2 && ownTop < innerHeight, off, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+    })
+    const z0 = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
+    /* out from 230 to 80 apart, then back to 230 — the zoom it began at — the fingers level */
+    const at = (d: number) => [[200 - d / 2, 450], [200 + d / 2, 450]]
+    await touch(cdp, 'touchStart', [at(230)[0]]); await sleep(30)
+    await touch(cdp, 'touchStart', at(230)); await sleep(30)
+    for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(230 - 150 * i / 8)); await sleep(30) }
+    /* AT THE TURN, fingers 80 apart (the narrow read of rounds 2–3, its test gap): the page has scrolled up with the pinch and the
+       grid's own row is in sight — the frozen row must be hidden there (never two rows) and a row still drawn; read only at
+       the end of the turn, a frozen row never hidden passed every check */
+    await sleep(150)
+    const turn = await lineUp()
+    for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(80 + 150 * i / 8)); await sleep(30) }
+    await sleep(150)
+    const mid = await lineUp()
+    await touch(cdp, 'touchEnd', []); await sleep(700)
+    const after = await lineUp()
+    expect.soft(turn.twoRows, `at the turn, never two heading rows (${JSON.stringify(turn)})`).toBe(false)
+    expect.soft(turn.headingRow, `at the turn, a heading row is drawn under the top bar (${JSON.stringify(turn)})`).toBe(true)
+    expect.soft(mid.headingRow, `mid-gesture, a heading row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
+    expect.soft(mid.twoRows, `mid-gesture, never two heading rows (${JSON.stringify(mid)})`).toBe(false)
+    expect.soft(mid.off, `mid-gesture, a frozen heading row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
+    expect(await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1')), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
+    expect(after.frozen, 'after the lift the heading row is frozen again').toBe(true)
+    expect.soft(after.off, `after the lift, the frozen heading row lined up with its columns (${JSON.stringify(after)})`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
 })

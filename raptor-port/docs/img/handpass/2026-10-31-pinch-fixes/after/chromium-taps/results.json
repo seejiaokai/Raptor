@@ -1,0 +1,202 @@
+[
+ {
+  "id": "T1",
+  "what": "manning-open: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-open: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-fold: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "manning-fold: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "month-sep: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "month-sep: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "zoomed-month-mar: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "zoomed-month-mar: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "zoomed-manning-open: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "zoomed-manning-open: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T1",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-wsos: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-wsos: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-personnel: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-personnel: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-all: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-all: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-pilots: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "switch-pilots: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "pinned-heading-sort: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "pinned-heading-sort: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "zoomed-switch-wsos: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "zoomed-switch-wsos: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "zoomed-switch-pilots: right after the tap, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "zoomed-switch-pilots: settled, every pinned cell in sight solid",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "T2",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "D1",
+  "what": "read mid-burst (stretched)",
+  "ok": true,
+  "detail": {
+   "tf": true,
+   "cornerOff": 0,
+   "namesOff": 0,
+   "n": 21
+  }
+ },
+ {
+  "id": "D1",
+  "what": "mid-burst the corner and every name at the grid's left edge",
+  "ok": true,
+  "detail": {
+   "tf": true,
+   "cornerOff": 0,
+   "namesOff": 0,
+   "n": 21
+  }
+ },
+ {
+  "id": "D1",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ },
+ {
+  "id": "D2",
+  "what": "a desktop's Ctrl+scroll does not stretch Quals' table or mark its pinned row",
+  "ok": true,
+  "detail": {
+   "tf": "",
+   "pinching": false,
+   "z": "1"
+  }
+ },
+ {
+  "id": "D2",
+  "what": "no page errors",
+  "ok": true,
+  "detail": []
+ }
+]

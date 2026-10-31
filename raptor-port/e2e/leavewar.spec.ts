@@ -5736,6 +5736,91 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     expect(fr.bandL === null ? 0 : Math.abs(fr.bandL - fr.wrapL), 'the names stay at the left edge').toBeLessThan(1.5)
     expect(fr.mirrorRight, 'the frozen dates still reach the screen’s right edge').toBe(true)
     await cdp.detach()
+    /* [LW-PINCH-IN-CORNER] (the pinch walk, 30 Oct 26 — its picture lw-grid-pinch-in-mid-corner.png): part-way down, the
+       date row in sight, a pinch IN grows the date row and its corner down; the names' frozen copy, rising with the rows,
+       was clipped at the date row's OLD foot, so its rows were drawn over the corner's lower part until the lift. Manning
+       folded again, so the names start close under the dates, as in the walk; the fingers set low enough that the names'
+       first row is carried up past the old foot. Read with the fingers down: what is drawn on top over the corner and
+       the LVE heading (the names copy takes no taps at rest, so it is made to for the read only). */
+    await page.locator('[data-testid="counts-toggle"]').click(); await page.waitForTimeout(400)
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const g = await page.evaluate(() => {
+      const c = document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!.getBoundingClientRect()
+      const b = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')
+      return { cornerT: c.top, cornerB: c.bottom, bandT: b && getComputedStyle(b).visibility !== 'hidden' ? b.getBoundingClientRect().top : null, h: innerHeight }
+    })
+    expect(g.bandT, 'a phone draws the names as their frozen copy').not.toBeNull()
+    expect(g.cornerT, 'part-way down, the date row is in sight').toBeGreaterThan(0)
+    const K = 220 / 120
+    const fy = Math.max(g.bandT! + 40, (K * g.bandT! - g.cornerB + 40) / (K - 1))
+    expect(fy, `the fingers fit on the screen (${JSON.stringify(g)})`).toBeLessThan(g.h - 20)
+    const pin = await lwMidPinch(page, 200, fy, 120, 220, () => page.evaluate(() => {
+      const c = document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!.getBoundingClientRect()
+      const l = document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.bal')!.getBoundingClientRect()
+      const band = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')!
+      const was = band.style.pointerEvents
+      band.style.pointerEvents = 'auto'
+      const over: number[] = []
+      for (const r of [c, l]) {
+        const x = r.left + r.width / 2
+        for (let y = Math.ceil(r.top) + 1; y < r.bottom - 1; y += 3) if (document.elementFromPoint(x, y)?.closest('[data-testid="frozen-cols"]')) over.push(Math.round(y))
+      }
+      /* …and the names still start right under it: the clip is the date row's foot, not lower */
+      const under = !!document.elementFromPoint(c.left + c.width / 2, c.bottom + 4)?.closest('[data-testid="frozen-cols"]')
+      band.style.pointerEvents = was
+      return { over, under, cornerT: c.top, cornerB: c.bottom, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+    }))
+    expect(pin.transformed, 'read mid-pinch').toBe(true)
+    expect(pin.cornerB - pin.cornerT, 'the date row grew with the pinch').toBeGreaterThan((g.cornerB - g.cornerT) * 1.3)
+    expect(pin.over, `part-way down, pinching in, the names are never drawn over the stretched corner or LVE heading (${JSON.stringify(pin)})`).toEqual([])
+    expect(pin.under, 'and the names start right under the date row').toBe(true)
+    /* …AND THE NAMES STILL SHOW, read from the other side (the walk of 31 Oct 26, L2 and L7 — `compare/L2-names-missing-…png`):
+       part-way down, and with the dates frozen under the top bar, a pinch OUT scrolls the page with the pinch (D1288); the
+       names copy's cut-off line was worked back through its stretch but not through that scroll, so it stood too low and
+       the names column was blank under the date row — SXO down to Saber, with the dates frozen nearly the whole screen —
+       until the lift. The check above only asked that nothing was drawn where it must not be; this asks that the names are
+       drawn where they must be: every point down the names column from the date row's foot to the fingers is a name, a
+       group heading or another pinned row's name cell — never a day cell of the grid showing through. */
+    const namesShown = (yTo: number) => page.evaluate(yTo => {
+      const wrapL = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left
+      /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+      const fixedRow = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
+      const sticky = fixedRow && getComputedStyle(fixedRow).visibility !== 'hidden' ? fixedRow.querySelector('.mxfixed-frozen') : null
+      const head = (sticky ?? document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!).getBoundingClientRect().bottom
+      const band = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')!
+      const was = band.style.pointerEvents
+      band.style.pointerEvents = 'auto'
+      const blank: string[] = []
+      for (let y = Math.max(Math.ceil(head) + 6, 60); y < yTo; y += 6) {
+        /* the frozen date row's own box is see-through below its shrunken row while the fingers are down (matrix.css
+           .lw-sda .mxfixed.lw-pinching): looked through, to what it shows */
+        let hit: Element | null = null
+        for (const el of document.elementsFromPoint(wrapL + 15, y)) { if (el.closest('[data-testid="sticky-head"]') && !el.closest('th')) continue; hit = el; break }
+        if (!hit?.closest('[data-testid="frozen-cols"], td.who, td.grphd, td.catsub-in, [data-testid="sticky-head"] th')) blank.push(`${y} ${hit ? hit.tagName.toLowerCase() + '.' + String(hit.className).split(' ')[0] : 'nothing'}`)
+      }
+      band.style.pointerEvents = was
+      return { blank, head: Math.round(head), stuck: !!sticky, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+    }, yTo)
+    /* the grid stands zoomed in after the pinch in above, so each pinch out below has room to shrink it (from the smallest
+       zoom a pinch out moves nothing — the first draft of this step passed for that reason alone): the frozen case first */
+    const zoomNow = () => page.evaluate(() => parseFloat((document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const zf = await zoomNow()
+    const frRest = await namesShown(500)
+    expect(frRest.blank, `at rest, the dates frozen, the names column is all names (the reading is sound) (${JSON.stringify(frRest)})`).toEqual([])
+    const outFrozen = await lwMidPinch(page, 200, 450, 230, 160, () => namesShown(500))
+    expect(outFrozen.transformed, 'read mid-pinch').toBe(true)
+    expect.soft(outFrozen.blank, `with the dates frozen, pinching OUT, the names are drawn all the way down to the fingers (${JSON.stringify(outFrozen)})`).toEqual([])
+    expect(await zoomNow(), 'that pinch out did shrink the grid').toBeLessThan(zf - 0.1)
+    await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)
+    const zp = await zoomNow()
+    const outRest = await namesShown(500)
+    expect(outRest.blank, `at rest, part-way down, the names column is all names (the reading is sound) (${JSON.stringify(outRest)})`).toEqual([])
+    const outPart = await lwMidPinch(page, 200, 520, 230, 100, () => namesShown(500))
+    expect(outPart.transformed, 'read mid-pinch').toBe(true)
+    expect.soft(outPart.blank, `part-way down, pinching OUT, the names are drawn all the way down to the fingers (${JSON.stringify(outPart)})`).toEqual([])
+    expect(await zoomNow(), 'that pinch out did shrink the grid').toBeLessThan(zp - 0.05)
   })
 
   test('a big pinch out where the grid opens, at the top of the page: the month buttons hold their size mid-pinch, and the day under the fingers does not move across from the stretched picture to a beat after the lift', async ({ page }) => {
@@ -5847,6 +5932,56 @@ const lwBandHits = (page: Page, x: number, yTo: number) => page.evaluate(([x, yT
 
 test.describe('mid-pinch, the page moves with the grid and the pinned parts stay whole (D1288; the fix read, 23 Oct 26)', () => {
   test.beforeEach(() => { test.skip(!isPhone(), 'two fingers are a touch screen\'s') })
+
+  /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1 — the same as on Quals since D1288): with the dates frozen under
+     the top bar, a pinch out scrolls the page up with the pinch and the frozen date row unpins; turning back to a pinch in
+     scrolls it down again and the row was pinned anew mid-gesture, at rest over the stretched grid, its widths measured off
+     stretched cells and kept after a lift at the zoom the pinch began at. */
+  test('with the dates frozen, a pinch out that turns back to a pinch in leaves the frozen date row over its columns, mid-gesture and after the lift (the code read, finding 1)', async ({ page }) => {
+    await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
+    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    const lineUp = () => page.evaluate(() => {
+      const m = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
+      const real = [...document.querySelectorAll('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th')].map(t => t.getBoundingClientRect())
+      const mir = m ? [...m.querySelectorAll('.mxfixed-scroll tbody.mxhead th')].map(t => t.getBoundingClientRect()) : []
+      const off: string[] = []
+      mir.forEach((r, i) => { const q = real[i]; if (i < 2 || !q || r.right < 0 || r.left > innerWidth || q.width < 2) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
+      /* …and a date row IS drawn under the top bar (fix round 3 — round 2's turned pinch left none, the SXO group straight
+         under the bar, until the lift; D1287: the pinned parts stay pinned): the frozen row, shown, or the grid's own date
+         row in sight below the bar — never both (his D1288 picture: a second date row) */
+      const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const shown = !!m && getComputedStyle(m).visibility !== 'hidden'
+      const ownTop = document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!.getBoundingClientRect().top
+      return { frozen: !!m, shown, ownTop: Math.round(ownTop), bar: Math.round(bar), dateRow: shown || ownTop >= bar - 1, twoRows: shown && ownTop > bar + 2 && ownTop < innerHeight, off: off.slice(0, 8), n: off.length, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+    })
+    const zoom = () => page.evaluate(() => parseFloat((document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
+    const z0 = await zoom()
+    const cdp = await page.context().newCDPSession(page)
+    const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+    const at = (d: number) => [[200 - d / 2, 450], [200 + d / 2, 450]]
+    await touch('touchStart', [at(230)[0]!]); await page.waitForTimeout(30)
+    await touch('touchStart', at(230)); await page.waitForTimeout(30)
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', at(230 - 150 * i / 8)); await page.waitForTimeout(30) }
+    /* AT THE TURN, fingers 80 apart (the narrow read of rounds 2–3, its test gap): the page has scrolled up with the pinch and the
+       grid's own row is in sight — the frozen row must be hidden there (never two rows) and a row still drawn; read only at
+       the end of the turn, a frozen row never hidden passed every check */
+    await page.waitForTimeout(150)
+    const turn = await lineUp()
+    for (let i = 1; i <= 8; i++) { await touch('touchMove', at(80 + 150 * i / 8)); await page.waitForTimeout(30) }
+    await page.waitForTimeout(150)
+    const mid = await lineUp()
+    await touch('touchEnd', []); await page.waitForTimeout(800)
+    await cdp.detach()
+    const after = await lineUp()
+    expect.soft(turn.twoRows, `at the turn, never two date rows (${JSON.stringify(turn)})`).toBe(false)
+    expect.soft(turn.dateRow, `at the turn, a date row is drawn under the top bar (${JSON.stringify(turn)})`).toBe(true)
+    expect.soft(mid.dateRow, `mid-gesture, a date row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
+    expect.soft(mid.twoRows, `mid-gesture, never two date rows (${JSON.stringify(mid)})`).toBe(false)
+    expect.soft(mid.off, `mid-gesture, a frozen date row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
+    expect(await zoom(), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
+    expect(after.frozen, 'after the lift the date row is frozen again').toBe(true)
+    expect.soft(after.off, `after the lift, the frozen date row lined up with its columns (${JSON.stringify(after)})`).toEqual([])
+  })
 
   test('part-way down the page, a pinch out opens no band between the month buttons and the date row (D1288)', async ({ page }) => {
     await page.evaluate(() => window.scrollTo(0, 110)); await page.waitForTimeout(300)

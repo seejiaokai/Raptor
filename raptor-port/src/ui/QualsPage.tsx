@@ -377,6 +377,11 @@ export function QualsPage() {
   qzRef.current = qz
   const qzEffRef = useRef(1)
   qzEffRef.current = qzEff
+  /* while two fingers pinch the table (the pinch's onStart → onEnd): the frozen heading row may unpin but is never pinned
+     or measured anew, and `qRepinRef` measures it once the fingers lift (the code read of 31 Oct 26, finding 1 — see the
+     mirror's effect) */
+  const qPinchingRef = useRef(false)
+  const qRepinRef = useRef<() => void>(() => {})
   /* a heading drag pressed by a pinch's first finger is let go when the pinch starts (the code read's finding 3) */
   const cancelColDrag = useRef<(() => void) | null>(null)
   /* THE PINNED HEADER FOLLOWS BY THE BROWSER (owner D993, 18 Oct 26 — "Could u try to just fix the quals pinned header
@@ -675,14 +680,50 @@ export function QualsPage() {
         cancelColDrag.current?.()
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = 'paused'
+        document.querySelector('#page-quals .qfixed')?.classList.add('q-pinching')
+        qPinchingRef.current = true
       },
+      /* (called with the stretch already taken off, before the zoom is written: the row is measured at rest; a new zoom
+         measures it again through the mirror effect's own `qzEff`) */
       onEnd: () => {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = ''
+        const fixedRow = document.querySelector<HTMLElement>('#page-quals .qfixed')
+        if (fixedRow) { fixedRow.classList.remove('q-pinching'); fixedRow.style.visibility = '' }
+        qPinchingRef.current = false
+        qRepinRef.current()
       },
-      /* the pinned heading row's CONTENTS stretch with the table while the fingers move (the code read's finding 7), not
-         its box: the box keeps the table's edges and clips them, as the table's own box does (the fix round's finding 2) */
-      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll, #page-quals .qfixed > .qfixed-frozen')],
+      /* THE HEADING ROW AND THE NAME COLUMN STAY PINNED AND LINED UP WHILE THE FINGERS MOVE (D1110; [QUALS-PINCH-MID], the
+         pinch walk of 30 Oct 26 — part-way down, a pinch out opened an empty band between the pinned heading row and the
+         shrinking table, and a pinch in carried the name column off the left edge with the stretched picture, both until
+         the lift). The Leave War's answer to the same two (D1287, D1288), the app's one pinch body:
+         · the page scrolls with the pinch as far as the lift's scroll would take it, so the table's top and the bars above
+           it move together and no band opens (`scrollPage`, which rides `edges`: the picture never floats down or right
+           of where the lift's scroll can bring it back);
+         · the name cells are held at the table's left edge, growing and shrinking about it; the heading row's cells
+           follow the rows down but never rise over the bars above them, its name heading held at the left (`pin`);
+         · the pinned heading row's copy under the top bar: its days stretch with the table (`also` — the code read's
+           finding 7: its box keeps the table's edges and clips them sideways, the fix round's finding 2), its still copy of
+           the name heading grows from its own corner, held at the left (`alsoTL`); while the fingers are down its box lets
+           them grow down and is see-through under a shrunken row (05-quals.css `.qfixed.q-pinching`). */
+      edges: true,
+      scrollPage: true,
+      pin: () => {
+        const t = tblRef.current
+        if (!t) return []
+        const out: { el: HTMLElement; x: boolean; y: boolean | 'up' }[] = []
+        for (const th of t.querySelectorAll<HTMLElement>(':scope > thead th')) out.push({ el: th, x: th.dataset.sort === 'cs', y: 'up' })
+        for (const td of t.querySelectorAll<HTMLElement>(':scope > tbody td.qname')) out.push({ el: td, x: true, y: false })
+        return out
+      },
+      /* the pinned block's corner: the table's left edge (the wrap's — the name column's place at rest) and the heading
+         row's top */
+      pinAt: () => ({
+        x: wrapRef.current?.getBoundingClientRect().left ?? 0,
+        y: tblRef.current?.tHead?.getBoundingClientRect().top ?? 0,
+      }),
+      also: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-scroll')],
+      alsoTL: () => [...document.querySelectorAll<HTMLElement>('#page-quals .qfixed > .qfixed-frozen')],
     })
   }, [])
 
@@ -718,9 +759,28 @@ export function QualsPage() {
          LOWER edge: the mirror freezes there the instant the real header would
          slide under it. Measured live, so it is right whatever the bar wrapped to. */
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* WHILE THE FINGERS ARE DOWN THE PINNED ROW STAYS AS IT WAS AT THE PINCH'S START (the code read of 31 Oct 26, finding
+         1, and the fix rounds 2–3; D1110). Part-way down a pinch out scrolls the page up with the pinch (`scrollPage`) and a
+         pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the stretched table with
+         widths measured off stretched cells (round 2's find); let go until the lift, no heading row stood under the top bar
+         (round 3's). So while pinching nothing is mounted, unmounted or measured: a row frozen at the start stays, stretched
+         by the pinch with the table, and is only hidden while the table's own heading row — held from rising, so drawn at
+         its place or lower — is in sight below the top bar (two heading rows, never: the Leave War's D1288 picture), shown
+         again the moment that row would pass under it. A row not frozen at the start never needs one: its own heading row,
+         held from rising, never passes under the top bar. The lift settles it once, from rest (`qRepinRef`). */
+      if (qPinchingRef.current) {
+        const fixedRow = document.querySelector<HTMLElement>('#page-quals .qfixed')
+        if (fixedRow) {
+          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
+          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+        }
+        return
+      }
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
+        /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
+        if (tblRef.current?.style.transform) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
@@ -730,6 +790,7 @@ export function QualsPage() {
         return { top: topEdge, left: wr.left, width: wr.width, cols }
       })
     }
+    qRepinRef.current = () => pin(true)
     const onScroll = () => pin(false)
     /* a rotate/resize fires BEFORE iOS settles the new viewport, so an immediate
        read takes the OLD geometry — re-measure on the next two frames AND once
@@ -779,6 +840,7 @@ export function QualsPage() {
       window.visualViewport?.removeEventListener('resize', remeasure)
       ro?.disconnect()
       if (watchCellsRef.current === watchCells) watchCellsRef.current = null
+      qRepinRef.current = () => {}
       cancelAnimationFrame(raf); clearTimeout(t)
     }
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
