@@ -90,7 +90,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [LW-POSTED-OUT-RESTORE] — a man posted out but not deleted (overseas, another squadron): Redo can put back an approval of his leave on a day after his posting's date, which Approve refuses (older, also on main; found 30 Oct 26).
 - [LW-DELETED-REDO-NETSUM] — for a deleted man, one war step that approves a day his late posting refuses AND sends back another approved day of his adds nothing overall, so its Redo is let through; no screen sends that pair in one step (older; found 31 Oct 26 by a security read).
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -112,10 +111,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
-- [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK], then [LW-WEEKDAY-WORK], then the database.
-- [LW-LOCKMARK] — the war still locks a day with an old marker; per-record checks replace it.
-- [LW-OFFER-ONLY-TAKEABLE] — two war sheets offer a choice the war then refuses — with [LW-LOCKMARK].
-- [LW-CLASH-ROWLESS-TAP] — a clash note's link for a man with no row on the war (a SANS man with Show SANS off) opens nothing.
+- [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [LW-HELD-DAY-ADD] — his find (D1548): a day held whole by leave or a medical filed on the Inputs page opens only a read-only note, so no Grant OIL there — open the bid window as a course's day does.
 - [LW-DELETE-POSTING-RESTORE] — before a Delete posting runs, Redo can put back an approval the live Approve refuses from its date (D1541's one kept refusal).
 - [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); the bell line drawn for him before it is built.
@@ -305,9 +301,6 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 ### [LW-DELETE-POSTING-RESTORE] Before a Delete posting has run, Redo can put back an approval the live Approve refuses from its date (found 31 Oct 26, the Leave War fixes' fresh code read, its point 1)
 **What happens:** his D1541 lets the posting date refuse no leave, but a posting out with the Delete outcome keeps its refusal from its date (the agent's reading 1 of D1541 — he leaves flying for good, D287). Approve refuses those days (`sync.ts postingOutWhy`: "He posts out on …: refuse or delete it"); Undo / Redo do not, until the posting has run and deleted him: `state/person-delete.ts deletedRestoreProblem` asks only of a man already deleted (`refusedFrom` is null before). So: approve a day after the date, Undo, set a Delete posting dated before that day, Redo — the approval and its war-approved leave come back where the live Approve refuses them. **What is left of `[LW-POSTED-OUT-RESTORE]`** (its other postings were closed by D1541, which refuses nothing for them). **The scenario:** the 13 tests of the reverted 057ca75ab (the restore refusal for a posting), re-run with the Delete outcome. **Place:** low, with the Leave War's next batch (D490) — — D1541's reading 1 confirmed by his D1545 (31 Oct 26), so this is to build. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` §The reads.
-
-### [LW-POSTED-OUT-RESTORE] A man posted out but not deleted: Redo can put back an approval on a day after his posting's date (found 30 Oct 26, the small fixes' narrow read, its observation)
-**What happens:** a man with a posting out that is not a Delete (overseas, another squadron, archive) — an approval of his leave on a day after his posting's date, made before the posting was set, then undone; the posting set (run or not); Redo puts the approval back and writes the war-approved leave, where the live Approve refuses it ("He posts out on 1 Mar: refuse or delete it" — D1436). Reproduced by the reader in a scratch test with an Overseas posting (`raptor-port/docs/handpass/parts/lw-sf1030/read-fix1.md`, "Observation"). **Older:** on `main` too — neither restore refusal reads posting dates. **Why it was not built with the small fixes** (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §12, the narrow read): D1436 rules the Approvals list's Approve, and its "wherever leave is approved" is the agent's reading about the doors, not about Undo / Redo; D321 (8) makes a posting out no Undo step; and the deleted man's restore refusal is cached on the step for good ("a delete is final"), which a posting — moved, taken back by "Undo post out", or turned SANS — is not. **The likely shape:** a refusal in the uncached restore check (`state/undo-wire.ts restoreRefusal`, beside D1263's closed-day rule) that asks the live door's own posting test (`leavewar/sync.ts postingOutWhy` / `refusedFrom`) for every day the step's Redo adds — one body with Approve — with a test for each twin path: a posting moved earlier and later, taken back, turned SANS, run and not yet run, an Undo of a send-back, a place-and-approve. **Ask him first** whether Undo / Redo should keep the posting's date rule (recommended: yes — the two doors agree, D754), with a picture. **Place:** low; nothing waits on it; a stored case is not a finding (D56), only new Redos are.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
@@ -910,16 +903,6 @@ Its place in the order and the one-paragraph description are item 3 of `[BACKLOG
 Given a heading 23 Sep 26 ([DOCS-GUARD] F5) so the document gate counts it — it had been named in
 his order without ever having an item of its own. **Talk to him before building any of it.**
 
-### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
-Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
-the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
-`leaveInputAt` (person/date/code) rather than the record id. Correct today (the tap list acts by id on any
-multi-record day), but design §6 wants the lock derived from each contribution's own Input. Replace the
-Matrix `raptorOwns` checks with per-contribution predicates, open the remarks sheet by iid, then delete
-`sourceOf`/`raptorOwns` and the synthesised `source`. Also open: a publish → undo → publish → undo → redo
-refusal ("an earlier undone change touches the same thing") that exists on `main` too (found by the step-4
-scenario tester) — the global undo timeline's own item.
-
 ### [LW-OIL-OPENING-AWARD] An opening OIL balance from the old system, at go-live — a question for him before the database step (found 28 Oct 26, M5a's build spec)
 **What:** D1255 rules that an opening OIL balance from an old system is given once in the OIL tracker as an award, "Opening balance from the old system", so every day of OIL has its record; M5a stops OIL being typed as a figure by any door (red-team fix B6). The code survey of 28 Oct 26 found two side effects of giving it as an ordinary award: every hand award is drawn on the grid as an FO or HO box on its date (D402), so the opening balance would show as a box on a day nothing happened; and an award follows the OIL expiry rule, where today's undated opening figure never expires (`leavewar/state/oiltracker.ts`, the `openings.oil` credit); an award is also capped at 365 days. **Why later:** only real data meets it — today's store is demo data, cleared before the database (D56). **To put to him, with a picture, before the database step:** whether an opening award is drawn on the grid and whether it can expire (recommended: dated the day the old system's figure was read, not drawn on the grid, and expiring as the old system would have it — to be drawn first). Where it is planned: `raptor-port/docs/superpowers/plans/2026-10-28-lw-m5a-build-spec.md` §6 reading 16.
 
@@ -1440,9 +1423,6 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 `claude/lw-drag-flaky-tests-batch-c0719b`): the "Other ways to bid" slide's check line is already corrected in `scripts/itflow/content.mjs`
 (it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
-### [LW-CLASH-ROWLESS-TAP] A clash note's link for a man with no row on the war opens nothing (found 21 Oct 26 by the Leave War batch's walk, W2) — OPEN, older
-**Seen** (`raptor-port/docs/handpass/parts/lws/w2.md`, scenario 33; pictures `raptor-port/docs/img/handpass/2026-10-21-leavewar-small/w2/w2-s33-*`): a SANS man with Show SANS off holds a bid on a published Saturday he works; the clash note names him (since [BATCH-14OCT-LEFTOVERS] (c)) but its "Decide the bid ›" opens nothing — on a phone the grid jumps to July and rings the day, on a desktop nothing visible happens; with Show SANS on the same tap opens his day. The note's link asks the grid to open his row (`leavewar/ui/Chrome.tsx goClash` → `focusDay`), and he has none. Older than the batch. **To do:** for a man with no row, the link says where the bid can be decided (Show SANS on, or his archive) or the note offers to show him — words for him first (D853, a picture). **Place:** low, with the next Leave War batch.
-
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
 `#exportPdf` prints first an empty frame (`about:blank`), then the report (`about:srcdoc`). The frame's load handler fires when the
@@ -1498,23 +1478,6 @@ Found by the small-fixes batch (28 Sep 26): its `gatelock.mjs run` was queued be
 
 ### [PLAN-BANNER-DOOR] The preview banner's "Switch to this plan" has no screen route — low (filed 28 Sep 26)
 Found by the small-fixes batch's walk (`raptor-port/scripts/handpass/sf/sf-f-banner.mjs`) while walking `[REQ-DOOR-WORDS]` 1, which made that button say the switch in the plans menu's own words. The button is drawn only on an EDIT surface (`html.ts`, `vsel`) over a PLAN preview ('d:'), and no screen reaches one: Edit Schedule's plans menu previews issued versions only and switches plans directly, View-only Sched's plan picker shows the plan's banner read-only (no Switch), and that preview does not carry over to Edit Schedule. So the button, its handler (`interactions.ts` `data-draftgo`) and the wording fix are reachable only by a test. **To decide:** retire the door (as `[LW-SPARE-MOVE-DOORS]` retired the war's unused move doors), or give it a route (a plan preview on the edit surfaces). Not a defect a person can meet today. **Place:** low, with the next change to the plans menu or the preview bar.
-
-### [LW-OFFER-ONLY-TAKEABLE] Two Leave War sheets offer a choice the war then refuses — low (the absence-record re-test's re-walk, W3, 26 Sep 26)
-Found by the war re-walker on the rebuilt app; no record is harmed and each refusal is said, but the principle the
-re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be taken) is not kept here:
-1. **A morning the WAR approved, then a tap on that day:** the bid sheet offers Whole day (already picked) and AM, and
-   pressing LL is refused "That time is already taken by LL — clear it first." The same morning filed on the Inputs page
-   offers only PM (the free half, `MatrixRows.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
-   Pictures: `docs/img/handpass/2026-09-26-absence/rewalk/w3/rw-w3-11-{desktop,phone}-A-whole-a-sheet`, `-A-whole-b-after-LL`,
-   `-C-inputs-filed-sheet`.
-2. **A refused bid under a medical filed since:** the tap list still offers Approve and Ack on it; both are refused in
-   words that never name the medical ("Couldn't change that", "Couldn't approve — something else is on that time"),
-   where the Undo / Redo road to the same state names it. Pictures: `rw-w3-10-{desktop,phone}-ack-b-after-press`,
-   `-approve-b-after-press`.
-**Build:** offer only the halves and decisions that can be taken, off the same question the door asks, and name the
-blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the lock by day vs by record is the same
-root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
-`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
 
 ### [LW-UNDO-BLOCK-REOPEN] A refused Undo or Redo onto a closed day stays passed over after the day reopens — with the database step (filed 22 Oct 26)
 From the narrow read of D1263's fix (evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §15). A member's

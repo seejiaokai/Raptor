@@ -7181,3 +7181,48 @@ itself at the end of every session and on every change"; the session run is a ho
 and settings for it, one fresh reader before it is switched on; it reports the count and blocks nothing). Own branch, his "merge live".
 **Built 31 Oct 26 on `claude/code-check-ci-ada539`, pull request 605 — waits on his "merge live":** the shared script `raptor-port/scripts/code-check.mjs` (`npm run lint:changed` now runs it; it reads React Doctor's JSON report and is red when it compared nothing — React Doctor's silent pass when it cannot read `main`'s side), the `code check` job in `deploy.yml`, and the Stop hook `.claude/hooks/code-check-stop.mjs` (read by one fresh, blind Opus reader before it was wired into `.claude/settings.json`). Its first red proved on a scratch pull request (606, closed, its branch deleted). How it works: `raptor-port/docs/gates-and-deploy.md` §Now (D1539); evidence `raptor-port/docs/handpass/2026-10-31-code-check-ci.md`. After the merge this item is archived.
 
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([LW-POSTED-OUT-RESTORE]). Forward facts: `raptor-port/docs/handpass/2026-10-31-lw-fixes.md`.*
+
+### [LW-POSTED-OUT-RESTORE] A man posted out but not deleted: Redo can put back an approval on a day after his posting's date (found 30 Oct 26, the small fixes' narrow read, its observation)
+**What happens:** a man with a posting out that is not a Delete (overseas, another squadron, archive) — an approval of his leave on a day after his posting's date, made before the posting was set, then undone; the posting set (run or not); Redo puts the approval back and writes the war-approved leave, where the live Approve refuses it ("He posts out on 1 Mar: refuse or delete it" — D1436). Reproduced by the reader in a scratch test with an Overseas posting (`raptor-port/docs/handpass/parts/lw-sf1030/read-fix1.md`, "Observation"). **Older:** on `main` too — neither restore refusal reads posting dates. **Why it was not built with the small fixes** (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §12, the narrow read): D1436 rules the Approvals list's Approve, and its "wherever leave is approved" is the agent's reading about the doors, not about Undo / Redo; D321 (8) makes a posting out no Undo step; and the deleted man's restore refusal is cached on the step for good ("a delete is final"), which a posting — moved, taken back by "Undo post out", or turned SANS — is not. **The likely shape:** a refusal in the uncached restore check (`state/undo-wire.ts restoreRefusal`, beside D1263's closed-day rule) that asks the live door's own posting test (`leavewar/sync.ts postingOutWhy` / `refusedFrom`) for every day the step's Redo adds — one body with Approve — with a test for each twin path: a posting moved earlier and later, taken back, turned SANS, run and not yet run, an Undo of a send-back, a place-and-approve. **Ask him first** whether Undo / Redo should keep the posting's date rule (recommended: yes — the two doors agree, D754), with a picture. **Place:** low; nothing waits on it; a stored case is not a finding (D56), only new Redos are.
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([LW-LOCKMARK]). Forward facts: `raptor-port/docs/handpass/2026-10-31-lw-fixes.md`.*
+
+### [LW-LOCKMARK] Retire the war's `source:'raptor'` lock marker — OPEN (follow-up to step 4, 20 Sep 26)
+Codex's round-2 inspection (AS4-R2-004, low): the merged view still synthesises `source:'raptor'` ("locked on
+the war") and Matrix reads it through `raptorOwns`, and the published remarks sheet finds its Input via
+`leaveInputAt` (person/date/code) rather than the record id. Correct today (the tap list acts by id on any
+multi-record day), but design §6 wants the lock derived from each contribution's own Input. Replace the
+Matrix `raptorOwns` checks with per-contribution predicates, open the remarks sheet by iid, then delete
+`sourceOf`/`raptorOwns` and the synthesised `source`. Also open: a publish → undo → publish → undo → redo
+refusal ("an earlier undone change touches the same thing") that exists on `main` too (found by the step-4
+scenario tester) — the global undo timeline's own item.
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([LW-CLASH-ROWLESS-TAP]). Forward facts: `raptor-port/docs/handpass/2026-10-31-lw-fixes.md`.*
+
+### [LW-CLASH-ROWLESS-TAP] A clash note's link for a man with no row on the war opens nothing (found 21 Oct 26 by the Leave War batch's walk, W2) — OPEN, older
+**Seen** (`raptor-port/docs/handpass/parts/lws/w2.md`, scenario 33; pictures `raptor-port/docs/img/handpass/2026-10-21-leavewar-small/w2/w2-s33-*`): a SANS man with Show SANS off holds a bid on a published Saturday he works; the clash note names him (since [BATCH-14OCT-LEFTOVERS] (c)) but its "Decide the bid ›" opens nothing — on a phone the grid jumps to July and rings the day, on a desktop nothing visible happens; with Show SANS on the same tap opens his day. The note's link asks the grid to open his row (`leavewar/ui/Chrome.tsx goClash` → `focusDay`), and he has none. Older than the batch. **To do:** for a man with no row, the link says where the bid can be decided (Show SANS on, or his archive) or the note offers to show him — words for him first (D853, a picture). **Place:** low, with the next Leave War batch.
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([LW-OFFER-ONLY-TAKEABLE]). Forward facts: `raptor-port/docs/handpass/2026-10-31-lw-fixes.md`.*
+
+### [LW-OFFER-ONLY-TAKEABLE] Two Leave War sheets offer a choice the war then refuses — low (the absence-record re-test's re-walk, W3, 26 Sep 26)
+Found by the war re-walker on the rebuilt app; no record is harmed and each refusal is said, but the principle the
+re-test applied elsewhere (item D, W5-F4: a half is offered only when it can be taken) is not kept here:
+1. **A morning the WAR approved, then a tap on that day:** the bid sheet offers Whole day (already picked) and AM, and
+   pressing LL is refused "That time is already taken by LL — clear it first." The same morning filed on the Inputs page
+   offers only PM (the free half, `MatrixRows.tsx freeHalfBeside`, runs only for Inputs-filed leave — `raptorOwns`).
+   Pictures: `docs/img/handpass/2026-09-26-absence/rewalk/w3/rw-w3-11-{desktop,phone}-A-whole-a-sheet`, `-A-whole-b-after-LL`,
+   `-C-inputs-filed-sheet`.
+2. **A refused bid under a medical filed since:** the tap list still offers Approve and Ack on it; both are refused in
+   words that never name the medical ("Couldn't change that", "Couldn't approve — something else is on that time"),
+   where the Undo / Redo road to the same state names it. Pictures: `rw-w3-10-{desktop,phone}-ack-b-after-press`,
+   `-approve-b-after-press`.
+**Build:** offer only the halves and decisions that can be taken, off the same question the door asks, and name the
+blocker in any refusal that remains. **Place:** low, with `[LW-LOCKMARK]` (the lock by day vs by record is the same
+root). Not checked against `main` by the walker; the free-half rule predates this branch. Evidence
+`raptor-port/docs/handpass/parts/2026-09-26-absence-rewalk-w3.md`.
+
