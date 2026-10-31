@@ -79,10 +79,10 @@ const writeState = (gitDir, s) => { try { writeFileSync(join(gitDir, STATE), JSO
  *  reaches the agent — so it is plain words, with no file name or line number (the fresh read's finding 3; the rules on
  *  plain language). The details are one `npm run lint:changed` away, and on the pull request's check. */
 export function message(r) {
-  if (r.status === 'clean') return 'Code check: no new problem in the code changed in this session.';
+  if (r.status === 'clean') return 'Code check: no new problem in the code this branch changes.';
   if (r.status === 'new') {
     const n = r.newCount === 1 ? '1 new problem' : `${r.newCount} new problems`;
-    return `Code check: ${n} in the code changed in this session. The pull request's code check holds the change until ${r.newCount === 1 ? 'it is' : 'each is'} fixed.`;
+    return `Code check: ${n} in the code this branch changes. The pull request's code check holds the change until ${r.newCount === 1 ? 'it is' : 'each is'} fixed.`;
   }
   return "Code check: could not run this time. The pull request's code check still runs.";
 }

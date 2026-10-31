@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { run, codeChange } from './code-check-stop.mjs';
 import { read, doctorArgs, runTool } from '../../raptor-port/scripts/code-check.mjs';
 
-const CLEAN = 'Code check: no new problem in the code changed in this session.';
+const CLEAN = 'Code check: no new problem in the code this branch changes.';
 const COULD_NOT = "Code check: could not run this time. The pull request's code check still runs.";
 const HOOK = join(dirname(fileURLToPath(import.meta.url)), 'code-check-stop.mjs');
 const g = (cwd, ...a) => { const r = spawnSync('git', a, { cwd, encoding: 'utf8' }); assert.equal(r.status, 0, `git ${a.join(' ')}: ${r.stderr}`); return r.stdout; };
@@ -42,6 +42,8 @@ function project() {
   writeFileSync(join(root, 'raptor-port', 'scripts', 'code-check.mjs'), STUB);
   writeFileSync(join(root, '.gitignore'), 'raptor-port/scripts/runs.txt\nraptor-port/scripts/opts.json\nraptor-port/scripts/answer.json\n');
   writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 1\n');
+  // tracked from the start, as in the real repo (the fix read's finding 4: a change to them is a `git diff`, not a new file)
+  for (const f of ['doctor.config.json', 'package.json', 'tsconfig.app.json']) writeFileSync(join(root, 'raptor-port', f), '{}\n');
   g(root, 'add', '-A'); g(root, 'commit', '-qm', 'base');
   g(root, 'update-ref', 'refs/remotes/origin/main', 'HEAD');
   g(root, 'checkout', '-qb', 'work');
@@ -156,6 +158,8 @@ test('the report: a comparison not made is never a pass', () => {
   assert.equal(read({ ...good, error: { message: 'no base' } }, 'origin/main').status, 'error');
   assert.equal(read({ ...good, projects: [{ skippedChecks: ['lint'] }] }, 'origin/main').status, 'error');
   assert.equal(read(null, 'origin/main').status, 'error');
+  // files the linter dropped are marked only here (the fix read's finding 1): their new findings are missing, so no pass
+  assert.equal(read({ ...good, projects: [{ skippedChecks: [], skippedCheckReasons: { 'lint:partial': '2 file(s) failed to lint' } }] }, 'origin/main').status, 'error');
 });
 
 test('the run is told its own time limit, inside the kill timer (the read\'s finding 1: a killed shell left it running)', () => {
@@ -177,7 +181,7 @@ test('a change to React Doctor\'s settings or the project file counts as a new s
   try {
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 7\n');
     await run({ cwd: root });
-    for (const [f, body] of [['doctor.config.json', '{"rules":{}}\n'], ['package.json', '{"name":"x"}\n'], ['tsconfig.app.json', '{}\n']]) {
+    for (const [f, body] of [['doctor.config.json', '{"rules":{}}\n'], ['package.json', '{"name":"x"}\n'], ['tsconfig.app.json', '{"compilerOptions":{}}\n']]) {
       const before = runs(root);
       writeFileSync(join(root, 'raptor-port', f), body);
       assert.notEqual(await run({ cwd: root }), null, `${f} changed: checked again`);
@@ -192,7 +196,7 @@ test('the line in the chat is plain words for him — no file names or line numb
     answer(root, { status: 'new', newCount: 2, findings: [{ file: 'src/x.tsx', line: 3, title: 't' }, { file: 'src/y.tsx', line: 4, title: 'u' }], changedFiles: 2, base: 'origin/main' });
     writeFileSync(join(root, 'raptor-port', 'src', 'a.ts'), 'export const a = 8\n');
     const text = await run({ cwd: root });
-    assert.match(text, /2 new problems/); assert.doesNotMatch(text, /src\/|\.tsx|:\d/);
+    assert.match(text, /2 new problems in the code this branch changes/); assert.doesNotMatch(text, /src\/|\.tsx|:\d/);
   } finally { done(root); }
 });
 

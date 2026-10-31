@@ -203,7 +203,7 @@ the phone perf budget. Don't convert them to components.
 - **Comments explain WHY**, in prose, above the code — often the bug they
   fix. That density is the house style; match it.
 - **`scheduler.css` carries measured contracts, not preferences.**
-- **New and changed code follows React Doctor's rules** (owner D1534, 31 Oct 26): before a push `npm run lint:changed` reports no new finding; a finding is fixed, or kept with its reason in a disable comment on the line above it — never by changing `doctor.config.json`; `npm run lint` runs the whole check the kit's way.
+- **New and changed code follows React Doctor's rules** (owner D1534, 31 Oct 26): before a push `npm run lint:changed` reports no new finding; a finding is fixed, or kept with its reason in a disable comment on the line above it — never by changing `doctor.config.json`; `npm run lint` runs the whole check the kit's way. The same check runs by itself (D1539): the pull request's `code check`, and a Stop hook that shows the count at a turn's end (`docs/gates-and-deploy.md` §Now).
 - **Every bug fix lands with a test that pins it**; new features get new
   tests. Never weaken a failing assertion — understand it.
 - **Keep the records true in the same PR — each fact in its ONE home** (D140, `../.claude/rules/doc-structure.md`): a file change edits `docs/file-map.md`; open work in `../OUTSTANDING.md`, where things stand in `../HANDOFF.md` `## Now`; a passage not needed moves WHOLE to `docs/archive/` (D138, D141); a code change never trims a document (D29) · full text: docs/guide-full.md §Keep the records true in the same PR

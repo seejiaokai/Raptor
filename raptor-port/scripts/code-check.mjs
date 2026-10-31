@@ -118,6 +118,10 @@ export function read(report, base) {
   if (report.mode !== 'baseline' || !report.baseline) return fail(base, `React Doctor did not compare against ${base} (mode "${report.mode}")`)
   const skipped = (report.projects || []).flatMap((p) => p.skippedChecks || [])
   if (skipped.length) return fail(base, `React Doctor skipped part of the check: ${skipped.map((s) => (typeof s === 'string' ? s : JSON.stringify(s))).join(', ')}`)
+  // files its linter dropped (a crash, memory, a deadline) are marked only here, and their new findings are simply missing
+  // from the report (the fix round's read, 31 Oct 26)
+  const partial = (report.projects || []).flatMap((p) => Object.keys(p.skippedCheckReasons || {}))
+  if (partial.length) return fail(base, `React Doctor did not finish the check: ${partial.join(', ')}`)
   const findings = (report.diagnostics || []).map((d) => ({
     file: d.filePath, line: d.line, rule: `${d.plugin ? `${d.plugin}/` : ''}${d.rule}`, severity: d.severity, title: d.title || d.message || d.rule,
   }))

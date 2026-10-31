@@ -149,7 +149,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
-- [WEEK-DRAG-EDGE-PAN] — a man held with the mouse at Edit Schedule's week side now steps the week a day (his D1529); BUILT on pull request 595, merged on his "merge live" 31 Oct 26.
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
 - [VEILED-WINDOWS-BAR] — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's).
@@ -167,7 +166,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CODE-CHECK-CI] — React Doctor's "no new finding" check run by itself: a GitHub check on every pull request and a run at the end of every session (D1536, D1539) — next, in a fresh chat.
+- [CODE-CHECK-CI] — React Doctor's "no new finding" check run by itself: a GitHub check on every pull request and a run at the end of every session (D1536, D1539) — BUILT, pull request 605, waits on his "merge live".
 - [AVAILWIN-SETUP-SLOW] — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
@@ -252,6 +251,7 @@ jobs now fetch shallow and without the picture folders (D1091), and its first re
 (31 Oct 26): build it now, in a fresh chat** — the GitHub check AND a run at the end of every working session (D1536's "runs by
 itself at the end of every session and on every change"; the session run is a hook — his permission to change the project's hooks
 and settings for it, one fresh reader before it is switched on; it reports the count and blocks nothing). Own branch, his "merge live".
+**Built 31 Oct 26 on `claude/code-check-ci-ada539`, pull request 605 — waits on his "merge live":** the shared script `raptor-port/scripts/code-check.mjs` (`npm run lint:changed` now runs it; it reads React Doctor's JSON report and is red when it compared nothing — React Doctor's silent pass when it cannot read `main`'s side), the `code check` job in `deploy.yml`, and the Stop hook `.claude/hooks/code-check-stop.mjs` (read by one fresh, blind Opus reader before it was wired into `.claude/settings.json`). Its first red proved on a scratch pull request (606, closed, its branch deleted). How it works: `raptor-port/docs/gates-and-deploy.md` §Now (D1539); evidence `raptor-port/docs/handpass/2026-10-31-code-check-ci.md`. After the merge this item is archived.
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
@@ -290,14 +290,6 @@ Every point of the SWiFT build-and-deploy kit set against Raptor, numbered in th
 count: `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`. Waiting on him: the points he strikes, the
 his-call points, and whether new code follows the code check's rules. Nothing on it is built until he says so; the kit's
 red flags, its Vercel rule and its private-project rule are set aside (D1530).
-
-### [WEEK-DRAG-EDGE-PAN] A man dragged with a mouse to the edge of Edit Schedule never pans the week sideways (found 30 Oct 26, the arrows' walk)
-On a desktop, a man's name dragged with a mouse and held at the left or right edge of Edit Schedule's week scrolls the page
-up and down at the top and foot, but never pans the week sideways, so he can only be dropped on a day already in view.
-Measured the same with the old arrows, the new slim tab and no arrows at all (`raptor-port/scripts/handpass/week-arrows-walk.mjs`
-step C2). The design guide's drag rule (§5A, D895: "carried to the edge, the view follows") says it should; the phone board's
-wide layout already does (D1107, `src/ui/drag.ts` tdWideLoop). Older, not caused by the arrows. **To put to him with a picture
-before building** (whether a held drag at the week's side should step the days as the arrows do). **Put to him 31 Oct 26** (branch `claude/jolly-volhard-4458db`), on the page https://claude.ai/artifact/313NUfzzM3XrGKu6T3QYbv: two marked pictures at his PC's size (held two seconds at each side, the week did not move — `raptor-port/scripts/handpass/week-drag-edge-pan-pictures.mjs`, `raptor-port/docs/img/handpass/2026-10-31-week-drag-edge-pan/`) and three choices — **A (recommended):** held about half a second in a band at the week's side, the week steps one day as one press of ‹ / › does, again while held, a name only passing through does nothing (every crew-panel name crosses the right side, which is the crew panel's edge, not the window's), stopping at Monday and Sunday (never into another week mid-drag); **B:** a smooth slide at the Leave War's mouse speed (`src/ui/edgescroll.ts`), settling on a day at the let-go; **C:** leave it. The half-second wait is a new number (the guide's §5A prefers existing ones) — said to him. Waiting on his answer; nothing built. Found while reading: the desktop drag's up-and-down edge scroll runs only while the mouse moves (`src/ui/drag.ts` `tdAutoScroll`, called from `tdOver`) — a build would run the sideways step from a frame loop, as `tdWideLoop` does. **His answer (31 Oct 26): "A — a day at a time" — D1529. BUILT** on `claude/jolly-volhard-4458db`, pull request 595: `src/ui/drag.ts` `weekStepLoop`, `src/ui/pan.ts` `panDays(dir, cross)`; red first (`weekdragstep.test.tsx` 10), a browser test (`e2e/geometry.spec.ts`), walked 18/18 after two fixes the walk found (evidence `raptor-port/docs/handpass/2026-10-31-week-drag-edge-pan.md`); the fresh code read's two findings fixed red first (the page's scroll bar at the window's edge; the window narrowed mid-drag), re-walked 18/18 and 2/2 with scroll bars shown; GitHub's run green. **His "merge live" 31 Oct 26** — merged; this item leaves for the archive at the next tidy. Met in passing, older, not filed as a fault: Escape does not cancel a mouse drag (the sheet says so).
 
 ### [QUALS-PINCH-NOSDA-HEAD] Quals mid-pinch in, without scroll-driven animations: the pinned row's name heading carried left (found 31 Oct 26, building [QUALS-PINCH-MID])
 **What:** in a browser that has no scroll-driven animations (`QualsPage.tsx` `sdaActive` false — an older Safari or Chrome), the heading row frozen under the top bar has no still copy of its name heading (`.qfixed-frozen` is drawn only in the scroll-driven path); its own scroller's sticky name heading is stretched with the row about the fingers, so part-way down a pinch in carries it left of the table's edge until the lift, while the names under it now stay at the edge ([QUALS-PINCH-MID]). Not seen — worked out from the code; Chrome and the walk use the scroll-driven path. **To do:** the Leave War's answer (D1287, the fix read's finding 4): draw the still copy in both paths and hide the scroller's own name heading while pinching; a mid-pinch test with scroll-driven animations reported missing (the Leave War's `addInitScript` way, `e2e/leavewar.spec.ts` "where the browser cannot move the frozen dates by itself"). **Place:** with the next Quals job; whether his iPhone takes this path is checked first (if it never does, it may be left).
@@ -338,8 +330,8 @@ preview, 1 change redone, 61 merges); the next is due 14 Nov 26 (D1409 — the a
 `.github/workflows/secrets-scan.yml` + its self-test `raptor-port/scripts/secrets-scan-selftest.mjs` + `.gitleaksignore`;
 how it works and how to read a red run: `raptor-port/docs/gates-and-deploy.md` §Now (D1408). **Owed before it counts as
 proven:** its first run on GitHub (the self-test with the real gitleaks, and the whole-history scan, which runs on that
-same pull request) — read its summary, triage each history finding as that section says. **His to approve, never done by
-the agent (repository settings — read only on 31 Oct 26: GitHub's own secret scanning and push protection OFF, `main`
+same pull request) — read its summary, triage each history finding as that section says. **Both settings below DONE by him, 31 Oct 26** (D1535, D1540 — read back: GitHub's own scanning and push protection on; the ruleset "main: secrets scan" active, no bypass, requiring `secrets scan`; `raptor-port/docs/gates-and-deploy.md` §Now). The steps as they were put to him: **His to approve, never done by
+the agent (repository settings — read only on 31 Oct 26, before he switched them on: GitHub's own secret scanning and push protection OFF, `main`
 unprotected, no rulesets):** (a) make `secrets scan` a required check — GitHub → the repository → Settings → Rules →
 Rulesets → New ruleset → New branch ruleset; name "main"; Enforcement: Active; Target branches: Add target → Include
 default branch; tick "Require status checks to pass", Add checks → type `secrets scan` → pick it (source GitHub Actions;
