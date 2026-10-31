@@ -333,6 +333,50 @@ that pinches after another pinch checks that its own pinch changed the zoom (fro
 nothing).* Round 2 adds a second for the same list: *a gesture whose page scrolls with it is walked turning direction
 before the lift — what the scroll unpins on the way out must not come back mid-gesture on the way in.*
 
+## Fix round 3 — the turned pinch left no date row (the host's look at round 2's pictures, 31 Oct 26)
+
+**The fault (in round 2's fix):** `after-fix2/*/L8-mid.png` — the turned pinch with no frozen date row and no month buttons at the
+top, the SXO group straight under the top bar, until the lift. Round 2's "may unpin, never pin anew" let the row go as the page
+scrolled up and kept it gone as the page came back down: D1287's "the frozen date row under the month buttons" broken. Round 2's
+L8 checks passed it — they read only that a frozen row, if any, was over its columns, never that a date row was there.
+
+**Red first** (the branch at 81e84207b, Chrome, real fingers): the two turned-pinch tests, extended to read that a heading row IS
+drawn under the top bar (the frozen row shown, or the table's / grid's own in sight below it) and never two —
+`e2e/leavewar.spec.ts` *"…a pinch out that turns back to a pinch in…"*: "a date row is drawn under the top bar" — no frozen row,
+the grid's own date row at −33 (the bar's foot at 49); `e2e/pinchzoom.spec.ts` the same for Quals — the table's own heading row
+at −219.
+
+**What was chosen:** while the fingers are down the frozen row is neither mounted, unmounted nor measured — a row frozen at the
+pinch's start STAYS, stretched with the grid as the pinch read it at its start (D1287's normal case), and is only HIDDEN while the
+grid's own date row (held from rising, so drawn at its place or lower) is in sight below the top bar, shown again the moment that
+row would pass under it. So a date row always stands under the top bar, and never two (his D1288 picture: a frozen row at the top
+and the grid's own lower down). A row not frozen at the start never needs one: the grid's date row, held from rising, never passes
+under the top bar. The lift clears the hiding and settles the pinned state and widths once, from rest. Not chosen: freezing the
+row shown for the whole gesture — on a pinch out part-way down the page scroll brings the grid's own date row into sight under it,
+the second date row D1288 took away. (`Matrix.tsx` and `QualsPage.tsx` `pin`; the hiding follows the page's scroll events, so it
+can trail the crossing by a frame.)
+
+**Checks after round 3 (under the lock):** the touched browser tests — every pinch, Ctrl+scroll, Quals, frozen-row and D128x test
+of the three files, which carry rounds 1–3's red-first tests: **65 passed, 21 skipped**; the build green as their server; unit,
+the touched files: **109 files, 1729 passed, 20 skipped**. Two test readings corrected on the way: a frozen row kept but hidden
+counts as absent (the Quals band reading had taken it as the heading row).
+
+**The walk script, v4:** every Leave War and Quals reading, at rest, mid-pinch and after the lift, now also asks that a date row /
+heading row IS drawn under the top bar and that there are never two; a hidden frozen row counts as absent.
+
+**The re-walk after round 3** (the builder's, nothing else running beside it): `after-fix3/chromium/`, `after-fix3/webkit/` — every
+`*-mid.png`, `L8-lift.png`, `Q9-lift.png`, `results.json`. **Chrome 372 of 372. WebKit 370 of 372:** L6 (the older reading,
+`[LW-PINCH-FROZEN-WEBKIT-OFF]`) and Q5 (scrolled sideways, a pinch in: the frozen headings read 47 px right of their columns
+mid-pinch) — Q5 passed in round 2's run and in two re-runs of WebKit's Quals walk just after (200 of 200 each), so it is
+intermittent and of the same family as L6 (WebKit's reading of the frozen row's sideways follow, paused while pinching); noted
+under that item, not chased. **To open:** `after-fix3/chromium/L8-mid.png`, `after-fix3/chromium/Q9-mid.png`, and their `webkit/`
+twins (`L8-lift.png`, `Q9-lift.png` beside them).
+
+**The lesson, again, and the rounds' cap:** round 3's miss is round 1's class — a check that read for what must not be drawn and
+never for what must. The proposed §7.11 lesson above is widened: *every pinned part a walk reads mid-gesture is read for presence
+as well as for place — is it there, in sight, the only one — not only "where it is, if it is there".* Three fix rounds reached
+(the order's cap, §5): what carries the rest is the red-first tests of all three rounds, the re-walk above and his iPhone look.
+
 ## Findings and dispositions
 
 | # | Finding | Found by | In this change? | Disposition |
@@ -344,10 +388,12 @@ before the lift — what the scroll unpins on the way out must not come back mid
 | 5 | WebKit's L1, L2, L4 failing only while the unit suite ran beside the walk | the builder's re-walk | — | timing-bound in WebKit's in-page touches; three quiet runs clean; noted |
 | 6 | WebKit's frozen date row read ~360 px off its columns mid-pinch in (L6) | the round-2 re-walk's new reading | no — origin/main the same | filed `[LW-PINCH-FROZEN-WEBKIT-OFF]` |
 | 7 | Quals' frozen name heading still carried left mid-pinch in, in a browser without scroll-driven animations | the builder, from the code | yes (the part this change leaves) | filed `[QUALS-PINCH-NOSDA-HEAD]`, with the read's tidiness note |
+| 9 | Round 2's turned pinch left no date row (Leave War) or heading row (Quals) under the top bar until the lift | the host's look at round 2's pictures (the script passed) | yes (round 2) | fixed red first, round 3 |
+| 10 | WebKit Q5 once: the frozen Quals headings read 47 px off mid-pinch in, scrolled sideways | the round-3 re-walk | — (did not repeat) | intermittent, noted with `[LW-PINCH-FROZEN-WEBKIT-OFF]` |
 | 8 | After a tap on a Quals heading (kept "hovered" on an iPhone), a pinch out with the row frozen could show rows faintly through that heading | the builder, from the code | yes (the see-through box) | not seen; for the host's look |
 
 ## The code read
 
 *(a fresh, blind Opus reader — owed)*
 
-`Walk: docs/handpass/2026-10-31-pinch-fixes.md · 155 pictures · 7 surfaces (the Leave War grid and Quals on a phone; the grid and Quals at his PC's size; the OIL tab, Balances, the board's desktop layout and the Tracker in the six-surface pinch) · 4 orders (a pinch in, a pinch out, a pinch out turned back in, a tap then a pinch) · MISSING: 1 filed ([QUALS-PINCH-NOSDA-HEAD])`  — the picture count is every picture the job holds under `docs/img/handpass/2026-10-31-pinch-fixes/`, after-fix2 included.
+`Walk: docs/handpass/2026-10-31-pinch-fixes.md · 193 pictures · 7 surfaces (the Leave War grid and Quals on a phone; the grid and Quals at his PC's size; the OIL tab, Balances, the board's desktop layout and the Tracker in the six-surface pinch) · 4 orders (a pinch in, a pinch out, a pinch out turned back in, a tap then a pinch) · MISSING: 1 filed ([QUALS-PINCH-NOSDA-HEAD]) · fix rounds: 3 (the walk; the code read; the host's look), each red first, re-walked after-fix1–3`  — the picture count is every picture the job holds under `docs/img/handpass/2026-10-31-pinch-fixes/`, after-fix3 included.

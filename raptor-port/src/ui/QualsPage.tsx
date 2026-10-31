@@ -688,7 +688,8 @@ export function QualsPage() {
       onEnd: () => {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = ''
-        document.querySelector('#page-quals .qfixed')?.classList.remove('q-pinching')
+        const fixedRow = document.querySelector<HTMLElement>('#page-quals .qfixed')
+        if (fixedRow) { fixedRow.classList.remove('q-pinching'); fixedRow.style.visibility = '' }
         qPinchingRef.current = false
         qRepinRef.current()
       },
@@ -758,16 +759,28 @@ export function QualsPage() {
          LOWER edge: the mirror freezes there the instant the real header would
          slide under it. Measured live, so it is right whatever the bar wrapped to. */
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* WHILE THE FINGERS ARE DOWN THE PINNED ROW STAYS AS IT WAS AT THE PINCH'S START (the code read of 31 Oct 26, finding
+         1, and the fix rounds 2–3; D1110). Part-way down a pinch out scrolls the page up with the pinch (`scrollPage`) and a
+         pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the stretched table with
+         widths measured off stretched cells (round 2's find); let go until the lift, no heading row stood under the top bar
+         (round 3's). So while pinching nothing is mounted, unmounted or measured: a row frozen at the start stays, stretched
+         by the pinch with the table, and is only hidden while the table's own heading row — held from rising, so drawn at
+         its place or lower — is in sight below the top bar (two heading rows, never: the Leave War's D1288 picture), shown
+         again the moment that row would pass under it. A row not frozen at the start never needs one: its own heading row,
+         held from rising, never passes under the top bar. The lift settles it once, from rest (`qRepinRef`). */
+      if (qPinchingRef.current) {
+        const fixedRow = document.querySelector<HTMLElement>('#page-quals .qfixed')
+        if (fixedRow) {
+          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
+          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+        }
+        return
+      }
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
-        /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the
-           pinch and the row unpins above; turning back to a pinch in scrolls it down again, and the row was pinned anew
-           mid-gesture — drawn at rest over the stretched table (the pinch stretches only the parts it read at its start)
-           with widths measured off stretched cells, kept if the pinch ended at the zoom it began at. While the fingers are
-           down it may unpin, never pin or measure anew; the lift measures it once (`qRepinRef`). And never a stretched
-           table measured, whoever asks (a cell's own box under a stretch is k times its width). */
-        if (qPinchingRef.current || tblRef.current?.style.transform) return prev
+        /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
+        if (tblRef.current?.style.transform) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()

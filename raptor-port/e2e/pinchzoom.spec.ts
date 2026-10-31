@@ -244,7 +244,9 @@ test.describe('Quals on a phone pinches (D1110)', () => {
   /** points down one column, from the pinned heading row's foot (the copy under the top bar while it is up, else the
    *  table's own heading row, as drawn) to `yTo`, where no cell of the table or of the pinned row is drawn: a band */
   const bandUnderHeading = (page: Page, x: number, yTo: number) => page.evaluate(([x, yTo]) => {
-    const mirror = document.querySelector('[data-testid="qsticky-head"]')
+    /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+    const m0 = document.querySelector('[data-testid="qsticky-head"]')
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
     const heads = [...(mirror ?? document.getElementById('qtbl')!.tHead!).querySelectorAll('th')].map(t => t.getBoundingClientRect()).filter(r => r.width > 0)
     const foot = Math.max(...heads.map(r => r.bottom))
     const bare: string[] = []
@@ -260,7 +262,8 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const wrapL = document.querySelector('#page-quals .qwrap')!.getBoundingClientRect().left
     const names = [...document.querySelectorAll<HTMLElement>('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(r => r.bottom > 60 && r.top < innerHeight)
     const off = names.filter(r => Math.abs(r.left - wrapL) > 1.5).map(r => Math.round(r.left))
-    const mirror = document.querySelector('[data-testid="qsticky-head"]')
+    const m0 = document.querySelector('[data-testid="qsticky-head"]')
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
     const head = (mirror?.querySelector('.qfixed-frozen th[data-sort="cs"]') ?? document.querySelector('#qtbl thead th[data-sort="cs"]'))!.getBoundingClientRect()
     return { wrapL, n: names.length, off, headL: head.left, headR: head.right, nameR: names[0]?.right ?? null, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
   })
@@ -323,7 +326,12 @@ test.describe('Quals on a phone pinches (D1110)', () => {
       const mir = m ? [...m.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].map(t => t.getBoundingClientRect()) : []
       const off: string[] = []
       mir.forEach((r, i) => { const q = real[i]; if (!q || r.right < 0 || r.left > innerWidth) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
-      return { frozen: !!m, off, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+      /* …and a heading row IS drawn under the top bar (fix round 3 — round 2's turned pinch left none until the lift): the
+         frozen row, shown, or the table's own heading row in sight below the bar — never both (a second heading row) */
+      const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const shown = !!m && getComputedStyle(m).visibility !== 'hidden'
+      const ownTop = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect().top
+      return { frozen: !!m, shown, ownTop: Math.round(ownTop), bar: Math.round(bar), headingRow: shown || ownTop >= bar - 1, twoRows: shown && ownTop > bar + 2 && ownTop < innerHeight, off, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
     })
     const z0 = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
     /* out from 230 to 80 apart, then back to 230 — the zoom it began at — the fingers level */
@@ -336,6 +344,8 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const mid = await lineUp()
     await touch(cdp, 'touchEnd', []); await sleep(700)
     const after = await lineUp()
+    expect.soft(mid.headingRow, `mid-gesture, a heading row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
+    expect.soft(mid.twoRows, `mid-gesture, never two heading rows (${JSON.stringify(mid)})`).toBe(false)
     expect.soft(mid.off, `mid-gesture, a frozen heading row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
     expect(await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1')), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
     expect(after.frozen, 'after the lift the heading row is frozen again').toBe(true)

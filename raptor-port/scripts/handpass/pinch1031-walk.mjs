@@ -17,7 +17,7 @@ const [, , DIST = 'dist', OUT0 = 'C:/pinch1031', ONLY] = process.argv
 const ENGINE = process.env.ENGINE === 'webkit' ? 'webkit' : 'chromium'
 const OUT = join(OUT0, ENGINE)
 mkdirSync(OUT, { recursive: true })
-console.log(`pinch1031-walk v3 — ${ENGINE}, ${DIST}`)
+console.log(`pinch1031-walk v4 — ${ENGINE}, ${DIST}`)
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 const ORIGIN = 'http://localhost:4196'
 const results = []
@@ -92,7 +92,9 @@ const lwRead = yTo => {
   const corner = q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who').getBoundingClientRect()
   const lve = q('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.bal').getBoundingClientRect()
   const band = q('#page-leavewar [data-testid="frozen-cols"]')
-  const sticky = q('#page-leavewar [data-testid="sticky-head"]')
+  /* a frozen row kept but hidden while the fingers are down (fix round 3) counts as absent */
+  const sticky0 = q('#page-leavewar [data-testid="sticky-head"]')
+  const sticky = sticky0 && getComputedStyle(sticky0).visibility !== 'hidden' ? sticky0 : null
   const frozenCorner = sticky?.querySelector('.mxfixed-frozen')?.getBoundingClientRect() ?? null
   const bar = q('.topbar')?.getBoundingClientRect().bottom ?? 0
   const was = band ? band.style.pointerEvents : ''
@@ -127,7 +129,10 @@ const lwRead = yTo => {
   })
   const bandR = band && getComputedStyle(band).visibility !== 'hidden' ? band.getBoundingClientRect() : null
   return {
-    over, blank, lineOff: lineOff.slice(0, 6), stuck: !!sticky, inSight: corner.bottom > bar && corner.top < innerHeight,
+    over, blank, lineOff: lineOff.slice(0, 6), stuck: !!sticky,
+    /* (fix round 3) a date row IS drawn under the top bar — the frozen row shown, or the grid's own in sight below the bar —
+       and never both */
+    dateRow: !!sticky || corner.top >= bar - 1, twoRows: !!sticky && corner.top > bar + 2 && corner.top < innerHeight, inSight: corner.bottom > bar && corner.top < innerHeight,
     cornerT: Math.round(corner.top), cornerB: Math.round(corner.bottom), bandT: bandR ? Math.round(bandR.top) : null,
     cornerOff: Math.round((corner.left - wrap.left) * 10) / 10, bandOff: bandR ? Math.round((bandR.left - wrap.left) * 10) / 10 : null,
     frozenOff: frozenCorner ? Math.round((frozenCorner.left - wrap.left) * 10) / 10 : null,
@@ -142,6 +147,8 @@ const lwJudge = (id, when, r) => {
   if (r.bandOff !== null) check(id, `${when}: the names at the grid's left edge`, Math.abs(r.bandOff) < 1.5, r)
   if (r.frozenOff !== null) check(id, `${when}: the frozen dates' corner at the left edge`, Math.abs(r.frozenOff) < 1.5, r)
   if (r.stuck) check(id, `${when}: the frozen date row over its columns`, r.lineOff.length === 0, r)
+  check(id, `${when}: a date row drawn under the top bar (frozen, or the grid's own in sight)`, r.dateRow, r)
+  check(id, `${when}: never two date rows`, !r.twoRows, r)
 }
 /* the date row at about 150 down the screen, part-way down the page */
 const lwPartWay = async (p, manningOpen) => {
@@ -202,7 +209,8 @@ if (!ONLY || ONLY === 'lw') for (const [id, what, reach] of LW) {
    pinned heading over its column. */
 const qRead = yTo => {
   const wrap = document.querySelector('#page-quals .qwrap').getBoundingClientRect()
-  const mirror = document.querySelector('[data-testid="qsticky-head"]')
+  const mirror0 = document.querySelector('[data-testid="qsticky-head"]')
+  const mirror = mirror0 && getComputedStyle(mirror0).visibility !== 'hidden' ? mirror0 : null
   const tbl = document.getElementById('qtbl')
   const heads = [...(mirror ?? tbl.tHead).querySelectorAll('th')].map(t => t.getBoundingClientRect()).filter(r => r.width > 0)
   const foot = Math.max(...heads.map(r => r.bottom))
@@ -224,8 +232,12 @@ const qRead = yTo => {
   const head = (mirror?.querySelector('.qfixed-frozen th[data-sort="cs"]') ?? mirror?.querySelector('th[data-sort="cs"]') ?? tbl.querySelector('thead th[data-sort="cs"]')).getBoundingClientRect()
   const real = [...tbl.querySelectorAll('thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect())
   const mir = mirror ? [...mirror.querySelectorAll('.qfixed-scroll thead tr:last-child > th')].slice(1, 8).map(t => t.getBoundingClientRect()) : []
+  const barQ = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const ownTop = tbl.querySelector('thead th[data-sort="cs"]').getBoundingClientRect().top
   return {
-    bare, stuck: !!mirror, foot: Math.round(foot), names: names.length,
+    bare, stuck: !!mirror,
+    /* (fix round 3) a heading row IS drawn under the top bar — the frozen row shown, or the table's own in sight — never both */
+    headingRow: !!mirror || ownTop >= barQ - 1, twoRows: !!mirror && ownTop > barQ + 2 && ownTop < innerHeight, foot: Math.round(foot), names: names.length,
     namesOff: names.filter(r => Math.abs(r.left - wrap.left) > 1.5).map(r => Math.round(r.left)),
     headOff: Math.round((head.left - wrap.left) * 10) / 10, headWidthOff: names[0] ? Math.round((head.right - names[0].right) * 10) / 10 : null,
     columnsOff: mir.map((r, i) => (Math.abs(r.left - real[i].left) > 3 || Math.abs(r.width - real[i].width) > 2) ? `${i + 1}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(real[i].left)}/${Math.round(real[i].width)}` : null).filter(Boolean),
@@ -238,6 +250,8 @@ const qJudge = (id, when, r) => {
   check(id, `${when}: the pinned name heading at the left edge`, Math.abs(r.headOff) < 1.5, r)
   if (r.headWidthOff !== null) check(id, `${when}: the name heading as wide as the names under it`, Math.abs(r.headWidthOff) < 2, r)
   if (r.stuck) check(id, `${when}: every pinned heading over its column, as wide as it`, r.columnsOff.length === 0, r)
+  check(id, `${when}: a heading row drawn under the top bar (frozen, or the table's own in sight)`, r.headingRow, r)
+  check(id, `${when}: never two heading rows`, !r.twoRows, r)
 }
 const qScroll = (y, x = 0, view = null) => async s => {
   if (view) { await s.p.locator('.segview button', { hasText: view }).first().click(); await sleep(500) }

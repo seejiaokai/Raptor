@@ -5783,7 +5783,9 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
        group heading or another pinned row's name cell — never a day cell of the grid showing through. */
     const namesShown = (yTo: number) => page.evaluate(yTo => {
       const wrapL = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left
-      const sticky = document.querySelector('#page-leavewar [data-testid="sticky-head"] .mxfixed-frozen')
+      /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+      const fixedRow = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
+      const sticky = fixedRow && getComputedStyle(fixedRow).visibility !== 'hidden' ? fixedRow.querySelector('.mxfixed-frozen') : null
       const head = (sticky ?? document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!).getBoundingClientRect().bottom
       const band = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')!
       const was = band.style.pointerEvents
@@ -5944,7 +5946,13 @@ test.describe('mid-pinch, the page moves with the grid and the pinned parts stay
       const mir = m ? [...m.querySelectorAll('.mxfixed-scroll tbody.mxhead th')].map(t => t.getBoundingClientRect()) : []
       const off: string[] = []
       mir.forEach((r, i) => { const q = real[i]; if (i < 2 || !q || r.right < 0 || r.left > innerWidth || q.width < 2) return; if (Math.abs(r.left - q.left) > 3 || Math.abs(r.width - q.width) > 2) off.push(`${i}: ${Math.round(r.left)}/${Math.round(r.width)} over ${Math.round(q.left)}/${Math.round(q.width)}`) })
-      return { frozen: !!m, off: off.slice(0, 8), n: off.length, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
+      /* …and a date row IS drawn under the top bar (fix round 3 — round 2's turned pinch left none, the SXO group straight
+         under the bar, until the lift; D1287: the pinned parts stay pinned): the frozen row, shown, or the grid's own date
+         row in sight below the bar — never both (his D1288 picture: a second date row) */
+      const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const shown = !!m && getComputedStyle(m).visibility !== 'hidden'
+      const ownTop = document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!.getBoundingClientRect().top
+      return { frozen: !!m, shown, ownTop: Math.round(ownTop), bar: Math.round(bar), dateRow: shown || ownTop >= bar - 1, twoRows: shown && ownTop > bar + 2 && ownTop < innerHeight, off: off.slice(0, 8), n: off.length, transformed: !!(document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.transform }
     })
     const zoom = () => page.evaluate(() => parseFloat((document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
     const z0 = await zoom()
@@ -5960,6 +5968,8 @@ test.describe('mid-pinch, the page moves with the grid and the pinned parts stay
     await touch('touchEnd', []); await page.waitForTimeout(800)
     await cdp.detach()
     const after = await lineUp()
+    expect.soft(mid.dateRow, `mid-gesture, a date row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
+    expect.soft(mid.twoRows, `mid-gesture, never two date rows (${JSON.stringify(mid)})`).toBe(false)
     expect.soft(mid.off, `mid-gesture, a frozen date row stands over its columns (${JSON.stringify(mid)})`).toEqual([])
     expect(await zoom(), 'the pinch ended at the zoom it began at').toBeCloseTo(z0, 3)
     expect(after.frozen, 'after the lift the date row is frozen again').toBe(true)

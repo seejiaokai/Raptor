@@ -1317,7 +1317,8 @@ export function Matrix() {
          zoom measures it again through the mirror effect's own `zoom`) */
       onEnd: () => {
         const a = anim(); if (a) a.style.animationPlayState = ''
-        outer.querySelector('.mxfixed')?.classList.remove('lw-pinching')
+        const fixedRow = outer.querySelector<HTMLElement>('.mxfixed')
+        if (fixedRow) { fixedRow.classList.remove('lw-pinching'); fixedRow.style.visibility = '' }
         outer.classList.remove('lw-pinching')
         pinchingRef.current = false
         repinRef.current()
@@ -1975,16 +1976,29 @@ export function Matrix() {
       // LOWER edge: the mirror freezes there the instant the real header would
       // slide under it. Both phone and desktop now (owner, 27 Aug 26).
       const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      /* WHILE THE FINGERS ARE DOWN THE FROZEN DATE ROW STAYS AS IT WAS AT THE PINCH'S START (D1287: the pinned parts stay
+         pinned; the code read of 31 Oct 26, finding 1, and the fix rounds 2–3). Since D1288 a pinch out scrolls the page up
+         with the pinch and a pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the
+         stretched grid with widths measured off stretched cells (round 2's find); let go until the lift, no date row stood
+         under the top bar, the first group straight under it (round 3's). So while pinching nothing is mounted, unmounted
+         or measured: a row frozen at the start stays, stretched by the pinch with the grid (`alsoTL`, `alsoIn`, `also`), and
+         is only hidden while the grid's own date row — held from rising, so drawn at its place or lower — is in sight below
+         the top bar (his D1288 picture: never a second date row), shown again the moment that row would pass under it. A
+         row not frozen at the start never needs one: the grid's date row, held from rising, never passes under the top
+         bar. The lift settles it once, from rest (`repinRef`, from the pinch's onEnd). */
+      if (pinchingRef.current) {
+        const fixedRow = mirrorRef.current?.parentElement
+        if (fixedRow) {
+          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
+          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+        }
+        return
+      }
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
       setStuck(prev => {
         if (prev && !force) return prev
-        /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1 — since D1288 scrolls the page with a pinch): with the
-           dates frozen, a pinch out scrolls the page up and the row unpins; turning back to a pinch in scrolls it down
-           again, and the row was pinned anew mid-gesture — drawn at rest over the stretched grid (the pinch stretches only
-           the parts it read at its start) with widths measured off stretched cells, kept if the pinch ended at the zoom
-           it began at. While the fingers are down it may unpin, never pin or measure anew; the lift measures it once
-           (`repinRef`, from the pinch's onEnd). And never a stretched grid measured, whoever asks. */
-        if (pinchingRef.current || (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform)) return prev
+        /* never a stretched grid measured, whoever asks (a cell's own box under a stretch is k times its width) */
+        if (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform) return prev
         const wrap = wrapRef.current
         if (!wrap) return prev
         const wr = wrap.getBoundingClientRect()
