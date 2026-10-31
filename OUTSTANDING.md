@@ -205,6 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
 - [REACT-DOCTOR-CLEANUP] — the code check's clean-up batch before new feature work: the errors, the missed updates, the whole Tracker (D1534).
+- [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
@@ -249,6 +250,13 @@ at that build. The other areas' remaining findings ride with each area's next ba
 would change what a person sees is shown to him first (D853). The findings list: the move plan §3
 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
 batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
+
+### [AIRCRAFT-TYPE-SETTING] Each deployment set to its aircraft type by a setting (D1536, 31 Oct 26)
+**What:** one code base serves every aircraft type (D1100, D1101); each deployment — F-15, F-16, F-35, each with its own
+database — is set to its type by a setting, not by changing code. Today the app names the type in a few places as the bare
+"F-15" (D63); the setting would supply it, and anything else that differs by type. Built at the database step or hand-over,
+not now; the plan's point 2 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`). What the setting holds, and
+who may change it, is put to him at that build.
 
 ### [M365-HOSTING-TRIAL] The app on his own M365 with no database — a hosting trial (D1532, 31 Oct 26)
 **What:** at a good stopping point in the Tracker's work (the agent proposes it, he agrees first), the app is put on his own
