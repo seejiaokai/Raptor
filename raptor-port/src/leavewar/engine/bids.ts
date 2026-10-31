@@ -46,10 +46,10 @@ export type BidSource = 'bid' | 'raptor'
 
 export interface BidRecord {
   state: BidState
-  /** The last authority to write this cell, NOT where it first came from. A
-   *  cell round-trips — bid, approved, out to Raptor, edited there, back —
-   *  and after that last step Raptor is what owns it. */
-  source: BidSource
+  /** A BARE GRID'S OWN MARK — the engine's fixtures only ([LW-LOCKMARK], 31 Oct 26): which side wrote the cell, read by
+   *  `charge.ts legacyViews` when a source carries no day views. The live war never writes it: its records come from the
+   *  merge with their day views, and whether a day is locked is asked of those (`dayview.ts lockedOnWar`). */
+  source?: BidSource
   /** The date management moved this bid from, when they shifted it. Absent
    *  on a bid that landed where it was asked for. */
   shiftedFrom?: string
@@ -77,18 +77,6 @@ export function recordOf(states: States, personId: string, date: string): BidRec
  *  keep asking it. */
 export function stateOf(states: States, personId: string, date: string): BidState | undefined {
   return recordOf(states, personId, date)?.state
-}
-
-export function sourceOf(states: States, personId: string, date: string): BidSource | undefined {
-  return recordOf(states, personId, date)?.source
-}
-
-/** The question every write path asks first. `source:'raptor'` on the merged
- *  view means "locked on the war": leave filed on the Inputs page, or a
- *  medical — it is changed on the Inputs page, never here ([ARCH-STACK] step 4:
- *  the Input is the one record, so there is nothing to sync back). */
-export function raptorOwns(states: States, personId: string, date: string): boolean {
-  return sourceOf(states, personId, date) === 'raptor'
 }
 
 export function shiftedFrom(states: States, personId: string, date: string): string | undefined {

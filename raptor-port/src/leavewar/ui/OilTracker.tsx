@@ -126,8 +126,10 @@ const yearOf = (date: string, fallback: string) => (date ? date.slice(0, 4) : fa
 
 /** A whole-number field that commits on blur or Enter, so a person can clear
  *  it and retype without the store refusing the empty moment. */
-function IntField({ testid, value, min, max, onCommit }: {
+function IntField({ testid, label, value, min, max, onCommit }: {
   testid: string
+  /** what the box holds, read aloud (its row's words say it on screen) */
+  label: string
   value: number
   min: number
   max: number
@@ -146,6 +148,7 @@ function IntField({ testid, value, min, max, onCommit }: {
       type="number"
       className="oil-num"
       data-testid={testid}
+      aria-label={label}
       min={min}
       max={max}
       value={draft}
@@ -167,6 +170,7 @@ function IntField({ testid, value, min, max, onCommit }: {
    is one — so what it drives stays whole: the row is scrolled into view AND
    lit (`here` on the row, `oiltracker.css`). Opening on a person is a live
    feature; only opening on a day went. */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the tracker's grid, its grant and edit forms and its settings share one set of state (the open editor, the archive, the range, the pinch); split, its hooks and the order its layout effects run in would move
 export function OilTracker({ person, onClose, onGranted }: {
   /** Scroll to this person's row on open (the Cinch's OIL BAL); `null` opens
    *  at the top. */
@@ -405,13 +409,13 @@ export function OilTracker({ person, onClose, onGranted }: {
 
   /* ---- editing an award or a correction ---------------------------------- */
   const startEdit = (c: OilCredit) => {
-    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); setEIsCorr(false); setEHalf(c.half ?? null)
+    setEditId(c.ledgerId!); setEAmt(String(c.amount)); setEDate(c.date); setEReason(c.reason); setEGiven(c.givenBy ?? ''); setEErr(''); setArmDel(null); eIsCorr.current = false; setEHalf(c.half ?? null)
   }
   /* A CORRECTION's editor has no "given by" box, so the save leaves the one it has alone — it used to send the blank and
      wipe it (Astra's final read, OA-002) */
-  const [eIsCorr, setEIsCorr] = useState(false)
+  const eIsCorr = useRef(false)   // a ref: never drawn, read only by the save
   const saveEdit = () => {
-    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr ? {} : { givenBy: eGiven }), ...(!eIsCorr && eHalf ? { half: eHalf } : {}) })
+    const problem = updateLedgerEntry(editId!, { amount: Number(eAmt), date: eDate, reason: eReason, ...(eIsCorr.current ? {} : { givenBy: eGiven }), ...(!eIsCorr.current && eHalf ? { half: eHalf } : {}) })
     if (problem) { setEErr(problem); return }
     setEditId(null)
     done()
@@ -440,6 +444,7 @@ export function OilTracker({ person, onClose, onGranted }: {
             {exp && (
               <IntField
                 testid="oil-exp-n"
+                label={`OIL lasts, in ${exp.unit}`}
                 value={exp.n}
                 min={1}
                 max={exp.unit === 'days' ? MAX_EXPIRY_DAYS : MAX_EXPIRY_MONTHS}
@@ -458,7 +463,7 @@ export function OilTracker({ person, onClose, onGranted }: {
             <button className={`tchip${oilPolicy.historyMonths === null ? ' on' : ''}`} data-testid="oil-hist-first" onClick={() => setOilPolicy({ historyMonths: null })}>From first entry</button>
             <button className={`tchip${oilPolicy.historyMonths !== null ? ' on' : ''}`} data-testid="oil-hist-months" onClick={() => setOilPolicy({ historyMonths: oilPolicy.historyMonths ?? 6 })}>Last N months</button>
             {oilPolicy.historyMonths !== null && (
-              <IntField testid="oil-hist-n" value={oilPolicy.historyMonths} min={1} max={MAX_HISTORY_MONTHS} onCommit={n => setOilPolicy({ historyMonths: n })} />
+              <IntField testid="oil-hist-n" label="History, in months" value={oilPolicy.historyMonths} min={1} max={MAX_HISTORY_MONTHS} onCommit={n => setOilPolicy({ historyMonths: n })} />
             )}
           </div>
           <span className="note">The window the tracker opens on. Anyone can widen or narrow it while looking.</span>
@@ -587,6 +592,7 @@ export function OilTracker({ person, onClose, onGranted }: {
           </div>
           <div className="l3">
             {/* one row per take (owner, 2 Sep 26 — "subsequent inputs on a new row") */}
+            {/* eslint-disable-next-line react-doctor/no-array-index-as-key -- a credit's takes in the ledger's order, drawn afresh from it and never edited in place; two takes may share a day and an amount, so the place is their only identity */}
             <span className="tk">{c.used.map((u, i) => <span key={i} className="tk1">−{show(u.amount)} {dmy(u.date, lane)}</span>)}</span>
             <span className={`left${c.expired ? ' zero exp' : c.left === 0 ? ' zero' : ''}`} data-testid={`oil-status-${tid(c.id, c.ledgerId)}`}>
               {c.expired ? `expired ${dmy(c.expires!, lane)}` : `${show(c.left)} left`}
@@ -621,7 +627,7 @@ export function OilTracker({ person, onClose, onGranted }: {
       )
     }
     const canEdit = admin && d.source === 'correction'
-    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); setEIsCorr(true) }
+    const startCorrEdit = () => { setEditId(d.ledgerId!); setEAmt(String(-d.amount)); setEDate(d.date); setEReason(d.reason); setEGiven(''); setEErr(''); setArmDel(null); eIsCorr.current = true }
     return (
       <div
         key={d.id}
@@ -697,6 +703,7 @@ export function OilTracker({ person, onClose, onGranted }: {
             </span>
           )}
         </td>
+        {/* eslint-disable-next-line react-doctor/click-events-have-key-events -- each row's archive cell is a pointer's shortcut to the ONE Archive switch in the heading (a button, a Tab stop, Enter and Space) — the keyboard's route; a Tab stop here would add one per person for the same switch */}
         <td className={`oil-arch f c3${archiveOpen ? ' open' : ''}`} data-testid={`oil-arch-${p.id}`} onClick={toggleArchive} title={archivedN ? `${archivedN} used-up credit${archivedN === 1 ? '' : 's'} in the archive` : undefined}>
           {archivedN > 0 && <span className="an">{archivedN}</span>}
         </td>

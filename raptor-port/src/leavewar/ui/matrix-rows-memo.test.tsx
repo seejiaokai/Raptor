@@ -28,7 +28,7 @@ const recId = (d: string) => recordsAt('ramp', d).find(r => r.kind === 'request'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { Matrix } from './Matrix'
-import { closeDayPanel } from './DayPanel'
+import { closeDayPanel } from './daypanelopen'
 
 beforeEach(() => { initStore(memoryBackend()); elevenCounters(); act(() => { setRole('admin') }) })
 

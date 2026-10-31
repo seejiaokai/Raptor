@@ -1,0 +1,63 @@
+[
+ {
+  "id": "R2-5 D1542 the link for a man with no row reads \"Decide it in Approvals ›\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[\"Zenith Sat 18 Jul Decide it in Approvals › Weekend/PH work earns HO* (AM), but the day holds LL\"]",
+  "pics": [
+   "r2-phone-5-note-sans-off"
+  ]
+ },
+ {
+  "id": "R2-6 D1542 its tap opens Approvals with his request ringed, in view",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"up\":true,\"ringed\":[\"appr-line-vinci\"],\"ringInView\":true}",
+  "pics": [
+   "r2-phone-6-tap-sans-off"
+  ]
+ },
+ {
+  "id": "R2-7 D1542 a man with a row keeps \"Decide the bid ›\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[\"Zenith Sat 18 Jul Decide the bid › Weekend/PH work earns HO* (AM), but the day holds LL\"]",
+  "pics": [
+   "r2-phone-7-note-sans-back"
+  ]
+ },
+ {
+  "id": "R2-8 his day opens for him, as before",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"dayList\":\"Zenith Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. LL Pending Placed Saber · Wed 4 Nov, 09:00 Approve Refuse ⇄Mo\",\"oneDay\":null}",
+  "pics": [
+   "r2-phone-8-tap-sans-back"
+  ]
+ },
+ {
+  "id": "R2-10 D1542 approved leave, no row: \"Change the leave on Inputs ›\"",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "[\"Zenith Sat 18 Jul Change the leave on Inputs › Weekend/PH work earns HO* (AM), but the day holds approved LL\"]",
+  "pics": [
+   "r2-phone-10-note-approved-sans-off"
+  ]
+ },
+ {
+  "id": "R2-11 D1542 its tap opens that leave own window on the Inputs page",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "{\"page\":\"inputs\",\"win\":{\"type\":\"LL\",\"text\":\"⠿ Zenith · 18 Jul ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 18 Jul DATES July 2026 › 13 ‹ \"}}",
+  "pics": [
+   "r2-phone-11-tap-approved-sans-off"
+  ]
+ },
+ {
+  "id": "R2 clash note link for a man with no row",
+  "size": "phone",
+  "verdict": "RECORDED",
+  "said": "fixture: {\"man\":\"Zenith\",\"ground\":[\"Range brief vinci\"]} || 1 + SANS on: {\"how\":\"pressed \\\"+ SANS\\\"\",\"groupBefore\":0,\"offerChipVisible\":true,\"groupAfter\":1} || 1 his row drawn: 1 || 2 his bid LL placed (Auto-approve off → pending): {\"ok\":true,\"cell\":\"HO*:s-a,LL:s-w\",\"inputs\":[]} || 3 clash note, SANS on: {\"found\":1,\"head\":\"⚠ 1 clash with the schedule Hide\",\"rows\":[\"Zenith Sat 18 Jul Decide the bid › Weekend/PH work earns HO* (AM), but the day holds LL\"]} || 3b tap with SANS on: {\"pressed\":true,\"text\":\"Zenith Sat 18 Jul Decide the bid › Weekend/PH work earns HO* (AM), but the day holds LL\",\"dayList\":\"Zenith Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. LL Pending Placed Saber · Wed 4 Nov, 09:00 Approve Refuse ⇄Mo\",\"oneDay\":null,\"dialogs\":[\"daylist-sheet: Zenith Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. L\"],\"page\":\"leavewar\",\"highlighted\":[],\"said\":[\"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.\",\"Saturday published and approved\"],\"newNotes\":[]} || 4 SANS taken off: {\"how\":\"pressed the SANS group's ✕\",\"groupBefore\":1,\"offerChipVisible\":false,\"groupAfter\":0} || 4 his row drawn: 0 || 5 clash note, SANS off (opened): {\"found\":1,\"head\":\"⚠ 1 clash with the schedule Hide\",\"rows\":[\"Zenith Sat 18 Jul Decide it in Approvals › Weekend/PH work earns HO* (AM), but the day holds LL\"]} || 5 names the man: {\"Zenith\":true} || 6 tap with SANS off (no row for him): {\"pressed\":true,\"text\":\"Zenith Sat 18 Jul Decide it in Approvals › Weekend/PH work earns HO* (AM), but the day holds LL\",\"dayList\":null,\"oneDay\":null,\"dialogs\":[],\"page\":\"leavewar\",\"highlighted\":[],\"said\":[\"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.\",\"Saturday published and approved\"],\"newNotes\":[],\"approvals\":{\"up\":true,\"ringed\":[\"appr-line-vinci\"],\"ringInView\":true}} || 6 after closing: page, windows: {\"dayList\":null,\"oneDay\":null,\"dialogs\":[],\"page\":\"leavewar\",\"highlighted\":[],\"said\":[\"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.\",\"Saturday published and approved\"]} || 7 + SANS back on: {\"how\":\"pressed \\\"+ SANS\\\"\",\"groupBefore\":0,\"offerChipVisible\":true,\"groupAfter\":1} || 7 clash note, SANS back on: {\"found\":1,\"head\":\"⚠ 1 clash with the schedule Hide\",\"rows\":[\"Zenith Sat 18 Jul Decide the bid › Weekend/PH work earns HO* (AM), but the day holds LL\"]} || 8 tap with \"+ SANS\" back on: {\"pressed\":true,\"text\":\"Zenith Sat 18 Jul Decide the bid › Weekend/PH work earns HO* (AM), but the day holds LL\",\"dayList\":\"Zenith Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. LL Pending Placed Saber · Wed 4 Nov, 09:00 Approve Refuse ⇄Mo\",\"oneDay\":null,\"dialogs\":[\"daylist-sheet: Zenith Sat 18 Jul ✕ Two of these can’t both stand on the same time — an admin needs to change one. L\"],\"page\":\"leavewar\",\"highlighted\":[],\"said\":[\"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.\",\"Saturday published and approved\"],\"newNotes\":[]} || 9 his bid approved on Approvals: approved || 9 his war leave: [{\"iid\":\"imw1euuwvm2n2dc\",\"type\":\"LL\",\"date\":\"Jul 18\",\"end\":null}] || 10 SANS taken off again: {\"how\":\"pressed the SANS group's ✕\",\"groupBefore\":1,\"offerChipVisible\":false,\"groupAfter\":0} || 10 clash note, approved leave, SANS off: {\"found\":1,\"head\":\"⚠ 1 clash with the schedule Hide\",\"rows\":[\"Zenith Sat 18 Jul Change the leave on Inputs › Weekend/PH work earns HO* (AM), but the day holds approved LL\"]} || 11 tap: the leave own window: {\"page\":\"inputs\",\"window\":{\"type\":\"LL\",\"text\":\"⠿ Zenith · 18 Jul ✕ PERSON Several people TYPE ? DURATION ALL DAY AM PM CUSTOM DOCUMENT Document REMARKS till 18 Jul DATES July 2026 › 13 ‹ \"},\"leave\":{\"iid\":\"imw1euuwvm2n2dc\",\"type\":\"LL\",\"date\":\"Jul 18\",\"end\":null}} || errors: none",
+  "pics": []
+ }
+]

@@ -11,7 +11,7 @@ import { QCHIP } from '../../engine/people'
 import { catClass, catText, type Person } from '../engine'
 
 /** The chip's words: the schedule's own letter where it has one ("O" for OCU), "G" for ground personnel (D1470). */
-export function chipText(p: Person): string {
+function chipText(p: Person): string {
   if (p.pers || p.seat === 'gnd') return 'G'
   const t = catText(p)
   return (QCHIP as Record<string, string>)[t] ?? t
@@ -32,6 +32,7 @@ export function NamePuck({ p, quals, testid, onChipEnter, onChipLeave, onChipCli
   return (
     <span className={cls}>
       <span className="nm">{p.callsign}</span>
+      {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the chip sits inside the name's own button (the row's one Tab stop, which opens his person window), where a control of its own is not allowed; the qualifications it lists are read out as part of that button's name, from the chip's label */}
       <span
         className={`role lw-chip ${catClass(p)}${has ? ' has-quals' : ''}`}
         data-testid={testid}

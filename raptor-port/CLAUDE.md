@@ -21,6 +21,8 @@ load in every chat. Map: §Where things live, at the end.
 
 **THE NEWEST OWNER INSTRUCTION WINS** (owner, 17 Sep 26; D90): where two rules conflict, follow the LATER-dated one and say which you followed and which you set aside; an undated rule loses to a dated one; if the newer one does not clearly cover the case, ask; fix the stale text in the same change · full text: docs/guide-full.md §The newest owner instruction wins
 
+**FLAG WHAT THE NEW PLATFORM CANNOT DO** (owner, 31 Oct 26 — D1551): when he asks for a feature, or one is designed, say at once if it cannot be done — or only differently, or with a paid licence or the IT side — in a Power Apps code app on Dataverse (D1532, D1536), so he can skip it; unsure, say so and how you will find out. The running list: `docs/superpowers/plans/2026-10-31-m365-move-plan.md` §Platform flags.
+
 **Reach 95% confidence before building.** If the request could reasonably
 mean two different things, or a choice would materially change the result,
 ask follow-up questions until it wouldn't. Small, unambiguous asks clear

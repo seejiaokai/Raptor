@@ -11,18 +11,21 @@
 // check — the buttons are only offered where it would succeed.
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
+import { warInputs, type WarInput } from '../absences'
 import { canDecide, canEditRow, codeInWords, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
-import { docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
+import { bidHeldWhy, docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { EntryBox } from './BidBits'
-import { draftOf, LeaveWords, patchOf, ReqWordsRows, runEnd, type FlushRef, type ReqDraft } from './ReqWords'
+import { LeaveWords, ReqWordsRows, type FlushRef } from './ReqWords'
+import { draftOf, patchOf, runEnd, type ReqDraft } from './reqdraft'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { Sheet } from './Sheet'
-import { PlacedOne, placedFacts } from './PlacedLine'
+import { PlacedOne } from './PlacedLine'
+import { placedFacts } from './placedfacts'
 import { dayLabel, enteredDay, shortDate } from './dates'   // one body for the day's list and the one-day sheets ([LW-ISO-DATES])
 import { halfWord } from './awardwords'
 import { HalfPick } from './CreditForm'
@@ -97,9 +100,11 @@ function BidWords({ personId, date, rec, onDone, flushRef }: { personId: string;
       }} />
   )
 }
+/* the schedule's inputs as the war reads them — typed once at the Leave War's edge (absences.ts warInputs) */
+const inputRows = (): readonly WarInput[] => warInputs()
 /** an entry's remarks and documents, read only — what the Inputs page holds for one filed there (D1315), or another man's:
  *  the typed words as every screen prints them, the "till <date>" after them (D948) — nothing where none were typed */
-function readOnly(id: string, row: any, raw = false): ReactElement | null {
+function readOnly(id: string, row: Pick<WarInput, 'remarks' | 'docId' | 'docIds'>, raw = false): ReactElement | null {
   const words = raw ? String(row.remarks ?? '').trim() : remarksTyped(row.remarks, row) ? remarksShown(row) : ''
   const docs = rowDocIds(row)
   if (!words && !docs.length) return null
@@ -112,6 +117,7 @@ function readOnly(id: string, row: any, raw = false): ReactElement | null {
   )
 }
 
+// eslint-disable-next-line react-doctor/no-giant-component -- the day's list draws every record of one day, each with its own rights and actions, from one read of the day; split, the order the entries keep (an action never moves one) would be worked out in two places
 export function DayListSheet({
   personId, callsign, date, view, role, viewer, period, onMove, onClose, note,
 }: {
@@ -183,7 +189,7 @@ export function DayListSheet({
   const ordered = view.all.map((c, i) => ({ c, i })).sort((a, b) => ((a.c.win?.[0] ?? 0) - (b.c.win?.[0] ?? 0))
     || ((b.c.win?.[1] ?? 0) - (a.c.win?.[1] ?? 0)) || String(a.c.code).localeCompare(String(b.c.code)) || a.i - b.i).map(x => x.c)
   const lines = ordered.map(c => {
-    const row0 = c.kind === 'absence' ? INPUTS.find((r: any) => String(r.iid) === c.id) : null
+    const row0 = c.kind === 'absence' ? inputRows().find(r => String(r.iid) === c.id) : null
     /* PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26): N1 starts a window filed at exactly 12:00 at
        12:01, so it cannot touch the morning — the minute decides the HALF, it is not what the man filed, and this list
        read "12:01–14:00" where the Inputs page says 12:00. The input's own stored start puts the minute back. */
@@ -238,7 +244,10 @@ export function DayListSheet({
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        actions.push(<button key="ap" className="dchip dec approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
+        /* GREYED WHILE A MEDICAL OR LEAVE HOLDS ITS TIME (his D1544; a pending bid's too — D1550): its title the war's own refusal naming the holder —
+           "OML holds 11 Nov, so the bid can't be approved"; Refuse and Delete beside it stay */
+        const heldWhy = bidHeldWhy(personId, date, c.id)
+        actions.push(<button key="ap" className="dchip dec approve" disabled={!!heldWhy} title={heldWhy ?? undefined} data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
         /* Refuse always in its place (his D1330: one row wherever it opens — the narrow read's N3: on a refused bid it was left
            out, and the next button slid under a repeated tap). ON A REFUSED BID IT IS LIT (his D1355, D1361): solid red,
            "Refused", and a second tap sends the bid back to waiting, as the lit Approve does */

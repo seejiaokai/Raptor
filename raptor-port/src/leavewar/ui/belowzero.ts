@@ -7,7 +7,7 @@
 
 import type { CounterName } from '../engine'
 import { BAL_KINDS, KIND_COUNTER } from '../engine/leaveyear'
-import { figWords } from './FigureCell'
+import { figWords } from './figwords'
 
 export type BelowZero = { callsign: string; counter: CounterName; after: number }
 

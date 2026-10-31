@@ -102,6 +102,19 @@ const OFF_WAR = new Set(['ATTC', 'ATTB', 'HL', 'OML', 'CSE', 'OD', ...COMMIT_COD
  *  on it changed off the war locks it — and stays `state/merge.ts projRecord`'s, which asks this first. */
 export const offWar = (c: Contrib): boolean =>
   c.kind === 'absence' ? !c.lw || OFF_WAR.has(c.code) : c.kind === 'credit' && !!c.auto
+/** IS THE DAY LOCKED ON THE WAR — what the war may not write, read from the day's OWN entries ([LW-LOCKMARK], 31 Oct 26 —
+ *  design §6: "the lock derived from each contribution's own Input"). Its top entry changed off the war (`offWar`: leave filed
+ *  on the Inputs page, a medical, a course, overseas duty, a commitment under Unavailable, a credit the app worked out), or an
+ *  absence on the day filed on the Inputs page beside leave the war approved — it is changed on the Inputs page, never here
+ *  (design §5.4, owner §13 Q1). A bid or an award the war placed keeps the day open. Until 31 Oct 26 the merge synthesised a
+ *  `source: 'raptor'` mark on the day's record from this same question, and the grid asked that mark (`raptorOwns`); the mark
+ *  and its readers went, so the grid, a tap and every write ask the entries themselves. */
+export function lockedOnWar(v: DayView | undefined): boolean {
+  const m = v?.main
+  if (!v || !m || m.kind === 'request') return false
+  if (m.kind === 'credit') return !!m.auto
+  return offWar(m) || !v.all.every(c => c.kind !== 'absence' || c.lw)
+}
 
 /* Two windows clash only when they share time: an end and a start at the same
    minute (LL 08:00–10:00, OL 10:00–11:00) sit back to back and do NOT clash —

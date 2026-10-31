@@ -180,6 +180,54 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     } finally { setAbsenceDoor(door) }
   })
 
+  /* HIS D1541 (31 Oct 26 — replacing D1436): the current squadron approves a man's leave on days from his posting-out date as
+     on any other day — "he just needs to inform the superior on his own. The next sqn can still reject it" — so he can plan
+     ahead and see what is left. For a posting out as Overseas Sqn, Transfer or with no outcome, before or after it runs, in
+     every door; a posting with the Delete outcome keeps its refusal from its date (the agent's reading — below). */
+  describe('his D1541: a posting out refuses no leave on days from its date', () => {
+    for (const outcome of ['none', 'overseas'] as const) {
+      it(`a posting still to come (${outcome}): Approvals approves his days from the date, and the leave is written`, () => {
+        setMemberTodayForTests('2026-01-20')
+        for (const d of DAYS) setCell('bane', d, 'LL')
+        expect(setPostOut('bane', DAYS[1]!, outcome)).toBe(true)
+        expect(decideRequests([lineOf('bane', DAYS, 'approved')])[0]!.kind).toBe('done')
+        expect(leaveOf('bane'), 'one leave over his three days, two of them from his posting-out date').toHaveLength(1)
+      })
+    }
+    it('a posting that has RUN: Approvals, the day’s list and the bid windows approve his days from the date', () => {
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      setMemberTodayForTests('2026-02-10')
+      expect(decideRequests([lineOf('bane', [DAYS[1]!], 'approved')])[0]!.kind, 'Approvals').toBe('done')
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(true)
+    })
+    it('the bid windows: Approve and Auto-approve place his days from the date approved', () => {
+      setMemberTodayForTests('2026-01-20')
+      setCell('bane', DAYS[2]!, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').decided).toBe(1)
+      const r = placeApproved([{ personId: 'bane', date: '2026-02-09' }], 'OL')
+      expect(r.pending, 'Auto-approve keeps nothing pending').toEqual([])
+    })
+    it('Undo and Redo agree: an approval undone before the posting was set comes back on Redo', () => {
+      setMemberTodayForTests('2026-01-20')
+      setCell('bane', DAYS[2]!, 'LL')
+      expect(decideRequests([lineOf('bane', [DAYS[2]!], 'approved')])[0]!.kind).toBe('done')
+      expect(globalUndo().ok).toBe(true)
+      expect(setPostOut('bane', DAYS[1]!, 'overseas')).toBe(true)
+      expect(globalRedo().ok, 'the Redo of the approval goes back, as Approve now would').toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
+    })
+    it('a posting with the Delete outcome keeps its refusal from its date (he leaves flying for good — D287)', () => {
+      setMemberTodayForTests('2026-01-20')
+      for (const d of DAYS) setCell('bane', d, 'LL')
+      expect(setPostOut('bane', DAYS[1]!, 'delete')).toBe(true)
+      /* (the tense follows the app's clock, July in this file, so a February Delete posting reads as run) */
+      expect(decideRequests([lineOf('bane', [DAYS[2]!], 'approved')])[0]).toMatchObject({ kind: 'refused', why: expect.stringMatching(/^He post(s|ed) out on 4 Feb: refuse or delete it$/) })
+      expect(decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])[0]!.kind, 'the day before approves').toBe('done')
+    })
+  })
+
   /* A MAN WHOSE POSTING OUT HAS RUN (B12 as his D1436 narrows it — the host's reading of D1436's full row, 28 Oct 26: "a
      request with no such day [after his posting-out date] approves as ever"): only his days from the posting-out date on are
      refused, in the past tense now; a day before it approves; Refuse still works. The earlier "Posted out — refuse or delete
@@ -190,11 +238,9 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     setMemberTodayForTests('2026-02-10')
     try {
       const [a] = decideRequests([lineOf('bane', [DAYS[1]!, DAYS[2]!], 'approved')])
-      expect(a).toEqual({ kind: 'refused', why: 'He posted out on 4 Feb: refuse or delete it' })
-      const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
-      expect(b!.kind, 'the day before his posting-out date approves as ever').toBe('done')
-      const [c] = decideRequests([lineOf('bane', [DAYS[2]!], 'refused')])
-      expect(c!.kind, 'Refuse still works').toBe('done')
+      expect(a!.kind, 'his days from the date approve now (D1541)').toBe('done')
+      const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'refused')])
+      expect(b!.kind, 'Refuse still works').toBe('done')
     } finally { setMemberTodayForTests(null) }
   })
 
@@ -205,13 +251,11 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     setMemberTodayForTests('2026-01-20')
     for (const d of DAYS) setCell('bane', d, 'LL')
     expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
-    const [a] = decideRequests([lineOf('bane', DAYS, 'approved')])
-    expect(a).toEqual({ kind: 'refused', why: 'He posts out on 4 Feb: refuse or delete it' })
-    expect(leaveOf('bane')).toHaveLength(0)
-    const [b] = decideRequests([lineOf('bane', [DAYS[0]!], 'approved')])
-    expect(b!.kind, 'the day before his posting-out date approves as ever').toBe('done')
     const [c] = decideRequests([lineOf('bane', [DAYS[2]!], 'refused')])
     expect(c!.kind, 'Refuse still works').toBe('done')
+    const [a] = decideRequests([lineOf('bane', [DAYS[0]!, DAYS[1]!], 'approved')])
+    expect(a!.kind, 'his day before the date and his day from it approve alike (D1541)').toBe('done')
+    expect(leaveOf('bane')).toHaveLength(1)
   })
 
   it('a posting still to come: the bid window refuses the same days (D1436)', () => {
@@ -219,9 +263,8 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
     for (const d of DAYS) setCell('bane', d, 'LL')
     expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
     const r = setBidStates(DAYS.map(date => ({ personId: 'bane', date })), 'approved')
-    expect(r.skipped, 'his days from 4 Feb are skipped').toBe(2)
-    expect(req('bane', DAYS[1]!).state).toBe('pending')
-    expect(req('bane', DAYS[2]!).state).toBe('pending')
+    expect(r.skipped, 'none of his days is skipped now (D1541)').toBe(0)
+    expect(r.decided).toBe(3)
   })
 
   /* THE FIXES' M5 (the re-walk's A-F3 = B-F2; both code reads): one rule for posting out in every door (D1436, D754).
@@ -232,10 +275,8 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       setMemberTodayForTests('2026-01-20')
       for (const d of DAYS) setCell('bane', d, 'LL')
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
-      const why = 'He posts out on 4 Feb: refuse or delete it'
-      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
-      expect(setBidStates([{ personId: 'bane', date: DAYS[2]! }], 'approved').why, 'the bid windows').toEqual([why])
-      expect(req('bane', DAYS[2]!).state).toBe('pending')
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list approves (D1541)').toBe(true)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[0]! }], 'approved').decided, 'the bid windows approve alike').toBe(1)
     })
     /* (narrowed by D1436's full row, the host's reading of 28 Oct 26: one DATE rule in every door, whether the posting has
        run or not — a day before his posting-out date approves in every door, a day from it is refused in every door) */
@@ -243,18 +284,12 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       for (const d of DAYS) setCell('bane', d, 'LL')
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
       setMemberTodayForTests('2026-02-10')
-      const why = 'He posted out on 4 Feb: refuse or delete it'
-      expect(decideRequests([lineOf('bane', [DAYS[1]!], 'approved')])[0]).toEqual({ kind: 'refused', why })
-      const r = setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'approved')
-      expect(r.decided, 'the bid windows do not approve it').toBe(0)
-      expect(r.why).toEqual([why])
-      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list').toBe(why)
-      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'refused').decided).toBe(1)
-      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'refused')).toBe(true)
-      expect(leaveOf('bane')).toHaveLength(0)
+      expect(setBidStates([{ personId: 'bane', date: DAYS[1]! }], 'refused').decided, 'Refuse works').toBe(1)
+      expect(decideRequestById('bane', DAYS[2]!, req('bane', DAYS[2]!).id, 'approved'), 'the day’s list approves his day from the date (D1541)').toBe(true)
+      expect(leaveOf('bane')).toHaveLength(1)
       /* a day before his posting-out date: approved through the bid windows' door */
       expect(decideRequestById('bane', DAYS[0]!, req('bane', DAYS[0]!).id, 'approved'), 'the day before approves').toBe(true)
-      expect(leaveOf('bane')).toHaveLength(1)
+      expect(leaveOf('bane'), 'two leaves, the refused day between them').toHaveLength(2)
     })
     it('a posting that has RUN: a day before the date approves in Approvals and the bid windows too', () => {
       for (const d of DAYS) setCell('bane', d, 'LL')
@@ -268,8 +303,7 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       setMemberTodayForTests('2026-01-20')
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
       const r = placeApproved([{ personId: 'bane', date: DAYS[2]! }], 'LL')
-      expect(r.pending).toEqual([{ personId: 'bane', date: DAYS[2]! }])
-      expect(r.why).toEqual(['He posts out on 4 Feb: refuse or delete it'])
+      expect(r.pending, 'placed approved (D1541)').toEqual([])
     })
     /* THE FIXES' ROUND 3, R3-6 (the host's decision, 28 Oct 26): round 2's one date rule dropped the refusal of a DELETED
        man's requests too, so his leftover pending bids from before the delete approved. D1436 speaks only of posting out:
@@ -307,12 +341,9 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
       expect(setPostOut('rocky', DAYS[2]!, 'none')).toBe(true)
       const r = setBidStates(['bane', 'rocky'].flatMap(p => [DAYS[2]!, '2026-02-06'].map(date => ({ personId: p, date }))), 'approved')
-      expect(r.whyBy).toEqual([
-        { personId: 'bane', why: 'He posts out on 4 Feb: refuse or delete it' },
-        { personId: 'rocky', why: 'He posts out on 5 Feb: refuse or delete it' },
-      ])
+      expect(r.whyBy, 'no posting refuses either man now (D1541)').toEqual([])
       const p = placeApproved([{ personId: 'bane', date: '2026-02-09' }, { personId: 'rocky', date: '2026-02-09' }], 'OL')
-      expect(p.whyBy.map(x => x.personId)).toEqual(['bane', 'rocky'])
+      expect(p.whyBy).toEqual([])
     })
     /* R2-5: the drag window printed the rules' reason against EVERY skipped day, an empty one too */
     it('the bid windows count the days the rules refused apart from the days with nothing to decide (R2-5)', () => {
@@ -320,7 +351,7 @@ describe('Approvals’ one writer (8.3, 8.5)', () => {
       setCell('bane', DAYS[0]!, 'LL'); setCell('bane', DAYS[2]!, 'LL')
       expect(setPostOut('bane', DAYS[1]!, 'none')).toBe(true)
       const r = setBidStates([DAYS[0]!, DAYS[2]!, '2026-02-06'].map(date => ({ personId: 'bane', date })), 'approved')
-      expect(r).toMatchObject({ decided: 1, skipped: 2, refused: 1, why: ['He posts out on 4 Feb: refuse or delete it'] })
+      expect(r, 'the empty day counted apart; the posting refuses nothing (D1541)').toMatchObject({ decided: 2, skipped: 1, refused: 0 })
     })
     it('a posting out as SANS that has run approves in the bid windows too (D283)', () => {
       for (const d of DAYS) setCell('bane', d, 'LL')

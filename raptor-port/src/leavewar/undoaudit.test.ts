@@ -9,6 +9,7 @@ import { INPUTS } from '../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { projectPeople } from './state/raptorRoster'
 import { evaluatePeriod } from './engine'
+import { lockedOnWar } from './engine/dayview'
 import {
   addEventBand,
   addEventRow,
@@ -396,13 +397,16 @@ describe('undo/redo — how it affects the rest (cross-app + engine)', () => {
   it('a Raptor-owned cell survives an undo of an unrelated edit', () => {
     writeInputs(() => INPUTS.push({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', yr: 2026, allday: true, type: 'LL', remarks: '', mod: '2026-06-01' } as any))
     syncAbsences()
-    expect(stateOf('ammo', '2026-02-10')!.source).toBe('raptor')
+    /* [LW-LOCKMARK] (31 Oct 26): the day's lock is read from its own entries (engine/dayview.ts lockedOnWar) — the merge's
+       old `source: 'raptor'` mark went — so the leave filed on the Inputs page is asked of the day view itself */
+    const lockedHere = () => lockedOnWar(getState().views.ammo?.['2026-02-10'])
+    expect(lockedHere(), 'leave filed on the Inputs page: changed there, never on the war').toBe(true)
     wireUndo()
     setCell('ramp', '2026-03-02', 'LL')
     globalUndo()
     expect(codeOf('ramp', '2026-03-02')).toBeUndefined()
     expect(codeOf('ammo', '2026-02-10'), 'the filed leave must not be touched by an unrelated undo').toBe('LL')
-    expect(stateOf('ammo', '2026-02-10')!.source).toBe('raptor')
+    expect(lockedHere(), 'and still the Inputs page’s to change').toBe(true)
   })
 
   it('the whole-period manning verdict is byte-identical before an approval and after its undo', () => {

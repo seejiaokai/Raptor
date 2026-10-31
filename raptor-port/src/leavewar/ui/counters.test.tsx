@@ -6,7 +6,8 @@ import { DEFAULT_FIGURE_ORDER, FIGURES } from '../engine'
 import { closeDates, getState, grantTo, selectWar, initStore, leaveFiguresOf, setBidState, setCell, setPeople, setRole, setTypedBalance, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
-import { FigureCell, figWords } from './FigureCell'
+import { FigureCell } from './FigureCell'
+import { figWords } from './figwords'
 import { Matrix } from './Matrix'
 
 beforeEach(() => {

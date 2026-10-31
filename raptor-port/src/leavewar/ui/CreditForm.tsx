@@ -11,6 +11,7 @@ import { useState, type KeyboardEvent, type ReactNode } from 'react'
 import type { CounterName, Half } from '../engine'
 import { defaultAwardHalf, grantTo, MAX_GIVEN_BY, MAX_REASON, reasonRequired } from '../state/store'
 import { DateBox } from '../../ui/DateBox'
+import { parseAmount } from './creditamount'
 import './oiltracker.css'
 
 /** WHICH HALF OF ITS DAY AN HO TAKES (owner, D1164 — an HO is drawn in a half, the morning or the afternoon, as a half
@@ -45,21 +46,6 @@ export function DayChip({ testid, value, today, onPick }: {
   onPick: (d: string) => void
 }) {
   return <DateBox label="Date" testid={testid} className="oil-datebox" value={value} today={today} noWeekday onChange={onPick} />
-}
-
-/**
- * The typed days, signed: `2` and `+2` add, `-2` (or `−2`) subtracts (owner,
- * 6 Sep 26 — "if I put 2 or +2 it means the same thing, only minus is −2").
- * With no sign typed the `sign` chip decides — a phone's decimal keypad has no
- * minus key, so the chip is the phone's way to a correction. Null for anything
- * that is not a plain number; the STORE rules the rest (non-zero, halves) so
- * this form, the tracker and any future caller cannot disagree with it.
- */
-export function parseAmount(raw: string, sign: 1 | -1 = 1): number | null {
-  const t = raw.trim().replace(/^−/, '-')
-  if (!/^[+-]?\d*\.?\d+$/.test(t)) return null
-  const n = Number(t)
-  return /^[+-]/.test(t) ? n : n * sign
 }
 
 /**

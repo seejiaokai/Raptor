@@ -19,7 +19,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { toPeople, pieceOf } from '../engine/inputown'
-import { goesOnProg, INPUTS, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
+import { goesOnProg, inputLines, DATES, baseYear, dateOrd, inpId, inpWin, isAway, isLeave, isPersonal, canWork, oilAsks, oilSilent, remarksTyped, tillShown, tillDefault, inputCoversDate, nowStamp, idsOf, onlyNamed, leadOf, isPlaceholderInput, inputSilent, filingOf } from '../engine/inputs'
 import { dayEngaged, personBusy } from '../engine/avail'
 import { inputProtected, protectedDates } from '../engine/quarantine'
 import { shortDate } from './ui/dates'
@@ -32,6 +32,7 @@ import { SESSION, canEditSched } from '../state/auth'
 import { persistPeopleProjection, commitPeopleEdit } from '../state/people-settings-commit'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
+import type { Day, Sched } from '../engine/schema'
 import { SCHED, dayApproved, dayCurVer, dayCurVerIn, daySnapIn, daySnapOf, amFormatOf, unpublishBackTo } from '../engine/publish'
 import { blindDesks, dayOilBlind, dayOilWork, inputOilAmt, oilWorkWhy, type OilWork } from '../engine/oil'
 import { oilEarnedWork, oilAmount, oilWorkSpans as workSpans, type OilEvidence } from '../engine/oilev'
@@ -84,6 +85,7 @@ import {
   canEditCell,
   memberToday,
   type PostOutcome,
+  type Person,
   type Contrib,
   type RequestRec,
   type RequestState,
@@ -136,7 +138,7 @@ import {
   postedOutBy,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
-import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope } from '../command'
+import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope, isQueued, type CommitResult, type Txn } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
@@ -162,8 +164,8 @@ import { codeWorth } from './engine/credit'
 import { cs, dm, installInputGate } from './inputgate'
 import { projectPeople, qualCatalogue } from './state/raptorRoster'
 import {
-  labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate,
-  type AbsenceIndex,
+  labelToISO, warVisible, warCounts, absenceSignature, buildAbsenceIndex, inputDates, inputRowFor, isoToInputDate, warInputs, warLines, rosterBody,
+  type AbsenceIndex, type WarInput,
 } from './absences'
 
 /* Re-entrancy: ingest persists-and-notifies per cell, and writeInputsBatch's
@@ -203,10 +205,10 @@ let INDEX: AbsenceIndex = new Map()
 /** Rebuild the index for every person whose war-visible Inputs changed. True
  *  when anything did (the caller then repaints). */
 export function refreshAbsences(force = false): boolean {
-  const byPerson = new Map<string, any[]>()
+  const byPerson = new Map<string, WarInput[]>()
   /* one LINE a named person of each input ([ALL-AVAIL-AS-MEMBER] step 1 — engine/inputs.ts inputLines): the index is
      one man's absences, so a leave filed for three is three men's, and an input for ALL AVAIL is nobody's */
-  for (const row of inputLines(INPUTS.filter((r: any) => r && warCounts(r)))) {   // only the kinds the war shows are copied — this runs on every repaint
+  for (const row of warLines(warInputs().filter(r => r && warCounts(r)))) {   // only the kinds the war shows are copied — this runs on every repaint
     if (!row || !warCounts(row) || !row.person) continue
     const p = String(row.person)
     const list = byPerson.get(p)
@@ -256,9 +258,10 @@ export function restoreAbsencesOf(changes: ReadonlyArray<{ collection: string; i
   const ins = changes.filter(ch => ch.collection === 'inputs')
   if (!ins.length) return absencesAt
   const touched = new Set(ins.map(ch => String(ch.id)))
-  const rows = INPUTS.filter((r: any) => r && !touched.has(String(r.iid)))
-  for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after)
-  const ix = buildAbsenceIndex(inputLines(rows).filter((r: any) => r && r.person && warCounts(r)))
+  const rows = warInputs().filter(r => r && !touched.has(String(r.iid)))
+  /* (an inputs after-image is a stored input) */
+  for (const ch of ins) if (ch.op !== 'delete' && ch.after && typeof ch.after === 'object') rows.push(ch.after as WarInput)
+  const ix = buildAbsenceIndex(warLines(rows).filter(r => r && r.person && warCounts(r)))
   return (personId, date) => ix.get(personId)?.get(date) ?? []
 }
 
@@ -285,7 +288,7 @@ export function installAbsenceDoor(): void {
     sameSnap: (snap, pid, kind) => isBalKind(kind) && sameSnapshot(snap as SnapEntry[], snapshotNow(pid, kind)),
     wellFormed: (row, kind) => readTypedBalShape(row, kind) !== null,
   })
-  setHiddenIdentityLookup(id => warIdentityIfHidden(id))
+  setHiddenIdentityLookup(id => hiddenIdentity(id))
   /* a refused war gesture rolled INPUTS back; the absence index was refreshed
      inside it, so re-read it before the repaint (Codex AS4-R2-001) */
   setRefusalHook(() => { refreshAbsences(true) })
@@ -314,7 +317,7 @@ export function installAbsenceDoor(): void {
      real date, and who an ALL / ALL AVAIL puck stands for ([ALL-AVAIL-REDEF]).
      Same seam, same reason — the engine cannot ask a war anything. */
   HOOKS.oilDayISO = (di: number) => labelToISO(DATES[di]) || ''
-  HOOKS.oilSentinel = (iso: string, win: [number, number], day: any) => availableFor(iso, win, day)
+  HOOKS.oilSentinel = (iso: string, win: [number, number], day: Day) => availableFor(iso, win, day)
   /* WHICH YEAR'S PERIOD IS MISSING (owner's ruling D19, 22 Sep 26). A weekend
      COUNTS as a day that earns whether or not a war holds it — that is the
      calendar, and the predicate above says so. But the credit can only be
@@ -352,7 +355,7 @@ export function createOilPeriodFor(year: string): string {
    the front on the period it was showing, while its note said to open the new one's dates "here". The Leave War's own
    "new period" goes straight to the period it made (owner, 2 Sep 26 — WarSheet); this is the same for the schedule's. */
 export function showPeriodOf(iso: string): void {
-  const war = warHolding(getState().wars, iso)
+  const war = warHolding(getState().wars, iso) as MergedWar | undefined
   if (war) selectWar(war.period.id)
 }
 /** Re-read the Inputs into the war now and repaint — what a Raptor notify
@@ -366,9 +369,9 @@ export function syncAbsences(): void {
    editor edits (owner, 27 Aug 26). The day view knows exactly which Inputs make
    the cell (their iids), so this is a lookup, not a guess: the tapped half's
    contributor when the code names one, else the main one. */
-export function leaveInputAt(personId: string, iso: string, code?: string): any | null {
-  const war = warHolding(getState().wars, iso)
-  const v = war ? (war as any).views?.[personId]?.[iso] : null
+export function leaveInputAt(personId: string, iso: string, code?: string): WarInput | null {
+  const war = warHolding(getState().wars, iso) as MergedWar | undefined
+  const v = war ? war.views?.[personId]?.[iso] : null
   if (!v) return null
   const leaves = (v.all as Contrib[]).filter(c => c.kind === 'absence' && isLeave(INPUT_TYPE_FOR[c.code] ?? c.code))
   if (!leaves.length) return null
@@ -377,22 +380,22 @@ export function leaveInputAt(personId: string, iso: string, code?: string): any 
     ?? (cell && leaves.find(c => c.code === cell.type))
     ?? (cell ? null : leaves[0])
   if (!pick) return null
-  return INPUTS.find((r: any) => String(r.iid) === pick.id) ?? null
+  return warInputs().find(r => String(r.iid) === pick.id) ?? null
 }
 /** EVERY Raptor leave input behind a war cell — a morning and an afternoon are two entries on the Inputs page — each
  *  once (the drag window's typed words go onto every one of them: his D1341 "Replace them all"; the night's scenario
  *  designer, gap 5, 25 Oct 26 — `leaveInputAt` alone gave the first found). */
-export function leaveInputsAt(personId: string, iso: string): any[] {
-  const war = warHolding(getState().wars, iso)
-  const v = war ? (war as any).views?.[personId]?.[iso] : null
+export function leaveInputsAt(personId: string, iso: string): WarInput[] {
+  const war = warHolding(getState().wars, iso) as MergedWar | undefined
+  const v = war ? war.views?.[personId]?.[iso] : null
   if (!v) return []
   const ids = [...new Set((v.all as Contrib[]).filter(c => c.kind === 'absence' && isLeave(INPUT_TYPE_FOR[c.code] ?? c.code)).map(c => String(c.id)))]
-  return ids.map(id => INPUTS.find((r: any) => String(r.iid) === id)).filter(Boolean)
+  return ids.map(id => warInputs().find(r => String(r.iid) === id)).filter((r): r is WarInput => !!r)
 }
 /** An input as it now stands, by its id — the record a window opened on, read afresh after a save (the one-row words of his
  *  own leave, the night's walk W1). Null where it is gone. */
-export function inputById(iid: unknown): any | null {
-  return iid == null ? null : INPUTS.find((r: any) => String(r.iid) === String(iid)) ?? null
+export function inputById(iid: unknown): WarInput | null {
+  return iid == null ? null : warInputs().find(r => String(r.iid) === String(iid)) ?? null
 }
 const INPUT_TYPE_FOR: Record<string, string> = { ATTB: 'ATT B', ATTC: 'ATT C' }
 
@@ -413,8 +416,8 @@ export const inDoor = (): boolean => DOOR > 0
  *  war-approved LEAVE covering that date (Codex AS4-R2-002/003): a stale or
  *  mismatched id, or an lw-tagged row an admin retyped to a medical / course /
  *  duty, is never moved, un-approved or deleted from the war. */
-function warLeaveRow(it: { personId: string; date: string; iid: string }): any | null {
-  const row = INPUTS.find((r: any) => String(r.iid) === it.iid)
+function warLeaveRow(it: { personId: string; date: string; iid: string }): WarInput | null {
+  const row = warInputs().find(r => String(r.iid) === it.iid)
   if (!row || !row.lw || !isLeave(row.type)) return null
   /* (a war-approved leave is one person's — read through the record's own list) */
   if (String(onlyNamed(row) ?? '') !== it.personId || !inputDates(row).includes(it.date)) return null
@@ -435,7 +438,7 @@ function doorWrite(fn: () => void): boolean {
    before anything is written, so an inner refusal never sinks Approve all). The locked week; then the preflight — the
    would-be absence against every absence already there (a different leave on the same time, a medical) — skipped and
    reported, nothing consumed. */
-const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+const lockedDates = (): Set<string> => new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
 /* IS HE A DELETED MAN — the war's `gone` mark, OR the app's own delete mark ([LW-DELETED-NO-ROW-APPROVE], 30 Oct 26). A man
    deleted before he ever arrived (his only stint still to come) keeps no row and no posting record on the war
    (store.ts forgetPersonFrom drops both), so `gone` never sees him — yet a pending bid of his on a day already past (an admin
@@ -444,13 +447,13 @@ const lockedDates = (): Set<string> => new Set(protectedDates().map((d: any) => 
    Delete posting alike) are the one record of a delete that outlives the war's row. Never "no row and no record": a SANS
    man with SANS off has neither and is no one deleted (the scenario list's S1-4). A Delete POSTING that has run falls to
    D1436's date rule below, as before (R3c-1) — its kept record still carries the outcome and `poDone`. */
-const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!(PEOPLE as any)[personId]?.deleted
+const deletedMan = (personId: string): boolean => postedOutBy(personId) === 'gone' || !!rosterBody(personId)?.deleted
 /** IS EVERY PENDING BID OF HIS REFUSED — a man deleted, but not by a Delete POSTING that has run (that falls to D1436's date
  *  rule — R3c-1: his kept record carries the outcome and `poDone`). The ONE body the live door (`approveWhy`) and the
  *  restore refusal (state/person-delete.ts deletedRestoreProblem) ask, so Undo and Redo never disagree with Approve (the
  *  blind code read of 14403cf57, finding 2). */
 export function refusedWhole(personId: string): boolean {
-  const kept: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  const kept = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
   return deletedMan(personId) && !(kept && outcomeOf(kept) === 'delete' && kept.poDone)
 }
 /** FROM WHICH DAY A DELETED MAN'S LEAVE IS REFUSED — '' every day (refused whole), a date for a Delete POSTING that has run (the
@@ -477,11 +480,29 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
-  const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-  if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) return `${shortDate(it.date)} already holds leave or a medical at that time — not approved`
-  return null
+  return heldWhy(it.personId, it.date, rec)
 }
-/* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
+/* WHAT HOLDS A BID'S TIME, NAMED (his D1544, 31 Oct 26 — [LW-OFFER-ONLY-TAKEABLE]): a refused bid with a medical or leave filed
+   over its day since used to say only "already holds leave or a medical at that time". The one refusal of that kind now
+   names the holder as the grid's box writes it (a half with its AM or PM — D1525): "OML holds 11 Nov, so the bid can't be
+   approved" (the agent's draft, the app's own codes). The same sentence greys the windows' Approve and is its title
+   (`bidHeldWhy`), so the button and every door that asks the war's approve rule — Approvals, Approve all, the day's list, the
+   bid windows, Auto-approve — say one thing. */
+function heldWhy(personId: string, date: string, rec: RequestRec): string | null {
+  const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
+  const o = absencesAt(personId, date).find(x => barsWrite(c, x))
+  return o ? `${codeInWords(notationOf(o.code, o.win))} holds ${dayMon(date)}, so the bid can’t be approved` : null
+}
+/** Why this bid cannot be approved because a medical or leave already holds its time — null where nothing holds it (his D1544:
+ *  the windows grey its Approve while this answers). Only that one reason: a locked week or a posting is said on the press. */
+export function bidHeldWhy(personId: string, date: string, recId: string): string | null {
+  const war = warHolding(rawState().wars, date)
+  const rec = war ? recsAt(war.recs, personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId) : undefined
+  return rec ? heldWhy(personId, date, rec) : null
+}
+/* REPLACED 31 Oct 26 BY HIS D1541 (see `postingOutWhy` below): the posting date now refuses no leave, but a Delete posting's,
+   so read what follows as the history of the date rule that a Delete posting still keeps.
+   His D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
    even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
    out as SANS keeps his leave (D283). The record's own dates are read, as `postingPendingTag` reads them.
    ONE DATE RULE, WHETHER THE POSTING HAS RUN OR NOT (the fixes' round 2 — the host's reading of D1436's full row, 28 Oct 26:
@@ -492,11 +513,18 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
    pending his word). */
 /* the first day his posting refuses — the day after his last in the squadron; none for a SANS posting (D283) or none at all */
 function postingOutFrom(personId: string): string | null {
-  const w: any = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  const w = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
   if (!w || !w.to || outcomeOf(w) === 'sans') return null
   return addDays(w.to, 1)
 }
+/* HIS D1541 (31 Oct 26 — replacing D1436): the posting date refuses no leave — "he just needs to inform the superior on his
+   own. The next sqn can still reject it" — so a posting out as Overseas Sqn, Transfer or with no outcome approves his days
+   from the date in every door that asks this (Approvals, the day's list, the bid windows, Auto-approve), and Undo / Redo
+   agree by having nothing to refuse. Only a posting with the Delete outcome keeps the refusal from its date: he leaves flying
+   for good (D287) and has no next squadron — D1541's reading 1, confirmed by his D1545 (31 Oct 26). */
 function postingOutWhy(personId: string, date: string): string | null {
+  const w = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
+  if (!w || outcomeOf(w) !== 'delete') return null
   const from = postingOutFrom(personId)
   if (!from || date < from) return null
   const on = dayMon(from)
@@ -518,8 +546,8 @@ function decideApprovedWhy(it: { personId: string; date: string; iid: string }, 
 }
 /* who approved a war-approved leave — its Input's placer (D629), by callsign */
 function approvedBy(iid: string): string | null {
-  const row = INPUTS.find((r: any) => String(r.iid) === iid)
-  const p: any = row && row.by != null ? (PEOPLE as any)[String(row.by)] : null
+  const row = warInputs().find(r => String(r.iid) === iid)
+  const p = row && row.by != null ? rosterBody(String(row.by)) : null
   return p && p.cs ? String(p.cs) : null
 }
 
@@ -530,7 +558,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
   const why: string[] = []
   /* …and whose each reason is, so a window over several men names each (the fixes' round 3, R3-4) */
   const whyOf: Array<{ personId: string; why: string }> = []
-  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   type Pick = { personId: string; date: string; rec: RequestRec; warId: string }
   const picks: Pick[] = []
   let skipped = 0
@@ -594,22 +622,22 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       const start = labelToISO(r.date, r.yr)!, end = r.endDate ? labelToISO(r.endDate, r.yr)! : start
       /* …and only when the remark (without its date tail) matches, so an
          extension never swallows the run's own carried remark (Fable #7) */
-      const body = (x: any) => remarksTyped(x.remarks, x)
-      const same = (x: any) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
+      const body = (x: WarInput) => remarksTyped(x.remarks, x)
+      const same = (x: WarInput) => x !== r && idsOf(x).length === 1 && String(leadOf(x)) === String(leadOf(r)) && x.lw === r.lw && x.type === r.type &&
         !!x.allday === !!r.allday && (x.half ?? '') === (r.half ?? '') && body(x) === body(r) &&
         /* a request that carries its own till choice (M3 7.2) joins only a leave that shows the same; one with none takes
            its neighbour's, as before (D953) */
         (typeof r.till !== 'boolean' || tillShown(x) === r.till)
-      const before = INPUTS.find((x: any) => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
+      const before = warInputs().find(x => same(x) && addDays(inputDates(x).slice(-1)[0] ?? '', 1) === start)
       /* …and a day that would BRIDGE a leave whose till date is unticked and one whose is not joins the one before only:
          one record holds one tick, so a bridge would drop one of the two choices (owner D953 — the scenario designer's 8,
          17 Oct 26). An extension of either alone keeps its choice — the dates still run more than a day. */
-      const after0 = INPUTS.find((x: any) => same(x) && inputDates(x)[0] === addDays(end, 1))
+      const after0 = warInputs().find(x => same(x) && inputDates(x)[0] === addDays(end, 1))
       const after = after0 && before && tillShown(after0) !== tillShown(before) ? undefined : after0
-      if (!before && !after) { INPUTS.push(r); continue }
+      if (!before && !after) { warInputs().push(r); continue }
       const from = before ? inputDates(before)[0]! : start
       const to = after ? inputDates(after).slice(-1)[0]! : end
-      const keep = before ?? after
+      const keep = (before ?? after)!   // (one of the two is there: neither was handled just above)
       const merged = sliceInput({ ...keep, lwMoved: { ...(before?.lwMoved ?? {}), ...(r.lwMoved ?? {}), ...(after?.lwMoved ?? {}) } }, from, to, true)
       merged.remarks = remarksTyped(keep.remarks, keep)
       /* …the papers of every piece it joins (M3 7.2): none is lost to a join */
@@ -621,8 +649,8 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
       Object.assign(merged, placerOf([keep, r, ...(before && after ? [after] : [])].map(x => ({ placedBy: x.lwBy, placedAt: x.lwAt }))))
       /* an approval that EXTENDS a leave is still an approval: placed by this approver, now (the plan §3.8) */
       stampPlaced(merged)
-      INPUTS.splice(INPUTS.indexOf(keep), 1, merged)
-      if (before && after) INPUTS.splice(INPUTS.indexOf(after), 1)
+      warInputs().splice(warInputs().indexOf(keep), 1, merged)
+      if (before && after) warInputs().splice(warInputs().indexOf(after), 1)
     }
     ok = true
   })
@@ -641,7 +669,7 @@ function doorApprove(items: Array<{ personId: string; date: string; recId: strin
  *  Inputs page's, exactly as one filed there. The Inputs door's own rules run (a course or an OD never replaces a bid). */
 function doorFile(items: Array<{ personId: string; date: string }>, code: string, words?: ReqWords): { done: number; skipped: number; why: string[] } {
   const why: string[] = []
-  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   let skipped = 0
   const picks: Array<{ personId: string; date: string }> = []
   for (const it of items) {
@@ -677,7 +705,7 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
     stampPlaced(row)
     return toPeople(row)
   })
-  if (!doorWrite(() => { for (const r of rows) INPUTS.push(r) })) return { done: 0, skipped: skipped + picks.length, why }
+  if (!doorWrite(() => { for (const r of rows) warInputs().push(r) })) return { done: 0, skipped: skipped + picks.length, why }
   refreshAbsencesAndRepaint()
   askFiledOil(rows.map(r => String(r.iid)), picks[0]!.date, picks.reduce((m, p) => (p.date > m ? p.date : m), picks[0]!.date))
   return { done: picks.length, skipped, why }
@@ -698,7 +726,7 @@ function askFiledOil(iids: string[], from: string, to: string): void {
       const days = open.flatMap(o => o.days).sort()
       setOilList({ from: days[0]!, to: days[days.length - 1]!, name: '', plain: true })
     } else {
-      const row = INPUTS.find((x: any) => String(x.iid) === open[0]!.iid)
+      const row = warInputs().find(x => String(x.iid) === open[0]!.iid)
       if (!row) return
       setOilAsk(open[0]!.iid)
       setInpEdit(row)
@@ -711,9 +739,9 @@ function askFiledOil(iids: string[], from: string, to: string): void {
 /* the dates an Input covers and a copy of it limited to [from, to] — the one
    split/shrink body (design §5.2 Splitting: the first part keeps the iid, a
    later part gets a fresh one carrying lw / remarks / docs / mod verbatim) */
-export function sliceInput(row: any, from: string, to: string, keepIid: boolean): any {
+export function sliceInput(row: WarInput, from: string, to: string, keepIid: boolean): WarInput {
   /* its own people, never the list it was cut from (engine/inputown.ts pieceOf) */
-  const out = pieceOf(row)
+  const out: WarInput = pieceOf(row)
   const { date, yr } = isoToInputDate(from)
   out.date = date
   out.yr = yr
@@ -751,9 +779,9 @@ function cutDates(cuts: Map<string, Set<string>>): boolean {
   let ok = false
   doorWrite(() => {
     for (const [iid, drop] of cuts) {
-      const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
+      const ix = warInputs().findIndex(r => String(r.iid) === iid)
       if (ix < 0) continue
-      const row = INPUTS[ix]
+      const row = warInputs()[ix]
       const dates = inputDates(row)
       const keep: string[][] = []
       for (const d of dates) {
@@ -762,9 +790,9 @@ function cutDates(cuts: Map<string, Set<string>>): boolean {
         else keep[keep.length - 1]!.push(d)
       }
       const parts = keep.filter(k => k.length)
-      if (!parts.length) { INPUTS.splice(ix, 1); continue }
+      if (!parts.length) { warInputs().splice(ix, 1); continue }
       const pieces = parts.map((k, i) => sliceInput(row, k[0]!, k[k.length - 1]!, i === 0))
-      INPUTS.splice(ix, 1, ...pieces)
+      warInputs().splice(ix, 1, ...pieces)
     }
     ok = true
   })
@@ -792,7 +820,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
   let skipped = 0
   const cuts = new Map<string, Set<string>>()
   const adds: Array<{ personId: string; date: string; drop: string[]; add: WarRec[] }> = []
-  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
     const row = warLeaveRow(it)
     const contrib = row ? absencesAt(it.personId, it.date).find(c => c.id === it.iid) : undefined
@@ -830,7 +858,7 @@ function doorDecideApproved(items: Array<{ personId: string; date: string; iid: 
 function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: string }>): { done: number; skipped: number; why: string[] } {
   const cuts = new Map<string, Set<string>>()
   const why: string[] = []
-  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   let skipped = 0
   for (const it of items) {
     const row = warLeaveRow(it)
@@ -859,7 +887,7 @@ function doorRemoveApproved(items: Array<{ personId: string; date: string; iid: 
    commit passes none: by then the requests have already left and landed, so the door judges the day as it will be. */
 function doorMoveApproved(items: Array<{ personId: string; date: string; iid: string }>, delta: number, tracked: boolean, check: boolean, skip?: ReadonlySet<string>): { reason: 'occupied' | 'window' | 'nothing'; at?: string } | null {
   const leaving = new Set(items.map(i => `${i.iid}|${i.date}`))
-  const prot = new Set(protectedDates().map((d: any) => labelToISO(d)).filter(Boolean) as string[])
+  const prot = new Set(protectedDates().map(d => labelToISO(d)).filter(Boolean) as string[])
   for (const it of items) {
     const row = warLeaveRow(it)
     if (!row) return { reason: 'nothing', at: it.date }
@@ -881,9 +909,9 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
   const byIid = new Map<string, string[]>()
   for (const it of items) byIid.set(it.iid, [...(byIid.get(it.iid) ?? []), it.date])
   const cuts = new Map<string, Set<string>>()
-  const refile: any[] = []
+  const refile: WarInput[] = []
   for (const [iid, dates] of byIid) {
-    const row = INPUTS.find((r: any) => String(r.iid) === iid)!
+    const row = warInputs().find(r => String(r.iid) === iid)!
     cuts.set(iid, new Set(dates))
     const sorted = [...dates].sort()
     let run: string[] = []
@@ -908,9 +936,9 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
   doorWrite(() => {
     /* cut first (same body as remove), then file the landings */
     for (const [iid, drop] of cuts) {
-      const ix = INPUTS.findIndex((r: any) => String(r.iid) === iid)
+      const ix = warInputs().findIndex(r => String(r.iid) === iid)
       if (ix < 0) continue
-      const row = INPUTS[ix]
+      const row = warInputs()[ix]
       const parts: string[][] = []
       for (const d of inputDates(row)) {
         if (drop.has(d)) { parts.push([]); continue }
@@ -918,9 +946,9 @@ function doorMoveApproved(items: Array<{ personId: string; date: string; iid: st
         else parts[parts.length - 1]!.push(d)
       }
       const keep = parts.filter(k => k.length)
-      INPUTS.splice(ix, 1, ...keep.map((k, i) => sliceInput(row, k[0]!, k[k.length - 1]!, i === 0)))
+      warInputs().splice(ix, 1, ...keep.map((k, i) => sliceInput(row, k[0]!, k[k.length - 1]!, i === 0)))
     }
-    for (const r of refile) INPUTS.push(r)
+    for (const r of refile) warInputs().push(r)
     ok = true
   })
   if (ok) refreshAbsencesAndRepaint()
@@ -948,8 +976,8 @@ function notationOf(code: string, win: readonly [number, number]): string {
    nothing. */
 function publishLeaveClashes(): void {
   const out: SyncClash[] = []
-  for (const war of getState().wars as any[]) {
-    for (const [person, row] of Object.entries(war.views ?? {}) as Array<[string, Record<string, any>]>) {
+  for (const war of getState().wars) {
+    for (const [person, row] of Object.entries(war.views ?? {})) {
       for (const [date, v] of Object.entries(row)) {
         for (const pair of v.conflicts as Array<[Contrib, Contrib]>) {
           /* the sentence reads "work earns X but the day holds Y", so when one
@@ -961,10 +989,16 @@ function publishLeaveClashes(): void {
           const duty = a.kind === 'credit' || b.kind === 'credit'
           const holders = duty ? [b] : [a, b]
           const wayOut = clashWayOut(holders)
-          /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) */
-          const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw) : undefined
+          /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) — and, for
+             leave the war approved, that leave's own input too: for a man with no row on the grid the note opens it there
+             (his D1542 — the grid has no row to open his day on) */
+          const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw)
+            : wayOut === 'war' ? holders.find(c => c.kind === 'absence' && !!c.lw) : undefined
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), inputShown: clashCodeShown(a), bidShown: clashCodeShown(b), ...(duty ? { kind: 'duty' as const } : {}),
-            wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}) })
+            wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}),
+            /* the bid's own record, whichever side of the pair it stands (the fixes' narrow read, its 1) — what the note's
+               "Decide it in Approvals ›" rings (D1542): `bidCode` is the pair's SECOND side, the bid only against work */
+            ...(() => { const req = [a, b].find(c => c.kind === 'request'); return req ? { reqId: String(req.id) } : {} })() })
         }
       }
     }
@@ -1009,13 +1043,13 @@ export type ClashWayOut = 'bid' | 'war' | 'inputs'
 /* a man's callsign as the roster has it — for a clash about a man with NO row on the war (a SANS man with Show SANS
    off, an archived man), whom the war's own roster cannot name; never his hidden id ([BATCH-14OCT-LEFTOVERS] (c)) */
 export function rosterCallsign(id: string): string | null {
-  const b: any = (PEOPLE as any)[id]
+  const b = rosterBody(id)
   return b && b.cs ? String(b.cs) : null
 }
 /* …and whether he is a SANS man, for a man with no row on the war (a SANS man while SANS is off it — Approvals' LOWEST AVAIL
    says "SANS · not in Avail" for him, M4 8.2) */
 export function rosterIsSans(id: string): boolean {
-  const b: any = (PEOPLE as any)[id]
+  const b = rosterBody(id)
   return !!(b && b.san)
 }
 export interface SyncClash {
@@ -1037,8 +1071,11 @@ export interface SyncClash {
   /** The leave period that holds the date — the list covers every period, and a tap on a clash must put ITS period on
    *  screen before it opens the day ([LW-CLASH-NOTE-PHONE], owner D827). */
   war: string
-  /** `wayOut: 'inputs'` only: the Input in the way, whose own window the tap opens. */
+  /** The Input in the way, whose own window the tap opens: for `wayOut: 'inputs'`, and for `wayOut: 'war'` (leave the war
+   *  approved) — opened only for a man with no row on the grid (his D1542); a man with a row has his day opened. */
   iid?: string
+  /** A bid in the pair: its own record id (a request's contribution id is its record's) — the line Approvals rings (D1542). */
+  reqId?: string
 }
 
 /* Re-derived on every pass, never persisted — a clash list is a view of two
@@ -1100,7 +1137,7 @@ export function isNonWorkingISO(date: string): boolean {
    the CELL finally posted may still upgrade when published schedule work on
    the same day stretches its envelope (desiredOilCells). Walks label→ISO exactly as
    inputDates does, same 400-day cap. */
-export function oilAskPlan(row: { person?: any; date: string; endDate?: string; yr?: any; allday?: any; s?: any; e?: any }): { iso: string; amt: 0.5 | 1 }[] {
+export function oilAskPlan(row: { person?: unknown; date: string; endDate?: string; yr?: unknown; allday?: unknown; s?: unknown; e?: unknown }): { iso: string; amt: 0.5 | 1 }[] {
   const out: { iso: string; amt: 0.5 | 1 }[] = []
   const amt = inputOilAmt(row.allday, row.s, row.e)
   if (amt == null) return out
@@ -1127,16 +1164,16 @@ export function oilAskPlan(row: { person?: any; date: string; endDate?: string; 
    removed that commitment. Returns the first pending day per row so the
    bell's tap can land the editor on the exact question (iid, never the row
    object — undo re-mints rows). */
-export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
+export function oilPendingFor(personId: string | null | undefined): { iid: string; iso: string }[] {
   const out: { iid: string; iso: string }[] = []
   /* a placeholder is nobody: there is no bell to light for ALL AVAIL itself ([INPUT-ALL-AVAIL]) */
-  if (!personId || (PEOPLE[personId] && PEOPLE[personId].special)) return out
+  if (!personId || rosterBody(personId)?.special) return out
   /* a protected (quarantined) day is never asked (P2-QREV-06/Fable-6): the OIL
      pass already treats it as "credit stands", and the answer write would be
      rolled back by the input funnel — so the bell would stay lit forever. Skip
      those days from the scan. */
   const prot = protectedDates()
-  const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
+  const isoProt = (iso: string) => prot.length > 0 && prot.some(dt => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
   /* AND AN INPUT HE FILED FOR ALL AVAIL / ALL ([INPUT-ALL-AVAIL]; owner D711 (4), 9 Oct 26: "an OIL question nobody
      answered goes to the filer's bell, and only his"). Nobody stands behind such an input by name, so nobody else can be
      asked; the men behind it never are (D702: "only on the day and the schedule"). ONLY WHILE HE MAY STILL ANSWER — a
@@ -1149,12 +1186,12 @@ export function oilPendingFor(personId: any): { iid: string; iso: string }[] {
      of his own"; step 2 (a) of the one-rule build). So "an input he answers for" is ONE test: its only person is he —
      his own request, whoever filed it — or it holds anyone else (several people, ALL AVAIL) and he is its filer, while
      he may still change it. A man who is merely IN a shared input is not asked. */
-  const filedByHim = (row: any) => (idsOf(row).length > 1 || isPlaceholderInput(row)) && row.by != null && String(row.by) === String(personId)
+  const filedByHim = (row: WarInput) => (idsOf(row).length > 1 || isPlaceholderInput(row)) && row.by != null && String(row.by) === String(personId)
     && (session == null || String(session) === String(personId)) && mayEditInput(row)
-  const ownOf = (row: any) => idsOf(row).length === 1 && onlyNamed(row) === personId
+  const ownOf = (row: WarInput) => idsOf(row).length === 1 && onlyNamed(row) === personId
   /* the RECORDS, not the per-person lines (engine/inputs.ts): this asks who ANSWERS for an input — its own man, or
      whoever filed it for ALL AVAIL, an input that has no line at all — and hands back the input's id for the editor */
-  for (const row of INPUTS) {
+  for (const row of warInputs()) {
     if ((!ownOf(row) && !filedByHim(row)) || !oilAsks(row.type) || oilSilent(row)) continue
     const answered = (row.oil ?? {}) as Record<string, number>
     const hit = oilAskPlan(row).find(p => answered[p.iso] == null && !isoProt(p.iso))
@@ -1179,9 +1216,9 @@ export function oilOpenOn(from: string, to?: string | null): OilOpen[] {
   if (!validIso(from)) return []
   const hi = to && validIso(to) && to >= from ? to : from
   const prot = protectedDates()
-  const isoProt = (iso: string) => prot.length > 0 && prot.some((dt: any) => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
+  const isoProt = (iso: string) => prot.length > 0 && prot.some(dt => inputCoversDate({ date: isoToLabel(iso), yr: baseYear() }, dt))
   const out: OilOpen[] = []
-  for (const row of INPUTS as any[]) {
+  for (const row of warInputs()) {
     if (!row || !row.iid || !oilAsks(row.type) || oilSilent(row)) continue
     const plan = oilAskPlan(row)
     if (!plan.length) continue
@@ -1199,7 +1236,7 @@ export function oilOpenOn(from: string, to?: string | null): OilOpen[] {
    the list's own length (Fable's read of the plan, A9) */
 let LEFT: { v: number; wf: number; n: number; m: Map<string, number> } = { v: -1, wf: -1, n: -1, m: new Map() }
 function holidayLeft(a: string, b: string): number {
-  const v = raptorVersion(), wf = warFactsVersion(), n = INPUTS.length
+  const v = raptorVersion(), wf = warFactsVersion(), n = warInputs().length
   if (LEFT.v !== v || LEFT.wf !== wf || LEFT.n !== n) LEFT = { v, wf, n, m: new Map() }
   const key = `${a}|${b}`
   let c = LEFT.m.get(key)
@@ -1266,7 +1303,7 @@ function tellHoliday(runs: HolidayRun[]): void {
    approval as "bid deleted", or a put-back as nothing. */
 function warLeaveNow(): Map<string, Map<string, string>> {
   const out = new Map<string, Map<string, string>>()
-  for (const row of INPUTS as any[]) {
+  for (const row of warInputs()) {
     if (!row || !row.lw || !isLeave(row.type)) continue
     const pid = onlyNamed(row)
     if (pid == null) continue
@@ -1294,7 +1331,7 @@ function tellWar(tells: WarTell[]): void {
    special left out (noticeWar), and the admin who did it (D1214) */
 function warAudience(): string[] {
   const onWar = new Set(getState().people.map(p => p.id))
-  return [...new Set(ACCOUNTS_LIST.filter((a: any) => a && a.pid != null && onWar.has(String(a.pid))).map((a: any) => String(a.pid)))]
+  return [...new Set(ACCOUNTS_LIST.filter(a => a && a.pid != null && onWar.has(String(a.pid))).map(a => String(a.pid)))]
 }
 function tellBidding(tells: OpenTell[]): void {
   const by = me()
@@ -1326,7 +1363,7 @@ function endedLines(pid: string): Notice[] {
     if (!(o.to < today)) continue
     let told = 0
     for (const n of NOTICES) {
-      const p: any = n.to === pid ? (n.what || [])[0] : null
+      const p = n.to === pid ? (n.what || [])[0] : null
       if (p && p.k === 'lwopen' && String(p.a) <= o.to && o.from <= String(p.b || p.a)) told = Math.max(told, n.at)
     }
     if (!told && o.to < since) continue
@@ -1370,10 +1407,11 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
     if (c.collection !== 'notices' || c.op !== 'put' || !c.after) continue
     const n = c.after as Notice
     if (!isWarNotice(n)) continue
-    const p: any = (n.what || [])[0]
+    /* (a war notice's first part is one of the war's own three kinds — isWarNotice, just above) */
+    const p = (n.what || [])[0] as Extract<NoticePart, { k: 'lw' | 'lwopen' | 'lwback' }> | undefined
     if (!p || p.k === 'lwback') continue
     /* the "again" lines an earlier Redo wrote for this line, newest last (the fixes' M9 — the Opus read's 5) */
-    const again = NOTICES.filter(x => x.to === n.to && (x.what || [])[0]?.k === 'lw' && (x.what[0] as any).again && (x.what[0] as any).ref === n.id)
+    const again = NOTICES.filter(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lw' && q.again && q.ref === n.id })
     if (dir === 'undo') {
       if (NOTICES.some(x => x.id === n.id) || !hasRead(n.to, n)) continue
       /* …a Redo after a "taken back" told him "again": that line is now the one he last had. Unread, it simply goes — it
@@ -1382,9 +1420,9 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
       const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
-      made.push({ ...n, what: [{ k: 'lwback', ...(p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
     } else {
-      if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => x.to === n.to && (x.what || [])[0]?.k === 'lwback' && ((x.what[0] as any).ref === n.id))) continue
+      if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
@@ -1436,7 +1474,7 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
 
    The war grid needs no separate read: an approved war-side leave exists as an
    Input too, so INPUTS is the one absence record this consults. */
-export function availableFor(iso: string, win: [number, number], day?: any): string[] {
+export function availableFor(iso: string, win: [number, number], day?: Day): string[] {
   const out: string[] = []
   const isoOrd = +iso.replace(/-/g, '')
   /* the Leave War body, for the posting window (bug pass, 28 Aug 26): a
@@ -1448,19 +1486,19 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
   /* computed ONCE for the whole walk, not per person: dayEngaged is a full pass
      over the day, and this loop runs sixty times per sentinel window. */
   const engaged = day ? dayEngaged(day) : null
-  const covers = (inp: any) => {
+  const covers = (inp: WarInput) => {
     const a = dateOrd(inp.date, inp.yr)
     if (a == null) return false
     const b = inp.endDate ? dateOrd(inp.endDate, inp.yr) ?? a : a
     return isoOrd >= a && isoOrd <= b
   }
-  const hits = (inp: any) => { const w = inpWin(inp); return !!w && w[0] < win[1] && win[0] < w[1] }
+  const hits = (inp: WarInput) => { const w = inpWin(inp); return !!w && w[0] < win[1] && win[0] < w[1] }
   /* WHO IS KEPT OUT BY AN INPUT OF HIS OWN, worked out ONCE for the whole walk, not once a man ([ALL-AVAIL-AS-MEMBER]
      step 1): the inputs that could keep anyone out of this window are picked first — every test below is about the
      INPUT (its filing, its kind, its dates, its hours) — and then read as LINES, one a named person (engine/inputs.ts
      inputLines): a man's own line is his commitment over the window, whoever else is in the input, and an input for
      ALL AVAIL / ALL has no line and so keeps nobody out. */
-  const keptOut = new Set<any>(inputLines(INPUTS.filter((inp: any) => {
+  const keptOut = new Set<string | undefined>(warLines(warInputs().filter(inp => {
     /* A REMOVED REQUEST IS SILENT EVERYWHERE (Astra, 21 Sep 26). The dormant
        test used to sit on the `commit` branch only, so a Training or Meeting
        the scheduler had turned down correctly stopped speaking — while a
@@ -1478,9 +1516,9 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     const commit = isPersonal(inp.type) || goesOnProg(inp)
     if (!away && !commit) return false
     return covers(inp) && hits(inp)
-  })).map((l: any) => l.person))
+  })).map(l => l.person))
   for (const id of Object.keys(PEOPLE)) {
-    const p: any = (PEOPLE as any)[id]
+    const p = rosterBody(id)
     if (!p || p.special || p.pers) continue
     /* a DELETED man is read by DATE ([POST-OUT-OUTCOMES], D297 — Fable F1): on a day before his cutoff he is
        available exactly as he was, so the crowd a day he flew froze at publication compares equal and that day never
@@ -1495,7 +1533,7 @@ export function availableFor(iso: string, win: [number, number], day?: any): str
     const lw = lwById.get(id)
     if (lw && !inSquadron(lw, iso)) continue
     if (keptOut.has(id)) continue
-    if (engaged && personBusy(day, id).some((w: any) => w[0] < win[1] && win[0] < w[1])) continue
+    if (engaged && personBusy(day, id).some((w: [number, number]) => w[0] < win[1] && win[0] < w[1])) continue
     out.push(id)
   }
   return out
@@ -1519,13 +1557,15 @@ function weekDayISO(v: string, di: number): string | null {
    (state/history.ts): ok=dayOK, cv=cur, a=als, o=orig, dr=drafts — mapped
    here into the SCHED shape the parameterized publish readers take.
    null = nothing usable stashed. */
-const STASH_OIL_CACHE = new Map<string, { src: string, wk: { days: any[], sc: any } | null }>()
-function stashOilWeek(v: string): { days: any[], sc: any } | null {
+/* (its days, and its publish state in the SCHED shape — each part as the blob held it, absent where it held none) */
+type StashOilWeek = { days: Day[], sc: Partial<Pick<Sched, 'dayOK' | 'cur' | 'als' | 'orig' | 'drafts' | 'amV'>> }
+const STASH_OIL_CACHE = new Map<string, { src: string, wk: StashOilWeek | null }>()
+function stashOilWeek(v: string): StashOilWeek | null {
   const src = stashGet(v)
   if (!src) return null
   const hit = STASH_OIL_CACHE.get(v)
   if (hit && hit.src === src) return hit.wk
-  let wk: { days: any[], sc: any } | null = null
+  let wk: StashOilWeek | null = null
   try {
     const s = JSON.parse(src)
     if (s && Array.isArray(s.d))
@@ -1602,7 +1642,7 @@ export interface DesiredOil {
    is exactly what §7.5 forbids), so the date is PROTECTED rather than guessed
    at: the landed credit stands and nothing new is derived — the same rule the
    pass already applies to an unresolvable snapshot. Returns false to say so. */
-function creditFrom(day: any, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void, blocks?: Map<string, OilEvidence>): boolean {
+function creditFrom(day: Day, iso: string, add: (p: string, iso: string, sp: OilWork[], via?: 'schedule' | 'input') => void, blocks?: Map<string, OilEvidence>): boolean {
   const ev: OilEvidence | undefined = day && day.oilev
   /* the block's own date must be the date we are crediting. The evidence carries
      its ISO precisely so this binding can be checked, and a block that does not
@@ -1643,7 +1683,7 @@ function desiredOilCells(back?: { di: number; ver: string | null }): { desired: 
      the Leave War roster (owner, 18 Aug 26) and a scheduler who names one on a
      weekend row means it (O-2, "leave it", 21 Sep 26). */
   const creditable = (id: string, iso: string) => {
-    const p: any = (PEOPLE as any)[id]
+    const p = rosterBody(id)
     /* [POST-OUT-OUTCOMES] (D299 — "his OIL balance" goes; the plan's Round 1): a DELETED man earns nothing on or after
        his cutoff — not even from a published day to come that still carries him until it is re-issued. Before it, his
        credits stand (the past keeps its record). */
@@ -1805,7 +1845,7 @@ const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', '
    wording has it. The second form ("… earned nobody any OIL — …") is not on his list of 13 Oct 26 and has no `told`:
    it is joined by the dot, as before, and so are the two lines below that may ride behind either form. */
 type BlindLine = { line: string; told?: { head: string; body: string } }
-function oilBlindLine(iso: string, day: any, spans: Record<string, OilWork[]>): BlindLine | null {
+function oilBlindLine(iso: string, day: Day, spans: Record<string, OilWork[]>): BlindLine | null {
   const blind = dayOilBlind(day)
   if (!blind.length) return null
   const earners = Object.values(spans).filter(sp => workSpans(sp).length).length
@@ -2033,9 +2073,9 @@ function reprojectRoster(): void {
   /* the posting window: the STORED record, through the one body setPeople lays it with ([POST-OUT-OUTCOMES] —
      windowFor; Astra A4: the SANS outcome lays no window while Show SANS is on, and two overlays laying it differently
      would defeat that); a window with no record behind it (the demo overlay's, first boot) keeps today's carry-over */
-  const next: any[] = projected.map(pp => {
+  const next: Person[] = projected.map(pp => {
     const ex = curById.get(pp.id)
-    const merged: any = { ...pp }
+    const merged: Person = { ...pp }
     const rec = st.postOuts[pp.id]
     if (rec) Object.assign(merged, windowFor(rec, st.showSans))
     else if (ex) { merged.from = ex.from; merged.to = ex.to; merged.poArchive = ex.poArchive; if (ex.past) merged.past = ex.past }
@@ -2060,13 +2100,13 @@ function reprojectRoster(): void {
   for (const p of st.people) {
     if (nextIds.has(p.id)) continue
     const rec = st.postOuts[p.id]
-    const kept: any = rec ? { ...p, ...windowFor(rec, false) } : p
+    const kept: Person = rec ? { ...p, ...windowFor(rec, false) } : p
     if (kept.to === null) continue
-    if ((PEOPLE as any)[p.id] && (PEOPLE as any)[p.id].deleted) kept.gone = true
+    if (rosterBody(p.id)?.deleted) kept.gone = true
     /* the final code reads (Fable F4, Astra 2 — both, 27 Sep 26): an ARCHIVED man renamed on Admin → Users (Save name)
        carries his new callsign here too — the war knows him by id, and a rename is a label (as on every flown day). A
        DELETED man keeps the name he flew under: his callsign is free for someone else (D297) */
-    const body = (PEOPLE as any)[p.id]
+    const body = rosterBody(p.id)
     const renamed = !!body && !body.deleted && !!body.cs && String(body.cs) !== kept.callsign
     next.push(renamed ? { ...kept, callsign: String(body.cs) } : kept)     // a copy: `kept` may be the store's own row
   }
@@ -2084,8 +2124,8 @@ function reprojectRoster(): void {
   const catalog = qualCatalogue()
   if (JSON.stringify(catalog) !== JSON.stringify(st.qualCatalog)) setQualCatalog(catalog)
   // xq is sorted at projection, so an unchanged qual set compares equal here.
-  const sig = (p: any) =>
-    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${(p.past || []).map((x: any) => `${x.from || ''}~${x.to}`).join(',')}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}`
+  const sig = (p: Person) =>
+    `${p.callsign}|${p.seat}|${p.band}|${p.sxo ? 1 : 0}|${p.q || ''}|${p.scd ? 1 : 0}|${p.scn ? 1 : 0}|${p.pers ? 1 : 0}|${p.label || ''}|${p.from || ''}|${p.to || ''}|${p.poArchive === undefined ? '' : p.poArchive ? 1 : 0}|${p.poOutcome || ''}|${p.poDone || ''}|${(p.past || []).map(x => `${x.from || ''}~${x.to}`).join(',')}|${p.gone ? 1 : 0}|${p.san ? 1 : 0}|${(p.xq || []).join(',')}`
   const before = new Map(st.people.map(p => [p.id, sig(p)]))
   const unchanged = before.size === next.length && next.every(p => before.get(p.id) === sig(p))
   if (unchanged) return
@@ -2152,7 +2192,7 @@ function poDueNow(id: string, today: string): PoDue | null {
   if (!outcome || outcome === 'none') return null
   const poDate = addDays(rec.to, 1)
   if (today < poDate || rec.poDone === poDate) return null
-  const body: any = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || body.special || body.deleted) return null
   return { id, poDate, outcome, key: `${id}@${poDate}:${outcome}` }
 }
@@ -2165,7 +2205,7 @@ function poDueNow(id: string, today: string): PoDue | null {
      holding him).
    It runs as soon as the reason goes (another admin can sign in; the week is repaired). The sentence, or null. */
 export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = effectiveToday()): string | null {
-  const body: any = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body) return null
   if (outcome === 'overseas') {
     const a = accountOfPid(id)
@@ -2181,7 +2221,7 @@ export function poHeldReason(id: string, outcome: PostOutcome, poDate: string = 
    "posting in 19 Oct"; or null */
 export function postingPendingTag(id: string): string | null {
   /* the RECORD's dates first — Show SANS lays no window on the displayed row of a man whose SANS posting has run */
-  const w: any = getState().postOuts[id] || getState().people.find(p => p.id === id)
+  const w = getState().postOuts[id] || getState().people.find(p => p.id === id)
   if (w && !w.gone && w.from && w.from > effectiveToday()) return `posting in ${dayMon(w.from)}`
   if (!w || !w.to || w.gone) return null
   const poDate = addDays(w.to, 1)
@@ -2236,12 +2276,12 @@ export function runPoOutcomes(): void {
   const needsDays = due.some(d => d.outcome === 'delete')
   for (const d of due) PO_INFLIGHT.add(d.key)
   const settle = (): void => { for (const d of due) PO_INFLIGHT.delete(d.key) }
-  let res: any
+  let res: CommitResult | undefined
   SYNCING = true
   try {
     res = cmdCommitProjection({
-      type: 'lw.postoutRun', scope: { module: 'people' } as any,
-      apply: (txn: any) => {
+      type: 'lw.postoutRun', scope: { module: 'people' },
+      apply: (txn: Txn) => {
         settle()
         /* a queued command runs later, outside the scan's guard: hold the other passes off its half-made world here too */
         const was = SYNCING
@@ -2258,7 +2298,7 @@ export function runPoOutcomes(): void {
             /* asked again when the command runs (it may run later, queued): held → nothing changes, not marked done */
             const held = poHeldReason(d.id, d.outcome, d.poDate)
             if (held) { told.push([d.key, held]); continue }
-            const body: any = (PEOPLE as any)[d.id]
+            const body = rosterBody(d.id)!   // (poDueNow just found his body)
             if (d.outcome === 'overseas') {
               if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
               suspendForPosting(d.id)
@@ -2293,14 +2333,14 @@ export function runPoOutcomes(): void {
   } finally {
     SYNCING = false
   }
-  if (res && res.queued) { res.done.then(settle, settle); return }
+  if (res && isQueued(res)) { res.done.then(settle, settle); return }
   settle()
   raptorNotify()
 }
 /* a DELETE's war half, for the admin's own delete (state/person-delete.ts deletePerson — Admin → Users): the war's
    store enlisted in that command, his records from the cutoff gone, his window closed the day before, `gone` set. The
    ONE place a Raptor command reaches the war's store — here, at the seam. */
-export function deletePersonOnWar(txn: any, id: string, cutoff: string, frozen: any = null): void {
+export function deletePersonOnWar(txn: Txn, id: string, cutoff: string, frozen: Person | null = null): void {
   txn.enlist(lwStore)
   forgetPersonFrom(id, cutoff, frozen && pastOnWar(id, cutoff) ? frozen : null)
 }
@@ -2309,25 +2349,27 @@ export function deletePersonOnWar(txn: any, id: string, cutoff: string, frozen: 
    Archive ([ONE-DOOR], round 1 — Fable F3 / Astra 7) */
 function pastOnWar(id: string, cutoff: string): boolean {
   const cut = +cutoff.replace(/-/g, '')
-  return getState().wars.some(w => Object.keys(((w as any).recs || {})[id] || {}).some(d => d < cutoff))
-    || inputLines().some((r: any) => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
+  return getState().wars.some(w => Object.keys((w.recs || {})[id] || {}).some(d => d < cutoff))
+    || warLines().some(r => r && r.person === id && (dateOrd(r.date, r.yr) ?? Infinity) < cut)
     /* an OIL award before the cutoff is his past on the war too — a ledger entry since [OIL-AWARD-IS-A-GRANT], so the
        war's records no longer carry it (Astra's plan read F03; D299: his past OIL stays, and so does his row) */
     || rawState().ledger.some(e => e.personId === id && isOilAward(e) && e.date < cutoff)
 }
 /* the war's picture of a man it does NOT show right now (a SANS man with Show SANS off), taken before a delete's mark
    takes him off every projection — null when the war already has his row (the kept rule then carries him) */
-export function warIdentityIfHidden(id: string): any {
+function hiddenIdentity(id: string): Person | null {
   if (getState().people.some(p => p.id === id)) return null
   return projectPeople(true).find(p => p.id === id) || null
 }
+/* (the same answer, for the other files) */
+export function warIdentityIfHidden(id: string): Person | null { return hiddenIdentity(id) }
 /* the auto-archive's old name — every caller and test that runs it now runs the outcomes (an 'overseas' posting IS
    the old "Archive on PO date") */
 export const runPoArchive = runPoOutcomes
 /* a posting's Delete is never made on the last admin who can sign in (the door's own refusal, accounts.ts
    deleteAccountProblem — minus "yourself": the pass is not the signed-in person acting) */
 function deleteBlocked(id: string): string | null {
-  const body: any = (PEOPLE as any)[id]
+  const body = rosterBody(id)!   // (its one caller, poHeldReason, has found his body)
   const lastAdmin = lastAdminIfGone(id)
   return lastAdmin ? `${body.cs} is the last admin who can sign in — he is not deleted until another admin can` : null
 }
@@ -2349,7 +2391,7 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
      so a hand-made call cannot do what the page will not offer; a
      sessionless test/boot context is not a member and passes. */
   if (!mayManageRoster()) return false
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || !body.archived || body.special) return false
   /* [POST-OUT-OUTCOMES]: a DELETED man is never restored (D287 — final; Fable F3); and a man whose callsign a man ON
      THE ROSTER now holds is not restored under it (D286 reading (1): Restore refuses while the name is taken and never
@@ -2365,7 +2407,7 @@ export function restoreArchivedPerson(id: string, postIn?: string): boolean {
    or a post-in on or before the day his stint closed (the store's one sentence). null when it would go ahead. */
 export function restoreProblem(id: string, postIn: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   if (!/^\d{4}-\d{2}-\d{2}$/.test(String(postIn ?? ''))) return 'Pick the post-in date'
   const st = getState()
@@ -2387,13 +2429,13 @@ export function restoreProblem(id: string, postIn: string): string | null {
      and `back` set on his Person so HE is told on his first sign-in (D305 — every Restore, with or without an account:
      Fable F12 / Astra 5). */
 function restoreBody(id: string, rename: string | null, postIn?: string): boolean {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)!   // (both callers have found his body, archived)
   let ok = true
   const r = cmdCommit({
     /* UNDO is the posting's own decision taken back (the posting command, as `takeBack` is); RESTORE is Admin → Users'.
        The change history says each as what it is (Astra's read of the [DRAFT-PENDING] fixes, 02) */
-    type: postIn === undefined ? 'lw.postout' : 'person.restore', scope: { module: 'people' } as any, meta: null,
-    apply: (txn: any) => {
+    type: postIn === undefined ? 'lw.postout' : 'person.restore', scope: { module: 'people' }, meta: null,
+    apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
@@ -2413,7 +2455,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
       finishPeopleWrite()
     },
   })
-  if (!ok || (r && (r as any).ok === false)) return false
+  if (!ok || (r && 'ok' in r && r.ok === false)) return false
   markBack(id)
   raptorNotify()
   return true
@@ -2423,7 +2465,7 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
    callsign rule's reason (blank, 14 letters, taken). null = done. */
 export function restoreArchivedAs(id: string, cs: string, postIn?: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can restore someone'
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || !body.archived || body.special || body.deleted) return 'That person cannot be restored'
   const want = String(cs ?? '').trim()
   const bad = callsignProblem(want, id) || (postIn !== undefined ? restoreProblem(id, postIn) : null)
@@ -2447,16 +2489,16 @@ const dayMon = (iso: string) => `${Number(iso.slice(8, 10))} ${MON[Number(iso.sl
    id, so a later rename follows) or "Archived 14 Oct 26 by his posting (Overseas Sqn)". null for a man on the roster,
    a deleted man, or one archived before this was kept (demo data — D56). */
 export function archivedLine(id: string): string | null {
-  const b: any = (PEOPLE as any)[id]
+  const b = rosterBody(id)
   if (!b || !b.archived || b.deleted || !b.archivedOn) return null
   const when = `${dayMon(b.archivedOn)} ${String(b.archivedOn).slice(2, 4)}`
   if (b.archivedBy === 'po') return `Archived ${when} by his posting (${OUTCOME_WORD.overseas})`
-  const who = b.archivedWho && (PEOPLE as any)[b.archivedWho] ? (PEOPLE as any)[b.archivedWho].cs : null
+  const who = b.archivedWho && rosterBody(b.archivedWho) ? rosterBody(b.archivedWho)!.cs : null
   return `Archived ${when}${who ? ` by ${who}` : ''}`
 }
 export function archiveProblem(id: string): string | null {
   if (!mayManageRoster()) return 'Only an admin can archive someone'
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || body.special) return 'That person cannot be archived'
   if (body.deleted) return 'That person has been deleted'
   if (body.archived) return `${body.cs} is already archived`
@@ -2468,23 +2510,23 @@ export function archiveProblem(id: string): string | null {
 export function archivePerson(id: string): { bad: string | null; said: string } {
   const bad = archiveProblem(id)
   if (bad) return { bad, said: '' }
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)!   // (archiveProblem has just found his body)
   const today = effectiveToday()
   const st = getState()
-  const hidden = warIdentityIfHidden(id)
+  const hidden = hiddenIdentity(id)
   const keepHidden = hidden && pastOnWar(id, today) ? hidden : undefined
-  const w0: any = st.people.find(p => p.id === id) || st.postOuts[id] || null
+  const w0 = st.people.find(p => p.id === id) || st.postOuts[id] || null
   const pendingDate = w0 && w0.to && w0.poDone !== addDays(w0.to, 1) ? addDays(w0.to, 1) : null   // not yet RUN (Fable F5)
   let replaced: string | null = null
   const r = cmdCommit({
-    type: 'person.archive', scope: { module: 'people' } as any, meta: null,
-    apply: (txn: any) => {
+    type: 'person.archive', scope: { module: 'people' }, meta: null,
+    apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (suspendForArchive(id) === 'lock') throw new CmdRefused(`${body.cs} is the last admin who can sign in — he can't be archived until another admin can`)
       body.archived = true
       body.archivedBy = 'admin'
       body.archivedOn = today                                           // D329: how and when — who, by his person id
-      if (me() != null) body.archivedWho = me(); else delete body.archivedWho
+      if (me() != null) body.archivedWho = me() as string; else delete body.archivedWho
       delete body.back
       if (body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
       replaced = closeStintOnArchive(id, today, keepHidden).replaced
@@ -2492,7 +2534,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
       finishPeopleWrite()
     },
   })
-  if (r && (r as any).ok === false) return { bad: (r as any).message || 'You are not allowed to do that', said: '' }
+  if (r && 'ok' in r && r.ok === false) return { bad: r.message || 'You are not allowed to do that', said: '' }
   clearBack(id)
   raptorNotify()
   /* his sign-in named only when he has one (the walk's design, Fable 4.7 — the posting sheets already word it so) */
@@ -2503,7 +2545,7 @@ export function archivePerson(id: string): { bad: string | null; said: string } 
 /* A NEW PERSON'S POST-IN DATE (D308, [ONE-DOOR]) — the war half of the one add, inside its command: the war's store
    enlisted, his war identity taken from the projection (the war has not re-projected him yet), his first stint opened on
    the date. Refused whole (the add rolls back) if the war cannot take it. */
-function postInNewPerson(txn: any, id: string, date: string): void {
+function postInNewPerson(txn: Txn, id: string, date: string): void {
   txn.enlist(lwStore)
   const identity = projectPeople(true).find(p => p.id === id)
   if (!identity) return
@@ -2511,7 +2553,7 @@ function postInNewPerson(txn: any, id: string, date: string): void {
 }
 /* a man archived on Admin → Users: the war's posting doors refuse him — Restore there is the one way back (Fable F1) */
 export function adminArchived(id: string): string | null {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   return body && body.archived && !body.deleted && body.archivedBy === 'admin'
     ? `${body.cs} was archived on Admin → Users — restore him there` : null
 }
@@ -2530,7 +2572,7 @@ export function adminArchived(id: string): string | null {
    D295, D310).
    null when the Undo can go ahead. */
 export function undoPostOutProblem(id: string): string | null {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   if (!body || body.deleted) return null
   const here = adminArchived(id)
   if (here) return here
@@ -2539,7 +2581,7 @@ export function undoPostOutProblem(id: string): string | null {
   return null
 }
 export function undoPostOut(id: string): boolean {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */
   if (body && body.deleted) return false
   /* [ONE-DOOR] (Fable F1 / Astra 2): an Admin archive comes back only by Restore on Admin → Users */
@@ -2558,11 +2600,11 @@ export function undoPostOut(id: string): boolean {
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
    "he's back": no prompt (the plan's Round 2, Fable 5). */
 function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}): boolean {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   let ok = false
   cmdCommit({
-    type: 'lw.postout', scope: { module: 'people' } as any, meta: null,
-    apply: (txn: any) => {
+    type: 'lw.postout', scope: { module: 'people' }, meta: null,
+    apply: (txn: Txn) => {
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return
@@ -2594,7 +2636,7 @@ export function postOutProblem(id: string, outcome: PostOutcome): string | null 
   return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
 }
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
-  const body = (PEOPLE as any)[id]
+  const body = rosterBody(id)
   /* a DELETED man's posting is final ([POST-OUT-OUTCOMES], D287 — Fable F3) */
   if (body && body.deleted) return false
   const outcome: PostOutcome = typeof archive === 'string' ? archive : (archive ? 'overseas' : 'none')
@@ -2641,7 +2683,7 @@ export function carryViewerPin(from: unknown): void {
 const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESSION ? VIEWER_PIN.v : viewerId())
 /* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
    roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */
-const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && (PEOPLE as any)[m] ? (PEOPLE as any)[m].cs : null) }
+const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && rosterBody(m) ? rosterBody(m)!.cs : null) }
 
 export function wireLeaveWarSync(): void {
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
@@ -2651,7 +2693,7 @@ export function wireLeaveWarSync(): void {
   /* [ONE-DOOR]: an Admin-archived man's posting dates are read-only on the war — both writers ask (Fable 4.2 / 4.3) */
   setPostingLockLookup(adminArchived)
   /* D308 ([ONE-DOOR]): a new person's post-in date, written inside the add's own command */
-  HOOKS.warPostIn = (txn: any, id: string, date: string) => postInNewPerson(txn, id, date)
+  HOOKS.warPostIn = (txn: Txn, id: string, date: string) => postInNewPerson(txn, id, date)
   /* The VIEWING PERSON rides this same wire (owner, 17 Aug 26 — the matrix
      lights the viewer's row and the counter picker answers with their
      numbers). Since [ACCOUNTS] (D166 (4), 26 Sep 26) it is the SIGNED-IN person —
@@ -2731,9 +2773,9 @@ export function wireLeaveWarSync(): void {
        this lane's own echo (the raptor notify → the passes → a war write) finds nothing new. */
     const ods = oilDaySig()
     if (ods !== lastOilDaySig) { lastOilDaySig = ods; validate(); raptorNotify() }
-    const sig = INPUTS
-      .filter((r: any) => oilAsks(r.type) && !oilSilent(r) && r.iid)
-      .flatMap((r: any) => {
+    const sig = warInputs()
+      .filter(r => oilAsks(r.type) && !oilSilent(r) && r.iid)
+      .flatMap(r => {
         const answered = (r.oil ?? {}) as Record<string, number>
         return oilAskPlan(r).filter(p => answered[p.iso] == null).map(p => `${r.iid}|${p.iso}`)
       })
@@ -2748,7 +2790,7 @@ let lastPendingSig: string | null = null
    (the weekend, a PH; an Off day does not) and which have no period to earn into — the facts
    behind the OIL advisories. One string per day, compared by the lw lane above. */
 function oilDaySig(): string {
-  return DAYS.map((_: any, di: number) => `${HOOKS.oilEarningDay(di) ? 1 : 0}:${HOOKS.oilNoPeriod(di) || ''}`).join('|')
+  return DAYS.map((_: unknown, di: number) => `${HOOKS.oilEarningDay(di) ? 1 : 0}:${HOOKS.oilNoPeriod(di) || ''}`).join('|')
 }
 let lastOilDaySig: string | null = null
 
@@ -3076,7 +3118,7 @@ export function alsoSince(prev: number, from: string, to: string, me: string | n
   }
   /* the Inputs page's leave, on a man the war shows */
   const onWar = new Set(getState().people.map(p => p.id))
-  for (const row of INPUTS as any[]) {
+  for (const row of warInputs()) {
     if (!row || row.lw || !isLeave(row.type) || !(typeof row.at === 'number' && row.at > prev)) continue
     if (row.by != null && me != null && String(row.by) === String(me)) continue
     const pid = onlyNamed(row)
@@ -3095,7 +3137,7 @@ export function alsoSince(prev: number, from: string, to: string, me: string | n
 export function openRequestDocs(r: { personId: string; code: string; from: string; to: string; docIds: readonly string[]; remarks?: string; placedBy?: string; placedAt?: number }): boolean {
   if (!r.docIds.length) return false
   const a = isoToInputDate(r.from), b = isoToInputDate(r.to)
-  const row: any = {
+  const row: WarInput = {
     person: r.personId, type: parseCell(r.code)?.type ?? r.code, allday: true, date: a.date, yr: a.yr,
     ...(r.to > r.from ? { endDate: b.yr === a.yr ? b.date : `${b.date} ${b.yr}` } : {}),
     remarks: r.remarks ?? '', docIds: [...r.docIds],
@@ -3108,7 +3150,8 @@ export function openRequestDocs(r: { personId: string; code: string; from: strin
 /** …AND A LEAVE'S, FILED OR APPROVED, READ ONLY (M4 — the spec's reading 8: every document chip on the war opens the
  *  document; the day's list and the bid windows' Document row): the same viewer on the input itself; its papers change on
  *  the Inputs page or in its own bid window, never from the viewer opened here */
-export function openInputDocs(row: any): boolean {
+/* `row` — an input, or a war request's own words and documents (DayList's read-only line): only its documents are read */
+export function openInputDocs(row: Partial<WarInput> | null | undefined): boolean {
   if (!row || !rowDocIds(row).length) return false
   setDocView({ row, readOnly: true })
   raptorNotify()
@@ -3118,9 +3161,9 @@ export function openInputDocs(row: any): boolean {
  *  replaced it, when that is a leave of the same man that still stands. Through the one remarks save (ui/inputedit.tsx
  *  setLeaveRemarks → commitInputEdit), so who may change that leave is asked as anywhere: the man himself or an admin.
  *  Answers the input it would go onto (`can`) and whether it was written. */
-export function replacedCarry(personId: string, n: { remarks?: string; docIds?: readonly string[]; iid?: string }): { row: any; remarks: string; docIds: string[] } | null {
+export function replacedCarry(personId: string, n: { remarks?: string; docIds?: readonly string[]; iid?: string }): { row: WarInput; remarks: string; docIds: string[] } | null {
   if (!n.iid || (!n.remarks && !n.docIds?.length)) return null
-  const row = INPUTS.find((r: any) => String(r.iid) === n.iid)
+  const row = warInputs().find(r => String(r.iid) === n.iid)
   if (!row || !isLeave(row.type) || !idsOf(row).map(String).includes(personId)) return null
   const have = rowDocIds(row)
   const docIds = [...new Set([...have, ...(n.docIds ?? [])])]
@@ -3131,7 +3174,7 @@ export function replacedCarry(personId: string, n: { remarks?: string; docIds?: 
   return { row, remarks, docIds }
 }
 export function openInputWindow(iid: string): boolean {
-  const row = INPUTS.find((r: any) => String(r.iid) === String(iid))
+  const row = warInputs().find(r => String(r.iid) === String(iid))
   if (!row) return false
   if (CURPAGE !== 'inputs') setPage('inputs')
   setInpEdit(row)
@@ -3184,5 +3227,5 @@ export { docGet } from '../state/docs'
 export function puckHtml(id: string, callsign = ''): string {
   const h = puck(id, false, true, false).replace(' tabindex="0"', '')
   /* a war person the roster no longer draws (a demo row, one deleted since) still reads as his callsign */
-  return h || `<span class="ll-cs">${String(callsign).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as any)[c])}</span>`
+  return h || `<span class="ll-cs">${String(callsign).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' } as Record<string, string>)[c])}</span>`
 }

@@ -102,7 +102,8 @@ export function readHolidaySheet(text: string): SheetRow[] {
   const hasHead = head.includes('from')
   const col = (names: string[], at: number) => {
     if (!hasHead) return at
-    return head.findIndex(h => names.includes(h))
+    const want = new Set(names)
+    return head.findIndex(h => want.has(h))
   }
   const ix = { from: col(['from'], 0), to: col(['to'], 1), name: col(['name'], 2), kind: col(['kind'], 3), short: col(['on grid', 'ongrid', 'short'], 4) }
   const cell = (r: string[], i: number) => (i >= 0 ? (r[i] ?? '').trim() : '')

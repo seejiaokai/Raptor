@@ -15,7 +15,7 @@ import { memoryBackend } from '../state/storage'
 import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
 import { SelectSheet } from './SelectSheet'
-import { compactSpan, readApprove } from './BidBits'
+import { compactSpan, readApprove } from './bidhelpers'
 
 const ISNAP = JSON.stringify(INPUTS)
 const P = 'dusk'

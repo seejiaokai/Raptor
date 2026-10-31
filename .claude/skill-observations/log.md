@@ -2968,3 +2968,48 @@ reset mode disables before reusing it.
 **Suggested improvement:** before a tool's exit code becomes a gate, read (or test) what it does when its comparison cannot be made; gate on its machine-readable report's own "comparison made" field, and prove the gate red on a planted fault in the real CI copy (shallow, sparse) — not only on the full local checkout.
 
 **Principle:** A gate is only as good as its failure mode: find out what the tool does when it cannot do its job, and make that case red.
+
+### Observation 758: Parallel helpers that each type a shared record give it different shapes, which clash only at the merge
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** the Leave War's strict-checking and React Doctor clean-up, fanned out to four Opus helpers, each in its own worktree on a disjoint set of files.
+**Skill:** dispatching-parallel-agents
+**Type:** open-source
+**Phase/Area:** the brief for parallel helpers working on one codebase
+
+**Issue:** Each helper was told to replace loose types with real ones in its own files. Two of them met the same untyped record (a leave input) from opposite sides: one introduced a wider "as the war reads it" shape at the shared edge, the other typed its windows with the narrower schema shape. Each helper's own type check was green; the clash surfaced only after both branches were merged — six type errors across five files, settled by hand by the host. A second, smaller clash came from two helpers each re-routing the same moved helper function. Also, the brief's suggested junction command (`cmd //c mklink //J`) was refused in two helpers' shells; they fell back to PowerShell `New-Item -ItemType Junction`.
+
+**Suggested improvement:** In the parallel-dispatch brief, when helpers will add types at boundaries they share, name the ONE canonical type for each shared record up front (or have one helper own the shared edge and finish first); and name which helper owns any helper function another may move. Give the PowerShell junction command as the default.
+
+**Principle:** Partitioning parallel work by file is not enough when the work introduces shared vocabulary (types, moved helpers): decide the shared vocabulary before the fan-out, or the merge becomes the integration step.
+
+### Observation 759: A handoff's "tests green" that named no run hid six red tests
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** continuing `claude/leave-war-fixes-react-doctor-d90ac5` from its HANDOFF block (build D1542–D1544, then the bug check)
+**Skill:** session-handoff (the block's "Built and committed (tests green on his PC)" line)
+**Type:** open-source
+**Phase/Area:** writing the handoff block — what was checked and how
+
+**Issue:** The block said the branch's first three steps were "tests green on his PC". The whole Leave War suite, run on the untouched branch before any new change, had six red tests in four files — every one an old test still asserting a mark the branch had removed on purpose ([LW-LOCKMARK]) or a rule a ruling had replaced (D1541). The earlier chat had run only the files it touched. The next chat found it only because its own full run failed, and had to prove which reds were its own by running the four files on the untouched branch in a second checkout.
+
+**Suggested improvement:** In the session-handoff skill's block template, the "checked" line names the exact run and its count ("Leave War project, 227 files / 4,037 tests, green" or "only the touched files: a, b, c"), never a bare "tests green"; and a step that REMOVES a field, a mark or a rule runs the whole suite of its area (or names a search for the removed name across the tests) before the block may say green.
+
+**Principle:** A verification claim carries its scope. "Green" without the run that made it is read as the whole suite, and a removal breaks tests far from the files it touched.
+
+### Observation 760: `gatelock.mjs exec` mangles a compound command passed as one string
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** the same branch — running the Leave War suite and the build under the PC's check lock
+**Skill:** shipping rule, the checks (`.claude/rules/shipping.md`) and `raptor-port/scripts/gatelock.mjs`
+**Type:** internal
+**Phase/Area:** taking the lock for a run of more than one command
+
+**Issue:** `gatelock.mjs exec "<who>" -- "cmd1 > f1; echo X >> f1; cmd2 > f2"` (a quoted compound with redirections) ran something else: the first file was never written, the second held a two-file vitest run, and the lock reported a clean exit. Writing the commands into a small script and passing `-- bash <script>` worked first time.
+
+**Suggested improvement:** shipping.md's lock paragraph (and gatelock.mjs's usage text): for more than one command, write them to a script and pass `-- bash <script>`; or make `exec` refuse an argument holding `;`, `>` or `&&` with that advice.
+
+**Principle:** A wrapper that re-parses a shell string should refuse what it cannot run faithfully rather than run part of it and report success.

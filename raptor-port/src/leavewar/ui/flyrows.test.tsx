@@ -20,7 +20,7 @@ import { elevenCounters } from '../testkit'
 import { projectPeople } from '../state/raptorRoster'
 import { dayFacts, flyAnswer } from '../sync'
 import { Matrix } from './Matrix'
-import { FLY_ROW_KEYS } from './FlyRows'
+import { FLY_ROW_KEYS } from './flyrowlist'
 import { askLw } from './lwnav'
 
 /* Rearrange's way in is a line in ⚙ since D1254 ("⇅ Rearrange the grid"); the bar's "⇅ Done" is only the way out. */

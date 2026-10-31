@@ -63,3 +63,16 @@ export const lwPage = (): LwPage => (appr === 'page' ? 'approvals' : bal ? 'bala
 let ringAsk: { personId: string; date: string } | null = null
 export function askRing(a: { personId: string; date: string } | null) { ringAsk = a }
 export function takeRingAsk(): { personId: string; date: string } | null { const a = ringAsk; ringAsk = null; return a }
+
+/* A REQUEST TO RING ON THE APPROVALS PAGE (his D1542, 31 Oct 26 — [LW-CLASH-ROWLESS-TAP]): the clash note's "Decide it in
+   Approvals ›" for a man with no row on the grid (a SANS man while SANS is off the war, an archived man) opens Approvals with
+   his request on that day ringed — the grid cannot open a day on a row it does not draw. The page takes the ask once, rings
+   the line holding that day and scrolls it into view (ApprovalsPage.tsx). View state only — not saved, not undone. */
+/* `code`: the bid's own code, as the clash names it — two bids of his on one day are two lines, and the clash's is the one
+   rung (the fresh read's F2, 31 Oct 26) */
+export interface ApprRingAsk { personId: string; date: string; code?: string; reqId?: string }
+let apprRing: ApprRingAsk | null = null
+export function askApprRing(a: ApprRingAsk) { apprRing = a; ping() }
+/** whether a ring is waiting — read without taking it, so a render React throws away takes nothing */
+export const apprRingAsked = (): ApprRingAsk | null => apprRing
+export function takeApprRing(): ApprRingAsk | null { const a = apprRing; apprRing = null; return a }

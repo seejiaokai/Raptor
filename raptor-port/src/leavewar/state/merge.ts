@@ -8,9 +8,10 @@
 // already reads:
 //   `grid[pid][date]`   — the main code's notation (what the box prints),
 //   `states[pid][date]` — the main record's colour state, its moved-from date,
-//                         its note, and `source: 'raptor'` when the war may not
-//                         change it (filed on the Inputs page / medical / a
-//                         generated credit — the blue edge, design §5.4).
+//                         its note. Whether the war may change the day (filed on
+//                         the Inputs page / medical / a generated credit — design
+//                         §5.4) is asked of the day view's own entries
+//                         (`dayview.ts lockedOnWar` — [LW-LOCKMARK], 31 Oct 26).
 // Nothing here is ever persisted or diffed into a command: writers, undo and
 // storage keep reading the raw state.
 //
@@ -21,7 +22,7 @@
 
 import type { BidRecord, Grid, LeaveWar, States } from '../engine'
 import type { LedgerEntry } from '../engine/counters'
-import { dayView, offWar, type Contrib, type DayView, type Views } from '../engine/dayview'
+import { dayView, type Contrib, type DayView, type Views } from '../engine/dayview'
 import { awardContrib, recContribs, type Recs, type WarRec } from '../engine/warrecs'
 
 export type { Views }
@@ -116,20 +117,18 @@ function projRecord(v: DayView): BidRecord | undefined {
   const m = v.main
   if (!m) return undefined
   if (m.kind === 'request') {
-    const r: BidRecord = { state: m.state!, source: 'bid' }
+    const r: BidRecord = { state: m.state! }
     if (m.movedFrom) r.shiftedFrom = m.movedFrom
     return r
   }
   if (m.kind === 'credit') {
-    const r: BidRecord = { state: 'approved', source: m.auto ? 'raptor' : 'bid' }
+    const r: BidRecord = { state: 'approved' }
     if (m.note) r.note = m.note
     return r
   }
-  /* an absence: war-editable only when approved on the war (`lw`) and not
-     medical, course or OD — everything else says "change it on the Inputs
-     page" (design §5.4, owner §13 Q1) */
-  const locked = offWar(m) || !(v.all.every(c => c.kind !== 'absence' || c.lw))
-  const r: BidRecord = { state: 'approved', source: locked ? 'raptor' : 'bid' }
+  /* an absence: whether the war may change it is the day view's own question now (`dayview.ts lockedOnWar` — [LW-LOCKMARK]);
+     the record carries its state and where it moved from */
+  const r: BidRecord = { state: 'approved' }
   if (m.movedFrom) r.shiftedFrom = m.movedFrom
   return r
 }

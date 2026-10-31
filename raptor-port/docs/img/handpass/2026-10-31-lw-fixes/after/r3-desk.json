@@ -1,0 +1,120 @@
+[
+ {
+  "id": "R3a-2 D1543 an approved morning: AM lit, Whole day greyed, PM offered",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"full\":{\"on\":false,\"disabled\":true,\"opacity\":\"0.45\"},\"am\":{\"on\":true,\"disabled\":false,\"opacity\":\"1\"},\"pm\":{\"on\":false,\"disabled\":false,\"opacity\":\"1\"}}",
+  "pics": [
+   "r3a-desk-2-window-tapped-again"
+  ]
+ },
+ {
+  "id": "R3a-3 D1543 a tap on the greyed Whole day changes nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"full\":{\"on\":false,\"disabled\":true,\"opacity\":\"0.45\"},\"am\":{\"on\":true,\"disabled\":false,\"opacity\":\"1\"},\"pm\":{\"on\":false,\"disabled\":false,\"opacity\":\"1\"}}",
+  "pics": [
+   "r3a-desk-3-whole-day-tapped"
+  ]
+ },
+ {
+  "id": "R3a-4 D1543 a leave pressed on the held half says which half to pick, and writes nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"text\":\"Drifter Thu 12 Nov Auto-approve ✕ No manning row is amber or red Placed Saber · Wed 4 Nov, 09:00 · Approved Saber · Wed 4 Nov, 09:00 Approved Refuse ⇄Move Delete till 12 Nov Document Whole day AM PM P\",\"cellBefore\":\"LL:s-a\",\"cellAfter\":\"LL:s-a\"}",
+  "pics": [
+   "r3a-desk-4-held-half-ll"
+  ]
+ },
+ {
+  "id": "R3a-5 the free half picked: OL lands in the afternoon beside the approved morning",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "LL:s-a,OL:s-a",
+  "pics": [
+   "r3a-desk-5-row-pm-ol"
+  ]
+ },
+ {
+  "id": "R3a AM LL then the sheet tapped again",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "who: Drifter (slipway), D2 = 2026-11-12 (12 Nov), cell before: empty || Auto-approve on: true || 1 pressed AM then LL (Auto-approve on): {\"windowStillOpen\":false,\"said\":[],\"cell\":\"LL:s-a\",\"inputs\":[{\"iid\":\"imw1etjo3oa9pho\",\"type\":\"LL\",\"date\":\"Nov 12\",\"lw\":\"y2026\"}]} || 2 the window tapped again: {\"root\":\"bid-picker\",\"text\":\"Drifter Thu 12 Nov Auto-approve ✕ No manning row is amber or red Placed Saber · Wed 4 Nov, 09:00 · Approved Saber · Wed 4 Nov, 09:00 Approved Refuse ⇄Move Delete till 12 Nov Document Whole day AM PM Pick a range <LL 23.5 <OL 23.5 <OIL 4 <CCL 5 <FCL 0 <PL 0 <EL 0 <CL 0 CSE OD Grant OIL ⋯\",\"buttons\":[\"bid-approve-tick[true cls:on|]:Auto-approve\",\"bid-cancel[|]:✕\",\"decide-approve[true cls:lit|]:Approved\",\"decide-refuse[false|]:Refuse\",\"decide-shift[|]:⇄Move\",\"bid-clear[|]:Delete\",\"?[|]:Document\",\"portion-full(disabled)[false|]:Whole day\",\"portion-am[true cls:on|]:AM\",\"portion-pm[false|]:PM\",\"span-range[false|]:Pick a range\",\"bid-LL[ cls:lit|s-a]:<LL 23.5\",\"bid-OL[|s-a]:<OL 23.5\",\"bid-OIL[|s-a]:<OIL 4\",\"bid-CCL[|s-a]:<CCL 5\",\"bid-FCL[|s-a+dim]:<FCL 0\",\"bid-PL[|s-a+dim]:<PL 0\",\"bid-EL[|s-a+dim]:<EL 0\",\"bid-CL[|s-a+dim]:<CL 0\",\"bid-file-CSE[|s-a]:CSE\",\"bid-file-OD[|s-a]:OD\",\"bid-oil[|s-a]:Grant OIL\",\"bid-more[|]:⋯\"]} || 4 LL pressed with the held morning lit: {\"windowStillOpen\":true,\"windowText\":\"Drifter Thu 12 Nov Auto-approve ✕ No manning row is amber or red Placed Saber · Wed 4 Nov, 09:00 · Approved Saber · Wed 4 Nov, 09:00 Approved Refuse ⇄Move Delete till 12 Nov Document Whole day AM PM Pick a range <LL 23.5 <OL 23.5 <OIL 4 <CCL 5 <FCL 0 <PL 0 <EL 0 <CL 0 The morning is LL. Pick PM to place the afternoon. CSE OD Grant OIL ⋯\",\"said\":[],\"cell\":\"LL:s-a\",\"inputs\":[{\"iid\":\"imw1etjo3oa9pho\",\"type\":\"LL\",\"date\":\"Nov 12\",\"lw\":\"y2026\"}]} || 5 PM then OL pressed: {\"cell\":\"LL:s-a,OL:s-a\",\"inputs\":[{\"iid\":\"imw1etjo3oa9pho\",\"type\":\"LL\",\"date\":\"Nov 12\",\"lw\":\"y2026\"},{\"iid\":\"imw1etoceoqhf7f\",\"type\":\"OL\",\"date\":\"Nov 12\",\"lw\":\"y2026\"}]} || errors: none",
+  "pics": []
+ },
+ {
+  "id": "R3b-3 a morning filed on the Inputs page: neither Whole day nor AM offered (the member)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"window\":\"remarks-sheet\",\"full\":null,\"am\":null,\"pm\":null}",
+  "pics": [
+   "r3b-desk-3-window-member"
+  ]
+ },
+ {
+  "id": "R3b-5 a morning filed on the Inputs page: only PM offered (the admin)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"full\":null,\"am\":null,\"pm\":{\"on\":true,\"disabled\":false,\"opacity\":\"1\"}}",
+  "pics": [
+   "r3b-desk-5-window-admin"
+  ]
+ },
+ {
+  "id": "R3b AM LL filed on the Inputs page, then the day tapped",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "who: Ranger (bane) as the member us; D2b = 2026-11-13 (13 Nov); inputs of his in Nov/Dec before: [] || 1 filed on the Inputs page (LL, AM): {\"options\":\"LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other\",\"chose\":\"LL\",\"dateButton\":\"dcal-d is-sel|true\",\"saidAfterSave\":[],\"formStillOpen\":false,\"dayWindowStayedOpenAfterAdd\":true} || 1 his inputs now: [{\"iid\":\"imw1etm2jxrnzqy\",\"type\":\"LL\",\"date\":\"Nov 13\",\"lw\":null}] || 2 his cell on the grid: LL:s-a || 3 the window tapped as the member: {\"root\":\"remarks-sheet\",\"text\":\"Ranger 13 Nov LL (AM) ✕ till 13 Nov Document\",\"buttons\":[\"remarks-cancel[|]:✕\",\"?[|]:Document\"]} || 4 his cell, as the admin: LL:s-a || 5 the window tapped as the admin: {\"root\":\"bid-picker\",\"text\":\"Ranger Fri 13 Nov Auto-approve ✕ No manning row turns amber or red till 13 Nov Document PM The morning is LL, filed on the Inputs page — change that there. Pick a range LL> 11.5 OL> 11.5 OIL> −0.5 CCL> 1.5 FCL> 4.5 PL> 1 EL> 3.5 CL> −0.5 CSE OD Grant OIL ⋯\",\"buttons\":[\"bid-approve-tick[true cls:on|]:Auto-approve\",\"bid-cancel[|]:✕\",\"?[|]:Document\",\"portion-pm[true cls:on|]:PM\",\"span-range[false|]:Pick a range\",\"bid-LL[|s-a]:LL> 11.5\",\"bid-OL[|s-a]:OL> 11.5\",\"bid-OIL[|s-a+dim]:OIL> −0.5\",\"bid-CCL[|s-a]:CCL> 1.5\",\"bid-FCL[|s-a]:FCL> 4.5\",\"bid-PL[|s-a]:PL> 1\",\"bid-EL[|s-a]:EL> 3.5\",\"bid-CL[|s-a+dim]:CL> −0.5\",\"bid-file-CSE[|s-a]:CSE\",\"bid-file-OD[|s-a]:OD\",\"bid-oil[|s-a]:Grant OIL\",\"bid-more[|]:⋯\"]} || 6 admin: Whole day + LL: {\"windowText\":null,\"said\":[],\"cell\":\"LL:s-a,LL:s-a\",\"inputs\":[{\"iid\":\"imw1etm2jxrnzqy\",\"type\":\"LL\",\"date\":\"Nov 13\",\"lw\":null},{\"iid\":\"imw1etu9p4x82q5\",\"type\":\"LL\",\"date\":\"Nov 13\",\"lw\":\"y2026\"}]} || errors: none",
+  "pics": []
+ },
+ {
+  "id": "R3C-4 D1544 the refused bid's Approve greyed under OML, its title naming the holder; Refuse and Delete there",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"approve\":{\"disabled\":true,\"title\":\"OML holds 11 Nov, so the bid can’t be approved\",\"opacity\":\"0.45\"},\"others\":[\"dl-refuse-rmw1etlf51cdjb\",\"dl-clear-rmw1etlf51cdjb\"]}",
+  "pics": [
+   "r3c-desk-4-window-d3"
+  ]
+ },
+ {
+  "id": "R3C-5 D1544 a tap on the greyed Approve changes nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"cell\":\"OML:s-a,LL:s-r\",\"inputs\":[{\"iid\":\"imw1etvhofd77wa\",\"type\":\"OML\",\"date\":\"Nov 11\",\"lw\":null}]}",
+  "pics": [
+   "r3c-desk-5-after-approve"
+  ]
+ },
+ {
+  "id": "R3C a refused bid under a medical (OML) filed since",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "who: Ranger (bane), D3 = 2026-11-11 (11 Nov), cell before empty || 1 a pending LL placed and refused on Approvals: {\"placed\":true,\"lineIndex\":5,\"pressed\":true,\"linesBefore\":[{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 11.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 11.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Wed 11 Nov › 1 day 11.5 P 27 4 Nov 09:00 · by Saber Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Wed 11 Nov ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]}],\"linesAfter\":[{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Wed 11 Nov › 4 Nov 09:00 · by Saber Approve Refused\",\"lit\":\"refused\",\"why\":null,\"buttons\":[\"appr-dates:Wed 11 Nov ›\",\"appr-approve:Approve\",\"appr-refuse:Refused\"]}]} || 1 his cell: LL:s-r || 2 the member filed a medical over D3 on the Inputs page: {\"options\":\"LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other\",\"chose\":\"OML\",\"dateButton\":\"dcal-d is-sel|true\",\"saidAfterSave\":[],\"formStillOpen\":false,\"dayWindowStayedOpenAfterAdd\":true} || 2 his inputs now: [{\"iid\":\"imw1etvhofd77wa\",\"type\":\"OML\",\"date\":\"Nov 11\",\"lw\":null}] || 3 his cell on D3, as the admin: OML:s-a,LL:s-r || 4 the window tapped: {\"root\":\"daylist-sheet\",\"text\":\"Ranger Wed 11 Nov ✕ LL Refused Placed Saber · Wed 4 Nov, 09:00 · Refused Saber · Wed 4 Nov, 09:00 Approve Refused Delete till 11 Nov Document OML Change it on the Inputs page\",\"buttons\":[\"daylist-close[|]:✕\",\"dl-approve-rmw1etlf51cdjb(disabled)[|]:Approve\",\"dl-refuse-rmw1etlf51cdjb[true cls:lit|]:Refused\",\"dl-clear-rmw1etlf51cdjb[|]:Delete\",\"?[|]:Document\"]} || 5 Approve pressed: {\"windowText\":\"Ranger Wed 11 Nov ✕ LL Refused Placed Saber · Wed 4 Nov, 09:00 · Refused Saber · Wed 4 Nov, 09:00 Approve Refused Delete till 11 Nov Document OML Change it on the Inputs page\",\"buttons\":[\"daylist-close[|]:✕\",\"dl-approve-rmw1etlf51cdjb(disabled)[|]:Approve\",\"dl-refuse-rmw1etlf51cdjb[true cls:lit|]:Refused\",\"dl-clear-rmw1etlf51cdjb[|]:Delete\",\"?[|]:Document\"],\"said\":[],\"cell\":\"OML:s-a,LL:s-r\",\"inputs\":[{\"iid\":\"imw1etvhofd77wa\",\"type\":\"OML\",\"date\":\"Nov 11\",\"lw\":null}]} || 6 Approvals lines for him after: [{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]}] || errors: none",
+  "pics": []
+ },
+ {
+  "id": "R3C2-4 D1544 the refused bid's Approve greyed under ATT C, its title naming the holder; Refuse and Delete there",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"approve\":{\"disabled\":true,\"title\":\"C holds 11 Nov, so the bid can’t be approved\",\"opacity\":\"0.45\"},\"others\":[\"dl-refuse-rmw1etlee1pgci\",\"dl-clear-rmw1etlee1pgci\"]}",
+  "pics": [
+   "r3c2-desk-4-window-d3"
+  ]
+ },
+ {
+  "id": "R3C2-5 D1544 a tap on the greyed Approve changes nothing",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "{\"cell\":\"C:s-a,LL:s-r\",\"inputs\":[{\"iid\":\"imw1etvfewlqkkp\",\"type\":\"ATT C\",\"date\":\"Nov 11\",\"lw\":null}]}",
+  "pics": [
+   "r3c2-desk-5-after-approve"
+  ]
+ },
+ {
+  "id": "R3C2 a refused bid under a medical (ATT C) filed since",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "who: Ranger (bane), D3 = 2026-11-11 (11 Nov), cell before empty || 1 a pending LL placed and refused on Approvals: {\"placed\":true,\"lineIndex\":5,\"pressed\":true,\"linesBefore\":[{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 11.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 11.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Wed 11 Nov › 1 day 11.5 P 27 4 Nov 09:00 · by Saber Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Wed 11 Nov ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]}],\"linesAfter\":[{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Wed 11 Nov › 4 Nov 09:00 · by Saber Approve Refused\",\"lit\":\"refused\",\"why\":null,\"buttons\":[\"appr-dates:Wed 11 Nov ›\",\"appr-approve:Approve\",\"appr-refuse:Refused\"]}]} || 1 his cell: LL:s-r || 2 the member filed a medical over D3 on the Inputs page: {\"options\":\"LL,OL,OIL,CCL,PL,FCL,EL,CL,HL,OML,ATT C,ATT B,Upchit,Training,CSE,Meeting,Attach,Personal,Appointment,Duty,Event,OD,Other\",\"chose\":\"ATT C\",\"dateButton\":\"dcal-d is-sel|true\",\"saidAfterSave\":[],\"formStillOpen\":false,\"dayWindowStayedOpenAfterAdd\":true} || 2 his inputs now: [{\"iid\":\"imw1etvfewlqkkp\",\"type\":\"ATT C\",\"date\":\"Nov 11\",\"lw\":null}] || 3 his cell on D3, as the admin: C:s-a,LL:s-r || 4 the window tapped: {\"root\":\"daylist-sheet\",\"text\":\"Ranger Wed 11 Nov ✕ C Change it on the Inputs page LL Refused Placed Saber · Wed 4 Nov, 09:00 · Refused Saber · Wed 4 Nov, 09:00 Approve Refused Delete till 11 Nov Document\",\"buttons\":[\"daylist-close[|]:✕\",\"dl-approve-rmw1etlee1pgci(disabled)[|]:Approve\",\"dl-refuse-rmw1etlee1pgci[true cls:lit|]:Refused\",\"dl-clear-rmw1etlee1pgci[|]:Delete\",\"?[|]:Document\"]} || 5 Approve pressed: {\"windowText\":\"Ranger Wed 11 Nov ✕ C Change it on the Inputs page LL Refused Placed Saber · Wed 4 Nov, 09:00 · Refused Saber · Wed 4 Nov, 09:00 Approve Refused Delete till 11 Nov Document\",\"buttons\":[\"daylist-close[|]:✕\",\"dl-approve-rmw1etlee1pgci(disabled)[|]:Approve\",\"dl-refuse-rmw1etlee1pgci[true cls:lit|]:Refused\",\"dl-clear-rmw1etlee1pgci[|]:Delete\",\"?[|]:Document\"],\"said\":[],\"cell\":\"C:s-a,LL:s-r\",\"inputs\":[{\"iid\":\"imw1etvfewlqkkp\",\"type\":\"ATT C\",\"date\":\"Nov 11\",\"lw\":null}]} || 6 Approvals lines for him after: [{\"text\":\"Ranger IP LL Thu 29 Jan, AM › 0.5 day 12.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 29 Jan, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP LL Thu 12 – Fri 13 Feb › 2 days 12.5 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Thu 12 – Fri 13 Feb ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CCL Mon 2 Mar › 1 day CCL 2 P 26 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 2 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP PL Mon 16 Mar, AM › 0.5 day PL 1.5 P 27.5 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Mon 16 Mar, AM ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]},{\"text\":\"Ranger IP CL Tue 17 Mar › 1 day CL 0 P 27 — Approve Refuse\",\"lit\":\"\",\"why\":null,\"buttons\":[\"appr-dates:Tue 17 Mar ›\",\"appr-approve:Approve\",\"appr-refuse:Refuse\"]}] || errors: none",
+  "pics": []
+ }
+]

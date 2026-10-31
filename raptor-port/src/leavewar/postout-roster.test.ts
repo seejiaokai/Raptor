@@ -115,7 +115,7 @@ describe('a person changed in memory outside every command is not saved by the p
   })
   it('a man added from a console: not saved, gone from memory', () => {
     postAhead('bane', 'overseas')
-    ;(PEOPLE as any).ghost = { ...JSON.parse(JSON.stringify(P('rocky'))), cs: 'GHOST' }
+    ;(PEOPLE as any).ghost = { ...structuredClone(P('rocky')), cs: 'GHOST' }
     const n = commandStream().length
     runPoOutcomes()
     expect(peopleIn(passEnvs(n)[0]!)).toEqual(['bane'])
@@ -240,6 +240,7 @@ describe('the hard rule: a posting pass changes a person only where it carries o
     runPoOutcomes()
     const envs = passEnvs(n)
     expect(envs, 'the pass ran').toHaveLength(1)
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the envelope as it is saved and sent, read the way the store writes it: a structuredClone would keep any field left undefined, which a saved envelope never holds
     return JSON.parse(JSON.stringify(envs[0]))
   }
   const ch = (e: CommitEnvelope, coll: string, id: string): any => e.changes.find(c => c.collection === coll && c.id === id)
@@ -262,6 +263,7 @@ describe('the hard rule: a posting pass changes a person only where it carries o
   })
   it('another man’s posting record touched (not its done mark) and his Management tick beside it is refused', () => {
     const e = realPass('bane', 'overseas')
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- his record as it is saved, the same JSON reading as the pass's envelope it is slipped into (realPass); a structuredClone would keep fields JSON drops
     const r = JSON.parse(JSON.stringify(P('rocky')))
     e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: null }, after: { to: null, label: 'x' } } as any)
     e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: r, after: { ...r, quals: { ...r.quals, mgmt: true } } } as any)
@@ -270,6 +272,7 @@ describe('the hard rule: a posting pass changes a person only where it carries o
   it('a delete mark cleared beside a posting’s done mark is refused', () => {
     /* a SANS pass writes no account row, so the person's own check is the one that answers */
     const e = realPass('bane', 'sans')
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- his record as it is saved, the same JSON reading as the pass's envelope it is slipped into (realPass); a structuredClone would keep fields JSON drops
     const r = JSON.parse(JSON.stringify(P('rocky')))
     e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: { to: '2026-07-13', poOutcome: 'delete' }, after: { to: '2026-07-13', poOutcome: 'delete', poDone: '2026-07-14' } } as any)
     e.changes.push({ op: 'put', collection: 'people', id: 'rocky', before: { ...r, deleted: true, deletedFrom: '2026-07-01', archived: true, archivedBy: 'del' }, after: { ...r, deleted: false, archived: false } } as any)
@@ -307,6 +310,7 @@ describe('the hard rule: a posting pass changes a person only where it carries o
   })
   it('a posting already done, touched again (its mark unchanged), does not vouch for his change', () => {
     const e = realPass('bane', 'overseas')
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- his record as it is saved, the same JSON reading as the pass's envelope it is slipped into (realPass); a structuredClone would keep fields JSON drops
     const r = JSON.parse(JSON.stringify(P('rocky')))
     const done = { to: '2026-07-19', poOutcome: 'overseas', poDone: '2026-07-20' }
     e.changes.push({ op: 'put', collection: 'lw.postouts', id: 'rocky', before: done, after: { ...done, label: 'x' } } as any)

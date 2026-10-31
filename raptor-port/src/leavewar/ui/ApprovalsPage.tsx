@@ -25,43 +25,23 @@
    NEW (D1231's reading, 8.4): the moment he OPENED the tab is stored (state/apprseen.ts) and the previous one kept for the
    visit: a request placed since wears the cyan dot, and "New N" shows only those. The dots go when he leaves Approvals. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { boxText, kindOf, parseCell } from '../engine'
+import { boxText, kindOf } from '../engine'
 import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
 import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
 import { alsoSince, openRequestDocs, postingPendingTag, puckHtml, rosterCallsign, type AlsoLine } from '../sync'
 import { openApprovals } from '../../state/apprseen'
 import { me } from '../../state/perms'
 import { ClipIcon } from '../../ui/icons'
-import { askLw, apprMode, setApprMode, subscribeLwNav } from './lwnav'
+import { askLw, apprMode, apprRingAsked, lwNavVersion, setApprMode, subscribeLwNav, takeApprRing } from './lwnav'
 import { ringCell } from './cellring'
 import { RangePicker, type Range } from './RangePicker'
 import { usePhone } from './phone'
 import { useVersion } from './useStore'
+import { datesWords, dm, dow, MON, rangeWords } from './approvaldates'
 import './approvals.css'
 
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const dow = (iso: string) => DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]
-const dm = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
 
-/** the "Pick dates…" chip once a span is picked: "13 Jan – 15 Jan"; one day is one day, "13 Jan" (the walk, 27 Oct 26 — it
- *  read "13 Jan – 13 Jan") */
-export function rangeWords(from: string, to: string): string {
-  return from === to ? dm(from) : `${dm(from)} – ${dm(to)}`
-}
-/* "Thu 22 – Fri 23 Jan" · "Fri 23 Jan, AM" on a desktop; "22–23 Jan" · "23 Jan AM" on a phone (as drawn) */
-export function datesWords(code: string, from: string, to: string, phone: boolean): string {
-  const half = parseCell(code)?.portion
-  const h = half === 'am' ? 'AM' : half === 'pm' ? 'PM' : ''
-  const sameMonth = from.slice(0, 7) === to.slice(0, 7)
-  if (phone) {
-    const run = from === to ? dm(from) : sameMonth ? `${+from.slice(8, 10)}–${dm(to)}` : `${dm(from)}–${dm(to)}`
-    return h ? `${run} ${h}` : run
-  }
-  const run = from === to ? `${dow(from)} ${dm(from)}` : sameMonth ? `${dow(from)} ${+from.slice(8, 10)} – ${dow(to)} ${dm(to)}` : `${dow(from)} ${dm(from)} – ${dow(to)} ${dm(to)}`
-  return h ? `${run}, ${h}` : run
-}
 const daysWords = (n: number) => `${fig(n)} ${n === 1 ? 'day' : n <= 1 && n > 0 ? 'day' : 'days'}`
 const placedWords = (at?: number) => {
   if (typeof at !== 'number') return '—'
@@ -102,6 +82,7 @@ function inFilter(l: ApprLine, f: Filter, prev: number, me: string | null): bool
   return days.some(d => d >= f.from && d <= f.to)
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the page's rows, their merge, the armed Approve all and the visit's facts share one set of state and refs; split, its hooks and the order its effects run in would move, on the page that decides leave
 export function ApprovalsPage({ shown }: { shown: boolean }) {
   useVersion()
   const phone = usePhone()
@@ -110,7 +91,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const pid = me()
   /* the moment he opened it — written now, the previous one kept for this visit (state/apprseen.ts) */
   const [prev, setPrev] = useState<number | null>(null)
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit: opening writes the moment he opened it, so a re-run would move his "since you last looked" mark mid-visit
+  // eslint-disable-next-line react-hooks/exhaustive-deps, react-doctor/rendering-hydration-no-flicker -- once per visit: opening writes the moment he opened it, so a re-run would move his "since you last looked" mark mid-visit; and that write to storage is a side effect no render may make — until it runs nothing is marked new, so nothing flashes
   useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])
   const [filter, setFilterRaw] = useState<Filter>({ kind: 'all' })
   const [picking, setPicking] = useState(false)
@@ -238,7 +219,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
       /* JOINED into a line another row already holds (a day placed between two drawn lines — D1339, D1346), every day of
          it still standing: that row is the line now, so this one simply goes — never a greyed "No longer there" (★8) */
       if ([...r.ids].some(id => byId.has(id)) && lineStale(r.line.personId, r.line.parts) === null) {
-        const holder = out.find(x => [...r.ids].some(id => x.ids.has(id) || recIds(x.line).includes(id)))
+        const holder = out.find(x => { const xIds = new Set(recIds(x.line)); return [...r.ids].some(id => x.ids.has(id) || xIds.has(id)) })
         if (holder) r.ids.forEach(id => holder.ids.add(id))
         continue
       }
@@ -262,9 +243,12 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const people = st.people
   const figs = useMemo(() => {
     const m = new Map<string, ApprFigures>()
+    /* each man found once by his id (the first with it, as a search of the list would) */
+    const byId = new Map<string, (typeof people)[number]>()
+    for (const p of people) if (!byId.has(p.id)) byId.set(p.id, p)
     for (const r of rows) {
       if (r.lit || r.msg?.kind === 'stale') continue
-      m.set(r.key, figuresOf(r.line, people.find(p => p.id === r.line.personId)))
+      m.set(r.key, figuresOf(r.line, byId.get(r.line.personId)))
     }
     return m
   }, [rows, people])
@@ -319,6 +303,36 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     if (!isArmed) { setArmed(sig); return }
     apply(toApprove, 'approved')
   }
+  /* A REQUEST RINGED ON ASK (his D1542 — the clash note's "Decide it in Approvals ›" for a man with no row on the grid): the
+     line holding his request on that day wears the war's just-added ring (the cyan of D1449, as the grid's ringed day does)
+     for six seconds and is brought into view; where the dates picked hide it, every line is shown first. Taken once, after
+     the render that drew the rows has committed (the rows as drawn — `rowsRef`), never in a render React may throw away. */
+  const navV = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  const [ringKey, setRingKey] = useState<string | null>(null)
+  useEffect(() => {
+    if (!shown || !apprRingAsked()) return
+    const a = takeApprRing()!
+    /* his lines holding that day — the one of the clash's own bid first, where it names one (two bids of his on one day) */
+    const onDay = rowsRef.current.rows.filter(x => x.msg?.kind !== 'stale' && x.line.personId === a.personId && x.line.parts.some(p => p.date === a.date))
+    /* …by the bid's own record first (the fixes' narrow read, its 1: the code names the bid only against work), then its code */
+    const r = onDay.find(x => a.reqId != null && x.line.parts.some(p => p.date === a.date && p.recId === a.reqId))
+      ?? onDay.find(x => a.code != null && x.line.parts.some(p => p.date === a.date && p.code === a.code)) ?? onDay[0]
+    if (!r) return
+    if (!inFilter(r.line, filter, seen, mePid)) {
+      /* every line shown, as a press on All does (`setFilter`) */
+      rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(x => !x.lit && x.msg?.kind !== 'stale') }
+      // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change -- the answer to an ask from outside the page (the clash note's link, taken once from lwnav), not to a prop: a render may not take the ask, so it is taken here after the rows it looks in have committed
+      setFilterRaw({ kind: 'all' }); setArmed(null); setTick(t => t + 1)
+    }
+    setRingKey(r.key)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs when an ask arrives (the nav's version) or the page comes up; the filter and the rows are read as they stand then
+  }, [navV, shown])
+  useEffect(() => {
+    if (!ringKey) return
+    document.querySelector<HTMLElement>('#page-leavewar .appr-line.lw-ring, .appr-line.lw-ring')?.scrollIntoView?.({ block: 'center' })
+    const t = setTimeout(() => setRingKey(null), 6000)
+    return () => clearTimeout(t)
+  }, [ringKey])
   /* a request's dates → the Grid, the day ringed, the slim bar up (8.5); a man with no row on the grid → his person window.
      The "also" lines' dates the same (D1231's reading): a withdrawn bid's day ringed, nothing in it. */
   const openAt = (personId: string, date: string) => {
@@ -410,6 +424,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
         {total === 0 && rows.length === 0 && <div className="appr-empty" data-testid="appr-empty">Nothing waiting for a decision.</div>}
         {rows.length > 0 && shownRows.length === 0 && !(filter.kind === 'new' && also.length) && <div className="appr-empty">Nothing here for these dates.</div>}
         {shownRows.length > 0 && (
+          // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the list holds its column-heading row, which is no request: a <ul> may hold only list items, and the browser's list margins and markers would change its look
           <div className="appr-list" role="list">
             {!phone && (
               <div className="appr-cols" aria-hidden="true">
@@ -419,10 +434,11 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
             {phone && (
               <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="appr-end">Placed</span></div>
             )}
-            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} onPress={press} onDates={openDates} />)}
+            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} ringed={r.key === ringKey} onPress={press} onDates={openDates} />)}
           </div>
         )}
         {filter.kind === 'new' && also.length > 0 && (
+          // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the list holds its own heading line, which is no list item: a <ul> may hold only list items, and the browser's list margins and markers would change its look
           <div className="appr-also" role="list" aria-label="Also since you last looked" data-testid="appr-also">
             <div className="appr-alsohead"><span className="appr-lab">Also since you last looked</span> · nothing to decide</div>
             {also.map(a => <AlsoRow key={a.key} a={a} phone={phone} onDates={openAt} />)}
@@ -434,7 +450,8 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
 }
 const isoOf = (ms: number) => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
-function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; fresh: boolean; onPress: (r: Row, to: 'approved' | 'refused') => void; onDates: (r: Row) => void }) {
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one request's line, its phone and desktop layouts built from the same parts side by side; split, the two layouts could drift apart
+function Line({ r, phone, fresh, ringed, onPress, onDates }: { r: Row; phone: boolean; fresh: boolean; ringed: boolean; onPress: (r: Row, to: 'approved' | 'refused') => void; onDates: (r: Row) => void }) {
   const l = r.line
   const p = getState().people.find(x => x.id === l.personId)
   const cs = p?.callsign || rosterCallsign(l.personId) || l.personId
@@ -494,14 +511,16 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
   )
   if (phone) {
     return (
-      <div className={`appr-line ph${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+      // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a line of the list above, which stays a role="list" box (it holds its column headings): an <li> outside a <ul> is not valid
+      <div className={`appr-line ph${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}${ringed ? ' lw-ring' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
         <div className="appr-l1">{puck}{box}{dates}{clip}{btns}</div>
         <div className="appr-l2">{days}{bal}{avail}{placed}</div>
       </div>
     )
   }
   return (
-    <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+    // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a line of the list above, which stays a role="list" box (it holds its column headings): an <li> outside a <ul> is not valid
+    <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}${ringed ? ' lw-ring' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
       {puck}{box}{dates}{days}{bal}{avail}{placed}<span className="appr-cliphold">{clip}</span>{btns}
     </div>
   )
@@ -520,6 +539,7 @@ function AlsoRow({ a, phone, onDates }: { a: AlsoLine; phone: boolean; onDates: 
     ? `Bid withdrawn by ${byCs || cs}`
     : `Filed on the Inputs page${byCs && a.by !== a.personId ? ` by ${byCs}` : ''} · approved`
   return (
+    // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a line of the "Also since you last looked" list, which stays a role="list" box (it holds its heading): an <li> outside a <ul> is not valid
     <div className={`appr-aline${phone ? ' ph' : ''}`} role="listitem" data-testid={`appr-also-${a.what}`}>
       <span className="appr-who"><span className="appr-dot" aria-label="New" /><span className="appr-puck" dangerouslySetInnerHTML={{ __html: puckHtml(a.personId, cs) }} /></span>
       <span className={`c k-${kindOf(a.code)} ${a.what === 'withdrawn' ? 's-r' : 's-a'} appr-box`}>{boxText(a.code)}</span>

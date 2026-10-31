@@ -89,7 +89,8 @@ export const CONFIG_KEYS: ReadonlyArray<readonly [string, string]> = [
   ['grades', 'grades'], ['balLock', 'ballock'],
 ]
 /* the squadron's manning rules are kept as the rule list alone (`manningdefs`), as they always were */
-const configValue = (field: string, v: any): string => JSON.stringify(field === 'requirements' ? v?.default?.rules : v)
+const configValue = (field: string, v: unknown): string =>
+  JSON.stringify(field === 'requirements' ? (v as { default?: { rules?: unknown } } | null | undefined)?.default?.rules : v)
 
 /** the old whole-list records this phase replaces — never written again; the fold removes them */
 export const OLD_BLOBS = ['wars', 'openings', 'ledger', 'postouts', 'perslabels', 'personedits'] as const
@@ -122,7 +123,7 @@ export function lwRows(changes: readonly Change[], now: LwNow): LwRow[] {
       case 'lw.cell': {
         const { warId, pid, date } = cellParts(c.id)
         const spread = (side: Map<string, string>, list: unknown) => {
-          if (Array.isArray(list)) for (const r of list) if (r && typeof r === 'object' && typeof (r as any).id === 'string') side.set(recKey(warId, (r as any).id), recJSON(r, pid, date))
+          if (Array.isArray(list)) for (const r of list) if (r && typeof r === 'object' && typeof (r as { id?: unknown }).id === 'string') side.set(recKey(warId, (r as { id: string }).id), recJSON(r, pid, date))
         }
         spread(before, c.before)
         if (c.op !== 'delete') spread(after, c.after)
@@ -144,7 +145,8 @@ export function lwRows(changes: readonly Change[], now: LwNow): LwRow[] {
       case 'lw.current': if (c.op !== 'delete') put('current', String(c.after)); break
       case 'lw.config': {
         if (c.op === 'delete') break
-        const b: any = c.before && typeof c.before === 'object' ? c.before : null, a: any = c.after || {}
+        const b = (c.before && typeof c.before === 'object' ? c.before : null) as Record<string, unknown> | null
+        const a = (c.after || {}) as Record<string, unknown>
         for (const [field, key] of CONFIG_KEYS) {
           /* a field the record had before and has no longer is REMOVED, not left behind: the grades list is absent until an
              admin first edits it (narrow read 6), so the Undo of that first edit restores a record with no `grades` — and

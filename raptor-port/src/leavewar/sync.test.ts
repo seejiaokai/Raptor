@@ -15,6 +15,7 @@ import { INPUTS, holds, idsOf, remarksShown } from '../engine/inputs'
 import { initStore as raptorInitStore, writeInputs } from '../state/store'
 import { commandStream } from '../command'
 import { balanceOf, figureParts, FIGURES } from './engine'
+import { lockedOnWar } from './engine/dayview'
 import { projectPeople } from './state/raptorRoster'
 import {
   clearCells, getState, initStore as lwInitStore, rawState, setBidState, setCell, setPeople, setRole, moveCells,
@@ -65,7 +66,7 @@ describe('approving turns the bids into the ONE Input', () => {
     for (const d of ['2026-02-02', '2026-02-03', '2026-02-04']) {
       expect(raw('ammo', d)).toEqual([])                       // nothing approved is stored on the war
       expect(getState().grid.ammo[d]).toBe('LL')                // the war reads the Input
-      expect(getState().states.ammo[d]).toEqual({ state: 'approved', source: 'bid' })
+      expect(getState().states.ammo[d]).toEqual({ state: 'approved' }); expect(lockedOnWar(getState().views.ammo[d])).toBe(false)
     }
   })
 
@@ -143,7 +144,7 @@ describe('changing approved leave on the war (the absence door)', () => {
     setRole('admin')
     expect(moveBidVia('ammo', '2026-02-02', '2026-02-09')).toBe('shifted')
     expect(getState().grid.ammo?.['2026-02-02']).toBeUndefined()
-    expect(getState().states.ammo['2026-02-09']).toEqual({ state: 'approved', source: 'bid', shiftedFrom: '2026-02-02' })
+    expect(getState().states.ammo['2026-02-09']).toEqual({ state: 'approved', shiftedFrom: '2026-02-02' }); expect(lockedOnWar(getState().views.ammo['2026-02-09'])).toBe(false)
   })
 })
 
@@ -152,7 +153,7 @@ describe('leave filed on the Inputs page shows on the war', () => {
     file({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true, type: 'LL' })
     for (const d of ['2026-02-10', '2026-02-11', '2026-02-12']) {
       expect(getState().grid.ammo[d]).toBe('LL')
-      expect(getState().states.ammo[d]).toEqual({ state: 'approved', source: 'raptor' })
+      expect(getState().states.ammo[d]).toEqual({ state: 'approved' }); expect(lockedOnWar(getState().views.ammo[d])).toBe(true)
     }
   })
 
@@ -202,7 +203,7 @@ describe('medical is member-filed and shows on the war', () => {
     file({ person: 'ammo', date: 'Feb 10', endDate: 'Feb 12', allday: true, type: 'ATT C' })
     for (const d of ['2026-02-10', '2026-02-11', '2026-02-12']) {
       expect(getState().grid.ammo[d]).toBe('ATTC')
-      expect(getState().states.ammo[d]).toEqual({ state: 'approved', source: 'raptor' })
+      expect(getState().states.ammo[d]).toEqual({ state: 'approved' }); expect(lockedOnWar(getState().views.ammo[d])).toBe(true)
     }
   })
   it('an Upchit never shows', () => {
@@ -238,7 +239,7 @@ describe('edits on the Inputs page (design §5.4, owner §13 Q1)', () => {
     expect(commitInputEdit(row, draft)).toBe(true)
     syncAbsences()
     expect(row.lw).toBe('y2026')
-    expect(getState().states.ammo['2026-02-02']).toEqual({ state: 'approved', source: 'bid' })
+    expect(getState().states.ammo['2026-02-02']).toEqual({ state: 'approved' }); expect(lockedOnWar(getState().views.ammo['2026-02-02'])).toBe(false)
   })
 
   it('an ADMIN date edit moves the leave and keeps it war-approved', () => {

@@ -8,6 +8,11 @@
 import { PEOPLE, isInstr } from '../../engine/people'
 import { qualCols } from '../../engine/qualcols'
 import type { Person, QualDef } from '../engine'
+import type { Person as RaptorPerson } from '../../engine/schema'
+
+/* Raptor's roster, typed once at the Leave War's edge: the engine's PEOPLE is untyped (a word-for-word port — D1537),
+   and its declared shape is the schema's Person */
+const raptorPeople = (): Record<string, RaptorPerson> => PEOPLE
 
 /**
  * Raptor's aircrew as Leave War people.
@@ -40,7 +45,7 @@ import type { Person, QualDef } from '../engine'
  */
 export function projectPeople(includeSans = false): Person[] {
   const out: Person[] = []
-  for (const [id, p] of Object.entries<any>(PEOPLE)) {
+  for (const [id, p] of Object.entries(raptorPeople())) {
     if (p.special || p.archived) continue
     if (p.san && !includeSans) continue
     // Ground crew ride the roster since 18 Aug 26 (owner: "when I add
@@ -106,7 +111,7 @@ export function qualCatalogue(): QualDef[] {
   const out: QualDef[] = qualCols().map(c => ({ k: c.k, label: c.h }))
   const listed = new Set(out.map(q => q.k))
   const held = new Set<string>()
-  for (const p of Object.values<any>(PEOPLE)) {
+  for (const p of Object.values(raptorPeople())) {
     if (p.special || p.archived) continue
     for (const k of Object.keys(p.quals || {})) if (p.quals[k] && !listed.has(k)) held.add(k)
   }

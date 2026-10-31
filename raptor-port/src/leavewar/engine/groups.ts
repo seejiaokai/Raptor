@@ -118,8 +118,11 @@ export function matchesGroup(p: Person, d: GroupDef): boolean {
  * whatsoever.
  */
 export function assignGroup(p: Person, defs: readonly GroupDef[], priority: readonly string[]): string {
+  /* each id's FIRST group, as a find over the list would answer it */
+  const byId = new Map<string, GroupDef>()
+  for (const d of defs) if (!byId.has(d.id)) byId.set(d.id, d)
   for (const id of priority) {
-    const d = defs.find(x => x.id === id)
+    const d = byId.get(id)
     if (d && matchesGroup(p, d)) return d.id
   }
   // Priority may be short or stale (a group added but not yet ranked): fall
@@ -166,7 +169,7 @@ export function readGroupDefs(v: unknown): GroupDef[] | null {
   const builtIn = new Set<string>(GROUP_ORDER)
   for (const raw of v) {
     if (!raw || typeof raw !== 'object') continue
-    const d = raw as any
+    const d = raw as { kind?: unknown; g?: unknown; k?: unknown }
     if (d.kind === 'cat' && typeof d.g === 'string' && builtIn.has(d.g)) {
       out.push({ id: d.g, kind: 'cat', g: d.g as Group })
     } else if (d.kind === 'qual' && typeof d.k === 'string' && d.k) {

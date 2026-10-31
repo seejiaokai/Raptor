@@ -1,10 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import {
   isBiddable,
-  raptorOwns,
   removesAvailability,
   shiftedFrom,
-  sourceOf,
   stateOf,
   type States,
 } from './bids'
@@ -98,21 +96,9 @@ describe('the bid record', () => {
     expect(stateOf(rich, 'nobody', '2026-01-05')).toBeUndefined()
   })
 
-  it('reads the source, and defaults nothing — an absent record has no source', () => {
-    expect(sourceOf(rich, 'ramp', '2026-01-05')).toBe('bid')
-    expect(sourceOf(rich, 'ramp', '2026-01-06')).toBe('raptor')
-    expect(sourceOf(rich, 'ramp', '2026-01-09')).toBeUndefined()
-  })
-
-  // The one question every write path asks before touching a cell. Raptor
-  // owns what Raptor last wrote; changing it here would desync the two
-  // systems, which is the whole failure this model exists to prevent.
-  it('says which cells Raptor owns', () => {
-    expect(raptorOwns(rich, 'ramp', '2026-01-06')).toBe(true)
-    expect(raptorOwns(rich, 'ramp', '2026-01-05')).toBe(false)
-    expect(raptorOwns(rich, 'ramp', '2026-01-09')).toBe(false)
-    expect(raptorOwns(rich, 'nobody', '2026-01-09')).toBe(false)
-  })
+  /* [LW-LOCKMARK] (31 Oct 26): the record no longer carries who may change it — `sourceOf` and `raptorOwns` went; whether
+     a day is locked on the war is asked of its own entries (dayview.ts lockedOnWar, pinned in lockedonwar.test.ts). A bare
+     grid's `source` stays only for the engine's fixtures (charge.ts legacyViews). */
 
   it('carries the date a shifted bid was moved from', () => {
     expect(shiftedFrom(rich, 'ramp', '2026-01-07')).toBe('2026-01-02')

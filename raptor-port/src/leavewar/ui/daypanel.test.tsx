@@ -8,7 +8,7 @@ import { closeDates, initStore, setCell, setCellRange, setRole, setViewer } from
 import { memoryBackend } from '../state/storage'
 import { _resetFloatWins } from '../../ui/FloatWindow'
 import { Matrix } from './Matrix'
-import { closeDayPanel, dayPanelDate, openDayPanel } from './DayPanel'
+import { closeDayPanel, dayPanelDate, openDayPanel } from './daypanelopen'
 
 beforeEach(() => { initStore(memoryBackend()); setRole('admin') })
 afterEach(() => { act(() => { closeDayPanel() }); _resetFloatWins() })

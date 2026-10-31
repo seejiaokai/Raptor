@@ -22,7 +22,8 @@ import { setMemberTodayForTests } from './engine'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { wireLeaveWarSync } from './sync'
-import { ApprovalsPage, SlimBar, rangeWords } from './ui/ApprovalsPage'
+import { ApprovalsPage, SlimBar } from './ui/ApprovalsPage'
+import { rangeWords } from './ui/approvaldates'
 import { DayListSheet } from './ui/DayList'
 import { Matrix } from './ui/Matrix'
 import { SelectSheet } from './ui/SelectSheet'
@@ -409,7 +410,7 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
     ranger(); expect(setCell('bane', TUE, 'LL')).toBe(true); saber()
     setMemberTodayForTests('2026-01-20')
     try {
-      expect(setPostOut('bane', MON, 'none')).toBe(true)
+      expect(setPostOut('bane', MON, 'delete')).toBe(true)
       const st = getState()
       const id = reqs('bane', TUE)[0]!.id
       render(<DayListSheet personId="bane" callsign="Ranger" date={TUE} view={st.views['bane']![TUE]!} role="admin" viewer="stiff" period={st.period} onClose={() => {}} />)
@@ -448,11 +449,11 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       } finally { setAbsenceDoor(door) }
     })
     it('R2-4 the drag window, "Approve what I enter" over his days after the date: kept pending with the door’s reason', () => {
-      expect(setPostOut('bane', WED, 'none')).toBe(true)
+      expect(setPostOut('bane', WED, 'delete')).toBe(true)
       render(<SelectSheet sel={sel([THU, FRI])} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
       expect(screen.getByTestId('sel-approve-tick').getAttribute('aria-checked')).toBe('true')
       fireEvent.click(screen.getByTestId('sel-LL'))
-      expect(screen.getByTestId('sel-note').textContent).toContain('kept pending — He posts out on 11 Feb: refuse or delete it')
+      expect(screen.getByTestId('sel-note').textContent).toMatch(/kept pending — He post(s|ed) out on 11 Feb: refuse or delete it/)   // a Delete posting since D1541; the tense follows the app's clock
       expect(screen.getByTestId('sel-note').textContent).not.toContain('a locked week')
     })
     /* ROUND 3, R3-3: a Refuse the rules stopped was counted "not approved" — he asked for no approval */
@@ -470,17 +471,17 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
     /* ROUND 3, R3-4: several reasons ran together, and over several men "He" named nobody */
     it('R3-4 a two-man drag names each man before his reason, the reasons apart', () => {
       for (const p of ['bane', 'rocky']) expect(setCell(p, THU, 'LL')).toBe(true)
-      expect(setPostOut('bane', WED, 'none')).toBe(true)
-      expect(setPostOut('rocky', THU, 'none')).toBe(true)
+      expect(setPostOut('bane', WED, 'delete')).toBe(true)
+      expect(setPostOut('rocky', THU, 'delete')).toBe(true)
       const two = { people: ['bane', 'rocky'], from: THU, to: FRI, cells: ['bane', 'rocky'].flatMap(p => [THU, FRI].map(date => ({ personId: p, date }))) } as any
       render(<SelectSheet sel={two} people={id => (id === 'bane' ? 'Ranger' : 'Rocky')} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
       fireEvent.click(screen.getByTestId('sel-approve'))
       const note = screen.getByTestId('sel-note').textContent!
-      expect(note).toContain('Ranger: He posts out on 11 Feb: refuse or delete it. Rocky: He posts out on 12 Feb: refuse or delete it.')
+      expect(note).toMatch(/Ranger: He post(s|ed) out on 11 Feb: refuse or delete it\. Rocky: He post(s|ed) out on 12 Feb: refuse or delete it\./)
     })
     it('R2-5 the drag window counts the days the rules refused apart from a day with nothing to decide', () => {
       expect(setCell('bane', TUE, 'LL')).toBe(true); expect(setCell('bane', THU, 'LL')).toBe(true)
-      expect(setPostOut('bane', WED, 'none')).toBe(true)
+      expect(setPostOut('bane', WED, 'delete')).toBe(true)
       render(<SelectSheet sel={sel([TUE, WED, THU, FRI].filter(d => d !== WED))} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
       fireEvent.click(screen.getByTestId('sel-approve'))
       expect(screen.getByTestId('sel-note').textContent).toBe('1 decided. 1 not approved: He posts out on 11 Feb: refuse or delete it. 1 skipped (no bid, or Raptor-owned).')

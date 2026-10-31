@@ -15,19 +15,10 @@
 // (~700ms, matrix.css `lw-figflash`). Keyed by figure id so switching the
 // column to another figure never flashes every row. The first render never
 // flashes: there is nothing "changed" about a number just appearing.
-import { memo, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { memo, useEffect, useState, type MouseEvent } from 'react'
 import type { Figure, FigureLines } from '../engine'
-
-// Exported — the rows' own title-tooltip text (MatrixRows.tsx PersonRow) reads a figure's
-// top number the same way, and a second copy of this rounding rule would be
-// a drift seam waiting to happen.
-export const show = (n: number) => String(Math.round(n * 10) / 10)
-
-/** A FIGURE AS EVERY SURFACE WRITES IT: halves .5 (D1246), a minus sign, never a hyphen. The one helper — the Balances page,
- *  the person window, the grid's figure beside a name and the below-zero ask all write a figure through it (walker D's
- *  FAIL 5, 29 Oct 26: the grid's figure and the ask drew "-2" where every other surface drew "−2"). It lives in this small
- *  module, which imports no screen, so the bid windows' ask can read it without pulling the Balances page in. */
-export const figWords = (n: number) => { const r = Math.round(n * 2) / 2; return (r < 0 ? '−' : '') + String(Math.abs(r)) }
+/* how a figure is written — `show` (the box's own rounding) and `figWords` (every surface's): ui/figwords.ts */
+import { figWords, show } from './figwords'
 
 /** The column at which a value stops fitting its box at the ordinary type size.
  *
@@ -64,13 +55,16 @@ export const FigureCell = memo(function FigureCell({
   dataPerson?: string
   /* (`selected` / `data-figsel` — the committed selection of a drag down the LVE column — went with that drag, D1491) */
 }) {
-  const prev = useRef<{ id: string; person: string; top: number } | null>(null)
+  /* the figure the box last drew, and the flash when its top number moves for the same figure and person — put right in
+     the render that sees the change, so the box never paints the new number without its flash first */
+  const [prev, setPrev] = useState({ id: figure.id, person: personId, top: lines.top })
   const [flash, setFlash] = useState(false)
-  useEffect(() => {
-    const p = prev.current
-    if (p && p.id === figure.id && p.person === personId && p.top !== lines.top) setFlash(true)
-    prev.current = { id: figure.id, person: personId, top: lines.top }
-  }, [figure.id, personId, lines.top])
+  /* (`Object.is`, as the effect's own dependency check was: a figure that were ever NaN must not count as changed on every
+     render and loop — the fresh read of 31 Oct 26, its point 4) */
+  if (prev.id !== figure.id || prev.person !== personId || !Object.is(prev.top, lines.top)) {
+    if (prev.id === figure.id && prev.person === personId) setFlash(true)
+    setPrev({ id: figure.id, person: personId, top: lines.top })
+  }
   // The class comes off on `animationend` — except that under
   // `prefers-reduced-motion` there is no animation (matrix.css turns it off),
   // so that event never arrives and the class would sit on the cell for the
@@ -94,6 +88,7 @@ export const FigureCell = memo(function FigureCell({
   const usedChars = shownUsed.reduce((n, u) => n + show(u.value).length, 0)
   const wide = topText.length >= WIDE_CHARS || usedChars >= WIDE_CHARS
   return (
+    // eslint-disable-next-line react-doctor/click-events-have-key-events -- the box beside a name opens the same window as the name's own button just before it, which is the keyboard's way in (one Tab stop a row); the phone's frozen copy is hidden from the keyboard on purpose
     <td
       className={`${extraClass} figbox${wide ? ' wide' : ''}${flash ? ' flash' : ''}`}
       data-testid={testid}

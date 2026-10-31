@@ -14,9 +14,10 @@ import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
-import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
+import { askApprRing, askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
+import { clashWhat } from './clashwhat'
 import './chrome.css'
 
 /** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
@@ -52,17 +53,16 @@ const WAY_OUT: Record<ClashWayOut, string> = {
   war: 'Change the approved leave',
   inputs: 'Change the leave on Inputs',
 }
-/** What clashes, as a sentence — today's words less the name and the date, which stand beside it (D825: every key word
- *  kept). Where the leave in the way is one the war APPROVED the sentence says so (r7-19): it is why the instruction is
- *  to change the approved leave rather than decide a bid. */
-export function clashWhat(c: SyncClash): string {
-  /* each code as the grid's box draws it ([LW-HALF-DAY-WORDS-LEFT] — sync.ts clashCodeShown), the stored one only where a
-     clash was built without it */
-  const held = `${c.wayOut === 'war' ? 'approved ' : ''}${c.bidShown ?? c.bidCode}`
-  return c.kind === 'duty'
-    ? `Weekend/PH work earns ${c.inputShown ?? c.inputCode}, but the day holds ${held}`
-    : `The input is ${c.inputShown ?? c.inputCode}, but the bid is ${held}`
+/* A MAN WITH NO ROW ON THE GRID (his D1542, 31 Oct 26 — [LW-CLASH-ROWLESS-TAP]): a SANS man while SANS men are off the war, an
+   archived man. The day cannot be opened on a row the grid does not draw, so the link goes where the clash can be dealt
+   with: a bid to the Approvals page, his request ringed; leave the war approved to its own window on the Inputs page, as
+   leave filed there already goes. A man with a row keeps the words above. */
+const WAY_OUT_NO_ROW: Record<ClashWayOut, string> = {
+  bid: 'Decide it in Approvals',
+  war: 'Change the leave on Inputs',
+  inputs: 'Change the leave on Inputs',
 }
+/* what clashes, as a sentence: `clashWhat` (ui/clashwhat.ts) */
 
 /* THE TABS' TWO SMALL GLYPHS, in the line style of the app's icons (ui/icons.tsx — the Inputs page's tabs wear them). */
 function GridGlyph() {
@@ -110,6 +110,7 @@ function BalGlyph() {
 /* the period list's last line, "+ New period" (D1244) — a value no period id can be */
 const NEW_PERIOD = '\u0000new'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one row of small, separate branches (the tabs, View, My leave, ⚙, the new-period ask), each drawn once; split, the same few values would only be passed down
 export function Topbar() {
   useVersion()
   const { period, wars, role, viewer, people } = getState()
@@ -280,6 +281,7 @@ function nextLabel(iso: string): string {
  *  everyone, standing on the grid card above the month buttons (`full/r19-nav-*`, `full/r21-rows-*`). The grid hands it
  *  the Manning fold (its own state — the counts it hides are the grid's rows) and anything that rides the bar's right end
  *  before Legend ("Done" while rearranging; the zoom pair went when pinch to zoom replaced it — [LW-PHONE-PINCH-ZOOM], D1228, D1276). */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the bar's chips, its two pop-outs and the clash note share one set of state (the red days, which pop-out is open, where each hangs); its length is mostly the Legend's plain list, markup rather than logic
 export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen?: boolean; onManning?: () => void; extra?: ReactNode } = {}) {
   const sv = useVersion()
   /* The clash list lives in the sync module, not the store — it is a view of
@@ -313,8 +315,22 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
   /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */
   const yearHere = period.days[0]?.date.slice(0, 4)
   const clashDay = (date: string) => `${dayLabel(date)}${date.slice(0, 4) !== yearHere ? ` ${date.slice(2, 4)}` : ''}`
+  const hasRow = (id: string) => people.some(p => p.id === id)
+  const wayWords = (c: SyncClash) => (hasRow(c.person) ? WAY_OUT : WAY_OUT_NO_ROW)[c.wayOut]
   const goClash = (c: SyncClash) => {
     if (c.wayOut === 'inputs' && c.iid && openInputWindow(c.iid)) return
+    if (!hasRow(c.person)) {
+      /* his D1542: no row to open the day on — the leave the war approved in its own window on the Inputs page; a bid on the
+         Approvals page (the clash's own period on screen first), his request on that day ringed there */
+      if (c.wayOut === 'war' && c.iid && openInputWindow(c.iid)) return
+      if (c.wayOut === 'bid') {
+        if (c.war && c.war !== period.id) selectWar(c.war)
+        askApprRing({ personId: c.person, date: c.date, code: c.bidCode, ...(c.reqId ? { reqId: c.reqId } : {}) })
+        askLw({ kind: 'grid' })
+        setApprMode('page')
+        return
+      }
+    }
     /* the list covers every period: put the clash's own on screen first, then ask the grid for the day and the person */
     if (c.war && c.war !== period.id) selectWar(c.war)
     focusDay(c.date, { open: c.person })
@@ -487,11 +503,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
           that disagreed with the login would be a lie. Do not re-add it. */}
       {showList && (
         <>
-          <div className="umscrim" data-testid="undermanned-scrim" onClick={() => setListOpen(false)} />
-          <div
+          {/* a tap outside closes the list and does nothing else; Escape closes it from the keyboard (the handler above) */}
+          <div className="umscrim" data-testid="undermanned-scrim" role="presentation" onClick={() => setListOpen(false)} />
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; this list hangs off its chip over the app's own scrim, layered on purpose */}
+          <div role="dialog"
             className="umlist"
             data-testid="undermanned-list"
-            role="dialog"
             aria-label="Under-manned days"
             style={at ? { left: at.left, top: at.top } : undefined}
           >
@@ -534,11 +551,12 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
       </button>
       {legOpen && (
         <>
-          <div className="umscrim" data-testid="legend-scrim" onClick={() => setLegOpen(false)} />
-          <div
+          {/* a tap outside closes the Legend and does nothing else; Escape closes it from the keyboard (the handler above) */}
+          <div className="umscrim" data-testid="legend-scrim" role="presentation" onClick={() => setLegOpen(false)} />
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Leave War's own stacking order, with its own backdrop and focus rules; the Legend hangs off its button over the app's own scrim, layered on purpose */}
+          <div role="dialog"
             className="leglist"
             data-testid="legend"
-            role="dialog"
             aria-label="What the colours and marks mean"
             style={legAt ? { left: legAt.left, top: legAt.top } : undefined}
           >
@@ -630,7 +648,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
           {clashes.map((c, i) => (
             <span className="row" key={clashKey(c, i)}>
               <b>{whoOf(c.person)}</b> · {clashDay(c.date)} · {clashWhat(c)}.{' '}
-              <button type="button" className="clashgo" data-testid={`clash-go-${i}`} onClick={() => goClash(c)}>{WAY_OUT[c.wayOut]}{'\u00a0'}›</button>
+              <button type="button" className="clashgo" data-testid={`clash-go-${i}`} onClick={() => goClash(c)}>{wayWords(c)}{'\u00a0'}›</button>
             </span>
           ))}
         </div>
@@ -666,7 +684,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <button type="button" className="clashrow" key={clashKey(c, i)} data-testid={`clash-row-${i}`} onClick={() => goClash(c)}>
                 <span className="clash-who">{whoOf(c.person)}</span>
                 <span className="clash-day">{clashDay(c.date)}</span>
-                <span className="clash-do">{WAY_OUT[c.wayOut]}{'\u00a0'}›</span>
+                <span className="clash-do">{wayWords(c)}{'\u00a0'}›</span>
                 <span className="clash-what">{clashWhat(c)}</span>
               </button>
             ))}

@@ -16,10 +16,10 @@ import { closeDates, getState, initStore, setBidState, setRole, setViewer } from
 import { setMemberTodayForTests } from '../engine'
 import { memoryBackend } from '../state/storage'
 import type { SyncClash } from '../sync'
-import { clashWhat } from './Chrome'
+import { clashWhat } from './clashwhat'
 import { CLOSED_NOTE, PENDING_NOTE } from './ClosedNoteSheet'
 import { Matrix } from './Matrix'
-import { cellOpenable } from './MatrixRows'
+import { cellOpenable } from './matrixrowparts'
 
 beforeEach(() => {
   initStore(memoryBackend())

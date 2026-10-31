@@ -4,14 +4,14 @@
 // deleted ingestFromRaptor.
 import { INPUTS, inpId, mintInpIds, filingOf } from '../engine/inputs'
 import { warHolding } from './engine'
-import { inputRowFor } from './absences'
+import { inputRowFor, type WarInput } from './absences'
 import { getState, rawState, saveManningRule, setRole } from './state/store'
 import { ELEVEN_COUNTERS } from './testing/eleven'
 import { syncAbsences } from './sync'
 
 /** File an absence as the Input it is. `code` is war notation (`LL`, `*LL`,
  *  `ATTC`); `lw` = approved on the war (default: filed on the Inputs page). */
-export function fileAbsence(person: string, code: string, from: string, to = from, opts: { lw?: boolean; remarks?: string } = {}): any {
+export function fileAbsence(person: string, code: string, from: string, to = from, opts: { lw?: boolean; remarks?: string } = {}): WarInput {
   const war = warHolding(rawState().wars, from)
   const row = inputRowFor({ person, code, from, to, lw: opts.lw && war ? war.period.id : undefined, remarks: opts.remarks, mod: '2026-01-01' })
   /* filed where its kind lands, as the Inputs page files it (D1372: a course under Unavailable by itself — engine/inputs.ts
@@ -33,7 +33,7 @@ export function elevenCounters(): void {
   if (was !== 'admin') setRole('admin')
   try {
     for (const r of ELEVEN_COUNTERS) {
-      if (!saveManningRule(JSON.parse(JSON.stringify(r)))) throw new Error(`testkit: the counter "${r.id}" was refused by saveManningRule`)
+      if (!saveManningRule(structuredClone(r))) throw new Error(`testkit: the counter "${r.id}" was refused by saveManningRule`)
     }
   } finally {
     if (was !== 'admin') setRole(was)

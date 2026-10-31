@@ -14,7 +14,7 @@ import { getState, groupIdOf, initStore as lwInitStore, setPeople } from './stat
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { archivePerson, wireLeaveWarSync } from './sync'
-import { rowInWindow } from './ui/Matrix'
+import { rowInWindow } from './ui/rowinwindow'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''

@@ -95,6 +95,7 @@ export function WarSheet({ onClose, initial = null, raised = false }: {
         <input
           className="dateinput namein"
           data-testid="war-name"
+          aria-label="Name"
           placeholder="JUL - SEP 26"
           value={name}
           onChange={e => { setName(e.target.value); setProblem('') }}

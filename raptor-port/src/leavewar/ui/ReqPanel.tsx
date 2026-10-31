@@ -19,7 +19,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { dropFlyRun, flyAnswer, getFlyPlan, setFlyDays, setFlyRun, usePlanVersion, useWarFacts, type FlyDayPatch, type FlySave } from '../sync'
 import { dayLabel, shortSpan } from './dates'
-import { liftAbove, REQ_NAME, reqName, reqShort } from './FlyEdit'
+import { liftAbove, REQ_NAME, reqName, reqShort } from './flyeditparts'
 import { useCloseOnCellClick } from './gridclick'
 import { planPick } from './reqpick'
 import type { ReqSelection } from './select'
@@ -37,6 +37,7 @@ function tightSpan(from: string, to: string): string {
   return `${sameMonth ? String(+from.slice(8, 10)) : dm(from)} – ${dm(to)}`
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the Required panel's number, its "These days | From <date> on" choice and Apply / Clear read one plan of the picked cells (reqpick.ts planPick); split, what is lit and what Apply writes could part
 export function ReqPanel({ pick, include, onInclude, onClose }: {
   pick: ReqSelection
   /** whether the weekend / holiday days of a mixed pick are taken in — FlyRows holds it, because it lights the cells */

@@ -68,6 +68,8 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Posting out · Drifter · Mon 14 Nov · archived, account suspended") — a tap opening his row on Admin → Users; it does not wait for anyone to accept it. |
+| D1546 | 31 Oct 26 | His direction: when a man's posting out runs on its date — archived, deleted, made SANS or transferred — the schedulers are told, so nobody is ever gone silently; it runs and tells them, never waiting for an Accept (D1547). — changed by D1547 |
 | D1510 | 29 Oct 26 | On Quals only an admin ticks the Management column: a member's own Management cell reads only, and a member's command that changes it is refused — he still ticks every other column of his own row. |
 | D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. — changed by D1110 |
 | D1105 | 21 Oct 26 | A posting out with Delete chosen says plainly that the app deletes him by itself on the date: the sheet's line reads "On <date> the app deletes him automatically, with his account. Days he flew keep his puck.", and until the date his row reads "posting out <date> · auto delete"; the button stays "Delete" (D298). |

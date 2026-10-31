@@ -54,8 +54,9 @@ const RECORDS: Record<string, string> = {
   'boot.ts': 'the boot: ids and landing',
   'main.tsx': 'a comment only',
   'leavewar/ui/BidPicker.tsx': 'a comment only',
-  'leavewar/ui/DayList.tsx': 'one record by its id, for the day\'s list',
-  'leavewar/ui/Matrix.tsx': 'a comment only',
+  'leavewar/ui/DayList.tsx': 'one record by its id, for the day\'s list (warInputs — the Leave War\'s doorway)',
+  'leavewar/schedrecs.ts': 'the Leave War\'s one typed doorway to the stored list (warInputs, warLines) — what it hands out is read and written by the files listed for each',
+  'leavewar/ui/Matrix.tsx': 'the input a war cell derives from, by its id (warInputs — the Leave War\'s doorway)',
   'state/changelines.ts': 'the change history\'s line for an input',
   'state/docs.ts': 'a medical input\'s documents',
   'state/perms.ts': 'who may change an input',
@@ -108,11 +109,13 @@ const WRITERS: Record<string, string> = {
   'ui/InputsPage.tsx': 'MIXED — the List\'s add and delete WRITE; which deleted men still have an input (DeletedGroup) reads LINES',
 }
 
-const NAMES = /\bINPUTS\b|\binputsOn\(|\binputLinesOn\(|\binputLines\(|\binpById\(|\binputOn\(/
+/* …and the Leave War's typed doorway to the same list (leavewar/schedrecs.ts — 31 Oct 26): a file that reaches the inputs
+   through it reaches them as surely as one that names INPUTS, so the guard reads its names too */
+const NAMES = /\bINPUTS\b|\binputsOn\(|\binputLinesOn\(|\binputLines\(|\binpById\(|\binputOn\(|\bwarInputs\(|\bwarLines\(/
 /* a line, a block and a JSX comment, taken out before a file is searched for what it DOES */
 const code = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`\\])\/\/[^\n]*/g, '$1')
-const WRITES = /\bINPUTS\.(?:splice|push|unshift|pop|shift|sort|reverse|indexOf)\(|\bINPUTS\.length\s*=[^=]/
-const RECORD_READS = /\bINPUTS\b|\binputsOn\(|\binpById\(|\binputOn\(/
+const WRITES = /\b(?:INPUTS|warInputs\(\))\.(?:splice|push|unshift|pop|shift|sort|reverse|indexOf)\(|\b(?:INPUTS|warInputs\(\))\.length\s*=[^=]/
+const RECORD_READS = /\bINPUTS\b|\binputsOn\(|\binpById\(|\binputOn\(|\bwarInputs\(/
 
 function files(dir: string, out: string[] = []): string[] {
   for (const f of readdirSync(dir)) {
