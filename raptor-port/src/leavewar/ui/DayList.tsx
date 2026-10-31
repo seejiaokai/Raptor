@@ -244,7 +244,7 @@ export function DayListSheet({
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        /* GREYED WHILE A MEDICAL OR LEAVE HOLDS ITS TIME (his D1544): its title the war's own refusal naming the holder —
+        /* GREYED WHILE A MEDICAL OR LEAVE HOLDS ITS TIME (his D1544; a pending bid's too — D1550): its title the war's own refusal naming the holder —
            "OML holds 11 Nov, so the bid can't be approved"; Refuse and Delete beside it stay */
         const heldWhy = bidHeldWhy(personId, date, c.id)
         actions.push(<button key="ap" className="dchip dec approve" disabled={!!heldWhy} title={heldWhy ?? undefined} data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
