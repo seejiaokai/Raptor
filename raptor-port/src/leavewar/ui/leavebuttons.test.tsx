@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { balanceAfterFill, getState, initStore, leaveFiguresOf, setRole } from '../state/store'
-import { figWords } from './BalancesPage'
+import { figWords } from './balancefigs'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { LeaveButtons } from './LeaveButtons'

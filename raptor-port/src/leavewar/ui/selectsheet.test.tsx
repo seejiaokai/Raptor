@@ -5,7 +5,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { closeDates, getState, initStore, setCell, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { SelectSheet } from './SelectSheet'
-import { skipWhy } from './BidPicker'
+import { skipWhy } from './bidskip'
 import type { Selection } from './select'
 import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 

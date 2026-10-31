@@ -25,7 +25,7 @@
    NEW (D1231's reading, 8.4): the moment he OPENED the tab is stored (state/apprseen.ts) and the previous one kept for the
    visit: a request placed since wears the cyan dot, and "New N" shows only those. The dots go when he leaves Approvals. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
-import { boxText, kindOf, parseCell } from '../engine'
+import { boxText, kindOf } from '../engine'
 import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
 import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
 import { alsoSince, openRequestDocs, postingPendingTag, puckHtml, rosterCallsign, type AlsoLine } from '../sync'
@@ -37,31 +37,11 @@ import { ringCell } from './cellring'
 import { RangePicker, type Range } from './RangePicker'
 import { usePhone } from './phone'
 import { useVersion } from './useStore'
+import { datesWords, dm, dow, MON, rangeWords } from './approvaldates'
 import './approvals.css'
 
-const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const dow = (iso: string) => DOW[new Date(Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))).getUTCDay()]
-const dm = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
 const fig = (n: number) => String(Math.round(n * 2) / 2).replace('-', '−')
 
-/** the "Pick dates…" chip once a span is picked: "13 Jan – 15 Jan"; one day is one day, "13 Jan" (the walk, 27 Oct 26 — it
- *  read "13 Jan – 13 Jan") */
-export function rangeWords(from: string, to: string): string {
-  return from === to ? dm(from) : `${dm(from)} – ${dm(to)}`
-}
-/* "Thu 22 – Fri 23 Jan" · "Fri 23 Jan, AM" on a desktop; "22–23 Jan" · "23 Jan AM" on a phone (as drawn) */
-export function datesWords(code: string, from: string, to: string, phone: boolean): string {
-  const half = parseCell(code)?.portion
-  const h = half === 'am' ? 'AM' : half === 'pm' ? 'PM' : ''
-  const sameMonth = from.slice(0, 7) === to.slice(0, 7)
-  if (phone) {
-    const run = from === to ? dm(from) : sameMonth ? `${+from.slice(8, 10)}–${dm(to)}` : `${dm(from)}–${dm(to)}`
-    return h ? `${run} ${h}` : run
-  }
-  const run = from === to ? `${dow(from)} ${dm(from)}` : sameMonth ? `${dow(from)} ${+from.slice(8, 10)} – ${dow(to)} ${dm(to)}` : `${dow(from)} ${dm(from)} – ${dow(to)} ${dm(to)}`
-  return h ? `${run}, ${h}` : run
-}
 const daysWords = (n: number) => `${fig(n)} ${n === 1 ? 'day' : n <= 1 && n > 0 ? 'day' : 'days'}`
 const placedWords = (at?: number) => {
   if (typeof at !== 'number') return '—'

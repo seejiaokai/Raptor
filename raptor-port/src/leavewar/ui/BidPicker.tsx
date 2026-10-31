@@ -15,12 +15,17 @@
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
-import { OutcomeChips, outcomeLine } from './OutcomeChips'
+import { OutcomeChips } from './OutcomeChips'
+import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
 import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
-import { draftOf, emptyDraft, heldRequest, LeaveWords, patchOf, ReqWordsRows, wordsOf, type ReqDraft } from './ReqWords'
-import { ApproveSwitch, compactSpan, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
-import { OilAmount, oilAmountText, oilNumber, oilStart, type OilPick } from './OilAmount'
+import { LeaveWords, ReqWordsRows } from './ReqWords'
+import { draftOf, emptyDraft, heldRequest, patchOf, wordsOf, type ReqDraft } from './reqdraft'
+import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
+import { compactSpan } from './bidhelpers'
+import { skipWhy } from './bidskip'
+import { OilAmount } from './OilAmount'
+import { oilAmountText, oilNumber, oilStart, type OilPick } from './oilamountwords'
 import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
@@ -54,15 +59,6 @@ const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'am', label: 'AM', testid: 'portion-am' },
   { portion: 'pm', label: 'PM', testid: 'portion-pm' },
 ]
-
-/* WHY A FILL OR A DELETE SKIPPED DAYS — true for whoever reads it (M1's code read, L2 / F4, both readers): the open dates
-   and his today bind a member's fill, never the admin's; a delete is stopped by a decided record or leave filed on the
-   Inputs page, never by a closed day (a member deletes his own pending bid there — D1225). Shared by the range fill here
-   and the drag-selected block's panel (SelectSheet). */
-export function skipWhy(verb: string, role: 'admin' | 'member'): string {
-  if (verb !== 'written') return 'already decided, or filed on the Inputs page'
-  return role === 'member' ? 'closed for bidding, before today, or already holding leave or a medical' : 'already holding leave or a medical'
-}
 
 /** THE LEAVE A DAY HOLDS, for the window's lit button and its half (round 3's change 7, his D1331): its kind and its half
  *  where the day's code is a leave not refused — a pending bid or an approved leave — else null. */

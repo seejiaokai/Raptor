@@ -40,7 +40,7 @@ const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct
 const sayD = (d: Date): string => `${WD[d.getUTCDay()]} ${d.getUTCDate()} ${MON[d.getUTCMonth()]}`
 const say = (iso: string): string => sayD(new Date(iso + 'T00:00:00Z'))
 /** a run as the Holidays list says it: "Mon 9 – Fri 13 Feb" inside one month, "Thu 31 Dec – Fri 1 Jan" across two */
-export const whenSaid = (from: string, to: string): string => {
+const whenSaid = (from: string, to: string): string => {
   if (to <= from) return say(from)
   return from.slice(0, 7) === to.slice(0, 7) ? `${say(from).replace(/ [A-Za-z]+$/, '')} – ${say(to)}` : `${say(from)} – ${say(to)}`
 }
@@ -49,7 +49,7 @@ export const whenSaid = (from: string, to: string): string => {
  *  touch the name?"), as the drawing found it: every run of up to 60 days from 1 Jan of `year` to the end of the year
  *  after, written as the list writes it, the widest by `width`. Each letter is measured once and a run's width taken as
  *  the sum of its letters', so the 44,000 runs cost no more than adding; the caller measures the winner whole. */
-export function widestWhen(year: number, width: (s: string) => number): string {
+function widestWhen(year: number, width: (s: string) => number): string {
   const ch = new Map<string, number>()
   const w = (s: string) => { let n = 0; for (const c of s) { let v = ch.get(c); if (v === undefined) { v = width(c); ch.set(c, v) } n += v } return n }
   const sameMonth = (a: Date, b: Date) => a.getUTCMonth() === b.getUTCMonth() && a.getUTCFullYear() === b.getUTCFullYear()
