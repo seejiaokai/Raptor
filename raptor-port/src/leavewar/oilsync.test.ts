@@ -242,7 +242,11 @@ describe('the ownership partition against wires 1+2', () => {
     expect(v.all.some(c => c.kind === 'credit')).toBe(true)      // and the credit is banked
     expect(v.amber).toBe(true)                                   // the day needs a human
     expect(getClashes()).toContainEqual(
-      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', inputShown: 'FO*', bidShown: 'LL', kind: 'duty', wayOut: 'war', war: getState().wars[0].period.id })   // …and each code as the note prints it, as its box draws it ([LW-HALF-DAY-WORDS-LEFT] — D1306's star)   // war-approved leave: sent back or deleted on the sheet; and the period that holds the day (D827)
+      { person: 'plasma', date: SAT, inputCode: 'FO', bidCode: 'LL', inputShown: 'FO*', bidShown: 'LL', kind: 'duty', wayOut: 'war', war: getState().wars[0].period.id,
+        /* …and the approved leave's own input, which the note opens for a man with no row on the grid (his D1542) */
+        iid: expect.any(String) })
+    const iid = getClashes().find(c => c.person === 'plasma' && c.date === SAT)!.iid
+    expect(INPUTS.some((r: any) => String(r.iid) === iid && r.lw), 'the clash names the leave the war approved').toBe(true)   // …and each code as the note prints it, as its box draws it ([LW-HALF-DAY-WORDS-LEFT] — D1306's star)   // war-approved leave: sent back or deleted on the sheet; and the period that holds the day (D827)
   })
 
   it('leave WINS an owned cell and the passes stay stable — no flip-flop', () => {

@@ -2,6 +2,7 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { setMemberTodayForTests } from '../engine'
 import { closeDates, getState, initStore, openDates, setRole } from '../state/store'
+import { lockedOnWar } from '../engine/dayview'
 import { memoryBackend } from '../state/storage'
 import { elevenCounters } from '../testkit'
 import { StageBar } from './Chrome'
@@ -448,7 +449,9 @@ describe('shifting a bid', () => {
     await moveTo('cell-asics-2026-01-30')
     expect(getState().grid.asics?.['2026-01-23']).toBeUndefined()
     expect(getState().grid.asics['2026-01-30']).toBe('*LL')
-    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'pending', source: 'bid' })
+    /* [LW-LOCKMARK] (31 Oct 26): the day's record carries no `source` mark any more — whether the war may change the day is read from its own entries (engine/dayview.ts lockedOnWar), and the war's own entry keeps it open */
+    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'pending' })
+    expect(lockedOnWar(getState().views.asics?.['2026-01-30']), 'the war’s own entry: the day stays the war’s to change').toBe(false)
     expect(screen.getByTestId('cell-asics-2026-01-30').querySelector('.c')!.className).not.toContain('moved')
   })
 
@@ -459,8 +462,9 @@ describe('shifting a bid', () => {
     fireEvent.click(screen.getByTestId(PENDING))
     await moveTo('cell-asics-2026-01-30')
     expect(getState().states.asics['2026-01-30']).toEqual({
-      state: 'approved', source: 'bid', shiftedFrom: '2026-01-23',
+      state: 'approved', shiftedFrom: '2026-01-23',
     })
+    expect(lockedOnWar(getState().views.asics?.['2026-01-30']), 'the war’s own entry: the day stays the war’s to change').toBe(false)
     expect(screen.getByTestId('cell-asics-2026-01-30').querySelector('.c')!.className).toContain('moved')
   })
 
@@ -491,7 +495,8 @@ describe('shifting a bid', () => {
     await moveTo('cell-asics-2026-01-30')
     fireEvent.click(screen.getByTestId('cell-asics-2026-01-30'))
     fireEvent.click(screen.getByTestId('decide-approve'))
-    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'approved', source: 'bid' })
+    expect(getState().states.asics['2026-01-30']).toEqual({ state: 'approved' })
+    expect(lockedOnWar(getState().views.asics?.['2026-01-30']), 'the war’s own entry: the day stays the war’s to change').toBe(false)
   })
 })
 

@@ -42,7 +42,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
-import { sayOnWar } from '../sync'
+import { bidHeldWhy, sayOnWar } from '../sync'
 import { PlacedLine } from './PlacedLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
@@ -218,6 +218,15 @@ export function BidPicker({
   /* WHAT THE WINDOW ACTS ON: the range picked — or this one day, where none is, or where the range picked is only the day
      tapped (round 3: "Just this day" went, so a range picked back to the one day is the one day again — D1332) */
   const span: Range | null = range && !(range.from === date && range.to === date) ? range : null
+  /* A HALF HELD BY LEAVE THE WAR APPROVED (his D1543, 31 Oct 26 — [LW-OFFER-ONLY-TAKEABLE]): Whole day is greyed and cannot be
+     pressed, the held half stays lit (D1331) and the free half is offered — as leave filed on the Inputs page already offers
+     only the free half (`onlyPortion`). A leave pressed with the held half lit says which half to pick, in place of the war's
+     "already taken … clear it first". A pending bid on a half is not this: it is re-typed from its window, as before. Only on
+     the one day — a range picked widens the Duration to days this one half does not speak for. */
+  const heldHalf: 'am' | 'pm' | null = !span && dayLeave && dayLeave.portion !== 'full' && (decide?.state ?? dayState) === 'approved' ? dayLeave.portion : null
+  const heldHalfSay = heldHalf && dayLeave
+    ? `The ${heldHalf === 'am' ? 'morning' : 'afternoon'} is ${codeInWords(dayLeave.type)}. Pick ${heldHalf === 'am' ? 'PM' : 'AM'} to place the ${heldHalf === 'am' ? 'afternoon' : 'morning'}.`
+    : ''
   /* A LEAVE OF SEVERAL DAYS OPENS WHOLE (his D1448, D1461 — version 2): the leave the day tapped belongs to (the store's
      `leaveRunAt` — the joined bar's entry, the Approvals list's line), and the choice at the Duration row's right end of
      what Approve, Refuse, Move and Delete act on: "All <n> days", picked to start with, or the day tapped. Read on every
@@ -416,6 +425,10 @@ export function BidPicker({
     return p === 'full' || h === 'full' || h === p
   }
   const held = heldAny && covers(portion) ? heldAny : null
+  /* APPROVE ON A BID WHOSE TIME A MEDICAL OR LEAVE NOW HOLDS (his D1544): greyed and not pressable, its title the war's own
+     refusal naming the holder ("OML holds 11 Nov, so the bid can't be approved"); Refuse and Delete stay. The one day only —
+     on "All" or a range Approve decides many days and each refusal is said on the press. */
+  const approveHeld = !span && !whole && heldAny ? bidHeldWhy(personId, date, heldAny.rec.id) : null
   /* the approved leave's own row speaks for the day only while no range widens it (a range's words go with the fill) */
   const leaveRow = !span && !held && !onlyPortion ? approvedRow : null   // never the free half's (the fresh read's R1)
   const words = held ? (heldEdit ?? draftOf(held.rec)) : draft
@@ -509,6 +522,11 @@ export function BidPicker({
 
   const write = (code: string) => {
     flushWords()   // words still in a box ride with the write (round 3's FULL check)
+    /* the held half lit (or Whole day, which it greys): no leave is placed over leave the war approved — say which half to pick */
+    if (code && heldHalf && portion !== (heldHalf === 'am' ? 'pm' : 'am')) {
+      setNoteAt('leave'); confirming.current = null
+      return setNote(heldHalfSay)
+    }
     /* the leave as it stands now the words are saved (G4) — what this press covers, read again, never the drawn one */
     const whole = wholeNow()
     const multi: Range | null = span ?? (whole ? { from: whole.from, to: whole.to } : null)
@@ -712,9 +730,10 @@ export function BidPicker({
                   lesson 54) — and a second tap on it sends the bid back to waiting. */}
               <button
                 className={`dchip dec approve${!span && decide?.state === 'approved' ? ' lit' : ''}`}
+                disabled={!!approveHeld}
                 data-testid="decide-approve"
                 aria-pressed={!span && decide?.state === 'approved'}
-                title={!span && decide?.state === 'approved' ? 'Approved — tap again to send it back to waiting' : undefined}
+                title={approveHeld ?? (!span && decide?.state === 'approved' ? 'Approved — tap again to send it back to waiting' : undefined)}
                 onClick={() => answer('approved')}
               >
                 {!span && decide?.state === 'approved' ? 'Approved' : 'Approve'}
@@ -776,6 +795,7 @@ export function BidPicker({
             data-testid={p.testid}
             className={`pchip${portion === p.portion ? ' on' : ''}`}
             aria-pressed={portion === p.portion}
+            disabled={!!heldHalf && p.portion === 'full'}
             onClick={() => {
               /* words typed on the held bid are saved onto it before the box turns to the other half's new bid */
               if (held && !covers(p.portion)) flushWords()

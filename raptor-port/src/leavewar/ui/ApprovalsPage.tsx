@@ -32,7 +32,7 @@ import { alsoSince, openRequestDocs, postingPendingTag, puckHtml, rosterCallsign
 import { openApprovals } from '../../state/apprseen'
 import { me } from '../../state/perms'
 import { ClipIcon } from '../../ui/icons'
-import { askLw, apprMode, setApprMode, subscribeLwNav } from './lwnav'
+import { askLw, apprMode, apprRingAsked, lwNavVersion, setApprMode, subscribeLwNav, takeApprRing } from './lwnav'
 import { ringCell } from './cellring'
 import { RangePicker, type Range } from './RangePicker'
 import { usePhone } from './phone'
@@ -303,6 +303,32 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     if (!isArmed) { setArmed(sig); return }
     apply(toApprove, 'approved')
   }
+  /* A REQUEST RINGED ON ASK (his D1542 — the clash note's "Decide it in Approvals ›" for a man with no row on the grid): the
+     line holding his request on that day wears the war's just-added ring (the cyan of D1449, as the grid's ringed day does)
+     for six seconds and is brought into view; where the dates picked hide it, every line is shown first. Taken once, after
+     the render that drew the rows has committed (the rows as drawn — `rowsRef`), never in a render React may throw away. */
+  const navV = useSyncExternalStore(subscribeLwNav, lwNavVersion, lwNavVersion)
+  const [ringKey, setRingKey] = useState<string | null>(null)
+  useEffect(() => {
+    if (!shown || !apprRingAsked()) return
+    const a = takeApprRing()!
+    const r = rowsRef.current.rows.find(x => x.msg?.kind !== 'stale' && x.line.personId === a.personId && x.line.parts.some(p => p.date === a.date))
+    if (!r) return
+    if (!inFilter(r.line, filter, seen, mePid)) {
+      /* every line shown, as a press on All does (`setFilter`) */
+      rowsRef.current = { period: st.period.id, rows: rowsRef.current.rows.filter(x => !x.lit && x.msg?.kind !== 'stale') }
+      // eslint-disable-next-line react-doctor/no-adjust-state-on-prop-change -- the answer to an ask from outside the page (the clash note's link, taken once from lwnav), not to a prop: a render may not take the ask, so it is taken here after the rows it looks in have committed
+      setFilterRaw({ kind: 'all' }); setArmed(null); setTick(t => t + 1)
+    }
+    setRingKey(r.key)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs when an ask arrives (the nav's version) or the page comes up; the filter and the rows are read as they stand then
+  }, [navV, shown])
+  useEffect(() => {
+    if (!ringKey) return
+    document.querySelector<HTMLElement>('#page-leavewar .appr-line.lw-ring, .appr-line.lw-ring')?.scrollIntoView?.({ block: 'center' })
+    const t = setTimeout(() => setRingKey(null), 6000)
+    return () => clearTimeout(t)
+  }, [ringKey])
   /* a request's dates → the Grid, the day ringed, the slim bar up (8.5); a man with no row on the grid → his person window.
      The "also" lines' dates the same (D1231's reading): a withdrawn bid's day ringed, nothing in it. */
   const openAt = (personId: string, date: string) => {
@@ -404,7 +430,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
             {phone && (
               <div className="appr-cols ph" aria-hidden="true"><span>Days</span><span>LVE Bal</span><span>Lowest Avail</span><span className="appr-end">Placed</span></div>
             )}
-            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} onPress={press} onDates={openDates} />)}
+            {shownRows.map(r => <Line key={r.key} r={r} phone={phone} fresh={isNew(r)} ringed={r.key === ringKey} onPress={press} onDates={openDates} />)}
           </div>
         )}
         {filter.kind === 'new' && also.length > 0 && (
@@ -421,7 +447,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
 const isoOf = (ms: number) => { const d = new Date(ms); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one request's line, its phone and desktop layouts built from the same parts side by side; split, the two layouts could drift apart
-function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; fresh: boolean; onPress: (r: Row, to: 'approved' | 'refused') => void; onDates: (r: Row) => void }) {
+function Line({ r, phone, fresh, ringed, onPress, onDates }: { r: Row; phone: boolean; fresh: boolean; ringed: boolean; onPress: (r: Row, to: 'approved' | 'refused') => void; onDates: (r: Row) => void }) {
   const l = r.line
   const p = getState().people.find(x => x.id === l.personId)
   const cs = p?.callsign || rosterCallsign(l.personId) || l.personId
@@ -482,7 +508,7 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
   if (phone) {
     return (
       // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a line of the list above, which stays a role="list" box (it holds its column headings): an <li> outside a <ul> is not valid
-      <div className={`appr-line ph${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+      <div className={`appr-line ph${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}${ringed ? ' lw-ring' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
         <div className="appr-l1">{puck}{box}{dates}{clip}{btns}</div>
         <div className="appr-l2">{days}{bal}{avail}{placed}</div>
       </div>
@@ -490,7 +516,7 @@ function Line({ r, phone, fresh, onPress, onDates }: { r: Row; phone: boolean; f
   }
   return (
     // eslint-disable-next-line react-doctor/prefer-tag-over-role -- a line of the list above, which stays a role="list" box (it holds its column headings): an <li> outside a <ul> is not valid
-    <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
+    <div className={`appr-line${r.lit ? ` lit-${r.lit}` : ''}${stale ? ' stale' : ''}${ringed ? ' lw-ring' : ''}`} role="listitem" data-testid={`appr-line-${l.personId}`}>
       {puck}{box}{dates}{days}{bal}{avail}{placed}<span className="appr-cliphold">{clip}</span>{btns}
     </div>
   )

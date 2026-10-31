@@ -17,7 +17,7 @@ import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../e
 import { creditWorthText } from '../engine/credit'
 import { creditGiver, type Half, type NoticeRec, type RequestRec } from '../engine/warrecs'
 import { ackReplacement, canBidOn, ownPendingOnClosedDay, changeAbsenceById, clearRecordById, decideRequestById, defaultAwardHalf, editAward, movableRecords, oilOnDay, recordsAt, setRequestWords, type OilShown } from '../state/store'
-import { docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
+import { bidHeldWhy, docGet, openInputDocs, openRequestDocs, replacedCarry, rowDocIds } from '../sync'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { EntryBox } from './BidBits'
 import { LeaveWords, ReqWordsRows, type FlushRef } from './ReqWords'
@@ -244,7 +244,10 @@ export function DayListSheet({
       const actions: ReactElement[] = []
       /* THE SHEETS' ORDER AND WORDS (D264, D331, D332): Approve · Refuse (Ack gone, D1158), then Move, then Delete */
       if (deciding) {
-        actions.push(<button key="ap" className="dchip dec approve" data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
+        /* GREYED WHILE A MEDICAL OR LEAVE HOLDS ITS TIME (his D1544): its title the war's own refusal naming the holder —
+           "OML holds 11 Nov, so the bid can't be approved"; Refuse and Delete beside it stay */
+        const heldWhy = bidHeldWhy(personId, date, c.id)
+        actions.push(<button key="ap" className="dchip dec approve" disabled={!!heldWhy} title={heldWhy ?? undefined} data-testid={`dl-approve-${c.id}`} onClick={() => { flushOf(c.id); act(() => decideRequestById(personId, date, c.id, 'approved'), 'Couldn’t approve — something else is on that time') }}>Approve</button>)
         /* Refuse always in its place (his D1330: one row wherever it opens — the narrow read's N3: on a refused bid it was left
            out, and the next button slid under a repeated tap). ON A REFUSED BID IT IS LIT (his D1355, D1361): solid red,
            "Refused", and a second tap sends the bid back to waiting, as the lit Approve does */

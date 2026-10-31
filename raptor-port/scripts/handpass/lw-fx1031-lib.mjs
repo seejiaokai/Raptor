@@ -60,3 +60,9 @@ export async function postOutOn(w, pid, d, outcome, poDate, pic = null) {
 }
 /* what the last passing notes said */
 export const said = (w, n = 3) => L.lastSaid(w, n)
+
+/* THE RE-WALK'S VERDICTS (31 Oct 26, on the fixed build): each step that the rulings decide is recorded PASS or FAIL against
+   the RIGHT behaviour — D1541 (a posting out refuses no leave), D1542 (the clash note's link for a man with no row), D1543
+   (a half held by approved leave greys Whole day) and D1544 (Approve greyed on a refused bid under a medical). A step's
+   pictures are named beside it; the RECORDED lines stay for what only a look can judge. */
+export function check(id, size, ok, said, pics = []) { L.rec(id, size, ok ? 'PASS' : 'FAIL', said, pics) }

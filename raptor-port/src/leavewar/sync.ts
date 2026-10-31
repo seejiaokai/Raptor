@@ -480,9 +480,25 @@ function approveWhy(it: { personId: string; date: string; recId: string }, prot:
   if (prot.has(it.date)) return `${shortDate(it.date)} is on a locked week — not approved`
   const po = postingOutWhy(it.personId, it.date)
   if (po) return po
+  return heldWhy(it.personId, it.date, rec)
+}
+/* WHAT HOLDS A BID'S TIME, NAMED (his D1544, 31 Oct 26 — [LW-OFFER-ONLY-TAKEABLE]): a refused bid with a medical or leave filed
+   over its day since used to say only "already holds leave or a medical at that time". The one refusal of that kind now
+   names the holder as the grid's box writes it (a half with its AM or PM — D1525): "OML holds 11 Nov, so the bid can't be
+   approved" (the agent's draft, the app's own codes). The same sentence greys the windows' Approve and is its title
+   (`bidHeldWhy`), so the button and every door that asks the war's approve rule — Approvals, Approve all, the day's list, the
+   bid windows, Auto-approve — say one thing. */
+function heldWhy(personId: string, date: string, rec: RequestRec): string | null {
   const c: Contrib = { id: 'new', kind: 'absence', code: parseCell(rec.code)!.type, win: requestWin(rec.code) }
-  if (absencesAt(it.personId, it.date).some(o => barsWrite(c, o))) return `${shortDate(it.date)} already holds leave or a medical at that time — not approved`
-  return null
+  const o = absencesAt(personId, date).find(x => barsWrite(c, x))
+  return o ? `${codeInWords(notationOf(o.code, o.win))} holds ${dayMon(date)}, so the bid can’t be approved` : null
+}
+/** Why this bid cannot be approved because a medical or leave already holds its time — null where nothing holds it (his D1544:
+ *  the windows grey its Approve while this answers). Only that one reason: a locked week or a posting is said on the press. */
+export function bidHeldWhy(personId: string, date: string, recId: string): string | null {
+  const war = warHolding(rawState().wars, date)
+  const rec = war ? recsAt(war.recs, personId, date).find((r): r is RequestRec => r.kind === 'request' && r.id === recId) : undefined
+  return rec ? heldWhy(personId, date, rec) : null
 }
 /* his D1436 (27 Oct 26, "all as recommended", question 16): leave on a day from his posting-out date on is not approved,
    even before the posting has run — the Approvals list and the bid windows alike, since both ask `approveWhy`; a posting
@@ -971,8 +987,11 @@ function publishLeaveClashes(): void {
           const duty = a.kind === 'credit' || b.kind === 'credit'
           const holders = duty ? [b] : [a, b]
           const wayOut = clashWayOut(holders)
-          /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) */
-          const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw) : undefined
+          /* the leave filed on the Inputs page that is in the way — what "Change the leave on Inputs" opens (D827) — and, for
+             leave the war approved, that leave's own input too: for a man with no row on the grid the note opens it there
+             (his D1542 — the grid has no row to open his day on) */
+          const filed = wayOut === 'inputs' ? holders.find(c => c.kind === 'absence' && !c.lw)
+            : wayOut === 'war' ? holders.find(c => c.kind === 'absence' && !!c.lw) : undefined
           out.push({ person, date, inputCode: notationOf(a.code, a.win), bidCode: notationOf(b.code, b.win), inputShown: clashCodeShown(a), bidShown: clashCodeShown(b), ...(duty ? { kind: 'duty' as const } : {}),
             wayOut, war: String(war.period?.id ?? ''), ...(filed ? { iid: String(filed.id) } : {}) })
         }
@@ -1047,7 +1066,8 @@ export interface SyncClash {
   /** The leave period that holds the date — the list covers every period, and a tap on a clash must put ITS period on
    *  screen before it opens the day ([LW-CLASH-NOTE-PHONE], owner D827). */
   war: string
-  /** `wayOut: 'inputs'` only: the Input in the way, whose own window the tap opens. */
+  /** The Input in the way, whose own window the tap opens: for `wayOut: 'inputs'`, and for `wayOut: 'war'` (leave the war
+   *  approved) — opened only for a man with no row on the grid (his D1542); a man with a row has his day opened. */
   iid?: string
 }
 

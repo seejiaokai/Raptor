@@ -10,7 +10,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS, holds } from '../../engine/inputs'
 import {
   getState, initStore, leaveRunAt, openDates, recordsAt, setBidStates, setCell, setCellRange, setDayAward, setPeople,
-  setPostOut, setRole, setViewer, lwHistInit,
+  setPostOut, setRole, setViewer, lwHistInit, absenceDoor, setAbsenceDoor,
 } from '../state/store'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
@@ -229,15 +229,28 @@ describe('what Approve, Refuse, Move and Delete act on', () => {
     expect(screen.queryByTestId('bid-picker')).toBeNull()
     expect(DAYS.map(d => reqs(d)[0]!.id)).toEqual(before)
   })
-  it('an Approve the rules refuse (a posting-out date inside the leave) writes nothing and says nothing was decided, and why', () => {
+  /* WAS "a posting-out date inside the leave". HIS D1541 (31 Oct 26, replacing D1436): a posting out refuses no leave (the
+     test after this one). The rule still refusing a day of the leave here is a locked week — given by the war's door, as
+     m4decide.test.ts gives it — since the refusal on All is what this test is about, not which rule makes it */
+  it('an Approve the rules refuse (a locked week inside the leave) writes nothing and says nothing was decided, and why', () => {
+    fourBid()
+    const door = absenceDoor()!
+    setAbsenceDoor({ ...door, approveWhy: it => (it.date === DAYS[2] ? 'Wed 11 Feb is on a locked week — not approved' : door.approveWhy!(it)) })
+    try {
+      tap(DAYS[0]!)
+      fireEvent.click(within(sheet()).getByTestId('decide-approve'))
+      for (const d of DAYS) expect(st(d), d).not.toBe('approved')
+      const said = within(sheet()).getByTestId('shift-problem').textContent!
+      expect(said).toMatch(/^Nothing was decided\. /)
+      expect(said).toMatch(/locked week/)
+    } finally { setAbsenceDoor(door) }
+  })
+  it('…and a posting out with no outcome refuses nothing: Approve on All approves the whole leave (D1541)', () => {
     fourBid()
     expect(setPostOut(P, DAYS[2]!, 'none')).toBe(true)
     tap(DAYS[0]!)
     fireEvent.click(within(sheet()).getByTestId('decide-approve'))
-    for (const d of DAYS) expect(st(d), d).not.toBe('approved')
-    const said = within(sheet()).getByTestId('shift-problem').textContent!
-    expect(said).toMatch(/^Nothing was decided\. /)
-    expect(said).toMatch(/posts? out/i)
+    for (const d of DAYS) expect(st(d), d).toBe('approved')
   })
   it('words typed and not yet left that join the leave to a next-door bid: Approve on All approves the five days (G4)', () => {
     fourBid()

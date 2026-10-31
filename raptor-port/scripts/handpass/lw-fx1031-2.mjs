@@ -2,13 +2,16 @@
 // The clash of w2d.mjs scenario 33, adapted to today's app: a SANS man (Zenith) on a ground row of the loaded week's Saturday
 // (18 Jul 26), that day published, his bid LL on it placed while "+ SANS" is on, then SANS taken off (⚙ Settings, the SANS
 // group's ✕). The note names him; the row / its link is pressed with SANS off, then with "+ SANS" back on.
+// THE RE-WALK (his D1542, 31 Oct 26): with no row for him the bid's link reads "Decide it in Approvals ›" and opens Approvals
+// with his request ringed; "+ SANS" back on, "Decide the bid ›" opens his day as before. Then (R2b) his bid approved and SANS
+// off again: "Change the leave on Inputs ›" opens that leave's own window on the Inputs page. Each recorded PASS / FAIL.
 // Run from raptor-port:  SIZE=desk|phone  LW_DIST=<build>  [LW_OUT=<folder under docs/img/handpass>]
 //   node scripts/handpass/lw-fx1031-2.mjs
 process.env.LW_OUT ||= '2026-10-31-lw-fixes/before'
 const L = await import('./lw-rr-lib.mjs')
 const F = await import('./lw-fx1031-lib.mjs')
 const SIZE = F.SIZE
-console.log('[lw-fx1031-2 v1]', SIZE, 'today', L.TODAY)
+console.log('[lw-fx1031-2 v2]', SIZE, 'today', L.TODAY)
 F.clearMine(`r2-${SIZE}-`)
 const pre = `r2-${SIZE}-`
 const DAY = '2026-07-18', S = 'vinci', SCS = 'Zenith'
@@ -67,6 +70,13 @@ async function tapNote(name) {
   await L.shot(w, pre + name)
   return { pressed: true, text, ...(await surface()), newNotes: await P.evaluate(n => (window.__said || []).slice(n), said0) }
 }
+/* the Approvals page as drawn: up or not, and which lines wear the ring (D1542) */
+const apprState = () => P.evaluate(() => {
+  const pg = document.querySelector('[data-testid="approvals-page"]')
+  const up = !!pg && !pg.hidden && pg.getBoundingClientRect().height > 0
+  return { up, ringed: up ? [...pg.querySelectorAll('.appr-line.lw-ring')].map(e => e.dataset.testid) : [], ringInView: up ? [...pg.querySelectorAll('.appr-line.lw-ring')].some(e => { const r = e.getBoundingClientRect(); return r.top >= 0 && r.bottom <= innerHeight }) : false }
+})
+const linkWords = n => JSON.stringify(n.links || n.rows || [])
 async function closeAll() {
   await L.closeWin(w)
   for (const id of ['dl-close']) if (await L.vis(P, L.T(id))) await L.press(w, L.T(id))
@@ -96,17 +106,46 @@ try {
   if (nOff.found) {
     const names = JSON.stringify(nOff.rows)
     note('5 names the man', { Zenith: names.includes(SCS) })
+    F.check('R2-5 D1542 the link for a man with no row reads "Decide it in Approvals ›"', SIZE, linkWords(nOff).includes('Decide it in Approvals ›') && !linkWords(nOff).includes('Decide the bid'), linkWords(nOff), [pre + '5-note-sans-off'])
     const t = await tapNote('6-tap-sans-off')
-    note('6 tap with SANS off (no row for him)', t)
+    const ap = await apprState()
+    note('6 tap with SANS off (no row for him)', { ...t, approvals: ap })
+    F.check('R2-6 D1542 its tap opens Approvals with his request ringed, in view', SIZE, ap.up && ap.ringed.includes(`appr-line-${S}`) && ap.ringInView && !t.dayList && !t.oneDay, JSON.stringify(ap), [pre + '6-tap-sans-off'])
+    await L.openGrid(w)
     await closeAll()
     note('6 after closing: page, windows', await surface())
   }
+  await L.openGrid(w)
   note('7 + SANS back on', await setSans(true))
   await P.waitForTimeout(600)
   await toJul()
   const nBack = await readNote()
   note('7 clash note, SANS back on', nBack)
-  if (nBack.found) { await clashPic('7-note-sans-back'); const t = await tapNote('8-tap-sans-back'); note('8 tap with "+ SANS" back on', t); await closeAll() }
+  if (nBack.found) {
+    await clashPic('7-note-sans-back')
+    F.check('R2-7 D1542 a man with a row keeps "Decide the bid ›"', SIZE, linkWords(nBack).includes('Decide the bid ›'), linkWords(nBack), [pre + '7-note-sans-back'])
+    const t = await tapNote('8-tap-sans-back'); note('8 tap with "+ SANS" back on', t)
+    F.check('R2-8 his day opens for him, as before', SIZE, !!(t.dayList || t.oneDay), JSON.stringify({ dayList: t.dayList, oneDay: t.oneDay }), [pre + '8-tap-sans-back'])
+    await closeAll()
+  }
+  /* R2b — his bid approved (SANS on, his row there), then SANS off: the approved leave's own window on the Inputs page */
+  note('9 his bid approved on Approvals', await L.approveOn(w, S, DAY))
+  note('9 his war leave', await L.warLeave(w, S))
+  note('10 SANS taken off again', await setSans(false))
+  await P.waitForTimeout(600)
+  await toJul()
+  const nApp = await readNote()
+  note('10 clash note, approved leave, SANS off', nApp)
+  if (nApp.found) {
+    await clashPic('10-note-approved-sans-off')
+    F.check('R2-10 D1542 approved leave, no row: "Change the leave on Inputs ›"', SIZE, linkWords(nApp).includes('Change the leave on Inputs ›') && !linkWords(nApp).includes('Change the approved leave'), linkWords(nApp), [pre + '10-note-approved-sans-off'])
+    const leave = (await L.warLeave(w, S))[0]
+    const t = await tapNote('11-tap-approved-sans-off')
+    const win = await P.evaluate(() => { const e = document.querySelector('[data-testid="win-inputedit"]'); return e && e.getBoundingClientRect().width > 0 ? { type: document.querySelector('#inpEditType')?.value, text: e.innerText.replace(/\s+/g, ' ').slice(0, 140) } : null })
+    note('11 tap: the leave own window', { page: t.page, window: win, leave })
+    F.check('R2-11 D1542 its tap opens that leave own window on the Inputs page', SIZE, t.page === 'inputs' && !!win && win.type === 'LL', JSON.stringify({ page: t.page, win }), [pre + '11-tap-approved-sans-off'])
+    if (win) { await L.press(w, '#inpEditCancel').catch(() => {}); await P.waitForTimeout(400) }
+  } else F.check('R2-10 D1542 approved leave, no row: the clash note', SIZE, false, 'no clash note drawn', [])
 } catch (e) { note('STEP-ERROR (NOT WALKED beyond here)', String(e).split('\n')[0].slice(0, 300)); await L.shot(w, pre + 'zz-step-error').catch(() => {}) }
 note('errors', w.errs.length ? w.errs : 'none')
 L.rec('R2 clash note link for a man with no row', SIZE, 'RECORDED', log.map(([k, v]) => k + ': ' + (typeof v === 'string' ? v : JSON.stringify(v))).join(' || '), [])

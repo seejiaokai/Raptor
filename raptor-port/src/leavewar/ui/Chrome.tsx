@@ -14,7 +14,7 @@ import { usePhone } from './phone'
 import { WarSheet } from './WarSheet'
 import { clearNewWarAsk, peekNewWarAsk, subscribeNewWarAsk, type WarAsk } from './warask'
 import { useVersion } from './useStore'
-import { askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
+import { askApprRing, askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, setApprMode, lwPage, setBalancesUp } from './lwnav'
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
 import { clashWhat } from './clashwhat'
@@ -51,6 +51,15 @@ const LEGEND_WIDTH = 312
 const WAY_OUT: Record<ClashWayOut, string> = {
   bid: 'Decide the bid',
   war: 'Change the approved leave',
+  inputs: 'Change the leave on Inputs',
+}
+/* A MAN WITH NO ROW ON THE GRID (his D1542, 31 Oct 26 — [LW-CLASH-ROWLESS-TAP]): a SANS man while SANS men are off the war, an
+   archived man. The day cannot be opened on a row the grid does not draw, so the link goes where the clash can be dealt
+   with: a bid to the Approvals page, his request ringed; leave the war approved to its own window on the Inputs page, as
+   leave filed there already goes. A man with a row keeps the words above. */
+const WAY_OUT_NO_ROW: Record<ClashWayOut, string> = {
+  bid: 'Decide it in Approvals',
+  war: 'Change the leave on Inputs',
   inputs: 'Change the leave on Inputs',
 }
 /* what clashes, as a sentence: `clashWhat` (ui/clashwhat.ts) */
@@ -306,8 +315,22 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
   /* the day as the day's own sheets say it — "Sat 18 Jul" — with its year only where that is not the year on screen */
   const yearHere = period.days[0]?.date.slice(0, 4)
   const clashDay = (date: string) => `${dayLabel(date)}${date.slice(0, 4) !== yearHere ? ` ${date.slice(2, 4)}` : ''}`
+  const hasRow = (id: string) => people.some(p => p.id === id)
+  const wayWords = (c: SyncClash) => (hasRow(c.person) ? WAY_OUT : WAY_OUT_NO_ROW)[c.wayOut]
   const goClash = (c: SyncClash) => {
     if (c.wayOut === 'inputs' && c.iid && openInputWindow(c.iid)) return
+    if (!hasRow(c.person)) {
+      /* his D1542: no row to open the day on — the leave the war approved in its own window on the Inputs page; a bid on the
+         Approvals page (the clash's own period on screen first), his request on that day ringed there */
+      if (c.wayOut === 'war' && c.iid && openInputWindow(c.iid)) return
+      if (c.wayOut === 'bid') {
+        if (c.war && c.war !== period.id) selectWar(c.war)
+        askApprRing({ personId: c.person, date: c.date })
+        askLw({ kind: 'grid' })
+        setApprMode('page')
+        return
+      }
+    }
     /* the list covers every period: put the clash's own on screen first, then ask the grid for the day and the person */
     if (c.war && c.war !== period.id) selectWar(c.war)
     focusDay(c.date, { open: c.person })
@@ -625,7 +648,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
           {clashes.map((c, i) => (
             <span className="row" key={clashKey(c, i)}>
               <b>{whoOf(c.person)}</b> · {clashDay(c.date)} · {clashWhat(c)}.{' '}
-              <button type="button" className="clashgo" data-testid={`clash-go-${i}`} onClick={() => goClash(c)}>{WAY_OUT[c.wayOut]}{'\u00a0'}›</button>
+              <button type="button" className="clashgo" data-testid={`clash-go-${i}`} onClick={() => goClash(c)}>{wayWords(c)}{'\u00a0'}›</button>
             </span>
           ))}
         </div>
@@ -661,7 +684,7 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <button type="button" className="clashrow" key={clashKey(c, i)} data-testid={`clash-row-${i}`} onClick={() => goClash(c)}>
                 <span className="clash-who">{whoOf(c.person)}</span>
                 <span className="clash-day">{clashDay(c.date)}</span>
-                <span className="clash-do">{WAY_OUT[c.wayOut]}{'\u00a0'}›</span>
+                <span className="clash-do">{wayWords(c)}{'\u00a0'}›</span>
                 <span className="clash-what">{clashWhat(c)}</span>
               </button>
             ))}

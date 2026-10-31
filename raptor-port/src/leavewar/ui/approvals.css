@@ -190,6 +190,10 @@
      too dark on the grid); for a reader who asked for less motion it stands steady and goes when its time is up */
   td.lw-ring { box-shadow: inset 0 0 0 2px #3BC6E8; animation: lwring 6s ease-out 1 forwards; }
   @media (prefers-reduced-motion: reduce) { td.lw-ring { animation: none; } }
+  /* …and a request's line on this page brought into view the same way (his D1542 — the clash note's "Decide it in Approvals ›"
+     for a man with no row on the grid): the same ring, the same six seconds, round the whole line */
+  .appr-line.lw-ring { box-shadow: inset 0 0 0 2px #3BC6E8; border-radius: 6px; animation: lwring 6s ease-out 1 forwards; }
+  @media (prefers-reduced-motion: reduce) { .appr-line.lw-ring { animation: none; } }
 
   /* WHILE THE SLIM BAR IS UP (the walk's A-F6, 27 Oct 26): a window opened over the bar's foot cut it ("Back" read "ack") —
      every window but a full-screen one stands above the bar (22 above the foot, 44 tall), so the two never overlap, and is

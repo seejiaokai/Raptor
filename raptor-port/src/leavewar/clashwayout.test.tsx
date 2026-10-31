@@ -30,6 +30,8 @@ import { memoryBackend } from './state/storage'
 import { clashPairOrder, getClashes, installAbsenceDoor, runOilPass, syncAbsences } from './sync'
 import { LeaveWarPage } from './LeaveWarPage'
 import { StageBar } from './ui/Chrome'
+import { ApprovalsPage } from './ui/ApprovalsPage'
+import { apprMode, setApprMode, takeApprRing } from './ui/lwnav'
 import { PHONE_QUERY } from './ui/phone'
 
 const ISNAP = JSON.stringify(INPUTS)
@@ -56,6 +58,7 @@ beforeEach(() => {
   setRole('admin')
   setInpEdit(null); setPage('leavewar')
   takeFocusOpen('')                                    // nothing left over from the test before
+  setApprMode('off'); takeApprRing()                   // …nor an Approvals page or a ring asked for (D1542)
 })
 afterEach(() => { cleanup(); (window as any).matchMedia = origMM })
 
@@ -396,5 +399,73 @@ describe('on a phone the note is a line of its own that opens its list (D805, D8
     cleanup()
     asPhone()
     expect(render(<StageBar />).queryByTestId('sync-clashes')).toBeNull()
+  })
+})
+
+/* [LW-CLASH-ROWLESS-TAP] — HIS D1542 (31 Oct 26, "Q2-4 as recommended"; the walk of 31 Oct 26, R2). A clash for a man with
+   NO ROW on the war (a SANS man while SANS men are off it, an archived man) offered "Decide the bid ›", whose tap asked the
+   grid to open a day on a row the grid does not draw — so it opened nothing. Now its link goes where the clash can be dealt
+   with: a bid to the Approvals page with his request ringed ("Decide it in Approvals ›"); leave the war approved to its own
+   window on the Inputs page ("Change the leave on Inputs ›"). A man with a row keeps today's link (the tests above). */
+describe('a clash for a man with no row goes where it can be dealt with (D1542)', () => {
+  const noRow = () => {
+    setPeople(projectPeople().filter(p => p.id !== 'plasma'))
+    expect(getState().people.some(p => p.id === 'plasma'), 'no row of his on the war').toBe(false)
+  }
+  /* the strip's line for him, named by the roster's callsign (he has no row to name him) */
+  const lineNoRow = () => {
+    const { container, unmount } = render(<StageBar />)
+    const row = [...container.querySelectorAll('[data-testid="sync-clashes"] .row')].map(flat).find(t => t.startsWith('Fable · Sat 18 Jul · '))
+    unmount()
+    expect(row, 'the strip carries his Saturday').toBeTruthy()
+    return row!
+  }
+  it('a bid: "Decide it in Approvals ›" — the tap opens Approvals and asks it to ring his request, the grid sent nowhere', () => {
+    aBid(); noRow()
+    expect(lineNoRow()).toMatch(/, but the day holds LL\. Decide it in Approvals ›$/)
+    const { getByTestId } = render(<StageBar />)
+    const seq = getState().focusSeq
+    fireEvent.click(getByTestId('clash-go-0'))
+    expect(apprMode(), 'the Approvals page is up').toBe('page')
+    expect(takeApprRing(), 'his request on that day is the one to ring').toEqual({ personId: 'plasma', date: SAT })
+    expect(getState().focusSeq, 'no day opened on a row that is not there').toBe(seq)
+    expect(CURPAGE).toBe('leavewar')
+  })
+
+  it('…and the Approvals page rings that request\'s line, the period\'s every line shown', () => {
+    aBid(); noRow()
+    const strip = render(<StageBar />)
+    fireEvent.click(strip.getByTestId('clash-go-0'))
+    strip.unmount()
+    const page = render(<ApprovalsPage shown={true} />)
+    const line = page.getByTestId('appr-line-plasma')
+    expect(line.className, 'ringed with the war\'s just-added mark').toContain('lw-ring')
+    expect(takeApprRing(), 'the ask is taken once').toBeNull()
+  })
+
+  it('leave the war approved: "Change the leave on Inputs ›" — its own window there', () => {
+    warLeave(); noRow()
+    const leave = INPUTS.find((r: any) => holds(r, 'plasma') && r.lw && r.date === 'Jul 18')!
+    expect(theClash().wayOut).toBe('war')
+    expect(theClash().iid, 'the clash knows the leave in the way').toBe(String(leave.iid))
+    expect(lineNoRow()).toMatch(/, but the day holds approved LL\. Change the leave on Inputs ›$/)
+    const { getByTestId } = render(<StageBar />)
+    fireEvent.click(getByTestId('clash-go-0'))
+    expect(CURPAGE).toBe('inputs')
+    expect(INPEDIT && INPEDIT.iid, 'the window is opened on that very leave').toBe(String(leave.iid))
+  })
+
+  it('the same on a phone: its row reads the new words and goes to the same place', () => {
+    asPhone(); aBid(); noRow()
+    const { container, getByTestId } = render(<StageBar />)
+    expect(flat(container.querySelector('[data-testid="clash-row-0"] .clash-do'))).toBe('Decide it in Approvals ›')
+    fireEvent.click(getByTestId('clash-row-0'))
+    expect(apprMode()).toBe('page')
+    expect(takeApprRing()).toEqual({ personId: 'plasma', date: SAT })
+  })
+
+  it('a man WITH a row keeps today\'s links', () => {
+    aBid()
+    expect(stripLine()).toMatch(/Decide the bid ›$/)
   })
 })

@@ -241,6 +241,16 @@
   color: var(--accent);
 }
 
+/* WHOLE DAY GREYED (his D1543): a half of the day holds leave the war approved, so a whole day cannot be placed — dimmed as a
+   decide button that cannot be pressed is, and a hover does not light it */
+.bidsheet .pchip:disabled,
+.bidsheet .pchip:disabled:hover {
+  opacity: .45;
+  cursor: default;
+  border-color: var(--edge);
+  color: var(--ink-2);
+}
+
 .bidsheet .tchip.clear {
   color: var(--ink-3);
   border-style: dashed;

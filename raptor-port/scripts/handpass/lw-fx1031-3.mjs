@@ -5,6 +5,10 @@
 //       which halves are offered.
 //  R3c  a pending LL for Ranger on Wed D3 refused; Ranger files a medical over D3 on the Inputs page; the admin taps D3: which buttons
 //       the refused bid offers; Approve pressed: the exact words.
+// THE RE-WALK (his D1543, D1544, 31 Oct 26): R3a — AM lit, Whole day greyed (a tap on it changes nothing), LL pressed says
+// "The morning is LL. Pick PM to place the afternoon." and writes nothing, PM + OL then lands; R3b — only PM offered, as
+// before; R3c — the refused bid's Approve greyed, its title "OML holds 11 Nov, so the bid can't be approved", a tap on it
+// changes nothing, Refuse and Delete still there. Each recorded PASS / FAIL.
 // Run from raptor-port:  SIZE=desk|phone  LW_DIST=<build>  [LW_OUT=<folder under docs/img/handpass>]  [ONLY=r3a,r3b,r3c]
 //   node scripts/handpass/lw-fx1031-3.mjs
 process.env.LW_OUT ||= '2026-10-31-lw-fixes/before'
@@ -14,7 +18,7 @@ const F = await import('./lw-fx1031-lib.mjs')
 const SIZE = F.SIZE
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-fx1031-3 v1]', SIZE, 'today', L.TODAY)
+console.log('[lw-fx1031-3 v2]', SIZE, 'today', L.TODAY)
 F.clearMine(`r3a-${SIZE}-`); F.clearMine(`r3b-${SIZE}-`); F.clearMine(`r3c-${SIZE}-`); F.clearMine(`r3c2-${SIZE}-`); F.clearMine(`r3-fileform-${SIZE}`)
 const D2 = L.day(8), D2B = L.day(9), D3 = L.day(7)
 const errsAll = []
@@ -30,6 +34,11 @@ const winState = w => w.page.evaluate(() => {
 })
 const saidSince = (w, n) => w.page.evaluate(n => (window.__said || []).slice(n), n)
 const saidLen = w => w.page.evaluate(() => (window.__said || []).length)
+/* the Duration row as drawn: each half's button — there, pressed, greyed */
+const durState = w => w.page.evaluate(() => Object.fromEntries(['full', 'am', 'pm'].map(k => {
+  const b = [...document.querySelectorAll(`[data-testid="portion-${k}"]`)].find(e => e.getBoundingClientRect().width > 0)
+  return [k, b ? { on: b.getAttribute('aria-pressed') === 'true', disabled: b.disabled, opacity: getComputedStyle(b).opacity } : null]
+})))
 const cellSum = async (w, pid, d) => ({ cell: await F.cellWords(w, pid, d), inputs: (await L.inputsOf(w.page, pid)).filter(r => /(Nov|Dec)/.test(r.date || '')) })
 
 /* ---------------- R3a ---------------- */
@@ -52,19 +61,35 @@ async function r3a() {
   const st = await winState(w)
   await L.shot(w, pre + '2-window-tapped-again')
   note('2 the window tapped again', st)
-  /* Whole day + LL */
+  const d2 = await durState(w)
+  F.check('R3a-2 D1543 an approved morning: AM lit, Whole day greyed, PM offered', SIZE, !!d2.am?.on && !!d2.full?.disabled && +d2.full.opacity < 1 && !!d2.pm && !d2.pm.disabled,
+    JSON.stringify(d2), [pre + '2-window-tapped-again'])
+  /* a tap on the greyed Whole day: nothing changes */
   const n0 = await saidLen(w)
-  const fullOk = await L.vis(P, L.T('portion-full'))
-  if (fullOk) await L.press(w, L.T('portion-full')); await P.waitForTimeout(300)
-  const st2 = await winState(w)
-  await L.shot(w, pre + '3-whole-day-picked')
-  note('3 Whole day pressed', { offered: fullOk, window: st2 })
+  const cell0 = await F.cellWords(w, id, D2)
+  if (d2.full) await L.press(w, L.T('portion-full')); await P.waitForTimeout(300)
+  const d3 = await durState(w)
+  await L.shot(w, pre + '3-whole-day-tapped')
+  F.check('R3a-3 D1543 a tap on the greyed Whole day changes nothing', SIZE, !!d3.am?.on && !d3.full?.on, JSON.stringify(d3), [pre + '3-whole-day-tapped'])
+  /* LL pressed with the held morning lit */
   await L.press(w, L.T('bid-LL')); await P.waitForTimeout(700)
-  await L.shot(w, pre + '4-after-whole-day-ll')
+  await L.shot(w, pre + '4-held-half-ll')
   const st3 = await winState(w)
-  note('4 then LL pressed', { windowStillOpen: !!st3, windowText: st3 && st3.text, buttons: st3 && st3.buttons, said: await saidSince(w, n0), ...(await cellSum(w, id, D2)) })
-  /* the same with an approved leave tapped as the day's other half: Whole day + OL / CCL for comparison of the wording */
-  if (st3) { await L.press(w, L.T('bid-OL')); await P.waitForTimeout(700); const st4 = await winState(w); await L.shot(w, pre + '5-whole-day-ol'); note('5 Whole day then OL pressed', { windowStillOpen: !!st4, windowText: st4 && st4.text, said: await saidSince(w, n0), ...(await cellSum(w, id, D2)) }) }
+  const cell4 = await F.cellWords(w, id, D2)
+  note('4 LL pressed with the held morning lit', { windowStillOpen: !!st3, windowText: st3 && st3.text, said: await saidSince(w, n0), ...(await cellSum(w, id, D2)) })
+  F.check('R3a-4 D1543 a leave pressed on the held half says which half to pick, and writes nothing', SIZE,
+    !!st3 && st3.text.includes('The morning is LL. Pick PM to place the afternoon.') && !/clear it first/.test(st3.text) && cell4 === cell0,
+    JSON.stringify({ text: st3 && st3.text.slice(0, 200), cellBefore: cell0, cellAfter: cell4 }), [pre + '4-held-half-ll'])
+  /* the free half picked, a leave lands there */
+  if (st3) {
+    await L.press(w, L.T('portion-pm')); await P.waitForTimeout(300)
+    await L.press(w, L.T('bid-OL')); await P.waitForTimeout(700)
+    await F.settle(w)
+    await L.reachCell(w, id, D2); await L.rowShot(w, id, L.day(5), L.day(11), pre + '5-row-pm-ol')
+    const cell5 = await F.cellWords(w, id, D2)
+    note('5 PM then OL pressed', { cell: cell5, ...(await cellSum(w, id, D2)) })
+    F.check('R3a-5 the free half picked: OL lands in the afternoon beside the approved morning', SIZE, /LL/.test(cell5) && /OL/.test(cell5), cell5, [pre + '5-row-pm-ol'])
+  }
   await F.settle(w)
   errsAll.push(...w.errs.map(e => 'r3a ' + e)); note('errors', w.errs.length ? w.errs : 'none')
   L.rec('R3a AM LL then the sheet tapped again', SIZE, 'RECORDED', log.map(([k, v]) => k + ': ' + (typeof v === 'string' ? v : JSON.stringify(v))).join(' || '), [])
@@ -131,12 +156,16 @@ async function r3b() {
   await L.rowShot(w, id, L.day(6), L.day(12), pre + '2-row-member')
   await L.openCell(w, id, D2B)
   note('3 the window tapped as the member', await winState(w)); await L.shot(w, pre + '3-window-member')
+  const dm3 = await durState(w)
+  F.check('R3b-3 a morning filed on the Inputs page: only PM offered (the member)', SIZE, !dm3.full && !dm3.am && !!dm3.pm?.on, JSON.stringify(dm3), [pre + '3-window-member'])
   await F.settle(w)
   /* as the admin */
   await L.signOut(w); await L.signInSaved(w, 'admin'); await L.toWar(w); await L.openGrid(w); await L.reachCell(w, id, D2B)
   note('4 his cell, as the admin', await F.cellWords(w, id, D2B))
   await L.openCell(w, id, D2B)
   note('5 the window tapped as the admin', await winState(w)); await L.shot(w, pre + '5-window-admin')
+  const da5 = await durState(w)
+  F.check('R3b-5 a morning filed on the Inputs page: only PM offered (the admin)', SIZE, !da5.full && !da5.am && !!da5.pm?.on, JSON.stringify(da5), [pre + '5-window-admin'])
   const n0 = await saidLen(w)
   if (await L.vis(P, L.T('portion-full'))) { await L.press(w, L.T('portion-full')); await P.waitForTimeout(300) }
   await L.press(w, L.T('bid-LL')); await P.waitForTimeout(700)
@@ -186,11 +215,19 @@ async function r3c(medType = 'OML', tag = 'r3c') {
   const n0 = await saidLen(w)
   /* the window is the one-day sheet (decide-approve) or the day's list (dl-approve-<record>) */
   const apprSel = st ? await P.evaluate(() => { const b = [...document.querySelectorAll('[data-testid="decide-approve"],[data-testid^="dl-approve-"]')].find(e => e.getBoundingClientRect().width > 0); if (!b) return null; b.setAttribute('data-fxpress', '1'); return '[data-fxpress="1"]' }) : null
+  const apprBtn = apprSel ? await P.evaluate(() => { const b = document.querySelector('[data-fxpress="1"]'); return { disabled: b.disabled, title: b.title, opacity: getComputedStyle(b).opacity } }) : null
+  const others = await P.evaluate(() => [...document.querySelectorAll('[data-testid="decide-refuse"],[data-testid^="dl-refuse-"],[data-testid^="dl-clear-"],[data-testid="sel-clear"]')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.dataset.testid + (e.disabled ? '(disabled)' : '')))
+  const holder = medType
+  F.check(`${tag.toUpperCase()}-4 D1544 the refused bid's Approve greyed under ${medType}, its title naming the holder; Refuse and Delete there`, SIZE,
+    !!apprBtn && apprBtn.disabled && +apprBtn.opacity < 1 && apprBtn.title === `${holder} holds ${L.dm(D3)}, so the bid can’t be approved` && others.some(t => /refuse/.test(t) && !/disabled/.test(t)) && others.some(t => /clear/.test(t)),
+    JSON.stringify({ approve: apprBtn, others }), [pre + '4-window-d3'])
   if (apprSel) {
     await L.press(w, apprSel); await P.waitForTimeout(700)
     await L.shot(w, pre + '5-after-approve')
     const st2 = await winState(w)
-    note('5 Approve pressed', { windowText: st2 && st2.text, buttons: st2 && st2.buttons, said: await saidSince(w, n0), ...(await cellSum(w, id, D3)) })
+    const c5 = await cellSum(w, id, D3)
+    note('5 Approve pressed', { windowText: st2 && st2.text, buttons: st2 && st2.buttons, said: await saidSince(w, n0), ...c5 })
+    F.check(`${tag.toUpperCase()}-5 D1544 a tap on the greyed Approve changes nothing`, SIZE, !c5.inputs.some(r => r.type === 'LL'), JSON.stringify(c5), [pre + '5-after-approve'])
   } else note('5 Approve', 'not offered in the window (no decide-approve / dl-approve button visible)')
   await F.settle(w)
   await F.toApprovals(w)

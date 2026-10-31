@@ -1556,6 +1556,7 @@ leave, the person window, the manning rows and their counts, the OIL tracker for
 approved request IS an Input) and the schedule's Unavailable list exactly as the grid's do. Its "New" choice reads each
 admin's `apprseen:` row; its "Also since you last looked" reads the change history's `withdrawn` lines and the Inputs'
 own `by`/`at` (`sync.ts alsoSince`). A request's dates reach the grid through `ui/cellring.ts` and the slim bar.
+**A second way in rings one line (his D1542, 31 Oct 26):** the clash note's "Decide it in Approvals ›" — a bid of a man with no row on the grid — opens the page with his request on that day ringed (`ui/lwnav.ts askApprRing`, taken once by `ApprovalsPage.tsx`, every line shown first where the dates picked hide it). **Drift-seam:** a change to how a line is keyed or filtered must keep finding the line by the person and a date of its parts, or the link opens the page and rings nothing.
 **The bell's war lines** are worked out from the state before and after each of the war's own commands (`store.ts
 gesture` → `decisionTells` / `openingTells`) and written through the scheduler store's notices (`sync.ts tellWar` /
 `tellBidding`), so every door that decides, moves, deletes or places a man's leave — the bid window, the drag window, the
