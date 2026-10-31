@@ -476,6 +476,27 @@ describe('the second narrow read’s finding A: a war move across the posting’
   })
 })
 
+/* THE SCENARIO DESIGNER'S S1 AND F1 (1 Nov 26): the per-day rule asked only whether the DAY held his war-approved leave
+   before — so one step approving his refused morning and sending back his approved afternoon of the SAME day left the day
+   held both before and after, and the Redo passed. It asks what time of the day the step adds (inputWindow's half). */
+describe('[LW-DELETED-REDO-NETSUM] — the same day’s two halves', () => {
+  it('one war step approving his 13 Jul morning and sending back his 13 Jul afternoon, Undo, the posting runs late, Redo: refused', () => {
+    setCell('bane', PAST2, 'LL*')
+    const [a] = decideRequests([line('bane', PAST2, 'approved')])
+    expect(a!.kind).toBe('done')
+    setCell('bane', PAST2, '*LL')
+    const out = decideRequests([line('bane', PAST2, 'approved'), { personId: 'bane', to: 'pending', parts: (a as any).parts }])
+    expect(out.map(o => o.kind)).toEqual(['done', 'done'])
+    const am = () => warLeave('bane').some((r: any) => r.date === 'Jul 13' && (r.half === 'am' || (r.allday === false && Number(r.s) < 720)))
+    expect(am(), 'the morning approved').toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    expect(am()).toBe(false)
+    expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify()
+    globalRedo()
+    expect(am(), 'no approval of his refused morning written').toBe(false)
+  })
+})
+
 /* [LW-DELETED-REDO-NETSUM]'s caution (RR-A): the per-day test must never refuse a step the live door allows. A war move
    takes no request away — a bid it carries lands with its own id — so a block of his approved leave and his pending bid
    slid one day, the leave landing where the bid stood, is no approval of that day, though a request leaves it and his

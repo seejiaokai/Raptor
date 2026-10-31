@@ -66,7 +66,7 @@ import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './account
 import { saidOf } from './roster-add'
 import { stampChanged, stampWho } from './inputstamp'
 import { deletePersonOnWar, postingOutIds, postingRefusedFrom, postingRestoreWhy, refusedFrom, warIdentityIfHidden } from '../leavewar/sync'
-import { inputDates } from '../leavewar/absences'
+import { inputDates, inputWindow } from '../leavewar/absences'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
 
@@ -303,7 +303,9 @@ function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, modul
        one war step that approves his refused 13 Jul AND sends back his approved 10 Jul nets nothing (+1 −1), so the sum let
        its Redo through. A war step's Redo is refused, too, when it takes a request of his off a day from `from` — the
        request gone from the step altogether, not carried to another day — and leaves his war-approved leave on that same
-       day where it was not: that is an approval of the day, whatever else the step did. Asked of every war writer before it
+       day at a time of it where there was none (by its half — inputWindow; the scenario designer's F1: keyed by the day
+       alone, a morning approved beside an afternoon sent back left the day "held" both before and after): that is an
+       approval of the day, whatever else the step did. Asked of every war writer before it
        was built (the item's caution, RR-A — it must never refuse what the live door allows): only the approval door
        (sync.ts doorApprove — Approvals, Approve all, the windows' Approve, Auto-approve's placeApproved) turns a request into
        war-approved leave, and the live door refuses his days from `from` (approveWhy — refusedWhole, postingOutWhy); a move
@@ -321,16 +323,29 @@ function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, modul
     }
     const taken = new Set([...before].filter(([r]) => !after.has(r)).map(([, day]) => day))
     if (!taken.size) return false
-    const days = (side: 'before' | 'after'): Set<string> => {
-      const out = new Set<string>()
+    /* his war-approved leave's time on each day (minutes, its half or the whole day), before the step and after it */
+    const winsOn = (side: 'before' | 'after'): Map<string, Array<readonly [number, number]>> => {
+      const out = new Map<string, Array<readonly [number, number]>>()
       for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
         const row = side === 'after' ? (ch.op === 'delete' ? null : ch.after) : ch.before
-        if (row && row.lw && inInput(row, id)) for (const d of inputDates(row)) out.add(d)
+        if (!row || !row.lw || !inInput(row, id)) continue
+        const win = inputWindow(row).win
+        for (const d of inputDates(row)) out.set(d, [...(out.get(d) ?? []), [win[0], win[1]] as const])
       }
       return out
     }
-    const had = days('before')
-    return [...days('after')].some(d => taken.has(d) && !had.has(d))
+    /* is [a, b] wholly inside what `list` covers (a morning 0–720 and an afternoon 721–1439 together cover the day) */
+    const covered = (list: ReadonlyArray<readonly [number, number]>, a: number, b: number): boolean => {
+      let at = a
+      for (const [x, y] of [...list].sort((p, q) => p[0] - q[0])) {
+        if (x > at) break
+        if (y >= at) at = y + 1
+        if (at > b) return true
+      }
+      return at > b
+    }
+    const had = winsOn('before'), has = winsOn('after')
+    return [...taken].some(d => (has.get(d) ?? []).some(([a, b]) => !covered(had.get(d) ?? [], a, b)))
   }
   const takesBid = (changes || []).some(ch => {
     if (!ch || ch.collection !== 'lw.cell') return false

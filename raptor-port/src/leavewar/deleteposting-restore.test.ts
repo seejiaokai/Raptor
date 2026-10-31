@@ -219,6 +219,27 @@ describe('Redo of a war approval after his posting out is set', () => {
   })
 })
 
+/* THE SCENARIO DESIGNER'S S1 AND F1 (1 Nov 26): the same day's two halves in one step — his refused morning approved, his
+   approved afternoon sent back — must not pass as "the day already held leave" */
+describe('one step: his refused morning approved and his afternoon of the same day sent back', () => {
+  it('Undo, the Delete posting set, Redo: refused — the morning is not approved', () => {
+    setCell('bane', AFTER, 'LL*')
+    const [a] = decideRequests([line('bane', AFTER, 'approved')])
+    expect(a!.kind).toBe('done')
+    setCell('bane', AFTER, '*LL')
+    const out = decideRequests([line('bane', AFTER, 'approved'), { personId: 'bane', to: 'pending', parts: (a as any).parts }])
+    expect(out.map(o => o.kind)).toEqual(['done', 'done'])
+    const am = () => INPUTS.some((r: any) => holds(r, 'bane') && r.lw && r.date === 'Jul 20' && (r.half === 'am' || (r.allday === false && Number(r.s) < 720)))
+    expect(am(), 'the morning approved').toBe(true)
+    expect(globalUndo().ok).toBe(true)
+    post()
+    const r = globalRedo()
+    expect(r.ok).toBe(false)
+    expect(r.reason).toMatch(REFUSED)
+    expect(am()).toBe(false)
+  })
+})
+
 describe('Undo of a send-back after his posting out is set', () => {
   it('approve, the second tap sends it back, post him out (Delete), Undo: refused — the approval is not put back', () => {
     setCell('bane', AFTER2, 'LL')
