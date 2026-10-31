@@ -14,6 +14,7 @@ import { INPUTS } from '../../engine/inputs'
 import { getState, initStore, setPostOut, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { syncAbsences } from '../sync'
+import { fileAbsence } from '../testkit'
 import { Matrix } from './Matrix'
 import { inputsFilledDay } from './matrixrowparts'
 import type { Contrib, DayView } from '../engine/dayview'
@@ -231,6 +232,32 @@ describe('inputsFilledDay — only a day filled from the Inputs page', () => {
     expect(inputsFilledDay(view([abs('OD', FULLw, { spill: true })]))).toBeNull()
     expect(inputsFilledDay(view([abs('LL', AMw), abs('OML', PMw), abs('OD', PMw)]))).toBeNull()
     expect(inputsFilledDay(view([abs('LL', AMw)]))).toBeNull()
+  })
+})
+
+/* THE FRESH CODE READ (1 Nov 26): what the old windows showed that the line must still show */
+describe('the line keeps what the old windows showed', () => {
+  it('F1: an entry’s documents show as chips in its line, read only, for an admin (D1150 — the note listed them)', () => {
+    INPUTS.unshift({ iid: 'h-doc', person: P, type: 'LL', date: 'Feb 10', yr: 2026, allday: true, remarks: 'Approved', docIds: ['doc-1'], mod: '2026-01-01' })
+    syncAbsences()
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(within(sheet()).getByTestId('bid-heldday').querySelectorAll('.docchip')).toHaveLength(1)
+  })
+  it('F2: a run of days prints its "till <date>" after its words, as the day’s list did (D948)', () => {
+    fileAbsence(P, 'OD', D, '2026-02-12', { remarks: 'Exercise' })
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(lines()[0]).toContain('Exercise till 12 Feb')
+  })
+  it('F3: a member’s own course dated after his posting out still opens the window (D1395); only leave keeps the day’s list', () => {
+    plant('CSE', 'Instructor course', { acc: 'u' })
+    setPostOut(P, '2026-02-01')
+    setRole('member')
+    setViewer(P)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(lines()[0]).toContain('CSE')
   })
 })
 

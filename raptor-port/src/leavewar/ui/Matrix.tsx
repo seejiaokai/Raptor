@@ -1,7 +1,7 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { isCommitCode, isLeaveCode, isSickCode, type Contrib, type DayView } from '../engine/dayview'
-import { INPUTS, remarksTyped } from '../../engine/inputs'
+import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
 import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet, type HeldLine } from './BidPicker'
@@ -151,7 +151,12 @@ function heldLine(c: Contrib, portion: Portion, hours: readonly [number, number]
   const from = hours && hours[0] === 721 && row && row.allday === false && row.s === 720 ? 720 : hours?.[0]
   return {
     code: c.code, portion, ...(hours ? { hours: `${hm(from!)}–${hm(hours[1])}` } : {}),
-    remarks: row && !ownWords ? String(remarksTyped(row.remarks, row) ?? '').trim() : '',
+    /* its words as every screen prints them, the "till <date>" after them from its dates (D948, D951 — as the day's list
+       printed them; the fresh code read's F2) */
+    remarks: row && !ownWords && remarksTyped(row.remarks, row) ? remarksShown(row) : '',
+    /* its documents, read only, a tap opening them — as the read-only note and the day's list showed them (D1150; the fresh
+       code read's F1) — none where his own box carries them */
+    ...(row && !ownWords && rowDocIds(row).length ? { docs: { list: rowDocIds(row).map(id => ({ id, name: docGet(id)?.name ?? 'document' })), row } } : {}),
     ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}),
   }
 }
@@ -3383,7 +3388,9 @@ export function Matrix() {
      day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
      day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
   const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
-    && (!openPerson || inSquadron(openPerson, open.date))
+    /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
+       the window, as a course's day did before — the fresh code read's F3) */
+    && !(openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
     ? inputsFilledDay(openView) : null
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */

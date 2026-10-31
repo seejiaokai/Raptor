@@ -42,7 +42,7 @@ import type { DayWhatIf } from '../engine/whatif'
 import { DayLine } from './DayLine'
 import { dayLineCode } from './daylinecode'
 import { DutyButtons, GrantOilButton, LeaveButtons } from './LeaveButtons'
-import { bidHeldWhy, sayOnWar } from '../sync'
+import { bidHeldWhy, openInputDocs, sayOnWar } from '../sync'
 import { PlacedLine } from './PlacedLine'
 
 /** minutes of the day as `08:00` — the worked hours on an automatic credit */
@@ -73,7 +73,7 @@ function leaveOn(current: string, state?: BidState): { type: string; portion: Po
 
 /** One entry of a day filled from the Inputs page, as the window's top line names it (his D1548, D1553): its code, the half
  *  it holds, a medical's hours where it was recorded with them, its typed words, where it is attached */
-export type HeldLine = { code: string; portion: Portion; hours?: string; remarks: string; to?: string }
+export type HeldLine = { code: string; portion: Portion; hours?: string; remarks: string; to?: string; docs?: { list: Array<{ id: string; name: string }>; row: WarInput } }
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the one-day window's leave, range, OIL, posting and words rows share one set of state, refs and writes (its below-zero ask, its Delete's confirm, the words saved before an action); split, its hooks and the order its effects run in would move
 export function BidPicker({
@@ -727,6 +727,8 @@ export function BidPicker({
             <span>{h.hours ?? (h.portion === 'am' ? 'AM' : h.portion === 'pm' ? 'PM' : 'Whole day')}</span>
             {h.to && <span>· {h.to}</span>}
             {h.remarks && <span className="bp-heldwords">“{h.remarks}”</span>}
+            {/* its documents, read only, as the day's list draws them (D1150) */}
+            {h.docs?.list.map(d => <button key={d.id} type="button" className="docchip" onClick={() => openInputDocs(h.docs!.row)}><span className="docname">{d.name}</span></button>)}
             <span>· change it on the Inputs page</span>
           </span>
         </div>

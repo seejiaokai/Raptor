@@ -106,11 +106,24 @@ condition, carried by test); his real iPhone (below).
 
 ## His look card
 1. On your iPhone, tap Gambit's OML day (23 Jul): the window as drawn, OML's line on top, Grant OIL there.
-2. In WebKit's settled picture (`rewalk/p1-webkit-gambit-oml.png`) the PM chip wore a cyan edge — most likely the tap's
+2. Over a whole-day ATT B (grounded, may still work) the leave buttons stay — the war takes leave over ATT B; say if you
+   want them off there too.
+3. In WebKit's settled picture (`rewalk/p1-webkit-gambit-oml.png`) the PM chip wore a cyan edge — most likely the tap's
    held state (an iPhone keeps what was last touched "hovered"); worth a glance on your phone.
 
-## The code read
-(to come — a fresh, blind Opus read, with this sheet in hand)
+## The code read (fresh, blind Opus, this sheet in hand — 3 findings, all fixed red first)
+- **F1 (medium)** — an entry's documents no longer showed: the read-only note and the day's list listed them. Fixed: a
+  chip each in its line, read only, a tap opening the document (`HeldLine.docs`); red first (`heldday.test.tsx` F1);
+  re-walked `rewalk2/f1-trident-doc*.png` — "approval.pdf" in Trident's LL line, the document viewer opened.
+- **F2 (low)** — the line dropped the "till <date>" the day's list printed (D948). Fixed with `remarksShown`; red first
+  (F2); re-walked `rewalk2/f2-havoc-till.png` — "Exercise till 23 Jul".
+- **F3 (low)** — the outside-his-time guard was wider than answer C: a course, medical or OD outside his time lost the
+  window. Fixed to answer C's own rule (only leave keeps the day's list); red first (F3), the leave test still green.
+- **Small notes, dispositions:** (1) over a whole-day ATT B the leave buttons stay — the war takes leave over ATT B
+  ("may still work"), and D1552 follows what the war refuses; named to him on his look card. (2) an entry of several
+  time windows in one day reads its half — rare, no stored entry has it on the Inputs page; left. (3) state changes while
+  the window is open beyond D4's Undo — carried by `heldday.test.tsx` and the round 2 Undo tests of the filings.
+- **The narrow read of the fixes** (the order's §5, "a fix is new code"): (to come)
 
 ## Gates
 Leave War unit: 228 files, 4062 tests green (on his PC, under the lock). Code check: no new finding. GitHub's run on the

@@ -9,7 +9,7 @@ const fs = await import('node:fs')
 const H = await import('./lw-m3b-w2-lib.mjs')
 const { L, T } = H
 fs.mkdirSync(H.OUT, { recursive: true })
-const parts = (process.env.PART || 'd,p,m,k').split(',')
+const parts = (process.env.PART || 'd,p,m,k,f').split(',')
 const run = id => parts.includes(id)
 console.log('lw-held-walk →', H.OUT, parts.join(' '))
 const ids = P => P.evaluate(() => Object.fromEntries(Object.entries(window.PEOPLE || {}).map(([k, v]) => [v.cs, k])))
@@ -242,6 +242,30 @@ if (run('k')) {
   await P.keyboard.press('Escape'); await P.waitForTimeout(300)
   rec('K1-keys', 'desk', focusIn === focusFree && tabs.includes('bid-oil') && (await sheetOf(P)) === null,
     `focus in the window on open: held day ${focusIn}, a free day ${focusFree} (the same); Tab reaches ${tabs.join(' → ')}; Escape closes it`)
+  await w.ctx.close()
+}
+
+/* ================= f: the fresh code read's fixes — a document in the line, a run's "till", a course after posting out ================= */
+if (run('f')) {
+  const w = await freshDesk(), P = w.page
+  const id = await ids(P)
+  /* a whole-day LL with its document, and an OD over three days, both through the Inputs page's form */
+  await H.fileInput(w, { who: 'Trident', type: 'LL', from: '2026-07-21', remarks: 'Approved leave', beforeSave: () => L.setDoc(w, '[data-testid="win-inputedit"]', 'approval.pdf'), tag: 'f-doc', oil: 'no' })
+  await H.fileInput(w, { who: 'Havoc', type: 'OD', from: '2026-07-21', to: '2026-07-23', remarks: 'Exercise', tag: 'f-till', oil: 'no' })
+  await P.evaluate(() => window.go('leavewar')); await P.waitForTimeout(1200)
+  await L.openCellR(w, id.Trident, '2026-07-21')
+  const chips = await P.evaluate(() => [...document.querySelectorAll('[data-testid="bid-picker"] [data-testid="bid-heldday"] .docchip')].map(b => b.textContent.trim()))
+  const pic1 = await winPic(w, 'f1-trident-doc')
+  if (chips.length) { await L.press(w, `${T('bid-picker')} [data-testid="bid-heldday"] .docchip`); await P.waitForTimeout(800) }
+  const viewer = await P.evaluate(() => [...document.querySelectorAll('[role="dialog"], .docview, [data-testid*="docview"], [data-testid*="doc-viewer"]')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.getAttribute('data-testid') || e.className).slice(0, 3))
+  const pic1b = await P.screenshot({ path: `${H.OUT}/f1-trident-doc-open.png`, scale: 'device' }).then(() => 'f1-trident-doc-open.png')
+  rec('F1-doc', 'desk', chips.length === 1 && viewer.length > 0, `chips in the line: ${chips.join(', ') || 'none'}; after a tap, open: ${viewer.join(', ') || 'nothing'}`, [pic1, pic1b])
+  await P.keyboard.press('Escape'); await P.waitForTimeout(300); await close(w)
+  await L.openCellR(w, id.Havoc, '2026-07-22')
+  const ls = await lines(P)
+  rec('F2-till', 'desk', /Exercise till 23 Jul/.test(ls[0] || ''), `line: ${ls.join(' | ')}`, [await winPic(w, 'f2-havoc-till')])
+  await close(w)
+  rec('F-errors', 'desk', !w.errs.length, w.errs.slice(0, 4).join(' | ') || 'none')
   await w.ctx.close()
 }
 
