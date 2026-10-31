@@ -15,10 +15,43 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **The code check runs by itself (his D1539, 31 Oct 26 — D1536's answer to the M365 plan's point 4; [CODE-CHECK-CI]):**
+  React Doctor 0.9.18's "no new finding" check, in three places that share ONE script, `raptor-port/scripts/code-check.mjs`:
+  `npm run lint:changed` by hand; the **`code check`** job in `deploy.yml` on every pull request; and a Stop hook,
+  `.claude/hooks/code-check-stop.mjs`, at the end of a turn. React Doctor reads each changed file as `main` has it and as
+  the change leaves it, and only a finding the change ADDS counts — an old finding in a touched file does not (D1534).
+  - **Trap — the silent pass:** when React Doctor 0.9.18 cannot read `main`'s side (a shallow copy with no shared starting
+    point, a base it cannot find, main's side failing to read) it lists every finding in the changed files and switches its
+    own pass/fail OFF — the run passes whatever it holds (read in its source, 31 Oct 26). So the script reads its JSON
+    report and goes red ("could not compare", exit 2) unless the report says it compared — mode "baseline", not marked degraded, no check skipped, no file its linter dropped ("lint:partial"); never run the check by its bare
+    command and believe its exit code.
+  - **The GitHub job** (pull requests only; on GitHub's machines whether the repo is public or private, like the Docs guard
+    — a private repo bills about two minutes a pull request): the pull request's merge commit with its two parents, `main`
+    taken as the first parent — exactly what the pull request lands on — the pictures, zips and pdfs under
+    `raptor-port/docs` left behind, the walk scripts laid down (React Doctor reads them, as the local run does); `main`'s
+    side of the changed files fetched in one go with the run's read-only token passed to those git commands alone. No
+    `npm ci`: the whole check gave the same 952 findings, line for line, with and without the packages (31 Oct 26). A path
+    filter skips it with the other `deploy.yml` legs on a notes-only pull request — so it must never be made a required
+    check (the trap under the secrets scan below). **A red one:** each new finding is on the run's summary page and marked
+    on the pull request's changed line; fix it, or keep it with its reason in a disable comment on the line above
+    (`raptor-port/CLAUDE.md` §Coding conventions) — never by changing `doctor.config.json`.
+  - **The end-of-turn run** (his D1539, reading 2 — it reports, blocks nothing): when the branch changes anything under
+    `raptor-port/src` against this checkout's `origin/main` (as last fetched — no network), it runs the same script, cut
+    off at 150 s, and shows the count in the chat in plain words, no file names (the app's line under the turn, his to read
+    — the agent does not see it; the details are one `npm run lint:changed` away); a state of the code already checked —
+    its code files, React Doctor's settings, `package.json`, the tsconfigs — is not checked again (a fingerprint in the
+    checkout's git folder, `claude-code-check.json`). **Trap (the fresh read, 31 Oct 26):** on Windows the run goes through
+    a shell, and a timer that stops only the shell leaves React Doctor running on underneath — so a run out of time is
+    stopped as a whole tree (`taskkill /T`; a process group elsewhere), and React Doctor gets its own limit 15 s earlier.
+    Measured 31 Oct 26: under half a second on a turn with nothing to check, 16 s for a one-file change. It ends 0 always,
+    and runs on unattended nights too (bounded, it cannot stall one). Wired in `.claude/settings.json` with `"timeout": 200` — above its own worst case, so the app never kills it mid-run and leaves React Doctor behind. Its tests: `node --test
+    .claude/hooks/code-check-stop.test.mjs`.
 - **GitHub's own secret scanning (D1535, 31 Oct 26):** he approved switching it on, push protection with it (the agent's
   reading); he clicks it on himself (Settings → Advanced Security, or Code security → Secret Protection → Enable, and Push
-  protection → Enable). Checked on 31 Oct 26: both on. **The project's own scan as a required check: approved, D1540** — a
-  branch ruleset on `main` requiring the "secrets scan" check, which he switches on himself; the agent reads it back after.
+  protection → Enable). Checked on 31 Oct 26: both on. **The project's own scan as a required check (D1540) — on, read back
+  31 Oct 26:** the ruleset "main: secrets scan", enforcement active, on the default branch, no one allowed to bypass it,
+  requiring the `secrets scan` check (from GitHub Actions), and blocking the branch's deletion and force-pushes. So a pull
+  request into `main` cannot merge until that scan has passed — notes-only ones too (the scan has no path filter).
 - **A secrets scan joins the checks (his D1408, 27 Oct 26 — built 31 Oct 26 on `claude/secrets-scan-scorecard`, [REVIEW-LAYERS]
   step 4):** a pull request that adds a password, key or access code to any file does not merge; the whole history is
   scanned once, and a key found there is changed, not only deleted. The repo is public for now (D106).
@@ -55,11 +88,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     do, put to him; only then does its fingerprint go in `.gitleaksignore`. Not a secret (an example, a test value, an id
     that looks like a key): its fingerprint goes in `.gitleaksignore` with a comment saying what it is, who judged it and
     when. Changing that file makes the next run scan the whole history again.
-  - **GitHub's own scanning is OFF on this repository** (read 31 Oct 26: secret scanning, push protection, their two
-    extras and Dependabot's security updates all "disabled"), and `main` has **no protection and no rulesets** — so today a
-    red `secrets scan` stops a merge only because nothing merges red (the shipping rules), not because GitHub refuses it.
-    Making it a required check, and switching GitHub's own scanning on, are repository settings — his to approve, never
-    the agent's: the steps are in `OUTSTANDING.md` `[REVIEW-LAYERS]`.
+  - **GitHub's own scanning and the required check — both on since 31 Oct 26** (D1535, D1540; read back above). Until
+    then GitHub's own scanning was off and `main` had no rulesets, so a red `secrets scan` stopped a merge only because
+    nothing merges red. Both are repository settings — his to change, never the agent's.
   - **Traps:** the check's name appears in a ruleset's list only after it has run once; a required check must never be
     one that a path filter can skip (the `deploy.yml` legs), or a notes-only pull request could never merge. If the repo
     goes private again, this job runs on GitHub's machines and is billed by the minute (D89 moved only `deploy.yml` to his

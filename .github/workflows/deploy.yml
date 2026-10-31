@@ -475,6 +475,61 @@ jobs:
           SMOKE_PART: ${{ matrix.part }}
         run: npm run smoke:tracker
 
+  # THE CODE CHECK (his D1536 point 4 and D1539, 31 Oct 26): React Doctor's "no new finding" check on every pull request.
+  # It reads the files the pull request changes twice — as main has them and as the pull request leaves them — and turns
+  # red only on a finding the pull request ADDS (raptor-port/scripts/code-check.mjs, the same script `npm run lint:changed`
+  # and the end-of-session run use; an old finding in a touched file is not this change's — D1534).
+  #   - NOT routed to his PC: one light job on GitHub's machines whether the repo is public or private, like the Docs guard
+  #     and the secrets scan (a private repo bills about two minutes a pull request). A push to main has nothing to compare.
+  #   - MAIN'S SIDE WITHOUT THE HISTORY: the pull request's merge commit is checked out with its two parents (depth 2), and
+  #     main is taken to be its first parent — exactly what the pull request lands on. React Doctor finds no shared starting
+  #     point in a shallow copy otherwise, and then it quietly compares nothing and passes; the script refuses such a run.
+  #   - THE PICTURES STAY BEHIND, the walk scripts do not: unlike the legs above, every code file of the walks is laid down
+  #     (React Doctor reads the walk scripts, and the drivers saved beside the pictures, as the local run does) and only the
+  #     pictures, zips and pdfs under raptor-port/docs are left out — about 5.6 GB of files; what comes beside them (their
+  #     notes, saved looks and scripts) is about 70 MB more than the legs above lay down (D1091's aim kept).
+  #   - The copy is "blobless" (a sparse checkout fetches only the files it lays down), so main's side of each changed file
+  #     is fetched in one go before React Doctor runs, with the run's read-only token passed to that one command — the same
+  #     reads React Doctor makes, so it then finds every file it needs already here, public repo or private.
+  code-check:
+    name: code check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 2
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/raptor-port/docs/**/*.png
+            !/raptor-port/docs/**/*.jpg
+            !/raptor-port/docs/**/*.zip
+            !/raptor-port/docs/**/*.pdf
+      - name: Take main as the pull request's base, and fetch main's side of the change
+        working-directory: raptor-port
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git update-ref refs/remotes/origin/main HEAD~1
+          auth=$(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)
+          g() { git -c "http.https://github.com/.extraheader=AUTHORIZATION: basic $auth" "$@"; }
+          # the two reads React Doctor makes: what changed (with renames), then each changed code file on both sides
+          g diff --no-ext-diff --no-textconv --find-renames -z --name-status --relative HEAD~1 > /dev/null
+          g diff --no-ext-diff --no-textconv HEAD~1 HEAD -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.mjs' '*.cjs' '*.html' > /dev/null
+          echo "main taken as $(git rev-parse --short HEAD~1); $(git diff --name-only HEAD~1 HEAD | wc -l) files changed"
+      # No `npm ci`: React Doctor reads the React version and the rest from package.json, and its whole check gave the same
+      # 952 findings with and without the packages installed (31 Oct 26); a check it could not make is refused by the script.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Code check — no new finding
+        working-directory: raptor-port
+        run: npm run lint:changed
+
   # Publishes only when every gate above is green: a failed or cancelled
   # `needs` job skips this one, so nothing deploys red.
   #

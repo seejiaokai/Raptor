@@ -7156,3 +7156,28 @@ code (`raptor-port/docs/handpass/parts/rdc1031/dispositions.md`); the app's erro
 byte-identical; the code reads' one fault fixed red first (evidence `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`).
 Left for later: [CODE-CHECK-CI], [AVAILWIN-SETUP-SLOW], [TRK-STANDALONE-LEFTOVERS]. Waiting on his "merge live".
 
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([WEEK-DRAG-EDGE-PAN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [WEEK-DRAG-EDGE-PAN] A man dragged with a mouse to the edge of Edit Schedule never pans the week sideways (found 30 Oct 26, the arrows' walk)
+On a desktop, a man's name dragged with a mouse and held at the left or right edge of Edit Schedule's week scrolls the page
+up and down at the top and foot, but never pans the week sideways, so he can only be dropped on a day already in view.
+Measured the same with the old arrows, the new slim tab and no arrows at all (`raptor-port/scripts/handpass/week-arrows-walk.mjs`
+step C2). The design guide's drag rule (§5A, D895: "carried to the edge, the view follows") says it should; the phone board's
+wide layout already does (D1107, `src/ui/drag.ts` tdWideLoop). Older, not caused by the arrows. **To put to him with a picture
+before building** (whether a held drag at the week's side should step the days as the arrows do). **Put to him 31 Oct 26** (branch `claude/jolly-volhard-4458db`), on the page https://claude.ai/artifact/313NUfzzM3XrGKu6T3QYbv: two marked pictures at his PC's size (held two seconds at each side, the week did not move — `raptor-port/scripts/handpass/week-drag-edge-pan-pictures.mjs`, `raptor-port/docs/img/handpass/2026-10-31-week-drag-edge-pan/`) and three choices — **A (recommended):** held about half a second in a band at the week's side, the week steps one day as one press of ‹ / › does, again while held, a name only passing through does nothing (every crew-panel name crosses the right side, which is the crew panel's edge, not the window's), stopping at Monday and Sunday (never into another week mid-drag); **B:** a smooth slide at the Leave War's mouse speed (`src/ui/edgescroll.ts`), settling on a day at the let-go; **C:** leave it. The half-second wait is a new number (the guide's §5A prefers existing ones) — said to him. Waiting on his answer; nothing built. Found while reading: the desktop drag's up-and-down edge scroll runs only while the mouse moves (`src/ui/drag.ts` `tdAutoScroll`, called from `tdOver`) — a build would run the sideways step from a frame loop, as `tdWideLoop` does. **His answer (31 Oct 26): "A — a day at a time" — D1529. BUILT** on `claude/jolly-volhard-4458db`, pull request 595: `src/ui/drag.ts` `weekStepLoop`, `src/ui/pan.ts` `panDays(dir, cross)`; red first (`weekdragstep.test.tsx` 10), a browser test (`e2e/geometry.spec.ts`), walked 18/18 after two fixes the walk found (evidence `raptor-port/docs/handpass/2026-10-31-week-drag-edge-pan.md`); the fresh code read's two findings fixed red first (the page's scroll bar at the window's edge; the window narrowed mid-drag), re-walked 18/18 and 2/2 with scroll bars shown; GitHub's run green. **His "merge live" 31 Oct 26** — merged; this item leaves for the archive at the next tidy. Met in passing, older, not filed as a fault: Escape does not cancel a mouse drag (the sheet says so).
+
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([CODE-CHECK-CI]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [CODE-CHECK-CI] React Doctor's "no new finding" check on every pull request (filed 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**What:** the move plan's point 4 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) says the code check joins the checks
+run on every change. Built with the clean-up: `npm run lint` and `npm run lint:changed` (only what a branch changes against `main`,
+proved on its own branch: 70 files read, no new finding) and the standing line in `raptor-port/CLAUDE.md` (D1534). Not built: a job in
+`.github/workflows/deploy.yml` running `lint:changed` on each pull request — it needs `main`'s history on the check machine, which the
+jobs now fetch shallow and without the picture folders (D1091), and its first red needs proving on a planted finding. **His D1539
+(31 Oct 26): build it now, in a fresh chat** — the GitHub check AND a run at the end of every working session (D1536's "runs by
+itself at the end of every session and on every change"; the session run is a hook — his permission to change the project's hooks
+and settings for it, one fresh reader before it is switched on; it reports the count and blocks nothing). Own branch, his "merge live".
+**Built 31 Oct 26 on `claude/code-check-ci-ada539`, pull request 605 — waits on his "merge live":** the shared script `raptor-port/scripts/code-check.mjs` (`npm run lint:changed` now runs it; it reads React Doctor's JSON report and is red when it compared nothing — React Doctor's silent pass when it cannot read `main`'s side), the `code check` job in `deploy.yml`, and the Stop hook `.claude/hooks/code-check-stop.mjs` (read by one fresh, blind Opus reader before it was wired into `.claude/settings.json`). Its first red proved on a scratch pull request (606, closed, its branch deleted). How it works: `raptor-port/docs/gates-and-deploy.md` §Now (D1539); evidence `raptor-port/docs/handpass/2026-10-31-code-check-ci.md`. After the merge this item is archived.
+

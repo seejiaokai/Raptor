@@ -2953,3 +2953,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** §8 names the folders the type check needs: everything under `raptor-port/` except `docs/` (and `node_modules`, joined by a junction).
 
 **Principle:** A recipe that says "the source" should name the folders, because the build's own definition of source is wider than the app's.
+
+### Observation 757: A linter's "changed only" mode can pass silently when it cannot see the base
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [CODE-CHECK-CI] — React Doctor's "no new finding" check as a GitHub check and a Stop hook (D1539)
+**Skill:** New skill candidate: wiring a third-party check into CI / hooks (or the bug-check order's tooling walk)
+**Type:** open-source
+**Phase/Area:** wiring a tool's diff/baseline mode into a gate
+
+**Issue:** React Doctor 0.9.18's `--scope changed` compares each changed file with the base. Read in its source: when the base cannot be resolved (a shallow CI checkout with no merge base, a base side that fails to read) it falls back to listing every finding AND marks the run "gate exempt", so it exits 0 whatever the change holds. A CI job built the obvious way (shallow checkout, run the command, trust the exit code) would have been green forever. Found only by reading the tool's code before wiring it.
+
+**Suggested improvement:** before a tool's exit code becomes a gate, read (or test) what it does when its comparison cannot be made; gate on its machine-readable report's own "comparison made" field, and prove the gate red on a planted fault in the real CI copy (shallow, sparse) — not only on the full local checkout.
+
+**Principle:** A gate is only as good as its failure mode: find out what the tool does when it cannot do its job, and make that case red.
