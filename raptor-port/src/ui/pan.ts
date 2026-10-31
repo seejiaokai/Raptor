@@ -163,12 +163,15 @@ function panBase(w: any): number {
    far short of a genuine mid-day view, where the day-you-are-leaving semantics
    above still decide. */
 const PARK_TOL = 0.35
-export function panDays(dir: number) {
-  const w = activeWeekEl(); if (!w) return
+/* `cross` false — a man held at the week's side during a drag (owner D1529, 31 Oct 26; ui/drag.ts weekStepLoop): the
+   same one-day step as a press, but at Monday or Sunday it stops instead of loading the neighbouring week, because a
+   week loaded under a held man repaints the cells he is aiming at. Returns whether a step was commanded. */
+export function panDays(dir: number, cross = true): boolean {
+  const w = activeWeekEl(); if (!w) return false
   /* the st guard stays FIRST: an un-stubbed jsdom week measures no step, and
      without it every test's arrow click would read as "at the edge" below and
      week-jump */
-  const st = dayStep(w); if (!st) return
+  const st = dayStep(w); if (!st) return false
   /* CONTINUOUS ACROSS WEEKS (owner, 23 Aug 26): an arrow pressed while the last
      live day already sits at the front crosses into the neighbouring week — the
      same edge-cross the phone swipe does, landing via WEEKJUMP in the load's
@@ -183,8 +186,11 @@ export function panDays(dir: number) {
   const max = weekScrollMax(w)
   const base = panBase(w)
   const slop = PARK_TOL * st
-  if (dir > 0 && base >= max - slop) { view.setWeekJump('mon'); panWk = null; loadWeek(shiftWeek(CURWEEK, 1)); return }
-  if (dir < 0 && base <= slop) { view.setWeekJump('sun'); panWk = null; loadWeek(shiftWeek(CURWEEK, -1)); return }
+  if ((dir > 0 && base >= max - slop) || (dir < 0 && base <= slop)) {
+    if (!cross) return false
+    if (dir > 0) { view.setWeekJump('mon'); panWk = null; loadWeek(shiftWeek(CURWEEK, 1)); return true }
+    view.setWeekJump('sun'); panWk = null; loadWeek(shiftWeek(CURWEEK, -1)); return true
+  }
   const n = w.querySelectorAll('.day:not(.peek)').length || 1
   const at = base / st
   const cur = dir > 0 ? Math.floor(at + PARK_TOL) : Math.ceil(at - PARK_TOL)
@@ -197,6 +203,7 @@ export function panDays(dir: number) {
   panWk = CURWEEK; panAnchor = cont ? panAnchor : base; panTgt = dest
   glideEnd = Date.now() + GLIDE_MS   // the track follows, never drives, until the glide lands
   w.scrollTo({ left: dest, behavior: 'smooth' })
+  return true
 }
 
 /* ---- sticky bottom horizontal scroll bar (desktop) ----

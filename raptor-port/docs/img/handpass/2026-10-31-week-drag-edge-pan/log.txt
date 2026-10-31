@@ -1,0 +1,5 @@
+at rest: week box 0–1259; days in view: ⚠ 17 issues, ⚠ 4 issues, ⚠ 7 issues; sideways position 20
+right edge: carried "CometIP" to x 1245, held 2 s; picked up true; sideways position 20 → 20; days in view: ⚠ 17 issues, ⚠ 4 issues, ⚠ 7 issues
+after two › presses: days in view: ⚠ 7 issues, ⚠ 6 issues, 4; sideways position 1128
+left edge: carried "CAceA" to x 10, held 2 s; sideways position 1128 → 1128; days in view: ⚠ 7 issues, ⚠ 6 issues, 4
+page errors: none
