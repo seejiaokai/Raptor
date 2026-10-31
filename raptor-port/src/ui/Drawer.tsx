@@ -46,8 +46,9 @@ export function Drawer() {
      closing it must not unlock a board that is still open). Scroll position
      captured and put back by hand, the board's reasoning: `overflow:hidden`
      keeps it today, not by guarantee. */
+  const drawerOpen = DRAWER   // the store's live value, read on this render (a module value changes between renders)
   useEffect(() => {
-    if (!DRAWER) return
+    if (!drawerOpen) return
     const el = document.scrollingElement || document.documentElement
     const y = el.scrollTop, x = el.scrollLeft, on = CURPAGE
     document.body.classList.add('dw-lock')
@@ -57,7 +58,7 @@ export function Drawer() {
          (Shell.tsx — [LW-LEAVE-SCROLL-CARRY]), and putting the old page's scroll back carried it onto the new one */
       if (CURPAGE === on) { el.scrollTop = y; el.scrollLeft = x }
     }
-  }, [DRAWER])
+  }, [drawerOpen])
   return (
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer"
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>

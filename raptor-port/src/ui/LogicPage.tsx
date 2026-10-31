@@ -231,6 +231,11 @@ export function LogicPage() {
      drawn in its place, owed, and it is saved when the box is really left. */
   const shown = useRef<object | null>(null)
   const rebuilding = useRef(false)
+  /* SET DURING THE RENDER, on purpose: Chrome raises the box's change while the commit is taking it off the page — before
+     any effect, insertion effects included, has run — so the flag must already stand when the commit begins; the keeper
+     below clears it once the rebuild is done. (The words change only by the store's signal, a render React commits at
+     once, never one it starts and throws away.) */
+  // eslint-disable-next-line react-doctor/no-ref-current-in-render -- must stand before the commit removes the old boxes, whose change Chrome raises before any effect runs
   if (shown.current !== bodyHTML) rebuilding.current = true
   useLayoutEffect(() => {
     shown.current = bodyHTML; rebuilding.current = false
@@ -263,6 +268,8 @@ export function LogicPage() {
      native listeners, since the fields live inside the built markup */
   useEffect(() => {
     const host = bodyRef.current!
+    /* the Reset's keyboard hand-back, a moment after the redraw — owned here, so it never fires into a page that has gone */
+    let focusT: ReturnType<typeof setTimeout> | undefined
     const onFocusIn = (e: Event) => {
       const t = e.target as HTMLElement, mark = focusMark(t)
       keep.current = mark ? { mark, el: t } : null
@@ -361,7 +368,8 @@ export function LogicPage() {
         ruleApply()
         /* the Reset goes with the change it undid — the keyboard lands on the row's own box, never on the page's foot */
         const k0 = r.dataset.lgreset!.split(',')[0]
-        setTimeout(() => (host.querySelector(k0 === 'kinds' ? '[data-lgkind]' : `[data-lgset="${k0}"]`) as HTMLElement | null)?.focus(), 0)
+        clearTimeout(focusT)
+        focusT = setTimeout(() => (host.querySelector(k0 === 'kinds' ? '[data-lgkind]' : `[data-lgset="${k0}"]`) as HTMLElement | null)?.focus(), 0)
       }
     }
     /* a fold opened or closed — remembered, so a repaint draws it as the reader left it */
@@ -380,7 +388,7 @@ export function LogicPage() {
     host.addEventListener('keydown', onKeyDown)
     host.addEventListener('click', onClick)
     host.addEventListener('toggle', onToggle, true)
-    return () => { host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('focusin', onFocusIn); host.removeEventListener('focusout', onFocusOut); host.removeEventListener('keydown', onKeyDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
+    return () => { clearTimeout(focusT); host.removeEventListener('mousedown', onMouseDown); host.removeEventListener('change', onChange); host.removeEventListener('focusin', onFocusIn); host.removeEventListener('focusout', onFocusOut); host.removeEventListener('keydown', onKeyDown); host.removeEventListener('click', onClick); host.removeEventListener('toggle', onToggle, true) }
   }, [])
 
   /* DONE TAKES ONE PRESS ([LOGIC-DONE-FIRST-PRESS], 21 Oct 26). A press on Done used to take the keyboard out of the box

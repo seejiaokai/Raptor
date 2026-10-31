@@ -85,7 +85,9 @@ export function upgradeCourses(students, links) {
     for (const k of Object.keys(links)) outLinks[has(map, k) ? map[k] : k] = links[k];
   }
   return {
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
     students: JSON.parse(JSON.stringify({ courses: entries, byCourse })),
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
     links: outLinks ? JSON.parse(JSON.stringify(outLinks)) : null,
     map: Object.assign({}, map),
   };
@@ -154,7 +156,9 @@ export function reconcileCourseIds(students, links, existing) {
     for (const k of Object.keys(links)) outLinks[re(k)] = links[k];
   }
   return {
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
     students: JSON.parse(JSON.stringify({ courses, byCourse })),
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
     links: outLinks ? JSON.parse(JSON.stringify(outLinks)) : null,
     remapped: Object.assign({}, remap),
     conflicts,

@@ -98,6 +98,7 @@ function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => v
   const scrimRef = useRef<HTMLDivElement>(null)
   // A layout effect: the scrim must be out of the finger's way, and the
   // shield in place, before a finger can land on the freshly-opened sheet.
+  // eslint-disable-next-line react-doctor/effect-needs-cleanup -- every listener added here is removed by the cleanup returned below; the touch screen's shield is added and removed in the same loop over SHIELDED, which the check does not follow
   useLayoutEffect(() => {
     const scrim = scrimRef.current
     if (!scrim) return
@@ -419,7 +420,7 @@ export function Sheet({
   // The latest onClose, for listeners armed once: the Escape key below and, on
   // a touch screen, the tap shield in useGridPan.
   const closeRef = useRef(onClose)
-  closeRef.current = onClose
+  useLayoutEffect(() => { closeRef.current = onClose })
   const scrimRef = useGridPan(movedRef, closeRef)
   const phone = usePhone()
   const asPage = page && phone

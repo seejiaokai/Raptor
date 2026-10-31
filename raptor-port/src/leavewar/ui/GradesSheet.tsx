@@ -87,6 +87,7 @@ export function GradesSheet({ anchor, onClose }: { anchor: HTMLElement | null; o
       p.style.top = `${r.bottom + 8}px`
     } else { p.style.left = ''; p.style.top = '' }
     p.querySelector<HTMLElement>('.gw-grip')?.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- placed and focused as it opens and when the screen changes size class; re-run on a new anchor it would take the keyboard back to the first grip mid-edit
   }, [phone])
 
   /* ESCAPE IN A BOX PUTS ITS OLD VALUE BACK FIRST, and only the next closes the window (the design guide §3: Escape closes

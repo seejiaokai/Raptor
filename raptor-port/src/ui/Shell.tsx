@@ -105,15 +105,19 @@ export function Shell() {
      itself on roster/leave changes and can never show stale data on return.
      Leave War ONLY: the other pages are cheap to rebuild and keeping them all
      would hold DOM for no gain. The perf gate is untouched — its ceilings
-     measure the week/board containers, never the whole document. */
-  const lwEverRef = useRef(false)
-  if (page === 'leavewar') lwEverRef.current = true
+     measure the week/board containers, never the whole document.
+     A LATCH IN STATE, set while rendering (React's own "adjust state while rendering": the render is redone at once, before
+     anything is committed) — never a ref written mid-render, which a render React throws away could leave set. The first
+     render on the page mounts it by `page` alone; from the next one on, the latch keeps it. */
+  const [lwEver, setLwEver] = useState(false)
+  if (page === 'leavewar' && !lwEver) setLwEver(true)
   /* The Tracker STAYS MOUNTED once visited, for a harder reason than speed:
      its flow board is drawn imperatively by a once-only init, so a remount
      would come back with an empty chart (tracker/TrackerPage.tsx). Not
-     pre-warmed — nobody pays for a chart they have not asked for. */
-  const trEverRef = useRef(false)
-  if (page === 'tracker') trEverRef.current = true
+     pre-warmed — nobody pays for a chart they have not asked for. (A latch in state, as the Leave War's above: once set it
+     is never cleared for the life of the shell, so the Tracker is never unmounted once visited.) */
+  const [trEver, setTrEver] = useState(false)
+  if (page === 'tracker' && !trEver) setTrEver(true)
   /* PRE-WARM (owner, 5 Sep 26). On a desktop, once the user has paused after
      login, mount Leave War HIDDEN — so its separate download and its first few
      months are built off the critical path, and the tab then opens instantly.
@@ -345,6 +349,9 @@ export function Shell() {
     bandsWas.current = bands
     window.dispatchEvent(Object.assign(new Event('resize'), { saveBand: true }))
   }, [bands])
+  /* the top bar's other signals, read once here so its memo's list names plain values: the sync pill's fast mode, the
+     bell's two lights and whether the changes window is up (each drawn by a child that reads it itself, or below) */
+  const fastOn = fastSync(), bellOn = bellLit(), bugOn = bugAlert(), chgOpen = !!CHGWIN
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
@@ -410,7 +417,7 @@ export function Shell() {
                 you; a second tap closes it. Admins only — a member opens the window from a day's own count (D171 (1)).
                 Edit Schedule is the admin's page, so the door is his by where it sits; isAdmin() says so outright. */}
             {page === 'editsched' && isAdmin() ? (() => { const wn = weekNew(); return (
-              <button className={'abtn chgbtn' + (CHGWIN ? ' on' : '')} id="histBtn" aria-pressed={!!CHGWIN}
+              <button className={'abtn chgbtn' + (chgOpen ? ' on' : '')} id="histBtn" aria-pressed={chgOpen}
                 title={wn ? `Changes — ${wn} new to you this week` : 'Changes — every change this week, and who made it'}
                 aria-label={wn ? `Changes, ${wn} new to you this week` : 'Changes'}
                 onClick={() => { toggleChanges('week', 'new') }}><span className="bi"><HistIcon /></span>{wn ? <span className="chgnum">{wn}</span> : null}</button>
@@ -487,7 +494,8 @@ export function Shell() {
   /* the changes clock's number and its open state are read inside the memo, so they are its deps too (the gate found it,
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastSync(), uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellLit(), bugAlert(), oilPend, accAlert, clockNew, !!CHGWIN, saveFailed, oilTop])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- eng is a new object every render, so its four drawn fields stand for it (its undo and redo call the live history); fastOn, bellOn and bugOn are read by the children they redraw
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">
@@ -550,6 +558,7 @@ export function Shell() {
      lit state render here, so a fold or a search that changes without either
      in the list would paint stale (SEARCH is the toggle's other lit source —
      spec'd as HLOPEN alone, added for the same staleness reason). */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- HLOPEN, HLGROUP, SEARCH and CURWEEK are the store's live module values, changed between renders; they redraw the page's chrome
   ), [page, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   /* .editing rides unconditionally with the page since the Edit-mode toggle
@@ -643,6 +652,7 @@ export function Shell() {
      without hlSig the chips' .on state would go stale the moment a chip was
      toggled on another surface, and without HLOPEN/SEARCH the fold and the
      toggle's lit state would freeze (same reasoning as the view page's). */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- HIST, HLOPEN, HLGROUP, SEARCH and CURWEEK are the store's live module values, changed between renders; they redraw the page's chrome
   ), [page, HIST.ix, HIST.stack.length, hlSig, HLOPEN, HLGROUP, SEARCH, legend, CURWEEK])
 
   return (
@@ -665,14 +675,14 @@ export function Shell() {
       </section>
       {/* once visited, the section DOZES (content-visibility) rather than
           display:none — scheduler.css `.page.doze` carries the measurement
-          and the why; the keep-alive comment sits at lwEverRef above */}
-      <section className={'page' + (page === 'leavewar' ? ' on' : (lwEverRef.current || prewarmed) ? ' doze' : '')} id="page-leavewar">
-        {(page === 'leavewar' || lwEverRef.current || prewarmed) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
+          and the why; the keep-alive comment sits at lwEver above */}
+      <section className={'page' + (page === 'leavewar' ? ' on' : (lwEver || prewarmed) ? ' doze' : '')} id="page-leavewar">
+        {(page === 'leavewar' || lwEver || prewarmed) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
       </section>
       {/* once visited the Tracker dozes too (content-visibility, same as Leave
           War above) — its whole reason is in TrackerPage.tsx */}
-      <section className={'page' + (page === 'tracker' ? ' on' : trEverRef.current ? ' doze' : '')} id="page-tracker">
-        {(page === 'tracker' || trEverRef.current) && <Suspense fallback={null}><TrackerPage active={page === 'tracker'} /></Suspense>}
+      <section className={'page' + (page === 'tracker' ? ' on' : trEver ? ' doze' : '')} id="page-tracker">
+        {(page === 'tracker' || trEver) && <Suspense fallback={null}><TrackerPage active={page === 'tracker'} /></Suspense>}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

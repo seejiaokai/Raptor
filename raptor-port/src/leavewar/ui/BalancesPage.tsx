@@ -174,12 +174,13 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   /* — and a refusal there (the lock landed while he typed, which takes his boxes away) is said in the app's passing note, the
      box being gone (D850: a refusal out of sight is told) */
   const labelNow = useRef(label)
-  labelNow.current = label
+  useLayoutEffect(() => { labelNow.current = label })
   useEffect(() => () => {
     /* a box taken away emptied was no save he asked for: nothing is said of it */
     if (typed.current === null || typed.current.trim() === '') return
     const why = commitText(typed.current)
     if (why) HOOKS.toast(`${labelNow.current} not saved: ${why}`, 'warn')
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, as the box leaves the screen: what it saves comes from the refs set as he types (held, typed), never from this render's figures
   }, [])
   /* Escape inside a window (the Grades window — a Sheet, whose Escape closes it) puts the old figure back FIRST: the window
      asks for it with `lw-revert` before its own Escape is heard (GradesSheet.tsx), so Escape closes what opened last */
@@ -467,13 +468,14 @@ export function BalancesPage() {
   const zoomBox = useRef<HTMLDivElement | null>(null)
   const [zoom, setZoom] = useState(1)
   const zoomRef = useRef(zoom)
-  zoomRef.current = zoom
+  useLayoutEffect(() => { zoomRef.current = zoom })
 
   /* THE PEOPLE — the grid's own order and groups (reading 9: the people on the grid in the View period; a SANS man while
      SANS is off the war, and a man whose stints miss the period, are not on it). The heading's label and colour are the
      grid's (Matrix.tsx `labelOfGroup`, `groupClass`, `groupColorOf`); the count, the people listed. */
+  /* `version` stands for what is read fresh from the store's module (the roster, the group list and its order) */
+  const win = `${period.start.slice(0, 7)}|${period.end.slice(0, 7)}`
   const groups = useMemo<Group[]>(() => {
-    const win = `${period.start.slice(0, 7)}|${period.end.slice(0, 7)}`
     const defs = groupsInOrder(), prio = groupPriorityIds()
     const needle = q.trim().toLowerCase()
     const out: Group[] = []
@@ -490,7 +492,7 @@ export function BalancesPage() {
       G.people.push(p)
     }
     return out
-  }, [version, period.id, q])
+  }, [version, period.id, q, win, spans, qualCatalog, groupColors])
 
   /* EVERY ROW'S FIGURES — the store's one engine, worked out once per change of the war; a row's signature decides whether it
      repaints (its memo) */
@@ -509,7 +511,7 @@ export function BalancesPage() {
       m.set(p.id, { d, sig: JSON.stringify(d), puck: puckHtml(p.id, p.callsign), boxes: balanceProblem(p.id, 'CCL', 0) === null })
     }
     return m
-  }, [groups, version, view, period.id])
+  }, [groups, version, view, period.id, period.start, period.end])
 
   /* the row's doors, stable for the page's life so a row's memo holds */
   const api = useMemo<RowApi>(() => ({
@@ -552,6 +554,7 @@ export function BalancesPage() {
      drew shorter, and a strip of the rows slid between them. The second pins where the first one ends, as measured — the
      same in every browser, whatever a table cell makes of its height and padding. */
   const tableRef = useRef<HTMLTableElement | null>(null)
+  const noGroups = groups.length === 0
   useLayoutEffect(() => {
     const t = tableRef.current
     if (!t) return
@@ -562,7 +565,7 @@ export function BalancesPage() {
     pin()
     window.addEventListener('resize', pin)
     return () => window.removeEventListener('resize', pin)
-  }, [phone, view, groups.length === 0])
+  }, [phone, view, noGroups])
 
   /* A TAPPED BOX COMES INTO SIGHT WITH ITS PENDING FIGURE (the M5a walk's B-F4, 29 Oct 26): the browser slides the phone's
      list only far enough for the box, and a kind's amber pending figure after it — the figure the typed number changes —

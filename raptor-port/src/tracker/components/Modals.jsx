@@ -7,21 +7,116 @@ import { edgeAutoScroll } from '../../ui/edgescroll';
 import { markLand, paintLand } from '../../ui/lift';
 
 /* ---------- generic in-page dialog (uiConfirm / uiPrompt / uiAlert / uiChoice) ---------- */
+/* The pieces below are the dialog's own, taken out of DlgModal so its body stays short enough to follow (React Doctor's
+   complexity check, 31 Oct 26). Each does exactly what the same lines did inside it. */
+
+/* A list (9 Sep 26, the + Add roster picker): the search box and the list
+   sit ABOVE the text box, so the roster is the first thing offered and the
+   free-text box the fallback. An empty list draws nothing — the dialog is
+   then the old prompt to the byte. */
+/* a list may be given as a function, read on every render — the + Add roster, so a
+   person added or taken off while the box is open shows at once ([TRK-RETEST-NOTES] C11) */
+function dlgListOf(d) {
+  const src = d && (d.listFn ? d.listFn() : d.list);
+  return (Array.isArray(src) && src.length) ? src : null;
+}
+
+/* the entries the search leaves: every one whose name or line under it holds the typed text */
+function dlgShown(list, needle) {
+  return list ? list.filter(it => !needle || (it.label + ' ' + (it.sub || '')).toLowerCase().includes(needle)) : [];
+}
+
+/* THE DOOR BEHIND THE SHADE IS SHUT ([TRK-DLG-LEFTOVERS], 28 Sep 26 — the plan's red
+   team, Fable F3). The shade stops a pointer, not the keyboard: Tab walked out of the
+   box into the Tracker's bar, and Enter on "+ Add" there opened a second question over
+   the first. While a question is up, every other part of the Tracker's page is `inert`
+   (no focus, no press) — the bar, the tool strip, the chart, the side panel and any
+   window open under the question. Raptor's own top bar is outside the page and stays
+   usable: its Logout asks about this question first (D129). Only what THIS effect
+   marked is unmarked, so a part something else made inert is left as it was. */
+function shutBehind(box) {
+  const page = box && box.closest('.tr-root');
+  if (!page) return undefined;
+  const marked = [];
+  for (const el of page.children) {
+    if (el === box || el.id === 'dlgOverlay' || el.hasAttribute('inert')) continue;
+    el.setAttribute('inert', ''); marked.push(el);
+  }
+  return () => marked.forEach(el => el.removeAttribute('inert'));
+}
+
+/* The keyboard goes into the box's typing field (`el`) — unless it is already in one of THIS box's typing fields (the
+   reason is at the timer in DlgModal). */
+function focusDlgField(box, el) {
+  const has = document.activeElement;
+  if (box && has && box.contains(has) && (has.tagName === 'INPUT' || has.tagName === 'TEXTAREA')) return;
+  if (el) { el.focus(); el.select(); }
+}
+
+/* THE COURSE START in "+ Add" (owner D1003, D1018 — as drawn, 5-add-box): the app's own date box, above the list
+   because a tap on a name adds him at once; today by default, and a day is always set (nothing to take off).
+   Its caption is a plain caption, not a <label>: the date box is a button that already says this name to a screen
+   reader, and a label tied to it would make a press on the words open the calendar, which nothing did before. */
+function DlgDate({ date }) {
+  return (
+    <div className="field dlg-date">
+      <span className="flbl">{date.label}</span>
+      <DateBox key={core.dlgSerial} id="dlgDate" title={date.label} clearable={false} value={date.value || ''} onCommit={v => core.setDlgDate(v)} />
+    </div>
+  );
+}
+
+/* The roster picker: its title, the search box and the list of entries (see dlgListOf above). */
+function DlgPick({ d, q, setQ, filterRef, shown, searchAsNew, pick, ok }) {
+  return (
+    <>
+      {d.listTitle && <div className="mini dlg-listtitle">{d.listTitle}</div>}
+      {/* one search box (owner D1127): the app's line magnifier inside it, as every search box */}
+      {d.filter && (<span className="findbox dlg-findbox"><SrchGlyph />
+        <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" aria-label="Search by callsign" value={q}
+          onChange={e => setQ(e.target.value)}
+          /* Enter on the search box picks the one entry left — the keyboard
+             route through a long roster — and, with nobody left, does what
+             OK does: adds the name typed (D191) */
+          onKeyDown={e => {
+            if (e.key !== 'Enter' || isComposing(e)) return;
+            if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
+            else if (searchAsNew) { e.preventDefault(); ok(); }
+          }} /></span>
+      )}
+      <div id="dlgList" role="listbox">
+        {/* aria-selected false: an entry is never "picked and waiting" — a press adds him at once */}
+        {shown.map(it => (
+          <button type="button" className="dlg-item" key={it.key} data-key={it.key} role="option" aria-selected={false} onClick={() => pick(it.key)}>
+            <span className="dlg-lbl">{it.label}</span>
+            {it.sub ? <span className="dlg-sub">{it.sub}</span> : null}
+          </button>
+        ))}
+        {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.{searchAsNew ? ' OK adds them as a new crew member.' : ''}</div>}
+      </div>
+    </>
+  );
+}
+
+/* Cancel, the alternative answer and OK, at the box's foot */
+function DlgButtons({ d, cancel, ok }) {
+  return (
+    <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
+      {d.cancel && <button id="dlgCancel" onClick={cancel}>{d.cancelLabel || 'Cancel'}</button>}
+      {d.alt && <button id="dlgAlt" onClick={() => core.dlgClose('__alt__')}>{d.alt}</button>}
+      <button className="primary" id="dlgOk" onClick={ok}>{d.ok}</button>
+    </div>
+  );
+}
+
 export function DlgModal() {
   const d = core.dlg;
   const [val, setVal] = useState('');
   const [q, setQ] = useState('');
-  const serialRef = useRef(-1);
+  const [seenSerial, setSeenSerial] = useState(-1);
   const inputRef = useRef(null);
   const filterRef = useRef(null);
-  /* A list (9 Sep 26, the + Add roster picker): the search box and the list
-     sit ABOVE the text box, so the roster is the first thing offered and the
-     free-text box the fallback. An empty list draws nothing — the dialog is
-     then the old prompt to the byte. */
-  /* a list may be given as a function, read on every render — the + Add roster, so a
-     person added or taken off while the box is open shows at once ([TRK-RETEST-NOTES] C11) */
-  const src = d && (d.listFn ? d.listFn() : d.list);
-  const list = (Array.isArray(src) && src.length) ? src : null;
+  const list = dlgListOf(d);
   /* Clear the fields to the new dialog's defaults DURING render, not in a
      post-paint effect. The effect version ran a beat AFTER the box was already
      on screen and fillable, so a value put into the field in that gap — a fast
@@ -29,14 +124,15 @@ export function DlgModal() {
      wiped by the reset a moment later, and OK then submitted a blank. That is
      exactly what made "+ Add" silently drop a student when the app was busy
      enough for the reset to land after the type (TRK-SMOKE, 17 Sep 26).
-     Resetting during render (a supported React pattern for adjusting state when
+     Resetting during render (React's supported pattern for adjusting state when
      the source changes) means the field already holds the right value before it
-     is ever shown, so nothing typed afterwards can be clobbered. Safe with a ref
-     here rather than the docs' state-based form because notify() drives this
-     through useSyncExternalStore, which renders synchronously — no discarded
-     render can leave serialRef bumped without this reset committing. */
-  if (d && serialRef.current !== core.dlgSerial) {
-    serialRef.current = core.dlgSerial;
+     is ever shown, so nothing typed afterwards can be clobbered. The serial seen
+     last is STATE, the docs' own form (31 Oct 26 — it was a ref written during
+     render, which React Doctor flags: a render React throws away would have
+     left the ref bumped with no reset committed). React re-runs this render at
+     once with the new values, before anything is painted. */
+  if (d && seenSerial !== core.dlgSerial) {
+    setSeenSerial(core.dlgSerial);
     setVal(d.def || ''); setQ('');
   }
   /* Focus after paint (it touches the DOM); the search box takes it when there
@@ -58,26 +154,9 @@ export function DlgModal() {
      anywhere else — the button that opened it, or nowhere — it moves it as
      before. */
   const modalRef = useRef(null);
-  /* THE DOOR BEHIND THE SHADE IS SHUT ([TRK-DLG-LEFTOVERS], 28 Sep 26 — the plan's red
-     team, Fable F3). The shade stops a pointer, not the keyboard: Tab walked out of the
-     box into the Tracker's bar, and Enter on "+ Add" there opened a second question over
-     the first. While a question is up, every other part of the Tracker's page is `inert`
-     (no focus, no press) — the bar, the tool strip, the chart, the side panel and any
-     window open under the question. Raptor's own top bar is outside the page and stays
-     usable: its Logout asks about this question first (D129). Only what THIS effect
-     marked is unmarked, so a part something else made inert is left as it was. */
+  /* the door behind the shade is shut while a question is up — shutBehind, above */
   const open = !!d;
-  useEffect(() => {
-    if (!open) return;
-    const box = modalRef.current, page = box && box.closest('.tr-root');
-    if (!page) return;
-    const marked = [];
-    for (const el of page.children) {
-      if (el === box || el.id === 'dlgOverlay' || el.hasAttribute('inert')) continue;
-      el.setAttribute('inert', ''); marked.push(el);
-    }
-    return () => marked.forEach(el => el.removeAttribute('inert'));
-  }, [open]);
+  useEffect(() => (open ? shutBehind(modalRef.current) : undefined), [open]);
   /* ...and Tab / Shift+Tab go round inside the box: from its last control to its first,
      and back. */
   const trapTab = e => {
@@ -91,18 +170,13 @@ export function DlgModal() {
   };
   useEffect(() => {
     if (!d) return;
-    const t = setTimeout(() => {
-      const box = modalRef.current, has = document.activeElement;
-      if (box && has && box.contains(has) && (has.tagName === 'INPUT' || has.tagName === 'TEXTAREA')) return;
-      const el = (list && d.filter) ? filterRef.current : inputRef.current;
-      if (el) { el.focus(); el.select(); }
-    }, 30);
+    const t = setTimeout(() => focusDlgField(modalRef.current, (list && d.filter) ? filterRef.current : inputRef.current), 30);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [core.dlgSerial]);
   if (!d) return null;
   const needle = q.trim().toLowerCase();
-  const shown = list ? list.filter(it => !needle || (it.label + ' ' + (it.sub || '')).toLowerCase().includes(needle)) : [];
+  const shown = dlgShown(list, needle);
   /* A callsign typed into the SEARCH that matches nobody on the roster, with
      "Or type a callsign" left empty, IS the name to add (D191, 25 Sep 26 — his
      "A"). + Add opens with the cursor in the search, so this is where a new
@@ -122,44 +196,13 @@ export function DlgModal() {
           the details window (90/91), so Export's "Tick at least one syllabus."
           was drawn behind the window that asked it ([HUMAN-RETEST] Fable #6,
           23 Sep 26). Raptor's own overlays (400+) stay above the whole tab. */}
-      <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} onClick={cancel}></div>
-      <div className="modal" id="dlgModal" ref={modalRef} role="dialog" aria-modal="true" onKeyDown={trapTab} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
+      {/* role="presentation": the shade, not a control — a tap on it answers "no", as Escape does (core.handleEscapeKey) */}
+      <div className="overlay" id="dlgOverlay" style={{ zIndex: 100, display: 'block' }} role="presentation" onClick={cancel}></div>
+      {/* named by its own question (dlgMsg), which is what a screen reader says on opening it */}
+      <div className="modal" id="dlgModal" ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="dlgMsg" onKeyDown={trapTab} style={{ zIndex: 101, width: 'min(420px, 92vw)', display: 'block' }}>
         <div id="dlgMsg" style={{ fontSize: 13.5, whiteSpace: 'pre-wrap', marginBottom: 12 }}>{d.msg}</div>
-        {/* THE COURSE START in "+ Add" (owner D1003, D1018 — as drawn, 5-add-box): the app's own date box, above the list
-            because a tap on a name adds him at once; today by default, and a day is always set (nothing to take off) */}
-        {d.date && (
-          <div className="field dlg-date">
-            <label>{d.date.label}</label>
-            <DateBox key={core.dlgSerial} id="dlgDate" title={d.date.label} clearable={false} value={d.date.value || ''} onCommit={v => core.setDlgDate(v)} />
-          </div>
-        )}
-        {list && (
-          <>
-            {d.listTitle && <div className="mini dlg-listtitle">{d.listTitle}</div>}
-            {/* one search box (owner D1127): the app's line magnifier inside it, as every search box */}
-            {d.filter && (<span className="findbox dlg-findbox"><SrchGlyph />
-              <input id="dlgFilter" ref={filterRef} type="search" placeholder="Search by callsign" value={q}
-                onChange={e => setQ(e.target.value)}
-                /* Enter on the search box picks the one entry left — the keyboard
-                   route through a long roster — and, with nobody left, does what
-                   OK does: adds the name typed (D191) */
-                onKeyDown={e => {
-                  if (e.key !== 'Enter' || isComposing(e)) return;
-                  if (shown.length === 1) { e.preventDefault(); pick(shown[0].key); }
-                  else if (searchAsNew) { e.preventDefault(); ok(); }
-                }} /></span>
-            )}
-            <div id="dlgList" role="listbox">
-              {shown.map(it => (
-                <button type="button" className="dlg-item" key={it.key} data-key={it.key} role="option" onClick={() => pick(it.key)}>
-                  <span className="dlg-lbl">{it.label}</span>
-                  {it.sub ? <span className="dlg-sub">{it.sub}</span> : null}
-                </button>
-              ))}
-              {!shown.length && <div className="mini dlg-none">Nobody on the roster matches “{q.trim()}”.{searchAsNew ? ' OK adds them as a new crew member.' : ''}</div>}
-            </div>
-          </>
-        )}
+        {d.date && <DlgDate date={d.date} />}
+        {list && <DlgPick d={d} q={q} setQ={setQ} filterRef={filterRef} shown={shown} searchAsNew={searchAsNew} pick={pick} ok={ok} />}
         {d.input && (
           <input id="dlgInput" ref={inputRef} style={{ width: '100%', marginBottom: 12 }} value={val}
             placeholder={d.placeholder || undefined}
@@ -169,11 +212,7 @@ export function DlgModal() {
                press carry on to the document and shut the editor underneath. */
             onKeyDown={e => { if (e.key === 'Enter' && !isComposing(e)) ok(); }} />
         )}
-        <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
-          {d.cancel && <button id="dlgCancel" onClick={cancel}>{d.cancelLabel || 'Cancel'}</button>}
-          {d.alt && <button id="dlgAlt" onClick={() => core.dlgClose('__alt__')}>{d.alt}</button>}
-          <button className="primary" id="dlgOk" onClick={ok}>{d.ok}</button>
-        </div>
+        <DlgButtons d={d} cancel={cancel} ok={ok} />
       </div>
     </>
   );
@@ -188,7 +227,7 @@ function EditModalInner({ id }) {
   const [num, setNum] = useState(ev.num != null ? String(ev.num) : '');
   const [crew, setCrew] = useState(d.crew || '');
   const [pre, setPre] = useState(d.pre || '');
-  const [links, setLinks] = useState((ev.prereqs || []).join(', '));
+  const [links, setLinks] = useState(() => (ev.prereqs || []).join(', '));
   const [err, setErr] = useState('');
   const save = async () => {
     const e = await core.saveEdit({ text, type, num, crew, pre, links });
@@ -197,8 +236,8 @@ function EditModalInner({ id }) {
   return (
     <div className="modal" id="editModal" style={{ width: 'min(460px,92vw)', display: 'block' }}>
       <h2>Edit poke-ball</h2>
-      <div className="field"><label>Text</label><input id="edText" style={{ flex: 1 }} value={text} onChange={e => setText(e.target.value)} /></div>
-      <div className="field"><label>Colour / type</label>
+      <div className="field"><label htmlFor="edText">Text</label><input id="edText" style={{ flex: 1 }} value={text} onChange={e => setText(e.target.value)} /></div>
+      <div className="field"><label htmlFor="edType">Colour / type</label>
         <select id="edType" value={type} onChange={e => setType(e.target.value)}>
           <option value="flight">Flight (blue)</option>
           <option value="acad">Acad / Spec (green)</option>
@@ -207,10 +246,10 @@ function EditModalInner({ id }) {
           <option value="device">CFT/IAT/EPT (purple)</option>
         </select>
       </div>
-      <div className="field"><label>Number (badge)</label><input id="edNum" type="text" style={{ width: 90 }} placeholder="optional" value={num} onChange={e => setNum(e.target.value)} /></div>
-      <div className="field"><label>Crew</label><input id="edCrew" style={{ flex: 1 }} placeholder="e.g. IP / UW, UP / IW" value={crew} onChange={e => setCrew(e.target.value)} /></div>
-      <div className="field"><label>Prereq links</label><input id="edLinks" style={{ flex: 1 }} placeholder="comma-separated event IDs — draws the arrows" value={links} onChange={e => setLinks(e.target.value)} /></div>
-      <div className="field"><label>Prerequisites (note)</label><input id="edPre" style={{ flex: 1 }} placeholder="free text shown in the details bubble" value={pre} onChange={e => setPre(e.target.value)} /></div>
+      <div className="field"><label htmlFor="edNum">Number (badge)</label><input id="edNum" type="text" style={{ width: 90 }} placeholder="optional" value={num} onChange={e => setNum(e.target.value)} /></div>
+      <div className="field"><label htmlFor="edCrew">Crew</label><input id="edCrew" style={{ flex: 1 }} placeholder="e.g. IP / UW, UP / IW" value={crew} onChange={e => setCrew(e.target.value)} /></div>
+      <div className="field"><label htmlFor="edLinks">Prereq links</label><input id="edLinks" style={{ flex: 1 }} placeholder="comma-separated event IDs — draws the arrows" value={links} onChange={e => setLinks(e.target.value)} /></div>
+      <div className="field"><label htmlFor="edPre">Prerequisites (note)</label><input id="edPre" style={{ flex: 1 }} placeholder="free text shown in the details bubble" value={pre} onChange={e => setPre(e.target.value)} /></div>
       <small className="hint" style={{ display: 'block', marginTop: 2 }}>Prereq links drive the arrows on the chart and what counts as available. The note is the wording shown under Crew in the details bubble — leave it blank to fall back to the links.</small>
       <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'space-between' }}>
         <button id="edDelete" style={{ borderColor: 'var(--red)', color: 'var(--red-ink)' }} onClick={core.deleteFromEditModal}>Delete ball</button>
@@ -225,7 +264,8 @@ export function EditModal() {
   return (
     <>
       {(id != null || core.sylModalOpen) && (
-        <div className="overlay" id="overlay" style={{ display: 'block' }} onClick={() => { core.closeModal(); core.closeEdit(); }}></div>
+        /* role="presentation": the shade, not a control — a tap on it closes the editor, as Escape does */
+        <div className="overlay" id="overlay" style={{ display: 'block' }} role="presentation" onClick={() => { core.closeModal(); core.closeEdit(); }}></div>
       )}
       {id != null && core.byid[id] && <EditModalInner key={id} id={id} />}
     </>
@@ -253,14 +293,15 @@ function InfoModalInner({ id }) {
   return (
     <>
       {/* above #showAllPanel (81) so it can never open behind the Show All list */}
-      <div className="overlay" id="infoOverlay" style={{ zIndex: 90, display: 'block' }} onClick={core.closeInfo}></div>
+      {/* role="presentation": the shade, not a control — a tap on it closes the window, as Escape does */}
+      <div className="overlay" id="infoOverlay" style={{ zIndex: 90, display: 'block' }} role="presentation" onClick={core.closeInfo}></div>
       <div className="modal" id="infoModal" style={{ zIndex: 91, width: 'min(440px,94vw)', display: 'block' }}>
         <h2 id="infoTitle">{id} — details</h2>
-        <div className="field"><label>Name</label><input id="ifName" style={{ flex: 1 }} value={name} onChange={e => setName(e.target.value)} /></div>
-        <div className="field"><label>Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder={core.FMT_HINT} value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
-        <div className="field"><label>Hours</label><input id="ifHrs" style={{ width: 120 }} placeholder="e.g. 1.5 Hrs" value={hrs} onChange={e => setHrs(e.target.value)} /></div>
-        <div className="field" style={{ alignItems: 'flex-start' }}><label>Crew</label><textarea id="ifCrew" placeholder="e.g. UP/UW, IP/IW/FSI" value={crew} onChange={e => setCrew(e.target.value)} /></div>
-        <div className="field" style={{ alignItems: 'flex-start' }}><label>Prerequisites</label><textarea id="ifPre" placeholder="e.g. AVI-02, AVI-03, AVI-04" value={pre} onChange={e => setPre(e.target.value)} /></div>
+        <div className="field"><label htmlFor="ifName">Name</label><input id="ifName" style={{ flex: 1 }} value={name} onChange={e => setName(e.target.value)} /></div>
+        <div className="field"><label htmlFor="ifFmt">Type / format</label><input id="ifFmt" style={{ flex: 1 }} placeholder={core.FMT_HINT} value={fmtV} onChange={e => setFmtV(e.target.value)} /></div>
+        <div className="field"><label htmlFor="ifHrs">Hours</label><input id="ifHrs" style={{ width: 120 }} placeholder="e.g. 1.5 Hrs" value={hrs} onChange={e => setHrs(e.target.value)} /></div>
+        <div className="field" style={{ alignItems: 'flex-start' }}><label htmlFor="ifCrew">Crew</label><textarea id="ifCrew" placeholder="e.g. UP/UW, IP/IW/FSI" value={crew} onChange={e => setCrew(e.target.value)} /></div>
+        <div className="field" style={{ alignItems: 'flex-start' }}><label htmlFor="ifPre">Prerequisites</label><textarea id="ifPre" placeholder="e.g. AVI-02, AVI-03, AVI-04" value={pre} onChange={e => setPre(e.target.value)} /></div>
         <div style={{ display: 'flex', gap: 8, marginTop: 12, justifyContent: 'flex-end' }}>
           {hasDoc
             ? <button id="ifReset" title="Put the source document's wording back in the boxes — Save keeps it, Cancel doesn't" style={{ marginRight: 'auto' }} onClick={reset}>Reset to doc</button>
@@ -287,7 +328,7 @@ function SylModalInner() {
     <div className="modal" id="sylModal" style={{ display: 'block' }}>
       <h2>Edit events / flow</h2>
       <small className="hint">Each event: {'{'}"id","type","phase","seq","prereqs":[...]{'}'}. type = flight | acad | test | sim | device. Two events sharing the same prereqs run in parallel (branch). Edit and Save to regenerate the board — then hit “Save changes” in the header to keep it.</small>
-      <textarea id="sylText" spellCheck={false} value={text} onChange={e => setText(e.target.value)} />
+      <textarea id="sylText" aria-label="Edit events / flow" spellCheck={false} value={text} onChange={e => setText(e.target.value)} />
       <div style={{ display: 'flex', gap: 8, marginTop: 10, justifyContent: 'flex-end' }}>
         <button id="sylCancel" onClick={core.closeModal}>Cancel</button>
         <button className="primary" id="sylSave" onClick={save}>Save</button>
@@ -478,7 +519,8 @@ function OrdModalInner({ mode }) {
   };
   return (
     <>
-      <div className="overlay" id="ordOverlay" style={{ zIndex: 70, display: 'block' }} onClick={core.closeOrd}></div>
+      {/* role="presentation": the shade, not a control — a tap on it closes the list, as Escape does */}
+      <div className="overlay" id="ordOverlay" style={{ zIndex: 70, display: 'block' }} role="presentation" onClick={core.closeOrd}></div>
       <div className="modal" id="ordModal" data-ord={mode} style={{ zIndex: 71, width: 'min(420px,92vw)', display: 'block' }}>
         <h2 id="ordTitle">{cfg.title}</h2>
         <div className="mini" style={{ marginBottom: 8 }}>{cfg.note}</div>
@@ -538,7 +580,8 @@ function CopyModalInner() {
   const picked = ids.filter(id => core.copyPick[id]).length;
   return (
     <>
-      <div className="overlay" id="copyOverlay" style={{ zIndex: 90, display: 'block' }} onClick={core.closeCopy}></div>
+      {/* role="presentation": the shade, not a control — a tap on it closes the window, as Escape does */}
+      <div className="overlay" id="copyOverlay" style={{ zIndex: 90, display: 'block' }} role="presentation" onClick={core.closeCopy}></div>
       <div className="modal" id="copyModal" style={{ zIndex: 91, width: 'min(460px, 92vw)', display: 'block' }}>
         <div style={{ fontWeight: 600, marginBottom: 10 }}>Export</div>
         <div className="mini" style={{ marginBottom: 10 }}>

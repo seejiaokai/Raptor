@@ -172,6 +172,7 @@ export function AirPop() {
      render: the effect below deliberately has no dependency list, and
      re-snapshotting on an unrelated repaint would quietly adopt the half-typed
      value as the "before". */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- the snapshot is taken once per window opened (AIRKEY), never again on a repaint that would adopt half-typed words as the "before"
   useEffect(() => { TRWAS = (((g || {}).traffic || []) as any[]).slice() }, [AIRKEY])
   /* renderAir: innerHTML + delegated input/focusout, exactly as the reference
      wires #airBody (a React-controlled list would repaint under the caret) */
@@ -234,7 +235,7 @@ export function AirPop() {
     const bar = AIR_BAR()
     const ro = bar && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null
     if (ro && bar) ro.observe(bar)
-    return () => { window.removeEventListener('resize', place); if (ro) ro.disconnect() }
+    return () => { window.removeEventListener('resize', place); ro?.disconnect() }
   })
   useEffect(() => {
     if (!open) return

@@ -1,9 +1,9 @@
 // @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
-import { storage, useStorageImpl } from './storage.js'
+import { storage, setStorageImpl } from './storage.js'
 
 beforeEach(() => { localStorage.clear() })
-afterEach(() => { useStorageImpl(null) })
+afterEach(() => { setStorageImpl(null) })
 
 describe('tracker storage target', () => {
   it('without a target it uses localStorage under ocu: (today’s behaviour)', async () => {
@@ -15,7 +15,7 @@ describe('tracker storage target', () => {
   })
   it('with a target every verb goes to the target and never to localStorage, same return shapes', async () => {
     const mem: Record<string, string> = {}
-    useStorageImpl({ get: (k: string) => mem[k] ?? null, set: (k: string, v: string) => { mem[k] = v }, remove: (k: string) => { delete mem[k] }, keys: () => Object.keys(mem) })
+    setStorageImpl({ get: (k: string) => mem[k] ?? null, set: (k: string, v: string) => { mem[k] = v }, remove: (k: string) => { delete mem[k] }, keys: () => Object.keys(mem) })
     expect(await storage.set('v3:courses', '[]')).toEqual({ key: 'v3:courses', value: '[]' })
     expect(mem['v3:courses']).toBe('[]')
     expect(localStorage.length).toBe(0)

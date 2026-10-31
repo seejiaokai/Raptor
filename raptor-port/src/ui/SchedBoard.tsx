@@ -119,13 +119,15 @@ export function SchedBoard() {
   useEffect(() => {
     if (!open) return
     const off = wireBoardEscape()
+    /* the board's own box, held for the close below (it is one box for the board's life — `hidden`, never re-made) */
+    const root = rootRef.current
     const was = document.activeElement as HTMLElement | null
-    const back = was && was !== document.body && was.isConnected && !rootRef.current?.contains(was) ? locate(was) : null
+    const back = was && was !== document.body && was.isConnected && !root?.contains(was) ? locate(was) : null
     return () => {
       off()
       if (CURPAGE !== 'editsched') return
       const now = document.activeElement as HTMLElement | null
-      const inBoard = !!now && !!rootRef.current?.contains(now)
+      const inBoard = !!now && !!root?.contains(now)
       if (now && now !== document.body && !inBoard) return
       const to = back ? back() : null
       if (to && to.isConnected) to.focus({ preventScroll: true })
@@ -140,10 +142,11 @@ export function SchedBoard() {
      dropped whenever the board closes — ✓ Done or a page change — so the next open is at today's size. Only on a phone
      (the layout switch is offered only up to 820 wide); the phone layout has no pinch of its own. */
   const [, setZoomTick] = useState(0)
+  const wide = SBWIDE   // the store's live value, read on this render (a module value changes between renders)
   useEffect(() => {
     if (!open) { setBoardZoom(1); return }
     const main = mainRef.current
-    if (!SBWIDE || !main) return
+    if (!wide || !main) return
     return wirePinch({
       surface: main,
       target: () => mainRef.current,
@@ -164,7 +167,7 @@ export function SchedBoard() {
       blockTwo: touchDragArmed,
       onStart: () => { cancelTouchHold(); cancelRowDrags() },
     })
-  }, [open, SBWIDE])
+  }, [open, wide])
 
   /* LOCK THE PAGE WHILE THE BOARD IS OPEN (owner-reported, 11 Aug 26 — "I
      could scroll and see the edit schedule board leaking into it, and in the

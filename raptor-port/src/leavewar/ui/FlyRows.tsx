@@ -214,7 +214,7 @@ export const FlyRows = memo(function FlyRows({ days, admin, padL, padR, phL, phR
   useEffect(() => { if (!admin) setNaming(null) }, [admin])
   const lastPtr = useRef('')
   const adminRef = useRef(admin)
-  adminRef.current = admin
+  useLayoutEffect(() => { adminRef.current = admin })
   useEffect(() => {
     if (!admin) { setEdit(null); return }
     const onDown = (e: PointerEvent) => { lastPtr.current = e.pointerType || 'mouse' }

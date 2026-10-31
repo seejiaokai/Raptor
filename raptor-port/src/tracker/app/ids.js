@@ -74,6 +74,7 @@ export function upgradeCourseBlock(block, links) {
     bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks, legacyHere), dates: rekey(sv.dates, legacyHere) };
   }
   const out = { ...src, bySyllabus, lulls: rekey(src.lulls, legacyAll), pace: rekey(src.pace, legacyAll) };
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
   return { block: JSON.parse(JSON.stringify(out)), ids: Object.assign({}, ids) };
 }
 
@@ -149,5 +150,6 @@ export function reconcileIds(block, existing) {
     bySyllabus[syl] = { ...sv, roster, marks: rekey(sv.marks), dates: rekey(sv.dates) };
   }
   const out = { ...src, bySyllabus, lulls: rekey(src.lulls), pace: rekey(src.pace) };
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
   return { block: JSON.parse(JSON.stringify(out)), remapped: Object.assign({}, map), conflicts };
 }

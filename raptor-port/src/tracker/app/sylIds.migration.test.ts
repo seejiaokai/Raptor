@@ -14,7 +14,7 @@
    - FROZEN the built-in ids never change (records file under them). */
 import { beforeEach, describe, expect, it } from 'vitest'
 import * as core from './core.js'
-import { useStorageImpl, storage } from '../storage.js'
+import { setStorageImpl, storage } from '../storage.js'
 import { isSylId, isBuiltinSylId, builtinIdByName } from './sylIds.js'
 
 /* a Map-backed store so a seed is deterministic and isolated from localStorage */
@@ -22,7 +22,7 @@ async function makeStore(seed: Record<string, any>, failOnce?: string) {
   const m = new Map<string, string>()
   for (const [k, v] of Object.entries(seed)) m.set(k, typeof v === 'string' ? v : JSON.stringify(v))
   let failed = false
-  useStorageImpl({
+  setStorageImpl({
     get: (k: string) => (m.has(k) ? m.get(k)! : null),
     /* failOnce: swallow the FIRST write to this key (the way sSet drops a "local
        only" failure) so a resumability test can interrupt a specific step */
@@ -245,7 +245,7 @@ describe('migrateSylIds — KEEP the catalogue, RESET the student layer', () => 
     /* the store is fresh (no failOnce) for the resume */
     const m2 = new Map<string, string>()
     for (const k of (await storage.list()).keys) { const v = await get(k); if (v != null) m2.set(k, v) }
-    useStorageImpl({ get: (k: string) => (m2.has(k) ? m2.get(k)! : null), set: (k: string, v: string) => { m2.set(k, v) }, remove: (k: string) => { m2.delete(k) }, keys: () => [...m2.keys()] })
+    setStorageImpl({ get: (k: string) => (m2.has(k) ? m2.get(k)! : null), set: (k: string, v: string) => { m2.set(k, v) }, remove: (k: string) => { m2.delete(k) }, keys: () => [...m2.keys()] })
     await core.rehydrateForTests()
     expect(await core.migrateSylIds(), 'the resume completes').toBe(true)
     expect(await get('v3:sylreset')).toBe('1')

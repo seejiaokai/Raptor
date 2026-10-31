@@ -1,0 +1,27 @@
+{
+  "$schema": "https://react.doctor/schema/config.json",
+  "rules": {
+    "react-doctor/unused-file": "warn",
+    "react-doctor/unused-export": "warn",
+    "react-doctor/unused-type": "warn",
+    "react-doctor/unused-dependency": "warn",
+    "react-doctor/unused-dev-dependency": "warn",
+    "react-doctor/circular-dependency": "warn"
+  },
+  "ignore": {
+    "files": [
+      "scripts/handpass/cal-F-p602.mjs",
+      "scripts/handpass/cal-F-p602b.mjs",
+      "scripts/handpass/cal-F-p606.mjs",
+      "scripts/handpass/cal-F-p611.mjs",
+      "scripts/handpass/cal-F-p612.mjs",
+      "scripts/handpass/cal-G-x07.mjs",
+      "scripts/handpass/icard-A-s11.mjs",
+      "scripts/handpass/lw-m4-walk-c3.mjs",
+      "scripts/handpass/odc/w2/probe4.mjs",
+      "scripts/handpass/on-A-a14.mjs",
+      "scripts/handpass/or-RX3-7.mjs",
+      "scripts/handpass/stk2-Q-j2.mjs"
+    ]
+  }
+}

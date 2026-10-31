@@ -195,23 +195,32 @@ export function useFloatWin(opts: {
     n.style.left = x + 'px'; n.style.top = y + 'px'
   }
   useLayoutEffect(place)
+  /* TODAY'S place, getBox and setBox for the three listeners below, which are armed once per window (`deps`), not once
+     per render. Written after each commit, never during a render React may throw away; every reader is a listener that
+     runs later (a resize, a mutation of the board's panel, a change of the window's size), never inside a render. */
+  const live = useRef({ place, getBox, setBox })
+  useLayoutEffect(() => { live.current = { place, getBox, setBox } })
+  /* `deps` is the CALLER's list — what makes a NEW window (the hook's contract, as useEffect's own); `open` and the
+     window's identity are in every caller's list, and everything else is read live through the ref above. */
   useEffect(() => {
     if (!open) return
-    window.addEventListener('resize', place)
-    return () => window.removeEventListener('resize', place)
+    const on = () => live.current.place()
+    window.addEventListener('resize', on)
+    return () => window.removeEventListener('resize', on)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- the caller's deps say when a new window opens; the rest is read live through `live`
   }, deps)
   /* THE EXACT MOMENT THE BAR CHANGES. The board writes its preview bar in a PASSIVE effect, after this window's layout
      effect has placed it, so a preview started while the window is open would be measured one render late. The board
      REPLACES the panel's markup whenever the bar appears, is armed or goes, so a watch on that panel's children re-places
      the window then — whatever order the two components mount in. The ref keeps the observer calling today's place(). */
-  const placeRef = useRef(place)
-  placeRef.current = place
+  const panelOf = opts.watch
   useEffect(() => {
-    const w = open && opts.watch ? opts.watch() : null
+    const w = open && panelOf ? panelOf() : null
     if (!w || typeof MutationObserver === 'undefined') return
-    const mo = new MutationObserver(() => placeRef.current())
+    const mo = new MutationObserver(() => live.current.place())
     mo.observe(w, { childList: true })
     return () => mo.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- the caller's deps say when a new window opens; the panel is found afresh each time it does
   }, deps)
 
   useEffect(() => {
@@ -219,7 +228,7 @@ export function useFloatWin(opts: {
     if (!n || !open || typeof ResizeObserver === 'undefined') return
     const ro = new ResizeObserver(() => {
       if (drag.current) return
-      const b = getBox()
+      const b = live.current.getBox()
       if (phoneLayout() || (b && b.phone)) return
       if (!b && !n.style.width && !n.style.height) return
       const r = n.getBoundingClientRect()
@@ -228,10 +237,11 @@ export function useFloatWin(opts: {
       const cap = parseFloat(n.style.maxHeight)
       if (b && !b.moved && cap && Math.abs(r.width - b.w) < 1 && Math.abs(r.height - cap) < 1 && b.h > cap) return
       /* a size he chose keeps whether he had moved it */
-      setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false, ...(b && b.moved ? { moved: true } : {}) })
+      live.current.setBox({ x: r.left, y: r.top, w: r.width, h: r.height, phone: false, ...(b && b.moved ? { moved: true } : {}) })
     })
     ro.observe(n)
     return () => ro.disconnect()
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- the caller's deps say when a new window opens; the box is read live through `live`
   }, deps)
 
   const onBarDown = (e: React.PointerEvent) => {

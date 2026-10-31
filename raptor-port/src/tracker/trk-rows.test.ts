@@ -31,7 +31,7 @@ async function client(wb: Whiteboard, who?: string): Promise<any> {
   const core: any = await import('./app/core.js')
   const st: any = await import('./storage.js')
   const people: any = await import('./people.js')
-  st.useStorageImpl(trackerTarget(wb))
+  st.setStorageImpl(trackerTarget(wb))
   if (who) people.setWhoamiId(() => who)
   await core.init()
   await core.whenLoaded()

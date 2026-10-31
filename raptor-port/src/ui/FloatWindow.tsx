@@ -185,8 +185,10 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     : { onPointerDown: onBarDown, onPointerMove: onBarMove, onPointerUp: onBarUp, onPointerCancel: onBarUp }
 
   /* OPENED LAST, IN FRONT — and the keyboard goes into it; closed, the keyboard goes back to what opened it */
+  /* today's onClose for the Escape listener below — written after each commit, never during a render React may throw
+     away (its one reader is that listener, run on a key press) */
   const closeRef = useRef(onClose)
-  closeRef.current = onClose
+  useLayoutEffect(() => { closeRef.current = onClose })
   useLayoutEffect(() => {
     const opener = document.activeElement as HTMLElement | null
     const n = el.current

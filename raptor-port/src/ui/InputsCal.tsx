@@ -164,12 +164,6 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   /* on a phone the month's name is its first three letters, so the arrows, Today, the switch and the filter button hold
      ONE line across 390px (the SANS month's own rule, ui/SansCal.tsx) */
   const narrow = useMedia('(max-width:820px)')
-  /* the deps-`[]` gesture effect below must always call the CURRENT month
-     stepper, never the one captured on its first render (which would page
-     from the wrong month forever). A ref updated every render is the
-     standard "latest callback" seam for that — the effect reads
-     stepRef.current at gesture time, when it is fresh. */
-  const stepRef = useRef<(n: number) => void>(() => {})
   /* The month-change slide (owner, 22 Aug 26 — "I want swipe animation when I
      swipe left and right"). `slideDirRef` records which way the last step went
      so the layout effect below can slide the new grid IN from that side, then
@@ -305,11 +299,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
      D664 (the month fits the screen) while expanded. */
   const expandKey = () => { const v = viewerId(); return v ? `inp:calexpand:${v}` : null }
   const [expanded, setExpanded] = useState(() => { try { const k = expandKey(); return !!k && localStorage.getItem(k) === '1' } catch { return false } })
-  const toggleExpanded = () => setExpanded(on => {
-    const next = !on
+  /* the next value is worked out first and the browser's storage written beside the state, never inside its updater:
+     React may run an updater twice, and a write there would happen twice */
+  const toggleExpanded = () => {
+    const next = !expanded
     try { const k = expandKey(); if (k) { if (next) localStorage.setItem(k, '1'); else localStorage.removeItem(k) } } catch { /* the month still turns */ }
-    return next
-  })
+    setExpanded(next)
+  }
   /* which late input's note is showing in the opened day (its entry's key) */
   const [rmkDraft, setRmkDraft] = useState('')
   /* the title box's own Escape is in flight: the blur it causes writes nothing (D732 — `titleKey`, in the opened day) */
@@ -404,6 +400,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     }
     window.addEventListener('keydown', esc, true)
     return () => window.removeEventListener('keydown', esc, true)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- cancelPick reads only pickFor, pickWords and pickIso (named here) and setters; re-arming per render would reorder the window's Escape listeners
   }, [pickFor, pickWords, pickIso])
 
   /* THE PICKER'S THREE ENDS, one body each — its Cancel, Escape and OK all come here. A note being WRITTEN is finished
@@ -427,7 +424,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   }
   const finishNewNote = (ids: string[]) => { if (pickWords || ids.length) writeInputs(() => addPlanPuck(pickIso, pickWords, ids)) }
   const cancelPick = () => { if (pickFor === '') finishNewNote([]); shutPick() }
-  settlePick.current = pickFor != null ? cancelPick : null
+  /* written after each commit, never during a render React may throw away; declared BEFORE the undo reveal's layout
+     effect below, which may close the day through showDay() and so read it in the same commit */
+  useLayoutEffect(() => { settlePick.current = pickFor != null ? cancelPick : null })
   /* THE KEYBOARD STAYS IN THE PICKER while it is up (Sol S1): it is a blocking chooser, and Tab used to walk out of it
      onto the notes beneath. It takes the focus as it opens; Tab and Shift+Tab turn round at its ends. */
   useEffect(() => {
@@ -534,8 +533,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     setCalMonth({ y: cur.y + Math.floor(m0 / 12), m: ((m0 % 12) + 12) % 12 + 1 })
     notify()
   }
-  /* keep the pointer machines' stepper current — see `live` above */
-  stepRef.current = step
+  /* keep the pointer machines' stepper current — see `live` above (the gesture effect, wired once, must always call the
+     CURRENT month stepper, never the one captured on its first render, which would page from the wrong month forever) */
   live.current.step = step
   const goToday = () => {
     const d = new Date(); const ny = d.getFullYear(), nm = d.getMonth() + 1

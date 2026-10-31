@@ -56,7 +56,8 @@ function Menu({ id, label, title, children, icon, active }) {
         aria-expanded={open} onClick={() => setOpen(o => !o)}>{icon ? label : <>{label} ▾</>}</button>
       {/* Closing on bubble, so the item's own handler has already run — the
           file pickers throw if anything awaits before them. */}
-      <div className={'menupanel' + (open ? ' on' : '')} id={id + 'MenuPanel'}
+      {/* role="presentation": the panel is not a control — it only hears a press on one of its buttons go by, to close */}
+      <div className={'menupanel' + (open ? ' on' : '')} id={id + 'MenuPanel'} role="presentation"
         style={at ? { left: at.left + 'px', top: at.top + 'px', maxHeight: at.maxHeight + 'px' } : undefined}
         onClick={e => { if (e.target.closest('button')) setOpen(false); }}>
         {children}
@@ -105,6 +106,7 @@ function HeaderSearch() {
     if (!showList || !ul.current) return;
     const li = ul.current.querySelector('.findrow.on');
     if (li && li.scrollIntoView) li.scrollIntoView({ block: 'nearest' });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- core.searchAt is a live module binding: when ↑ ↓ move the ring to another row, the newly ringed row is scrolled into view
   }, [showList, core.searchAt, hitIds]);
   const pick = i => { core.searchGo(i); setList(false); if (input.current) input.current.blur(); };
   useLayoutEffect(() => {
@@ -134,7 +136,7 @@ function HeaderSearch() {
         style={at ? { top: at.top + 'px' } : undefined}>
         {/* one search box (owner D1127, 21 Oct 26): the app's line magnifier inside the box, as in every other search box */}
         <span className="findbox"><SrchGlyph />
-        <input id="hSearch" ref={input} placeholder="Find event…" value={core.searchQ}
+        <input id="hSearch" ref={input} placeholder="Find event…" aria-label="Find event" value={core.searchQ}
           role="combobox" aria-autocomplete="list" aria-expanded={showList} aria-controls="hSearchList"
           autoComplete="off"
           onFocus={() => setList(true)} onBlur={() => setList(false)}
@@ -161,16 +163,45 @@ function HeaderSearch() {
   );
 }
 
-export default function Header() {
-  /* the dropdown carries syllabus IDS (option value) and shows the label (§9) */
-  const sylIds = core.ready ? core.orderedSylIds() : [];
-  const sylValue = (core.plan && core.plan.sylId) || '';
-  const sylOptions = (sylValue && !sylIds.includes(sylValue)) ? [...sylIds, sylValue] : sylIds;
+/* The standalone Tracker's own ↶ ↷ (inside Raptor the pair is in the app's top bar — see Header below). A component of
+   its own so the bar's function stays short (React Doctor, 31 Oct 26); it draws the same two buttons as before. */
+function OwnUndoRedo() {
+  return (
+    <>
+      <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>
+      <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>
+    </>
+  );
+}
+
+/* The save corner at the bar's far right — its words, then ✓ Save changes. Its own component for the same reason as
+   OwnUndoRedo; the comments that say why it is drawn this way stay at its place in the bar. */
+function SaveSlot() {
   /* Unsaved FLOW edits only. Until 9 Sep 26 this also watched the user's file
      (`fileDirty`), so a mark lit the button and pressing it opened a save-file
      dialog; the store is the record now, marks save themselves, and the File
      menu is import/export only. */
   const dirty = core.sylDirty;
+  const words = core.saveWords();
+  return (
+    <span className="saveslot">
+      {/* Green here while the orange button is showing would tell the user
+          their work is both safe and at risk at once (the status reports
+          the last write; the button, the flow edits still waiting). Keep
+          the words, drop the green until nothing is outstanding. Errors
+          stay red. */}
+      {/* no words while the button shows — it says it (core.saveWords, [TRK-RETEST-NOTES] C14) */}
+      <span id="saveStat" title={words.title} className={'savestat ' + words.cls} hidden={!words.text}>{words.text}</span>
+      {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
+    </span>
+  );
+}
+
+export default function Header() {
+  /* the dropdown carries syllabus IDS (option value) and shows the label (§9) */
+  const sylIds = core.ready ? core.orderedSylIds() : [];
+  const sylValue = (core.plan && core.plan.sylId) || '';
+  const sylOptions = (sylValue && !sylIds.includes(sylValue)) ? [...sylIds, sylValue] : sylIds;
   /* ONE BAR FOR EVERYONE (owner, 23 Sep 26 — D121: "admin and member should
      have the same access authority"). The File menu (Import, Export) was the
      admin's from 7 Sep 26 and was hidden from a member here; it is drawn for
@@ -252,8 +283,7 @@ export default function Header() {
         {/* [UNDO-TOPBAR] (owner D347 / D349 (2), 28 Sep 26): inside Raptor the pair is drawn in the app's TOP BAR, in
             Edit Schedule's place and look, still undoing the Tracker's own changes (undo-bridge.js); the standalone
             Tracker keeps it here — nothing hosts it there (Fable's red team 3). */}
-        {!trackerHosted() && <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>}
-        {!trackerHosted() && <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>}
+        {trackerHosted() ? null : <OwnUndoRedo />}
 
         {/* Show All moved to the right of the syllabus group (owner, 9 Sep 26).
             On a phone the button is hidden: the Show All tab under the bar is
@@ -313,16 +343,7 @@ export default function Header() {
             room, so the first edit can no longer push Save onto a second row and
             slide the chart down under the pointer at a laptop width
             ([HUMAN-RETEST] w3-F5, w3-F6). */}
-        <span className="saveslot">
-          {/* Green here while the orange button is showing would tell the user
-              their work is both safe and at risk at once (the status reports
-              the last write; the button, the flow edits still waiting). Keep
-              the words, drop the green until nothing is outstanding. Errors
-              stay red. */}
-          {/* no words while the button shows — it says it (core.saveWords, [TRK-RETEST-NOTES] C14) */}
-          <span id="saveStat" title={core.saveWords().title} className={'savestat ' + core.saveWords().cls} hidden={!core.saveWords().text}>{core.saveWords().text}</span>
-          {dirty ? <button className="sm dirty" id="saveChanges" title="Save your changes to the syllabus — events, prerequisites and lines" onClick={core.saveChangesClick}>✓ Save changes ●</button> : null}
-        </span>
+        <SaveSlot />
       </div>
     </header>
   );

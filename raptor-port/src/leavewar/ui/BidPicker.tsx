@@ -459,7 +459,10 @@ export function BidPicker({
   /* …and as the window leaves the screen by ANY road — the ⋯'s panels close it themselves (Give FO, Remove, Post out's and
      Post in's confirm): the fresh read's R7. Kept in a ref, saved once: a save already made clears it. */
   const heldSave = useRef<(() => void) | null>(null)
-  heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) } : null
+  /* kept current once each render has committed (read only by a press and by the window's leaving, both after it) */
+  useLayoutEffect(() => {
+    heldSave.current = held && heldEdit ? () => { const p = patchOf(draftOf(held.rec), heldEdit); if (p) setRequestWords(personId, date, held.rec.id, p) } : null
+  })
   useEffect(() => () => { heldSave.current?.() }, [])
   const flushWords = () => {
     if (heldSave.current) { heldSave.current(); heldSave.current = null; setHeldEdit(null) }

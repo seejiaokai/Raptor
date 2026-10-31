@@ -21,7 +21,10 @@ const pageEl = () => document.getElementById(PAGE_ID);
 function Board() {
   /* The flow chart is rendered imperatively into this container by the core
      engine (renderBoard), exactly as in the original app. */
-  return <div className="board" id="board" tabIndex={0} />;
+  return (
+    // eslint-disable-next-line react-doctor/no-noninteractive-tabindex -- the chart is the one Tab stop the arrow keys drive (owner D980); the engine listens for its keys on this box
+    <div className="board" id="board" tabIndex={0} />
+  );
 }
 
 function Resizer() {
@@ -81,6 +84,7 @@ export default function App({ active = true }) {
      7 Sep 26 "no chart after re-login" case). */
   /* ...and LANDS it, as a pick does ([TRK-REMOUNT-LANDING], 17 Oct 26): the same person signing out and in again came
      back to the chart's top corner, because this redraw never asked where to land (core.landChart) */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- core.ready is a live module binding the async boot flips from false to true; it is the trigger that draws the board once
   useEffect(() => { if (core.ready && !core.bootError && !core.resumeForPerson()) { core.renderBoard(); core.notify(); core.landChart(); } }, [core.ready]);
   /* ...and when the FIRST course arrives on a Tracker that had none ([DB-READINESS] group A, phase 5 — D463): the board's
      box mounts only with it, empty, so it is drawn once it is there */
@@ -126,6 +130,7 @@ export default function App({ active = true }) {
       document.removeEventListener('click', clickAway);
       window.removeEventListener('beforeunload', unload);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- core.ready is a live module binding that changes when the boot ends; the page's key and click handlers must bind then
   }, [active, core.ready]);
 
   /* The phone's Flow / Info switch (was a class on <body>) rides the .tr-root

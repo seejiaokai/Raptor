@@ -43,7 +43,9 @@ export function sameDef(a, b) {
    the import. */
 export function normalizeImport(parsed, existing) {
   const version = parsed.version;
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- Import's working copy of the file must be exactly its JSON form (undefined fields dropped, an odd value never a throw), and the caller's object is never touched
   let charts = parsed.charts ? JSON.parse(JSON.stringify(parsed.charts)) : null;
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- Import's working copy of the file must be exactly its JSON form (undefined fields dropped, an odd value never a throw), and the caller's object is never touched
   let students = parsed.students ? JSON.parse(JSON.stringify(parsed.students)) : null;
   if (charts && (version == null || version < 3)) charts = upgradeSyllabi(charts).charts;   /* v1/v2 → id + derived sylcat */
   const chartsCat = (charts && Array.isArray(charts.sylcat)) ? charts.sylcat : null;

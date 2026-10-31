@@ -122,6 +122,7 @@ export function upgradeSyllabi(charts) {
   const order = orderIn.map(assign);
   const out = { order, syllabi, layouts, sylcat };
   if (src.eventInfo != null) out.eventInfo = src.eventInfo;
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the id converter's output is stored as is, so it must be exactly its JSON form: null-prototype maps made plain, undefined fields dropped, an odd value never a throw mid-import
   return { charts: JSON.parse(JSON.stringify(out)), map: Object.assign({}, map) };
 }
 

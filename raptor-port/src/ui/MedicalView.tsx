@@ -162,14 +162,16 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
   const [lit, setLit] = useState<{ iid: string; n: number } | null>(null)
   const litT = useRef<ReturnType<typeof setTimeout> | null>(null)
   useEffect(() => () => { if (litT.current) clearTimeout(litT.current) }, [])
+  /* run when the ask changes (each save asks with a new one; spending it puts null back), not after every commit */
+  const reveal = MEDREVEAL
   useLayoutEffect(() => {
-    const r = MEDREVEAL
+    const r = MEDREVEAL   // read as it stands: an ask already spent is not spent twice
     if (!r) return
     clearMedReveal()
     setLit(l => ({ iid: r.iid, n: (l?.n ?? 0) + 1 }))
     if (litT.current) clearTimeout(litT.current)
     litT.current = setTimeout(() => setLit(null), 6000)
-  })
+  }, [reveal])
   useEffect(() => {
     if (lit) bringRowOnScreen(document.querySelector(`[data-medcard="${lit.iid}"]`))
   }, [lit])

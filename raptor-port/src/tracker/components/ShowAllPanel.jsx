@@ -32,6 +32,7 @@ function SaEdit({ id, onDone }) {
   };
   return (
     <div className="saedit" onKeyDown={onKey}>
+      {/* eslint-disable-next-line react-doctor/no-autofocus -- not on a page load: the editor opens because Edit was pressed, and the keyboard goes into it (design guide §2) */}
       <label>Name<input value={v.name} onChange={set('name')} autoFocus /></label>
       <label>Type / format<input value={v.fmt} onChange={set('fmt')} placeholder={core.FMT_HINT} /></label>
       <label>Hours<input value={v.hrs} onChange={set('hrs')} placeholder="e.g. 1.5 Hrs" /></label>
@@ -107,14 +108,15 @@ export default function ShowAllPanel() {
   });
   return (
     <>
-      <div className="overlay" id="saOverlay" style={{ zIndex: 80, display: 'block' }} onClick={core.closeShowAll}></div>
+      {/* role="presentation": the shade, not a control — a tap on it closes the list, as Escape does */}
+      <div className="overlay" id="saOverlay" style={{ zIndex: 80, display: 'block' }} role="presentation" onClick={core.closeShowAll}></div>
       <div id="showAllPanel" className="on">
         <div className="sahd">
           {/* The tail is dropped on a phone, where it wrapped onto three lines
               and pushed the first event down to a third of the screen. */}
           <h2>All events<span className="satl"> — name, crew &amp; prerequisites</span></h2>
           {/* one search box (owner D1127): the app's line magnifier inside it */}
-          <span className="findbox"><SrchGlyph /><input id="saSearch" placeholder="filter…" style={{ width: 150 }} value={q} onChange={e => setQ(e.target.value)} /></span>
+          <span className="findbox"><SrchGlyph /><input id="saSearch" placeholder="filter…" aria-label="Filter the events" style={{ width: 150 }} value={q} onChange={e => setQ(e.target.value)} /></span>
           <button id="saClose" onClick={core.closeShowAll}>Close</button>
         </div>
         <div id="saBody">{blocks.length ? blocks : <div className="mini">No matches.</div>}</div>

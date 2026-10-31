@@ -91,7 +91,7 @@ function readable(L, fam) {
 }
 const byRowOrd = byOrd(r => r.id);
 const sortRows = list => list.slice().sort((a, b) => byRowOrd(a.row, b.row));
-const without = (o, drop) => { const c = {}; for (const k of Object.keys(o)) if (!drop.includes(k)) c[k] = o[k]; return c; };
+const without = (o, drop) => { const skip = new Set(drop), c = {}; for (const k of Object.keys(o)) if (!skip.has(k)) c[k] = o[k]; return c; };
 
 /* the chart row's parts: the catalogue entry (every field but the row's own), its place, hidden, deleted, events */
 const CHART_OWN = ['ord', 'hidden', 'tomb', 'def'];

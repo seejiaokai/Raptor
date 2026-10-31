@@ -30,7 +30,7 @@ export function leavewarAdapter(wb: Whiteboard): StorageBackend {
   }
 }
 
-/* the sync target tracker/storage.js's useStorageImpl accepts */
+/* the sync target tracker/storage.js's setStorageImpl accepts */
 export function trackerTarget(wb: Whiteboard): { get(k: string): string | null; set(k: string, v: string): void; remove(k: string): void; keys(): string[] } {
   return {
     get: k => wb.get('tracker', k),

@@ -19,7 +19,7 @@
 //
 // Every write is the store's (`openDates`, `closeDates`, `setStretch` — admin only, re-checked there).
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import {
   memberToday, monthSpan, monthState, openFrom, periodMonths, stretchDays, stretchLabel, type OpenStretch,
 } from '../engine'
@@ -135,7 +135,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     endDrag()
   }
   const onUpRef = useRef(onUp)
-  onUpRef.current = onUp
+  useLayoutEffect(() => { onUpRef.current = onUp })
   const tap = (ix: number) => {
     if (swallowClick.current) { swallowClick.current = false; return }
     if (!admin || isPast(ix)) return
@@ -159,7 +159,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
      and the window stays. Listened on the WINDOW in its capture phase, so it runs before the Sheet's own Escape (on the
      document) and can stop it; only while the Leave War is the page showing, as the Sheet's. */
   const editingRef = useRef(editing)
-  editingRef.current = editing
+  useLayoutEffect(() => { editingRef.current = editing })
   useEffect(() => {
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || !editingRef.current) return
@@ -174,7 +174,7 @@ export function OpenDatesSheet({ onClose }: { onClose: () => void }) {
     return () => window.removeEventListener('keydown', esc, true)
   }, [])
   const startEditRef = useRef(startEdit)
-  startEditRef.current = startEdit
+  useLayoutEffect(() => { startEditRef.current = startEdit })
   const closeExact = () => { if (editing && editing !== 'new' && say(closeDates(editing.from, editing.to))) startEdit(null) }
   const exactFoot = (forNew: boolean) => (
     <div className="od-apply">

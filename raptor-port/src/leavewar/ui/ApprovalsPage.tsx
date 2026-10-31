@@ -24,7 +24,7 @@
 
    NEW (D1231's reading, 8.4): the moment he OPENED the tab is stored (state/apprseen.ts) and the previous one kept for the
    visit: a request placed since wears the cyan dot, and "New N" shows only those. The dots go when he leaves Approvals. */
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { boxText, kindOf, parseCell } from '../engine'
 import { decideRequests, getState, getVersion, lineStale, postedOutBy, selectWar, type DecideTo } from '../state/store'
 import { figuresOf, linesOfWar, pendingCount, pendingElsewhere, type ApprFigures, type ApprLine } from '../approvals'
@@ -110,6 +110,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const pid = me()
   /* the moment he opened it — written now, the previous one kept for this visit (state/apprseen.ts) */
   const [prev, setPrev] = useState<number | null>(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- once per visit: opening writes the moment he opened it, so a re-run would move his "since you last looked" mark mid-visit
   useEffect(() => { setPrev(openApprovals(pid != null ? String(pid) : null)) }, [])
   const [filter, setFilterRaw] = useState<Filter>({ kind: 'all' })
   const [picking, setPicking] = useState(false)
@@ -117,6 +118,7 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
   const pickBtn = useRef<HTMLButtonElement | null>(null)
   /* "Pick dates…" is a click-open popup: it closes on a press outside it (its button counting as inside) and on Escape,
      the keyboard back on its button (4 Sep 26; the scenario designer's 14) */
+  // eslint-disable-next-line react-doctor/effect-needs-cleanup -- a press's own listeners must outlive this effect (that press closes the picker, which ends it) to take the click it makes; each removes itself at that click, a cancel, the next press or 500 ms after the lift
   useEffect(() => {
     if (!picking) return
     const down = (e: Event) => {
@@ -248,20 +250,24 @@ export function ApprovalsPage({ shown }: { shown: boolean }) {
     }
     for (const l of fresh) if (!used.has(l)) out.push({ key: l.key, line: l, ids: new Set(recIds(l)) })
     out.sort((a, b) => (a.line.placedAt ?? -1) - (b.line.placedAt ?? -1) || (a.line.from < b.line.from ? -1 : a.line.from > b.line.from ? 1 : 0) || (a.key < b.key ? -1 : 1))
-    rowsRef.current = { period: st.period.id, rows: out }
     return out
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fresh, st.period.id, tick])
+  /* the rows as drawn, kept for the next merge and for Approve / Refuse — written once the render that drew them has
+     committed, never during a render React may throw away (the next merge, and every press, comes after it) */
+  const periodNow = st.period.id
+  useLayoutEffect(() => { rowsRef.current = { period: periodNow, rows } })
 
   /* the figures, once per change of the war, for the lines still pending (a lit line keeps the figures it was decided on) */
+  const people = st.people
   const figs = useMemo(() => {
     const m = new Map<string, ApprFigures>()
     for (const r of rows) {
       if (r.lit || r.msg?.kind === 'stale') continue
-      m.set(r.key, figuresOf(r.line, st.people.find(p => p.id === r.line.personId)))
+      m.set(r.key, figuresOf(r.line, people.find(p => p.id === r.line.personId)))
     }
     return m
-  }, [rows])
+  }, [rows, people])
   for (const r of rows) { const f = figs.get(r.key); if (f) r.figs = f }
 
   const seen = prev ?? Number.MAX_SAFE_INTEGER

@@ -297,7 +297,7 @@ export function Matrix() {
   /* the selection as it now stands, for the select machine wired once; and the drag window's way to keep its typed words
      when a NEW drag replaces it (the night's code read, R4) */
   const selRef = useRef<Selection | null>(null)
-  selRef.current = sel
+  useLayoutEffect(() => { selRef.current = sel })
   const selFlushRef = useRef<(() => void) | null>(null)
   const [moveSel, setMoveSel] = useState<Selection | null>(null)
   const [moveErr, setMoveErr] = useState('')
@@ -705,7 +705,7 @@ export function Matrix() {
      after the window narrowed landed at once, with no Confirm. It reads this ref at the tap instead; a change of width
      takes down a staged landing (the effect below). */
   const phoneRef = useRef(false)
-  phoneRef.current = phone
+  useLayoutEffect(() => { phoneRef.current = phone })
   useEffect(() => {
     setMovePreview(null); setEventMovePreview(null)
     const w = wrapRef.current
@@ -751,9 +751,10 @@ export function Matrix() {
   /* THE LIVE RECORDS, NOT THE ONES OF THE MOMENT THE MOVE BEGAN (Astra's final read, 4; Fable's note, 27 Sep 26): the move
      machine (`wireMove`, wired once per `moveSel`) keeps its callbacks for the whole move, and they used to hold the
      records of the render that wired them — a record changed or gone under a move was still judged as it was. They
-     read the records through this ref, which every render keeps current. */
+     read the records through this ref, which every render keeps current — written once it has committed (the move machine
+     reads it only at a hover, a tap or a Confirm, all after). */
   const moveLive = useRef({ movers, moveAnchor })
-  moveLive.current = { movers, moveAnchor }
+  useLayoutEffect(() => { moveLive.current = { movers, moveAnchor } })
   const landingFor = (targetDate: string): Cell[] => {
     const { movers, moveAnchor } = moveLive.current
     if (moveAnchor === null) return []
@@ -923,6 +924,7 @@ export function Matrix() {
   // error, and the picker with it).
   const colWin = colWinRaw && months.length >= WINDOW_FROM_MONTHS ? clampWin(colWinRaw, months.length) : null
   const colWinRef = useRef(colWin)
+  // eslint-disable-next-line react-doctor/no-ref-current-in-render -- written during render on purpose: the Required and counter rows call the grid's re-measure from their own layout effects, which run before this component's, and it must read this render's window, never the last one
   colWinRef.current = colWin
   // THE PLACEHOLDERS (owner, 5 Sep 26 — "do the placeholders + moving", picked
   // off a mockup of four scrolling styles). One empty cell before the first
@@ -1040,6 +1042,7 @@ export function Matrix() {
   // because the hazard is real. Every measure reads this ref, never its
   // closure.
   const liveRef = useRef({ drawnMonths, drawnDates, people, rowSpans })
+  // eslint-disable-next-line react-doctor/no-ref-current-in-render -- written during render on purpose: the Required and counter rows call the grid's re-measure from their own layout effects, which run before this component's, and it must read this render's months and rows, never the last ones
   liveRef.current = { drawnMonths, drawnDates, people, rowSpans }
   const coarsePointer = () => typeof window.matchMedia === 'function' && window.matchMedia('(pointer: coarse)').matches
   // The war's month structure for the placeholders' width estimate (see
@@ -1151,7 +1154,7 @@ export function Matrix() {
   }
   /* the on-screen listener is wired once; it reaches this render's jumpTo through the ref */
   const jumpToRef = useRef(jumpTo)
-  jumpToRef.current = jumpTo
+  useLayoutEffect(() => { jumpToRef.current = jumpTo })
 
   // Which month the grid is showing, so the strip says where you ARE and not
   // only where you can go. Held as state rather than derived during render
@@ -1250,7 +1253,7 @@ export function Matrix() {
   const [zoom, setZoom] = useState(() =>
     typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
   const zoomRef = useRef(zoom)
-  zoomRef.current = zoom
+  useLayoutEffect(() => { zoomRef.current = zoom })
   // When a pinch last laid its zoom out: the scroll it writes straight after (the day under the fingers brought back
   // under them) is a JUMP, not a fling — see onWrapScroll and the pinch's wiring below.
   const pinchAtRef = useRef(0)
@@ -1481,7 +1484,7 @@ export function Matrix() {
   /* the latest render's reading, for the move machine — wired once per move, its callbacks would otherwise read the
      verdicts of the render that wired them */
   const flaggedRef = useRef(flaggedNow)
-  flaggedRef.current = flaggedNow
+  useLayoutEffect(() => { flaggedRef.current = flaggedNow })
   /* compare a "before" with the grid as it is now; only a WORSENING raises the bubble (a row to amber or red, or amber
      to red, on a day — or, D1345, a row already amber or red taken lower) — one rule for a bid placed, a filing and a
      bid moved */
@@ -1578,9 +1581,10 @@ export function Matrix() {
     moveBeforeRef.current = null
     raiseIfWorse(before)
   })
-  /* gone at his next tap, anywhere */
+  /* gone at his next tap, anywhere — wired again only when its words change (a note that only moves keeps its listeners) */
+  const bubbleText = bubble ? bubble.text : null
   useEffect(() => {
-    if (!bubble) return
+    if (bubbleText === null) return
     /* a press on the foot note's own Show is not "a tap elsewhere" (D1277) — Show's click does its work and ends it */
     const inNote = (e: Event) => e.target instanceof Element && !!e.target.closest('[data-testid="manning-bubble"]')
     /* A TAP, NOT A PRESS (the walk's W1 8): the note went at a finger's first touch, so a scroll — the way to the Manning
@@ -1619,7 +1623,7 @@ export function Matrix() {
       document.removeEventListener('pointerup', onUp)
       window.removeEventListener('scroll', onScroll, { capture: true }); if (raf) window.cancelAnimationFrame(raf)
     }
-  }, [bubble ? bubble.text : null])
+  }, [bubbleText])
   /* …and a change of WIDTH across the phone line after the page opened (a desktop window narrowed under 700, a phone
      turned on its side and back — the M2 code read's F6): the fold is decided again by the same rule, folded on a phone
      unless he opened it there, open on a desktop (D1258). Not on the first draw — the state's own start decided that. */
@@ -1640,12 +1644,13 @@ export function Matrix() {
     try { const k = manningKey(); setCountsOpen(!!k && localStorage.getItem(k) === 'open') } catch { setCountsOpen(false) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewerNow])
-  const toggleManning = () => setCountsOpen(o => {
-    const next = !o
+  /* the next state worked out first and remembered outside the setter — an updater React may run twice must not write */
+  const toggleManning = () => {
+    const next = !countsOpen
+    setCountsOpen(next)
     const k = manningKey()
     if (phoneNow && k) { try { localStorage.setItem(k, next ? 'open' : 'shut') } catch { /* a view convenience only */ } }
-    return next
-  })
+  }
 
   /* WHICH CATEGORY GROUPS ARE FOLDED AWAY (owner, 28 Aug 26 — "allow me to
      minimise categories on leave war"). Same doctrine as the manning collapse
@@ -1688,6 +1693,7 @@ export function Matrix() {
   // own inputs moved, never with a stale memo.
   const widthGenRef = useRef<object>(widthGen)
   const widthGenSeenRef = useRef(widthGen)
+  // eslint-disable-next-line react-doctor/no-ref-current-in-render -- written during render on purpose: the Required and counter rows replace this token from their own layout effects (onArchiveChange), which run before this component's, so a write after them would undo theirs
   if (widthGenSeenRef.current !== widthGen) { widthGenSeenRef.current = widthGen; widthGenRef.current = widthGen }
   // What a width change must refresh, published by the effects that own it: the
   // strip/cache/placeholder/bottom-bar geometry, and the frozen header's pinned
@@ -1768,7 +1774,7 @@ export function Matrix() {
   // never sees a new function prop; the row reads `.current` at event time,
   // so every handler sees this render's live state (qualPop, the drag).
   const rowApi = useRef<RowApi>(null!)
-  rowApi.current = {
+  useLayoutEffect(() => { rowApi.current = {
     startRowDrag,
     setWhoOpen: openWho,
     /* the tap pins the posting sheet it opens (W3-F5) — read off the day as it stands at the tap */
@@ -1781,7 +1787,7 @@ export function Matrix() {
     chipEnter: openQualsAt,
     chipLeave: () => setQualPop(null),
     chipClick: (p, el) => { if (qualPop?.id === p.id) setQualPop(null); else openQualsAt(p.id, el) },
-  }
+  } })
   /* The chip: the person's CAT, coloured by CAT (an SXO keeps gold wherever they
      sit). When they hold a displayed qualification it becomes a live control —
      hover (desktop) or tap (phone) to list them; the click is swallowed so it
@@ -1995,6 +2001,7 @@ export function Matrix() {
         return
       }
       if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
+      // eslint-disable-next-line react-doctor/no-impure-state-updater -- only reads the layout, and only when the bar is not yet frozen or is forced: read outside, every column would be measured on every scroll while the bar is frozen
       setStuck(prev => {
         if (prev && !force) return prev
         /* never a stretched grid measured, whoever asks (a cell's own box under a stretch is k times its width) */
@@ -2189,6 +2196,7 @@ export function Matrix() {
     const hold = HBAR_HOLD_MS - (Date.now() - hbarUserTsRef.current)
     if (hold > 0) {
       if (hbarCatchUpRef.current == null) {
+        // eslint-disable-next-line react-doctor/effect-needs-cleanup -- the handle is kept in hbarCatchUpRef, cleared by the grid's unmount effect (with the rest timer)
         hbarCatchUpRef.current = setTimeout(() => { hbarCatchUpRef.current = null; syncHbar() }, hold + 10)
       }
       return
@@ -3139,6 +3147,7 @@ export function Matrix() {
       return p.key === n.key && p.left === n.left && p.top === n.top && p.width === n.width && p.height === n.height && p.cutL === n.cutL && p.cutR === n.cutR
     }) ? prev : next))
   }
+  // eslint-disable-next-line react-doctor/no-ref-current-in-render -- written during render on purpose: the Required and counter rows call it (onArchiveChange) from their own layout effects, which run before this component's
   measureBidBoxRef.current = measureBidBox // this render's, for `onArchiveChange`
   useLayoutEffect(() => {
     measureBidBox()
@@ -3525,7 +3534,7 @@ export function Matrix() {
   // Feed the drag-select controller live state. A member drags on his own row at any time since the stages went
   // (D1177): a fill writes only his open days from today and counts the rest skipped; a Delete over days since closed
   // takes his own pending bids there (D1225). An admin drags anywhere.
-  selCtxRef.current = {
+  useLayoutEffect(() => { selCtxRef.current = {
     // A member drags only WITHIN their own row: the rectangle's rows come from
     // this list, so limiting it to the viewer keeps a member's drag on their
     // own row (a date range still selects freely along it) while an admin
@@ -3555,7 +3564,7 @@ export function Matrix() {
     // cannot rescue it for us: `0` is not nullish, so it would pass straight
     // through (review, 6 Sep 26).
     leftEdge: () => { const w = wrapRef.current; return w ? w.getBoundingClientRect().left + frozenWidth(w) : -Infinity },
-  }
+  } })
 
   const csOf = (id: string): string => displayRoster().find(p => p.id === id)?.callsign ?? id
 

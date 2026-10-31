@@ -2938,3 +2938,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** in the walk-script guidance: every check of a clip, a pin or a hide reads both sides — what must not show AND what must show — and a pinch step asserts its own zoom changed.
 
 **Principle:** A check that only forbids can be satisfied by nothing; pair every "must not" with a "must".
+
+### Observation 756: A before-build from `git archive` needs the scripts folder too
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [REACT-DOCTOR-CLEANUP] — building main's code in a scratch folder as the "before" side of a nothing-on-screen-changes comparison.
+**Skill:** walk-scripts guidance (raptor-port/docs/walk-scripts.md §8, "The build before the change")
+**Type:** internal
+**Phase/Area:** §8, archiving the old build
+
+**Issue:** the guide says to archive "the source and the config" and leave the bulky folders out. An archive of src, public, the configs, reference and sample-data failed to build: the type check compiles test files that import `scripts/gatelock.mjs`. Adding `scripts/`, `e2e/`, `probes/` and `playwright.config.ts` fixed it (the picture folders still left out — they are what make a whole `raptor-port` archive take minutes).
+
+**Suggested improvement:** §8 names the folders the type check needs: everything under `raptor-port/` except `docs/` (and `node_modules`, joined by a junction).
+
+**Principle:** A recipe that says "the source" should name the folders, because the build's own definition of source is wider than the app's.

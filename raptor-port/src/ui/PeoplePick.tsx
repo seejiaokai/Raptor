@@ -16,7 +16,7 @@
 
    The picker holds no state and writes nothing: its owner keeps `people` (in the order picked — the first is the one
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitInput. */
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { isUpchit, needsDoc, placeholderKind, placeholderProblem, shapeProblem } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
@@ -161,8 +161,10 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
      design guide §5a, D895): once the drag is the picker's, held at the top or the foot of the window (or the page) the
      faces are in, that scrolls up or down at the app's one edge feel (ui/edgescroll.ts) — and each face that slides
      under the still pointer is passed over, as if the pointer had moved onto it. */
+  /* who is picked, for the drag's handlers: today's list after each commit (never written during a render React may throw
+     away), moved on by the drag itself between one pick and the redraw it causes */
   const live = useRef(people)
-  live.current = people
+  useLayoutEffect(() => { live.current = people })
   const drag = useRef<{
     id: string; on: boolean; x: number; y: number; active: boolean; touch: boolean; seen: Set<string>
     /** the edge scroll, from the moment the drag is the picker's; and where the pointer last was */

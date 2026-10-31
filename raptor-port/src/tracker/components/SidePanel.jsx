@@ -8,17 +8,13 @@ import { DateBox } from './DateBox.jsx';
    (Syllabus) and Expected end date — all three already had their own boxes in
    the panel above, and setting a lull meant choosing "Lull start", clicking,
    choosing "Lull end", clicking. It only sets lull periods now. */
-function LullCalendar() {
-  const pick = core.lullPick;
-  const s = pick.student;
-  const calView = core.calView;
+/* One month of the lull calendar's days, Monday first, six rows — out of LullCalendar so its body stays short enough to
+   follow (React Doctor, 31 Oct 26). Each day is a real button since 31 Oct 26, so the keyboard reaches it; `.trbtn`
+   (tracker.css) takes the button's own look off, and the cell is drawn by its `.cal .day` rules exactly as before. */
+function lullCells(calView, pick, spans) {
   const y = calView.getFullYear(), m = calView.getMonth();
   const first = new Date(y, m, 1); const start = new Date(first); start.setDate(1 - ((first.getDay() + 6) % 7)); // Mon start
   const today = core.parseD(core.isoToday());
-  const editing = pick.index >= 0 ? (core.lulls[s] || [])[pick.index] : null;
-  const spans = (core.lulls[s] || [])
-    .filter((l, i) => i !== pick.index)
-    .map(l => [core.parseD(l.start), core.parseD(l.end)]).filter(a => a[0] && a[1]);
   const cells = [];
   for (let i = 0; i < 42; i++) {
     const d = new Date(start.getTime() + i * core.DAY); const iso = core.isoOf(d);
@@ -31,18 +27,32 @@ function LullCalendar() {
     if (spans.some(([a, b]) => d >= a && d <= b)) cols.push('var(--red-wash)');
     const bg = core.sliceBg(cols);
     cells.push(
-      <div key={iso} className={cls} data-iso={iso} style={bg ? { background: bg } : undefined}
-        onClick={() => core.lullDayClick(iso)}>{d.getDate()}</div>
+      <button type="button" key={iso} className={cls + ' trbtn'} data-iso={iso} style={bg ? { background: bg } : undefined}
+        onClick={() => core.lullDayClick(iso)}>{d.getDate()}</button>
     );
   }
+  return cells;
+}
+
+function LullCalendar() {
+  const pick = core.lullPick;
+  const s = pick.student;
+  const calView = core.calView;
+  const mine = core.lulls[s] || [];
+  const editing = pick.index >= 0 ? mine[pick.index] : null;
+  const spans = mine
+    .filter((l, i) => i !== pick.index)
+    .map(l => [core.parseD(l.start), core.parseD(l.end)]).filter(a => a[0] && a[1]);
+  const cells = lullCells(calView, pick, spans);
   const mn = calView.toLocaleDateString('en-GB', { month: 'long', year: 'numeric' });
   return (
     <>
-      <div className="lullback" onClick={core.closeLullPicker} />
+      {/* role="presentation": the shade, not a control — a tap on it closes the calendar, as Escape does */}
+      <div className="lullback" role="presentation" onClick={core.closeLullPicker} />
       <div className="lullcal on" id="lullCal">
         <div className="lullhd">
           <b>{editing ? 'Change lull period' : 'Set lull period'} — {core.nameOf(s)}</b>
-          <button className="sm" id="lullClose" onClick={core.closeLullPicker}>✕</button>
+          <button className="sm" id="lullClose" aria-label="Close" onClick={core.closeLullPicker}>✕</button>
         </div>
         <div className="mini" id="lullStep">
           {pick.start
@@ -51,9 +61,9 @@ function LullCalendar() {
         </div>
         <div className="cal">
           <div className="hd">
-            <button className="sm" id="lullPrev" onClick={core.calPrev}>‹</button>
+            <button className="sm" id="lullPrev" aria-label="Previous month" onClick={core.calPrev}>‹</button>
             <b>{mn}</b>
-            <button className="sm" id="lullNext" onClick={core.calNext}>›</button>
+            <button className="sm" id="lullNext" aria-label="Next month" onClick={core.calNext}>›</button>
           </div>
           <div className="grid">
             {['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => <div key={d} className="dow">{d}</div>)}
@@ -70,26 +80,28 @@ function LullCalendar() {
 function LullCopy() {
   const c = core.lullCopy;
   const others = core.roster.filter(r => r.id !== c.from);
+  const picked = new Set(c.picked);
   return (
     <>
-      <div className="lullback" onClick={core.closeLullCopy} />
+      {/* role="presentation": the shade, not a control — a tap on it closes the window, as Escape does */}
+      <div className="lullback" role="presentation" onClick={core.closeLullCopy} />
       <div className="lullcal on" id="lullCopy">
         <div className="lullhd">
           <b>Copy {core.nameOf(c.from)}’s lull periods to</b>
-          <button className="sm" id="lullCopyClose" onClick={core.closeLullCopy}>✕</button>
+          <button className="sm" id="lullCopyClose" aria-label="Close" onClick={core.closeLullCopy}>✕</button>
         </div>
         {/* "a tick-list of the other students on the course plus a 'select all'
             row" — the approved 7 Aug design ([HUMAN-RETEST] W2-F5) */}
         {others.length > 1 && (
           <label className="sub lullpick lullall">
-            <input type="checkbox" id="lullCopyAll" checked={others.every(r => c.picked.includes(r.id))}
+            <input type="checkbox" id="lullCopyAll" checked={others.every(r => picked.has(r.id))}
               onChange={e => core.setLullCopyAll(e.target.checked)} /> <b>Select all</b>
           </label>
         )}
         {others.length
           ? others.map(r => (
             <label className="sub lullpick" key={r.id}>
-              <input type="checkbox" value={r.id} checked={c.picked.includes(r.id)}
+              <input type="checkbox" value={r.id} checked={picked.has(r.id)}
                 onChange={e => core.toggleLullCopy(r.id, e.target.checked)} /> {r.name}
             </label>
           ))
@@ -114,7 +126,10 @@ function LullCopy() {
    over: the details bubble (name, type, hours, crew, prerequisites). On a phone
    a long press shows the same bubble, and the tap that ends it is NOT a click —
    the user asked to read, not to jump. The bubble then stays until the next
-   touch anywhere. */
+   touch anywhere.
+   A REAL BUTTON SINCE 31 OCT 26 (React Doctor's clean-up), so the keyboard reaches it: `.trbtn` (tracker.css) keeps
+   the span's look, and `data-dragscroll` keeps a mouse drag that starts on it scrolling this half as before
+   (core.js dragScroll). */
 function EventChip({ id, className, style, title }) {
   const ref = useRef(null);
   const timer = useRef(null), pressed = useRef(false), at = useRef(null);
@@ -123,7 +138,7 @@ function EventChip({ id, className, style, title }) {
   const moved = e => at.current && Math.hypot(e.clientX - at.current.x, e.clientY - at.current.y) > 8;
   useEffect(() => cancel, []);
   return (
-    <span ref={ref} className={className + ' evchip'} style={style} title={title} data-ev={id}
+    <button type="button" ref={ref} className={className + ' evchip trbtn'} style={style} title={title} data-ev={id} data-dragscroll=""
       onClick={() => { if (pressed.current) { pressed.current = false; return; } core.showEvent(id); }}
       onPointerEnter={e => { if (e.pointerType === 'mouse') core.showEventBubble(id, ref.current); }}
       onPointerLeave={e => { if (e.pointerType === 'mouse') core.hideEventBubble(); cancel(); }}
@@ -140,7 +155,7 @@ function EventChip({ id, className, style, title }) {
         }, 450);
       }}
       onPointerUp={cancel} onPointerCancel={cancel} onPointerMove={e => { if (moved(e)) cancel(); }}
-      onContextMenu={e => e.preventDefault()}>{id}</span>
+      onContextMenu={e => e.preventDefault()}>{id}</button>
   );
 }
 
@@ -148,20 +163,21 @@ function EventChip({ id, className, style, title }) {
    individually … ST-01, ST-01X"). Mouse over: a bubble with the day it
    happened. On a phone a tap shows the same bubble, and the next touch
    anywhere puts it away — the same arrangement as the event chips' long
-   press, but on a plain tap because the owner asked for a click. */
+   press, but on a plain tap because the owner asked for a click.
+   A real button since 31 Oct 26, drag-through like the event chips (see EventChip). */
 function FailChip({ s, id, i, date }) {
   const ref = useRef(null);
   const label = core.failLabel(id, i);
   const show = () => core.showFailBubble(s, id, i, ref.current);
   return (
-    <span ref={ref} className="chip failchip" data-ev={id} data-fi={i} data-date={date || ''}
+    <button type="button" ref={ref} className="chip failchip trbtn" data-ev={id} data-fi={i} data-date={date || ''} data-dragscroll=""
       title={`${label} — ${core.ordinal(i + 1)} failure on ${id}${date ? ' · ' + core.fmt(core.parseD(date)) : ' · date not recorded'}`}
       onPointerEnter={e => { if (e.pointerType === 'mouse') show(); }}
       onPointerLeave={e => { if (e.pointerType === 'mouse') core.hideEventBubble(); }}
       onClick={() => {
         show();
         document.addEventListener('pointerdown', () => core.hideEventBubble(), { once: true, capture: true });
-      }}>{label}</span>
+      }}>{label}</button>
   );
 }
 
@@ -174,12 +190,13 @@ function FailLog() {
   const list = core.roster.some(r => r.id === s) ? core.failList(s) : [];
   return (
     <>
-      <div className="lullback" onClick={core.closeFailLog} />
+      {/* role="presentation": the shade, not a control — a tap on it closes the list, as Escape does */}
+      <div className="lullback" role="presentation" onClick={core.closeFailLog} />
       <div className="lullcal on faillog" id="failLog">
         <div className="lullhd">
           <b>Failures — {core.nameOf(s)}</b>
           <span className="failtot" id="failLogTotal">{list.length} fail{list.length === 1 ? '' : 's'}</span>
-          <button className="sm" id="failLogClose" onClick={core.closeFailLog}>✕</button>
+          <button className="sm" id="failLogClose" aria-label="Close" onClick={core.closeFailLog}>✕</button>
         </div>
         {list.length
           ? list.map(x => (
@@ -240,7 +257,9 @@ function DownLog() {
   }, []);
   return (
     <>
-      <div className="lullback" onClick={core.closeDownLog} />
+      {/* role="presentation": the shade, not a control — a tap on it closes the window, as Escape does */}
+      <div className="lullback" role="presentation" onClick={core.closeDownLog} />
+      {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the Tracker's own order (a question at 100 must stay over this window at 70), with its own backdrop and focus rules; this window is the Failures list's clone and keeps its place */}
       <div className="lullcal on faillog downlog" id="downLog" role="dialog" aria-label={'Down days — ' + core.nameOf(s)}>
         <div className="lullhd">
           <b>Down days — {core.nameOf(s)}</b>
@@ -265,6 +284,221 @@ function DownLog() {
       </div>
     </>
   );
+}
+
+/* THE INFO HALF'S CARDS, each its own component since 31 Oct 26 — SidePanel's one body had grown past what can be
+   followed (React Doctor's complexity check). Each card draws exactly what the same lines drew inside SidePanel; they
+   read the store themselves, and SidePanel re-draws them on every change as before. */
+
+/* Everything done TO the list of students lives here: add, reorder,
+   and (on each chip) remove. Reorder used to sit in the header's View
+   menu, two clicks away and nowhere near the students it moves. */
+function StudentsCard() {
+  return (
+    <div className="card c-students">
+      <h3>Students <span className="hbtns">
+        <button className="sm" id="ordCrew" disabled={core.roster.length < 2}
+          title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}><ReorderGlyph /> Reorder</button>
+        <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
+      <div className="chips">
+        {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
+            says who they are there; an unlinked chip is untouched. */}
+        {/* The rename pencil and the remove ✕ are real buttons since 31 Oct 26 (React Doctor's clean-up — the keyboard
+            reaches them; `.trbtn` keeps the spans' look). The pencil is drag-through (`data-dragscroll`), as the span was:
+            a mouse drag that starts on it still scrolls this half. The ✕ is not, as the span was not (core.js dragScroll
+            has always left a press on `[data-rm]` alone). */}
+        {core.roster.map((r, i) => {
+          const p = core.linkedPerson(r.id);
+          return (
+            <span key={r.id} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
+              <b>{i + 1}</b> {r.name} <button type="button" className="ren trbtn" data-ren={r.id} data-dragscroll="" title="Rename this student" aria-label="Rename this student" onClick={() => core.renameStudent(r.id)}><PenGlyph solo /></button> <button type="button" className="x trbtn" data-rm={r.id} title="Remove this student" aria-label="Remove this student" onClick={() => core.removeStudent(r.id)}><XGlyph /></button></span>
+          );
+        })}
+      </div>
+      {/* Wrapped so the phone can shrink it — it is the tallest card there. */}
+      <div className="keyball" dangerouslySetInnerHTML={{ __html: core.renderKeyBall() }} />
+    </div>
+  );
+}
+
+function CurrencyCard({ s, today }) {
+  const lc = core.parseD(core.dates[s].lastCurr), ls = core.parseD(core.dates[s].lastSyll);
+  const dCurr = lc ? core.daysBetween(lc, today) : null, dSyll = ls ? core.daysBetween(ls, today) : null;
+  /* THE LANDING-CURRENCY BAR COUNTS ONLY THE DAYS SINCE HIS LAST CURRENCY OR NON-SYLLABUS FLIGHT (owner D1004, 18 Oct 26 —
+     "The currency bar has got nothing to do with medical down days as calculation"): the down days are taken off nothing */
+  const fx = core.flexFor(dSyll);
+  const cur = core.landingCurrency(dCurr);
+  /* THE FLEX SWITCH (owner D1006, D1018 — 18 Oct 26, the picture 06-info-flex-off): with flex off the card is
+     "Currency" alone — the flex bar, "Days since syllabus" (it feeds only flex) and the flex sentence go, and the
+     currency bar takes the whole width. Last Flown (Syllabus) stays: a syllabus flight still moves currency (D1005). */
+  const flexOn = core.flexOn();
+  return (
+    <div className="card wide c-curr">
+      <h3>{flexOn ? <>Currency &amp; flex</> : 'Currency'}</h3>
+      <div className="curGrid">
+        {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
+            Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
+            boxes offer "take this date off" only for a day put in by hand (D123) — and, since the design look of
+            13 Oct 26 (L14, D830), no day after today on their calendars: they refuse one (D374), as the rows of the
+            full failures list above do. The course start and the end dates are planned days and offer every day.
+            THE COURSE START AND THE DOWN DAYS (owner D1002, D1003, D1005, D1018 — 18 Oct 26, as drawn, 2-proposed): the
+            "Upchit Date" box and the typed "No. of Down Days" went; the course start sits where Upchit was — set once,
+            changed by picking another day, so nothing to take off — and the number is worked out from the Inputs. */}
+        {/* Each caption is a plain caption, not a <label> (31 Oct 26): the box beside it is a button that already says
+            the same name, and a tied label would open the calendar — or the down-days window — on a press of the words. */}
+        <div className="field"><span className="flbl">Last Flown (Syllabus)</span><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" noFuture clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
+        <div className="field"><span className="flbl">Last Flown (Currency)</span><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" noFuture clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
+        <div className="field"><span className="flbl">Course start</span><DateBox key={s + ':courseStart'} id="courseStart" title="Course start" clearable={false} value={core.courseStartOf(s)} onCommit={v => core.setCourseStart(s, v)} /></div>
+        <div className="field"><span className="flbl">No. of Down Days</span><DownDays s={s} /></div>
+      </div>
+      <div className="curKv">
+        {flexOn ? <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div> : null}
+        <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}</b></div>
+      </div>
+      <div className={'flexPair' + (flexOn ? '' : ' one')}>
+        {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
+        <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
+        {flexOn ? <div className="flexbar" data-testid="trk-flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div> : null}
+      </div>
+      <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency.{flexOn ? <> Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</> : null}</div>
+    </div>
+  );
+}
+
+/* The pace one end date asks for: the events left over the weeks left before it, this student's lull days taken off;
+   '—' with no date, 'past' once it has gone by. */
+function reqPaceTo(s, rem, today, tgt) {
+  if (!tgt) return '—';
+  const wk = (core.daysBetween(today, tgt) - core.lullDaysIn(s, today.getTime(), tgt.getTime())) / 7;
+  return wk > 0 ? (rem / wk).toFixed(1) : 'past';
+}
+
+function PaceCard({ s, st, today }) {
+  /* Pace and both end dates belong to the student being marked, not the course. */
+  const rem = st.remaining;
+  const myPace = core.paceOf(s);
+  const epwRaw = myPace.epw;                 /* exactly what is in the box */
+  const epw = core.epwOf(s);                 /* what the arithmetic uses */
+  let projEnd = '—';
+  if (rem > 0 && epw > 0) {
+    let weeks = rem / epw; let end = new Date(today.getTime() + Math.ceil(weeks * 7) * core.DAY);
+    end = new Date(end.getTime() + Math.ceil(core.lullDaysIn(s, today.getTime(), end.getTime())) * core.DAY); projEnd = core.fmt(end);
+  }
+  const reqEpw = reqPaceTo(s, rem, today, core.parseD(myPace.target));
+  const reqEpw2 = reqPaceTo(s, rem, today, core.parseD(myPace.target2));
+  return (
+    <div className="card wide c-pace">
+      <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>
+      {/* Set pace takes the whole width; the two end dates share the row below.
+          Three across needed 419px in a 301px panel and pushed End date B off
+          the right edge of the window. */}
+      <div className="opt2 paceGrid">
+        <div className="o">
+          <div className="t">Set pace</div>
+          <div className="paceRow">
+            <div className="field" style={{ margin: 0 }}>
+              <input type="number" step="0.1" min="0.5" id="epwIn" aria-label="Set pace" value={epwRaw ?? ''} style={{ width: 52 }} onChange={e => core.setEpw(s, e.target.value)} /> <span className="mini">/wk</span>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div className="r">{projEnd}</div><div className="mini">projected end</div>
+            </div>
+          </div>
+        </div>
+        <div className="o">
+          <div className="t">End date A</div>
+          <DateBox key={s + ':target'} id="targetIn" title="End date A" narrow value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
+          <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
+        </div>
+        <div className="o">
+          <div className="t">End date B</div>
+          <DateBox key={s + ':target2'} id="targetIn2" title="End date B" narrow value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
+          <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
+        </div>
+      </div>
+      <div className="mini" style={{ marginTop: 6 }}>Baseline 2 events/wk. Both end-date paces exclude this student’s lull periods.</div>
+    </div>
+  );
+}
+
+/* Failures are UNBOUNDED — an event can fail any number of times — so this
+   card takes a fixed height and scrolls inside itself. Anything that grows
+   without a ceiling here would push pace and currency off a phone screen.
+   It goes full width past ten entries, dropping Lull to its own row: Lull
+   is the least-consulted card on this panel and already the shortest.
+   Notation is the user's, 16 Aug: the first failure shows the plain code
+   and every further one adds an X. Since 9 Sep 26 EACH failure is its
+   own chip (owner: "when someone fails twice, it should show ST-01,
+   ST-01X"), each carrying the day it happened — hover or tap for it;
+   the title opens the full list with a date box per failure. Worst
+   event first, its failures oldest DAY first (D371). The total counts failures.
+   An event marked N.A. is left out — its ball hides its ticks, and the card
+   and its total follow (owner, 28 Sep 26 — D370); the failures are kept and
+   come back if it is graded again. */
+function FailsCard({ s }) {
+  const fails = core.SYL
+    .map(e => ({ id: e.id, n: core.failOf(s, e.id) }))
+    .filter(x => x.n > 0 && core.gradeOf(s, x.id) !== 'na')
+    .sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
+  const total = fails.reduce((t, x) => t + x.n, 0);
+  return (
+    <div className={'card c-fails' + (total > 10 ? ' wide' : '')} id="failsCard">
+      {/* the title is a real button since 31 Oct 26 (it was a span with role="button" and its own Enter / Space): `.trbtn`
+          keeps its look, `data-dragscroll` keeps a mouse drag that starts on it scrolling this half */}
+      <h3><button type="button" className="failTitle trbtn" id="failTitle" data-dragscroll=""
+        title="Every failure with its date" onClick={() => core.openFailLog(s)}>Failures</button>{' '}
+        <span className="who">— {core.nameOf(s)}</span>
+        {total ? <span className="failtot" id="failTotal">
+          {total} fail{total === 1 ? '' : 's'}</span> : null}</h3>
+      <div className="chips failchips" id="failChips">
+        {fails.length
+          ? fails.flatMap(x => core.failDates(s, x.id).map((d, i) =>
+            <FailChip key={x.id + ':' + i} s={s} id={x.id} i={i} date={d} />))
+          : <span className="mini">none</span>}
+      </div>
+    </div>
+  );
+}
+
+function LullCard({ s }) {
+  const mine = core.lulls[s] || [];
+  return (
+    <div className="card c-lull">
+      <h3>Lull periods <span className="who">— {core.nameOf(s)}</span></h3>
+      <div className="chips" id="lullChips">
+        {mine.length
+          ? mine.map((l, i) => (
+            /* Tapping the period reopens the calendar on it — the same
+               pop-up that made it, so there is one way to set these dates. */
+            /* Since 31 Oct 26 (React Doctor's clean-up) the dates are a real button, so the keyboard reaches them —
+               drag-through, laid out as the chip's own pieces were (`.lullopen`, tracker.css) — and the chip around them
+               only catches a press on its padding, as the whole chip did before (role="presentation": the button is the
+               control). The ✕ is a real button too; it was never drag-through (core.js dragScroll skips `[data-lull]`). */
+            /* eslint-disable-next-line react-doctor/no-array-index-as-key -- a lull period has no id of its own; the chips hold no state, and each press reads its place fresh from this drawing */
+            <span key={i} className="chip lullchip" title="Tap to change these dates" role="presentation"
+              onClick={() => core.openLullPicker(s, i)}>
+              <button type="button" className="lullopen trbtn" data-dragscroll=""
+                onClick={e => { e.stopPropagation(); core.openLullPicker(s, i); }}>
+                <b>{core.fmt(core.parseD(l.start))}</b>→<b>{core.fmt(core.parseD(l.end))}</b>
+              </button>
+              <button type="button" className="x trbtn" data-lull={i} aria-label="Remove this lull period"
+                onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}>×</button>
+            </span>
+          ))
+          : <span className="mini">none</span>}
+      </div>
+      <div className="lullbtns">
+        <button className="sm" id="setLullBtn" onClick={() => core.openLullPicker(s, null)}>+ Set lull period</button>
+        <button className="sm" id="copyLullBtn" disabled={core.roster.length < 2}
+          title="Copy these periods onto other students" onClick={() => core.openLullCopy(s)}>⧉ Copy to…</button>
+      </div>
+    </div>
+  );
+}
+
+/* plannable now (matches the original inline computation): the furthest row this student has done anything on */
+function doneRowOf(s) {
+  let fr = 0; core.SYL.forEach(e => { if (core.isDone(s, e.id)) fr = Math.max(fr, core.rowOf(e.id)); });
+  return fr;
 }
 
 export default function SidePanel({ zoom }) {
@@ -295,34 +529,9 @@ export default function SidePanel({ zoom }) {
   }
 
   const st = core.stats(s); const availNow = core.availableNow(s); const today = core.parseD(core.isoToday());
-  const lc = core.parseD(core.dates[s].lastCurr), ls = core.parseD(core.dates[s].lastSyll);
-  const dCurr = lc ? core.daysBetween(lc, today) : null, dSyll = ls ? core.daysBetween(ls, today) : null;
-  /* THE LANDING-CURRENCY BAR COUNTS ONLY THE DAYS SINCE HIS LAST CURRENCY OR NON-SYLLABUS FLIGHT (owner D1004, 18 Oct 26 —
-     "The currency bar has got nothing to do with medical down days as calculation"): the down days are taken off nothing */
-  const fx = core.flexFor(dSyll);
-  const cur = core.landingCurrency(dCurr);
-  /* THE FLEX SWITCH (owner D1006, D1018 — 18 Oct 26, the picture 06-info-flex-off): with flex off the card is
-     "Currency" alone — the flex bar, "Days since syllabus" (it feeds only flex) and the flex sentence go, and the
-     currency bar takes the whole width. Last Flown (Syllabus) stays: a syllabus flight still moves currency (D1005). */
-  const flexOn = core.flexOn();
-
-  /* Pace and both end dates belong to the student being marked, not the course. */
-  const rem = st.remaining;
-  const myPace = core.paceOf(s);
-  const epwRaw = myPace.epw;                 /* exactly what is in the box */
-  const epw = core.epwOf(s);                 /* what the arithmetic uses */
-  let projEnd = '—';
-  if (rem > 0 && epw > 0) {
-    let weeks = rem / epw; let end = new Date(today.getTime() + Math.ceil(weeks * 7) * core.DAY);
-    end = new Date(end.getTime() + Math.ceil(core.lullDaysIn(s, today.getTime(), end.getTime())) * core.DAY); projEnd = core.fmt(end);
-  }
-  const tgt = core.parseD(myPace.target); let reqEpw = '—';
-  if (tgt) { const wk = (core.daysBetween(today, tgt) - core.lullDaysIn(s, today.getTime(), tgt.getTime())) / 7; reqEpw = wk > 0 ? (rem / wk).toFixed(1) : 'past'; }
-  const tgt2 = core.parseD(myPace.target2); let reqEpw2 = '—';
-  if (tgt2) { const wk = (core.daysBetween(today, tgt2) - core.lullDaysIn(s, today.getTime(), tgt2.getTime())) / 7; reqEpw2 = wk > 0 ? (rem / wk).toFixed(1) : 'past'; }
 
   /* plannable now (matches the original inline computation) */
-  let fr = 0; core.SYL.forEach(e => { if (core.isDone(s, e.id)) fr = Math.max(fr, core.rowOf(e.id)); });
+  const fr = doneRowOf(s);
   const near = availNow.filter(e => core.rowOf(e.id) <= fr + 5);
 
   return (
@@ -331,28 +540,7 @@ export default function SidePanel({ zoom }) {
           ancestor shifts a position:fixed child's origin and they would land
           in the wrong place. */}
       <div className="sidescale">
-      <div className="card c-students">
-        {/* Everything done TO the list of students lives here: add, reorder,
-            and (on each chip) remove. Reorder used to sit in the header's View
-            menu, two clicks away and nowhere near the students it moves. */}
-        <h3>Students <span className="hbtns">
-          <button className="sm" id="ordCrew" disabled={core.roster.length < 2}
-            title="Change the order crew appear in the dropdown and which slice of every ball is theirs" onClick={core.openOrdCrew}><ReorderGlyph /> Reorder</button>
-          <button className="sm" id="addStu" onClick={core.addStudent}>+ Add</button></span></h3>
-        <div className="chips">
-          {/* A student linked to Raptor's roster (9 Sep 26) wears a dot and
-              says who they are there; an unlinked chip is untouched. */}
-          {core.roster.map((r, i) => {
-            const p = core.linkedPerson(r.id);
-            return (
-              <span key={r.id} className={p ? 'chip linked' : 'chip'} title={p ? 'On the squadron roster as ' + p.cs : undefined}>
-                <b>{i + 1}</b> {r.name} <span className="ren" data-ren={r.id} title="Rename this student" onClick={() => core.renameStudent(r.id)}><PenGlyph solo /></span> <span className="x" data-rm={r.id} title="Remove this student" aria-label="Remove this student" onClick={() => core.removeStudent(r.id)}><XGlyph /></span></span>
-            );
-          })}
-        </div>
-        {/* Wrapped so the phone can shrink it — it is the tallest card there. */}
-        <div className="keyball" dangerouslySetInnerHTML={{ __html: core.renderKeyBall() }} />
-      </div>
+      <StudentsCard />
       <div className="card c-overall">
         <h3>Overall <span className="who">— {core.nameOf(s)}</span></h3>
         <div className="big">
@@ -406,123 +594,11 @@ export default function SidePanel({ zoom }) {
             : <span className="mini">none within reach</span>}
         </div>
       </div>
-      <div className="card wide c-curr">
-        <h3>{flexOn ? <>Currency &amp; flex</> : 'Currency'}</h3>
-        <div className="curGrid">
-          {/* the date boxes are the app's own since 13 Oct 26 (D801 — DateBox.jsx): a day picked is saved at once.
-              Keyed by student and field, so a Crew switch never carries a refusal's line across. The two Last Flown
-              boxes offer "take this date off" only for a day put in by hand (D123) — and, since the design look of
-              13 Oct 26 (L14, D830), no day after today on their calendars: they refuse one (D374), as the rows of the
-              full failures list above do. The course start and the end dates are planned days and offer every day.
-              THE COURSE START AND THE DOWN DAYS (owner D1002, D1003, D1005, D1018 — 18 Oct 26, as drawn, 2-proposed): the
-              "Upchit Date" box and the typed "No. of Down Days" went; the course start sits where Upchit was — set once,
-              changed by picking another day, so nothing to take off — and the number is worked out from the Inputs. */}
-          <div className="field"><label>Last Flown (Syllabus)</label><DateBox key={s + ':lastSyll'} id="lastSyll" title="Last Flown (Syllabus)" noFuture clearable={!!core.dates[s].handSyll} value={core.dates[s].lastSyll || ''} onCommit={v => core.setLastSyll(s, v)} /></div>
-          <div className="field"><label>Last Flown (Currency)</label><DateBox key={s + ':lastCurr'} id="lastCurr" title="Last Flown (Currency)" noFuture clearable={!!core.dates[s].handCurr} value={core.dates[s].lastCurr || ''} onCommit={v => core.setLastCurr(s, v)} /></div>
-          <div className="field"><label>Course start</label><DateBox key={s + ':courseStart'} id="courseStart" title="Course start" clearable={false} value={core.courseStartOf(s)} onCommit={v => core.setCourseStart(s, v)} /></div>
-          <div className="field"><label>No. of Down Days</label><DownDays s={s} /></div>
-        </div>
-        <div className="curKv">
-          {flexOn ? <div className="kv"><span>Days since syllabus</span><b>{dSyll == null ? '—' : dSyll + 'd'}</b></div> : null}
-          <div className="kv"><span>Days since currency</span><b>{dCurr == null ? '—' : dCurr + 'd'}</b></div>
-        </div>
-        <div className={'flexPair' + (flexOn ? '' : ' one')}>
-          {/* the bar's ink rides with its colour (core.flexFor / landingCurrency — D982) */}
-          <div className="flexbar" style={{ background: cur.color, color: cur.ink }}>{cur.txt}</div>
-          {flexOn ? <div className="flexbar" data-testid="trk-flexbar" style={{ background: fx.color, color: fx.ink }}>{fx.txt}</div> : null}
-        </div>
-        <div className="mini" style={{ marginTop: 5 }}>Landing currency = days since last currency.{flexOn ? <> Flex requirement uses days since last <b>syllabus</b> flight, so updating currency won’t change it.</> : null}</div>
-      </div>
-      <div className="card wide c-pace">
-        <h3>Pace &amp; expected end <span className="who">— {core.nameOf(s)}</span></h3>
-        {/* Set pace takes the whole width; the two end dates share the row below.
-            Three across needed 419px in a 301px panel and pushed End date B off
-            the right edge of the window. */}
-        <div className="opt2 paceGrid">
-          <div className="o">
-            <div className="t">Set pace</div>
-            <div className="paceRow">
-              <div className="field" style={{ margin: 0 }}>
-                <input type="number" step="0.1" min="0.5" id="epwIn" value={epwRaw ?? ''} style={{ width: 52 }} onChange={e => core.setEpw(s, e.target.value)} /> <span className="mini">/wk</span>
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div className="r">{projEnd}</div><div className="mini">projected end</div>
-              </div>
-            </div>
-          </div>
-          <div className="o">
-            <div className="t">End date A</div>
-            <DateBox key={s + ':target'} id="targetIn" title="End date A" narrow value={myPace.target || ''} onCommit={v => core.setTarget(s, v)} />
-            <div className="r" style={{ marginTop: 6 }}>{reqEpw}{reqEpw !== '—' && reqEpw !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
-          </div>
-          <div className="o">
-            <div className="t">End date B</div>
-            <DateBox key={s + ':target2'} id="targetIn2" title="End date B" narrow value={myPace.target2 || ''} onCommit={v => core.setTarget2(s, v)} />
-            <div className="r" style={{ marginTop: 6 }}>{reqEpw2}{reqEpw2 !== '—' && reqEpw2 !== 'past' ? ' /wk' : ''}</div><div className="mini">req. pace</div>
-          </div>
-        </div>
-        <div className="mini" style={{ marginTop: 6 }}>Baseline 2 events/wk. Both end-date paces exclude this student’s lull periods.</div>
-      </div>
-      {/* Failures are UNBOUNDED — an event can fail any number of times — so this
-          card takes a fixed height and scrolls inside itself. Anything that grows
-          without a ceiling here would push pace and currency off a phone screen.
-          It goes full width past ten entries, dropping Lull to its own row: Lull
-          is the least-consulted card on this panel and already the shortest.
-          Notation is the user's, 16 Aug: the first failure shows the plain code
-          and every further one adds an X. Since 9 Sep 26 EACH failure is its
-          own chip (owner: "when someone fails twice, it should show ST-01,
-          ST-01X"), each carrying the day it happened — hover or tap for it;
-          the title opens the full list with a date box per failure. Worst
-          event first, its failures oldest DAY first (D371). The total counts failures.
-          An event marked N.A. is left out — its ball hides its ticks, and the card
-          and its total follow (owner, 28 Sep 26 — D370); the failures are kept and
-          come back if it is graded again. */}
-      {(() => {
-        const fails = core.SYL
-          .map(e => ({ id: e.id, n: core.failOf(s, e.id) }))
-          .filter(x => x.n > 0 && core.gradeOf(s, x.id) !== 'na')
-          .sort((a, b) => b.n - a.n || a.id.localeCompare(b.id));
-        const total = fails.reduce((t, x) => t + x.n, 0);
-        return (
-          <div className={'card c-fails' + (total > 10 ? ' wide' : '')} id="failsCard">
-            <h3><span className="failTitle" id="failTitle" role="button" tabIndex={0}
-              title="Every failure with its date" onClick={() => core.openFailLog(s)}
-              onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); core.openFailLog(s); } }}>Failures</span>{' '}
-              <span className="who">— {core.nameOf(s)}</span>
-              {total ? <span className="failtot" id="failTotal">
-                {total} fail{total === 1 ? '' : 's'}</span> : null}</h3>
-            <div className="chips failchips" id="failChips">
-              {fails.length
-                ? fails.flatMap(x => core.failDates(s, x.id).map((d, i) =>
-                  <FailChip key={x.id + ':' + i} s={s} id={x.id} i={i} date={d} />))
-                : <span className="mini">none</span>}
-            </div>
-          </div>
-        );
-      })()}
+      <CurrencyCard s={s} today={today} />
+      <PaceCard s={s} st={st} today={today} />
+      <FailsCard s={s} />
 
-      <div className="card c-lull">
-        <h3>Lull periods <span className="who">— {core.nameOf(s)}</span></h3>
-        <div className="chips" id="lullChips">
-          {(core.lulls[s] || []).length
-            ? (core.lulls[s] || []).map((l, i) => (
-              /* Tapping the period reopens the calendar on it — the same
-                 pop-up that made it, so there is one way to set these dates. */
-              <span key={i} className="chip lullchip" title="Tap to change these dates"
-                onClick={() => core.openLullPicker(s, i)}>
-                <b>{core.fmt(core.parseD(l.start))}</b>→<b>{core.fmt(core.parseD(l.end))}</b>
-                <span className="x" data-lull={i}
-                  onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}>×</span>
-              </span>
-            ))
-            : <span className="mini">none</span>}
-        </div>
-        <div className="lullbtns">
-          <button className="sm" id="setLullBtn" onClick={() => core.openLullPicker(s, null)}>+ Set lull period</button>
-          <button className="sm" id="copyLullBtn" disabled={core.roster.length < 2}
-            title="Copy these periods onto other students" onClick={() => core.openLullCopy(s)}>⧉ Copy to…</button>
-        </div>
-      </div>
+      <LullCard s={s} />
       </div>
       {core.lullPick ? <LullCalendar /> : null}
       {core.lullCopy ? <LullCopy /> : null}

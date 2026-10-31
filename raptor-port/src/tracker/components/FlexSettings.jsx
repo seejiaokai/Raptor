@@ -44,12 +44,13 @@ function Body({ btn, close }) {
     addEventListener('resize', place);
     addEventListener('scroll', place, true);
     return () => { removeEventListener('resize', place); removeEventListener('scroll', place, true); };
-  }, []);
+  }, [btn]);
   /* the keyboard goes in: to the switch for an admin, to the window itself for a member (nothing in it to press but ✕) */
   useEffect(() => {
     const n = box.current; if (!n) return;
     const first = n.querySelector(admin ? 'input' : '.tflex-body');
     if (first) first.focus({ preventScroll: true });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- the keyboard goes in once, when the window opens; a later change of who may edit must not pull it back to the first box
   }, []);
   /* Escape closes it — and only it: caught on the way down and stopped, so the Tracker's own Escape (the marking
      pop-up, the search) never fires behind it. Not while another tab is up: the page is kept mounted (the Legend's
@@ -64,7 +65,7 @@ function Body({ btn, close }) {
     };
     document.addEventListener('keydown', esc, true);
     return () => document.removeEventListener('keydown', esc, true);
-  }, []);
+  }, [close]);
   /* Tab stays inside (design guide §2): round from the last stop to the first, and back */
   const trap = e => {
     if (e.key !== 'Tab' || !box.current) return;
@@ -90,7 +91,7 @@ function Body({ btn, close }) {
   return (
     <>
       {/* A tap outside closes it and does nothing else — the scrim takes it (the Legend's scrim), the ⚙ included */}
-      <div className="tflexscrim" data-testid="trk-flex-scrim" onClick={close} />
+      <div className="tflexscrim" data-testid="trk-flex-scrim" role="presentation" onClick={close} />
       <div className="tflexwin" id="trkFlexWin" data-testid="trk-flex" role="dialog" aria-modal="true" aria-label="Flex settings"
         ref={box} style={at ? { left: at.left + 'px', top: at.top + 'px' } : undefined} onKeyDown={trap}>
         <div className="tflex-hd">
@@ -107,6 +108,7 @@ function Body({ btn, close }) {
           <div className="tflex-bands">
             <span className="tflex-mh c">From</span><span className="tflex-mh c">To</span><span className="tflex-mh">Flex</span>
             {bands.map((b, i) => (
+              /* eslint-disable-next-line react-doctor/no-array-index-as-key -- a band's place is what it is: band i takes the From day typed at i - 1, and the six never reorder */
               <React.Fragment key={i}>
                 {i === 0 || !admin
                   ? <span className="tflex-val" data-testid={'trk-flex-from-' + i}>{i === 0 ? '0' : from[i - 1]}</span>

@@ -170,11 +170,12 @@ export function BellList() {
   /* A FINGER ON THE BELL NEVER SCROLLS THE PAGE BEHIND IT (owner D686; the fixes' M8 — the re-walk's B-F1): its lines
      scroll inside it, but a finger that began on its foot ("↓ 3 more", Mark all read) and dragged moved the page behind
      it. The one body every window holds a finger with (floatwin.ts holdPageScroll), on the whole bell, its foot included. */
+  const placed = !!at   // the list is drawn once it has a place: the element to hold is there from then on
   useEffect(() => {
     const n = ref.current
     if (!open || !n) return
     return holdPageScroll(n)
-  }, [open, !!at])
+  }, [open, placed])
   /* A LONG LIST KEEPS ITS FOOT IN SIGHT AND SAYS WHAT IS BELOW (the walk's C-F4, 27 Oct 26): the lines scroll inside
      the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — the Leave
      War day panel's cue (D1295) — gone once the list is at its end */
