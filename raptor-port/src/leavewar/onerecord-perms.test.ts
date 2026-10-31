@@ -55,7 +55,7 @@ const D = (o: Record<string, any> = {}) => ({
 })
 const feb = (type = 'Meeting') => INPUTS.filter((r: any) => r.type === type && String(r.date).startsWith('Feb')) as any[]
 const the = (type = 'Meeting') => { const l = feb(type); expect(l, `one ${type}`).toHaveLength(1); return l[0] }
-const copy = (x: any) => JSON.parse(JSON.stringify(x))
+const copy = (x: any) => structuredClone(x)
 const change = (over: any, people?: string[], opts?: any) => commitInput(the(over.type0 || 'Meeting'), { ...draftOf(the(over.type0 || 'Meeting')), ...over }, people || idsOf(the(over.type0 || 'Meeting')), opts)
 
 beforeAll(() => {

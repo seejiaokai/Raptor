@@ -26,7 +26,7 @@
 import {
   addDays, availPointsOf, availVerdict, chargedDays, codeOf as leaveCodeOf, counterLabel, dayView,
   evaluateDay, fillRow, oilLedgerOf, parseCell,
-  type Person, type RequestRec, type Views, type CounterName, type FigureCtx, type LeaveSource,
+  type Person, type RequestRec, type Views, type CounterName, type FigureCtx, type LeaveSource, type WarRec,
 } from './engine'
 import { AM, FULL, PM, type DayView } from './engine/dayview'
 import { BAL_KINDS, KIND_COUNTER } from './engine/leaveyear'
@@ -60,7 +60,7 @@ export interface ApprFigures {
 }
 
 /** Every line waiting in one war's records (pending requests only), oldest placed first. */
-export function linesOfWar(war: { period: { id: string }; recs: Record<string, Record<string, readonly any[]>> }): ApprLine[] {
+export function linesOfWar(war: { period: { id: string }; recs: Record<string, Record<string, readonly WarRec[]>> }): ApprLine[] {
   const out: ApprLine[] = []
   for (const [personId, byDate] of Object.entries(war.recs)) {
     const dates = Object.keys(byDate).sort()
@@ -68,7 +68,7 @@ export function linesOfWar(war: { period: { id: string }; recs: Record<string, R
     const open = new Map<string, ApprLine>()          // run key → the line the day before ended
     let prevDate = ''
     for (const date of dates) {
-      const reqs = (byDate[date] ?? []).filter((r: any): r is RequestRec => r && r.kind === 'request' && r.state === 'pending')
+      const reqs = (byDate[date] ?? []).filter((r): r is RequestRec => r && r.kind === 'request' && r.state === 'pending')
       const next = new Map<string, ApprLine>()
       for (const r of reqs) {
         const k = reqRunKey(r)

@@ -82,7 +82,7 @@ const oldRec = (person: string, o: Record<string, any> = {}) => ({
 const raw = (fn: () => void): boolean => writeInputs(fn)
 const has = (iid: string) => INPUTS.some((r: any) => r.iid === iid)
 const byId = (iid: string) => INPUTS.find((r: any) => r.iid === iid) as any
-const copy = (r: any) => JSON.parse(JSON.stringify(r))
+const copy = (r: any) => structuredClone(r)
 /* a hand-made change to ONE record, found afresh each time: a refused command puts the list back as new objects */
 const chg = (iid: string, fn: (r: any) => void): boolean => raw(() => { fn(byId(iid)) })
 const drop = (iid: string): boolean => raw(() => { INPUTS.splice(INPUTS.findIndex((r: any) => r.iid === iid), 1) })

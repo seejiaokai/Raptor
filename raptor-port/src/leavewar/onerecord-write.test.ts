@@ -52,7 +52,7 @@ const D = (o: Record<string, any> = {}) => ({
 })
 const feb = (type = 'Meeting') => INPUTS.filter((r: any) => r.type === type && String(r.date).startsWith('Feb')) as any[]
 const the = (type = 'Meeting') => { const l = feb(type); expect(l, `one ${type}`).toHaveLength(1); return l[0] }
-const copy = (x: any) => JSON.parse(JSON.stringify(x))
+const copy = (x: any) => structuredClone(x)
 const cmds = () => commandStream().length
 
 beforeAll(() => {

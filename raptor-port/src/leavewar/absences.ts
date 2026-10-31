@@ -15,10 +15,44 @@
 //     that do not overlap are allowed).
 // Everything that decides what the combination MEANS is `engine/dayview.ts`.
 
-import { dateOrd, inpType, inpWin, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
+import { INPUTS, dateOrd, inpType, inpWin, inputLines, inputSilent, isDownchit, isLeave, isPersonal } from '../engine/inputs'
+import { PEOPLE } from '../engine/people'
+import type { Input, Person as RaptorPerson } from '../engine/schema'
 import { addDays } from './engine'
 import { AM, PM, FULL, type Contrib, type Win } from './engine/dayview'
 import type { Portion } from './engine'
+
+/* ---- THE SCHEDULE'S RECORDS, TYPED ONCE AT THE WAR'S EDGE -----------------
+   The schedule's live lists (engine/inputs.ts INPUTS, engine/people.ts PEOPLE) are typed `any` by the word-for-word
+   engine. The Leave War reads them HERE as the records they hold, so no body on this side has to guess (D1537). */
+
+/** An Input as the Leave War reads and writes it: the schedule's record (engine/schema.ts `Input`) and the fields kept on
+ *  it beyond the schema's list — a till tick of its own (`till`, D953), the war's moved-from marks (`lwMoved`), the placer
+ *  of the request it was approved from (`lwBy`, `lwAt` — M4 8.6) and an overseas duty put on the Ground Programme
+ *  (`odGround`). Its `type` is the catalogue code as stored, read as words; `mod` and `allday` are absent on a row this
+ *  layer has just built without them, and on a thin stored one. */
+export type WarInput = Omit<Input, 'type' | 'mod' | 'allday'> & {
+  type: string
+  mod?: string
+  allday?: boolean
+  till?: boolean
+  lwMoved?: Record<string, string>
+  lwBy?: string
+  lwAt?: number
+  odGround?: boolean
+}
+/** WHAT THE READERS BELOW ASK OF A ROW — any of an Input's fields, each of any kind: they read rows of every age (a seed
+ *  literal, a stored record, a restore's after-image, a test's own row) and ask of each field only what it holds. */
+export type InputRead = { readonly [K in keyof WarInput]?: unknown }
+
+/** The schedule's inputs — the live list itself, never a copy: a push, a splice or a field written through it is written
+ *  to the list. Read at every call, so a list put in its place is the one read. */
+export const warInputs = (): WarInput[] => INPUTS
+/** One line a named person of each input — the input's fields with `person` his id (engine/inputs.ts inputLines, frozen):
+ *  of the live inputs, or of a list handed in. */
+export const warLines = (list?: readonly InputRead[]): readonly WarInput[] => inputLines(list)
+/** A person of the schedule's roster by his id (engine/schema.ts `Person`) — undefined for an id it does not hold. */
+export const rosterBody = (id: string): RaptorPerson | undefined => PEOPLE[id]
 
 /* 'Feb 11' -> '2026-02-11', through dateOrd so the two directions cannot
    disagree about what a label means. Null for anything unreadable. `yr` is
@@ -43,7 +77,7 @@ export function labelToISO(lbl: unknown, yr?: unknown): string | null {
    it. One reading now: a custom window that starts at noon and runs past it
    starts at 12:01. A window that ENDS at noon is untouched, and so are both
    half presets. */
-function realWin(row: any): [number, number] | null {
+function realWin(row: InputRead): [number, number] | null {
   const w = inpWin(row)
   if (!w) return null
   return w[0] === 720 && w[1] > 720 ? [721, w[1]] : [w[0], w[1]]
@@ -56,7 +90,7 @@ function realWin(row: any): [number, number] | null {
    window. The half minutes are HALF_AM/HALF_PM's own: [0,720] / [721,1439].
    A thin row with neither flag nor times fails closed to the whole day,
    the same call inpWin itself makes. */
-export function rowPortion(row: any): Portion {
+export function rowPortion(row: InputRead): Portion {
   if (row.allday) return 'full'
   if (row.half === 'am') return 'am'
   if (row.half === 'pm') return 'pm'
@@ -77,7 +111,7 @@ export function rowPortion(row: any): Portion {
    Which half: the side of noon the window sits on, its midpoint deciding a
    straddler. Leave keeps its round-OUT rule above untouched — the owner
    stated this one for the medical types. */
-export function medRowPortion(row: any): Portion {
+export function medRowPortion(row: InputRead): Portion {
   if (row.allday) return 'full'
   if (row.half === 'am') return 'am'
   if (row.half === 'pm') return 'pm'
@@ -126,7 +160,7 @@ function isAwayKind(type: unknown): boolean {
  *  Unavailable list (`acc:'u'` — filed there by itself, by its filer's "Goes to" or by a scheduler's "→ Unavail"): his
  *  D1357 (25 Oct 26 — "any commitment under the schedule's Unavailable list counts him out on the Leave War, whatever its
  *  kind … by 1 or 0.5 for a half day"), D1356, D1374. One on the Ground Programme, or taken back out (Reject), does not. */
-export function warCounts(row: any): boolean {
+export function warCounts(row: InputRead | null | undefined): boolean {
   if (!row || typeof row !== 'object') return false
   /* A COURSE OR AN OVERSEAS DUTY A SCHEDULER TOOK OUT OF UNAVAILABLE COUNTS HIM BACK IN (his D1381, D1389, D1390 —
      26 Oct 26): only Unavailable counts him out, as for every other commitment. The war asks what the schedule asks
@@ -167,7 +201,7 @@ const halfWin = (p: Portion): Win => (p === 'am' ? AM : p === 'pm' ? PM : FULL)
  *      first, was silently deleted.
  *  `real` is left off when it would be the same window, so nothing downstream
  *  has to care about the distinction for an all-day or half-preset medical. */
-export function inputWindow(row: any): { win: Win; real?: Win; tail: Win | null } {
+export function inputWindow(row: InputRead): { win: Win; real?: Win; tail: Win | null } {
   if (isDownchit(row.type)) {
     const win = halfWin(medRowPortion(row))
     if (row.allday || row.half === 'am' || row.half === 'pm' || row.s == null || row.e == null) return { win, tail: null }
@@ -194,7 +228,7 @@ export function inputWindow(row: any): { win: Win; real?: Win; tail: Win | null 
 
 /** The ISO dates an Input covers, start to end (a capped walk, so a malformed
  *  span cannot spin a read; 400 covers any real year-crossing leave). */
-export function inputDates(row: any): string[] {
+export function inputDates(row: InputRead): string[] {
   const start = labelToISO(row.date, row.yr)
   if (!start) return []
   let end = row.endDate ? labelToISO(row.endDate, row.yr) ?? start : start
@@ -208,11 +242,12 @@ export function inputDates(row: any): string[] {
 export type AbsenceIndex = Map<string, Map<string, Contrib[]>>
 
 /** One Input's contributions, date by date. */
-export function contribsOfInput(row: any): Array<[string, Contrib]> {
+export function contribsOfInput(row: InputRead | null | undefined): Array<[string, Contrib]> {
   if (!row || typeof row !== 'object' || !warCounts(row) || !row.person || !row.iid) return []
   const { win, real, tail } = inputWindow(row)
   const code = warCodeOf(row.type)
-  const moved: Record<string, string> = row.lwMoved && typeof row.lwMoved === 'object' ? row.lwMoved : {}
+  /* (an object of date → the date it moved from, as the war writes it) */
+  const moved = (row.lwMoved && typeof row.lwMoved === 'object' ? row.lwMoved : {}) as Record<string, string>
   const out: Array<[string, Contrib]> = []
   for (const d of inputDates(row)) {
     const c: Contrib = { id: String(row.iid), kind: 'absence', code, win }
@@ -229,14 +264,15 @@ export function contribsOfInput(row: any): Array<[string, Contrib]> {
 }
 
 /** Build the whole index from a list of Inputs (boot, a reset, `loadWars`). */
-export function buildAbsenceIndex(rows: readonly any[]): AbsenceIndex {
+export function buildAbsenceIndex(rows: readonly (InputRead | null | undefined)[]): AbsenceIndex {
   const ix: AbsenceIndex = new Map()
   for (const row of rows) addInput(ix, row)
   return ix
 }
 
-export function addInput(ix: AbsenceIndex, row: any): void {
-  const person = row && String(row.person)
+export function addInput(ix: AbsenceIndex, row: InputRead | null | undefined): void {
+  /* (a missing row gives no contributions, so the loop below only ever runs with a row and its person's id) */
+  const person = (row && String(row.person)) as string
   for (const [d, c] of contribsOfInput(row)) {
     let byDate = ix.get(person)
     if (!byDate) { byDate = new Map(); ix.set(person, byDate) }
@@ -250,7 +286,7 @@ export function addInput(ix: AbsenceIndex, row: any): void {
  *  of the day — everything but its remarks, documents and bookkeeping. A
  *  remarks-only edit keeps it; the Inputs editor uses it to tell the two
  *  apart (design §5.4). */
-export function leaveKey(row: any): string {
+export function leaveKey(row: InputRead): string {
   return [row.person, warCodeOf(row.type), labelToISO(row.date, row.yr), row.endDate ? labelToISO(row.endDate, row.yr) : '',
     row.allday ? 1 : 0, row.half ?? '', row.allday ? '' : row.s ?? '', row.allday ? '' : row.e ?? ''].join('|')
 }
@@ -258,7 +294,7 @@ export function leaveKey(row: any): string {
 /** Only the Input fields `contribsOfInput` reads — the per-person signature
  *  the index rebuilds on (design §4.1, FB2-08: remarks, docs, acc, mod … are
  *  deliberately out, so a remarks edit never rebuilds anything). */
-export function absenceSignature(row: any): string {
+export function absenceSignature(row: InputRead | null | undefined): string {
   if (!row || !warCounts(row)) return ''
   /* where a commitment is filed (`acc`) is in the signature: under Unavailable it is on the war, taken out it is not */
   return [row.iid, row.type, row.date, row.endDate ?? '', row.yr ?? '', row.allday ? 1 : 0,
@@ -298,11 +334,11 @@ export interface WarLeave {
 
 /** The Input row a war leave is — the ONE absence record. `iid` is left for
  *  the inputs door to mint. */
-export function inputRowFor(w: WarLeave): any {
+export function inputRowFor(w: WarLeave): WarInput {
   const lead = w.code.startsWith('*'), trail = w.code.endsWith('*')
   const bare = w.code.replace(/\*/g, '')
   const { date, yr } = isoToInputDate(w.from)
-  const row: any = { person: w.person, date, yr, type: INPUT_FOR_WAR[bare] ?? bare, remarks: w.remarks ?? '' }
+  const row: WarInput = { person: w.person, date, yr, type: INPUT_FOR_WAR[bare] ?? bare, remarks: w.remarks ?? '' }
   if (w.to > w.from) row.endDate = endLabel(w.from, w.to)
   if (lead) { row.allday = false; row.half = 'am'; row.s = 0; row.e = 720 }
   else if (trail) { row.allday = false; row.half = 'pm'; row.s = 721; row.e = 1439 }
