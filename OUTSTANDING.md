@@ -205,6 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
+- [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
@@ -235,6 +236,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [M365-HOSTING-TRIAL] The app on his own M365 with no database — a hosting trial (D1532, 31 Oct 26)
+**What:** at a good stopping point in the Tracker's work (the agent proposes it, he agrees first), the app is put on his own
+M365 subscription as a Power Apps code app that still saves in the browser as today — no Dataverse — so he can test it
+there himself: Microsoft's sign-in, his iPhone, the Power Apps player. About 1–2 days. Covers the move plan's points that
+add Microsoft's Power Apps add-on to the app and replace the sign-in card with Microsoft's
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`). **Before he buys anything:** confirm his plan includes
+Power Apps (a Microsoft 365 Business plan with a work or school account; a Family or Personal plan does not). Only the app's
+made-up demo data goes there. The database step stays at the end (D473).
 
 ### [M365-MOVE-PLAN] The M365 move plan — his strikes owed (written 31 Oct 26, D1530, D1531)
 Every point of the SWiFT build-and-deploy kit set against Raptor, numbered in the recommended order, with React Doctor's
