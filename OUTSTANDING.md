@@ -204,6 +204,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [USER-GUIDE] — a guide for users and admins — wanted, not started, not urgent.
 
 **Database step — at the end (D473)**
+- [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
+- [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
@@ -234,6 +236,21 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [M365-HOSTING-TRIAL] The app on his own M365 with no database — a hosting trial (D1532, 31 Oct 26)
+**What:** at a good stopping point in the Tracker's work (the agent proposes it, he agrees first), the app is put on his own
+M365 subscription as a Power Apps code app that still saves in the browser as today — no Dataverse — so he can test it
+there himself: Microsoft's sign-in, his iPhone, the Power Apps player. About 1–2 days. Covers the move plan's points that
+add Microsoft's Power Apps add-on to the app and replace the sign-in card with Microsoft's
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`). **Before he buys anything:** confirm his plan includes
+Power Apps (a Microsoft 365 Business plan with a work or school account; a Family or Personal plan does not). Only the app's
+made-up demo data goes there. The database step stays at the end (D473).
+
+### [M365-MOVE-PLAN] The M365 move plan — his strikes owed (written 31 Oct 26, D1530, D1531)
+Every point of the SWiFT build-and-deploy kit set against Raptor, numbered in the recommended order, with React Doctor's
+count: `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`. Waiting on him: the points he strikes, the
+his-call points, and whether new code follows the code check's rules. Nothing on it is built until he says so; the kit's
+red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 ### [WEEK-DRAG-EDGE-PAN] A man dragged with a mouse to the edge of Edit Schedule never pans the week sideways (found 30 Oct 26, the arrows' walk)
 On a desktop, a man's name dragged with a mouse and held at the left or right edge of Edit Schedule's week scrolls the page
@@ -1878,6 +1895,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The night of 31 Oct 26 (D1531) — the M365 move plan page (`claude/m365-move-plan`); [SYSTEM-PASS-SAVES-ROSTER] with [LW-DELETED-RESTORE-OVERREFUSE] (saved data, who may write it — `claude/lw-roster-restore-fixes`); the secrets scan and scorecard (D1408, D1409 — `claude/secrets-scan-scorecard`); the pinch fixes (`claude/pinch-fixes-1031`) | each: one fresh, blind Opus reader (D790, D903); job 2 also the security read (D1411) | Astra's and Sol 6.1's reads (job 2's two, D590) |
 | The Leave War small fixes — a deleted man's leftover bid refused at every door and in Undo / Redo (saved data: an approval writes a leave input), the clash note's and credited sheet's codes, the month's memo across its edge; FULL-checked on the night of 29–30 Oct 26 on `claude/lw-small-fixes-1030` (pull request 592) | the scenario design and the code read: fresh, blind Opus readers (D790); the two fix rounds' narrow reads: fresh Opus readers (the second still owed at the time of writing) | Astra's scenario design and Astra's and Sol 6.1's reads of the finished code (saved data) |
 | The Leave War overhaul's M5b — the admin's set-up (D1499–D1502): a saved built-in Quals column, holidays imported by file (saved data, one Undo step), the import an admin's only; FULL-checked 29 Oct 26 on `claude/leave-war-m5b-iphone-balances-1402b7` (pull request 588) | the security read (D1411); one fresh, blind Opus reader of the finished code (D790) and one of its fixes; the scenarios designed by a fresh Opus helper | Astra's and Sol 6.1's two reads of the finished code, and the other provider's scenario design (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`) |
 | The drawing check's guide wording (D1494) — the bug-check order §7.0 and §7.10, walk-scripts §10 — drafted 29 Oct 26 on `claude/drawing-check-b783bd` (`raptor-port/docs/superpowers/specs/2026-10-29-drawing-check-guide-wording.md`), not yet in the guides | one fresh, blind Opus reader (16 findings, all taken) | the guide change's two reads (D70: Astra and Sol 6.1) |
