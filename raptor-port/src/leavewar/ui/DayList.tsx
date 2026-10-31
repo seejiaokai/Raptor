@@ -11,6 +11,7 @@
 // check — the buttons are only offered where it would succeed.
 import { useEffect, useRef, useState, type ReactElement } from 'react'
 import { INPUTS, remarksShown, remarksTyped } from '../../engine/inputs'
+import type { Input } from '../../engine/schema'
 import { canDecide, canEditRow, codeInWords, codeOf, displayCell, type Period, type Role } from '../engine'
 import { AM, FULL, offWar, PM, type Contrib, type DayView, type Win } from '../engine/dayview'
 import { creditWorthText } from '../engine/credit'
@@ -98,9 +99,11 @@ function BidWords({ personId, date, rec, onDone, flushRef }: { personId: string;
       }} />
   )
 }
+/* the schedule's inputs read as the app's declared shape — the rules engine keeps its list loosely typed (src/engine/inputs.ts) */
+const inputRows = (): readonly Input[] => INPUTS
 /** an entry's remarks and documents, read only — what the Inputs page holds for one filed there (D1315), or another man's:
  *  the typed words as every screen prints them, the "till <date>" after them (D948) — nothing where none were typed */
-function readOnly(id: string, row: any, raw = false): ReactElement | null {
+function readOnly(id: string, row: Pick<Input, 'remarks' | 'docId' | 'docIds'>, raw = false): ReactElement | null {
   const words = raw ? String(row.remarks ?? '').trim() : remarksTyped(row.remarks, row) ? remarksShown(row) : ''
   const docs = rowDocIds(row)
   if (!words && !docs.length) return null
@@ -184,7 +187,7 @@ export function DayListSheet({
   const ordered = view.all.map((c, i) => ({ c, i })).sort((a, b) => ((a.c.win?.[0] ?? 0) - (b.c.win?.[0] ?? 0))
     || ((b.c.win?.[1] ?? 0) - (a.c.win?.[1] ?? 0)) || String(a.c.code).localeCompare(String(b.c.code)) || a.i - b.i).map(x => x.c)
   const lines = ordered.map(c => {
-    const row0 = c.kind === 'absence' ? INPUTS.find((r: any) => String(r.iid) === c.id) : null
+    const row0 = c.kind === 'absence' ? inputRows().find(r => String(r.iid) === c.id) : null
     /* PRINTED AS FILED (the absence-record re-test, W1-F4, 26 Sep 26): N1 starts a window filed at exactly 12:00 at
        12:01, so it cannot touch the morning — the minute decides the HALF, it is not what the man filed, and this list
        read "12:01–14:00" where the Inputs page says 12:00. The input's own stored start puts the minute back. */

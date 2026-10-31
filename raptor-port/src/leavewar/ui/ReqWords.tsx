@@ -14,6 +14,7 @@
 
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { remarksTyped, tillShown } from '../../engine/inputs'
+import type { Input } from '../../engine/schema'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { inputDates } from '../absences'
 import { DocField, inputById, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
@@ -173,7 +174,7 @@ function useFlush(flushRef: FlushRef | undefined, pending: { current: { save: ()
 
 export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flushRef }: {
   /** the Raptor input the cell derives from (`sync.ts leaveInputAt`) */
-  row: any
+  row: Input | null | undefined
   personId: string
   testPrefix?: string
   /** a save the one gate refused says why (a control that silently does nothing is the worst of the three outcomes) */

@@ -14,6 +14,7 @@
 // rather than against a signed-in person — see `docs/known-gaps.md`.
 
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import type { Input } from '../../engine/schema'
 import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, type BidState, type CounterName, type Half, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
@@ -191,7 +192,7 @@ export function BidPicker({
   /** THE APPROVED LEAVE ON THIS DAY — the Raptor input it is (`sync.ts leaveInputAt`), for its Remarks and Document row,
    *  shown at once in place of the "Note" that opened them in a window of their own (his D1307; M1's code read, L6 had
    *  first given the window that Note). */
-  approvedRow?: any
+  approvedRow?: Input | null
   /** the day's bid state, for every role — what is lit reads it (a refused bid lights no leave), the admin's decide aside */
   dayState?: BidState
   onClose: () => void

@@ -15,6 +15,7 @@
 // ROUND 3's ONE ROW (his D1354, 25 Oct 26 — round 3's Q2 "as recommended"): the window carries the bid windows' one row —
 // the dark box that wraps, its till, Document (`ReqWords.tsx LeaveWords`) — saved as it changes, in place of the older
 // labelled Document and Remarks rows, the light box and its own Save; words typed and not yet saved go with the closing.
+import type { Input } from '../../engine/schema'
 import { codeInWords } from '../engine'
 import { Sheet } from './Sheet'
 import { inputDayLabel } from './dates'
@@ -32,7 +33,7 @@ export function RemarksSheet({
    *  given a leave of his own first (ui/inputedit.tsx setLeaveRemarks) */
   personId: string
   /** the Raptor INPUT the cell derives from (sync.ts:leaveInputAt) */
-  row: any
+  row: Input | null
   /** the cell's Leave War code, for the header only */
   code: string
   onClose: () => void
