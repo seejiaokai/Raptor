@@ -521,7 +521,7 @@ function postingOutFrom(personId: string): string | null {
    own. The next sqn can still reject it" — so a posting out as Overseas Sqn, Transfer or with no outcome approves his days
    from the date in every door that asks this (Approvals, the day's list, the bid windows, Auto-approve), and Undo / Redo
    agree by having nothing to refuse. Only a posting with the Delete outcome keeps the refusal from its date: he leaves flying
-   for good (D287) and has no next squadron (the agent's reading, named to him with D1541). */
+   for good (D287) and has no next squadron — D1541's reading 1, confirmed by his D1545 (31 Oct 26). */
 function postingOutWhy(personId: string, date: string): string | null {
   const w = getState().postOuts[personId] || getState().people.find(p => p.id === personId)
   if (!w || outcomeOf(w) !== 'delete') return null
