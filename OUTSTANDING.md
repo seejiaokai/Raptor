@@ -190,7 +190,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
-- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived, the screen-design rulings to an area of their own, the Codex guide shortened — its own documents-only job.
+- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived and the screen-design rulings moved to an area of their own (done on its branch, 1 Nov 26); the Codex guide shortened and the rule files' passages moved — drafted, waiting on his approval.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -259,6 +259,11 @@ move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usag
 **Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
 is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
 the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
+**Status (1 Nov 26, night — branch `claude/start-load-trim-1101`):** steps (1) and (2) DONE on the branch — three restated
+rulings archived (D1103, D1133, D1507), nineteen screen-design rulings moved to their own area (`.claude/rules/decisions/design.md`),
+both read by one fresh reader; the general rulings 56,481 → 50,897 bytes (~2,075 tokens off every chat). Steps (3) and (4) are
+DRAFTED for his approval, with the two area-list lines the always-loaded rule files need: `raptor-port/docs/superpowers/specs/2026-11-01-start-load-trim.md`
+(the reads: `raptor-port/docs/superpowers/briefs/2026-11-01-start-load-trim-reads.md`). Waits on his approval of the drafts and his "merge live".
 
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])

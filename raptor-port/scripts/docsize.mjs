@@ -197,7 +197,7 @@ const FILES = [
   /* DECISIONS.md 92 -> 95 (27 Oct 26, the skill-notes review): three lines in the recording steps — the one command that
      finds the highest ruling number on every branch (observation 670); the file holds the steps every chat follows, so
      the line goes where the step is. Room, not a target. */
-  ['DECISIONS.md',                       1,   95],
+  ['DECISIONS.md',                       1,   96],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
@@ -270,7 +270,10 @@ const RULING_BYTES = [
   /* how-we-work 56000 -> 58000 (31 Oct 26, [LW-HELD-DAY-ADD]'s branch): 56,324 bytes on main with D1534-D1551 (the React
      Doctor clean-up, strict checking, the secrets scan required, the M365 platform flags), merged over the marker; every
      line live (D136), not trimmed without his word (D1262). Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 58000],
+  /* how-we-work 58000 -> 56000 (1 Nov 26, [START-LOAD-TRIM], owner D1554): 56,481 bytes down to about 50,800 - three
+     rulings a later one restates in full archived (D1103, D1133, D1507 - D971, each read by a fresh reader) and nineteen
+     screen-design rulings moved whole to their own area (design.md). Set about a tenth above - a tripwire, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 56000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -387,6 +390,11 @@ const RULING_BYTES = [
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
   ['.claude/rules/decisions/it-flow-guide.md', 2, 5000],
+  /* NEW 1 Nov 26 ([START-LOAD-TRIM], owner D1554): the screen-design rulings - how a screen looks and behaves (the gear,
+     the pencils, the top bar, search boxes, arrows, pinned bars, the failed-save band, rings, glows, drag) - moved here
+     whole by the script from How we work, which carried them into every chat; they load with the design guide's paths
+     and the walks' pictures (D137, D141). Set about a tenth above what it holds - a tripwire, not a target. */
+  ['.claude/rules/decisions/design.md',  2, 7600],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
