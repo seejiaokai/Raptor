@@ -1,0 +1,12 @@
+# The secrets scan's list of findings judged NOT a secret — read by gitleaks in .github/workflows/secrets-scan.yml
+# (his D1408). One fingerprint a line, copied from the red run's summary: commit:file:rule:line (a finding in the
+# history) or file:rule:line (a finding wherever it stands). Never a value — a fingerprint holds none.
+#
+# Before a line goes in, open the file at that commit ON HIS PC (never paste it into a log, a chat or a pull request)
+# and decide:
+#   - a real password, key or access code  → it goes on this list only AFTER it has been changed at its source (a new
+#     key issued, the old one switched off), because the repository is public and the history keeps the old one
+#     whatever is deleted (D1408: "a key found in the history is changed, not only deleted"); his to do, put to him;
+#   - not a secret (a made-up example, a test value, a word that only looks like a key) → the line goes in, with a
+#     comment above it saying what it is and who judged it, and the date.
+# Changing this file makes the next run scan the whole history again.

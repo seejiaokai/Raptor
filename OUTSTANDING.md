@@ -167,7 +167,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set.
+- [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
@@ -276,6 +276,24 @@ it once; (7) the way back: putting the previous live version back on Vercel, che
 **For the full security review, from M4's security read (27 Oct 26 — `raptor-port/docs/handpass/parts/lw-m4/security-read.md` §Lower):** (a) older than M4 — on an open day of his own row a member's command may write a war record of ANY kind, an OIL credit (`{kind:'credit', code:'FO', oil:'auto'}`) among them, and the war adds such credits up (`dayview.ts earnsOil`); whether the schedule's credit pass rewrites a forged one was not confirmed; (b) one admin can write another admin's Approvals marker (`apprseen:`), the same pattern as the `reqseen:` row — no fix, a note; (c) a member's notice text is never compared with what his change did (a line about his own input that misdescribes it) — the war's line kinds are refused since M4.
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
+**Steps (1) and (4) BUILT the night of 31 Oct 26 on `claude/secrets-scan-scorecard`** (not merged; evidence
+`raptor-port/docs/handpass/2026-10-31-secrets-scorecard.md`). (1) `raptor-port/scripts/scorecard.mjs`; the baseline,
+scorecard 1, `raptor-port/docs/superpowers/plans/2026-10-31-scorecard-1.md` (18–31 Oct: 17 of his finds not said to be on a
+preview, 1 change redone, 61 merges); the next is due 14 Nov 26 (D1409 — the agent's standing job). (4)
+`.github/workflows/secrets-scan.yml` + its self-test `raptor-port/scripts/secrets-scan-selftest.mjs` + `.gitleaksignore`;
+how it works and how to read a red run: `raptor-port/docs/gates-and-deploy.md` §Now (D1408). **Owed before it counts as
+proven:** its first run on GitHub (the self-test with the real gitleaks, and the whole-history scan, which runs on that
+same pull request) — read its summary, triage each history finding as that section says. **His to approve, never done by
+the agent (repository settings — read only on 31 Oct 26: GitHub's own secret scanning and push protection OFF, `main`
+unprotected, no rulesets):** (a) make `secrets scan` a required check — GitHub → the repository → Settings → Rules →
+Rulesets → New ruleset → New branch ruleset; name "main"; Enforcement: Active; Target branches: Add target → Include
+default branch; tick "Require status checks to pass", Add checks → type `secrets scan` → pick it (source GitHub Actions;
+it is listed only once it has run once); no other rule; Create. Only that check, never a `deploy.yml` leg (a path filter
+skips those on a notes-only pull request, which could then never merge); an admin is held by it too unless put on its
+bypass list. (b) switch on GitHub's own scanning, free on a public repository — Settings → "Code security" (GitHub
+has also called the page "Advanced Security"; the agent did not open it) → Secret scanning (or "Secret Protection"):
+Enable, then Push protection: Enable; it refuses a push carrying a known provider's key before it lands, which
+the check above cannot (it sees the key only once pushed). Recommended: both.
 
 ### [SINGLE-SEAT] Single-seat jets — the app works with only the front seat filled (his intent, 21 Oct 26 — D1099)
 **What:** a flying line with only its FCP filled must work as fully as a two-seat line — every check, mark, count and page — for F-16 squadrons (mixed fleet) and F-35 squadrons (all single-seat); an admin switch to hide the RCP is his idea, not designed. **Steps:** (1) the check — every place that reads the back seat and what it does with only the front seat filled, in the code and on screen, written up for him with the design questions (nothing in the app changes); (2) his answers, in rounds of four with pictures; (3) the build, on his word. **Design note:** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat.md`. **Step 1 done (the night of 21 Oct 26):** `raptor-port/docs/superpowers/specs/2026-10-21-single-seat-check.md` — 44 places; three rules wrong for a real single-seat jet (AAR training, an IRT in one jet's remarks, OCU solo); the app cannot tell single-seat from a back seat not yet filled; 8 questions for him with marked pictures — put to him when he says (D994).
