@@ -339,11 +339,18 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     await touch(cdp, 'touchStart', [at(230)[0]]); await sleep(30)
     await touch(cdp, 'touchStart', at(230)); await sleep(30)
     for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(230 - 150 * i / 8)); await sleep(30) }
+    /* AT THE TURN, fingers 80 apart (the narrow read of rounds 2–3, its test gap): the page has scrolled up with the pinch and the
+       grid's own row is in sight — the frozen row must be hidden there (never two rows) and a row still drawn; read only at
+       the end of the turn, a frozen row never hidden passed every check */
+    await sleep(150)
+    const turn = await lineUp()
     for (let i = 1; i <= 8; i++) { await touch(cdp, 'touchMove', at(80 + 150 * i / 8)); await sleep(30) }
     await sleep(150)
     const mid = await lineUp()
     await touch(cdp, 'touchEnd', []); await sleep(700)
     const after = await lineUp()
+    expect.soft(turn.twoRows, `at the turn, never two heading rows (${JSON.stringify(turn)})`).toBe(false)
+    expect.soft(turn.headingRow, `at the turn, a heading row is drawn under the top bar (${JSON.stringify(turn)})`).toBe(true)
     expect.soft(mid.headingRow, `mid-gesture, a heading row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
     expect.soft(mid.twoRows, `mid-gesture, never two heading rows (${JSON.stringify(mid)})`).toBe(false)
     expect.soft(mid.off, `mid-gesture, a frozen heading row stands over its columns (${JSON.stringify(mid)})`).toEqual([])

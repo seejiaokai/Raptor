@@ -5962,12 +5962,19 @@ test.describe('mid-pinch, the page moves with the grid and the pinned parts stay
     await touch('touchStart', [at(230)[0]!]); await page.waitForTimeout(30)
     await touch('touchStart', at(230)); await page.waitForTimeout(30)
     for (let i = 1; i <= 8; i++) { await touch('touchMove', at(230 - 150 * i / 8)); await page.waitForTimeout(30) }
+    /* AT THE TURN, fingers 80 apart (the narrow read of rounds 2–3, its test gap): the page has scrolled up with the pinch and the
+       grid's own row is in sight — the frozen row must be hidden there (never two rows) and a row still drawn; read only at
+       the end of the turn, a frozen row never hidden passed every check */
+    await page.waitForTimeout(150)
+    const turn = await lineUp()
     for (let i = 1; i <= 8; i++) { await touch('touchMove', at(80 + 150 * i / 8)); await page.waitForTimeout(30) }
     await page.waitForTimeout(150)
     const mid = await lineUp()
     await touch('touchEnd', []); await page.waitForTimeout(800)
     await cdp.detach()
     const after = await lineUp()
+    expect.soft(turn.twoRows, `at the turn, never two date rows (${JSON.stringify(turn)})`).toBe(false)
+    expect.soft(turn.dateRow, `at the turn, a date row is drawn under the top bar (${JSON.stringify(turn)})`).toBe(true)
     expect.soft(mid.dateRow, `mid-gesture, a date row is drawn under the top bar (${JSON.stringify(mid)})`).toBe(true)
     expect.soft(mid.twoRows, `mid-gesture, never two date rows (${JSON.stringify(mid)})`).toBe(false)
     expect.soft(mid.off, `mid-gesture, a frozen date row stands over its columns (${JSON.stringify(mid)})`).toEqual([])

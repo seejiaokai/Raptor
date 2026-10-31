@@ -8,8 +8,8 @@ the host the findings, the code read and the closing lines.
 
 ## Questions waiting for him
 
-None. Owed from him, after the walk: **his iPhone look** at both, mid-pinch (WebKit takes no touch input from outside the
-page, so the walk shows what Safari's engine draws, not how his iPhone delivers the fingers — §7.11 lesson 6).
+None. **Owed: his iPhone look** at both, mid-pinch — Safari takes no outside touch input, so only his iPhone proves the pinch there
+(the walk shows what Safari's engine draws, not how his iPhone delivers the fingers — §7.11 lesson 6).
 
 ## The eight questions and the tier
 
@@ -392,8 +392,33 @@ as well as for place — is it there, in sight, the only one — not only "where
 | 10 | WebKit Q5 once: the frozen Quals headings read 47 px off mid-pinch in, scrolled sideways | the round-3 re-walk | — (did not repeat) | intermittent, noted with `[LW-PINCH-FROZEN-WEBKIT-OFF]` |
 | 8 | After a tap on a Quals heading (kept "hovered" on an iPhone), a pinch out with the row frozen could show rows faintly through that heading | the builder, from the code | yes (the see-through box) | not seen; for the host's look |
 
-## The code read
+## The code reads (§8) and the fix rounds
 
-*(a fresh, blind Opus reader — owed)*
+Both reads by one fresh, blind Opus reader (D790), saved as they arrived: `docs/handpass/parts/pinch1031/read-opus.md`.
 
-`Walk: docs/handpass/2026-10-31-pinch-fixes.md · 193 pictures · 7 surfaces (the Leave War grid and Quals on a phone; the grid and Quals at his PC's size; the OIL tab, Balances, the board's desktop layout and the Tracker in the six-surface pinch) · 4 orders (a pinch in, a pinch out, a pinch out turned back in, a tap then a pinch) · MISSING: 1 filed ([QUALS-PINCH-NOSDA-HEAD]) · fix rounds: 3 (the walk; the code read; the host's look), each red first, re-walked after-fix1–3`  — the picture count is every picture the job holds under `docs/img/handpass/2026-10-31-pinch-fixes/`, after-fix3 included.
+- **The code read of pull request 599, to f416065b8** — everything else checked sound; two findings: a pinch that turns
+  direction re-pinned the frozen row over the stretched table (medium-low; in Quals by this change, older on the Leave War since
+  D1288) and a unit-test gap for the floor row's held top (low); a tidiness note, filed under `[QUALS-PINCH-NOSDA-HEAD]`. Both
+  fixed red first in round 2 (above).
+- **The narrow read of rounds 2 and 3, f416065b8..452653e0d** (§5 "A fix is new code") — both rounds sound: no frozen row ever
+  added where none stood, never two rows and never none through a turn, the lift un-hides and settles once, a touchcancel, a
+  third finger and an unmount end through the same lift; per frame nothing new beyond one box read on page-scroll events
+  (D991); the memo firewall untouched. **One low test gap:** with the hide broken (the frozen row never hidden) the tests would
+  likely still pass, the turned tests reading only at the end of the turn. **Closed, test only:** both turned-pinch tests
+  (`e2e/leavewar.spec.ts`, `e2e/pinchzoom.spec.ts` "…a pinch out that turns back to a pinch in…") also read AT the turn, the
+  fingers 80 apart — never two rows, and a row drawn. **The break:** the hide disabled in `Matrix.tsx` and `QualsPage.tsx`
+  (the frozen row left shown while pinching) → red in both: *"at the turn, never two date rows"* — the frozen row shown and the
+  grid's own date row in sight at 227 (the top bar's foot at 49); *"at the turn, never two heading rows"* — Quals' own at 201;
+  the code then put back (`git checkout`), and the touched browser files green: **65 passed, 21 skipped** (under the lock).
+  No app code changed, so no re-walk: the after-fix3 walk stands for this code.
+
+| Round | Found by | The fault | The fix | Red first | Re-walk |
+|---|---|---|---|---|---|
+| — | the pinch walk of 30 Oct 26 | `[LW-PINCH-IN-CORNER]`, `[QUALS-PINCH-MID]` | 224a251dc | 3 browser, 1 unit | the walk: before/after, both engines |
+| 1 | the walk's pictures (L2, L7; the script passed) | the names blank mid-pinch out part-way down — the cut worked back without the page's own scroll | f416065b8, `pinchzoom.ts` | 1 unit, 2 browser steps | after-fix1: Chrome 99/99, WebKit 99/99 (×3 quiet) |
+| 2 | the code read | a turned pinch re-pinned the frozen row over the stretched grid; the floor-row test gap | 81e84207b, `Matrix.tsx`, `QualsPage.tsx`; a unit case | 2 browser, 1 unit | after-fix2: Chrome 267/267, WebKit 266/267 (L6, older) |
+| 3 | the host's look at round 2's pictures (L8; the script passed) | a turned pinch left no date row under the top bar | 452653e0d, the same two files | 2 browser (presence) | after-fix3: Chrome 372/372, WebKit 370/372 (L6 older; Q5 once) |
+| — | the narrow read | a test gap: the hide unread at the turn | tests only (this commit) | the break above | none needed — no app code |
+
+
+`Walk: docs/handpass/2026-10-31-pinch-fixes.md · 193 pictures · 7 surfaces (the Leave War grid and Quals on a phone; the grid and Quals at his PC's size; the OIL tab, Balances, the board's desktop layout and the Tracker in the six-surface pinch) · 4 orders (a pinch in, a pinch out, a pinch out turned back in, a tap then a pinch) · MISSING: 1 filed ([QUALS-PINCH-NOSDA-HEAD]) · fix rounds: 3 (the walk; the code read; the host's look), each red first, re-walked after-fix1–3 · reads: the code read and its narrow read · owed: his iPhone look`  — the picture count is every picture the job holds under `docs/img/handpass/2026-10-31-pinch-fixes/`, after-fix3 included.

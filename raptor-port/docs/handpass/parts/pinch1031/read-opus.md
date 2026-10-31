@@ -33,3 +33,20 @@ with `[QUALS-PINCH-NOSDA-HEAD]`.
 
 Verdict: the fixes do what the items ask on every pinch surface, nothing else broken; the direction-change gap (1) wants
 a fix and a test before "merge live".
+
+## The narrow read of fix rounds 2 and 3 (f416065b8..452653e0d) — the same reader, saved as it arrived (condensed)
+
+1. The frozen row through every gesture — no fault: started at the top or with the grid's own date row in sight, no
+   frozen row is ever added (the own row is held from rising); frozen at the start then a pinch out, it is hidden while
+   the own row is in sight and shows again, stretched, when turned back in — never two, never none; the hide reads the
+   drawn top of the own row's first cell, the resting pin's own test; the Leave War hides the element its lift un-hides;
+   the lift un-hides, measures at rest, re-measures if the zoom changed; touchcancel, a third finger and unmount end
+   through the same lift.
+2. Per frame (D991): not new — one more box read on page-scroll events while the fingers are down, no forced layout.
+3. Memo firewall untouched.
+4. Tests: the held-box unit cases and the turned-pinch browser tests catch the first-round faults. **Low, a test gap:**
+   if the hide were broken (the frozen row never hidden) every test would likely still pass (worked out, not run) — the
+   turned tests read only at the end of the turn. Fix: in both turned tests also read at the turn (fingers 80 apart) and
+   assert no second row and that a heading or date row is drawn.
+
+Verdict: both rounds sound; one test gap; nothing blocks the merge.
