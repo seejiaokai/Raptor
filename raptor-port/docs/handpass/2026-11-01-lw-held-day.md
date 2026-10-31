@@ -123,7 +123,7 @@ condition, carried by test); his real iPhone (below).
   ("may still work"), and D1552 follows what the war refuses; named to him on his look card. (2) an entry of several
   time windows in one day reads its half — rare, no stored entry has it on the Inputs page; left. (3) state changes while
   the window is open beyond D4's Undo — carried by `heldday.test.tsx` and the round 2 Undo tests of the filings.
-- **The narrow read of the fixes** (the order's §5, "a fix is new code"): (to come)
+- **The narrow read of the fixes** (the order's §5, "a fix is new code" — fresh Opus, the fix commit only): **0 findings**; each fix the day's list's own body, no chip twice (his own leave's box carries his documents), F3 the day's list's own rule word for word. It noted, outside this change, that the free half's line for a commitment (D1371) lacks the "till" and the documents too — filed as [LW-HELDHALF-WORDS]. One round; the read cap not reached.
 
 ## Gates
 Leave War unit: 228 files, 4062 tests green (on his PC, under the lock). Code check: no new finding. GitHub's run on the
