@@ -65,7 +65,7 @@ import { mayDeletePerson, byAfterLeaving } from './perms'
 import { deleteAccountProblem, dropAccountOfPid, accountsAfter } from './accounts'
 import { saidOf } from './roster-add'
 import { stampChanged, stampWho } from './inputstamp'
-import { deletePersonOnWar, refusedFrom, warIdentityIfHidden } from '../leavewar/sync'
+import { deletePersonOnWar, postingOutIds, postingRefusedFrom, postingRestoreWhy, refusedFrom, warIdentityIfHidden } from '../leavewar/sync'
 import { inputDates } from '../leavewar/absences'
 import { HOOKS } from '../engine/hooks'
 import { deferEffect as cmdDeferEffect } from '../command'
@@ -283,6 +283,85 @@ export function applyDelete(id: string, cutoff: string): void {
    before it restores. The record names are the command layer's (state/sched-commit.ts decompose): `days` `<wk>#<di>`,
    `sched.book` `<wk>#<di>` (that day's `sg` sign-offs and `dr` parked plans), `inputs` `<iid>`, `plan` `pp:<id>`, `weekstash`
    `<wk>#<di>` (a saved week's day row — state/weekrows.ts; its other rows name no day he could be put back on). */
+/* DOES THIS STEP REPLAY A WAR APPROVAL OF HIS LEAVE, FROM `from` ON — the one body both restore refusals ask: a deleted
+   man's (below, decided once and kept) and a man whose Delete posting has not yet run ([LW-DELETE-POSTING-RESTORE],
+   `postingRestoreProblem`, asked fresh). Moved here whole from `deletedRestoreProblem` (1 Nov 26); what counts as an approval is as its comment says:
+   a war step's Redo that adds war-approved days for him overall AND from `from`; an Undo that takes a request of his off the
+   war from `from` and writes war-approved leave for him there (the Undo of a send-back). */
+function replaysApproval(changes: any[], dir: 'undo' | 'redo' | undefined, module: string | undefined, id: string, from: string): boolean {
+  const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
+  if (dir === 'redo') {
+    if (module !== 'lw') return false
+    const all = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
+    let grew = 0, added = 0
+    for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
+      const a = ch.op === 'delete' ? null : ch.after
+      grew += all(a) - all(ch.before); added += lwDays(a) - lwDays(ch.before)
+    }
+    if (grew > 0 && added > 0) return true
+    /* …AND DAY BY DAY, NOT ONLY AS A NET SUM ([LW-DELETED-REDO-NETSUM], the security read of 7d0c12b24, 4 — built 1 Nov 26):
+       one war step that approves his refused 13 Jul AND sends back his approved 10 Jul nets nothing (+1 −1), so the sum let
+       its Redo through. A war step's Redo is refused, too, when it takes a request of his off a day from `from` — the
+       request gone from the step altogether, not carried to another day — and leaves his war-approved leave on that same
+       day where it was not: that is an approval of the day, whatever else the step did. Asked of every war writer before it
+       was built (the item's caution, RR-A — it must never refuse what the live door allows): only the approval door
+       (sync.ts doorApprove — Approvals, Approve all, the windows' Approve, Auto-approve's placeApproved) turns a request into
+       war-approved leave, and the live door refuses his days from `from` (approveWhy — refusedWhole, postingOutWhy); a move
+       carries a bid with its own id and lands approved leave only where no live bid stands (sync.ts doorMoveApproved,
+       'occupied'); a re-typed approved leave (decideApproved) takes no request; a filing (doorFile) writes no war mark;
+       the inputs door's swap of a bid for a notice is an Inputs-page step, never `lw` (finding B, above). */
+    const reqsOf = (list: any) => (Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id))
+    const before = new Map<string, string>(), after = new Set<string>()
+    for (const ch of changes || []) if (ch && ch.collection === 'lw.cell') {
+      const parts = String(ch.id || '').split(':')
+      if (parts[parts.length - 2] !== id) continue
+      const day = parts[parts.length - 1]!
+      for (const r of reqsOf(ch.before)) if (day >= from) before.set(r, day)
+      if (ch.op !== 'delete') for (const r of reqsOf(ch.after)) after.add(r)
+    }
+    const taken = new Set([...before].filter(([r]) => !after.has(r)).map(([, day]) => day))
+    if (!taken.size) return false
+    const days = (side: 'before' | 'after'): Set<string> => {
+      const out = new Set<string>()
+      for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
+        const row = side === 'after' ? (ch.op === 'delete' ? null : ch.after) : ch.before
+        if (row && row.lw && inInput(row, id)) for (const d of inputDates(row)) out.add(d)
+      }
+      return out
+    }
+    const had = days('before')
+    return [...days('after')].some(d => taken.has(d) && !had.has(d))
+  }
+  const takesBid = (changes || []).some(ch => {
+    if (!ch || ch.collection !== 'lw.cell') return false
+    const parts = String(ch.id || '').split(':')
+    if (parts[parts.length - 2] !== id || parts[parts.length - 1]! < from) return false
+    const reqIds = (list: any) => new Set((Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id)))
+    const now = reqIds(ch.before), left = ch.op === 'delete' ? new Set<string>() : reqIds(ch.after)
+    return [...now].some(r => !left.has(r))
+  })
+  if (!takesBid) return false
+  return (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && lwDays(ch.after) > 0)
+}
+
+/* ---- A DELETE POSTING NOT YET RUN ([LW-DELETE-POSTING-RESTORE], found 31 Oct 26, built 1 Nov 26) ----
+   Undo and Redo never put back an approval of his leave on a day from his posting-out date, which the live Approve refuses
+   (his D1545: a posting out with the Delete outcome keeps refusing his leave from its date — the two doors agree, D754).
+   Every other posting refuses nothing (D1541), and once the Delete posting has run he is deleted and `deletedRestoreProblem`
+   answers. Asked by the timeline's restoreRefusal — fresh on every Undo and Redo, never kept with the step as a delete's is
+   — because a posting can be moved, taken back ("Undo post out") or given another outcome, and the same Redo must then go
+   back. The days are the live door's (leavewar/sync.ts postingRefusedFrom); what counts as an approval is
+   `replaysApproval`'s, the deleted man's own body: a move, a shortening, a delete or an Inputs-page edit of his leave is no
+   approval and passes. (First built for every posting as [LW-POSTED-OUT-RESTORE], 057ca75ab, and reverted under D1541.) */
+export function postingRestoreProblem(changes: any[], dir: 'undo' | 'redo', module?: string): string | null {
+  for (const id of postingOutIds()) {
+    const from = postingRefusedFrom(id)
+    if (!from) continue
+    if (replaysApproval(changes, dir, module, id, from)) return postingRestoreWhy(id, dir)
+  }
+  return null
+}
+
 const holds = (v: any, id: string): boolean => { try { return JSON.stringify(v ?? null).includes(`"${id}"`) } catch (_e) { return false } }
 export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', module?: string): string | null {
   const gone = Object.keys(PEOPLE).filter(id => (PEOPLE as any)[id] && (PEOPLE as any)[id].deleted)
@@ -329,30 +408,7 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
   for (const id of gone) {
     const from = refusedFrom(id)
     if (from == null) continue
-    const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
-    if (dir === 'redo') {
-      if (module === 'lw') {
-        const all = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
-        let grew = 0, added = 0
-        for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
-          const a = ch.op === 'delete' ? null : ch.after
-          grew += all(a) - all(ch.before); added += lwDays(a) - lwDays(ch.before)
-        }
-        if (grew > 0 && added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
-      }
-      continue
-    }
-    const takesBid = (changes || []).some(ch => {
-      if (!ch || ch.collection !== 'lw.cell') return false
-      const parts = String(ch.id || '').split(':')
-      if (parts[parts.length - 2] !== id || parts[parts.length - 1]! < from) return false
-      const reqIds = (list: any) => new Set((Array.isArray(list) ? list : []).filter((r: any) => r && r.kind === 'request').map((r: any) => String(r.id)))
-      const now = reqIds(ch.before), left = ch.op === 'delete' ? new Set<string>() : reqIds(ch.after)
-      return [...now].some(r => !left.has(r))
-    })
-    if (!takesBid) continue
-    const writesLeave = (changes || []).some(ch => !!ch && ch.collection === 'inputs' && ch.op === 'put' && lwDays(ch.after) > 0)
-    if (writesLeave) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+    if (replaysApproval(changes, dir, module, id, from)) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
   }
   for (const ch of changes || []) {
     if (!ch || ch.op !== 'put') continue

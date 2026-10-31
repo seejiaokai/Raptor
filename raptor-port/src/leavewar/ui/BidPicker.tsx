@@ -75,6 +75,23 @@ function leaveOn(current: string, state?: BidState): { type: string; portion: Po
  *  it holds, a medical's hours where it was recorded with them, its typed words, where it is attached */
 export type HeldLine = { code: string; portion: Portion; hours?: string; remarks: string; to?: string; docs?: { list: Array<{ id: string; name: string }>; row: WarInput } }
 
+/** ONE BODY FOR EVERY LINE NAMING AN ENTRY FILED ON THE INPUTS PAGE ([LW-HELDHALF-WORDS], 1 Nov 26): a held day's lines
+ *  (D1548, D1553) and the free half's line for a commitment (D1371) — its box, its half as AM / PM / Whole day or a
+ *  medical's hours (D1525), where it is attached, its words with their "till <date>" (D948), its documents read only
+ *  (D1150), and where it is changed. The free half's line drew its own copy, which printed the typed words alone. */
+function HeldEntryLine({ h, testid }: { h: HeldLine; testid: string }) {
+  return (
+    <span className="note bp-wide bp-heldline" data-testid={testid}>
+      <EntryBox code={h.code} fill="a" place={h.portion === 'am' ? 'top' : h.portion === 'pm' ? 'bot' : 'whole'} />
+      <span>{h.hours ?? (h.portion === 'am' ? 'AM' : h.portion === 'pm' ? 'PM' : 'Whole day')}</span>
+      {h.to && <span>· {h.to}</span>}
+      {h.remarks && <span className="bp-heldwords">“{h.remarks}”</span>}
+      {h.docs?.list.map(d => <button key={d.id} type="button" className="docchip" onClick={() => openInputDocs(h.docs!.row)}><span className="docname">{d.name}</span></button>)}
+      <span>· change it on the Inputs page</span>
+    </span>
+  )
+}
+
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the one-day window's leave, range, OIL, posting and words rows share one set of state, refs and writes (its below-zero ask, its Delete's confirm, the words saved before an action); split, its hooks and the order its effects run in would move
 export function BidPicker({
   callsign,
@@ -192,7 +209,7 @@ export function BidPicker({
   heldBy?: string
   /** THE HELD HALF IS A COMMITMENT UNDER UNAVAILABLE (his D1371 — an Other, an Attach…): its code and remarks, for the one
    *  line that names it — its box, its half, its remarks and where it is changed — in place of the leave's sentence */
-  heldOther?: { code: string; remarks: string; to?: string } | null
+  heldOther?: HeldLine | null
   /** A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — a course's day first, D1395, drawn lw-m3n-draw.mjs d7; every
    *  such day drawn lw-held-draw.mjs): a short tap opens this window so more can be added (Grant OIL…), with ONE line on top
    *  for each entry — its box, its half (Whole day, AM, PM, or a medical's hours), its remarks, and where it is changed —
@@ -721,16 +738,9 @@ export function BidPicker({
       {/* keyed by its kind and its half: a day holds one entry a half, or one over the whole day (matrixrowparts inputsFilledDay) */}
       {heldDays?.map(h => (
         <div className="bidsheet-row" key={`${h.code}-${h.portion}`}>
-          <span className="note bp-wide bp-heldline" data-testid="bid-heldday">
-            <EntryBox code={h.code} fill="a" place={h.portion === 'am' ? 'top' : h.portion === 'pm' ? 'bot' : 'whole'} />
-            {/* its half as AM / PM after its box (his D1525), a medical recorded with hours its hours */}
-            <span>{h.hours ?? (h.portion === 'am' ? 'AM' : h.portion === 'pm' ? 'PM' : 'Whole day')}</span>
-            {h.to && <span>· {h.to}</span>}
-            {h.remarks && <span className="bp-heldwords">“{h.remarks}”</span>}
-            {/* its documents, read only, as the day's list draws them (D1150) */}
-            {h.docs?.list.map(d => <button key={d.id} type="button" className="docchip" onClick={() => openInputDocs(h.docs!.row)}><span className="docname">{d.name}</span></button>)}
-            <span>· change it on the Inputs page</span>
-          </span>
+          {/* its half as AM / PM after its box (his D1525), a medical recorded with hours its hours; its documents read only,
+              as the day's list draws them (D1150) */}
+          <HeldEntryLine h={h} testid="bid-heldday" />
         </div>
       ))}
 
@@ -840,16 +850,9 @@ export function BidPicker({
         )}
         {/* A HALF-DAY OTHER HELD (his D1371 — drawn by scripts/handpass/lw-1025-q7.mjs, SET c2): one line — its box in its
             outlined look, "Morning" or "Afternoon", its remarks, and where it is changed — the same for an admin and a member */}
-        {onlyPortion && heldOther && (
-          <span className="note bp-wide bp-heldline" data-testid="bid-heldhalf">
-            <EntryBox code={heldOther.code} fill="a" place={onlyPortion === 'pm' ? 'top' : 'bot'} />
-            {/* its half after its box as AM / PM (his D1525 — narrowing D1371's "Morning" / "Afternoon") */}
-            <span>{onlyPortion === 'pm' ? 'AM' : 'PM'}</span>
-            {heldOther.to && <span>· {heldOther.to}</span>}
-            {heldOther.remarks && <span className="bp-heldwords">“{heldOther.remarks}”</span>}
-            <span>· change it on the Inputs page</span>
-          </span>
-        )}
+        {/* its half after its box as AM / PM (his D1525 — narrowing D1371's "Morning" / "Afternoon"): the half the free one
+            is not (Matrix.tsx heldCommitment), drawn by the held day's own body */}
+        {onlyPortion && heldOther && <HeldEntryLine h={heldOther} testid="bid-heldhalf" />}
         {/* ON A LEAVE OF SEVERAL DAYS (his D1461 — version 2): "Pick a range"'s place holds the choice of what Approve,
             Refuse, Move and Delete act on — "All <n> days" (picked to start with) or the day tapped ("Tue 13") — so the
             window keeps its height. Picking either takes back an armed question and a note about the other. */}

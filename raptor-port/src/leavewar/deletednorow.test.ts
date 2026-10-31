@@ -476,6 +476,31 @@ describe('the second narrow read’s finding A: a war move across the posting’
   })
 })
 
+/* [LW-DELETED-REDO-NETSUM]'s caution (RR-A): the per-day test must never refuse a step the live door allows. A war move
+   takes no request away — a bid it carries lands with its own id — so a block of his approved leave and his pending bid
+   slid one day, the leave landing where the bid stood, is no approval of that day, though a request leaves it and his
+   approved leave arrives there */
+describe('[LW-DELETED-REDO-NETSUM] — a move is no approval, even where a bid leaves the day the leave lands on', () => {
+  const postLate = () => { expect(postOut('bane', '2026-07-12', 'delete')).toBe(true); runPoOutcomes(); raptorNotify(); expect((PEOPLE as any).bane.deletedFrom).toBe('2026-07-15') }
+  const on = (d: string) => warLeave('bane').some((r: any) => r.date === d)
+  const block = () => {
+    setCell('bane', '2026-07-11', 'LL'); expect(decideRequests([line('bane', '2026-07-11', 'approved')])[0]!.kind).toBe('done')
+    expect(setCell('bane', '2026-07-12', 'LL')).toBe(true)
+    expect(moveCells([{ personId: 'bane', date: '2026-07-11' }, { personId: 'bane', date: '2026-07-12' }], 1)).toBe('moved')
+    expect(on('Jul 12'), 'his approved leave on 12 Jul').toBe(true)
+    expect(req('bane', '2026-07-13').state, 'his bid carried to 13 Jul').toBe('pending')
+  }
+  it('his approved 11 Jul and pending 12 Jul slid one day, Undo, the posting runs late, Redo: the move goes back', () => {
+    block()
+    expect(globalUndo().ok).toBe(true)
+    expect(on('Jul 11')).toBe(true)
+    postLate()
+    expect(globalRedo().ok, 'the Redo of the move').toBe(true)
+    expect(on('Jul 12')).toBe(true)
+    expect(req('bane', '2026-07-13').state).toBe('pending')
+  })
+})
+
 describe('the second narrow read’s finding B: an Inputs-page lengthening over his own pending bid', () => {
   it('lengthened 10 → 10–11 Jul over his pending 11 Jul bid, Undo, he is deleted, Redo: the lengthening is back', () => {
     setCell('bane', PAST, 'LL'); expect(decideRequests([line('bane', PAST, 'approved')])[0]!.kind).toBe('done')
@@ -517,9 +542,11 @@ describe('the security read’s older leads', () => {
   })
   /* (b) the war count is a net sum: one war step that approves a day the late posting refuses AND sends back another
      approved day of his adds nothing overall, so its Redo passed. No screen sends that pair in one command (Approvals and
-     the bid windows decide one way at a time) — filed, [LW-DELETED-REDO-NETSUM]. Written as the RIGHT behaviour and marked
-     `it.fails` while the fault stands: it goes red the day the fix lands, and is then made a plain `it` */
-  it.fails('one war step approving his refused 13 Jul and sending back his 10 Jul, Undo, the posting runs late, Redo: refused — FILED [LW-DELETED-REDO-NETSUM]', () => {
+     the bid windows decide one way at a time). Marked `it.fails` while the fault stood; FIXED 1 Nov 26
+     ([LW-DELETED-REDO-NETSUM]): a war step's Redo is refused, too, when it takes a request of his off a day from the first
+     refused day and writes his war-approved leave on that same day — an approval of that day, whatever else the step did
+     (state/person-delete.ts replaysApproval) */
+  it('one war step approving his refused 13 Jul and sending back his 10 Jul, Undo, the posting runs late, Redo: refused ([LW-DELETED-REDO-NETSUM])', () => {
     setCell('bane', PAST, 'LL'); setCell('bane', '2026-07-13', 'LL')
     const [a] = decideRequests([line('bane', PAST, 'approved')])
     expect(a!.kind).toBe('done')
