@@ -15,6 +15,9 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **GitHub's own secret scanning (D1535, 31 Oct 26):** he approved switching it on, push protection with it (the agent's
+  reading); he clicks it on himself (Settings → Advanced Security, or Code security → Secret Protection → Enable, and Push
+  protection → Enable). The project's own scan as a required check is a separate setting, not yet approved.
 - **A secrets scan joins the checks (his D1408, 27 Oct 26 — built 31 Oct 26 on `claude/secrets-scan-scorecard`, [REVIEW-LAYERS]
   step 4):** a pull request that adds a password, key or access code to any file does not merge; the whole history is
   scanned once, and a key found there is changed, not only deleted. The repo is public for now (D106).

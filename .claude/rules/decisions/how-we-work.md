@@ -12,6 +12,7 @@ never pay or money).
 
 | # | Date | The rule |
 |---|---|---|
+| D1535 | 31 Oct 26 | GitHub's own secret scanning is switched on for the project, beside the project's own secrets scan. |
 | D1534 | 31 Oct 26 | React Doctor's findings are cleaned up as one batch before new feature work: the 60 errors and the 42 missed-update warnings across the app, and every finding in the Tracker; from now on new and changed code follows the code check's rules; the other areas' remaining findings ride with each area's next batch (D490). |
 | D1533 | 31 Oct 26 | React Doctor may be run on Raptor the kit's way, sending its findings to the tool's maker (Million Software, Inc., react.doctor) for its score; the night's run with every outside connection off is no longer required. |
 | D1532 | 31 Oct 26 | Building goes on and the database step stays at the end (D473); at a good stopping point in the Tracker's work the app is first put on his own M365 subscription with no database — a hosting trial: it runs inside Power Apps and still saves in the browser as today, so he can test it there himself. |
