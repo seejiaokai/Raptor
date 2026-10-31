@@ -267,7 +267,10 @@ const RULING_BYTES = [
      kit set aside in part, React Doctor's permissions, the M365 hosting trial before the database step); D1531 stays live
      (its "nothing fixed without his word" and "not added to the project's tools" still hold), every line live (D136), and
      what a chat loads is not trimmed without his word (D1262). Room, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 56000],
+  /* how-we-work 56000 -> 58000 (31 Oct 26, [LW-HELD-DAY-ADD]'s branch): 56,324 bytes on main with D1534-D1551 (the React
+     Doctor clean-up, strict checking, the secrets scan required, the M365 platform flags), merged over the marker; every
+     line live (D136), not trimmed without his word (D1262). Room, not a target. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 58000],
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -364,7 +367,10 @@ const RULING_BYTES = [
      D1517 - merged with code while the size check was deferred (D29); every line a live ruling (D136), not trimmed
      without his word (D1262). Room for M6's first answers; the split or the archive of what the overhaul retires is
      still [RULINGS-SPENT-PASS]'s. Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 124000],
+  /* leave-war 124000 -> 128000 (31 Oct 26, [LW-HELD-DAY-ADD]'s branch): 124,705 bytes on main with D1541-D1550 (the Leave
+     War's small fixes of 31 Oct), merged over the marker; every line a live ruling (D136), not trimmed without his word
+     (D1262). Room for this job's answers; the split or archive is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 128000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

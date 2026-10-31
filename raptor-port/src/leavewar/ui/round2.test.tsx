@@ -112,13 +112,15 @@ describe('round 2 — the row under the leaves (D1326, D1338)', () => {
     expect(line.textContent).toContain('change it on the Inputs page')
     expect(within(sheet()).getByTestId('bid-oil'), 'Grant OIL is there').toBeTruthy()
   })
+  /* an overseas duty's day opens the bid window too since his D1548, its line saying where it is changed */
   it('a tap on the filed day says where it is changed, never that it was filed on the Inputs page', () => {
     render(<Matrix />)
     fireEvent.click(cell())
     fireEvent.click(within(sheet()).getByTestId('bid-file-OD'))
     fireEvent.click(cell())
-    const note = screen.getByTestId('raptor-note').textContent ?? ''
-    expect(note).toBe('Change it on the Inputs page, not here.')
+    const line = within(sheet()).getByTestId('bid-heldday').textContent ?? ''
+    expect(line).toContain('change it on the Inputs page')
+    expect(line).not.toMatch(/filed on the Inputs page/i)
   })
   /* the fresh code read's F2: a picked range of which a day was left out (it already held an OD — the designer's G2, "left
      as it is AND said") closed the window in silence; the drag window says it, and so does this one now */

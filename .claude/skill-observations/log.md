@@ -3013,3 +3013,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** shipping.md's lock paragraph (and gatelock.mjs's usage text): for more than one command, write them to a script and pass `-- bash <script>`; or make `exec` refuse an argument holding `;`, `>` or `&&` with that advice.
 
 **Principle:** A wrapper that re-parses a shell string should refuse what it cannot run faithfully rather than run part of it and report success.
+
+### Observation 761: A "today" picture taken from a test fixture can silently show nothing staged
+
+**Status:** OPEN
+**Date:** 2026-10-31
+**Session context:** [LW-HELD-DAY-ADD] — drawing the Leave War's bid window on a day held by an entry filed on the Inputs page
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (driving the build to the state) and the Traps list
+
+**Issue:** The drawing staged its entries through the app's test bridge. One entry was filed under the war's short code ("OTH") instead of the Inputs page's own type name ("Other"), so it never reached the grid; the "today" picture showed an ordinary empty day's window and the script reported success. Only reading the picture showed the cell was empty. A second surprise the same run: the member's "today" was a window the ruling had not mentioned (his own remarks window), which changed the proposal.
+
+**Suggested improvement:** In The Method, step 1: after staging, assert each staged record is ON SCREEN in the today state (the cell holds its box, the window names it) before any proposal is drawn, and draw "today" for every role the change touches before designing the proposed state, since a role may already have a window of its own there.
+
+**Principle:** A fixture is staged only when the screen shows it; check the today picture's premise as strictly as the proposal's, and look at today for each role before deciding what changes.

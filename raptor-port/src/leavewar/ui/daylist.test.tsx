@@ -287,13 +287,15 @@ describe('the tail of an overnight leave, on the morning it clashes', () => {
    That minute decides the HALF; it is not the time the man filed, and the list printed "12:01–14:00" where the Inputs
    page says 12:00–14:00. */
 describe('a leave filed from 12:00', () => {
-  it('reads 12:00 in the tap list, as on the Inputs page — and is still the afternoon', () => {
+  /* a morning and an afternoon both filed on the Inputs page now open the bid window, a line each (his D1553 — it was the
+     day's list): the afternoon's line reads 12:00 as the list did */
+  it('reads 12:00 in the held line, as on the Inputs page — and is still the afternoon', () => {
     INPUTS.unshift({ iid: 'noon1', person: P, type: 'LL', date: 'Feb 11', yr: 2026, allday: false, s: 720, e: 840, remarks: '', mod: '2026-01-01' })
     INPUTS.unshift({ iid: 'am1', person: P, type: 'OL', date: 'Feb 11', yr: 2026, allday: false, s: 480, e: 600, remarks: '', mod: '2026-01-01' })
     syncAbsences()
     render(<Matrix />)
     fireEvent.click(cell())
-    const text = screen.getByTestId('daylist').textContent || ''
+    const text = screen.getAllByTestId('bid-heldday').map(l => l.textContent).join(' | ')
     expect(text).toContain('12:00–14:00')
     expect(text).not.toContain('12:01')
   })

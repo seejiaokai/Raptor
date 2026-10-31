@@ -1,10 +1,10 @@
 import { Fragment, memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore, type ReactNode, type RefCallback, type TouchEvent } from 'react'
 import { dayLabel, shortDate, shortSpan } from './dates'
-import { isCommitCode, type DayView } from '../engine/dayview'
+import { isCommitCode, isLeaveCode, isSickCode, type Contrib, type DayView } from '../engine/dayview'
 import { INPUTS, remarksTyped } from '../../engine/inputs'
 import { addDays, boxText, canDecide, canEditRow, focusDateOf, memberToday, openFrom, codeOf, columnKindFor, evaluatePeriod, groupOf, assignGroup, groupLabel, matchesGroup, OTHER_ID, OTHER_LABEL, SANS_GROUP_ID, inSquadron, postingSheetFor, isBiddable, opsCatOf, DEFAULT_FIGURE_ID, FIGURES, figureForLeave, dayName, isWeekend, monthsIn, parseCell, lockedOnWar, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid } from '../engine'
 import { actCount, filedSince, awardsOnDay, balanceAfterFill, canBidOn, ownPendingOnClosedDay, clearRecordById, oilOnDay, setDayAward, groupsInOrder, groupPriorityIds, lwHistEpoch, displayRoster, getState, takeFocusOpen, movableRecords, moveRecords, moveRecordsProblem, stayingIn, moveEvent, moveEventProblem, manningBlockOrder, setPostIn, postingProblem, hasAccount, postingBlocked, postingLocked, type MoveResult, type MoveRec, type EventMoveResult } from '../state/store'
-import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet } from './BidPicker'
+import { AwardSheet, BidPicker, PostInSheet, PostOutSheet, RaptorSheet, type HeldLine } from './BidPicker'
 import { PersonWindow } from './PersonWindow'
 import { openOwnWindow } from '../../state/lwseen'
 import { ringCell } from './cellring'
@@ -22,7 +22,7 @@ import { EventsSheet } from './EventsSheet'
 import { monthInView } from './monthview'
 import { popAt } from './popat'
 import { clampWin, leftGrowAbsorbable, rollingTarget, stepAllowedInMotion, stepToward, visibleSpan, windowAround, WINDOW_FROM_MONTHS, type ColWin } from './colwindow'
-import type { PostOutcome } from '../engine'
+import type { PostOutcome, Portion } from '../engine'
 import { outcomeOf, bandAt, classifyEvent, dayEvent, dayEventKind, EVENT_KIND_WORDS } from '../engine'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { creditGiver } from '../engine/warrecs'
@@ -51,7 +51,7 @@ import { columnInView } from './inview'
 import { useVersion } from './useStore'
 import { DayListSheet } from './DayList'
 import { PersonRow, type RowApi } from './MatrixRows'
-import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
+import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, type RowDragCfg, freeHalfBeside, inputsFilledDay, nameLines, ownAwardAlone, setPhWidth } from './matrixrowparts'
 import { rowInWindow } from './rowinwindow'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
@@ -138,13 +138,22 @@ function sameStuck(
 
 /** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
  *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
-/** THE COURSE HOLDING A WHOLE DAY (his D1395 — [LW-TAP-HELD-DAY]): its code and typed remarks for the bid window's top line */
+/** ONE ENTRY OF A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — a course's first, D1395): its code, its half or hours,
+ *  its typed remarks — none where they stand in the window's own Remarks box (`ownWords`, his own leave — D1552) — and
+ *  where it is attached ("To"), for the bid window's line */
 /* the Inputs page's live list, typed once at the Leave War's edge (the schedule's engine keeps it untyped) */
 const inputRows = (): readonly WarInput[] => warInputs()
-function heldCourse(v: DayView): { code: string; remarks: string } {
-  const c = v.all[0]!
+function heldLine(c: Contrib, portion: Portion, hours: readonly [number, number] | undefined, ownWords: boolean): HeldLine {
   const row = inputRows().find(r => String(r.iid) === c.id)
-  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '' }
+  /* PRINTED AS FILED (W1-F4, as the day's list prints it — DayList.tsx `shownWin`): a window filed at exactly 12:00 starts
+     at 12:01 so it cannot touch the morning; the input's own start puts the minute back */
+  const hm = (m: number) => `${String(Math.floor(m / 60)).padStart(2, '0')}:${String(m % 60).padStart(2, '0')}`
+  const from = hours && hours[0] === 721 && row && row.allday === false && row.s === 720 ? 720 : hours?.[0]
+  return {
+    code: c.code, portion, ...(hours ? { hours: `${hm(from!)}–${hm(hours[1])}` } : {}),
+    remarks: row && !ownWords ? String(remarksTyped(row.remarks, row) ?? '').trim() : '',
+    ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}),
+  }
 }
 function heldCommitment(v: DayView | undefined): { code: string; remarks: string; to?: string } | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
@@ -3366,17 +3375,28 @@ export function Matrix() {
      actions (design §25 OA10-001). It comes before every single-record sheet
      below, which stay exactly as they were for a one-record day. */
   const openView = open ? views[open.id]?.[open.date] : undefined
+  /* A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1552, D1553 — [LW-HELD-DAY-ADD]; D1395's course day widened): held whole
+     by entries filed there — leave, a medical, an overseas duty, a course, a commitment under Unavailable, or a morning and an
+     afternoon — a tap opens the bid window so more can still be added (Grant OIL first), one line on top for each entry. Only
+     where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did, unless
+     he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below). It comes before the
+     day's list, the member's remarks window and the read-only note, each of which it replaces on such a day — but never on a
+     day outside his time in the squadron, where the day's list shows every record on its own line (owner answer C, below). */
+  const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
+    && (!openPerson || inSquadron(openPerson, open.date))
+    ? inputsFilledDay(openView) : null
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
     && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
-  const listOpen = !!open && !!openView && (openView.mark !== '' || commitHeld ||
+  const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
     (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
      war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the
      half he may still bid on. Its remarks are reached from the Inputs page then. */
-  const canRemark = !listOpen && !!remarkRow
+  /* …and his own leave on a day filled from the Inputs page opens the bid window, its Remarks and Document there (D1552) */
+  const canRemark = !listOpen && !!remarkRow && !openHeld
     && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   /* THE FREE HALF BESIDE INPUTS-FILED LEAVE (CURRENT-STATE item D). When the
      cell is locked to the Inputs page but only HALF of it is actually spoken
@@ -3408,13 +3428,20 @@ export function Matrix() {
     && openView.all.length > 0 && openView.all.every(c => c.kind === 'credit')
     && !openView.all.some(c => c.kind === 'credit' && !c.auto)
   /* A COURSE HOLDING THE WHOLE DAY (his D1395, 26 Oct 26 — [LW-TAP-HELD-DAY]: "would it be better that a short press allows
-     me to add additional input from there?"): a tap on a day a course alone holds opens the bid window, the course's line
-     on top, so Grant OIL and the rest are one tap away — where he may bid there; else the read-only sheet, as before */
-  /* …only where the bid window itself opens: an admin's tap on a posted-out or not-yet-arrived day shows what it always did,
-     unless he chose to place leave or OIL there (the narrow read's N3 — the bid window's own condition, below) */
-  const openCourse = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && openView.all.length === 1
-    && openView.all[0]!.kind === 'absence' && openView.all[0]!.code === 'CSE' && canBidOn(open.id, open.date)
-    ? heldCourse(openView) : null
+     me to add additional input from there?") opened the bid window, the course's line on top; since his D1548 every day
+     filled from the Inputs page does (`openHeld`, above). Each entry's line: its box, its half, its typed words — but his
+     own leave's words stand in the window's Remarks box, where he changes them today (D1354, D1552), so its line leaves them out */
+  /* (only where one leave fills the day — where his remarks window opened before; a day of two halves opened the day's
+     list, its words read only, and one box could hold only one of them — the scenario designer's 4) */
+  const openHeldOwn = !!openHeld && openHeld.held.length === 1 && role !== 'admin' && !!remarkRow && String(remarkRow.iid) === openHeld.held[0]!.c.id
+  const openHeldLines = openHeld
+    ? openHeld.held.map(h => heldLine(h.c, h.portion, h.hours, openHeldOwn))
+    : null
+  /* A HALF HELD BY LEAVE OR A MEDICAL BESIDE A HALF THE WAR TAKES LEAVE OVER (an OD, a course, an Other — the scenario
+     designer's 1): Whole day greyed and the other half offered, as D1543 does beside approved leave */
+  const openHeldLeave = openHeld && !openHeld.noLeave
+    ? (() => { const h = openHeld.held.find(x => x.portion !== 'full' && (isLeaveCode(x.c.code) || isSickCode(x.c.code))); return h ? { half: h.portion as 'am' | 'pm', code: h.c.code } : null })()
+    : null
   const openFreeHalf = open && lockedOnWar(openView)
     && canBidOn(open.id, open.date)
     ? freeHalfBeside(openView)
@@ -4072,7 +4099,7 @@ export function Matrix() {
           sheets. That cell is approved elsewhere: offering a picker or a
           decision on it would offer an action the store will refuse, which
           is worse than offering nothing. */}
-      {open && !listOpen && !canRemark && lockedOnWar(openView) && !openFreeHalf && !openWorkOnly && !openCourse && (
+      {open && !listOpen && !canRemark && lockedOnWar(openView) && !openFreeHalf && !openWorkOnly && !openHeld && (
         <RaptorSheet
           callsign={open.callsign}
           date={open.date}
@@ -4428,14 +4455,16 @@ export function Matrix() {
       )}
       {/* a member may bid CLEARING leave after their own posting-out (owner
           answer C, 20 Sep 26) — the admin's tap there stays the PO sheet */}
-      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openCourse)
+      {open && !listOpen && !canRemark && (placing || ((!openPostedOut || role !== 'admin') && (!openNotYetArrived || role !== 'admin'))) && (!lockedOnWar(openView) || !!openFreeHalf || openWorkOnly || !!openHeld)
         && canBidOn(open.id, open.date) && (
         <BidPicker
           key={`${open.id}-${open.date}`}
           /* the approved leave's Remarks and Document, shown at once (his D1307 — "Note" went) */
           /* never on the free half beside a leave filed on the Inputs page: its words are the NEW bid's, and that leave is
              changed on the Inputs page (the fresh read's R1, round 3's check) */
-          approvedRow={openFreeHalf ? null : adminNoteRow}
+          /* …and on a day filled from the Inputs page, his own leave's (D1552 — what his remarks window held, D1354); an admin
+             reads the entry's words in its line there, as the note never let him change them here */
+          approvedRow={openFreeHalf ? null : openHeld ? (openHeldOwn ? remarkRow : null) : adminNoteRow}
           callsign={open.callsign}
           personId={open.id}
           date={open.date}
@@ -4445,7 +4474,9 @@ export function Matrix() {
              holds the other one. */
           onlyPortion={openFreeHalf}
           heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}
-          heldDay={openCourse}
+          heldDays={openHeldLines}
+          noLeave={!!openHeld?.noLeave}
+          heldLeave={openHeldLeave}
           heldOther={openFreeHalf ? heldCommitment(openView) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
@@ -4483,8 +4514,9 @@ export function Matrix() {
              anybody asked for. The admin decides at any time (D1177). */
           /* THE DAY'S BID STATE FOR EVERY ROLE (round 3's FULL check — the designer's S1, X1): the window lights the day's own
              leave, never a refused bid; it read that only from the admin's decide, so a member's own refused bid opened lit */
-          dayState={isBiddable(grid[open.id]?.[open.date]) ? stateOf(states, open.id, open.date) : undefined}
-          decide={canDecide(role) && !openFreeHalf && isBiddable(grid[open.id]?.[open.date])
+          dayState={!openHeld && isBiddable(grid[open.id]?.[open.date]) ? stateOf(states, open.id, open.date) : undefined}
+          /* never on a day filled from the Inputs page: its leave is the Inputs page's, not a bid to decide (D1548) */
+          decide={canDecide(role) && !openFreeHalf && !openHeld && isBiddable(grid[open.id]?.[open.date])
             ? { state: stateOf(states, open.id, open.date), movedFrom: movedShown ? shiftedFrom(states, open.id, open.date) : undefined }
             : null}
           /* ONE CHIP, ONE MOVE (owner, D262, 27 Sep 26): the sheet's Move picks the chip up into the grid's own move
