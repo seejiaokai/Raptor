@@ -167,7 +167,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CODE-CHECK-CI] — React Doctor's "no new finding" check as a GitHub check on every pull request — the half of the move plan's point 4 not built with the clean-up.
+- [CODE-CHECK-CI] — React Doctor's "no new finding" check run by itself: a GitHub check on every pull request and a run at the end of every session (D1536, D1539) — next, in a fresh chat.
 - [AVAILWIN-SETUP-SLOW] — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
@@ -248,8 +248,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 run on every change. Built with the clean-up: `npm run lint` and `npm run lint:changed` (only what a branch changes against `main`,
 proved on its own branch: 70 files read, no new finding) and the standing line in `raptor-port/CLAUDE.md` (D1534). Not built: a job in
 `.github/workflows/deploy.yml` running `lint:changed` on each pull request — it needs `main`'s history on the check machine, which the
-jobs now fetch shallow and without the picture folders (D1091), and its first red needs proving on a planted finding. **Place:** with
-[REVIEW-LAYERS], or on his word.
+jobs now fetch shallow and without the picture folders (D1091), and its first red needs proving on a planted finding. **His D1539
+(31 Oct 26): build it now, in a fresh chat** — the GitHub check AND a run at the end of every working session (D1536's "runs by
+itself at the end of every session and on every change"; the session run is a hook — his permission to change the project's hooks
+and settings for it, one fresh reader before it is switched on; it reports the count and blocks nothing). Own branch, his "merge live".
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
