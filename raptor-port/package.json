@@ -18,7 +18,7 @@
     "rulecheck": "node scripts/rulecheck.mjs",
     "docsize": "node scripts/docsize.mjs",
     "lint": "npx -y react-doctor@0.9.18 --verbose --no-telemetry",
-    "lint:changed": "npx -y react-doctor@0.9.18 --verbose --no-telemetry --no-supply-chain --scope changed --base origin/main --blocking warning"
+    "lint:changed": "node scripts/code-check.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",
