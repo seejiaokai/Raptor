@@ -294,11 +294,13 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
   if (accts) for (const id of gone) if (accts.some((a: any) => a && a.pid === id)) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
   /* …AND NEVER AN APPROVAL OF HIS LEFTOVER BID PUT BACK ([LW-DELETED-NO-ROW-APPROVE], 30 Oct 26 — his D1447, reading R21: a
      man deleted on Admin → Users keeps the refusal of his leftover pending leave; R3-6: "in every door"). The days before his
-     cutoff keep his record (D299), so the check below lets a past input of his come back — but a Redo of an approval, or
-     the Undo of a send-back, made after his delete is that refused approval replayed: the step takes a request of his off
-     the war (`lw.cell <war>:<pid>:<date>`, a request in what is there now and not in what it leaves) and writes the leave the
-     war approved for it (an `inputs` row carrying `lw`, holding him). A war-approved leave of his put back WITHOUT taking a
-     request away (the Undo of its delete) is his past kept, and passes.
+     cutoff keep his record (D299), so the check below lets a past input of his come back — but the Undo of a send-back made
+     after his delete is that refused approval replayed: the step takes a request of his off the war (`lw.cell
+     <war>:<pid>:<date>`, a request in what is there now and not in what it leaves) and writes the leave the war approved for
+     it (an `inputs` row carrying `lw`, holding him). A war-approved leave of his put back WITHOUT taking a request away (the
+     Undo of its delete) is his past kept, and passes. (This request test is an UNDO's only, since the second fix round: a
+     Redo is judged by the war count below — the paragraphs that follow say how it came to be so; the code read of 7d0c12b24,
+     its tidiness note 2.)
      …AND A REDO THAT APPROVES HIS LEAVE IN ANY FORM (the blind code read of 14403cf57, finding 1): Auto-approve places and
      approves in ONE gesture (store.ts placeApproved — the bid window and the drag window), so its step takes no request off
      the war, and its Redo wrote approved leave for a man deleted since. A Redo re-takes a step made forward, and a forward
@@ -314,14 +316,30 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
      …AND ONLY THE WAR'S OWN STEPS ARE COUNTED AS APPROVALS (its finding 2): an admin's Inputs-page edit that lengthens his
      war-approved leave keeps the war's mark (ui/inputedit.tsx) and is allowed live after his delete (D321 (10)); what tells
      it from an approval is the step's module — a war step is `lw` (`lw.decide`, `lw.placeApproved`), an Inputs-page step
-     `inputs`. Any other Redo falls to the request test, as an Undo does. */
+     `inputs`.
+     …A MOVE ADDS NO DAYS, EVEN ACROSS THE FIRST REFUSED DAY (the narrow read of the second fix round, `read-fix2.md`
+     finding A, [LW-DELETED-RESTORE-OVERREFUSE] — built 31 Oct 26): counted only from `from`, a war move of his approved leave
+     from before that day to after it read as adding days, and its Redo was refused for good, though the same move live goes
+     through. A war step's Redo is refused only when it adds days of war-approved leave for him OVERALL and adds days from the
+     first refused day — an approval, a place-and-approve, an approval that extends a leave into the refused days.
+     …AND ONLY A WAR STEP APPROVES (its finding B): every other Redo that takes a request of his and writes war-marked leave
+     is the inputs door's swap — an admin's Inputs-page edit that lengthens his war-approved leave over his own pending bid,
+     the bid swapped for a notice — which is allowed live after his delete (D321 (10)); the read's survey of every writer
+     found no other. So no Redo falls to the request test; an Undo keeps it. */
   for (const id of gone) {
     const from = refusedFrom(id)
     if (from == null) continue
     const lwDays = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).filter(d => d >= from).length : 0)
-    if (dir === 'redo' && module === 'lw') {
-      const added = (changes || []).reduce((n, ch) => (ch && ch.collection === 'inputs' ? n + lwDays(ch.op === 'delete' ? null : ch.after) - lwDays(ch.before) : n), 0)
-      if (added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+    if (dir === 'redo') {
+      if (module === 'lw') {
+        const all = (row: any): number => (row && row.lw && inInput(row, id) ? inputDates(row).length : 0)
+        let grew = 0, added = 0
+        for (const ch of changes || []) if (ch && ch.collection === 'inputs') {
+          const a = ch.op === 'delete' ? null : ch.after
+          grew += all(a) - all(ch.before); added += lwDays(a) - lwDays(ch.before)
+        }
+        if (grew > 0 && added > 0) return `${(PEOPLE as any)[id].cs} has been deleted — that change can't be undone`
+      }
       continue
     }
     const takesBid = (changes || []).some(ch => {
@@ -348,7 +366,9 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
         const [wk, di] = rid.split('#')
         if (wk && di != null && /^[0-6]$/.test(di)) { try { const row = typeof v === 'string' ? JSON.parse(v) : v; hit = dayIso(wk, +di) >= cut && (holds(row && row.d, id) || holds(row && row.sg, id) || holds(row && row.dr, id)) } catch (_e) { hit = false } }
       }
-      else if (ch.collection === 'inputs') { const a = v && inInput(v, id) ? dateOrd(v.date, v.yr) : null; hit = a != null && a >= isoOrd(cut) }
+      /* an input of his on ANY day from his cutoff — not only one that STARTS there: one that starts before it and runs on
+         past it put him back on those days (the security read of 7d0c12b24, 4 — an Inputs-page lengthening's Redo) */
+      else if (ch.collection === 'inputs') hit = !!v && inInput(v, id) && inputDates(v).some(d => d >= cut)
       /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
       else if (ch.collection === 'plan') hit = !!v && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD

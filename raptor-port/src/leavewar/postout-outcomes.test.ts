@@ -30,6 +30,7 @@ import {
 import { updatePersonField } from '../state/quals-write'
 import { stashPut, stashDrop } from '../engine/weekstash'
 import { deletePerson } from '../state/person-delete'
+import { commitPeopleEdit } from '../state/people-settings-commit'
 import { INPUTS } from '../engine/inputs'
 
 const TODAY = '2026-07-15'
@@ -337,7 +338,9 @@ describe('from the code reads', () => {
   })
   it('Fable 2 — Undo post out takes back the posting’s suspension even when the archive was made by hand', () => {
     expect(postOut('bane', '2026-07-20', 'overseas')).toBe(true)
-    P('bane').archived = true                                                    // archived by hand on Quals (no 'po' mark)
+    /* archived by hand (no 'po' mark) — a SAVED change, made inside a roster command as every in-app roster write is: a bare
+       write outside every command is now put back by the pass before it runs ([SYSTEM-PASS-SAVES-ROSTER], 31 Oct 26) */
+    commitPeopleEdit(() => { P('bane').archived = true })
     vi.setSystemTime(new Date(2026, 6, 20, 9, 0, 0)); runPoOutcomes()
     expect(accountByName('us')!.offBy).toBe('po')
     expect(undoPostOut('bane')).toBe(true)

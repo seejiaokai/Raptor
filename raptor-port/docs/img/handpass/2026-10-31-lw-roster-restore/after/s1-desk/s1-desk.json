@@ -1,0 +1,60 @@
+[
+ {
+  "id": "RR-A0 the live move across the posting’s date",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; \"On 30 Oct the app deletes him automatically. Days he flew keep his puck.\" deleted from 2026-11-04; Move offered true, banner \"Tap a day to move 1 entry Cancel\", after \"null\"; leave on 2 Nov 1, on 26 Oct 0",
+  "pics": [
+   "rr-a0-a-postout",
+   "rr-a0-c-after-move"
+  ]
+ },
+ {
+  "id": "RR-A the Redo of a move across the posting’s date, after it ran late",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; moved true; Undo put it back true; deleted from 2026-11-04; Redo offered true; after Redo leave on 2 Nov 1, on 26 Oct 0; said [\"Undid: moving a bid\",\"Redid: moving a bid\"]",
+  "pics": [
+   "rr-a-a-before-redo",
+   "rr-a-b-after-redo"
+  ]
+ },
+ {
+  "id": "RR-B0 the live lengthening over his pending bid, after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; pending bid on 27 Oct true; deleted true; window saved; the leave now Oct 26–Oct 27",
+  "pics": [
+   "rr-b0-a-window",
+   "rr-b0-b-saved"
+  ]
+ },
+ {
+  "id": "RR-B the Redo of an Inputs-page lengthening over his pending bid, after his delete",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; bid true; lengthened true (grid 27 Oct: LL:s-a); Undo true; deleted true; Redo offered true; after Redo Oct 26–Oct 27; said [\"Drifter deleted\",\"Redid: a personal input\"]",
+  "pics": [
+   "rr-b-a-before-redo",
+   "rr-b-b-after-redo"
+  ]
+ },
+ {
+  "id": "RR-C1 the Redo of an approval after his delete stays refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; deleted true; Redo offered false; his leave on 26 Oct after Redo 0",
+  "pics": [
+   "rr-c1-after-redo"
+  ]
+ },
+ {
+  "id": "RR-C2 the Redo of an approval of a refused day stays refused, as the live Approve",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo offered true; his leave on 2 Nov after Redo 0; the live Approve said \"He posted out on 30 Oct: refuse or delete it\"",
+  "pics": [
+   "rr-c2-approvals"
+  ]
+ }
+]

@@ -136,13 +136,13 @@ import {
   postedOutBy,
 } from './state/store'
 import { HOOKS } from '../engine/hooks'
-import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused } from '../command'
+import { deferEffect as cmdDeferEffect, commitProjection as cmdCommitProjection, commit as cmdCommit, CmdRefused, isInReducer, activeEnvelope } from '../command'
 /* [POST-OUT-OUTCOMES] (27 Sep 26): the posting's outcomes cross the seam HERE, the one place the war meets Raptor */
 import { suspendForPosting, enableAfterPosting, lastAdminIfGone, accountOfPid, suspendForArchive, enableForRestore, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { markBack, clearBack, CURPAGE, setPage } from '../state/view'
 import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
-import { peopleStore, settingsStore, finishPeopleWrite } from '../state/people-settings-commit'
+import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
 import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
@@ -2219,6 +2219,20 @@ export function runPoOutcomes(): void {
     due.push(d)
   }
   if (!due.length) return
+  /* ONLY ITS OWN CHANGE TO THE ROSTER IS SAVED ([SYSTEM-PASS-SAVES-ROSTER], D1510's security read, 29 Oct 26 — built
+     31 Oct 26). The pass runs as the app itself, which the commit gate lets through, and its people store diffs against
+     the SAVED roster — so a change made to a person in memory outside every command (a browser's console) was saved with
+     it, unchecked. Run as its own command (at idle, or queued behind the command that woke it), the pass first puts the
+     roster in memory back to what is saved (people-settings-commit.ts revertUnsavedPeople): every in-app roster write is
+     saved by its own command before then, so only such a stray change is undone, and the pass's outcomes are the whole of
+     its change — the commit gate holds that too (perms.ts ownershipViolation: a `lw.postoutRun` change to a person only
+     beside his posting record). Raised INSIDE another command's reducer it joins that command (a posting made today runs
+     inside the Post out command — one envelope, judged as its maker's), where the live roster holds that command's own
+     unsaved change: nothing is put back then. A command the app itself runs (a projection) is the one parent the gate
+     would not judge, so under one the pass waits and runs as its own command straight after it. */
+  const parent = isInReducer() ? activeEnvelope() : null
+  if (parent && parent.origin === 'projection' && cmdDeferEffect(runPoOutcomes)) return
+  const own = !parent
   const needsDays = due.some(d => d.outcome === 'delete')
   for (const d of due) PO_INFLIGHT.add(d.key)
   const settle = (): void => { for (const d of due) PO_INFLIGHT.delete(d.key) }
@@ -2233,6 +2247,7 @@ export function runPoOutcomes(): void {
         const was = SYNCING
         SYNCING = true
         try {
+          if (own) revertUnsavedPeople()   // before the enlist: the roster as saved, so nothing else rides in (above)
           if (needsDays) resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
           if (needsDays) txn.enlist(schedStore)   // no saved week is written for a delete ([DB-READINESS] group A, phase 6 (d))
