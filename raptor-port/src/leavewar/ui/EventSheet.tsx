@@ -103,6 +103,7 @@ const presetOf = (defs: EventDef[], text: string, kind: EventKind | null): numbe
 const presetNamed = (defs: EventDef[], text: string): number =>
   (defKey(text) ? defs.findIndex(d => defKey(d.name) === defKey(text)) : -1)
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the event window and its presets view share one draft (name, kind, days, scope); split, its hooks and the order its effects run in would move
 export function EventSheet({ line, date, to, fresh = false, presets = false, run = false, onClose, onMove, onSaved }: {
   line: number
   date: string
@@ -419,6 +420,7 @@ export function EventSheet({ line, date, to, fresh = false, presets = false, run
       <div className="bidsheet-row evquick" data-testid="event-quickpicks" role="group" aria-labelledby="ev-presets-lab">
         {defs.map((d, i) => (
           <button
+            // eslint-disable-next-line react-doctor/no-array-index-as-key -- a preset is picked by its place in the list (the pick holds that index), and the list is not changed while this view is up — Edit presets is a view of its own
             key={i}
             className={`evchip ${d.kind}${pick === i ? ' on' : ''}`}
             data-testid={`event-quick-${i}`}

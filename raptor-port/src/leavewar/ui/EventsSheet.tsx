@@ -210,6 +210,7 @@ export function EventsSheet({ onClose, onOpenEvent, onAdd, onPresets, fresh }: {
     /* its date in each button's name too, so two events of one name are told apart when read aloud (the read's R5) */
     const when = whenSaid(l.from, l.to)
     return (
+      // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the whole line is a pointer's shortcut to its own Edit button (the pencil), which is the keyboard's route; the line holds its two buttons, so it cannot itself be one
       <div
         key={key}
         className={'hol-line ev-line' + (l.past ? ' is-past' : '') + (fresh === key ? ' innew' : '')}

@@ -116,6 +116,7 @@ function readOnly(id: string, row: Pick<Input, 'remarks' | 'docId' | 'docIds'>, 
   )
 }
 
+// eslint-disable-next-line react-doctor/no-giant-component -- the day's list draws every record of one day, each with its own rights and actions, from one read of the day; split, the order the entries keep (an action never moves one) would be worked out in two places
 export function DayListSheet({
   personId, callsign, date, view, role, viewer, period, onMove, onClose, note,
 }: {

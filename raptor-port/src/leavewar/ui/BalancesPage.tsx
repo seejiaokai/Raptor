@@ -20,7 +20,7 @@
 
    SPEED (docs/performance.md Part 1, §E): a row is memoised on its own figures (a signature string), so typing in one box
    repaints one box, and a save repaints the rows whose figures moved. The grid stays mounted and untouched behind it. */
-import { memo, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { memo, useCallback, useEffect, useEffectEvent, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { flushSync } from 'react-dom'
 import { HOOKS } from '../../engine/hooks'
 import { assignGroup, FIGURES, groupLabel, OTHER_ID, OTHER_LABEL, type Person } from '../engine'
@@ -284,6 +284,7 @@ function Ro({ v, sm }: { v: number; sm?: boolean }) {
 }
 const pendWords = (n: number) => (n ? `−${figWords(n)}` : '')
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- a grade box's four looks as drawn (a member's words or an admin's button, on a phone or a desktop) side by side; split, they could drift apart
 function GradeBox({ pid, g, phone, admin, api }: { pid: string; g: RowData['grade']; phone: boolean; admin: boolean; api: RowApi }) {
   /* a member reads his grade as words with its "+36" (D1487); "No grade" in amber where a grade is set (D1249) */
   if (!admin) {
@@ -305,10 +306,12 @@ function GradeBox({ pid, g, phone, admin, api }: { pid: string; g: RowData['grad
   )
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the memoised row (docs/performance.md §E — one row repaints on its own figures); split, its memo boundary and what it compares would move
 const Row = memo(function Row({ p, puck, me, boxes, admin, phone, view, d, api }: RowProps) {
   const pid = p.id
   const who = (
     <button type="button" className="bp-name" data-testid={`bal-name-${pid}`} aria-label={`${p.callsign}: open his leave`} onClick={() => api.name(pid)}>
+      {/* react-doctor-disable-next-line react-doctor/dangerous-html-sink -- the schedule's own puck (sync.ts puckHtml, built by ui/html.ts puck), every callsign escaped at the builder; the security scan reads only this form */}
       <span className="bp-puck" dangerouslySetInnerHTML={{ __html: puck }} />
     </button>
   )
@@ -375,17 +378,19 @@ function GradePick({ pid, anchor, phone, onClose }: { pid: string; anchor: HTMLE
   const cur = gradeOf(pid)?.id ?? null
   const list = liveGrades()
   const r = anchor.getBoundingClientRect()
+  /* a press outside closes the list — read through an Effect Event, so the listener is not set up again for a new onClose */
+  const closeOutside = useEffectEvent(() => onClose(false))
   useEffect(() => {
     const items = () => [...(ref.current?.querySelectorAll<HTMLElement>('[role="menuitemradio"]') ?? [])]
     ;(items().find(b => b.getAttribute('aria-checked') === 'true') ?? items()[0])?.focus()
     const down = (e: Event) => {
       const t = e.target as Node | null
       if (t && (ref.current?.contains(t) || anchor.contains(t))) return
-      onClose(false)
+      closeOutside()
     }
     document.addEventListener('pointerdown', down, true)
     return () => document.removeEventListener('pointerdown', down, true)
-  }, [anchor, onClose])
+  }, [anchor])
   const key = (e: ReactKeyboardEvent) => {
     const items = [...(ref.current?.querySelectorAll<HTMLElement>('[role="menuitemradio"]') ?? [])]
     const i = items.indexOf(document.activeElement as HTMLElement)
@@ -424,6 +429,7 @@ function GradePick({ pid, anchor, phone, onClose }: { pid: string; anchor: HTMLE
 
 interface Group { id: string; label: string; cls: string; color?: string; people: Person[] }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the page's bar, rows, pinch and heading pins share one set of state and refs; split, its hooks and the order its layout effects run in would move (the measured fit of the page and its headings)
 export function BalancesPage() {
   const version = useVersion()
   const phone = usePhone()
@@ -452,6 +458,9 @@ export function BalancesPage() {
   const win = `${period.start.slice(0, 7)}|${period.end.slice(0, 7)}`
   const groups = useMemo<Group[]>(() => {
     const defs = groupsInOrder(), prio = groupPriorityIds()
+    /* each group found once by its id (the first with it, as a search of the list would) */
+    const defById = new Map<string, (typeof defs)[number]>()
+    for (const d of defs) if (!defById.has(d.id)) defById.set(d.id, d)
     const needle = q.trim().toLowerCase()
     const out: Group[] = []
     for (const p of displayRoster()) {
@@ -460,7 +469,7 @@ export function BalancesPage() {
       const g = assignGroup(p, defs, prio)
       let G = out[out.length - 1]
       if (!G || G.id !== g) {
-        const d = defs.find(x => x.id === g)
+        const d = defById.get(g)
         G = { id: g, label: g === OTHER_ID ? OTHER_LABEL : d ? groupLabel(d, qualCatalog) : g, cls: `g-${g.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`, color: groupColorOf(g, groupColors), people: [] }
         out.push(G)
       }
@@ -620,7 +629,11 @@ export function BalancesPage() {
     })
   }, [phone, view])
 
-  const closePick = useCallback((back: boolean) => { setPick(cur => { if (back && cur) cur.el.focus(); return null }) }, [])
+  /* the box the list opened from, read as it closes: the keyboard goes back to it outside the state update (React may run an
+     update twice, and a focus is no part of working out the next state) */
+  const pickNow = useRef(pick)
+  useLayoutEffect(() => { pickNow.current = pick })
+  const closePick = useCallback((back: boolean) => { const cur = pickNow.current; if (back && cur) cur.el.focus(); setPick(null) }, [])
   const closeGrades = useCallback(() => { setGrades(false); gradesBtn.current?.focus() }, [])
 
   const seg = (

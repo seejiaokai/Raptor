@@ -70,6 +70,7 @@ function leaveOn(current: string, state?: BidState): { type: string; portion: Po
   return { type: c.type, portion: c.portion }
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the one-day window's leave, range, OIL, posting and words rows share one set of state, refs and writes (its below-zero ask, its Delete's confirm, the words saved before an action); split, its hooks and the order its effects run in would move
 export function BidPicker({
   callsign,
   personId,
@@ -243,7 +244,8 @@ export function BidPicker({
   /* The ask is a TOKEN of what it said — the leave, the days, the balance it named — not the leave alone (Astra's final
      read, F2, 29 Sep 26): a one-day ask kept armed after the range was widened let the wider fill write on ONE tap. It
      is also dropped whenever How many, the range or How much changes. */
-  const [confirming, setConfirming] = useState<string | null>(null)
+  /* a ref, not state: the ask is never drawn from it — it is read only when the leave is tapped again (the note says the ask) */
+  const confirming = useRef<string | null>(null)
   // The post-out controls, folded behind the one PO button until the admin
   // asks (owner, 19 Aug 26 — "show this toggle when the admin clicks PO"):
   // the date (seeded with the tapped day, but ANY date is legal — past,
@@ -263,7 +265,7 @@ export function BidPicker({
        was the second (the reason the posting doors' asks are taken back too, D1102) */
   /* the code read's F1 and F2: the one-day window's own "Delete — sure?" (clearAsked, clearIds) is taken back too, and the
      question's words with it */
-  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirming(null); setClearAsked(false); setClearIds([]); setNote('') } }), [])
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); confirming.current = null; setClearAsked(false); clearIds.current = []; setNote('') } }), [])
   // The post-IN controls, folded the same way and for the same reason. No
   // archive switch: arriving has no counterpart to it — the Quals archive is
   // something a person LEAVES the roster into.
@@ -362,7 +364,7 @@ export function BidPicker({
   const [clearAsked, setClearAsked] = useState(false)
   /* the awards the confirm NAMED — the Delete takes these and no other (Astra's round-2 read, R2-02: an award given on
      one of these days after the confirm stays) */
-  const [clearIds, setClearIds] = useState<string[]>([])
+  const clearIds = useRef<string[]>([])   // a ref: never drawn, read only by the Delete that follows the confirm
   /* where the sheet's one note is drawn: under the Selected row for a Delete's confirm, under the leave chips for a
      leave's (the negative-balance ask, a refused write) — beside the button that raised it */
   const [noteAt, setNoteAt] = useState<'sel' | 'leave'>('leave')
@@ -522,7 +524,7 @@ export function BidPicker({
     /* DELETE ON "ALL" TAKES THE LEAVE AND NOTHING ELSE ON ITS DAYS (D1461 — the spec's reading R3): its own records, in one
        command (the store's `clearRecords`); an award sharing a day is not taken, so there is no award to name first */
     if (!code && whole) {
-      setClearAsked(false); setConfirming(null)
+      setClearAsked(false); confirming.current = null
       const { written, skipped, why: doorWhy } = clearRecords(whole.recs)
       if (written > 0) onWrote?.('')
       if (written > 0 && skipped === 0) return onClose()
@@ -538,8 +540,8 @@ export function BidPicker({
       const awards = awardsIn(cells)
       if (awards.length && !clearAsked) {
         setClearAsked(true)
-        setClearIds(awards.map(a => a.id))
-        setConfirming(null)
+        clearIds.current = awards.map(a => a.id)
+        confirming.current = null
         return setNote(awards.length === 1
           ? `Delete also takes ${callsign}’s OIL award (${awardDays(awards[0]!.days)}) — tap Delete again to go ahead.`
           : `Delete also takes ${awardsClause(awards, () => callsign)} — tap Delete again to go ahead.`)
@@ -555,12 +557,12 @@ export function BidPicker({
     const after = code && wouldLeave ? wouldLeave(code, days) : null
     if (goesBelow(after)) {
       const token = `${code}|${days.join(',')}|${after.after}`
-      if (confirming !== token) {
-        setConfirming(token)
+      if (confirming.current !== token) {
+        confirming.current = token
         return setNote(belowZeroAsk([{ callsign, counter: after.counter, after: after.after }]))
       }
     }
-    setConfirming(null)
+    confirming.current = null
 
     /* ticked: placed and approved in one command, one Undo (`placeApproved`); a day its approval refuses keeps its bid,
        pending, and is named here — never a whole-window failure */
@@ -596,7 +598,7 @@ export function BidPicker({
          of the old behaviour — and it refuses a PUBLISHED approved leave,
          which is the owner's own rule. */
       if (!code) {
-        const { written } = clearCells([{ personId, date }], clearAsked ? clearIds : awardsIn([{ personId, date }]).map(a => a.id))
+        const { written } = clearCells([{ personId, date }], clearAsked ? clearIds.current : awardsIn([{ personId, date }]).map(a => a.id))
         if (!written) return setNote('Nothing here can be deleted from the war: approved leave and leave filed on the Inputs page are changed on the Inputs page.')
         onWrote?.('')
         return onClose()
@@ -616,7 +618,7 @@ export function BidPicker({
        unsaid, and the sheet closed as done. `clearCells` removes it through the absence door (or counts it where it may
        not go — a published war's finished paperwork), exactly as the one-day Clear and a dragged block's Delete do. */
     const { written, skipped } = code ? setCellRange(personId, multi.from, multi.to, code, newWords)
-      : clearCells(spanCells(multi), clearAsked ? clearIds : awardsIn(spanCells(multi)).map(a => a.id))
+      : clearCells(spanCells(multi), clearAsked ? clearIds.current : awardsIn(spanCells(multi)).map(a => a.id))
     if (written > 0) onWrote?.(code)
     if (skipped === 0) return onClose()
     const verb = code ? 'written' : 'deleted'
@@ -666,7 +668,7 @@ export function BidPicker({
         <span className="who">{callsign}</span>
         {/* on "All" the leave's dates, in the drag window's voice ("9–12 Feb" — BidBits compactSpan); else the day (D1461) */}
         <span className="dt when">{whole ? compactSpan(whole.from, whole.to) : dayLabel(date)}</span>
-        {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
+        {isAdmin && <ApproveSwitch testid="bid-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
         <button className="x" data-testid="bid-cancel" onClick={closeKeeping} aria-label="Cancel">
           ✕
         </button>
@@ -776,7 +778,7 @@ export function BidPicker({
             onClick={() => {
               /* words typed on the held bid are saved onto it before the box turns to the other half's new bid */
               if (held && !covers(p.portion)) flushWords()
-              setPortion(p.portion); setConfirming(null)
+              setPortion(p.portion); confirming.current = null
             }}
           >
             {p.label}
@@ -814,7 +816,7 @@ export function BidPicker({
                 aria-pressed={pick === k}
                 /* named in full for a screen reader — the dates, the month (the scenario designer's G11) */
                 aria-label={k === 'all' ? `All ${run.dates.length} days, ${compactSpan(run.from, run.to).replace(/\s*–\s*/, ' to ')}` : `Only ${dayLabel(date)}`}
-                onClick={() => { setPick(k); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) }}
+                onClick={() => { setPick(k); setNote(''); setClearAsked(false); clearIds.current = []; setMoveErr(''); confirming.current = null }}
               >
                 {k === 'all' ? `All ${run.dates.length} days` : dayLabel(date).split(' ').slice(0, 2).join(' ')}
               </button>
@@ -833,7 +835,7 @@ export function BidPicker({
              and with it gone the calendar stayed open with only the window's ✕ to shut it); a pick of one day closed unfinished
              goes back to the day tapped, as "Just this day" did (the fresh read's R6) */
           aria-expanded={showCal}
-          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) { setRange(null); setNote(''); setClearAsked(false); setClearIds([]); setMoveErr(''); setConfirming(null) } return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+          onClick={() => { if (showCal) { setShowCal(false); if (range && range.from === range.to) { setRange(null); setNote(''); setClearAsked(false); clearIds.current = []; setMoveErr(''); confirming.current = null } return } setShowCal(true); setRange(r => r ?? { from: date, to: date }); setNote(''); setClearAsked(false); setMoveErr(''); confirming.current = null }}
         >
           {span ? shortSpan(span.from, span.to) : 'Pick a range'}
         </button>}
@@ -849,7 +851,7 @@ export function BidPicker({
             min={dates[0]}
             max={dates[dates.length - 1]}
             value={range}
-            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr(''); setConfirming(null) }}
+            onChange={r => { setRange(r); setNote(''); setClearAsked(false); setMoveErr(''); confirming.current = null }}
           />
         </div>
       )}
@@ -1093,6 +1095,7 @@ export function BidPicker({
  * none, which is why it is a separate sheet rather than a disabled version
  * of the other two.
  */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one read-only window whose branches are its sentences — which says where a credit or a filed absence is changed; split, the wording of one fact could drift between them
 export function RaptorSheet({
   callsign,
   date,
@@ -1166,6 +1169,7 @@ export function RaptorSheet({
       {!creditShown && docNames.length > 0 && (
         <div className="bidsheet-row" data-testid="raptor-docs">
           <span className="lab">Document</span>
+          {/* eslint-disable-next-line react-doctor/no-array-index-as-key -- the documents in the order the record holds them, read only: two may share a name, and none is added, removed or reordered while this window is open — the place is the chip */}
           <span className="docfield">{docNames.map((n, i) => <button key={i} type="button" className="docchip" onClick={() => onDoc?.()}><span className="docname">{n}</span></button>)}</span>
         </div>
       )}
@@ -1260,6 +1264,7 @@ export function AwardSheet({
  * reaches it: a posted-out cell is inert for them, and the matrix only makes
  * it tappable for an admin.
  */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the posting's date, chips and twice-asked Delete share one question (askDate, delArm); split, the question and what clears it would live apart
 export function PostOutSheet({
   callsign,
   date,
@@ -1314,14 +1319,17 @@ export function PostOutSheet({
      leaves the posting and its date as they were. A date still to come deletes no one now and is saved at once — picked
      while the question waits too (D1102's reading (1)). */
   const [askDate, setAskDate] = useState<string | null>(null)
+  /* …and when the posting under it changes — an Undo, another tab, the date or outcome moved — the question is about a
+     posting that no longer stands: it goes, never to delete at the date it was asked about. Cleared while rendering
+     (React's "adjust state when a prop changes"), not in an effect after paint, which drew the old question for one frame */
+  const postingNow = `${poFrom}|${outcome}`
+  const [askFor, setAskFor] = useState(postingNow)
+  if (askFor !== postingNow) { setAskFor(postingNow); setAskDate(null) }
   const armed = delArm || askDate !== null
   const shownFrom = askDate ?? poFrom
   /* the Leave War is kept mounted, so this sheet survives a page switch: a question to delete is never left waiting for
      one tap from someone who no longer knows it was the second ([LW-SETTINGS-SMALL]'s reason, met here too) */
   useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArm(false); setAskDate(null) } }), [])
-  /* …and when the posting under it changes — an Undo, another tab, the date or outcome moved — the question is about a
-     posting that no longer stands: it goes, never to delete at the date it was asked about */
-  useEffect(() => { setAskDate(null) }, [poFrom, outcome])
   const locked = !!lockedWhy
   return (
     <Sheet testid="postout-sheet" label="Posted out" onClose={onClose}>

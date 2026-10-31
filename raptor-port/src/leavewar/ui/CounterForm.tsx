@@ -142,6 +142,8 @@ function FilterFields({ d, tid, qualChips, onChange }: {
       {label}
     </button>
   )
+  /* each chip asks its own list once — as sets, not a search of the list per chip */
+  const holding = new Set(d.quals), without = new Set(d.notQuals)
   return (
     <>
       <div className="bidsheet-row cf-row">
@@ -179,9 +181,9 @@ function FilterFields({ d, tid, qualChips, onChange }: {
         {qualChips.map(q => (
           <button
             key={q.k}
-            className={`tchip${d.quals.includes(q.k) ? ' on' : ''}`}
+            className={`tchip${holding.has(q.k) ? ' on' : ''}`}
             data-testid={`${tid}-qual-${q.k}`}
-            aria-pressed={d.quals.includes(q.k)}
+            aria-pressed={holding.has(q.k)}
             onClick={() => onChange({ ...d, quals: toggled(d.quals, q.k), notQuals: d.notQuals.filter(k => k !== q.k) })}
           >
             {q.label}
@@ -193,9 +195,9 @@ function FilterFields({ d, tid, qualChips, onChange }: {
         {qualChips.map(q => (
           <button
             key={q.k}
-            className={`tchip${d.notQuals.includes(q.k) ? ' on' : ''}`}
+            className={`tchip${without.has(q.k) ? ' on' : ''}`}
             data-testid={`${tid}-noqual-${q.k}`}
-            aria-pressed={d.notQuals.includes(q.k)}
+            aria-pressed={without.has(q.k)}
             onClick={() => onChange({ ...d, notQuals: toggled(d.notQuals, q.k), quals: d.quals.filter(k => k !== q.k) })}
           >
             {q.label}
@@ -206,6 +208,7 @@ function FilterFields({ d, tid, qualChips, onChange }: {
   )
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- one counter's draft — its name, count, slots, thresholds and an Available row's points — read together by its live sample and its Save; split, the draft would be held in two places
 export function CounterForm({ ruleId, onClose }: {
   /** `null` builds a new counter; an id edits that one. */
   ruleId: string | null
@@ -329,6 +332,7 @@ export function CounterForm({ ruleId, onClose }: {
         <input
           className="namein"
           data-testid="cform-name"
+          aria-label="Name"
           placeholder="e.g. NVG PILOTS"
           maxLength={80}
           value={label}
@@ -369,6 +373,7 @@ export function CounterForm({ ruleId, onClose }: {
       {mode === 'team' && (
         <>
           {slots.map((s, i) => (
+            // eslint-disable-next-line react-doctor/no-array-index-as-key -- a slot is its place — "Slot 1", "Slot 2" are numbered by it and every box in it is drawn from the list; keyed by place, the keyboard stays where it was when a slot is taken off
             <div className="cf-slot" data-testid={`cform-slot-${i}`} key={i}>
               <div className="bidsheet-row cf-row cf-slothd">
                 <span className="lab">Slot {i + 1}</span>

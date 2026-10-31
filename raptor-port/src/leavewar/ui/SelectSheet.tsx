@@ -28,7 +28,7 @@
 // still cancels the MOVE (D262) — that is the move, not this panel. The war's other windows keep blocking
 // (`OUTSTANDING.md` `[LW-WINDOWS-NONBLOCKING]`).
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { formatCell, LEAVE_TYPES, type BidState, type Portion, type PostOutcome } from '../engine'
 import { OutcomeChips } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
@@ -66,6 +66,7 @@ const PORTIONS: { portion: Portion; label: string; testid: string }[] = [
   { portion: 'pm', label: 'PM', testid: 'sel-portion-pm' },
 ]
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the drag window's fill, delete, decide, posting and words rows share one selection and one set of asks (the below-zero ask, the Delete's confirm); split, its hooks and the order its effects run in would move
 export function SelectSheet({
   sel,
   people,
@@ -135,13 +136,14 @@ export function SelectSheet({
   /* what the below-zero ask SAID — the leave and each man's figure (D418) — the same leave tapped again goes ahead only
      while that still holds; any other control on the sheet (How much, Delete, Decide, PO) drops it (Astra's final read,
      F2, 29 Sep 26 — a portion changed away and back kept the ask armed) */
-  const [confirming, setConfirming] = useState<string | null>(null)
+  /* a ref, not state: the ask is never drawn from it — it is read only when the leave is tapped again (the note says the ask) */
+  const confirming = useRef<string | null>(null)
   /* WHERE THE ONE NOTE IS DRAWN — beside the button that raised it, as on the one-day sheet (D264, one format and one
      look): a Delete's confirm under the Selected row, a leave's (the below-zero ask, a partial write) under Which leave,
      and a decision's or a posting's at the foot, where they always were */
   const [noteAt, setNoteAt] = useState<'sel' | 'leave' | 'end'>('end')
   /* the awards the confirm NAMED — the Delete takes these and no other (Astra's round-2 read, R2-02) */
-  const [delAwardIds, setDelAwardIds] = useState<string[]>([])
+  const delAwardIds = useRef<string[]>([])   // a ref: never drawn, read only by the Delete that follows the confirm
   const [poOpen, setPoOpen] = useState(false)
   const [poDate, setPoDate] = useState(sel.from)
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
@@ -153,7 +155,7 @@ export function SelectSheet({
   /* [LW-ARMS-PAGE-LEAVE-REST] (27 Oct 26): every armed second tap here is taken back when the Leave War leaves the screen — the
        page is kept mounted, so the question could wait across a page switch for a tap from someone who no longer knows it
        was the second (the reason the posting doors' asks are taken back too, D1102) */
-  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirmDel(false); setConfirming(null); setNote('') } }), [])   /* the words too (the code read's F2) */
+  useEffect(() => subLwScreen(() => { if (!isLwOnScreen()) { setDelArmed(false); setConfirmDel(false); confirming.current = null; setNote('') } }), [])   /* the words too (the code read's F2) */
   /* POST IN, dated from the drag's first day as Post out is ([LW-DRAG-MORE-MENU], his report of 26 Oct 26) */
   const [piOpen, setPiOpen] = useState(false)
   const [piDate, setPiDate] = useState(sel.from)
@@ -166,7 +168,7 @@ export function SelectSheet({
   const [oilNote, setOilNote] = useState('')
   const [oilGiven, setOilGiven] = useState('')
   const [oilErr, setOilErr] = useState('')
-  const openOil = () => { setOilPick(portion === 'full' ? '1' : '0.5'); setOilOther(''); setOilErr(''); setConfirming(null); setOilOpen(true) }
+  const openOil = () => { setOilPick(portion === 'full' ? '1' : '0.5'); setOilOther(''); setOilErr(''); confirming.current = null; setOilOpen(true) }
   const giveOil = () => {
     const raw = oilAmountText(oilPick, oilOther), n = raw.trim() ? oilNumber(raw) : 1
     if (!Number.isFinite(n)) { setOilErr('Type how many days'); return }
@@ -268,12 +270,12 @@ export function SelectSheet({
     setNoteAt('leave')
     const below = code ? belowZero(code) : []
     const token = `${code}|${JSON.stringify(below)}`
-    if (below.length && confirming !== token) {
-      setConfirming(token)
+    if (below.length && confirming.current !== token) {
+      confirming.current = token
       setNote(belowZeroAsk(below))
       return
     }
-    setConfirming(null)
+    confirming.current = null
     if (code && approving) {
       const r = placeApproved(sel.cells, code, nPeople === 1 ? wordsOf(fillWords()) : undefined)
       if (!r.skipped && !r.pending.length) { onDone(r.written > 0); return }
@@ -295,7 +297,7 @@ export function SelectSheet({
   /* ROUND 2 (his D1318, D1324): a course, an overseas duty or the unforeseen absence filed straight on every day of every man
      picked — no bid, nothing to approve; one man's words go with it, as with a leave. A day not his to change is named. */
   const fileDuty = (code: string) => {
-    setConfirmDel(false); setConfirming(null); setNoteAt('leave')
+    setConfirmDel(false); confirming.current = null; setNoteAt('leave')
     /* an Other and an Attach take the window's Duration (his D1365, D1380); a course and an overseas duty whole days.
        The ONE entry's words the box opened with (D1362) are that entry's, not a new filing's (the M3 code read's Q6 — a
        leave's "Wedding" was filed onto a course over the same drag): left as they opened, they are not sent; words he
@@ -309,16 +311,16 @@ export function SelectSheet({
 
 
   const del = () => {
-    setConfirming(null)
+    confirming.current = null
     setNoteAt('sel')
     if (!confirmDel) {
       setConfirmDel(true)
-      setDelAwardIds(awards.map(a => a.id))
+      delAwardIds.current = awards.map(a => a.id)
       const incl = awards.length ? `, including ${awardsClause(awards, people)}` : ''
       setNote(`Delete ${nDays === 1 ? 'this day' : `${nDays} days`} for ${who}${incl}? Tap Delete again.`)
       return
     }
-    const { written, skipped } = clearCells(sel.cells, delAwardIds)
+    const { written, skipped } = clearCells(sel.cells, delAwardIds.current)
     if (skipped === 0) return onDone(written > 0)
     setNote(skipNote('deleted', written, skipped))
     if (written > 0) onDone(true, true)
@@ -372,7 +374,7 @@ export function SelectSheet({
     sel.people.length > 1 && by.length ? by.map(w => `${people(w.personId)}: ${w.why}`).join('. ') : why.join('. ')
 
   const decide = (bid: BidState) => {
-    setConfirming(null)
+    confirming.current = null
     setNoteAt('end')
     /* the words and the decision in ONE command, one Undo (the night's code read, R1) */
     /* the counts kept outside the command, so a refusal thrown inside it leaves the window its note (the narrow read, N3) */
@@ -403,7 +405,7 @@ export function SelectSheet({
       <div className="bidsheet-hd">
         <span className="who" data-testid="sel-who">{who}</span>
         <span className="dt when" data-testid="sel-span">{span} · {nDays} day{nDays === 1 ? '' : 's'}</span>
-        {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); setConfirming(null) }} />}
+        {role === 'admin' && <ApproveSwitch testid="sel-approve-tick" on={approve} onChange={v => { setApprove(v); confirming.current = null }} />}
         <button className="x" data-testid="sel-cancel" onClick={closeKeeping} aria-label="Cancel">✕</button>
       </div>
       <DayLine days={line.days} label={line.label} />
@@ -437,7 +439,7 @@ export function SelectSheet({
               <button key={p.portion} data-testid={p.testid}
                 className={`pchip${portion === p.portion ? ' on' : ''}`}
                 aria-pressed={portion === p.portion}
-                onClick={() => { setPortion(p.portion); setConfirming(null) }}>
+                onClick={() => { setPortion(p.portion); confirming.current = null }}>
                 {p.label}
               </button>
             ))}
@@ -472,10 +474,10 @@ export function SelectSheet({
             { key: 'atch', testid: 'sel-file-ATCH', label: 'Attach', title: 'Attach: attached to another squadron, a job or an exercise — filed under Unavailable on the schedule, for the Duration picked; where to is added on the Inputs page', onPick: () => fileDuty('ATCH') },
             ...(role === 'admin' ? [{ key: 'oth', testid: 'sel-file-OTH', label: 'Other', title: 'Other: out of the manning — filed under Unavailable on the schedule, for the Duration picked', onPick: () => fileDuty('OTH') }] : []),
             ...(role === 'admin' && onPostOut && nPeople === 1 ? [{ key: 'po', testid: 'sel-postout', label: 'Post out', title: 'Post out — their last day in the squadron',
-              onPick: () => { setPoOpen(true); setConfirming(null) } }] : []),
+              onPick: () => { setPoOpen(true); confirming.current = null } }] : []),
             /* …and its twin, Post in, as the one-day window's ⋯ holds them (his D1326; [LW-DRAG-MORE-MENU]) */
             ...(role === 'admin' && onPostIn && nPeople === 1 ? [{ key: 'pi', testid: 'sel-postin', label: 'Post in', title: 'Post in — their first day in the squadron',
-              onPick: () => { setPiOpen(true); setConfirming(null) } }] : []),
+              onPick: () => { setPiOpen(true); confirming.current = null } }] : []),
           ]} />
         </div>
       )}
