@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |
 | D1406 | 27 Oct 26 | On a touch screen the Tracker's chart draws no scroll bars: it still scrolls, glides and pinches as before; the Info half, Show All and every window keep their normal bars, and a desktop with a mouse keeps both the chart's and the Info panel's bars, which are how a mouse scrolls them. |
 | D1405 | 27 Oct 26 | The Tracker's scroll bars that show in odd places are found and fixed first, before the iPhone keyboard fault (D1366) and the Leave War overhaul's M4 (D1404). — changed by D1406 |
 | D1171 | 21 Oct 26 | Where a narrow desktop wraps the Tracker's bar onto two lines, the bar may be 2 taller than before, as built; its lines are not moved closer to hold the old height. |
@@ -119,7 +120,8 @@ section are relative to `raptor-port/` (as they were in that file).
 
 **The Tracker tab is a THIRD app with a THIRD store** (vendored 7 Sep 26,
 `src/tracker/`, from `seejiaokai/Tracker` — plain JavaScript/JSX, `allowJs`,
-bodies are verbatim ports like `src/engine/`). Its state is module `let`s in
+bodies are verbatim ports like `src/engine/` *[no longer since D1534 and D1538, 31 Oct 26: the Tracker lives in Raptor
+for good and its code is ordinary app code, cleaned to the code check's rules]*). Its state is module `let`s in
 `tracker/app/core.js` with its own subscribe/notify; its storage goes through
 ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
 under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
@@ -220,7 +222,9 @@ exported back out as a standalone app** (owner, 9 Sep 26), where students are
 typed and nothing feeds the bridge — so every Raptor-fed feature degrades to the
 old behaviour when the bridge is empty (`+ Add` with no roster IS the old
 prompt, pinned), and Raptor-specific code stays in `people.js` /
-`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. Design:
+`peoplewire.ts` / `TrackerPage.tsx` plus the one `people.length` branch. *[REPLACED 31 Oct 26 by D1538: the Tracker
+will NOT be exported any more — it lives in Raptor for good. A change no longer has to keep a standalone Tracker working;
+the code kept only for one is filed as [TRK-STANDALONE-LEFTOVERS], to go with the Tracker's next batch.]* Design:
 `docs/superpowers/specs/2026-09-09-schema-hardening-design.md`; the target
 model for the database step: `docs/data-model.md`. **Everyone
 does everything — marking, charts, students, courses, syllabi AND the File menu

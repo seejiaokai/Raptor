@@ -16,7 +16,7 @@ import { readFileSync, readdirSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { KINDS, GRADES } from './components/Legend.jsx'
+import { KINDS, GRADES } from './components/legendSamples.js'
 
 const strip = (s: string) => s.replace(/\/\*[\s\S]*?\*\//g, '')
 const vars = (block: string) => Object.fromEntries(

@@ -2538,6 +2538,7 @@ export function InputEditor() {
       if (g.kind === 'ask') setOilConf(one ? { ...g, shut: true } : g)
       else if (one) { setInpEdit(null); notify() }
     } else if (OILASK && !r) setOilAsk(null)
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- re-seeds only when a different record is opened; on a repaint it would throw away what he has typed
   }, [r])
   /* THE RECORD BEHIND THE WINDOW. After every paint of the page the window asks what its record now is:
        · GONE (deleted on the page behind, or taken away by an Undo) — the window closes and says so;
@@ -2546,6 +2547,7 @@ export function InputEditor() {
        · CHANGED — a field he has not touched takes the live value silently; one changed both ways is listed, with what
          theirs is and what his is, and waits for his choice; Save is refused until he has made it.
      So a Save writes only his own changes over the record as it stands (the plan §3.7). */
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- after every paint on purpose (any store change can alter the record behind the window); it sets state only when something differs, so it settles
   useLayoutEffect(() => {
     if (!win || !r || isNew || !draft) return
     /* NOT WHILE IT IS ASKING. When another input is asked for over unsaved work, the effect above keeps the first one

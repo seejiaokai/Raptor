@@ -33,9 +33,10 @@ export function DayTplModal() {
      template") seeds the local selection once, the same tick the flag itself
      changes — hooks run every render regardless of the early return below,
      so this stays before it. */
+  const tplTarget = DAYTPLEDIT   // the store's live value, read on this render (a module value changes between renders)
   useEffect(() => {
-    if (typeof DAYTPLEDIT === 'string') setSel(DAYTPLEDIT)
-  }, [DAYTPLEDIT])
+    if (typeof tplTarget === 'string') setSel(tplTarget)
+  }, [tplTarget])
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); before the early return, as hooks must be */
   const boxRef = useRef<HTMLDivElement>(null)

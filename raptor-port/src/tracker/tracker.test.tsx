@@ -162,8 +162,10 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
        source is checked here, its screen by the walk (scripts/handpass/cr3-walk.mjs) */
     const side = readFileSync(join(__dirname, 'components/SidePanel.jsx'), 'utf8')
     expect(side, 'Reorder wears the drawn arrows').toMatch(/<ReorderGlyph \/> Reorder<\/button>/)
-    expect(side, 'a name\'s rename is the solid pencil').toMatch(/className="ren"[^\n]*?><PenGlyph solo \/><\/span>/)
-    expect(side, 'a name\'s remove is the drawn ✕').toMatch(/className="x"[^\n]*?><XGlyph \/><\/span>/)
+    /* the rename pencil is a real button since 31 Oct 26 too (drag-through — see the dragScroll test at the end of this file) */
+    expect(side, 'a name\'s rename is the solid pencil').toMatch(/className="ren trbtn"[^\n]*?><PenGlyph solo \/><\/button>/)
+    /* the remove ✕ is a real button since 31 Oct 26 (React Doctor's clean-up — the keyboard reaches it; `.trbtn` keeps its look) */
+    expect(side, 'a name\'s remove is the drawn ✕').toMatch(/className="x trbtn"[^\n]*?><XGlyph \/><\/button>/)
     for (const [sel, cls] of items) {
       const b = $(sel)!
       expect(b, sel + ' is there').toBeTruthy()
@@ -898,6 +900,28 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     })
     expect(vAtOpen, 'the field is reset during render, not a beat later in an effect').toBe('')
     await act(async () => { C.dlgClose(null) }); await p!
+    await act(async () => { root.unmount() }); host.remove()
+  })
+
+  it('a question that follows another at once shows ITS OWN default — the reset keys on the dialog, not on a blank in between', async () => {
+    /* The reset to a new dialog's default rode a ref written during render until 31 Oct 26; it is React state now (the
+       docs' form of "adjust state while rendering" — React Doctor's clean-up). Two prompts queued back to back hand the
+       box from one to the next: the second must open on its own default, and what was typed in the first must not
+       carry over. */
+    const { fireEvent } = await import('@testing-library/react')
+    const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
+    const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
+    const root = createRoot(host)
+    await act(async () => { root.render(<Live />) })
+    let a: Promise<any>, b: Promise<any>
+    await act(async () => { a = C.uiPrompt('first?', 'A'); b = C.uiPrompt('second?', 'B'); await tick() })
+    expect(($('#dlgInput') as HTMLInputElement).value, 'the first opens on its default').toBe('A')
+    await act(async () => { fireEvent.change($('#dlgInput')!, { target: { value: 'TYPED IN THE FIRST' } }) })
+    await act(async () => { C.dlgClose('x'); await tick() })
+    expect(await a!).toBe('x')
+    expect($('#dlgMsg')!.textContent).toBe('second?')
+    expect(($('#dlgInput') as HTMLInputElement).value, 'the second opens on its own default').toBe('B')
+    await act(async () => { C.dlgClose(null) }); await b!
     await act(async () => { root.unmount() }); host.remove()
   })
 
@@ -1786,5 +1810,40 @@ describe('course ids — migration, links translation, fail-closed boot, boundar
     p = C.renCourse(); await answer('Links')
     await until(() => C.dlg && C.dlg.cancel === false); expect(C.dlg.msg).toMatch(/reserves/); C.dlgClose(true); await p
     expect(C.courseName(C.course), 'the rename was refused').toBe(cur)
+  })
+})
+
+/* A DRAG-THROUGH BUTTON (React Doctor's clean-up, 31 Oct 26). The Info half's chips, rename pencils, Failures title and
+   lull dates were spans, and a mouse drag that started on one scrolled the half (core.js dragScroll), the click after it
+   swallowed. They are real buttons now, marked `data-dragscroll`: a press on one is still the box's drag, while a press
+   on any other button is left alone, as before. */
+describe('dragScroll: a drag-through button is still the box\'s drag; any other button is not', () => {
+  const ptr = (type: string, target: Element, x: number, y: number) => {
+    const e = new MouseEvent(type, { bubbles: true, cancelable: true, clientX: x, clientY: y, button: 0, buttons: 1 })
+    Object.defineProperty(e, 'pointerType', { value: 'mouse' }); Object.defineProperty(e, 'pointerId', { value: 1 })
+    target.dispatchEvent(e)
+  }
+  it('a mouse drag from a drag-through button scrolls and eats the click after it; a still press clicks; a plain button is no drag', async () => {
+    expect((core as any).arrangeMode, 'not in Edit chart layout').toBeFalsy()
+    const box = document.createElement('div'); box.className = 'host'; document.body.appendChild(box)
+    box.innerHTML = '<button type="button" data-dragscroll="" id="dsThru"><b>ST-01</b></button><button type="button" id="dsPlain">+ Add</button>'
+    core.dragScroll(box)
+    const thru = box.querySelector('#dsThru')!, inner = thru.querySelector('b')!, plain = box.querySelector('#dsPlain')!
+    let clicked = 0; thru.addEventListener('click', () => { clicked++ })
+    /* a drag that starts on the button's words: the box's drag */
+    ptr('pointerdown', inner, 10, 10); ptr('pointermove', inner, 30, 40)
+    expect(box.classList.contains('dragging'), 'the drag is the box\'s').toBe(true)
+    ptr('pointerup', inner, 30, 40); (thru as HTMLElement).click()
+    expect(clicked, 'the click that follows the drag is swallowed').toBe(0)
+    await new Promise(r => setTimeout(r, 0))
+    /* a press that does not move is a click, as on the span it was */
+    ptr('pointerdown', thru, 10, 10); ptr('pointerup', thru, 10, 10); (thru as HTMLElement).click()
+    expect(clicked, 'a still press clicks').toBe(1)
+    expect(box.classList.contains('dragging')).toBe(false)
+    /* any other button is left alone */
+    ptr('pointerdown', plain, 10, 10); ptr('pointermove', plain, 40, 50)
+    expect(box.classList.contains('dragging'), 'a plain button never starts the box\'s drag').toBe(false)
+    ptr('pointerup', plain, 40, 50)
+    box.remove()
   })
 })

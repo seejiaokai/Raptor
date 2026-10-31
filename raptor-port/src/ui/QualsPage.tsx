@@ -351,6 +351,9 @@ export function QualsPage() {
   const qLiftRef = useRef<HTMLDivElement | null>(null)
   const qLandRef = useRef<string | null>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
+  /* the pinned row as last set — written beside every setStuck, so the scroll listener knows it without measuring inside a
+     state updater (React may run an updater twice; a measure there is a side effect) */
+  const stuckRef = useRef<typeof stuck>(null)
   /* the pinned row's watch of the real heading cells, moved onto new cells whenever the table is drawn again (below) */
   const watchCellsRef = useRef<(() => void) | null>(null)
   /* PINCH TO ZOOM THE TABLE ON A PHONE (owner D1108, D1110, 21 Oct 26 — [BOARD-PHONE-PINCH-ZOOM]). Two fingers on the table
@@ -374,9 +377,10 @@ export function QualsPage() {
   }, [])
   const qzEff = phone ? qz : 1
   const qzRef = useRef(1)
-  qzRef.current = qz
   const qzEffRef = useRef(1)
-  qzEffRef.current = qzEff
+  /* today's zoom for the pinch's handlers and the mirror's layout effect below — written after each commit, never during a
+     render React may throw away; declared before that layout effect, so it reads this commit's zoom */
+  useLayoutEffect(() => { qzRef.current = qz; qzEffRef.current = qzEff })
   /* while two fingers pinch the table (the pinch's onStart → onEnd): the frozen heading row may unpin but is never pinned
      or measured anew, and `qRepinRef` measures it once the fingers lift (the code read of 31 Oct 26, finding 1 — see the
      mirror's effect) */
@@ -461,7 +465,7 @@ export function QualsPage() {
      — never runs, leaving the lift box standing round a column nobody is
      holding. The decision is made HERE, against the `cols` of this render, and
      not inside the updater: an updater's answer arrives too late to be returned.
-     `live.current` is rebuilt every render, so the closure always reads the
+     `live.current` is rebuilt after every commit, so the closure always reads the
      current list. Unreachable through the UI today — onMove refuses a target
      that is the dragged column, so `i === j` cannot happen — which is exactly
      why it is worth closing rather than relying on. */
@@ -478,9 +482,10 @@ export function QualsPage() {
 
   /* the delegated listeners below are mounted once and never re-bound, so
      anything of theirs that changes per render is read through this ref
-     rather than captured in the closure */
+     rather than captured in the closure (written after each commit, never during
+     a render React may throw away — its readers are those listeners alone) */
   const live = useRef<any>({})
-  live.current = { canEditQuals, delQual, moveQual }
+  useLayoutEffect(() => { live.current = { canEditQuals, delQual, moveQual } })
 
   /* the reference's tick/untick + archive + level handlers, verbatim logic */
   useEffect(() => {
@@ -639,7 +644,7 @@ export function QualsPage() {
       document.removeEventListener('pointerup', onUp); document.removeEventListener('pointercancel', onUp)
       wrap.removeEventListener('scroll', onXScroll)
     }
-  }, [])
+  }, [sdaActive])   // fixed for the page's life (asked of the browser once) — named so the listener's reading of it is plain
 
   useEffect(() => {
     const wrap = wrapRef.current
@@ -741,9 +746,12 @@ export function QualsPage() {
      column's own sticky-left keeps working inside it. Desktop AND phone (owner,
      29 Aug 26 — "freeze like the leave war top bar … on desktop and mobile").
      jsdom has no layout, so a 0-height header never activates it there. */
+  // eslint-disable-next-line react-doctor/effect-needs-cleanup -- every cell watchCells observes is on the one ResizeObserver this effect's cleanup disconnects
   useEffect(() => {
-    setStuck(null)
+    stuckRef.current = null; setStuck(null)
     if (typeof window.matchMedia !== 'function') return
+    /* the row is unpinned, or pinned anew, only where it differs from the one already set (a set to the same is no redraw) */
+    const unstick = () => { if (stuckRef.current) { stuckRef.current = null; setStuck(null) } }
     /* `force` re-measures the pinned widths even while already stuck. A plain
        scroll keeps them (cheap, and they don't change as you scroll), but a
        rotate/resize changes EVERY column width — without a fresh measurement the
@@ -752,7 +760,7 @@ export function QualsPage() {
        off to the portrait view "to fix it I need to scroll up then back down"). */
     const pin = (force: boolean) => {
       const head = tblRef.current?.tHead
-      if (!head) { setStuck(prev => (prev ? null : prev)); return }
+      if (!head) { unstick(); return }
       const r = head.getBoundingClientRect()
       if (r.height === 0) return // jsdom, or not laid out yet — never activate
       /* the app top bar stays pinned (sticky, z-index 60), so "the top" is its
@@ -776,19 +784,19 @@ export function QualsPage() {
         }
         return
       }
-      if (r.top >= topEdge) { setStuck(prev => (prev ? null : prev)); return }
-      setStuck(prev => {
-        if (prev && !force) return prev
-        /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
-        if (tblRef.current?.style.transform) return prev
-        const wrap = wrapRef.current
-        if (!wrap) return prev
-        const wr = wrap.getBoundingClientRect()
-        const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
-        const cols = cells.map(c => c.getBoundingClientRect().width)
-        if (cols.length === 0 || cols.some(w => !w)) return prev
-        return { top: topEdge, left: wr.left, width: wr.width, cols }
-      })
+      if (r.top >= topEdge) { unstick(); return }
+      /* measured here, in the listener, never inside a state updater; a plain scroll of a row already pinned measures nothing */
+      if (stuckRef.current && !force) return
+      /* never a stretched table measured, whoever asks (a cell's own box under a stretch is k times its width) */
+      if (tblRef.current?.style.transform) return
+      const wrap = wrapRef.current
+      if (!wrap) return
+      const wr = wrap.getBoundingClientRect()
+      const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
+      const cols = cells.map(c => c.getBoundingClientRect().width)
+      if (cols.length === 0 || cols.some(w => !w)) return
+      const next = { top: topEdge, left: wr.left, width: wr.width, cols }
+      stuckRef.current = next; setStuck(next)
     }
     qRepinRef.current = () => pin(true)
     const onScroll = () => pin(false)

@@ -205,7 +205,8 @@ export function InputsPage() {
      which of its two the Inputs tab was left on, so Medical — a tab, not a place opened from somewhere — never decides
      where a tab press lands. */
   const inputsView = useRef<'cal'|'table'>(INPVIEW === 'table' ? 'table' : 'cal')
-  if (INPVIEW !== 'med') inputsView.current = INPVIEW
+  /* remembered after each commit, never during a render React may throw away — its one reader is a tab press */
+  useLayoutEffect(() => { if (INPVIEW !== 'med') inputsView.current = INPVIEW })
   type Tab = 'inputs' | 'sans' | 'med'
   const tab: Tab = INPVIEW === 'med' ? 'med' : INPMODE === 'sans' ? 'sans' : 'inputs'
   /* ARRIVING ON THE PAGE SHOWS IT FROM ITS TOP. The app kept the window's scroll from page to page (the week opens
@@ -283,6 +284,9 @@ export function InputsPage() {
      React has painted it. */
   const [justAddedIid, setJustAddedIid] = useState<{iid:string} | null>(null)
   const reveal=INPREVEAL
+  /* its timer is not cleared when the next reveal comes — each input's light runs its own six seconds (F1, above) —
+     so it is owned by `flashT`, whose unmount effect above clears every one */
+  // eslint-disable-next-line react-doctor/effect-needs-cleanup -- the light's timer is held in flashT and cleared on unmount by the effect above; clearing it on the next reveal would cut a light short
   useLayoutEffect(()=>{
     const row=reveal&&INPUTS.find((r:any)=>r.iid===reveal.iid&&inputsInMode([r],INPMODE).length)
     if(!row||!reveal||reveal.mode!==INPMODE)return

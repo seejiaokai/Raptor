@@ -59,7 +59,7 @@
 // Role: the sheet DRAWS controls for an admin only (absent, not disabled —
 // the house rule), and the store refuses a member's write regardless.
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import {
   addMonths,
@@ -206,7 +206,7 @@ export function OilTracker({ person, onClose, onGranted }: {
   const [zoom, setZoom] = useState(() =>
     typeof window.matchMedia === 'function' && window.matchMedia('(max-width: 700px)').matches ? 0.8 : 1)
   const zoomRef = useRef(zoom)
-  zoomRef.current = zoom
+  useLayoutEffect(() => { zoomRef.current = zoom })
   const [mode, setMode] = useState<RangeMode>(oilPolicy.historyMonths === null ? 'first' : 'months')
   const [pick, setPick] = useState<Range | null>(null)
   const [picking, setPicking] = useState(false)
@@ -259,11 +259,13 @@ export function OilTracker({ person, onClose, onGranted }: {
 
   /* ---- the drag-select gesture, bound once ------------------------------ */
   const selCtxRef = useRef<{ order: () => string[]; enabled: () => boolean; onSelect: (ids: string[]) => void }>({ order: () => [], enabled: () => false, onSelect: () => {} })
-  selCtxRef.current = {
-    order: () => orderIds,
-    enabled: () => admin && view === 'grid',
-    onSelect: ids => setSel(prev => new Set([...prev, ...ids])),
-  }
+  useLayoutEffect(() => {
+    selCtxRef.current = {
+      order: () => orderIds,
+      enabled: () => admin && view === 'grid',
+      onSelect: ids => setSel(prev => new Set([...prev, ...ids])),
+    }
+  })
   useEffect(() => {
     const wrap = wrapRef.current
     if (!wrap) return

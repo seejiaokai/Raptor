@@ -205,7 +205,7 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
 
   /* latest handlers for the two document listeners below, which are bound once */
   const live = useRef({ finish, close: () => onClose(at) })
-  live.current = { finish, close: () => onClose(at) }
+  useLayoutEffect(() => { live.current = { finish, close: () => onClose(at) } })
   useEffect(() => {
     /* A PRESS ANYWHERE ELSE saves and closes. The box, the strip and the pad are "inside". Capture phase, so it has
        run before the press reaches a cell that opens its own editor. */

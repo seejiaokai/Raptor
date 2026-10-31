@@ -1,0 +1,1670 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "http://localhost:4391",
+      "localStorage": [
+        {
+          "name": "raptor:leavewar/opening:slipway:ccl",
+          "value": "5"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-3",
+          "value": "{\"id\":\"walk-m5a-3\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-02-12\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:plasma:LVE",
+          "value": "{\"amount\":25.5,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"plasma\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:gizmo:LVE",
+          "value": "{\"amount\":28.5,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"gizmo\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/spanner",
+          "value": "{\"cs\":\"Cotter\",\"seat\":\"GND\",\"pers\":true,\"q\":\"\",\"initials\":\"CTR\",\"flight\":\"Maint\",\"remarks\":\"\",\"quals\":{},\"ord\":61440}"
+        },
+        {
+          "name": "raptor:leavewar/bal:salsa:LVE",
+          "value": "{\"amount\":21,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"salsa\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:ignite",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:ammo:oil",
+          "value": "2.5"
+        },
+        {
+          "name": "raptor:people/vinci",
+          "value": "{\"cs\":\"Zenith\",\"seat\":\"FCP\",\"q\":\"C\",\"san\":true,\"sanQ\":{\"flown\":6,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":23552}"
+        },
+        {
+          "name": "raptor:leavewar/grade:spaceman",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg030pp9a",
+          "value": "{\"person\":\"bane\",\"date\":\"Jul 16\",\"allday\":false,\"s\":1020,\"e\":1110,\"type\":\"Appointment\",\"remarks\":\"Medical / PHA\",\"mod\":\"2026-06-29\",\"by\":\"bane\",\"at\":1782695220000,\"modBy\":\"bane\",\"modAt\":1782695220000,\"yr\":2026,\"iid\":\"imriimcg030pp9a\",\"ord\":2048,\"acc\":\"g\"}"
+        },
+        {
+          "name": "raptor:leavewar/ballock",
+          "value": "false"
+        },
+        {
+          "name": "raptor:leavewar/opening:prowler:oil",
+          "value": "1.5"
+        },
+        {
+          "name": "raptor:leavewar/bal:mamba:LVE",
+          "value": "{\"amount\":12,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"mamba\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0zh0sk4",
+          "value": "{\"person\":\"bruise\",\"date\":\"Jul 15\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0zh0sk4\",\"ord\":39936}"
+        },
+        {
+          "name": "raptor:leavewar/bal:stuff:LVE",
+          "value": "{\"amount\":34,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"stuff\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-1",
+          "value": "{\"id\":\"dol-1\",\"personId\":\"slipway\",\"counter\":\"oil\",\"amount\":2,\"date\":\"2026-03-14\",\"reason\":\"Exercise recovery\",\"approvedBy\":\"SQNCDR\",\"givenBy\":\"OC Ops\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:wolf:annual",
+          "value": "15"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l3",
+          "value": "{\"id\":\"l3\",\"personId\":\"rocky\",\"counter\":\"annual\",\"amount\":14,\"date\":\"2026-01-01\",\"reason\":\"Annual leave top-up\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:plan",
+          "value": "{\"sylId\":\"sb2026\",\"mode\":\"pace\",\"epw\":2,\"target\":null,\"target2\":null,\"lulls\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:spaceman:annual",
+          "value": "16"
+        },
+        {
+          "name": "raptor:people/wolf",
+          "value": "{\"cs\":\"Static\",\"seat\":\"RCP\",\"q\":\"IW\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":36864}"
+        },
+        {
+          "name": "raptor:leavewar/opening:dirty:ccl",
+          "value": "5"
+        },
+        {
+          "name": "raptor:leavewar/bal:rocky:LVE",
+          "value": "{\"amount\":-2,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"rocky\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg07jxi6z",
+          "value": "{\"person\":\"romeo\",\"date\":\"Jul 14\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-21\",\"by\":\"romeo\",\"at\":1782024300000,\"modBy\":\"romeo\",\"modAt\":1782024300000,\"yr\":2026,\"iid\":\"imriimcg07jxi6z\",\"ord\":16384}"
+        },
+        {
+          "name": "raptor:people/haowen",
+          "value": "{\"cs\":\"Talisman\",\"seat\":\"FCP\",\"q\":\"OCU\",\"quals\":{\"sxo\":false,\"imc\":false,\"nvg\":false,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":false,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":33792}"
+        },
+        {
+          "name": "raptor:people/shrek",
+          "value": "{\"cs\":\"Wisp\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":49152}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2027:seed14",
+          "value": "{\"id\":\"seed14\",\"kind\":\"request\",\"code\":\"*LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"ammo\",\"date\":\"2027-05-05\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-4",
+          "value": "{\"id\":\"dol-4\",\"personId\":\"harpoon\",\"counter\":\"oil\",\"amount\":2,\"date\":\"2027-01-09\",\"reason\":\"Overseas exercise\",\"approvedBy\":\"SQNCDR\",\"givenBy\":\"OC Ops\"}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed8",
+          "value": "{\"id\":\"seed8\",\"kind\":\"request\",\"code\":\"LL*\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"slash\",\"date\":\"2026-02-03\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l9",
+          "value": "{\"id\":\"l9\",\"personId\":\"prowler\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-01-04\",\"reason\":\"Weekend recovery\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-10",
+          "value": "{\"id\":\"dol-10\",\"personId\":\"ammo\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-08-08\",\"reason\":\"SIM\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:bruise:annual",
+          "value": "9.5"
+        },
+        {
+          "name": "raptor:people/nick",
+          "value": "{\"cs\":\"Tally\",\"seat\":\"RCP\",\"q\":\"OCU\",\"san\":true,\"sanQ\":{\"flown\":5,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":false,\"nvg\":false,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":false,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":58368}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-4",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[4],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Setting\",\"key\":\"tracker/v3:cmriimcg0al87q3:last:smriimcg0u8km9r\",\"op\":\"put\"},{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:slash:oil",
+          "value": "6"
+        },
+        {
+          "name": "raptor:leavewar/bal:stiff:LVE",
+          "value": "{\"amount\":17.5,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"stiff\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:glass:LVE",
+          "value": "{\"amount\":16.5,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"glass\",\"snap\":[]}"
+        },
+        {
+          "name": "ocuLocal:who:stiff:lastCourse",
+          "value": "cmriimcg0al87q3"
+        },
+        {
+          "name": "raptor:inputs/imriimcg006rxtu",
+          "value": "{\"person\":\"pike\",\"date\":\"Jan 14\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg006rxtu\",\"ord\":46080}"
+        },
+        {
+          "name": "raptor:leavewar/bal:torque:LVE",
+          "value": "{\"amount\":14,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"torque\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:split",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:glass",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:pike",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-11",
+          "value": "{\"id\":\"dol-11\",\"personId\":\"spaceman\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-08-15\",\"reason\":\"FLT\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:pain:annual",
+          "value": "11"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-2",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[2],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Setting\",\"key\":\"tracker/v3:cmriimcg0al87q3:last:smriimcg0u8km9r\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"tracker/v3:cmriimcg0al87q3:lastStudent\",\"op\":\"put\"},{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:ammo:LVE",
+          "value": "{\"amount\":19.5,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"ammo\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grouppriocustom",
+          "value": "false"
+        },
+        {
+          "name": "raptor:leavewar/opening:prowler:annual",
+          "value": "8"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-8",
+          "value": "{\"id\":\"dol-8\",\"personId\":\"slash\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-05-09\",\"reason\":\"FLT + SIM\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0os0bk9",
+          "value": "{\"person\":\"slash\",\"date\":\"Jun 3\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0os0bk9\",\"ord\":44032}"
+        },
+        {
+          "name": "raptor:leavewar/grade:harpoon",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/xray",
+          "value": "{\"cs\":\"Ryder\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":50176}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:FCL",
+          "value": "{\"amount\":5,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0ezjflk",
+          "value": "{\"person\":\"bullet\",\"date\":\"Jul 14\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true,\"o\":true,\"a\":true},\"mod\":\"2026-06-25\",\"by\":\"bullet\",\"at\":1782349980000,\"modBy\":\"bullet\",\"modAt\":1782349980000,\"yr\":2026,\"iid\":\"imriimcg0ezjflk\",\"ord\":20480}"
+        },
+        {
+          "name": "ocuLocal:who:stiff:lastCrew:cmriimcg0al87q3",
+          "value": "smriimcg0u8km9r"
+        },
+        {
+          "name": "raptor:tracker/v3:courseidmig",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed1",
+          "value": "{\"id\":\"seed1\",\"kind\":\"request\",\"code\":\"*OIL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"slipway\",\"date\":\"2026-02-10\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:harpoon:annual",
+          "value": "2"
+        },
+        {
+          "name": "raptor:people/prism",
+          "value": "{\"cs\":\"Recon\",\"seat\":\"FCP\",\"q\":\"OCU\",\"quals\":{\"sxo\":false,\"imc\":false,\"nvg\":false,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":false,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":34816}"
+        },
+        {
+          "name": "raptor:people/bullet",
+          "value": "{\"cs\":\"Zulu\",\"seat\":\"RCP\",\"q\":\"OCU\",\"san\":true,\"sanQ\":{\"flown\":7,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":false,\"nvg\":false,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":false,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":59392}"
+        },
+        {
+          "name": "raptor:leavewar/grade:shaft",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-7",
+          "value": "{\"id\":\"walk-m5a-7\",\"kind\":\"request\",\"code\":\"CL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-03-17\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0sl9r9e",
+          "value": "{\"person\":\"bane\",\"date\":\"Jan 19\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"\",\"endDate\":\"Jan 21\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0sl9r9e\",\"ord\":48128}"
+        },
+        {
+          "name": "ocuLocal:who:stiff:lastSyl:cmriimcg0al87q3",
+          "value": "sb2026"
+        },
+        {
+          "name": "raptor:leavewar/oilpolicy",
+          "value": "{\"expiry\":null,\"historyMonths\":null}"
+        },
+        {
+          "name": "raptor:leavewar/bal:fantom:LVE",
+          "value": "{\"amount\":28,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"fantom\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:snap:CCL",
+          "value": "{\"amount\":3,\"day\":\"2026-01-10\",\"by\":\"snap\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:casper",
+          "value": "{\"hist\":[{\"id\":null,\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/pike",
+          "value": "{\"cs\":\"Nomad\",\"seat\":\"FCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":25600}"
+        },
+        {
+          "name": "raptor:people/nasty",
+          "value": "{\"cs\":\"Quill\",\"seat\":\"RCP\",\"q\":\"IW\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":41984}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0jqdkj1",
+          "value": "{\"person\":\"divot\",\"date\":\"Jul 13\",\"allday\":true,\"type\":\"OML\",\"remarks\":\"Medical leave 13 Jul\",\"mod\":\"2026-07-12\",\"docId\":\"doc-54bf252c-0f4b-ea65-0fef-c7246b324e58\",\"by\":\"divot\",\"at\":1783814400000,\"modBy\":\"divot\",\"modAt\":1783814400000,\"yr\":2026,\"iid\":\"imriimcg0jqdkj1\",\"ord\":1024}"
+        },
+        {
+          "name": "raptor:leavewar/current",
+          "value": "y2026"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed6",
+          "value": "{\"id\":\"seed6\",\"kind\":\"request\",\"code\":\"OIL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bruise\",\"date\":\"2026-02-24\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0bhmiln",
+          "value": "{\"person\":\"casper\",\"date\":\"Feb 5\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0bhmiln\",\"ord\":47104}"
+        },
+        {
+          "name": "raptor:leavewar/eventrows",
+          "value": "2"
+        },
+        {
+          "name": "raptor:leavewar/ledger:walk-3",
+          "value": "{\"id\":\"walk-3\",\"personId\":\"spaceman\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-02-23\",\"reason\":\"FLT\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:people/fantom",
+          "value": "{\"cs\":\"Diesel\",\"seat\":\"FCP\",\"q\":\"D\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":29696}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0y8d689",
+          "value": "{\"person\":\"slash\",\"date\":\"Jun 2\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0y8d689\",\"ord\":43008}"
+        },
+        {
+          "name": "raptor:leavewar/opening:slash:annual",
+          "value": "7"
+        },
+        {
+          "name": "raptor:inputs/imriimcg09z78zj",
+          "value": "{\"person\":\"pike\",\"date\":\"Jul 15\",\"endDate\":\"Jul 17\",\"allday\":true,\"type\":\"OD\",\"remarks\":\"Overseas duty — exercise, off island\",\"mod\":\"2026-06-18\",\"by\":\"pike\",\"at\":1781740980000,\"modBy\":\"pike\",\"modAt\":1781740980000,\"yr\":2026,\"iid\":\"imriimcg09z78zj\",\"ord\":10240}"
+        },
+        {
+          "name": "raptor:leavewar/grade:bapster",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:ignite:LVE",
+          "value": "{\"amount\":11,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"ignite\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:pain:LVE",
+          "value": "{\"amount\":12,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"pain\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:chart:sbagaa2026",
+          "value": "{\"id\":\"sbagaa2026\",\"name\":\"A/G - A/A 2026\",\"base\":\"A/G - A/A 2026\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:info:sb2026:ST-01",
+          "value": "{\"name\":\"Walk welcome detail\",\"hrs\":\"2.5 Hrs\"}"
+        },
+        {
+          "name": "raptor:people/rocky",
+          "value": "{\"cs\":\"Hex\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":45056}"
+        },
+        {
+          "name": "raptor:people/divot",
+          "value": "{\"cs\":\"Vector\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":46080}"
+        },
+        {
+          "name": "raptor:leavewar/figorder",
+          "value": "[\"lve\",\"oil\",\"ccl\",\"fcl\",\"cl\",\"pl\",\"lvetot\",\"medtot\"]"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0n0tacc",
+          "value": "{\"person\":\"dirty\",\"date\":\"Jan 15\",\"yr\":2026,\"type\":\"CCL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0n0tacc\",\"ord\":32768}"
+        },
+        {
+          "name": "raptor:leavewar/manningorder",
+          "value": "[]"
+        },
+        {
+          "name": "raptor:people/slipway",
+          "value": "{\"cs\":\"Drifter\",\"seat\":\"FCP\",\"q\":\"A\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":3072}"
+        },
+        {
+          "name": "raptor:leavewar/grade:bane",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:beams:LVE",
+          "value": "{\"amount\":15,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"beams\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:walk-2",
+          "value": "{\"id\":\"walk-2\",\"personId\":\"casper\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-02-05\",\"reason\":\"SIM\",\"approvedBy\":\"SQNCDR\",\"half\":\"pm\"}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-1",
+          "value": "{\"id\":\"walk-1\",\"kind\":\"request\",\"code\":\"OL\",\"state\":\"refused\",\"ord\":1024,\"pid\":\"spaceman\",\"date\":\"2026-02-23\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:dirty:annual",
+          "value": "10"
+        },
+        {
+          "name": "raptor:leavewar/grade:haowen",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg00ldlcj",
+          "value": "{\"person\":\"wolf\",\"date\":\"Jan 6\",\"yr\":2026,\"allday\":true,\"type\":\"OML\",\"remarks\":\"OML — filed on Inputs\",\"mod\":\"2026-01-05\",\"iid\":\"imriimcg00ldlcj\",\"ord\":51200}"
+        },
+        {
+          "name": "raptor:tracker/v3:seedstamp",
+          "value": "2026-07-22T00:30:11.314Z"
+        },
+        {
+          "name": "raptor:leavewar/grade:nasty",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed9",
+          "value": "{\"id\":\"seed9\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"refused\",\"ord\":1024,\"pid\":\"rocky\",\"date\":\"2026-03-10\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:razer:LVE",
+          "value": "{\"amount\":32.5,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"razer\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:idmig",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/bal:freak:LVE",
+          "value": "{\"amount\":13.5,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"freak\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:chart:sb2024",
+          "value": "{\"id\":\"sb2024\",\"name\":\"2024\",\"base\":\"2024\"}"
+        },
+        {
+          "name": "raptor:leavewar/grade:chaps",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:prism",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:__legacy__/done",
+          "value": "1"
+        },
+        {
+          "name": "raptor:inputs/imriimcg02l7qfx",
+          "value": "{\"person\":\"slash\",\"date\":\"Jun 1\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg02l7qfx\",\"ord\":41984}"
+        },
+        {
+          "name": "raptor:people/spaceman",
+          "value": "{\"cs\":\"Dash\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":47104}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-5",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[5],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:course:cmriimcg0al87q3",
+          "value": "{\"id\":\"cmriimcg0al87q3\",\"name\":\"26ABSG\",\"ord\":1024}"
+        },
+        {
+          "name": "raptor:people/ammo",
+          "value": "{\"cs\":\"Cinder\",\"seat\":\"RCP\",\"q\":\"B\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":44032}"
+        },
+        {
+          "name": "raptor:people/freak",
+          "value": "{\"cs\":\"Echo\",\"seat\":\"RCP\",\"q\":\"IW\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":35840}"
+        },
+        {
+          "name": "raptor:leavewar/grade:beams",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:snap",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/fighidden",
+          "value": "[]"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-4",
+          "value": "{\"id\":\"walk-m5a-4\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-02-13\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:razer:CCL",
+          "value": "{\"amount\":3,\"day\":\"2026-01-10\",\"by\":\"razer\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-6",
+          "value": "{\"id\":\"walk-m5a-6\",\"kind\":\"request\",\"code\":\"*PL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-03-16\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0xqz64u",
+          "value": "{\"person\":\"shrek\",\"date\":\"Jul 14\",\"allday\":true,\"type\":\"OIL\",\"remarks\":\"OIL — CO approved, post-detachment\",\"mod\":\"2026-07-02\",\"by\":\"shrek\",\"at\":1782970500000,\"modBy\":\"shrek\",\"modAt\":1782970500000,\"yr\":2026,\"iid\":\"imriimcg0xqz64u\",\"ord\":6144}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg068a64k",
+          "value": "{\"person\":\"vinci\",\"date\":\"Jun 20\",\"allday\":true,\"type\":\"Upchit\",\"remarks\":\"Medically up 20 Jun\",\"mod\":\"2026-06-20\",\"docId\":\"doc-9d5b1695-5efe-61ce-c96d-fcf6514fcfaf\",\"by\":\"vinci\",\"at\":1781930040000,\"modBy\":\"vinci\",\"modAt\":1781930040000,\"yr\":2026,\"iid\":\"imriimcg068a64k\",\"ord\":23552}"
+        },
+        {
+          "name": "raptor:leavewar/bal:shrek:LVE",
+          "value": "{\"amount\":29,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"shrek\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:tracker/v3:sylcatmig",
+          "value": "1"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:sb2026:enr:smriimcg0ay5xed",
+          "value": "{\"id\":\"smriimcg0ay5xed\",\"name\":\"STUDENT A\",\"ord\":1024}"
+        },
+        {
+          "name": "raptor:leavewar/opening:ammo:annual",
+          "value": "14"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:CCL",
+          "value": "{\"amount\":3,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-6",
+          "value": "{\"id\":\"dol-6\",\"personId\":\"prowler\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-02-07\",\"reason\":\"FLT\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:sb2026:enr:smriimcg0u8km9r",
+          "value": "{\"id\":\"smriimcg0u8km9r\",\"name\":\"TALISMAN\",\"pid\":\"haowen\",\"ord\":3072}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0wrm3vl",
+          "value": "{\"person\":\"harpoon\",\"date\":\"Feb 15\",\"yr\":2027,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2027\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0wrm3vl\",\"ord\":45056}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bapster:LVE",
+          "value": "{\"amount\":17,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"bapster\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:gizmo",
+          "value": "{\"hist\":[{\"id\":\"opsa\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:beams:CCL",
+          "value": "{\"amount\":5,\"day\":\"2026-01-10\",\"by\":\"beams\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/gizmo",
+          "value": "{\"cs\":\"Widget\",\"seat\":\"GND\",\"pers\":true,\"q\":\"\",\"initials\":\"WGT\",\"flight\":\"Line\",\"remarks\":\"\",\"quals\":{},\"ord\":62464}"
+        },
+        {
+          "name": "raptor:leavewar/bal:xray:LVE",
+          "value": "{\"amount\":11,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"xray\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg029t8dt",
+          "value": "{\"person\":\"waldo\",\"date\":\"Jul 15\",\"allday\":false,\"half\":\"am\",\"s\":0,\"e\":720,\"type\":\"SANS Availability\",\"sans\":{\"o\":true},\"mod\":\"2026-06-23\",\"by\":\"waldo\",\"at\":1782205140000,\"modBy\":\"waldo\",\"modAt\":1782205140000,\"yr\":2026,\"iid\":\"imriimcg029t8dt\",\"ord\":18432}"
+        },
+        {
+          "name": "raptor:leavewar/grade:torque",
+          "value": "{\"hist\":[{\"id\":\"opsa\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l2",
+          "value": "{\"id\":\"l2\",\"personId\":\"prowler\",\"counter\":\"annual\",\"amount\":14,\"date\":\"2026-01-01\",\"reason\":\"Annual leave top-up\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-3",
+          "value": "{\"id\":\"dol-3\",\"personId\":\"slash\",\"counter\":\"oil\",\"amount\":-1,\"date\":\"2026-05-20\",\"reason\":\"Correction: double credit\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:__legacy__/started",
+          "value": "1"
+        },
+        {
+          "name": "raptor:people/psy",
+          "value": "{\"cs\":\"Cutter\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":51200}"
+        },
+        {
+          "name": "raptor:leavewar/war:y2026",
+          "value": "{\"id\":\"y2026\",\"name\":\"JAN - DEC 26\",\"start\":\"2026-01-01\",\"end\":\"2026-12-31\",\"open\":[{\"from\":\"2026-01-01\",\"to\":\"2026-03-31\"}],\"lastClosed\":null,\"days\":[{\"date\":\"2026-01-01\",\"events\":[\"PH\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":true},{\"date\":\"2026-01-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-01-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-17\",\"events\":[\"PH\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":true},{\"date\":\"2026-02-18\",\"events\":[\"PH\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":true},{\"date\":\"2026-02-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-02-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-09\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-10\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-11\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-12\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-13\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-14\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-03-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-03-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-04-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-05-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-06-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-07-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-09\",\"events\":[\"PH\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":true},{\"date\":\"2026-08-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-08-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-14\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-15\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-16\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-17\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-18\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-19\",\"events\":[\"\",\"\"],\"blocked\":true,\"blockedReason\":\"Exercise week\",\"ph\":false},{\"date\":\"2026-09-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-09-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-10-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-11-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-25\",\"events\":[\"PH\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":true},{\"date\":\"2026-12-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2026-12-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false}],\"bands\":[],\"ord\":1024}"
+        },
+        {
+          "name": "raptor:people/bruise",
+          "value": "{\"cs\":\"Gambit\",\"seat\":\"FCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":20480}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r",
+          "value": "{\"ST-01\":{\"g\":\"dco\",\"f\":0,\"d\":\"2026-07-08\",\"at\":\"2026-07-13T01:00:00.000Z\",\"by\":\"Saber\"},\"ACG-01\":{\"g\":\"dpco\",\"f\":0,\"d\":\"2026-07-09\",\"at\":\"2026-07-13T01:00:00.000Z\",\"by\":\"Saber\"},\"ST-02\":{\"g\":0,\"f\":1,\"fd\":[\"2026-07-13\"],\"at\":\"2026-07-13T01:00:00.000Z\",\"by\":\"Saber\"}}"
+        },
+        {
+          "name": "raptor:leavewar/profile:ignite",
+          "value": "{\"post\":{\"id\":\"ignite\",\"callsign\":\"Torch\",\"seat\":\"pilot\",\"band\":\"ops\",\"sxo\":false,\"from\":null,\"to\":\"2026-01-12\",\"q\":\"C\",\"scd\":true,\"scn\":false,\"xq\":[\"daar\",\"imc\",\"nvg\",\"scDay\"],\"san\":false}}"
+        },
+        {
+          "name": "raptor:leavewar/bal:prism:LVE",
+          "value": "{\"amount\":31,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"prism\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:slipway:oil",
+          "value": "3"
+        },
+        {
+          "name": "raptor:leavewar/grade:boosh",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-5",
+          "value": "{\"id\":\"dol-5\",\"personId\":\"slipway\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-04-18\",\"reason\":\"SIM\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:sylreset",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/grade:pain",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0cp1j6f",
+          "value": "{\"person\":\"prowler\",\"date\":\"Mar 2\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0cp1j6f\",\"ord\":37888}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0nrm56f",
+          "value": "{\"person\":\"slipway\",\"date\":\"May 11\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0nrm56f\",\"ord\":34816}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0582aeu",
+          "value": "{\"person\":\"ammo\",\"date\":\"Jul 4\",\"yr\":2026,\"allday\":true,\"type\":\"Duty\",\"remarks\":\"SDO — weekend duty crew\",\"mod\":\"2026-07-01\",\"oil\":{\"2026-07-04\":1},\"iid\":\"imriimcg0582aeu\",\"ord\":53248}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg002olod",
+          "value": "{\"type\":\"Duty\",\"date\":\"Jul 25\",\"allday\":false,\"s\":540,\"e\":720,\"remarks\":\"Hangar clean-up\",\"oil\":{\"2026-07-25\":0.5},\"people\":[{\"p\":\"allavail\",\"by\":\"stiff\",\"at\":1782436500000}],\"mod\":\"2026-06-26\",\"by\":\"stiff\",\"at\":1782436500000,\"modBy\":\"stiff\",\"modAt\":1782436500000,\"yr\":2026,\"iid\":\"imriimcg002olod\",\"ord\":25600}"
+        },
+        {
+          "name": "raptor:leavewar/grade:dj",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:divot:LVE",
+          "value": "{\"amount\":33,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"divot\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0zr6lhr",
+          "value": "{\"person\":\"bruise\",\"date\":\"Jul 23\",\"allday\":true,\"type\":\"OML\",\"remarks\":\"Medical leave — grounded\",\"mod\":\"2026-07-06\",\"docId\":\"doc-8c044571-586e-da9b-cde2-08cc9193b735\",\"by\":\"bruise\",\"at\":1783304220000,\"modBy\":\"bruise\",\"modAt\":1783304220000,\"yr\":2026,\"iid\":\"imriimcg0zr6lhr\",\"ord\":12288}"
+        },
+        {
+          "name": "raptor:leavewar/bal:prowler:LVE",
+          "value": "{\"amount\":20.5,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"prowler\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:plasma",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:dj:CCL",
+          "value": "{\"amount\":5,\"day\":\"2026-01-10\",\"by\":\"dj\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:EL",
+          "value": "{\"amount\":4,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:rocky:oil",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/rosterorder",
+          "value": "[]"
+        },
+        {
+          "name": "raptor:people/slash",
+          "value": "{\"cs\":\"Blade\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":8192}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:sb2026:d:smriimcg0u8km9r",
+          "value": "{\"lastSyll\":null,\"lastCurr\":null}"
+        },
+        {
+          "name": "raptor:people/drill",
+          "value": "{\"cs\":\"Ledger\",\"seat\":\"RCP\",\"q\":\"IW\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":40960}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-2",
+          "value": "{\"id\":\"walk-m5a-2\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"refused\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-02-02\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:vegas:LVE",
+          "value": "{\"amount\":10.5,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"vegas\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:stuff",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l1",
+          "value": "{\"id\":\"l1\",\"personId\":\"slipway\",\"counter\":\"annual\",\"amount\":14,\"date\":\"2026-01-01\",\"reason\":\"Annual leave top-up\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l10",
+          "value": "{\"id\":\"l10\",\"personId\":\"divot\",\"counter\":\"oil\",\"amount\":0.5,\"date\":\"2026-01-03\",\"reason\":\"Half-day recovery\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:people/casper",
+          "value": "{\"cs\":\"Outlaw\",\"seat\":\"FCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":21504}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0t9siqi",
+          "value": "{\"person\":\"bane\",\"date\":\"Jan 26\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"\",\"endDate\":\"Jan 27\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0t9siqi\",\"ord\":49152}"
+        },
+        {
+          "name": "raptor:leavewar/bal:spaceman:LVE",
+          "value": "{\"amount\":15,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"spaceman\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grouppriority",
+          "value": "[]"
+        },
+        {
+          "name": "raptor:people/glass",
+          "value": "{\"cs\":\"Basher\",\"seat\":\"RCP\",\"q\":\"IW\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":39936}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0pi3x51",
+          "value": "{\"person\":\"slipway\",\"date\":\"May 12\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0pi3x51\",\"ord\":35840}"
+        },
+        {
+          "name": "raptor:leavewar/grade:mamba",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:prowler",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/mamba",
+          "value": "{\"cs\":\"Sidewinder\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":12288}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg02901xr",
+          "value": "{\"person\":\"prowler\",\"date\":\"Mar 30\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg02901xr\",\"ord\":38912}"
+        },
+        {
+          "name": "raptor:people/romeo",
+          "value": "{\"cs\":\"Rebel\",\"seat\":\"FCP\",\"q\":\"B\",\"san\":true,\"sanQ\":{\"flown\":0,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":26624}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:rostermig",
+          "value": "1"
+        },
+        {
+          "name": "raptor:inputs/imriimcg00b3m7a",
+          "value": "{\"person\":\"sufa\",\"date\":\"Jul 13\",\"endDate\":\"Jul 17\",\"allday\":true,\"type\":\"ATT C\",\"remarks\":\"Medically down till 17 Jul\",\"mod\":\"2026-07-12\",\"docId\":\"doc-d6b5e662-8264-445e-fca5-b2257ce1c88a\",\"by\":\"sufa\",\"at\":1783838520000,\"modBy\":\"sufa\",\"modAt\":1783838520000,\"yr\":2026,\"iid\":\"imriimcg00b3m7a\",\"ord\":7168}"
+        },
+        {
+          "name": "raptor:people/badger",
+          "value": "{\"cs\":\"Pixel\",\"seat\":\"RCP\",\"q\":\"D\",\"san\":true,\"sanQ\":{\"flown\":3,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":56320}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0ttoyfs",
+          "value": "{\"person\":\"krait\",\"date\":\"Jul 15\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-24\",\"by\":\"stiff\",\"at\":1782259560000,\"modBy\":\"stiff\",\"modAt\":1782259560000,\"yr\":2026,\"iid\":\"imriimcg0ttoyfs\",\"ord\":19456}"
+        },
+        {
+          "name": "raptor:people/salsa",
+          "value": "{\"cs\":\"Saint\",\"seat\":\"FCP\",\"q\":\"B\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":27648}"
+        },
+        {
+          "name": "raptor:leavewar/bal:boosh:LVE",
+          "value": "{\"amount\":33,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"boosh\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:dj:annual",
+          "value": "4"
+        },
+        {
+          "name": "raptor:leavewar/bal:glass:CCL",
+          "value": "{\"amount\":3,\"day\":\"2026-01-10\",\"by\":\"glass\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg024yhvd",
+          "value": "{\"person\":\"pain\",\"date\":\"Jan 12\",\"yr\":2026,\"type\":\"CSE\",\"remarks\":\"\",\"endDate\":\"Jan 13\",\"allday\":true,\"mod\":\"2026-01-01\",\"acc\":\"u\",\"iid\":\"imriimcg024yhvd\",\"ord\":31744}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:chart:sb2026",
+          "value": "{\"id\":\"sb2026\",\"name\":\"2026\",\"base\":\"2026\"}"
+        },
+        {
+          "name": "raptor:people/beams",
+          "value": "{\"cs\":\"Comet\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":16384}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:PL",
+          "value": "{\"amount\":2,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/prowler",
+          "value": "{\"cs\":\"Hunter\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":6144}"
+        },
+        {
+          "name": "raptor:leavewar/grade:pump",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/dice",
+          "value": "{\"cs\":\"Reaper\",\"seat\":\"FCP\",\"q\":\"IR\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":17408}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-3",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[3],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed2",
+          "value": "{\"id\":\"seed2\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"wolf\",\"date\":\"2026-01-08\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:taipan:LVE",
+          "value": "{\"amount\":30,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"taipan\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/razer",
+          "value": "{\"cs\":\"Ridge\",\"seat\":\"FCP\",\"q\":\"C\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":22528}"
+        },
+        {
+          "name": "raptor:leavewar/opening:pike:oil",
+          "value": "0"
+        },
+        {
+          "name": "raptor:settings/schema",
+          "value": "{\"stage\":1,\"dataFormatVersion\":6,\"initialized\":true,\"appliedAt\":\"2026-07-13T01:00:00.000Z\",\"minClient\":6}"
+        },
+        {
+          "name": "raptor:people/bane",
+          "value": "{\"cs\":\"Ranger\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":1024}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l5",
+          "value": "{\"id\":\"l5\",\"personId\":\"bruise\",\"counter\":\"oil\",\"amount\":1.5,\"date\":\"2026-02-02\",\"reason\":\"Exercise recovery\",\"approvedBy\":\"OC OPS\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:eventinfomig",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/grade:psy",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/stuff",
+          "value": "{\"cs\":\"Scope\",\"seat\":\"RCP\",\"q\":\"IW\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":38912}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:CL",
+          "value": "{\"amount\":1,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-8",
+          "value": "{\"type\":\"trk.lulls\",\"seqs\":[8],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"CoursePlan\",\"key\":\"tracker/v3:cmriimcg0al87q3:lulls:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:ignite:el",
+          "value": "14"
+        },
+        {
+          "name": "raptor:leavewar/opening:pike:annual",
+          "value": "3"
+        },
+        {
+          "name": "raptor:leavewar/grade:slash",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/groupdefs",
+          "value": "[{\"id\":\"SXO\",\"kind\":\"cat\",\"g\":\"SXO\"},{\"id\":\"IP\",\"kind\":\"cat\",\"g\":\"IP\"},{\"id\":\"OPSP\",\"kind\":\"cat\",\"g\":\"OPSP\"},{\"id\":\"IWSO\",\"kind\":\"cat\",\"g\":\"IWSO\"},{\"id\":\"OPSW\",\"kind\":\"cat\",\"g\":\"OPSW\"},{\"id\":\"OCU\",\"kind\":\"cat\",\"g\":\"OCU\"},{\"id\":\"PERS\",\"kind\":\"cat\",\"g\":\"PERS\"}]"
+        },
+        {
+          "name": "raptor:people/pump",
+          "value": "{\"cs\":\"Piston\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":7168}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0ipzwqr",
+          "value": "{\"person\":\"ammo\",\"date\":\"May 4\",\"yr\":2027,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0ipzwqr\",\"ord\":33792}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0vp6u6v",
+          "value": "{\"person\":\"wolf\",\"date\":\"Jan 5\",\"yr\":2026,\"allday\":true,\"type\":\"ATT C\",\"remarks\":\"ATT C — filed on Inputs\",\"mod\":\"2026-01-04\",\"iid\":\"imriimcg0vp6u6v\",\"ord\":50176}"
+        },
+        {
+          "name": "raptor:leavewar/bal:plasma:CCL",
+          "value": "{\"amount\":3,\"day\":\"2026-01-10\",\"by\":\"plasma\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0py3u34",
+          "value": "{\"person\":\"yeti\",\"date\":\"Jul 13\",\"allday\":false,\"s\":600,\"e\":660,\"type\":\"Appointment\",\"remarks\":\"HSP blood panel\",\"mod\":\"2026-07-06\",\"by\":\"yeti\",\"at\":1783300200000,\"modBy\":\"yeti\",\"modAt\":1783300200000,\"yr\":2026,\"iid\":\"imriimcg0py3u34\",\"ord\":11264,\"acc\":\"g\"}"
+        },
+        {
+          "name": "raptor:people/torque",
+          "value": "{\"cs\":\"Ratchet\",\"seat\":\"GND\",\"pers\":true,\"q\":\"\",\"initials\":\"RCH\",\"flight\":\"Maint\",\"remarks\":\"\",\"quals\":{},\"ord\":60416}"
+        },
+        {
+          "name": "raptor:leavewar/grade:spanner",
+          "value": "{\"hist\":[{\"id\":\"opsa\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:divot",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-5",
+          "value": "{\"id\":\"walk-m5a-5\",\"kind\":\"request\",\"code\":\"CCL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-03-02\"}"
+        },
+        {
+          "name": "raptor:people/waldo",
+          "value": "{\"cs\":\"Scribe\",\"seat\":\"RCP\",\"q\":\"D\",\"san\":true,\"sanQ\":{\"flown\":2,\"carry\":3,\"missedQtrs\":1},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":57344}"
+        },
+        {
+          "name": "raptor:people/yeti",
+          "value": "{\"cs\":\"Bolt\",\"seat\":\"FCP\",\"q\":\"C\",\"san\":true,\"sanQ\":{\"flown\":0,\"carry\":0,\"missedQtrs\":1},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":true,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":24576}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2027:seed12",
+          "value": "{\"id\":\"seed12\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"harpoon\",\"date\":\"2027-04-15\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:bruise:LVE",
+          "value": "{\"amount\":18,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"bruise\",\"snap\":[[\"2026-01-08\",\"day\"]]}"
+        },
+        {
+          "name": "raptor:people/nact",
+          "value": "{\"cs\":\"Warden\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":5120}"
+        },
+        {
+          "name": "raptor:leavewar/grade:stiff",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed5",
+          "value": "{\"id\":\"seed5\",\"kind\":\"request\",\"code\":\"*LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bruise\",\"date\":\"2026-01-23\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:snap:LVE",
+          "value": "{\"amount\":23.5,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"snap\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:dj:LVE",
+          "value": "{\"amount\":31,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"dj\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/bapster",
+          "value": "{\"cs\":\"Wildcard\",\"seat\":\"FCP\",\"q\":\"OCU\",\"quals\":{\"sxo\":false,\"imc\":false,\"nvg\":false,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":false,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":32768}"
+        },
+        {
+          "name": "raptor:leavewar/bal:dirty:CCL",
+          "value": "{\"amount\":5,\"day\":\"2026-01-10\",\"by\":\"dirty\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:pike:LVE",
+          "value": "{\"amount\":14,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"pike\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:vegas",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:slash:LVE",
+          "value": "{\"amount\":34,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"slash\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:dirty",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:fantom:CCL",
+          "value": "{\"amount\":2,\"day\":\"2026-01-10\",\"by\":\"fantom\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:walk-m5a-1",
+          "value": "{\"id\":\"walk-m5a-1\",\"kind\":\"request\",\"code\":\"*LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"bane\",\"date\":\"2026-01-29\"}"
+        },
+        {
+          "name": "raptor:leavewar/grade:riddler",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:harpoon:oil",
+          "value": "8"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-7",
+          "value": "{\"id\":\"dol-7\",\"personId\":\"prowler\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-03-21\",\"reason\":\"Duty\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0h6qa17",
+          "value": "{\"person\":\"vegas\",\"date\":\"Jul 20\",\"allday\":false,\"s\":600,\"e\":720,\"type\":\"Appointment\",\"remarks\":\"Medical / PHA\",\"mod\":\"2026-07-06\",\"by\":\"vegas\",\"at\":1783308240000,\"modBy\":\"vegas\",\"modAt\":1783308240000,\"yr\":2026,\"iid\":\"imriimcg0h6qa17\",\"ord\":13312}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0vy7stl",
+          "value": "{\"person\":\"slipway\",\"date\":\"Jun 13\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0vy7stl\",\"ord\":36864}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l6",
+          "value": "{\"id\":\"l6\",\"personId\":\"slash\",\"counter\":\"annual\",\"amount\":-1,\"date\":\"2026-02-14\",\"reason\":\"Correction: double-counted 12 Jan\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0go2405",
+          "value": "{\"person\":\"prowler\",\"date\":\"Jan 9\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0go2405\",\"ord\":28672}"
+        },
+        {
+          "name": "raptor:leavewar/eventdefs",
+          "value": "[{\"name\":\"PH\",\"kind\":\"off\",\"short\":\"PH\"},{\"name\":\"Off day\",\"kind\":\"free\",\"short\":\"OFF\"},{\"name\":\"No Leave\",\"kind\":\"nolv\",\"short\":\"NL\"},{\"name\":\"SC\",\"kind\":\"work\",\"short\":\"SC\"}]"
+        },
+        {
+          "name": "raptor:leavewar/opening:wolf:oil",
+          "value": "0.5"
+        },
+        {
+          "name": "raptor:leavewar/opening:divot:oil",
+          "value": "2"
+        },
+        {
+          "name": "raptor:leavewar/bal:divot:CCL",
+          "value": "{\"amount\":5,\"day\":\"2026-01-10\",\"by\":\"divot\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:dj:oil",
+          "value": "2"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-0",
+          "value": "{\"type\":\"boot\",\"seqs\":[0],\"actorId\":\"system\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"LeaveWar\",\"key\":\"leavewar/war:y2026\",\"op\":\"put\"},{\"table\":\"LeaveWar\",\"key\":\"leavewar/war:y2027\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l1\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l2\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l3\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l4\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l5\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l7\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l8\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l9\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l10\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:l6\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/oilpolicy\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/current\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/eventdefs\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/figorder\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/rosterorder\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/manningorder\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/manninghidden\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/fighidden\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/groupdefs\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/grouppriority\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/grouppriocustom\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/groupcolors\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/manningdefs\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/eventrows\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/showsans\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/reqnames\",\"op\":\"put\"},{\"table\":\"Setting\",\"key\":\"leavewar/ballock\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed1\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed2\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed3\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed4\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed5\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed6\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed7\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed8\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:seed9\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2027:seed10\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2027:seed11\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2027:seed12\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2027:seed13\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2027:seed14\",\"op\":\"put\"},{\"table\":\"LeavePersonProfile\",\"key\":\"leavewar/profile:ignite\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-1\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-2\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-3\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-4\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-5\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-6\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-7\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-8\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-9\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-10\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-11\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-12\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:dol-13\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:walk-2\",\"op\":\"put\"},{\"table\":\"LeaveLedger\",\"key\":\"leavewar/ledger:walk-3\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:slipway:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:slipway:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:slipway:ccl\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:prowler:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:prowler:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:wolf:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:wolf:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:wolf:pl\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:dj:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:dj:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:ignite:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:ignite:el\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:bruise:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:bruise:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:pain:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:pain:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:ammo:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:ammo:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:ammo:ccl\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:slash:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:slash:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:dirty:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:dirty:ccl\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:dirty:fcl\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:rocky:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:rocky:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:casper:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:casper:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:divot:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:divot:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:pike:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:pike:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:spaceman:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:spaceman:oil\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:harpoon:annual\",\"op\":\"put\"},{\"table\":\"LeaveOpening\",\"key\":\"leavewar/opening:harpoon:oil\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:stiff:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:slipway:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:dj:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:dj:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:nact:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:prowler:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:slash:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:harpoon:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:snap:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:snap:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:taipan:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:mamba:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:shaft:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:shaft:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:boosh:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:beams:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:beams:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:dice:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:split:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:ignite:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:ignite:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bruise:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:razer:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:razer:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:pike:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:salsa:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:fantom:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:fantom:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:vegas:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bapster:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:prism:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:freak:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:wolf:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:wolf:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:dirty:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:dirty:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:stuff:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:glass:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:glass:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:nasty:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:pain:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:pain:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:ammo:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:rocky:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:divot:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:divot:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:spaceman:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:shrek:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:shrek:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:xray:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:psy:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:plasma:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:plasma:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:sufa:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:torque:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:gizmo:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:LVE\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:CCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:FCL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:PL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:EL\",\"op\":\"put\"},{\"table\":\"LeaveBalance\",\"key\":\"leavewar/bal:bane:CL\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:bane\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:stiff\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:slipway\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:dj\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:nact\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:prowler\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:pump\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:slash\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:harpoon\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:snap\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:taipan\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:mamba\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:shaft\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:chaps\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:boosh\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:beams\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:dice\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:split\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:ignite\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:bruise\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:casper\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:razer\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:pike\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:salsa\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:fantom\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:vegas\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:bapster\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:haowen\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:prism\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:freak\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:wolf\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:dirty\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:stuff\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:glass\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:drill\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:nasty\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:pain\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:ammo\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:rocky\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:divot\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:spaceman\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:riddler\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:shrek\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:xray\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:psy\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:plasma\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:sufa\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:torque\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:spanner\",\"op\":\"put\"},{\"table\":\"LeaveGrade\",\"key\":\"leavewar/grade:gizmo\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-1\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-1\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-2\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-3\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-4\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-5\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-6\",\"op\":\"put\"},{\"table\":\"LeaveBid\",\"key\":\"leavewar/rec:y2026:walk-m5a-7\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0jqdkj1\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg030pp9a\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg021rt2a\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0d6m68m\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0j1ihex\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0xqz64u\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg00b3m7a\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0rxaugl\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0sc0a3k\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg09z78zj\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0py3u34\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0zr6lhr\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0h6qa17\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg09lrlth\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg06n4oa3\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg07jxi6z\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0qel06e\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg029t8dt\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0ttoyfs\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0ezjflk\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0e7hp54\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0r1hnxm\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg068a64k\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0gd0qbn\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg002olod\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg04xufx1\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0jq7qjz\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0go2405\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg091hr5c\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0b9d1br\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg024yhvd\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0n0tacc\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0ipzwqr\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0nrm56f\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0pi3x51\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0vy7stl\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0cp1j6f\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg02901xr\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0zh0sk4\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg04g3y63\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg02l7qfx\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0y8d689\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0os0bk9\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0wrm3vl\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg006rxtu\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0bhmiln\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0sl9r9e\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0t9siqi\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0vp6u6v\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg00ldlcj\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0fi8wvd\",\"op\":\"put\"},{\"table\":\"Input\",\"key\":\"inputs/imriimcg0582aeu\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/bane\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/stiff\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/slipway\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/dj\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/nact\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/prowler\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/pump\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/slash\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/harpoon\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/snap\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/taipan\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/mamba\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/shaft\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/chaps\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/boosh\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/beams\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/dice\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/split\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/ignite\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/bruise\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/casper\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/razer\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/vinci\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/yeti\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/pike\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/romeo\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/salsa\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/ipman\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/fantom\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/vegas\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/krait\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/bapster\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/haowen\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/prism\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/freak\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/wolf\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/dirty\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/stuff\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/glass\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/drill\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/nasty\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/pain\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/ammo\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/rocky\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/divot\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/spaceman\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/riddler\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/shrek\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/xray\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/psy\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/plasma\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/sufa\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/cards\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/wrangler\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/badger\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/waldo\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/nick\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/bullet\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/torque\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/spanner\",\"op\":\"put\"},{\"table\":\"Person\",\"key\":\"people/gizmo\",\"op\":\"put\"},{\"table\":\"SchemaVersion\",\"key\":\"settings/schema\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0sc0a3k",
+          "value": "{\"person\":\"vinci\",\"date\":\"Jul 13\",\"allday\":false,\"s\":540,\"e\":1020,\"type\":\"Meeting\",\"remarks\":\"Desk / staff work\",\"mod\":\"2026-06-26\",\"by\":\"stiff\",\"at\":1782464160000,\"modBy\":\"stiff\",\"modAt\":1782464160000,\"yr\":2026,\"iid\":\"imriimcg0sc0a3k\",\"ord\":9216,\"acc\":\"g\"}"
+        },
+        {
+          "name": "raptor:leavewar/groupcolors",
+          "value": "{}"
+        },
+        {
+          "name": "raptor:leavewar/grade:ammo",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:dirty:LVE",
+          "value": "{\"amount\":27,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"dirty\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/snap",
+          "value": "{\"cs\":\"Cinch\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":10240}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed7",
+          "value": "{\"id\":\"seed7\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"slash\",\"date\":\"2026-02-02\"}"
+        },
+        {
+          "name": "raptor:leavewar/manninghidden",
+          "value": "[]"
+        },
+        {
+          "name": "raptor:leavewar/bal:bane:LVE",
+          "value": "{\"amount\":17,\"cf\":4,\"day\":\"2026-01-05\",\"by\":\"bane\",\"snap\":[[\"2026-01-19\",\"day\"],[\"2026-01-20\",\"day\"],[\"2026-01-21\",\"day\"]]}"
+        },
+        {
+          "name": "raptor:people/cards",
+          "value": "{\"cs\":\"Marlin\",\"seat\":\"RCP\",\"q\":\"A\",\"san\":true,\"sanQ\":{\"flown\":1,\"carry\":6,\"missedQtrs\":2},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":54272}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0j1ihex",
+          "value": "{\"person\":\"nasty\",\"date\":\"Jul 14\",\"allday\":true,\"type\":\"LL\",\"remarks\":\"Local leave\",\"mod\":\"2026-06-30\",\"by\":\"nasty\",\"at\":1782793680000,\"modBy\":\"nasty\",\"modAt\":1782793680000,\"yr\":2026,\"iid\":\"imriimcg0j1ihex\",\"ord\":5120}"
+        },
+        {
+          "name": "raptor:leavewar/grade:sufa",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/krait",
+          "value": "{\"cs\":\"Kraken\",\"seat\":\"FCP\",\"q\":\"D\",\"san\":true,\"sanQ\":{\"flown\":0,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":31744}"
+        },
+        {
+          "name": "raptor:leavewar/bal:nasty:LVE",
+          "value": "{\"amount\":30,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"nasty\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/showsans",
+          "value": "false"
+        },
+        {
+          "name": "raptor:leavewar/grade:shrek",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/dj",
+          "value": "{\"cs\":\"Ace\",\"seat\":\"FCP\",\"q\":\"A\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":4096}"
+        },
+        {
+          "name": "raptor:people/pain",
+          "value": "{\"cs\":\"Rune\",\"seat\":\"RCP\",\"q\":\"B\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":43008}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l8",
+          "value": "{\"id\":\"l8\",\"personId\":\"prowler\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-01-01\",\"reason\":\"New Year duty\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:slipway:LVE",
+          "value": "{\"amount\":24,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"slipway\",\"snap\":[[\"2026-01-01\",\"day\"]]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:ignite:CCL",
+          "value": "{\"amount\":4,\"day\":\"2026-01-10\",\"by\":\"ignite\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/manningdefs",
+          "value": "[{\"id\":\"sets\",\"label\":\"Crew sets\",\"count\":{\"kind\":\"team\",\"slots\":[{\"count\":1,\"filter\":{\"seats\":[\"pilot\"]}},{\"count\":1,\"filter\":{\"seats\":[\"wso\"]}}]},\"threshold\":{\"amber\":5,\"red\":4.5},\"desc\":\"One set is one pilot plus one WSO — a jet you can crew. The day's number is whichever seat runs out first.\"},{\"id\":\"ip\",\"label\":\"IP\",\"count\":{\"kind\":\"people\",\"filter\":{\"seats\":[\"pilot\"],\"cats\":[\"FI\",\"IR\",\"IP\",\"IW\"]}},\"threshold\":{\"amber\":3,\"red\":2},\"desc\":\"Instructor pilots available.\"},{\"id\":\"iwso\",\"label\":\"IWSO\",\"count\":{\"kind\":\"people\",\"filter\":{\"seats\":[\"wso\"],\"cats\":[\"FI\",\"IR\",\"IP\",\"IW\"]}},\"threshold\":{\"amber\":3,\"red\":2},\"desc\":\"Instructor WSOs available.\"},{\"id\":\"opsp\",\"label\":\"OPSP\",\"count\":{\"kind\":\"people\",\"filter\":{\"seats\":[\"pilot\"],\"notCats\":[\"FI\",\"IR\",\"IP\",\"IW\"]}},\"threshold\":{\"amber\":4,\"red\":3},\"desc\":\"Ops pilots (CAT A–D, OCU included) available.\"},{\"id\":\"opsw\",\"label\":\"OPSW\",\"count\":{\"kind\":\"people\",\"filter\":{\"seats\":[\"wso\"],\"notCats\":[\"FI\",\"IR\",\"IP\",\"IW\"]}},\"threshold\":{\"amber\":4,\"red\":3},\"desc\":\"Ops WSOs (CAT A–D, OCU included) available.\"},{\"id\":\"sxo\",\"label\":\"SXO\",\"count\":{\"kind\":\"people\",\"filter\":{\"quals\":[\"sxo\"]}},\"threshold\":{\"amber\":1,\"red\":1},\"desc\":\"SXO-qualified crew available, counted on top of their own category.\"}]"
+        },
+        {
+          "name": "raptor:people/shaft",
+          "value": "{\"cs\":\"Anvil\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":13312}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg04g3y63",
+          "value": "{\"person\":\"bruise\",\"date\":\"Jul 16\",\"yr\":2026,\"type\":\"OIL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg04g3y63\",\"ord\":40960}"
+        },
+        {
+          "name": "raptor:leavewar/opening:wolf:pl",
+          "value": "10"
+        },
+        {
+          "name": "raptor:leavewar/grade:salsa",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:slipway",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:drill",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:xray",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/vegas",
+          "value": "{\"cs\":\"Vapor\",\"seat\":\"FCP\",\"q\":\"D\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":30720}"
+        },
+        {
+          "name": "raptor:leavewar/bal:shrek:CCL",
+          "value": "{\"amount\":4,\"day\":\"2026-01-10\",\"by\":\"shrek\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:bruise",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg09lrlth",
+          "value": "{\"person\":\"nick\",\"date\":\"Jul 24\",\"allday\":true,\"type\":\"LL\",\"remarks\":\"Local leave\",\"mod\":\"2026-07-10\",\"by\":\"stiff\",\"at\":1783657860000,\"modBy\":\"stiff\",\"modAt\":1783657860000,\"yr\":2026,\"iid\":\"imriimcg09lrlth\",\"ord\":14336}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-13",
+          "value": "{\"id\":\"dol-13\",\"personId\":\"pike\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-01-10\",\"reason\":\"FLT\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:lastStudent",
+          "value": "smriimcg0u8km9r"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-9",
+          "value": "{\"id\":\"dol-9\",\"personId\":\"ammo\",\"counter\":\"oil\",\"amount\":3,\"date\":\"2026-07-04\",\"reason\":\"Exercise recovery\",\"approvedBy\":\"SQNCDR\",\"givenBy\":\"OC Ops\"}"
+        },
+        {
+          "name": "raptor:leavewar/bal:nact:LVE",
+          "value": "{\"amount\":13,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"nact\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg021rt2a",
+          "value": "{\"person\":\"salsa\",\"date\":\"Jul 14\",\"allday\":false,\"s\":840,\"e\":960,\"type\":\"Appointment\",\"remarks\":\"Dental appt\",\"mod\":\"2026-07-09\",\"by\":\"salsa\",\"at\":1783563240000,\"modBy\":\"salsa\",\"modAt\":1783563240000,\"yr\":2026,\"iid\":\"imriimcg021rt2a\",\"ord\":3072,\"acc\":\"g\"}"
+        },
+        {
+          "name": "raptor:people/split",
+          "value": "{\"cs\":\"Vandal\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":18432}"
+        },
+        {
+          "name": "raptor:people/sufa",
+          "value": "{\"cs\":\"Grit\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":53248}"
+        },
+        {
+          "name": "raptor:people/boosh",
+          "value": "{\"cs\":\"Havoc\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":15360}"
+        },
+        {
+          "name": "raptor:leavewar/bal:harpoon:LVE",
+          "value": "{\"amount\":16,\"cf\":3,\"day\":\"2026-01-10\",\"by\":\"harpoon\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:wolf:LVE",
+          "value": "{\"amount\":20,\"cf\":0,\"day\":\"2026-01-10\",\"by\":\"wolf\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0fi8wvd",
+          "value": "{\"person\":\"wolf\",\"date\":\"Jan 7\",\"yr\":2026,\"allday\":true,\"type\":\"Upchit\",\"remarks\":\"Medically up 7 Jan\",\"mod\":\"2026-01-07\",\"iid\":\"imriimcg0fi8wvd\",\"ord\":52224}"
+        },
+        {
+          "name": "raptor:people/chaps",
+          "value": "{\"cs\":\"Forge\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":14336}"
+        },
+        {
+          "name": "raptor:people/wrangler",
+          "value": "{\"cs\":\"Otter\",\"seat\":\"RCP\",\"q\":\"D\",\"san\":true,\"sanQ\":{\"flown\":0,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":55296}"
+        },
+        {
+          "name": "raptor:leavewar/grade:rocky",
+          "value": "{\"hist\":[{\"id\":\"jw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-7",
+          "value": "{\"type\":\"trk.eventinfo\",\"seqs\":[7],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"TrainingEvent\",\"key\":\"tracker/v3:master:info:sb2026:ST-01\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg06n4oa3",
+          "value": "{\"person\":\"nick\",\"date\":\"Jul 13\",\"allday\":false,\"half\":\"pm\",\"s\":721,\"e\":1439,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-20\",\"by\":\"nick\",\"at\":1781933880000,\"modBy\":\"nick\",\"modAt\":1781933880000,\"yr\":2026,\"iid\":\"imriimcg06n4oa3\",\"ord\":15360}"
+        },
+        {
+          "name": "raptor:people/harpoon",
+          "value": "{\"cs\":\"Trident\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":9216}"
+        },
+        {
+          "name": "raptor:leavewar/grade:nact",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:split:LVE",
+          "value": "{\"amount\":29.5,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"split\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg04xufx1",
+          "value": "{\"type\":\"Event\",\"title\":\"Sports afternoon\",\"date\":\"Jul 22\",\"allday\":false,\"s\":900,\"e\":1020,\"remarks\":\"PT kit\",\"people\":[{\"p\":\"all\",\"by\":\"stiff\",\"at\":1782436500000}],\"mod\":\"2026-06-26\",\"by\":\"stiff\",\"at\":1782436500000,\"modBy\":\"stiff\",\"modAt\":1782436500000,\"yr\":2026,\"iid\":\"imriimcg04xufx1\",\"ord\":26624}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed4",
+          "value": "{\"id\":\"seed4\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"refused\",\"ord\":1024,\"pid\":\"bruise\",\"date\":\"2026-01-09\"}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2027:seed13",
+          "value": "{\"id\":\"seed13\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"harpoon\",\"date\":\"2027-04-16\"}"
+        },
+        {
+          "name": "raptor:leavewar/grade:dice",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-1",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[1],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Enrolment\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:enr:smriimcg0u8km9r\",\"op\":\"put\"},{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"},{\"table\":\"Enrolment\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:d:smriimcg0u8km9r\",\"op\":\"put\"},{\"table\":\"CoursePlan\",\"key\":\"tracker/v3:cmriimcg0al87q3:pace:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:taipan",
+          "value": "{\"hist\":[{\"id\":\"sp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/grade:wolf",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:people/ipman",
+          "value": "{\"cs\":\"Jester\",\"seat\":\"FCP\",\"q\":\"B\",\"san\":true,\"sanQ\":{\"flown\":0,\"carry\":0,\"missedQtrs\":0},\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":true,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":28672}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0d6m68m",
+          "value": "{\"person\":\"taipan\",\"date\":\"Jul 15\",\"allday\":true,\"type\":\"OL\",\"remarks\":\"Overseas leave — off island\",\"mod\":\"2026-06-22\",\"by\":\"stiff\",\"at\":1782098460000,\"modBy\":\"stiff\",\"modAt\":1782098460000,\"yr\":2026,\"iid\":\"imriimcg0d6m68m\",\"ord\":4096}"
+        },
+        {
+          "name": "raptor:leavewar/opening:bruise:oil",
+          "value": "4"
+        },
+        {
+          "name": "raptor:leavewar/bal:wolf:CCL",
+          "value": "{\"amount\":4,\"day\":\"2026-01-10\",\"by\":\"wolf\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/ignite",
+          "value": "{\"cs\":\"Torch\",\"seat\":\"FCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":true,\"naar\":false},\"ord\":19456}"
+        },
+        {
+          "name": "raptor:tracker/v3:master:chart:sbtx2026",
+          "value": "{\"id\":\"sbtx2026\",\"name\":\"Tx 2026\",\"base\":\"Tx 2026\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:ammo:ccl",
+          "value": "5"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0rxaugl",
+          "value": "{\"person\":\"bruise\",\"date\":\"Jul 13\",\"allday\":true,\"type\":\"Attach\",\"remarks\":\"Keen for any wave\",\"mod\":\"2026-06-20\",\"by\":\"bruise\",\"at\":1781941740000,\"modBy\":\"bruise\",\"modAt\":1781941740000,\"yr\":2026,\"iid\":\"imriimcg0rxaugl\",\"ord\":8192,\"acc\":\"g\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:spaceman:oil",
+          "value": "1"
+        },
+        {
+          "name": "raptor:leavewar/bal:psy:LVE",
+          "value": "{\"amount\":18,\"cf\":4,\"day\":\"2026-01-10\",\"by\":\"psy\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/taipan",
+          "value": "{\"cs\":\"Cobra\",\"seat\":\"FCP\",\"q\":\"IP\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":11264}"
+        },
+        {
+          "name": "raptor:leavewar/grade:fantom",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:changes/cmriimcg0uyubkx-6",
+          "value": "{\"type\":\"trk.gesture\",\"seqs\":[6],\"actorId\":\"acad\",\"at\":\"2026-07-13T01:00:00.000Z\",\"items\":[{\"table\":\"Attempt\",\"key\":\"tracker/v3:cmriimcg0al87q3:sb2026:m:smriimcg0u8km9r\",\"op\":\"put\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l7",
+          "value": "{\"id\":\"l7\",\"personId\":\"slipway\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-01-03\",\"reason\":\"Weekend recovery\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:pain:oil",
+          "value": "1"
+        },
+        {
+          "name": "raptor:people/dirty",
+          "value": "{\"cs\":\"Relay\",\"seat\":\"RCP\",\"q\":\"IW\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":true,\"daar\":false,\"naar\":false},\"ord\":37888}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2027:seed11",
+          "value": "{\"id\":\"seed11\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"harpoon\",\"date\":\"2027-04-14\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0b9d1br",
+          "value": "{\"person\":\"bruise\",\"date\":\"Jan 8\",\"yr\":2026,\"type\":\"LL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0b9d1br\",\"ord\":30720}"
+        },
+        {
+          "name": "raptor:people/stiff",
+          "value": "{\"cs\":\"Saber\",\"seat\":\"FCP\",\"q\":\"IP\",\"sxo\":true,\"quals\":{\"sxo\":true,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":true,\"scDay\":true,\"scNight\":true,\"daar\":true,\"naar\":true},\"ord\":2048}"
+        },
+        {
+          "name": "raptor:leavewar/reqnames",
+          "value": "{}"
+        },
+        {
+          "name": "raptor:leavewar/opening:dirty:fcl",
+          "value": "6"
+        },
+        {
+          "name": "raptor:leavewar/ledger:l4",
+          "value": "{\"id\":\"l4\",\"personId\":\"dj\",\"counter\":\"oil\",\"amount\":2,\"date\":\"2026-01-19\",\"reason\":\"CNY workplan\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/grade:freak",
+          "value": "{\"hist\":[{\"id\":\"sw\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2027:seed10",
+          "value": "{\"id\":\"seed10\",\"kind\":\"request\",\"code\":\"LL\",\"state\":\"pending\",\"ord\":1024,\"pid\":\"harpoon\",\"date\":\"2027-04-13\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0e7hp54",
+          "value": "{\"person\":\"nasty\",\"date\":\"Jul 6\",\"endDate\":\"Jul 9\",\"allday\":true,\"type\":\"OML\",\"remarks\":\"Medically down till 9 Jul\",\"mod\":\"2026-07-05\",\"docId\":\"doc-36dd3a40-dfc6-3ba9-b090-547fa2fbcfb1\",\"by\":\"nasty\",\"at\":1783218000000,\"modBy\":\"nasty\",\"modAt\":1783218000000,\"yr\":2026,\"iid\":\"imriimcg0e7hp54\",\"ord\":21504}"
+        },
+        {
+          "name": "raptor:leavewar/opening:ignite:annual",
+          "value": "6"
+        },
+        {
+          "name": "raptor:inputs/imriimcg091hr5c",
+          "value": "{\"person\":\"dj\",\"date\":\"Jan 16\",\"yr\":2026,\"type\":\"OL\",\"remarks\":\"\",\"endDate\":\"Jan 17\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg091hr5c\",\"ord\":29696}"
+        },
+        {
+          "name": "raptor:leavewar/war:y2027",
+          "value": "{\"id\":\"y2027\",\"name\":\"JAN - DEC 27\",\"start\":\"2027-01-01\",\"end\":\"2027-12-31\",\"open\":[],\"lastClosed\":null,\"days\":[{\"date\":\"2027-01-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-01-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-02-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-03-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-04-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-05-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-06-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-07-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-08-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-09-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-10-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-11-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-01\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-02\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-03\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-04\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-05\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-06\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-07\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-08\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-09\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-10\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-11\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-12\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-13\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-14\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-15\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-16\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-17\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-18\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-19\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-20\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-21\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-22\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-23\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-24\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-25\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-26\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-27\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-28\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-29\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-30\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false},{\"date\":\"2027-12-31\",\"events\":[\"\",\"\"],\"blocked\":false,\"blockedReason\":\"\",\"ph\":false}],\"bands\":[],\"ord\":2048}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:last:smriimcg0u8km9r",
+          "value": "{\"syl\":\"sb2026\",\"event\":\"ACG-01\"}"
+        },
+        {
+          "name": "raptor:leavewar/grade:razer",
+          "value": "{\"hist\":[{\"id\":\"jp\",\"from\":\"2026-01-01\"}]}"
+        },
+        {
+          "name": "raptor:leavewar/opening:divot:annual",
+          "value": "13"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:pace:smriimcg0u8km9r",
+          "value": "{\"epw\":2,\"target\":null,\"target2\":null,\"courseStart\":\"2026-07-13\"}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0gd0qbn",
+          "value": "{\"people\":[{\"p\":\"stiff\",\"by\":\"stiff\",\"at\":1782369120000},{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782369120000},{\"p\":\"slipway\",\"by\":\"stiff\",\"at\":1782369120000},{\"p\":\"freak\",\"by\":\"stiff\",\"at\":1782369120000}],\"type\":\"Meeting\",\"date\":\"Jul 23\",\"allday\":false,\"s\":600,\"e\":660,\"remarks\":\"Flight safety brief\",\"mod\":\"2026-06-25\",\"by\":\"stiff\",\"at\":1782369120000,\"modBy\":\"stiff\",\"modAt\":1782369120000,\"yr\":2026,\"iid\":\"imriimcg0gd0qbn\",\"ord\":24576}"
+        },
+        {
+          "name": "raptor:leavewar/rec:y2026:seed3",
+          "value": "{\"id\":\"seed3\",\"kind\":\"request\",\"code\":\"OL\",\"state\":\"refused\",\"ord\":1024,\"pid\":\"dj\",\"date\":\"2026-01-19\"}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-12",
+          "value": "{\"id\":\"dol-12\",\"personId\":\"divot\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-08-29\",\"reason\":\"Duty\",\"approvedBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:casper:oil",
+          "value": "-4.5"
+        },
+        {
+          "name": "raptor:people/riddler",
+          "value": "{\"cs\":\"Ghost\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":48128}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0r1hnxm",
+          "value": "{\"person\":\"vinci\",\"date\":\"Jun 15\",\"endDate\":\"Jun 19\",\"allday\":true,\"type\":\"ATT B\",\"remarks\":\"Grounded — may still work, till 19 Jun\",\"mod\":\"2026-06-14\",\"docId\":\"doc-c3c70bf0-21f2-723b-f3e5-86e7ea11a786\",\"by\":\"vinci\",\"at\":1781407620000,\"modBy\":\"vinci\",\"modAt\":1781407620000,\"yr\":2026,\"iid\":\"imriimcg0r1hnxm\",\"ord\":22528}"
+        },
+        {
+          "name": "raptor:leavewar/bal:sufa:LVE",
+          "value": "{\"amount\":32,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"sufa\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:dice:LVE",
+          "value": "{\"amount\":22,\"cf\":1,\"day\":\"2026-01-10\",\"by\":\"dice\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:lulls:smriimcg0u8km9r",
+          "value": "[{\"start\":\"2026-07-06\",\"end\":\"2026-07-10\"}]"
+        },
+        {
+          "name": "raptor:leavewar/bal:shaft:CCL",
+          "value": "{\"amount\":2,\"day\":\"2026-01-10\",\"by\":\"shaft\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:leavewar/bal:pain:CCL",
+          "value": "{\"amount\":2,\"day\":\"2026-01-10\",\"by\":\"pain\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0qel06e",
+          "value": "{\"person\":\"vinci\",\"date\":\"Jul 15\",\"endDate\":\"Jul 16\",\"allday\":true,\"type\":\"SANS Availability\",\"sans\":{\"f\":true},\"mod\":\"2026-06-22\",\"by\":\"vinci\",\"at\":1782114720000,\"modBy\":\"vinci\",\"modAt\":1782114720000,\"yr\":2026,\"iid\":\"imriimcg0qel06e\",\"ord\":17408}"
+        },
+        {
+          "name": "raptor:leavewar/ledger:dol-2",
+          "value": "{\"id\":\"dol-2\",\"personId\":\"bruise\",\"counter\":\"oil\",\"amount\":1,\"date\":\"2026-06-06\",\"reason\":\"Night flying week\",\"approvedBy\":\"SQNCDR\",\"givenBy\":\"SQNCDR\"}"
+        },
+        {
+          "name": "raptor:leavewar/opening:casper:annual",
+          "value": "5"
+        },
+        {
+          "name": "raptor:leavewar/bal:shaft:LVE",
+          "value": "{\"amount\":19,\"cf\":2,\"day\":\"2026-01-10\",\"by\":\"shaft\",\"snap\":[]}"
+        },
+        {
+          "name": "raptor:people/plasma",
+          "value": "{\"cs\":\"Fable\",\"seat\":\"RCP\",\"q\":\"C\",\"quals\":{\"sxo\":false,\"imc\":true,\"nvg\":true,\"tf\":false,\"san\":false,\"sched\":false,\"scDay\":true,\"scNight\":false,\"daar\":false,\"naar\":false},\"ord\":52224}"
+        },
+        {
+          "name": "raptor:inputs/imriimcg0jq7qjz",
+          "value": "{\"person\":\"slipway\",\"date\":\"Jan 1\",\"yr\":2026,\"type\":\"OL\",\"remarks\":\"\",\"allday\":true,\"lw\":\"y2026\",\"mod\":\"2026-01-01\",\"iid\":\"imriimcg0jq7qjz\",\"ord\":27648}"
+        },
+        {
+          "name": "raptor:leavewar/opening:slipway:annual",
+          "value": "12"
+        },
+        {
+          "name": "raptor:leavewar/opening:rocky:annual",
+          "value": "-12"
+        },
+        {
+          "name": "raptor:tracker/v3:cmriimcg0al87q3:sb2026:enr:smriimcg0qdb6i3",
+          "value": "{\"id\":\"smriimcg0qdb6i3\",\"name\":\"STUDENT B\",\"ord\":2048}"
+        }
+      ],
+      "indexedDB": [
+        {
+          "name": "raptor-docs",
+          "version": 1,
+          "stores": [
+            {
+              "name": "docs",
+              "autoIncrement": false,
+              "keyPath": "id",
+              "records": [
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-36dd3a40-dfc6-3ba9-b090-547fa2fbcfb1"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 732
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                },
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-54bf252c-0f4b-ea65-0fef-c7246b324e58"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 733
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                },
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-8c044571-586e-da9b-cde2-08cc9193b735"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 733
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                },
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-9d5b1695-5efe-61ce-c96d-fcf6514fcfaf"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 739
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                },
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-c3c70bf0-21f2-723b-f3e5-86e7ea11a786"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 735
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                },
+                {
+                  "valueEncoded": {
+                    "o": [
+                      {
+                        "k": "id",
+                        "v": "doc-d6b5e662-8264-445e-fca5-b2257ce1c88a"
+                      },
+                      {
+                        "k": "name",
+                        "v": "document"
+                      },
+                      {
+                        "k": "mime",
+                        "v": "image/svg+xml"
+                      },
+                      {
+                        "k": "size",
+                        "v": 733
+                      },
+                      {
+                        "k": "blob",
+                        "v": {
+                          "o": [],
+                          "id": 2
+                        }
+                      }
+                    ],
+                    "id": 1
+                  }
+                }
+              ],
+              "indexes": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

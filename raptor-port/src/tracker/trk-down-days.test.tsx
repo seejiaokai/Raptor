@@ -136,7 +136,8 @@ describe('D1003, D1018 — the course start, set in "+ Add"', () => {
     expect(box, 'a date box in the add box').toBeTruthy()
     expect(box!.tagName).toBe('BUTTON')
     expect(box!.getAttribute('data-value'), 'today by default').toBe(T())
-    expect(box!.closest('.field')!.querySelector('label')!.textContent).toBe('Course start')
+    /* the caption is a plain caption since 31 Oct 26 (`.flbl`, not a <label>: a tied label would open the calendar on a press of the words) */
+    expect(box!.closest('.field')!.querySelector('.flbl')!.textContent).toBe('Course start')
     /* above the list: a tap on a name adds him at once */
     const list = $('#dlgModal #dlgList')!
     expect(box!.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING, 'the box comes before the list').toBeTruthy()
@@ -170,7 +171,7 @@ describe('D1002, D1005, D1018 — the Info panel', () => {
     await act(async () => { C.setActive(zen()); await tick() })
     expect($('#upchit'), 'no Upchit box').toBeNull()
     expect($('input#downDays'), 'no typed box').toBeNull()
-    const f = [...document.querySelectorAll('.c-curr .curGrid > .field')].map(x => x.querySelector('label')!.textContent)
+    const f = [...document.querySelectorAll('.c-curr .curGrid > .field')].map(x => x.querySelector('.flbl')!.textContent)
     expect(f).toEqual(['Last Flown (Syllabus)', 'Last Flown (Currency)', 'Course start', 'No. of Down Days'])
     const cs = $('#courseStart')!
     expect(cs.tagName).toBe('BUTTON')

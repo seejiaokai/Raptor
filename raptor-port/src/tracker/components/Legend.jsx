@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { fixedOrigin } from '../../ui/kbscroll';
+import { KINDS, GRADES } from './legendSamples.js';
 
 /* THE TRACKER'S LEGEND (owner D1007, D1018 — 18 Oct 26, approved "as recommended" on the pictures
    docs/img/handpass/2026-10-18-trk-flex-legend/07-legend-*, 07b-, 08-): a "Legend" button beside ☰ Show All in the
@@ -13,23 +14,8 @@ import { fixedOrigin } from '../../ui/kbscroll';
    the currency and flex rows are read off the bars' own rules (core.barBands over landingCurrency; core.flexBands —
    the flex settings' own bands, D1006, whose days an admin sets), so the legend cannot drift from what it explains. */
 
-/* The centre — one sample ball per kind of event, its code as on the 2026 chart's own balls (as drawn). Exported so
-   trk-palette.test.ts can pin each word to its kind. */
-export const KINDS = [
-  { type: 'flight', label: 'TR-1(P)', name: 'Flight' },
-  { type: 'acad', label: 'ST-01', name: 'Acad / Spec' },
-  { type: 'test', label: 'T-01', name: 'Test' },
-  { type: 'sim', label: 'TR(S)-1', name: 'Sim' },
-  { type: 'device', label: 'CFT-01', name: 'CFT / IAT / EPT' },
-];
-/* The ring — one sample per grade; `grade` null is a slice nobody has graded (white). */
-export const GRADES = [
-  { grade: 'dco', name: 'DCO' },
-  { grade: 'dpco', name: 'DPCO' },
-  { grade: 'marg', name: 'Marginal' },
-  { grade: 'na', name: 'N.A.' },
-  { grade: null, name: 'Not done' },
-];
+/* The centre (one sample ball per kind of event) and the ring (one sample per grade) live in legendSamples.js, so this
+   file exports only its component; trk-palette.test.ts pins each word to its kind from there. */
 /* The marks that sit on a ball, each on an acad ball as drawn. */
 const MARKS = [
   { opts: { fails: 1 }, name: 'A failure — one red tick each' },
@@ -119,10 +105,11 @@ export default function Legend() {
           {/* A tap outside closes it and does nothing else — the scrim takes it, so a tap meant to close the legend
               never marks a ball under it (the Leave War Legend's scrim). It lies over the button too: a second
               press of the button lands here and closes it. */}
-          <div className="tlegscrim" data-testid="trk-legend-scrim" onClick={close} />
+          <div className="tlegscrim" data-testid="trk-legend-scrim" role="presentation" onClick={close} />
           <div className="tleglist" id="trkLegend" data-testid="trk-legend" role="dialog" aria-label="What the chart is telling you"
             style={at ? { left: at.left + 'px', top: at.top + 'px' } : undefined} onKeyDown={trap}>
             <div className="tleg-hd">What the chart is telling you</div>
+            {/* eslint-disable-next-line react-doctor/no-noninteractive-tabindex -- the scrolling list is the pop-out's one keyboard stop, so the arrow keys scroll it (design guide §2) */}
             <div className="tleg-body" ref={body} tabIndex={0}>
               <div className="tleg-sec">The centre — the kind of event</div>
               <div className="tleg-grid">

@@ -152,8 +152,10 @@ function DaysBody({ at }: { at: string }) {
      was turned from — by a swipe only; an arrow pressed again and again is not made to wait for a slide. */
   const parts = useRef<HTMLDivElement>(null)
   const slide = useRef<{ part: 'month' | 'holidays'; dir: number } | null>(null)
+  /* today's tab layout for the swipe listener wired once below — written after each commit (its one reader is that
+     listener, run on a finger's swipe), never during a render React may throw away */
   const live = useRef({ tabbed, tab })
-  live.current = { tabbed, tab }
+  useLayoutEffect(() => { live.current = { tabbed, tab } })
   useEffect(() => {
     const el = parts.current
     if (!el) return

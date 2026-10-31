@@ -127,6 +127,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -166,6 +167,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CODE-CHECK-CI] — React Doctor's "no new finding" check as a GitHub check on every pull request — the half of the move plan's point 4 not built with the clean-up.
+- [AVAILWIN-SETUP-SLOW] — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -204,7 +207,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
-- [REACT-DOCTOR-CLEANUP] — the code check's clean-up batch before new feature work: the errors, the missed updates, the whole Tracker (D1534).
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
@@ -241,15 +243,29 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
-**What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the
-app, and every finding in the Tracker (`src/tracker/` — about 150: its core, windows and side panel); then the code check run
-again to show the count falling. New and changed code follows the check's rules from now on; the plan's point 4 (a lint script
-running it, its settings file in `raptor-port/`) is built with it, and the standing rule gets its line in `raptor-port/CLAUDE.md`
-at that build. The other areas' remaining findings ride with each area's next batch (D490). Full bug-check order; anything that
-would change what a person sees is shown to him first (D853). The findings list: the move plan §3
-(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
-batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
+### [CODE-CHECK-CI] React Doctor's "no new finding" check on every pull request (filed 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**What:** the move plan's point 4 (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) says the code check joins the checks
+run on every change. Built with the clean-up: `npm run lint` and `npm run lint:changed` (only what a branch changes against `main`,
+proved on its own branch: 70 files read, no new finding) and the standing line in `raptor-port/CLAUDE.md` (D1534). Not built: a job in
+`.github/workflows/deploy.yml` running `lint:changed` on each pull request — it needs `main`'s history on the check machine, which the
+jobs now fetch shallow and without the picture folders (D1091), and its first red needs proving on a planted finding. **Place:** with
+[REVIEW-LAYERS], or on his word.
+
+### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
+run of 142 test files on his PC it timed out once and passed alone. A busy GitHub run could go red with no fault in the app. **To do:**
+give that hook its own longer limit, or load the chunks once for the file in a setup the limit does not cover. **Place:** with the next
+job that touches the tests' set-up.
+
+### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
+**What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
+Tracker is no longer needed: `+ Add` falling back to the bare "Student callsign:" prompt when no roster is handed over
+(`components/Modals.jsx`, the one `people.length` branch), the bare `ocu:` localStorage path in `src/tracker/storage.js` used when no
+storage target is plugged in (also the path of tests that never boot the app — check them first), `role.js`'s and `people.js`'s
+no-import shape kept so the Tracker could leave without Raptor, and the "a standalone export must carry …" notes in
+`docs/tracker/known-gaps.md`. **To do:** list each, say whether anything still uses it (a test, the smoke suite
+`scripts/tracker/smoke.mjs`, the boot), and remove or simplify it with its tests; nothing a person sees changes. **Place:** with
+the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
 
 ### [AIRCRAFT-TYPE-SETTING] Each deployment set to its aircraft type by a setting (D1536, 31 Oct 26)
 **What:** one code base serves every aircraft type (D1100, D1101); each deployment — F-15, F-16, F-35, each with its own

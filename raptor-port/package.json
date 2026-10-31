@@ -16,7 +16,9 @@
     "perf": "node probes/perf-port.cjs",
     "smoke:tracker": "node scripts/tracker/smoke.mjs",
     "rulecheck": "node scripts/rulecheck.mjs",
-    "docsize": "node scripts/docsize.mjs"
+    "docsize": "node scripts/docsize.mjs",
+    "lint": "npx -y react-doctor@0.9.18 --verbose --no-telemetry",
+    "lint:changed": "npx -y react-doctor@0.9.18 --verbose --no-telemetry --no-supply-chain --scope changed --base origin/main --blocking warning"
   },
   "dependencies": {
     "react": "^19.2.8",

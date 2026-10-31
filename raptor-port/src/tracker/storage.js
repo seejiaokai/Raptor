@@ -27,12 +27,12 @@ function ls() {
 }
 
 /* THE PLUGGABLE TARGET (8 Sep 26, the storage seam). Raptor's main.tsx
-   plugs the whiteboard in through useStorageImpl; with no target (the
+   plugs the whiteboard in through setStorageImpl; with no target (the
    standalone smoke, a test that never boots main) every verb keeps its
    localStorage path under `ocu:` exactly as before. Return shapes are
    identical either way — core.js cannot tell which is behind it. */
 let target = null   // { get(k), set(k, v), remove(k), keys() } — sync, unprefixed
-export function useStorageImpl(t) { target = t }
+export function setStorageImpl(t) { target = t }
 
 export const storage = {
   async get(k) {

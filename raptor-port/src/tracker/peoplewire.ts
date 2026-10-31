@@ -53,11 +53,11 @@ export function deletedForTracker(people: any): string[] {
 export type TrackerMed = { iid: string; type: string; startIso: string; endIso: string; half: string; firstEnd?: string; cutOn?: string }
 export function medForTracker(inputs: any): Record<string, TrackerMed[]> {
   const out: Record<string, TrackerMed[]> = {}
-  const ups: Record<string, number[]> = {}
+  const ups: Record<string, Set<number>> = {}
   for (const r of (inputs || [])) {
     if (!r || !isUpchit(r.type)) continue
     const p = leadOf(r), a = medStartOrd(r); if (p == null || a == null) continue
-    ;(ups[p] = ups[p] || []).push(a)
+    ;(ups[p] = ups[p] || new Set()).add(a)
   }
   for (const r of (inputs || [])) {
     if (!r || !isDownchit(r.type)) continue
@@ -66,7 +66,7 @@ export function medForTracker(inputs: any): Record<string, TrackerMed[]> {
     const row: TrackerMed = { iid: String(r.iid || ''), type: inpType(r.type), startIso: firstEndIso(a), endIso: firstEndIso(b),
       half: !r.allday && (r.half === 'am' || r.half === 'pm') ? r.half : '' }
     const f = firstEndOrd(r), next = ordShift(b, 1)
-    if (f != null && next != null && f > b && (ups[p] || []).includes(next)) { row.firstEnd = firstEndIso(f); row.cutOn = firstEndIso(next) }
+    if (f != null && next != null && f > b && !!ups[p] && ups[p].has(next)) { row.firstEnd = firstEndIso(f); row.cutOn = firstEndIso(next) }
     ;(out[p] = out[p] || []).push(row)
   }
   for (const p in out) out[p].sort((x, y) => (x.startIso < y.startIso ? -1 : x.startIso > y.startIso ? 1 : 0))

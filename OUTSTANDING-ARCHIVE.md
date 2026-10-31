@@ -7137,3 +7137,22 @@ The posting pass (`raptor-port/src/leavewar/sync.ts`, the `lw.postoutRun` comman
 ### [QUALS-PINCH-MID] Quals mid-pinch: a band under the pinned heading row, the name column off the left edge (found 30 Oct 26, the pinch walk)
 **What:** on a phone (Chrome's touch input), with the page part-way down: a pinch out shrinks the table about the fingers while the pinned heading row stays where it is, so an empty band opens between them until the lift (the Leave War's own fix of the same, D1288, is `scrollPage` in its pinch); a pinch in moves the sticky name column off the left edge with the stretched picture until the lift (D1110: the heading row and the name column stay pinned and lined up) — pictures `raptor-port/docs/img/handpass/2026-10-30-scroll-pinned/pinch/quals-pinch-out-mid-band.png`, `…/quals-pinch-in-mid-names.png`. After the lift all is right. Older than the scroll job. **To do:** with the next Quals job — the Leave War's `scrollPage` and `pin` for Quals' pinch (`raptor-port/src/ui/QualsPage.tsx` `wirePinch`), a mid-pinch test as D1287's, his iPhone look after. **BUILT 31 Oct 26 on `claude/pinch-fixes-1031`** (the overnight run, job 4; fix rounds 2–3, the code read's finding 1: through a pinch that turns direction the frozen heading row stays as it was at the start, hidden only while the table's own heading row is in sight below the top bar, never re-pinned or measured mid-gesture — the Leave War's date row the same, older there — and settled once at the lift): Quals' pinch takes `edges` + `scrollPage`, `pin` (the name cells at the left edge, the heading row's cells never rising) and `pinAt`; the pinned row's still name heading grows from its corner (`alsoTL`); while pinching its box clips sideways only and is see-through under a shrunken row (`05-quals.css` `.qfixed.q-pinching`). Red first (`e2e/pinchzoom.spec.ts`): a pinch out part-way down — bare from 59 to 215 under the heading row on the unfixed build; a pinch in — every name at −159 against the table's 20. Evidence draft `raptor-port/docs/handpass/2026-10-31-pinch-fixes.md`. **In pull request 599:** walked (`raptor-port/docs/handpass/2026-10-31-pinch-fixes.md`, three fix rounds, each red first), the fresh code read and its narrow read done. **Owed:** his iPhone look is owed — Safari takes no outside touch input, so only his iPhone proves the pinch there. Not touched: the browsers without scroll-driven animations — filed as `[QUALS-PINCH-NOSDA-HEAD]`.
 
+
+*Moved here 2026-10-31 by backlog-archive.mjs ([REACT-DOCTOR-CLEANUP]). Forward facts: `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`.*
+
+### [REACT-DOCTOR-CLEANUP] The code check's clean-up batch, before new feature work (D1534, 31 Oct 26)
+**What:** one batch, about 3 nights: React Doctor's 60 errors and 42 missed-update warnings ("exhaustive-deps") across the
+app, and every finding in the Tracker (`src/tracker/` — about 150: its core, windows and side panel); then the code check run
+again to show the count falling. New and changed code follows the check's rules from now on; the plan's point 4 (a lint script
+running it, its settings file in `raptor-port/`) is built with it, and the standing rule gets its line in `raptor-port/CLAUDE.md`
+at that build. The other areas' remaining findings ride with each area's next batch (D490). Full bug-check order; anything that
+would change what a person sees is shown to him first (D853). The findings list: the move plan §3
+(`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md`) — the night's raw output was in a session scratchpad, so the
+batch runs React Doctor again first (D1533: the kit's way allowed). Opus, high thinking (his global rule for heavy or risky building).
+**BUILT 31 Oct 26** on `claude/react-doctor-cleanup`, pull request 603: 288 findings — 204 fixed, 84 kept with their reason in the
+code (`raptor-port/docs/handpass/parts/rdc1031/dispositions.md`); the app's errors 60 → 0, missed updates 42 → 0, the Tracker
+195 → 0; `npm run lint`, `lint:changed`, `doctor.config.json` and the standing line in `raptor-port/CLAUDE.md`. FULL check:
+113/113 screens identical, 28 behaviour rows the same on both builds, the Tracker's stored world carried old → new
+byte-identical; the code reads' one fault fixed red first (evidence `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`).
+Left for later: [CODE-CHECK-CI], [AVAILWIN-SETUP-SLOW], [TRK-STANDALONE-LEFTOVERS]. Waiting on his "merge live".
+

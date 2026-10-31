@@ -9,7 +9,7 @@
    Each was run RED against the code before the batch (the evidence sheet's break list names the lines). */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { useStorageImpl, useSaveHealth } from './storage.js'
+import { setStorageImpl, useSaveHealth } from './storage.js'
 import { setPeople, setGonePeople } from './people.js'
 import { deletedForTracker } from './peoplewire'
 import { Whiteboard } from '../storage/whiteboard'
@@ -33,7 +33,7 @@ async function addMember(pid: string) {
 beforeAll(async () => {
   wb = new Whiteboard()
   wireRows(wb)
-  useStorageImpl(trackerTarget(wb))
+  setStorageImpl(trackerTarget(wb))
   board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
   setPeople([
     { id: 'pgoA', cs: 'GOA', seat: 'FCP', q: 'OCU', sxo: false },
@@ -44,7 +44,7 @@ beforeAll(async () => {
   await C.init()
   await C.whenLoaded()
 })
-afterAll(() => { board.remove(); useStorageImpl(null); useSaveHealth(null) })
+afterAll(() => { board.remove(); setStorageImpl(null); useSaveHealth(null) })
 
 describe('D981 — a man deleted through Post out leaves the courses still running for him', () => {
   it('events still to do: he leaves the list (stored), and nothing of his record is erased; a man not deleted stays', async () => {

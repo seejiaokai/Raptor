@@ -83,7 +83,8 @@ export async function writeTo(handle, text) {
 export function downloadInstead(name, text) {
   const blob = new Blob([text], { type: 'application/json' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = name;
+  const url = URL.createObjectURL(blob);
+  a.href = url; a.download = name;
   document.body.appendChild(a); a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+  setTimeout(() => { URL.revokeObjectURL(url); a.remove(); }, 0);
 }

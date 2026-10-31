@@ -54,7 +54,8 @@ export function scrubBlock(block, shippedOf) {
    edits win where they speak, every other typed detail on the chart stays
    (D122: an import never wipes an event's typed details). */
 export function mergeBlock(mine, incoming, shippedOf) {
-  const out = JSON.parse(JSON.stringify(isObj(mine) ? mine : {}));
+  /* a copy, never the chart's own block: every caller hands in plain JSON (stored details, or diffDetails' strings) */
+  const out = structuredClone(isObj(mine) ? mine : {});
   if (isObj(incoming)) {
     for (const id of Object.keys(incoming)) {
       if (!isObj(incoming[id])) continue;
@@ -75,12 +76,12 @@ export function realFlatEdits(flat, EVENT_INFO) {
   for (const id of Object.keys(flat)) {
     const o = flat[id]; if (!isObj(o)) continue;
     const base = (own(EVENT_INFO, id) && EVENT_INFO[id]) || {};
-    const kept = Array.isArray(o.__kept) ? o.__kept : [];
+    const kept = new Set(Array.isArray(o.__kept) ? o.__kept : []);
     const d = {};
     for (const f of DETAIL_FIELDS) {
       if (!own(o, f)) continue;
       const v = o[f] == null ? '' : String(o[f]);
-      if (v !== (base[f] || '') || kept.includes(f)) d[f] = v;
+      if (v !== (base[f] || '') || kept.has(f)) d[f] = v;
     }
     if (Object.keys(d).length) out[id] = d;
   }

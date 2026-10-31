@@ -1,0 +1,14 @@
+{
+ "students": [
+  "1 STUDENT A",
+  "2 STUDENT B",
+  "3 TALISMAN"
+ ],
+ "overall": "OVERALL — TALISMAN 1.0% COMPLETE 2 DONE 208 REMAINING Flights 0/41 · 0% Acad / Spec 2/106 · 2% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%",
+ "fails": "ST-02",
+ "lulls": "06/07/26 → 10/07/26 ×",
+ "crew": "STUDENT A STUDENT B TALISMAN",
+ "detail": "Walk welcome detail Type: Lecture · 2.5 Hrs",
+ "doneDate": "2026-07-08",
+ "doneDate2": "2026-07-09"
+}

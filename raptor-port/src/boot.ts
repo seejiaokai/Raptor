@@ -21,7 +21,7 @@ import { BrowserBackend } from './storage/browser'
 import { idbDocStore } from './storage/docstore'
 import { docBoot } from './state/docs'
 import { settingsAdapter, leavewarAdapter, trackerTarget } from './storage/adapters'
-import { useStorageImpl } from './tracker/storage.js'
+import { setStorageImpl } from './tracker/storage.js'
 /* the Tracker's one-time conversion — the fold's last converter ([DB-READINESS] group A, phase 5b): registered by the
    boot, since the Tracker's own code is a lazy chunk the fold cannot wait for */
 import './tracker/fold'
@@ -77,7 +77,7 @@ export async function bootApp(backend: Backend, policy: BootPolicy = DEMO_POLICY
 function bootBody(wb: Whiteboard, policy: BootPolicy): void {
   /* the three doors (storage/adapters.ts): settings, Leave War, Tracker */
   storeBackend.impl = settingsAdapter(wb)
-  useStorageImpl(trackerTarget(wb))
+  setStorageImpl(trackerTarget(wb))
 
   /* inputs / roster / plan layer / stashed weeks: whiteboard → singletons,
      BEFORE initStore so its seeds know to stand down (state/persist.ts) */

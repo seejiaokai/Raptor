@@ -34,10 +34,11 @@ export function DraftsModal() {
      bleeds onto another draft's box. */
   const [nm, setNm] = useState<string | null>(null)
   const open = DRAFTSEDIT
+  const openDi = open && open.di, openId = open && open.id
   useEffect(() => {
-    if (open && open.id) setSel(open.id)
+    if (openId) setSel(openId)
     setNm(null)
-  }, [open && open.di, open && open.id])
+  }, [openDi, openId])
   /* it takes and keeps the keyboard while it is up, Escape closes it, and the keyboard goes back to the button that
      opened it ([BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); a name half typed is dropped, as Escape does in every box;
      before the early return, as hooks must be */

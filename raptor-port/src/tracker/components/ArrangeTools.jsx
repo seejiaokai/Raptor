@@ -31,7 +31,7 @@ function FontBox() {
   useEffect(() => { if (document.activeElement !== ref.current) setV(String(cur)); }, [cur]);
   return (
     <label className="sub">Font <input id="fontIn" ref={ref} className="fontnum" type="number" min="4" max="20" step="0.5" value={v}
-      onChange={e => { setV(e.target.value); const n = parseFloat(e.target.value); if (n >= 4 && n <= 20) core.setFont(n); }}
+      onChange={e => { const raw = e.target.value; setV(raw); const n = raw === '' ? NaN : parseFloat(raw); if (Number.isFinite(n) && n >= 4 && n <= 20) core.setFont(n); }}
       onBlur={() => setV(String(core.currentFont()))} /></label>
   );
 }
@@ -57,6 +57,7 @@ export default function ArrangeTools() {
     const away = e => { if (wrap.current && !wrap.current.contains(e.target)) core.setToolsOpen(false); };
     document.addEventListener('pointerdown', away, true);
     return () => document.removeEventListener('pointerdown', away, true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- core.toolsOpen is a live module binding that opens and shuts the set; it is the trigger that binds and unbinds the outside press
   }, [core.toolsOpen]);
   /* every other button in the set also closes it first, so what it opens (a
      question, the event list) is never drawn under it */

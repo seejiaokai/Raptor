@@ -155,8 +155,8 @@ export function PersonWindow({ person, since, hasRow, onClose, onOil, onGo }: {
   /* THE KEYBOARD (the design guide §3): it opens with the keyboard on the window, so Tab walks it; Escape in a box he has
      typed in puts the old figure back FIRST (the window's own Escape — Sheet.tsx, on the document's capture — is heard after
      this one, on the window's), and the next Escape closes it; closing gives the keyboard back to what opened it */
-  const opener = useRef<HTMLElement | null>(null)
-  if (opener.current === null && typeof document !== 'undefined') opener.current = (document.activeElement as HTMLElement | null) ?? document.body
+  /* what had the keyboard as the window first drew — the first render's value is the one kept */
+  const opener = useRef<HTMLElement | null>(typeof document !== 'undefined' ? (document.activeElement as HTMLElement | null) ?? document.body : null)
   useEffect(() => {
     const p = PANEL()
     if (p) { p.tabIndex = -1; p.focus({ preventScroll: true }) }

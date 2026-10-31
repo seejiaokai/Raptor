@@ -70,6 +70,7 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
       if (!to) return
       if (now === document.body || now == null || el.contains(now)) to.focus({ preventScroll: true })
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- on opening and closing only: `box` is the caller's ref, and re-arming on a new `first` would move the keyboard on a repaint
   }, [open])   // on opening and closing only — a repaint of the sheet never moves the keys
 }
 

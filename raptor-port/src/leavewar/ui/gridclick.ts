@@ -11,13 +11,13 @@
    re-aimed by a drag is not closed by that drag's own trailing click. A cell is a `td` of the grid whose id is a
    roster cell's, an event cell's, or one of the four rows' (`cell-`, `event-`, `req-`, `avail-`): the things a click
    opens something on. A press on the month buttons, a heading or the toolbar leaves the panel up. */
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 const CELL = /^(cell|event|req|avail)-/
 
 export function useCloseOnCellClick(onClose: () => void): void {
   const close = useRef(onClose)
-  close.current = onClose
+  useLayoutEffect(() => { close.current = onClose })
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       const t = e.target as HTMLElement | null

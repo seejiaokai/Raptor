@@ -13,7 +13,7 @@
      pace that had never been set, taken away again. */
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { useStorageImpl } from './storage.js'
+import { setStorageImpl } from './storage.js'
 import { Whiteboard, type Change } from '../storage/whiteboard'
 import { trackerTarget } from '../storage/adapters'
 import { wireRows } from '../state/persist'
@@ -27,7 +27,7 @@ let groups: Change[][] = []
 beforeAll(async () => {
   wb = new Whiteboard()
   wireRows(wb)
-  useStorageImpl(trackerTarget(wb))
+  setStorageImpl(trackerTarget(wb))
   board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
   await core.init()
   for (const [id, name] of [[Z, 'RST Z'], [Y, 'RST Y']]) if (!(core as any).byName(name)) ((core as any).roster as any).push({ id, name })
@@ -35,7 +35,7 @@ beforeAll(async () => {
   for (const id of [Z, Y]) if (!(core as any).marks[id]) (core as any).marks[id] = {}
   wb.subscribe(g => groups.push(g))
 })
-afterAll(() => { board.remove(); useStorageImpl(null) })
+afterAll(() => { board.remove(); setStorageImpl(null) })
 beforeEach(() => { groups = [] })
 
 const trackerRows = (g: Change[]) => g.filter(c => c.collection === 'tracker')

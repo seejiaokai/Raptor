@@ -321,8 +321,10 @@ function familyFromMem(prefix) {
 async function familyFromStore(prefix) {
   let keys;
   try { keys = ((await storage.list(prefix)).keys || []); } catch (_) { return familyFromMem(prefix); }
+  /* The rows are read together (reads only; each sGetOne keeps its own write-guard), then filed in the listed order. */
+  const vals = await Promise.all(keys.map(rk => sGetOne(rk)));
   const fam = new Map();
-  for (const rk of keys) { const v = await sGetOne(rk); if (v != null && v !== '') fam.set(rk, v); }
+  keys.forEach((rk, i) => { const v = vals[i]; if (v != null && v !== '') fam.set(rk, v); });
   return fam;
 }
 async function sGet(k) {
@@ -376,10 +378,14 @@ async function sGetOne(k) {
 async function trkHydrateMem() {
   try {
     const { keys } = await storage.list();
-    for (const k of keys) {
-      if (!trkCollectionOf(k)) continue;
-      const r = await storage.get(k);
-      if (r) mem[k] = r.value;
+    /* Read together (reads only), then mirrored in key order, stopping at the first key that could not be read —
+       exactly where the one-by-one loop used to stop. */
+    const want = keys.filter(k => trkCollectionOf(k));
+    const got = await Promise.allSettled(want.map(k => storage.get(k)));
+    for (let i = 0; i < want.length; i++) {
+      if (got[i].status === 'rejected') break;
+      const r = got[i].value;
+      if (r) mem[want[i]] = r.value;
     }
   } catch (_) {}
 }
@@ -578,7 +584,7 @@ function trkReloadCurrentFromMem(rebuildSyl) {
   if (rebuildSyl) {
     let __src = sylSource(plan.sylId);
     if (!__src) { plan.sylId = firstSylId(); __src = sylSource(plan.sylId) || DEFAULT_SYLLABUS; }
-    SYL = __src ? JSON.parse(JSON.stringify(__src)) : [];
+    SYL = __src ? structuredClone(__src) : [];
     byid = {}; SYL.forEach(e => byid[e.id] = e);
   }
   roster = sParse(memGet(kRosterFor(c, plan.sylId)), [], 'array').filter(isEntry);
@@ -677,7 +683,7 @@ function trkWriteRecords(entries) {
     const afterDef = JSON.stringify(customDefs && customDefs[curSylId()]);
     if (afterDef !== beforeDef) {
       const __src = sylSource(curSylId());
-      SYL = __src ? JSON.parse(JSON.stringify(__src)) : [];
+      SYL = __src ? structuredClone(__src) : [];
       byid = {}; SYL.forEach(e => byid[e.id] = e);
     }
   }
@@ -912,11 +918,11 @@ function loadEdgeMeta() {
   let em = (layout && layout.__edgeMeta), mg = (layout && layout.__merges), un = (layout && layout.__unmerges);
   if (!em || !Object.keys(em).length) { /* fall back to the built-in default's routing metadata */
     const dl = defaultLayoutOf(curSylId());
-    if (dl && dl.__edgeMeta) em = JSON.parse(JSON.stringify(dl.__edgeMeta));
-    if ((!mg || !mg.length) && dl && dl.__merges) mg = JSON.parse(JSON.stringify(dl.__merges));
+    if (dl && dl.__edgeMeta) em = structuredClone(dl.__edgeMeta);
+    if ((!mg || !mg.length) && dl && dl.__merges) mg = structuredClone(dl.__merges);
     /* kept-hop pairs ship with a default chart too: without this, an arrow
        crossing a shipped drawn line renders flush and reads as a junction */
-    if ((!un || !un.length) && dl && dl.__unmerges) un = JSON.parse(JSON.stringify(dl.__unmerges));
+    if ((!un || !un.length) && dl && dl.__unmerges) un = structuredClone(dl.__unmerges);
   }
   edgeMeta = em || {}; merges = new Set(mg || []);
   unmerges = new Set(un || []);
@@ -987,12 +993,12 @@ function loadLineDefaults() {
   const dl = defaultLayoutOf(curSylId());
   if (!dl) return;
   if (!Array.isArray(layout.__lines) && Array.isArray(dl.__lines))
-    layout.__lines = JSON.parse(JSON.stringify(dl.__lines));
+    layout.__lines = structuredClone(dl.__lines);
   if (!Array.isArray(layout.__derived) && Array.isArray(dl.__derived))
-    layout.__derived = JSON.parse(JSON.stringify(dl.__derived));
+    layout.__derived = structuredClone(dl.__derived);
   /* shipped per-ball font sizes (wide labels) must reach a first visit too */
   if (layout.__font == null && dl.__font)
-    layout.__font = JSON.parse(JSON.stringify(dl.__font));
+    layout.__font = structuredClone(dl.__font);
 }
 /* While a first finger is down in Edit chart layout the save WAITS for it to
    lift ([TRK-PINCH-DRAGS-BALL], Astra's final read #1): Delete, Merge and a
@@ -1098,9 +1104,9 @@ export function builtinOf(id) { return (isBuiltinSylId(id) && sylEntry(id)) ? id
 function sylSource(id) { if (customDefs && has(customDefs, id) && sylEntry(id)) return customDefs[id]; const b = baseOf(id); return b ? SYLLABI[b] : null; }
 export function allSylIds() { return SYLS.map(e => e.id).filter(id => !isHidden(id)); }
 export function orderedSylIds() {
-  const all = allSylIds();
-  const ranked = SYL_ORDER.filter(id => all.includes(id));
-  return [...ranked, ...all.filter(id => !ranked.includes(id))];
+  const all = allSylIds(), allSet = new Set(all);
+  const ranked = SYL_ORDER.filter(id => allSet.has(id)), rankedSet = new Set(ranked);
+  return [...ranked, ...all.filter(id => !rankedSet.has(id))];
 }
 /* labels, for the dropdown / reorder modal / chart export (names-in-modal is
    kept, §9 — labels are unique across the catalogue by ensureUniqueLabel). */
@@ -1281,6 +1287,7 @@ async function migrateIds(c) {
        flat key and both carry a bare string). */
     if (!(await sGet(kRosterMig(c)))) return;
     const syls = await storeSylIds(c), ids = Object.create(null), rosters = {};
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
     for (const n of syls) { rosters[n] = sParse(await sGet(kRosterFor(c, n)), [], 'array'); for (const e of rosters[n]) if (isEntry(e) && !has(ids, e.name)) ids[e.name] = e.id; }
     const names = new Set();
     for (const n of syls) for (const e of rosters[n]) { if (typeof e === 'string' && e) names.add(e); else if (isEntry(e)) names.add(e.name); }
@@ -1320,9 +1327,11 @@ async function migrateIds(c) {
     };
     let ok = true;
     for (const n of syls) for (const nm of names) {
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: each record is written under its new key, read back, and only then deleted, and one failed move must stop the migration being marked done
       ok = (await moved(kMarksFor(c, n, nm), kMarksFor(c, n, ids[nm]))) && ok;
       ok = (await moved(kDatesFor(c, n, nm), kDatesFor(c, n, ids[nm]))) && ok;
     }
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: each record is written under its new key, read back, and only then deleted, and one failed move must stop the migration being marked done
     for (const nm of names) for (const k of [kLulls, kPace, kLast, kDatesOld]) ok = (await moved(k(c, nm), k(c, ids[nm]))) && ok;
     if (!ok) return;
     for (const n of syls) {
@@ -1434,6 +1443,7 @@ export async function migrateCourseIds() {
            (v3:lay:<course>:<syl>) — move those, skip every other global */
         if (seg === 'lay') {
           const after = rest.slice(ci + 1), ci2 = after.indexOf(':');
+          // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: each record is written under its new key, read back, and only then deleted, and one failed move must stop the migration being marked done
           if (ci2 > 0) { const cn = after.slice(0, ci2); if (has(idByName, cn) && idByName[cn] !== cn) ok = (await moved(k, 'v3:lay:' + idByName[cn] + ':' + after.slice(ci2 + 1))) && ok; }
         }
         continue;
@@ -1532,7 +1542,8 @@ async function buildSylJournal() {
      syltomb pref) is left out and stays tombstoned (hidden ≠ deleted). */
   const tombNames = Object.keys(sParse(await sGet(kSylTomb()), {}, 'object') || {});
   const hiddenNames = sParse(await sGet(kSylHidden()), [], 'array').filter(x => typeof x === 'string');   // read here too: the classify guard below needs it
-  for (const b of BUILTIN_SYL) { idByName[b.name] = b.id; if (tombNames.indexOf(b.name) < 0) addCat(b.id, b.name, b.name); }
+  const tombNameSet = new Set(tombNames), hiddenNameSet = new Set(hiddenNames);   /* looked up once per name below */
+  for (const b of BUILTIN_SYL) { idByName[b.name] = b.id; if (!tombNameSet.has(b.name)) addCat(b.id, b.name, b.name); }
 
   /* definitions, precedence highest-first: master → legacy master → per-course
      own → the plan.custom single legacy def (§14 CSID2-02) */
@@ -1546,6 +1557,7 @@ async function buildSylJournal() {
   const addDefs = (obj, fromMaster) => { if (obj && typeof obj === 'object' && !Array.isArray(obj)) for (const n of Object.keys(obj)) if (!has(defByName, n)) { defByName[n] = obj[n]; if (fromMaster) defFromMaster[n] = true; } };
   addDefs(sParse(await sGet(kSyls()), {}, 'object'), true);
   addDefs(sParse(await sGet(kSylsOldMaster()), {}, 'object'), false);
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
   for (const cE of COURSES) addDefs(sParse(await sGet(kSylsOwn(cE.id)), {}, 'object'), false);
   /* the plan.custom single legacy def (v3:<course>:syl) is collected PER COURSE,
      not merged by name: two unopened courses can share a sylName but hold
@@ -1554,6 +1566,7 @@ async function buildSylJournal() {
      (review CSID-REVIEW-01; the old loader switched plan.sylName to '<syl> (edited)'). */
   const customPlanDefs = [];   // { courseId, syl, name, def }
   for (const cE of COURSES) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
     const p = sParse(await sGet(kPlan(cE.id)), {}, 'object');
     if (p && p.custom) { const sr = await sGet(kSyl(cE.id)); const legacy = sr ? sParse(sr, null) : null; if (legacy) { const syl = p.sylName || DEFAULT_SYL_NAME; customPlanDefs.push({ courseId: cE.id, syl, name: syl + ' (edited)', def: legacy }); } }
   }
@@ -1572,7 +1585,7 @@ async function buildSylJournal() {
        (or a built-in override) here would RESURRECT a chart the owner had suppressed.
        Only a GLOBAL-master def is unconditional. Skip the suppressed legacy def; the
        built-in (if any) is handled by seeding/hidden/tomb below (review RR-03). */
-    if (!defFromMaster[name] && (hiddenNames.indexOf(name) >= 0 || tombNames.indexOf(name) >= 0)) continue;
+    if (!defFromMaster[name] && (hiddenNameSet.has(name) || tombNameSet.has(name))) continue;
     const cls = classifyDefinedName(name);
     /* fold a def onto the built-in id ONLY when that built-in is LIVE — neither
        tombstoned NOR hidden. The old reader's CUSTOMS was never filtered by hidden
@@ -1581,7 +1594,7 @@ async function buildSylJournal() {
        that vanishes. Mint a visible custom instead; the built-in is still seeded
        (if not tombstoned) and carried in the hidden set, exactly as the old model
        held it (review: preserve what the old READER showed). */
-    const asBuiltin = cls.builtin && tombNames.indexOf(name) < 0 && hiddenNames.indexOf(name) < 0;
+    const asBuiltin = cls.builtin && !tombNameSet.has(name) && !hiddenNameSet.has(name);
     const id = asBuiltin ? cls.id : mintSylId();
     idByName[name] = id;
     if (!has(defById, id)) defById[id] = defByName[name];
@@ -1633,6 +1646,7 @@ async function buildSylJournal() {
      first-seen flag bricking the upgrade regardless of read order (review RR-01). */
   const consider = (name, raw, srcKey, kind) => { (candByName[name] || (candByName[name] = [])).push({ raw, srcKey, kind }); };
   for (const k of allKeys) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
     if (k.startsWith(SYL_NS + ':lay:')) { const name = k.slice((SYL_NS + ':lay:').length); masterLayKeys.push({ k, name }); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'master'); continue; }
     if (k.startsWith('v3:lay:SYLLABUS EDIT:')) { const name = k.slice('v3:lay:SYLLABUS EDIT:'.length); legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) consider(name, raw, k, 'oldmaster'); continue; }
     if (k.startsWith('v3:lay:')) { const rest = k.slice('v3:lay:'.length), i = rest.indexOf(':'); if (i > 0) { const cid = rest.slice(0, i), name = rest.slice(i + 1); if (COURSES.some(c => c.id === cid)) { legacyLayKeys.push(k); const raw = sParse(await sGet(k), null, 'object'); if (raw) { const eid = editedLayKey.get(k); if (eid) { if (!has(rawLayoutById, eid)) { rawLayoutById[eid] = raw; layoutSrcById[eid] = k; } } else consider(name, raw, k, 'own'); } } } continue; }
@@ -1664,6 +1678,7 @@ async function buildSylJournal() {
   /* discover every remaining name (prefs, layouts, plan pointers) so an id is
      assigned (or the name is knowingly dropped) before anything is written */
   const planSylByCourse = Object.create(null);
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
   for (const cE of COURSES) { const p = sParse(await sGet(kPlan(cE.id)), {}, 'object'); if (p) { planSylByCourse[cE.id] = p; } }
   const everyName = new Set([...Object.keys(defByName), ...Object.keys(layByName), ...orderNames, ...hiddenNames, ...tombNames]);
   for (const cE of COURSES) { const p = planSylByCourse[cE.id]; if (p) { if (p.sylName) everyName.add(p.sylName); if (p.__oldSyl) everyName.add(p.__oldSyl); } }
@@ -1710,8 +1725,8 @@ async function buildSylJournal() {
      even UN-deleted such a built-in in the old app (review: preserve what the old
      READER showed). order stays alias-tolerant: it is display-only and filtered
      to visible ids at render, so a dead entry there can resurrect nothing. */
-  const order = []; for (const n of orderNames) { const id = idByName[n]; if (id && !order.includes(id)) order.push(id); }
-  const hidden = []; for (const n of hiddenNames) { const id = builtinIdByName(n); if (id && !hidden.includes(id)) hidden.push(id); }
+  const order = [], orderSeen = new Set(); for (const n of orderNames) { const id = idByName[n]; if (id && !orderSeen.has(id)) { orderSeen.add(id); order.push(id); } }
+  const hidden = [], hiddenSeen = new Set(); for (const n of hiddenNames) { const id = builtinIdByName(n); if (id && !hiddenSeen.has(id)) { hiddenSeen.add(id); hidden.push(id); } }
   const tomb = Object.create(null); for (const n of tombNames) { const id = builtinIdByName(n); if (id) tomb[id] = 1; }
 
   /* EVERY persisted course namespace, not just the visible index (review
@@ -1723,6 +1738,7 @@ async function buildSylJournal() {
      v3: prefix scan; deleted namespaces are repaired WITHOUT re-adding them to the
      visible index (applyResetJournal only writes their per-course records). */
   const namespaces = await allCourseNamespaces();
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- a stored-data migration (D464: his charts and marks must never be lost) kept as one fixed sequential pass; the storage under it is synchronous, so reading together would gain nothing
   for (const c of namespaces) if (!(c in planSylByCourse)) { const p = sParse(await sGet(kPlan(c)), null, 'object'); if (p) planSylByCourse[c] = p; }
 
   /* per-course plan target id (drops __oldSyl). The fallback and every target are
@@ -1761,6 +1777,7 @@ async function buildSylJournal() {
   };
 }
 /* re-clone through JSON so a null-proto or shared ref never leaks into a payload */
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the migration journal must hold exactly its stored JSON form (undefined dropped, never a throw on an odd value) so its read-back verify compares like with like
 function raw2plain(v) { try { return JSON.parse(JSON.stringify(v)); } catch (_) { return v; } }
 
 /* KEEP — replay the journal's catalogue writes (idempotent whole-object writes),
@@ -1778,6 +1795,7 @@ async function applyKeepJournal(j) {
   if (!(await put(kSylHidden(), j.hidden))) return false;
   if (!(await put(kSylTomb(), j.tomb))) return false;
   if (!(await put(kSylCat(), j.sylcat))) return false;   /* the index every reader keys off — written last */
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: the migration journal's deletes run in order and only after every write before them was read back
   for (const k of j.purge) await delKey(k);
   /* FINAL verify after ALL purges (§16 CSID2-R3-01): a purge must not have
      deleted a destination that shared a key with a legacy name. */
@@ -1807,6 +1825,7 @@ async function applyResetJournal(j) {
       if (tail === '' && (seg === 'plan' || seg === 'rostermig' || seg === 'idmig' || seg === 'idmap' || seg === 'syl' || seg === 'syls')) continue;
       if (tail === 'roster' || tail.startsWith('enr:') || tail.startsWith('m:') || tail.startsWith('d:')      /* v3:c:<seg>:roster|enr:*|m:*|d:* — any middle seg */
         || seg === 'roster' || seg === 'lulls' || seg === 'pace' || seg === 'last' || seg === 'lastStudent'
+        // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: the reset journal clears each course's records in turn and is idempotent, so a half-done run finishes on the retry
         || seg === 'd') await delKey(k);                                            /* legacy flat dates v3:c:d:* */
     }
     /* the plan: keep mode + epw (a genuine course pace default), zero lulls /
@@ -1909,14 +1928,16 @@ async function readCourseBlock(c, withNames) {
      still exports its crew — put in display order where the display has an
      opinion, and the rest after. */
   const all = await storeSylIds(c);
-  const ranked = orderedSylIds().filter(n => all.includes(n));
-  for (const n of [...ranked, ...all.filter(n => !ranked.includes(n))]) {
+  const allSet = new Set(all), ranked = orderedSylIds().filter(n => allSet.has(n)), rankedSet = new Set(ranked);
+  for (const n of [...ranked, ...all.filter(n => !rankedSet.has(n))]) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- the one course block Export and Import share (D464), built in one fixed pass in chart order; the storage under it is synchronous, so reading together would gain nothing
     const roster = sParse(await sGet(kRosterFor(c, n)), [], 'array');
     if (!roster.length) continue;
     const marks = {}, dates = {};
     for (const e of roster) {
       const s = isEntry(e) ? e.id : (typeof e === 'string' ? e : null); if (!s) continue;
       if (typeof e === 'string') names.add(e);
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- the one course block Export and Import share (D464), built in one fixed pass in chart order; the storage under it is synchronous, so reading together would gain nothing
       const m = await sGet(kMarksFor(c, n, s)); if (m) { try { marks[s] = JSON.parse(m); } catch (_) {} }
       const d = await sGet(kDatesFor(c, n, s)); if (d) { try { dates[s] = JSON.parse(d); } catch (_) {} }
     }
@@ -1926,6 +1947,7 @@ async function readCourseBlock(c, withNames) {
   const lulls = {}, pace = {};
   for (const n in bySyllabus) for (const e of bySyllabus[n].roster) {
     const s = isEntry(e) ? e.id : e; if (lulls[s] || pace[s]) continue;
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- the one course block Export and Import share (D464), built in one fixed pass in chart order; the storage under it is synchronous, so reading together would gain nothing
     const l = await sGet(kLulls(c, s)); if (l) { try { lulls[s] = JSON.parse(l); } catch (_) {} }
     const pc = await sGet(kPace(c, s)); if (pc) { try { pace[s] = JSON.parse(pc); } catch (_) {} }
   }
@@ -1933,12 +1955,17 @@ async function readCourseBlock(c, withNames) {
 }
 async function writeCourseBlock(c, block) {
   if (block.plan && Object.keys(block.plan).length) await sSet(kPlan(c), JSON.stringify(block.plan));
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes the course's records one after another in the file's order (D464: never a reordered write)
   for (const s in (block.lulls || {})) await sSet(kLulls(c, s), JSON.stringify(block.lulls[s]));
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes the course's records one after another in the file's order (D464: never a reordered write)
   for (const s in (block.pace || {})) await sSet(kPace(c, s), JSON.stringify(block.pace[s]));
   for (const n in (block.bySyllabus || {})) {
     const b = block.bySyllabus[n];
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes the course's records one after another in the file's order (D464: never a reordered write)
     await sSet(kRosterFor(c, n), JSON.stringify(b.roster || []));
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes the course's records one after another in the file's order (D464: never a reordered write)
     for (const s in (b.marks || {})) await sSet(kMarksFor(c, n, s), JSON.stringify(b.marks[s]));
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes the course's records one after another in the file's order (D464: never a reordered write)
     for (const s in (b.dates || {})) await sSet(kDatesFor(c, n, s), JSON.stringify(b.dates[s]));
   }
 }
@@ -2018,7 +2045,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
      loadCourse half-way and left the app looking broken. An empty board is the
      correct state here: the user has simply not opened their file yet. */
-  SYL = __src ? JSON.parse(JSON.stringify(__src)) : [];
+  SYL = __src ? structuredClone(__src) : [];
   byid = {}; SYL.forEach(e => byid[e.id] = e);
   await migrateRosters(c);
   await migrateIds(c);
@@ -2105,6 +2132,7 @@ async function openSylHere(id) {
 async function loadStudent() {
   marks = {}; dates = {}; lulls = {}; lastEdit = {}; pace = {};
   for (const { id: s } of roster) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: the loop also moves a student's old-style dates to the new key (a write) as it reads them
     const m = await sGet(kMarks(course, s)); marks[s] = sParse(m, {}, 'object');
     let d = await sGet(kDates(course, s));
     if (d == null || d === '') { const od = await sGet(kDatesOld(course, s)); if (od) { d = od; await sSet(kDates(course, s), od); } }
@@ -3773,11 +3801,11 @@ function enablePinchZoom(el) {
      they land on it; one no longer on the screen (a lift lost to a redraw) is forgotten at the next landing.
      A finger whose target a redraw takes away sends its moves there and never here, so the hold is hung on each held
      finger's own target too (the code read's F3). */
-  let held = false, heldOn = [];
+  let held = false, heldOn = new Set();
   const mine = new Set();
   const onBoard = e => Array.from(e.touches).filter(t => mine.has(t.identifier)).length;
   const cancelIfHeld = e => { if (held && e.cancelable) e.preventDefault(); };
-  const release = () => { held = false; for (const t of heldOn) t.removeEventListener('touchmove', cancelIfHeld); heldOn = []; };
+  const release = () => { held = false; for (const t of heldOn) t.removeEventListener('touchmove', cancelIfHeld); heldOn = new Set(); };
   el.addEventListener('touchstart', e => {
     const down = new Set(Array.from(e.touches).map(t => t.identifier));
     for (const id of [...mine]) if (!down.has(id)) mine.delete(id);
@@ -3786,7 +3814,7 @@ function enablePinchZoom(el) {
     held = true; if (e.cancelable) e.preventDefault();
     for (const t of Array.from(e.touches)) {
       const tg = t.target;
-      if (mine.has(t.identifier) && tg && tg !== el && tg.addEventListener && !heldOn.includes(tg)) { tg.addEventListener('touchmove', cancelIfHeld, { passive: false }); heldOn.push(tg); }
+      if (mine.has(t.identifier) && tg && tg !== el && tg.addEventListener && !heldOn.has(tg)) { tg.addEventListener('touchmove', cancelIfHeld, { passive: false }); heldOn.add(tg); }
     }
   }, { passive: false });
   el.addEventListener('touchmove', cancelIfHeld, { passive: false });
@@ -4106,8 +4134,13 @@ export function dragScroll(el, skip) {
     if (arrangeMode) return;   /* arrange mode pans the SVG viewport itself */
     if (e.pointerType !== 'mouse' || e.button !== 0) return;   /* a finger or a pen: the browser's own scroll */
     const t = e.target, tag = (t && t.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'select' || tag === 'textarea' || tag === 'button' || tag === 'option' || (t && t.isContentEditable)) return;
-    if (t && t.closest && (t.closest('button') || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]'))) return;
+    /* A DRAG-THROUGH BUTTON (React Doctor's clean-up, 31 Oct 26): the Info half's event chips, failure chips, rename
+       pencils, Failures title and lull dates were spans until then, and a mouse drag that started on one scrolled the
+       half like any other spot — the click after it swallowed below. They are real buttons now, so the keyboard reaches
+       them; marked `data-dragscroll`, a press on one is still this box's drag, while every other button is left alone. */
+    const through = !!(t && t.closest && t.closest('button[data-dragscroll]'));
+    if (tag === 'input' || tag === 'select' || tag === 'textarea' || (tag === 'button' && !through) || tag === 'option' || (t && t.isContentEditable)) return;
+    if (t && t.closest && ((t.closest('button') && !through) || t.closest('input') || t.closest('select') || t.closest('a') || t.closest('[data-rm]') || t.closest('[data-lull]'))) return;
     if ((skip && skip(e)) || inWindow(t)) return;
     st = { x: e.clientX, y: e.clientY, sx: el.scrollLeft, sy: el.scrollTop, moved: false, id: e.pointerId };
   });
@@ -4332,7 +4365,8 @@ export async function saveEdit(vals) {
   const num = vals.num.trim();
   ev.num = num === '' ? undefined : num;
   /* drop edge styling for links that no longer exist, then apply the new set */
-  (ev.prereqs || []).forEach(p => { if (!list.includes(p)) delete edgeMeta[ekey(p, ev.id)]; });
+  const keepLinks = new Set(list);
+  (ev.prereqs || []).forEach(p => { if (!keepLinks.has(p)) delete edgeMeta[ekey(p, ev.id)]; });
   ev.prereqs = list;
   /* crew + prereq note are event-info overrides: merge, don't clobber name/fmt/hrs.
      Written through writeInfo, the details window's own body: this box is
@@ -4773,7 +4807,11 @@ export let pop = null;               /* {id, x, y} */
 export let popDoneDate = '';
 export let popFailDate = '';
 export function isoOf(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
-export function isoToday() { try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date()); } catch (e) { return isoOf(new Date()); } }
+/* Built once: today's date where the squadron is, as YYYY-MM-DD. A browser that cannot build it (no such time zone)
+   leaves it null, and isoToday falls back to the device's own date, as it always did. */
+let SG_DAY_FMT = null;
+try { SG_DAY_FMT = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Singapore', year: 'numeric', month: '2-digit', day: '2-digit' }); } catch (e) { SG_DAY_FMT = null; }
+export function isoToday() { try { if (SG_DAY_FMT) return SG_DAY_FMT.format(new Date()); } catch (e) {} return isoOf(new Date()); }
 export function openPop(id, evt) {
   /* the keyboard carries on from the event a pop-up was opened on, however it was opened (D980) */
   if (kbdId !== id) kbdCame = null;
@@ -5285,10 +5323,13 @@ export function closeShowAll() { showAllOpen = false; notify(); }
    id would split their pace and lull periods off their marks. */
 export async function findEnrolment(pid, name) {
   let byPid = null, byNm = null;
-  for (const n of await storeSylIds(course)) {
-    const r = (n === curSylId()) ? roster : sParse(await sGet(kRosterFor(course, n)), [], 'array').filter(isEntry);
+  const c = course, syls = await storeSylIds(c), cur = curSylId();
+  /* the stored rosters read together (reads only), then searched in the same chart order, so the first match still wins */
+  const stored = await Promise.all(syls.map(n => (n === cur ? null : sGet(kRosterFor(c, n)))));
+  syls.forEach((n, i) => {
+    const r = (n === cur) ? roster : sParse(stored[i], [], 'array').filter(isEntry);
     for (const e of r) { if (pid && e.pid === pid && !byPid) byPid = e; if (e.name === name && !byNm) byNm = e; }
-  }
+  });
   return { byPid, byNm };
 }
 export async function addStudent() {
@@ -5431,16 +5472,20 @@ async function leaveRunningCoursesNow(gone) {
     const here = n => c === course && n === curSylId();
     /* every chart of the course whose list holds one of them — read first, then written in ONE gesture */
     const charts = [];
-    for (const n of await storeSylIds(c)) {
-      const list = here(n) ? roster.slice() : sParse(await sGet(kRosterFor(c, n)), [], 'array').filter(isEntry);
+    const syls = await storeSylIds(c), onScreen = syls.map(here);
+    /* the stored lists read together (reads only — every write waits for the gesture below), kept in chart order */
+    const stored = await Promise.all(syls.map((n, i) => (onScreen[i] ? null : sGet(kRosterFor(c, n)))));
+    syls.forEach((n, i) => {
+      const list = onScreen[i] ? roster.slice() : sParse(stored[i], [], 'array').filter(isEntry);
       if (list.some(e => e.pid && gone.has(e.pid) && !e.goneKept)) charts.push({ n, list });
-    }
+    });
     if (!charts.length) continue;
     const leaving = new Set();
     for (const { n, list } of charts) {
       const evs = sylSource(n); if (!Array.isArray(evs)) continue;
       for (const e of list) {
         if (!e.pid || !gone.has(e.pid) || e.goneKept || leaving.has(e.id)) continue;
+        // eslint-disable-next-line react-doctor/async-await-in-loop -- each read is skipped once that man is already known to be leaving, which depends on the reads before it
         const m = here(n) ? (marks[e.id] || {}) : sParse(await sGet(kMarksFor(c, n, e.id)), {}, 'object');
         if (evs.some(ev => { const g = m[ev.id] && m[ev.id].g; return !DONE.has(g) && g !== 'na'; })) leaving.add(e.id);
       }
@@ -5502,7 +5547,8 @@ export async function renameStudent(id) {
     const c = course, syl = curSylId();
     const otherSyls = (await storeSylIds(c)).filter(sn => sn !== syl);
     const otherRosters = new Map();
-    for (const sn of otherSyls) otherRosters.set(sn, sParse(await sGet(kRosterFor(c, sn)), [], 'array'));
+    const otherRaw = await Promise.all(otherSyls.map(sn => sGet(kRosterFor(c, sn))));   /* reads only; the writes are the gesture's */
+    otherSyls.forEach((sn, i) => otherRosters.set(sn, sParse(otherRaw[i], [], 'array')));
     trkGesture(() => {
       /* The name is the enrolment's ONE label, and findEnrolment relies on every
          chart of the course agreeing on it (a person can sit on several syllabi
@@ -5710,8 +5756,8 @@ export function closeOrd() { ordMode = null; notify(); }
    teammate can add a course or a student over SharePoint while the modal sits
    open, and dropping them would delete their work rather than reorder it. */
 function reranked(list, live) {
-  const ranked = list.filter(n => live.includes(n));
-  return [...ranked, ...live.filter(n => !ranked.includes(n))];
+  const liveSet = new Set(live), ranked = list.filter(n => liveSet.has(n)), rankedSet = new Set(ranked);
+  return [...ranked, ...live.filter(n => !rankedSet.has(n))];
 }
 export async function saveOrderList(list) {
   /* the modal lists LABELS (unique across the catalogue, §9); rerank SYL_ORDER
@@ -5719,7 +5765,8 @@ export async function saveOrderList(list) {
   const byName = new Map(SYLS.map(e => [e.name, e.id]));
   const ranked = list.map(n => byName.get(n)).filter(Boolean);
   const all = allSylIds();
-  SYL_ORDER = [...ranked.filter(id => all.includes(id)), ...all.filter(id => !ranked.includes(id))];
+  const allSet = new Set(all), rankedSet = new Set(ranked);
+  SYL_ORDER = [...ranked.filter(id => allSet.has(id)), ...all.filter(id => !rankedSet.has(id))];
   await saveSylOrder();
   closeOrd(); refreshSyl();
   setSaveStatus('syllabus order saved', 'ok');
@@ -5746,7 +5793,8 @@ export async function saveCrewOrder(list) {
        name (added meanwhile) keeps their place after */
     const byN = new Map(roster.map(r => [r.name, r]));
     const ranked = list.map(n => byN.get(n)).filter(Boolean);
-    roster = [...ranked, ...roster.filter(r => !ranked.includes(r))];
+    const rankedSet = new Set(ranked);
+    roster = [...ranked, ...roster.filter(r => !rankedSet.has(r))];
     await saveRoster();
   });
   closeOrd(); refreshActive(); renderBoard(); renderSide();
@@ -5881,7 +5929,8 @@ export async function saveSylText(text) {
        saved yet still has its marks filed, so putting it back through the list
        would bring them back with it (the two code reads, Fable F-B) */
     const gone = (sylSource(curSylId()) || []).map(e => e && e.id).filter(x => x && !byid[x]);
-    const back = arr.map(e => e.id).filter(x => gone.includes(x));
+    const goneSet = new Set(gone);
+    const back = arr.map(e => e.id).filter(x => goneSet.has(x));
     if (back.length) throw new Error('“' + back.join(', ') + '” was deleted from this chart and that is not saved yet. Press ✓ Save changes first (its marks are removed then), or Undo to bring it back.');
     pushUndo(); SYL = arr; byid = {}; SYL.forEach(e => byid[e.id] = e); markDirty(); closeModal(); refreshSyl(); renderBoard(); renderSide();
     return null;
@@ -5925,6 +5974,7 @@ export async function persistSyl() {
      export → import. The same rule the import follows ([HUMAN-RETEST] F7; the
      re-walk found this second writer, 23 Sep 26). */
   const shipped = isBuiltinSylId(id) ? SYLLABI[builtinBaseOf(id)] : null;
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- this copy becomes the saved chart: the ball editor clears a name or number by setting it undefined, and JSON drops those keys as the stored chart does
   const def = JSON.parse(JSON.stringify(SYL));
   /* the chart itself saved INSIDE the sweep's gesture: its marks and the chart they went with, one saved group */
   await sweepChart(id, new Set(gone), saved, SYL, () => {
@@ -5983,8 +6033,10 @@ async function planSylSweep(sylId, fallback) {
     /* clear this course's last-edit pointers that name the deleted syllabus, and
        lastStudent when it points at one — else loadCourseNow's restore reopens the
        (deleted, maybe later restored-empty) chart. */
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- gathers the sweep's keys in the fixed order its deletes and writes then run in, so they stay sequential
     const lastS = await sGet(kLastStudent(c));
     for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- gathers the sweep's keys in the fixed order its deletes and writes then run in, so they stay sequential
       try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId) { dels.push(k); if (lastS && k === kLast(c, lastS)) dels.push(kLastStudent(c)); } } catch (_) {}
     }
     /* repoint any course's plan.sylId that names the deleted id. */
@@ -6026,6 +6078,7 @@ async function sweepChart(sylId, kill, before, after, also) {
   for (const c of await allCourseNamespaces()) {
     const pre = 'v3:' + c + ':' + sylId + ':m:';
     for (const k of ((await storage.list(pre)).keys || [])) {
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- gathers the sweep's keys in the fixed order its deletes and writes then run in, so they stay sequential
       const m = sParse(await sGet(k), null, 'object'); if (!m) continue;
       const hit = Object.keys(m).filter(x => kill.has(x));
       const s = k.slice(pre.length);
@@ -6040,6 +6093,7 @@ async function sweepChart(sylId, kill, before, after, also) {
     }
     if (kill.size) {
       for (const k of ((await storage.list('v3:' + c + ':last:')).keys || [])) {
+        // eslint-disable-next-line react-doctor/async-await-in-loop -- gathers the sweep's keys in the fixed order its deletes and writes then run in, so they stay sequential
         try { const rec = JSON.parse((await sGet(k)) || 'null'); if (rec && rec.syl === sylId && kill.has(rec.event)) dels.push({ k, c, s: k.slice(('v3:' + c + ':last:').length) }); } catch (_) {}
       }
     }
@@ -6086,6 +6140,7 @@ export async function dupSyl() {
      is best-effort at the gesture boundary (the status line shows "local only" on
      failure), so the old mid-sequence rollback is neither reachable nor needed. */
   const id = mintSylId();
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- this copy becomes the new chart's saved record: the ball editor clears a name or number by setting it undefined, and JSON drops those keys as the stored chart does
   const defCopy = JSON.parse(JSON.stringify(SYL));
   const layoutSnap = await snapshotLayout(srcId);
   /* The copy reads exactly as the chart it came from, details included
@@ -6519,6 +6574,7 @@ async function applyBundle() {
   if (typeof SEED_STAMP === 'undefined' || !SEED_STAMP) return;
   let cur = null; try { cur = await sGet('v3:seedstamp'); } catch (e) {}
   if (cur === SEED_STAMP) return;
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- seeding writes each shipped record in turn, each failure skipped on its own, before the stamp that says it is done
   for (const k in (SEED_STATE || {})) { try { await sSet(k, SEED_STATE[k]); } catch (_) {} }
   try { await sSet('v3:seedstamp', SEED_STAMP); } catch (e) {}
 }
@@ -6575,16 +6631,18 @@ export async function collectCharts(ids, opts) {
   for (const id of list) {
     const src = sylSource(id); if (!src) continue;
     order.push(id);
-    syllabi[id] = JSON.parse(JSON.stringify(src));
-    layouts[id] = await layoutSnapshotFor(id, syllabi[id]);
+    syllabi[id] = structuredClone(src);
     sylcat.push(sylcatEntryOf(id));
   }
+  /* every chart's layout read together (an export only reads), then filed in the charts' order */
+  const snaps = await Promise.all(order.map(id => layoutSnapshotFor(id, syllabi[id])));
+  order.forEach((id, i) => { layouts[id] = snaps[i]; });
   /* each exported chart's OWN detail edits, keyed by the chart (D126), and
      nothing else: the file used to carry the whole baked table, and an import
      of one chart then put that table back over every other chart's edits
      ([HUMAN-RETEST] W1-9; D122). */
   const eventInfoBySyl = {};
-  for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
+  for (const id of order) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = structuredClone(eventInfo[id]);
   const out = { order, syllabi, layouts, eventInfoBySyl, sylcat };
   /* A backup of every chart carries the flex settings too (D1006), so export → wipe → import keeps them — the route the
      Tracker takes to the database (D120). Never on a file of some charts: a chart handed over must not change another
@@ -6600,7 +6658,7 @@ export async function collectCharts(ids, opts) {
        would have before (D127 "exactly as before the wipe"; the two code reads,
        Fable F-A / Astra #1). The file format accepts a details key a deleted id
        names without a chart of its own. */
-    for (const id of out.deleted) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = JSON.parse(JSON.stringify(eventInfo[id]));
+    for (const id of out.deleted) if (eventInfo[id] && Object.keys(eventInfo[id]).length) eventInfoBySyl[id] = structuredClone(eventInfo[id]);
   }
   return out;
 }
@@ -6689,12 +6747,14 @@ export async function applyCharts(charts, opts) {
        that way (D120; [HUMAN-RETEST] F7). */
     const shipped = isBuiltinSylId(target) ? SYLLABI[builtinBaseOf(target)] : null;
     if (shipped && sameDef(events, shipped)) delete customDefs[target];
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- Import: the file's chart becomes the saved record in its JSON form, undefined keys dropped, and an odd value never throws half-way through an import
     else customDefs[target] = JSON.parse(JSON.stringify(events));
     /* A ball the file's chart no longer has keeps its students' marks, out of
        sight — an import never deletes anyone's marks; importing the old chart
        back brings them back (owner, 23 Sep 26 — D132; the D124 wipe is a
        ✓ Save changes / Revert thing only). */
     const lay = (charts.layouts || {})[src];
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import writes each chart's layout in turn, in the file's chart order (D464: his charts must never be lost to a reordered write)
     if (lay) await sSet(kLayoutFor(course, target), JSON.stringify(lay));
     if (SYL_TOMB[target]) delete SYL_TOMB[target];
     if (SYL_HIDDEN.indexOf(target) >= 0) SYL_HIDDEN = SYL_HIDDEN.filter(x => x !== target);
@@ -6849,6 +6909,7 @@ export async function applyStudents(students, links, version) {
     const pcs = (students.byCourse || {})[c] || {};
     const pUp = upgradeCourseBlock({ plan: pcs.plan, lulls: pcs.lulls, pace: pcs.pace, bySyllabus: pcs.bySyllabus }, (links || {})[c] || null).block;
     const pExisting = [], pSyls = await storeSylIds(c);
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import's check of the students already here (D464), kept in one fixed pass beside the writes that follow; the storage under it is synchronous, so reading together would gain nothing
     for (const n of pSyls) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array')) if (isEntry(e)) pExisting.push(e);
     const { conflicts } = reconcileIds(pUp, pExisting);
     /* a course still on its legacy bare-string roster carries its people as
@@ -6862,6 +6923,7 @@ export async function applyStudents(students, links, version) {
     const legacyPid = Object.create(null);
     if (storeLinks) {
       const legRosters = [await sGet(kRoster(c))];
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- Import's check of the students already here (D464), kept in one fixed pass beside the writes that follow; the storage under it is synchronous, so reading together would gain nothing
       for (const n of pSyls) legRosters.push(await sGet(kRosterFor(c, n)));
       for (const raw of legRosters) for (const e of sParse(raw, [], 'array'))
         if (typeof e === 'string' && e && has(storeLinks, e) && typeof storeLinks[e] === 'string' && storeLinks[e]) legacyPid[e] = storeLinks[e];
@@ -6883,6 +6945,7 @@ export async function applyStudents(students, links, version) {
        10 Sep 26 — ids.js reconcileIds says why): every roster the store holds
        for the course, so a chart the file does not carry still counts. */
     const existing = [];
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- Import's check of the students already here (D464), kept in one fixed pass beside the writes that follow; the storage under it is synchronous, so reading together would gain nothing
     for (const n of await storeSylIds(c)) for (const e of sParse(await sGet(kRosterFor(c, n)), [], 'array')) if (isEntry(e)) existing.push(e);
     const { block } = reconcileIds(up, existing);
     /* ADDED TO WHAT IS HERE, NOT WRITTEN OVER IT — the promise the Import
@@ -6913,6 +6976,7 @@ export async function applyStudents(students, links, version) {
     for (const n in block.bySyllabus) for (const e of (block.bySyllabus[n].roster || [])) if (isEntry(e) && !has(label, e.id)) label[e.id] = e.name;
     for (const n of await storeSylIds(c)) {
       if (has(block.bySyllabus, n)) continue;
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- Import relabels each other chart's student list in turn, reading and writing it in one step (D464: never a reordered write)
       const rr = sParse(await sGet(kRosterFor(c, n)), [], 'array'); let changed = false;
       for (const e of rr) if (isEntry(e) && has(label, e.id) && e.name !== label[e.id]) { e.name = label[e.id]; changed = true; }
       if (changed) await sSet(kRosterFor(c, n), JSON.stringify(rr));
@@ -7145,6 +7209,7 @@ export async function importClick() {
       }
       if (!sylEntry(id) || orderedSylIds().length <= 1) continue;
       const nm = sylName(id);
+      // eslint-disable-next-line react-doctor/async-await-in-loop -- sequential on purpose: the chart on screen is switched away before that chart is deleted and the next one is handled
       if (curSylId() === id) await switchSylNow(firstOtherSylId(id));
       trkGesture(() => {
         SYLS = SYLS.filter(e => e.id !== id);

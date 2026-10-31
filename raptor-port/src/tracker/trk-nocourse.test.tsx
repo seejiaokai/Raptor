@@ -11,7 +11,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import * as core from './app/core.js'
 import App from './App.jsx'
-import { useStorageImpl } from './storage.js'
+import { setStorageImpl } from './storage.js'
 import { Whiteboard } from '../storage/whiteboard'
 import { trackerTarget } from '../storage/adapters'
 
@@ -25,14 +25,14 @@ beforeAll(async () => {
      last test and writes into a closed console (a unit share red with every test green — [TOPBAR-PAIR-TEARDOWN-LOG]) */
   await Promise.all([import('../leavewar/LeaveWarPage'), import('./TrackerPage')])
   wb = new Whiteboard()
-  useStorageImpl(trackerTarget(wb))
+  setStorageImpl(trackerTarget(wb))
   C.setTrackerSeedDemo(false)
   await C.init()
   host = document.createElement('div'); document.body.appendChild(host)
   root = createRoot(host)
   await act(async () => { root.render(<App active={true} />); await tick() })
 })
-afterAll(async () => { await act(async () => { root.unmount() }); host.remove(); useStorageImpl(null) })
+afterAll(async () => { await act(async () => { root.unmount() }); host.remove(); setStorageImpl(null) })
 
 describe('the Tracker on a shared store: no course, no student', () => {
   it('boots with no course and nobody on it — never the demo course or its pair', () => {

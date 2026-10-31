@@ -58,6 +58,7 @@ export function MoreButton({ items, testid, place = 'col4' }: { items: MoreItem[
   const btn = useRef<HTMLButtonElement>(null)
   const menu = useRef<HTMLDivElement>(null)
   const close = (refocus: boolean) => { setOpen(false); if (refocus) btn.current?.focus() }
+  // eslint-disable-next-line react-doctor/effect-needs-cleanup -- a press's own listeners must outlive this effect (that press closes the menu, which ends it) to catch the click it makes; each removes itself at that click, a cancel or the next press
   useEffect(() => {
     if (!open) return
     /* Escape takes the menu first, then (a second press) the window: caught on the WINDOW in its capture phase, which runs

@@ -373,6 +373,21 @@ describe('the Manning fold on a phone, remembered per person (D1258)', () => {
     expect(localStorage.getItem('lw:manning:tata')).toBeNull()    // TATA never chose, so nothing is kept for him
   })
 
+  /* React Doctor clean-up (D1534): the fold's memory is written beside the setter, never inside it — each press still
+     turns it and remembers what it turned to, press after press */
+  it('two presses in a row open it then fold it, each remembered', () => {
+    phone(true)
+    act(() => setViewer('ramp'))
+    render(<Matrix />)
+    expect(shown()).toBe(false)
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(shown()).toBe(true)
+    expect(localStorage.getItem('lw:manning:ramp')).toBe('open')
+    fireEvent.click(screen.getByTestId('counts-toggle'))
+    expect(shown()).toBe(false)
+    expect(localStorage.getItem('lw:manning:ramp')).toBe('shut')
+  })
+
   /* the M2 code read's F6: a width that crosses the phone line after the page opened decides the fold again — a desktop
      window narrowed folds it, widened again opens it (D1258) */
   it('follows a change of width: narrowed to a phone it folds, widened again it opens', () => {

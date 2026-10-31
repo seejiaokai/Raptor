@@ -148,8 +148,6 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
   /* ---- the month ------------------------------------------------------------------------------------------------- */
   const goTo = (y: number, m: number, dir: number) => { slide.current = dir; setCalMonth({ y, m }); notify() }
   const step = (n: number) => { const k = cur.y * 12 + (cur.m - 1) + n; goTo(Math.floor(k / 12), (k % 12) + 1, n) }
-  const stepRef = useRef(step)
-  stepRef.current = step
   const goToday = () => { const k = (now.getFullYear() * 12 + now.getMonth()) - (cur.y * 12 + cur.m - 1); goTo(now.getFullYear(), now.getMonth() + 1, k < 0 ? -1 : k > 0 ? 1 : 0) }
   /* the new month comes in from the side the page turned (owner, 22 Aug 26 — the first calendar's own slide) */
   useLayoutEffect(() => {
@@ -165,7 +163,7 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
 
   /* ---- the pointer: one machine, wired once; it reads the latest handlers through a ref -------------------------- */
   const live = useRef({ showDay, step })
-  live.current = { showDay, step }
+  useLayoutEffect(() => { live.current = { showDay, step } })   // after each commit, never mid-render; read only by the machine's callbacks
   useEffect(() => {
     const el = gridRef.current
     if (!el) return

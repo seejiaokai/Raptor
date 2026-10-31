@@ -162,8 +162,10 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
     window.addEventListener('resize', on)
     return () => window.removeEventListener('resize', on)
   }, [])
+  /* the latest close, for the keydown listener wired once below — written after each commit, never during a render
+     React may throw away (its only reader is that listener, which runs on a key press, long after the commit) */
   const closeRef = useRef(onClose)
-  closeRef.current = onClose
+  useLayoutEffect(() => { closeRef.current = onClose })
 
   /* ESCAPE AND TAB ARE THE CALENDAR'S WHILE IT IS UP — heard on the way DOWN, at the window, before any listener of
      the form behind it. Escape: the windows shell closes its front window on it (at the window, on the way back up) and

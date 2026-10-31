@@ -35,6 +35,15 @@ body.tr-on{padding-bottom:0;overflow:hidden}
    reached it (Fable F-B). */
 #detailBubble .mkrec{margin-top:5px;padding-top:5px;border-top:1px dashed var(--edge,#2A313A)}
 #detailBubble .mini{font-size:11px;color:var(--ink-3,#8A96A3)}
+/* A PRESS THAT WAS A DIV OR A SPAN, NOW A REAL <button> (React Doctor's clean-up, D1534, 31 Oct 26): the lull calendar's
+   days, the Info half's event and failure chips, a student's rename pencil and remove ✕, the Failures title, a lull
+   period's dates and its ✕ — so the keyboard reaches them — and each must look exactly as the
+   element it replaced. `.trbtn` takes off all a button brings that a div or span had not (the browser's own button look,
+   and this file's bare `button` rules: border, fill, padding, rounding, 12.5px words) and leaves the element's own class
+   rules to draw it as before. Out here, not in the wrapper, for its weight: it must outweigh the wrapper's bare `button`
+   rules (an id and one element) and lose to every class rule in it (an id and a class); `html body #page-tracker`
+   with a :where() (an id and two elements) is the one weight between them. */
+html body #page-tracker :where(button.trbtn){appearance:none;-webkit-appearance:none;margin:0;padding:0;border:0;border-radius:0;background:none;font:inherit;color:inherit;letter-spacing:inherit;word-spacing:inherit;text-transform:inherit;text-indent:inherit;text-shadow:inherit;text-align:inherit;cursor:inherit}
 
 #page-tracker {
 /* RAPTOR COLLISION RESETS — first inside the wrapper so every Tracker rule
@@ -505,7 +514,7 @@ svg.perf .edgehit{pointer-events:none}
 .card h3 .hbtns button{text-transform:none;letter-spacing:0}
 .bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin:3px 0 8px}.bar>div{height:100%;background:linear-gradient(90deg,var(--flight),var(--acad))}
 .kv{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;padding:3px 0;border-bottom:1px dashed var(--line)}
-.kv:last-child{border-bottom:0}.kv span:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
+.kv:last-child{border-bottom:0}.kv span:first-child,.kv b>.evchip:first-child{color:var(--muted)}.kv b{font-variant-numeric:tabular-nums;text-align:right}
 .big{display:flex;gap:8px;flex-wrap:wrap}.big .num{flex:1;min-width:60px;text-align:center;background:var(--panel);border:1px solid var(--line);border-radius:9px;padding:7px}
 .big .num .v{font-size:20px;font-weight:700}.big .num .l{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:.6px}
 .flexbar{padding:8px 10px;border-radius:8px;font-weight:700;color:#fff;text-align:center;font-size:13px}
@@ -553,6 +562,9 @@ svg.perf .edgehit{pointer-events:none}
 .lullbtns{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
 .lullpick{display:flex;align-items:center;gap:8px;padding:4px 2px}
 .lullchip{cursor:pointer}.lullchip:hover{border-color:var(--accent)}
+/* a lull period's dates are a button inside the chip since 31 Oct 26 (SidePanel.jsx LullCard): it lays them out as the
+   chip laid out its own pieces — in a row, centred, the chip's own gap between them */
+.lullchip .lullopen{display:flex;align-items:center;gap:inherit}
 .cal{user-select:none}.cal .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
 .cal .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
 .cal .dow{font-size:9px;color:var(--muted);text-align:center;padding:2px}
@@ -584,7 +596,11 @@ svg.perf .edgehit{pointer-events:none}
 #dlgList .dlg-none{padding:8px 10px}
 .seg-key{display:flex;gap:5px;flex-wrap:wrap;font-size:11px}
 .mini{font-size:11px;color:var(--muted)}
-.field{display:flex;gap:7px;align-items:center;margin:5px 0}.field label{min-width:120px;color:var(--muted);font-size:12px}
+.field{display:flex;gap:7px;align-items:center;margin:5px 0}.field label,.field .flbl{min-width:120px;color:var(--muted);font-size:12px}
+/* a date box's caption (the Info panel's four, the add box's course start) is a plain caption since 31 Oct 26, not a
+   <label>: the box is a button that already says its name, and a tied label would open the calendar on a press of the
+   words. It keeps the label's look and the label's arrow pointer. */
+.field .flbl{cursor:default}
 small.hint{color:var(--muted);font-size:11px}
 /* Docked, not floating. It used to be position:fixed over the board at
    (360,128) — 720x139 — which put it on top of the first event of every chart:
@@ -640,7 +656,7 @@ small.hint{color:var(--muted);font-size:11px}
 @media(max-width:1050px){
  .curGrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:10px;row-gap:2px}
  .curGrid .field{flex-direction:column;align-items:stretch;gap:1px;margin:2px 0}
- .curGrid .field label{min-width:0}
+ .curGrid .field label,.curGrid .field .flbl{min-width:0}
  .curGrid .field input{width:100%!important}
  .curKv{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px}
  .curKv .kv{border-bottom:0;padding:2px 0}
@@ -687,7 +703,7 @@ small.hint{color:var(--muted);font-size:11px}
  .big{flex-wrap:nowrap}
  .big .num .v{font-size:13.5px}.big .num .l{font-size:7.5px;letter-spacing:.2px}
  /* Four date fields, compactly. */
- .curGrid .field label{font-size:10px}
+ .curGrid .field label,.curGrid .field .flbl{font-size:10px}
  .curGrid .field{margin:1px 0}
  .flexPair{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
  /* flex off (D1006, D1018): the currency bar alone takes the whole width */
@@ -739,7 +755,7 @@ small.hint{color:var(--muted);font-size:11px}
     scrolling again. */
  .kv{line-height:1.4}
  .flexbar{padding:3px 4px}
- .curGrid .field label{font-size:9.5px}
+ .curGrid .field label,.curGrid .field .flbl{font-size:9.5px}
  .chips{gap:3px}
  .curGrid .field input{padding:4px 3px}
  .big .num{padding:2px}.big .num .v{font-size:12.5px}

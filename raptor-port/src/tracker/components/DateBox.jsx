@@ -60,8 +60,11 @@ export function DateBox({ value, onCommit, id, title, style, narrow, clearable =
   const row = useRef(null);
   useEffect(() => { gone.current = false; return () => { gone.current = true; }; }, []);
   /* the line belongs to the day it refused: when the saved day changes under the box (a
-     re-sort of the failures list moved another failure into this row), it goes (walker b F-b4) */
-  useEffect(() => { setWarn(''); }, [saved]);
+     re-sort of the failures list moved another failure into this row), it goes (walker b F-b4).
+     Cleared while rendering (React's "adjust state when a prop changes"), not in an effect after paint: the effect
+     drew the old line under the new day for one frame first (React Doctor, 31 Oct 26). */
+  const [shownFor, setShownFor] = useState(saved);
+  if (shownFor !== saved) { setShownFor(saved); setWarn(''); }
   const hand = async v => {
     if (v !== '' && !core.isWholeDay(v)) return;
     setWarn('');

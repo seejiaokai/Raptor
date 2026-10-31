@@ -191,7 +191,7 @@ the phone perf budget. Don't convert them to components.
 
 **The Leave War tab is a SECOND app with a SECOND store** — its architecture (its own store and storage seam, what it persists, the one absence record, the four seams that cross the boundary and only four) moved 24 Sep 26, whole, to `../.claude/rules/decisions/leave-war.md` §Architecture, which loads with any Leave War file and with every file where it meets the rest of the app.
 
-**The Tracker tab is a THIRD app with a THIRD store** — its architecture (its own store and storage doorway, the file is a format not a store, stable ids, the three seams, the same access for everyone — D121, the standalone export) moved 24 Sep 26, whole, to `../.claude/rules/decisions/tracker.md` §Architecture, which loads with any Tracker file and with every file where it meets the rest of the app.
+**The Tracker tab is a THIRD app with a THIRD store** — its architecture (its own store and storage doorway, the file is a format not a store, stable ids, the three seams, the same access for everyone — D121; no standalone export any more, D1538) moved 24 Sep 26, whole, to `../.claude/rules/decisions/tracker.md` §Architecture, which loads with any Tracker file and with every file where it meets the rest of the app.
 
 ## Coding conventions
 
@@ -203,6 +203,7 @@ the phone perf budget. Don't convert them to components.
 - **Comments explain WHY**, in prose, above the code — often the bug they
   fix. That density is the house style; match it.
 - **`scheduler.css` carries measured contracts, not preferences.**
+- **New and changed code follows React Doctor's rules** (owner D1534, 31 Oct 26): before a push `npm run lint:changed` reports no new finding; a finding is fixed, or kept with its reason in a disable comment on the line above it — never by changing `doctor.config.json`; `npm run lint` runs the whole check the kit's way.
 - **Every bug fix lands with a test that pins it**; new features get new
   tests. Never weaken a failing assertion — understand it.
 - **Keep the records true in the same PR — each fact in its ONE home** (D140, `../.claude/rules/doc-structure.md`): a file change edits `docs/file-map.md`; open work in `../OUTSTANDING.md`, where things stand in `../HANDOFF.md` `## Now`; a passage not needed moves WHOLE to `docs/archive/` (D138, D141); a code change never trims a document (D29) · full text: docs/guide-full.md §Keep the records true in the same PR

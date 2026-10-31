@@ -43,7 +43,7 @@ import { openBootGroup } from '../storage/schema'
 import { tableOf } from '../storage/tables'
 import { recordKey, splitKey, type Snapshot } from '../storage/backend'
 import type { Change, Whiteboard } from '../storage/whiteboard'
-import { useStorageImpl } from '../tracker/storage.js'
+import { setStorageImpl } from '../tracker/storage.js'
 import * as trk from '../tracker/app/core.js'
 import { PEOPLE } from '../engine/people'
 import { PERMS, T } from './perms'
@@ -63,7 +63,7 @@ beforeAll(async () => {
   wb = w
   const bootGroup = openBootGroup(wb)
   storeBackend.impl = settingsAdapter(wb)
-  useStorageImpl(trackerTarget(wb))
+  setStorageImpl(trackerTarget(wb))
   hydrate(wb)
   wireRows(wb)
   initStore()
@@ -83,7 +83,7 @@ beforeAll(async () => {
   flushAll = () => postman.flush()
   wb.subscribe(g => groups.push({ g: g.slice(), trkInit: inTrkInit }))
 })
-afterAll(() => { storeBackend.impl = null; useStorageImpl(null); resetSession(null) })
+afterAll(() => { storeBackend.impl = null; setStorageImpl(null); resetSession(null) })
 
 const itemsOf = (g: Change[]) => g.filter(c => c.collection !== 'changes')
   .map(c => ({ table: tableOf(c.collection, c.id), key: recordKey(c.collection, c.id), op: c.value === null ? 'delete' : 'put' }))
