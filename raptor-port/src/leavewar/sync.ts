@@ -2348,8 +2348,7 @@ function hiddenIdentity(id: string): Person | null {
   return projectPeople(true).find(p => p.id === id) || null
 }
 /* (the same answer, for the other files) */
-// any: ui/Matrix.tsx hands this straight to the person window's `person` (a Person) behind its own test that it is there — typed Person | null that line does not build, and that file is not this one's to change; narrow both together
-export function warIdentityIfHidden(id: string): any { return hiddenIdentity(id) }
+export function warIdentityIfHidden(id: string): Person | null { return hiddenIdentity(id) }
 /* the auto-archive's old name — every caller and test that runs it now runs the outcomes (an 'overseas' posting IS
    the old "Archive on PO date") */
 export const runPoArchive = runPoOutcomes

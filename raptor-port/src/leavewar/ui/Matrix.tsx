@@ -3337,6 +3337,9 @@ export function Matrix() {
   // Every "may this be bid on" question goes through the store's `canBidOn` — the day open in the period holding it,
   // a member's today, his own row (D1177, D1211) — the same one body every write asks.
   const deciding = canDecide(role)
+  /* THE PERSON WINDOW'S MAN — his row on the grid, or, with none (a SANS man while SANS is off), his identity as the war would
+     have it (sync.ts warIdentityIfHidden); none at all and the window does not open */
+  const whoPerson = who ? (people.find(p => p.id === who.id) ?? warIdentityIfHidden(who.id)) : null
 
   // The dotted "moved" mark shows on ANY move of a leave already approved (D1177's reading — no longer only once
   // bidding closed). The store gates the RECORD: a bid that only waits stores no trail when it moves, so the mark
@@ -4258,10 +4261,10 @@ export function Matrix() {
           Balances builder's 1). A man with no row on the grid (a SANS man while SANS is off — B12, [LW-CLASH-ROWLESS-TAP])
           opens from his identity as the war would have it (sync.ts warIdentityIfHidden); his figures read the same engine.
           Keyed on the visit, so another man — or his own window opened again — is a fresh window. */}
-      {who && (people.some(p => p.id === who.id) || warIdentityIfHidden(who.id)) && createPortal(
+      {who && whoPerson && createPortal(
         <PersonWindow
           key={`${who.id}|${who.since ?? ''}`}
-          person={people.find(p => p.id === who.id) ?? warIdentityIfHidden(who.id)}
+          person={whoPerson}
           since={who.since}
           hasRow={people.some(p => p.id === who.id)}
           onClose={() => setWho(null)}
