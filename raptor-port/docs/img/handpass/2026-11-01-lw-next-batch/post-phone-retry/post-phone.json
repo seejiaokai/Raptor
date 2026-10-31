@@ -1,0 +1,29 @@
+[
+ {
+  "id": "DP1 the Redo of an approval after a Delete posting is set: refused, said, nothing written",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo offered true; first press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0; still offered true; second press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0",
+  "pics": [
+   "dp1-a-redo-refused",
+   "dp1-b-row-after-refusal"
+  ]
+ },
+ {
+  "id": "DP2 the posting taken back (\"Undo post out\"): the same Redo goes through",
+  "size": "phone",
+  "verdict": "FAIL",
+  "said": "\"Undo post out\" offered and pressed false; Redo said [\"Switch back to the admin view to redo that.\"]; his leave on 11 Nov 0",
+  "pics": [
+   "dp2-a-posting-sheet",
+   "dp2-row-after-redo"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

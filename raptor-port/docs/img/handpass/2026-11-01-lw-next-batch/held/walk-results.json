@@ -1,0 +1,120 @@
+[
+ {
+  "id": "H1-line",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened bid-picker; PM lit true; line \"OTHAM“Station board till 22 Jul”board.pdf· change it on the Inputs page\"; chips board.pdf",
+  "pics": [
+   "h1-comet-other-am.png"
+  ]
+ },
+ {
+  "id": "H2-doc",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "after a tap on the chip, open: docview-placed",
+  "pics": [
+   "h2-comet-doc-open.png"
+  ]
+ },
+ {
+  "id": "H3-second-day",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "line \"OTHAM“Station board till 22 Jul”board.pdf· change it on the Inputs page\"",
+  "pics": [
+   "h3-comet-day2.png"
+  ]
+ },
+ {
+  "id": "H4-attach",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "opened bid-picker; AM lit true; line \"ATCHPM· 145 Sqn“Exercise”· change it on the Inputs page\"; chips 0",
+  "pics": [
+   "h4-havoc-attach-pm.png"
+  ]
+ },
+ {
+  "id": "H5-place",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "cell now LL ATCH",
+  "pics": [
+   "h5-havoc-after.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "P1-line",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line \"OTHAM“Station board till 22 Jul”board.pdf· change it on the Inputs page\"; chips board.pdf; line 25,377 inside window 12,390 true; no sideways scroll true",
+  "pics": [
+   "p1-chromium-comet-other.png"
+  ]
+ },
+ {
+  "id": "P2-doc",
+  "size": "chromium",
+  "verdict": "PASS",
+  "said": "after a tap on the chip, open: docview-placed",
+  "pics": [
+   "p2-chromium-doc-open.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "chromium",
+  "verdict": "FAIL",
+  "said": "phone requestfailed: blob:http://localhost:4174/1e01db4a-773b-4efe-b12c-40bd653570da net::ERR_ABORTED",
+  "pics": []
+ },
+ {
+  "id": "P1-line",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line \"OTHAM“Station board till 22 Jul”board.pdf· change it on the Inputs page\"; chips board.pdf; line 25,377 inside window 12,390 true; no sideways scroll true",
+  "pics": [
+   "p1-webkit-comet-other.png"
+  ]
+ },
+ {
+  "id": "P2-doc",
+  "size": "webkit",
+  "verdict": "PASS",
+  "said": "after a tap on the chip, open: docview-placed",
+  "pics": [
+   "p2-webkit-doc-open.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "webkit",
+  "verdict": "FAIL",
+  "said": "phone requestfailed: blob:http://localhost:4174/15fff112-f494-4c46-8d9c-ff746eef60e2 Frame load interrupted",
+  "pics": []
+ },
+ {
+  "id": "M1-own",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "opened bid-picker; line \"OTHAM“Exam board till 29 Jul”notice.pdf· change it on the Inputs page\"; chips notice.pdf",
+  "pics": [
+   "m1-ranger-own.png"
+  ]
+ },
+ {
+  "id": "M-errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -13,7 +13,7 @@ const L = await import('./lw-rr-lib.mjs')
 const SIZE = process.env.SIZE || 'desk'
 const ONLY = (process.env.ONLY || '').split(',').filter(Boolean)
 const want = id => !ONLY.length || ONLY.includes(id)
-console.log('[lw-nb-post v1]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY, '→', L.OUT)
+console.log('[lw-nb-post v2]', SIZE, ONLY.join(',') || 'all', 'today', L.TODAY, '→', L.OUT)
 L.clearOut()
 
 /* the days (T0 = Wed 4 Nov 26): his Delete posting dated Mon 9 Nov — still to run, so he is not deleted; the war refuses his
@@ -32,6 +32,9 @@ const approvedOn = async (pid, d) => { const ok = await L.pendingLL(w, pid, d); 
 /* the posting sheet's own "Undo post out", from an empty day of his from the posting's date (a day holding his bid opens the
    day's list there — answer C of [ARCH-STACK]) */
 async function undoPostOutOn(pid, d, pic = null) {
+  /* the page back at its top first: on a phone the last row picture left the tab row above the screen, and a press aimed
+     there landed on the top bar (the walker's DP2 on the phone, 1 Nov 26) */
+  await L.settle(w)
   await L.toWar(w); await L.openGrid(w)
   await L.openCell(w, pid, d)
   if (pic) await L.shot(w, pic)
@@ -189,8 +192,10 @@ if (want('dp6')) {
     ap && !!mv && moved && back && on === 1 && off === 0 && !said.some(s => /Can’t (undo|redo)/.test(s)) ? 'PASS' : 'FAIL',
     `approved ${ap}; moved ${!!mv && moved}; Undo put it back ${back}; Redo said ${JSON.stringify(said)}; leave on ${L.dm(LAND)} ${on}, on ${L.dm(BEFORE)} ${off}`, ['dp6-a-row-after-redo'])
   /* the live Move, for comparison: back to 6 Nov and across again, the posting standing */
-  await L.toWar(w); await L.undo(w)
+  await L.settle(w); await L.toWar(w); await L.undo(w)
+  await L.settle(w)
   const mv2 = await L.moveLeave(w, id, BEFORE, LAND, 'dp6-b-live-move-staged')
+  if (!(await L.vis(P, L.T('move-confirm')))) await L.shot(w, 'dp6-b-live-move-staged')
   const live = (await leaveAt(id, LAND)).length
   L.rec('DP6-live the live Move across the Delete posting’s date, for comparison', SIZE, 'RECORDED',
     `Move offered ${!!mv2}, banner "${mv2?.banner}", after "${mv2?.after}"; leave on ${L.dm(LAND)} ${live}`, ['dp6-b-live-move-staged'])

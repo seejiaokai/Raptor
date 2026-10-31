@@ -1,0 +1,47 @@
+[
+ {
+  "id": "DP1 the Redo of an approval after a Delete posting is set: refused, said, nothing written",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo offered true; first press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0; still offered true; second press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0",
+  "pics": [
+   "dp1-a-redo-refused",
+   "dp1-b-row-after-refusal"
+  ]
+ },
+ {
+  "id": "DP2 the posting taken back (\"Undo post out\"): the same Redo goes through",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "\"Undo post out\" offered and pressed true; Redo said [\"Redid: a decision on a bid\"]; his leave on 11 Nov 1",
+  "pics": [
+   "dp2-a-posting-sheet",
+   "dp2-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP6 the Redo of a move across the Delete posting’s date: goes through (a move is no approval)",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "approved true; moved true; Undo put it back true; Redo said [\"Redid: moving a bid\"]; leave on 10 Nov 1, on 6 Nov 0",
+  "pics": [
+   "dp6-a-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP6-live the live Move across the Delete posting’s date, for comparison",
+  "size": "phone",
+  "verdict": "RECORDED",
+  "said": "Move offered true, banner \"Tap a day to move 1 entry Cancel\", after \"null\"; leave on 10 Nov 1",
+  "pics": [
+   "dp6-b-live-move-staged"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "phone",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
