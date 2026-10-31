@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1548 | 31 Oct 26 | A tap on a Leave War day held whole by an entry filed on the Inputs page — leave, a medical, an overseas duty — opens the bid window so more can still be added there, Grant OIL first, with one line naming the held entry and where it is changed, as a day held by a course already does (D1395). |
 | D1545 | 31 Oct 26 | A posting out with the Delete outcome keeps refusing a man's leave from its date — Approve, Approve all, the bid windows and Auto-approve all refuse it — because he leaves flying for good (D287) and has no next squadron to refuse it; every other posting refuses nothing (D1541). |
 | D1544 | 31 Oct 26 | In the Leave War's windows Approve on a refused bid is greyed and cannot be pressed while a medical or leave holds that time, and any refusal of that kind names what holds the day — "OML holds 11 Nov, so the bid can't be approved"; Refuse and Delete stay. |
 | D1543 | 31 Oct 26 | On a Leave War day where one half holds approved leave, the bid window's Whole day is greyed and cannot be pressed; the held half stays lit, the free half is offered, and a leave pressed while the held half is lit says "The morning is LL. Pick PM to place the afternoon." — as leave filed on the Inputs page already offers only the free half. |
