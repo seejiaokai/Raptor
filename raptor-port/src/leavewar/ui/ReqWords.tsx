@@ -16,7 +16,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { remarksTyped, tillShown } from '../../engine/inputs'
 import { setLeaveRemarks } from '../../ui/inputedit'
 import { inputDates, type WarInput } from '../absences'
-import { DocField, inputById, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
+import { DocField, inputById, requestDocRow, rowDocIds, tillOfISO, usePlanVersion } from '../sync'
 import { TILL_DEFAULT, type ReqDraft } from './reqdraft'
 
 /* THE BOX GROWS WITH ITS WORDS (his D1333): one line tall to start; as the words wrap it grows a line at a time, so a long
@@ -48,13 +48,15 @@ export function useGrow(value: string) {
 /** ROUND 3's ONE ROW (his D1311, approved D1332): the dark Remarks box (D1308), the words "Remarks" inside it until he types
  *  (no label beside it), its "till <date>", then the app's one Document button — the bid windows' and the day's list's.
  *  Enter saves the words, as before; it never starts a new line (a remark is one run of words that wraps — D1333). */
-export function WordsRow({ value, onChange, till, tillOn, onTill, testPrefix = 'bid', readOnlyDocs = false }: {
+export function WordsRow({ value, onChange, till, tillOn, onTill, viewRow, testPrefix = 'bid', readOnlyDocs = false }: {
   value: { remarks: string; docIds: string[] }
   onChange: (next: { remarks: string; docIds: string[] }, how: 'type' | 'commit') => void
   /** "till <date>" — '' where the entry prints none */
   till: string
   tillOn: boolean
   onTill?: (on: boolean) => void
+  /** the page a Document chip's file opens on in the viewer (his D1292) — whose, which kind, which days */
+  viewRow: () => any
   testPrefix?: string
   readOnlyDocs?: boolean
 }) {
@@ -85,28 +87,32 @@ export function WordsRow({ value, onChange, till, tillOn, onTill, testPrefix = '
         )}
       </span>
       <span className="bp-doc" data-testid={`${testPrefix}-doc-row`}>
-        <DocField ids={value.docIds} onIds={ids => { if (!readOnlyDocs) onChange({ ...value, docIds: ids }, 'commit') }} />
+        <DocField ids={value.docIds} viewRow={viewRow} onIds={ids => { if (!readOnlyDocs) onChange({ ...value, docIds: ids }, 'commit') }} />
       </span>
     </div>
   )
 }
 
-export function ReqWordsRows({ value, onChange, start, end, testPrefix = 'bid', compact = false }: {
+export function ReqWordsRows({ value, onChange, start, end, who, testPrefix = 'bid', compact = false }: {
   value: ReqDraft
   /** `commit`: a change to save now on a held request (a file, a ✕, the tick, the box left or Enter); `type`: a keystroke */
   onChange: (next: ReqDraft, how: 'type' | 'commit') => void
   /** the request's first and last day (ISO), for its "till <date>" */
   start: string
   end?: string
+  /** whose request and its kind ('' while none is picked) — the page a Document chip opens on (his D1292: a file just added
+   *  opens in the viewer straight away, before it is placed) */
+  who: { personId: string; code?: string }
   testPrefix?: string
   /** round 3's one row (the bid windows and the day's list); the closed-day window keeps its two labelled rows */
   compact?: boolean
 }) {
   const till = tillOfISO('LL', start, end)
   const on = typeof value.till === 'boolean' ? value.till : TILL_DEFAULT
+  const viewRow = () => requestDocRow({ personId: who.personId, code: who.code ?? '', from: start, to: end ?? start, docIds: value.docIds, remarks: value.remarks })
   if (compact) {
     return (
-      <WordsRow testPrefix={testPrefix} value={value} till={till} tillOn={on}
+      <WordsRow testPrefix={testPrefix} value={value} till={till} tillOn={on} viewRow={viewRow}
         onChange={(next, how) => onChange({ ...value, ...next }, how)}
         onTill={v => { const { till: _drop, ...rest } = value; onChange(v === TILL_DEFAULT ? rest : { ...rest, till: v }, 'commit') }} />
     )
@@ -115,7 +121,7 @@ export function ReqWordsRows({ value, onChange, start, end, testPrefix = 'bid', 
     <>
       <div className="bidsheet-row" data-testid={`${testPrefix}-doc-row`}>
         <span className="lab">Document</span>
-        <DocField ids={value.docIds} onIds={ids => onChange({ ...value, docIds: ids }, 'commit')} />
+        <DocField ids={value.docIds} viewRow={viewRow} onIds={ids => onChange({ ...value, docIds: ids }, 'commit')} />
       </div>
       <div className="bidsheet-row" data-testid={`${testPrefix}-rmk-row`}>
         <label className="lab" htmlFor={`${testPrefix}-remarks`}>Remarks</label>
@@ -202,6 +208,8 @@ export function LeaveWords({ row, personId, testPrefix = 'bid', onRefused, flush
   }
   return (
     <WordsRow testPrefix={testPrefix} till={till} tillOn={tillShown(row)}
+      /* the leave's own file opens on the leave itself, as its read-only chips do (openInputDocs) */
+      viewRow={() => row ?? null}
       value={{ remarks: edit ?? typed, docIds }}
       onChange={(next, how) => {
         if (how === 'type') {

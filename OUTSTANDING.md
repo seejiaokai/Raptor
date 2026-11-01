@@ -90,7 +90,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [LW-DELETED-REDO-NETSUM] — for a deleted man, one war step that approves a day his late posting refuses AND sends back another approved day of his adds nothing overall, so its Redo is let through; no screen sends that pair in one step (older; found 31 Oct 26 by a security read).
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -98,6 +97,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-TWO-BOX-LETTERS] — two whole-day boxes side by side (D1167) clip three-letter codes ("FO*" beside "TRG"); common now that a weekend duty under Unavailable shows its FO* beside it — how to draw it, a question for him with pictures.
 - [SCHED-UNAV-PENDING-MARK] — on a published day an input under the Unavailable list carries no "waiting to go out" mark on its row, where a Ground Programme row does (the count and the changes window do say it) — older than the M3 build; found by its FULL check.
 - [LW-NIGHT1025-OLDER] — older faults the night of 25 Oct 26's walk met: a posted-out man's gone days, a double tap's second tap, a refused war change that puts back the role and viewer, and two tabs (with the database step); the wrong-bid words and the bubble under the day panel fixed (pull request 569).
+- [LW-VIEWER-TAB] — Tab inside the document viewer over a blocking Leave War window goes round one button (the window's own Tab keeping is heard first); its ✕ and ‹ are not reached by Tab, Escape still closes it — older, found by the doc-chip read, 2 Nov 26.
+- [LW-DOCFIELD-CHIP-OPENS] — a bid window's own Document row: its chip (a file just added, or one on his placed leave) opens nothing when tapped — D1292's other half, never built and lost from the backlog; found 2 Nov 26 by the document viewer's walk.
 - [LW-PICK-HELD-MARK] — the tapped day's cyan mark (D1289) BUILT 28 Oct 26 with [LW-WHOLE-LEAVE-WINDOW], and the phone's scroll (D1290) built in M3; left: whether the one-day window can be shorter — pictures to him first.
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-READS-OWED-1024] — left: design lessons 49, 50 and 52 reworded to what he said (the fix worded in the reader's file), and D1297's sweep of earlier evidence sheets with its fresh reader.
@@ -112,10 +113,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
-- [LW-HELDHALF-WORDS] — the free half's line for a commitment (D1371) prints no "till <date>" and no documents, where the day's list and (since [LW-HELD-DAY-ADD]) the held day's lines do; small, the Leave War's next batch.
-- [LW-DELETE-POSTING-RESTORE] — before a Delete posting runs, Redo can put back an approval the live Approve refuses from its date (D1541's one kept refusal).
 - [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); the bell line drawn for him before it is built.
-- [E2E-POSTING-DATES-PIN] — from 12 Dec 26 three Leave War browser tests of a posting out skip themselves (they date the posting 20 days on, inside the 2026 demo war): pin their clock first.
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
@@ -190,6 +188,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
+- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived, the screen-design rulings to an area of their own, the Codex guide shortened — its own documents-only job.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -240,6 +239,25 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
+**What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
+the general rulings (`.claude/rules/decisions/how-we-work.md`, 209 lines, 56 KB — the biggest), the unscoped rule files
+(`shipping.md`, `record-decisions.md`, `doc-structure.md`, `bug-check.md`, `plain-language.md`), `AGENTS.md` (written for
+Codex, but loaded into every Claude chat too) and the memory index; `raptor-port/CLAUDE.md` (~30 KB) loads too once any
+file under `raptor-port/` is read. The rest of the start is the app's own tools and instructions. **To do, as he approved:**
+(1) archive every general ruling a later one restates in full — 65 carry "changed by", only the wholly restated ones go,
+each pair checked by one fresh reader (D971, DECISIONS.md step 2); (2) move the screen-design rulings (the gear, the pencil,
+search boxes, the top bar, arrows, pinned bars, bands, rings — about 20 lines, ~8 KB) into a new rulings area with the
+design guide's paths (`.claude/rules/ui-design.md`), its full-text file, map row and byte tripwire (`--move-rows`; a new area
+per record-decisions.md); (3) shorten `AGENTS.md` to what Codex needs at its door, the rest in a Codex-only file it opens;
+(4) look for any other always-loaded passage no job needs where it sits (D141) — moved whole, never reworded (D138).
+**Never:** a read a job needs (D68); a ruling's meaning changed. **Checks:** `npm run docsize`; one fresh reader on every
+move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usage on an empty chat) and told to him.
+**Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
+is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
+the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
+
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
@@ -292,15 +310,6 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 ### [POSTOUT-RUN-NOTICE] A posting out runs on its date with nobody told (his direction, 31 Oct 26 — D1546)
 **What:** today a posting out runs silently on its date (`leavewar/sync.ts runPoOutcomes` — archived and suspended, deleted, made SANS or transferred), the schedulers told only when it is held back (D306). His direction: never gone silently. **ANSWERED 31 Oct 26 — A (D1547):** it runs on its date and the bells are told; the bell line is drawn for him on the real app before it is built; his idea of an "auto / manual" choice at the Post out sheet was answered with the agent's recommendation (none). **The choice that was put:** (A, recommended) it runs on its date as today and each admin's bell gets one line — "Posting out · Drifter · Mon 14 Nov · archived, account suspended", the outcome's own words, a tap opening his row on Admin → Users; or (B) on its date it waits, his row reading "posting out due", until a scheduler presses Accept — and until then he stays on the roster and the manning. A keeps the date he set as the one decision and never leaves a man half posted out; B adds a step every time and a forgotten Accept keeps a man on the books. **Ripples:** the bell's lines (`state/notices.ts`), the notifications register (P14), the Delete posting's own two taps (D287, D1102) — a Delete may want B even if the rest take A. **Place:** with the people-and-accounts work's next batch (D490), his answer first.
-
-### [E2E-POSTING-DATES-PIN] Three Leave War browser tests of a posting out skip themselves from 12 Dec 26 (found 31 Oct 26, the Leave War fixes' narrow read of the fix rounds, its 3)
-**What:** `e2e/leavewar.spec.ts` — "one-day window, 'Approve what I enter' on a day after his posting-out date … (R3b)", the "kept pending" note said once (R3c-2) and D1541's Overseas case — date the posting 20 days from the real today (a posting still to run, so the man is not deleted under the test — the browser tests run on the real date) and `test.skip` when that date leaves 2026, the demo war's year. From 12 Dec 26 they skip: the on-screen "kept pending — He posts out on …" refusal and the no-stale-note check lose their browser cover while GitHub's run stays green. **Fix:** pin the browser clock in those tests (Playwright's `page.clock.setFixedTime`, set before the app loads) and use fixed 2026 dates — the walk scripts already hold the clock (`scripts/handpass/lw-rr-lib.mjs` T0). **Place:** before 12 Dec 26, with the Leave War's next batch. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` §The reads.
-
-### [LW-HELDHALF-WORDS] The free half's line for a commitment prints no "till" and no documents (found 1 Nov 26, the narrow read of [LW-HELD-DAY-ADD]'s fixes)
-**What happens:** a day whose morning holds an Other (or any commitment) under Unavailable opens the bid window on the afternoon with one line for the morning (D1371); that line prints the Other's typed words only — no "till <date>" (D948) and no document chips (D1150) — where the day's list printed both and, since [LW-HELD-DAY-ADD] (D1548), the held day's lines do. **Cause:** `raptor-port/src/leavewar/ui/Matrix.tsx` `heldCommitment` reads `remarksTyped`, not `remarksShown`, and carries no documents; `ui/BidPicker.tsx` draws `heldOther` without chips. **To do:** build it as `heldLine` does (one body for both lines), red first. Already on the live app before this job; not a fault of it. **Place:** small, with the Leave War's next batch (D490). **Evidence:** `raptor-port/docs/handpass/2026-11-01-lw-held-day.md` §The code read.
-
-### [LW-DELETE-POSTING-RESTORE] Before a Delete posting has run, Redo can put back an approval the live Approve refuses from its date (found 31 Oct 26, the Leave War fixes' fresh code read, its point 1)
-**What happens:** his D1541 lets the posting date refuse no leave, but a posting out with the Delete outcome keeps its refusal from its date (the agent's reading 1 of D1541 — he leaves flying for good, D287). Approve refuses those days (`sync.ts postingOutWhy`: "He posts out on …: refuse or delete it"); Undo / Redo do not, until the posting has run and deleted him: `state/person-delete.ts deletedRestoreProblem` asks only of a man already deleted (`refusedFrom` is null before). So: approve a day after the date, Undo, set a Delete posting dated before that day, Redo — the approval and its war-approved leave come back where the live Approve refuses them. **What is left of `[LW-POSTED-OUT-RESTORE]`** (its other postings were closed by D1541, which refuses nothing for them). **The scenario:** the 13 tests of the reverted 057ca75ab (the restore refusal for a posting), re-run with the Delete outcome. **Place:** low, with the Leave War's next batch (D490) — — D1541's reading 1 confirmed by his D1545 (31 Oct 26), so this is to build. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` §The reads.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page
@@ -391,6 +400,9 @@ Found by the walkers of `raptor-port/docs/handpass/2026-10-25-lw-night.md` (repo
 ### [INP-CAL-CLICK-BEHIND-NEW] A date clicked behind a new input's window (his D1298, 24 Oct 26)
 **Seen (his desktop, pull request 569):** "New input · Jul 8" open; a click on 9 Jul outlines 9 Jul and nothing else changes — and the same on the SANS calendar (1 Jul outlined, his "likewise for san calander"). **To do:** his choice first (recommended: the new input takes the clicked date, keeping what was typed); then a test and a walk (the bug-check order §7.11, lesson 4). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
 
+### [LW-VIEWER-TAB] Tab inside the document viewer over a blocking Leave War window reaches only one button (older; found 2 Nov 26)
+**What:** with the viewer (`ui/DocViewer.tsx`) open over a blocking Leave War window, the window's own Tab keeping (`leavewar/ui/Sheet.tsx`, the trap after the Escape listener) is heard first and sends focus into the window; the viewer's own (`ui/sheetfocus.ts`) pulls it back to its first control — so each Tab lands on the same button (Close, or Next with several files) and the ✕ and ‹ are never reached by Tab. Escape still closes the viewer. Older than the doc-chip build (the read-only chips met it since M4); the fresh read of `[LW-DOCFIELD-CHIP-OPENS]` (note 1, `raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`). **To do:** the Sheet's Tab trap stands aside while a keyboard-holding window opened after it is up, as its Escape listener already does (`topSheet()`); red first, with a keyboard walk over the viewer. **Place:** the next Leave War batch; a WALK (keyboard).
+
 ### [LW-PICK-HELD-MARK] The tapped day stays marked and in view while its bid window is open (his D1289, D1290 — 24 Oct 26, his look at pull request 569)
 **What:** on the Leave War a day tapped to open its bid window wears the grid's cyan selection mark (`matrix.css .selcell`, the drag-selection's look) until the window closes or the leave is placed (D1289); on a phone, when the window opens over what was picked, the grid scrolls so it stands just above the window (D1290). **And his question the same message:** can the one-day bid window be less tall — put to him with pictures of ways to do it, each naming the ruling it would change (D1144's day line, D1212's rows). **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave` (pull request 569), after his answer on the pictures; the design guide's lesson 45.
 
@@ -450,21 +462,6 @@ pass join it unjudged and put nothing back. No production `seed` or `remote` com
 **The reader's fix:** key the wait on `parent.actor?.role === 'system'`, so the two agree; a test with a system-actor parent
 of another origin. **Place:** before the first `seed` or `remote` command is written (the database step); not built now.
 Source: `raptor-port/docs/handpass/parts/lw-rr1031/read-opus.md`.
-
-### [LW-DELETED-REDO-NETSUM] A deleted man's Redo: one war step approving a refused day and sending back another is let through (found 31 Oct 26 — the security read of `claude/lw-roster-restore-fixes`, 4)
-
-**What happens:** Ranger has approved LL on 10 Jul and a pending LL on 13 Jul; ONE war step approves 13 Jul and sends 10 Jul
-back (`decideRequests` with both lines); Undo; a Delete posting dated 12 Jul runs late (15 Jul), so his 13 Jul is refused
-live; Redo puts the approval of 13 Jul back. **Cause:** `state/person-delete.ts deletedRestoreProblem` counts a war step's
-war-approved days as a net sum (overall, and from the first refused day): +1 on 13 Jul and −1 on 10 Jul sum to nothing. The
-code before the second fix round summed the same way (older). **Reach:** no screen sends an approval and a send-back in one
-step — Approvals, Approve all, the bid windows and the day's list each decide one way at a time — so it is reached only by
-calling the writer directly. **The test:** `raptor-port/src/leavewar/deletednorow.test.ts`, "one war step approving his
-refused 13 Jul and sending back his 10 Jul …", marked `it.fails` while the fault stands (it goes red the day it is fixed).
-**Why filed, not fixed:** the likely fix — for a war step's Redo, also refuse when it takes a request of his off a day from
-the first refused day and writes his war-approved leave there (the Undo's request test, with its day) — must first be
-checked against every war writer so it never refuses a move the live door allows (RR-A); not obviously right in a fix
-round. **Place:** with the next Leave War batch; small; nothing waits on it.
 
 ### [LINE-ICONS-ELSEWHERE-ASK] Other lists that may want D1512's edit and cross icons (named 29 Oct 26, D852)
 
@@ -2022,6 +2019,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The Leave War overhaul's M4 (deciding — Approvals, the bell's war lines) and the night of 27–28 Oct 26's fixes (`claude/leave-war-m4-planning-d18224`, pull request 581) | a security read (D1411); two blind code reads — a fresh Opus reader and Fable (his D1425), each blind to the other; three fresh, blind Opus reads of the fixes, one a round | Astra and Sol 6.1 — saved data, permissions and a published record's who-decided want two providers (D590) |
 | A leave of several days opens whole in its bid window, with D1289's cyan mark ([LW-WHOLE-LEAVE-WINDOW], `claude/lw-whole-leave-window`, pull request 582) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
 | The night of 30 Oct 26, job 2 (`claude/lw-small-fixes-1030`): `[LW-DELETED-NO-ROW-APPROVE]`, `[LW-HALF-DAY-WORDS-LEFT]`, `[LW-M1-READ-LEFTOVERS]` (2), `[LW-MONTH-MEMO-UNPINNED]` — an approval that writes an input (saved data) | one fresh, blind Opus reader of the finished code (D790, D903) | Astra's and Sol 6.1's two independent reads (D590) |
+| The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

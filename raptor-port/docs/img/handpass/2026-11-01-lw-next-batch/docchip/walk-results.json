@@ -1,0 +1,1326 @@
+[
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e1-close-2-viewer.png",
+   "d-e1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e1-x-2-viewer.png",
+   "d-e1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e1-surround-2-viewer.png",
+   "d-e1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e1-escape-2-viewer.png",
+   "d-e1-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 its ✕ takes the file off and opens nothing",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "chips 0; viewer not opened",
+  "pics": [
+   "d-e1-5-after-del.png"
+  ]
+ },
+ {
+  "id": "E1 saved: LL placed pending with its file",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "the window closed on the leave true",
+  "pics": [
+   "d-e1-6-placed.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e2-close-2-viewer.png",
+   "d-e2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e2-x-2-viewer.png",
+   "d-e2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e2-surround-2-viewer.png",
+   "d-e2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e2-escape-2-viewer.png",
+   "d-e2-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "After: the person window’s paperclip on the 23 Feb leave opens it",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 23\"",
+  "pics": [
+   "d-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "After: Approvals shows the document icon, and it opens",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "paperclips 1; \"Ranger · LL · Feb 23\"",
+  "pics": [
+   "d-ap-viewer.png"
+  ]
+ },
+ {
+  "id": "E3 set-up: an approved LL with its file, reopened",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "d-e3-0-open.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e3-close-2-viewer.png",
+   "d-e3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e3-x-2-viewer.png",
+   "d-e3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e3-surround-2-viewer.png",
+   "d-e3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e3-escape-2-viewer.png",
+   "d-e3-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6b-close-2-viewer.png",
+   "d-e6b-close-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6b-x-2-viewer.png",
+   "d-e6b-x-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6b-surround-2-viewer.png",
+   "d-e6b-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6b-escape-2-viewer.png",
+   "d-e6b-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 set-up: a day of two bids opens the day’s list",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "day's list true",
+  "pics": [
+   "d-e4-0-list.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e4-close-2-viewer.png",
+   "d-e4-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e4-x-2-viewer.png",
+   "d-e4-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e4-surround-2-viewer.png",
+   "d-e4-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e4-escape-2-viewer.png",
+   "d-e4-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e5-close-2-viewer.png",
+   "d-e5-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e5-x-2-viewer.png",
+   "d-e5-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e5-surround-2-viewer.png",
+   "d-e5-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e5-escape-2-viewer.png",
+   "d-e5-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6-close-2-viewer.png",
+   "d-e6-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6-x-2-viewer.png",
+   "d-e6-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6-surround-2-viewer.png",
+   "d-e6-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "d-e6-escape-2-viewer.png",
+   "d-e6-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 saved: the input carries its file",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "docs \"doc-0cb51533-4107-4d9c-adab-bfc9314ce888\"",
+  "pics": [
+   "d-e6-saved.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m1-close-2-viewer.png",
+   "dm-m1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m1-x-2-viewer.png",
+   "dm-m1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m1-surround-2-viewer.png",
+   "dm-m1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m1-escape-2-viewer.png",
+   "dm-m1-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 saved: his LL placed with its file",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "dm-m1-placed.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m2-close-2-viewer.png",
+   "dm-m2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m2-x-2-viewer.png",
+   "dm-m2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m2-surround-2-viewer.png",
+   "dm-m2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m2-escape-2-viewer.png",
+   "dm-m2-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — Close",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m3-close-2-viewer.png",
+   "dm-m3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — ✕",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m3-x-2-viewer.png",
+   "dm-m3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — surround",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m3-surround-2-viewer.png",
+   "dm-m3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — Escape",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one Escape: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "dm-m3-escape-2-viewer.png",
+   "dm-m3-escape-4-after.png"
+  ]
+ },
+ {
+  "id": "After: his person window’s paperclip on the 27 Feb leave opens it",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 27\"",
+  "pics": [
+   "dm-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e1-close-2-viewer.png",
+   "p-chromium-e1-close-3-close-q.png",
+   "p-chromium-e1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e1-x-2-viewer.png",
+   "p-chromium-e1-x-3-x-q.png",
+   "p-chromium-e1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e1-surround-2-viewer.png",
+   "p-chromium-e1-surround-3-surround-q.png",
+   "p-chromium-e1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 its ✕ takes the file off and opens nothing",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "chips 0; viewer not opened",
+  "pics": [
+   "p-chromium-e1-5-after-del.png"
+  ]
+ },
+ {
+  "id": "E1 saved: LL placed pending with its file",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "the window closed on the leave true",
+  "pics": [
+   "p-chromium-e1-6-placed.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e2-close-2-viewer.png",
+   "p-chromium-e2-close-3-close-q.png",
+   "p-chromium-e2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e2-x-2-viewer.png",
+   "p-chromium-e2-x-3-x-q.png",
+   "p-chromium-e2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e2-surround-2-viewer.png",
+   "p-chromium-e2-surround-3-surround-q.png",
+   "p-chromium-e2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After: the person window’s paperclip on the 23 Feb leave opens it",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 23\"",
+  "pics": [
+   "p-chromium-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "After: Approvals shows the document icon, and it opens",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "paperclips 1; \"Ranger · LL · Feb 23\"",
+  "pics": [
+   "p-chromium-ap-viewer.png"
+  ]
+ },
+ {
+  "id": "E3 set-up: an approved LL with its file, reopened",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "p-chromium-e3-0-open.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e3-close-2-viewer.png",
+   "p-chromium-e3-close-3-close-q.png",
+   "p-chromium-e3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e3-x-2-viewer.png",
+   "p-chromium-e3-x-3-x-q.png",
+   "p-chromium-e3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e3-surround-2-viewer.png",
+   "p-chromium-e3-surround-3-surround-q.png",
+   "p-chromium-e3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6b-close-2-viewer.png",
+   "p-chromium-e6b-close-3-close-q.png",
+   "p-chromium-e6b-close-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6b-x-2-viewer.png",
+   "p-chromium-e6b-x-3-x-q.png",
+   "p-chromium-e6b-x-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6b-surround-2-viewer.png",
+   "p-chromium-e6b-surround-3-surround-q.png",
+   "p-chromium-e6b-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 set-up: a day of two bids opens the day’s list",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "day's list true",
+  "pics": [
+   "p-chromium-e4-0-list.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e4-close-2-viewer.png",
+   "p-chromium-e4-close-3-close-q.png",
+   "p-chromium-e4-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e4-x-2-viewer.png",
+   "p-chromium-e4-x-3-x-q.png",
+   "p-chromium-e4-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e4-surround-2-viewer.png",
+   "p-chromium-e4-surround-3-surround-q.png",
+   "p-chromium-e4-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e5-close-2-viewer.png",
+   "p-chromium-e5-close-3-close-q.png",
+   "p-chromium-e5-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e5-x-2-viewer.png",
+   "p-chromium-e5-x-3-x-q.png",
+   "p-chromium-e5-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e5-surround-2-viewer.png",
+   "p-chromium-e5-surround-3-surround-q.png",
+   "p-chromium-e5-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6-close-2-viewer.png",
+   "p-chromium-e6-close-3-close-q.png",
+   "p-chromium-e6-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6-x-2-viewer.png",
+   "p-chromium-e6-x-3-x-q.png",
+   "p-chromium-e6-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-chromium-e6-surround-2-viewer.png",
+   "p-chromium-e6-surround-3-surround-q.png",
+   "p-chromium-e6-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 saved: the input carries its file",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "docs \"doc-f6a728d7-d3d5-4298-9b9c-06a9e72af3c4\"",
+  "pics": [
+   "p-chromium-e6-saved.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m1-close-2-viewer.png",
+   "pm-chromium-m1-close-3-close-q.png",
+   "pm-chromium-m1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m1-x-2-viewer.png",
+   "pm-chromium-m1-x-3-x-q.png",
+   "pm-chromium-m1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m1-surround-2-viewer.png",
+   "pm-chromium-m1-surround-3-surround-q.png",
+   "pm-chromium-m1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 saved: his LL placed with its file",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "pm-chromium-m1-placed.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m2-close-2-viewer.png",
+   "pm-chromium-m2-close-3-close-q.png",
+   "pm-chromium-m2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m2-x-2-viewer.png",
+   "pm-chromium-m2-x-3-x-q.png",
+   "pm-chromium-m2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m2-surround-2-viewer.png",
+   "pm-chromium-m2-surround-3-surround-q.png",
+   "pm-chromium-m2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m3-close-2-viewer.png",
+   "pm-chromium-m3-close-3-close-q.png",
+   "pm-chromium-m3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — ✕",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m3-x-2-viewer.png",
+   "pm-chromium-m3-x-3-x-q.png",
+   "pm-chromium-m3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — surround",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-chromium-m3-surround-2-viewer.png",
+   "pm-chromium-m3-surround-3-surround-q.png",
+   "pm-chromium-m3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After: his person window’s paperclip on the 27 Feb leave opens it",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 27\"",
+  "pics": [
+   "pm-chromium-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e1-close-2-viewer.png",
+   "p-webkit-e1-close-3-close-q.png",
+   "p-webkit-e1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e1-x-2-viewer.png",
+   "p-webkit-e1-x-3-x-q.png",
+   "p-webkit-e1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 the bid window, a file just added (nothing placed yet) — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e1-surround-2-viewer.png",
+   "p-webkit-e1-surround-3-surround-q.png",
+   "p-webkit-e1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E1 its ✕ takes the file off and opens nothing",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "chips 0; viewer not opened",
+  "pics": [
+   "p-webkit-e1-5-after-del.png"
+  ]
+ },
+ {
+  "id": "E1 saved: LL placed pending with its file",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "the window closed on the leave true",
+  "pics": [
+   "p-webkit-e1-6-placed.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e2-close-2-viewer.png",
+   "p-webkit-e2-close-3-close-q.png",
+   "p-webkit-e2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e2-x-2-viewer.png",
+   "p-webkit-e2-x-3-x-q.png",
+   "p-webkit-e2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E2 the bid window reopened on the held bid — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 23\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e2-surround-2-viewer.png",
+   "p-webkit-e2-surround-3-surround-q.png",
+   "p-webkit-e2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After: the person window’s paperclip on the 23 Feb leave opens it",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 23\"",
+  "pics": [
+   "p-webkit-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "After: Approvals shows the document icon, and it opens",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "paperclips 1; \"Ranger · LL · Feb 23\"",
+  "pics": [
+   "p-webkit-ap-viewer.png"
+  ]
+ },
+ {
+  "id": "E3 set-up: an approved LL with its file, reopened",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "p-webkit-e3-0-open.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e3-close-2-viewer.png",
+   "p-webkit-e3-close-3-close-q.png",
+   "p-webkit-e3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e3-x-2-viewer.png",
+   "p-webkit-e3-x-3-x-q.png",
+   "p-webkit-e3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E3 an approved leave’s own row (the admin’s bid window) — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e3-surround-2-viewer.png",
+   "p-webkit-e3-surround-3-surround-q.png",
+   "p-webkit-e3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6b-close-2-viewer.png",
+   "p-webkit-e6b-close-3-close-q.png",
+   "p-webkit-e6b-close-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6b-x-2-viewer.png",
+   "p-webkit-e6b-x-3-x-q.png",
+   "p-webkit-e6b-x-4-after.png"
+  ]
+ },
+ {
+  "id": "After (E6b): the Inputs page’s input window of that leave, its chip — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6b-surround-2-viewer.png",
+   "p-webkit-e6b-surround-3-surround-q.png",
+   "p-webkit-e6b-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 set-up: a day of two bids opens the day’s list",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "day's list true",
+  "pics": [
+   "p-webkit-e4-0-list.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e4-close-2-viewer.png",
+   "p-webkit-e4-close-3-close-q.png",
+   "p-webkit-e4-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e4-x-2-viewer.png",
+   "p-webkit-e4-x-3-x-q.png",
+   "p-webkit-e4-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E4 the day’s list, the morning bid’s chip — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 26\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e4-surround-2-viewer.png",
+   "p-webkit-e4-surround-3-surround-q.png",
+   "p-webkit-e4-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e5-close-2-viewer.png",
+   "p-webkit-e5-close-3-close-q.png",
+   "p-webkit-e5-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e5-x-2-viewer.png",
+   "p-webkit-e5-x-3-x-q.png",
+   "p-webkit-e5-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E5 the drag window (2–4 Mar), a file just added — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Mar 2 → Mar 4\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e5-surround-2-viewer.png",
+   "p-webkit-e5-surround-3-surround-q.png",
+   "p-webkit-e5-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6-close-2-viewer.png",
+   "p-webkit-e6-close-3-close-q.png",
+   "p-webkit-e6-close-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6-x-2-viewer.png",
+   "p-webkit-e6-x-3-x-q.png",
+   "p-webkit-e6-x-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 the Inputs page’s input window, a new input (nothing saved) — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Jul 14 → Jul 15\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "p-webkit-e6-surround-2-viewer.png",
+   "p-webkit-e6-surround-3-surround-q.png",
+   "p-webkit-e6-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "E6 saved: the input carries its file",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "docs \"doc-4fb5b5b7-48fd-43fd-8243-b5b1fad5cdbd\"",
+  "pics": [
+   "p-webkit-e6-saved.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m1-close-2-viewer.png",
+   "pm-webkit-m1-close-3-close-q.png",
+   "pm-webkit-m1-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m1-x-2-viewer.png",
+   "pm-webkit-m1-x-3-x-q.png",
+   "pm-webkit-m1-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 his own bid window, a file just added — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · Bid · Feb 27\" showing img, its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m1-surround-2-viewer.png",
+   "pm-webkit-m1-surround-3-surround-q.png",
+   "pm-webkit-m1-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M1 saved: his LL placed with its file",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "placed true",
+  "pics": [
+   "pm-webkit-m1-placed.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m2-close-2-viewer.png",
+   "pm-webkit-m2-close-3-close-q.png",
+   "pm-webkit-m2-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m2-x-2-viewer.png",
+   "pm-webkit-m2-x-3-x-q.png",
+   "pm-webkit-m2-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M2 his approved leave’s window (the approved-leave window) — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 25\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m2-surround-2-viewer.png",
+   "pm-webkit-m2-surround-3-surround-q.png",
+   "pm-webkit-m2-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one Close: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m3-close-2-viewer.png",
+   "pm-webkit-m3-close-3-close-q.png",
+   "pm-webkit-m3-close-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — ✕",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one ✕: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m3-x-2-viewer.png",
+   "pm-webkit-m3-x-3-x-q.png",
+   "pm-webkit-m3-x-4-after.png"
+  ]
+ },
+ {
+  "id": "M3 his closed day’s window, his pending bid’s chip — surround",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "opened: \"Ranger · LL · Feb 12 → Feb 13\" showing the \"No document on file\" statement (this test browser kept no file — side check), its Close on top; one surround: viewer closed, the window as it was, chips 1",
+  "pics": [
+   "pm-webkit-m3-surround-2-viewer.png",
+   "pm-webkit-m3-surround-3-surround-q.png",
+   "pm-webkit-m3-surround-4-after.png"
+  ]
+ },
+ {
+  "id": "After: his person window’s paperclip on the 27 Feb leave opens it",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "\"Ranger · LL · Feb 27\"",
+  "pics": [
+   "pm-webkit-pw-viewer.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

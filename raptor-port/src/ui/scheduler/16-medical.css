@@ -15,6 +15,12 @@
 .docchip{display:inline-flex;align-items:center;gap:4px;min-width:0;padding:2px 4px 2px 8px;
   border:1px solid rgba(87,201,122,.55);border-radius:8px;font-size:11px;color:var(--ink-2);background:transparent}
 .docchip .docname{max-width:110px}
+/* the name of a file just added opens it (D1292): a button drawn exactly as the name was, only the pointer and the keyboard's
+   ring telling it can be pressed */
+.docchip .docopen{font:inherit;font-weight:500;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;
+  text-align:left;min-width:0}
+.docchip .docopen:hover{color:var(--ink)}
+.docchip .docopen:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 .docdel{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;
   border:0;border-radius:6px;background:transparent;color:var(--ink-3);font-size:10px;line-height:1;cursor:pointer}
 .docdel:hover{color:var(--warn);background:var(--panel-2)}

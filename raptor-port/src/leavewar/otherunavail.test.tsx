@@ -438,4 +438,18 @@ describe('the free half beside a half-day Other (D1353, D1371)', () => {
     expect(line.textContent).toContain('change it on the Inputs page')
     expect(line.querySelector('.c.k-unav')?.textContent).toBe('OTH')
   })
+  /* [LW-HELDHALF-WORDS] (the narrow read of [LW-HELD-DAY-ADD]'s fixes, 1 Nov 26): the held half's line printed the Other's
+     typed words only — no "till <date>" after them (D948) and no document chips (D1150), where the day's list printed
+     both and a held day's lines do (Matrix.tsx heldLine). ONE body for both lines now; red first. */
+  it('its held-half line prints the "till <date>" after the words and the documents as chips, as a held day’s line does', () => {
+    const who = getState().people[0]!.id
+    expect(fileStraight([{ personId: who, date: D }], 'OTH', { remarks: 'Board of inquiry' }, 'am').done).toBe(1)
+    const other: any = INPUTS.find((r: any) => r.type === 'Other' && ((r.people ?? []).some((x: any) => x.p === who) || r.person === who))
+    act(() => { other.till = true; other.docIds = ['doc-boi']; raptorNotify() })
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-${who}-${D}`))
+    const line = within(screen.getByTestId('bid-picker')).getByTestId('bid-heldhalf')
+    expect(line.textContent, 'its words, then the till date from its dates (D948)').toContain('“Board of inquiry till 11 Feb”')
+    expect(line.querySelectorAll('.docchip'), 'its document, read only (D1150)').toHaveLength(1)
+  })
 })

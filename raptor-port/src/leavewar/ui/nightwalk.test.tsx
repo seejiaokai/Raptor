@@ -129,7 +129,7 @@ describe('his own leave\'s words row redraws from what it saved (W1)', () => {
     const live = () => INPUTS.find((r: any) => r.iid === row.iid)
     render(<LeaveWords row={live()} personId="dusk" testPrefix="w" />)
     expect(screen.getByTestId('w-doc-row').textContent).toContain('doc-a'.slice(0, 0))
-    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip button, button[aria-label^="Remove"], .chip-x') as HTMLElement | null
+    const chipX = screen.getByTestId('w-doc-row').querySelector('.docchip .docdel, button[aria-label^="Remove"], .chip-x')   // the ✕ — the chip's name is a button of its own since D1292 (it opens the file) as HTMLElement | null
     if (chipX) {
       fireEvent.click(chipX)
       expect((live() as any).docIds ?? [], 'saved without it').toHaveLength(0)

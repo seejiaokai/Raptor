@@ -1,0 +1,123 @@
+[
+ {
+  "id": "DP0 the live Approve after a Delete posting is set",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "bid true; posting line \"On 9 Nov the app deletes him automatically. Days he flew keep his puck.\"; deleted yet false; Approve said \"He posts out on 9 Nov: refuse or delete it\"; his leave on 11 Nov 0",
+  "pics": [
+   "dp0-a-postout",
+   "dp0-b-approvals"
+  ]
+ },
+ {
+  "id": "DP1 the Redo of an approval after a Delete posting is set: refused, said, nothing written",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo offered true; first press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0; still offered true; second press said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave 0",
+  "pics": [
+   "dp1-a-redo-refused",
+   "dp1-b-row-after-refusal"
+  ]
+ },
+ {
+  "id": "DP2 the posting taken back (\"Undo post out\"): the same Redo goes through",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "\"Undo post out\" offered and pressed true; Redo said [\"Redid: a decision on a bid\"]; his leave on 11 Nov 1",
+  "pics": [
+   "dp2-a-posting-sheet",
+   "dp2-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP3 an Overseas Sqn posting: the Redo of the approval goes through (D1541)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo said [\"Redid: a decision on a bid\"]; his leave on 11 Nov 1",
+  "pics": [
+   "dp3-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP4 the Undo of a send-back after a Delete posting is set: refused, said, nothing written",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Approve lit true; sent back true; Undo said [\"Can’t undo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; his leave on 11 Nov 0",
+  "pics": [
+   "dp4-undo-refused"
+  ]
+ },
+ {
+  "id": "DP5 his day before the Delete posting’s date: the Redo goes through",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo true; Redo said [\"Redid: a decision on a bid\"]; his leave on 6 Nov 1",
+  "pics": [
+   "dp5-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP6 the Redo of a move across the Delete posting’s date: goes through (a move is no approval)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; moved true; Undo put it back true; Redo said [\"Redid: moving a bid\"]; leave on 10 Nov 1, on 6 Nov 0",
+  "pics": [
+   "dp6-a-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP6-live the live Move across the Delete posting’s date, for comparison",
+  "size": "desk",
+  "verdict": "RECORDED",
+  "said": "Move offered true, banner \"Tap a day to move 1 entry Cancel\", after \"null\"; leave on 10 Nov 1",
+  "pics": [
+   "dp6-b-live-move-staged"
+  ]
+ },
+ {
+  "id": "DP7 approve, a Delete posting set, Undo, Redo: the Undo goes, the Redo is refused",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; Undo said [\"Undid: a decision on a bid — the later posting stays; it isn’t undone here.\"], took it true; Redo said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; his leave on 11 Nov 0",
+  "pics": [
+   "dp7-redo-refused"
+  ]
+ },
+ {
+  "id": "DP8 refused, the outcome changed to Overseas Sqn, Redo: goes through (D1541)",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; first Redo said [\"Can’t redo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; the sheet's Overseas chip offered true; outcome read null; second Redo said [\"Redid: a decision on a bid\"]; his leave on 11 Nov 1",
+  "pics": [
+   "dp8-a-posting-sheet",
+   "dp8-b-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP9 Auto-approve after a Delete posting’s date: kept pending live, and no approval after Undo / Redo",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "Auto-approve on true; said \"kept pending — He posts out on 9 Nov: refuse or delete it.\"; his leave on 11 Nov after placing 0, after Undo / Redo 0; the cell draws LL PO",
+  "pics": [
+   "dp9-a-kept-pending",
+   "dp9-b-row-after-redo"
+  ]
+ },
+ {
+  "id": "DP10 a block of his approved leave and his bid moved across a Delete posting’s date, then Undo: both go",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "approved true; bid true; drag window true, Move offered true; banner after \"null\"; leave moved to 13 Nov true, bid on 14 Nov true; Undo said [\"Undid: moving a bid\"]; leave back on 11 Nov true",
+  "pics": [
+   "dp10-a-after-live-move",
+   "dp10-b-after-undo"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

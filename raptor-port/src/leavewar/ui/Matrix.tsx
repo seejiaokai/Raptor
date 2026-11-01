@@ -136,8 +136,6 @@ function sameStuck(
 
 /* the bid bubble's reading and its words (`BubbleFlags`, `worsenedRows`, `bubbleParts`, `bubbleWords`): ui/bubblewords.ts */
 
-/** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371): its code and its typed remarks, for the free
- *  half's one line; null where the held half is anything else (a leave keeps its sentence) */
 /** ONE ENTRY OF A DAY FILLED FROM THE INPUTS PAGE (his D1548, D1553 — a course's first, D1395): its code, its half or hours,
  *  its typed remarks — none where they stand in the window's own Remarks box (`ownWords`, his own leave — D1552) — and
  *  where it is attached ("To"), for the bid window's line */
@@ -160,11 +158,15 @@ function heldLine(c: Contrib, portion: Portion, hours: readonly [number, number]
     ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}),
   }
 }
-function heldCommitment(v: DayView | undefined): { code: string; remarks: string; to?: string } | null {
+/** THE COMMITMENT UNDER UNAVAILABLE HOLDING A DAY'S OTHER HALF (his D1371), for the free half's one line; null where the
+ *  held half is anything else (a leave keeps its sentence). Built by `heldLine`, the held day's own body
+ *  ([LW-HELDHALF-WORDS], 1 Nov 26): its words with their "till <date>" (D948) and its documents as chips (D1150) — it printed
+ *  the typed words alone. Its half is the one the free half is not; no hours, so the line reads AM or PM after its box
+ *  (D1371, D1525). */
+function heldCommitment(v: DayView | undefined, free: Portion): HeldLine | null {
   const c = v?.all.find(x => x.kind === 'absence' && isCommitCode(x.code))
   if (!c) return null
-  const row = inputRows().find(r => String(r.iid) === c.id)
-  return { code: c.code, remarks: row ? String(remarksTyped(row.remarks, row) ?? '').trim() : '', ...(row && typeof row.to === 'string' && row.to.trim() ? { to: row.to.trim() } : {}) }
+  return free === 'full' ? null : heldLine(c, free === 'pm' ? 'am' : 'pm', undefined, false)
 }
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the grid's controller carries measured performance contracts (performance.md §E: the window of months, the memoised rows and months, the memo firewall, its hook and effect order); it is split only by moves that change none of them, as its rows were (MatrixRows.tsx)
@@ -4484,7 +4486,7 @@ export function Matrix() {
           heldDays={openHeldLines}
           noLeave={!!openHeld?.noLeave}
           heldLeave={openHeldLeave}
-          heldOther={openFreeHalf ? heldCommitment(openView) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
+          heldOther={openFreeHalf ? heldCommitment(openView, openFreeHalf) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */
           /* Admin-only: post this person out (owner, 18 Aug 26; any date and
              the archive switch, 19 Aug 26). The store sets their posting-out
              date; the greyed boxes and the manpower exclusion follow from it,
