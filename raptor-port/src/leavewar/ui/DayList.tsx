@@ -86,7 +86,7 @@ function BidWords({ personId, date, rec, onDone, flushRef }: { personId: string;
     return () => { if (flushRef.current === flush) flushRef.current = null }
   }, [flushRef])
   return (
-    <ReqWordsRows compact testPrefix={`dl-${rec.id}`} value={edit ?? held} start={date} end={runEnd(personId, date, rec)}
+    <ReqWordsRows compact testPrefix={`dl-${rec.id}`} value={edit ?? held} start={date} end={runEnd(personId, date, rec)} who={{ personId, code: rec.code }}
       onChange={(next, how) => {
         if (how === 'type') {
           const p = patchOf(held, next)

@@ -814,7 +814,8 @@ export function BidPicker({
           the Inputs page), or the words of the bid about to be placed */}
       {leaveRow
         ? <LeaveWords row={leaveRow} personId={personId} flushRef={leaveFlush} onRefused={why => { setNoteAt('leave'); setNote(why) }} />
-        : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : date} end={span ? span.to : held ? held.end : date} />}
+        : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : date} end={span ? span.to : held ? held.end : date}
+            who={{ personId, code: held?.rec.code ?? '' }} />}
 
       {/* DURATION, with "Pick a range" at its end (round 3's change 5): "Just this day" went — it is always the default,
           and a range picked back to the day tapped is the one day again. The range stays the exception, one extra tap

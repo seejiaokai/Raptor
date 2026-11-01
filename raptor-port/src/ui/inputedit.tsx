@@ -574,8 +574,19 @@ function ownPartSave(inp: any, who: any, save: (own: any) => boolean): boolean {
    a real cancel, and the store keeps every stored file either way, because
    undo can resurrect a record), and the button appends more. Picking files
    stores each at once (state/docs); a refused file (wrong kind, over the
-   cap) toasts and the rest still land. */
-export function DocField({ ids, onIds }: { ids: string[], onIds: (ids: string[]) => void }) {
+   cap) toasts and the rest still land.
+   A CHIP'S NAME OPENS ITS FILE (his D1292, 24 Oct 26 — "After I upload the document. I should be able to click on the image to
+   preview what I uploaded"; [LW-DOCFIELD-CHIP-OPENS]): a tap on the name shows that file in the app's document viewer, over
+   the window it sits in — straight after it is picked, nothing saved yet, as well as later; the ✕ beside it only takes it
+   off. The viewer opens read only (no "Edit input": the window it was opened from is where the entry changes) on the page
+   `viewRow` names — whose, which kind, which days, as the window has them now — every chip's file on it, the one tapped
+   shown first. Every caller says what that page is, so no chip can open on a blank one. */
+function viewDocFile(row: any, ids: readonly string[], id: string): void {
+  if (!row) return
+  setDocView({ row: { ...row, docId: undefined, docIds: [...ids] }, readOnly: true, docId: id })
+  notify()
+}
+export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: string[]) => void, viewRow: () => any }) {
   const ref = useRef<HTMLInputElement>(null)
   const have = ids || []
   return <span className="docfield">
@@ -595,7 +606,8 @@ export function DocField({ ids, onIds }: { ids: string[], onIds: (ids: string[])
     {have.map(id => {
       const doc = docGet(id)
       return <span key={id} className="docchip" title={doc ? doc.name : 'Document'}>
-        <span className="docname">{doc ? doc.name : 'document'}</span>
+        <button type="button" className="docname docopen" title={`Open ${doc ? doc.name : 'the document'}`}
+          onClick={() => viewDocFile(viewRow(), have, id)}>{doc ? doc.name : 'document'}</button>
         <button type="button" className="docdel" aria-label={`Remove ${doc ? doc.name : 'document'}`}
           onClick={() => onIds(have.filter(x => x !== id))}>✕</button>
       </span>
@@ -3185,7 +3197,15 @@ export function InputEditor() {
               leave system; a medical's is still the one asked and guarded (needsDoc) */}
           <div className="inped-f">
             <span className="inped-k">Document</span>
-            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })} />
+            {/* a chip opens its file (D1292, D1159 — the one Document button everywhere): the page the window's own fields
+                name now, a file not yet saved included; who placed it, from the saved entry */}
+            <DocField ids={draft.docIds} onIds={ids => setDraft({ ...draft, docIds: ids })}
+              viewRow={() => ({
+                person: draft.person, type: draft.type, allday: draft.allday, date: fmt(draft.start),
+                ...(draft.end && fmt(draft.end) !== fmt(draft.start) ? { endDate: fmt(draft.end) } : {}),
+                remarks: draft.remarks || '',
+                ...(r && !r._new && r.by != null ? { by: r.by, at: r.at } : {}),
+              })} />
           </div>
           {/* THE REMARKS BOX HOLDS ONLY WHAT A PERSON TYPES (owner D948, 16 Oct 26 — his D946: "a dedicated remarks box just
               for free text that is empty and easy to select and the editable till date is always after the remarks"):

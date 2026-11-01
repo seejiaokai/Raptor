@@ -3161,16 +3161,20 @@ export function alsoSince(prev: number, from: string, to: string, me: string | n
  *  it — with no "Edit input" or "Upchit" in its foot. Nothing on the war opened a document before (the survey §4). */
 export function openRequestDocs(r: { personId: string; code: string; from: string; to: string; docIds: readonly string[]; remarks?: string; placedBy?: string; placedAt?: number }): boolean {
   if (!r.docIds.length) return false
+  setDocView({ row: requestDocRow(r), readOnly: true })
+  raptorNotify()
+  return true
+}
+/** …the page itself: whose leave, its kind (a bid not yet placed — no kind picked — reads "Bid") and its days. Also what a
+ *  window's own Document chip opens on (ui/inputedit.tsx DocField — his D1292: a file just added opens straight away) */
+export function requestDocRow(r: { personId: string; code: string; from: string; to: string; docIds: readonly string[]; remarks?: string; placedBy?: string; placedAt?: number }): WarInput {
   const a = isoToInputDate(r.from), b = isoToInputDate(r.to)
-  const row: WarInput = {
-    person: r.personId, type: parseCell(r.code)?.type ?? r.code, allday: true, date: a.date, yr: a.yr,
+  return {
+    person: r.personId, type: r.code ? (parseCell(r.code)?.type ?? r.code) : 'Bid', allday: true, date: a.date, yr: a.yr,
     ...(r.to > r.from ? { endDate: b.yr === a.yr ? b.date : `${b.date} ${b.yr}` } : {}),
     remarks: r.remarks ?? '', docIds: [...r.docIds],
     ...(r.placedBy ? { by: r.placedBy } : {}), ...(typeof r.placedAt === 'number' ? { at: r.placedAt } : {}),
   }
-  setDocView({ row, readOnly: true })
-  raptorNotify()
-  return true
 }
 /** …AND A LEAVE'S, FILED OR APPROVED, READ ONLY (M4 — the spec's reading 8: every document chip on the war opens the
  *  document; the day's list and the bid windows' Document row): the same viewer on the input itself; its papers change on

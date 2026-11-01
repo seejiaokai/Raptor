@@ -434,7 +434,7 @@ export function SelectSheet({
               {listed.map(e => <span key={`${e.key}-${e.from}`} className="dl-ro-words sel-rmk-line" data-testid="sel-remark-line">“{e.remark}” · {compactSpan(e.from, e.to)}</span>)}
             </div>
           )}
-          {nPeople === 1 && <ReqWordsRows compact value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" />}
+          {nPeople === 1 && <ReqWordsRows compact value={words} onChange={w => setWords(w)} start={sel.from} end={sel.to} testPrefix="sel" who={{ personId: sel.people[0]! }} />}
           <div className="bidsheet-row bp-dur" role="group" aria-label="Duration">
             {PORTIONS.map(p => (
               <button key={p.portion} data-testid={p.testid}

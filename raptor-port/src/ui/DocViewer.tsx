@@ -47,7 +47,13 @@ export function DocViewer() {
      of the page counts of every row before it. */
   const seatOf = (ri: number) => list.slice(0, ri).reduce((n: number, e: any) => n + Math.max(1, rowDocIds(e.row).length), 0)
   const [seenV, setSeenV] = useState<any>(null)
-  if (v !== seenV) { setSeenV(v); setI(v && v.idx ? seatOf(v.idx) : 0) }
+  /* …or on the FILE tapped, where the caller names one (`docId` — a Document chip's own name, his D1292): of an entry holding
+     several files, the one pressed is the one shown, the pager stepping to the others */
+  const seatAt = (x: any) => {
+    if (x && x.docId) { const at = els.findIndex((e: any) => e.docId === x.docId); if (at >= 0) return at }
+    return x && x.idx ? seatOf(x.idx) : 0
+  }
+  if (v !== seenV) { setSeenV(v); setI(seatAt(v)) }
   const idx = els.length ? Math.min(i, els.length - 1) : 0
   const cur = els.length ? els[idx] : null
   const r = cur && cur.row
