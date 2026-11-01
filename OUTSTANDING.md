@@ -110,6 +110,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-MONTHSTRIP-TWO-YEARS] — on a phone a two-year period's month buttons run past the edge: with [LW-YEAR-CLEAR].
+- [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): drawn first.
 - [LW-YEAR-CLEAR] — the Leave War shows which year the grid is on (D1559): designed with the design skill, pictures to him first.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
@@ -264,6 +265,14 @@ strip and the year are one design question), red first.
 ‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
 Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
 app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built. **ANSWERED 2 Nov 26 — his D1562: design A, the floating wheels.** Built with [LW-YEAR-CLEAR], from the same drawings.
+
+### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
+**What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
+"All 3 days", every day marked), but an entry filed on the Inputs page (his picture: Quill's OML of 6–9 Jul) opens on the one day
+tapped ("Quill Mon 6 Jul"), the rest unmarked. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\faf6bf7b-image.png`
+(Quill) and `…\65af00f1-image.png` (Rune). **To do:** draw it on the real app first (D853) — the whole range marked and named, and
+what the window offers over a held range (the Duration row's "All n days" / day tapped; Grant OIL, CSE, OD on all days or one) — his
+pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat.
 
 ### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
 **What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
