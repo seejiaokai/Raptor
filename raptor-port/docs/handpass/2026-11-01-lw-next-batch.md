@@ -288,4 +288,12 @@ old order; worth a glance in a scroll-speed pass (D991).
    desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
    (`scripts/handpass/lw-nb-docclose.mjs`).
 
-`Walk: docs/handpass/2026-11-01-lw-next-batch.md §His find, 2 Nov 26 · 247 pictures · 7 places (the bid window's held day and held half, a raised bid window, the day's list, the person window, Approvals, the Inputs page's input window — desktop 1536 Chromium, desktop 1440 WebKit, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 2 fixed (the shield, red first; the raised window, red first), 1 filed (an editable Document chip opens nothing — D1292's other half)`
+**Gates.** On his PC: the two new test files and their neighbours (37 files, 518 tests) green; the build clean; the code check —
+no new finding. GitHub's run of the fix (`c3d0581a6`) was red on six browser tests none of this change touches, all the month's
+turn to November (the calendars open on today's month): the Inputs and SANS calendars' "the month takes the width back" read
+1416.00002 against 1416 (checked on his PC without the fix too: the same), and four keyboard tests (KS3g, KS3h, KS3j, KS3k) tapped
+an eleventh date that November's six rows put below the phone's visible screen. Fixed in the tests only — the width to half a
+pixel; the keyboard tests turn the calendar to October 2026, the month they were written in, by its own arrow — 51/51 and 61/61
+on his PC (one older Inputs-calendar test, a held finger, failed once in two runs on his PC only, green on GitHub). **GitHub's run
+green on `89740186e`, the last commit carrying code** — every share; its preview Ready.
+ · 247 pictures · 7 places (the bid window's held day and held half, a raised bid window, the day's list, the person window, Approvals, the Inputs page's input window — desktop 1536 Chromium, desktop 1440 WebKit, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 2 fixed (the shield, red first; the raised window, red first), 1 filed (an editable Document chip opens nothing — D1292's other half)`
