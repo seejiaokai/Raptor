@@ -1,6 +1,6 @@
 import { act, fireEvent, render, screen, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
-import type { Person } from '../engine'
+import { focusDateOf, memberToday, type Person } from '../engine'
 import { addGroup, closeDates, getState, initStore, setBidState, setCell, setGroupColor, setPersLabel, setRole } from '../state/store'
 import { memoryBackend } from '../state/storage'
 import { fileAbsence, elevenCounters } from '../testkit'
@@ -63,7 +63,16 @@ describe('Matrix', () => {
   it('the frozen column heads CS/Name — it holds callsigns and ground-crew names alike (owner, 26 Aug 26)', () => {
     render(<Matrix />)
     const th = document.querySelector('.mx .mxhead th.who')!
-    expect(th.textContent).toBe('CS/Name')
+    // the year of the first date in view stands above it on its own line (D1561); the words of the heading are unchanged
+    expect(th.lastChild!.textContent).toBe('CS/Name')
+  })
+
+  it('the corner over the names carries the year (D1561) — before any layout, the year of the date the grid lands on', () => {
+    render(<Matrix />)
+    const yr = screen.getByTestId('grid-year')
+    expect(yr.closest('th.who'), 'in the corner over the names').toBeTruthy()
+    const s = getState()
+    expect(yr.textContent).toBe((s.focusDate || focusDateOf(s.period, memberToday())).slice(0, 4))
   })
 
   it('a personnel row at rest shows callsign + chip only — the role label is edit-mode only (owner, 26 Aug 26)', () => {

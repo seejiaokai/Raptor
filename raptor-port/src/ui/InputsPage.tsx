@@ -602,7 +602,9 @@ export function InputsPage() {
     <div className="ic-nav ic-nav-ghost" aria-hidden="true" inert>
       {/* real buttons, so their words are drawn exactly as the Calendar's (a span's letters ran 2.6px narrower) */}
       <button type="button" className="abtn ic-ga" tabIndex={-1}>‹</button>
-      <span className="ic-mon" data-fit={MONTHS.map(m => `${m} ${ghostYear}`).join('\n')}>{MONTHS[0]} {ghostYear}</span>
+      {/* the title's copy as the title is drawn (ui/MonthJump.tsx — its words' room and its ▾, D1562), so the switch keeps
+          its place; a span, not a button, as it is never pressed */}
+      <span className="ic-mon mjt"><span className="mjt-w" data-fit={MONTHS.map(m => `${m} ${ghostYear}`).join('\n')}>{MONTHS[0]} {ghostYear}</span></span>
       <button type="button" className="abtn ic-ga" tabIndex={-1}>›</button><button type="button" className="abtn ic-gt" tabIndex={-1}>Today</button>
     </div>
   )

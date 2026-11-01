@@ -89,17 +89,9 @@ export function DateBox(p: {
      phone the card is put in the middle of the screen, so it can land under the finger that opened it, and the second
      half of a double tap fell on a date — which in the Tracker is saved at once. Where the card is under its box the
      second half fell on the veil and shut the calendar it had just opened. The patch lies OVER the card (its z-index). */
-  const [patch, setPatch] = useState<{ x: number; y: number } | null>(null)
-  const patchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  const dropPatch = () => { if (patchTimer.current) clearTimeout(patchTimer.current); patchTimer.current = null; setPatch(null) }
-  useEffect(() => () => { if (patchTimer.current) clearTimeout(patchTimer.current) }, [])
+  const { standPatch, dropPatch, patchNode } = useTapPatch()
   /* a box switched off while its calendar is up is closed for good — not left to spring open when it is switched on */
   useEffect(() => { if (p.disabled && open) setOpen(false) }, [p.disabled, open])
-  const standPatch = (at: { x: number; y: number }) => {
-    if (patchTimer.current) clearTimeout(patchTimer.current)
-    setPatch(at)
-    patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
-  }
   const close = (at?: { x: number; y: number } | null) => {
     setOpen(false)
     if (at) standPatch(at)
@@ -133,19 +125,39 @@ export function DateBox(p: {
           onPick={(iso, at) => { close(at); if (iso !== p.value) p.onChange(iso) }}
           onClose={close}
         />, document.body)}
-      {patch && createPortal(
-        <div className="dcal-layer dcal-patch" data-testid="dcal-patch" aria-hidden="true"
-          style={{ inset: 'auto', left: patch.x - SETTLE_PX / 2, top: patch.y - SETTLE_PX / 2, width: SETTLE_PX, height: SETTLE_PX }}
-          onClick={e => { e.stopPropagation(); dropPatch() }} onPointerDown={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}
-        />, document.body)}
+      {patchNode}
     </>
   )
 }
 
-function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, onClose }: {
+/* THE PATCH THAT TAKES A SECOND CLICK (above, at the box's own `patch`) — one body for the date box and the calendars'
+   month title (ui/MonthJump.tsx), which opens the same layer and meets the same double tap. */
+export function useTapPatch() {
+  const [patch, setPatch] = useState<{ x: number; y: number } | null>(null)
+  const patchTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const dropPatch = () => { if (patchTimer.current) clearTimeout(patchTimer.current); patchTimer.current = null; setPatch(null) }
+  useEffect(() => () => { if (patchTimer.current) clearTimeout(patchTimer.current) }, [])
+  const standPatch = (at: { x: number; y: number }) => {
+    if (patchTimer.current) clearTimeout(patchTimer.current)
+    setPatch(at)
+    patchTimer.current = setTimeout(() => { patchTimer.current = null; setPatch(null) }, SETTLE_MS)
+  }
+  const patchNode = patch ? createPortal(
+    <div className="dcal-layer dcal-patch" data-testid="dcal-patch" aria-hidden="true"
+      style={{ inset: 'auto', left: patch.x - SETTLE_PX / 2, top: patch.y - SETTLE_PX / 2, width: SETTLE_PX, height: SETTLE_PX }}
+      onClick={e => { e.stopPropagation(); dropPatch() }} onPointerDown={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}
+    />, document.body) : null
+  return { standPatch, dropPatch, patchNode }
+}
+
+export function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, onClose, month }: {
   /** `label` is said (the card's spoken name); `name` is shown (a phone's line at the top of the card) */
   label: string; name: string; value: string; min?: string; max?: string; markWd?: number; at?: string; today?: string
   box: HTMLElement | null
+  /** a month only (the Inputs and SANS calendars' title — D1562, ui/MonthJump.tsx): the calendar opens straight on its
+   *  month and year lists and hands back each month they come to rest on; Escape closes the card at once, as there is
+   *  no list to shut first */
+  month?: { onMonth: (y: number, m: number) => void; onDone: () => void; onToday: () => void }
   /** `at` — where the click that picked landed; null for a pick by the keyboard */
   onPick: (iso: string, at: { x: number; y: number } | null) => void
   onClose: (at?: { x: number; y: number } | null) => void
@@ -166,6 +178,7 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
      React may throw away (its only reader is that listener, which runs on a key press, long after the commit) */
   const closeRef = useRef(onClose)
   useLayoutEffect(() => { closeRef.current = onClose })
+  const monthOnly = useRef(!!month)
 
   /* ESCAPE AND TAB ARE THE CALENDAR'S WHILE IT IS UP — heard on the way DOWN, at the window, before any listener of
      the form behind it. Escape: the windows shell closes its front window on it (at the window, on the way back up) and
@@ -182,7 +195,7 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') {
         e.preventDefault(); e.stopPropagation()
-        if (!card.current?.querySelector('.dcal-lists')) closeRef.current()
+        if (monthOnly.current || !card.current?.querySelector('.dcal-lists')) closeRef.current()
         return
       }
       if (e.key !== 'Tab') return
@@ -200,10 +213,11 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
     return () => window.removeEventListener('keydown', onKey, true)
   }, [])
 
-  /* the keyboard goes onto the calendar's one tab stop — the picked date, or today */
+  /* the keyboard goes onto the calendar's one tab stop — the picked date, or today; a month only: into the month list,
+     where the arrows turn it at once (D1562 — Jump to a date's keys) */
   useLayoutEffect(() => {
     const n = card.current
-    const to = n && (n.querySelector<HTMLElement>('.dcal-grid button[tabindex="0"]') || n.querySelector<HTMLElement>('button'))
+    const to = n && (n.querySelector<HTMLElement>('.dcal-grid button[tabindex="0"]') || n.querySelector<HTMLElement>('.dcal-col') || n.querySelector<HTMLElement>('button'))
     if (to) to.focus({ preventScroll: true })
   }, [])
 
@@ -253,7 +267,7 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
   return (
     <div className={'dcal-layer' + (phone ? ' is-phone' : '')} ref={layer} onClickCapture={e => { pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null }} onClick={mine} onPointerDown={mine} onMouseDown={mine} onKeyDown={mine}>
       <div className="dcal-scrim" data-testid="dcal-scrim" onClick={() => onClose(pt.current)} />
-      <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={`${label} — pick a date`} data-testid="dcal-card">
+      <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={month ? label : `${label} — pick a date`} data-testid="dcal-card">
         {/* ON A PHONE THE CARD SAYS WHICH DATE IT IS FOR (the design look of 13 Oct 26 — L9; owner D830). The centred
             card covers the box that opened it and looked the same for every box: on the Tracker's panel it covers
             three of five date boxes, in its marking pop-up both "Done on" and "Failed on" — a finger that landed on
@@ -261,7 +275,9 @@ function Layer({ label, name, value, min, max, markWd, at, today, box, onPick, o
             the same on every month, so nothing under it moves. Not on a desktop: the panel hangs under its own box.
             The card already says the name to a screen reader (its label above), so the line is not said twice. */}
         {phone && name ? <div className="dcal-name" data-testid="dcal-name" aria-hidden="true">{name}</div> : null}
-        <DateCal value={value} min={min} max={max} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />
+        {month
+          ? <DateCal mode="month" at={at} today={today} tid="mjump" onMonth={month.onMonth} onDone={month.onDone} onToday={month.onToday} />
+          : <DateCal value={value} min={min} max={max} markWd={markWd} at={at} today={today} onPick={iso => onPick(iso, pt.current)} />}
       </div>
     </div>
   )
