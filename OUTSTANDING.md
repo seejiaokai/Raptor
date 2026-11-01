@@ -263,7 +263,7 @@ strip and the year are one design question), red first.
 **What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;
 ‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
 Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
-app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built.
+app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built. **ANSWERED 2 Nov 26 — his D1562: design A, the floating wheels.** Built with [LW-YEAR-CLEAR], from the same drawings.
 
 ### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
 **What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
@@ -272,7 +272,7 @@ and its month buttons read only "JUL"; the year shows only in the View picker at
 His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\0f3ee06a-image.png` (the war) and
 `…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
 (Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
-**Place:** now, after the Tracker round.
+**Place:** now, after the Tracker round. **ANSWERED 2 Nov 26 — his D1561 ("all as recommended"): design A, the year in the pinned corner.** To build in a fresh chat on its own branch from `main`, with [CAL-MONTH-YEAR-JUMP] and [LW-MONTHSTRIP-TWO-YEARS], from the approved drawings (`raptor-port/docs/img/mock/2026-11-02-year/`, the note `raptor-port/docs/superpowers/specs/2026-11-02-year-designs.md`) and checked beside them (D1495).
 
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
