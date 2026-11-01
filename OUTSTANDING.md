@@ -250,13 +250,6 @@ tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
 
-### [YEAR-DRAWCHECK] The formal drawing check for the year build's three parts (2 Nov 26)
-The year build ([LW-YEAR-CLEAR], [CAL-MONTH-YEAR-JUMP], pull request 611) was compared with its approved drawings by measure
-and by eye side by side (`raptor-port/docs/handpass/2026-11-02-year-build.md`), not by the drawing-check tool
-(`raptor-port/scripts/drawcheck/`, D1495): its drawings have no part list or recorded drawing yet. **To do:** his ruling —
-record the drawings and write the part list (the corner, the title and its ▾, the card), or accept the measured comparison
-for these three small parts. **Place:** before pull request 611's "merge live". **ANSWERED 2 Nov 26 — his D1566: the measured comparison stands, a one-off.**
-
 ### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
 **What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
 "All 3 days", every day marked), but an entry filed on the Inputs page (his picture: Quill's OML of 6–9 Jul) opens on the one day

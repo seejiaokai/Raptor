@@ -7354,3 +7354,13 @@ Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 40
 JUN are cut off at the right edge. Picture: the year designs' `lw-5-two-years.png`. **To do:** with [LW-YEAR-CLEAR]'s build (the
 strip and the year are one design question), red first.
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([YEAR-DRAWCHECK]). Forward facts: `raptor-port/docs/handpass/2026-11-02-year-build.md`.*
+
+### [YEAR-DRAWCHECK] The formal drawing check for the year build's three parts (2 Nov 26)
+The year build ([LW-YEAR-CLEAR], [CAL-MONTH-YEAR-JUMP], pull request 611) was compared with its approved drawings by measure
+and by eye side by side (`raptor-port/docs/handpass/2026-11-02-year-build.md`), not by the drawing-check tool
+(`raptor-port/scripts/drawcheck/`, D1495): its drawings have no part list or recorded drawing yet. **To do:** his ruling —
+record the drawings and write the part list (the corner, the title and its ▾, the card), or accept the measured comparison
+for these three small parts. **Place:** before pull request 611's "merge live". **ANSWERED 2 Nov 26 — his D1566: the measured comparison stands, a one-off.**
+
