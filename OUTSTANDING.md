@@ -109,6 +109,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
+- [LW-MONTHSTRIP-TWO-YEARS] — on a phone a two-year period's month buttons run past the edge: with [LW-YEAR-CLEAR].
 - [LW-YEAR-CLEAR] — the Leave War shows which year the grid is on (D1559): designed with the design skill, pictures to him first.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
@@ -129,6 +130,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRK-ROUND-SEEN] — older things the plain-user round saw (dropdown words cut in the test browser, two phone covers): his iPhone look first.
 - [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
 
@@ -192,7 +194,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
-- [TRK-USER-ROUND] — a plain-user round on the Tracker as it is live (D1558), now.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -244,11 +245,19 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [TRK-USER-ROUND] A plain-user round on the Tracker as it is live (his D1558, 2 Nov 26)
-**What:** the Tracker's everyday tasks done as a user, start to finish, on his iPhone's size (WebKit) and a desktop, with pictures,
-pressing every control that opens or closes something, and every place the result should show looked at (D1557, bug-check order
-§7.0a) — so he knows whether the clean-up of 31 Oct 26 (D1534, pull request 603) broke anything. Every fault found: a picture to
-him, fixed red first. **Place:** now, after the document-close fix (one browser run at a time on his PC).
+### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
+From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
+test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
+his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/selects/tracker-bar-webkit.png`); (2) on a phone the marking
+pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
+tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
+gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
+Duplicate, the chart's arrow keys, sideways, his PC's 125%. **Place:** with the Tracker's next batch; (1) his iPhone look first.
+
+### [LW-MONTHSTRIP-TWO-YEARS] On a phone the Leave War's month strip runs past the edge in a two-year period (found 2 Nov 26)
+Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 402 wide draws more month buttons than fit, so MAY and
+JUN are cut off at the right edge. Picture: the year designs' `lw-5-two-years.png`. **To do:** with [LW-YEAR-CLEAR]'s build (the
+strip and the year are one design question), red first.
 
 ### [CAL-MONTH-YEAR-JUMP] The Inputs and SANS calendars: a tap on the month's title opens a month-and-year picker (his D1560, 2 Nov 26)
 **What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;

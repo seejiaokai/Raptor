@@ -7260,3 +7260,12 @@ DRAFTED for his approval, with the two area-list lines the always-loaded rule fi
 (the reads: `raptor-port/docs/superpowers/briefs/2026-11-01-start-load-trim-reads.md`). Waits on his approval of the drafts and his "merge live".
 
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([TRK-USER-ROUND]). Forward facts: `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md`.*
+
+### [TRK-USER-ROUND] A plain-user round on the Tracker as it is live (his D1558, 2 Nov 26)
+**What:** the Tracker's everyday tasks done as a user, start to finish, on his iPhone's size (WebKit) and a desktop, with pictures,
+pressing every control that opens or closes something, and every place the result should show looked at (D1557, bug-check order
+§7.0a) — so he knows whether the clean-up of 31 Oct 26 (D1534, pull request 603) broke anything. Every fault found: a picture to
+him, fixed red first. **Place:** now, after the document-close fix (one browser run at a time on his PC).
+

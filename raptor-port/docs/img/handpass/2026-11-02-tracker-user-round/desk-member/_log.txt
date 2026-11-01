@@ -1,0 +1,110 @@
+world: {"active":"smvx8l2glsq03ql","name":"STUDENT A","roster":["STUDENT A","STUDENT B"]}
+PASS a-crew-dropdown — picked "STUDENT B"; store active="STUDENT B"; Pace card says "— STUDENT B"
+PASS a-crew-back — back to "STUDENT A"
+PASS b-pop-opens — the marking pop-up opened on ST-01
+PASS b-dco-marks — grade before=null after=dco; pop-up closed=true; ball class="ball"
+PASS b-overall-shows — Overall reads: 0.5% COMPLETE 1 DONE
+PASS b-undo — top bar Undo ("Undo the mark on ST-01 for STUDENT A (Ctrl+Z)") → grade null
+PASS b-redo — Redo → grade dco
+PASS c-pop-x-Close — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS c-pop-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for c-pop: {"x":24,"y":389,"at":"flowSvg"}
+PASS c-pop-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS c-pop-other-ball — a press on another ball while one pop-up is up shows: "ST-01 · STUDENT A"
+PASS c-fail-plus — pop-up Fails 0 → 1; its list reads "ACG-01 01/11/26"
+PASS c-failures-card — Failures card chips=["ACG-01"] total="1 FAIL"
+  fail chip tap shows: null
+PASS c-faillog-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS c-faillog-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for c-faillog: {"x":24,"y":389,"at":"lullback"}
+PASS c-faillog-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS d-details-x-Cancel — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS d-details-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for d-details: {"x":24,"y":389,"at":"infoOverlay"}
+PASS d-details-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS d-details-save — window closed=true; pop-up details read "Course Introduction and Aircraft Overview Type: Lecture · 1.7 Hrs Prerequisites: ST-01"
+PASS e-showall-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS e-showall-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for e-showall: {"x":24,"y":389,"at":"saOverlay"}
+PASS e-showall-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS e-showall-filter — filter "ACG-01" leaves 1 rows; shows hours typed in D: true
+PASS e-legend-x-button-again — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS e-legend-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for e-legend: {"x":24,"y":389,"at":"tlegscrim"}
+PASS e-legend-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS e-details-switch — ⓘ pressed=true, then false
+PASS f-flex-x-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS f-flex-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for f-flex: {"x":24,"y":389,"at":"tflexscrim"}
+PASS f-flex-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS f-flex-member-readonly — member: Save shown=false, typed boxes=0
+PASS g-add-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS g-add-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for g-add: {"x":24,"y":389,"at":"dlgOverlay"}
+PASS g-add-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+  roster offered: ["Recon\nPilot · OCU","Talisman\nPilot · OCU","Wildcard\nPilot · OCU","Tally\nWSO · OCU","Zulu\nWSO · OCU","Ace\nPilot · A"]
+PASS g-add — roster 2 → 3 (STUDENT A, STUDENT B, RECON); chips=3; Crew list=3
+PASS g-rename — names=STUDENT A, STUDENT B, RENAMED UR; Crew list has it=true
+PASS g-remove-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS g-remove-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for g-remove: {"x":24,"y":389,"at":"dlgOverlay"}
+PASS g-remove-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS g-remove — roster 3 → 2
+PASS g-reorder-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS g-reorder-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for g-reorder: {"x":24,"y":389,"at":"ordOverlay"}
+PASS g-reorder-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lastsyll — calendar opened=true; box reads "Sun 1 Nov 26"; Days since syllabus 0d Days since currency 0d
+PASS h-cal-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for h-cal: {"x":24,"y":389,"at":"dcal-scrim"}
+PASS h-cal-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-pace — card: PACE & EXPECTED END — STUDENT A SET PACE /wk 03/03/28 projected end END DATE A Pick a date ▾ — req. pace END DATE B Pick a date ▾ — req. pace Baseline 2 events/
+PASS h-enddate-a — End date A reads "1 Nov 26"; card: PACE & EXPECTED END — STUDENT A SET PACE /wk 03/03/28 projected end END DATE A 1 Nov 26 ✕ past req. pace END DATE B Pick a date ▾ — req. pace Baseline 2 events/wk. Both end-date paces exclude this stu
+PASS h-coursestart — Course start reads "Sun 1 Nov 26 ▾"; No. of Down Days reads "— ›"
+PASS h-roster-man — added "Talisman"; Course start reads "Sun 1 Nov 26 ▾"; No. of Down Days reads "0 days ›"
+PASS h-downdays-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-downdays-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for h-downdays: {"x":24,"y":389,"at":"lullback"}
+PASS h-downdays-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lull-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lull-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for h-lull: {"x":24,"y":389,"at":"lullback"}
+PASS h-lull-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lull-set — days in calendar=42; lulls stored=["05/11/26\n→\n09/11/26\n×"]; chips "05/11/26 → 09/11/26 ×"
+PASS h-lullcopy-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lullcopy-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for h-lullcopy: {"x":24,"y":389,"at":"lullback"}
+PASS h-lullcopy-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS h-lull-chip-opens — a tap on the lull period opens its calendar
+  back to the first student for the rest: STUDENT A
+PASS i-course-x-button-again — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-course-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for i-course: {"x":24,"y":389,"at":"flowSvg"}
+PASS i-course-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-syl-x-button-again — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-syl-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for i-syl: {"x":24,"y":389,"at":"flowSvg"}
+PASS i-syl-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-file-x-button-again — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-file-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for i-file: {"x":24,"y":389,"at":"flowSvg"}
+PASS i-file-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-export-x — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-export-esc — closed=true; a marking pop-up opened behind=false; a question opened=false
+  outside point for i-export: {"x":24,"y":389,"at":"copyOverlay"}
+PASS i-export-out — closed=true; a marking pop-up opened behind=false; a question opened=false
+PASS i-export — a file was handed over: OCU-syllabus-WITH-STUDENTS-2026-11-01.json
+  after export: Exported as “OCU-syllabus-WITH-STUDENTS-2026-11-01.json”. It CONTAINS student names and marks, with every chart — a full backup; only send it to someone entitled to see them.
+  import questions: ["“2024” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it]","“2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it]","“Tx 2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it]","“A/G - A/A 2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it]","This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyo [Cancel|OK]","Brought in 2024, 2026, Tx 2026, A/G - A/A 2026 · students & marks restored. It is saved. [OK]"]
+PASS i-import-keeps-marks — ST-01 grade before export=dco, after import=dco; "1 DONE" before=true after=true
+PASS i-import — Import asked 6 question(s): “2024” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it] // “2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it] // “Tx 2026” already exists. Replace it, or add the incoming one un
+PASS i-search — rows offered=1; ACG-05 in the chart's view=true
+PASS i-search-clear — box after ✕ reads ""
+PASS j-bar — hidden, show button there=true; back again
+PASS j-zoom — chart zoom 100% → 110% → reset 100%
+PASS k-evchip — chip "CFT-01" → ball in view: {"inView":true,"cls":"ball"}; pop-up open=false
+PASS l-reload — before={"who":"STUDENT A","g":"dco","roster":["STUDENT A","STUDENT B","TALISMAN"],"lastSyll":"Sun 1 Nov 26","pace":"3","endA":"1 Nov 26","fails":"FAILURES — STUDENT A 1 FAIL ACG-01","lulls":"none","overall":"OVERALL — STUDENT A 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%"} after={"who":"STUDENT A","g":"dco","roster":["STUDENT A","STUDENT B","TALISMAN"],"lastSyll":"Sun 1 Nov 26","pace":"3","endA":"1 Nov 26","fails":"FAILURES — STUDENT A 1 FAIL ACG-01","lulls":"none","overall":"OVERALL — STUDENT A 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%"}
+PASS m-tab-away-back — before {"g":"dco","who":"STUDENT A"} after {"g":"dco","who":"STUDENT A"}
+PASS m-logout-login — before {"g":"dco","who":"STUDENT A"} after sign-in {"g":"dco","who":"STUDENT A"}
+PASS z-no-page-errors — 0 console/page errors
+== desk-member: 86 PASS, 0 FAIL, 0 not walked; page errors: 0

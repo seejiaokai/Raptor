@@ -1,0 +1,465 @@
+{
+  "results": [
+    {
+      "id": "a-crew-dropdown",
+      "ok": "PASS",
+      "note": "picked \"STUDENT B\"; store active=\"STUDENT B\"; Pace card says \"— STUDENT B\""
+    },
+    {
+      "id": "a-crew-back",
+      "ok": "PASS",
+      "note": "back to \"STUDENT A\""
+    },
+    {
+      "id": "b-pop-opens",
+      "ok": "PASS",
+      "note": "the marking pop-up opened on ST-01"
+    },
+    {
+      "id": "b-dco-marks",
+      "ok": "PASS",
+      "note": "grade before=null after=dco; pop-up closed=true; ball class=\"ball\""
+    },
+    {
+      "id": "b-overall-shows",
+      "ok": "PASS",
+      "note": "Overall reads: 0.5% COMPLETE 1 DONE"
+    },
+    {
+      "id": "b-undo",
+      "ok": "PASS",
+      "note": "top bar Undo (\"Undo the mark on ST-01 for STUDENT A (Ctrl+Z)\") → grade null"
+    },
+    {
+      "id": "b-redo",
+      "ok": "PASS",
+      "note": "Redo → grade dco"
+    },
+    {
+      "id": "c-pop-x-Close",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "c-pop-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "c-pop-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "c-pop-other-ball",
+      "ok": "PASS",
+      "note": "a press on another ball while one pop-up is up shows: \"ST-01 · STUDENT A\""
+    },
+    {
+      "id": "c-fail-plus",
+      "ok": "PASS",
+      "note": "pop-up Fails 0 → 1; its list reads \"ACG-01 01/11/26\""
+    },
+    {
+      "id": "c-failures-card",
+      "ok": "PASS",
+      "note": "Failures card chips=[\"ACG-01\"] total=\"1 FAIL\""
+    },
+    {
+      "id": "c-faillog-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "c-faillog-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "c-faillog-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "d-details-x-Cancel",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "d-details-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "d-details-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "d-details-save",
+      "ok": "PASS",
+      "note": "window closed=true; pop-up details read \"Course Introduction and Aircraft Overview Type: Lecture · 1.7 Hrs Prerequisites: ST-01\""
+    },
+    {
+      "id": "e-showall-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-showall-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-showall-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-showall-filter",
+      "ok": "PASS",
+      "note": "filter \"ACG-01\" leaves 1 rows; shows hours typed in D: true"
+    },
+    {
+      "id": "e-legend-x-button-again",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-legend-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-legend-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "e-details-switch",
+      "ok": "PASS",
+      "note": "ⓘ pressed=true, then false"
+    },
+    {
+      "id": "f-flex-x-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "f-flex-x-Cancel",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "f-flex-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "f-flex-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "f-flex-save",
+      "ok": "PASS",
+      "note": "From 7 typed 8; window closed on Save=true; reopened reads 8"
+    },
+    {
+      "id": "f-flex-off-info",
+      "ok": "PASS",
+      "note": "flex bars on the Info panel with flex off: 0"
+    },
+    {
+      "id": "f-flex-on-info",
+      "ok": "PASS",
+      "note": "flex bars with flex on again: 1"
+    },
+    {
+      "id": "g-add-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-add-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-add-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-add",
+      "ok": "PASS",
+      "note": "roster 2 → 3 (STUDENT A, STUDENT B, RECON); chips=3; Crew list=3"
+    },
+    {
+      "id": "g-rename",
+      "ok": "PASS",
+      "note": "names=STUDENT A, STUDENT B, RENAMED UR; Crew list has it=true"
+    },
+    {
+      "id": "g-remove-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-remove-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-remove-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-remove",
+      "ok": "PASS",
+      "note": "roster 3 → 2"
+    },
+    {
+      "id": "g-reorder-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-reorder-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "g-reorder-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lastsyll",
+      "ok": "PASS",
+      "note": "calendar opened=true; box reads \"Sun 1 Nov 26\"; Days since syllabus 0d Days since currency 0d"
+    },
+    {
+      "id": "h-cal-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-cal-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-pace",
+      "ok": "PASS",
+      "note": "card: PACE & EXPECTED END SET PACE /wk 03/03/28 projected end END DATE A Pick a date ▾ — req. pace END DATE B Pick a date ▾ — req. pace"
+    },
+    {
+      "id": "h-enddate-a",
+      "ok": "PASS",
+      "note": "End date A reads \"1 Nov 26\"; card: PACE & EXPECTED END SET PACE /wk 03/03/28 projected end END DATE A 1 Nov 26 ✕ past req. pace END DATE B Pick a date ▾ — req. pace"
+    },
+    {
+      "id": "h-coursestart",
+      "ok": "PASS",
+      "note": "Course start reads \"Sun 1 Nov 26 ▾\"; No. of Down Days reads \"— ›\""
+    },
+    {
+      "id": "h-roster-man",
+      "ok": "PASS",
+      "note": "added \"Talisman\"; Course start reads \"Sun 1 Nov 26 ▾\"; No. of Down Days reads \"0 days ›\""
+    },
+    {
+      "id": "h-downdays-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-downdays-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-downdays-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lull-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lull-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lull-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lull-set",
+      "ok": "PASS",
+      "note": "days in calendar=42; lulls stored=[\"05/11/26\\n→\\n09/11/26\\n×\"]; chips \"05/11/26 → 09/11/26 ×\""
+    },
+    {
+      "id": "h-lullcopy-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lullcopy-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lullcopy-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "h-lull-chip-opens",
+      "ok": "PASS",
+      "note": "a tap on the lull period opens its calendar"
+    },
+    {
+      "id": "i-course-x-button-again",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-course-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-course-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-syl-x-button-again",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-syl-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-syl-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-file-x-button-again",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-file-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-file-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-export-x",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-export-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-export-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-export",
+      "ok": "PASS",
+      "note": "a file was handed over: OCU-syllabus-WITH-STUDENTS-2026-11-01.json"
+    },
+    {
+      "id": "i-import-keeps-marks",
+      "ok": "PASS",
+      "note": "ST-01 grade before export=dco, after import=dco; \"1 DONE\" before=false after=false"
+    },
+    {
+      "id": "i-import",
+      "ok": "PASS",
+      "note": "Import asked 6 question(s): “2024” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it] // “2026” already exists. Replace it, or add the incoming one under a new name? [Skip this one|Add as new|Replace it] // “Tx 2026” already exists. Replace it, or add the incoming one un"
+    },
+    {
+      "id": "i-search",
+      "ok": "PASS",
+      "note": "rows offered=1; ACG-05 in the chart's view=true"
+    },
+    {
+      "id": "i-search-clear",
+      "ok": "PASS",
+      "note": "box after ✕ reads \"\""
+    },
+    {
+      "id": "i-searchpanel-x-magnifier-again",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-searchpanel-esc",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "i-searchpanel-out",
+      "ok": "PASS",
+      "note": "closed=true; a marking pop-up opened behind=false; a question opened=false"
+    },
+    {
+      "id": "j-bar",
+      "ok": "PASS",
+      "note": "hidden, show button there=true; back again"
+    },
+    {
+      "id": "j-zoom",
+      "ok": "PASS",
+      "note": "chart zoom 42% → 52% → reset 42%"
+    },
+    {
+      "id": "k-evchip",
+      "ok": "PASS",
+      "note": "chip \"CFT-01\" → ball in view: {\"inView\":true,\"cls\":\"ball\"}; pop-up open=false"
+    },
+    {
+      "id": "l-reload",
+      "ok": "PASS",
+      "note": "before={\"who\":\"STUDENT A\",\"g\":\"dco\",\"roster\":[\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"],\"lastSyll\":\"Sun 1 Nov 26\",\"pace\":\"3\",\"endA\":\"1 Nov 26\",\"fails\":\"FAILURES 1 FAIL ACG-01\",\"lulls\":\"none\",\"overall\":\"OVERALL 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%\"} after={\"who\":\"STUDENT A\",\"g\":\"dco\",\"roster\":[\"STUDENT A\",\"STUDENT B\",\"TALISMAN\"],\"lastSyll\":\"Sun 1 Nov 26\",\"pace\":\"3\",\"endA\":\"1 Nov 26\",\"fails\":\"FAILURES 1 FAIL ACG-01\",\"lulls\":\"none\",\"overall\":\"OVERALL 0.5% COMPLETE 1 DONE 209 REMAINING Flights 0/41 · 0% Acad / Spec 1/106 · 1% Sims 0/31 · 0% IAT/CFT/EPT 0/18 · 0% Tests 0/14 · 0%\"}"
+    },
+    {
+      "id": "m-tab-away-back",
+      "ok": "PASS",
+      "note": "before {\"g\":\"dco\",\"who\":\"STUDENT A\"} after {\"g\":\"dco\",\"who\":\"STUDENT A\"}"
+    },
+    {
+      "id": "m-logout-login",
+      "ok": "PASS",
+      "note": "before {\"g\":\"dco\",\"who\":\"STUDENT A\"} after sign-in {\"g\":\"dco\",\"who\":\"STUDENT A\"}"
+    },
+    {
+      "id": "z-no-page-errors",
+      "ok": "PASS",
+      "note": "0 console/page errors"
+    }
+  ],
+  "errors": []
+}

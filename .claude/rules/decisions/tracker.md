@@ -45,7 +45,6 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
-| D1558 | 2 Nov 26 | A plain-user round is run on the Tracker as it is live (D1557): its everyday tasks done as a user, start to finish, on a phone and a desktop, with pictures, every fault found reported to him and fixed red first — so he knows whether the clean-up of 31 Oct 26 (D1534) broke anything. |
 | D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |
 | D1406 | 27 Oct 26 | On a touch screen the Tracker's chart draws no scroll bars: it still scrolls, glides and pinches as before; the Info half, Show All and every window keep their normal bars, and a desktop with a mouse keeps both the chart's and the Info panel's bars, which are how a mouse scrolls them. |
 | D1405 | 27 Oct 26 | The Tracker's scroll bars that show in odd places are found and fixed first, before the iPhone keyboard fault (D1366) and the Leave War overhaul's M4 (D1404). — changed by D1406 |

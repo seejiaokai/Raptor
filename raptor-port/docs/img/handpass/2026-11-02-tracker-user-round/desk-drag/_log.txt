@@ -1,0 +1,6 @@
+scroller: side
+PASS drag-next-event-chip — half scrolled 279.28570556640625 → 399.2857360839844; something opened by the drag=false
+PASS drag-students-pencil — half scrolled 0 → 120; something opened by the drag=false
+FAIL drag-Failures-title — half scrolled 1250.71435546875 → 1250.71435546875; something opened by the drag=false
+PASS kbd-failtitle — Enter on the Failures title opens the full list
+== desk-drag: 3 PASS, 1 FAIL, 0 not walked; page errors: 0
