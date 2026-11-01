@@ -70,7 +70,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
+- [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
@@ -1449,6 +1449,15 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 (it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
+**SEEN ON HIS IPHONE, 1 Nov 26 — and worse than this item says:** one press of Export as PDF opened the iPhone's print preview on
+the APP SCREEN itself — 4 pages of the working copy (DRAFT, "Live working copy", the open Aircrew panel, the "Print dialog opened"
+note printed on the page) — not the white report of the published schedule ([FLAG-EXPORT]); so on his iPhone an unpublished working
+copy can go out as the record. Likely cause, to confirm: iPhone Safari prints the parent page when a frame's print is called, and
+the load handler fires on the blank frame first. His picture: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\37e79b02-image.png`
+(copy it into the evidence folder when the fix is built). **Fix:** every browser prints only the report, once (e.g. the report in a
+print-only part of the main page, `@media print` hiding the app, `window.print()`, cleaned up on `afterprint`), red first; checked
+with print-media pictures in Chromium and WebKit, and his iPhone look. **His word, 2 Nov 26: "Later"** — not now; with the next batch
+of small fixes. The lesson: `raptor-port/docs/bug-check-order.md` §7.11 lesson 18.
 Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
 `#exportPdf` prints first an empty frame (`about:blank`), then the report (`about:srcdoc`). The frame's load handler fires when the
 blank frame is inserted AND when the report lands (`src/ui/printpdf.ts` `printSchedPDF`). Headless it is silent; in real Chrome a

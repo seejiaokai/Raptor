@@ -932,6 +932,14 @@ the reader's instructions or model change, it is run on every case and a change 
    that the page is no wider than the window and that everything sized from the changed part (a foot bar, a pinned header)
    fits it again (`scripts/handpass/crew-toggle-walk.mjs`).
 
+18. **Something only a real browser's print draws (his picture, Edit Schedule's Export as PDF on his iPhone, 1 Nov 26).** The
+   export prints through the browser's own print dialog, which no headless walk can open: the tests stubbed the print and counted
+   calls, and the backlog's "confirm on his iPhone" ([PDF-PRINT-TWICE], 29 Sep 26) was never done — so for five weeks his iPhone
+   printed the working copy's screen instead of the published report. **From now on:** a change that prints or downloads names, in
+   its sizing step, how its RESULT is seen — print-media pictures in Chromium AND WebKit of what the dialog would print — and puts
+   the real phone's look on his look card; an "only his phone can confirm" left in the backlog is put to him with the next look he
+   is asked for, not left waiting.
+
 ## 8. Making the checks FIND rather than CONFIRM
 
 1. **Tests loop over the roll-call, never over one fixture.** A test of a mark walks every KIND of
