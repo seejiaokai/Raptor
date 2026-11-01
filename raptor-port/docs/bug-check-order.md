@@ -433,6 +433,17 @@ line.
 
 ---
 
+## With the Claudex loop
+
+They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
+Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
+**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
+→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
+first, passed, and three unwired surfaces went out behind it. On money, published records,
+permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
+Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
+bypassed. Full detail: §4a of the order.
+
 ## 5. Which checks for which change
 
 All of it on everything would be abandoned in a week (D7). The tier is decided by facts read off the

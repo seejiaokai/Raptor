@@ -125,3 +125,56 @@ tripped the gate — the squeeze behind the 22 Sep 26 destruction. That clause i
 corrected). Moving a ceiling is a deliberate, argued edit with its reason in the commit, in a
 commit that touches no `raptor-port/src` file (the gate checks this). Its self-test,
 `scripts/docsize-selftest.mjs`, replays the destruction and must stay green.
+
+## 5. Passages moved here from the always-loaded rule files (D1556, 2 Nov 26)
+
+Moved whole, byte for byte, by `backlog-archive.mjs --move` (D138), each leaving a one-line pointer where it stood:
+the unattended-runs bullet of `.claude/rules/doc-structure.md` "In his workflow", just below, and the last section of
+`.claude/rules/record-decisions.md`, "Keeping the list whole, and read by relevance", after it. Paths inside them are
+from the repo root.
+
+### The unattended-runs bullet, from `.claude/rules/doc-structure.md` "In his workflow"
+
+- **Unattended runs (D596, 5 Oct 26):** when he leaves a job to run while he is asleep or away, a question never stops
+  the run. Search the rulings and the backlog first (D53) — a question a ruling already answers is never parked; technical
+  choices are the agent's to make and explain. A choice that is truly his is parked in ONE list he can read in a minute —
+  the question in the app's own words, a recommended answer, and exactly which finding or step waits on it (in a bug
+  check: "Questions waiting for him", at the head of the evidence sheet's look-card section) — only that piece is left
+  undone, and everything else carries on. One notification at the end or when truly blocked; nothing merges, nothing
+  touches `main`. **And a full chat does not stop it (D667, 8 Oct 26 — "since I can't be there to help u hand off maybe u
+  can self compact and continue working"):** with nobody there to start a fresh chat, the agent keeps `HANDOFF.md` and the
+  backlog true at every commit, lets the chat compact, and carries on. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.) **And the compaction is a SMART one (D766, 12 Oct 26 — "Smart compact be specific on what u need and dont need so that u dont waste context"):** the state is in the repo first, and the compaction is told exactly what the remaining work needs — the step in hand, the files it touches, the open faults, the questions parked for him — and what to drop.
+
+## Keeping the list whole, and read by relevance (D136 + D137, 24 Sep 26)
+
+**Owner:** *"If you archive an old ruling would it be lost and not read even tho it's applicable? … anything I change
+you will have the context of the ruling."* An archived ruling a chat does not know about is one it will not look for.
+So the list is **never shrunk by moving a live ruling out**: at a size budget the BUDGET rises. Only a ruling
+**replaced by a later one** — or **restated in full by one, a fresh reader checking each pair (D971, 17 Oct 26)** — or a **one-off permission once spent**, leaves — to `DECISIONS-ARCHIVE.md`, marked,
+never deleted, still searched before asking him anything.
+
+**And the same day (D137):** *"general rules should be read each session or rules that are applicable should be
+read, once we venture into things concerning other areas then that should be automatically read too … I don't want
+to bloat the ai to context that doesn't matter."* So the rulings are **split by area**, one file each under
+`.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work (and, since 28 Sep 26, People &
+accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Inputs pages — D802; since 1 Nov 26, Screen design — D1554) — every row keeping its date:
+- **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
+  file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
+  generously: a ruling missed costs more than one loaded (D68).
+- **A ruling spanning two areas** sits in the one it mostly governs; the other file's "Also read" line names it.
+- **Filing is mechanical** (`DECISIONS.md`, steps 1–3): a row at the top of its area's table, the replaced or spent
+  row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
+  `docsize` — in CI and at the end of every turn — fails on a lost or doubled D-number, a map out of step, a marked
+  row still live, or a row written in `DECISIONS.md` itself. A NEW area gets its own file, `paths:`, map row and byte
+  tripwire (`RULING_BYTES` in `docsize.mjs`); the converter makes its full-text file.
+
+**And as ONE LINE each (D390, 28 Sep 26 — his "Approve" to the slim-down).** An area file holds one short line per
+ruling — its number, its date, the rule as it stands (in ordinary letters, capitals only where a name or a short form has
+them — D970, 17 Oct 26), and a " — changed by D…" tail naming the later rulings that
+changed it; **the full row lives whole in `.claude/decisions-full/<same name>`, never loaded by itself. Open a ruling's
+full row before acting on its detail or putting a question to him about it** (`grep -h '^| D149 |'
+.claude/decisions-full/*.md`, or Read that line). A mark on an older ruling (DECISIONS.md step 2) goes in its FULL row,
+and its short line is rewritten to state the rule as it now stands. In a full row's home cell, "this file" or "this
+row" means its area's rulings. A tripwire in bytes guards each area file: crossing it means split the area (`--move-rows`)
+or raise it with its reason — never trim a ruling. The design, its red teams and the merge story:
+`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`.

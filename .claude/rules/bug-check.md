@@ -76,13 +76,4 @@ future. Put the exclusion in the REVIEWER'S BRIEF so the finding is never produc
 Say so to him, plainly, and say why. A skipped check he agreed to is a decision; a skipped check he
 never heard about is how three bugs reached him on 21 Sep 26.
 
-## With the Claudex loop
-
-They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
-Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
-**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
-→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
-first, passed, and three unwired surfaces went out behind it. On money, published records,
-permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
-Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
-bypassed. Full detail: §4a of the order.
+## With the Claudex loop — moved whole to `raptor-port/docs/bug-check-order.md`, after §4a (D1556)

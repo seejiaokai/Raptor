@@ -580,6 +580,10 @@ check. Any future local service: list the ENABLED local accounts and the folder'
 trusting the service account. PR #428's evidence (the Leave War fixes):
 `raptor-port/docs/handpass/2026-09-23-lw-monthjump.md` PART TWO.
 
+- **Once the repo is private: they run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
+  way back to GitHub's own machines is the repo variable `CI_ON_GITHUB=true`. Never two full gate runs at once,
+  and never a full local run while his PC's runner is mid-run (D86).
+
 ## How pushes cost runs (his question, 23 Sep 26)
 
 Any push to a branch with an open PR re-runs the whole check set, even notes-only (D151's reason). Notes wait

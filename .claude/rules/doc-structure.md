@@ -13,7 +13,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
   `raptor-port/` is opened; most of its rules are ONE line, each naming its full text in `raptor-port/docs/guide-full.md` (D391).
 - **At the start of a chat:** `HANDOFF.md` — where things stand (`## Now`, a block per chat) and what is next.
 - **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`,
-  `people-accounts.md`, `it-flow-guide.md`, `inputs.md` (the Inputs pages — D802) — each area's rulings, settled decisions and architecture — load when a matching file is opened
+  `people-accounts.md`, `it-flow-guide.md`, `inputs.md` (the Inputs pages — D802), `design.md` (the screen-design rulings — how a screen looks and behaves, loaded with screen work, D1554) — each area's rulings, settled decisions and architecture — load when a matching file is opened
   **with the Read tool**. A shell read (`cat`, `grep`) does not load them, and neither does planning before any file is
   open: **before planning or editing in an area, open its file yourself** — People & accounts for any work on
   accounts, sign-in, Admin → Users, Quals, one-door, posting in or out, archive, restore or delete (D390). A brief for
@@ -66,15 +66,7 @@ on his "merge live"; he sometimes runs two worktrees in parallel and merges both
   worktree picker, so the outgoing chat releases its branch as its last step and the opening line switches the new chat
   to it, with what to do if the switch is refused** — a new job: level with `main`; an unmerged branch continuing: that
   `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same: persist first.
-- **Unattended runs (D596, 5 Oct 26):** when he leaves a job to run while he is asleep or away, a question never stops
-  the run. Search the rulings and the backlog first (D53) — a question a ruling already answers is never parked; technical
-  choices are the agent's to make and explain. A choice that is truly his is parked in ONE list he can read in a minute —
-  the question in the app's own words, a recommended answer, and exactly which finding or step waits on it (in a bug
-  check: "Questions waiting for him", at the head of the evidence sheet's look-card section) — only that piece is left
-  undone, and everything else carries on. One notification at the end or when truly blocked; nothing merges, nothing
-  touches `main`. **And a full chat does not stop it (D667, 8 Oct 26 — "since I can't be there to help u hand off maybe u
-  can self compact and continue working"):** with nobody there to start a fresh chat, the agent keeps `HANDOFF.md` and the
-  backlog true at every commit, lets the chat compact, and carries on. (That it holds for every unattended run, not only that night's, is the agent's reading of his words.) **And the compaction is a SMART one (D766, 12 Oct 26 — "Smart compact be specific on what u need and dont need so that u dont waste context"):** the state is in the repo first, and the compaction is told exactly what the remaining work needs — the step in hand, the files it touches, the open faults, the questions parked for him — and what to drop.
+- **Unattended runs (D596, D667, D766)** — when he leaves a job to run while he is asleep or away: moved whole to `raptor-port/docs/doc-budget.md` §5 (D1556); the overnight guide carries the same rulings.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the
