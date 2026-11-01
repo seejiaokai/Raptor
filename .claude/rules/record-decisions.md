@@ -2,23 +2,11 @@
 
 Unscoped, so it loads before any project file. The record is one file per AREA under
 `.claude/rules/decisions/`, with `DECISIONS.md` at the repo root as the front door and map (D137 — the last
-section below), and `.claude/hooks/record-decisions.sh` fires this check on every message he sends.
+section's pointer below), and `.claude/hooks/record-decisions.sh` fires this check on every message he sends.
 
 ## The lapse this exists to stop
 
-**Owner, 21 Sep 26 (D13):** *"This is a recurring problem. Whenever we discussed something important to
-note down. I dont see u noting them down. How do we fix your behavior lapse?"*
-
-He is right, and the cause is **not forgetting — it is misclassifying.** A ruling stated mid-task
-gets read as an instruction for the work in front of you. You execute it correctly, and that feels
-like it has been handled. **The work absorbing a ruling is not the record keeping it.** Because the
-work comes out right, nothing feels missing, so the lapse repeats and is only ever caught when he
-asks.
-
-Two from one evening, both caught only because he asked: his instruction that the bug-check order
-must fire itself went into the reminder file that happened to be open at that moment, not into the
-order where it belonged; his ruling that it supersedes the earlier methods went into a commit
-message and a memory, not into the document.
+The story behind this rule — two misses of one evening, 21 Sep 26 (D13), and why the lapse is misclassifying, not forgetting — is kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
 
 ## The rule
 
@@ -102,52 +90,6 @@ words, its conditions and its readings are only there — D390), `DECISIONS-ARCH
 the code. Not the specs folder. Those, by keyword, every time — with the SHELL's grep: the Grep tool prints
 "[Omitted long matching line]" for a full row, and a search that returned no text is not a read. It costs one search.
 
-Three failures made it, and each one is worth recognising on sight:
+The three failures that made this check — a named entry is a pointer, not a scope; the backlog is read every time; search for a claim's SUBJECT, never its phrasing — and why a code comment is never evidence about today (the rulings win; fix the comment in the same change): kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
 
-1. **A handoff that names specific entries** ("read D48–D49") is a POINTER, not a scope. Grepping
-   for exactly those two and stopping leaves every other live ruling unread. Read the file.
-2. **`OUTSTANDING.md`'s read-trigger was scoped to "resuming parked work"**, and a session that
-   thinks it is "continuing a build" will skip it. It is now UNCONDITIONAL: read it whenever you
-   are about to ask him something or report something as absent.
-3. **Searching for the words the stale comment used can only CONFIRM it.** Searching for the THING
-   ("mock", "window", the feature's name) is what disconfirms. When you are checking whether a
-   claim is still true, search for its subject, never its phrasing.
-
-**A code comment is dated the moment it is written.** "Not yet ruled", "TODO", "the owner has not
-picked" — none of it is evidence about today. The rulings are. Where the two disagree, the
-rulings win and **you fix the comment in the same change** (the newest-instruction-wins rule
-already says so).
-
-## Keeping the list whole, and read by relevance (D136 + D137, 24 Sep 26)
-
-**Owner:** *"If you archive an old ruling would it be lost and not read even tho it's applicable? … anything I change
-you will have the context of the ruling."* An archived ruling a chat does not know about is one it will not look for.
-So the list is **never shrunk by moving a live ruling out**: at a size budget the BUDGET rises. Only a ruling
-**replaced by a later one** — or **restated in full by one, a fresh reader checking each pair (D971, 17 Oct 26)** — or a **one-off permission once spent**, leaves — to `DECISIONS-ARCHIVE.md`, marked,
-never deleted, still searched before asking him anything.
-
-**And the same day (D137):** *"general rules should be read each session or rules that are applicable should be
-read, once we venture into things concerning other areas then that should be automatically read too … I don't want
-to bloat the ai to context that doesn't matter."* So the rulings are **split by area**, one file each under
-`.claude/rules/decisions/` — Tracker, Leave War, Scheduler & amendments, OIL, How we work (and, since 28 Sep 26, People &
-accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Inputs pages — D802) — every row keeping its date:
-- **How we work loads in every session** (no `paths:`); **each other area loads by itself** when a session READS a
-  file matching its `paths:` — so work that strays into a second area picks that area up too. Choose paths
-  generously: a ruling missed costs more than one loaded (D68).
-- **A ruling spanning two areas** sits in the one it mostly governs; the other file's "Also read" line names it.
-- **Filing is mechanical** (`DECISIONS.md`, steps 1–3): a row at the top of its area's table, the replaced or spent
-  row marked, then `node raptor-port/scripts/backlog-archive.mjs --rulings` moves marked rows and rewrites the map.
-  `docsize` — in CI and at the end of every turn — fails on a lost or doubled D-number, a map out of step, a marked
-  row still live, or a row written in `DECISIONS.md` itself. A NEW area gets its own file, `paths:`, map row and byte
-  tripwire (`RULING_BYTES` in `docsize.mjs`); the converter makes its full-text file.
-
-**And as ONE LINE each (D390, 28 Sep 26 — his "Approve" to the slim-down).** An area file holds one short line per
-ruling — its number, its date, the rule as it stands (in ordinary letters, capitals only where a name or a short form has
-them — D970, 17 Oct 26), and a " — changed by D…" tail naming the later rulings that
-changed it; **the full row lives whole in `.claude/decisions-full/<same name>`, never loaded by itself. Open a ruling's
-full row before acting on its detail or putting a question to him about it** (`grep -h '^| D149 |'
-.claude/decisions-full/*.md`, or Read that line). A mark on an older ruling (DECISIONS.md step 2) goes in its FULL row,
-and its short line is rewritten to state the rule as it now stands. In a full row's home cell, "this file" or "this
-row" means its area's rulings. A tripwire in bytes guards each area file: crossing it means split the area (`--move-rows`)
-or raise it with its reason — never trim a ruling. The design, its red teams and the merge story:
-`raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`.
+## Keeping the list whole, and read by relevance (D136, D137, D390) — moved whole to `raptor-port/docs/doc-budget.md` §5 (D1556)

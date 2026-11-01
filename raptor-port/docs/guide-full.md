@@ -31,6 +31,40 @@ for missed rulings before any handoff or closing report, and carry a `Rulings:` 
 report. Full rule and the two worked misses: `../.claude/rules/record-decisions.md`; the check
 fires on every message via `../.claude/hooks/record-decisions.sh`.
 
+#### The lapse this exists to stop — moved whole from `.claude/rules/record-decisions.md` (D1556, 2 Nov 26; its paths are from the repo root)
+
+**Owner, 21 Sep 26 (D13):** *"This is a recurring problem. Whenever we discussed something important to
+note down. I dont see u noting them down. How do we fix your behavior lapse?"*
+
+He is right, and the cause is **not forgetting — it is misclassifying.** A ruling stated mid-task
+gets read as an instruction for the work in front of you. You execute it correctly, and that feels
+like it has been handled. **The work absorbing a ruling is not the record keeping it.** Because the
+work comes out right, nothing feels missing, so the lapse repeats and is only ever caught when he
+asks.
+
+Two from one evening, both caught only because he asked: his instruction that the bug-check order
+must fire itself went into the reminder file that happened to be open at that moment, not into the
+order where it belonged; his ruling that it supersedes the earlier methods went into a commit
+message and a memory, not into the document.
+
+#### The three failures behind "Read it before you ask him anything" — moved whole from `.claude/rules/record-decisions.md` §The check (D1556, 2 Nov 26; its paths are from the repo root)
+
+Three failures made it, and each one is worth recognising on sight:
+
+1. **A handoff that names specific entries** ("read D48–D49") is a POINTER, not a scope. Grepping
+   for exactly those two and stopping leaves every other live ruling unread. Read the file.
+2. **`OUTSTANDING.md`'s read-trigger was scoped to "resuming parked work"**, and a session that
+   thinks it is "continuing a build" will skip it. It is now UNCONDITIONAL: read it whenever you
+   are about to ask him something or report something as absent.
+3. **Searching for the words the stale comment used can only CONFIRM it.** Searching for the THING
+   ("mock", "window", the feature's name) is what disconfirms. When you are checking whether a
+   claim is still true, search for its subject, never its phrasing.
+
+**A code comment is dated the moment it is written.** "Not yet ruled", "TODO", "the owner has not
+picked" — none of it is evidence about today. The rulings are. Where the two disagree, the
+rulings win and **you fix the comment in the same change** (the newest-instruction-wins rule
+already says so).
+
 ### The newest owner instruction wins
 
 **THE NEWEST OWNER INSTRUCTION WINS (owner, 17 Sep 26 — "most probably the

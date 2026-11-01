@@ -1,0 +1,25 @@
+{
+  "results": [
+    {
+      "id": "drag-next-event-chip",
+      "ok": "PASS",
+      "note": "half scrolled 279.28570556640625 → 399.2857360839844; something opened by the drag=false"
+    },
+    {
+      "id": "drag-students-pencil",
+      "ok": "PASS",
+      "note": "half scrolled 0 → 120; something opened by the drag=false"
+    },
+    {
+      "id": "drag-Failures-title",
+      "ok": "FAIL",
+      "note": "half scrolled 1250.71435546875 → 1250.71435546875; something opened by the drag=false"
+    },
+    {
+      "id": "kbd-failtitle",
+      "ok": "PASS",
+      "note": "Enter on the Failures title opens the full list"
+    }
+  ],
+  "errors": []
+}

@@ -70,7 +70,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-PENDING-COUNT] — the 👁 look at the Original shows "1 pending" where the working copy shows "2 pending" (reproduce first).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [PDF-PRINT-TWICE] — "Export as PDF" may print twice, first on a blank page — to confirm in real Chrome and on his iPhone.
+- [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
@@ -105,10 +105,14 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CSS-FONT-INHERIT] — eight boxes and buttons on the schedule and the Inputs pages show the browser’s own letters: their font line is not a font and is dropped (found in round 3’s check, 24 Oct 26); a picture to him first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-CARD-COLUMNS] — on the Inputs list's cards LATE, "No document" and the hours in three columns, card to card (his D1305, pick A — D1310): to build with the next Inputs batch.
+- [CAL-MONTH-YEAR-JUMP] — a tap on the Inputs / SANS calendar's month title opens the month-and-year wheels (D1560): drawn first, with [LW-YEAR-CLEAR].
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
+- [LW-MONTHSTRIP-TWO-YEARS] — on a phone a two-year period's month buttons run past the edge: with [LW-YEAR-CLEAR].
+- [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): drawn first.
+- [LW-YEAR-CLEAR] — the Leave War shows which year the grid is on (D1559): designed with the design skill, pictures to him first.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -125,6 +129,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [TRK-ROUND-SEEN] — older things the plain-user round saw (dropdown words cut in the test browser, two phone covers): his iPhone look first.
 - [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
 
@@ -188,7 +193,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
-- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived, the screen-design rulings to an area of their own, the Codex guide shortened — its own documents-only job.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -240,23 +244,42 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
-### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
-**What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
-the general rulings (`.claude/rules/decisions/how-we-work.md`, 209 lines, 56 KB — the biggest), the unscoped rule files
-(`shipping.md`, `record-decisions.md`, `doc-structure.md`, `bug-check.md`, `plain-language.md`), `AGENTS.md` (written for
-Codex, but loaded into every Claude chat too) and the memory index; `raptor-port/CLAUDE.md` (~30 KB) loads too once any
-file under `raptor-port/` is read. The rest of the start is the app's own tools and instructions. **To do, as he approved:**
-(1) archive every general ruling a later one restates in full — 65 carry "changed by", only the wholly restated ones go,
-each pair checked by one fresh reader (D971, DECISIONS.md step 2); (2) move the screen-design rulings (the gear, the pencil,
-search boxes, the top bar, arrows, pinned bars, bands, rings — about 20 lines, ~8 KB) into a new rulings area with the
-design guide's paths (`.claude/rules/ui-design.md`), its full-text file, map row and byte tripwire (`--move-rows`; a new area
-per record-decisions.md); (3) shorten `AGENTS.md` to what Codex needs at its door, the rest in a Codex-only file it opens;
-(4) look for any other always-loaded passage no job needs where it sits (D141) — moved whole, never reworded (D138).
-**Never:** a read a job needs (D68); a ruling's meaning changed. **Checks:** `npm run docsize`; one fresh reader on every
-move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usage on an empty chat) and told to him.
-**Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
-is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
-the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
+### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
+From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
+test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
+his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/selects/tracker-bar-webkit.png`); (2) on a phone the marking
+pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
+tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
+gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
+Duplicate, the chart's arrow keys, sideways, his PC's 125%. **Place:** with the Tracker's next batch; (1) his iPhone look first.
+
+### [LW-MONTHSTRIP-TWO-YEARS] On a phone the Leave War's month strip runs past the edge in a two-year period (found 2 Nov 26)
+Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 402 wide draws more month buttons than fit, so MAY and
+JUN are cut off at the right edge. Picture: the year designs' `lw-5-two-years.png`. **To do:** with [LW-YEAR-CLEAR]'s build (the
+strip and the year are one design question), red first.
+
+### [CAL-MONTH-YEAR-JUMP] The Inputs and SANS calendars: a tap on the month's title opens a month-and-year picker (his D1560, 2 Nov 26)
+**What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;
+‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
+Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
+app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built. **ANSWERED 2 Nov 26 — his D1562: design A, the floating wheels.** Built with [LW-YEAR-CLEAR], from the same drawings.
+
+### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
+**What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
+"All 3 days", every day marked), but an entry filed on the Inputs page (his picture: Quill's OML of 6–9 Jul) opens on the one day
+tapped ("Quill Mon 6 Jul"), the rest unmarked. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\faf6bf7b-image.png`
+(Quill) and `…\65af00f1-image.png` (Rune). **To do:** draw it on the real app first (D853) — the whole range marked and named, and
+what the window offers over a held range (the Duration row's "All n days" / day tapped; Grant OIL, CSE, OD on all days or one) — his
+pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat.
+
+### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
+**What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
+then looked for them on the Inputs calendar's JUL 2026 — they were on 22 Jul 2027: the grid was on the next period (Jan – Dec 27),
+and its month buttons read only "JUL"; the year shows only in the View picker at the top, out of sight once the grid is scrolled.
+His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\0f3ee06a-image.png` (the war) and
+`…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
+(Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
+**Place:** now, after the Tracker round. **ANSWERED 2 Nov 26 — his D1561 ("all as recommended"): design A, the year in the pinned corner.** To build in a fresh chat on its own branch from `main`, with [CAL-MONTH-YEAR-JUMP] and [LW-MONTHSTRIP-TWO-YEARS], from the approved drawings (`raptor-port/docs/img/mock/2026-11-02-year/`, the note `raptor-port/docs/superpowers/specs/2026-11-02-year-designs.md`) and checked beside them (D1495).
 
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
@@ -1421,6 +1444,15 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 (it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
+**SEEN ON HIS IPHONE, 1 Nov 26 — and worse than this item says:** one press of Export as PDF opened the iPhone's print preview on
+the APP SCREEN itself — 4 pages of the working copy (DRAFT, "Live working copy", the open Aircrew panel, the "Print dialog opened"
+note printed on the page) — not the white report of the published schedule ([FLAG-EXPORT]); so on his iPhone an unpublished working
+copy can go out as the record. Likely cause, to confirm: iPhone Safari prints the parent page when a frame's print is called, and
+the load handler fires on the blank frame first. His picture: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\37e79b02-image.png`
+(copy it into the evidence folder when the fix is built). **Fix:** every browser prints only the report, once (e.g. the report in a
+print-only part of the main page, `@media print` hiding the app, `window.print()`, cleaned up on `afterprint`), red first; checked
+with print-media pictures in Chromium and WebKit, and his iPhone look. **His word, 2 Nov 26: "Later"** — not now; with the next batch
+of small fixes. The lesson: `raptor-port/docs/bug-check-order.md` §7.11 lesson 18.
 Found by the IT flow guide's research (`[IT-FLOW-GUIDE]`), with the browser's print stubbed and each call recorded: one press of
 `#exportPdf` prints first an empty frame (`about:blank`), then the report (`about:srcdoc`). The frame's load handler fires when the
 blank frame is inserted AND when the report lands (`src/ui/printpdf.ts` `printSchedPDF`). Headless it is silent; in real Chrome a
@@ -1655,7 +1687,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 
 ### [CAL-JOB-LEFT] What the calendar job's handoff block still owed when the block left `HANDOFF.md` (pull request #487, live 9 Oct 26) — filed 10 Oct 26
 **Status: OPEN — small, none of it a fault in the app.** The block of `claude/inputs-sans-calendar` was removed from `HANDOFF.md` on 10 Oct 26 (its work merged); a helper read all of it against the backlog, the rulings and the sheets, and these were the lines with no other home. Each is quoted from the block as it was written.
-**(1) `AGENTS.md` is stale:** "`AGENTS.md` on `main` still names the calendar as "the job on hold" (a working guide — D70's two reads before it changes)". The calendar job is built and live; the line to correct is its first paragraph ("the job on hold is the SANS availability calendar's new layout"). A second stale sentence there: "D567–D585 stay reserved for the calendar branch" — those rulings are all on `main` now. One round each by Astra and Sol 6.1, then his approval.
+**(1) `AGENTS.md` is stale:** "`AGENTS.md` on `main` still names the calendar as "the job on hold" (a working guide — D70's two reads before it changes)". The calendar job is built and live; the line to correct is its first paragraph ("the job on hold is the SANS availability calendar's new layout") — that paragraph moved whole to `raptor-port/docs/codex-guide.md` on 2 Nov 26 (D1556). **And (2 Nov 26, the trim's fresh reader — [START-LOAD-TRIM] archived):** `AGENTS.md`'s read-first item 4 does not name the screen-design rulings `.claude/rules/decisions/design.md` (D1554), which until 1 Nov 26 sat in the general rulings Codex reads whole — add it to that list, e.g. ", `design.md` (screen design — read it before any interface work)"; a working-guide change, his to approve (D70). A second stale sentence there: "D567–D585 stay reserved for the calendar branch" — those rulings are all on `main` now. One round each by Astra and Sol 6.1, then his approval.
 **(2) Two reads never run:** "Astra's D138 read of the short lines D658–D664 is owed with the first code read", "Astra's D138 read of D665's short line, with D658–D664's" and "Astra's D138 read of the short lines D676–D679 is owed with D658–D665's" — a meaning read of those short ruling lines against their full rows (no brief for it exists under `raptor-port/docs/superpowers/briefs/`); and "D70's two reads of the one sentence added to `.claude/rules/doc-structure.md` are owed" (D667's sentence on unattended runs). **Added 10 Oct 26:** the same meaning read of the short lines D734–D741 (each is its full row's own first sentence, word for word) — with the read of `[GROUP-INPUT-ONE-ROW]`'s plan.
 **(3) The size markers:** "the rulings files for the scheduler and for How we work are over their size markers (D611: the scheduler's stays one file — raise each marker with its reason in a documents-only change, D29; never trim a ruling)" — RAISED 10 Oct 26 with this filing (`raptor-port/scripts/docsize.mjs`, the Leave War's too); what is still to do is `[RULINGS-SPENT-PASS]`.
 **(4) An old page:** "**Owed from D665:** the main mock-ups page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD) still draws the rows under the Event rows — add a "Since drawn:" line under those pictures when that page is next published".

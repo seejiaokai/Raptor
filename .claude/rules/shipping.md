@@ -49,14 +49,7 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   §Build & verify). The preview is NOT a gate (15 Aug 26): `vercel.json` at the repo root builds `raptor-port`
   for every push, untested, so a red preview is still just a preview — correctness rides the gates.
 
-## Ship once per session, at the end (owner, 10 Aug 26)
-Build and verify everything locally as you go. **Shipping is not how you test**:
-`npm run build && npx vite preview` is the same bundle that deploys, so every check — driving it in a browser
-included — happens before his look and his "merge live"; while the repo is public the pull request is opened once the
-job is built, so GitHub's run goes during the walk (D1086). One branch and one pull request carry two to four related
-jobs of one area (D1087). Prefer batches: most of the cost is loading this app into context (measured
-10 Aug 26: fifteen changes in one pass ran ~6 min each, where a single change shipped alone took an hour and a
-half).
+## Ship once per session, at the end (10 Aug 26) — moved whole to `raptor-port/docs/archive/rule-files-2026-11-02.md` (D1556); its live points are in "The loop" and "The checks" (D1086, D1087)
 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
 - **On his "merge live" (D1088, 20 Oct 26):** push the job's closing records, wait for that one GitHub run, merge once
@@ -93,9 +86,7 @@ half).
   A job's first push keeps the whole set on his PC — except while the repo is public, when GitHub's run is that check too (D1086, above).
 - **While the repo is public (D106, 25 Sep 26; until he says otherwise — D1530, 31 Oct 26)** the checks run on GitHub's machines (the workflow sends a
   public repo there by itself) and his PC's runner stays STOPPED; when it goes private again, the runner starts again.
-- **Once the repo is private: they run on HIS PC** (D89): one job, a Windows service, the `pc` job in `.github/workflows/deploy.yml`; the
-  way back to GitHub's own machines is the repo variable `CI_ON_GITHUB=true`. Never two full gate runs at once,
-  and never a full local run while his PC's runner is mid-run (D86).
+- **Once the repo is private (D89):** when the repo goes private, read this first — how the checks then run on his PC, moved whole to `raptor-port/docs/gates-and-deploy.md` §The checks run on HIS PC (D1556).
 - **Parallel chats take turns through ONE lock on his PC (D228, 26 Sep 26 — "why not both? and deconflict the full
   checks").** Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out
   walk, TAKE the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder

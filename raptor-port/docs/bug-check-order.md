@@ -433,6 +433,17 @@ line.
 
 ---
 
+## With the Claudex loop
+
+They do not compete (D11): Claudex covers the PLAN and the CODE, this order covers the RUNNING APP, and
+Claudex has no step that runs it. Order of operations: harden the plan with Claudex → build →
+**WALK THE APP** → then Claudex's final inspection, given the finished code AND the evidence sheet
+→ report. The walk goes BEFORE the inspection, not after; on the OIL build the inspection ran
+first, passed, and three unwired surfaces went out behind it. On money, published records,
+permissions or persistence, one inspector is not enough — run two, independently (for work Opus wrote: Astra and Sol 6.1 — D590).
+Claudex's own rules stand: the provider that built never inspects (one exception — D588's ONE Sonnet trial fix, read by Opus), and its reviewer is never
+bypassed. Full detail: §4a of the order.
+
 ## 5. Which checks for which change
 
 All of it on everything would be abandoned in a week (D7). The tier is decided by facts read off the
@@ -666,6 +677,14 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
 - **It sizes the walk and nothing else.** The tier, the roll-call, the door check, the tests, the gates, the code
   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
+
+**7.0a The plain-user round (his D1557, 2 Nov 26 — "2 yes add it").** Every walk of a screen includes one, on top of the
+change's own scenarios and sized with them: the area's everyday tasks done start to finish as a user would — file, open, edit,
+close, undo — pressing EVERY control that opens or closes something (a window over a window: its Close, its ✕, Escape, a tap
+outside), then every other place that should show the result looked at: the Inputs page, the schedule, the bell, the person
+window, another year or period. Pictures as for any step. The scenario designer's brief asks for it. Why: the night of 1–2 Nov
+26 walked its four fixes and opened a document but never pressed Close; he found in one tap, as a user, that Close shut the
+window behind it first.
 
 **7.1 Build the day that has everything on it — never the convenient one.** A published Saturday, an
 unpublished Sunday, a weekday beside them, and a public holiday declared after the Saturday went
@@ -931,6 +950,21 @@ the reader's instructions or model change, it is run on every case and a change 
    control that shows, hides or resizes a part of a page is pressed, both ways and back, and after each press the walk measures
    that the page is no wider than the window and that everything sized from the changed part (a foot bar, a pinned header)
    fits it again (`scripts/handpass/crew-toggle-walk.mjs`).
+
+18. **Something only a real browser's print draws (his picture, Edit Schedule's Export as PDF on his iPhone, 1 Nov 26).** The
+   export prints through the browser's own print dialog, which no headless walk can open: the tests stubbed the print and counted
+   calls, and the backlog's "confirm on his iPhone" ([PDF-PRINT-TWICE], 29 Sep 26) was never done — so for five weeks his iPhone
+   printed the working copy's screen instead of the published report. **From now on:** a change that prints or downloads names, in
+   its sizing step, how its RESULT is seen — print-media pictures in Chromium AND WebKit of what the dialog would print — and puts
+   the real phone's look on his look card; an "only his phone can confirm" left in the backlog is put to him with the next look he
+   is asked for, not left waiting.
+19. **A window opened over a window, never closed (his find on his iPhone, the document viewer, 2 Nov 26).** The night's walk
+   (H2, P2) opened the viewer from the bid window's chip and asked only that it opened; nobody pressed its Close, so the tap
+   shield of the window under it — which on a touch screen eats every tap outside that window — was never met: on his iPhone
+   Close closed the window behind and the viewer stayed. **Lesson:** every window or pop-up that opens over another is closed
+   in the walk by each of its own ways — its Close, its ✕, its own surround, Escape — on a touch screen in WebKit as well as a
+   desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
+   (`scripts/handpass/lw-nb-docclose.mjs` on the branch `claude/lw-next-batch-1101`; its evidence `docs/handpass/2026-11-01-lw-next-batch.md` §His find).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
