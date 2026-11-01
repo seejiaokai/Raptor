@@ -117,6 +117,14 @@ awake). The document check does not require them to name the new area, so nothin
 
 **Answered 2 Nov 26 — his D1556, "Yes all three": (a), (b) all rows and (c) approved as written.** (4), his "merge live", still his.
 
+**Done 2 Nov 26 (D1556), on this branch:** 1–3 DONE — all ten blocks moved by the filing script, byte for byte, each with its pointer
+(the `AGENTS.md` sections to `raptor-port/docs/codex-guide.md`; the rule-file passages to the homes in (b)'s table — the two
+record-decisions stories under two labels in `guide-full.md` §Write his rulings down at the moment, the Keeping section and the
+unattended-runs bullet in `doc-budget.md` §5, "Ship once per session" in `raptor-port/docs/archive/rule-files-2026-11-02.md`,
+the Claudex section after the checking guide's §4a); the two area lines of (c) in. The always-loaded files: 106,818 → 96,929
+bytes (about 9,900 bytes, ~3,700 tokens by the document check's ratio). One fresh reader: byte for byte PASS, nothing lost, every limit and read of `AGENTS.md` kept — its four findings, three
+fixed, one put to him (Read 3 of the reads file). 4 waits on his "merge live".
+
 1. Approve the shorter `AGENTS.md` and its Codex-only guide — recommended: yes.
 2. Approve the moves in (b), all or row by row — recommended: all.
 3. Approve the two area-list lines in (c) — recommended: yes.

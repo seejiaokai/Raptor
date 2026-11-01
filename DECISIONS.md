@@ -1,7 +1,7 @@
 # DECISIONS — every ruling the owner has made, and where each one lives
 
 **Why this file exists** (owner, 21 Sep 26): rulings stated mid-task were absorbed into the work and never
-written down — the work absorbing a ruling is not the record keeping it (the story: `.claude/rules/record-decisions.md`).
+written down — the work absorbing a ruling is not the record keeping it (the story: `raptor-port/docs/guide-full.md` §Write his rulings down at the moment — D1556).
 
 **How the rulings are kept — by RELEVANCE, not all at once (D136, D137, 24 Sep 26), and as ONE LINE each (D390,
 28 Sep 26).** Every ruling is ONE short line — its number, its date, the rule as it stands — in ONE area file under
@@ -14,8 +14,8 @@ so a pointer like "DECISIONS.md D38" still lands. Nothing is ever deleted, and n
 (D136): the only rows that leave are rulings REPLACED by a later one or RESTATED IN FULL by one (D971), and one-off permissions once SPENT — they go to
 `DECISIONS-ARCHIVE.md`, never loaded, and SEARCHED before telling him anything is undecided.
 
-**Recording a ruling — the moment he says it, BEFORE the work it implies** (full rule and the misses that made
-it: `.claude/rules/record-decisions.md`; closing reports carry a `Rulings:` line):
+**Recording a ruling — the moment he says it, BEFORE the work it implies** (full rule: `.claude/rules/record-decisions.md`; the misses
+that made it: `raptor-port/docs/guide-full.md` §Write his rulings down at the moment; closing reports carry a `Rulings:` line):
 1. **Add ONE full row at the top of its area's table** — the date, his words where short enough, what it means, and
    the file that now carries it (then make that file carry it, with the D-number beside the ruling there: this list is
    an index, never the only home; the gate fails a new row whose Markdown home never mentions it — a row renumbered

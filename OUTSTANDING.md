@@ -192,7 +192,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
-- [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived and the screen-design rulings moved to an area of their own (done on its branch, 1 Nov 26); the Codex guide shortened and the rule files' passages moved — drafted, waiting on his approval.
 - [TRK-USER-ROUND] — a plain-user round on the Tracker as it is live (D1558), now.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
@@ -265,30 +264,6 @@ His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a
 `…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
 (Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
 **Place:** now, after the Tracker round.
-
-
-### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
-**What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
-the general rulings (`.claude/rules/decisions/how-we-work.md`, 209 lines, 56 KB — the biggest), the unscoped rule files
-(`shipping.md`, `record-decisions.md`, `doc-structure.md`, `bug-check.md`, `plain-language.md`), `AGENTS.md` (written for
-Codex, but loaded into every Claude chat too) and the memory index; `raptor-port/CLAUDE.md` (~30 KB) loads too once any
-file under `raptor-port/` is read. The rest of the start is the app's own tools and instructions. **To do, as he approved:**
-(1) archive every general ruling a later one restates in full — 65 carry "changed by", only the wholly restated ones go,
-each pair checked by one fresh reader (D971, DECISIONS.md step 2); (2) move the screen-design rulings (the gear, the pencil,
-search boxes, the top bar, arrows, pinned bars, bands, rings — about 20 lines, ~8 KB) into a new rulings area with the
-design guide's paths (`.claude/rules/ui-design.md`), its full-text file, map row and byte tripwire (`--move-rows`; a new area
-per record-decisions.md); (3) shorten `AGENTS.md` to what Codex needs at its door, the rest in a Codex-only file it opens;
-(4) look for any other always-loaded passage no job needs where it sits (D141) — moved whole, never reworded (D138).
-**Never:** a read a job needs (D68); a ruling's meaning changed. **Checks:** `npm run docsize`; one fresh reader on every
-move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usage on an empty chat) and told to him.
-**Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
-is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
-the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
-**Status (1 Nov 26, night — branch `claude/start-load-trim-1101`):** steps (1) and (2) DONE on the branch — three restated
-rulings archived (D1103, D1133, D1507), nineteen screen-design rulings moved to their own area (`.claude/rules/decisions/design.md`),
-both read by one fresh reader; the general rulings 56,481 → 50,897 bytes (~2,075 tokens off every chat). Steps (3) and (4) are
-DRAFTED for his approval, with the two area-list lines the always-loaded rule files need: `raptor-port/docs/superpowers/specs/2026-11-01-start-load-trim.md`
-(the reads: `raptor-port/docs/superpowers/briefs/2026-11-01-start-load-trim-reads.md`). Waits on his approval of the drafts and his "merge live".
 
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
@@ -1717,7 +1692,7 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 
 ### [CAL-JOB-LEFT] What the calendar job's handoff block still owed when the block left `HANDOFF.md` (pull request #487, live 9 Oct 26) — filed 10 Oct 26
 **Status: OPEN — small, none of it a fault in the app.** The block of `claude/inputs-sans-calendar` was removed from `HANDOFF.md` on 10 Oct 26 (its work merged); a helper read all of it against the backlog, the rulings and the sheets, and these were the lines with no other home. Each is quoted from the block as it was written.
-**(1) `AGENTS.md` is stale:** "`AGENTS.md` on `main` still names the calendar as "the job on hold" (a working guide — D70's two reads before it changes)". The calendar job is built and live; the line to correct is its first paragraph ("the job on hold is the SANS availability calendar's new layout"). A second stale sentence there: "D567–D585 stay reserved for the calendar branch" — those rulings are all on `main` now. One round each by Astra and Sol 6.1, then his approval.
+**(1) `AGENTS.md` is stale:** "`AGENTS.md` on `main` still names the calendar as "the job on hold" (a working guide — D70's two reads before it changes)". The calendar job is built and live; the line to correct is its first paragraph ("the job on hold is the SANS availability calendar's new layout") — that paragraph moved whole to `raptor-port/docs/codex-guide.md` on 2 Nov 26 (D1556). **And (2 Nov 26, the trim's fresh reader — [START-LOAD-TRIM] archived):** `AGENTS.md`'s read-first item 4 does not name the screen-design rulings `.claude/rules/decisions/design.md` (D1554), which until 1 Nov 26 sat in the general rulings Codex reads whole — add it to that list, e.g. ", `design.md` (screen design — read it before any interface work)"; a working-guide change, his to approve (D70). A second stale sentence there: "D567–D585 stay reserved for the calendar branch" — those rulings are all on `main` now. One round each by Astra and Sol 6.1, then his approval.
 **(2) Two reads never run:** "Astra's D138 read of the short lines D658–D664 is owed with the first code read", "Astra's D138 read of D665's short line, with D658–D664's" and "Astra's D138 read of the short lines D676–D679 is owed with D658–D665's" — a meaning read of those short ruling lines against their full rows (no brief for it exists under `raptor-port/docs/superpowers/briefs/`); and "D70's two reads of the one sentence added to `.claude/rules/doc-structure.md` are owed" (D667's sentence on unattended runs). **Added 10 Oct 26:** the same meaning read of the short lines D734–D741 (each is its full row's own first sentence, word for word) — with the read of `[GROUP-INPUT-ONE-ROW]`'s plan.
 **(3) The size markers:** "the rulings files for the scheduler and for How we work are over their size markers (D611: the scheduler's stays one file — raise each marker with its reason in a documents-only change, D29; never trim a ruling)" — RAISED 10 Oct 26 with this filing (`raptor-port/scripts/docsize.mjs`, the Leave War's too); what is still to do is `[RULINGS-SPENT-PASS]`.
 **(4) An old page:** "**Owed from D665:** the main mock-ups page (https://claude.ai/artifact/U3WNp6VARTdVeDP5cUoQvD) still draws the rows under the Event rows — add a "Since drawn:" line under those pictures when that page is next published".

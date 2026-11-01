@@ -68,3 +68,39 @@ SPENT, which was outside tonight's brief), **D871** and **D465** (live condition
 - The gate's comments: **OK** (50,897 and 6,867 bytes measured; tripwires about a tenth above; DECISIONS.md 95 → 96
   for one map row).
 - The three archive marks: **all OK** — each claim is said by a ruling still in force.
+
+## Read 3 — the three approved drafts made real (2 Nov 26, D1556)
+
+One fresh, blind Opus reader (a new helper; it had not seen the drafts' making or the earlier reads), given commit
+`3062ffe31` and asked: does any moved text change meaning, is anything lost, does the shorter `AGENTS.md` still carry
+every limit? Its verdict, in its own words where short:
+
+- **Byte for byte: PASS.** Checked by script — every removed block searched for, byte for byte, in its destination: the
+  `AGENTS.md` intro (8 lines) and its two sections (27 lines) in `codex-guide.md`; the lapse story (13) and the three
+  failures (16) in `guide-full.md`; the Keeping section in `doc-budget.md` (exact once the approved (c) line is
+  applied); the unattended-runs bullet in `doc-budget.md` §5; "Ship once per session" in
+  `archive/rule-files-2026-11-02.md`; the private-repo bullet in `gates-and-deploy.md`; "With the Claudex loop" in
+  `bug-check-order.md`. **No loss:** the only source line found nowhere is the approved (c) edit.
+- **Meaning: PASS, one gap** (finding 3). "This order" in the moved Claudex block still means the bug-check order, its
+  "§4a of the order" now just above it; paths are from the repo root and each label says so; the overnight guide does
+  carry D596, D667 and D766.
+- **New lines: accurate**, apart from older pointers the change left behind (finding 2).
+- **The new `AGENTS.md`:** "Read first", the hooks section, "Hard limits" and "When you stop" identical, section by
+  section; the first paragraph sends Codex to `codex-guide.md` before any review or build. One gap: finding 1.
+
+**Findings, and what was done:**
+1. **Codex no longer reads the screen-design rulings** — `AGENTS.md`'s read-first item 4 lists the area files but not
+   `design.md`; before the area was made those rulings sat in `how-we-work.md`, which item 2 has Codex read whole.
+   Fix proposed: add `design.md` to item 4. **Not made — it is outside the approved text, and a change to `AGENTS.md` is
+   his (D70):** filed in the backlog under [CAL-JOB-LEFT] (1), with the other `AGENTS.md` lines owed, and put to him.
+2. **Older pointers to the moved lapse story went through an extra hop** — FIXED: `DECISIONS.md` lines 4 and 17–18 now
+   name `guide-full.md` §Write his rulings down at the moment for the story; `record-decisions.md` line 4 says "the last
+   section's pointer below". The pointer inside `guide-full.md` (moved text of 28 Sep 26) is left as it was: the two
+   passages it means are now just below it.
+3. **One rule went with the "stories"** — failure 3's "search a claim's subject, never its phrasing" is not stated by
+   the check left behind. FIXED by the pointer only (moved text untouched): it now names the three failures' rules.
+4. **[CAL-JOB-LEFT] (1) pointed at the wrong file** — FIXED: it says the paragraph moved to `codex-guide.md`.
+
+Minor notes, not acted on: the moved Keeping section keeps its `##` heading, so it sits after §5 (whose intro says
+"after it"); the moved Claudex block and the private-repo bullet carry no "moved from" label (the pointers name them);
+the `AGENTS.md` summary is one unwrapped line.

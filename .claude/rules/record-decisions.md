@@ -2,7 +2,7 @@
 
 Unscoped, so it loads before any project file. The record is one file per AREA under
 `.claude/rules/decisions/`, with `DECISIONS.md` at the repo root as the front door and map (D137 — the last
-section below), and `.claude/hooks/record-decisions.sh` fires this check on every message he sends.
+section's pointer below), and `.claude/hooks/record-decisions.sh` fires this check on every message he sends.
 
 ## The lapse this exists to stop
 
@@ -90,6 +90,6 @@ words, its conditions and its readings are only there — D390), `DECISIONS-ARCH
 the code. Not the specs folder. Those, by keyword, every time — with the SHELL's grep: the Grep tool prints
 "[Omitted long matching line]" for a full row, and a search that returned no text is not a read. It costs one search.
 
-The three failures that made this check, and why a code comment is never evidence about today (the rulings win; fix the comment in the same change): kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
+The three failures that made this check — a named entry is a pointer, not a scope; the backlog is read every time; search for a claim's SUBJECT, never its phrasing — and why a code comment is never evidence about today (the rulings win; fix the comment in the same change): kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
 
 ## Keeping the list whole, and read by relevance (D136, D137, D390) — moved whole to `raptor-port/docs/doc-budget.md` §5 (D1556)

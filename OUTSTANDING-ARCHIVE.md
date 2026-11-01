@@ -7232,3 +7232,31 @@ root). Not checked against `main` by the walker; the free-half rule predates thi
 ### [LW-HELD-DAY-ADD] A day held whole by leave or a medical filed on the Inputs page lets nothing be added — no Grant OIL (his find, 31 Oct 26 — D1548)
 **What happens:** his picture — Gambit's whole-day OML filed on the Inputs page; a tap on the day opens only "Filed on the Inputs page — change it there, not here.", so an OIL cannot be granted on it, where a day held by a course opens the bid window with one line for the course (D1395). **Cause:** `raptor-port/src/leavewar/ui/Matrix.tsx` `openCourse` is for a lone `CSE` only (`heldCourse`); every other whole-day absence filed on the Inputs page falls to the read-only note (pinned as intended on 20 Sep 26 by `freehalf.test.tsx` — that test changes with the ruling). **To do:** widen it to any whole day filed on the Inputs page (leave, medical, overseas duty), its one line naming the entry; what the war would refuse beside it (a leave over a medical or leave) not offered or greyed, as D1543 — a picture to him first (D853), on a desktop and his iPhone; red first; walk an admin and a member on his own row. **Place:** next, the Leave War's next batch, in a fresh chat. **Evidence:** `raptor-port/docs/handpass/2026-10-31-lw-fixes.md` (D1548). **Drawn 31 Oct 26 on `claude/lw-held-day-add-eabfce`** (pictures `raptor-port/docs/img/handpass/2026-10-31-lw-held-day/draw/`, script `raptor-port/scripts/handpass/lw-held-draw.mjs`; page https://claude.ai/artifact/TAKNwJVkxJVcGbf6Kp2QUy): admin desktop + iPhone, member iPhone, an OD, and two cases the ruling did not name. Put to him: Q1 on a leave or medical day the eight leave buttons off (A, recommended — greyed they read as "no balance") or greyed (B, as D1543); Q2 a whole-day Other under Unavailable and a day of two Inputs halves open the same window (recommended yes). The agent's calls, shown on the page: the member's own leave keeps its remarks box in the window (D1354), an admin reads the entry's words read only in its line; leave stays offered over an OD, a course or an Other (the war allows it).
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([START-LOAD-TRIM]). Forward facts: `raptor-port/docs/superpowers/specs/2026-11-01-start-load-trim.md`.*
+
+### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
+**What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
+the general rulings (`.claude/rules/decisions/how-we-work.md`, 209 lines, 56 KB — the biggest), the unscoped rule files
+(`shipping.md`, `record-decisions.md`, `doc-structure.md`, `bug-check.md`, `plain-language.md`), `AGENTS.md` (written for
+Codex, but loaded into every Claude chat too) and the memory index; `raptor-port/CLAUDE.md` (~30 KB) loads too once any
+file under `raptor-port/` is read. The rest of the start is the app's own tools and instructions. **To do, as he approved:**
+(1) archive every general ruling a later one restates in full — 65 carry "changed by", only the wholly restated ones go,
+each pair checked by one fresh reader (D971, DECISIONS.md step 2); (2) move the screen-design rulings (the gear, the pencil,
+search boxes, the top bar, arrows, pinned bars, bands, rings — about 20 lines, ~8 KB) into a new rulings area with the
+design guide's paths (`.claude/rules/ui-design.md`), its full-text file, map row and byte tripwire (`--move-rows`; a new area
+per record-decisions.md); (3) shorten `AGENTS.md` to what Codex needs at its door, the rest in a Codex-only file it opens;
+(4) look for any other always-loaded passage no job needs where it sits (D141) — moved whole, never reworded (D138).
+**Never:** a read a job needs (D68); a ruling's meaning changed. **Checks:** `npm run docsize`; one fresh reader on every
+move and rewrite (`docsize.mjs --moves`); the new start measured after (get_usage on an empty chat) and told to him.
+**Merge:** `AGENTS.md` and the unscoped rule files are not notes-only (D1407) — his "merge live"; a changed working guide
+is read as D70 says. **Place:** its own fresh chat, beside the Leave War's next batch. **Model:** Opus decides what moves;
+the mechanical moves may go to a cheaper helper; the meaning read is a fresh Opus reader.
+**Status (1 Nov 26, night — branch `claude/start-load-trim-1101`):** steps (1) and (2) DONE on the branch — three restated
+rulings archived (D1103, D1133, D1507), nineteen screen-design rulings moved to their own area (`.claude/rules/decisions/design.md`),
+both read by one fresh reader; the general rulings 56,481 → 50,897 bytes (~2,075 tokens off every chat). Steps (3) and (4) are
+DRAFTED for his approval, with the two area-list lines the always-loaded rule files need: `raptor-port/docs/superpowers/specs/2026-11-01-start-load-trim.md`
+**Status (2 Nov 26 — his D1556, "Yes all three"):** steps (3) and (4) DONE on the branch — `AGENTS.md` shortened (its detail in `raptor-port/docs/codex-guide.md`), seven rule-file passages moved whole with pointers, the two area lines in; the always-loaded files 106,818 → 96,929 bytes; one fresh reader PASS (spec §3, the reads file's Read 3). Left: his "merge live" on the trim's pull request; a fresh chat's start measured after it merges; `AGENTS.md`'s missing `design.md` line, filed under [CAL-JOB-LEFT] (1).
+(the reads: `raptor-port/docs/superpowers/briefs/2026-11-01-start-load-trim-reads.md`). Waits on his approval of the drafts and his "merge live".
+
+
