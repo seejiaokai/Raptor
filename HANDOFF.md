@@ -21,7 +21,7 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/lw-next-batch-1101 -->
-### `claude/lw-next-batch-1101` — THE NIGHT OF 1–2 NOV 26 (he sleeps 12 hours; Low: one helper at a time) — written 1 Nov 26
+### `claude/lw-next-batch-1101` — THE NIGHT OF 1–2 NOV 26 (he sleeps 12 hours; Low: one helper at a time) — written 1 Nov 26 — **his "merge live" 2 Nov 26, pull request 609 (the four fixes, his two finds of 2 Nov: the document viewer's Close and the Document chip, and D1555) — remove this block at the next handoff**
 - **After a compaction:** re-read this block, the overnight guide (`.claude/skills/overnight/SKILL.md`) and the files of the step in hand before the next change; note the compaction here with its time.
 - **His words:** "Start it" (job 1, the four fixes put to him without the ✕) and "Carry on" (job 2, D1554), then "I'm sleeping 12 hours". The night runs in this one chat; each job goes to one fresh helper with its own walker and reader (D1416 — he is on his phone, not the desktop app); Low, one helper after another (D1104 — no reply waited for, D1443).
 - **Job 1 — the Leave War's next batch** on this branch (cut from `main` at bb6932e8c; its first commit is D1554's records): [LW-HELDHALF-WORDS], [E2E-POSTING-DATES-PIN] (before 12 Dec 26), [LW-DELETE-POSTING-RESTORE], [LW-DELETED-REDO-NETSUM] — each red first. Check: the bug-check order in full, tier decided by its §5 (expected FULL: what a deleted man's leave can do, saved data), a sized walk with pictures, a fresh blind Opus code read (D790); the pull request opened when built, so GitHub's run is the full check (D1086). Rough time 5–7 h (a guess).
