@@ -1961,3 +1961,13 @@
 .bidsheet .oil-amount { flex-wrap: wrap; row-gap: 8px; }
 .bidsheet .oil-picks { display: inline-flex; gap: 6px; }
 .bidsheet .oil-amount .oil-other { border-style: dashed; min-width: 0; width: 118px; }
+
+/* THE APP'S POP-UPS STAND ABOVE A RAISED WINDOW (the fresh read of his find of 2 Nov 26 — the document viewer's Close). A
+   blocking window opened while the person window or the Inputs "Calendar" is up is raised (480 / 481, above); the pop-ups a
+   window of it opens — the document viewer (460), the OIL question and its kin (470), "No document" (472) — were drawn UNDER
+   it, the viewer's Close landing on the veil, which closed the window behind and left the viewer up. While a raised window is
+   up they stand above it, in the same order among themselves. Here, OUTSIDE the page's wrapper: a pop-up lives on <body>.
+   Pinned: raisedpop-css.test.ts; walked: lw-nb-docclose.mjs R9. */
+body:has(.bidsheet.raised) .airpop { z-index: 482; }
+body:has(.bidsheet.raised) .airpop.upconf-pop { z-index: 483; }
+body:has(.bidsheet.raised) .airpop.docconf-pop { z-index: 484; }

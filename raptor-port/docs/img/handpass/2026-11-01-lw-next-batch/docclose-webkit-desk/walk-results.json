@@ -1,0 +1,88 @@
+[
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Close",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r1-close-1-viewer-open.png",
+   "k-webkit-r1-close-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — ✕",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one ✕: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r1-x-1-viewer-open.png",
+   "k-webkit-r1-x-3-after-one-x.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — surround",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one surround: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r1-surround-1-viewer-open.png",
+   "k-webkit-r1-surround-3-after-one-surround.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Escape",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one Escape: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r1-escape-1-viewer-open.png",
+   "k-webkit-r1-escape-3-after-one-escape.png"
+  ]
+ },
+ {
+  "id": "R2 the bid window, the held half’s line (Comet’s morning Other 21 Jul) — Close",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r2-1-viewer-open.png",
+   "k-webkit-r2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R8 the Inputs page’s input window, its paperclip — Close",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r8-1-viewer-open.png",
+   "k-webkit-r8-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R9a a raised bid window (person window up): the viewer’s Close is on top",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "person window up true; bid window raised true; under the Close's middle: the Close",
+  "pics": [
+   "k-webkit-r9-1-viewer-over-raised.png"
+  ]
+ },
+ {
+  "id": "R9b a raised bid window (person window up), its held line’s chip — Close",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "k-webkit-r9-1-viewer-open.png",
+   "k-webkit-r9-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "K-errors",
+  "size": "desk/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

@@ -132,6 +132,12 @@ function useGridPan(movedRef: { current: boolean }, closeRef: { current: () => v
          delete stands at the foot of the screen, and shielded, its Undo was eaten and the list CLOSED (the Events walk's F1,
          29 Oct 26) */
       if (el?.closest('.bidsheet, .dcal-layer, .sheet-part')) return
+      /* …nor a pop-up of the app's own (`.airpop` on <body> — the document viewer a document chip opens, ui/DocViewer.tsx;
+         the OIL question and its kin): every one is drawn ABOVE every sheet — a raised sheet included (bidpicker.css lifts
+         them over it while it is up) — so a tap there is a tap on it, as the mouse's scrim, lying under it, already makes it.
+         Shielded, the viewer's Close, its ✕ and its own dark surround were eaten and the window BEHIND closed instead; the
+         viewer went only on a second tap (his find on his iPhone, 2 Nov 26 — docviewer-sheet.test.tsx). */
+      if (el?.closest('.airpop')) return
       e.stopPropagation()
       if (e.type === 'mousedown') e.preventDefault()
       if (e.type === 'click') closeRef.current()
