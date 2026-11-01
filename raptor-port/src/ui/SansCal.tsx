@@ -47,6 +47,7 @@ import { puck } from './html'
 import { HlIcon } from './icons'
 import { cutParts, dayWord, sansCell, sansMine, sansRoster, type SansCell } from './sanscal-model'
 import { useMedia } from './usemedia'
+import { MonthJump } from './MonthJump'
 import { useVersion } from './useStore'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
@@ -262,9 +263,9 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
         <div className={'sc-head' + (lead ? ' sc-head-tabs' : '')}>
           {lead}
           <button type="button" className="abtn sc-nav" data-testid="sc-prev" aria-label="Previous month" onClick={() => step(-1)}>&#8249;</button>
-          {/* data-fit on a desktop: the name's room is the widest month in the device's own font, so › stays put (D1122);
-              the phone keeps its own 96px (D705) */}
-          <span className="sc-month" data-testid="sc-month" aria-live="polite" aria-label={`${MONTHS[cur.m - 1]} ${cur.y}`} data-fit={narrow ? undefined : MONTHS.map(m => `${m} ${cur.y}`).join('\n')}>{narrow ? MONTHS[cur.m - 1].slice(0, 3) : MONTHS[cur.m - 1]} {cur.y}</span>
+          {/* the month's title opens the month and year wheels (D1562); its room is still the widest month (D1122), the
+              phone's still its own 96px (D705) */}
+          <MonthJump className="sc-month" testid="sc-month" y={cur.y} m={cur.m} short={narrow} onMonth={(y, m) => goTo(y, m, 0)} />
           <button type="button" className="abtn sc-nav" data-testid="sc-next" aria-label="Next month" onClick={() => step(1)}>&#8250;</button>
           <button type="button" className="abtn sc-today" data-testid="sc-today" onClick={goToday}>Today</button>
           <span className="sc-spring" />

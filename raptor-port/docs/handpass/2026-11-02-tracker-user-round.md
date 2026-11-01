@@ -58,7 +58,7 @@ press on the old code.)
    (Crew, Course, Syllabus read "STUDENT A", "26ABSG", "2026" with the lower half missing). The same on the old code
    (`before603-phone-member/01-landing.png`); Chromium at the same size draws them whole (`selects/tracker-bar-chromium.png`
    beside `selects/tracker-bar-webkit.png`), with the same measured box (26 high, 12px words). Read as the Windows WebKit's
-   own drawing of a dropdown, not the app — **not checked on a real iPhone**; worth one look on his phone.
+   own drawing of a dropdown, not the app — **not checked on a real iPhone**; worth one look on his phone. **His look, 2 Nov 26 (D1564): on his iPhone the three boxes look right — the test browser's drawing; nothing to change.**
 2. **On a phone the ⚙ is the typed gear, which WebKit draws as a grey picture** (every phone picture). Older, and already
    ruled and filed (D1507/D1509, `[UI-CONSISTENCY-LOOK]` round 4).
 3. **On a phone, the marking pop-up of an event at the very top of the chart opens over the Tracker's bar** — it covers ⚙,

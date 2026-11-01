@@ -6,6 +6,7 @@
    attributes those later tasks will hook). */
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
+import { fireEvent } from '@testing-library/react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify, undo, writeInputs } from '../state/store'
@@ -156,6 +157,21 @@ describe('the Inputs page calendar toggle', () => {
     expect(CALMONTH).toEqual({ y: now.getFullYear(), m: now.getMonth() + 1 })
     expect($('.ic-mon')!.textContent).toContain(String(now.getFullYear()))
     await goJul2026()                    // back where the chip tests expect
+  })
+
+  /* the title opens the month and year wheels (D1562) — the SANS calendar's own part (sanscal.test.tsx holds the whole
+     set); here only that the Inputs title is that part and turns THIS calendar */
+  it('a tap on the month’s title opens the wheels, and the Inputs month follows them', async () => {
+    const title = $('.ic-mon') as HTMLElement
+    expect(title.tagName).toBe('BUTTON')
+    await click(title)
+    expect(document.querySelector('[data-testid="mjump-lists"]'), 'the wheels').toBeTruthy()
+    fireEvent.keyDown(document.querySelector('[data-testid="mjump-years"]')!, { key: 'ArrowDown' })
+    expect(CALMONTH).toEqual({ y: 2027, m: 7 })
+    expect($('.ic-mon')!.textContent).toBe('July 2027')
+    fireEvent.keyDown(document.querySelector('[data-testid="mjump-years"]')!, { key: 'Enter' })
+    expect(document.querySelector('[data-testid="dcal-card"]')).toBeFalsy()
+    await goJul2026()
   })
 })
 

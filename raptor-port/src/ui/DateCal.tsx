@@ -137,8 +137,14 @@ function Wheel({ value, label, onChange, onEnter, name, tid }: {
 }
 
 export function DateCal(p: {
-  /** one date (the default), a run of dates, or several separate days (the OIL question's "Only some days…" — D923) */
-  mode?: 'one' | 'run' | 'many'
+  /** one date (the default), a run of dates, several separate days (the OIL question's "Only some days…" — D923), or
+   *  a month only: the calendar opened straight on its month and year lists, which it never leaves (the Inputs and SANS
+   *  calendars' title — D1562) */
+  mode?: 'one' | 'run' | 'many' | 'month'
+  /** a month only: the lists came to rest on this month (1–12) */
+  onMonth?: (y: number, m: number) => void
+  /** a month only: the choice is made — Enter in a list, or a tap on the title */
+  onDone?: () => void
   /** several days: the days turned on */
   picked?: string[]
   /** several days: a tap turned this day on or off */
@@ -180,6 +186,7 @@ export function DateCal(p: {
   const tid = p.tid || 'dcal'
   const run = p.mode === 'run'
   const many = p.mode === 'many'
+  const month = p.mode === 'month'
   const picked = new Set(p.picked || [])
   /* the dates that may be tapped, in order — the keyboard steps over the rest to the next of these (below) */
   const onlyList = p.only ? [...p.only].sort() : null
@@ -188,9 +195,10 @@ export function DateCal(p: {
   const from = run ? p.from || '' : p.value || ''
   const to = run ? p.to || p.from || '' : p.value || ''
   const [ym, setYm] = useState(() => ymOf(validIso(from) ? from : validIso(p.at) ? p.at : validIso(p.min) && p.min > today ? p.min : validIso(p.max) && p.max < today ? p.max : today))
-  const [lists, setLists] = useState(false)
+  /* a month only: the lists are all there is, from the first frame (D1562) */
+  const [lists, setLists] = useState(month)
   /* the month list's own number: it goes round, so it is kept apart from the month it stands for */
-  const [mi, setMi] = useState(0)
+  const [mi, setMi] = useState(() => (month ? ym.m - 1 : 0))
   /* the date the keyboard is on (one tab stop for the whole month), and a date to put the keyboard on once drawn */
   const [kb, setKb] = useState<string | null>(null)
   const want = useRef<string | null>(null)
@@ -208,9 +216,23 @@ export function DateCal(p: {
      arrow did anything. A click made by a key carries no pointer's count (`detail` 0 — how ui/DateBox.tsx tells the two
      apart); a tap or a mouse click moves the keyboard nowhere, as before. Closing them from the title leaves the
      keyboard on the title, as built. */
-  const openLists = (e: MouseEvent) => { setMi(ym.m - 1); if (!lists && e.detail === 0) wantIn.current = 'list'; setLists(v => !v) }
-  /* Enter in a list (K4): the dates of the month chosen, with the keyboard back on them */
-  const closeLists = () => { wantIn.current = 'dates'; setLists(false) }
+  const openLists = (e: MouseEvent) => { if (month) { p.onDone?.(); return } setMi(ym.m - 1); if (!lists && e.detail === 0) wantIn.current = 'list'; setLists(v => !v) }
+  /* Enter in a list (K4): the dates of the month chosen, with the keyboard back on them — a month only: the choice made */
+  const closeLists = () => { if (month) { p.onDone?.(); return } wantIn.current = 'dates'; setLists(false) }
+  /* A MONTH ONLY: THE MONTH FOLLOWS THE LISTS AS THEY COME TO REST (D1562 — "the calendar turns to the month as soon as
+     the wheels stop"). A list chooses its row only once its scrolling has stopped (Wheel's settle), so a fling through
+     the years turns the page behind once, where it lands. Handed over at the choice itself, never by an effect. */
+  /* each list changes only its own half, read from the month as it stands NOW — not from the render a list's settle timer
+     was set in: two lists settling within a moment of each other (two fingers) would otherwise put back the other's
+     choice (the fresh code read of 2 Nov 26) */
+  const ymNow = useRef(ym)
+  useLayoutEffect(() => { ymNow.current = ym })
+  const chooseMonth = (part: { y?: number; m?: number }) => {
+    const n = { y: part.y ?? ymNow.current.y, m: part.m ?? ymNow.current.m }
+    ymNow.current = n
+    setYm(n)
+    if (month) p.onMonth?.(n.y, n.m)
+  }
   const goToday = () => { if (p.onToday) { p.onToday(); return } setLists(false); setYm(ymOf(today)) }
   /* ESCAPE SHUTS THE LISTS FIRST (owner D1012, 18 Oct 26 — "as recommended"; the design guide's "Escape closes what
      opened last"). A form holding this calendar (the OIL question, an input's own window) hears Escape on the way DOWN
@@ -220,7 +242,8 @@ export function DateCal(p: {
      same since D1020 (18 Oct 26): its layer (ui/DateBox.tsx) takes the key from everything behind it, leaves the lists'
      Escape to this listener, and closes itself only on the next press (datebox.test.tsx). */
   useEffect(() => {
-    if (!lists) return
+    /* a month only: the lists never shut — Escape is its layer's, and closes the card (ui/MonthJump.tsx) */
+    if (!lists || month) return
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key !== 'Escape') return
       /* only while the keyboard is in this calendar (or nowhere): an Escape typed in a box on the page behind is that
@@ -234,7 +257,7 @@ export function DateCal(p: {
     }
     window.addEventListener('keydown', onKey, true)
     return () => window.removeEventListener('keydown', onKey, true)
-  }, [lists])
+  }, [lists, month])
 
   const tap = (iso: string) => {
     if (!may(iso)) return
@@ -374,8 +397,8 @@ export function DateCal(p: {
         <div className="dcal-lists" data-testid={`${tid}-lists`}>
           <div className="dcal-band" aria-hidden="true" />
           <Wheel tid={`${tid}-months`} name="Month" value={mi} label={i => MONTHS[mod12(i)]} onEnter={closeLists}
-            onChange={i => { setMi(i); setYm(v => ({ y: v.y, m: mod12(i) + 1 })) }} />
-          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => setYm(v => ({ y, m: v.m }))} />
+            onChange={i => { setMi(i); chooseMonth({ m: mod12(i) + 1 }) }} />
+          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => chooseMonth({ y })} />
         </div>
       ) : (
         <>

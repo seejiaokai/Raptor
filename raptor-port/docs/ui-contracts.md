@@ -5946,6 +5946,8 @@ nothing and is there all day).
 
 ## The Inputs month calendar (owner, 22 Aug 26)
 
+**The month's title opens the month and year wheels (his D1562, 2 Nov 26 — design A of the year designs, `docs/superpowers/specs/2026-11-02-year-designs.md`).** On the Inputs and the SANS calendar the title ("JUL 2027") is one part, `ui/MonthJump.tsx`: the small cyan ▾ of Jump to a date's title right after its words, both centred in the title's own room (the widest month on a desktop, D1122 — measured with the ▾; the fixed 96px / 88px on a phone, D705). A tap opens the app's floating calendar (`ui/DateBox.tsx`'s layer) straight on its month and year wheels (`ui/DateCal.tsx` `mode: 'month'`): centred on a phone, under the title on a desktop, the keyboard in the month list. The page's month follows the wheels as each comes to rest (a jump: nothing slides in). Enter, one Escape, a tap outside, a tap on the card's title, a second tap on the page's title (it lands on the veil) close it; the card's Today goes to this month and closes it. While it is up the title's words are cyan. ‹ › and Today are unchanged. The List keeps an invisible copy of the title, ▾ and all, so the Calendar | List switch stands still (D687). Pins: `ui/sanscal.test.tsx`, `ui/inputscal.test.tsx`, `ui/inputstabs.test.tsx`.
+
 
 **Superseded in part, 8 Oct 26 (step 5 of the Inputs / SANS job) — read "The Inputs calendar — its tabs, its month of
 bars, its day, its gear, the editor as a window" first.** What this section says of the planning layer still stands:
@@ -8235,6 +8237,10 @@ there is nothing to reset. Still no button on the grid and no strip. Pinned in `
 Reset order), `roster.test.ts` (resetRosterOrder …) and `undoaudit.test.ts` (Reset order is ONE step …).
 
 ### The zoom buttons, OIL credit boxes that wrap, and the one-line month strip
+
+**The year in the corner over the names (his D1561, 2 Nov 26 — design A of the year designs).** The pinned corner (`th.who`, "CS/Name") carries the year of the first date in view on a line above it — the date numbers' white, 1.25em, 800 — in the grid and in the frozen mirror alike. It is the month holding the first date past the frozen columns (more than 2px of it showing: a rounding sliver of December does not count), worked out in `measureStrip` from the same cached spans as the lit month and written by `paintYear` as a text write, never a re-render of the grid; in a period across two years it turns at 1 January. No height is added (the corner already had two lines' room). Pins: `e2e/year-leavewar.spec.ts`, `leavewar/ui/matrix.test.tsx`.
+
+**A period across two years on the month strip ([LW-MONTHSTRIP-TWO-YEARS], 2 Nov 26).** Its labels carry the year ("JAN 29"); up to 820 wide the year stands under its month (`.mjy`), and the strip's room is 760 wide, so the twelve hold one line on a phone and a desktop alike (on his iPhone MAY and JUN had run past the edge; on a desktop they wrapped onto a second line). Pin: `e2e/year-leavewar.spec.ts`.
 
 **Which month is lit (his D1477, 28 Oct 26 — "i click on the jan icon, MAR lights up"):** the month he presses stays lit while the grid sits where the jump left it (its first day at the frozen edge, or the view at the year's end with the month whole on screen — `Matrix.tsx pressedRef`); once he scrolls, the first month from the left with at least half of it on screen, and only where none is, the month filling most of the screen (`monthview.ts monthInView`). It was the month filling most of the screen alone, which on a desktop wide enough for three or four months lit a later one. Checked at 1536, 1536 with the grid zoomed out, a 2560-wide screen and a phone: `scripts/handpass/lw-month-strip-check.mjs`.
 

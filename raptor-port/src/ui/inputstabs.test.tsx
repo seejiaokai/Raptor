@@ -215,7 +215,7 @@ describe('the Calendar | List switch keeps its place (D687, D1125)', () => {
     expect(g.getAttribute('aria-hidden')).toBe('true')
     expect(g.hasAttribute('inert'), 'out of the keyboard’s reach').toBe(true)
     expect([...g.querySelectorAll('button')].map(b => [b.textContent, b.tabIndex]), 'the Calendar’s three buttons, none reachable').toEqual([['‹', -1], ['›', -1], ['Today', -1]])
-    expect(g.querySelector('.ic-mon')!.getAttribute('data-fit')!.split('\n'),'the month’s room: all twelve names').toHaveLength(12)
+    expect(g.querySelector('.ic-mon .mjt-w')!.getAttribute('data-fit')!.split('\n'),'the month’s room: all twelve names').toHaveLength(12)
     await click('#inCalBtn')
     expect($('.ic-nav-ghost'), 'gone on the Calendar, where the real ones stand').toBeFalsy()
   })

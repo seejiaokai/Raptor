@@ -57,6 +57,9 @@ import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKin
 import { warInputs, type WarInput } from '../absences'
 import './matrix.css'
 
+/** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
+const yearAt = (iso: string) => iso.slice(0, 4)
+
 /** A posting through the store, or the sentence saying why it was refused (the absence-record re-test, AB5, 26 Sep
  *  26): every posting door — the bid sheet's PI / PO, the two posting sheets, the drag-selection's PO — shows it and
  *  stays open, where each used to close (or snap back) with nothing said. */
@@ -1133,6 +1136,20 @@ export function Matrix() {
       if (on) el.setAttribute('aria-current', 'true')
       else el.removeAttribute('aria-current')
     }
+  }
+
+  // THE YEAR IN THE CORNER (D1561) is painted the same way and for the same reason: the corner's two copies (the grid's
+  // header and the frozen mirror's) take the new words by a text write, never a re-render of the grid. The ref is the
+  // source of truth the header row renders, so a re-render from any other cause keeps the right year.
+  // EVERY COPY: the grid's own header, and the pinned bar (`.mxfixed`) with its sliding row AND its frozen corner — the
+  // one drawn on top while the page is scrolled down, the normal state on a phone (the fresh code read of 2 Nov 26: the
+  // frozen corner, outside `mirrorRef`, kept the old year across 1 January). The year is kept with the period it was
+  // painted for, so a period changed before the next measure never shows the last one's year.
+  const yearRef = useRef({ war: '', y: '' })
+  const paintYear = (y: string) => {
+    if (y === yearRef.current.y && yearRef.current.war === period.id) return
+    yearRef.current = { war: period.id, y }
+    for (const box of [wrapRef.current, mirrorRef.current?.closest('.mxfixed') ?? null]) box?.querySelectorAll('.lw-yr').forEach(el => { el.textContent = y })
   }
 
   // The visible month WINDOW — 'yyyy-mm|yyyy-mm', first and last months with
@@ -2260,7 +2277,11 @@ export function Matrix() {
           ground-crew names, and the short form fits the phone's 76px frozen
           column; the Quals page's Personnel view says the long form
           (Callsign/Name) where there is room. */}
-      <th className="who">CS/Name</th>
+      {/* THE YEAR OF THE FIRST DATE IN VIEW (owner D1561, 2 Nov 26 — design A of the year designs: "2027" in bright
+          white above "CS/Name"). The corner is the one spot that stays in view however the grid is scrolled, and it
+          sits at the start of the row of dates his eye is on. It turns at 1 January in a period across two years. Its
+          words are written by `paintYear` on scroll, as the month strip's lit button is — never a re-render. */}
+      <th className="who"><span className="lw-yr" data-testid={testids ? 'grid-year' : undefined}>{yearRef.current.war === period.id && yearRef.current.y ? yearRef.current.y : yearAt(focusDate || focusDateOf(period, memberToday()))}</span>CS/Name</th>
       {/* The column's heading: LVE, the one figure it shows (D1245). Frozen beside the callsign, so the figure stays on
           screen however far the grid scrolls. */}
       {/* the spoken name on the heading CELL, which a screen reader honours (a plain span's aria-label may be skipped) */}
@@ -2522,6 +2543,11 @@ export function Matrix() {
       else if (Date.now() - pressedAtRef.current > 1000) pressedRef.current = null
     }
     paintInView(lit)
+    // The year in the corner: the month holding the first date in view — the first span showing more than a sliver
+    // past the frozen columns' edge (a December day half under them still counts; 1 January at the edge is January —
+    // the 2px is the rounding of a scroll position at a phone's zoom, which left December 0.5px "in view").
+    const first = g.spans.findIndex(s => s.right - vl > 2)
+    if (first >= 0 && months[first]) paintYear(yearAt(months[first]!.first))
     // Which months (absolute indices, drawn or placeholder) the view is over —
     // what the fill engine's rolling target follows, and where the grid shrinks
     // to around when the tab is left. Same twelve numbers, no extra read.
@@ -3656,7 +3682,9 @@ export function Matrix() {
                           title={`Jump to ${m.label}`}
                           onClick={() => { jumpTo(m.first); pressedRef.current = months.indexOf(m); pressedAtRef.current = Date.now(); measureStrip() }}
                         >
-                          {m.label}
+                          {/* A period across two years writes "JAN 29"; on a phone the year stands under the month
+                              ([LW-MONTHSTRIP-TWO-YEARS]: side by side, twelve of them ran past the screen's right edge) */}
+                          {m.label.includes(' ') ? <><span className="mjm">{m.label.slice(0, 3)}</span><span className="mjy"> {m.label.slice(4)}</span></> : m.label}
                         </button>
                       ))}
                     </div>

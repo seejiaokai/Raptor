@@ -62,6 +62,7 @@ import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
 import { PenIcon } from './icons'
 import { useMedia } from './usemedia'
+import { MonthJump } from './MonthJump'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
 
 const MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -536,6 +537,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   /* keep the pointer machines' stepper current — see `live` above (the gesture effect, wired once, must always call the
      CURRENT month stepper, never the one captured on its first render, which would page from the wrong month forever) */
   live.current.step = step
+  /* the title's wheels (D1562): a jump, not a page — nothing slides in */
+  const jumpTo = (y: number, m: number) => { slideDirRef.current = 0; setCalMonth({ y, m }); notify() }
   const goToday = () => {
     const d = new Date(); const ny = d.getFullYear(), nm = d.getMonth() + 1
     /* Today reads as a jump, not a page — slide only when it actually crosses a
@@ -1272,9 +1275,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
           {lead}
           <div className="ic-nav">
             <button type="button" className="abtn" id="icPrev" aria-label="Previous month" onClick={() => step(-1)}>‹</button>
-            {/* data-fit on a desktop: the name's room is the widest month in the device's own font, so › stays put (D1122);
-                the phone keeps its own fixed width (D705) */}
-            <span className="ic-mon" aria-live="polite" aria-label={`${MON[cur.m - 1]} ${cur.y}`} data-fit={narrow ? undefined : MON.map(m => `${m} ${cur.y}`).join('\n')}>{narrow ? MON[cur.m - 1].slice(0, 3) : MON[cur.m - 1]} {cur.y}</span>
+            {/* the month's title opens the month and year wheels (D1562); its room is still the widest month (D1122), the
+                phone's still its fixed width (D705) */}
+            <MonthJump className="ic-mon" testid="ic-mon" y={cur.y} m={cur.m} short={narrow} onMonth={jumpTo} />
             <button type="button" className="abtn" id="icNext" aria-label="Next month" onClick={() => step(1)}>›</button>
             <button type="button" className="abtn" id="icToday" onClick={goToday}>Today</button>
           </div>
