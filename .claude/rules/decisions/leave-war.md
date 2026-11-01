@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1559 | 2 Nov 26 | The Leave War shows which year the grid is on, plainly and where the eye already is — a more intuitive design drawn with the design skill (Impeccable), put to him with pictures before anything is built. |
 | D1553 | 1 Nov 26 | A tap on a Leave War day held whole by a commitment under Unavailable (an Other, an Attach, Training and the rest), or whose morning and afternoon are both filed on the Inputs page, opens the bid window too, with one line for each entry — its box, AM, PM or Whole day, its remarks and where it is changed — so Grant OIL and the rest are there. |
 | D1552 | 1 Nov 26 | In the bid window a day held whole by an entry filed on the Inputs page opens (D1548), the eight leave buttons are not drawn where the war refuses leave over what holds it — leave or a medical; Pick a range brings them back for a range, the held days skipped with their reason; over an overseas duty, a course or an Other they stay. |
 | D1550 | 31 Oct 26 | Approve is greyed on any bid whose time a medical or leave holds — a pending bid as well as a refused one — in the bid window and the day's list, since the war would refuse it; Refuse and Delete stay (D1544). |

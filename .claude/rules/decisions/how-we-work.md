@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1557 | 2 Nov 26 | Every walk of a screen includes a plain-user round: the area's everyday tasks done start to finish as a user would, pressing every control that opens or closes something, then every other place that should show the result looked at — the Inputs page, the schedule, the bell, the person window, another year or period — with pictures. |
 | D1556 | 2 Nov 26 | The three drafts of the start-load trim are approved as written: the shorter AGENTS.md with its detail in a Codex-only guide, the seven passages of the always-loaded rule files moved whole to the homes named, and the two lines naming the new screen-design rulings area — each move read by one fresh reader for meaning, live on his "merge live". |
 | D1554 | 1 Nov 26 | What a chat loads at its start is trimmed again, never anything a job reads (D68): the every-chat rulings a later one restates in full archived, the screen-design rulings moved to a file loaded only for screen work, the Codex guide shortened; and after an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff. |
 | D1551 | 31 Oct 26 | Whenever he asks for a feature or one is designed, the agent says at once if it cannot be done — or only differently, or with a paid licence or the IT side — on the platform the app is moving to (a Power Apps code app on Dataverse, on his M365 — D1532, D1536), so he can skip it before work is spent. |

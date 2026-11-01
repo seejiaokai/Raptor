@@ -667,6 +667,14 @@ chosen, and its row added afterwards — and the choice is told to him in the ti
   reads and his look are as this order gives them. It applies to the WALK and FULL tiers; a LOOK is already one
   before-and-after picture, and a re-walk is already "only what the fixes touched" (§5).
 
+**7.0a The plain-user round (his D1557, 2 Nov 26 — "2 yes add it").** Every walk of a screen includes one, on top of the
+change's own scenarios and sized with them: the area's everyday tasks done start to finish as a user would — file, open, edit,
+close, undo — pressing EVERY control that opens or closes something (a window over a window: its Close, its ✕, Escape, a tap
+outside), then every other place that should show the result looked at: the Inputs page, the schedule, the bell, the person
+window, another year or period. Pictures as for any step. The scenario designer's brief asks for it. Why: the night of 1–2 Nov
+26 walked its four fixes and opened a document but never pressed Close; he found in one tap, as a user, that Close shut the
+window behind it first.
+
 **7.1 Build the day that has everything on it — never the convenient one.** A published Saturday, an
 unpublished Sunday, a weekday beside them, and a public holiday declared after the Saturday went
 out. Carrying every kind of row and every kind of man: a flying line; an SC shift with a MAIN and a

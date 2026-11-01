@@ -104,10 +104,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CSS-FONT-INHERIT] — eight boxes and buttons on the schedule and the Inputs pages show the browser’s own letters: their font line is not a font and is dropped (found in round 3’s check, 24 Oct 26); a picture to him first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-CARD-COLUMNS] — on the Inputs list's cards LATE, "No document" and the hours in three columns, card to card (his D1305, pick A — D1310): to build with the next Inputs batch.
+- [CAL-MONTH-YEAR-JUMP] — a tap on the Inputs / SANS calendar's month title opens the month-and-year wheels (D1560): drawn first, with [LW-YEAR-CLEAR].
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
+- [LW-YEAR-CLEAR] — the Leave War shows which year the grid is on (D1559): designed with the design skill, pictures to him first.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -191,6 +193,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
 - [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
 - [START-LOAD-TRIM] — what every chat loads at its start, trimmed where no job reads it (D1554): restated rulings archived and the screen-design rulings moved to an area of their own (done on its branch, 1 Nov 26); the Codex guide shortened and the rule files' passages moved — drafted, waiting on his approval.
+- [TRK-USER-ROUND] — a plain-user round on the Tracker as it is live (D1558), now.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -241,6 +244,28 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [TRK-USER-ROUND] A plain-user round on the Tracker as it is live (his D1558, 2 Nov 26)
+**What:** the Tracker's everyday tasks done as a user, start to finish, on his iPhone's size (WebKit) and a desktop, with pictures,
+pressing every control that opens or closes something, and every place the result should show looked at (D1557, bug-check order
+§7.0a) — so he knows whether the clean-up of 31 Oct 26 (D1534, pull request 603) broke anything. Every fault found: a picture to
+him, fixed red first. **Place:** now, after the document-close fix (one browser run at a time on his PC).
+
+### [CAL-MONTH-YEAR-JUMP] The Inputs and SANS calendars: a tap on the month's title opens a month-and-year picker (his D1560, 2 Nov 26)
+**What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;
+‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
+Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
+app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built.
+
+### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
+**What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
+then looked for them on the Inputs calendar's JUL 2026 — they were on 22 Jul 2027: the grid was on the next period (Jan – Dec 27),
+and its month buttons read only "JUL"; the year shows only in the View picker at the top, out of sight once the grid is scrolled.
+His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\0f3ee06a-image.png` (the war) and
+`…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
+(Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
+**Place:** now, after the Tracker round.
+
 
 ### [START-LOAD-TRIM] What every chat loads at its start, trimmed where no job reads it (his D1554, 1 Nov 26)
 **What:** measured 1 Nov 26 on a fresh chat — about 41,000 tokens of its start are the project's own always-loaded files:
