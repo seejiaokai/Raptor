@@ -21,6 +21,24 @@ const tap = async (page: Page, loc: Locator) => {
   const b = (await loc.boundingBox())!
   await page.touchscreen.tap(b.x + b.width / 2, b.y + Math.min(b.height / 2, 8))
 }
+/* THE MONTH THESE TESTS WERE WRITTEN IN (October 2026): the calendars open on today's month, and from 1 Nov 26 November's
+   six rows put the eleventh date below the phone's visible screen, where a tap at its place lands on nothing and the day
+   never opened (GitHub's run of 1 Nov 26). The tests are about the input window and the keys, not the month: each turns
+   the calendar to October first, by its own ‹, as a person would. */
+const toOct26 = async (page: Page) => {
+  const sans = await page.locator('[data-testid="sanscal"]').count()
+  const label = sans ? page.locator('[data-testid="sc-month"]') : page.locator('#inpCal .ic-mon')
+  const prev = sans ? page.locator('[data-testid="sc-prev"]') : page.locator('#icPrev')
+  const next = sans ? page.locator('[data-testid="sc-next"]') : page.locator('#icNext')
+  const MON = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+  for (let i = 0; i < 240; i++) {
+    const [name, year] = (await label.innerText()).trim().toLowerCase().split(/\s+/)
+    const d = 2026 * 12 + 9 - (+year! * 12 + MON.indexOf(name!.slice(0, 3)))
+    if (!d) return
+    await (d > 0 ? next : prev).click(); await page.waitForTimeout(150)
+  }
+  throw new Error('the calendar never reached October 2026')
+}
 const bottomOf = (loc: Locator) => loc.evaluate(e => Math.round(e.getBoundingClientRect().bottom))
 /* bring `loc` low on the screen inside its own scrolling panel (or the page), as a box he would reach for */
 const lowOnScreen = (loc: Locator) => loc.evaluate((e, h) => {
@@ -418,7 +436,7 @@ test.describe('the input window on a phone that measures from the visible screen
   }
   test("KS3g from an Inputs calendar day (OL): the window left where the phone's pan carried it, Remarks shown by that pan, nothing in or of the window moved (D1412)", async ({ page }) => {
     await login(page); await go(page, 'inputs')
-    await page.click('#inCalBtn'); await page.waitForTimeout(300)
+    await page.click('#inCalBtn'); await page.waitForTimeout(300); await toOct26(page)
     const cell = page.locator('[data-icday]').nth(10)
     await tap(page, cell)
     await page.locator('[data-testid="win-inputsday"]').waitFor()
@@ -428,7 +446,7 @@ test.describe('the input window on a phone that measures from the visible screen
   })
   test('KS3h from a SANS calendar day (SANS Availability): the same', async ({ page }) => {
     await login(page); await go(page, 'inputs')
-    await page.click('#inSansMode'); await expect(page.locator('[data-testid="sanscal"]')).toBeVisible()
+    await page.click('#inSansMode'); await expect(page.locator('[data-testid="sanscal"]')).toBeVisible(); await toOct26(page)
     await tap(page, page.locator('[data-icday]').nth(10))
     await page.locator('[data-testid="sd-add"]').click()
     await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
@@ -490,7 +508,7 @@ test.describe('the input window on a phone that measures from the visible screen
   const untouched = (page: Page, sel: string) => page.evaluate(sel => { const e = document.querySelector(sel) as HTMLElement; return [e.style.translate, e.dataset.kblift, e.dataset.kbcap, e.style.getPropertyValue('--kbcap')] }, sel)
   const openInputWin = async (page: Page, other: boolean) => {
     await login(page); await go(page, 'inputs')
-    await page.click('#inCalBtn'); await page.waitForTimeout(300)
+    await page.click('#inCalBtn'); await page.waitForTimeout(300); await toOct26(page)
     await tap(page, page.locator('[data-icday]').nth(10))
     await page.locator('[data-testid="win-inputsday"]').waitFor()
     await page.locator('#icPopAdd').click()
