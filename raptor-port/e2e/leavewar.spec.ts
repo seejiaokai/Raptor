@@ -5523,7 +5523,8 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   // so the scroll-driven path's static frozen-column overlay is not picked)
   const real = (await page.locator('[data-testid="head-2026-01-20"]').boundingBox())!
   const ghost = await page.evaluate(() => {
-    const cells = document.querySelectorAll('.mxfixed-scroll .mxhead tr:last-child th')
+    // the dates' headings only: the corner over the names carries the year since D1561 ("2026" holds a 20 too)
+    const cells = document.querySelectorAll('.mxfixed-scroll .mxhead tr:last-child th.day')
     for (const c of cells) {
       if (c.textContent!.includes('20')) return c.getBoundingClientRect().x
     }

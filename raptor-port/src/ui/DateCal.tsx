@@ -222,7 +222,17 @@ export function DateCal(p: {
   /* A MONTH ONLY: THE MONTH FOLLOWS THE LISTS AS THEY COME TO REST (D1562 — "the calendar turns to the month as soon as
      the wheels stop"). A list chooses its row only once its scrolling has stopped (Wheel's settle), so a fling through
      the years turns the page behind once, where it lands. Handed over at the choice itself, never by an effect. */
-  const chooseMonth = (y: number, m: number) => { setYm({ y, m }); if (month) p.onMonth?.(y, m) }
+  /* each list changes only its own half, read from the month as it stands NOW — not from the render a list's settle timer
+     was set in: two lists settling within a moment of each other (two fingers) would otherwise put back the other's
+     choice (the fresh code read of 2 Nov 26) */
+  const ymNow = useRef(ym)
+  useLayoutEffect(() => { ymNow.current = ym })
+  const chooseMonth = (part: { y?: number; m?: number }) => {
+    const n = { y: part.y ?? ymNow.current.y, m: part.m ?? ymNow.current.m }
+    ymNow.current = n
+    setYm(n)
+    if (month) p.onMonth?.(n.y, n.m)
+  }
   const goToday = () => { if (p.onToday) { p.onToday(); return } setLists(false); setYm(ymOf(today)) }
   /* ESCAPE SHUTS THE LISTS FIRST (owner D1012, 18 Oct 26 — "as recommended"; the design guide's "Escape closes what
      opened last"). A form holding this calendar (the OIL question, an input's own window) hears Escape on the way DOWN
@@ -387,8 +397,8 @@ export function DateCal(p: {
         <div className="dcal-lists" data-testid={`${tid}-lists`}>
           <div className="dcal-band" aria-hidden="true" />
           <Wheel tid={`${tid}-months`} name="Month" value={mi} label={i => MONTHS[mod12(i)]} onEnter={closeLists}
-            onChange={i => { setMi(i); chooseMonth(ym.y, mod12(i) + 1) }} />
-          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => chooseMonth(y, ym.m)} />
+            onChange={i => { setMi(i); chooseMonth({ m: mod12(i) + 1 }) }} />
+          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => chooseMonth({ y })} />
         </div>
       ) : (
         <>

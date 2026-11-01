@@ -62,6 +62,27 @@ test('the corner over the names carries the year, adds no height, and turns at 1
   expect((await shownYears(page)).every(y => y === '2029'), '1 Jan at the edge').toBe(true)
   await gridTo(page, '2028-12-30')
   expect((await shownYears(page)).every(y => y === '2028'), 'back into December').toBe(true)
+  /* SCROLLED DOWN, THE DATE ROW PINNED AT THE TOP (the normal state on a phone): the pinned bar draws its own copies of
+     the corner, and every one of them turns with the dates (the fresh code read's finding 1, 2 Nov 26) */
+  await page.evaluate(() => window.scrollBy(0, 1200))
+  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  const allYears = () => page.evaluate(() => [...document.querySelectorAll('.lw-yr')].map(e => e.textContent))
+  await gridTo(page, '2028-12-31', 6)
+  expect(await allYears(), 'pinned, 31 Dec — every copy of the corner').toEqual(expect.arrayContaining(['2028']))
+  expect((await allYears()).every(y => y === '2028')).toBe(true)
+  await gridTo(page, '2029-01-01')
+  expect((await allYears()).every(y => y === '2029'), 'pinned, 1 Jan at the edge — every copy of the corner').toBe(true)
+  const onTop = await page.evaluate(() => {
+    const bar = document.querySelector('[data-testid="sticky-head"]')!
+    // the copy a person sees: the one whose own cell is what the screen shows at its middle
+    const seen = [...bar.querySelectorAll('.lw-yr')].find(e => {
+      const r = e.getBoundingClientRect(); if (!r.width) return false
+      const hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+      return !!hit && (hit === e || e.closest('th')!.contains(hit))
+    })
+    return seen?.textContent
+  })
+  expect(onTop, 'the corner drawn on top of the pinned bar').toBe('2029')
 })
 
 test('a two-year period’s twelve month buttons stand in view on one line ([LW-MONTHSTRIP-TWO-YEARS])', async ({ page }) => {

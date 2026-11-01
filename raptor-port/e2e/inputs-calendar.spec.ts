@@ -128,7 +128,7 @@ for (const height of [844, 568]) test(`phone ${height}: three slim tabs, then ON
   }
   /* the month's name reads whole in every month of a year, and the row holds its one line through them all */
   for (let i = 0; i < 12; i++) {
-    const cut = await page.evaluate(() => { const m = document.querySelector('#inpCal .ic-mon') as HTMLElement, f = document.querySelector('[data-testid="in-gear"]')!.getBoundingClientRect(), n = document.querySelector('#icPrev')!.getBoundingClientRect(); return { cut: m.scrollWidth > m.clientWidth, name: m.textContent, wrapped: Math.abs(f.top - n.top) > 2, right: f.right } })
+    const cut = await page.evaluate(() => { const m = document.querySelector('#inpCal .ic-mon .mjt-w') as HTMLElement, f = document.querySelector('[data-testid="in-gear"]')!.getBoundingClientRect(), n = document.querySelector('#icPrev')!.getBoundingClientRect(); return { cut: m.scrollWidth > m.clientWidth, name: m.textContent, wrapped: Math.abs(f.top - n.top) > 2, right: f.right } })
     expect(cut.cut, 'the month is cut: ' + cut.name).toBe(false); expect(cut.wrapped, 'the tools wrapped in ' + cut.name).toBe(false); expect(cut.right).toBeLessThanOrEqual(390)
     await page.click('#icNext')
   }
@@ -436,8 +436,9 @@ test('on a desktop the opened day sits beside the month and covers no date; anot
   for (const id of ['#inMedBtn', '#inFSearch', '#inListBtn']) { const b = (await page.locator(id).boundingBox())!; expect(b.x + b.width, id + ' is under the window').toBeLessThanOrEqual(win.x) }
   await cell(page, '2026-10-20').click({ position: { x: 8, y: 8 } })
   await expect(dayWin(page)).toHaveCount(1); await expect(dayWin(page).locator('.win-ttl')).toContainText('Tue 20 Oct')
-  /* a press on the page outside it leaves it up (D641) */
-  await page.locator('#inpCal .ic-mon').click(); await expect(dayWin(page)).toBeVisible()
+  /* a press on the page outside it leaves it up (D641) — on the colour key: the month's title is a control since D1562 (it
+     opens the month and year wheels), no longer a plain spot to press */
+  await page.locator('[data-testid="ib-legend"]').click(); await expect(dayWin(page)).toBeVisible()
   const bar = (await dayWin(page).locator('.win-bar').boundingBox())!
   await page.mouse.move(bar.x + 80, bar.y + 12); await page.mouse.down(); await page.mouse.move(bar.x - 300, bar.y + 200, { steps: 6 }); await page.mouse.up()
   /* the width back to within half a pixel: from 1 Nov 26 (the month first drawn is today's) the first reading came back a few

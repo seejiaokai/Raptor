@@ -338,7 +338,7 @@ for(const height of [568,700,844])for(const [name,y,m] of [['five-week',2026,10]
 
 for(const height of [844,568])test(`phone ${height}: the month’s controls are a finger’s size and its name is not cut`,async({page})=>{
   await page.setViewportSize({width:390,height});await sans(page)
-  const label=await tid(page,'sc-month').evaluate(e=>({width:e.clientWidth,textWidth:e.scrollWidth}))
+  const label=await tid(page,'sc-month').evaluate(e=>{const w=e.querySelector('.mjt-w') as HTMLElement;return {width:w.clientWidth,textWidth:w.scrollWidth}})
   expect(label.width).toBeGreaterThanOrEqual(label.textWidth)
   /* DRAWN AS TALL AS THE TABS ABOVE THEM (owner D698, 9 Oct 26: "Seems like the 2nd row is taller. Do this for the sans
      and inputs calander") — and each still answers a finger over 44, by a press area a little larger than it. */
@@ -355,7 +355,7 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   expect(Math.max(...head.map(h=>h.right))).toBeLessThanOrEqual(390);expect(Math.min(...head.map(h=>h.left))).toBeGreaterThanOrEqual(0)
   /* and "Highlight" reads whole, in every month of a year (the months' names differ in width) */
   for(let i=0;i<12;i++){
-    const cut=await page.evaluate(()=>{const t=document.querySelector('[data-testid="sc-hl"] .sc-hl-t') as HTMLElement,m=document.querySelector('[data-testid="sc-month"]') as HTMLElement;return {word:t.scrollWidth>t.clientWidth,month:m.scrollWidth>m.clientWidth,name:m.textContent}})
+    const cut=await page.evaluate(()=>{const t=document.querySelector('[data-testid="sc-hl"] .sc-hl-t') as HTMLElement,m=document.querySelector('[data-testid="sc-month"] .mjt-w') as HTMLElement;return {word:t.scrollWidth>t.clientWidth,month:m.scrollWidth>m.clientWidth,name:m.textContent}})
     expect(cut.word,'"Highlight" is cut in '+cut.name).toBe(false);expect(cut.month,'the month is cut: '+cut.name).toBe(false)
     await tid(page,'sc-next').click()
   }
@@ -369,7 +369,7 @@ for(const height of [844,568])test(`phone ${height}: the month’s controls are 
   const longest=await page.evaluate(()=>{const P=(window as any).PEOPLE;return Object.keys(P).filter(k=>P[k].san&&!P[k].archived&&!P[k].deleted&&!P[k].special&&!P[k].pers).sort((a,b)=>P[b].cs.length-P[a].cs.length)[0]})
   await page.evaluate(id=>{(window as any).PEOPLE[id].cs='Wwwwwwwwwwwwww'},longest)
   await tid(page,'sc-hl').click();await tid(page,'sc-hl-'+longest).click()
-  const picked=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const e=document.querySelector(`[data-testid="${id}"]`) as HTMLElement,r=e.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,cut:id==='sc-month'&&e.scrollWidth>e.clientWidth}}))
+  const picked=await page.evaluate(()=>['sc-prev','sc-month','sc-next','sc-today','sc-hl','sc-gear'].map(id=>{const e=document.querySelector(`[data-testid="${id}"]`) as HTMLElement,r=e.getBoundingClientRect();return {mid:Math.round(r.top+r.height/2),right:r.right,cut:id==='sc-month'&&(e.querySelector('.mjt-w') as HTMLElement).scrollWidth>(e.querySelector('.mjt-w') as HTMLElement).clientWidth}}))
   expect(Math.max(...picked.map(h=>h.mid))-Math.min(...picked.map(h=>h.mid)),'a long callsign wrapped the head').toBeLessThanOrEqual(2)
   expect(Math.max(...picked.map(h=>h.right))).toBeLessThanOrEqual(390);expect(picked.some(h=>h.cut),'the month’s name was cut').toBe(false)
   /* THE THREE TABS ARE LESS TALL THAN A BUTTON (owner D626, 7 Oct 26 — "I like the 3 tabs across the top but make it less

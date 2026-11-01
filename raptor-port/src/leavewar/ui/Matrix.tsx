@@ -1141,11 +1141,15 @@ export function Matrix() {
   // THE YEAR IN THE CORNER (D1561) is painted the same way and for the same reason: the corner's two copies (the grid's
   // header and the frozen mirror's) take the new words by a text write, never a re-render of the grid. The ref is the
   // source of truth the header row renders, so a re-render from any other cause keeps the right year.
-  const yearRef = useRef('')
+  // EVERY COPY: the grid's own header, and the pinned bar (`.mxfixed`) with its sliding row AND its frozen corner — the
+  // one drawn on top while the page is scrolled down, the normal state on a phone (the fresh code read of 2 Nov 26: the
+  // frozen corner, outside `mirrorRef`, kept the old year across 1 January). The year is kept with the period it was
+  // painted for, so a period changed before the next measure never shows the last one's year.
+  const yearRef = useRef({ war: '', y: '' })
   const paintYear = (y: string) => {
-    if (y === yearRef.current) return
-    yearRef.current = y
-    for (const box of [wrapRef.current, mirrorRef.current]) box?.querySelectorAll('.lw-yr').forEach(el => { el.textContent = y })
+    if (y === yearRef.current.y && yearRef.current.war === period.id) return
+    yearRef.current = { war: period.id, y }
+    for (const box of [wrapRef.current, mirrorRef.current?.closest('.mxfixed') ?? null]) box?.querySelectorAll('.lw-yr').forEach(el => { el.textContent = y })
   }
 
   // The visible month WINDOW — 'yyyy-mm|yyyy-mm', first and last months with
@@ -2277,7 +2281,7 @@ export function Matrix() {
           white above "CS/Name"). The corner is the one spot that stays in view however the grid is scrolled, and it
           sits at the start of the row of dates his eye is on. It turns at 1 January in a period across two years. Its
           words are written by `paintYear` on scroll, as the month strip's lit button is — never a re-render. */}
-      <th className="who"><span className="lw-yr" data-testid={testids ? 'grid-year' : undefined}>{yearRef.current || yearAt(focusDate || focusDateOf(period, memberToday()))}</span>CS/Name</th>
+      <th className="who"><span className="lw-yr" data-testid={testids ? 'grid-year' : undefined}>{yearRef.current.war === period.id && yearRef.current.y ? yearRef.current.y : yearAt(focusDate || focusDateOf(period, memberToday()))}</span>CS/Name</th>
       {/* The column's heading: LVE, the one figure it shows (D1245). Frozen beside the callsign, so the figure stays on
           screen however far the grid scrolls. */}
       {/* the spoken name on the heading CELL, which a screen reader honours (a plain span's aria-label may be skipped) */}

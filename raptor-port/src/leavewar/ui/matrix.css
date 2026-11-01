@@ -2203,9 +2203,11 @@ touch-action: pan-x pan-y;
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  /* 760: room for twelve two-year labels ("JAN 29") on one line, as twelve single-year ones always had
-     ([LW-MONTHSTRIP-TWO-YEARS] — at 640 MAY 29 and JUN 29 wrapped onto a second line on a desktop) */
-  width: min(760px, calc(100vw - 60px));
+  /* the room its twelve buttons need, up to the screen's width: twelve two-year labels ("JAN 29") on one line, as twelve
+     single-year ones always had ([LW-MONTHSTRIP-TWO-YEARS] — at a fixed 640 MAY 29 and JUN 29 wrapped onto a second line on
+     a desktop, and a fixed 760 measured in Windows' letters still wrapped in GitHub's Linux ones) */
+  width: max-content;
+  max-width: calc(100vw - 60px);
 }
 
 .mx .mstripe .months {
@@ -2222,7 +2224,7 @@ touch-action: pan-x pan-y;
    (measured in the built app). The row falls back to its 44px desktop height
    (the 72px two-line allowance is gone); `stripH` measures the same. */
 @media (max-width: 700px) {
-  .mx .mstripe .mstrow { width: calc(100vw - 32px); }
+  .mx .mstripe .mstrow { width: calc(100vw - 32px); max-width: none; }
   .mx .mstripe .months { flex-wrap: nowrap; gap: 3px; }
   .mx .mstripe .months .mjump {
     flex: 1 1 0;
