@@ -12,7 +12,7 @@ phone in WebKit), `post-phone-retry/` and `post-phone-2/` (the phone's DP2 after
    DP6-live — 6 Nov moved to 10 Nov, the posting dated 9 Nov, it lands). Should a Delete posting's date bar a Move of his
    approved leave onto days from it too? Recommended: **no — leave as built**: the leave was approved before the posting,
    a move changes its days, not whether it was approved, and the same holds for a man already deleted (D321's readings,
-   [LW-DELETED-RESTORE-OVERREFUSE]). Nothing waits on it. Filed as `[LW-DELETE-POSTING-MOVE-ASK]`.
+   [LW-DELETED-RESTORE-OVERREFUSE]). Nothing waits on it. **Answered 2 Nov 26 — his D1555: no, as built** (a Move of his approved leave over a Delete posting's date stays allowed). Filed as `[LW-DELETE-POSTING-MOVE-ASK]`.
 
 ## The eight answers and the tier
 1. Money — YES: what a man's leave balance is charged follows which approvals stand (leave, as OIL, is time owed — D25);

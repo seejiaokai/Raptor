@@ -112,7 +112,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); the bell line drawn for him before it is built.
-- [LW-DELETE-POSTING-MOVE-ASK] — a question for him: should a Delete posting's date bar a Move of his approved leave onto days from it, as it bars approving it (D1545)? Recommended no, as built.
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
@@ -309,18 +308,6 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 ### [POSTOUT-RUN-NOTICE] A posting out runs on its date with nobody told (his direction, 31 Oct 26 — D1546)
 **What:** today a posting out runs silently on its date (`leavewar/sync.ts runPoOutcomes` — archived and suspended, deleted, made SANS or transferred), the schedulers told only when it is held back (D306). His direction: never gone silently. **ANSWERED 31 Oct 26 — A (D1547):** it runs on its date and the bells are told; the bell line is drawn for him on the real app before it is built; his idea of an "auto / manual" choice at the Post out sheet was answered with the agent's recommendation (none). **The choice that was put:** (A, recommended) it runs on its date as today and each admin's bell gets one line — "Posting out · Drifter · Mon 14 Nov · archived, account suspended", the outcome's own words, a tap opening his row on Admin → Users; or (B) on its date it waits, his row reading "posting out due", until a scheduler presses Accept — and until then he stays on the roster and the manning. A keeps the date he set as the one decision and never leaves a man half posted out; B adds a step every time and a forgotten Accept keeps a man on the books. **Ripples:** the bell's lines (`state/notices.ts`), the notifications register (P14), the Delete posting's own two taps (D287, D1102) — a Delete may want B even if the rest take A. **Place:** with the people-and-accounts work's next batch (D490), his answer first.
-
-### [LW-DELETE-POSTING-MOVE-ASK] A question: should a Delete posting's date bar a Move of his approved leave too? (found 1 Nov 26, the next batch's scenario designer, S20)
-**What happens:** his D1545 refuses APPROVING the leave of a man whose posting out has the Delete outcome, from the posting's
-date — Approve, Approve all, the bid windows and Auto-approve. The bid window's Move (and the drag window's) still carries his
-leave approved earlier onto days from that date: walked 1 Nov 26 (`raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`
-DP6-live, DP10 — 6 Nov moved to 10 Nov over a posting dated 9 Nov, it lands). The same holds for a man already deleted
-([LW-DELETED-RESTORE-OVERREFUSE], built on the live Move going through). Undo and Redo agree with the live Move today.
-**The question for him (D994 — when he next looks at the Leave War):** should a Delete posting's date also refuse a Move of
-his approved leave onto days from it? **Recommended: no, leave as built** — the leave was approved before the posting; a move
-changes its days, not whether it was approved, and he can still delete it. If yes: `leavewar/sync.ts doorMoveApproved` and
-`moveRecordsProblem` ask `postingOutWhy` for each landing day, the restore refusal's Redo of a move follows, and the walk's
-DP6 / DP10 change their expected lines. **Place:** a question, nothing waits on it.
 
 ### [REVIEW-LAYERS] The review layers he approved (27 Oct 26 — D1407–D1411)
 **What:** the Claude Code team's review layers (Anthropic, 15 Oct 26) set against Raptor's, put to him on the page

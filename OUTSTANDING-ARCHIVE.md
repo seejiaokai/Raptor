@@ -7268,3 +7268,18 @@ the first refused day and writes his war-approved leave there (the Undo's reques
 checked against every war writer so it never refuses a move the live door allows (RR-A); not obviously right in a fix
 round. **Place:** with the next Leave War batch; small; nothing waits on it.
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([LW-DELETE-POSTING-MOVE-ASK]). Forward facts: `raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`.*
+
+### [LW-DELETE-POSTING-MOVE-ASK] A question: should a Delete posting's date bar a Move of his approved leave too? (found 1 Nov 26, the next batch's scenario designer, S20)
+**What happens:** his D1545 refuses APPROVING the leave of a man whose posting out has the Delete outcome, from the posting's
+date — Approve, Approve all, the bid windows and Auto-approve. The bid window's Move (and the drag window's) still carries his
+leave approved earlier onto days from that date: walked 1 Nov 26 (`raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`
+DP6-live, DP10 — 6 Nov moved to 10 Nov over a posting dated 9 Nov, it lands). The same holds for a man already deleted
+([LW-DELETED-RESTORE-OVERREFUSE], built on the live Move going through). Undo and Redo agree with the live Move today.
+**The question for him (D994 — when he next looks at the Leave War):** should a Delete posting's date also refuse a Move of
+his approved leave onto days from it? **Recommended: no, leave as built** — the leave was approved before the posting; a move
+changes its days, not whether it was approved, and he can still delete it. If yes: `leavewar/sync.ts doorMoveApproved` and
+`moveRecordsProblem` ask `postingOutWhy` for each landing day, the restore refusal's Redo of a move follows, and the walk's
+DP6 / DP10 change their expected lines. **Place:** a question, nothing waits on it.
+
