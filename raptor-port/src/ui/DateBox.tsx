@@ -91,6 +91,7 @@ export function DateBox(p: {
      second half fell on the veil and shut the calendar it had just opened. The patch lies OVER the card (its z-index). */
   const { standPatch, dropPatch, patchNode } = useTapPatch()
   /* a box switched off while its calendar is up is closed for good — not left to spring open when it is switched on */
+  // eslint-disable-next-line react-doctor/no-reset-all-state-on-prop-change -- one flag closed when the box is switched off, as built before the patch moved into useTapPatch; nothing else of the box is reset
   useEffect(() => { if (p.disabled && open) setOpen(false) }, [p.disabled, open])
   const close = (at?: { x: number; y: number } | null) => {
     setOpen(false)

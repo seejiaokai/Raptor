@@ -221,11 +221,8 @@ export function DateCal(p: {
   const closeLists = () => { if (month) { p.onDone?.(); return } wantIn.current = 'dates'; setLists(false) }
   /* A MONTH ONLY: THE MONTH FOLLOWS THE LISTS AS THEY COME TO REST (D1562 — "the calendar turns to the month as soon as
      the wheels stop"). A list chooses its row only once its scrolling has stopped (Wheel's settle), so a fling through
-     the years turns the page behind once, where it lands. The first frame hands back the month it opened on — the
-     caller's own, which changes nothing. */
-  const onMonthRef = useRef(p.onMonth)
-  useLayoutEffect(() => { onMonthRef.current = p.onMonth })
-  useEffect(() => { if (month) onMonthRef.current?.(ym.y, ym.m) }, [month, ym.y, ym.m])
+     the years turns the page behind once, where it lands. Handed over at the choice itself, never by an effect. */
+  const chooseMonth = (y: number, m: number) => { setYm({ y, m }); if (month) p.onMonth?.(y, m) }
   const goToday = () => { if (p.onToday) { p.onToday(); return } setLists(false); setYm(ymOf(today)) }
   /* ESCAPE SHUTS THE LISTS FIRST (owner D1012, 18 Oct 26 — "as recommended"; the design guide's "Escape closes what
      opened last"). A form holding this calendar (the OIL question, an input's own window) hears Escape on the way DOWN
@@ -390,8 +387,8 @@ export function DateCal(p: {
         <div className="dcal-lists" data-testid={`${tid}-lists`}>
           <div className="dcal-band" aria-hidden="true" />
           <Wheel tid={`${tid}-months`} name="Month" value={mi} label={i => MONTHS[mod12(i)]} onEnter={closeLists}
-            onChange={i => { setMi(i); setYm(v => ({ y: v.y, m: mod12(i) + 1 })) }} />
-          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => setYm(v => ({ y, m: v.m }))} />
+            onChange={i => { setMi(i); chooseMonth(ym.y, mod12(i) + 1) }} />
+          <Wheel tid={`${tid}-years`} name="Year" value={ym.y} label={i => String(i)} onEnter={closeLists} onChange={y => chooseMonth(y, ym.m)} />
         </div>
       ) : (
         <>
