@@ -83,6 +83,7 @@ export function ClosedNoteSheet({ personId, callsign, date, pending, onClose }: 
           {pending.map((r, i) => (
             /* round 3's one row (his D1354, 25 Oct 26 — round 3's Q2): the dark box, its till, Document, no labels */
             <ReqWordsRows compact key={r.id} testPrefix={i === 0 ? 'closed' : `closed-${r.id}`} start={date} end={pending.length === 1 ? end : date}
+              who={{ personId, code: r.code }}
               value={edit[r.id] ?? draftOf(r)}
               onChange={(next, how) => {
                 if (how === 'type') return setEdit(e => ({ ...e, [r.id]: next }))

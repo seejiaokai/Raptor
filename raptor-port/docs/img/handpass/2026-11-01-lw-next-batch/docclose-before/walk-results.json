@@ -1,0 +1,359 @@
+[
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Close",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "d-r1-close-1-viewer-open.png",
+   "d-r1-close-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — ✕",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one ✕: viewer closed; the window behind still open",
+  "pics": [
+   "d-r1-x-1-viewer-open.png",
+   "d-r1-x-3-after-one-x.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — surround",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one surround: viewer closed; the window behind still open",
+  "pics": [
+   "d-r1-surround-1-viewer-open.png",
+   "d-r1-surround-3-after-one-surround.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Escape",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Escape: viewer closed; the window behind still open",
+  "pics": [
+   "d-r1-escape-1-viewer-open.png",
+   "d-r1-escape-3-after-one-escape.png"
+  ]
+ },
+ {
+  "id": "R2 the bid window, the held half’s line (Comet’s morning Other 21 Jul) — Close",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "d-r2-1-viewer-open.png",
+   "d-r2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R8 the Inputs page’s input window, its paperclip — Close",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "d-r8-1-viewer-open.png",
+   "d-r8-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R5 the person window, a leave line’s paperclip — Close",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "d-r5-1-viewer-open.png",
+   "d-r5-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R7 Approvals, a request’s paperclip — Close (a page, not a window: the page stays)",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "d-r7-1-viewer-open.png",
+   "d-r7-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Close",
+  "size": "phone/chromium",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-chromium-r1-close-1-viewer-open.png",
+   "p-chromium-r1-close-2-close-q.png",
+   "p-chromium-r1-close-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — ✕",
+  "size": "phone/chromium",
+  "verdict": "FAIL",
+  "said": "one ✕: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-chromium-r1-x-1-viewer-open.png",
+   "p-chromium-r1-x-2-x-q.png",
+   "p-chromium-r1-x-3-after-one-x.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — surround",
+  "size": "phone/chromium",
+  "verdict": "FAIL",
+  "said": "one surround: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-chromium-r1-surround-1-viewer-open.png",
+   "p-chromium-r1-surround-2-surround-q.png",
+   "p-chromium-r1-surround-3-after-one-surround.png"
+  ]
+ },
+ {
+  "id": "R2 the bid window, the held half’s line (Comet’s morning Other 21 Jul) — Close",
+  "size": "phone/chromium",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-chromium-r2-1-viewer-open.png",
+   "p-chromium-r2-2-close-q.png",
+   "p-chromium-r2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R8 the Inputs page’s input window, its paperclip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-chromium-r8-1-viewer-open.png",
+   "p-chromium-r8-2-close-q.png",
+   "p-chromium-r8-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R5 the person window, a leave line’s paperclip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-chromium-r5-1-viewer-open.png",
+   "p-chromium-r5-2-close-q.png",
+   "p-chromium-r5-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R7 Approvals, a request’s paperclip — Close (a page, not a window: the page stays)",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-chromium-r7-1-viewer-open.png",
+   "p-chromium-r7-2-close-q.png",
+   "p-chromium-r7-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — Close",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-webkit-r1-close-1-viewer-open.png",
+   "p-webkit-r1-close-2-close-q.png",
+   "p-webkit-r1-close-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — ✕",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "one ✕: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-webkit-r1-x-1-viewer-open.png",
+   "p-webkit-r1-x-2-x-q.png",
+   "p-webkit-r1-x-3-after-one-x.png"
+  ]
+ },
+ {
+  "id": "R1 the bid window, a whole day held (Gambit's OML 23 Jul) — surround",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "one surround: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-webkit-r1-surround-1-viewer-open.png",
+   "p-webkit-r1-surround-2-surround-q.png",
+   "p-webkit-r1-surround-3-after-one-surround.png"
+  ]
+ },
+ {
+  "id": "R2 the bid window, the held half’s line (Comet’s morning Other 21 Jul) — Close",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "p-webkit-r2-1-viewer-open.png",
+   "p-webkit-r2-2-close-q.png",
+   "p-webkit-r2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R8 the Inputs page’s input window, its paperclip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-webkit-r8-1-viewer-open.png",
+   "p-webkit-r8-2-close-q.png",
+   "p-webkit-r8-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R5 the person window, a leave line’s paperclip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-webkit-r5-1-viewer-open.png",
+   "p-webkit-r5-2-close-q.png",
+   "p-webkit-r5-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R7 Approvals, a request’s paperclip — Close (a page, not a window: the page stays)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "p-webkit-r7-1-viewer-open.png",
+   "p-webkit-r7-2-close-q.png",
+   "p-webkit-r7-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "P-errors",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "R5 the person window, a leave line’s paperclip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-setup-chromium-r5-1-viewer-open.png",
+   "m-setup-chromium-r5-2-close-q.png",
+   "m-setup-chromium-r5-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R7 Approvals, a request’s paperclip — Close (a page, not a window: the page stays)",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-setup-chromium-r7-1-viewer-open.png",
+   "m-setup-chromium-r7-2-close-q.png",
+   "m-setup-chromium-r7-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M1 the day’s list (a member on Comet’s morning Other), its document chip — Close",
+  "size": "phone/chromium",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "m-chromium-m1-1-viewer-open.png",
+   "m-chromium-m1-2-close-q.png",
+   "m-chromium-m1-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M2 the member’s own person window, the paperclip — Close",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-chromium-m2-1-viewer-open.png",
+   "m-chromium-m2-2-close-q.png",
+   "m-chromium-m2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M-errors",
+  "size": "phone/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "R5 the person window, a leave line’s paperclip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-setup-webkit-r5-1-viewer-open.png",
+   "m-setup-webkit-r5-2-close-q.png",
+   "m-setup-webkit-r5-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "R7 Approvals, a request’s paperclip — Close (a page, not a window: the page stays)",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-setup-webkit-r7-1-viewer-open.png",
+   "m-setup-webkit-r7-2-close-q.png",
+   "m-setup-webkit-r7-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M1 the day’s list (a member on Comet’s morning Other), its document chip — Close",
+  "size": "phone/webkit",
+  "verdict": "FAIL",
+  "said": "one Close: viewer STILL OPEN; the window behind CLOSED",
+  "pics": [
+   "m-webkit-m1-1-viewer-open.png",
+   "m-webkit-m1-2-close-q.png",
+   "m-webkit-m1-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M2 the member’s own person window, the paperclip — Close",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "one Close: viewer closed; the window behind still open",
+  "pics": [
+   "m-webkit-m2-1-viewer-open.png",
+   "m-webkit-m2-2-close-q.png",
+   "m-webkit-m2-3-after-one-close.png"
+  ]
+ },
+ {
+  "id": "M-errors",
+  "size": "phone/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

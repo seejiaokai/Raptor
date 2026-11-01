@@ -112,7 +112,17 @@ if (process.env.LW_WIDE_LETTERS) {
   })
 }
 
+/* A TEST THAT READS TODAY RUNS ON A PINNED ONE ([E2E-POSTING-DATES-PIN], 1 Nov 26): a test tagged with `PINNED` has the
+   browser's clock installed at `PIN_T0` before the app loads, and left running (as the walk scripts hold it —
+   scripts/handpass/lw-rr-lib.mjs T0), so its dates are fixed 2026 ones and it never skips itself as the real date moves on.
+   The three posting-out tests below dated their posting 20 days from the real today and skipped once that left the demo
+   war's 2026 (from 12 Dec 26). */
+const PINNED = '@pinned-today'
+/* noon in Greenwich: still 4 Nov in every time zone from UTC−11 to UTC+11, whatever machine runs it (the fresh code read's
+   note B — the browser takes the machine's zone) */
+const PIN_T0 = '2026-11-04T12:00:00Z'
 test.beforeEach(async ({ page }) => {
+  if (test.info().tags.includes(PINNED)) await page.clock.install({ time: new Date(PIN_T0) })
   await openLeaveWar(page)
 })
 
@@ -7631,8 +7641,13 @@ test('with "Pick dates…" open, a tap on the empty card beside or under the cal
    the posted-out day's "Place leave or OIL here instead…", the tick on, LL. */
 /* HIS D1541 (31 Oct 26): a posting out as Overseas Sqn refuses no leave any more — only a posting with the Delete outcome keeps
    its refusal from its date (the agent's reading 1, put to him). So the route is the same, the posting a Delete one, dated
-   20 days from today so it is still to run (the man is not deleted under the test; the browser tests run on the real date). */
-const isoIn = (n: number) => { const d = new Date(); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }
+   20 days on so it is still to run (the man is not deleted under the test) — on the browser's pinned today, `PIN_T0`
+   (4 Nov 26), so 24 Nov 26, his leave on 25 Nov ([E2E-POSTING-DATES-PIN]). */
+const PO_DATE = '2026-11-24', PO_NEXT = '2026-11-25'
+/* the pin holds: the page's today is PIN_T0's day, whatever the real date */
+async function pinnedToday(page: Page) {
+  expect(await page.evaluate(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}` }), 'the browser runs on the pinned today').toBe('2026-11-04')
+}
 const MONTH_BTN = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 const dmOf = (iso: string) => `${+iso.slice(8, 10)} ${['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+iso.slice(5, 7) - 1]}`
 async function postOutThenPlace(page: Page, outcome: 'delete' | 'overseas', poDate: string) {
@@ -7651,11 +7666,11 @@ async function postOutThenPlace(page: Page, outcome: 'delete' | 'overseas', poDa
   const day = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`
   await page.locator(`[data-testid="cell-slipway-${day}"]`).click()
 }
-test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', async ({ page }) => {
+test('one-day window, "Approve what I enter" on a day after his posting-out date: the reason it stays pending is on screen (R3b)', { tag: PINNED }, async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  const po = isoIn(20)
-  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await pinnedToday(page)
+  const po = PO_DATE
   await postOutThenPlace(page, 'delete', po)
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
@@ -7672,13 +7687,13 @@ test('one-day window, "Approve what I enter" on a day after his posting-out date
 
 /* …AND D1541'S OWN CASE: an Overseas posting refuses nothing — the leave placed on a day after it, Auto-approve on, lands
    approved, and no "kept pending" note is raised */
-test('one-day window, "Approve what I enter" after an Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)', async ({ page }) => {
+test('one-day window, "Approve what I enter" after an Overseas posting-out date: the leave lands approved, nothing kept pending (D1541)', { tag: PINNED }, async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  const po = isoIn(20)
-  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await pinnedToday(page)
+  const po = PO_DATE
   await postOutThenPlace(page, 'overseas', po)                  // dated ahead, as the Delete one: still to run
-  const day = isoIn(21)
+  const day = PO_NEXT
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
   await expect(tick).toBeVisible()
@@ -7696,13 +7711,13 @@ test('one-day window, "Approve what I enter" after an Overseas posting-out date:
    bar on a desktop, and on a phone the Undo closes the window — and a bid placed with the tick off closes the window, which
    ends the cell's note anyway. So the list is taken away by its own Delete, and brought back on the SAME open day by a bid
    that arrives from elsewhere while the window is up — another admin's, as the store's sync would bring it.) */
-test('the "kept pending" note is said once: the same open day’s list, back after a Delete, shows no stale note (R3c-2)', async ({ page }) => {
+test('the "kept pending" note is said once: the same open day’s list, back after a Delete, shows no stale note (R3c-2)', { tag: PINNED }, async ({ page }) => {
   await lwRole(page, 'admin')
   if (isPhone()) await page.setViewportSize({ width: 402, height: 874 })
-  const po = isoIn(20)
-  test.skip(po.slice(0, 4) !== '2026', 'the demo war is 2026 — a posting date 20 days on must fall inside it')
+  await pinnedToday(page)
+  const po = PO_DATE
   await postOutThenPlace(page, 'delete', po)                    // D1541: a Delete posting is the one that still refuses
-  const day = isoIn(21)
+  const day = PO_NEXT
   await page.locator('[data-testid="postout-place"]').click()
   const tick = page.getByTestId('bid-approve-tick')
   await expect(tick).toBeVisible()

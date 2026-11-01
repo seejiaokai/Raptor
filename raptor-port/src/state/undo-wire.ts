@@ -20,7 +20,7 @@ import { decodeRoleId } from '../engine/mission-role'
 import { peopleStore, settingsStore } from './people-settings-commit'
 import { rosterRestoreProblem } from './roster-restore'
 import { seedAccounts } from './accounts'
-import { deletedRestoreProblem } from './person-delete'
+import { deletedRestoreProblem, postingRestoreProblem } from './person-delete'
 import {
   installUndo, registerUndoStore, setCutoverModules, setUndoHooks, setDescribeNames,
 } from '../undo'
@@ -379,7 +379,11 @@ export function installGlobalUndo(): void {
     /* the war's own rules on what a restore may put back — a bid over a medical filed since (W3-F8) */
     /* …and B5 (the change-recording re-test): what a roster or settings restore must re-check — one callsign on the
        roster, the accounts' guards, a man still named somewhere (state/roster-restore.ts) */
-    restoreRefusal: (changes, dir) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir),
+    /* …and [LW-DELETE-POSTING-RESTORE]: an approval of his leave from the date of a Delete posting not yet run, refused live
+       (D1545) — asked fresh each time, since a posting moves, is taken back or changes its outcome (person-delete.ts
+       postingRestoreProblem) */
+    restoreRefusal: (changes, dir, entry) => restoreBlocker(changes as any, dir, restoreAbsencesOf(changes as any)) || rosterRestoreProblem(changes as any, dir)
+      || postingRestoreProblem(changes as any, dir, entry?.scope?.module),
     /* [POST-OUT-OUTCOMES]: a step that would put a deleted man back is passed over, never taken (person-delete.ts) */
     /* the direction and the step's module: a war step's Redo is judged by the leave it adds (person-delete.ts) */
     deadRefusal: (changes, dir, entry) => deletedRestoreProblem(changes as any, dir, entry?.scope?.module),

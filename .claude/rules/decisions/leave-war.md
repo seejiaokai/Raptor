@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1555 | 2 Nov 26 | A posting out with the Delete outcome refuses approving his leave from its date (D1545) but not moving leave of his already approved: Move and the drag window may carry it onto days from that date, as built, since a move changes its days, not whether it was approved, and it can still be deleted. |
 | D1563 | 2 Nov 26 | A tap on any day of an entry of several days filed on the Inputs page, whatever its kind, opens it whole, as a leave of several days placed on the war does (D1448, D1461): all its days marked, the window's title naming its dates; what the window then offers over the held range is drawn for him first. |
 | D1561 | 2 Nov 26 | The Leave War grid's pinned corner over the names shows the year of the first date in view — "2027" in bright white above "CS/Name" (design A of 2 Nov 26) — on a phone and a desktop, turning at 1 January in a period across two years, with no added height. |
 | D1559 | 2 Nov 26 | The Leave War shows which year the grid is on, plainly and where the eye already is — a more intuitive design drawn with the design skill (Impeccable), put to him with pictures before anything is built. — changed by D1561 |

@@ -114,7 +114,7 @@ test('a long remark typed beside a file stays whole when the file is taken off',
   await expect(page.locator(`${T('bid-doc-row')} .docchip`)).toHaveCount(1)
   /* typed while the box is wide (a file attached — the box takes the row), then the file taken off: the box narrows */
   await page.locator(T('bid-remarks')).fill('A long remark for the check: the member has not yet sent the approval from the leave app and asks for the afternoon kept free')
-  await page.locator(`${T('bid-doc-row')} .docchip button`).first().click()
+  await page.locator(`${T('bid-doc-row')} .docchip .docdel`).first().click()   // its ✕ (the name opens the file — D1292)
   await expect(page.locator(`${T('bid-doc-row')} .docchip`)).toHaveCount(0)
   await expect.poll(() => page.locator(T('bid-remarks')).evaluate(e => e.scrollHeight - e.clientHeight), { message: 'no line of the remark hidden' }).toBeLessThanOrEqual(0)
 })

@@ -1,0 +1,19 @@
+[
+ {
+  "id": "DP10 a block of his approved leave and his bid moved across a Delete posting’s date, then Undo: both go",
+  "size": "desk",
+  "verdict": "FAIL",
+  "said": "approved true; bid true; drag window true, Move offered true; banner after \"null\"; leave moved to 13 Nov true, bid on 14 Nov true; Undo said [\"Can’t undo that — Drifter posts out on 9 Nov, so leave from that day can’t be approved\"]; leave back on 11 Nov false",
+  "pics": [
+   "dp10-a-after-live-move",
+   "dp10-b-after-undo"
+  ]
+ },
+ {
+  "id": "errors",
+  "size": "desk",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
