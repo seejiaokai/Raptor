@@ -958,6 +958,13 @@ the reader's instructions or model change, it is run on every case and a change 
    its sizing step, how its RESULT is seen — print-media pictures in Chromium AND WebKit of what the dialog would print — and puts
    the real phone's look on his look card; an "only his phone can confirm" left in the backlog is put to him with the next look he
    is asked for, not left waiting.
+19. **A window opened over a window, never closed (his find on his iPhone, the document viewer, 2 Nov 26).** The night's walk
+   (H2, P2) opened the viewer from the bid window's chip and asked only that it opened; nobody pressed its Close, so the tap
+   shield of the window under it — which on a touch screen eats every tap outside that window — was never met: on his iPhone
+   Close closed the window behind and the viewer stayed. **Lesson:** every window or pop-up that opens over another is closed
+   in the walk by each of its own ways — its Close, its ✕, its own surround, Escape — on a touch screen in WebKit as well as a
+   desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
+   (`scripts/handpass/lw-nb-docclose.mjs` on the branch `claude/lw-next-batch-1101`; its evidence `docs/handpass/2026-11-01-lw-next-batch.md` §His find).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
