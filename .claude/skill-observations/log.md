@@ -3044,3 +3044,33 @@ reset mode disables before reusing it.
 **Suggested improvement:** In step 9 / Part 2, say how to wait on a background helper: keep-awake `session_idle`, then a silent re-armed Monitor timer as the heartbeat (no polling of the helper's transcript); and after any helper opens a pull request, check Auto-fix (`ccd_pr get_status`) and switch it off (D1090).
 
 **Principle:** A rule about how to wait must name the waiting mechanism the tools actually offer; when a delegated step opens a pull request, the coordinator re-applies the project's PR switches itself.
+
+### Observation 763: A mark drawn in a copied part was walked only at rest
+
+**Status:** OPEN
+**Date:** 2026-11-02
+**Session context:** building the Leave War grid's corner year (D1561) — a value repainted on scroll into a header that the app draws in three copies (the grid, a pinned bar's sliding row, its frozen corner)
+**Skill:** New skill candidate: none — the project's bug-check order (`raptor-port/docs/bug-check-order.md` §7.11) and the walk-scripts guide
+**Type:** open-source
+**Phase/Area:** the walk's sizing step; the roll-call of copies
+
+**Issue:** The walk checked the pinned header "scrolled down, still reads 2027" — the copy on top at rest — and crossed the New Year only with the page at its top. The fresh code read found the pinned bar's frozen corner was a third copy never repainted, so crossing 1 January while scrolled down left the old year. The roll-call listed "the mirror" as one place, not its two parts.
+
+**Suggested improvement:** In the roll-call, list every COPY a part is drawn in (find them on the running page by the element's own class, not from the component), and walk the moving reading (a scroll, a turn of the year) in each copy, with the assertion made on what is drawn on top (`elementFromPoint`), not on the first match.
+
+**Principle:** A value that changes as the view moves must be walked moving in every copy of the part that shows it; a check at rest proves only the copy that happened to be painted last.
+
+### Observation 764: Python run from a Bash heredoc mangles non-ASCII and escapes on Windows
+
+**Status:** OPEN
+**Date:** 2026-11-02
+**Session context:** editing CSS and TSX through short Python scripts
+**Skill:** New skill candidate: none — the project's memory notes on shell edits (`node-e-in-git-bash`, `bash-heredoc-apostrophes`)
+**Type:** open-source
+**Phase/Area:** editing files by script
+
+**Issue:** A heredoc-fed Python edit turned the CSS escape `'\25BE'` into a control character plus "BE", and a replace of a line holding "›" failed its assertion (the heredoc's stdin decoded in the console's code page). Scripts written to a file with the Write tool and run from there had neither problem.
+
+**Suggested improvement:** Make it unconditional: an edit script is always written to a file and run (never a heredoc), whatever it contains — extend the existing memory note to Python and to non-ASCII text, not only apostrophes and `node -e`.
+
+**Principle:** A rule with a condition ("unless it holds an apostrophe") fails on the next unforeseen character; where the safe route costs nothing extra, make it the only route.

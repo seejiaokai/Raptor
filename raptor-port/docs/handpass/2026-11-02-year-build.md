@@ -80,7 +80,7 @@ Pictures: `docs/img/handpass/2026-11-02-year-build/` (the measures) and `…/wal
 | 8 | the fresh code read (finding 4, low) | a changed period could show the last one's year until a measure | the year kept with its period |
 | 9 | GitHub's run | two older tests' premises: one pressed the month's title as a plain spot (it is a control now); one found "the heading with a 20" (the corner holds 2026) | each retargeted to what it meant |
 
-A narrow fresh read of the fix commit: see below. The code check (`npm run lint:changed`): no new finding.
+A narrow fresh Opus read of the fix commit (D790, §5 "a fix is new code"): **no findings** — the pinned bar's every copy reached, a freshly mounted bar showing the painted year, no order in which a list reads a stale month, the strip's new width moving nothing for a single-year period, the retargeted tests still testing their claims. The code check (`npm run lint:changed`): no new finding.
 
 **Walk:** host, scripted, 402 WebKit + 1536 + 2560 Chromium, admin and member, 36 measures + 47 walk checks + the plain-user
 round, all PASS after the fixes; the re-walk of the fixes all PASS; the pinned 1 Jan crossing carried by
