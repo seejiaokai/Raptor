@@ -105,14 +105,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [CSS-FONT-INHERIT] — eight boxes and buttons on the schedule and the Inputs pages show the browser’s own letters: their font line is not a font and is dropped (found in round 3’s check, 24 Oct 26); a picture to him first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-CARD-COLUMNS] — on the Inputs list's cards LATE, "No document" and the hours in three columns, card to card (his D1305, pick A — D1310): to build with the next Inputs batch.
-- [CAL-MONTH-YEAR-JUMP] — a tap on the Inputs / SANS calendar's month title opens the month-and-year wheels (D1560): drawn first, with [LW-YEAR-CLEAR].
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
-- [LW-MONTHSTRIP-TWO-YEARS] — on a phone a two-year period's month buttons run past the edge: with [LW-YEAR-CLEAR].
-- [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): drawn first.
-- [LW-YEAR-CLEAR] — the Leave War shows which year the grid is on (D1559): designed with the design skill, pictures to him first.
+- [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): drawn 2 Nov 26, his pick (A or B) waited on.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -129,6 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
+- [YEAR-DRAWCHECK] — the year build compared with its drawings by measure, not the drawing-check tool: his ruling before its merge.
 - [TRK-ROUND-SEEN] — two phone covers the plain-user round saw (the marking pop-up and Find over the tabs); the dropdown words closed by his iPhone look (D1564).
 - [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
@@ -253,16 +251,12 @@ tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
 
-### [LW-MONTHSTRIP-TWO-YEARS] On a phone the Leave War's month strip runs past the edge in a two-year period (found 2 Nov 26)
-Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 402 wide draws more month buttons than fit, so MAY and
-JUN are cut off at the right edge. Picture: the year designs' `lw-5-two-years.png`. **To do:** with [LW-YEAR-CLEAR]'s build (the
-strip and the year are one design question), red first.
-
-### [CAL-MONTH-YEAR-JUMP] The Inputs and SANS calendars: a tap on the month's title opens a month-and-year picker (his D1560, 2 Nov 26)
-**What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;
-‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
-Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
-app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built. **ANSWERED 2 Nov 26 — his D1562: design A, the floating wheels.** Built with [LW-YEAR-CLEAR], from the same drawings.
+### [YEAR-DRAWCHECK] The formal drawing check for the year build's three parts (2 Nov 26)
+The year build ([LW-YEAR-CLEAR], [CAL-MONTH-YEAR-JUMP], pull request 611) was compared with its approved drawings by measure
+and by eye side by side (`raptor-port/docs/handpass/2026-11-02-year-build.md`), not by the drawing-check tool
+(`raptor-port/scripts/drawcheck/`, D1495): its drawings have no part list or recorded drawing yet. **To do:** his ruling —
+record the drawings and write the part list (the corner, the title and its ▾, the card), or accept the measured comparison
+for these three small parts. **Place:** before pull request 611's "merge live".
 
 ### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
 **What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
@@ -270,17 +264,7 @@ app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to
 tapped ("Quill Mon 6 Jul"), the rest unmarked. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\faf6bf7b-image.png`
 (Quill) and `…\65af00f1-image.png` (Rune). **To do:** draw it on the real app first (D853) — the whole range marked and named, and
 what the window offers over a held range (the Duration row's "All n days" / day tapped; Grant OIL, CSE, OD on all days or one) — his
-pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat.
-
-### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
-**What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
-then looked for them on the Inputs calendar's JUL 2026 — they were on 22 Jul 2027: the grid was on the next period (Jan – Dec 27),
-and its month buttons read only "JUL"; the year shows only in the View picker at the top, out of sight once the grid is scrolled.
-His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\0f3ee06a-image.png` (the war) and
-`…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
-(Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
-**Place:** now, after the Tracker round. **ANSWERED 2 Nov 26 — his D1561 ("all as recommended"): design A, the year in the pinned corner.** To build in a fresh chat on its own branch from `main`, with [CAL-MONTH-YEAR-JUMP] and [LW-MONTHSTRIP-TWO-YEARS], from the approved drawings (`raptor-port/docs/img/mock/2026-11-02-year/`, the note `raptor-port/docs/superpowers/specs/2026-11-02-year-designs.md`) and checked beside them (D1495).
-
+pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat. **DRAWN 2 Nov 26** on the real app (`raptor-port/docs/img/mock/2026-11-02-input-range/`, the script `raptor-port/scripts/handpass/lw-input-range-draw.mjs`): today, A (recommended — opened whole, "All 4 days" / the day tapped on the Duration row choosing what Grant OIL, CSE, OD and the ⋯ act on), B (opened whole to look at, acting on the day tapped) — **his pick waited on**, then the build.
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a

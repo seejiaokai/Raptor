@@ -7324,3 +7324,33 @@ DP6 / DP10 change their expected lines. **Place:** a question, nothing waits on 
 ### [LW-DOCFIELD-CHIP-OPENS] A bid window's own Document chip opens the file (his D1292 — the half not built; found 2 Nov 26)
 **What:** D1292 (24 Oct 26): in the Leave War's windows a document chip opens what it holds when tapped, in the app's document viewer — "straight after it is added as well as later; its ✕ still takes it off". The read-only chips (a held day's line, the day's list, the person window, Approvals) open it since M4; the EDITABLE chips of a bid window's own Document row (`raptor-port/src/ui/inputedit.tsx` `DocField`, used by `leavewar/ui/ReqWords.tsx`) do not: a tap on "leave-note.pdf ✕" does nothing (walked 2 Nov 26 — `scripts/handpass/lw-nb-docclose.mjs`, the bid window reopened on Ranger's placed LL). D1292's full row placed it "with the M3 follow-up"; the M3 sheet left it for his look, the M4 sheet named it D1292's own job under [LW-PICK-HELD-MARK], and that item no longer carries it. **To do:** the chip's name opens the viewer on the file (a file not yet saved too), its ✕ unchanged; the same `DocField` sits in the Inputs page's input window — whether its chips open too is D1159's (one Document button everywhere) and goes with it. **Place:** the next Leave War batch; a WALK (the viewer over the window, closed by each way — the lesson drafted 2 Nov 26).
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([LW-YEAR-CLEAR]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-YEAR-CLEAR] The Leave War shows which year the grid is on (his D1559, 2 Nov 26)
+**What:** on 2 Nov 26 he filed an Attach, a course, an overseas duty, an Other and two leaves on Thu 22 Jul on the Leave War,
+then looked for them on the Inputs calendar's JUL 2026 — they were on 22 Jul 2027: the grid was on the next period (Jan – Dec 27),
+and its month buttons read only "JUL"; the year shows only in the View picker at the top, out of sight once the grid is scrolled.
+His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\0f3ee06a-image.png` (the war) and
+`…\e58a2458-image.png` (the Inputs calendar). **To do:** a more intuitive way to show the year, designed with the design skill
+(Impeccable) on the real app, on a phone and a desktop, put to him with pictures before anything is built (D853, D1222).
+**Place:** now, after the Tracker round. **ANSWERED 2 Nov 26 — his D1561 ("all as recommended"): design A, the year in the pinned corner.** To build in a fresh chat on its own branch from `main`, with [CAL-MONTH-YEAR-JUMP] and [LW-MONTHSTRIP-TWO-YEARS], from the approved drawings (`raptor-port/docs/img/mock/2026-11-02-year/`, the note `raptor-port/docs/superpowers/specs/2026-11-02-year-designs.md`) and checked beside them (D1495).
+
+
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([CAL-MONTH-YEAR-JUMP]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [CAL-MONTH-YEAR-JUMP] The Inputs and SANS calendars: a tap on the month's title opens a month-and-year picker (his D1560, 2 Nov 26)
+**What:** a tap on "JUL 2027" opens the same month and year wheels as Edit Schedule's "Jump to a date", for faster navigation;
+‹ › and Today stay. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\de02c0d4-image.png` (the
+Inputs calendar) and `…\0fc4d4b2-image.png` (Edit Schedule's Jump to a date). **To do:** drawn with the design skill on the real
+app, phone and desktop, with [LW-YEAR-CLEAR] (one design question round), put to him before anything is built. **ANSWERED 2 Nov 26 — his D1562: design A, the floating wheels.** Built with [LW-YEAR-CLEAR], from the same drawings.
+
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([LW-MONTHSTRIP-TWO-YEARS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MONTHSTRIP-TWO-YEARS] On a phone the Leave War's month strip runs past the edge in a two-year period (found 2 Nov 26)
+Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 402 wide draws more month buttons than fit, so MAY and
+JUN are cut off at the right edge. Picture: the year designs' `lw-5-two-years.png`. **To do:** with [LW-YEAR-CLEAR]'s build (the
+strip and the year are one design question), red first.
+
