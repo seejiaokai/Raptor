@@ -3985,7 +3985,9 @@ export function lineStale(personId: string, parts: readonly DecidePart[]): strin
    Leave filed on the Inputs page is not one of these (its read-only window), nor a course or any other commitment. One day
    is no run: the window opens as built. A pure read — nothing is written. */
 export interface LeaveRun {
-  kind: 'request' | 'absence'
+  /** 'held': an entry filed on the Inputs page (`heldRunAt` — his D1563, D1565): no records of the war's own, so nothing
+   *  to decide, move or delete — what "All" widens there is only what is added over it */
+  kind: 'request' | 'absence' | 'held'
   from: string
   to: string
   dates: string[]
@@ -4034,6 +4036,27 @@ export function leaveRunAt(personId: string, date: string): LeaveRun | null {
     recs: run.map(x => ({ personId, date: x.date, id: iid, kind: 'absence' as const })),
     parts: run.map(x => ({ date: x.date, iid, state: 'approved' as const })),
   }
+}
+
+/* ---- AN ENTRY OF SEVERAL DAYS FILED ON THE INPUTS PAGE, OPENED WHOLE (his D1563, D1565 — 2 Nov 26; [LW-INPUT-RANGE-WHOLE])
+   A tap on a day held whole by ONE entry filed on the Inputs page (the bid window's held day, D1548 — the grid has already
+   checked that the day holds nothing else, so a day also holding a second entry opens the day's list, as D1466 has it)
+   opens the window on that entry's days: the days in a row holding the same Input (its id), within the period holding the
+   day tapped — as `leaveRunAt` walks a leave the war approved. The entry is the Inputs page's (D1548), so the run carries no
+   records: "All" widens only what is added over it — Grant OIL, CSE, OD, the ⋯'s filings, leave where the war takes it. One
+   day is no run. A pure read. */
+export function heldRunAt(personId: string, date: string, iid: string): LeaveRun | null {
+  const war = warHolding(state.wars, date)
+  if (!war) return null
+  const on = (d: string) => warHolding(state.wars, d) === war && absencesAt(personId, d).some(c => c.kind === 'absence' && c.id === iid)
+  if (!on(date)) return null
+  let from = date, to = date
+  while (on(addDays(from, -1))) from = addDays(from, -1)
+  while (on(addDays(to, 1))) to = addDays(to, 1)
+  if (from === to) return null
+  const dates: string[] = []
+  for (let d = from; d <= to; d = addDays(d, 1)) dates.push(d)
+  return { kind: 'held', from, to, dates, recs: [], parts: [], state: 'approved' }
 }
 
 /** May this role take this one record — a request by the gates of every cell write (his row, a day open for him or his own

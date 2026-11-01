@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1567 | 2 Nov 26 | On a phone the page itself never zooms: only the grids that zoom by their own pinch (the Leave War grid and its OIL tab, Quals, the Scheduler Board’s desktop layout) zoom, and a pinch anywhere else does nothing, so the page can never be left zoomed in with no way out. |
 | D1523 | 30 Oct 26 | A window he has resized but never moved moves down below a failed save's "Not saved" band, as a window not yet placed does, so the band and its Retry are never covered (D587); a window he has moved keeps its place. |
 | D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, or any other part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges — at every zoom and every scroll position; the desktop week's ‹ › arrows excepted, which stay see-through (D1522). — changed by D1522 |
 | D1509 | 29 Oct 26 | The one settings gear everywhere in the app is the Leave War's drawn line gear, the ⚙ symbol going wherever it stands today (the Inputs calendar, the OIL tracker, the Tracker's flex settings, the Scheduler Board's flying-waves gear). |

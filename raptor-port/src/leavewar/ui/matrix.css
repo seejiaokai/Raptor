@@ -1746,6 +1746,18 @@ touch-action: pan-x pan-y;
 .mx tbody tr.me td {
   box-shadow: inset 0 1px 0 rgba(59, 198, 232, .55), inset 0 -1px 0 rgba(59, 198, 232, .55);
 }
+/* WHAT A WINDOW ACTS ON, ON HIS OWN ROW (his D1568, D1569 — design A, 2 Nov 26; drawn by
+   scripts/handpass/lw-ownrow-mark-draw.mjs): the row's lines above out-rank `.mx td.selcell` and drew over its ring, and the
+   faint wash left read as part of his cyan row, so on his iPhone the day he tapped disappeared. Here the picked days wear the
+   selection's own stronger look — the one a drag wears while it grabs (`.mx-wrap.selecting .mx td.selcell`, above) — over the
+   row's lines. One mark, one look (D876): the same cyan, made heavier, never a new colour; every other row is unchanged.
+   The two `:not()`s give it the weight of the touched row's tint (`tr:hover td…`, above — a tap on a phone leaves the row
+   "hovered"), and coming later it wins: without them the fill went back to that faint tint on a phone, the ring alone left
+   (the browser test's phone run, 2 Nov 26). A day cell is never `.who` or `.bal`, so they exclude nothing. */
+.mx tbody tr.me td.selcell:not(.who):not(.bal) {
+  background: rgba(59, 198, 232, .34);
+  box-shadow: inset 0 0 0 2px rgba(59, 198, 232, .95);
+}
 
 .mx tbody tr.me .who {
   color: var(--accent);

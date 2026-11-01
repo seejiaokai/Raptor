@@ -4512,6 +4512,8 @@ export function Matrix() {
           onlyPortion={openFreeHalf}
           heldBy={openFreeHalf ? boxText(grid[open.id]?.[open.date] ?? '') : undefined}
           heldDays={openHeldLines}
+          /* the one entry holding the day whole — an entry of several days opens whole from it (his D1563, D1565) */
+          heldEntry={openHeld && openHeld.held.length === 1 ? openHeld.held[0]!.c.id : null}
           noLeave={!!openHeld?.noLeave}
           heldLeave={openHeldLeave}
           heldOther={openFreeHalf ? heldCommitment(openView, openFreeHalf) : null}   /* the box's own word, "LL" — the half said in words (round 3, D1331) */

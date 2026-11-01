@@ -1,0 +1,70 @@
+<title>Own-row picked day</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one narrow reading column, the open question first, its pictures full width and tap-to-zoom. Dark only, like the app. */
+:root {
+  --bg: #0b0f14; --panel: #131a22; --fg: #e8edf2; --muted: #9aa6b2; --accent: #3bc6e8; --line: #24303c; --rec: #8fd18f;
+  --f-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--f-ui); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+h1 { font-size: 22px; margin: 0; text-wrap: balance; }
+h2 { font-size: 17px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 65ch; }
+.muted { color: var(--muted); }
+.now { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; }
+.now ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.rec { color: var(--rec); font-weight: 600; }
+section { display: grid; gap: 10px; }
+figure { margin: 0; display: grid; gap: 6px; }
+figure a { display: block; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+.opts { display: grid; gap: 8px; }
+.opt { display: grid; grid-template-columns: 4.5em 1fr; gap: 10px; }
+.opt b { color: var(--accent); }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<div class="wrap">
+  <h1>Your own row: the day you tap can’t be seen</h1>
+
+  <div class="now">
+    <h2>What to answer now</h2>
+    <ol>
+      <li>How should the day you tap stand out on your own row? <span class="rec">Recommended: A.</span> Reply “A”, “B”, or say what you’d like instead.</li>
+    </ol>
+  </div>
+
+  <section>
+    <h2>What is wrong today</h2>
+    <p>Your own row on the Leave War is lit in cyan, so you can find yourself. The day you tap is marked in the same cyan, and on your row the row’s own lines are drawn on top of the mark. On your iPhone the picked day simply disappears. Every other row shows it fine.</p>
+    <p>The same happens to a leave of several days opened whole: all its days are marked this way, so on your row none of them shows. The build I am finishing now (an Inputs entry of several days opening whole, your pick A of this morning) marks days the same way, so this fix goes on the same branch.</p>
+  </section>
+
+  <section>
+    <h2>The two ways to fix it — on your own row only</h2>
+    <div class="opts">
+      <div class="opt"><b>A</b><span>The selection’s own stronger look — the brighter fill and thicker cyan ring a drag already wears while you hold it. Same colour as every other picked day, just strong enough to beat your row’s lines. <span class="rec">Recommended:</span> the app keeps one look for “picked”, and the design guide says to make a mark heavier before giving it a new colour.</span></div>
+      <div class="opt"><b>B</b><span>A white ring in place of the cyan one. It stands out the most, because it is a different colour from your row. White is not used for anything else on the grid, so it would mean “picked on your own row”.</span></div>
+    </div>
+    <p class="muted">Every other row stays exactly as it is now. Pictures are the real app on your iPhone’s size and a desktop’s; A and B are drawn in. Tap a picture to see it full size.</p>
+  </section>
+
+  <section>
+    <h2>On your iPhone</h2>
+    <figure><a href="phone-day.png" target="_blank" rel="noopener"><img src="phone-day.png" alt="Saber's own row with Tue 14 Jul tapped: today the day is invisible, A shows a cyan box, B a white box"></a>
+      <figcaption>One day tapped (Tue 14 Jul) on your row. Today: nothing shows. A: a clear cyan box. B: a white box.</figcaption></figure>
+    <figure><a href="phone-run.png" target="_blank" rel="noopener"><img src="phone-run.png" alt="A three-day LL opened whole on Saber's own row: today unmarked, A cyan rings, B white rings"></a>
+      <figcaption>A three-day LL opened whole (21–23 Jul) on your row.</figcaption></figure>
+  </section>
+
+  <section>
+    <h2>On a desktop</h2>
+    <figure><a href="desktop-day.png" target="_blank" rel="noopener"><img src="desktop-day.png" alt="The same single day on a desktop: today faint, A cyan, B white"></a>
+      <figcaption>One day tapped. On a desktop today’s mark is faint rather than gone.</figcaption></figure>
+    <figure><a href="desktop-run.png" target="_blank" rel="noopener"><img src="desktop-run.png" alt="The three-day leave on a desktop: today, A and B"></a>
+      <figcaption>The three-day LL opened whole.</figcaption></figure>
+  </section>
+</div>
