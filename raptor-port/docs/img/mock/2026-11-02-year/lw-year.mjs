@@ -54,6 +54,7 @@ async function corner(P, kind, words) {
       if (kind === 'A') s.style.cssText = 'display:block;white-space:nowrap'
       else s.style.cssText = 'display:block;white-space:nowrap;color:var(--ink);font-size:1.25em;font-weight:800;letter-spacing:.04em;line-height:1.1'
       th.insertBefore(s, th.firstChild)
+      // eslint-disable-next-line react-doctor/js-batch-dom-css -- a drawing script sets the mock-up's few styles once, in the page it pictures
       th.style.outline = '2px dashed #ffd400'; th.style.outlineOffset = '-2px'
       const r = th.getBoundingClientRect()
       const rg = document.createRange(); rg.selectNodeContents(s); const tr = rg.getBoundingClientRect()
@@ -91,6 +92,7 @@ for (const dev of ['phone', 'desk']) {
   const yearsInView = async () => P.evaluate(() => { const t = document.body.innerText; return (t.match(/\b20\d\d\b|\b(JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC) \d\d\b/g) || []).slice(0, 6) })
   const words = `JUL 2027`
   for (const [k, w] of [[null, ''], ['A', words], ['B', '2027']]) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a drawing script takes its pictures one after another in one browser, in order
     const m = await corner(P, k, w)
     if (m) console.log(dev, k, 'top', JSON.stringify(m))
     shots[`${dev}-top-${k || 'today'}`] = await clip(P, `lw-${dev}-top-${({ A: 'monthyear', B: 'year' })[k] || 'today'}.png`, await frameTop(P, dev))
@@ -105,6 +107,7 @@ for (const dev of ['phone', 'desk']) {
   })
   console.log(dev, 'scrolled: strip top', pinned.stripTop, 'corner tops', pinned.cornerTops.join(','))
   for (const [k, w] of [[null, ''], ['A', words], ['B', '2027']]) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a drawing script takes its pictures one after another in one browser, in order
     const m = await corner(P, k, w)
     if (m) console.log(dev, k, 'scrolled', JSON.stringify(m))
     await neutral(P)
@@ -118,6 +121,7 @@ for (const dev of ['phone', 'desk']) {
     await P.selectOption('[data-testid="war-picker"]', { label: '+ New period' }); await P.waitForSelector('[data-testid="war-sheet"]')
     await P.fill('[data-testid="war-name"]', 'JUL 28 - JUN 29')
     const at = async () => { const ym = await P.getAttribute('[data-testid="war"]', 'data-month'); return +ym.slice(0, 4) * 12 + (+ym.slice(5, 7) - 1) }
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a drawing script takes its pictures one after another in one browser, in order
     const go = async iso => { let d = +iso.slice(0, 4) * 12 + (+iso.slice(5, 7) - 1) - await at(); for (; d > 0; d--) await P.click('[data-testid="war-next"]'); for (; d < 0; d++) await P.click('[data-testid="war-prev"]') }
     await go('2028-07-01'); await P.click('[data-testid="war-day-2028-07-01"]')
     await go('2029-06-30'); await P.click('[data-testid="war-day-2029-06-30"]')

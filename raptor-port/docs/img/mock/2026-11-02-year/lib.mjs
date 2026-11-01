@@ -40,6 +40,7 @@ export async function compose(file, { title, sub, items, dpr = 2, stack = false,
   const b = await chromium.launch()
   const ctx = await b.newContext({ viewport: { width: 400, height: 300 }, deviceScaleFactor: dpr })
   const P = await ctx.newPage()
+  // eslint-disable-next-line react-doctor/server-sequential-independent-await -- a drawing script drives one browser one step at a time, so each step waits for the last
   const { readFileSync } = await import('node:fs')
   const imgs = items.map(it => {
     const data = readFileSync(it.src).toString('base64')
