@@ -440,7 +440,10 @@ test('on a desktop the opened day sits beside the month and covers no date; anot
   await page.locator('#inpCal .ic-mon').click(); await expect(dayWin(page)).toBeVisible()
   const bar = (await dayWin(page).locator('.win-bar').boundingBox())!
   await page.mouse.move(bar.x + 80, bar.y + 12); await page.mouse.down(); await page.mouse.move(bar.x - 300, bar.y + 200, { steps: 6 }); await page.mouse.up()
-  await expect.poll(width).toBe(full)
+  /* the width back to within half a pixel: from 1 Nov 26 (the month first drawn is today's) the first reading came back a few
+     hundred-thousandths of a pixel off the whole (1416.00002 against 1416, on GitHub's machines and his PC alike, with or
+     without the branch's change) — a rounding of the layout, not a width kept by the window */
+  await expect.poll(width).toBeCloseTo(full, 0)
   await page.locator('[data-testid="win-inputsday-x"]').click(); await expect(dayWin(page)).toHaveCount(0)
 })
 
