@@ -129,7 +129,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
-- [TRK-ROUND-SEEN] — older things the plain-user round saw (dropdown words cut in the test browser, two phone covers): his iPhone look first.
+- [TRK-ROUND-SEEN] — two phone covers the plain-user round saw (the marking pop-up and Find over the tabs); the dropdown words closed by his iPhone look (D1564).
 - [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
 
@@ -251,7 +251,7 @@ his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/select
 pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
-Duplicate, the chart's arrow keys, sideways, his PC's 125%. **Place:** with the Tracker's next batch; (1) his iPhone look first.
+Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
 
 ### [LW-MONTHSTRIP-TWO-YEARS] On a phone the Leave War's month strip runs past the edge in a two-year period (found 2 Nov 26)
 Seen while drawing [LW-YEAR-CLEAR]: a period across two years on the iPhone's 402 wide draws more month buttons than fit, so MAY and

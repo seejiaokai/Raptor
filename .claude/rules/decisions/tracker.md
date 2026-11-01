@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1564 | 2 Nov 26 | On his iPhone the Tracker bar's student, course and year dropdowns draw their words whole: the cut words seen in the test browser were that browser's own drawing, not the app's, and nothing is changed. |
 | D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |
 | D1406 | 27 Oct 26 | On a touch screen the Tracker's chart draws no scroll bars: it still scrolls, glides and pinches as before; the Info half, Show All and every window keep their normal bars, and a desktop with a mouse keeps both the chart's and the Info panel's bars, which are how a mouse scrolls them. |
 | D1405 | 27 Oct 26 | The Tracker's scroll bars that show in odd places are found and fixed first, before the iPhone keyboard fault (D1366) and the Leave War overhaul's M4 (D1404). — changed by D1406 |
