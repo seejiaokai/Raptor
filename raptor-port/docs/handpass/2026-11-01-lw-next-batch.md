@@ -200,3 +200,92 @@ look still to come.**
    says "Can’t redo that — <name> posts out on <date>, so leave from that day can’t be approved".
 3. A commitment with hours (13:00–17:00) on a half: the free half's line says "PM", where a whole held day's line prints the
    hours — say if you want the hours there too (D1371 drew it with AM / PM).
+
+## His find, 2 Nov 26 — the document viewer's Close
+
+**What he saw (his iPhone, Safari, the 609 preview):** "When I press close. The window behind closes first then the document
+page closes on a 2nd tap" — Gambit's Thu 23 Jul bid window (a whole day held by an OML filed on the Inputs page), its
+"document" chip tapped, the viewer "Gambit · OML · Jul 23" over it; Close closed the BID WINDOW, the viewer went on a second tap.
+
+**The cause.** On a touch screen a blocking Leave War window lets the finger through its veil to the grid and puts a shield on
+the page that eats every tap outside the window and closes the window on it (`Sheet.tsx` `useGridPan`). The document viewer is a
+pop-up of the app's own on the page body, inside no window, so to the shield its Close, its ✕ and its own dark surround were
+taps outside: eaten before the viewer heard them, and the window behind closed. The second tap worked because the window and
+its shield were gone. A mouse never met it: there the veil itself lies under the viewer. **On `main` too:** the shield and the
+war's document chips (M4, D1292) are both on `main` (`origin/main`'s `Sheet.tsx` has the same shield and `BidPicker.tsx` the
+same chip); reproduced on this branch's build before the fix, the desktop clean. **The fix:** the shield lets every pop-up of
+the app's own through (`.airpop` — the viewer, the OIL question and its kin), as the mouse's veil does. **And the fresh read's
+finding 1** (older, not caused by the fix): a blocking window opened while the person window or the Inputs "Calendar" is up is
+raised (480 / 481) above every pop-up (460–472), so the viewer opened from it stood UNDER it, half hidden, and on a desktop its
+Close landed on the veil — the same fault. Fixed in the stylesheet: while a raised window is up the pop-ups stand above it, each
+in its own order (`bidpicker.css`, outside the page's wrapper).
+
+**Tier: WALK.** 1 money — no (nothing owed or counted changes: a tap reaches the pop-up it lands on). 2 published record — no.
+3 saved data — no. 4 a shared drawer — YES: the one shield every blocking Leave War window uses. 5 a gesture — YES: what a tap
+on a pop-up over a window does. 6 a new surface — no. 7 roles — no (a member opens the same viewer from his own windows; walked
+as one). 8 the warning list — no.
+
+**Rulings swept:** D1292 (a document chip opens the viewer over the window, "closed by Escape or ✕ back to it" — this fix is
+that sentence on a touch screen); the popup rule (a tap outside closes what opened last — kept: a tap outside every pop-up
+still closes the window, pinned); D641, D642 (the person window and the drag window do not block: no shield, never had the
+fault — walked); D1548, D1553 (the held day's bid window, his place); the design guide §3 (Escape closes what opened last —
+unchanged, walked). None in conflict.
+
+**The roll-call — every place the app opens the viewer over something** (R and M numbers are the walk's):
+
+| Place | Close / ✕ / surround / Escape close only the viewer | Why / how known |
+|---|---|---|
+| R1 the bid window, a whole day held (his) | has it — after the fix | a blocking window: RED before on the phone (Chromium and WebKit, all three taps), green after; the desktop green both |
+| R2 the bid window, the held half's line | has it — after the fix | the same shield: red before on the phone, green after |
+| M1 the day's list (a member on Comet's morning Other) | has it — after the fix | the same shield: red before on the phone, green after |
+| R9 a raised bid window (the person window up) | has it — after the stylesheet fix | the read's finding 1: the viewer under the window, Close on the veil — red on the desktop, green after in Chromium 1536 and WebKit 1440; on the phone the day is not reached with the person window up (pictured, `p-webkit-r9-unreachable.png`) |
+| the decision window, the remarks editor, the approved-leave note | has it — carried by the shared listener | the same chip → the same viewer → the same shield as R1; the unit test pins the shield itself; its route is R1's |
+| a bid window's own Document row (an editable chip) | MISSING — not this fix | the chip opens nothing yet — D1292's other half ("straight after it is added"); filed `[LW-DOCFIELD-CHIP-OPENS]` |
+| R5 / M2 the person window's paperclip (admin, member) | has it — before and after | the person window does not block (D641): no shield, never had the fault |
+| R7 Approvals' paperclip | has it — before and after | a page, not a window |
+| R8 the Inputs page's input window | has it — before and after | not a Leave War window |
+| the credited-OIL window, the drag window | must not — no document opener | neither opens the viewer (searched: every caller of the viewer) |
+
+**Tests, red then green.** `src/leavewar/ui/docviewer-sheet.test.tsx` (a blocking window on a touch screen, the real viewer over
+it: one tap on Close, ✕ or the surround closes the viewer only; a tap on the picture does nothing; a tap under the window still
+closes it; any pop-up's own button answers its first tap; Escape peels one at a time) — 6 of 7 red on the old shield, 7/7 after.
+`src/leavewar/ui/raisedpop-css.test.ts` (the pop-ups' layers over a raised window, the rule outside the page's wrapper) — 2 of 3
+red before the stylesheet change, 3/3 after. With the neighbours (the date calendar over a sheet, the veil, the held sheet, the
+sheets' order, the non-blocking windows, the person window): all green. The code check: no new finding.
+
+**Sizing (§7.0).** Type C, E (what a tap does over a window; a layer order). Only a walk could find: whether the real phone's tap
+reaches the viewer at each place, and what stands over what. The ledger: a shared listener's fault shows in every window that
+uses it — so every place in the roll-call, both engines on the phone, both roles. Chosen: the host alone, one script, before and
+after the fix. **Against §7.11:** lesson 4 (a press behind a window) — a tap under the window still closes it (walked and
+pinned); lesson 12 (opened from one page only) — opened from the grid, the person window, Approvals, the Inputs page; lesson 1
+(one state only) — the window raised and not raised; lesson 6 (only the real phone draws) — not a drawing: a tap, driven by real
+touches in Chromium and in WebKit. The rest cannot apply (no drag, list, pinch, box or width change).
+
+**The walk** (`scripts/handpass/lw-nb-docclose.mjs`; pictures `docs/img/handpass/2026-11-01-lw-next-batch/docclose/` after,
+`docclose-before/` the build before the fix, `docclose-r9-red/` the raised window before the stylesheet fix,
+`docclose-webkit-desk/` WebKit at 1440): **before the fix 25/35** — every blocking window red on the phone in both engines
+(the viewer still up, the window behind closed: `docclose-before/p-webkit-r1-close-3-after-one-close.png`), the desktop green;
+the raised window red on the desktop (`docclose-r9-red/d-r9-1-viewer-over-raised.png` — the viewer under the bid window, the
+veil under the Close's middle). **After: 39/39** (desktop 1536, iPhone Chromium and WebKit, admin and member) **and 9/9** (WebKit
+1440): one tap closes the viewer only, the window behind as it was (`docclose/p-webkit-r1-close-3-after-one-close.png`,
+`docclose/d-r9-1-viewer-over-raised.png` — the viewer over the raised window). No errors (the viewer's own cut-off file loads
+are not counted — it hands its file back as it closes).
+
+**The reads.** A fresh, blind Opus reader of the diff: the fix correct, no regression; **finding 1** — the raised window (above),
+reproduced on screen, fixed red first; notes: the "already up when the window opened" exception rested on a backwards premise
+(every pop-up stands above an ordinary window) — dropped, every pop-up let through; the OIL question and its kin over a window
+were eaten the same way — freed by the same fix, pinned. A fresh narrow reader of both fixes: **nothing found** (the rule
+outside the wrapper, its weight beating the base rules whatever loads first; no pop-up ever needs to stay under a raised
+window; nothing new reachable). Its note, kept: the lift is a `:has` rule — an old Safari (before 15.4) drops it and keeps the
+old order; worth a glance in a scroll-speed pass (D991).
+
+**A lesson drafted for the bug-check order's §7.11 (D1297) — for the coordinator to place (as lesson 19):**
+19. **A window opened over a window, never closed (his find on his iPhone, the document viewer, 2 Nov 26).** The night's walk
+   (H2, P2) opened the viewer from the bid window's chip and asked only that it opened; nobody pressed its Close, so the tap
+   shield of the window under it — which on a touch screen eats every tap outside that window — was never met: on his iPhone
+   Close closed the window behind and the viewer stayed. **Lesson:** every window or pop-up that opens over another is closed
+   in the walk by each of its own ways — its Close, its ✕, its own surround, Escape — on a touch screen in WebKit as well as a
+   desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
+   (`scripts/handpass/lw-nb-docclose.mjs`).
+
+`Walk: docs/handpass/2026-11-01-lw-next-batch.md §His find, 2 Nov 26 · 247 pictures · 7 places (the bid window's held day and held half, a raised bid window, the day's list, the person window, Approvals, the Inputs page's input window — desktop 1536 Chromium, desktop 1440 WebKit, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 2 fixed (the shield, red first; the raised window, red first), 1 filed (an editable Document chip opens nothing — D1292's other half)`
