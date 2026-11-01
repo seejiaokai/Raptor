@@ -112,7 +112,9 @@ test('on a desktop the opened day sits beside the month and covers no date; drag
   await expect(tid(page,'win-sansday').locator('.win-ttl')).toContainText('Tue 20 Oct')
   const bar=(await tid(page,'win-sansday').locator('.win-bar').boundingBox())!
   await page.mouse.move(bar.x+80,bar.y+12);await page.mouse.down();await page.mouse.move(bar.x-300,bar.y+200,{steps:6});await page.mouse.up()
-  await expect.poll(width).toBe(full)
+  /* to within half a pixel: from 1 Nov 26 the first reading came back 1416.00005 against 1416 (GitHub's run, with or without the
+     branch's change) — a rounding of the layout, not a width kept by the window (as inputs-calendar.spec.ts) */
+  await expect.poll(width).toBeCloseTo(full,0)
 })
 
 test('the gear: three colours and the late cut-off are saved from its window, reach the month, and survive a reload; Undo takes each back',async({page})=>{
