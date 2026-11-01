@@ -2539,9 +2539,10 @@ export function Matrix() {
       else if (Date.now() - pressedAtRef.current > 1000) pressedRef.current = null
     }
     paintInView(lit)
-    // The year in the corner: the month holding the first date in view — the first span whose right edge lies past
-    // the frozen columns' edge (a December day half under them still counts; 1 January at the edge is January).
-    const first = g.spans.findIndex(s => s.right > vl)
+    // The year in the corner: the month holding the first date in view — the first span showing more than a sliver
+    // past the frozen columns' edge (a December day half under them still counts; 1 January at the edge is January —
+    // the 2px is the rounding of a scroll position at a phone's zoom, which left December 0.5px "in view").
+    const first = g.spans.findIndex(s => s.right - vl > 2)
     if (first >= 0 && months[first]) paintYear(yearAt(months[first]!.first))
     // Which months (absolute indices, drawn or placeholder) the view is over —
     // what the fill engine's rolling target follows, and where the grid shrinks

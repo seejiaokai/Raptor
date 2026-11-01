@@ -2203,7 +2203,9 @@ touch-action: pan-x pan-y;
   display: flex;
   align-items: flex-start;
   gap: 6px;
-  width: min(640px, calc(100vw - 60px));
+  /* 760: room for twelve two-year labels ("JAN 29") on one line, as twelve single-year ones always had
+     ([LW-MONTHSTRIP-TWO-YEARS] — at 640 MAY 29 and JUN 29 wrapped onto a second line on a desktop) */
+  width: min(760px, calc(100vw - 60px));
 }
 
 .mx .mstripe .months {
@@ -2230,10 +2232,14 @@ touch-action: pan-x pan-y;
     letter-spacing: .02em;
     text-align: center;
   }
-  /* A PERIOD ACROSS TWO YEARS ([LW-MONTHSTRIP-TWO-YEARS], 2 Nov 26): its labels carry the year ("JAN 29"), and twelve
-     of them side by side ran past the right edge of an iPhone (402 wide), MAY and JUN out of view. The year stands
-     under its month, a little smaller, so each button keeps a month's width; the strip's row (44px) holds the two lines
-     with room to spare, so nothing grows. */
+}
+
+/* A PERIOD ACROSS TWO YEARS ([LW-MONTHSTRIP-TWO-YEARS], 2 Nov 26): its labels carry the year ("JAN 29"), and twelve
+   of them side by side ran past the right edge of an iPhone (402 wide), MAY and JUN out of view — and up to a narrow
+   desktop's width they wrapped onto a second line. Up to 820 wide the year stands under its month, a little smaller,
+   so each button keeps a month's width; the strip's row holds the two lines, so nothing grows. Wider, the strip's room
+   (below) holds twelve "JAN 29" on one line. */
+@media (max-width: 820px) {
   .mx .mstripe .months .mjump .mjy {
     display: block;
     font-size: 8px;
