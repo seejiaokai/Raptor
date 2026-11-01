@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1556 | 2 Nov 26 | The three drafts of the start-load trim are approved as written: the shorter AGENTS.md with its detail in a Codex-only guide, the seven passages of the always-loaded rule files moved whole to the homes named, and the two lines naming the new screen-design rulings area — each move read by one fresh reader for meaning, live on his "merge live". |
 | D1554 | 1 Nov 26 | What a chat loads at its start is trimmed again, never anything a job reads (D68): the every-chat rulings a later one restates in full archived, the screen-design rulings moved to a file loaded only for screen work, the Codex guide shortened; and after an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff. |
 | D1551 | 31 Oct 26 | Whenever he asks for a feature or one is designed, the agent says at once if it cannot be done — or only differently, or with a paid licence or the IT side — on the platform the app is moving to (a Power Apps code app on Dataverse, on his M365 — D1532, D1536), so he can skip it before work is spent. |
 | D1540 | 31 Oct 26 | The project's own secrets scan becomes a required check on `main`: a pull request cannot merge until the scan has passed; he switches it on himself in GitHub's settings, from the steps the agent gives him. |

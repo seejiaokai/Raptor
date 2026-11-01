@@ -115,6 +115,8 @@ awake). The document check does not require them to name the new area, so nothin
 
 ## 3. What he decides
 
+**Answered 2 Nov 26 — his D1556, "Yes all three": (a), (b) all rows and (c) approved as written.** (4), his "merge live", still his.
+
 1. Approve the shorter `AGENTS.md` and its Codex-only guide — recommended: yes.
 2. Approve the moves in (b), all or row by row — recommended: all.
 3. Approve the two area-list lines in (c) — recommended: yes.
