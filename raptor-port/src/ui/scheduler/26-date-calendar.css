@@ -197,7 +197,10 @@ button.datebox:disabled{opacity:.55;cursor:default}
 .mjt{display:inline-flex;flex-direction:row;align-items:center;justify-content:center;gap:4px;box-sizing:border-box;background:none;border:0;border-radius:8px;
   margin:0;cursor:pointer;-webkit-tap-highlight-color:transparent;overflow:hidden}
 .mjt .mjt-w{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:clip}
-.mjt::after{content:'\25BE';flex:0 0 auto;font-size:10px;line-height:1;color:var(--accent)}
+.mjt .mjt-t{display:block;white-space:nowrap}
+.mjt .mjt-t::after{content:'\25BE';display:inline-block;margin-left:4px;font-size:10px;line-height:1;vertical-align:middle;color:var(--accent)}
 .mjt.is-open{color:var(--accent)}
-.mjt:hover .mjt-w{color:var(--accent)}
+/* hover only where there is a mouse: an iPhone keeps a tapped control "hovered" until the next tap, so the closed title
+   would stay cyan and read as still open (the bug-check order's 7.10) */
+@media (hover:hover){.mjt:hover .mjt-w{color:var(--accent)}}
 .mjt:focus-visible{outline:2px solid var(--accent);outline-offset:1px}

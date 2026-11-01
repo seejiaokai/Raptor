@@ -65,9 +65,10 @@ export function MonthJump(p: {
         onClick={e => { if (open) close(); else { setOpen(true); if (e.detail > 0) standPatch({ x: e.clientX, y: e.clientY }); else dropPatch() } }}
       >
         {/* data-fit on a desktop: the words' room is the widest month in the device's own font, so › stays put (D1122);
-            the phone keeps its own fixed width (D705). The ▾ after them is the stylesheet's (`.mjt::after`): the title's
-            words stay the month's name alone */}
-        <span className="mjt-w" data-fit={p.short ? undefined : MONTHS.map(n => `${n} ${p.y}`).join('\n')}>{words}</span>
+            the phone keeps its own fixed width (D705). The ▾ right after the words is the stylesheet's (`.mjt-t::after`),
+            so the two stay together, centred in the room as the drawing has them, and the title's words stay the month's
+            name alone; the room is measured with it (a no-break space and the ▾ after each name) */}
+        <span className="mjt-w" data-fit={p.short ? undefined : MONTHS.map(n => `${n} ${p.y}\u00a0\u25be`).join('\n')}><span className="mjt-t">{words}</span></span>
       </button>
       {open && createPortal(
         <Layer

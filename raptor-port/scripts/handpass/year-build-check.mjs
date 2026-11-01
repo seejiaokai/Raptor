@@ -93,7 +93,7 @@ async function calendars(dev) {
   const row = () => P.evaluate(() => {
     const t = document.querySelector('.ic-mon'); const w = t.querySelector('.mjt-w')
     const r = id => Math.round(document.querySelector(id).getBoundingClientRect().left)
-    return { prev: r('#icPrev'), next: r('#icNext'), today: r('#icToday'), title: Math.round(t.getBoundingClientRect().width), words: t.textContent, cut: w.scrollWidth > w.clientWidth + 1, arrow: getComputedStyle(t, '::after').content, top: t.getBoundingClientRect().top }
+    return { prev: r('#icPrev'), next: r('#icNext'), today: r('#icToday'), title: Math.round(t.getBoundingClientRect().width), words: t.textContent, cut: w.scrollWidth > w.clientWidth + 1, arrow: getComputedStyle(t.querySelector('.mjt-t'), '::after').content, top: t.getBoundingClientRect().top }
   })
   const r0 = await row()
   check(r0.arrow.includes('▾'), `${dev}: the Inputs title wears the ▾ (${r0.arrow})`)

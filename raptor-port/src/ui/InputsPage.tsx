@@ -604,7 +604,7 @@ export function InputsPage() {
       <button type="button" className="abtn ic-ga" tabIndex={-1}>‹</button>
       {/* the title's copy as the title is drawn (ui/MonthJump.tsx — its words' room and its ▾, D1562), so the switch keeps
           its place; a span, not a button, as it is never pressed */}
-      <span className="ic-mon mjt"><span className="mjt-w" data-fit={MONTHS.map(m => `${m} ${ghostYear}`).join('\n')}>{MONTHS[0]} {ghostYear}</span></span>
+      <span className="ic-mon mjt"><span className="mjt-w" data-fit={MONTHS.map(m => `${m} ${ghostYear}\u00a0\u25be`).join('\n')}><span className="mjt-t">{MONTHS[0]} {ghostYear}</span></span></span>
       <button type="button" className="abtn ic-ga" tabIndex={-1}>›</button><button type="button" className="abtn ic-gt" tabIndex={-1}>Today</button>
     </div>
   )
