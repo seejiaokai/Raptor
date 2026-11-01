@@ -112,6 +112,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): his pick A (D1565) — IN HAND on `claude/lw-input-range-whole-02fa06`.
 - [LW-OWN-ROW-SELMARK] — on his own Leave War row the day he taps does not show as picked: the mark is his row’s own cyan (D1568) — drawn for him first, built on the same branch.
 - [NO-PAGE-ZOOM] — on a phone only the grids zoom, never the page (D1567) — its own job and branch.
+- [INPCAL-HOLD-FLAKE] — the Inputs calendar’s held-finger browser test fails on `main`’s own code (found 2 Nov 26).
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -274,6 +275,14 @@ that zoom by their own pinch (the Leave War grid and OIL tab, Quals, the Schedul
 stop the page zoom app-wide on a phone (Safari ignores the old "no zoom" page setting, so it needs the touch handling as well),
 check every grid’s own pinch still works on his iPhone’s WebKit, and that no screen needs page zoom to be read. **Place:** its own
 job and branch from `main`.
+
+### [INPCAL-HOLD-FLAKE] The Inputs calendar's held-finger browser test fails on main's own code (found 2 Nov 26)
+**What:** `e2e/inputs-calendar.spec.ts` "a finger held on a date, then dragged, picks the run…" failed twice in GitHub's run of
+pull request 612 (the first hold: 20 Oct never lit) and fails on his PC at the SECOND hold (after the window's ✕), with the
+branch's changed files put back to `main`'s — so it is not that change; `main`'s own run passed it at 21:24 on 1 Nov 26. A
+clock held at 1 or 2 Nov changes nothing on his PC. **To do:** find what the second hold waits on (the window's ✕ tap, the
+hold timer) and make the test wait on that, not on time (D87); check on GitHub. **Place:** with the next Inputs calendar job,
+or at once if it keeps a pull request red.
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a

@@ -9,9 +9,14 @@ import { lwRole, openLeaveWar } from './app'
 
 const T = (id: string) => `[data-testid="${id}"]`
 
+/* LETTERS OF ARIAL'S WIDTHS ON EVERY MACHINE, as the whole-leave test does (e2e/wholeleave-leavewar.spec.ts): close to Apple's on
+   his iPhone, and the same on this PC and GitHub's Linux machines (Liberation Sans) — so "one line at his phone's width" is
+   asserted outright; with Linux's own wider letters the two chips go to the next line together (GitHub's first run, 2 Nov 26) */
+const ARIAL = '#page-leavewar, #page-leavewar * { font-family: Arial, "Liberation Sans", sans-serif !important }'
 test.beforeEach(async ({ page }) => {
   await openLeaveWar(page)
   await lwRole(page, 'admin')
+  await page.addStyleTag({ content: ARIAL })
   const v = page.viewportSize()
   if (v && v.width < 500) await page.setViewportSize({ width: 402, height: 874 })   // his iPhone
 })

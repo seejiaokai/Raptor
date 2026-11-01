@@ -4038,7 +4038,7 @@ export function leaveRunAt(personId: string, date: string): LeaveRun | null {
   }
 }
 
-/* ---- AN ENTRY OF SEVERAL DAYS FILED ON THE INPUTS PAGE, OPENED WHOLE (his D1563, D1565 — 2 Nov 26; [LW-INPUT-RANGE-WHOLE])
+/* ---- AN ENTRY OF SEVERAL DAYS FILED ON THE Inputs PAGE, OPENED WHOLE (his D1563, D1565 — 2 Nov 26; [LW-INPUT-RANGE-WHOLE])
    A tap on a day held whole by ONE entry filed on the Inputs page (the bid window's held day, D1548 — the grid has already
    checked that the day holds nothing else, so a day also holding a second entry opens the day's list, as D1466 has it)
    opens the window on that entry's days: the days in a row holding the same Input (its id), within the period holding the
