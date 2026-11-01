@@ -62,7 +62,7 @@ member's corner and title alike.
 phone matches cal-1 (A); the desktop card sits under the title as cal-2 (A) draws it. One difference found and put back
 while building: on a desktop the ▾ stood at the far end of the title's room, away from the words; now the two are centred
 together as drawn. **Not run: the formal drawing-check tool** (`scripts/drawcheck/`) — the year drawings have no part list
-or recorded drawing yet; the comparison was by the measures above and by eye, side by side. Filed for him to rule.
+or recorded drawing yet; the comparison was by the measures above and by eye, side by side. Filed for him to rule — **his D1566 (2 Nov 26, "As recommended"): the measured comparison stands in place of the tool for these three parts, a one-off.**
 
 Pictures: `docs/img/handpass/2026-11-02-year-build/` (the measures) and `…/walk/` (the walk).
 
