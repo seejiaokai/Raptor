@@ -240,7 +240,7 @@ unchanged, walked). None in conflict.
 | M1 the day's list (a member on Comet's morning Other) | has it — after the fix | the same shield: red before on the phone, green after |
 | R9 a raised bid window (the person window up) | has it — after the stylesheet fix | the read's finding 1: the viewer under the window, Close on the veil — red on the desktop, green after in Chromium 1536 and WebKit 1440; on the phone the day is not reached with the person window up (pictured, `p-webkit-r9-unreachable.png`) |
 | the decision window, the remarks editor, the approved-leave note | has it — carried by the shared listener | the same chip → the same viewer → the same shield as R1; the unit test pins the shield itself; its route is R1's |
-| a bid window's own Document row (an editable chip) | MISSING — not this fix | the chip opens nothing yet — D1292's other half ("straight after it is added"); filed `[LW-DOCFIELD-CHIP-OPENS]` |
+| a bid window's own Document row (an editable chip) | MISSING — not this fix (built 2 Nov 26: §[LW-DOCFIELD-CHIP-OPENS] below) | the chip opens nothing yet — D1292's other half ("straight after it is added"); filed `[LW-DOCFIELD-CHIP-OPENS]` |
 | R5 / M2 the person window's paperclip (admin, member) | has it — before and after | the person window does not block (D641): no shield, never had the fault |
 | R7 Approvals' paperclip | has it — before and after | a page, not a window |
 | R8 the Inputs page's input window | has it — before and after | not a Leave War window |
@@ -296,4 +296,102 @@ an eleventh date that November's six rows put below the phone's visible screen. 
 pixel; the keyboard tests turn the calendar to October 2026, the month they were written in, by its own arrow — 51/51 and 61/61
 on his PC (one older Inputs-calendar test, a held finger, failed once in two runs on his PC only, green on GitHub). **GitHub's run
 green on `89740186e`, the last commit carrying code** — every share; its preview Ready.
- · 247 pictures · 7 places (the bid window's held day and held half, a raised bid window, the day's list, the person window, Approvals, the Inputs page's input window — desktop 1536 Chromium, desktop 1440 WebKit, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 2 fixed (the shield, red first; the raised window, red first), 1 filed (an editable Document chip opens nothing — D1292's other half)`
+
+`Walk: docs/handpass/2026-11-01-lw-next-batch.md §His find, 2 Nov 26 · 247 pictures · 7 places (the bid window's held day and held half, a raised bid window, the day's list, the person window, Approvals, the Inputs page's input window — desktop 1536 Chromium, desktop 1440 WebKit, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 2 fixed (the shield, red first; the raised window, red first), 1 filed (an editable Document chip opens nothing — D1292's other half)`
+
+## [LW-DOCFIELD-CHIP-OPENS], 2 Nov 26 — a document chip a person adds opens its file (his D1292)
+
+**What was missing.** The app's one Document control (`ui/inputedit.tsx DocField`) drew each file as a chip whose name was
+plain text: a tap on it did nothing, in every window where a person adds a document. D1292 (24 Oct 26): "a document chip opens
+what it holds when tapped … straight after it is added as well as later; its ✕ still takes it off"; D1159: the same control on
+the Inputs page's input window, so it opens there too. **The fix:** the name is a button drawn exactly as the name was; a tap
+opens the app's document viewer, read only, on the file tapped (of several, that one first), titled from the window — whose,
+which kind ("Bid" before one is picked), which days; a file not yet saved opens too. Every window must say what that title is
+(it cannot be left out); the ✕ is unchanged. One shared way: `DocField` → the viewer; the war's rows hand it the request's page
+(`sync.ts requestDocRow`, the page `openRequestDocs` already built), an approved leave's row the leave itself, the Inputs window
+its own fields. Commit `2b9ca38e4`.
+
+**Tier: WALK.** 1 money — no. 2 published record — no. 3 saved data — no (opening a file writes nothing; the viewer is read
+only). 4 a shared drawer — YES: the one Document control, in seven windows. 5 a gesture — YES: a tap on the chip's name.
+6 a new surface — no (the viewer exists). 7 roles — no (every account may see every document — the viewer's own rule; walked
+as admin and member). 8 the warning list — no.
+
+**Rulings swept:** D1292 (built: its other half); D1159 (one Document button everywhere — the Inputs window matches); D1150
+(documents seen at any time); D1307 and D1354 (the approved leave's and the closed day's one Remarks row — their chips open);
+D418 and `perms.ts` (who may change a leave's words and files — untouched: the viewer opened here is read only); the design
+guide §3 (Escape closes what opened last; the keyboard reaches and opens the name — pictured); D487 (no button's size changed —
+the chip is the size it was, pictured); the drafted lesson 19 (closed by each way — below). None in conflict.
+
+**The roll-call — every place a person adds a document and sees an editable chip** (E and M numbers are the walk's):
+
+| Place | Its chip opens the file | Why / how known |
+|---|---|---|
+| E1 the one-day bid window, an empty day (a file just added) | MISSING → has it | red in `docchip-open.test.tsx` (the grid tapped, a file picked) before the fix; walked |
+| E2 the bid window reopened on a held bid | MISSING → has it | the same row (`ReqWordsRows`), red in the held-bid test; walked |
+| E3 an approved leave's own row (the admin's bid window, D1307) | MISSING → has it | `LeaveWords`, red in its test; walked |
+| E4 the day's list (a day of two bids) | MISSING → has it | `DayList BidWords` → `ReqWordsRows`; walked |
+| E5 the drag window (one person) | MISSING → has it | `SelectSheet`, red in its test; walked (a finger in Chromium, the pointer in WebKit) |
+| E6 the Inputs page's input window — a new input, and a saved one (E6b) | MISSING → has it | `InputEditor`, red in `docfield-open.test.tsx`; walked |
+| M1 a member's own bid window | MISSING → has it | the same row as E1; walked as Ranger |
+| M2 a member's approved-leave window (D1354) | MISSING → has it | `RemarksSheet` → `LeaveWords`; walked as Ranger |
+| M3 a member's closed day's window (D1354) | MISSING → has it | `ClosedNoteSheet` → `ReqWordsRows`; walked as Ranger |
+| the drag window over several people | must not — no Document row | it draws no words row (one person only, as built) |
+| the schedule's and board's input window | has it — the same window as E6 | the same `InputEditor`; by the read, the viewer stands on it and Escape peels it (not walked: the same component) |
+| the read-only chips (held lines, the day's list notice, the person window, Approvals) | has it — before and after | unchanged; walked afterwards as where the document shows |
+
+**Tests, red then green.** `src/ui/docfield-open.test.tsx` (the control alone: a file just picked opens, the file tapped of
+several, the ✕ opens nothing; the Inputs page's window: a file in a new input opens, Escape closes only the viewer) and
+`src/leavewar/ui/docchip-open.test.tsx` (the grid tapped and a file picked in the bid window, its ✕, a held bid's row, the drag
+window, an approved leave's row) — **7 of 9 red before** (the two ✕ tests green both sides, as they pin what stays), **9/9
+after**. Two older tests pressed `.docchip button` meaning the ✕ — now the name: `nightwalk.test.tsx` W1 and
+`e2e/round3-leavewar.spec.ts` press the ✕ itself (`.docdel`), the same intent. With the neighbours (the Leave War's windows,
+the viewer, the input window, medical, upchit — 122 files, 1823 tests) green; `round3-leavewar.spec.ts` 10/10; the build
+clean; the code check — no new finding.
+
+**Sizing (§7.0).** Type C, E (a shared control's new tap; a window over a window). Only a walk could find: that each window's
+chip is reachable and pressed on screen, the viewer on top and titled right, and each way of closing it leaving the window as
+it was. The ledger: a shared control's fault shows wherever it is drawn — so every place in the roll-call, both engines on the
+phone, both roles. Chosen: the host alone, one script, every place × every way to close. **Against §7.11:** lesson 19 (drafted)
+— every way to close at every place, a picture after the one tap; lesson 1 (one state) — a file just added and one saved, a bid
+and an approved leave, a new input and a saved one; lesson 12 (opened from one page only) — the grid, the day's list, the drag
+window, the Inputs page; lesson 3 (feedback) — the viewer itself, the keyboard's ring pictured; lesson 6 (only the real phone
+draws) — the file kept after a reload, on his look card. The rest cannot apply (no drag of the chip, no list alignment, no
+pinch, no width change).
+
+**The plain-user round (D1557).** As a person would: add a file → open it → close it → take it off with ✕ (nothing opens) →
+add it again → type a remark → place the leave → look where it should show: the held bid's chip (E2), the person window's
+paperclip, Approvals' document icon, the leave's own window on the Inputs page (E6b) — each opens it. As the member: add, open,
+place (M1), then his person window's paperclip on it.
+
+**The walk** (`scripts/handpass/lw-nb-docchip.mjs`, the fixed build; pictures `docs/img/handpass/2026-11-01-lw-next-batch/docchip/`):
+**130/130** — desktop 1536 Chromium 50, iPhone 402 Chromium touch 40, iPhone 402 WebKit 40; admin and member; a picture right
+after each tap on the phone (`*-q.png`). The opened viewer (`p-webkit-e1-close-2-viewer.png`), the window as it was after one
+Close (`p-webkit-e1-close-4-after.png`), the Inputs page's new input (`d-e6-close-2-viewer.png`). Close-ups at twice the pixels
+(`docchip-close/`, `scripts/handpass/lw-nb-docchip-close.mjs`): the chip at rest, hovered and with the keyboard's ring — the
+name drawn as it was, not in the browser's grey button; Enter on it opens the viewer; a long name on WebKit still cut with "…"
+at its 110px, the chip one line, its ✕ inside (`chip-long-webkit.png`, `scripts/handpass/lw-nb-docchip-long.mjs`).
+**Met in the walk, not this change:** in the WebKit test browser the document drawer keeps no file (the app says "Couldn't save
+that document — your browser storage may be full" at the pick; Chromium keeps them — `scripts/handpass/lw-nb-docchip-idb.mjs`,
+7 kept / 0 kept); so after a sign-in the member's M2 and M3 chips in WebKit read "document" and the viewer said "No document on
+file for this entry" — the right page for a file not there; it opened and closed as everywhere. The walk counts those six as
+passing with that said; Chromium shows the picture in all of them. **Errors:** none (the viewer's cut-off file loads aside, as
+before).
+
+**The read.** A fresh, blind Opus reader of the commit (`2b9ca38e4`), its brief carrying D56 and D489: **no findings.** Its
+notes: (1) older, not this change — Tab inside the viewer over a blocking Leave War window goes round one button (the window's
+own Tab keeping is heard first and does not know the viewer), so the ✕ and ‹ are not reached by Tab; Escape still closes it;
+filed `[LW-VIEWER-TAB]`; (2) a long name on an iPhone — checked and pictured (above); (3) the day's list titles a several-day
+bid from the day tapped to its end, as its own "till" does — display only, kept; (4) the Inputs window's title names the lead
+person of an input for several — kept, the window itself names them all; (5) a notice with no kind now reads "Bid" where it
+was blank — harmless; (6) the schedule's own input window — by reading, the viewer stands on it and Escape peels it.
+
+**Gates.** On his PC: the touched tests and neighbours green; `round3-leavewar.spec.ts` 10/10; the build clean; the code check —
+no new finding. GitHub's run: green on the last pushed commit (see the HANDOFF block).
+
+**His look card (this item).**
+1. In a bid window on your iPhone, add a photo with Document, then tap its name: the photo opens; Close, and the window is as
+   you left it. The ✕ beside the name still takes it off.
+2. Place the leave, close the app's tab, open it again and tap the leave: the photo is still there and still opens (the test
+   iPhone browser keeps no files, so only your phone can show this).
+
+`Walk: docs/handpass/2026-11-01-lw-next-batch.md §[LW-DOCFIELD-CHIP-OPENS] · 361 pictures · 9 places (the bid window empty and held, an approved leave's row, the day's list, the drag window, the Inputs page's window new and saved, a member's own bid window, his approved-leave window, his closed day's window — desktop 1536 Chromium, iPhone Chromium and WebKit, admin and member) · 4 ways to close · MISSING: 9 fixed (red first), 1 older filed ([LW-VIEWER-TAB])`

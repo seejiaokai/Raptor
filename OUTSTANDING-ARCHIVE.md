@@ -7283,3 +7283,9 @@ changes its days, not whether it was approved, and he can still delete it. If ye
 `moveRecordsProblem` ask `postingOutWhy` for each landing day, the restore refusal's Redo of a move follows, and the walk's
 DP6 / DP10 change their expected lines. **Place:** a question, nothing waits on it.
 
+
+*Moved here 2026-11-01 by backlog-archive.mjs ([LW-DOCFIELD-CHIP-OPENS]). Forward facts: `raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`.*
+
+### [LW-DOCFIELD-CHIP-OPENS] A bid window's own Document chip opens the file (his D1292 — the half not built; found 2 Nov 26)
+**What:** D1292 (24 Oct 26): in the Leave War's windows a document chip opens what it holds when tapped, in the app's document viewer — "straight after it is added as well as later; its ✕ still takes it off". The read-only chips (a held day's line, the day's list, the person window, Approvals) open it since M4; the EDITABLE chips of a bid window's own Document row (`raptor-port/src/ui/inputedit.tsx` `DocField`, used by `leavewar/ui/ReqWords.tsx`) do not: a tap on "leave-note.pdf ✕" does nothing (walked 2 Nov 26 — `scripts/handpass/lw-nb-docclose.mjs`, the bid window reopened on Ranger's placed LL). D1292's full row placed it "with the M3 follow-up"; the M3 sheet left it for his look, the M4 sheet named it D1292's own job under [LW-PICK-HELD-MARK], and that item no longer carries it. **To do:** the chip's name opens the viewer on the file (a file not yet saved too), its ✕ unchanged; the same `DocField` sits in the Inputs page's input window — whether its chips open too is D1159's (one Document button everywhere) and goes with it. **Place:** the next Leave War batch; a WALK (the viewer over the window, closed by each way — the lesson drafted 2 Nov 26).
+
