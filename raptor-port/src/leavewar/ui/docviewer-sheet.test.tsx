@@ -79,6 +79,27 @@ describe('the document viewer opened over a Leave War window, on a touch screen'
     expect(onClose).not.toHaveBeenCalled()
     pop.remove()
   })
+  /* TAB GOES ROUND THE VIEWER, NOT THE WINDOW BEHIND ([LW-VIEWER-TAB], found by the doc-chip read, 2 Nov 26). The window's own
+     Tab keeping was heard first and pulled the keys into the window; the viewer's then pulled them back to its first button —
+     so every Tab landed on Close and its ✕ was never reached. The window now leaves Tab to a keyboard-holding window opened
+     over it, as its Escape already did. */
+  const tab = (shift = false) => act(() => { fireEvent.keyDown(document.activeElement ?? document, { key: 'Tab', shiftKey: shift }) })
+  it('Tab inside the viewer goes Close → ✕ → Close, never into the window behind', () => {
+    act(() => { $('#docViewDone').focus() })
+    tab()
+    expect(document.activeElement, 'Tab from Close reaches the ✕').toBe($('#docViewClose'))
+    tab()
+    expect(document.activeElement, 'Tab from the ✕ goes round to Close').toBe($('#docViewDone'))
+    tab(true)
+    expect(document.activeElement, 'Shift+Tab from Close goes to the ✕').toBe($('#docViewClose'))
+    expect(screen.getByTestId('chip').contains(document.activeElement)).toBe(false)
+  })
+  it('with the viewer closed, Tab is held inside the window again', () => {
+    act(() => { tap($('#docViewDone')) })
+    act(() => { (document.body as HTMLElement).focus() })
+    tab()
+    expect(screen.getByTestId('bid-picker').contains(document.activeElement), 'Tab from outside comes back into the window').toBe(true)
+  })
   it('Escape closes the viewer first, the window only on a second press', () => {
     act(() => { fireEvent.keyDown(document.activeElement ?? document, { key: 'Escape' }) })
     expect(DOCVIEW).toBeNull()

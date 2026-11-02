@@ -1,0 +1,334 @@
+[
+ {
+  "id": "K1 the bid window, a day held whole (Gambit 23 Jul) — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "stops: docViewDone · docViewClose · docViewDone · docViewClose · docViewDone · docViewClose · ⇧docViewDone · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "k-k1-1-tab.png",
+   "k-k1-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K1 the bid window, a day held whole (Gambit 23 Jul) — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "viewer closed; window behind up; four Tabs: in in in in",
+  "pics": [
+   "k-k1-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "K2 the bid window's own Document row, two files (the pager) — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "stops: docViewNext · IFRAME · docViewDone · docViewClose · docViewNext · IFRAME · ⇧docViewNext · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "k-k2-1-tab.png",
+   "k-k2-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K2 the bid window's own Document row, two files (the pager) — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "viewer closed; window behind up; four Tabs: in in in in",
+  "pics": [
+   "k-k2-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "K3b the person window, a leave line's paperclip (Ranger 7 Apr) — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "stops: docViewDone · docViewClose · docViewDone · docViewClose · docViewDone · docViewClose · ⇧docViewDone · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "k-k3b-1-tab.png",
+   "k-k3b-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K3b the person window, a leave line's paperclip (Ranger 7 Apr) — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1536/chromium",
+  "verdict": "FAIL",
+  "said": "viewer closed; window behind up; four Tabs: OUT(142RAPTOREdit ) OUT(Edit Schedule) OUT(View-only Sche) OUT(Inputs)",
+  "pics": [
+   "k-k3b-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "K4 Ranger's own bid reopened, its Document chip — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "stops: docViewDone · docViewClose · docViewDone · docViewClose · docViewDone · docViewClose · ⇧docViewDone · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "k-k4-1-tab.png",
+   "k-k4-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K4 Ranger's own bid reopened, its Document chip — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "viewer closed; window behind up; four Tabs: in in in in",
+  "pics": [
+   "k-k4-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "K-errors",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "K1 the bid window, a day held whole (Gambit 23 Jul) — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "stops: docViewDone · docViewClose · docViewDone · docViewClose · docViewDone · docViewClose · ⇧docViewDone · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "w-k1-1-tab.png",
+   "w-k1-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K1 the bid window, a day held whole (Gambit 23 Jul) — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "viewer closed; window behind up; four Tabs: in in in in",
+  "pics": [
+   "w-k1-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "K2 the bid window's own Document row, two files (the pager) — Tab and Shift+Tab stay in the viewer, every stop reached",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "stops: docViewNext · IFRAME · docViewDone · docViewClose · docViewNext · IFRAME · ⇧docViewNext · ⇧docViewClose · ⇧docViewDone",
+  "pics": [
+   "w-k2-1-tab.png",
+   "w-k2-2-shift-tab.png"
+  ]
+ },
+ {
+  "id": "K2 the bid window's own Document row, two files (the pager) — Escape closes the viewer only; the window behind holds Tab again",
+  "size": "desk 1440/webkit",
+  "verdict": "PASS",
+  "said": "viewer closed; window behind up; four Tabs: in in in in",
+  "pics": [
+   "w-k2-3-after-escape-tab.png"
+  ]
+ },
+ {
+  "id": "W-errors",
+  "size": "desk/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-chromium-390-open-dates-0-open.png",
+   "x-chromium-390-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-390-open-dates-2-tap-q.png",
+   "x-chromium-390-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-chromium-390-events-sheet-0-open.png",
+   "x-chromium-390-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-390-events-sheet-2-tap-q.png",
+   "x-chromium-390-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-chromium-360-open-dates-0-open.png",
+   "x-chromium-360-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-360-open-dates-2-tap-q.png",
+   "x-chromium-360-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-chromium-360-events-sheet-0-open.png",
+   "x-chromium-360-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-360-events-sheet-2-tap-q.png",
+   "x-chromium-360-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-webkit-390-open-dates-0-open.png",
+   "x-webkit-390-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-390-open-dates-2-tap-q.png",
+   "x-webkit-390-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-webkit-390-events-sheet-0-open.png",
+   "x-webkit-390-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-390-events-sheet-2-tap-q.png",
+   "x-webkit-390-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-webkit-360-open-dates-0-open.png",
+   "x-webkit-360-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-360-open-dates-2-tap-q.png",
+   "x-webkit-360-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 44px; area paints nothing",
+  "pics": [
+   "x-webkit-360-events-sheet-0-open.png",
+   "x-webkit-360-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-360-events-sheet-2-tap-q.png",
+   "x-webkit-360-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "D1 the floating \"Open for bidding\" window on a desktop: its ✕ as before, no wider area",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "full page false; ✕ 19 × 17; its centre is the ✕; 14px off is not the ✕",
+  "pics": [
+   "d-open-dates-floating.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

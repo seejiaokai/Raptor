@@ -3119,3 +3119,33 @@ reset mode disables before reusing it.
 **Suggested improvement:** either strip comments in the guard's NAMES test as its other tests already do (`code()`), or a line in the coding conventions: never write the word INPUTS in capitals in a comment.
 
 **Principle:** A source-scanning guard that strips comments in some checks and not others will trip on prose; make it consistent.
+
+### Observation 768: A walk script's "holds Tab" expectation applied to a window that, by ruling, never holds the keyboard
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** the WALK of [LW-VIEWER-TAB] (the document viewer over Leave War windows), a side session continuing a handed-off task
+**Skill:** New skill candidate: walk-script authoring (docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** writing a walk's expected lines from a roll-call
+
+**Issue:** The walk asked every window the viewer opens over to "hold Tab again" once the viewer closed. One of them (the person window) is a non-blocking window that by an owner ruling never holds the keyboard, so the first run reported a FAIL that was the script's own premise. The roll-call had a "holds Tab?" column only after the failure, not before.
+
+**Suggested improvement:** When a walk's expected line rides on a property that varies by surface (blocking or not, a role, a size), the roll-call gets that property as its own column BEFORE the script is written, and each expected line reads it from the column.
+
+**Principle:** An expectation that differs per surface belongs in the roll-call as a column, decided per row before the script runs; a uniform expectation across mixed surfaces manufactures false failures.
+
+### Observation 769: Handing a task to a new session while its branch is still checked out in the old worktree
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** a forked side session continuing [LW-VIEWER-TAB] from another worktree
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** picking up a handed-off branch in a fresh worktree
+
+**Issue:** The new worktree could not check out the task's branch because the original session's worktree still held it. Fast-forwarding the new worktree's own branch to the commit, renaming it, and setting its upstream to the remote branch worked (pushes then land on the right remote branch), but nothing in the hand-off said to do it.
+
+**Suggested improvement:** The hand-off's remaining plan, when the outgoing session cannot release its branch first, names the recipe: fast-forward the new worktree's branch to the task's commit and set its upstream to `origin/<task-branch>` (checking `branch.<b>.merge` is not `main`).
+
+**Principle:** A hand-off between two checkouts of one repository either releases the branch first or tells the receiver how to work on it from a second checkout.
