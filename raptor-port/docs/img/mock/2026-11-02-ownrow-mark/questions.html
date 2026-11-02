@@ -1,0 +1,70 @@
+<title>Own-row picked day</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one narrow reading column — what to look at now first, then the pictures of the built app, full width, tap to zoom. Dark only, like the app. */
+:root {
+  --bg: #0b0f14; --panel: #131a22; --fg: #e8edf2; --muted: #9aa6b2; --accent: #3bc6e8; --line: #24303c; --rec: #8fd18f;
+  --f-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color-scheme: dark;
+}
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--f-ui); }
+.wrap { max-width: 980px; margin: 0 auto; padding-block: 20px 48px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 20px; }
+h1 { font-size: 22px; margin: 0; text-wrap: balance; }
+h2 { font-size: 17px; margin: 0; text-wrap: balance; }
+p { margin: 0; max-width: 65ch; }
+.muted { color: var(--muted); }
+.now { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; display: grid; gap: 8px; }
+.now ol { margin: 0; padding-left: 20px; display: grid; gap: 8px; }
+.link { word-break: break-all; }
+.rec { color: var(--rec); font-weight: 600; }
+section { display: grid; gap: 10px; }
+.pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; }
+figure { margin: 0; display: grid; gap: 6px; min-width: 0; }
+figure a { display: block; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+figure img { display: block; width: 100%; height: auto; }
+figcaption { color: var(--muted); font-size: 13px; }
+a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+<div class="wrap">
+  <h1>Ready for your look: Inputs entries open whole, and your own row</h1>
+
+  <div class="now">
+    <h2>What to do now</h2>
+    <ol>
+      <li>On your iPhone, open the preview and go to the Leave War, July:<br><a class="link" href="https://raptor-git-claude-lw-input-range-whole-02fa06-kai-e2f5.vercel.app" target="_blank" rel="noopener">raptor-git-claude-lw-input-range-whole-02fa06-kai-e2f5.vercel.app</a></li>
+      <li>Tap any day of Quill’s OML (6–9 Jul). The window should say “6–9 Jul”, mark all four days, and show “All 4 days” beside the day you tapped.</li>
+      <li>Tap any empty day on your own row (Saber). The day should now stand out clearly.</li>
+      <li>If both look right, say <b>“merge live”</b>. <span class="rec">Recommended.</span></li>
+    </ol>
+  </div>
+
+  <section>
+    <h2>What changed</h2>
+    <p>An entry of several days filed on the Inputs page now opens whole, like leave placed on the Leave War: its dates in the title, its days marked, and “All 4 days” or the day you tapped. On “All”, Grant OIL gives OIL on every day of it, and a course, an overseas duty or anything in the ⋯ is filed over every day. The entry itself is still changed on the Inputs page.</p>
+    <p>On your own row, the days a window acts on now wear a stronger cyan fill and ring, so they no longer disappear into your row’s cyan (your pick A).</p>
+  </section>
+
+  <section>
+    <h2>The built app, on your iPhone’s size</h2>
+    <div class="pair">
+      <figure><a href="walk-P1.png" target="_blank" rel="noopener"><img src="walk-P1.png" alt="Quill's OML of 6 to 9 July opened whole on an iPhone: the title 6–9 Jul, four days marked, All 4 days beside Tue 7"></a>
+        <figcaption>Quill’s OML, Tue 7 tapped: “6–9 Jul”, all four days marked, “All 4 days” / “Tue 7”.</figcaption></figure>
+      <figure><a href="walk-M1.png" target="_blank" rel="noopener"><img src="walk-M1.png" alt="Saber's own row with a three-day course opened whole, its days in the stronger cyan mark"></a>
+        <figcaption>Your own row: a three-day course opened whole, its days in the stronger mark.</figcaption></figure>
+    </div>
+    <figure><a href="walk-U3.png" target="_blank" rel="noopener"><img src="walk-U3.png" alt="The OIL tracker showing Quill with four credits of one day each, 6 to 9 July"></a>
+      <figcaption>Grant OIL on “All 4 days”: the OIL tracker shows Quill +4, one day on each of 6–9 Jul. One Undo takes all four back.</figcaption></figure>
+  </section>
+
+  <section>
+    <h2>How it was checked</h2>
+    <p>A full bug check, because Grant OIL now reaches several days at once: new tests (13 of 15 failed on the old app first), the Leave War’s 400 browser tests on a phone and a desktop, a walk of the running app (37 of 37 steps passed, on your iPhone’s size and a desktop, as an admin and a member), and a fresh reader of the code, who found nothing to fix.</p>
+    <p class="muted">One older test of the Inputs calendar (a finger held on a date) fails on the live app’s own code too; it is filed to fix separately and is not caused by this change.</p>
+  </section>
+
+  <section>
+    <h2>Next, once this is live</h2>
+    <p>Your zoom request: on a phone only the grids zoom, never the page. It is recorded and filed as its own job. Your weekly allowance was at 94%, so it is likely to wait for the reset (about 1 am).</p>
+  </section>
+</div>

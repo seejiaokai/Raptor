@@ -11825,6 +11825,23 @@ Built on `claude/leave-war-m4-planning-d18224` from `docs/superpowers/plans/2026
   award, the other half's bid — opens the day's list (D1466); the readings stand — one leave the joined bar's entry, a leave
   button re-typing it, Delete and Move taking only it, the mark on every bid window, calendar days counted, no "Pick a
   range" on such a leave, the chips' whole wrap at 360, Approvals' greyed line after Back (D1467).
+- **An entry of several days filed on the Inputs page opens whole too (his D1563, D1565 — design A, [LW-INPUT-RANGE-WHOLE],
+  2 Nov 26; the drawing `docs/img/mock/2026-11-02-input-range/`):** a tap on a day held whole by ONE such entry (the held
+  day's window, D1548 — `Matrix.tsx openHeld`, its one entry's id passed as `heldEntry`) opens on that entry's days in a row
+  within the period (`store.ts heldRunAt`, a run of `kind: 'held'` with no records of the war's own): its dates in the title,
+  its days marked, "All <n> days" (picked) or the day tapped in place of "Pick a range". On "All", Grant OIL gives one award
+  on each day, one reason for all (`grantOilDays`, as the drag window does, D1394 — awards add up, D82); CSE, OD and the ⋯'s
+  filings file over every day; a leave button, where the war takes leave over the entry (an OD, a course, an Other), places
+  it on every day; the grey date after Remarks reads the entry's last day. On the day tapped, everything is as on a one-day
+  held window. The entry itself is the Inputs page's (D1548): no Approve, Refuse, Move or Delete on either choice. A day
+  holding two entries (a morning and an afternoon) keeps the one-day window; a day of the entry also holding something the
+  war wrote (an award, a bid) opens the day's list (`inputsFilledDay`, as D1466 has it), its other days still opening whole.
+  Pin: `leavewar/ui/inputrange.test.tsx`.
+- **On his own row the mark is heavier (his D1568, D1569 — design A, [LW-OWN-ROW-SELMARK], 2 Nov 26; the drawing
+  `docs/img/mock/2026-11-02-ownrow-mark/`):** his row (`tr.me`) is bracketed by cyan lines, which out-rank `.mx td.selcell`
+  and drew over its ring. On his row the days a window acts on wear the drag's grab look — fill rgba(59,198,232,.34), a 2px
+  inset ring at .95 (`matrix.css .mx tbody tr.me td.selcell:not(.who):not(.bal)`, weighed to beat the touched row's tint a
+  phone tap leaves); every other row keeps the 1px ring. Pin: `e2e/inputrange-leavewar.spec.ts`.
 
 ## The Leave War's Balances page (the overhaul's M5a, job 3 — D1230, D1242, D1245, D1254, D1255, D1482–D1488, D1490–D1492; BUILT 29 Oct 26)
 

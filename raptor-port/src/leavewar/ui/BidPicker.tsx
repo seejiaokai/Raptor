@@ -19,7 +19,7 @@ import { addDays, codeInWords, displayCell, formatCell, LEAVE_TYPES, parseCell, 
 import { OutcomeChips } from './OutcomeChips'
 import { outcomeLine } from './outcomewords'
 import '../../ui/postout.css'
-import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
+import { awardsIn, cellProblem, clearCells, clearRecords, decideRequests, deletableRecords, fileStraight, FILED_STRAIGHT, leaveRunAt, placeApproved, decidableIn, defaultAwardHalf, deletableIn, getState, grantOilDays, heldRunAt, MAX_GIVEN_BY, MAX_REASON, movableRecords, setBidStates, setCell, setCellRange, setRequestWords, type DecideTo, type LeaveRun, type MoveRec } from '../state/store'
 import { LeaveWords, ReqWordsRows } from './ReqWords'
 import { draftOf, emptyDraft, heldRequest, patchOf, wordsOf, type ReqDraft } from './reqdraft'
 import { ApproveSwitch, EntryBox, MoreButton, useApproveMemory, type MoreItem } from './BidBits'
@@ -118,6 +118,7 @@ export function BidPicker({
   heldBy,
   heldOther,
   heldDays,
+  heldEntry,
   noLeave = false,
   heldLeave,
   approvedRow,
@@ -215,6 +216,9 @@ export function BidPicker({
    *  for each entry — its box, its half (Whole day, AM, PM, or a medical's hours), its remarks, and where it is changed —
    *  D1371's held-half line widened to the whole day */
   heldDays?: readonly HeldLine[] | null
+  /** THE ONE ENTRY FILED ON THE INPUTS PAGE THAT HOLDS THE DAY WHOLE, by its Input id (his D1563, D1565): an entry of several
+   *  days opens whole from it (`heldRunAt`); absent where two entries share the day (a morning and an afternoon) */
+  heldEntry?: string | null
   /** THE WAR TAKES NO LEAVE OVER WHAT HOLDS THE DAY (his D1552 — leave or a medical, `dayview.ts barsWrite`): the eight leave
    *  buttons are not drawn while the window acts on the one day; a range picked brings them back for the days around it */
   noLeave?: boolean
@@ -269,7 +273,11 @@ export function BidPicker({
      render (a few days walked), so a leave changed under the open window — an Undo, another tab — is followed; a leave
      that shrinks to one day leaves the window as built. Never on a free half beside leave filed on the Inputs page. The
      pick is this window's alone, never saved. */
-  const run = !onlyPortion ? leaveRunAt(personId, date) : null
+  /* …AND SO DOES AN ENTRY OF SEVERAL DAYS FILED ON THE INPUTS PAGE (his D1563, D1565 — design A): its dates in the title,
+     its days marked, "All <n> days" or the day tapped choosing what Grant OIL, CSE, OD, the ⋯'s filings and any leave
+     placed over it act on. It is the Inputs page's to change (D1548): no Approve, Move or Delete is drawn for it. */
+  const runNow = (): LeaveRun | null => (onlyPortion ? null : leaveRunAt(personId, date) ?? (heldEntry ? heldRunAt(personId, date, heldEntry) : null))
+  const run = runNow()
   /* "ALL" IS PICKED AT OPEN ONLY ON A WINDOW THAT OPENS ON A LEAVE OF SEVERAL DAYS (D1461; the narrow read's N1): a
      one-day window whose day joins a leave under it — its words saved as the focus leaves the box, just BEFORE the click
      on Delete or Approve lands, or another tab — shows the chips with the day tapped picked, so the title, the mark and
@@ -401,6 +409,17 @@ export function BidPicker({
   const [oilErr, setOilErr] = useState('')
   const grantOil = () => {
     flushWords()   // the words first, so one Undo takes the award and leaves them (the narrow read's N2)
+    /* ON "ALL" OVER AN ENTRY FILED ON THE INPUTS PAGE (his D1565): one grant on each of its days, one reason for all, as
+       the drag window grants (D1394) — awards add up (D82); the day tapped keeps the one-day panel's own award */
+    const w = wholeNow()
+    if (w && w.kind === 'held') {
+      const n = oilDays.trim() ? oilN : 1   // a blank box is a day, as the one-day panel and the drag window read it
+      if (!Number.isFinite(n)) { setOilErr('Type how many days'); return }
+      const problem = grantOilDays(cellsOf(w), n, { note: oilNote, givenBy: oilGiven })
+      if (problem) { setOilErr(problem); return }
+      onClose()
+      return
+    }
     const problem = onCredit!(oilCode, Number.isFinite(oilN) ? String(oilN) : oilDays, oilNote, oilGiven, oilHalf)
     if (problem) { setOilErr(problem); return }
     onClose()
@@ -437,15 +456,16 @@ export function BidPicker({
   /* …ONLY on a window that drew a leave of several days, "All" picked, no range picked (the code read's F1): a one-day
      window whose words join it to a next-door leave at the save acts on its one day, as it always did — never on days it
      never named; a range picked keeps its range */
-  const wholeNow = (): LeaveRun | null => (run && !span && pick === 'all' && !onlyPortion ? leaveRunAt(personId, date) : null)
+  const wholeNow = (): LeaveRun | null => (run && !span && pick === 'all' && !onlyPortion ? runNow() : null)
   /* The Selected row's two buttons are drawn only where they would do something — the house rule for a control that
      could not work (a disabled chip invites a tap and then refuses it). Move: a record on these days this role may move
      (the store's one rule, D333 — so a member's own bid offers it while bidding is open); Delete: a day a Delete would
      change (an award for the admin, a bid, a leave the war approved and may remove). */
   /* On "All" both ask of the LEAVE's own records, not of everything on its days (D1461 — the spec's reading R3): an OIL award
      or the other half's bid sharing one of its days is not what was picked */
-  const canMoveHere = !!onMove && (whole ? movableRecords(selCells(), whole.recs) : movableRecords(selCells())).length > 0
-  const canDeleteHere = whole ? deletableRecords(whole.recs) > 0 : deletableIn(selCells()) > 0
+  /* (an entry filed on the Inputs page has no records of the war's own: on "All" nothing of it moves or goes — D1548) */
+  const canMoveHere = !!onMove && whole?.kind !== 'held' && (whole ? movableRecords(selCells(), whole.recs) : movableRecords(selCells())).length > 0
+  const canDeleteHere = whole ? whole.kind !== 'held' && deletableRecords(whole.recs) > 0 : deletableIn(selCells()) > 0
   /* DECIDE OVER A PICKED RANGE, EVEN FROM A DAY WITH NO BID (the final reads, Fable 4 / Astra 2, both blind): the row was
      drawn from the tapped day alone, so a range holding bids around an empty tapped day offered Move and Delete but no
      Decide — though D335 widens Decide to the range. With a range it is drawn wherever a Decide would answer something
@@ -814,7 +834,7 @@ export function BidPicker({
           the Inputs page), or the words of the bid about to be placed */}
       {leaveRow
         ? <LeaveWords row={leaveRow} personId={personId} flushRef={leaveFlush} onRefused={why => { setNoteAt('leave'); setNote(why) }} />
-        : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : date} end={span ? span.to : held ? held.end : date}
+        : <ReqWordsRows compact value={words} onChange={onWords} start={span ? span.from : !held && whole ? whole.from : date} end={span ? span.to : held ? held.end : whole ? whole.to : date}
             who={{ personId, code: held?.rec.code ?? '' }} />}
 
       {/* DURATION, with "Pick a range" at its end (round 3's change 5): "Just this day" went — it is always the default,
