@@ -236,3 +236,25 @@ On the bundle at `e44d50a26`, 1536 × 864. **18 / 18 PASS**; no console error, p
   seat, not a stored key; the dialogs by their real ids) — fixed and re-run.
 - **Seen in passing (older — `main` the same):** Escape does nothing on the Sort all dialog (Cancel, ✕ and a click outside close
   it) — filed under [BOARD-KEYS-LEFT]; the duty and wave template editors have no Cancel (Done and ✕; ✕ only) — as built, not a fault.
+
+## 7. The fix round and the re-walk
+
+**A6b fixed (commit `62556cdde`, job 1's builder, its copy still warm — D1104):** the cause read off walker A's failing trace —
+the first swipe left the strip standing still 127px short of Monday (the browser had not started its snap), so the second touch
+was neither at the edge nor "still settling", and its own 150px of travel, which carried Monday home and 23px past, was counted
+for nothing. Now a swipe begun within half a day of an end day, toward it, also crosses when its own travel brings that day home
+and goes on past by the crossing distance (45px; 24px for a flick still moving at 0.3px/ms); for a strip already resting on Monday
+nothing changes. Still not crossing: a swipe that only brings the day home, one begun more than half a day out, a week at rest
+mid-week, a slow short drag held still, a vertical drag, a jiggle. Red first: two unit tests (one replays the walker's trace) and
+a browser test that leaves the strip standing about 100px short of Monday (the snap held off, then put back) — red without the
+fix; green after: the swipe and glide unit files 117 / 117, `e2e/weekswipe.spec.ts` 6 / 6, the week's swipe and arrow browser
+tests 19 / 19, walker A's own `ws-walk-a-twice.mjs` 24 / 24 (7 from a strip standing still 84 or 141px out); build, `lint:changed`,
+docsize clean. **The 12px strip — not a flicker:** in both frames before the slide the leaving copy's box spans the whole width
+(0–402) over the arriving one (layer 41 over 40), opaque in the page's ground colour, so none of the arriving day shows. **Seen,
+not changed:** while the copies are up, the 12px edge of the neighbouring real day (Saturday's beside Sunday, Tuesday's beside
+Monday) is not drawn — each copy holds one day card, the settled design (24 Aug 26); a faint change of card colour to ground.
+
+**The re-walk (the host, walker A's own script, `WALK_OUT` to `…/rewalk/A/` so the first walk's pictures stay the evidence), on
+`dist` at `62556cdde`:** Chromium A1–A11 all PASS, A6 and A6b included; A12 at 844 × 390 the desktop layout (as §6); A12x at
+812 × 375 crosses each way with the positions exact (Δ 0) — flagged only by the script's speed ceiling, set for a 402-wide screen
+(the same 340ms over twice the width), as in the first walk. WebKit A1, A2, A5, A9 PASS. No problem logged.

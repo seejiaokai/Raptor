@@ -8,7 +8,8 @@ export const { chromium, webkit } = require('playwright')
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 export const launchOptions = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}
 export const BASE = 'http://localhost:4173'
-export const OUT = 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-11-03-week-swipe/walk/A'
+/* WALK_OUT sends a re-walk to its own folder, so the first walk's pictures stay the evidence (bug-check-order §5) */
+export const OUT = process.env.WALK_OUT || 'C:/Users/User/projects/Raptor/raptor-port/docs/img/handpass/2026-11-03-week-swipe/walk/A'
 mkdirSync(OUT, { recursive: true })
 export const sleep = ms => new Promise(r => setTimeout(r, ms))
 export const now = () => Number(process.hrtime.bigint() / 1000n) / 1000   // ms, monotonic
