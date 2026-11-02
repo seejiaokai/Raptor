@@ -146,6 +146,12 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
    changes.
 3. When your schema is shared: the adapter behind the storage doorway, written
    to your tables, passing the doorway's existing contract tests; then sign-in.
+   **How the tables are built and handed over (the agent's recommendation of 2 Nov 26; its test held to the database step,
+   his D1571):** a re-runnable setup script, written from `data-model.md`, builds every table in his own environment through
+   Dataverse's Web API — each column's exact type and length, the links between tables, the unique keys — straight into a
+   named solution; that solution is exported as a managed package and handed over, the script beside it for you to read or
+   run. Not CSV files: an import makes one table a file and sets no links, lengths or keys. Whether a script may sign in as
+   him on his PC is untested until then.
    **No data is imported — CORRECTED 29 Sep 26** (this line promised "a one-time import of what is in the browsers
    today"): everything in the browsers now is demo data and is cleared before the database step (owner, D54, D56), so
    your tables start EMPTY and the admin enters the real people himself (question 3 above, D165). The one thing that
