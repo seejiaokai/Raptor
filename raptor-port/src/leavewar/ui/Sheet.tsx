@@ -503,10 +503,17 @@ export function Sheet({
      Stage advance and the rest, and a war switched there left this sheet open and live, its next bid landing in the war
      no longer on screen. Tab and Shift+Tab now go round inside the topmost sheet, and focus left behind it is brought
      in. Same guards as the Escape above: only the topmost sheet, only while the Leave War is the page showing. */
+  /* …AND, AS THE ESCAPE ABOVE, IT LEAVES TAB TO A KEYBOARD-HOLDING WINDOW OPENED OVER IT ([LW-VIEWER-TAB], the doc-chip read's
+     note 1, 2 Nov 26). The document viewer (ui/DocViewer.tsx) keeps its own Tab round (ui/sheetfocus.ts), but this listener was
+     heard first: it pulled the keys into the sheet, the viewer's pulled them back to its first button, and every Tab landed on
+     that one button — its ✕ and ‹ never reached. One already up when this sheet opened is under it, and changes nothing. */
   useEffect(() => {
     if (!modal) return          // a window that does not block the page does not hold the keyboard either (D641)
+    const under = topSheet()
     const trap = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return
+      const top = topSheet()
+      if (top && top !== under && !panelRef.current?.contains(top)) return
       const pg = document.getElementById('page-leavewar')
       if (pg && !pg.classList.contains('on')) return
       const panel = panelRef.current

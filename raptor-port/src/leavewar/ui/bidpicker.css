@@ -1498,6 +1498,14 @@
 /* not movable: no grip, no move cursor, and a finger on the title may scroll the page's own list */
 #page-leavewar .bidsheet.fullpage .bidsheet-hd { cursor: default; touch-action: auto; }
 #page-leavewar .bidsheet.fullpage .bidsheet-hd::before { content: none; }
+/* ITS ✕ TAKES A FINGER'S TAP WITHOUT LOOKING BIGGER ([LW-OPENDATES-X-SIZE], seen on M3's follow-up walk, 24 Oct 26 — drawn
+   18 × 17 on his iPhone, a finger's size being 44). His D487: a button keeps the size it is drawn; where one is hard to hit, a
+   larger invisible area round it, never over a neighbour. Here the ✕ stands alone at the head's right end, the title well to
+   its left, so the area reaches 44 × 44 round its centre and touches nothing; the glyph, its colour and its place are as
+   before. Only the full page (the "Open for bidding" window and the Events list on a phone): the floating windows' ✕ has the
+   Auto-approve switch or Approve right beside it, where a wider area would take their taps. */
+#page-leavewar .bidsheet.fullpage .bidsheet-hd .x { position: relative; }
+#page-leavewar .bidsheet.fullpage .bidsheet-hd .x::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
 
 
 /* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------

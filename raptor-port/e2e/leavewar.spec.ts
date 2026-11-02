@@ -664,6 +664,46 @@ test('the top of the Leave War on a phone is two lines, nothing overlapping or o
   }
 })
 
+// [LW-OPENDATES-X-SIZE] (24 Oct 26): the full page's ✕ was drawn 18 × 17 — under a finger's 44. His D487 keeps its drawn size; a
+// larger invisible area round it takes the tap, over nothing else. Proved at the point a finger lands, as order §6 asks.
+test('on a phone a full-page window’s ✕ takes a finger’s tap 44 × 44 round it, drawn the size it was, over nothing else ([LW-OPENDATES-X-SIZE], D487)', async ({ page }) => {
+  test.skip(!isPhone(), 'the full page is a phone\'s form (D1264, D1511)')
+  await lwRole(page, 'admin')
+  const pages: [string, string, () => Promise<void>][] = [
+    ['open-dates', 'open-dates-close', () => openChip(page).click()],
+    ['events-sheet', 'events-close', async () => { await page.locator('[data-testid="settings-open"]').click(); await page.locator('[data-testid="settings-events"]').click() }],
+  ]
+  for (const [width, height] of PHONES) {
+    await page.setViewportSize({ width, height })
+    await page.waitForTimeout(200)
+    for (const [win, x, open] of pages) {
+      await open()
+      await expect(page.locator(`[data-testid="${win}"]`)).toBeVisible()
+      const m = await page.evaluate(([win, x]) => {
+        const b = document.querySelector(`[data-testid="${x}"]`) as HTMLElement
+        const r = b.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2
+        const hits = (dx: number, dy: number) => { const at = document.elementFromPoint(cx + dx, cy + dy); return !!at && (at === b || b.contains(at)) }
+        /* everything else in the head, and its first row below, kept clear of the area */
+        const head = b.closest('.bidsheet-hd') as HTMLElement
+        const others = [...head.querySelectorAll<HTMLElement>('*')].filter(n => n !== b && !b.contains(n) && n.getClientRects().length)
+        const clash = others.filter(n => { const o = n.getBoundingClientRect(); return o.right > cx - 22 && o.left < cx + 22 && o.bottom > cy - 22 && o.top < cy + 22 }).map(n => n.className || n.tagName)
+        const below = (head.nextElementSibling as HTMLElement).getBoundingClientRect().top
+        return { w: r.width, h: r.height, near: [[-15, 0], [15, 0], [0, -14], [0, 14], [-18, 16], [16, -14]].map(([dx, dy]) => hits(dx!, dy!)), far: [[-30, 0], [0, 30]].map(([dx, dy]) => hits(dx!, dy!)), clash, gap: below - (cy + 22), win: !!document.querySelector(`[data-testid="${win}"]`) }
+      }, [win, x] as const)
+      expect(m.w, `${width} ${win}: the ✕ is drawn the size it was (D487)`).toBeLessThan(26)
+      expect(m.h, `${width} ${win}: the ✕ is drawn the size it was (D487)`).toBeLessThan(26)
+      expect(m.near, `${width} ${win}: a finger a little off the ✕ reaches it`).toEqual([true, true, true, true, true, true])
+      expect(m.far, `${width} ${win}: the area stops at a finger's size`).toEqual([false, false])
+      expect(m.clash, `${width} ${win}: the area covers nothing else in the head`).toEqual([])
+      expect(m.gap, `${width} ${win}: the area stops above the row under the head`).toBeGreaterThanOrEqual(0)
+      /* and a real finger's tap off its centre closes the page */
+      const box = (await page.locator(`[data-testid="${x}"]`).boundingBox())!
+      await page.touchscreen.tap(box.x + box.width / 2 - 14, box.y + box.height / 2 + 12)
+      await expect(page.locator(`[data-testid="${win}"]`)).toHaveCount(0)
+    }
+  }
+})
+
 // RE-EXPRESSED, D1254 (the overhaul's M2): the window's own steps unchanged; the top it leaves behind is measured as M2 draws it (`expectTopLines`).
 test('on a phone the open chip opens the "Open for bidding" window as a full page from the top (D1264); its ✕ and Escape close it and change nothing; a month is one tap each way', async ({ page }) => {
   test.skip(!isPhone(), 'a phone-size control (D678, D1177)')
