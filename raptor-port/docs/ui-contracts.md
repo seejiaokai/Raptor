@@ -389,7 +389,13 @@ Four things make it work, and each is load-bearing:
   as a quick flick inside the week moves a day; and the direction is the first clear movement's (10 px), held for the
   gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does, and nor does any
   gesture that moved the page up or down (the document is the phone weeks' one vertical scroller; the page moving is
-  the browser's own answer, so it wins over the first-movement reading). **The slide
+  the browser's own answer, so it wins over the first-movement reading). **A swipe Safari gives the page no touch for**
+  (his iPhone recordings the morning after, 05:41 and 06:00, read by the `?swdebug` log — `ui/swdebug.ts`): a swipe begun
+  while the strip is still gliding into its snap can reach the page as no touch at all, though Safari moves the strip.
+  Safari still reports the strip pulled past its end (below 0 past Monday, above the last day past Sunday), so with no
+  touch being read a pull past an end day by 12 px that began with the strip on that day — at rest there, or easing in
+  slower than 0.15 px/ms within half a day of it — crosses when the strip springs back by 3 px; never a flick's own
+  overshoot, the spring-back of a touch the page did read, or the 700 ms after a cross (`pan.ts pullPastEnd`). **The slide
   starts where the day stands and ends where it rests** (`weekglide.ts`): the leaving copy keeps the day's live
   place — on an iPhone the pull past the end Safari draws, read from the strip's scroll — held to a quarter of a
   day; neither copy snaps (`scroll-snap-type:none` — the copy carries the week's class, and its own snap moved its
