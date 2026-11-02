@@ -116,9 +116,9 @@ type Snapshot = { html: string; shift: number; park: number }
    which `x` carries as it is — a reading the test browsers cannot show, his look
    is its proof). The snap was there so a finger that let go mid-scroll froze on
    one clean day, not a two-day sliver — a one-card clone cannot show a sliver of
-   another day, so the residual is kept, held to a quarter of a day: past that
-   the day was caught far from any resting place, and it is drawn whole on its
-   place, as before. */
+   another day, so the residual is kept, held to a quarter of a day: a day
+   caught further than that from its resting place is drawn a quarter of a day
+   off it, in the direction it stood, never further. */
 function snapshot(week: HTMLElement, x: number): Snapshot {
   const ds = week.querySelectorAll<HTMLElement>('.day:not(.peek)')
   if (!ds.length) return { html: week.innerHTML, shift: 0, park: x }

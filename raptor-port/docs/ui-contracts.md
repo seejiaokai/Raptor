@@ -387,7 +387,9 @@ Four things make it work, and each is load-bearing:
   the strip standing 84–127 px short of Monday for 160 ms before its snap began — the reading no longer hangs on the
   snap's timing); a short flick (24 px or more, still moving at 0.3 px/ms over its last 100 ms) crosses as a 45 px drag does,
   as a quick flick inside the week moves a day; and the direction is the first clear movement's (10 px), held for the
-  gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does. **The slide
+  gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does, and nor does any
+  gesture that moved the page up or down (the document is the phone weeks' one vertical scroller; the page moving is
+  the browser's own answer, so it wins over the first-movement reading). **The slide
   starts where the day stands and ends where it rests** (`weekglide.ts`): the leaving copy keeps the day's live
   place — on an iPhone the pull past the end Safari draws, read from the strip's scroll — held to a quarter of a
   day; neither copy snaps (`scroll-snap-type:none` — the copy carries the week's class, and its own snap moved its

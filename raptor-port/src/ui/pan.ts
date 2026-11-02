@@ -576,6 +576,9 @@ let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAt
 /* (1) a strip standing short of an end day: within half a day of it, and how far the finger must carry it home first */
 let swNearLeft = false, swNearRight = false, swHomeL = 0, swHomeR = 0
 let swAxis: 'x' | 'y' | null = null
+/* (3) the page's own up-and-down scroll at the touch's start — on the phone weeks the document is the one vertical
+   scroller (the week and its days do not scroll up and down) */
+let swPageY = 0
 /* the finger's recent path, for its speed at the lift: [x, time] newest last, trimmed to FLICK_WIN */
 let swTrail: [number, number][] = []
 /* the strip's own last movement — when, which way, which strip — read by (1) above; written by onDocScroll */
@@ -611,6 +614,7 @@ function onWeekTouchStart(e: TouchEvent) {
   swStartX = swLastX = e.touches[0].clientX
   swStartY = swLastY = e.touches[0].clientY
   swAxis = null
+  swPageY = window.scrollY
   swTrail = [[swStartX, Date.now()]]
   const sl = w.scrollLeft
   /* (1) still on its way to an end day: moved within SETTLE_MS, toward that end, within half a day of it. On a phone a
@@ -664,6 +668,11 @@ function onWeekTouchEnd(e: TouchEvent) {
      drifts sideways after — the axis its first clear movement took, (3) above; one that never moved that far keeps
      the whole-path test */
   if (swAxis === 'y' || (!swAxis && Math.abs(dx) <= Math.abs(dy))) return
+  /* …and whatever its first movement looked like, a gesture that moved the PAGE up or down was the browser's page scroll
+     (the fresh read's finding 4, 3 Nov 26): a thumb scrolling down whose first 10px slanted sideways, then drifting 45px
+     across, crossed the week. The page moving is the browser's own answer, so it wins over the first-movement guess; a
+     thumb's arc that moved the day sideways leaves the page where it was, and still crosses. */
+  if (Math.abs(window.scrollY - swPageY) > AXIS_SLOP) return
   /* the gesture began inside a wave block that actually scrolled → it owned the
      swipe, so this is not a week cross. A block that never moved (it was at its
      own edge) falls through, which is what unsticks a wave-dense day's swipe. */

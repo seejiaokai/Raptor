@@ -301,6 +301,23 @@ describe('a swipe off an end day that the old reading missed', () => {
     expect(CURWEEK, 'the arc crossed into the previous week').toBe('06/07/2026')
   })
 
+  /* the fresh read's finding 4 (3 Nov 26): a thumb scrolling the page down whose first 10px slant sideways was read as a
+     sideways swipe, and its drift crossed the week — though the browser had taken it as a page scroll (on the phone weeks
+     the document is the one thing that scrolls up and down). The page moving is the browser's own answer, and wins. */
+  it("a page scroll whose first movement slants sideways never crosses — the page moved, so it was the page's", async () => {
+    const w = stubWeek(12)
+    const was = window.scrollY
+    try {
+      await touch(w, 'touchstart', 100, 600)
+      for (const [x, y, sy] of [[111, 594, 0], [125, 580, 20], [140, 560, 60], [152, 540, 100], [160, 520, 140]]) {
+        Object.defineProperty(window, 'scrollY', { value: sy, configurable: true, writable: true })
+        await touch(w, 'touchmove', x!, y!)
+      }
+      await touch(w, 'touchend', 160, 520)          // 60 across, the page scrolled 140 down
+      expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
+    } finally { Object.defineProperty(window, 'scrollY', { value: was, configurable: true, writable: true }) }
+  })
+
   it('a drag whose first movement is down the day never crosses, whatever its sideways drift', async () => {
     const w = stubWeek(12)
     await touch(w, 'touchstart', 100, 300)
