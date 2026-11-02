@@ -3074,3 +3074,48 @@ reset mode disables before reusing it.
 **Suggested improvement:** Make it unconditional: an edit script is always written to a file and run (never a heredoc), whatever it contains — extend the existing memory note to Python and to non-ASCII text, not only apostrophes and `node -e`.
 
 **Principle:** A rule with a condition ("unless it holds an apostrophe") fails on the next unforeseen character; where the safe route costs nothing extra, make it the only route.
+
+### Observation 765: A member's walk step needs the days open for him first
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** walking [LW-INPUT-RANGE-WHOLE] (the Leave War's bid window opening an Inputs entry whole)
+**Skill:** internal — `raptor-port/docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** writing a walk script's member steps on the Leave War
+
+**Issue:** The walk's member steps tapped the member's own day and expected the bid window; in the demo nothing is open for bidding, so a member's tap shows the closed note (D1177) — two FAILs that were the script's premise, not the app. The fix: open the month through the admin's own "Open for bidding" window, then the name badge's switch to the member view (D292).
+
+**Suggested improvement:** walk-scripts.md: a Leave War step that needs a member's bid window first opens the dates through the app's own window (open-chip → od-month-<m> → open-dates-close), then switches with #roleBadge — the recipe in `scripts/handpass/lw-input-range-walk.mjs` walkM.
+
+**Principle:** A walk step's premise is checked against the state the demo really starts in, before its FAIL is read as the app's.
+
+### Observation 766: Git Bash `sed -i` on a CRLF file rewrites every line ending
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** a one-word comment fix in `src/leavewar/state/store.ts`
+**Skill:** internal — the memory note on edit scripts (Python newline='')
+**Type:** internal
+**Phase/Area:** editing files on Windows
+
+**Issue:** `sed -i 's/…/…/'` on a CRLF file left it LF throughout: git showed 12,576 lines changed for one word. Restored from HEAD and the change re-made with Python `newline=''`.
+
+**Suggested improvement:** extend the memory note: on Windows never `sed -i` a tracked file — an edit script (Python, newline='') written to a file; and check `git diff --stat` after any shell edit.
+
+**Principle:** The safe default for any in-place edit on Windows is the one tool known to keep line endings; a quick tool that silently rewrites them costs more than it saves.
+
+### Observation 767: The inputs guard reads comments — a capitalised INPUTS trips it
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** GitHub's run of pull request 612
+**Skill:** internal — `src/engine/inputs-readers.test.ts`
+**Type:** internal
+**Phase/Area:** comments in app code
+
+**Issue:** The guard decides which files "reach the inputs" by searching their raw text (comments included) for `INPUTS`; a comment heading "FILED ON THE INPUTS PAGE" put store.ts in that set and turned the unit run red.
+
+**Suggested improvement:** either strip comments in the guard's NAMES test as its other tests already do (`code()`), or a line in the coding conventions: never write the word INPUTS in capitals in a comment.
+
+**Principle:** A source-scanning guard that strips comments in some checks and not others will trip on prose; make it consistent.
