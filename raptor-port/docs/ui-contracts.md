@@ -1601,8 +1601,9 @@ the board opened (`sheetfocus.ts locate`), or off the board's hidden buttons. Pi
 date (`html.ts`, `.dt.sb-open`) carries `role="button"` and `tabindex="0"`: one Tab stop, named as a button; Enter and
 Space open the board (`interactions.ts routeOpenKey`, delegated on the document with the click route — the same edit-page
 gate; a held key's repeats and a key with Ctrl, Alt, ⌘ or Shift open nothing). Opened so, the keys go onto the board's
-own box (`board.ts openSchedulerByKeys` → `SchedBoard.tsx`, tabindex -1 only while that board is up, no ring), so the
-next Tab reaches the board's first button and never the week hidden behind it; Escape or ✓ Done gives them back to the
+own box (`board.ts openSchedulerByKeys` → `SchedBoard.tsx`, tabindex -1 only until the keys first leave it, no ring), so the
+next Tab reaches the board's first button and never the week hidden behind it — only when a board opens: Enter on a date
+behind a board already open changes its day and leaves no note for the next open, and a close clears it; Escape or ✓ Done gives them back to the
 date. The ring is the app's keyboard ring (`11-drag.css`), for `:focus-visible` only — a click on the date shows none,
 though the date then holds the focus and gets it back when the board closes. The date is no text box, so the schedule's
 own Tab route (D551–D555, D597) never visits it, and Shift+Tab from a day's first box does not land on it. The VIEW week's
@@ -1618,7 +1619,11 @@ outside-click listener and puts the keys back on its button (`menuEscape`); a wi
 where they were when it opened — its Traffic button or ⓘ — if they are nowhere or were inside it, found again on the
 board itself when it opened there (`locate` looks inside `#schedBoard` for a control of the board). In a Traffic line
 Escape closes the window after the line's own blur has saved it, as a press on ✕ does. A question sheet or a window that
-holds the keys (`topSheet`) over any of them answers first; a held key's repeats are not a press. Which windows cover the
+holds the keys (`topSheet`) over any of them answers first; a held key's repeats are not a press. With the keys in a
+schedule box on the page behind (a callsign, a time, a remark Tabbed to while the window or menu stays up) Escape is the
+box's — its old words back (`textedit.ts routeKeyDown`) — and the window or menu waits for the next Escape, as the movable
+windows and the board leave it; not the box the menu hangs from (the duty role's list: the first Escape closes the list,
+the second puts the role back). Which windows cover the
 top bar is unchanged. Pinned by `ui/boardkeys.test.tsx`, `ui/boardescape.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
 
 **The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**

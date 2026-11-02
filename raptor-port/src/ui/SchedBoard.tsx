@@ -130,9 +130,13 @@ export function SchedBoard() {
        keys go onto the board's own box (no ring of its own: a place for them to land, as a question sheet's box is), so
        the next Tab reaches the board's first button and not the week hidden behind it. The way back above is read first,
        so Escape and ✓ Done still give the keys back to the date. The box takes the keys only while a board opened so is up
-       (tabindex -1, given here and taken back as it closes): a press on the board's blank space must not take them. */
+       (tabindex -1, given here and taken back as it closes): a press on the board's blank space must not take them.
+       AND ONLY UNTIL THE KEYS LEAVE IT (the fresh read of 3 Nov 26, finding 2): its first blur takes the tabindex back —
+       kept, a later press on the board's blank space put the keys on the box, where a movable window over the board read
+       them as "in a box behind" and would not close on Escape, and the keys no longer went back to an opener. */
     const keyed = takeKeysIn() && !!root
-    if (keyed) { root!.tabIndex = -1; root!.focus({ preventScroll: true }) }
+    const untab = () => root?.removeAttribute('tabindex')
+    if (keyed) { root!.tabIndex = -1; root!.addEventListener('blur', untab, { once: true }); root!.focus({ preventScroll: true }) }
     const giveBack = () => {
       if (CURPAGE !== 'editsched') return
       const now = document.activeElement as HTMLElement | null
@@ -145,7 +149,7 @@ export function SchedBoard() {
     return () => {
       off()
       giveBack()
-      if (keyed) root!.removeAttribute('tabindex')
+      if (keyed) { root!.removeEventListener('blur', untab); untab() }
     }
   }, [open])
 

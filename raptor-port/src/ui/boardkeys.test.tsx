@@ -237,3 +237,57 @@ describe("the schedule's own Tab route is unchanged by the date's stop (D551–D
     expect(view.SBDAY).toBe(null)
   }, 60000)
 })
+
+/* THE FRESH READ'S THREE FINDINGS (the night of 3 Nov 26, docs/handpass/parts/ws-read.md) — each red on e76f32440 */
+describe('the fresh read: Escape in a box behind, the board box\'s Tab stop, the keys-open note', () => {
+  it('a schedule box typed in behind the Traffic window: Escape is the box\'s (its old words back), the window stays', async () => {
+    const gi = DAYS[1].waves.findIndex((w: any) => w && !w.sa)
+    await pressKeyed($(`#eWeek [data-air="1|${gi}"]`))
+    expect(($('#airpop') as any).hidden).toBe(false)
+    const box = $('#eWeek .day[data-day="1"] [data-txt]')
+    const was = box.textContent
+    box.focus()
+    box.textContent = 'TYPED BEHIND'
+    await key('Escape')
+    const now = $(`#eWeek .day[data-day="1"] [data-txt="${box.dataset.txt}"]`)
+    expect(now.textContent, 'the box put its old words back').toBe(was)
+    expect(($('#airpop') as any).hidden, 'the window stays').toBe(false)
+    await key('Escape')
+    expect(($('#airpop') as any).hidden, 'the next Escape closes the window').toBe(true)
+  })
+
+  it('a board box typed in under a board menu: Escape is the box\'s, the menu stays', async () => {
+    await click(date(2))
+    await pressKeyed($('#sbBoard [data-dwadd]'))
+    expect($('.wavemenu')).toBeTruthy()
+    const box = $('#sbBoard input.tm[data-bfld$=".to"]') as HTMLInputElement
+    const was = box.value
+    box.focus()
+    box.value = '23:59'
+    await key('Escape')
+    expect(($(`#sbBoard input[data-bfld="${box.dataset.bfld}"]`) as HTMLInputElement).value, 'the old time is back').toBe(was)
+    expect($('.wavemenu'), 'the menu stays').toBeTruthy()
+    expect(boardOpen()).toBe(true)
+  })
+
+  it('opened by the keys, the board\'s box stops being a stop for the keys once they leave it', async () => {
+    date(2).focus()
+    await key('Enter')
+    expect(document.activeElement).toBe($('#schedBoard'))
+    $('#sbCal').focus()   // the keys leave the box — a Tab, or a press on the board's blank space and away
+    expect($('#schedBoard').hasAttribute('tabindex'), 'no tabindex left on the board\'s box').toBe(false)
+  })
+
+  it('Enter on a date behind an already-open board leaves no note for the next open by the mouse', async () => {
+    await click(date(1))
+    expect(view.SBDAY).toBe(1)
+    date(2).focus()
+    await key('Enter')          // the board only changes its day
+    expect(view.SBDAY).toBe(2)
+    await click($('#sbDone'))
+    ;(document.activeElement as HTMLElement | null)?.blur?.()
+    await click(date(3))        // opened by the mouse
+    expect(view.SBDAY).toBe(3)
+    expect(document.activeElement, 'a mouse open does not put the keys on the board\'s box').not.toBe($('#schedBoard'))
+  })
+})

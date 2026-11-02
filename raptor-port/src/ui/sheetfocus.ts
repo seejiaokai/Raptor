@@ -111,8 +111,15 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
    Each joins this one list as it opens and leaves it as it closes; the newest answers. One listener on the document, in
    the capture phase — before the board's own Escape comes back up the tree, and before the page's own keys — taking the
    press so nothing under it closes too. A question sheet or a window that holds the keys (topSheet) stands over these and
-   answers its own Escape first. A held key's repeats are not a press, as on the board. */
-type EscEntry = { box: () => HTMLElement | null; close: () => void }
+   answers its own Escape first. A held key's repeats are not a press, as on the board.
+   IN A BOX BEHIND IT, ESCAPE IS THE BOX'S (the fresh read of 3 Nov 26, finding 1): with the keys in a schedule box on the
+   page behind — a callsign, a time, a remark, Tabbed to while a window or menu stays up — Escape puts the box's old words
+   back (textedit.ts routeKeyDown, D1011) and the window waits for the next one, as the movable windows (FloatWindow.tsx)
+   and the board (boardescape.ts) already leave it. Taking it there closed the window and left the words typed, saved on
+   the box's blur. Not the box the entry hangs from (`from`): the duty role's pick-list hangs from the role box itself,
+   so there the first Escape closes the list and the second puts the role back. */
+type EscEntry = { box: () => HTMLElement | null; close: () => void; from: HTMLElement | null }
+const TYPING = 'input, textarea, select, [contenteditable=""], [contenteditable="true"]'
 const escs: EscEntry[] = []
 function escTop(e: KeyboardEvent): void {
   if (e.key !== 'Escape' || e.defaultPrevented || e.repeat || e.isComposing) return
@@ -121,13 +128,18 @@ function escTop(e: KeyboardEvent): void {
   const top = escs[escs.length - 1]
   if (!top) { document.removeEventListener('keydown', escTop, true); return }
   if (topSheet()) return
+  const at = document.activeElement as HTMLElement | null
+  if (at && at !== document.body && typeof at.closest === 'function' && (at.closest(TYPING) || at.isContentEditable)) {
+    const b = top.box()
+    if (!(b && b.contains(at)) && !(top.from && top.from.contains(at))) return
+  }
   e.stopPropagation(); e.preventDefault()
   top.close()
 }
 /** Escape closes this until the returned function is called (or `box` is off the page). `close` does the closing and
     gives the keys back. */
-export function escCloses(box: () => HTMLElement | null, close: () => void): () => void {
-  const entry: EscEntry = { box, close }
+export function escCloses(box: () => HTMLElement | null, close: () => void, from: HTMLElement | null = null): () => void {
+  const entry: EscEntry = { box, close, from }
   if (!escs.length) document.addEventListener('keydown', escTop, true)
   escs.push(entry)
   return () => {
@@ -158,7 +170,7 @@ export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean, 
       const a = document.activeElement as HTMLElement | null
       if (a && el && el.contains(a)) a.blur()
       close()
-    })
+    }, was && was !== document.body ? was : null)
     return () => { off(); keysBack(back, el) }
   // eslint-disable-next-line react-hooks/exhaustive-deps -- on opening and closing only: re-joining the list on a repaint would make this window the newest over a menu opened after it; `close` and `box` are the window's own, fixed for its life
   }, [open])
@@ -174,7 +186,7 @@ export function menuEscape(box: HTMLElement, anchor: HTMLElement): void {
     if (out) document.removeEventListener('click', out)
     box.remove()
     keysBack(back)
-  })
+  }, anchor)
 }
 
 /* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */

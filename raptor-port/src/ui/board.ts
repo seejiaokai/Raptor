@@ -2302,9 +2302,12 @@ export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di
 /* OPENED BY THE KEYS ([BOARD-OPEN-BY-KEYS], 3 Nov 26): Enter or Space on the week's date. The board covers the whole
    screen, so the keys must go onto it — left on the date behind it, the next Tab walked the hidden week. The note is taken
    once by the board as it opens (SchedBoard.tsx), which puts the keys on its own box and still gives them back to the date
-   when it closes. A press or a tap opens it as before, the keys left where they were. */
+   when it closes. A press or a tap opens it as before, the keys left where they were.
+   ONLY WHEN THE BOARD OPENS (the fresh read of 3 Nov 26, finding 3): Enter on a date behind a board already open only
+   changes its day, and no board opens to take the note — left set, it put the keys on the box of the next board opened by
+   the mouse. A close clears it too (closeScheduler). */
 let KEYSIN = false
-export function openSchedulerByKeys(di: number) { KEYSIN = true; openScheduler(di) }
+export function openSchedulerByKeys(di: number) { KEYSIN = view.SBDAY == null; openScheduler(di) }
 export function takeKeysIn(): boolean { const k = KEYSIN; KEYSIN = false; return k }
 /* Done/Close also parks the aircrew drawer: ros-open is a body class shared
    with the edit week's own drawer, and leaving it set would surprise-open
@@ -2315,4 +2318,4 @@ export function takeKeysIn(): boolean { const k = KEYSIN; KEYSIN = false; return
    click and the Done/Close buttons close the board through the exact same
    path rather than two copies of "SBDAY null, park the drawer" drifting
    apart. */
-export function closeScheduler() { view.closeBoardState(); notify() }
+export function closeScheduler() { KEYSIN = false; view.closeBoardState(); notify() }
