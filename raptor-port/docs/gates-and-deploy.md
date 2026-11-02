@@ -15,6 +15,10 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **The 31 errors left in old walk scripts are fixed before the next full run (his D1572, 2 Nov 26):** the app's own errors
+  are 0 since the 31 Oct 26 clean-up; the errors a full `npm run lint` still reports are all in `scripts/handpass/` walk
+  scripts. They are fixed as a job of their own ([WALK-SCRIPT-DOCTOR-ERRORS]), then the full run is made; the app's
+  remaining warnings keep riding with each area's next batch (D1534, D490).
 - **The code check runs by itself (his D1539, 31 Oct 26 — D1536's answer to the M365 plan's point 4; [CODE-CHECK-CI]):**
   React Doctor 0.9.18's "no new finding" check, in three places that share ONE script, `raptor-port/scripts/code-check.mjs`:
   `npm run lint:changed` by hand; the **`code check`** job in `deploy.yml` on every pull request; and a Stop hook,
