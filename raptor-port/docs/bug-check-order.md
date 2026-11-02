@@ -965,6 +965,16 @@ the reader's instructions or model change, it is run on every case and a change 
    in the walk by each of its own ways — its Close, its ✕, its own surround, Escape — on a touch screen in WebKit as well as a
    desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
    (`scripts/handpass/lw-nb-docclose.mjs` on the branch `claude/lw-next-batch-1101`; its evidence `docs/handpass/2026-11-01-lw-next-batch.md` §His find).
+20. **A gesture walked once, slowly, and pictured only at rest (his iPhone recording, the swipe from one week into the next on
+   Edit Schedule, 3 Nov 26).** The August walks of the cross between weeks drove one clean, slow drag off Monday and Sunday and
+   pictured the day before and after; nobody swiped again before the snap settled, flicked short and quick, swiped with a
+   thumb's curling arc, or measured where the two sliding copies stood on their first and last frames against the real day. On
+   his iPhone the cross jumped (the leaving copy snapped back, each copy snapped itself, the slide was over in a frame) and
+   swipes only bounced (a second swipe while settling, a short flick under the distance, a curl judged on the whole path).
+   **Lesson:** a gesture is walked the ways a hand does it — slow and quick, short and long, straight and curling, again at
+   once before what it started has settled — and a moving change is checked by a frame-by-frame trace of where each moving
+   part stands, its first and last frame against the place the page settles; a picture at rest proves neither (`e2e/weekswipe.spec.ts`;
+   its evidence `docs/handpass/2026-11-03-week-swipe-keys.md`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

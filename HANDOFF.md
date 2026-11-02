@@ -21,19 +21,19 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/week-swipe-pdf-print -->
-### `claude/week-swipe-pdf-print` — THE NIGHT OF 3 NOV 26: the swipe across weeks, then Export as PDF — written 3 Nov 26, 00:40
+### `claude/week-swipe-pdf-print` — THE NIGHT OF 3 NOV 26: the swipe across weeks, the keyboard leftovers, the schedule's React Doctor warnings — rewritten 3 Nov 26
 - **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
-- **His message (3 Nov 26, about 00:30):** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog. /overnight 12" — then, with an iPhone recording: fix the swipe between weeks ("very abrupt, not smooth … sometimes doesn't allow me to go to the next week. Like Monday to Sunday"). His next pick: [PDF-PRINT-TWICE], the last chat's recommendation. 12 hours; **Low** (the recommended; he may change it).
-- **The night, in order (one branch, one check at the riskiest tier, one pull request — D485, D1087):**
-  1. **[WEEK-SWIPE-CROSS]** — the phone's swipe from one week into the next: find on Safari's engine why the glide is not seen and why an edge swipe only bounces, fix each red first. Its own walk on WebKit and Chromium by fingers at his iPhone's 402 × 874. About 4 h.
-  2. **[PDF-PRINT-TWICE]** — Export as PDF prints only the published report, once, in every browser (the item's own fix). About 3 h.
-  - **The check:** FULL for the batch (job 2 decides which paper copy goes out as the record — the published record question); the roll-call, the sizing step, the walk with pictures, a fresh blind Opus read (D790; on `[NO-ASTRA-LIST]`), the re-walk, the evidence sheet `raptor-port/docs/handpass/2026-11-03-week-swipe-pdf.md`. The pull request into `main` opened once both are built; nothing merges.
-- **Offered, built only on his word:** 3. the keyboard leftovers — the Scheduler Board opened from the keyboard ([BOARD-OPEN-BY-KEYS]) and the board's small menus, the Traffic and day-details windows closing on Escape ([VEILED-WINDOWS-BAR]'s Escape part); about 3 h.
-- **Not tonight:** [OVERNIGHT-RETRY-TRIAL] — the setting is read when a chat starts, so it cannot be tried inside a chat already running; it waits for a night whose chat starts after it is set.
-- **Helpers:** one fresh helper a job, one at a time; its own Sonnet walker and fresh Opus reader; this chat coordinates and keeps the records.
-- **Questions waiting for him:** none yet.
-- **Rulings:** none this session so far (his swipe report is a fault in the settled 23–24 Aug design, filed as [WEEK-SWIPE-CROSS]).
-- **Progress:** job 1 — starting.
+- **His message (3 Nov 26, about 00:30):** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog. /overnight 12" — with an iPhone recording: fix the swipe between weeks. Then: "Skip the pdf replace with something else" (the agent picked the keyboard job it had offered); Reduce Motion is OFF on his iPhone; **Low**; "PDF put in outstanding" (it is — its line says skipped that night); "I thought u have more things to fix from the react doctor?" (D1572's full run made; the schedule's warnings ride with this batch, D1534, D490). The branch keeps its name; there is no PDF work on it.
+- **The night, in order (one branch, one WALK check, one pull request — D485, D1087):**
+  1. **[WEEK-SWIPE-CROSS]** — BUILT, commit `4b377ec6e` (four causes of the jump, three of the missed cross, each red first). The report: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1.
+  2. **The keyboard leftovers** — [BOARD-OPEN-BY-KEYS] (the board opened from the day's date by Enter and Space; the Tab route of D551–D555 unchanged) and [VEILED-WINDOWS-BAR]'s Escape part (the board's small menus, the Traffic and day-details windows close on Escape, the keyboard back on their button). About 3 h. Next.
+  3. **The schedule's React Doctor warnings** — about 65 in the board, the week's drawing code and the schedule's windows (the list: the evidence sheet §3); fixed where nothing a person sees changes, else kept with its reason (D1534's way); the input window's 91 wait for the Inputs batch. About 2–3 h.
+  - **The check:** WALK — the sizing step, a Sonnet walker on the built bundle (the swipe by fingers in WebKit and Chromium the ways a hand does it — lesson 20 — and the keys), a fresh blind Opus read of the branch (D790; on `[NO-ASTRA-LIST]`), fixes, the re-walk, the evidence sheet. The pull request into `main` opened once all three are built; nothing merges.
+- **Records done:** [WEEK-SWIPE-CROSS] filed and marked built; §7.11 lesson 20 (D1297); the settled week-navigation text in `scheduler.md` amended for the new landing (D201's way — no new ruling); React Doctor's full count in the sheet §3.
+- **Not tonight:** [PDF-PRINT-TWICE] (his "skip"); [OVERNIGHT-RETRY-TRIAL] (the setting is read when a chat starts).
+- **Questions waiting for him:** none yet. For his iPhone look in the morning: Safari's pull past the end, the new 340ms pace, the pause after the lift, a short flick and a second swipe while settling.
+- **Rulings:** none this session.
+- **Progress:** job 1 built; job 2 starting.
 <!-- /now -->
 ## Next, in order
 
