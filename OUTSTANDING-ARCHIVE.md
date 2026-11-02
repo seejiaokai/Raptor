@@ -7364,3 +7364,24 @@ and by eye side by side (`raptor-port/docs/handpass/2026-11-02-year-build.md`), 
 record the drawings and write the part list (the corner, the title and its ▾, the card), or accept the measured comparison
 for these three small parts. **Place:** before pull request 611's "merge live". **ANSWERED 2 Nov 26 — his D1566: the measured comparison stands, a one-off.**
 
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([LW-INPUT-RANGE-WHOLE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
+**What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
+"All 3 days", every day marked), but an entry filed on the Inputs page (his picture: Quill's OML of 6–9 Jul) opens on the one day
+tapped ("Quill Mon 6 Jul"), the rest unmarked. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\faf6bf7b-image.png`
+(Quill) and `…\65af00f1-image.png` (Rune). **To do:** draw it on the real app first (D853) — the whole range marked and named, and
+what the window offers over a held range (the Duration row's "All n days" / day tapped; Grant OIL, CSE, OD on all days or one) — his
+pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat. **DRAWN 2 Nov 26** on the real app (`raptor-port/docs/img/mock/2026-11-02-input-range/`, the script `raptor-port/scripts/handpass/lw-input-range-draw.mjs`): today, A (recommended — opened whole, "All 4 days" / the day tapped on the Duration row choosing what Grant OIL, CSE, OD and the ⋯ act on), B (opened whole to look at, acting on the day tapped) — **his pick: A (D1565, 2 Nov 26)** — to build from drawing A, on a new branch from `main` once pull request 611 is live (both change the Leave War grid's file).
+
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([LW-OWN-ROW-SELMARK]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-OWN-ROW-SELMARK] On his own Leave War row the picked day cannot be seen (his D1568, 2 Nov 26)
+**What:** his own row on the Leave War is lit in cyan ("this is you"), and the day or days a window acts on wear the selection’s
+cyan (D1289) — so on his own row the picked day looks like the rest of the row (his picture: `C:\Users\User\.claude\uploads\41b60225-458a-4c7a-a0dc-97ad861ddec8\d8a172dd-image.png`,
+Saber, Mon 30 Nov). An entry opened whole marks all its days the same way (D1565), so it would hide there too. **To do:** draw how
+the mark stands out on his own row with the design skill, put it to him with pictures (D853), build it, walk it on his own row and
+another. **Place:** on `claude/lw-input-range-whole-02fa06`, with [LW-INPUT-RANGE-WHOLE].
+

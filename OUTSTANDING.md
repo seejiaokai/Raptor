@@ -109,8 +109,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-OPENDATES-X-SIZE] — on a phone the "Open for bidding" page's ✕ is 18 × 17, under a finger's size — seen by M3's follow-up walk.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
-- [LW-INPUT-RANGE-WHOLE] — a tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (D1563): his pick A (D1565) — IN HAND on `claude/lw-input-range-whole-02fa06`.
-- [LW-OWN-ROW-SELMARK] — on his own Leave War row the day he taps does not show as picked: the mark is his row’s own cyan (D1568) — drawn for him first, built on the same branch.
 - [NO-PAGE-ZOOM] — on a phone only the grids zoom, never the page (D1567) — its own job and branch.
 - [INPCAL-HOLD-FLAKE] — the Inputs calendar’s held-finger browser test fails on `main`’s own code (found 2 Nov 26).
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -252,21 +250,6 @@ pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it st
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
-
-### [LW-INPUT-RANGE-WHOLE] A tap on a day of a several-day entry filed on the Inputs page opens it whole, as a war leave does (his D1563, 2 Nov 26)
-**What:** today a leave of several days placed on the war opens whole from a tap on any day (D1448, D1461 — "Rune 30 Jun – 2 Jul",
-"All 3 days", every day marked), but an entry filed on the Inputs page (his picture: Quill's OML of 6–9 Jul) opens on the one day
-tapped ("Quill Mon 6 Jul"), the rest unmarked. His pictures: `C:\Users\User\.claude\uploads\bfb7a1b4-282f-4e4f-bffc-7fed8f1b15a0\faf6bf7b-image.png`
-(Quill) and `…\65af00f1-image.png` (Rune). **To do:** draw it on the real app first (D853) — the whole range marked and named, and
-what the window offers over a held range (the Duration row's "All n days" / day tapped; Grant OIL, CSE, OD on all days or one) — his
-pick, then build with the bug-check order (plain-user round, D1557). **Place:** with [LW-YEAR-CLEAR]'s build, in the fresh chat. **DRAWN 2 Nov 26** on the real app (`raptor-port/docs/img/mock/2026-11-02-input-range/`, the script `raptor-port/scripts/handpass/lw-input-range-draw.mjs`): today, A (recommended — opened whole, "All 4 days" / the day tapped on the Duration row choosing what Grant OIL, CSE, OD and the ⋯ act on), B (opened whole to look at, acting on the day tapped) — **his pick: A (D1565, 2 Nov 26)** — to build from drawing A, on a new branch from `main` once pull request 611 is live (both change the Leave War grid's file).
-
-### [LW-OWN-ROW-SELMARK] On his own Leave War row the picked day cannot be seen (his D1568, 2 Nov 26)
-**What:** his own row on the Leave War is lit in cyan ("this is you"), and the day or days a window acts on wear the selection’s
-cyan (D1289) — so on his own row the picked day looks like the rest of the row (his picture: `C:\Users\User\.claude\uploads\41b60225-458a-4c7a-a0dc-97ad861ddec8\d8a172dd-image.png`,
-Saber, Mon 30 Nov). An entry opened whole marks all its days the same way (D1565), so it would hide there too. **To do:** draw how
-the mark stands out on his own row with the design skill, put it to him with pictures (D853), build it, walk it on his own row and
-another. **Place:** on `claude/lw-input-range-whole-02fa06`, with [LW-INPUT-RANGE-WHOLE].
 
 ### [NO-PAGE-ZOOM] On a phone only the grids zoom, never the page (his D1567, 2 Nov 26)
 **What:** on his iPhone a pinch or double tap can zoom the whole page, and then he is stuck zoomed in (his screen recording:
