@@ -125,6 +125,18 @@ describe('generic drag & drop across the whole edit board (tfin)', () => {
     setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
   })
 
+  /* [OIL-NOTIFY-SEEN] (2): a puck let go over nothing came off its seat without a word, where the right-click says
+     "Fable removed" — a drop that missed and a removal looked the same */
+  it('a seat puck let go over nothing says it was removed, in the right-click’s words', async () => {
+    const seat = $$('#eWeek .seat[data-slot^="g:"][data-drag]').find(s => slotVal(s.dataset.slot!))!
+    const key = seat.dataset.slot!, before = slotVal(key)
+    toasts = []
+    await dnd($(`#eWeek .seat[data-slot="${key}"]`), document.body)
+    expect(slotVal(key)).toBe('')
+    expect(toasts[0]).toBe(`${PEOPLE[before].cs} removed`)
+    setSlotVal(key, before); await act(async () => { afterSchedMutate(); notify() })
+  })
+
   it('the dnd class is cleared after every drop', () => {
     expect(document.body.classList.contains('dnd')).toBe(false)
   })

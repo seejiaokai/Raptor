@@ -68,6 +68,9 @@ let OFW=false
    pending — what the discard-confirm button must show (P2-IMPL-09). Read only
    under PV; withDaySnap sets it before the swap and restores it in finally. */
 let PVND=0
+/* …and the day's own "N pending" — the count the working copy's head shows — captured with it ([LOOK-PENDING-COUNT], 2 Nov 26).
+   The two differ on purpose: a load leaves a member's own input alone (D863), so it is pending but not discarded. */
+let PVPC=0
 const sev=(di:any,id:any)=>(PV&&!OFW)?null:sevOf(di,id)
 /* THE PREVIOUS-DAY TRACE (owner, 6 Aug 26; made a standing mark 6 Aug 26).
    A crew-rest breach is raised on the day the man is told to report, but the
@@ -117,17 +120,17 @@ export function withDaySnap(di:any,ver:any,fn:any){
   if(!snap)return fn(false)
   /* capture the LIVE discard count BEFORE the swap zeroes pending (P2-IMPL-09) —
      the confirm button reads it as PVND, so it never shows "Discard 0 edits". */
-  const nd0=dayDiscardCount(di,ver)
-  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND
+  const nd0=dayDiscardCount(di,ver), pc0=dayApproved(di)?dayShownPendCount(di):0
+  const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND, pc=PVPC
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
-  PV=true; PVV=ver; PVND=nd0
+  PV=true; PVV=ver; PVND=nd0; PVPC=pc0
   /* …and an ISSUED version stands in its inputs too ([LEAVE-LATE-PUBLISHED], owner D177–D179): every reader of this
      face — the Unavailable block, the ⓘ panel's counts, the LATE badge, the SANS rows, the board's panels, the ALL
      AVAIL window through withChipWorld — reads the inputs the version was issued with (engine/inputs.ts inputsOn). A
      parked plan carries none (it is a working alternative, not a document) and reads the live inputs, as before. */
   const inp = snap.inp && snap.d && snap.d.dt != null ? { [snap.d.dt]: snap.inp } : null
   try { return withFrozenInputs(inp, () => withFaceAttrs({ pa: snap.pa, rv: snap.rv, ros: snap.ros }, () => fn(true))) }
-  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd }
+  finally { DAYS[di]=d0; SCHED.changes=c0; SCHED.pending=p0; PV=false; PVV=null; PVND=nd; PVPC=pc }
 }
 /* [ALL-AVAIL-WINDOW] — THE WORLD A COUNT CHIP WAS DRAWN IN, replayed for the
    window its tap opens (Fable S3, 23 Sep 26). A chip is drawn in one of three
@@ -1568,7 +1571,11 @@ export function dayStatHTML(di:any,ed:any){
        has replaced DAYS[di] with the frozen snapshot, so dayDelta here would diff
        the PREVIEWED version against the issued one and report the wrong number.
        PVND makes the "N pending" chip agree with the read-only bar's "Discard N
-       edits" count, which A3 requires (Codex PS-006 / Fable #2). The issued
+       edits" count, which A3 requires (Codex PS-006 / Fable #2). CHANGED 2 Nov 26 ([LOOK-PENDING-COUNT], walker D's find
+       of 6 Oct 26): the chip reads PVPC, the working copy's own count captured with PVND — since D863 a load leaves a
+       member's own input alone, so the discard count is the smaller of the two whenever one waits, and the look's head
+       read "1 pending" beside the working copy's "2 pending" for the same day. "N pending" is one count wherever it
+       shows; the bar's button keeps PVND, because it says what the load discards. The issued
        DEFAULT face (PVQ, the view page's frozen render) is NOT an active preview:
        it must stay byte-frozen against live edits, so it shows NO count at all — working-copy state never
        shows on the issued face (AM24, AM5). It used to keep dayDelta on the promise that the snapshot
@@ -1578,7 +1585,7 @@ export function dayStatHTML(di:any,ed:any){
     /* a day NOT yet published counts no "pending" any more ([DRAFT-PENDING], the owner's D118: it miscounted — a move
        read 2, put back still 2, a new puck in a crowd 0 — and could not be tapped); its chip is the changes window's
        "N new" / "N changes" below. A published day's count is unchanged. */
-    const nd=PV?(PVQ?0:PVND):(ok?dayShownPendCount(di):0);
+    const nd=PV?(PVQ?0:PVPC):(ok?dayShownPendCount(di):0);
     /* a DRAFT preview must never wear the published day's clothes (owner,
        15 Aug 26 — "when I toggle to draft 1, it shouldn't say published"):
        under a d: preview the ✓ Published stamp and the AL chip are replaced

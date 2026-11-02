@@ -259,7 +259,7 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   Schedule a mouse drag held in the app's mouse edge band at the week's left or right edge waits about half a second, then
   steps the week one day exactly as one press of ‹ / › does (the front day flush at the left, D275), and again while held;
   a name only passing through the band (every crew-panel name crosses the right one) moves nothing; it stops at Monday and
-  Sunday — a held man is never carried into another week. The finger's drag and the page's up-and-down edge scroll are
+  Sunday — a held man is never carried into another week (cross-week dragging skipped on his word, D1573). The finger's drag and the page's up-and-down edge scroll are
   unchanged. Answers [WEEK-DRAG-EDGE-PAN] under the design guide's drag rule (D895).
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and

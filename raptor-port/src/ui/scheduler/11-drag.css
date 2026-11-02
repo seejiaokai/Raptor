@@ -174,6 +174,12 @@ body.dnd [data-fill]:empty::after{content:'drop here';color:rgba(59,198,232,.5);
    bin you drag a puck back to became unreachable on a phone. */
 body.dnd .availpuck{position:relative}
 @media (min-width:821px){body.dnd .eroster{position:relative}}
+/* …but never on Edit Schedule's open crew panel, which is already sticky — and a sticky box anchors the badge as well as
+   a relative one does ([OIL-NOTIFY-SEEN] (3), 2 Nov 26). At (0,2,1) the rule above beat its sticky (0,2,0): the moment a
+   drag armed, the panel left its place under the top bar and went back to the top of the page — scrolled to a lower
+   day, ALL AVAIL, the whole crew list and this very "drop to unassign" bin were a screen or more above, out of reach.
+   The board's crew panel (.sb-ros, never sticky) keeps the relative; the hidden panel keeps its own absolute. */
+@media (min-width:821px){body.dnd:not(.ros-collapsed) .edit-board .eroster{position:sticky}}
 body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';position:absolute;top:3px;left:50%;transform:translateX(-50%);font-size:8.5px;font-weight:700;letter-spacing:.05em;color:rgba(59,198,232,.72);background:rgba(11,13,16,.9);border:1px solid rgba(59,198,232,.3);border-radius:999px;padding:1px 7px;pointer-events:none;z-index:3;white-space:nowrap}
 .sb-open{cursor:pointer}
 .page.editing .day-head .dow,.page.editing .day-head .dt{cursor:pointer}
