@@ -61,6 +61,45 @@ week loads — within the settled design, more moving parts; wait for his look f
 **Seen in passing (older, not this job's):** old previews of other chats still hold ports 4179, 4180, 4188, 4191, 4197, 4290,
 4301, 4311; the `?kbdebug` readout writes only on focus, resize and the visible screen's scroll — no frames lost to it.
 
+## 1b. Job 2 — the builder's report (a fresh Opus helper, saved as it arrived, commit `e76f32440`)
+
+**A. [BOARD-OPEN-BY-KEYS].** Was: the edit week's date that opens the board took no Tab and no key. Now: `html.ts` — the edit
+week's `.dt.sb-open` is `role="button" tabindex="0"` (the view week's markup unchanged — parity); `interactions.ts`
+`routeOpenKey` (Enter or Space open the board; a held-key repeat or a modifier does nothing; the same edit-page check as a click;
+delegated on the document), wired in `Shell.tsx`; `board.ts` `openSchedulerByKeys`, `takeKeysIn`; `SchedBoard.tsx` — opened by
+the keys, the keys go onto the board's own box (tabindex -1 only while that board is up, no ring), Escape and ✓ Done still put
+them back on the date; `11-drag.css` the app's keyboard ring on the date, `:focus-visible` only; `10-board-history.css` no ring
+on the board's box. **Beyond the brief, nothing on screen:** the keys move onto the board when it opens by them — else the next Tab
+went into the week hidden under the board and the focus left sight (the guide: focus always visible).
+
+**B. [VEILED-WINDOWS-BAR], the Escape part.** Was: the board's five small menus, the Traffic window and the day-details window did
+not close on Escape (with one up, Escape did nothing). Now: `sheetfocus.ts` — one list of these, newest on top, one capture
+listener that takes Escape and lets a question sheet over them answer first; `menuEscape` (removes the menu, unhooks its
+click-outside listener, the keys back on its button); `useEscWindow` (closes the window, every way out puts the keys back on its
+opener); `locate` finds the opener on the board, never the week's identical button under it. `board.ts popMenu` and
+`interactions.ts openStoresMenu` call `menuEscape`; `Modals.tsx` AirPop and DayPop use `useEscWindow` (a Traffic line being typed
+is saved first, as ✕ saves it); `boardescape.ts` comment brought up to date. Which windows cover the top bar: unchanged.
+
+**Tests.** New `src/ui/boardkeys.test.tsx`, 16 cases — 14 red on the old code, each for its reason; the 2 Tab-route cases green
+before and after, as they should be. `html.test.ts` (a pin that the view week's date has no tabindex); `boardescape.test.tsx` (the
+Traffic case expects Escape to close it). All of `src/ui` under the lock: 4935 / 4936 — the one its own Tab-walk test timing out
+under load, capped at 30 Tabs and a 60s limit, green on rerun. `e2e/board-escape-traffic.spec.ts` (real keys at 1536 × 864, two new
+tests) 11 / 11 — **not run against the old code** (the builder's reasoning says they would fail there; the unit tests carry the red);
+`e2e/schedule-tab.spec.ts` 31 / 31 — the Tab route unchanged. Build OK, `lint:changed` no new finding, docsize OK, **tfin 728 / 0**.
+
+**The builder's keyboard run** (`scripts/handpass/keys-build-walk.mjs`, the built bundle): 20 / 20, no console or page errors, no
+failed request. Pictures `raptor-port/docs/img/handpass/2026-11-03-week-swipe/keys-build/` — 01 the ring on Monday's date after
+Shift+Tab (the host opened it: the cyan ring round "Jul 13 · Today", nothing else changed); 02 the board open after Enter, no ring
+on its box; 03 + Block up, then gone after Escape with the ring back on + Block; 04–09, 11 the other menus and both windows; 10 the
+ring back on the date after Escape closed the board; 12 no ring after a mouse click. Its one first-run failure was its own: after
+the mouse round trip the week moved — the owner's 10 Aug 26 rule (a closed board brings its day to the week's front); the click
+itself leaves the week where it was (20 → 20); the check now measures at the click.
+
+**Seen in passing:** the duty role list on board rows is built by the same menu, so it closes on Escape too (with the caret in the
+role box, the first Escape closes the list, the second puts the old text back); a menu's items cannot be reached by the keys; Tab
+is not kept inside the board; the board's day-head crew-day picker is mouse-only — the three filed as [BOARD-KEYS-LEFT]. An older
+line of `ui-contracts.md` (about line 673) that still said the board does not close on Escape was corrected.
+
 ## 2. The lesson (D1297)
 `bug-check-order.md` §7.11 lesson 20 — a gesture walked once, slowly, pictured only at rest.
 
