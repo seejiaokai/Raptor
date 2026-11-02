@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, monthStill } from './app'
 
 /* THE INPUTS CALENDAR IN THE BUILT APP (the Inputs / SANS job, step 5 — the plan §3.6; D620, D626, D632, D639, D653,
    D664). What only a real browser can say: that a bar lies over the dates it covers and over no other, that the month
@@ -13,7 +13,7 @@ async function month(p: Page, y: number, m: number) {
   for (let i = 0; i < 240; i++) {
     const [name, year] = (await p.locator('#inpCal .ic-mon').innerText()).trim().toLowerCase().split(/\s+/)
     const d = y * 12 + (m - 1) - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name)))   // a phone prints three letters
-    if (!d) return
+    if (!d) return monthStill(p)
     await p.locator(d > 0 ? '#icNext' : '#icPrev').click()
   }
   throw new Error('the calendar never reached the month asked for')

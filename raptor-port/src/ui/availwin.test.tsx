@@ -81,7 +81,10 @@ beforeAll(async () => {
   await act(async () => { setSession({ user: 'ad', role: 'admin' }); notify() })
   await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
   HOOKS.toast = (m: any) => { toasts.push(String(m)) }
-})
+/* its own limit ([AVAILWIN-SETUP-SLOW], 2 Nov 26): loading the Leave War's and the Tracker's pages is the slowest thing
+   this set-up does, and in a run of 142 files on his PC it once passed vitest's 10 s limit for a set-up; a minute is
+   headroom on a busy machine, not a target — a load that never finishes still fails, by name */
+}, 60_000)
 afterAll(async () => {
   HOOKS.toast = origToast
   await act(async () => { root.unmount() })

@@ -19,10 +19,16 @@
  *        take it (waiting while another chat holds it), run that one command in this folder with its output shown,
  *        ALWAYS release, and exit with the command's code. The push-and-lock guard ([PUSH-LOCK-GUARD], D976) points
  *        here when it refuses a full check run made without the lock.
+ *   node raptor-port/scripts/gatelock.mjs beat                 refresh a lock taken by hand while its long run goes on
  *
- * Stale: a lock older than 2 hours is broken by `take` with a line saying so (a run that died without releasing).
- * RAPTOR_GATE_LOCK overrides the folder (the tests use a temporary one). */
-import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync, statSync, createWriteStream, renameSync, appendFileSync } from 'node:fs'
+ * Stale: a lock with no sign of life for 2 hours is broken by `take` with a line saying so (a run that died without
+ * releasing). Its sign of life is the lock folder's own time stamp — the HEARTBEAT ([GATELOCK-STALE-LIVE], 2 Nov 26):
+ * `run` and `exec` refresh it every minute while their command runs, and `beat` refreshes a lock taken by hand. Before
+ * it, age alone decided, and a waiting run came within three minutes of breaking a hand-taken lock whose Tracker smoke
+ * was still running (28 Sep 26). The push guard (.claude/hooks/push-guard.mjs) reads the same time stamp, so the two
+ * agree on what is stale without either changing its two hours.
+ * RAPTOR_GATE_LOCK overrides the folder (the tests use a temporary one); GATELOCK_BEAT_MS the heartbeat (the tests'). */
+import { mkdirSync, rmSync, writeFileSync, readFileSync, existsSync, statSync, createWriteStream, renameSync, appendFileSync, utimesSync } from 'node:fs'
 import { spawn, spawnSync } from 'node:child_process'
 import { join, resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -31,6 +37,11 @@ import { createServer, connect } from 'node:net'
 
 export const LOCK = process.env.RAPTOR_GATE_LOCK || join(homedir(), '.raptor-gates-lock')
 export const STALE_MS = 2 * 60 * 60 * 1000
+export const BEAT_MS = Number(process.env.GATELOCK_BEAT_MS) || 60_000
+/* how long a holder goes on beating: past it the lock is left to go stale as before, so a command that HANGS (a web server
+   that never comes up, a prompt nobody answers) frees the PC 2 h later instead of never (the fresh read, 2 Nov 26) — the
+   longest honest run, the whole gate set or a fanned-out walk, is well inside it */
+export const MAX_BEAT_MS = Number(process.env.GATELOCK_MAX_BEAT_MS) || 4 * 60 * 60 * 1000
 
 export function status(lock = LOCK) {
   if (!existsSync(lock)) return null
@@ -51,13 +62,63 @@ export function holderGone(s) {
 }
 /* the running command's own process, written beside holder-pid once it starts */
 function noteChild(p, lock = LOCK) { try { if (p && p.pid) appendFileSync(join(lock, 'owner.txt'), `child-pid: ${p.pid}\n`) } catch {} }
-/* one attempt: true when this caller now holds it */
+/* one attempt: true when this caller now holds it. The owner file names the chat — its branch in the first line, and the
+   app's own number for the session that took it — never the take command's process, which is gone the moment a lock is
+   taken by hand and so told a waiter nothing ([GATELOCK-STALE-LIVE]). */
 export function tryTake(who, lock = LOCK, holderPid = null) {
   try { mkdirSync(lock) } catch (e) { if (e && e.code === 'EEXIST') return false; throw e }
-  writeFileSync(join(lock, 'owner.txt'), `${who}\nstarted: ${new Date().toISOString()}\npid: ${process.pid}\n${holderPid ? `holder-pid: ${holderPid}\n` : ''}`)
+  writeFileSync(join(lock, 'owner.txt'), `${who}\nstarted: ${new Date().toISOString()}\nsession: ${mySession()}\n${holderPid ? `holder-pid: ${holderPid}\n` : 'taken by hand: refresh it with `gatelock.mjs beat` while its run goes on\n'}`)
   return true
 }
 export function release(lock = LOCK) { rmSync(lock, { recursive: true, force: true }) }
+/* A RUN RELEASES ONLY ITS OWN LOCK (the narrow read, 2 Nov 26): a run that outlived its heartbeat's ceiling may have had
+   its lock broken as stale and taken by another chat; when it finally ends, a plain release would delete THAT chat's lock
+   and let a third run start beside it. So `run`, `exec` and their signal path release only a lock whose owner file still
+   names their own process; the `release` command, used by hand, stays as it is. */
+export function releaseIfMine(lock = LOCK, pid = process.pid) {
+  let owner = ''
+  try { owner = readFileSync(join(lock, 'owner.txt'), 'utf8') } catch { return false }
+  if (!new RegExp(`^holder-pid: ${pid}$`, 'm').test(owner)) return false
+  release(lock)
+  return true
+}
+/* THE HEARTBEAT: the lock folder's time stamp moved to now — the sign of life `take` and the push guard read. False when
+   there is no lock to refresh. */
+export function beat(lock = LOCK) {
+  try { const now = new Date(); utimesSync(lock, now, now); return true } catch { return false }
+}
+/* a holder's heartbeat for as long as its command runs, up to MAX_BEAT_MS; returns the stop, called before the lock is released */
+export function keepBeating(lock = LOCK, everyMs = BEAT_MS, maxMs = MAX_BEAT_MS, log = console.log) {
+  const t0 = Date.now()
+  const t = setInterval(() => {
+    if (Date.now() - t0 > maxMs) {
+      clearInterval(t)
+      log(`gatelock: stopped refreshing the lock after ${Math.round(maxMs / 60000)} min — the command may be hung; the lock goes stale 2 h from now`)
+      return
+    }
+    beat(lock)
+  }, everyMs)
+  return () => clearInterval(t)
+}
+/* this chat's session, and the branch of a folder — what `beat` asks before it refreshes a lock taken by hand */
+export const mySession = () => process.env.CLAUDE_CODE_HOST_SESSION_ID || process.env.CLAUDE_CODE_SESSION_ID || 'unknown'
+/* May this caller refresh this lock? Only its own (the fresh read): a beat left running after its release would otherwise
+   keep the NEXT holder's lock alive, and a hand-taken lock has no process for a waiter to find dead. The session decides
+   where both sides know it; otherwise the branch, against the owner file's first line. */
+export function mayBeat(s, session = mySession(), branch = '') {
+  if (!s) return false
+  const m = /^session: (.+)$/m.exec(s.owner), theirs = m ? m[1].trim() : 'unknown'
+  if (theirs !== 'unknown' && session !== 'unknown') return theirs === session
+  return !!branch && s.owner.split('\n')[0].split(' — ')[0].trim() === branch
+}
+/* why a lock may be broken now, or null while it is live: its holder process is gone, or it has had no sign of life for
+   STALE_MS. A heartbeat keeps a long run's lock young, so age alone never cuts into a run that is still beating. */
+export function breakReason(s) {
+  if (!s) return null
+  if (holderGone(s)) return 'gone'
+  if (s.ageMs > STALE_MS) return 'stale'
+  return null
+}
 /* Break a dead or stale lock without breaking a fresh one (the guard's second read, 17 Oct 26): two waiting chats can
  * both judge the same lock dead, and the slower one would delete the lock the faster one has just taken. Renaming the
  * folder is atomic — only one rename succeeds — and the renamed folder's owner.txt is compared with the one judged: if
@@ -69,30 +130,42 @@ export function breakLock(lock, judged) {
      between these two reads. */
   /* a lock whose owner.txt is not written yet is named as status() names it — a chat that has just made the folder is
      never moved aside before it can write its name (the fix's read, 17 Oct 26) */
+  /* a lock that beat since it was judged is alive after all (the heartbeat's fresh read): its time stamp, not only its
+     owner, is compared — before the move and after it, as the owner is */
+  const beatSince = dir => { try { return judged && judged.since != null && statSync(dir).mtimeMs > judged.since } catch { return false } }
   if (judged) {
     if (!existsSync(lock)) return false
     let now = '(no owner.txt)'; try { now = readFileSync(join(lock, 'owner.txt'), 'utf8').trim() } catch {}
-    if (now !== judged.owner) return false
+    if (now !== judged.owner || beatSince(lock)) return false
   }
   const aside = `${lock}.broken-${process.pid}-${Date.now()}`
   try { renameSync(lock, aside) } catch { return false }                 // someone else broke (or released) it first
   let owner = ''
   try { owner = readFileSync(join(aside, 'owner.txt'), 'utf8').trim() } catch { owner = '(no owner.txt)' }
-  if (judged && owner !== judged.owner) { try { renameSync(aside, lock) } catch {} return false }
+  if (judged && (owner !== judged.owner || beatSince(aside))) { try { renameSync(aside, lock) } catch {} return false }
   rmSync(aside, { recursive: true, force: true })
   return true
 }
 let child = null                                                           // the command a run or an exec is running
 const sleep = ms => new Promise(r => setTimeout(r, ms))
 export async function take(who, { lock = LOCK, everyMs = 30_000, log = console.log, holderPid = null } = {}) {
-  let said = false
+  let said = false, warned = false
   for (;;) {
     if (tryTake(who, lock, holderPid)) return true
     const s = status(lock)
     // a lock that cannot be broken (a folder still in use) is waited on like any other — never retried without a pause
-    if (s && holderGone(s) && breakLock(lock, s)) { log(`gatelock: broke a lock whose run ended without releasing it — ${s.owner.split('\n')[0]}`); continue }
-    if (s && s.ageMs > STALE_MS && breakLock(lock, s)) { log(`gatelock: broke a stale lock (${Math.round(s.ageMs / 60000)} min old) — ${s.owner.split('\n')[0]}`); continue }
-    if (!said && s) { log(`gatelock: waiting — held by ${s.owner.split('\n')[0]} (${Math.round(s.ageMs / 60000)} min)`); said = true }
+    const why = breakReason(s)
+    if (why === 'gone' && breakLock(lock, s)) { log(`gatelock: broke a lock whose run ended without releasing it — ${s.owner.split('\n')[0]}`); continue }
+    if (why === 'stale' && breakLock(lock, s)) { log(`gatelock: broke a stale lock (no sign of life for ${Math.round(s.ageMs / 60000)} min) — ${s.owner.split('\n')[0]}`); continue }
+    if (!said && s) {
+      log(`gatelock: waiting — held by ${s.owner.split('\n')[0]} (last sign of life ${Math.round(s.ageMs / 60000)} min ago)`)
+      said = true
+    }
+    /* a lock taken by hand beats only when its holder says so: past an hour without one, the holder is the one to ask (D302) */
+    if (!warned && s && /^taken by hand/m.test(s.owner) && s.ageMs > STALE_MS / 2) {
+      log('gatelock: it was taken by hand and is broken after 2 h with no beat — ask its holder before then (D302)')
+      warned = true
+    }
     await sleep(everyMs)
   }
 }
@@ -160,6 +233,7 @@ async function runAll(from, logs) {
   const who = `${process.env.GATELOCK_WHO || branchName(from)} — the full gate set`
   await take(who, { holderPid: process.pid })
   releaseOnSignal()
+  const stopBeat = keepBeating()
   let bad = 0
   try {
     /* the port is chosen once the lock is ours, not before a wait behind another chat (the night's blind read, L2) */
@@ -171,7 +245,7 @@ async function runAll(from, logs) {
       if (code !== 0) bad++
       console.log(`${code === 0 ? 'PASS' : 'FAIL'} ${name} (${Math.round((Date.now() - t) / 1000)} s) → ${file}`)
     }
-  } finally { release() }
+  } finally { stopBeat(); releaseIfMine() }
   return bad
 }
 /* an interrupt (Ctrl-C, a stop) stops the command it is running, THEN releases — a run must never go on after the lock is
@@ -184,7 +258,7 @@ function releaseOnSignal() {
         else child.kill('SIGTERM')
       }
     } catch {}
-    try { release() } finally { process.exit(130) }
+    try { releaseIfMine() } finally { process.exit(130) }
   }
   for (const sig of ['SIGINT', 'SIGTERM', 'SIGBREAK', 'SIGHUP']) { try { process.on(sig, stop) } catch {} }
 }
@@ -200,6 +274,13 @@ if (isMain) {
   if (verb === 'status') { const s = status(); console.log(s ? `held by ${s.owner.replace(/\n/g, ' · ')} (${Math.round(s.ageMs / 60000)} min)` : 'free') }
   else if (verb === 'take') { await take(rest[0] || 'a chat'); console.log('gatelock: taken') }
   else if (verb === 'release') { release(); console.log('gatelock: released') }
+  else if (verb === 'beat') {
+    const s = status()
+    if (!s) { console.log('gatelock: no lock to refresh'); process.exitCode = 1 }
+    else if (!mayBeat(s, mySession(), branchName(process.cwd()))) { console.log(`gatelock: not yours — not refreshed (held by ${s.owner.split('\n')[0]})`); process.exitCode = 1 }
+    else if (beat()) console.log(`gatelock: refreshed — held by ${s.owner.split('\n')[0]}`)
+    else { console.log('gatelock: no lock to refresh'); process.exitCode = 1 }
+  }
   else if (verb === 'run') {
     const from = resolve(opt('--from') || join(dirname(fileURLToPath(import.meta.url)), '..'))
     const logs = resolve(opt('--logs') || join(tmpdir(), 'raptor-gates'))
@@ -210,6 +291,7 @@ if (isMain) {
     const cmd = parts.length === 1 ? parts[0] : parts.map(a => /[\s"&|;<>]/.test(a) ? `"${a.replace(/"/g, '\\"')}"` : a).join(' ')
     await take(rest[0], { holderPid: process.pid })
     releaseOnSignal()
+    const stopBeat = keepBeating()
     let code = 1
     try {
       /* the port is chosen once the lock is ours (the night's blind read, L2); a refusal still releases it (finally) */
@@ -222,8 +304,8 @@ if (isMain) {
         const p = child = spawn(cmd, { shell: true, stdio: 'inherit', env }); noteChild(p)
         p.on('close', c => res(c ?? 1)); p.on('error', () => res(1))
       })
-    } finally { release() }
+    } finally { stopBeat(); releaseIfMine() }
     console.log(`gatelock: released (the command exited ${code})`)
     process.exitCode = code
-  } else { console.log('usage: gatelock.mjs status | take "<who — what>" | release | run [--from raptor-port] [--logs dir] | exec "<who — what>" -- <command>'); process.exitCode = 2 }
+  } else { console.log('usage: gatelock.mjs status | take "<who — what>" | release | beat | run [--from raptor-port] [--logs dir] | exec "<who — what>" -- <command>'); process.exitCode = 2 }
 }

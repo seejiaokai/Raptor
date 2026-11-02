@@ -3149,3 +3149,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** The hand-off's remaining plan, when the outgoing session cannot release its branch first, names the recipe: fast-forward the new worktree's branch to the task's commit and set its upstream to `origin/<task-branch>` (checking `branch.<b>.merge` is not `main`).
 
 **Principle:** A hand-off between two checkouts of one repository either releases the branch first or tells the receiver how to work on it from a second checkout.
+
+### Observation 770: A shaky test chased by a guess that a small repeat count seemed to confirm
+
+**Status:** OPEN
+**Date:** 2 Nov 26
+**Session context:** the test-reliability batch — [INPCAL-HOLD-FLAKE], a browser test failing about one run in five
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** forming and testing a hypothesis for an intermittent failure
+
+**Issue:** The test passed 8 of 8 on the current code and failed 1 of 8 with a recent change taken out, so a plausible story (the browser's double-tap wait, removed by that change) looked proven. A run of 40 on the current code then failed 8 times: the story was wrong. Recording every press's real target in the failing step found the cause at once (the press landed on the neighbouring date, because the test measured positions while an animation was still running).
+
+**Suggested improvement:** In the phase that tests a hypothesis, add: for a failure of rate p, a pass count proves nothing until it is large enough that the old failure rate would almost surely have shown (at one in five, 8 clean runs happen about one time in six); before believing a story, instrument the failing step to record what actually happened (the event's target, the element's position at each moment) rather than reasoning from the code.
+
+**Principle:** An intermittent failure is diagnosed by recording what the failing step actually did, and a fix is believed only after a run long enough that the old rate could not hide in it.

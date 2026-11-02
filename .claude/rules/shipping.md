@@ -93,8 +93,9 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`); if it is held, WAIT (check every
   few minutes; never start alongside); RELEASE it the moment the run ends, pass or fail (`… gatelock.mjs release`, or
   delete the folder). `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you
-  STOP does not: release it yourself at once. A lock older than 2 hours whose run is plainly over is stale — break it and
-  say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
+  STOP does not: release it yourself at once. A lock with no sign of life for 2 hours is stale — `run` and `exec` refresh
+  its time stamp every minute while they run, and a lock taken by hand is refreshed with `… gatelock.mjs beat` during a
+  long run ([GATELOCK-STALE-LIVE], 2 Nov 26); break a stale one and say so (ask its holder first while a chat that could hold it is open). One UNIT test file, a typecheck or one walk script
   on a build already served needs no lock; anything that BUILDS — a browser-test run of even one file — waits until the lock is free.
   The folder sits OUTSIDE every checkout, so every worktree on the PC shares it. **`… gatelock.mjs exec "<branch> — <what>"
   -- <command>`** takes it, runs that one command and always releases it. **A guard enforces this and the push rules

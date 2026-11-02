@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, monthStill } from './app'
 
 /* THE SMALL OIL JOB, IN THE BUILT APP ([OIL-UNCANCEL-UNASKED] — owner D816; [OIL-LOAD-VERSION-UNASKED] — owner D818).
    What only a real browser can say: that the "not answered" bar holds its longest words and both its buttons on ONE
@@ -20,7 +20,7 @@ async function month(p: Page, sel: { mon: string; prev: string; next: string }, 
   for (let i = 0; i < 240; i++) {
     const [name, year] = (await p.locator(sel.mon).innerText()).trim().toLowerCase().split(/\s+/)
     const d = y * 12 + (m - 1) - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name.slice(0, 3))))
-    if (!d) return
+    if (!d) return monthStill(p)
     await p.locator(d > 0 ? sel.next : sel.prev).click()
   }
   throw new Error('the calendar never reached the month asked for')

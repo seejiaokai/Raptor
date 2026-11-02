@@ -106,7 +106,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
-- [INPCAL-HOLD-FLAKE] — the Inputs calendar’s held-finger browser test fails on `main`’s own code (found 2 Nov 26).
+- [INPCAL-HOLD-FLAKE] — **BUILT 2 Nov 26 on `claude/test-reliability-batch`** — the Inputs calendar’s held-finger browser test fails on `main`’s own code (found 2 Nov 26).
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
@@ -163,9 +163,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [AVAILWIN-SETUP-SLOW] — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
+- [AVAILWIN-SETUP-SLOW] — **BUILT 2 Nov 26 on `claude/test-reliability-batch`** — one test's set-up loads two big pages inside a 10-second limit and timed out once on a busy PC; a busy GitHub run could go red with no fault.
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
-- [GATELOCK-STALE-LIVE] — the lock is broken as "stale" on age alone and can cut into a live run.
+- [GATELOCK-STALE-LIVE] — **BUILT 2 Nov 26 on `claude/test-reliability-batch`** — the lock is broken as "stale" on age alone and can cut into a live run.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
@@ -248,6 +248,7 @@ gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart la
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
 
 ### [INPCAL-HOLD-FLAKE] The Inputs calendar's held-finger browser test fails on main's own code (found 2 Nov 26)
+**BUILT 2 Nov 26 on `claude/test-reliability-batch` — the cause was the test, not the app.** Since 1 Nov the calendar opens on November, so the test turns back to October, and it measured the dates while October was still sliding in (28px over 240ms); a later press at the measured place then landed on the 19th for the 20th — one run in five on his PC (6 to 8 of 40). The test's month step now waits for the slide to end (`e2e/app.ts monthStill`), in every test file that turns the Inputs or SANS month (eight); 120 of 120 runs passed after, and the eight files whole. The lesson: `docs/walk-scripts.md` §4. To archive once live.
 **What:** `e2e/inputs-calendar.spec.ts` "a finger held on a date, then dragged, picks the run…" failed twice in GitHub's run of
 pull request 612 (the first hold: 20 Oct never lit) and fails on his PC at the SECOND hold (after the window's ✕), with the
 branch's changed files put back to `main`'s — so it is not that change; `main`'s own run passed it at 21:24 on 1 Nov 26. A
@@ -256,6 +257,7 @@ hold timer) and make the test wait on that, not on time (D87); check on GitHub. 
 or at once if it keeps a pull request red.
 
 ### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**BUILT 2 Nov 26 on `claude/test-reliability-batch`:** that set-up and the three others that load the same two pages (`lwkeepalive`, `topbar-pair`, `trk-nocourse`) have a minute's limit of their own. To archive once live.
 **What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
 run of 142 test files on his PC it timed out once and passed alone. A busy GitHub run could go red with no fault in the app. **To do:**
 give that hook its own longer limit, or load the chunks once for the file in a setup the limit does not cover. **Place:** with the next
@@ -1473,6 +1475,7 @@ mock-up first (the Leave War and Quals first; Admin and Logic only if he wants t
 change-recording re-test; none blocking.
 
 ### [GATELOCK-STALE-LIVE] The check lock is broken as "stale" on age alone — it nearly cut into a live run — low (filed 28 Sep 26)
+**BUILT 2 Nov 26 on `claude/test-reliability-batch`:** the heartbeat — the lock folder's time stamp, refreshed every minute by `run` and `exec` (for at most 4 h, so a hung command still frees the PC) and by `gatelock.mjs beat` for this chat's own lock taken by hand; a beat landing as a waiter breaks the lock stops the break; stale is 2 h with no sign of life (the push guard reads the same stamp, unchanged); the owner file names the session, not the take command; tests `src/testing/gatelock-beat.test.ts`; `shipping.md` §The checks and `gates-and-deploy.md` (4) say so. To archive once live.
 Found by the small-fixes batch (28 Sep 26): its `gatelock.mjs run` was queued behind the Tracker-leftovers chat, which had taken the PC check lock by hand ~2 h earlier and was running its Tracker smoke under it. The waiter breaks any lock older than 2 hours (`STALE_MS`), and the pid in `owner.txt` is the `take` command's (gone at once), so nothing distinguished a live run from a dead one; the queued run was stopped by hand three minutes before it would have broken the lock. **The fix:** a heartbeat — the holder touches `owner.txt` while its work runs (`run` does it itself; a hand-taken lock is refreshed by `gatelock.mjs beat`, or by each suite it runs) and "stale" means no heartbeat for, say, 20 minutes; the owner file names the session, not the take command's pid. `raptor-port/scripts/gatelock.test.*` gains the case. Until then: ask the holder before a queued run reaches the 2-hour mark (D302). **Place:** low, any time — docs/scripts only; `shipping.md` §The checks describes the stale rule and changes with it.
 
 ### [PLAN-BANNER-DOOR] The preview banner's "Switch to this plan" has no screen route — low (filed 28 Sep 26)

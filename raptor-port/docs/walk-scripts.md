@@ -111,6 +111,11 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   it could (14 Oct 26: End in a scrolling list settles after about 750ms; a check at 450ms passed), or read the cause
   directly (the scroll position over time). A judge for "X is absent" is written as absence, never through X's own
   fields (`!!b.show && b.show.visible === …` reports WRONG exactly when Show is rightly absent).
+- **A place measured to press later is measured once what holds it has stopped moving** — the Inputs and SANS months
+  slide in 28px over 240ms when turned, so a date measured straight after ‹ or › is read mid-slide and a press sent there
+  later lands on the date beside it (2 Nov 26, [INPCAL-HOLD-FLAKE]: one test in five pressed the 19th for the 20th, once
+  November made it turn back to October). Wait on the motion itself — `e2e/app.ts monthStill` for those two months — or
+  measure again just before the press.
 - **A check over a list asserts the list's size first, and the premise that fills it** — `every(…)` over an empty list
   passes (21 Oct 26: a fault dropped the picked seat, the list emptied, and "0 of 0" passed).
 - **Every scroll step asserts that the scroll position moved** — of the scroller the step means to move, not the window
