@@ -10,6 +10,7 @@ import { CURWEEK } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
 import { shiftWeek } from './weeknav'
 import { mountPeek } from './peek'
+import { swDebugOn, swLog, swScroll, swScrollTake } from './swdebug'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -474,6 +475,7 @@ function onDocScroll(e: Event) {
     /* the strip's last movement, for a swipe begun while it is still settling onto an end day ((1) at the phone swipe,
        below) — three writes, the cost a scroll tick here can bear */
     const sl = w.scrollLeft
+    swScroll(sl)
     if (w !== wkPrevEl) { wkPrevEl = w; wkMoveDir = 0 }
     else if (sl !== wkPrevSL) { wkMoveDir = sl < wkPrevSL ? -1 : 1; wkMovedAt = Date.now() }
     wkPrevSL = sl
@@ -596,8 +598,11 @@ let wkMovedAt = -Infinity, wkMoveDir = 0, wkPrevSL = 0, wkPrevEl: HTMLElement | 
    it owned the swipe; if it did not (it was at its edge), the gesture falls
    through to the week-cross like a touch on any bare part of the day. */
 let swGo: HTMLElement | null = null, swGoSL = -1
+/* ?swdebug only (ui/swdebug.ts): the touch's moves, and whether a move came with no touch begun */
+let swMoves = 0, swOrphan = false
 function onWeekTouchStart(e: TouchEvent) {
   swEl = null; swGo = null
+  if (swDebugOn) { swMoves = 0; swOrphan = false }
   if (window.innerWidth > 820) return
   if (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') return
   if (view.SBDAY != null) return                 // the board is open — its arrows own week-stepping
@@ -625,11 +630,13 @@ function onWeekTouchStart(e: TouchEvent) {
   swAtRight = sl >= max - EDGE_SLOP || (settling && wkMoveDir > 0 && sl > max - half)
   swNearLeft = sl < half; swHomeL = Math.max(0, sl - EDGE_SLOP)
   swNearRight = sl > max - half; swHomeR = Math.max(0, max - EDGE_SLOP - sl)
+  if (swDebugOn) swLog(`START sl${Math.round(sl)}/${Math.round(max)} ${settling ? 'settling' : 'still'} dir${wkMoveDir} ${Date.now() - wkMovedAt}ms L${+swAtLeft} R${+swAtRight} nL${+swNearLeft} | ${swScrollTake()}`)
 }
 /* Track the finger so a gesture the browser CANCELS mid-way (see below) still
    has a real end position to measure — a passive move listener can't steer the
    scroll, it only remembers where the finger went. */
 function onWeekTouchMove(e: TouchEvent) {
+  if (swDebugOn) { if (swEl) swMoves++; else if (!swOrphan && e.target && (e.target as HTMLElement).closest?.('.week')) { swOrphan = true; swLog('MOVE with no touch begun') } }
   if (!swEl || !e.touches || !e.touches.length) return
   swLastX = e.touches[0].clientX
   swLastY = e.touches[0].clientY
@@ -659,24 +666,26 @@ function liftSpeed(endX: number): number {
    both, and swEl is nulled on the first, so this can't cross twice. */
 function onWeekTouchEnd(e: TouchEvent) {
   const w = swEl; swEl = null
+  if (swDebugOn && !w && e.target && (e.target as HTMLElement).closest?.('.week')) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} with no touch begun | ${swScrollTake()}`)
   if (!w || window.innerWidth > 820) return
   const ct = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0] : null
   const endX = ct ? ct.clientX : swLastX
   const endY = ct ? ct.clientY : swLastY
   const dx = endX - swStartX, dy = endY - swStartY
+  const said = (why: string) => { if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} ax${swAxis || '-'} mv${swMoves} → stay: ${why} | ${swScrollTake()}`) }
   /* horizontal intent only: a drag that began down the day (paging it) is the page being scrolled, however far it
      drifts sideways after — the axis its first clear movement took, (3) above; one that never moved that far keeps
      the whole-path test */
-  if (swAxis === 'y' || (!swAxis && Math.abs(dx) <= Math.abs(dy))) return
+  if (swAxis === 'y' || (!swAxis && Math.abs(dx) <= Math.abs(dy))) { said('read as up-down'); return }
   /* …and whatever its first movement looked like, a gesture that moved the PAGE up or down was the browser's page scroll
      (the fresh read's finding 4, 3 Nov 26): a thumb scrolling down whose first 10px slanted sideways, then drifting 45px
      across, crossed the week. The page moving is the browser's own answer, so it wins over the first-movement guess; a
      thumb's arc that moved the day sideways leaves the page where it was, and still crosses. */
-  if (Math.abs(window.scrollY - swPageY) > AXIS_SLOP) return
+  if (Math.abs(window.scrollY - swPageY) > AXIS_SLOP) { said(`page moved ${Math.round(window.scrollY - swPageY)}`); return }
   /* the gesture began inside a wave block that actually scrolled → it owned the
      swipe, so this is not a week cross. A block that never moved (it was at its
      own edge) falls through, which is what unsticks a wave-dense day's swipe. */
-  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) return
+  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) { said('a wave block scrolled'); return }
   /* right edge + swipe left (content advancing) → next week, land on Monday;
      left edge + swipe right (retreating) → previous week, land on Sunday */
   /* far enough, or (2) a short flick still moving that way at the lift */
@@ -685,6 +694,7 @@ function onWeekTouchEnd(e: TouchEvent) {
   /* travel measured from the edge, or (1) from where the travel has brought the end day home */
   const left = (swAtRight && crossing(-dx, -v)) || (swNearRight && crossing(-dx - swHomeR, -v))
   const right = (swAtLeft && crossing(dx, v)) || (swNearLeft && crossing(dx - swHomeL, v))
+  if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} v${v.toFixed(2)} ax${swAxis || '-'} mv${swMoves} → ${left ? 'NEXT WEEK' : right ? 'PREV WEEK' : 'stay'} | ${swScrollTake()}`)
   if (left) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
   else if (right) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }
