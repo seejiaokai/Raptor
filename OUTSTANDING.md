@@ -79,6 +79,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
+- [DOCTOR-INPUTS-RIDE] — React Doctor's warnings that ride with the next Inputs batch (D1534, D490): the input window's 91 and FloatWindow's two exports (filed 3 Nov 26).
 - [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 10, 12, 15, 17, 18) next, with the icons (D1507 one gear, D1508 Edit Schedule's calendar — 29 Oct 26).
 - [TITLE-CHECK-SEEN] — three older small finds left: one line a man in "To go out", a re-accepted request read as a words change, a long OIL Earn name cut on a phone.
 - [ALLAVAIL-CHECK-SEEN] — the ALL AVAIL / Event check's older small finds, none fixed.
@@ -152,7 +153,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [BOARD-OPEN-BY-KEYS] — the Scheduler Board cannot be opened from the keyboard: the day's date that opens it takes no keys (found 30 Oct 26; low). **BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); archive once live.
-- [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only (low, the agent's).
+- [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -2109,12 +2110,19 @@ armFreshTime). **Place:** low — with the next iPhone look at the board.
 ### [LOOK-COUNT-BOARD-ASK] The Scheduler Board's look at a version shows no "N pending"; the week's look shows one (found 2 Nov 26 by the schedule leftovers' walk — a question kept for him)
 **A question for him, not put until he says (D994).** Opened from the plans selector on a published day with changes waiting, the week's 👁 look at an issued version shows the day's "N pending" (since 2 Nov 26 the working copy's own count — `[LOOK-PENDING-COUNT]`, `html.ts` PVPC), while the Scheduler Board's look shows none: its strip under a look carries only who signed the version and the plans selector (`board.ts boardSignBody`, its `pv` branch). View-only Sched's issued face shows none either (AM24). Pictures: `raptor-port/docs/img/handpass/2026-11-02-schedule-leftovers/walk/D8-2-look-at-original-count.png` (the week) beside `D8-4-board-look-count.png` (the board). **To ask:** should a look at an issued version show the day's waiting count — on both, on neither? Recommended when put: on both, since the look's bar offers "Load onto working copy", and what it would throw away is the point. **Place:** with the next change to the version look or the board's sign strip.
 
+### [DOCTOR-INPUTS-RIDE] React Doctor's warnings that ride with the next Inputs batch (filed 3 Nov 26)
+D1534 and D490: an area's remaining React Doctor warnings ride with its next batch. After the full run of 3 Nov 26 (742 findings,
+the app's errors 0 — `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §3) and the schedule's 67 dealt with that night
+(§1c), the Inputs batch carries: `ui/inputedit.tsx`'s 91 (the input window) and `ui/FloatWindow.tsx`'s two exports (moving them
+touches the input window, the Inputs and SANS settings, the SANS day and about 40 tests). Fixed or kept with a reason on the line
+above, the 31 Oct 26 clean-up's way. **Place:** with the next Inputs batch.
+
 ### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
 Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (`raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b), older than that job:
 (1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
 the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
-(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. **Place:** low — with the next keyboard batch.
+(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
 
 ### [BOARD-OPEN-BY-KEYS] The Scheduler Board cannot be opened from the keyboard (found 30 Oct 26 by [BOARD-ESCAPE-CLOSE]'s build; older; low)
 **BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.

@@ -100,6 +100,46 @@ role box, the first Escape closes the list, the second puts the old text back); 
 is not kept inside the board; the board's day-head crew-day picker is mouse-only — the three filed as [BOARD-KEYS-LEFT]. An older
 line of `ui-contracts.md` (about line 673) that still said the board does not close on Escape was corrected.
 
+## 1c. Job 3 — the schedule's React Doctor warnings (a fresh Opus helper, saved as it arrived, commit `6eb79cfdb`)
+
+**67 dealt with: 41 FIXED, 26 KEPT** with a reason on the line above (one line each:
+`raptor-port/docs/handpass/parts/rdc1103/dispositions.md`). Nothing a person sees changed.
+
+| Kind | Fixed | Kept |
+|---|---|---|
+| only-export-components | 11 | 2 |
+| js-set-map-lookups | 7 | 6 |
+| control-has-associated-label | 9 | 0 |
+| no-placeholder-only-field | 8 | 0 |
+| no-static-element-interactions | 4 | 4 |
+| no-high-complexity-react-function | 2 | 3 |
+| prefer-html-dialog | 0 | 4 |
+| click-events-have-key-events | 0 | 4 |
+| no-giant-component | 0 | 2 |
+| no-unthrottled-scroll-mutation | 0 | 1 |
+
+(The 67 included three in `FloatWindow.tsx`; all three kept.)
+**Fixed:** code moved word for word to new files — `topbits.tsx`'s non-screen exports to `ui/topstate.ts` (the sync chip's state,
+the bell's tap and list state, `openNotice`, both undo engines), `jumpOf` to `ui/changesjump.ts`, `openAvailWinFrom` to
+`ui/availopen.ts`, importers repointed; screen-reader names (aria-label only) on the duty and wave template editors' unnamed
+controls and the board's search box; the shades behind the two template editors, the cancel dialog and Sort all marked as not a
+control; faster look-ups in `highlights.ts warnTarget`, `histbubble.ts storyOf`, `board.ts`'s ground-sort note, `html.ts
+signoffHTML`; two complexity findings by small parts drawing the same markup (`EntryChange` in the changes window, `WaveLine` and
+`WaveEye` in the wave template editor).
+**Kept:** the complexity of the changes window, the ALL AVAIL window and the board (splitting them re-wires ruled, checked
+behaviour); four windows that could be a `<dialog>` (layered, non-blocking — a dialog brings the browser's own top layer);
+FloatWindow's two exports (moving them touches the input window, the Inputs and SANS settings, the SANS day and about 40 tests —
+the Inputs batch); three click boxes passing a press to buttons inside them (the board's day chips — real buttons would change a
+measured bar's look, a picture first, D853); the ALL AVAIL window's list of men (pucks answer no key anywhere — a design job); the
+wave menu following its box on scroll (D1081 — a throttle leaves it a frame behind); six look-ups in lists searched once.
+**Checks:** React Doctor 0.9.18, the whole app after the job: 0 left in these files, the project 742 → 675 (exactly 67 fewer —
+nothing new, the three new files included); `lint:changed` no new finding; build passes; tfin 728 / 0; unit — all of `src/ui` and
+the moved code's other tests under the lock, 274 files, 5011 tests green; browser specs under the lock 155 passed (`availwin`,
+`changeswin`, `boardside`, `look-keys`, `kbscroll`, `board-escape-traffic`, `sched-phone`, `save-note`); docsize OK. No behaviour
+changed, so no new tests. **Left:** the board's day and week chips take no keys (most felt on a desktop, where the ‹ › day buttons
+are not drawn) — added to [BOARD-KEYS-LEFT]; FloatWindow's two exports and the input window's 91 ride with the Inputs batch
+([DOCTOR-INPUTS-RIDE]). **Seen in passing:** `ChangesWindow.tsx` still re-exports `openChanges`, which nothing imports from there.
+
 ## 2. The lesson (D1297)
 `bug-check-order.md` §7.11 lesson 20 — a gesture walked once, slowly, pictured only at rest.
 

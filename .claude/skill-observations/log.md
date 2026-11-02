@@ -3179,3 +3179,26 @@ reset mode disables before reusing it.
 **Suggested improvement:** In §5/§6 add: a script that empties its folder empties it only on an unfiltered run; a filtered run writes to its own sub-folder (`<folder>/only-<filter>`), or refuses to clear.
 
 **Principle:** A cleanup step that is right for a full run destroys evidence when the same script is run in part; tie destructive setup to the run's scope, not to the script.
+
+
+### Observation 772: An iPhone screen recording read frame by frame with no video tool installed
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** the night of 3 Nov 26 — the owner sent an iPhone .mp4 of a swipe fault; the PC has no ffmpeg or OpenCV.
+**Skill:** overnight (and any bug-diagnosis from a recording) — New skill candidate: a short "read a recording" note in the walk-scripts guide
+**Type:** open-source
+**Phase/Area:** diagnosing a fault the owner recorded
+
+**Issue:** The fault (a transition "abrupt", swipes that "sometimes don't" work) only showed in motion; a still was useless and no
+video tool was installed. What worked: Playwright with `channel: 'msedge'` (Edge decodes the iPhone's H.264/HEVC, the bundled
+Chromium does not), a local HTML page holding `<video src>` opened by `page.goto('file:///…')` (a `setContent` page cannot load
+a file: URL), seek by `currentTime` and wait for `seeked`, then an element screenshot of the video (a canvas `toDataURL` is
+refused — the canvas is tainted by the file: origin). Frames every 0.25 s, laid out 8 to a sheet, read the whole 7.7 s clip in
+four images; the builder later found two frames that showed the slide's end, which settled whether the animation ran at all.
+
+**Suggested improvement:** a few lines in `raptor-port/docs/walk-scripts.md` (or the debugging guide) on reading his recordings:
+Edge channel, file page, seek + element screenshot, contact sheets; frames saved with the evidence.
+
+**Principle:** When a fault lives in motion, read the recording frame by frame before theorising; a browser that can decode the
+format is a sufficient video tool, and a contact sheet of evenly spaced frames shows the whole gesture at a glance.

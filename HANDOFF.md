@@ -33,7 +33,7 @@ the later merge keeps both (D78).
 - **Not tonight:** [PDF-PRINT-TWICE] (his "skip"); [OVERNIGHT-RETRY-TRIAL] (the setting is read when a chat starts).
 - **Questions waiting for him:** none yet. For his iPhone look in the morning: Safari's pull past the end, the new 340ms pace, the pause after the lift, a short flick and a second swipe while settling.
 - **Rulings:** none this session.
-- **Progress:** job 1 built (`4b377ec6e`); job 2 built (`e76f32440`, the report §1b; its leftovers filed as [BOARD-KEYS-LEFT]); job 3 starting.
+- **Progress:** job 1 built (`4b377ec6e`); job 2 built (`e76f32440`, the report §1b; its leftovers filed as [BOARD-KEYS-LEFT]); job 3 built (`6eb79cfdb`, 41 fixed, 26 kept, the report §1c). Pull request into `main` to be opened; then the walk and the read.
 <!-- /now -->
 ## Next, in order
 
