@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, monthStill } from './app'
 
 /* THE SANS CALENDAR IN THE BUILT APP (the Inputs / SANS job, step 4 — the plan §3.5; D617–D651, D664). The first
    calendar's SANS half (Codex, 5 Oct 26: a "Flying SANS required" box in the day panel, a two-figure colour dropdown,
@@ -20,7 +20,7 @@ async function month(p:Page,y:number,m:number){
     const [name,year]=(await label.innerText()).trim().toLowerCase().split(/\s+/)
     /* a phone prints the month's first three letters */
     const d=y*12+(m-1)-(+year*12+MONTHS.findIndex(x=>x.startsWith(name)))
-    if(!d)return
+    if(!d)return monthStill(p)
     await (d>0?next:prev).click()
   }
   throw new Error('the calendar never reached the month asked for')

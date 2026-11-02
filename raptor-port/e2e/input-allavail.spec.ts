@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, monthStill } from './app'
 
 /* AN INPUT FILED FOR "ALL AVAIL", AND THE KIND "EVENT", IN THE BUILT APP (`[INPUT-ALL-AVAIL]`, `[INPUT-EVENT-KIND]`; owner
    D700, D702, D711, D713 — 9 Oct 26; the plan docs/superpowers/plans/2026-10-09-input-all-avail-plan.md §6.9).
@@ -21,7 +21,7 @@ async function month(p: Page, y: number, m: number) {
   for (let i = 0; i < 240; i++) {
     const [name, year] = (await p.locator('#inpCal .ic-mon').innerText()).trim().toLowerCase().split(/\s+/)
     const d = y * 12 + (m - 1) - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name)))   // a phone prints three letters
-    if (!d) return
+    if (!d) return monthStill(p)
     await p.locator(d > 0 ? '#icNext' : '#icPrev').click()
   }
   throw new Error('the calendar never reached the month asked for')

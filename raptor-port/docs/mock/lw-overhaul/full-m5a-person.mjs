@@ -41,6 +41,7 @@ const CLIP = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke
 // the approved ones; what this round adds is only D1472's line, `ADD_CSS` below, named on his page.
 const SRC = f => readFileSync(new URL('./' + f, import.meta.url), 'utf8')
 const cut = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i + 1); if (i < 0 || j < 0) throw new Error('marker missing: ' + a + ' … ' + b); return s.slice(i, j) }
+// react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
 const load = (code, deps, names) => new Function(...Object.keys(deps), code.replace(/^export /gm, '') + `\n;return { ${names.join(', ')} }`)(...Object.values(deps))
 const R7SRC = SRC('full-r7-person.mjs'), R20SRC = SRC('full-r20-3c.mjs')
 const { kb } = load(cut(R7SRC, 'const KIND = {', 'const CSS = `'), {}, ['KIND', 'kb'])

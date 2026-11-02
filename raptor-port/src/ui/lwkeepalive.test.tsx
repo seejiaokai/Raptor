@@ -30,7 +30,10 @@ beforeAll(async () => {
   root = createRoot(host)
   await act(async () => { root.render(<App />) })
   await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
-})
+/* its own limit ([AVAILWIN-SETUP-SLOW], 2 Nov 26): loading the Leave War's and the Tracker's pages is the slowest thing
+   this set-up does, and in a run of 142 files on his PC it once passed vitest's 10 s limit for a set-up; a minute is
+   headroom on a busy machine, not a target — a load that never finishes still fails, by name */
+}, 60_000)
 
 /* Unmount before the file ends: a render task left queued by the last test
    would otherwise fire after vitest tears jsdom down and die with "window is

@@ -15,6 +15,11 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
 
 ## Now (24 Sep 26) — how the checks and the deploy run today
 
+- **The 31 errors left in old walk scripts are fixed before the next full run (his D1572, 2 Nov 26):** the app's own errors
+  are 0 since the 31 Oct 26 clean-up; the 31 errors a full run still reported (2 Nov 26) were all one rule, `no-eval` —
+  30 in the Leave War overhaul's mock-up scripts (`docs/mock/lw-overhaul/`, which load their approved drawing's own code,
+  D1478), each now kept with its reason on the line above; 1 in `reference/probes/`, read-only, left as it is (the
+  cleanup's sheet called them walk scripts). The app's remaining warnings keep riding with each area's next batch (D1534, D490).
 - **The code check runs by itself (his D1539, 31 Oct 26 — D1536's answer to the M365 plan's point 4; [CODE-CHECK-CI]):**
   React Doctor 0.9.18's "no new finding" check, in three places that share ONE script, `raptor-port/scripts/code-check.mjs`:
   `npm run lint:changed` by hand; the **`code check`** job in `deploy.yml` on every pull request; and a Stop hook,
@@ -151,10 +156,14 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   processor. Reviewers run while the builder is fixing; the gates run alone.
   **(3) A `gatelock.mjs run` you STOP does not release the lock** — its release lives in the process you killed. Release
   it yourself at once (`gatelock.mjs release`).
-  **(4) A lock near its two-hour mark is not stale by its age alone.** A lock taken by hand records the short-lived
-  `take` command, so "its process is gone" proves nothing: ask the chat that holds it before breaking it (28 Sep 26: a
-  queued run was three minutes from breaking a lock whose holder had just started its last suite). The waiting `take` or
-  `run` breaks it by itself at two hours — stop your own queued run while the holder is still working.
+  **(4) A lock is stale after two hours with no sign of life, not two hours of age** ([GATELOCK-STALE-LIVE], 2 Nov 26).
+  Its sign of life is the lock folder's time stamp: `run` and `exec` refresh it every minute while their command runs, so
+  their lock never goes stale while it runs — up to 4 hours, after which they stop beating and say the command may be hung,
+  so a hung run still frees the PC 2 hours later; a lock taken BY HAND is refreshed only by `gatelock.mjs beat`, which
+  refreshes this chat's own lock and refuses another's — run it during a long run held that way, or better, run through `exec`. A waiter that finds a hand-taken lock silent for over an hour
+  says so: ask the chat that holds it (its branch is the owner file's first line, its session the `session:` line)
+  before the waiting `take` or `run` breaks it at two hours (28 Sep 26: a queued run was three minutes from breaking a
+  lock whose holder had just started its last suite). The push guard reads the same time stamp.
   **(5) After resolving a merge conflict by hand, run each conflicted file's own check before the long run** — the test
   file itself for a test, the type check for source. The type check does not cover the browser-test folder, and two
   tests appended at the same place share their closing lines: read the join, not only the markers.

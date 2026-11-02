@@ -19,6 +19,7 @@ const want = n => !ONLY.length || ONLY.includes(n)
 const browser = await chromium.launch()
 const SRC = f => readFileSync(new URL('./' + f, import.meta.url), 'utf8')
 const cut = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i + 1); if (i < 0 || j < 0) throw new Error('marker missing: ' + a + ' … ' + b); return s.slice(i, j) }
+// react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
 const load = (code, deps, names) => new Function(...Object.keys(deps), code.replace(/^export /gm, '') + `\n;return { ${names.join(', ')} }`)(...Object.values(deps))
 
 // ---------------------------------------------------------------- the sole sources (D1478)
@@ -319,8 +320,10 @@ if (want('b5')) for (const w of [375, 402]) {
 // round 14's Grades window and grade picker, their markup read from round 14's own code (D1478) and run here
 const R14SRC = SRC('full-r14-bal.mjs')
 const GW = cut(R14SRC, '    w.innerHTML = `<div class="hd">', '    Object.assign(w.style, { left: (btn.right - 470)')
+// react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
 const gradesHTML = cnt => { const w = {}; new Function('GR', 'cnt', 'w', GW)(B.GRADES, cnt, w); return w.innerHTML }
 const GM = cut(R14SRC, '    m.innerHTML = GR.map', '    Object.assign(m.style, { left: G.left')
+// react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
 const pickerHTML = () => { const m = {}; new Function('GR', 'm', GM)(B.GRADES, m); return m.innerHTML }
 // the table brought to a group: round 14's way (the page's own scroller is not scrolled; the table moves up)
 const toGroup = (p, g, off = 0) => p.evaluate(([g, off]) => {

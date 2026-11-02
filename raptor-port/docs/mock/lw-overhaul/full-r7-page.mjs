@@ -116,6 +116,7 @@ async function setup(kind, who, o = {}) {
   // Q9: a member's Manning opens folded (remembered per person) — fold it through the app's own button first
   if (member) await oneFold(p)
   await p.evaluate(([css, EXTRA, FAM, cellSrc, extraCells]) => {
+    // react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
     window.FAM = FAM; const cellHTML = new Function('return ' + cellSrc)(); window.__cellHTML = cellHTML
     const st = document.createElement('style'); st.id = 'zzcss'; st.textContent = css; document.head.appendChild(st)
     const pg = document.querySelector('#page-leavewar')
@@ -318,6 +319,7 @@ td.cell.box .cb{box-shadow:inset 0 0 0 2px rgba(74,140,100,.8)}
 // ======================= r7-05 / r7-06 — a tap on a date heading: the day panel =======================
 async function dayPanel(p, o) {
   await p.evaluate(([o, puckSrc]) => {
+    // react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
     const puck = new Function('return ' + puckSrc)()
     const th = document.querySelector(`[data-testid="head-${o.date}"]`)
     if (th) { th.style.outline = '2px solid #4c8dff'; th.style.outlineOffset = '-2px'; th.dataset.zk = 'head' }

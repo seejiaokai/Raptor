@@ -1,5 +1,5 @@
 import { test, expect, type Page, type Locator } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, monthStill } from './app'
 
 /* KS1–KS4 — [KEYBOARD-SCROLL] (owner D1048, 19 Oct 26): on a phone, a box tapped to type in that the keyboard would
    cover is scrolled to sit just above it. Chromium cannot raise an iPhone's keyboard, so — as the board's own keyboard
@@ -34,8 +34,8 @@ const toOct26 = async (page: Page) => {
   for (let i = 0; i < 240; i++) {
     const [name, year] = (await label.innerText()).trim().toLowerCase().split(/\s+/)
     const d = 2026 * 12 + 9 - (+year! * 12 + MON.indexOf(name!.slice(0, 3)))
-    if (!d) return
-    await (d > 0 ? next : prev).click(); await page.waitForTimeout(150)
+    if (!d) return monthStill(page)
+    await (d > 0 ? next : prev).click()
   }
   throw new Error('the calendar never reached October 2026')
 }

@@ -93,6 +93,20 @@ export async function go(page: Page, to: 'viewsched' | 'editsched' | 'inputs' | 
   await page.waitForTimeout(350)
 }
 
+/* THE INPUTS AND SANS MONTHS SLIDE IN WHEN TURNED ([INPCAL-HOLD-FLAKE], 2 Nov 26). ‹ and › run the new month in from
+   the side, 28px over 240ms (InputsCal.tsx and SansCal.tsx, "THE SLIDE"), so a date measured straight after a turn is
+   measured mid-slide and a press sent to that place later lands on the date beside it. It began failing on 1 Nov 26:
+   the calendar opens on today's month, so from November the tests turn back to October and the slide plays, where in
+   October no turn was needed. A test that turned the month waits here before it measures or presses anything: two
+   frames, so a slide the last press started has begun, then until no finite animation runs on either month. */
+export async function monthStill(page: Page) {
+  const still = await page.waitForFunction(() => new Promise<boolean>(done => requestAnimationFrame(() => requestAnimationFrame(() => {
+    const roots = Array.from(document.querySelectorAll('#inpCal, [data-testid="sanscal"]'))
+    done(!roots.some(el => el.getAnimations({ subtree: true }).some(a => a.playState === 'running' && a.effect?.getComputedTiming().endTime !== Infinity)))
+  }))), undefined, { timeout: 5000 }).then(() => true, () => false)
+  if (!still) throw new Error('monthStill: the month was still sliding after 5 s')
+}
+
 /* .week carries scroll-behavior:smooth and panDays() asks for 'smooth' on
    purpose, so a read taken a fixed delay later can land mid-animation and
    report a position nothing ever settled at. Poll until it stops moving. */

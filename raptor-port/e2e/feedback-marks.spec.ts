@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
-import { login, go, answerNoDocument } from './app'
+import { login, go, answerNoDocument, monthStill } from './app'
 
 /* THE LEFTOVERS OF 14 OCT 26, IN THE BUILT APP ([BATCH-14OCT-LEFTOVERS] — owner D849, D851, D854; the design guide's §1,
    D850). What only a real browser can say: that a mark is PAINTED and in view, that no note is drawn, where a tag stands
@@ -20,7 +20,7 @@ async function month(p: Page, y: number, m: number) {
   for (let i = 0; i < 240; i++) {
     const [name, year] = (await p.locator('#inpCal .ic-mon').innerText()).trim().toLowerCase().split(/\s+/)
     const d = y * 12 + (m - 1) - (+year * 12 + MONTHS.findIndex(x => x.startsWith(name)))   // a phone prints three letters
-    if (!d) return
+    if (!d) return monthStill(p)
     await p.locator(d > 0 ? '#icNext' : '#icPrev').click()
   }
   throw new Error('the calendar never reached the month asked for')

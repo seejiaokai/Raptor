@@ -7410,3 +7410,38 @@ job and branch from `main`.
 design guide). **To do:** check its press area (a stretched hit box may already reach 44); if not, give it the windows' 44px
 ✕ (`22-float-windows.css`, phone) — a picture before and after. **Place:** with the next Leave War look.
 
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([INPCAL-HOLD-FLAKE]). Forward facts: `raptor-port/docs/walk-scripts.md`, `raptor-port/docs/file-map.md`.*
+
+### [INPCAL-HOLD-FLAKE] The Inputs calendar's held-finger browser test fails on main's own code (found 2 Nov 26)
+**BUILT 2 Nov 26 on `claude/test-reliability-batch` — the cause was the test, not the app.** Since 1 Nov the calendar opens on November, so the test turns back to October, and it measured the dates while October was still sliding in (28px over 240ms); a later press at the measured place then landed on the 19th for the 20th — one run in five on his PC (6 to 8 of 40). The test's month step now waits for the slide to end (`e2e/app.ts monthStill`), in every test file that turns the Inputs or SANS month (eight); 120 of 120 runs passed after, and the eight files whole. The lesson: `docs/walk-scripts.md` §4. To archive once live.
+**What:** `e2e/inputs-calendar.spec.ts` "a finger held on a date, then dragged, picks the run…" failed twice in GitHub's run of
+pull request 612 (the first hold: 20 Oct never lit) and fails on his PC at the SECOND hold (after the window's ✕), with the
+branch's changed files put back to `main`'s — so it is not that change; `main`'s own run passed it at 21:24 on 1 Nov 26. A
+clock held at 1 or 2 Nov changes nothing on his PC. **To do:** find what the second hold waits on (the window's ✕ tap, the
+hold timer) and make the test wait on that, not on time (D87); check on GitHub. **Place:** with the next Inputs calendar job,
+or at once if it keeps a pull request red.
+
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([AVAILWIN-SETUP-SLOW]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [AVAILWIN-SETUP-SLOW] A test's set-up loads two big pages inside a 10-second limit (found 31 Oct 26, [REACT-DOCTOR-CLEANUP])
+**BUILT 2 Nov 26 on `claude/test-reliability-batch`:** that set-up and the three others that load the same two pages (`lwkeepalive`, `topbar-pair`, `trk-nocourse`) have a minute's limit of their own. To archive once live.
+**What:** `src/ui/availwin.test.tsx`'s `beforeAll` imports the Leave War's and the Tracker's lazy chunks under vitest's 10 s hook limit; in a
+run of 142 test files on his PC it timed out once and passed alone. A busy GitHub run could go red with no fault in the app. **To do:**
+give that hook its own longer limit, or load the chunks once for the file in a setup the limit does not cover. **Place:** with the next
+job that touches the tests' set-up.
+
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([GATELOCK-STALE-LIVE]). Forward facts: `raptor-port/docs/gates-and-deploy.md`, `.claude/rules/shipping.md`.*
+
+### [GATELOCK-STALE-LIVE] The check lock is broken as "stale" on age alone — it nearly cut into a live run — low (filed 28 Sep 26)
+**BUILT 2 Nov 26 on `claude/test-reliability-batch`:** the heartbeat — the lock folder's time stamp, refreshed every minute by `run` and `exec` (for at most 4 h, so a hung command still frees the PC) and by `gatelock.mjs beat` for this chat's own lock taken by hand; a beat landing as a waiter breaks the lock stops the break; stale is 2 h with no sign of life (the push guard reads the same stamp, unchanged); the owner file names the session, not the take command; tests `src/testing/gatelock-beat.test.ts`; `shipping.md` §The checks and `gates-and-deploy.md` (4) say so. To archive once live.
+Found by the small-fixes batch (28 Sep 26): its `gatelock.mjs run` was queued behind the Tracker-leftovers chat, which had taken the PC check lock by hand ~2 h earlier and was running its Tracker smoke under it. The waiter breaks any lock older than 2 hours (`STALE_MS`), and the pid in `owner.txt` is the `take` command's (gone at once), so nothing distinguished a live run from a dead one; the queued run was stopped by hand three minutes before it would have broken the lock. **The fix:** a heartbeat — the holder touches `owner.txt` while its work runs (`run` does it itself; a hand-taken lock is refreshed by `gatelock.mjs beat`, or by each suite it runs) and "stale" means no heartbeat for, say, 20 minutes; the owner file names the session, not the take command's pid. `raptor-port/scripts/gatelock.test.*` gains the case. Until then: ask the holder before a queued run reaches the 2-hour mark (D302). **Place:** low, any time — docs/scripts only; `shipping.md` §The checks describes the stale rule and changes with it.
+
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([WALK-SCRIPT-DOCTOR-ERRORS]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [WALK-SCRIPT-DOCTOR-ERRORS] The 31 React Doctor errors left in old walk scripts (his D1572, 2 Nov 26)
+**What:** after the 31 Oct 26 clean-up ([REACT-DOCTOR-CLEANUP], D1534) the app's own errors are 0; a full `npm run lint` still reports 31 error-level findings, all in `raptor-port/scripts/handpass/` walk scripts (the cleanup's evidence sheet, `raptor-port/docs/handpass/2026-10-31-react-doctor-cleanup.md`). **To do:** list them (the full run's JSON report), fix each — or keep one with its reason in a disable comment, never by changing `doctor.config.json` — check each touched script still runs (or say it is a spent one-off), then make the full run and give him the counts by area. Nothing in the app changes. **BUILT 2 Nov 26 on `claude/test-reliability-batch`:** all 31 are `no-eval` — 30 in `docs/mock/lw-overhaul/` mock-up scripts, which load their approved drawing's own code by design (D1478), each kept with its reason in a disable comment; 1 in `reference/probes/tdrag.js`, read-only, left as it is. To archive once live. The app's remaining warnings are NOT part of it: they ride with each area's next batch (D1534, D490). **Place:** next, his word (D1572); in a chat of its own.
+
