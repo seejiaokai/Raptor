@@ -21,7 +21,7 @@ import { setDayPop } from './pops'
 import { readFileSync } from 'fs'
 import { DAYS } from '../engine/data'
 import { INPUTS, inpId, withRemarksTail, holds, remarksShown } from '../engine/inputs'
-import { acceptInput, renameCallsign, setSlotVal } from '../engine/slots'
+import { acceptInput, renameCallsign, setSlotVal, txtSet } from '../engine/slots'
 import { loadVersionToWorkingCopy, inputsLeftSaid, draftDup, dayDrafts } from '../engine/drafts'
 import { SCHED, signOf, setSign, setDayApproved, dayDelta, dayDiscardCount, dayShownPendCount, dayCurVer, daySigned, dayPendingItems, publishALDay, unpublishDay } from '../engine/publish'
 import { validate, officialWarn, officialRaw, WARN, LIVE_ON_FACE } from '../engine/validate'
@@ -193,6 +193,24 @@ describe('D177 / D178 — an input change after publishing waits for the admin',
     expect(dayShownPendCount(MON)).toBe(1)
     /* …and the load's sentence says why the day still reads pending (Fable's code read F5; the plan's layer 1) */
     expect(inputsLeftSaid(MON)).toBe(" 1 change to a member's input stays pending. A load never puts back a member's own input.")   // (owner D863)
+  })
+
+  /* [LOOK-PENDING-COUNT] (walker D, 6 Oct 26): an edit and a leave filed since — the working copy's head read "2 pending"
+     and the 👁 look at the Original "1 pending", because the look printed the discard count (the leave is not discarded) */
+  it('the 👁 look at the Original reads the working copy\'s own "N pending"; its button still counts only what it discards', () => {
+    publishDay(MON)
+    txtSet(`dn:${MON}.0`, 'AN EDIT SINCE')
+    expect(commitNewInput(leaveDraft('bane', '2026-07-13', 'FILED SINCE'))).toBe(true)
+    validate()
+    expect(dayShownPendCount(MON), 'the edit and the leave').toBe(2)
+    expect(dayDiscardCount(MON), 'a load discards the edit only (D863)').toBe(1)
+    const ver = dayCurVer(MON)
+    setRestArm(MON, ver)
+    try {
+      const look = el(dayPreviewHTML(MON, ver, true))
+      expect(look.querySelector('.dpend')?.textContent?.replace(/\s+/g, ' '), 'the same count as the working copy').toBe('2 pending')
+      expect(look.textContent, 'the button says what the load discards').toContain('Discard 1 edit')
+    } finally { setRestArm(null, null) }
   })
 
   it('an accepted request edited after publishing is ONE change — its re-landed row folds into it', () => {

@@ -259,7 +259,7 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   Schedule a mouse drag held in the app's mouse edge band at the week's left or right edge waits about half a second, then
   steps the week one day exactly as one press of ‹ / › does (the front day flush at the left, D275), and again while held;
   a name only passing through the band (every crew-panel name crosses the right one) moves nothing; it stops at Monday and
-  Sunday — a held man is never carried into another week. The finger's drag and the page's up-and-down edge scroll are
+  Sunday — a held man is never carried into another week (cross-week dragging skipped on his word, D1573). The finger's drag and the page's up-and-down edge scroll are
   unchanged. Answers [WEEK-DRAG-EDGE-PAN] under the design guide's drag rule (D895).
 - **The desktop arrow glide cannot be cancelled mid-day** (owner, 23-24 Aug 26 —
   the recurring "arrows don't go day by day … stuck halfway then zoom past", and
@@ -296,6 +296,16 @@ looked at. So the day is also PICKABLE (owner, 15 Aug 26):
   sliver there where the first pucks showed through as the list scrolled. A shadow
   keeps the header's box height fixed, so the 27px column-label offset stays exact;
   the panel's `overflow` clips the cap to its rounded top edge.
+- **The open crew panel keeps its place under the top bar during a drag and at the page's foot** ([OIL-NOTIFY-SEEN] (3),
+  2 Nov 26 — the Placeholders row, ALL and ALL AVAIL, went out of the mouse's reach). Two causes, both fixed: the
+  drag-time `body.dnd .eroster{position:relative}` (`11-drag.css`, there only to anchor the "drop to unassign" badge)
+  beat the panel's sticky, so the moment a drag armed the panel went back to the top of the page — it is now
+  `body.dnd:not(.ros-collapsed) .edit-board .eroster{position:sticky}` (a sticky box anchors the badge too; the board's
+  own crew list, never sticky, keeps the relative; the hidden panel keeps its absolute); and a sticky box never leaves
+  its parent, which ended where the page's 120px foot padding begins, so the full-height panel was pushed 86px under the
+  bar at the last day — the week's own `margin-bottom:86px` lengthens `.edit-board` and its `-86px` gives it back, so
+  the page is no longer (`03-week.css`). Pins: `e2e/boardside.spec.ts` (D1116's describe — the page's foot, a puck
+  picked up scrolled down); walked `docs/handpass/2026-11-02-schedule-leftovers.md`.
 - **The desktop aircrew column can be HIDDEN, sliding off to the right** (owner,
   26 Aug 26 — "hide the placeholders list on the right of edit scheduler and it
   just animates to the right side"). A fixed rail at the viewport's right edge
@@ -2811,6 +2821,14 @@ persisted and never in a history snapshot. The toggle builder is `notePubTog`
 `applyDrop()` is the ONE drop path for mouse and touch.
 
 ### The drag machine — the mouse rides the pointer machine
+
+- **A finger scrolls the pane it is over** ([OIL-NOTIFY-SEEN], re-walk F S3-16, 2 Nov 26 — D895's "carried to the edge,
+  the view follows"). A finger drag's up-and-down edge scroll (`drag.ts tdAutoScroll`, a band a sixth of the pane, at
+  most 52px) moves the scrolling box under the finger, re-picked on each move (`tdOver`): the page itself where it is
+  the one that scrolls (the week on a phone held upright); where the page cannot scroll (the board), the finger over the
+  bar or a heading keeps the last box, so a puck carried past the pane's edge goes on scrolling it. Before, the box was
+  chosen once, from the puck's source — a crew-list puck on a phone on its side scrolled the crew list and never the
+  day pane. The mouse is unchanged (its source box is the page). Pin: `e2e/boardside.spec.ts` ("a phone on its side").
 
 - The `body.dnd` decoration is added one tick AFTER dragstart (guarded on
   the drag still being alive), never synchronously: Chromium aborts a
@@ -8071,7 +8089,10 @@ is scoped `:not(.lift-frame)`.
   dropped back on the seat it already sat in flashes in place too (7 Sep 26 —
   that path writes nothing and keeps its "Already in that seat" toast, which says
   WHY nothing moved while the flash says where the man is). A puck let go over the
-  roster is a REMOVAL: it has landed nowhere and marks nothing.
+  roster is a REMOVAL: it has landed nowhere and marks nothing — but it SAYS so, in the right-click's words, "Fable
+  removed" ([OIL-NOTIFY-SEEN] (2), 2 Nov 26: let go over nothing, often not meant, it looked like a drop that missed),
+  in one batch with the drop's own warning if the removal raised one (`drag.ts applyDrop`; pin `ui/drag.test.tsx`).
+  A man of an input's row let go over nothing keeps the door's own words (`reqdoor.ts rowTake`).
 - **Reduced motion.** The blanket `*{animation:none!important}` matches ELEMENTS
   and never pseudo-elements, so the veil carries its own
   `@media (prefers-reduced-motion:reduce){.lift-land::after{animation:none}}`

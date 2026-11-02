@@ -100,6 +100,39 @@ test('on a phone the panel has no grip', async ({ browser, baseURL }) => {
   await context.close()
 })
 
+/* [OIL-NOTIFY-SEEN] (re-walk F S3-16, 19 Oct 26): on a phone on its side a puck lifted from the crew list and held near the
+   top of the day pane scrolled the list it came from — and at the list's top, nothing — never the pane he aimed into */
+test('a phone on its side: a crew-list puck held at the top of the day pane scrolls the pane', async ({ browser, baseURL }) => {
+  const context = await browser.newContext({ baseURL, viewport: { width: 844, height: 390 }, isMobile: true, hasTouch: true })
+  const page = await context.newPage()
+  await login(page); await go(page, 'editsched')
+  await page.locator('#eWeek [data-sbday="0"]:visible').first().tap()
+  await page.waitForSelector('#schedBoard:not([hidden])'); await sleep(400)
+  const m = await page.evaluate(() => {
+    const pane = document.querySelector('#schedBoard .sb-boardwrap') as HTMLElement
+    pane.scrollTop = 300
+    const pk = [...document.querySelectorAll('#sbRoster [data-drag]')].map(e => e.getBoundingClientRect())
+      .find(r => r.width > 0 && r.top > pane.getBoundingClientRect().top && r.bottom < innerHeight - 4)
+    const p = pane.getBoundingClientRect()
+    return { pk: pk ? { x: pk.left + pk.width / 2, y: pk.top + pk.height / 2 } : null, paneTop: p.top, paneLeft: p.left, paneW: p.width, st: pane.scrollTop }
+  })
+  expect(m.pk, 'a crew-list puck in view').toBeTruthy()
+  expect(m.st).toBe(300)
+  const cdp = await context.newCDPSession(page)
+  const at = (x: number, y: number) => cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x, y, id: 1 }] })
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ ...m.pk!, id: 1 }] })
+  await sleep(300)   // held long enough to pick it up
+  const to = { x: m.paneLeft + m.paneW / 2, y: m.paneTop + 8 }
+  for (let i = 1; i <= 8; i++) await at(m.pk!.x + (to.x - m.pk!.x) * i / 8, m.pk!.y + (to.y - m.pk!.y) * i / 8)
+  for (let i = 0; i < 12; i++) { await at(to.x, to.y + (i % 2)); await sleep(30) }
+  const st = await page.evaluate(() => (document.querySelector('#schedBoard .sb-boardwrap') as HTMLElement).scrollTop)
+  /* let go back over the crew list, so nothing is placed */
+  await at(m.pk!.x, m.pk!.y)
+  await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await cdp.detach()
+  expect(st).toBeLessThan(300)
+  await context.close()
+})
+
 test.describe('Edit Schedule\'s AIRCREW heading stays in sight (D1116)', () => {
   test.use({ viewport: DESK })
   test('scrolled down, the crew panel\'s heading sits under the top bar, not behind it', async ({ page }) => {
@@ -114,6 +147,48 @@ test.describe('Edit Schedule\'s AIRCREW heading stays in sight (D1116)', () => {
     expect(m.scrolled).toBeGreaterThan(400)
     expect(m.headTop).toBeGreaterThanOrEqual(m.barBottom)
     expect(m.onHead).toBe(true)
+  })
+
+  /* [OIL-NOTIFY-SEEN] (3): the Placeholders row (ALL, ALL AVAIL) went out of the mouse's reach two ways — at the page's
+     foot the full-height panel was pushed up under the top bar, and the moment a drag armed a drag-time rule took the
+     panel out of its place under the bar, back to the top of the page */
+  const panel = (page: Page) => page.evaluate(() => {
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect()
+    const ros = document.querySelector('.edit-board .eroster')!
+    const h = ros.querySelector('.er-h')!.getBoundingClientRect()
+    const ph = ros.querySelector('.rall')!.getBoundingClientRect()
+    const hit = document.elementFromPoint(ph.left + 30, ph.top + ph.height / 2)
+    return { scrolled: scrollY, barBottom: bar.bottom, headTop: h.top, onPlaceholders: !!hit && !!hit.closest('.edit-board .eroster .rall'),
+      docH: document.documentElement.scrollHeight }
+  })
+  test('scrolled to the last day, the heading and the Placeholders row stay under the top bar', async ({ page }) => {
+    await login(page); await go(page, 'editsched'); await sleep(300)
+    const docH = await page.evaluate(() => document.documentElement.scrollHeight)
+    await page.evaluate(() => window.scrollTo(0, 1e6)); await sleep(300)
+    const m = await panel(page)
+    expect(m.scrolled).toBeGreaterThan(400)
+    expect(m.headTop).toBeGreaterThanOrEqual(m.barBottom)
+    expect(m.onPlaceholders).toBe(true)
+    expect(m.docH).toBe(docH)   // the page is no longer for it
+  })
+  test('scrolled down, a puck picked up leaves the crew panel where it was, ALL AVAIL in reach', async ({ page }) => {
+    await login(page); await go(page, 'editsched'); await sleep(300)
+    await page.evaluate(() => window.scrollTo(0, 900)); await sleep(300)
+    const seat = await page.evaluate(() => {
+      const s = [...document.querySelectorAll('#eWeek .seat[data-slot][data-drag]')].map(e => e.getBoundingClientRect())
+        .find(b => b.top > 150 && b.bottom < innerHeight - 80 && b.left > 40 && b.width > 0)
+      return s ? { x: s.left + s.width / 2, y: s.top + s.height / 2 } : null
+    })
+    expect(seat, 'a seat puck in view').toBeTruthy()
+    await page.mouse.move(seat!.x, seat!.y); await page.mouse.down()
+    for (let i = 1; i <= 6; i++) await page.mouse.move(seat!.x + i * 5, seat!.y + i * 4)
+    await expect.poll(() => page.evaluate(() => document.body.classList.contains('dnd'))).toBe(true)
+    const m = await panel(page)
+    /* put the puck back where it came from, so nothing changes */
+    await page.mouse.move(seat!.x, seat!.y); await page.mouse.up(); await sleep(200)
+    expect(m.scrolled).toBeGreaterThan(400)
+    expect(m.headTop).toBeGreaterThanOrEqual(m.barBottom)
+    expect(m.onPlaceholders).toBe(true)
   })
 })
 

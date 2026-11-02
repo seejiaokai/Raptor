@@ -139,6 +139,14 @@ body.dnd .hscroll,body.tdrag .hscroll{pointer-events:none}
      solid opaque panel top-to-bottom with nothing showing through beside it. */
   .edit-board .eroster{transition:transform .24s ease;background:var(--bg);
     max-height:calc(100vh - 44px - var(--topbar-h,0px));box-shadow:-16px 0 34px -22px rgba(0,0,0,.92)}
+  /* ROOM FOR THE FULL-HEIGHT PANEL AT THE PAGE'S FOOT ([OIL-NOTIFY-SEEN] (3), 2 Nov 26). A sticky panel never leaves its
+     parent, and .edit-board ended where the page's 120px foot padding (body, 00-foundation) began — so scrolled to the
+     last day, the panel, 34px short of the window's foot, was pushed 86px up under the top bar: its "AIRCREW · ‹ day ›"
+     heading hidden (D1116) and the Placeholders row (ALL, ALL AVAIL) half covered, out of the mouse's reach. The week's
+     own 86px margin lengthens the parent by exactly that much and the board's -86px gives it back to the page, so the
+     page is no longer and the panel holds its place under the bar to the very end. 86 = 120 less the panel's 34. */
+  .edit-board{margin-bottom:-86px}
+  .edit-board>.week{margin-bottom:86px}
   /* a slim BLUE "CREW" tab, styled off the phone drawer's accent tab and sat
      HIGH on the right edge rather than mid-height (owner, 26 Aug 26 — "make it
      like a blue side panel similar to the mobile one, labeled as crew … put it

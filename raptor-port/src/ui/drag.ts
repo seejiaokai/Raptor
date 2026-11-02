@@ -493,7 +493,16 @@ export function applyDrop(el: any, x: any, y: any) {
     const out = rowTake(DRAG.key)
     if (out === 'refused') return no()
     if (out === 'done') return fin()
-    setSlotVal(DRAG.key, ''); return done()
+    /* …and SAYS so, in the right-click's own words (Shell.tsx onCtx — "Fable removed"). A puck let go over nothing is
+       often not meant — a finger lifted early, a drop just past a row, a sideways phone's short board — and nothing on
+       screen tells him it came off rather than that the drop missed ([OIL-NOTIFY-SEEN] (2), the design guide's D850:
+       a note where the press did more than he would expect). Said in one batch with the drop's own warning, if the
+       removal raised one, so neither talks over the other: "Fable removed · <the warning>". */
+    const off = slotVal(DRAG.key)
+    return HOOKS.toastBatch(() => {
+      if (off) toast((PEOPLE[off] ? PEOPLE[off].cs : off) + ' removed')
+      setSlotVal(DRAG.key, ''); return done()
+    })
   }
   DRAG = null; dndOff(); return false
 }
@@ -718,6 +727,23 @@ function tdOver(x: any, y: any, scroll = true) {
     if (t) t.classList.add('dragover')
     TD.over = t
     hoverWhy(t)
+  }
+  /* A FINGER SCROLLS THE PANE IT IS OVER, not the list the puck came from ([OIL-NOTIFY-SEEN], re-walk F S3-16, 19 Oct 26).
+     The scroller was chosen once, from the source: a crew-list puck held near the top of the board's day pane on a phone
+     on its side scrolled the crew list (or nothing, at its top) and never the pane he was aiming into — the design
+     guide's drag rule says the view under a carried thing follows it (D895, §5A). So each move takes the scrolling box
+     under the finger — the page itself where it is the one that scrolls (the week on a phone held upright); where the
+     page cannot scroll (the board, which scrolls in its own pane) the finger over the bar or a heading keeps the last
+     box, so a puck carried past the pane's edge goes on scrolling that pane, as a seat's puck always did. The finger
+     only: a mouse on a desktop scrolls the page, which the source's box already is, and the week has its own sideways
+     step. */
+  /* …asked again only when the finger reaches another element (performance.md: nothing new runs on every move), and not
+     at all in the board's desktop layout, whose own loop scrolls the box under the finger (tdWideLoop) — the fresh read's F2 */
+  if (!TD.mouse && !TD.wide && el && el !== TD.scEl) {
+    TD.scEl = el
+    const sc = tdScrollerFor(el)
+    const page = sc === document.scrollingElement || sc === document.documentElement
+    if (!page || sc.scrollHeight > sc.clientHeight + 4) TD.scroller = sc
   }
   if (!TD.wide && scroll) tdAutoScroll(y)
 }

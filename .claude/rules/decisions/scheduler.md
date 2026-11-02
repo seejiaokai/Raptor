@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1573 | 2 Nov 26 | Cross-week dragging is not built: on Edit Schedule a carried man still stops at Monday and Sunday and is never carried into another week (D1529 stands), and the work is not filed in the backlog. |
 | D1529 | 31 Oct 26 | On Edit Schedule a man carried with the mouse and held at the left or right side of the week moves the week one day at a time, as one press of ‹ or › does: after a short wait at the side it glides one day, and again while he is held; a name only passing through moves nothing; it stops at Monday and Sunday, never carrying him into another week. |
 | D1528 | 30 Oct 26 | Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown. |
 | D1527 | 30 Oct 26 | The week's ‹ › arrow, slid out, looks as the old arrow did at rest — the same frosted glass at the same see-through level, grey edge and grey arrow, never lit blue nor more solid; the slim tab and its slide stay as D1526. |

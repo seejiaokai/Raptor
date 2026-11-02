@@ -1,0 +1,181 @@
+[
+ {
+  "name": "D1 a puck let go over nothing comes off and says \"<callsign> removed\"",
+  "result": "PASS",
+  "said": "the seat now holds \"\"; the note reads \"Warden removed\"",
+  "pics": [
+   "D1-1-let-go-over-nothing.png"
+  ]
+ },
+ {
+  "name": "D1 Undo puts him back on his seat",
+  "result": "PASS",
+  "said": "the seat holds nact (was nact); the note reads \"Undid: a change to the schedule\"",
+  "pics": [
+   "D1-2-undo-puts-him-back.png"
+  ]
+ },
+ {
+  "name": "D1 Redo takes him off again",
+  "result": "PASS",
+  "said": "the seat holds \"\"",
+  "pics": []
+ },
+ {
+  "name": "D2 dropped back on its own seat: no removal, \"Already in that seat\"",
+  "result": "PASS",
+  "said": "the note reads \"Already in that seat\"",
+  "pics": []
+ },
+ {
+  "name": "D3 mid-drag, scrolled 900: the panel keeps its place under the bar, ALL AVAIL in reach",
+  "result": "PASS",
+  "said": "panel heading 75 before, 75 mid-drag (bar's foot 58); ALL AVAIL reached under the mouse: true; position sticky",
+  "pics": [
+   "D3-1-mid-drag-panel-in-place.png"
+  ]
+ },
+ {
+  "name": "D3 the puck went back where it was",
+  "result": "PASS",
+  "said": "seat holds stiff",
+  "pics": []
+ },
+ {
+  "name": "D4 ALL AVAIL carried from the panel onto a row lower down lands there",
+  "result": "PASS",
+  "said": "row a:0.9.+: before \"+ add\", after \"ALL AVAIL44+ add\"; note \"Already in that seat\"",
+  "pics": [
+   "D4-1-allavail-landed-lower.png"
+  ]
+ },
+ {
+  "name": "D5 at the page's foot the heading and ALL AVAIL stay under the bar",
+  "result": "PASS",
+  "said": "scrolled 3272; heading 75, bar's foot 58; ALL AVAIL reached: true",
+  "pics": [
+   "D5-1-page-foot-panel-in-place.png"
+  ]
+ },
+ {
+  "name": "D5 the page is no wider than the window",
+  "result": "PASS",
+  "said": "page 1536 wide, window 1536",
+  "pics": []
+ },
+ {
+  "name": "D6 the hidden panel stays hidden through a drag",
+  "result": "PASS",
+  "said": "hidden at x 1542 (window 1536); mid-drag x 1542, absolute",
+  "pics": [
+   "D6-1-panel-hidden-mid-drag.png"
+  ]
+ },
+ {
+  "name": "D6 shown again: in place under the bar, the page no wider than the window",
+  "result": "PASS",
+  "said": "heading 75, bar 58; page 1536 / window 1536",
+  "pics": []
+ },
+ {
+  "name": "D7 the board: let go over its bar, off the seat with \"<callsign> removed\"",
+  "result": "PASS",
+  "said": "seat \"\"; note \"Warden removed\"; crew list mid-drag: \"drop to unassign\" / relative",
+  "pics": [
+   "D7-1-board-let-go-over-nothing.png"
+  ]
+ },
+ {
+  "name": "D7 the board's Undo puts him back",
+  "result": "PASS",
+  "said": "seat nact",
+  "pics": []
+ },
+ {
+  "name": "D8 the look at the Original reads the working copy's own \"N pending\"",
+  "result": "PASS",
+  "said": "working copy \"2 pending\", the look \"2 pending\"",
+  "pics": [
+   "D8-1-working-copy-count.png",
+   "D8-2-look-at-original-count.png"
+  ]
+ },
+ {
+  "name": "D8 \"Load onto working copy\" armed says what the load discards (the edit, not the leave)",
+  "result": "PASS",
+  "said": "the button reads \"Discard 1 edit & load — confirm\"",
+  "pics": [
+   "D8-3-load-armed-discard-count.png"
+  ]
+ },
+ {
+  "name": "D8 Keep editing, then ← Back to live copy: the working copy and its count as they were",
+  "result": "PASS",
+  "said": "preview still up: false; count \"2 pending\"",
+  "pics": []
+ },
+ {
+  "name": "D8 the board: its working copy reads the count; its look draws none (as built)",
+  "result": "PASS",
+  "said": "board working copy \"2 pending\", its look \"\"",
+  "pics": [
+   "D8-4-board-look-count.png"
+  ]
+ },
+ {
+  "name": "D8 View-only Sched's issued face shows no pending count",
+  "result": "PASS",
+  "said": "View-only Monday's count: \"\"",
+  "pics": [
+   "D8-5-view-only-issued-face.png"
+  ]
+ },
+ {
+  "name": "D errors in the page",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "name": "S1 slowly: a crew-list puck held at the pane's top scrolls the pane, not the list",
+  "result": "PASS",
+  "said": "pane 300 → 44; crew list 0 → 0",
+  "pics": [
+   "S1-1-crew-puck-scrolls-pane.png"
+  ]
+ },
+ {
+  "name": "S2 a quick flick to the pane's top scrolls the pane too",
+  "result": "PASS",
+  "said": "pane 300 → 140",
+  "pics": []
+ },
+ {
+  "name": "S3 a seat puck carried up into the bar keeps scrolling the pane",
+  "result": "PASS",
+  "said": "pane 400 → 96",
+  "pics": [
+   "S3-1-seat-puck-in-bar-scrolls-pane.png"
+  ]
+ },
+ {
+  "name": "S3 put back where it was (or said where it went)",
+  "result": "PASS",
+  "said": "seat now holds \"\" (was bane); note \"Ranger removed\"",
+  "pics": []
+ },
+ {
+  "name": "S4 a crew-list puck dropped on a row in the pane lands there",
+  "result": "PASS",
+  "said": "ALL AVAIL on a:0.0.+: true; note \"Undid: a change to the schedule\"",
+  "pics": [
+   "S4-1-crew-puck-landed-in-pane.png"
+  ]
+ },
+ {
+  "name": "S errors in the page",
+  "result": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]
