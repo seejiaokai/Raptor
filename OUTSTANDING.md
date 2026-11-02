@@ -70,7 +70,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [WEEK-SWIPE-CROSS] — on his iPhone the swipe from one week into the next jumps with no slide, and sometimes only bounces (his recording, 3 Nov 26): BUILT the night of 3 Nov 26 (job 1, `claude/week-swipe-pdf-print`); the walk and his iPhone look next.
+- [WEEK-SWIPE-CROSS] — on his iPhone the swipe from one week into the next jumps with no slide, and sometimes only bounces (his recording, 3 Nov 26): BUILT and WALK-checked the night of 3 Nov 26 (pull request 621, the evidence `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md`); his iPhone look and "merge live" next.
 - [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes; set for the night of 3 Nov 26, then skipped on his word that night ("Skip the pdf") — waits for a later batch.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
@@ -1414,7 +1414,7 @@ the glide is not seen, and the edge swipe is missed. Both are to be found on Saf
 debugging guide), each fixed red first. **Place:** the night of 3 Nov 26, job 1, on `claude/week-swipe-pdf-print`.
 **BUILT the night of 3 Nov 26 (commit `4b377ec6e`):** four causes of the jump and three of the missed cross, each fixed red first — the
 builder's report in `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1; the lesson `bug-check-order.md` §7.11 lesson 20.
-Left: the batch's walk and code read, then his iPhone look (Safari's pull past the end, the pace, the pause after the lift).
+**WALK-checked** (pull request 621): the walk's one fault (a second swipe while the week stood short of Monday) and the read's (a page scroll drifting sideways) fixed red first, every re-walk green (the sheet §6–§10). Left: his iPhone look (Safari's pull past the end, the pace, the pause after the lift) and "merge live".
 
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 **SEEN ON HIS IPHONE, 1 Nov 26 — and worse than this item says:** one press of Export as PDF opened the iPhone's print preview on

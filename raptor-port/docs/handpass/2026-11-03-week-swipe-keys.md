@@ -288,3 +288,22 @@ first walk (§6b); B16a's Escape on Sort all still does nothing (older, filed un
 `e44d50a26` (the three jobs built): green. `62556cdde` (the walk's fix): one job red — the Leave War desktop test "a pinch (phone) or
 Ctrl+scroll (desktop) zooms the whole grid down and back" ran out of time twice (31.8s, 32.0s); this branch touches nothing of the
 Leave War; filed as [LW-ZOOM-TEST-SLOW] (D84). `f5c1b0046` (the read's fix 4): green, that test included.
+
+## 10. The narrow read of the fixes, its fix, and the last re-walk
+**The narrow fresh Opus read of `f5c1b0046` and `9ea6274e1`** (`raptor-port/docs/handpass/parts/ws-read-fixes.md`): 0 high, 0 medium,
+**1 low** — the Escape skip stepped aside for every typing element, so with a window or menu up and the keys in the search box (or a
+select, a checkbox) Escape did nothing until the keys moved; everything else of the four fixes checked and sound (the duty role
+list, the sheets answering first, the blur listener removed on every way out, the note set and cleared, the page-scroll check on
+both twin paths with no read added to a scroll handler). **Fixed red first** by job 2's builder, commit `3ffb5f38a`: the skip covers
+exactly the boxes `textedit.ts routeKeyDown` answers (a board input only when it is a time box — D1011); two cases red on the code
+before (the Traffic window with the keys in the week's search box; + Block with the keys in the board's search box); 371 / 371 of the
+touched unit files; `board-escape-traffic` 11 / 11; build, lint, docsize; tfin 728 / 0. Fix rounds: two (the cap is about three, §5).
+**The last re-walk (the host, walker B's `ws-walk-b.mjs`, `dist` rebuilt at `3ffb5f38a`, pictures `…/rewalk2/B/`): 21 / 21 PASS.**
+
+**Walk:** A (phone) 12 scenarios, Chromium 13 PASS + WebKit 4 PASS, 1 fault found and fixed (A6b), re-walked green; B (desktop keys
+and the plain-user round) 18 / 18; re-walks of every fix green; 464 pictures, with the frame traces, in
+`raptor-port/docs/img/handpass/2026-11-03-week-swipe/` (`walk/`, `rewalk/`, `rewalk2/`).
+
+**For his iPhone look (only a real iPhone can show these):** the cross on Edit Schedule, Monday 13 Jul ↔ Sunday 12 Jul — slow, a short
+flick, and twice quickly; the new pace (340ms); whether the bounce past the end before the slide still reads as abrupt; on his
+iPhone held sideways the page is the desktop layout (wider than 820), with arrows — no swipe, as before.
