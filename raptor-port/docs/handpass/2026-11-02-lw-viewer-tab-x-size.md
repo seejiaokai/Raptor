@@ -117,6 +117,7 @@ War UI unit files 114 / 1704 passed under the lock; the new e2e test red then gr
 ## His "merge live" — 2 Nov 26
 
 Given in the original chat ("Merge live"), before he reported a look on his iPhone: the real iPhone's tap beside the full page's ✕ stays unproven (the test browsers' WebKit took it, 390 and 360). Both items archived.
+**His iPhone look, after the merge (2 Nov 26 — "The x works"):** the full page's ✕ takes his finger on his own phone; nothing is left unproven.
 
 ## His look card
 
