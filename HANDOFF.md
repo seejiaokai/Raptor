@@ -21,14 +21,14 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/no-page-zoom -->
-### `claude/no-page-zoom` — [NO-PAGE-ZOOM] (D1567): BUILT and WALK-checked, pull request 613 — written 2 Nov 26 — **waiting for his iPhone look and his "merge live"**
+### `claude/no-page-zoom` — [NO-PAGE-ZOOM] (D1567): BUILT and WALK-checked, pull request 613 — written 2 Nov 26 — **his "merge live" 2 Nov 26 — remove this block at the next handoff**
 - **Built:** on a touch-first screen (`(pointer: coarse)`) the page never zooms — `touch-action:pan-x pan-y` on the page (`00-foundation-login.css`), `maximum-scale=1, user-scalable=no` on a touch screen that is not an iPhone (`index.html`, its old "never add user-scalable=no" replaced), an iPhone's gesture events cancelled on the whole page (`src/ui/nopagezoom.ts`, from `main.tsx`). The grids read the fingers themselves and keep zooming. A desktop is unchanged (D1286). Records: `ui-contracts.md` §On a touch screen the page itself never zooms, `file-map.md`, `walk-scripts.md` (a script's event must bubble; WebKit's in-page touches make no scroll or pointer events), D1567's home.
 - **Checked:** WALK — red first (the old build: two fingers over the week took the page to 5×); `nopagezoom.spec.ts` + every grid pinch test 28/28 on his PC; `nopagezoom.test.ts` 5/5; the code check clean; the walk (`scripts/handpass/nopagezoom-walk.mjs`) Chromium 33/33, WebKit 16/19 (the three left are the method's limit), desktop 5/5. GitHub's run of the first push green. Evidence: `raptor-port/docs/handpass/2026-11-02-no-page-zoom.md`; ledger row added.
-- **Open — his look card (the sheet's last section):** pinch and double-tap on his iPhone (only his phone proves Safari's half — lessons 6, 7); each grid still pinches; the week's stores chips ("TPOD", "2 TKS", 7.5px) — readable without zoom? If not, raising them to the desktop's 9 is his word (D487).
+- **Closed:** his look on his iPhone 2 Nov 26 (his recording: the Leave War grid pinched in and out, the page around it unchanged; then "Ok looks good merge live"); [NO-PAGE-ZOOM] archived. The stores chips' question was on the look card he passed: taken as no change, nothing filed — raised again only if he says.
 - **Weekly allowance:** 95% at 10:15 on 2 Nov 26, resets in about 10 hours.
 - **Rulings:** none new; D1567's home updated to the build.
-- **Pick up here:** on his look — fix anything he finds red-first; on his "merge live", the closing records (archive [NO-PAGE-ZOOM]) then merge (D1088).
-- **Opening line:** "Read HANDOFF.md. Continue claude/no-page-zoom (pull request 613): his iPhone look, then merge live."
+- **Pick up here:** nothing left of this job; his next pick from the backlog.
+- **Opening line:** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog."
 <!-- /now -->
 ## Next, in order
 

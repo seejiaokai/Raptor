@@ -7385,3 +7385,14 @@ Saber, Mon 30 Nov). An entry opened whole marks all its days the same way (D1565
 the mark stands out on his own row with the design skill, put it to him with pictures (D853), build it, walk it on his own row and
 another. **Place:** on `claude/lw-input-range-whole-02fa06`, with [LW-INPUT-RANGE-WHOLE].
 
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([NO-PAGE-ZOOM]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [NO-PAGE-ZOOM] On a phone only the grids zoom, never the page (his D1567, 2 Nov 26)
+**What:** on his iPhone a pinch or double tap can zoom the whole page, and then he is stuck zoomed in (his screen recording:
+`C:\Users\User\.claude\uploads\41b60225-458a-4c7a-a0dc-97ad861ddec8\3d85d05f-ScreenRecording_11-02-2026_06-56-43_1.mov`). The grids
+that zoom by their own pinch (the Leave War grid and OIL tab, Quals, the Scheduler Board’s desktop layout) keep zooming. **To do:**
+stop the page zoom app-wide on a phone (Safari ignores the old "no zoom" page setting, so it needs the touch handling as well),
+check every grid’s own pinch still works on his iPhone’s WebKit, and that no screen needs page zoom to be read. **Place:** its own
+job and branch from `main`.
+

@@ -75,7 +75,7 @@ Red first: `e2e/nopagezoom.spec.ts` on the old build — two fingers over the we
 
 ## The pictures
 
-`docs/img/handpass/2026-11-02-no-page-zoom/` — 33 (chromium, webkit, desktop folders; `stchip-phone.png`).
+`docs/img/handpass/2026-11-02-no-page-zoom/` — 34 (chromium, webkit, desktop folders; `stchip-phone.png`, `stchip-phone-marked.png` — the look card's picture).
 
 ## Found, and each disposition
 
