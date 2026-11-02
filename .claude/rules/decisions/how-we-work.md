@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1570 | 2 Nov 26 | Every person in the squadron who will use the app holds a Power Apps Premium licence, so a code app on Dataverse can run for all of them, each with 40,000 Power Platform requests a day; no licence stands in the way of the move. |
 | D1566 | 2 Nov 26 | For the year build (pull request 611) the comparison with its approved drawings by measure and by eye, side by side, stands in place of the drawing-check tool, for its three small parts — the corner's year, the calendars' title with its ▾, the month-and-year card; the tool stays a standing step for every other build with a drawing (D1495). |
 | D1557 | 2 Nov 26 | Every walk of a screen includes a plain-user round: the area's everyday tasks done start to finish as a user would, pressing every control that opens or closes something, then every other place that should show the result looked at — the Inputs page, the schedule, the bell, the person window, another year or period — with pictures. |
 | D1556 | 2 Nov 26 | The three drafts of the start-load trim are approved as written: the shorter AGENTS.md with its detail in a Codex-only guide, the seven passages of the always-loaded rule files moved whole to the homes named, and the two lines naming the new screen-design rulings area — each move read by one fresh reader for meaning, live on his "merge live". |
