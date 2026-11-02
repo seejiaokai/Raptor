@@ -739,7 +739,7 @@ function doorFile(items: Array<{ personId: string; date: string }>, code: string
 /** THE OIL QUESTION OF WHAT WAS JUST FILED FROM THE WAR (round 2's FULL check — the scenario designer's G3): an OD or a
  *  course on a weekend or a holiday asks it at the save, as the Inputs page does — owner D804 ("asked … wherever it is
  *  filed"), D660 (the filer answers, at the save, so nobody is left to his own bell). One input: its own question, in its
- *  own window, over the war (the bell's way in — ui/topbits.tsx). Several (a drag over several men): a scheduler gets the
+ *  own window, over the war (the bell's way in — ui/topstate.ts openNotice). Several (a drag over several men): a scheduler gets the
  *  ONE list of those days (D782), never a window per man; anyone else — a member files one input, his own — the first.
  *  Raised once the filing has gone through (a deferred effect), never for one refused. */
 function askFiledOil(iids: string[], from: string, to: string): void {

@@ -79,9 +79,11 @@ export function DutyTplModal() {
   }
 
   return (
-    <div className="modal" id="tplModal" onClick={e => { if (clickedOutside(e, 'tplModal')) close() }}>
+    /* the shade behind the box: a press on it closes the editor, as a press outside any window does; the keyboard's way
+       out is Escape and the ✕ (role="presentation": the shade itself is nothing a screen reader should name) */
+    <div className="modal" id="tplModal" role="presentation" onClick={e => { if (clickedOutside(e, 'tplModal')) close() }}>
       <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
-        <div className="modal-head"><b>Duty templates</b><button className="x" id="tplClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Duty templates</b><button className="x" id="tplClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="modal-body">
           <div className="tpl-tabs">
             {DUTYTPL_CFG.map(t => (
@@ -94,7 +96,7 @@ export function DutyTplModal() {
               save()
             }}>+ New</button>
           </div>
-          <input className="tpl-name" value={tpl.title} maxLength={24}
+          <input className="tpl-name" value={tpl.title} maxLength={24} aria-label="Template name"
             onChange={e => { renameTpl(tpl.id, e.target.value); save() }} />
           <label className="tpl-wave">For wave
             <select value={tpl.wave} onChange={e => { setTplWave(tpl.id, e.target.value as DutyWave); save() }}>
@@ -109,22 +111,22 @@ export function DutyTplModal() {
           {tpl.rows.map((row, ri) => (
             <div className="trow" key={ri}>
               <span className="grip">
-                <button className="tnudge" disabled={ri === 0}
+                <button className="tnudge" disabled={ri === 0} aria-label="Move up"
                   onClick={() => { if (ri > 0) { moveTplRow(tpl.id, ri, ri - 1); save() } }}>▲</button>
-                <button className="tnudge" disabled={ri === tpl.rows.length - 1}
+                <button className="tnudge" disabled={ri === tpl.rows.length - 1} aria-label="Move down"
                   onClick={() => { if (ri < tpl.rows.length - 1) { moveTplRow(tpl.id, ri, ri + 1); save() } }}>▼</button>
               </span>
-              <input list="dutyRoles" value={row.role}
+              <input list="dutyRoles" value={row.role} aria-label="Role"
                 onChange={e => { setTplRow(tpl.id, ri, 'role', e.target.value); save() }} />
-              <input className="tm" value={row.str} inputMode="numeric" placeholder="07:00"
+              <input className="tm" value={row.str} inputMode="numeric" placeholder="07:00" aria-label="Start"
                 onFocus={e => { timeBuf.current = e.target.value }}
                 onChange={e => { setTplRow(tpl.id, ri, 'str', e.target.value); save() }}
                 onBlur={e => commitTime(tpl.id, ri, 'str', e.target.value)} />
-              <input className="tm" value={row.end} inputMode="numeric" placeholder="13:00"
+              <input className="tm" value={row.end} inputMode="numeric" placeholder="13:00" aria-label="End"
                 onFocus={e => { timeBuf.current = e.target.value }}
                 onChange={e => { setTplRow(tpl.id, ri, 'end', e.target.value); save() }}
                 onBlur={e => commitTime(tpl.id, ri, 'end', e.target.value)} />
-              <button className="del" onClick={() => { delTplRow(tpl.id, ri); save() }}>✕</button>
+              <button className="del" aria-label="Remove this role" onClick={() => { delTplRow(tpl.id, ri); save() }}>✕</button>
             </div>
           ))}
           <datalist id="dutyRoles">

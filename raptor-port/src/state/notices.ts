@@ -334,7 +334,7 @@ export function noticeLive(n: Notice): boolean {
   }
   return true
 }
-/** the holiday line that covers this date for this person, if one is live — the bell's tap asks it (ui/topbits.tsx) */
+/** the holiday line that covers this date for this person, if one is live — the bell's tap asks it (ui/topstate.ts bellTap) */
 export function holidayLineOn(pid: string | null | undefined, iso: string): Notice | null {
   if (!pid) return null
   for (const n of NOTICES) { const s = n.to === pid ? noticeSpan(n) : null; if (s && s.a <= iso && iso <= s.b && noticeLive(n)) return n }
@@ -386,7 +386,7 @@ const LIST_MAX = 30
 export function noticesFor(pid: string | null | undefined): Notice[] {
   if (!pid) return []
   /* …and a LIVE HOLIDAY LINE IS NEVER ONE OF THE LINES CUT (the Opus read of the finished code, F4 — 13 Oct 26): the
-     bell's tap leaves a scheduler's own unanswered input on that day to this line (ui/topbits.tsx bellTap), so with
+     bell's tap leaves a scheduler's own unanswered input on that day to this line (ui/topstate.ts bellTap), so with
      more than thirty newer notices the line was cut from the list while the tap still deferred to it — his own
      question, and the one list, could no longer be reached from his bell. The thirty are of the other notices. */
   let others = 0

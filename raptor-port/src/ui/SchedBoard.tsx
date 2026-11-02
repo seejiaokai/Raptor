@@ -33,13 +33,15 @@ import { refreshHighlights } from './highlights'
 import { wireRowDrag, cancelRowDrags } from './rowdrag'
 import { editingText, textCaret, CARET_GONE } from './textedit'
 import { useBoardVersion, useVersion, useUndoVersion } from './useStore'
-import { UndoPair, SyncChip, BellButton, globalUndoEngine } from './topbits'
+import { UndoPair, SyncChip, BellButton } from './topbits'
+import { globalUndoEngine } from './topstate'
 import { SaveBand } from './SaveStatus'
 import { OilBand } from './OilWaitSheet'
 import { clickedOutside } from './outside'
 import { wirePinch } from './pinchzoom'
 import { touchDragArmed, cancelTouchHold } from './drag'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the board's frame: its bar (phone and desktop from one list), the side panel, the menus and the effects that hang the dense day built as a string (performance.md Part 1 §A — React owns the chrome, strings own the day) off one set of view state; split, the effects that swap the day's markup and keep its scroll and caret would be spread across parts whose order of running is what keeps them (B54, the caret guard), on the surface the phone budget is measured on — a rewrite with nothing for a person to gain
 export function SchedBoard() {
   const version = useVersion()
   const boardVersion = useBoardVersion()
@@ -525,6 +527,7 @@ export function SchedBoard() {
           {/* the same seven buttons on both surfaces — CSS makes them chips on a
               desktop and dots on a phone, so there is one list, one click
               handler, and a tap on a dot still jumps straight to that day */}
+          {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a box that hands a press to the day and week chips drawn inside it by the board's builder (board.ts); the chips are drawn as chips on a desktop and dots on a phone in a bar whose rows are measured, so made buttons they would take a button's own look and box — a change he would see; a keyboard route to them is a design of its own, named with the board's keyboard leftovers */}
           <div className="sb-days" id="sbDays" ref={daysRef}
             onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null; if (!t) return; if (t.dataset.sbweek != null) boardWeekStep(+t.dataset.sbweek); else boardTab(+t.dataset.sbtab!) }} />
           {/* SEARCH + HIGHLIGHT in the freed middle of the day row (owner, 23
@@ -551,7 +554,7 @@ export function SchedBoard() {
                 onClick={() => { setMoreOpen(false); toggleWide(); notify() }}><span className="bi">{SBWIDE ? '📱' : '🖥'}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
             </div>}
           </span>
-          <div className="searchbox sb-search"><SrchIcon /><input id="searchB" placeholder="name / callsign"
+          <div className="searchbox sb-search"><SrchIcon /><input id="searchB" placeholder="name / callsign" aria-label="Search by name or callsign"
             onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           <button className="abtn sb-arrow" id="sbNextDay" title="Next day"
             disabled={SBDAY == null}
@@ -800,7 +803,9 @@ export function CxDialog() {
     cxReasonsReset(); setArmReset(false); notify()
   }
   return (
-    <div className="airpop" id="cxPop" hidden={!open}
+    /* the shade behind the box: a press on it closes it, as a press outside any window does; the keyboard's way out is
+       the ✕, or Escape in the reason box (role="presentation": the shade itself is nothing a screen reader should name) */
+    <div className="airpop" id="cxPop" role="presentation" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'cxPop')) close() }}>
       <div className="airpop-box cxbox" ref={cxBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="cxTitle">{on ? (what.charAt(0).toUpperCase() + what.slice(1)) + ' is cancelled — reason' : 'Cancel ' + what}</b><button className="x" id="cxClose" aria-label="Close" onClick={close}>✕</button></div>
@@ -871,7 +876,8 @@ export function SortAllDialog() {
   const sortBox = useRef<HTMLDivElement>(null)
   useSheetFocus(sortBox, open)
   return (
-    <div className="airpop" id="sortAllPop" hidden={!open}
+    /* the shade behind the box, as the cancel dialog's above (role="presentation") */
+    <div className="airpop" id="sortAllPop" role="presentation" hidden={!open}
       onClick={e => { if (clickedOutside(e, 'sortAllPop')) close() }}>
       <div className="airpop-box" ref={sortBox} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b id="sortAllTitle">Sort all — {d ? d.dow : ''}</b><button className="x" id="sortAllClose" aria-label="Close" onClick={close}>✕</button></div>

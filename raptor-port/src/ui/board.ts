@@ -38,7 +38,7 @@ import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentenc
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
 import { noteOpener, menuEscape } from './sheetfocus'
-import { openAvailWinFrom } from './AvailWindow'
+import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
@@ -530,6 +530,7 @@ export function boardWarnHTML(di: number, look = false) {
          any flagging … the top right warning column will snap to that puck and
          show what triggered that flagging"). selectPerson clears WFOCUS, so
          `.pksel` and `.on` never apply to the same row. */
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
       const sel = view.SELID && (w.who || []).includes(view.SELID) ? ' pksel' : ''
       wh += `<div class="wln ${w.sev}${on}${sel}${hid ? ' hid' : ''}" data-wdi="${di}" data-wix="${ix}" title="${hid ? 'Hidden — it flags no puck and is not counted. ' : ''}Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
@@ -965,7 +966,8 @@ export function boardMbtn(e: MouseEvent) {
     else if (kind === 'p') changed = sortProg(n[0])
     if (changed) {
       afterSchedMutate(); notify()
-      const gNow = kind === 'g' ? ((DAYS[n[0]] || {}).ground || []).map(gSig).filter((x: string) => gRowsBefore.includes(x)) : []
+      const before = new Set(gRowsBefore)
+      const gNow = kind === 'g' ? ((DAYS[n[0]] || {}).ground || []).map(gSig).filter((x: string) => before.has(x)) : []
       if (kind === 'g' && gWasMan && gNow.join('|') === gRowsBefore.join('|')) toast('Ground programme back to time order')
     }
     else toast('Already in order')
@@ -1619,6 +1621,7 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
     const h = box.offsetHeight
     let top = r.bottom + 6
     if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
+    // eslint-disable-next-line react-doctor/no-unthrottled-scroll-mutation -- the list must stand by the box it hangs off on every scroll, as the box moves ([KEYBOARD-SCROLL], D1081): the browser sends a scroll event at most once a frame, so this writes two numbers of one small box no oftener than that, and a timer or a later frame would leave the list a frame behind its box — the jump D1081 rules out; it lays out nothing of the board
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
     box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top)) - lay) + 'px'
   }

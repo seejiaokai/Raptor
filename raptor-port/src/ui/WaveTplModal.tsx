@@ -28,7 +28,7 @@ import {
   delWaveTplLine, setWaveTplLine, moveWaveTplLine, waveTplSave, waveTplReset, waveTime,
   isWaveHidden, setWaveHidden,
 } from '../engine/wavetpl'
-import type { WaveKind } from '../engine/wavetpl'
+import type { WaveKind, WaveTplLine } from '../engine/wavetpl'
 import { hmOK } from '../engine/time'
 import { canEditSched, SESSION } from '../state/auth'
 import { isAdmin } from '../state/perms'
@@ -95,9 +95,11 @@ export function WaveTplModal() {
   const tplHidden = tpl ? isWaveHidden(tpl.id) : false
 
   return (
-    <div className="modal" id="waveTplModal" onClick={e => { if (clickedOutside(e, 'waveTplModal')) close() }}>
+    /* the shade behind the box: a press on it closes the editor, as a press outside any window does; the keyboard's way
+       out is Escape and the ✕ (role="presentation": the shade itself is nothing a screen reader should name) */
+    <div className="modal" id="waveTplModal" role="presentation" onClick={e => { if (clickedOutside(e, 'waveTplModal')) close() }}>
       <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 480, outline: 'none' }}>
-        <div className="modal-head"><b>Flying waves</b><button className="x" id="waveTplClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Flying waves</b><button className="x" id="waveTplClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="modal-body">
           {/* WAVE TYPES — show / hide the four built-in rule-sets (folded in from the
               retired Manage sheet). Hidden is one tap from coming back, right here. */}
@@ -111,10 +113,7 @@ export function WaveTplModal() {
                   <li className={'wvmng-row' + (hidden ? ' off' : '')} key={b.key} data-wvrow={b.key}>
                     <span className="wvmng-name">{b.label}<span className="wvmng-sub">Built-in type</span></span>
                     <div className="wvmng-acts">
-                      <button className={'wvmng-eye' + (hidden ? ' off' : '')} disabled={!canEdit} data-wveye={b.key}
-                        aria-pressed={!hidden}
-                        title={hidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
-                        onClick={() => toggleHide(b.key)}>{hidden ? <EyeOff /> : <EyeOn />}<span>{hidden ? 'Hidden' : 'Shown'}</span></button>
+                      <WaveEye k={b.key} hidden={hidden} canEdit={canEdit} onToggle={toggleHide} />
                     </div>
                   </li>
                 )
@@ -142,12 +141,9 @@ export function WaveTplModal() {
             <>
               {/* name + this template's own show/hide eye, side by side */}
               <div className="tpl-namerow">
-                <input className="tpl-name" value={tpl.title} maxLength={24} placeholder="Template name"
+                <input className="tpl-name" value={tpl.title} maxLength={24} placeholder="Template name" aria-label="Template name"
                   onChange={e => { renameWaveTpl(tpl.id, e.target.value); save() }} />
-                <button className={'wvmng-eye' + (tplHidden ? ' off' : '')} disabled={!canEdit} data-wveye={tpl.id}
-                  aria-pressed={!tplHidden}
-                  title={tplHidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
-                  onClick={() => toggleHide(tpl.id)}>{tplHidden ? <EyeOff /> : <EyeOn />}<span>{tplHidden ? 'Hidden' : 'Shown'}</span></button>
+                <WaveEye k={tpl.id} hidden={tplHidden} canEdit={canEdit} onToggle={toggleHide} />
               </div>
 
               <div className="wkind" role="group" aria-label="Rule-set">
@@ -159,37 +155,7 @@ export function WaveTplModal() {
               <p className="wknote">{kindNote(tpl.kind)}</p>
 
               {tpl.lines.map((l, li) => (
-                <div className="wline" key={li}>
-                  <div className="wline-top">
-                    <span className="grip">
-                      <button className="tnudge" disabled={li === 0}
-                        onClick={() => { if (li > 0) { moveWaveTplLine(tpl.id, li, li - 1); save() } }}>▲</button>
-                      <button className="tnudge" disabled={li === tpl.lines.length - 1}
-                        onClick={() => { if (li < tpl.lines.length - 1) { moveWaveTplLine(tpl.id, li, li + 1); save() } }}>▼</button>
-                    </span>
-                    <input className="wcs" value={l.cs} maxLength={12} placeholder="Callsign"
-                      onChange={e => { setWaveTplLine(tpl.id, li, 'cs', e.target.value); save() }} />
-                    <button className="del" title="Remove this line"
-                      onClick={() => { delWaveTplLine(tpl.id, li); save() }}>✕</button>
-                  </div>
-                  <div className="wline-grid">
-                    <input className="wmsn" value={l.msn} maxLength={24} placeholder="Mission"
-                      onChange={e => { setWaveTplLine(tpl.id, li, 'msn', e.target.value); save() }} />
-                    <input className="tm" value={l.to} inputMode="numeric" placeholder="T/O"
-                      onFocus={e => { timeBuf.current = e.target.value }}
-                      onChange={e => { setWaveTplLine(tpl.id, li, 'to', e.target.value); save() }}
-                      onBlur={e => commitTime(tpl.id, li, 'to', e.target.value)} />
-                    <input className="tm" value={l.ld} inputMode="numeric" placeholder="LD"
-                      onFocus={e => { timeBuf.current = e.target.value }}
-                      onChange={e => { setWaveTplLine(tpl.id, li, 'ld', e.target.value); save() }}
-                      onBlur={e => commitTime(tpl.id, li, 'ld', e.target.value)} />
-                    {kindIsStandby(tpl.kind)
-                      ? <button className={'wrole' + (l.spare ? ' spare' : '')}
-                          title="Switch this line between MAIN and SPARE"
-                          onClick={() => { setWaveTplLine(tpl.id, li, 'spare', !l.spare); save() }}>{l.spare ? 'SPARE' : 'MAIN'}</button>
-                      : <span className="wrole-off" aria-hidden="true" />}
-                  </div>
-                </div>
+                <WaveLine key={li} id={tpl.id} kind={tpl.kind} l={l} li={li} n={tpl.lines.length} timeBuf={timeBuf} save={save} commitTime={commitTime} />
               ))}
               {tpl.lines.length < MAX_WLINES &&
                 <button className="addrow" onClick={() => { addWaveTplLine(tpl.id); save() }}>+ Add line</button>}
@@ -213,6 +179,60 @@ export function WaveTplModal() {
             }}>Delete template</button>}
           <button className="abtn primary" onClick={close}>Done</button>
         </div>
+      </div>
+    </div>
+  )
+}
+
+/* THE SHOW / HIDE EYE — one for each built-in wave type and one beside each template's name, the same button in both places
+   (taken out of the sheet so its body stays short enough to follow — React Doctor's complexity check, 3 Nov 26) */
+function WaveEye({ k, hidden, canEdit, onToggle }: { k: string; hidden: boolean; canEdit: boolean; onToggle: (k: string) => void }) {
+  return (
+    <button className={'wvmng-eye' + (hidden ? ' off' : '')} disabled={!canEdit} data-wveye={k}
+      aria-pressed={!hidden}
+      title={hidden ? 'Hidden from + Wave — tap to show' : 'Shown in + Wave — tap to hide'}
+      onClick={() => onToggle(k)}>{hidden ? <EyeOff /> : <EyeOn />}<span>{hidden ? 'Hidden' : 'Shown'}</span></button>
+  )
+}
+
+/* ONE LINE OF A TEMPLATE — its card: the move arrows, the callsign and its ✕ on top; the mission, the two times and, on a
+   standby kind, the MAIN / SPARE switch under it. Drawn by the sheet above for each line, exactly as it drew it inline
+   (taken out so the sheet's body stays short enough to follow — React Doctor's complexity check, 3 Nov 26). */
+function WaveLine({ id, kind, l, li, n, timeBuf, save, commitTime }: {
+  id: string; kind: WaveKind; l: WaveTplLine; li: number; n: number
+  timeBuf: { current: string }; save: () => void
+  commitTime: (id: string, li: number, field: 'to' | 'ld', raw: string) => void
+}) {
+  return (
+    <div className="wline">
+      <div className="wline-top">
+        <span className="grip">
+          <button className="tnudge" disabled={li === 0} aria-label="Move up"
+            onClick={() => { if (li > 0) { moveWaveTplLine(id, li, li - 1); save() } }}>▲</button>
+          <button className="tnudge" disabled={li === n - 1} aria-label="Move down"
+            onClick={() => { if (li < n - 1) { moveWaveTplLine(id, li, li + 1); save() } }}>▼</button>
+        </span>
+        <input className="wcs" value={l.cs} maxLength={12} placeholder="Callsign" aria-label="Callsign"
+          onChange={e => { setWaveTplLine(id, li, 'cs', e.target.value); save() }} />
+        <button className="del" title="Remove this line"
+          onClick={() => { delWaveTplLine(id, li); save() }}>✕</button>
+      </div>
+      <div className="wline-grid">
+        <input className="wmsn" value={l.msn} maxLength={24} placeholder="Mission" aria-label="Mission"
+          onChange={e => { setWaveTplLine(id, li, 'msn', e.target.value); save() }} />
+        <input className="tm" value={l.to} inputMode="numeric" placeholder="T/O" aria-label="Take-off"
+          onFocus={e => { timeBuf.current = e.target.value }}
+          onChange={e => { setWaveTplLine(id, li, 'to', e.target.value); save() }}
+          onBlur={e => commitTime(id, li, 'to', e.target.value)} />
+        <input className="tm" value={l.ld} inputMode="numeric" placeholder="LD" aria-label="Landing"
+          onFocus={e => { timeBuf.current = e.target.value }}
+          onChange={e => { setWaveTplLine(id, li, 'ld', e.target.value); save() }}
+          onBlur={e => commitTime(id, li, 'ld', e.target.value)} />
+        {kindIsStandby(kind)
+          ? <button className={'wrole' + (l.spare ? ' spare' : '')}
+              title="Switch this line between MAIN and SPARE"
+              onClick={() => { setWaveTplLine(id, li, 'spare', !l.spare); save() }}>{l.spare ? 'SPARE' : 'MAIN'}</button>
+          : <span className="wrole-off" aria-hidden="true" />}
       </div>
     </div>
   )

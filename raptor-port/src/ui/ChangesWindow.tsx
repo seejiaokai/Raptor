@@ -29,14 +29,12 @@ import { linesFor, byWho, byItem, whoEntry, dayCounts, weekRows, type CLine, typ
 import { weekDates, elogWhen } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { DAYS } from '../engine/data'
-import { INPUTS, inpId, inputCoversDate, idsOf, holds } from '../engine/inputs'
-import { posKey } from '../engine/rowids'
-import { standsOn } from '../engine/overlay'
 import { dayApproved, dayPendingItems, nextSeq } from '../engine/publish'
 import { markSeen } from '../state/changes'
 import { isMember, isAdmin } from '../state/perms'
 import { pendListHTML, pendKeysFor } from './pendlist'
 import { jumpToChange } from './interactions'
+import { jumpOf } from './changesjump'
 import { histJumpable, weekJumpable } from './histbubble'
 import { SBDAY, CURPAGE, DPREV } from '../state/view'
 import { useEffect, useState } from 'react'
@@ -46,51 +44,6 @@ const DOW = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 const dm = (iso: string) => { const [, m, d] = iso.split('-').map(Number); return `${d}/${m}` }
 
 export { openChanges } from './changesopen'
-
-/* where a tap on a line takes the schedule, and on which day of the loaded week — null when it has nowhere to go */
-export function jumpOf(l: CLine, days: string[], pick: string | null): { keys: string[]; di: number } | null {
-  const inWeek = (d: string | null | undefined) => d != null && days.includes(d)
-  const di0 = pick && days.includes(pick) ? days.indexOf(pick) : days.findIndex(d => l.rows.some(r => r.date === d || (r.date && r.end && r.date <= d && d <= r.end)))
-  if (l.iid) {
-    const inp: any = INPUTS.find((x: any) => inpId(x) === l.iid)
-    if (!inp) return null
-    const keys: string[] = []
-    /* an accepted request: its row on the programme first (Astra DP-08), then its row under Unavailable. Its STANDING row
-       only — a dead kept row (a version's row on a day the request no longer covers, D363) carries its id but is not its
-       row, and a line never goes there ([DB-READINESS] phase 6 (c), the FULL check: Astra's scenario design §3 C) */
-    /* …and a line about ONE man (the history files it under him — `one`, `sub`) goes to HIS place on that row first, the
-       row's name box after it: the tap on "Tally · Range brief · added" lit the first man on the row (the one-rule job's
-       walk, share C, C11 — 12 Oct 26) */
-    const man = l.rows && l.rows[0] && (l.rows[0] as any).one ? String((l.rows[0] as any).sub || '') : ''
-    DAYS.forEach((d: any, di: number) => { const g = standsOn(d, l.iid, inp); const ri = g ? (d.ground || []).indexOf(g) : -1; if (ri < 0) return
-      const n = man && g.who !== man ? (g.more || []).indexOf(man) : -1
-      if (n >= 0) keys.push(`g:${di}.${ri}.x${n}`)
-      keys.push(`g:${di}.${ri}`) })
-    /* the day it goes to is a day its row is DRAWN on now — its programme row's day, or a day its dates cover (under
-       Unavailable or Personal Inputs) — the chosen day only when it is one of them: a line shown on a day by the days the
-       input LEFT goes to where it is now (Astra's read of the fixes, 03); drawn on no day of this week, the line is listed,
-       not a button (Fable's final read, F5) */
-    const on = new Set<number>()
-    DAYS.forEach((d: any, di: number) => {
-      if (di >= days.length) return
-      if (standsOn(d, l.iid, inp) || (d.dt && inputCoversDate(inp, d.dt))) on.add(di)
-    })
-    if (!on.size) return null
-    /* one man's row of an input that holds several is named with him (engine/keys.ts iuParts) — the line's own man */
-    /* (HIS NAME IS ON THE LINE'S ROW — the window's own line carries no `sub` (ui/changesmodel.ts CLine); the change
-       history files a line about one man put in or taken out under him, and a line about the input under its first to
-       join (state/changelines.ts). Read off the line alone, the tap went to the bare `iu:<iid>` and fell back to the
-       FIRST row of an absence filed for several — the one-rule job's walk, share J, J2, 12 Oct 26.) */
-    { const sub = String((l as any).sub || (l.rows && l.rows[0] && (l.rows[0] as any).sub) || ''); if (sub && idsOf(inp).length > 1 && holds(inp, sub)) keys.push(`iu:${l.iid}~${sub}`) }
-    keys.push(`iu:${l.iid}`)
-    const pi = pick ? days.indexOf(pick) : -1
-    const di = on.has(pi) ? pi : on.has(di0) ? di0 : Math.min(...on)
-    return { keys, di }
-  }
-  if (!l.key || !inWeek(l.date)) return null
-  const pk = posKey(l.key, DAYS)
-  return { keys: [String(pk == null ? l.key : pk)], di: days.indexOf(l.date!) }
-}
 
 /* a line with nowhere to go on THIS page is listed but is not a button (the old list's rule, kept — a tap that does
    nothing reads as a tap that did not register): no key and no input; a detail the board does not draw, while on the
@@ -106,9 +59,10 @@ const lineOf = (e: Entry): CLine => ({ ...e.line, key: e.key, date: e.date, ...(
 
 /* ONE ENTRY, item-first (D340): with `title` — a whole line, the item in bold over its change; without — a sub-line under
    its item's header, the change beside who and when. A detail (a seat, a field) is a tag before the change. */
-function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo: (e: Entry) => void; go: boolean }) {
-  const who = <span className="cw-who">{e.line.who} · {elogWhen(e.t)}</span>
-  const change = (
+/* the change itself — its detail's tag, its words, its from → to; drawn by EntryLine below exactly as it drew it inline
+   (taken out so EntryLine stays short enough to follow — React Doctor's complexity check, 3 Nov 26) */
+function EntryChange({ e }: { e: Entry }) {
+  return (
     <>
       {e.detail ? <span className="cw-det">{e.detail}</span> : null}
       {e.text}
@@ -117,6 +71,10 @@ function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo
       {e.from || e.to ? <>{e.from ? <s>{e.from}</s> : null}{e.from && e.to ? ' → ' : ''}{e.to ? <b>{e.to}</b> : null}</> : null}
     </>
   )
+}
+function EntryLine({ e, title, onGo, go: may }: { e: Entry; title?: string; onGo: (e: Entry) => void; go: boolean }) {
+  const who = <span className="cw-who">{e.line.who} · {elogWhen(e.t)}</span>
+  const change = <EntryChange e={e} />
   const dot = e.fresh ? <span className="cw-dot" aria-label="new to you" /> : null
   /* the men of one filing, listed once under its line (D663 — ui/changesmodel.ts mergeFiled) */
   const names = e.names ? <span className="cw-names" data-testid="cw-names">{e.names.join(' · ')}</span> : null
@@ -146,6 +104,7 @@ function useLayoutWatch(open: boolean) {
   }, [open])
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one window drawn three ways (the phone's slim bar, the item list, the who list) off one set of choices — the day, the tab, the grouping, the phone layout, History's dots — and the float-window hook; split, the hook would have to run above every early return of each part, and the window's keys, its raise over the ALL AVAIL window and its phone bar would be re-wired across parts — a rewrite with nothing for a person to gain, on a window ruled line by line (D167, D339, D345)
 export function ChangesWindow() {
   useVersion()
   const w = CHGWIN
@@ -215,6 +174,7 @@ export function ChangesWindow() {
   if (w.bar && phone) {
     const n = lines.length
     return (
+      // eslint-disable-next-line react-doctor/prefer-html-dialog -- the slim bar of the window below: a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats beside the schedule without blocking it (D167), and raised over or under the ALL AVAIL window by a press (frontWin) — layered on purpose
       <div className={'chgwin bar' + (frontWin() === 'chg' ? ' front' : '')} ref={el} role="dialog" aria-label="Changes"
         onPointerDownCapture={() => { if (raiseWin('chg')) notify() }}>
         <button className="cw-barbtn" onClick={() => set({ bar: false })} aria-label={`Show the changes — ${n} change${n === 1 ? '' : 's'}`}>
@@ -246,6 +206,7 @@ export function ChangesWindow() {
     <div
       className={'chgwin' + (frontWin() === 'chg' ? ' front' : '')}
       ref={el}
+      /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats beside the schedule without blocking it (D167), and raised over or under the ALL AVAIL window by a press (frontWin) — layered on purpose */
       role="dialog"
       aria-label={title}
       onPointerDownCapture={() => { if (raiseWin('chg')) notify() }}
@@ -295,7 +256,9 @@ export function ChangesWindow() {
       <div className="win-body cw-body">
         {tab === 'out' ? (
           one
+            /* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a box that hands on the press of a button drawn inside it (each day's button; each waiting change's own button, from the pending list's builder) — those buttons are the controls, each a Tab stop with Enter and Space; the box itself is no control */
             ? <div className="cw-out" onClick={onOut} dangerouslySetInnerHTML={{ __html: pendListHTML(di) }} />
+            /* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a box that hands on the press of a button drawn inside it (each day's button; each waiting change's own button, from the pending list's builder) — those buttons are the controls, each a Tab stop with Enter and Space; the box itself is no control */
             : <div className="cw-out" onClick={onOut}>
                 {outDays.map(x => <button key={x.d} className="cw-outday" data-cwday={x.d}><b>{(DAYS as any)[x.i]?.dow}</b> {x.n ? `${x.n} waiting to go out as AL${nextSeq(x.i)}` : 'nothing waiting'}</button>)}
               </div>

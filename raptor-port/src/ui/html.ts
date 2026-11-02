@@ -603,6 +603,7 @@ export function exemptDeskOwn(di:any,key:any,id:any){
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   /* a hidden warning flags no puck (D469) — this row works its flag out from the list, so it skips one */
   const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
   return hit?'C':null;
 }
@@ -634,6 +635,7 @@ export function exemptLineOwn(di:any,key:any,id:any,off?:any){
        seat): the clash anchors on the first place, the other in `also`
        — same match the exempt DESK puck already makes (7 Sep 26). A
        same-formation pair already rings off the shared key prefix. */
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     &&(x.who||[]).includes(id)&&(placeOf(x.code,x.key)||placeOf(x.code,x.also)));
   return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null;
 }
@@ -863,6 +865,7 @@ export function personWarnMsgs(di:any,id:any):{sev:string,msg:string}[]{
   if(PV&&!OFW)return []
   const g=WARN.byDay&&WARN.byDay[+di]
   return shownWarns(g&&g.warns)   /* a hidden warning is no reason and no flag here either (D469) */
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     .filter(w=>w&&(w.who||[]).includes(String(id)))
     .map(w=>({sev:String(w.sev||'note'),msg:String(w.msg||'')}))
     .filter(w=>w.msg)
@@ -2438,7 +2441,8 @@ export function signoffHTML(di:any,full:any){
      names and just "1 to sign", and a phone has no hover to say which one ([HUMAN-RETEST] walk W3
      F-w3-6, 24 Sep 26) — so the line names it, on the week too (AM15b). An ordinary gap stays a count
      there: its empty pill already says which. */
-  const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&miss.includes(r[1])).map((r:any)=>r[1]);
+  const missing=new Set(miss);
+  const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&missing.has(r[1])).map((r:any)=>r[1]);
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{

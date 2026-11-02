@@ -59,6 +59,7 @@ import { placeToast } from './toast'
    keystroke, and component state would throw a window back to its corner mid-drag (floatwin.ts) */
 const BOXES = new Map<string, FloatBox | null>()
 /** test-only: forget every window's place and which was in front */
+// eslint-disable-next-line react-doctor/only-export-components -- the windows' remembered places and their in-front order are this module's own state, read by every window it draws; moved to a file of their own, the doors that call this (the input's own window, the Inputs and SANS settings, the SANS day) and some forty tests would change with it — the Inputs batch's files, whose findings ride with that batch (D490), so it moves then
 export function _resetFloatWins(): void { BOXES.clear(); UP.length = 0; raiseWin('') }
 
 /* THE WINDOWS THAT ARE UP, in the order they were last brought forward - so that when the front one closes, the one
@@ -76,6 +77,7 @@ function forward(id: string): boolean {
  *  not mount again, so nothing raised it: "Calendar..." pressed in a settings window left the Calendar window BEHIND
  *  the settings window that asked for it (the calendar job's bug check, 8 Oct 26 - walker G). A window that is not up
  *  is never named in front. */
+// eslint-disable-next-line react-doctor/only-export-components -- the windows' remembered places and their in-front order are this module's own state, read by every window it draws; moved to a file of their own, the doors that call this (the input's own window, the Inputs and SANS settings, the SANS day) and some forty tests would change with it — the Inputs batch's files, whose findings ride with that batch (D490), so it moves then
 export function bringForward(id: string): void {
   if (UP.includes(id) && forward(id)) notify()
 }
@@ -242,6 +244,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     <div
       className={'floatwin' + (className ? ' ' + className : '') + (rests ? ' rests' : '') + (sheet && tall ? ' is-tall' : '') + (frontWin() === id ? ' front' : '')}
       ref={el}
+      /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; these windows leave the page behind them working (D641, aria-modal false), stand one over another in the order they were pressed, and close on Escape front-first through this module's own order — layered on purpose */
       role="dialog"
       aria-modal="false"
       aria-label={title}

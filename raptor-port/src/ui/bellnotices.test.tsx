@@ -50,7 +50,8 @@ import * as pops from './pops'
 import { useVersion } from './useStore'
 import { NOTICES, noticesFor, noticeWords, noticeAge } from '../state/notices'
 import { isUnread, unreadFor, markNoticeRead, markAllNoticesRead } from '../state/noticeseen'
-import { bellOn, bellTap, bellListOpen, closeBellList, BellButton, BellList } from './topbits'
+import { BellButton, BellList } from './topbits'
+import { bellOn, bellTap, bellListOpen, closeBellList } from './topstate'
 import { routeClick } from './interactions'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

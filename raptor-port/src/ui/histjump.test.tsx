@@ -31,7 +31,7 @@ import * as view from '../state/view'
 import { openScheduler, closeScheduler } from './board'
 import { hideHistBub, HIST_CELLS, histKeyOf, onlyOn, refreshHistDots } from './histbubble'
 import { jumpToChange } from './interactions'
-import { jumpOf } from './ChangesWindow'
+import { jumpOf } from './changesjump'
 import { toggleOilMode, oilModeOn } from './oilmode'
 import { INPUTS, leadOf } from '../engine/inputs'
 import { acceptInput } from '../engine/slots'
@@ -486,7 +486,7 @@ describe('OIL Earn is on (the board, a Saturday)', () => {
    ui/grouprow.ts `leadKeyOf` to send a tap that named a member's undrawn place — a box of his row, his line under
    Personal Inputs — to the ONE row or line that was drawn. An input is one record and one row now, `leadKeyOf` had
    become "return what you were given" and went with the dead code — so the jump must land by the keys the changes
-   window hands it (ui/ChangesWindow.tsx jumpOf: the input's row on the programme, then `iu:<iid>~<its man>`, then
+   window hands it (ui/changesjump.ts jumpOf: the input's row on the programme, then `iu:<iid>~<its man>`, then
    `iu:<iid>`; a line of the history files an input under its FIRST TO JOIN — state/changelines.ts, `sub`).
    The people join Vandal, Ranger, Nomad on purpose: the first to join is NOT the first A to Z, so a landing that only
    works when the two happen to be the same man fails here. */

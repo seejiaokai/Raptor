@@ -69,7 +69,7 @@ const RECORDS: Record<string, string> = {
   'ui/oilday.ts': 'the save of the one list: each picked input found again by its id',
   'ui/reqdoor.ts': 'the door of an input\'s row: the input found again by its id after a tried save, for the question that follows a change made anyway',
   'ui/changesmodel.ts': 'the changes window\'s items',
-  'ui/ChangesWindow.tsx': 'the changes window',
+  'ui/changesjump.ts': 'the changes window: where a tap on a line goes (an input\'s row, the input found by its id)',
   'ui/export.ts': 'the CSV: one row an input as stored',
   'ui/histbubble.ts': 'the history bubble of an Unavailable row',
   'ui/html.ts': 'draws the day\'s inputs on the week; how many SANS men have offered reads lines through sansAvailOn',
@@ -87,7 +87,7 @@ const RECORDS: Record<string, string> = {
   'ui/SansCal.tsx': 'the SANS calendar',
   'ui/Shell.tsx': 'a comment only',
   'ui/textedit.ts': 'a typed box on a request',
-  'ui/topbits.tsx': 'the bell\'s tap opens a request',
+  'ui/topstate.ts': 'the bell\'s tap opens a request',
 }
 
 const WRITERS: Record<string, string> = {

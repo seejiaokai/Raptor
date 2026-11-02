@@ -45,30 +45,7 @@ import {
   AVAILWIN_BOX, setAvailWinBox,
 } from './pops'
 
-/* OPENING THE WINDOW FROM A COUNT CHIP — one body for the board and the week,
-   which both draw the chip. A second opener is how the chip and its tap came to
-   disagree once before (Fable correction 2). The title is read IN THE CHIP'S
-   WORLD, so an issued chip is titled by the issued row even if it has been
-   renamed since; it is kept as the fallback the window shows if the row is
-   later deleted behind it (S14).
-
-   WHICH HALF IT OPENS ON. Availability is the default and is always offered;
-   inside the earn mode the counter IS the door to switching men off — the job
-   he opened it for — so it lands on that half. Not for a VERSION's chip: a
-   record is read, never edited, so it lands on availability. */
-export function openAvailWinFrom(osn: HTMLElement) {
-  const di = +(osn.dataset.oilday || -1), item = osn.dataset.oilsent || '', ver = osn.dataset.oilver || ''
-  const ofw = osn.dataset.oilofw === '1'
-  const lbl = withChipWorld(di, ver, ofw, () => oilItemLabel(di, item))
-  /* A NEW SUBJECT FOR AN OPEN WINDOW KEEPS ITS PLACE (Fable, final read): he
-     dragged it aside to see the board, and tapping a second chip should not
-     throw it back over what he is looking at. A window opened fresh still
-     starts where the stylesheet puts it (S11). */
-  const keep = AVAILWIN ? AVAILWIN_BOX : null
-  setAvailWin({ di, item, ver, ofw, name: lbl.name, when: lbl.when, tab: oilModeOn(di) && !ver ? 'oil' : 'who' })
-  if (keep) setAvailWinBox(keep)
-  raiseWin('avail')
-}
+/* opening the window from a count chip: ui/availopen.ts openAvailWinFrom */
 
 /* D38/D51 — the LEFT column is the pilots and the RIGHT column is the WSOs, so
    the split says something rather than just saving space. That is the pairing
@@ -82,6 +59,7 @@ const isWso = (id: string) => seatShown(id) === 'RCP'
 
 /* THE PHONE LAYOUT, WHERE THE WINDOW SITS, THE DRAG AND THE RESIZE — moved whole to ui/floatwin.ts (28 Sep 26,
    [DRAFT-PENDING]) so the one changes window shares them; every rule and the finding behind it is there. */
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- one window drawing two halves (who is available, who earns OIL) off ONE read of the crowd in the chip's world (an issued day, a version, a plan), with the earn mode's masks and refusals and the float-window hook; split, the parts would each read that world and must still agree on one count and its words (D37, D44), on a window whose lines each answer a finding (Fable S6, S9, S14, F3, F4) — a rewrite with nothing for a person to gain
 export function AvailWindow() {
   useVersion()
   const open = AVAILWIN
@@ -362,6 +340,7 @@ export function AvailWindow() {
       ref={el}
       /* the one pressed last is in front of the changes window (Astra DP-10 — ui/floatwin.ts) */
       onPointerDownCapture={() => { if (raiseWin('avail')) notify() }}
+      /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own stacking order, with its own backdrop, focus and Escape rules; this window floats over the schedule without blocking it (D38, D41), and is raised over or under the changes window by a press (frontWin) — layered on purpose */
       role="dialog"
       aria-label={`${m && m.lbl.found ? m.lbl.name : name} — who is available`}
     >
@@ -400,6 +379,7 @@ export function AvailWindow() {
         <div className="win-one">Who&rsquo;s available <span className="c">{m && !m.lost ? m.n : '—'}</span></div>
       )}
 
+      {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the list is the crowd's pucks, drawn by the schedule's own puck builder (each a Tab stop, as on the schedule), and a tap on one does what a tap on his puck on the schedule does (D65); no puck on the schedule answers a key either, so keys for a puck are a keyboard design for every puck, not a tidy-up of this list; the window's own controls (its tabs, its ✕) are buttons */}
       <div
         className={'win-body' + (oil ? ' oilview' : '')}
         onClick={onBody}

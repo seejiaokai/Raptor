@@ -38,7 +38,7 @@ import * as pops from '../ui/pops'
 import { routeClick } from '../ui/interactions'
 import { DAYS } from '../engine/data'
 import { signOf, setDayApproved, dayCurVer } from '../engine/publish'
-import { bellOn, bellTap, openNotice } from '../ui/topbits'
+import { bellOn, bellTap, openNotice } from '../ui/topstate'
 import { App } from '../ui/App'
 import { projectPeople } from './state/raptorRoster'
 import {
