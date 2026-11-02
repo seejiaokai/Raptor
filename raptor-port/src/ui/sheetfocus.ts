@@ -92,12 +92,89 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
   const q = (v: string) => v.replace(/["\\]/g, '\\$&')
   const da = [...el.attributes].find(x => x.name.startsWith('data-'))
   const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]` : ''
+  /* a control on the Scheduler Board is looked for again on the board: the week behind it draws the same buttons with the
+     same marks (a wave's Traffic, a day's ⓘ), and the keys must not land on the week's copy, hidden under the board */
+  const within: ParentNode = el.closest('#schedBoard') || document
   return () => {
     if (el.isConnected) return el
     if (!sel) return null
-    const all = [...document.querySelectorAll<HTMLElement>(sel)]
+    const all = [...within.querySelectorAll<HTMLElement>(sel)]
     return all.find(n => n.getClientRects().length > 0) || all[0] || null
   }
+}
+
+/* ESCAPE CLOSES WHAT DOES NOT HOLD THE KEYS ([VEILED-WINDOWS-BAR]'s Escape part, 3 Nov 26 — the design guide §2: Escape
+   closes what opened last, and the keys go back to the button that opened it). The board's small menus (+ Block,
+   Templates, the plans selector, a jet's stores, + Wave — board.ts popMenu, interactions.ts openStoresMenu), the Traffic
+   window and the day-details window take no keyboard, so no sheet's own Escape reaches them, and with one up Escape did
+   nothing at all (the Scheduler Board under it rightly waits for what is over it — boardescape.ts overBoard).
+   Each joins this one list as it opens and leaves it as it closes; the newest answers. One listener on the document, in
+   the capture phase — before the board's own Escape comes back up the tree, and before the page's own keys — taking the
+   press so nothing under it closes too. A question sheet or a window that holds the keys (topSheet) stands over these and
+   answers its own Escape first. A held key's repeats are not a press, as on the board. */
+type EscEntry = { box: () => HTMLElement | null; close: () => void }
+const escs: EscEntry[] = []
+function escTop(e: KeyboardEvent): void {
+  if (e.key !== 'Escape' || e.defaultPrevented || e.repeat || e.isComposing) return
+  /* a menu taken away by any other way (a click outside, a pick, another menu) leaves the list here */
+  for (let i = escs.length - 1; i >= 0; i--) { const b = escs[i]!.box(); if (!b || !b.isConnected) escs.splice(i, 1) }
+  const top = escs[escs.length - 1]
+  if (!top) { document.removeEventListener('keydown', escTop, true); return }
+  if (topSheet()) return
+  e.stopPropagation(); e.preventDefault()
+  top.close()
+}
+/** Escape closes this until the returned function is called (or `box` is off the page). `close` does the closing and
+    gives the keys back. */
+export function escCloses(box: () => HTMLElement | null, close: () => void): () => void {
+  const entry: EscEntry = { box, close }
+  if (!escs.length) document.addEventListener('keydown', escTop, true)
+  escs.push(entry)
+  return () => {
+    const i = escs.indexOf(entry)
+    if (i >= 0) escs.splice(i, 1)
+    if (!escs.length) document.removeEventListener('keydown', escTop, true)
+  }
+}
+/** The keys back on `to`, if they are nowhere or inside what just closed — never taken from where they went meanwhile. */
+export function keysBack(to: (() => HTMLElement | null) | null, from?: HTMLElement | null): void {
+  const now = document.activeElement
+  if (now && now !== document.body && !(from && from.contains(now)) && now.isConnected) return
+  const el = to ? to() : null
+  if (el && el.isConnected) el.focus({ preventScroll: true })
+}
+
+/* A window that does not hold the keys (the Traffic window, the day-details window — ui/Modals.tsx): Escape closes it, and
+   only it, while it is up; what is being typed in one of its boxes is saved the ordinary way first, by that box's blur, as
+   a press on its ✕ saves it; and when it closes, by any way out, the keys go back to where they were when it opened — its
+   Traffic button or ⓘ — if they are nowhere or were inside it. `box` is the window's own element while it is up. */
+export function useEscWindow(box: RefObject<HTMLElement | null>, open: boolean, close: () => void): void {
+  useEffect(() => {
+    if (!open) return
+    const el = box.current
+    const was = document.activeElement as HTMLElement | null
+    const back = was && was !== document.body && was.isConnected && !(el && el.contains(was)) ? locate(was) : null
+    const off = escCloses(() => el, () => {
+      const a = document.activeElement as HTMLElement | null
+      if (a && el && el.contains(a)) a.blur()
+      close()
+    })
+    return () => { off(); keysBack(back, el) }
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- on opening and closing only: re-joining the list on a repaint would make this window the newest over a menu opened after it; `close` and `box` are the window's own, fixed for its life
+  }, [open])
+}
+
+/* A small menu hung from a button (board.ts popMenu, interactions.ts openStoresMenu): Escape takes it away, unhooking its
+   outside-click listener as every other way of removing it does, and the keys go back to its button */
+export function menuEscape(box: HTMLElement, anchor: HTMLElement): void {
+  const back = locate(anchor)
+  const off = escCloses(() => box, () => {
+    off()
+    const out = (box as any)._offClick
+    if (out) document.removeEventListener('click', out)
+    box.remove()
+    keysBack(back)
+  })
 }
 
 /* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */

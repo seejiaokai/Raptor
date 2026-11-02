@@ -26,7 +26,7 @@ import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
 import { paletteHTML, paletteDay } from './palette-html'
-import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, SBZOOM, setBoardZoom, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, wireSideGrip, SIDE_MIN, dayTplMenu } from './board'
+import { boardHTML, boardSignHTML, boardWarnHTML, dayTabsHTML, boardMbtn, boardChange, boardArmClick, boardTab, closeScheduler, CXT, cxCommit, setCxt, SBWIDE, SBZOOM, setBoardZoom, toggleWide, SORTALL, askSortAll, cancelSortAll, sortAllCommit, setSortAll, boardDayStep, boardWeekStep, wireDayDots, wireParkedRosScroll, wireWarnSplit, wireSideGrip, SIDE_MIN, dayTplMenu, takeKeysIn } from './board'
 import { CXR_CFG, addCxReason, delCxReason, renameCxReason, moveCxReason, cxReasonsSave, cxReasonsReset, cxrAreStandard } from '../engine/cxreasons'
 import { canEditSched } from '../state/auth'
 import { refreshHighlights } from './highlights'
@@ -113,9 +113,10 @@ export function SchedBoard() {
      AND THE KEYBOARD COMES BACK (the design guide §2 — "the keyboard returns to the button that opened a thing"): where
      it was when the board opened — a control of the week behind, found again by its id or data attribute after the
      week's string redraw (sheetfocus.ts locate) — once the board closes by any way out, unless something else has taken
-     it meanwhile. The day's date that opens the board takes no keyboard (filed, [BOARD-OPEN-BY-KEYS]), so after a
-     press on it the keyboard was nowhere, and nowhere is where it goes back to: off the board's own buttons, now
-     hidden. Not on a page change (the week is no longer on screen). */
+     it meanwhile. The day's date that opens the board is a stop for the keys since 3 Nov 26 ([BOARD-OPEN-BY-KEYS]), so
+     the keys go back to it — after Enter or Space on it, and after a click on it too (a click puts the focus there, with
+     no ring, :focus-visible); where the keys were nowhere, nowhere is where they go back to: off the board's own buttons,
+     now hidden. Not on a page change (the week is no longer on screen). */
   useEffect(() => {
     if (!open) return
     const off = wireBoardEscape()
@@ -123,8 +124,14 @@ export function SchedBoard() {
     const root = rootRef.current
     const was = document.activeElement as HTMLElement | null
     const back = was && was !== document.body && was.isConnected && !root?.contains(was) ? locate(was) : null
-    return () => {
-      off()
+    /* OPENED BY THE KEYS — Enter or Space on the week's date ([BOARD-OPEN-BY-KEYS], board.ts openSchedulerByKeys): the
+       keys go onto the board's own box (no ring of its own: a place for them to land, as a question sheet's box is), so
+       the next Tab reaches the board's first button and not the week hidden behind it. The way back above is read first,
+       so Escape and ✓ Done still give the keys back to the date. The box takes the keys only while a board opened so is up
+       (tabindex -1, given here and taken back as it closes): a press on the board's blank space must not take them. */
+    const keyed = takeKeysIn() && !!root
+    if (keyed) { root!.tabIndex = -1; root!.focus({ preventScroll: true }) }
+    const giveBack = () => {
       if (CURPAGE !== 'editsched') return
       const now = document.activeElement as HTMLElement | null
       const inBoard = !!now && !!root?.contains(now)
@@ -132,6 +139,11 @@ export function SchedBoard() {
       const to = back ? back() : null
       if (to && to.isConnected) to.focus({ preventScroll: true })
       else if (inBoard) now!.blur()
+    }
+    return () => {
+      off()
+      giveBack()
+      if (keyed) root!.removeAttribute('tabindex')
     }
   }, [open])
 

@@ -342,6 +342,10 @@ describe('view-week markup parity with the reference', () => {
     const normDow = (s: string) => s.replace(
       /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
+    /* Divergence ([BOARD-OPEN-BY-KEYS], 3 Nov 26): the edit week's DATE is a stop for the keys — role="button" and
+       tabindex="0" on the .dt.sb-open span, so Enter and Space open the board. Lifted off before the compare; a no-op on
+       the reference, whose date carries neither. Pinned positively below; the VIEW week's date carries neither. */
+    const normDt = (s: string) => s.replace(/(<span class="dt sb-open" data-sbday="\d+") role="button" tabindex="0"/g, '$1')
     /* Divergence (owner, 29 Aug 26 pt.3, the in-place drag): edit mode wraps each
        section in a draggable `.dsec[data-secmove]` carrying a grip, and each wave
        carries an edit-only `data-move="mv:w…"` + a `.wvgrip`. The reference has
@@ -386,7 +390,7 @@ describe('view-week markup parity with the reference', () => {
        as normDrag/normDow. Collapse the reference's double space; a no-op on the
        port. */
     const normBeakWs = (s: string) => s.replace(/class="dbeak {2,}/g, 'class="dbeak ')
-    const E = (s: string) => noDwCue(noVerTag(normBeakWs(normDrag(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(noRallyCols(s))))))))))))))))))))
+    const E = (s: string) => noDwCue(noVerTag(normBeakWs(normDrag(normDt(normDow(noItTime(noItCtl(noAhRmk(noRmkPh(noTrace(noBrief(noStores(sortGrnd(grndTitle(noInpGrp(noNotes(noDhTpl(noSign(noDsec(noRallyCols(s)))))))))))))))))))))
     DAYS.slice(0, REFN).forEach((_: any, di: number) => {
       const ref = w.eval(`dayHTML(${di},true)`)
       expect(E(dayHTML(di, true)), 'day ' + di + ' ' + parityWhere(E(dayHTML(di, true)), E(ref))).toBe(E(ref))
@@ -423,6 +427,15 @@ describe('view-week markup parity with the reference', () => {
     const vw = dayHTML(3, false)
     expect(vw).toContain('<span class="dow di-open" data-dayinfo="3"')
     expect(vw).not.toContain('data-crewday')                // view-only has no crew panel
+  })
+
+  /* [BOARD-OPEN-BY-KEYS] (3 Nov 26): the edit week's date is a Tab stop named as a button; the view week's date keeps
+     the reference's markup — no role, no Tab stop of its own */
+  it("the edit-week date is a stop for the keys; the view week's is not", () => {
+    expect(dayHTML(3, true)).toContain('<span class="dt sb-open" data-sbday="3" role="button" tabindex="0" title="Open scheduler board">')
+    const vw = dayHTML(3, false)
+    expect(vw).toContain('<span class="dt di-open" data-dayinfo="3" title="Day details">')
+    expect(vw).not.toMatch(/<span class="dt[^>]*tabindex/)
   })
 
   it('the sign-off pill: label + visible value + the full-pill select', () => {

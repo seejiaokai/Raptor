@@ -166,14 +166,15 @@ describe('something over the board answers first', () => {
     await click($('#sortAllCancel'))
   })
 
-  it('the Traffic window over the board: the board stays', async () => {
+  /* since [VEILED-WINDOWS-BAR]'s Escape part (3 Nov 26) the window closes on that Escape — and only it */
+  it('the Traffic window over the board: Escape closes the window, the board stays', async () => {
     await openBoard(2)
     const w = DAYS[2].waves.findIndex((x: any) => x && !x.sa)
     await act(async () => { setAirKey(`2|${w}`); notify() })
     expect(($('#airpop') as any).hidden).toBe(false)
     await key('Escape')
+    expect(($('#airpop') as any).hidden, 'the window closed').toBe(true)
     expect(boardOpen()).toBe(true)
-    await click($('#airClose'))
   })
 
   it('the changes window (History) over the board: the board stays', async () => {
@@ -193,9 +194,8 @@ describe('something over the board answers first', () => {
 })
 
 describe('the keyboard comes back', () => {
-  /* the state is set directly: the day's date that opens the board takes no keyboard ([BOARD-OPEN-BY-KEYS]), so a press
-     on it leaves the keyboard nowhere and no route puts it on a control of the week as the board opens today — this
-     proves the way back for the day one does (an undo reopening the board, a date that takes the keys) */
+  /* the state is set directly: this proves the way back from any control of the week (an undo reopening the board, say);
+     the day's date, which takes the keys since 3 Nov 26, is driven by its own keys in boardkeys.test.tsx */
   it('to the control of the week it was on when the board opened, after Escape', async () => {
     const opener = $('#eWeek [data-air]') as HTMLElement
     expect(opener, 'a Traffic button on the week').toBeTruthy()

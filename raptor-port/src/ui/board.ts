@@ -37,7 +37,7 @@ import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
-import { noteOpener } from './sheetfocus'
+import { noteOpener, menuEscape } from './sheetfocus'
 import { openAvailWinFrom } from './AvailWindow'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
@@ -1627,6 +1627,8 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   box.addEventListener('click', (e: any) => onPick(e, () => box.remove()))
   /* deferred by a tick, or the very click that OPENED this box closes it */
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+  /* Escape takes it away, the board under it staying, and the keys go back to its button ([VEILED-WINDOWS-BAR]) */
+  menuEscape(box, anchor)
   return box
 }
 /* + BLOCK's picker (owner, 13 Aug 26): the saved duty TEMPLATES, straight up \u2014
@@ -2294,6 +2296,13 @@ export function wireDayDots(el: HTMLElement) {
 }
 
 export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di); validate(); notify() }
+/* OPENED BY THE KEYS ([BOARD-OPEN-BY-KEYS], 3 Nov 26): Enter or Space on the week's date. The board covers the whole
+   screen, so the keys must go onto it — left on the date behind it, the next Tab walked the hidden week. The note is taken
+   once by the board as it opens (SchedBoard.tsx), which puts the keys on its own box and still gives them back to the date
+   when it closes. A press or a tap opens it as before, the keys left where they were. */
+let KEYSIN = false
+export function openSchedulerByKeys(di: number) { KEYSIN = true; openScheduler(di) }
+export function takeKeysIn(): boolean { const k = KEYSIN; KEYSIN = false; return k }
 /* Done/Close also parks the aircrew drawer: ros-open is a body class shared
    with the edit week's own drawer, and leaving it set would surprise-open
    the week's palette the moment the board lifts (owner's one-window phone

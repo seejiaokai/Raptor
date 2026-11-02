@@ -7,9 +7,10 @@
    highlight they make, stay).
    AND ONLY WITH NOTHING OVER THE BOARD. Every window, sheet and menu that can lie over it answers its own Escape, or
    ignores it, first: a window that closes on Escape (useEscClose, ui/FloatWindow.tsx), a question sheet, the ⋯ menu, a
-   date box's calendar — and the ones that do not close on it (the changes and ALL AVAIL windows, the Traffic and
-   day-details windows, the small menus of + Block, Templates and the plans selector, the bell's list) leave the board
-   open too. A seat picked (ARM) is put down first, as the reference's Escape always did; a drag under way is left alone.
+   date box's calendar, and since 3 Nov 26 the Traffic and day-details windows and the small menus of + Block, Templates,
+   the plans selector, a jet's stores and + Wave (sheetfocus.ts escCloses, [VEILED-WINDOWS-BAR]) — and the ones that do
+   not close on it (the changes and ALL AVAIL windows, the bell's list) leave the board open too. A seat picked (ARM) is
+   put down first, as the reference's Escape always did; a drag under way is left alone.
    WHY TWO LISTENERS. What stands over the board is read as the key goes DOWN, at the window's capture — the first thing
    to hear it, before any window has closed itself (the bell's list closes on this very press, and a reading taken after
    it would find nothing over the board and close that too). The board closes as the key comes back UP the tree, at the

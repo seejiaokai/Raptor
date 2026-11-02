@@ -148,9 +148,100 @@ test.describe('[BOARD-ESCAPE-CLOSE] Escape on the Scheduler Board, real keys', (
     await (await trafficButton(page, '#sbBoard')).click()
     await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
     await page.keyboard.press('Escape')
+    await expect(page.locator('#airpop:not([hidden])'), 'Escape closed the Traffic window (since 3 Nov 26)').toHaveCount(0)
     await expect(open, 'with the Traffic window over it, the board stays').toBeVisible()
-    await page.locator('#airDone').click()
     await page.keyboard.press('Escape')
     await expect(open).toHaveCount(0)
+  })
+})
+
+/* [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (the night of 3 Nov 26), with real keys on the built app at
+   his PC's screen (1536 × 864 here, as the night's brief asks): the week's date is reached by Tab and opens the board on
+   Enter and on Space, with the keyboard's ring on it and none after a mouse click; the board's small menus, the Traffic
+   window and the day-details window each close on Escape and only they, the keys back on the button that opened them;
+   Escape then closes the board, the keys back on the date. The rules in every order: ui/boardkeys.test.tsx. */
+test.describe('[BOARD-OPEN-BY-KEYS] the board opened and its menus closed by the keys', () => {
+  test.use({ viewport: { width: 1536, height: 864 } })
+
+  /* where the keyboard is, in the app's own marks */
+  const at = (page: Page) => page.evaluate(() => {
+    const a = document.activeElement as HTMLElement | null
+    return a ? { tag: a.tagName, id: a.id, sbday: a.dataset.sbday ?? null, air: a.dataset.air ?? null, inBoard: !!a.closest('#schedBoard'), ring: a.matches(':focus-visible') } : null
+  })
+
+  test('Tab to the date, Enter opens the board; each menu closes on Escape; Escape closes the board onto the date; Space opens it again', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    const open = page.locator('#schedBoard:not([hidden])')
+    const date = page.locator('#eWeek .day[data-day="0"] .dt.sb-open')
+    /* the keys are put on the day's Templates button, and Shift+Tab steps back to the date before it, as a person tabs */
+    await page.locator('#eWeek .day[data-day="0"] [data-daytplopen]').focus()
+    await page.keyboard.press('Shift+Tab')
+    expect(await at(page), 'Shift+Tab from Templates reaches the date').toMatchObject({ tag: 'SPAN', sbday: '0', ring: true })
+    await page.keyboard.press('Enter')
+    await expect(open, 'Enter opened the board').toBeVisible()
+    expect((await at(page))!.inBoard, 'the keys are on the board').toBe(true)
+
+    for (const sel of ['#sbBoard [data-dwadd]', '#sbTpl', '#schedBoard [data-planmenu]', '#sbBoard [data-stcfg]', '#sbBoard [data-wvadd]']) {
+      const b = page.locator(sel).first()
+      await b.focus()
+      await page.keyboard.press('Enter')
+      await expect(page.locator('.wavemenu'), `${sel}'s menu opened`).toHaveCount(1)
+      await page.keyboard.press('Escape')
+      await expect(page.locator('.wavemenu'), `${sel}'s menu closed on Escape`).toHaveCount(0)
+      await expect(open, 'the board stays under it').toBeVisible()
+      expect(await b.evaluate(el => el === document.activeElement), `the keys are back on ${sel}`).toBe(true)
+    }
+
+    await page.locator('#sbBoard [data-air]').first().focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#airpop:not([hidden])'), 'the Traffic window closed on Escape').toHaveCount(0)
+    await expect(open).toBeVisible()
+    expect((await at(page))!.air, 'the keys are on its Traffic button').not.toBeNull()
+
+    await page.locator('#schedBoard .dinfobtn').first().focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#dayPop:not([hidden])')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#dayPop:not([hidden])'), 'the day-details window closed on Escape').toHaveCount(0)
+    await expect(open).toBeVisible()
+
+    await page.locator('#sbCal').focus()
+    await page.keyboard.press('Escape')
+    await expect(open, 'Escape closed the board').toHaveCount(0)
+    expect(await at(page), 'the keys are back on the date, its ring showing').toMatchObject({ sbday: '0', ring: true })
+    await page.keyboard.press(' ')
+    await expect(open, 'Space opened it again').toBeVisible()
+    await page.locator('#sbDone').focus()
+    await page.keyboard.press('Enter')
+    await expect(open, '✓ Done by the keys').toHaveCount(0)
+    expect(await at(page), 'the keys are back on the date').toMatchObject({ sbday: '0' })
+
+    /* a mouse press on the date: the board opens, and the date wears no ring when it closes again by a press on ✓ Done */
+    await date.click()
+    await expect(open).toBeVisible()
+    await page.locator('#sbDone').click()
+    await expect(open).toHaveCount(0)
+    const after = await at(page)
+    expect(after && after.sbday === '0' ? after.ring : false, 'no ring after the mouse').toBe(false)
+  })
+
+  test("the week's Traffic and day-details windows close on Escape, the keys back on their buttons", async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    const air = page.locator('#eWeek [data-air]:visible').first()
+    await air.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#airpop:not([hidden])')).toHaveCount(0)
+    expect(await air.evaluate(el => el === document.activeElement), 'the keys are back on Traffic').toBe(true)
+    const info = page.locator('#eWeek .day[data-day="0"] .dinfobtn')
+    await info.focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#dayPop:not([hidden])')).toBeVisible()
+    await page.keyboard.press('Escape')
+    await expect(page.locator('#dayPop:not([hidden])')).toHaveCount(0)
+    expect(await info.evaluate(el => el === document.activeElement), 'the keys are back on the ⓘ').toBe(true)
   })
 })

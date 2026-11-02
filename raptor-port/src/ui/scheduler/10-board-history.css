@@ -3,6 +3,9 @@
    which html.sb-board-up holds to that one screen (nothing for an iPhone to scroll as the keys come and go);
    clipped (never a scroller), as a fixed layer was: whatever pokes past it, the crew drawer off its edge, never widens the page */
 .schedboard{position:absolute;inset:0;z-index:400;background:var(--bg);display:flex;flex-direction:column;overflow:clip}
+/* the board's box, given the keys when Enter or Space on the week's date opened it ([BOARD-OPEN-BY-KEYS]): a place for
+   them to land, not a control — no ring of its own, as a question sheet's box has none */
+.schedboard:focus{outline:none}
 /* the board's entrance — part of the 25 Aug 26 motion set (see PAGE SHELL).
    Keyed on :not([hidden]) so it replays only when the hidden attribute
    flips (the open), never on a class change like sb-wide; the board is
