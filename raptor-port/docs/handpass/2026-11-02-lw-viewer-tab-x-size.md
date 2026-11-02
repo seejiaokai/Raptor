@@ -114,6 +114,10 @@ of a fix that rewrites logic).
 GitHub's run of pull request 614 (the full set while the repo is public, D1086) — green on `3e14bf787`. On his PC: the Leave
 War UI unit files 114 / 1704 passed under the lock; the new e2e test red then green (lw-phone); the code check: no new finding.
 
+## His "merge live" — 2 Nov 26
+
+Given in the original chat ("Merge live"), before he reported a look on his iPhone: the real iPhone's tap beside the full page's ✕ stays unproven (the test browsers' WebKit took it, 390 and 360). Both items archived.
+
 ## His look card
 
 1. On a desktop: open a document from a bid window's chip, press Tab a few times — the ring goes Close → ✕ → Close; Escape

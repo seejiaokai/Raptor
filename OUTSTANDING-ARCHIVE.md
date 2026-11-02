@@ -7396,3 +7396,17 @@ stop the page zoom app-wide on a phone (Safari ignores the old "no zoom" page se
 check every grid’s own pinch still works on his iPhone’s WebKit, and that no screen needs page zoom to be read. **Place:** its own
 job and branch from `main`.
 
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([LW-VIEWER-TAB]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-VIEWER-TAB] Tab inside the document viewer over a blocking Leave War window reaches only one button (older; found 2 Nov 26)
+**What:** with the viewer (`ui/DocViewer.tsx`) open over a blocking Leave War window, the window's own Tab keeping (`leavewar/ui/Sheet.tsx`, the trap after the Escape listener) is heard first and sends focus into the window; the viewer's own (`ui/sheetfocus.ts`) pulls it back to its first control — so each Tab lands on the same button (Close, or Next with several files) and the ✕ and ‹ are never reached by Tab. Escape still closes the viewer. Older than the doc-chip build (the read-only chips met it since M4); the fresh read of `[LW-DOCFIELD-CHIP-OPENS]` (note 1, `raptor-port/docs/handpass/2026-11-01-lw-next-batch.md`). **To do:** the Sheet's Tab trap stands aside while a keyboard-holding window opened after it is up, as its Escape listener already does (`topSheet()`); red first, with a keyboard walk over the viewer. **Place:** the next Leave War batch; a WALK (keyboard).
+
+
+*Moved here 2026-11-02 by backlog-archive.mjs ([LW-OPENDATES-X-SIZE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-OPENDATES-X-SIZE] The "Open for bidding" page's ✕ is small on a phone (24 Oct 26)
+**Seen (M3's follow-up walk):** the full-page window's ✕ measures 18 × 17 on his iPhone's 402 wide; a finger's size is 44 (the
+design guide). **To do:** check its press area (a stretched hit box may already reach 44); if not, give it the windows' 44px
+✕ (`22-float-windows.css`, phone) — a picture before and after. **Place:** with the next Leave War look.
+
