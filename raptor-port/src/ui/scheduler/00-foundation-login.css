@@ -73,6 +73,14 @@
 [hidden]{display:none!important}
 html,body{margin:0;padding:0}
 html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:dark}
+/* ON A TOUCH SCREEN THE PAGE ITSELF NEVER ZOOMS (owner D1567, 2 Nov 26 — "only allow the grids to be zoomed. Not the page.
+   Sometimes I get stuck and I can't zoom out if the page zooms in."). A finger may pan the page; a pinch or a double tap
+   zooms nothing of the browser's. What a touch may do is the meet of every box from the one touched up to here, so this
+   one rule reaches every page and window. The grids that zoom by their own pinch (the Leave War grid and its OIL tab,
+   Quals, the Scheduler Board's desktop layout, the Tracker's chart) read the fingers themselves, which this never stops.
+   An iPhone's Safari pinches by its own gesture events as well — held off in ui/nopagezoom.ts; Android's page setting in
+   index.html. A mouse-first screen is left as the browser has it: a desktop's Ctrl + / − stays (D1286). */
+@media (pointer:coarse){html{touch-action:pan-x pan-y}}
 select option,select optgroup{background:#1A1F26;color:#F1F4F7}
 select{color-scheme:dark}
 body{

@@ -14,6 +14,7 @@ import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
 import { installKbScroll } from './ui/kbscroll'
+import { installNoPageZoom } from './ui/nopagezoom'
 
 /* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
    the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
@@ -43,6 +44,8 @@ async function boot(): Promise<void> {
   installDotRing()
   /* on a phone, the box being typed in is scrolled clear of the keyboard ([KEYBOARD-SCROLL], D1048) */
   installKbScroll()
+  /* on a phone the page itself never zooms, only the grids that pinch by themselves ([NO-PAGE-ZOOM], D1567) */
+  installNoPageZoom()
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
