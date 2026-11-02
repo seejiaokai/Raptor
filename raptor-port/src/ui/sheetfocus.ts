@@ -23,6 +23,7 @@
    answer answers nothing until the sheet's right-hand button is pressed, so nothing is one key-press from being done by
    accident. Every other sheet still lands on its box. */
 import { useEffect, type RefObject } from 'react'
+import { TIME_TXT } from '../engine/slots'
 
 const sheets: HTMLElement[] = []
 const STOPS = 'button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])'
@@ -117,9 +118,20 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
    back (textedit.ts routeKeyDown, D1011) and the window waits for the next one, as the movable windows (FloatWindow.tsx)
    and the board (boardescape.ts) already leave it. Taking it there closed the window and left the words typed, saved on
    the box's blur. Not the box the entry hangs from (`from`): the duty role's pick-list hangs from the role box itself,
-   so there the first Escape closes the list and the second puts the role back. */
+   so there the first Escape closes the list and the second puts the role back.
+   ONLY THE SCHEDULE'S OWN BOXES (the narrow read of that fix, R1): exactly the boxes whose Escape textedit.ts
+   routeKeyDown answers — the week's text cells, an input's cells on the week and the board, the board's wrapping boxes, its
+   time boxes, the in-time lines, the stores, area and area-time cells. Any other box (a search box, a select, a checkbox,
+   a Traffic line under a menu) does nothing with Escape, and stepping aside there left every Escape dead until the keys
+   moved. */
 type EscEntry = { box: () => HTMLElement | null; close: () => void; from: HTMLElement | null }
-const TYPING = 'input, textarea, select, [contenteditable=""], [contenteditable="true"]'
+const OWN_ESC = '[data-txt],[data-inp],[data-ifld],textarea[data-bfld],[data-itline],[data-bombs],[data-area],[data-atime]'
+function ownEscape(at: HTMLElement): boolean {
+  if (at.closest(OWN_ESC)) return true
+  /* the board's <input> boxes put the old value back on Escape only where they hold a time (D1011) */
+  const b = at.closest<HTMLElement>('input[data-bfld]')
+  return !!b && TIME_TXT.test(b.dataset.bfld || '')
+}
 const escs: EscEntry[] = []
 function escTop(e: KeyboardEvent): void {
   if (e.key !== 'Escape' || e.defaultPrevented || e.repeat || e.isComposing) return
@@ -129,7 +141,7 @@ function escTop(e: KeyboardEvent): void {
   if (!top) { document.removeEventListener('keydown', escTop, true); return }
   if (topSheet()) return
   const at = document.activeElement as HTMLElement | null
-  if (at && at !== document.body && typeof at.closest === 'function' && (at.closest(TYPING) || at.isContentEditable)) {
+  if (at && at !== document.body && typeof at.closest === 'function' && ownEscape(at)) {
     const b = top.box()
     if (!(b && b.contains(at)) && !(top.from && top.from.contains(at))) return
   }

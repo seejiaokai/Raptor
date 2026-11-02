@@ -291,3 +291,28 @@ describe('the fresh read: Escape in a box behind, the board box\'s Tab stop, the
     expect(document.activeElement, 'a mouse open does not put the keys on the board\'s box').not.toBe($('#schedBoard'))
   })
 })
+
+/* THE NARROW READ OF THE FIX (ws-read-fixes.md, R1): only the schedule's own boxes, whose Escape puts the old words back,
+   keep Escape from a window or menu over them — a search box, a select or a checkbox does nothing with it */
+describe('Escape from a box with no Escape of its own still closes the window or menu', () => {
+  it("the Traffic window up, the keys in the week's search box: Escape closes the window", async () => {
+    const gi = DAYS[1].waves.findIndex((w: any) => w && !w.sa)
+    await pressKeyed($(`#eWeek [data-air="1|${gi}"]`))
+    expect(($('#airpop') as any).hidden).toBe(false)
+    const s = $('#searchE')
+    expect(s, "the week's search box").toBeTruthy()
+    s.focus()
+    await key('Escape')
+    expect(($('#airpop') as any).hidden, 'the window closed').toBe(true)
+  })
+
+  it("a board menu up, the keys in the board's search box: Escape closes the menu", async () => {
+    await click(date(2))
+    await pressKeyed($('#sbBoard [data-dwadd]'))
+    expect($('.wavemenu')).toBeTruthy()
+    $('#searchB').focus()
+    await key('Escape')
+    expect($('.wavemenu'), 'the menu closed').toBeNull()
+    expect(boardOpen(), 'the board stays').toBe(true)
+  })
+})

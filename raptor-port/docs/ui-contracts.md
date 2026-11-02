@@ -1619,10 +1619,12 @@ outside-click listener and puts the keys back on its button (`menuEscape`); a wi
 where they were when it opened — its Traffic button or ⓘ — if they are nowhere or were inside it, found again on the
 board itself when it opened there (`locate` looks inside `#schedBoard` for a control of the board). In a Traffic line
 Escape closes the window after the line's own blur has saved it, as a press on ✕ does. A question sheet or a window that
-holds the keys (`topSheet`) over any of them answers first; a held key's repeats are not a press. With the keys in a
-schedule box on the page behind (a callsign, a time, a remark Tabbed to while the window or menu stays up) Escape is the
-box's — its old words back (`textedit.ts routeKeyDown`) — and the window or menu waits for the next Escape, as the movable
-windows and the board leave it; not the box the menu hangs from (the duty role's list: the first Escape closes the list,
+holds the keys (`topSheet`) over any of them answers first; a held key's repeats are not a press. With the keys in one of
+the schedule's own boxes on the page behind — only those whose Escape puts the old words back (`textedit.ts routeKeyDown`:
+the week's text cells, an input's cells, the board's wrapping boxes and time boxes, the in-time lines, the stores, area and
+area-time cells), Tabbed to while the window or menu stays up — Escape is the box's and the window or menu waits for the
+next Escape, as the movable windows and the board leave it; from any other box (a search box, a select, a checkbox) Escape
+closes the window or menu; not the box the menu hangs from (the duty role's list: the first Escape closes the list,
 the second puts the role back). Which windows cover the
 top bar is unchanged. Pinned by `ui/boardkeys.test.tsx`, `ui/boardescape.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
 
