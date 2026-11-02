@@ -551,6 +551,13 @@ const EDGE_SLOP = 24
        false and the swipe only finished the move to Monday. The week counts as on its end day too while it is still
        moving toward it and is within half a day of it (SETTLE_MS: a strip that scrolled that recently is still moving;
        scroll events come every frame while it does).
+       …AND A STRIP LEFT STANDING SHORT OF IT (the walk's A6b, 3 Nov 26 — 4 of 24 runs): the browser does not always begin
+       its snap at once, and a strip that stood still 84–127px short of Monday for 160ms and more was neither at the
+       edge nor moving, so the second swipe again only carried it home. That reading cannot hang on the snap's timing:
+       a swipe begun within half a day of an end day, toward it, also crosses when its own travel is enough to bring
+       that day to its resting place (the distance past EDGE_SLOP) and go on past it by the crossing distance below —
+       for a strip at rest on the day the distance to bring it home is nothing, so this is the same rule as before
+       there. A swipe that only brings the day home stays on the week.
    (2) A SHORT QUICK FLICK. The snap turns a quick flick shorter than SWIPE_TH into a whole day's move inside the week,
        but at the edge it needed 45px of travel. A flick of FLICK_MIN or more, still moving at FLICK_V or faster over its
        last FLICK_WIN before the lift, now crosses too; a finger that stops before it lifts is judged by distance alone,
@@ -566,6 +573,8 @@ const FLICK_MIN = 24, FLICK_V = 0.3, FLICK_WIN = 100
 const AXIS_SLOP = 10
 let swEl: HTMLElement | null = null
 let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAtRight = false
+/* (1) a strip standing short of an end day: within half a day of it, and how far the finger must carry it home first */
+let swNearLeft = false, swNearRight = false, swHomeL = 0, swHomeR = 0
 let swAxis: 'x' | 'y' | null = null
 /* the finger's recent path, for its speed at the lift: [x, time] newest last, trimmed to FLICK_WIN */
 let swTrail: [number, number][] = []
@@ -610,6 +619,8 @@ function onWeekTouchStart(e: TouchEvent) {
   const half = w.clientWidth / 2
   swAtLeft = sl <= EDGE_SLOP || (settling && wkMoveDir < 0 && sl < half)
   swAtRight = sl >= max - EDGE_SLOP || (settling && wkMoveDir > 0 && sl > max - half)
+  swNearLeft = sl < half; swHomeL = Math.max(0, sl - EDGE_SLOP)
+  swNearRight = sl > max - half; swHomeR = Math.max(0, max - EDGE_SLOP - sl)
 }
 /* Track the finger so a gesture the browser CANCELS mid-way (see below) still
    has a real end position to measure — a passive move listener can't steer the
@@ -661,10 +672,12 @@ function onWeekTouchEnd(e: TouchEvent) {
      left edge + swipe right (retreating) → previous week, land on Sunday */
   /* far enough, or (2) a short flick still moving that way at the lift */
   const v = liftSpeed(endX)
-  const left = dx <= -SWIPE_TH || (dx <= -FLICK_MIN && v <= -FLICK_V)
-  const right = dx >= SWIPE_TH || (dx >= FLICK_MIN && v >= FLICK_V)
-  if (swAtRight && left) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
-  else if (swAtLeft && right) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
+  const crossing = (d: number, sp: number) => d >= SWIPE_TH || (d >= FLICK_MIN && sp >= FLICK_V)
+  /* travel measured from the edge, or (1) from where the travel has brought the end day home */
+  const left = (swAtRight && crossing(-dx, -v)) || (swNearRight && crossing(-dx - swHomeR, -v))
+  const right = (swAtLeft && crossing(dx, v)) || (swNearLeft && crossing(dx - swHomeL, v))
+  if (left) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
+  else if (right) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }
 
 /* THE PEEK PREVIEW ACROSS A RESIZE CROSSING (ui/peek.ts). ViewWeek/EditWeek's

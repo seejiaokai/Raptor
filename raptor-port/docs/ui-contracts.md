@@ -382,7 +382,10 @@ Four things make it work, and each is load-bearing:
   scheduler.md §Week navigation). **The swipe is read as the browser read it** (`pan.ts` §CONTINUOUS SWIPE ACROSS
   WEEKS): the week still settling onto Monday or Sunday — moved in the last 150 ms, toward that end, within half a
   day of it — counts as on that day, so a second swipe straight after the first crosses instead of only finishing the
-  move; a short flick (24 px or more, still moving at 0.3 px/ms over its last 100 ms) crosses as a 45 px drag does,
+  move; so does a swipe begun within half a day of it, whether the strip is moving or standing still, whose own travel
+  brings that day home and goes on past it by the crossing distance (the walk's A6b: the test browser sometimes left
+  the strip standing 84–127 px short of Monday for 160 ms before its snap began — the reading no longer hangs on the
+  snap's timing); a short flick (24 px or more, still moving at 0.3 px/ms over its last 100 ms) crosses as a 45 px drag does,
   as a quick flick inside the week moves a day; and the direction is the first clear movement's (10 px), held for the
   gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does. **The slide
   starts where the day stands and ends where it rests** (`weekglide.ts`): the leaving copy keeps the day's live

@@ -228,6 +228,44 @@ describe('a swipe off an end day that the old reading missed', () => {
     expect(CURWEEK, 'a week heading for Tuesday is not at its edge').toBe('13/07/2026')
   })
 
+  /* the walk's A6b (3 Nov 26, 4 of 24 runs): the first swipe left the strip STANDING 127px short of Monday — the browser had
+     not begun its snap for 160ms and more — so the second swipe began on no edge and no movement, and only carried the strip
+     on to Monday. Its own travel decides now, whatever the snap's timing: enough to bring Monday to its resting place and go
+     on by the crossing distance. Replayed from the walk's trace (A6-chromium-nocross-trace-1.json). */
+  it('a week left standing short of Monday crosses when the swipe carries it back to Monday and on past it', async () => {
+    const w = stubWeek(127)
+    at(1_000_000); await scrolled(w, 200); await scrolled(w, 127)
+    at(1_000_300)                                  // standing still for 300ms — no snap under way
+    await touch(w, 'touchstart', 80)
+    for (const [t, x] of [[1_000_332, 105], [1_000_366, 130], [1_000_383, 155], [1_000_400, 180], [1_000_417, 205], [1_000_432, 230]]) { at(t!); await touch(w, 'touchmove', x!) }
+    await touch(w, 'touchend', 230)                // 150px: 103 to bring Monday home, 47 on past it
+    expect(CURWEEK, 'the swipe crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('and a slow drag from there does too, by distance alone — but not one that only brings Monday home', async () => {
+    const w = stubWeek(127)
+    at(1_000_000); await scrolled(w, 200); await scrolled(w, 127)
+    at(1_000_300); await touch(w, 'touchstart', 60)
+    at(1_000_700); await touch(w, 'touchmove', 220)
+    at(1_001_000); await touch(w, 'touchend', 220) // 160px, held still before the lift
+    expect(CURWEEK, 'a 160px drag from 127px out crossed').toBe('06/07/2026')
+    await act(async () => { loadWeek('13/07/2026') })
+    const w2 = stubWeek(127)
+    at(1_002_000); await scrolled(w2, 200); await scrolled(w2, 127)
+    at(1_002_300); await touch(w2, 'touchstart', 60)
+    at(1_002_700); await touch(w2, 'touchmove', 170)
+    at(1_003_000); await touch(w2, 'touchend', 170) // 110px: Monday home and only 7px on
+    expect(CURWEEK, 'a drag that only brings Monday home stays on the week').toBe('13/07/2026')
+  })
+
+  it('a swipe begun more than half a day from Monday never crosses, however far it goes', async () => {
+    const w = stubWeek(260)
+    at(1_000_000); await touch(w, 'touchstart', 20)
+    at(1_000_400); await touch(w, 'touchmove', 380)
+    at(1_000_700); await touch(w, 'touchend', 380)
+    expect(CURWEEK, 'a long swipe from Tuesday side of the middle').toBe('13/07/2026')
+  })
+
   it('a short quick flick off Monday crosses, as a short quick flick inside the week moves a day', async () => {
     const w = stubWeek(12)
     at(1_000_000); await touch(w, 'touchstart', 200)

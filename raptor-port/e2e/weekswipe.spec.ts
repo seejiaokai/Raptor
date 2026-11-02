@@ -121,6 +121,38 @@ test('a phone: a second swipe begun while the week is still settling onto Monday
   } finally { await context.close() }
 })
 
+/* THE WALK'S A6b (3 Nov 26, 4 of 24 runs): after a swipe back from Tuesday this browser sometimes left the strip STANDING
+   84–127px short of Monday for 160ms and more before its snap began, and the second swipe, begun then, only carried it home.
+   The premise is made here on purpose: the snap held off while the strip is put 100px short of Monday and left still, then
+   put back before the finger lands — so nothing is moving when it does. */
+test('a phone: a swipe begun with the week standing 100px short of Monday crosses when it carries Monday home and on', async ({ browser, baseURL }) => {
+  const { context, page, cdp } = await phone(browser, baseURL)
+  try {
+    await park(page, 0)
+    const from = await week(page)
+    const stand = () => page.evaluate(() => {
+      const w = document.getElementById('eWeek')!
+      w.style.scrollSnapType = 'none'; w.style.scrollBehavior = 'auto'
+      const ds = w.querySelectorAll('.day:not(.peek)')
+      w.scrollLeft = (ds[0] as HTMLElement).offsetLeft - (w.firstElementChild as HTMLElement).offsetLeft + 12 + 100
+      return Math.round(w.scrollLeft)
+    })
+    const at = await stand()
+    await page.waitForTimeout(300)
+    expect(at, 'the week stands about 100px short of Monday').toBeGreaterThan(90)
+    /* a swipe of 100px only brings Monday home: it stays on the week */
+    await finger(page, cdp, line(60, 100, 8), 16, 60)
+    await page.waitForTimeout(700)
+    expect(await week(page), 'a swipe that only brings Monday home stays on the week').toBe(from)
+    await stand(); await page.waitForTimeout(300)
+    /* one of 180px brings it home and goes on past it */
+    await finger(page, cdp, line(60, 180, 8), 16, 60)
+    await crossed(page, from)
+    await page.evaluate(() => { const w = document.getElementById('eWeek')!; w.style.scrollSnapType = ''; w.style.scrollBehavior = '' })
+    expect(await week(page), 'it crossed into the previous week').not.toBe(from)
+  } finally { await context.close() }
+})
+
 test('a phone: a short quick flick off Monday crosses; a short slow drag does not', async ({ browser, baseURL }) => {
   const { context, page, cdp } = await phone(browser, baseURL)
   try {
