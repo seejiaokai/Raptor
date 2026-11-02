@@ -1,0 +1,32 @@
+[
+ {
+  "id": "D1",
+  "what": "a desktop: the page keeps the browser's own touch rules",
+  "ok": true
+ },
+ {
+  "id": "D2",
+  "what": "a desktop: the plain page setting",
+  "ok": true
+ },
+ {
+  "id": "D3",
+  "what": "a desktop: a trackpad's gesture events are left to the browser",
+  "ok": true
+ },
+ {
+  "id": "D4",
+  "what": "a desktop: Ctrl+scroll over the Leave War grid still zooms the grid (D1228)",
+  "ok": true,
+  "detail": {
+   "z0": 1,
+   "z1": 1.4
+  }
+ },
+ {
+  "id": "D5",
+  "what": "no page error",
+  "ok": true,
+  "detail": []
+ }
+]
