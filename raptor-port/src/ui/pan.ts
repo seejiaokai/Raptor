@@ -610,7 +610,14 @@ let swGo: HTMLElement | null = null, swGoSL = -1
    has let go). Not a pull past the end that a swipe's own momentum makes: a flick from Tuesday reaches Monday fast and
    overshoots, and the strip was never on Monday first. Not the spring-back of a swipe the page did read: that touch has
    already decided, cross or stay. A browser that never scrolls a strip past its ends (Chrome, Android) never comes here. */
-const PULL_OVER = 12, PULL_BACK = 3, PULL_REST = 0.15, PULL_GAP = 100
+const PULL_OVER = 8, PULL_BACK = 3, PULL_REST = 0.15, PULL_GAP = 100
+/* THE FRESH READ OF THIS READING (3 Nov 26, `docs/handpass/parts/ws-read-pull.md`): (a) a strip that stood still counts as on
+   an end day only within EDGE_SLOP of it — one late frame in a flick's momentum looked like a rest anywhere within half a
+   day, armed the pull and crossed on the flick's own overshoot; (b) let go is a spring-back of at least PULL_BACK_PART of
+   how far past the end it was pulled, never a finger easing back a few px while it still holds; (c) the mark is 8 px past
+   the end — his log's pulls past Sunday read +10 to +16, and Sunday rests on its end where Monday rests 12 px in; (d) a
+   cancel from the browser leaves the reading alone: the finger may pull on unseen. */
+const PULL_BACK_PART = 0.4
 /* and not in the first PULL_QUIET after a cross: the slide and the landing's own settle are the app's, never a finger's */
 const PULL_QUIET = 700
 let pullEl: HTMLElement | null = null, pullWeek = '', pullPrevSL = 0, pullPrevT = 0, pullCrossAt = -Infinity
@@ -633,22 +640,28 @@ function pullPastEnd(w: HTMLElement, sl: number) {
   if (max <= 1) return
   /* on an end day: it stood still there (no scroll for PULL_GAP), or it is moving slowly there, inside the strip */
   const slow = dt > 0 && Math.abs(sl - prev) / dt < PULL_REST
-  const restAt = dt >= PULL_GAP ? prev : slow ? sl : NaN
-  if (restAt >= 0 && restAt < half) pullOnL = true
-  if (restAt <= max && restAt > max - half) pullOnR = true
-  if (sl >= half) pullOnL = false
-  if (sl <= max - half) pullOnR = false
+  if (dt >= PULL_GAP) {                         // it stood still at prev: on an end day only at its resting place (a)
+    if (prev >= 0 && prev <= EDGE_SLOP) pullOnL = true
+    if (prev <= max && prev >= max - EDGE_SLOP) pullOnR = true
+  } else if (slow) {                            // easing in slowly, within half a day of an end day
+    if (sl >= 0 && sl < half) pullOnL = true
+    if (sl <= max && sl > max - half) pullOnR = true
+  }
   /* pulled past the end by PULL_OVER, from an end day it was on … */
   if (pullOnL && sl <= -PULL_OVER) { if (pullSide !== -1) { pullSide = -1; pullPeak = sl } else if (sl < pullPeak) pullPeak = sl }
   if (pullOnR && sl >= max + PULL_OVER) { if (pullSide !== 1) { pullSide = 1; pullPeak = sl } else if (sl > pullPeak) pullPeak = sl }
   /* … and let go: it springs back */
-  if (pullSide === -1 && sl >= pullPeak + PULL_BACK) {
+  if (pullSide === -1 && sl >= pullPeak + Math.max(PULL_BACK, PULL_BACK_PART * -pullPeak)) {
     pullCrossed(); if (swDebugOn) swLog(`PULL past Monday ${Math.round(pullPeak)}, no touch seen → PREV WEEK`)
     view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1))
-  } else if (pullSide === 1 && sl <= pullPeak - PULL_BACK) {
+  } else if (pullSide === 1 && sl <= pullPeak - Math.max(PULL_BACK, PULL_BACK_PART * (pullPeak - max))) {
     pullCrossed(); if (swDebugOn) swLog(`PULL past Sunday +${Math.round(pullPeak - max)}, no touch seen → NEXT WEEK`)
     view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1))
+    return
   }
+  /* back inside the week by half a day: off that end day, and any pull of it that was never let go is over */
+  if (sl >= half) { pullOnL = false; if (pullSide === -1) pullSide = 0 }
+  if (sl <= max - half) { pullOnR = false; if (pullSide === 1) pullSide = 0 }
 }
 /* ?swdebug only (ui/swdebug.ts): the touch's moves, and whether a move came with no touch begun */
 let swMoves = 0, swOrphan = false
@@ -728,9 +741,9 @@ function onWeekTouchEnd(e: TouchEvent) {
   const endX = ct ? ct.clientX : swLastX
   const endY = ct ? ct.clientY : swLastY
   const dx = endX - swStartX, dy = endY - swStartY
-  /* (4) this touch decides its own swipe — its spring-back is no pull of a touch unseen; a cancel that came before the
-     finger had moved (the browser took the gesture at once) told nothing, and leaves (4) to read the strip */
-  if (!(e.type === 'touchcancel' && Math.abs(dx) < AXIS_SLOP && Math.abs(dy) < AXIS_SLOP)) pullReset()
+  /* (4) a touch that ended decides its own swipe — its spring-back is no pull of a touch unseen; a cancel is the browser
+     taking the gesture, and the finger may pull on unseen, so it leaves (4) to read the strip (the fresh read's (d)) */
+  if (e.type !== 'touchcancel') pullReset()
   const said = (why: string) => { if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} ax${swAxis || '-'} mv${swMoves} → stay: ${why} | ${swScrollTake()}`) }
   /* horizontal intent only: a drag that began down the day (paging it) is the page being scrolled, however far it
      drifts sideways after — the axis its first clear movement took, (3) above; one that never moved that far keeps
