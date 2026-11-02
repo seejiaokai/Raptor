@@ -149,3 +149,69 @@ stay 0; 741 warnings (performance 427, bugs 72, security 1, maintainability 139,
 By place: `src/ui` 333, `src/engine` 105, `docs` (old walk and mock-up scripts) 119, `reference` 66, `src/state` 58,
 `scripts` 32, the rest 29. The schedule's own screens and windows carry about 65 (job 3); the input window's 91
 (`ui/inputedit.tsx`) ride with the next Inputs batch.
+
+## 4. The roll-call (bug-check-order §6) — every place the three jobs reach
+
+| # | Place | What it must do | Mark |
+|---|---|---|---|
+| R1 | Edit Schedule's week, phone, upright (402 × 874) — swipe off Monday / Sunday | cross into the next / last week with the slide, landing on Sunday / Monday at its resting place; every way a hand swipes (lesson 20) | has it — to walk (WebKit, Chromium) |
+| R2 | View-only Sched's week, phone — the same swipe | the same as R1 (its own landing code, `ViewWeek.tsx`) | has it — to walk |
+| R3 | Inside a week, phone — a swipe between Tuesday and Wednesday | one day, no glide, unchanged | must not change — to walk |
+| R4 | The Scheduler Board on a phone — a sideways swipe | never crosses a week (its arrows own the day, 12 Aug 26) | must not, because the board steps by its arrows — to walk |
+| R5 | A phone on its side, up to 820 wide (812 × 375) — the week's swipe | the cross as R1 (above 820 wide the page is the desktop layout, by design — §6) | has it — walked A12x |
+| R6 | Desktop week (1536 × 864) — ‹ › across weeks, the week picker | instant, unchanged (desktop never glides) | must not change — to walk |
+| R7 | Edit Schedule's week, desktop — Tab to a day's date, Enter, Space | opens the board; ring only for the keys; Escape / ✓ Done put the keys back on the date | has it — to walk |
+| R8 | View-only Sched's date | no key stop (parity) | must not, because the view week is the reference copy — to walk |
+| R9 | Phone — a tap on the edit week's date | opens the board as before, no ring | must not change — to walk |
+| R10 | The board's small menus — + Block, Templates, plans, a jet's stores, + Wave, the duty role list | Escape closes the menu only, the board stays, the keys on its button | has it — to walk |
+| R11 | The Traffic window, the day-details window | Escape closes it only; a Traffic line being typed is saved | has it — to walk |
+| R12 | A question sheet over a menu or window | Escape answers the sheet first | has it — test `boardkeys.test.tsx`; one walk step |
+| R13 | Undo / Redo, the bell and its list, the sync chip (their code moved to `topstate.ts`) | work as before | must not change — plain-user round |
+| R14 | The changes window (a line tapped jumps — `changesjump.ts`) | as before | must not change — plain-user round |
+| R15 | The ALL AVAIL window (`availopen.ts`) | opens from a count as before | must not change — plain-user round |
+| R16 | The duty and wave template editors, Sort all, the cancel dialog, the board's search | as before; names for a screen reader only | must not change visibly — plain-user round |
+
+## 5. Sizing the walk (D607, `walk-ledger.md`)
+1. **Type:** C (a changed gesture — the swipe's reading; new keys on existing controls) with E (the slide's motion) for jobs 1–2;
+   job 3 is code moved and names added with no behaviour change — the plain-user round is its walk (D1557).
+2. **What only a walk can find:** how the cross moves on a real touch screen frame by frame (lesson 20); whether a swipe crosses
+   the ways a hand makes it; the ring and where the keys land on the real page; whether moved code still answers on screen
+   (Undo, the bell, the changes window, ALL AVAIL). The tests carry: the edge reading's thresholds (`swipeweeks.test.tsx`), the
+   glide's offsets and speed (`weekglide.test.ts`), the keys (`boardkeys.test.tsx`), Escape order with a sheet over (R12).
+3. **The ledger:** gesture walks by the host or one helper by real fingers over CDP found faults their tests missed (the pinch,
+   21 Oct 26: 3; [NO-PAGE-ZOOM], 2 Nov 26: 0 faults, 3 walk-script faults); the keyboard walks of the windows (24 Oct, 30 Oct 26)
+   found focus faults no unit test saw. The August swipe walks pictured one slow drag at rest — lesson 20.
+4. **The walk chosen (Low — one walker at a time):** walker A, Sonnet 5.5 — the phone: R1–R5 on the built bundle at `e44d50a26`,
+   Chromium by real touch over CDP and WebKit by touches inside the page, each cross slow, quick-short, curling, and again before
+   the snap settles, on a ground day and a wave-dense day, with a frame-position trace of both copies and the real day; about 16
+   scenarios. Walker B, Sonnet 5.5 — the desktop and the plain-user round: R6–R16 at 1536 × 864, by keyboard only for R7–R12, then
+   the schedule's everyday tasks start to finish (a man dragged on and off, Undo, Redo, the bell, the changes window and a jump,
+   ALL AVAIL, the duty and wave templates, Sort all, a cancel, the board's search); about 18 scenarios. The host opens every
+   deciding picture. His iPhone carries what a test browser cannot: Safari's own pull past the end and momentum.
+5. **After:** its row in `walk-ledger.md`.
+
+## 6. The walk — walker A, the phone (Sonnet 5.5; its report `raptor-port/docs/handpass/parts/ws-walk-a.md`, pictures and traces `raptor-port/docs/img/handpass/2026-11-03-week-swipe/walk/A/`)
+
+On the bundle at `e44d50a26`. **Chromium by real touch: 13 PASS, 2 FAIL; WebKit by touches inside the page: 4 PASS, 1 not walked.**
+No console error, page error or failed request anywhere.
+- **PASS** A1 (slow), A2 (a quick 30px flick), A3 (a curling thumb), A4 (a vertical drag drifting sideways — no cross), A5 (back),
+  A6 (a second swipe straight on), A7 (a wave-dense Monday, begun on a wave block), A8 (a slow 34px drag held — no cross), A9 (inside
+  the week — one day, no copies), A10a/b (View-only Sched), A11 (the board on a phone — never crosses; its arrows do). In every cross
+  on both weeks the leaving copy went up exactly where the day stood and the arriving copy ended exactly where the real day rests
+  (difference 0); nothing sped up or reversed mid-slide; the only steps over 30px are the glide's own, 42–50px a frame.
+  WebKit A1, A2, A5, A9 — the endpoints; WebKit draws the glide at about 5 frames a second at pixel ratio 3, so A1, A2, A5 were
+  also run at ratio 1, all PASS. The host opened A1's mid-slide and after pictures: Monday sliding out with Sunday under it; Sunday at
+  its resting place.
+- **FAIL A6b — a second swipe about 120ms after the first lifts crosses only most times:** 4 of 24 runs at gaps of 100–170ms did not
+  cross (3 of 3 at 17ms did). In the four, the week stood still 84 or 127px from Monday for 160ms or more, so it was not read as
+  settling and the swipe only carried it on to Monday. The test browser's snap may start late; the fix makes the reading not depend
+  on it (§7).
+- **A12 — not a fault; the roll-call's R5 was wrong:** at 844 × 390 the page is the desktop layout (above 820 wide — the ‹ › arrows,
+  no phone swipe, by design); at 812 × 375 the cross works each way (A12x, PASS). R5 is corrected to "a phone on its side up to 820
+  wide". His iPhone on its side is wider than 820, so it shows the desktop layout — as before.
+- **Not walked:** WebKit A6 — touches raised inside the page cannot hold the strip part-way, so the premise cannot be made there.
+- **The walk's own:** A2 as first driven (two moves) read as a stopped finger (this browser leaves about 34ms before the lift) —
+  one move crosses; A10b first began on empty page under a short card, where a swipe does nothing (older) — re-aimed at the card.
+- **Seen in passing:** the arriving copy stands two frames under the leaving one before it slides, and a 12px strip of its card
+  (390–402) is then not covered — not caught in a picture (§7 asks the builder); a cyan ring round "MAKE PUBLIC" in A7's last picture
+  — likely the touch's hover or focus, not looked into yet.
