@@ -215,3 +215,24 @@ No console error, page error or failed request anywhere.
 - **Seen in passing:** the arriving copy stands two frames under the leaving one before it slides, and a 12px strip of its card
   (390–402) is then not covered — not caught in a picture (§7 asks the builder); a cyan ring round "MAKE PUBLIC" in A7's last picture
   — likely the touch's hover or focus, not looked into yet.
+
+### 6b. Walker B — the desktop keys and the plain-user round (Sonnet 5.5; `raptor-port/docs/handpass/parts/ws-walk-b.md`, 78 pictures `…/walk/B/`)
+
+On the bundle at `e44d50a26`, 1536 × 864. **18 / 18 PASS**; no console error, page error or failed request.
+- **Keys (R7–R12):** Tab from the top bar reaches Monday's date in 13 stops, the ring and nothing else; Enter opens the board, Escape
+  closes it with the ring back on the date, Space opens it again; ✓ Done by Tab (9 stops) and Enter, the ring back on the date. All
+  five small menus close on Escape alone, the board staying, the ring on their button (the host opened B5's stores picture: the
+  menu gone, the ring on the jet's stores button). The Traffic and day-details windows close on Escape over the board and on the
+  week, the keys back on their openers; a Traffic line typed but not left survives Escape. The Tab route over a day's text boxes
+  unchanged, the date never a stop in it; 100 Tabs on View-only Sched never land on a date. A mouse click, and a tap at 402 × 874,
+  open the board with no ring after.
+- **The plain-user round (R13–R16, D1557):** a man dragged onto an empty seat shows on the week and the board, Undo takes him off,
+  Redo puts him back; the bell opens and closes by a click outside, Escape and the bell; the changes window opens, a tapped line
+  takes the schedule to the change, ✕ closes it; the ALL AVAIL window opens from its count, moves, closes; both template editors
+  open, Tab stays inside, ✕ and Escape close them with nothing saved; Sort all and the CX dialog open and close changing nothing;
+  the board's search lights the matching pucks and clears; the sync chip as before. The demo week has no empty flying seat and no
+  ALL AVAIL count — both made through real controls (+ aircraft; ALL AVAIL dragged onto a programme row).
+- **The walk's own:** three first-run reads of its script (the Traffic text begins with its line's template; the change found by the
+  seat, not a stored key; the dialogs by their real ids) — fixed and re-run.
+- **Seen in passing (older — `main` the same):** Escape does nothing on the Sort all dialog (Cancel, ✕ and a click outside close
+  it) — filed under [BOARD-KEYS-LEFT]; the duty and wave template editors have no Cancel (Done and ✕; ✕ only) — as built, not a fault.

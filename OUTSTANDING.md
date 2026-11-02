@@ -2122,7 +2122,7 @@ Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape pa
 (1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
 the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
-(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
+(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
 
 ### [BOARD-OPEN-BY-KEYS] The Scheduler Board cannot be opened from the keyboard (found 30 Oct 26 by [BOARD-ESCAPE-CLOSE]'s build; older; low)
 **BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
