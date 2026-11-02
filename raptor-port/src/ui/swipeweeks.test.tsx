@@ -391,7 +391,7 @@ describe('a swipe Safari gave the page no touch for — its edges', () => {
   const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
   const steps = async (w: HTMLElement, t0: number, pts: [number, number][]) => { for (const [dt, x] of pts) { at(t0 + dt); await scrolled(w, x) } }
 
-  it('two pulls in a row: the second is measured from its own furthest point, not the first', async () => {
+  it('a deep pull held, wobbling a px or two, does not cross until let go', async () => {
     const w = stubWeek(12)
     await steps(w, 3_000_000, [[0, 12], [500, 12]])
     await steps(w, 3_000_500, [[16, 0], [33, -30], [50, -40]])                       // a deep pull, held …
@@ -401,7 +401,7 @@ describe('a swipe Safari gave the page no touch for — its edges', () => {
     expect(CURWEEK, 'crossed when it springs back').toBe('06/07/2026')
   })
 
-  it('a pull that eased back under the mark and was pulled again is read afresh', async () => {
+  it('a short pull under the mark springs back without crossing, and a deeper one after it crosses', async () => {
     const w = stubWeek(12)
     await steps(w, 3_050_000, [[0, 12], [500, 12]])
     await steps(w, 3_050_500, [[16, 0], [33, -6], [50, -4], [66, 4], [83, 12]])     // a short pull, under the mark
@@ -470,5 +470,46 @@ describe('a swipe Safari gave the page no touch for — the fresh read’s cases
     expect(CURWEEK).toBe('13/07/2026')
     await steps(w, 5_300_520, [[16, -10], [33, -30], [50, -40], [66, -15]])
     expect(CURWEEK, 'the unseen rest of the pull crossed').toBe('06/07/2026')
+  })
+})
+
+describe('a swipe Safari gave the page no touch for — the narrow read’s cases', () => {
+  let clock = 6_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+  const steps = async (w: HTMLElement, t0: number, pts: [number, number][]) => { for (const [dt, x] of pts) { at(t0 + dt); await scrolled(w, x) } }
+
+  it('a short tug the browser cancelled stays, as the same tug ending normally would', async () => {
+    const w = stubWeek(12)
+    at(6_000_000); await scrolled(w, 12)
+    at(6_000_400); await scrolled(w, 12)
+    at(6_000_500); await touch(w, 'touchstart', 100)
+    at(6_000_516); await touch(w, 'touchmove', 110); await scrolled(w, 0)
+    at(6_000_533); await touch(w, 'touchmove', 120); await scrolled(w, -14)
+    at(6_000_540); await touch(w, 'touchcancel', 120)                  // 20px: the touch reading stays
+    await steps(w, 6_000_540, [[16, -12], [33, -4], [50, 12]])          // and it springs back
+    expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
+  })
+
+  it('a flick with one late frame just short of Monday does not cross', async () => {
+    const w = stubWeek(414)
+    await steps(w, 6_100_000, [[0, 414], [16, 300], [33, 160], [50, 20], [160, -30], [176, -38], [192, -22], [208, -6], [224, 8], [240, 12]])
+    expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
+  })
+
+  it('a shallow pull held, the finger wobbling 4px, does not cross', async () => {
+    const w = stubWeek(12)
+    await steps(w, 6_200_000, [[0, 12], [400, 12], [416, 0], [433, -9], [450, -5], [466, -9]])
+    expect(CURWEEK, 'still held').toBe('13/07/2026')
+  })
+
+  it('a cross read from the strip ends a touch left hanging, so its late end cannot cross again', async () => {
+    const w = stubWeek(12)
+    at(6_300_000); await scrolled(w, 12)
+    at(6_300_100); await touch(w, 'touchstart', 100)                   // a touch begins … and goes silent
+    await steps(w, 6_300_100, [[1500, 12], [1516, 0], [1533, -20], [1550, -30], [1566, -10]])
+    expect(CURWEEK, 'the pull crossed').toBe('06/07/2026')
+    at(6_301_700); await touch(w, 'touchend', 220)                       // the touch's late end
+    expect(CURWEEK, 'and only once').toBe('06/07/2026')
   })
 })

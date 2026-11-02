@@ -24,3 +24,22 @@ reading; the two width reads come before any write in the frame — no added lay
 6. **LOW — a repaint mid-pull could finish a pull early** (the scroll hold writes back a clamped position). Unverified; the
    day-follow repaint fires only when the day at the left changes.
 **Note:** the sparse scroll events in his log may partly be the log's own cost; re-check the marks with it off.
+
+## The narrow read of the fix round, commit d1e34600b — a second fresh Opus reader (3 Nov 26)
+All 34 swipe tests pass, each new one alone too. Sound: the cross check before the clearing; a release is never missed (rest
+lies past the let-go mark); a cancel the touch reading crossed on cannot cross twice; the flick's turnaround, the snap easing
+in, the easing back after a short drag.
+1. **MEDIUM — a cancelled short tug crosses where a touch end would stay.** Monday armed at rest; a touch to dx 20, strip -14;
+   Safari cancels (stay); on release -12 arms and -4 crosses. Fix: on a cancel that stays, keep the strip's position, and arm
+   only a pull that goes PULL_OVER further out than it; a red test (cancel at -14, then -12, -4, 12 → stays).
+2. **LOW–MEDIUM — one late frame within 24 px of the end still fakes a rest** (414, 300, 160, 20, then -30 after 110 ms, -38,
+   -22 → crosses), on an unread flick or the momentum after a read one. Fix: a gap counts as rest only if the strip also
+   arrived at that place slowly; a test.
+3. **LOW — dead code.** The `pullSide = 0` clearing can never run (an armed pull crosses before the strip is half a day in),
+   so a held finger dragged back into the week crosses — not tellable without touches; delete it or correct the comment.
+   The Monday cross has no `return`, Sunday's has — match them.
+4. **LOW — a held finger at the shallow end** (12, 0, -9, -5: a 4 px wobble) crosses on max(3, 3.6). Fix: a floor of 6.
+5. **LOW — a double cross possible since c40723cc4:** a touch seen, then silent over 1 s; the scroll reading crosses; a late
+   touchend crosses again. Fix: clear the touch being read in the scroll reading's cross.
+Tests: "two pulls in a row" holds one pull — rename; "read afresh" never arms its first pull — cannot be tested (an armed pull
+always crosses).
