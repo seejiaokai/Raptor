@@ -908,7 +908,7 @@ carry-over rules, and which year a leave crossing 31 Dec charges (ruled 28 Oct 2
 **At the end (D473, 1 Oct 26 — "Database at the end."):** the app goes into Dataverse once its features are built — the IT side's
 own advice (the app about 60% built; once it is in, every change needs their review and merge, and no AI outside that environment
 can sign in to check it). He, with his AI, writes the table format and schema for them to enter; `raptor-port/docs/data-model.md`
-is that list, kept up to date as each feature is added. What the platform offers today: `[IT-QUESTIONS]` (1 Oct 26).
+is that list, kept up to date as each feature is added. What the platform offers today: `[IT-QUESTIONS]` (1 Oct 26). **2 Nov 26:** his IT colleague's advice on building the tables, checked against Microsoft's pages, and how the tables are built and handed over (D1570, D1571) — `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md` §5.
 
 *(As written 29 Sep 26, replaced by D473:)* **STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
 
