@@ -20,16 +20,20 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/schedule-leftovers -->
-### `claude/schedule-leftovers` — the schedule leftovers: [OIL-NOTIFY-SEEN]'s three left and [LOOK-PENDING-COUNT] — written 2 Nov 26 — **his "merge live" 3 Nov 26 — remove this block at the next handoff**
-- **His pick (D994):** offered three small-fix batches, he chose the schedule leftovers over the recommended PDF export fix ([PDF-PRINT-TWICE] stays first for the next batch). Mid-job he asked about dragging a puck across weeks; told it is about a day's build plus a FULL check, he said skip it — **D1573** (D1529 stands; not filed).
-- **Built (each red first):** (1) a puck let go over nothing says "<callsign> removed" (`drag.ts applyDrop`); (2) the desktop crew panel's ALL / ALL AVAIL stays in reach — a drag-time rule no longer takes the panel out of its sticky place (`11-drag.css`), and at the page's foot it is no longer pushed 86px under the top bar (`03-week.css`); (3) a finger drag scrolls the box under the finger (`drag.ts tdOver`) — the sideways phone's day pane; (4) the look at an issued version prints the working copy's own "N pending" (`html.ts` PVPC), its Discard button the discard count (D863).
-- **Checked:** tier WALK — `raptor-port/docs/handpass/2026-11-02-schedule-leftovers.md`, the walk 29 / 29 at 1536 (a mouse), 402 upright and 844 on its side (fingers), 18 pictures; unit files near the change 669 / 669, stylesheet tests 350 / 350, three new browser tests (red on the old code); GitHub's run on `ffb7ea58f` 25 pass, 0 failing. A fresh blind Opus read of the commit: no fault in behaviour, two speed costs fixed; the re-walk 25 / 25.
-- **Records:** contracts in `ui-contracts.md` (the crew panel, the removal note, a finger's scroll), AM23 refined in the amendment register, the file map, the walk ledger, the backlog ([OIL-NOTIFY-SEEN] built — archive once live; [LOOK-PENDING-COUNT] built, its question kept for him: the board's look shows no count where the week's does).
-- **Rulings:** D1573 → `scheduler.md` (home `ui-contracts.md`).
-- **Closed:** his "merge live" 3 Nov 26; [OIL-NOTIFY-SEEN] and [LOOK-PENDING-COUNT] archived; the board question filed as [LOOK-COUNT-BOARD-ASK] (waits under D994).
-- **Pick up here:** nothing left of this job. The agent's recommendation for his next pick: [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy) instead of the published report; his "Later — the next batch of small fixes" (2 Nov 26). A fresh chat, on a new branch from `main`.
-- **Opening line:** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog."
+<!-- now:claude/week-swipe-pdf-print -->
+### `claude/week-swipe-pdf-print` — THE NIGHT OF 3 NOV 26: the swipe across weeks, then Export as PDF — written 3 Nov 26, 00:40
+- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
+- **His message (3 Nov 26, about 00:30):** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog. /overnight 12" — then, with an iPhone recording: fix the swipe between weeks ("very abrupt, not smooth … sometimes doesn't allow me to go to the next week. Like Monday to Sunday"). His next pick: [PDF-PRINT-TWICE], the last chat's recommendation. 12 hours; **Low** (the recommended; he may change it).
+- **The night, in order (one branch, one check at the riskiest tier, one pull request — D485, D1087):**
+  1. **[WEEK-SWIPE-CROSS]** — the phone's swipe from one week into the next: find on Safari's engine why the glide is not seen and why an edge swipe only bounces, fix each red first. Its own walk on WebKit and Chromium by fingers at his iPhone's 402 × 874. About 4 h.
+  2. **[PDF-PRINT-TWICE]** — Export as PDF prints only the published report, once, in every browser (the item's own fix). About 3 h.
+  - **The check:** FULL for the batch (job 2 decides which paper copy goes out as the record — the published record question); the roll-call, the sizing step, the walk with pictures, a fresh blind Opus read (D790; on `[NO-ASTRA-LIST]`), the re-walk, the evidence sheet `raptor-port/docs/handpass/2026-11-03-week-swipe-pdf.md`. The pull request into `main` opened once both are built; nothing merges.
+- **Offered, built only on his word:** 3. the keyboard leftovers — the Scheduler Board opened from the keyboard ([BOARD-OPEN-BY-KEYS]) and the board's small menus, the Traffic and day-details windows closing on Escape ([VEILED-WINDOWS-BAR]'s Escape part); about 3 h.
+- **Not tonight:** [OVERNIGHT-RETRY-TRIAL] — the setting is read when a chat starts, so it cannot be tried inside a chat already running; it waits for a night whose chat starts after it is set.
+- **Helpers:** one fresh helper a job, one at a time; its own Sonnet walker and fresh Opus reader; this chat coordinates and keeps the records.
+- **Questions waiting for him:** none yet.
+- **Rulings:** none this session so far (his swipe report is a fault in the settled 23–24 Aug design, filed as [WEEK-SWIPE-CROSS]).
+- **Progress:** job 1 — starting.
 <!-- /now -->
 ## Next, in order
 

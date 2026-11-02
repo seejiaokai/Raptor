@@ -70,7 +70,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes.
+- [WEEK-SWIPE-CROSS] — on his iPhone the swipe from one week into the next jumps with no slide, and sometimes only bounces (his recording, 3 Nov 26): the night of 3 Nov 26, job 1.
+- [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes; the night of 3 Nov 26, job 2.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
@@ -1396,6 +1397,19 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 `claude/lw-drag-flaky-tests-batch-c0719b`): the "Other ways to bid" slide's check line is already corrected in `scripts/itflow/content.mjs`
 (it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
+### [WEEK-SWIPE-CROSS] On his iPhone the swipe from one week into the next is abrupt, and sometimes does not cross at all (his recording, 3 Nov 26)
+**His words (3 Nov 26, 00:05, a 7.7-second iPhone recording of Edit Schedule on the preview):** *"could u fix the transition
+between week when I slide between them? Sometimes it triggers but it's very abrupt, not smooth. Sometimes it doesn't allow me
+to go to the next week. Like Monday to Sunday."* What the recording shows, a quarter-second a frame
+(`raptor-port/docs/img/handpass/2026-11-03-week-swipe/owner/rec-*.png`): on Monday 13 Jul a swipe right puts up Sunday 12 Jul
+in one frame with no slide (0.75 → 1.0 s); later, on Monday again, several swipes right only bounce the day and leave him on
+Monday (4.5 → 6.25 s), until one jumps to Sunday, again with no slide (6.5 s). Swipes between days inside the week slide as
+normal. **This is a fault in a settled design, not a new one:** since 22–24 Aug 26 the phone's swipe is continuous across
+weeks and the cross GLIDES — two frozen one-day copies slide, the real week covered behind them (`ui/weekglide.ts`, `ui/pan.ts`
+§CONTINUOUS SWIPE ACROSS WEEKS; `scheduler.md` §Week navigation & cross-week continuity — "the cross GLIDES"). On his iPhone
+the glide is not seen, and the edge swipe is missed. Both are to be found on Safari's engine before any fix (the
+debugging guide), each fixed red first. **Place:** the night of 3 Nov 26, job 1, on `claude/week-swipe-pdf-print`.
+
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 **SEEN ON HIS IPHONE, 1 Nov 26 — and worse than this item says:** one press of Export as PDF opened the iPhone's print preview on
 the APP SCREEN itself — 4 pages of the working copy (DRAFT, "Live working copy", the open Aircrew panel, the "Print dialog opened"
@@ -2002,6 +2016,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | A leave of several days opens whole in its bid window, with D1289's cyan mark ([LW-WHOLE-LEAVE-WINDOW], `claude/lw-whole-leave-window`, pull request 582) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
 | The night of 30 Oct 26, job 2 (`claude/lw-small-fixes-1030`): `[LW-DELETED-NO-ROW-APPROVE]`, `[LW-HALF-DAY-WORDS-LEFT]`, `[LW-M1-READ-LEFTOVERS]` (2), `[LW-MONTH-MEMO-UNPINNED]` — an approval that writes an input (saved data) | one fresh, blind Opus reader of the finished code (D790, D903) | Astra's and Sol 6.1's two independent reads (D590) |
 | The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The night of 3 Nov 26 (`claude/week-swipe-pdf-print`): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks) and `[PDF-PRINT-TWICE]` (Export as PDF prints only the published report) — FULL for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
