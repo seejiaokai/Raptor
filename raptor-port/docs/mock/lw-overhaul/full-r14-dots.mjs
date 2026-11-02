@@ -20,6 +20,7 @@ const state = JSON.parse(readFileSync(join(OUT, 'state.json'), 'utf8'))
 // the r7 Approvals window and the r12 labels, read from their files between markers and run unchanged
 const SRC = f => readFileSync(new URL('./' + f, import.meta.url), 'utf8')
 const cut = (s, a, b) => { const i = s.indexOf(a), j = s.indexOf(b, i + 1); if (i < 0 || j < 0) throw new Error('marker missing: ' + a + ' … ' + b); return s.slice(i, j) }
+// react-doctor-disable-next-line react-doctor/no-eval -- runs code cut from this folder's own approved mock-up scripts (D1478, the drawing is the sole source), never text a person typed — a mock-up script, not the app
 const load = (code, deps, names) => new Function(...Object.keys(deps), code.replace(/^export /gm, '') + `\n;return { ${names.join(', ')} }`)(...Object.values(deps))
 const DC = load(cut(SRC('full-r7-decide.mjs'), '// ---------------------------------------------------------------- shared pieces', '// ---------------------------------------------------------------- scenes'),
   { oneStage, oneFold, mk, UNDER, q, newPage, signIn, shot, gridTo, browser, state },
