@@ -10648,13 +10648,37 @@ chip-and-list disagreement Fable correction 2 exists to stop, in a new place.
 was issued, or who is free as things stand now — in the same words the chip's own
 title uses, from one shared body (`oilFromWords`). They were two readers once.
 
+## On a touch screen the page itself never zooms (owner D1567, 2 Nov 26 — `[NO-PAGE-ZOOM]`)
+
+*"Can u disable the other kind of zooming? So only allow the grids to be zoomed. Not the page. Sometimes I get stuck
+and I can't zoom out if the page zooms in."* On a phone or tablet (a screen whose main pointer is a finger,
+`(pointer: coarse)`) a pinch or a double tap never zooms the page, anywhere — a page, a window, a sheet, the top bar.
+The grids that zoom by their own pinch keep zooming, because each reads the fingers itself (`ui/pinchzoom.ts`; the
+Tracker's chart in `tracker/app/core.js`): the Leave War grid and its OIL tab, the Balances page, Quals, the Scheduler
+Board's desktop layout and the Tracker's chart. Three locks, one for each way a browser zooms a page:
+- **the stylesheet** — `@media (pointer:coarse){html{touch-action:pan-x pan-y}}` (`00-foundation-login.css`): what a
+  touch may do is the meet of every box from the one touched up to the page, so a finger pans and nothing of the
+  browser's zooms (Chrome, Android's browsers, Safari);
+- **the page setting** — `maximum-scale=1, user-scalable=no` on a touch screen that is not an iPhone or iPad
+  (`index.html`); an iPhone keeps its `maximum-scale=1` alone (the focus auto-zoom, above), as iOS ignores both for a pinch;
+- **an iPhone's own pinch** — Safari's `gesturestart` / `gesturechange` cancelled on the whole document
+  (`ui/nopagezoom.ts`, installed from `main.tsx`).
+No document-wide `touchmove` listener is added: one that could cancel would make every scroll of every page wait on the
+app (D991). A mouse-first screen is left as the browser has it — a desktop's Ctrl + / − and a trackpad pinch outside the
+grids still zoom the page (D1286). The phone's own larger-text setting is not touched. Pins: `e2e/nopagezoom.spec.ts`
+(real fingers: a pinch over the week, part-way down and over the top bar; a double tap; the setting and the stylesheet on
+a phone and a desktop), `src/ui/nopagezoom.test.ts`; the grids' own pinch in `e2e/pinchzoom.spec.ts` and
+`e2e/leavewar.spec.ts`. Only his iPhone proves Safari's half (the order's §7.11 lessons 6 and 7).
+
 ## Device caveats — unverified on a real iPhone (moved whole from `HANDOFF.md`, 24 Sep 26)
 
 - **Unverified on a real iPhone** (no iOS device reachable from here; each is a
   caveat, not a finding): the
   **focus-zoom fix** (`index.html` appends
-  `maximum-scale=1` to the viewport meta at runtime on Apple touch devices only;
-  Chromium's meta stays bare, gated in `e2e/geometry.spec.ts`; the unbuilt
+  `maximum-scale=1` to the viewport meta at runtime on Apple touch devices;
+  since D1567 every other touch screen gets `maximum-scale=1, user-scalable=no`
+  — §On a touch screen the page itself never zooms; a mouse-first screen's meta
+  stays bare, gated in `e2e/geometry.spec.ts` and `e2e/nopagezoom.spec.ts`; the unbuilt
   fallback is `font-size:16px` on the focused cell via a transform-scale trick),
   and the **board's page lock** (`body.sb-lock` is `overflow:hidden`; iOS Safari
   is the known exception for TOUCH scrolling; `overscroll-behavior:contain` on

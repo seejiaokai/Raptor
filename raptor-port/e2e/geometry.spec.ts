@@ -4040,21 +4040,24 @@ test.describe('the day arrows', () => {
 })
 
 /* ===================================================================
-   THE VIEWPORT META STAYS BARE OFF-APPLE (12 Aug 26). index.html carries an
-   inline script that appends `maximum-scale=1` ON APPLE TOUCH DEVICES ONLY —
-   iOS honours it for the focus auto-zoom (the thing the owner asked to stop)
-   while ignoring it for pinch zoom, but Android Chrome would lose pinch zoom
-   outright. iOS itself is not reachable from this container, so what CAN be
-   gated is the other half of the contract: in Chromium the script must not
-   fire, or Android users pay for an iOS fix.
+   THE VIEWPORT META STAYS BARE WHERE A MOUSE COMES FIRST (12 Aug 26; narrowed
+   2 Nov 26 by D1567). index.html carries an inline script that appends
+   `maximum-scale=1` on Apple touch devices — iOS honours it for the focus
+   auto-zoom (the thing the owner asked to stop) while ignoring it for pinch
+   zoom — and, since D1567 ("only allow the grids to be zoomed. Not the page"),
+   `maximum-scale=1, user-scalable=no` on every other touch screen, where an
+   Android phone loses the page's pinch zoom ON PURPOSE. A screen whose pointer
+   is a mouse — a desktop, or a desktop window as narrow as a phone, as here —
+   keeps the bare setting and the browser's own zoom (D1286). The touch phone's
+   setting is gated in e2e/nopagezoom.spec.ts.
    =================================================================== */
 test.describe('the viewport meta', () => {
-  test('is untouched where the platform is not an Apple touch device', async ({ page }) => {
+  test('is untouched where the pointer is a mouse, however narrow the window', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await page.goto('/')
     const content = await page.evaluate(() =>
       (document.querySelector('meta[name=viewport]') as HTMLMetaElement).getAttribute('content'))
-    expect(content, 'no maximum-scale leaks onto non-iOS platforms').not.toContain('maximum-scale')
+    expect(content, 'no maximum-scale leaks onto a mouse-first screen').not.toContain('maximum-scale')
     expect(content).toContain('width=device-width')
   })
 })

@@ -78,6 +78,7 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   that keeps its full words for a screen reader (clipped to 1px) beside a short form still counts both in `innerText`
   and `textContent`: read the children whose box is wider than 1px. The walk and the browser test both tripped on it;
   the pictures showed the right word.
+- **An event a script makes for a listener on the whole page is made to bubble** (`new Event(type, { bubbles: true, cancelable: true })`) — the browser's own gesture and touch events bubble; one made without it never reaches a listener on `document`, and its "not cancelled" reads as the app's fault (2 Nov 26, [NO-PAGE-ZOOM]). **Touches made inside the page in WebKit drive no browser scroll and no pointer events:** a scroll, a swipe the browser makes, or a pinch read by pointer events (the Tracker's chart) cannot be walked that way — walk it in Chromium by real fingers over CDP and say so in the sheet.
 - **A word is found by the element that draws it.** To assert a word is shown, find a drawn element — a box wider than
   zero, inside the surface being checked: the app keeps hidden copies (the week behind the board, a phone's frozen
   band) — whose OWN trimmed

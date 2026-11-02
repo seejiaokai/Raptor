@@ -1,0 +1,150 @@
+[
+ {
+  "id": "N0a",
+  "what": "the sign-in page: the page takes only panning from a finger",
+  "ok": true
+ },
+ {
+  "id": "N0b",
+  "what": "the sign-in page: an iPhone's own pinch (its gesture event) is cancelled",
+  "ok": true
+ },
+ {
+  "id": "N5a",
+  "what": "one finger up still scrolls the page",
+  "ok": false,
+  "detail": {
+   "y0": 0,
+   "y1": 0
+  }
+ },
+ {
+  "id": "N5b",
+  "what": "one finger sideways still slides the week to the next day",
+  "ok": false,
+  "detail": {
+   "x0": 12,
+   "x1": 12
+  }
+ },
+ {
+  "id": "N7b",
+  "what": "and the window is still open after the pinch",
+  "ok": true
+ },
+ {
+  "id": "N7c",
+  "what": "its close shuts it, the week behind it still there",
+  "ok": true
+ },
+ {
+  "id": "G1b",
+  "what": "the board's desktop layout still zooms by its own pinch (D1109)",
+  "ok": true,
+  "detail": {
+   "z0": 1,
+   "z1": 0.340678
+  }
+ },
+ {
+  "id": "G2a",
+  "what": "Quals still zooms by its own pinch (D1110)",
+  "ok": true,
+  "detail": {
+   "z0": 1,
+   "z1": 2
+  }
+ },
+ {
+  "id": "G3a",
+  "what": "the Leave War grid still zooms by its own pinch (D1282)",
+  "ok": true,
+  "detail": {
+   "z0": 0.8,
+   "z1": 1.4
+  }
+ },
+ {
+  "id": "G4a",
+  "what": "the Balances page still zooms by its own pinch (D1236)",
+  "ok": true,
+  "detail": {
+   "b0": 1,
+   "b1": 0.491
+  }
+ },
+ {
+  "id": "G5a",
+  "what": "the OIL tab still zooms by its own pinch (D1285)",
+  "ok": true,
+  "detail": {
+   "o0": 0.8,
+   "o1": 1.4
+  }
+ },
+ {
+  "id": "G5c",
+  "what": "the OIL tab closes by Escape",
+  "ok": true
+ },
+ {
+  "id": "G6a",
+  "what": "the Tracker's chart still zooms by its own pinch (D992)",
+  "ok": false,
+  "detail": {
+   "z0": 0.42,
+   "z1": 0.42
+  }
+ },
+ {
+  "id": "R-viewsched",
+  "what": "viewsched: its smallest words are drawn at 7.5px (stchip on) — at or above the app's smallest by design, the week's stores chip (7.5px, bold short codes — pictured legible at 3x)",
+  "ok": true,
+  "detail": {
+   "min": 7.5,
+   "where": "stchip on"
+  }
+ },
+ {
+  "id": "R-inputs",
+  "what": "inputs: its smallest words are drawn at 10px (medcount) — at or above the app's smallest by design, the week's stores chip (7.5px, bold short codes — pictured legible at 3x)",
+  "ok": true,
+  "detail": {
+   "min": 10,
+   "where": "medcount"
+  }
+ },
+ {
+  "id": "R-logic",
+  "what": "logic: its smallest words are drawn at 8.5px (I) — at or above the app's smallest by design, the week's stores chip (7.5px, bold short codes — pictured legible at 3x)",
+  "ok": true,
+  "detail": {
+   "min": 8.5,
+   "where": "I"
+  }
+ },
+ {
+  "id": "R-help",
+  "what": "help: its smallest words are drawn at 10px (LABEL) — at or above the app's smallest by design, the week's stores chip (7.5px, bold short codes — pictured legible at 3x)",
+  "ok": true,
+  "detail": {
+   "min": 10,
+   "where": "LABEL"
+  }
+ },
+ {
+  "id": "R-admin",
+  "what": "admin: its smallest words are drawn at 11px (adm-cat-s) — at or above the app's smallest by design, the week's stores chip (7.5px, bold short codes — pictured legible at 3x)",
+  "ok": true,
+  "detail": {
+   "min": 11,
+   "where": "adm-cat-s"
+  }
+ },
+ {
+  "id": "E",
+  "what": "no page error",
+  "ok": true,
+  "detail": []
+ }
+]
