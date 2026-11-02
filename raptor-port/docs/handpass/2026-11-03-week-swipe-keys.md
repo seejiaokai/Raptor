@@ -283,3 +283,8 @@ docsize clean; tfin 728 / 0.
 board and the week, a Traffic line kept, the Tab route, View-only Sched, a mouse click, a phone tap); the round B11, B12, B14, B15,
 B17, B18 PASS, B13 PASS on its re-read script, B16b PASS, B16a PASS on its third script — the same first-run script reads as the
 first walk (§6b); B16a's Escape on Sort all still does nothing (older, filed under [BOARD-KEYS-LEFT]). No console or page error.
+
+## 9. GitHub's runs (pull request 621)
+`e44d50a26` (the three jobs built): green. `62556cdde` (the walk's fix): one job red — the Leave War desktop test "a pinch (phone) or
+Ctrl+scroll (desktop) zooms the whole grid down and back" ran out of time twice (31.8s, 32.0s); this branch touches nothing of the
+Leave War; filed as [LW-ZOOM-TEST-SLOW] (D84). `f5c1b0046` (the read's fix 4): green, that test included.

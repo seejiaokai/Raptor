@@ -165,6 +165,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
@@ -2123,6 +2124,14 @@ Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape pa
 the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
 (3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
+
+### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
+On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
+`62556cdde` failed one job, `geometry (lw-desktop 2/2)`: `e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the
+whole grid down and back, within its limits" ran out of time at 31.8s and again on its retry at 32.0s. The run of the next commit,
+`f5c1b0046`, passed it with everything else. D84: a Leave War desktop timeout gets one re-run, not an investigation — the next run
+was that. **To do:** if it fails again, make it wait on what it needs, not on time (D87), and measure its length on GitHub's machines.
+**Place:** low — watch.
 
 ### [BOARD-OPEN-BY-KEYS] The Scheduler Board cannot be opened from the keyboard (found 30 Oct 26 by [BOARD-ESCAPE-CLOSE]'s build; older; low)
 **BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
