@@ -377,6 +377,23 @@ Four things make it work, and each is load-bearing:
   Nothing moved the strip, so there is nothing to hold it against. Pinned
   `ui/snaphold.test.tsx` (both weeks: no write on a no-change repaint, one
   write on a rewrite).
+- **The phone's cross into another week** ([WEEK-SWIPE-CROSS], his iPhone recording of 3 Nov 26 — "very abrupt,
+  not smooth" and "sometimes it doesn't allow me to go to the next week"; the design itself is settled —
+  scheduler.md §Week navigation). **The swipe is read as the browser read it** (`pan.ts` §CONTINUOUS SWIPE ACROSS
+  WEEKS): the week still settling onto Monday or Sunday — moved in the last 150 ms, toward that end, within half a
+  day of it — counts as on that day, so a second swipe straight after the first crosses instead of only finishing the
+  move; a short flick (24 px or more, still moving at 0.3 px/ms over its last 100 ms) crosses as a 45 px drag does,
+  as a quick flick inside the week moves a day; and the direction is the first clear movement's (10 px), held for the
+  gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does. **The slide
+  starts where the day stands and ends where it rests** (`weekglide.ts`): the leaving copy keeps the day's live
+  place — on an iPhone the pull past the end Safari draws, read from the strip's scroll — held to a quarter of a
+  day; neither copy snaps (`scroll-snap-type:none` — the copy carries the week's class, and its own snap moved its
+  card 12 px, at the start and again as the copies came off); the arriving copy and the real week land on the same
+  place, `pan.ts weekLanding` — Monday's own snap point on a phone (12 px in, the week's padding), never 0, which
+  Safari would not re-snap from (the hold above); and the slide starts at a hand's pace, about 2.4 px/ms, easing out
+  over 340 ms, not the 3.9 px/ms that crossed three-quarters of the screen in a tenth of a second. Pinned
+  `ui/swipeweeks.test.tsx`, `ui/weekglide.test.ts`, and by a real finger `e2e/weekswipe.spec.ts`; the feel on his
+  iPhone is his look's to judge.
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other

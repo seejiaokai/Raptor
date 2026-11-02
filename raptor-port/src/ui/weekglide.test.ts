@@ -103,7 +103,7 @@ describe('a fired glide leaves nothing behind', () => {
     // finishes it): the outgoing clone goes, the week is uncovered for touches
     // and the page clip lifts — but the INCOMING clone, the landed week's own
     // picture, stays two frames more while the real week's paint commits
-    vi.advanceTimersByTime(400)
+    vi.advanceTimersByTime(470)
     expect(root.style.pointerEvents, 'the settled week takes touches again').toBe('')
     expect(document.body.style.overflowX).toBe('')
     expect(document.querySelectorAll('body > .week').length, 'root + the incoming clone still covering').toBe(2)
@@ -238,6 +238,50 @@ describe('a fired glide leaves nothing behind', () => {
     const root = mkRoot(390)
     beginGlide(root)!()
     for (const c of clones()) expect(c.style.scrollBehavior, 'the clone must not inherit .week smooth-scroll, or its park animates').toBe('auto')
+    vi.runAllTimers()
+  })
+
+  /* [WEEK-SWIPE-CROSS] — his iPhone recording, 3 Nov 26: "it triggers but it's very abrupt, not smooth". Two things in
+     the glide itself made the cross read as a jump (the real browser's proof: e2e/weekswipe.spec.ts). */
+  it('the leaving copy starts where the day stands on screen — the pull past the end included — never put back first', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const at = (sl: number, jump: 'mon' | 'sun') => {
+      view.setWeekJump(jump)
+      const root = mkRoot(390)
+      fillWeek(root, '')
+      Object.defineProperty(root, 'scrollWidth', { value: 12 + 390 * 7, configurable: true })
+      Object.defineProperty(root, 'clientWidth', { value: 390, configurable: true })
+      Object.defineProperty(root, 'scrollLeft', { value: sl, configurable: true, writable: true })
+      const run = beginGlide(root)!
+      fillWeek(root, 'n'); run()
+      const card = byZ(41).firstElementChild as HTMLElement
+      const shift = parseFloat(card.style.marginLeft || '0')
+      vi.runAllTimers(); document.body.innerHTML = ''
+      return shift
+    }
+    /* Monday pulled 60px past its end (Safari reports the pull as a scroll below 0): the copy keeps the 60px */
+    expect(at(-60, 'sun'), 'Monday held where the pull left it').toBe(60)
+    /* Sunday at rest sits 12px further in than Monday (the week's padding): the copy keeps that too */
+    expect(at(2328, 'mon'), 'Sunday at its own resting place (measured: the strip rests at 2328, Sunday 12px in)').toBe(12)
+    /* a day caught far from any resting place is still drawn as one clean day, not slid half off: at most a quarter day */
+    expect(Math.abs(at(160, 'sun')), 'never more than a quarter of a day off its place').toBeLessThanOrEqual(390 / 4)
+  })
+
+  it("the slide starts no faster than a finger's own swipe of a day, and is still quick", () => {
+    vi.useFakeTimers()
+    setW(400); view.setWeekJump('mon')
+    beginGlide(mkRoot(390))!()
+    vi.advanceTimersByTime(32)
+    const t = byZ(40).style.transition
+    const ms = Number(/(\d+)ms/.exec(t)![1])
+    const [x1, y1] = /cubic-bezier\(([^,]+),([^,]+),/.exec(t)!.slice(1).map(Number) as [number, number]
+    /* the start speed of an eased slide is (y1 / x1) × distance / duration. A day swiped inside the week (the browser's own
+       snap, measured on this build at his iPhone's size): about 2.3px a millisecond at its fastest. The old slide began at
+       about 3.9 — a whole screen in its first tenth of a second, which reads as a jump. */
+    const start = (y1 / x1) * 390 / ms
+    expect(start, `starts at ${start.toFixed(2)}px/ms`).toBeLessThanOrEqual(2.5)
+    expect(ms, 'and is over within the time of a day swiped by hand').toBeLessThanOrEqual(400)
     vi.runAllTimers()
   })
 })

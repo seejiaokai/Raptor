@@ -5,7 +5,7 @@
    loads the previous week and lands on Sunday. jsdom has no layout, so the
    week's scroll metrics are stubbed to place it at an edge; the real geometry is
    the geometry gate's job. */
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
@@ -67,6 +67,7 @@ afterAll(async () => {
 })
 
 afterEach(async () => {
+  vi.restoreAllMocks()
   if (CURWEEK !== '13/07/2026') await act(async () => { loadWeek('13/07/2026') })
 })
 
@@ -190,5 +191,83 @@ describe('an ordinary within-week swipe does not cross', () => {
     await touch(w, 'touchstart', 300)
     await touch(w, 'touchend', 280)                // only 20px < 45px threshold
     expect(CURWEEK).toBe('13/07/2026')
+  })
+})
+
+/* [WEEK-SWIPE-CROSS] — his iPhone recording, 3 Nov 26: "Sometimes it doesn't allow me to go to the next week. Like Monday
+   to Sunday." On Monday, swipe after swipe only bounced the day. Three ways a swipe off an end day was read as no swipe
+   at all, each where the browser itself had plainly moved the day sideways (the real browser's proof:
+   e2e/weekswipe.spec.ts). `Date.now` is held still and stepped by hand, so a finger's speed is the test's to set. */
+describe('a swipe off an end day that the old reading missed', () => {
+  let clock = 1_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+
+  it('a second swipe begun while the week is still settling onto Monday crosses', async () => {
+    const w = stubWeek(400)                        // on Tuesday …
+    at(1_000_000)
+    await scrolled(w, 300)                         // … the strip on its way back to Monday after the last swipe
+    at(1_000_030); await scrolled(w, 150)
+    at(1_000_060)
+    await touch(w, 'touchstart', 100)              // the finger lands with Monday still 150px off
+    at(1_000_080); await touch(w, 'touchmove', 160)
+    at(1_000_110); await touch(w, 'touchend', 220)
+    expect(CURWEEK, 'the swipe crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('but a week at rest half a day out, or one moving away from Monday, is no edge', async () => {
+    const w = stubWeek(400)
+    at(1_000_000); await scrolled(w, 300); await scrolled(w, 150)
+    at(1_000_900)                                  // long at rest since
+    await touch(w, 'touchstart', 100); await touch(w, 'touchmove', 160); await touch(w, 'touchend', 220)
+    expect(CURWEEK, 'a week at rest between days is not at its edge').toBe('13/07/2026')
+    at(1_001_000); await scrolled(w, 100)
+    at(1_001_030); await scrolled(w, 150)          // moving AWAY from Monday
+    at(1_001_050)
+    await touch(w, 'touchstart', 100); await touch(w, 'touchmove', 160); await touch(w, 'touchend', 220)
+    expect(CURWEEK, 'a week heading for Tuesday is not at its edge').toBe('13/07/2026')
+  })
+
+  it('a short quick flick off Monday crosses, as a short quick flick inside the week moves a day', async () => {
+    const w = stubWeek(12)
+    at(1_000_000); await touch(w, 'touchstart', 200)
+    at(1_000_015); await touch(w, 'touchmove', 212)
+    at(1_000_030); await touch(w, 'touchmove', 226)
+    at(1_000_040); await touch(w, 'touchend', 232)  // 32px in 40ms — lifted moving
+    expect(CURWEEK, 'the flick crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('a short slow drag, a finger that rests before it lifts, and a tiny quick jiggle do not', async () => {
+    const w = stubWeek(12)
+    at(1_000_000); await touch(w, 'touchstart', 200)
+    at(1_000_200); await touch(w, 'touchmove', 216)
+    at(1_000_400); await touch(w, 'touchmove', 232)
+    at(1_000_420); await touch(w, 'touchend', 232)
+    expect(CURWEEK, 'a slow 32px drag').toBe('13/07/2026')
+    at(1_001_000); await touch(w, 'touchstart', 200)
+    at(1_001_015); await touch(w, 'touchmove', 220)
+    at(1_001_030); await touch(w, 'touchmove', 234)
+    at(1_001_300); await touch(w, 'touchend', 234)  // quick, but held still a quarter second before the lift
+    expect(CURWEEK, 'a flick that stopped before it lifted').toBe('13/07/2026')
+    at(1_002_000); await touch(w, 'touchstart', 200)
+    at(1_002_010); await touch(w, 'touchmove', 212)
+    at(1_002_020); await touch(w, 'touchend', 216)  // 16px: a finger's jiggle on a tap, however quick
+    expect(CURWEEK, 'a 16px jiggle').toBe('13/07/2026')
+  })
+
+  it("a thumb's arc whose first movement is sideways crosses, though it drops further than it travels", async () => {
+    const w = stubWeek(12)
+    await touch(w, 'touchstart', 100, 380)
+    for (const [x, y] of [[114, 381], [128, 384], [140, 392], [150, 404], [158, 418], [164, 434], [168, 448]]) await touch(w, 'touchmove', x!, y!)
+    await touch(w, 'touchend', 170, 460)            // 70 across, 80 down
+    expect(CURWEEK, 'the arc crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('a drag whose first movement is down the day never crosses, whatever its sideways drift', async () => {
+    const w = stubWeek(12)
+    await touch(w, 'touchstart', 100, 300)
+    for (const [x, y] of [[102, 316], [106, 336], [130, 350], [170, 360], [210, 366]]) await touch(w, 'touchmove', x!, y!)
+    await touch(w, 'touchend', 220, 368)            // 120 across, 68 down — but it began as the page being scrolled
+    expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
   })
 })
