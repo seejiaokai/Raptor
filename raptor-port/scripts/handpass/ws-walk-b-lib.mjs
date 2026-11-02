@@ -5,7 +5,8 @@ import { fileURLToPath } from 'url'
 import { dirname, resolve } from 'path'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const OUT = resolve(HERE, '../../docs/img/handpass/2026-11-03-week-swipe/walk/B')
+/* WALK_OUT sends a re-walk to its own folder, so the first walk's pictures stay the evidence (bug-check-order §5) */
+export const OUT = process.env.WALK_OUT || resolve(HERE, '../../docs/img/handpass/2026-11-03-week-swipe/walk/B')
 mkdirSync(OUT, { recursive: true })
 export const PORT = '4173'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'

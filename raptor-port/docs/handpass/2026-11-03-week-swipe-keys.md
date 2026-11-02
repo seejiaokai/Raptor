@@ -258,3 +258,28 @@ Monday) is not drawn — each copy holds one day card, the settled design (24 Au
 `dist` at `62556cdde`:** Chromium A1–A11 all PASS, A6 and A6b included; A12 at 844 × 390 the desktop layout (as §6); A12x at
 812 × 375 crosses each way with the positions exact (Δ 0) — flagged only by the script's speed ceiling, set for a 402-wide screen
 (the same 340ms over twice the width), as in the first walk. WebKit A1, A2, A5, A9 PASS. No problem logged.
+
+## 8. The fresh read, its fixes, and their re-walk
+
+**The fresh, blind Opus read of the whole branch** (`raptor-port/docs/handpass/parts/ws-read.md`, with this sheet in hand): **0 high,
+0 medium, 4 low**, each with its failure, cause and fix — (1) Escape taken from a schedule text box being typed in behind an open
+window or menu (the box's own Escape, which puts the old text back, never ran); (2) after a keys-open the board's box stayed a key
+stop for the board's whole life (a later click on its blank space took the keys there, and a movable window over the board then
+read it as "something behind"); (3) the keys-open note left set by Enter on a date behind an already-open board (the next mouse
+open put the keys on the board's box); (4) on a phone a downward page scroll whose first 10px slant sideways, then drift 45px
+sideways, could cross a week. Its "checked and sound" list covers the swipe's twin paths, the one landing, the Tab route, parity,
+the Escape list's listener, the moved code (one copy of each state, every importer and mock repointed) and the look-ups' order.
+**Fixed red first:** (4) by job 1's builder, commit `f5c1b0046` — the page's own scroll (`window.scrollY`, the one vertical scroller
+on both phone weeks, measured) moving more than 10px from touch to lift is not a week cross; a unit test red on the old reading;
+Chromium cannot produce the case (when the first 10px read sideways it scrolls the week, not the page — five slanted starts
+tried), so the unit test carries it; also the `weekglide.ts snapshot` comment made to say what the code does. (1)–(3) by job 2's
+builder, commit `9ea6274e1` — each Escape entry records what it hangs from and leaves a typing box outside it to answer first (the
+duty role list unchanged: the first Escape closes its list, the second restores the role); a one-time blur takes the board's
+tabindex off the first time the keys leave it; the note set only when a board opens, cleared on close — four unit cases red on
+the current code; the touched files 369 / 369; `board-escape-traffic` and `schedule-tab` browser specs 42 / 42; build, lint,
+docsize clean; tfin 728 / 0.
+**The re-walk of what the fixes touched (the host, walker B's own scripts, `WALK_OUT` to `…/rewalk/B/`, on `dist` rebuilt at
+`9ea6274e1`):** B1–B10 all PASS (the date, Enter, Escape, Space, ✓ Done, the five menus, the Traffic and day-details windows on the
+board and the week, a Traffic line kept, the Tab route, View-only Sched, a mouse click, a phone tap); the round B11, B12, B14, B15,
+B17, B18 PASS, B13 PASS on its re-read script, B16b PASS, B16a PASS on its third script — the same first-run script reads as the
+first walk (§6b); B16a's Escape on Sort all still does nothing (older, filed under [BOARD-KEYS-LEFT]). No console or page error.
