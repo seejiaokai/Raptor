@@ -688,7 +688,10 @@ test('on a phone a full-page window’s ✕ takes a finger’s tap 44 × 44 roun
         const others = [...head.querySelectorAll<HTMLElement>('*')].filter(n => n !== b && !b.contains(n) && n.getClientRects().length)
         const clash = others.filter(n => { const o = n.getBoundingClientRect(); return o.right > cx - 22 && o.left < cx + 22 && o.bottom > cy - 22 && o.top < cy + 22 }).map(n => n.className || n.tagName)
         const below = (head.nextElementSibling as HTMLElement).getBoundingClientRect().top
-        return { w: r.width, h: r.height, near: [[-15, 0], [15, 0], [0, -14], [0, 14], [-18, 16], [16, -14]].map(([dx, dy]) => hits(dx!, dy!)), far: [[-30, 0], [0, 30]].map(([dx, dy]) => hits(dx!, dy!)), clash, gap: below - (cy + 22), win: !!document.querySelector(`[data-testid="${win}"]`) }
+        /* the area stays inside the head: the head is pinned while the list scrolls under it, so a row passes right at its
+           foot — a point just under the head's own edge is never the ✕ (the fresh read's finding, 2 Nov 26) */
+        const hb = head.getBoundingClientRect().bottom
+        return { underHead: hits(0, hb + 1 - cy), w: r.width, h: r.height, near:[[-15, 0], [15, 0], [0, -14], [0, 14], [-18, 16], [16, -14]].map(([dx, dy]) => hits(dx!, dy!)), far: [[-30, 0], [0, 30]].map(([dx, dy]) => hits(dx!, dy!)), clash, gap: below - (cy + 22), win: !!document.querySelector(`[data-testid="${win}"]`) }
       }, [win, x] as const)
       expect(m.w, `${width} ${win}: the ✕ is drawn the size it was (D487)`).toBeLessThan(26)
       expect(m.h, `${width} ${win}: the ✕ is drawn the size it was (D487)`).toBeLessThan(26)
@@ -696,6 +699,7 @@ test('on a phone a full-page window’s ✕ takes a finger’s tap 44 × 44 roun
       expect(m.far, `${width} ${win}: the area stops at a finger's size`).toEqual([false, false])
       expect(m.clash, `${width} ${win}: the area covers nothing else in the head`).toEqual([])
       expect(m.gap, `${width} ${win}: the area stops above the row under the head`).toBeGreaterThanOrEqual(0)
+      expect(m.underHead, `${width} ${win}: the area reaches below the head's edge, over the rows that scroll under it`).toBe(false)
       /* and a real finger's tap off its centre closes the page */
       const box = (await page.locator(`[data-testid="${x}"]`).boundingBox())!
       await page.touchscreen.tap(box.x + box.width / 2 - 14, box.y + box.height / 2 + 12)

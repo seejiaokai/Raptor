@@ -20,7 +20,7 @@ const { L, T } = H
 fs.mkdirSync(H.OUT, { recursive: true })
 const parts = (process.env.PART || 'k,w,x,d').split(',')
 for (const f of fs.readdirSync(H.OUT)) if (f.endsWith('.png') && parts.some(p => f.startsWith(p + '-'))) fs.unlinkSync(`${H.OUT}/${f}`)
-console.log('[lw-tabx-walk v2] →', H.OUT, parts.join(' '), 'bundle on', process.env.LW_PORT)
+console.log('[lw-tabx-walk v3] →', H.OUT, parts.join(' '), 'bundle on', process.env.LW_PORT)
 const recs = []
 const real = errs => errs.filter(e => !/requestfailed: blob:/.test(e))
 const rec = (id, size, ok, said, pics = []) => { recs.push({ id, size, verdict: ok ? 'PASS' : 'FAIL', said, pics }); console.log(`${ok ? 'PASS' : 'FAIL'}  ${id} [${size}]  ${said}  [${pics.join(', ')}]`) }
@@ -130,13 +130,14 @@ async function xRound(w, tagPre, width, height) {
     const m = await P.evaluate(([win, x]) => {
       const b = document.querySelector(`[data-testid="${x}"]`), r = b.getBoundingClientRect(), a = getComputedStyle(b, '::after')
       const full = !!document.querySelector(`[data-testid="${win}"].fullpage`)
-      return { w: Math.round(r.width), h: Math.round(r.height), cx: r.left + r.width / 2, cy: r.top + r.height / 2, full, paint: `${a.backgroundColor} ${a.borderTopWidth} ${a.outlineStyle} ${a.boxShadow}`, aw: a.width, ah: a.height }
+      const hb = b.closest('.bidsheet-hd').getBoundingClientRect().bottom, u = document.elementFromPoint(r.left + r.width / 2, hb + 1)
+      return { under: !!u && (u === b || b.contains(u)), hb: Math.round(hb), w: Math.round(r.width), h: Math.round(r.height), cx: r.left + r.width / 2, cy: r.top + r.height / 2, full, paint: `${a.backgroundColor} ${a.borderTopWidth} ${a.outlineStyle} ${a.boxShadow}`, aw: a.width, ah: a.height }
     }, [win, x])
     const crop = `${tag}-1-x-close-up`
     await P.screenshot({ path: `${H.OUT}/${crop}.png`, clip: { x: Math.max(0, m.cx - 60), y: Math.max(0, m.cy - 24), width: 120, height: 48 }, scale: 'css' })
     const p0 = await shot(w, `${tag}-0-open`)
     const paints = !/rgba\(0, 0, 0, 0\) 0px none none/.test(m.paint)
-    rec(`X1 ${win}: a full page, its ✕ drawn the size it was, the touch area painting nothing`, size, m.full && m.w < 26 && m.h < 26 && !paints && m.aw === '44px' && m.ah === '44px', `full page ${m.full}; ✕ ${m.w} × ${m.h}; area ${m.aw} × ${m.ah}; area paints ${paints ? m.paint : 'nothing'}`, [p0, crop + '.png'])
+    rec(`X1 ${win}: a full page, its ✕ drawn the size it was, the touch area painting nothing`, size, m.full && m.w < 26 && m.h < 26 && !paints && m.aw === '44px' && parseFloat(m.ah) >= 40 && !m.under, `full page ${m.full}; ✕ ${m.w} × ${m.h}; area ${m.aw} × ${m.ah}; area paints ${paints ? m.paint : 'nothing'}; 1px under the head (${m.hb}) ${m.under ? 'IS the ✕' : 'is not the ✕'}`, [p0, crop + '.png'])
     await L.finger(w, m.cx - 14, m.cy + 12, 0, `${tag}-2-tap-q`)
     await P.waitForTimeout(400)
     const gone = !(await up(P, T(win)))

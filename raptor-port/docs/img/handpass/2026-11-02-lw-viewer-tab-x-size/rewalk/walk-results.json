@@ -1,0 +1,206 @@
+[
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-chromium-390-open-dates-0-open.png",
+   "x-chromium-390-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-390-open-dates-2-tap-q.png",
+   "x-chromium-390-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-chromium-390-events-sheet-0-open.png",
+   "x-chromium-390-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-390-events-sheet-2-tap-q.png",
+   "x-chromium-390-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 390/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-chromium-360-open-dates-0-open.png",
+   "x-chromium-360-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-360-open-dates-2-tap-q.png",
+   "x-chromium-360-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-chromium-360-events-sheet-0-open.png",
+   "x-chromium-360-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-chromium-360-events-sheet-2-tap-q.png",
+   "x-chromium-360-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 360/chromium",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-webkit-390-open-dates-0-open.png",
+   "x-webkit-390-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-390-open-dates-2-tap-q.png",
+   "x-webkit-390-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-webkit-390-events-sheet-0-open.png",
+   "x-webkit-390-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-390-events-sheet-2-tap-q.png",
+   "x-webkit-390-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 390/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "X1 open-dates: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-webkit-360-open-dates-0-open.png",
+   "x-webkit-360-open-dates-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 open-dates: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-360-open-dates-2-tap-q.png",
+   "x-webkit-360-open-dates-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X1 events-sheet: a full page, its ✕ drawn the size it was, the touch area painting nothing",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "full page true; ✕ 19 × 17; area 44px × 45px; area paints nothing; 1px under the head (47) is not the ✕",
+  "pics": [
+   "x-webkit-360-events-sheet-0-open.png",
+   "x-webkit-360-events-sheet-1-x-close-up.png"
+  ]
+ },
+ {
+  "id": "X2 events-sheet: a finger 14px left and 12px below the ✕'s centre closes the page",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "closed by the one tap",
+  "pics": [
+   "x-webkit-360-events-sheet-2-tap-q.png",
+   "x-webkit-360-events-sheet-3-after-tap.png"
+  ]
+ },
+ {
+  "id": "X-errors",
+  "size": "phone 360/webkit",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ },
+ {
+  "id": "D1 the floating \"Open for bidding\" window on a desktop: its ✕ as before, no wider area",
+  "size": "desk 1536/chromium",
+  "verdict": "PASS",
+  "said": "full page false; ✕ 19 × 17; its centre is the ✕; 14px off is not the ✕",
+  "pics": [
+   "d-open-dates-floating.png"
+  ]
+ },
+ {
+  "id": "D-errors",
+  "size": "desk 1536",
+  "verdict": "PASS",
+  "said": "none",
+  "pics": []
+ }
+]

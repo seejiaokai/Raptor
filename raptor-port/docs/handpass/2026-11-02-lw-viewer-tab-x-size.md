@@ -92,7 +92,22 @@ The keyboard on a phone (no Tab there).
 
 ## 8. The fresh read
 
-*(filled at its return)*
+One fresh Opus reader, blind to the walk, handed commit f6c4eb1f8 with the finder brief and D56's exclusion (D790).
+**One finding, low — confirmed, fixed red first:** the full page's head is pinned while the list scrolls under it, and its 8px
+foot margin takes no room then; the 44px area, centred on the ✕, hung about 4px below the head, over the top edge of whatever
+passes there — on the Events list the edit and ✕ icons at each line's right end (D1512, D1515). A tap there closed the page.
+*Red:* the e2e test gained "a point 1px under the head's edge is never the ✕" — red on the first fix at 390. *Fix:* the area
+runs from 20px above the ✕ to 8px below it (inside the head's foot padding and line), 44 × 45; a first try that clipped the
+area to the head (`overflow: hidden`) cut it too short at the top and right (two near points missed) and was dropped.
+*Green:* the full-page browser tests 6/6; the walk's ✕ part re-walked on the rebuilt bundle 22/22
+(`docs/img/handpass/2026-11-02-lw-viewer-tab-x-size/rewalk/`, X1 now also asks for the point under the head).
+**Negatives the reader gave:** every other keyboard-holding window (the "No document", OIL, Upchit and clash questions, the
+input window, the templates and plans windows, Insights, the board's dialogs) cannot open over a Leave War window; the order of
+opening, nesting, closing and re-drawing all hold; `position: relative` moves nothing; the floating windows untouched.
+**Hardening note, not a finding (filed nowhere, unreachable today):** the window remembers the viewer's one box as "under" if a
+war window ever mounted while the viewer was open; the Escape guard has the same shape.
+**No narrow read of the fix:** two lines of geometry in one style rule, proved by the test and the re-walk (§5 asks a narrow read
+of a fix that rewrites logic).
 
 ## 9. Gates
 

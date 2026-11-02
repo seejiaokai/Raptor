@@ -1504,8 +1504,12 @@
    its left, so the area reaches 44 × 44 round its centre and touches nothing; the glyph, its colour and its place are as
    before. Only the full page (the "Open for bidding" window and the Events list on a phone): the floating windows' ✕ has the
    Auto-approve switch or Approve right beside it, where a wider area would take their taps. */
+/* …and it never reaches below the head (the fresh read's finding, 2 Nov 26): the head is pinned while the list scrolls under
+   it, so the rows pass right at its foot, and a 44px area hung about 4px below it, over the top edge of the Events list's
+   edit and ✕ icons. So the area runs from 20px above the ✕ (into the page's own top edge, where nothing is) to 8px below it,
+   inside the head's 8px foot padding and 1px line: about 45 tall, 44 wide, never below the head. */
 #page-leavewar .bidsheet.fullpage .bidsheet-hd .x { position: relative; }
-#page-leavewar .bidsheet.fullpage .bidsheet-hd .x::after { content: ''; position: absolute; left: 50%; top: 50%; width: 44px; height: 44px; transform: translate(-50%, -50%); }
+#page-leavewar .bidsheet.fullpage .bidsheet-hd .x::after { content: ''; position: absolute; left: 50%; width: 44px; top: -20px; bottom: -8px; transform: translateX(-50%); }
 
 
 /* ---- THE "OPEN FOR BIDDING" WINDOW (D1177, D1168, D1169, D1172; drawn r7-17, r7-17b, r7-18) ----------------------

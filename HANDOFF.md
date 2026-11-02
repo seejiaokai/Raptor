@@ -20,15 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/no-page-zoom -->
-### `claude/no-page-zoom` — [NO-PAGE-ZOOM] (D1567): BUILT and WALK-checked, pull request 613 — written 2 Nov 26 — **his "merge live" 2 Nov 26 — remove this block at the next handoff**
-- **Built:** on a touch-first screen (`(pointer: coarse)`) the page never zooms — `touch-action:pan-x pan-y` on the page (`00-foundation-login.css`), `maximum-scale=1, user-scalable=no` on a touch screen that is not an iPhone (`index.html`, its old "never add user-scalable=no" replaced), an iPhone's gesture events cancelled on the whole page (`src/ui/nopagezoom.ts`, from `main.tsx`). The grids read the fingers themselves and keep zooming. A desktop is unchanged (D1286). Records: `ui-contracts.md` §On a touch screen the page itself never zooms, `file-map.md`, `walk-scripts.md` (a script's event must bubble; WebKit's in-page touches make no scroll or pointer events), D1567's home.
-- **Checked:** WALK — red first (the old build: two fingers over the week took the page to 5×); `nopagezoom.spec.ts` + every grid pinch test 28/28 on his PC; `nopagezoom.test.ts` 5/5; the code check clean; the walk (`scripts/handpass/nopagezoom-walk.mjs`) Chromium 33/33, WebKit 16/19 (the three left are the method's limit), desktop 5/5. GitHub's run of the first push green. Evidence: `raptor-port/docs/handpass/2026-11-02-no-page-zoom.md`; ledger row added.
-- **Closed:** his look on his iPhone 2 Nov 26 (his recording: the Leave War grid pinched in and out, the page around it unchanged; then "Ok looks good merge live"); [NO-PAGE-ZOOM] archived. The stores chips' question was on the look card he passed: taken as no change, nothing filed — raised again only if he says.
-- **Weekly allowance:** 95% at 10:15 on 2 Nov 26, resets in about 10 hours.
-- **Rulings:** none new; D1567's home updated to the build.
-- **Pick up here:** nothing left of this job; his next pick from the backlog.
-- **Opening line:** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog."
+<!-- now:claude/lw-viewer-tab-x-size -->
+### `claude/lw-viewer-tab-x-size` — [LW-VIEWER-TAB], [LW-OPENDATES-X-SIZE]: BUILT and WALK-checked, pull request 614 — written 2 Nov 26
+- **Built:** Tab round the document viewer opened over a Leave War window — the window's Tab hold stands aside while a keyboard-holding window opened after it is up, as its Escape does (`leavewar/ui/Sheet.tsx`); on a phone the full page's ✕ ("Open for bidding", the Events list) keeps its drawn size with an invisible touch area 44 wide that never reaches below the head (`bidpicker.css`, D487). Records: `ui-contracts.md` (both), `file-map.md`, the backlog (the two items marked built; [LW-DOCFIELD-CHIP-OPENS]'s stale priority line dropped — archived 1 Nov 26).
+- **Checked:** WALK — both red first (`docviewer-sheet.test.tsx`; the e2e test on `main`'s stylesheet); the Leave War UI unit files 114 / 1704; the code check clean; the walk `scripts/handpass/lw-tabx-walk.mjs` 35/36 then 9/9 (the FAIL the script's own — the person window never holds Tab, D641); the plain-user round `lw-nb-docclose.mjs` 39/39; GitHub's full run green. Evidence: `raptor-port/docs/handpass/2026-11-02-lw-viewer-tab-x-size.md`; ledger row added. The fresh Opus read: one low finding — the ✕'s area hung 4px below the pinned head, over the Events list's icons as it scrolls — fixed red first (the area ends 8px under the ✕), the ✕ part re-walked 22/22.
+- **Left:** his look (the card at the foot of the sheet) and his "merge live"; then archive both items by `backlog-archive.mjs --homes raptor-port/docs/ui-contracts.md`. Suggested only, never changed unasked: the floating war windows' ✕ (beside Auto-approve / Approve) could take a touch area that stops short of its neighbours.
+- **Branch note:** worked from the worktree `admiring-fermat-3b535b` on a local branch tracking `origin/claude/lw-viewer-tab-x-size` (the original chat's worktree still held the branch name).
+- **Rulings:** none.
+- **Pick up here:** his look and "merge live", or his next pick from the backlog.
+- **Opening line:** "Read HANDOFF.md. Carry pull request 614 to live on my word, or start my next pick from the backlog on a new branch from main."
 <!-- /now -->
 ## Next, in order
 
