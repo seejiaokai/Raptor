@@ -1,0 +1,800 @@
+{
+ "A1": {
+  "id": "A1",
+  "engine": "chromium",
+  "title": "Edit Schedule Mon 13 Jul -> slow right swipe (150px/400ms) -> Sun 12 Jul",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "landed sl 2328, Mon -2316, Sun 24",
+     "leaving copy first 12 vs day stood 12 (Δ 0)",
+     "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+     "leaving copy: 12 -> 414, max 2.97px/ms, biggest single step 49.6px (16ms); arriving copy: -378 -> 24, max 2.97px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 24 for 2 frames (49ms) under the leaving one before it jumped to -378",
+     "copies up 416ms, first copy 84ms after the lift"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "06/07/2026",
+     "sl": 2328,
+     "max": 2328,
+     "d0": -2316,
+     "d6": 24,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 10,
+      "startToLiftMs": 509
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "landed sl 2328, Mon -2316, Sun 24",
+   "leaving copy first 12 vs day stood 12 (Δ 0)",
+   "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+   "leaving copy: 12 -> 414, max 2.97px/ms, biggest single step 49.6px (16ms); arriving copy: -378 -> 24, max 2.97px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 24 for 2 frames (49ms) under the leaving one before it jumped to -378",
+   "copies up 416ms, first copy 84ms after the lift"
+  ],
+  "analysis": {
+   "frames": 102,
+   "up": 32,
+   "leaving": {
+    "stoodCard": 12,
+    "stoodDayIdx": 0,
+    "copyFirstCard": 12,
+    "delta": 0,
+    "tBeforeMs": 85
+   },
+   "arriving": {
+    "lastCopyCard": 24,
+    "firstLiveAfter": 24,
+    "settledLive": 24,
+    "delta": 0,
+    "deltaSettled": 0
+   },
+   "liveBeforeCopies": {
+    "n": 24,
+    "maxStep": 12,
+    "maxStepAt": {
+     "dt": 33
+    },
+    "maxSpeedPxMs": 0.37,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 0,
+    "to": 12
+   },
+   "leavingSeries": {
+    "n": 21,
+    "maxStep": 49.6,
+    "maxStepAt": {
+     "dt": 16
+    },
+    "maxSpeedPxMs": 2.97,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 12,
+    "to": 414
+   },
+   "arrivingParked": {
+    "frames": 2,
+    "at": 24,
+    "ms": 49,
+    "jumpsTo": -378
+   },
+   "arrivingSeries": {
+    "n": 23,
+    "maxStep": 49.6,
+    "maxStepAt": {
+     "dt": 16
+    },
+    "maxSpeedPxMs": 2.97,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": -378,
+    "to": 24
+   },
+   "seenJumps": [],
+   "copiesUpMs": 416,
+   "liftToCopiesUpMs": 84
+  },
+  "trace": "A1-chromium-trace.json",
+  "pics": [
+   "A1-chromium-1-beforelift.png",
+   "A1-chromium-2-slide0-first.png",
+   "A1-chromium-2-slide1.png",
+   "A1-chromium-2-slide2.png",
+   "A1-chromium-2-slide3.png",
+   "A1-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "landed sl 2328, Mon -2316, Sun 24",
+    "leaving copy first 12 vs day stood 12 (Δ 0)",
+    "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+    "leaving copy: 12 -> 414, max 2.83px/ms, biggest single step 49.6px (18ms); arriving copy: -378 -> 24, max 2.83px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 24 for 2 frames (48ms) under the leaving one before it jumped to -378",
+    "copies up 417ms, first copy 68ms after the lift"
+   ],
+   "picNote": {
+    "castFrames": 31,
+    "inWindow": 27,
+    "windowMsAfterLift": [
+     68,
+     485
+    ]
+   }
+  },
+  "problems": []
+ },
+ "A2": {
+  "id": "A2",
+  "engine": "chromium",
+  "title": "quick short flick (30px/60ms) right off Monday -> Sunday",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "landed sl 2328, Mon -2316, Sun 24",
+     "leaving copy first 12 vs day stood 12 (Δ 0)",
+     "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+     "leaving copy: 12 -> 414, max 3.18px/ms, biggest single step 49.3px (20ms); arriving copy: -378 -> 24, max 3.17px/ms, biggest step 49.3px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 24 for 2 frames (50ms) under the leaving one before it jumped to -378",
+     "copies up 446ms, first copy 59ms after the lift"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "06/07/2026",
+     "sl": 2328,
+     "max": 2328,
+     "d0": -2316,
+     "d6": 24,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 1,
+      "startToLiftMs": 53
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "landed sl 2328, Mon -2316, Sun 24",
+   "leaving copy first 12 vs day stood 12 (Δ 0)",
+   "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+   "leaving copy: 12 -> 414, max 3.18px/ms, biggest single step 49.3px (20ms); arriving copy: -378 -> 24, max 3.17px/ms, biggest step 49.3px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 24 for 2 frames (50ms) under the leaving one before it jumped to -378",
+   "copies up 446ms, first copy 59ms after the lift"
+  ],
+  "analysis": {
+   "frames": 72,
+   "up": 6,
+   "leaving": {
+    "stoodCard": 12,
+    "stoodDayIdx": 0,
+    "copyFirstCard": 12,
+    "delta": 0,
+    "tBeforeMs": 60
+   },
+   "arriving": {
+    "lastCopyCard": 24,
+    "firstLiveAfter": 24,
+    "settledLive": 24,
+    "delta": 0,
+    "deltaSettled": 0
+   },
+   "liveBeforeCopies": {
+    "n": 2,
+    "maxStep": 12,
+    "maxStepAt": {
+     "dt": 34
+    },
+    "maxSpeedPxMs": 0.35,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 0,
+    "to": 12
+   },
+   "leavingSeries": {
+    "n": 18,
+    "maxStep": 49.3,
+    "maxStepAt": {
+     "dt": 20
+    },
+    "maxSpeedPxMs": 3.18,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 12,
+    "to": 414
+   },
+   "arrivingParked": {
+    "frames": 2,
+    "at": 24,
+    "ms": 50,
+    "jumpsTo": -378
+   },
+   "arrivingSeries": {
+    "n": 20,
+    "maxStep": 49.3,
+    "maxStepAt": {
+     "dt": 20
+    },
+    "maxSpeedPxMs": 3.17,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": -378,
+    "to": 24
+   },
+   "seenJumps": [],
+   "copiesUpMs": 446,
+   "liftToCopiesUpMs": 59
+  },
+  "trace": "A2-chromium-trace.json",
+  "pics": [
+   "A2-chromium-1-beforelift.png",
+   "A2-chromium-2-slide0-first.png",
+   "A2-chromium-2-slide1.png",
+   "A2-chromium-2-slide2.png",
+   "A2-chromium-2-slide3.png",
+   "A2-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "landed sl 2328, Mon -2316, Sun 24",
+    "leaving copy first 12 vs day stood 12 (Δ 0)",
+    "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+    "leaving copy: 12.2 -> 414, max 2.59px/ms, biggest single step 90.8px (35ms); arriving copy: -377.8 -> 24, max 2.59px/ms, biggest step 90.8px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 24 for 2 frames (37ms) under the leaving one before it jumped to -377.8",
+    "copies up 421ms, first copy 67ms after the lift"
+   ],
+   "picNote": {
+    "castFrames": 27,
+    "inWindow": 23,
+    "windowMsAfterLift": [
+     67,
+     488
+    ]
+   }
+  },
+  "problems": []
+ },
+ "A3": {
+  "id": "A3",
+  "engine": "chromium",
+  "title": "curling thumb (70 across, 80 down) off Monday -> crosses",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "landed sl 2328, Mon -2316, Sun 24",
+     "leaving copy first 12 vs day stood 12 (Δ 0)",
+     "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+     "leaving copy: 12 -> 414, max 2.87px/ms, biggest single step 49.3px (18ms); arriving copy: -378 -> 24, max 2.87px/ms, biggest step 49.3px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 24 for 2 frames (28ms) under the leaving one before it jumped to -378",
+     "copies up 431ms, first copy 72ms after the lift"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "06/07/2026",
+     "sl": 2328,
+     "max": 2328,
+     "d0": -2316,
+     "d6": 24,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 8,
+      "startToLiftMs": 263
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "landed sl 2328, Mon -2316, Sun 24",
+   "leaving copy first 12 vs day stood 12 (Δ 0)",
+   "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+   "leaving copy: 12 -> 414, max 2.87px/ms, biggest single step 49.3px (18ms); arriving copy: -378 -> 24, max 2.87px/ms, biggest step 49.3px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 24 for 2 frames (28ms) under the leaving one before it jumped to -378",
+   "copies up 431ms, first copy 72ms after the lift"
+  ],
+  "analysis": {
+   "frames": 89,
+   "up": 17,
+   "leaving": {
+    "stoodCard": 12,
+    "stoodDayIdx": 0,
+    "copyFirstCard": 12,
+    "delta": 0,
+    "tBeforeMs": 72
+   },
+   "arriving": {
+    "lastCopyCard": 24,
+    "firstLiveAfter": 24,
+    "settledLive": 24,
+    "delta": 0,
+    "deltaSettled": 0
+   },
+   "liveBeforeCopies": {
+    "n": 12,
+    "maxStep": 12,
+    "maxStepAt": {
+     "dt": 34
+    },
+    "maxSpeedPxMs": 0.35,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 0,
+    "to": 12
+   },
+   "leavingSeries": {
+    "n": 21,
+    "maxStep": 49.3,
+    "maxStepAt": {
+     "dt": 18
+    },
+    "maxSpeedPxMs": 2.87,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 12,
+    "to": 414
+   },
+   "arrivingParked": {
+    "frames": 2,
+    "at": 24,
+    "ms": 28,
+    "jumpsTo": -378
+   },
+   "arrivingSeries": {
+    "n": 23,
+    "maxStep": 49.3,
+    "maxStepAt": {
+     "dt": 18
+    },
+    "maxSpeedPxMs": 2.87,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": -378,
+    "to": 24
+   },
+   "seenJumps": [],
+   "copiesUpMs": 431,
+   "liftToCopiesUpMs": 72
+  },
+  "trace": "A3-chromium-trace.json",
+  "pics": [
+   "A3-chromium-1-beforelift.png",
+   "A3-chromium-2-slide0-first.png",
+   "A3-chromium-2-slide1.png",
+   "A3-chromium-2-slide2.png",
+   "A3-chromium-2-slide3.png",
+   "A3-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "landed sl 2328, Mon -2316, Sun 24",
+    "leaving copy first 12 vs day stood 12 (Δ 0)",
+    "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+    "leaving copy: 12 -> 414, max 2.86px/ms, biggest single step 49.6px (18ms); arriving copy: -378 -> 24, max 2.86px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 24 for 2 frames (34ms) under the leaving one before it jumped to -378",
+    "copies up 419ms, first copy 83ms after the lift"
+   ],
+   "picNote": {
+    "castFrames": 32,
+    "inWindow": 28,
+    "windowMsAfterLift": [
+     83,
+     501
+    ]
+   }
+  },
+  "problems": []
+ },
+ "A5": {
+  "id": "A5",
+  "engine": "chromium",
+  "title": "back: Sunday 12 Jul -> slow left swipe -> Monday 13 Jul",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "landed sl 12, Mon 0, Sun 2340",
+     "leaving copy first 24 vs day stood 24 (Δ 0)",
+     "arriving copy ended 0 vs real day 0/0 (Δ 0)",
+     "leaving copy: 24 -> -378, max 3.08px/ms, biggest single step -49.3px (16ms); arriving copy: 402 -> 0, max 3.08px/ms, biggest step -49.3px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 0 for 2 frames (38ms) under the leaving one before it jumped to 402",
+     "copies up 431ms, first copy 131ms after the lift"
+    ],
+    "from": "06/07/2026",
+    "fin": {
+     "week": "13/07/2026",
+     "sl": 12,
+     "max": 2328,
+     "d0": 0,
+     "d6": 2340,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 10,
+      "startToLiftMs": 510
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "landed sl 12, Mon 0, Sun 2340",
+   "leaving copy first 24 vs day stood 24 (Δ 0)",
+   "arriving copy ended 0 vs real day 0/0 (Δ 0)",
+   "leaving copy: 24 -> -378, max 3.08px/ms, biggest single step -49.3px (16ms); arriving copy: 402 -> 0, max 3.08px/ms, biggest step -49.3px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 0 for 2 frames (38ms) under the leaving one before it jumped to 402",
+   "copies up 431ms, first copy 131ms after the lift"
+  ],
+  "analysis": {
+   "frames": 99,
+   "up": 32,
+   "leaving": {
+    "stoodCard": 24,
+    "stoodDayIdx": 6,
+    "copyFirstCard": 24,
+    "delta": 0,
+    "tBeforeMs": 132
+   },
+   "arriving": {
+    "lastCopyCard": 0,
+    "firstLiveAfter": 0,
+    "settledLive": 0,
+    "delta": 0,
+    "deltaSettled": 0
+   },
+   "liveBeforeCopies": {
+    "n": 1,
+    "maxStep": 0,
+    "maxStepAt": null,
+    "maxSpeedPxMs": 0,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 24,
+    "to": 24
+   },
+   "leavingSeries": {
+    "n": 21,
+    "maxStep": -49.3,
+    "maxStepAt": {
+     "dt": 16
+    },
+    "maxSpeedPxMs": 3.08,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 24,
+    "to": -378
+   },
+   "arrivingParked": {
+    "frames": 2,
+    "at": 0,
+    "ms": 38,
+    "jumpsTo": 402
+   },
+   "arrivingSeries": {
+    "n": 23,
+    "maxStep": -49.3,
+    "maxStepAt": {
+     "dt": 16
+    },
+    "maxSpeedPxMs": 3.08,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 402,
+    "to": 0
+   },
+   "seenJumps": [],
+   "copiesUpMs": 431,
+   "liftToCopiesUpMs": 131
+  },
+  "trace": "A5-chromium-trace.json",
+  "pics": [
+   "A5-chromium-1-beforelift.png",
+   "A5-chromium-2-slide0-first.png",
+   "A5-chromium-2-slide1.png",
+   "A5-chromium-2-slide2.png",
+   "A5-chromium-2-slide3.png",
+   "A5-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "landed sl 12, Mon 0, Sun 2340",
+    "leaving copy first 24 vs day stood 24 (Δ 0)",
+    "arriving copy ended 0 vs real day 0/0 (Δ 0)",
+    "leaving copy: 24 -> -378, max 2.95px/ms, biggest single step -49.3px (17ms); arriving copy: 402 -> 0, max 2.95px/ms, biggest step -49.3px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 0 for 2 frames (35ms) under the leaving one before it jumped to 402",
+    "copies up 431ms, first copy 134ms after the lift"
+   ],
+   "picNote": {
+    "castFrames": 26,
+    "inWindow": 25,
+    "windowMsAfterLift": [
+     134,
+     566
+    ]
+   }
+  },
+  "problems": []
+ },
+ "A6": {
+  "id": "A6",
+  "engine": "chromium",
+  "title": "Tuesday 14 -> right swipe to Monday, second right swipe ~120ms after the first lifts -> Sunday 12 Jul",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "landed sl 2328, Mon -2316, Sun 24",
+     "leaving copy first 12 vs day stood 12 (Δ 0)",
+     "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+     "leaving copy: 12 -> 413.4, max 3.21px/ms, biggest single step 97.5px (43ms); arriving copy: -378 -> 24, max 3.21px/ms, biggest step 97.5px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 24 for 2 frames (45ms) under the leaving one before it jumped to -378",
+     "second swipe began with the week at 157px (Monday rests at 12; settled-at-Monday would read 12)",
+     "copies up 427ms, first copy 78ms after the lift"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "06/07/2026",
+     "sl": 2328,
+     "max": 2328,
+     "d0": -2316,
+     "d6": 24,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 8,
+      "startToLiftMs": 337
+     },
+     {
+      "moves": 6,
+      "startToLiftMs": 132
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "landed sl 2328, Mon -2316, Sun 24",
+   "leaving copy first 12 vs day stood 12 (Δ 0)",
+   "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+   "leaving copy: 12 -> 413.4, max 3.21px/ms, biggest single step 97.5px (43ms); arriving copy: -378 -> 24, max 3.21px/ms, biggest step 97.5px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 24 for 2 frames (45ms) under the leaving one before it jumped to -378",
+   "second swipe began with the week at 157px (Monday rests at 12; settled-at-Monday would read 12)",
+   "copies up 427ms, first copy 78ms after the lift"
+  ],
+  "analysis": {
+   "frames": 95,
+   "up": 30,
+   "leaving": {
+    "stoodCard": 12,
+    "stoodDayIdx": 0,
+    "copyFirstCard": 12,
+    "delta": 0,
+    "tBeforeMs": 79
+   },
+   "arriving": {
+    "lastCopyCard": 24,
+    "firstLiveAfter": 24,
+    "settledLive": 24,
+    "delta": 0,
+    "deltaSettled": 0
+   },
+   "liveBeforeCopies": {
+    "n": 27,
+    "maxStep": 37,
+    "maxStepAt": {
+     "dt": 17
+    },
+    "maxSpeedPxMs": 1.88,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 0,
+    "to": 402
+   },
+   "leavingSeries": {
+    "n": 17,
+    "maxStep": 97.5,
+    "maxStepAt": {
+     "dt": 43
+    },
+    "maxSpeedPxMs": 3.21,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": 12,
+    "to": 413.4
+   },
+   "arrivingParked": {
+    "frames": 2,
+    "at": 24,
+    "ms": 45,
+    "jumpsTo": -378
+   },
+   "arrivingSeries": {
+    "n": 19,
+    "maxStep": 97.5,
+    "maxStepAt": {
+     "dt": 43
+    },
+    "maxSpeedPxMs": 3.21,
+    "accelSpikes": [],
+    "reversals": 0,
+    "from": -378,
+    "to": 24
+   },
+   "seenJumps": [],
+   "copiesUpMs": 427,
+   "liftToCopiesUpMs": 78
+  },
+  "trace": "A6-chromium-trace.json",
+  "pics": [
+   "A6-chromium-1-beforelift.png",
+   "A6-chromium-2-slide0-first.png",
+   "A6-chromium-2-slide1.png",
+   "A6-chromium-2-slide2.png",
+   "A6-chromium-2-slide3.png",
+   "A6-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "FAIL",
+   "notes": [
+    "landed sl 2328, Mon -2316, Sun 24",
+    "leaving copy first 12 vs day stood 12 (Δ 0)",
+    "arriving copy ended 24 vs real day 24/24 (Δ 0)",
+    "leaving copy: 12.1 -> 413.4, max 2.91px/ms, biggest single step 78.2px (12ms); arriving copy: -377.9 -> 24, max 2.91px/ms, biggest step 78.2px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 24 for 2 frames (46ms) under the leaving one before it jumped to -377.9",
+    "second swipe began with the week at 12px (Monday rests at 12; settled-at-Monday would read 12)",
+    "the second swipe began after the week had settled — not the case under test",
+    "copies up 428ms, first copy 60ms after the lift"
+   ],
+   "picNote": {
+    "castFrames": 41,
+    "inWindow": 24,
+    "windowMsAfterLift": [
+     60,
+     488
+    ]
+   }
+  },
+  "problems": []
+ },
+ "A8": {
+  "id": "A8",
+  "engine": "chromium",
+  "title": "slow drag stopping short (34px) then held 300ms -> must NOT cross",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "week unchanged",
+     "touch seen by the page: touchstart,touchmove,touchmove,touchmove,touchmove,touchmove,touchmove,touchend",
+     "page scrollY 0 -> 0"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "13/07/2026",
+     "sl": 12,
+     "max": 2328,
+     "d0": 0,
+     "d6": 2340,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 10,
+      "startToLiftMs": 716
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "week unchanged",
+   "touch seen by the page: touchstart,touchmove,touchmove,touchmove,touchmove,touchmove,touchmove,touchend",
+   "page scrollY 0 -> 0"
+  ],
+  "analysis": {
+   "frames": 280,
+   "up": -1,
+   "note": "no copies seen (no glide)"
+  },
+  "trace": "A8-chromium-trace.json",
+  "pics": [
+   "A8-chromium-1-beforelift.png",
+   "A8-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "week unchanged",
+    "touch seen by the page: touchstart,touchmove,touchmove,touchmove,touchmove,touchmove,touchmove,touchend",
+    "page scrollY 0 -> 0"
+   ],
+   "picNote": {
+    "castFrames": 17,
+    "inWindow": 0,
+    "windowMsAfterLift": null
+   }
+  },
+  "problems": []
+ },
+ "A9": {
+  "id": "A9",
+  "engine": "chromium",
+  "title": "inside the week: Wednesday -> Thursday, one day, no copies",
+  "tries": [
+   {
+    "verdict": "PASS",
+    "notes": [
+     "sl 792 -> 1182"
+    ],
+    "from": "13/07/2026",
+    "fin": {
+     "week": "13/07/2026",
+     "sl": 1182,
+     "max": 2328,
+     "d0": -1170,
+     "d6": 1170,
+     "scrollY": 0,
+     "copies": 0
+    },
+    "logs": [
+     {
+      "moves": 10,
+      "startToLiftMs": 511
+     }
+    ]
+   }
+  ],
+  "verdict": "PASS",
+  "notes": [
+   "sl 792 -> 1182"
+  ],
+  "analysis": {
+   "frames": 268,
+   "up": -1,
+   "note": "no copies seen (no glide)"
+  },
+  "trace": "A9-chromium-trace.json",
+  "pics": [
+   "A9-chromium-1-beforelift.png",
+   "A9-chromium-3-after.png"
+  ],
+  "picRun": {
+   "verdict": "PASS",
+   "notes": [
+    "sl 792 -> 1182"
+   ],
+   "picNote": {
+    "castFrames": 23,
+    "inWindow": 0,
+    "windowMsAfterLift": null
+   }
+  },
+  "problems": []
+ },
+ "problems-chromium": []
+}

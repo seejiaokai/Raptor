@@ -625,6 +625,10 @@ const PULL_OVER = 8, PULL_BACK = 6, PULL_REST = 0.15, PULL_GAP = 100
    cannot cross again. A held finger dragging the strip back into the week reads as let go — without touches the two
    cannot be told apart. */
 const PULL_BACK_PART = 0.4
+/* (i) the last read (the same file's third part): a stand that came at the end of a glide caught by the finger arrived at
+   0.2–0.45 px/ms — slower than a flick's late frame (several px/ms) but not under PULL_REST; arriving is judged by its own
+   limit, and a slow frame on the strip arms whether or not it ended a stand */
+const PULL_ARRIVE = 1
 /* and not in the first PULL_QUIET after a cross: the slide and the landing's own settle are the app's, never a finger's */
 const PULL_QUIET = 700
 let pullEl: HTMLElement | null = null, pullWeek = '', pullPrevSL = 0, pullPrevT = 0, pullCrossAt = -Infinity
@@ -651,9 +655,10 @@ function pullPastEnd(w: HTMLElement, sl: number) {
   /* on an end day: it stood still at its resting place, having arrived there slowly (a, e), or it is easing in slowly
      within half a day of it */
   if (dt >= PULL_GAP) {
-    if (prevV < PULL_REST && prev >= 0 && prev <= EDGE_SLOP) pullOnL = true
-    if (prevV < PULL_REST && prev <= max && prev >= max - EDGE_SLOP) pullOnR = true
-  } else if (v < PULL_REST) {
+    if (prevV < PULL_ARRIVE && prev >= 0 && prev <= EDGE_SLOP) pullOnL = true
+    if (prevV < PULL_ARRIVE && prev <= max && prev >= max - EDGE_SLOP) pullOnR = true
+  }
+  if (v < PULL_REST) {
     if (sl >= 0 && sl < half) pullOnL = true
     if (sl <= max && sl > max - half) pullOnR = true
   }

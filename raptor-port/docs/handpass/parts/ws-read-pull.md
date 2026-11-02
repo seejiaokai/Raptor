@@ -43,3 +43,17 @@ in, the easing back after a short drag.
    touchend crosses again. Fix: clear the touch being read in the scroll reading's cross.
 Tests: "two pulls in a row" holds one pull — rename; "read afresh" never arms its first pull — cannot be tested (an armed pull
 always crosses).
+
+## The last narrow read, commit 623178b30 — a third fresh Opus reader (3 Nov 26)
+38 / 38, each new test alone too; each of the four new tests would fail on the code before (worked by hand). Sound: (f) the
+cancel's standing place, both ends, cleared at the right times; (h) clearing a silent touch at a strip cross; the dead
+clearing gone and its comment true; the in-week snap onto Monday, a spring-back onto Monday, a cross's landing and a page
+switch all still arm; the originally reported case (easing in at ~0.06 px/ms) still caught.
+1. **HIGH — fix (e) missed a pull begun by catching the glide in its last few px** — the very moment Safari swallows the touch:
+   the glide's tail runs 0.2–0.45 px/ms (over PULL_REST), the finger stops it, the strip stands, then the pull; the stand's
+   arrival was judged by PULL_REST, and the slow frame after it skipped by `else if`. Fix: a separate arrival limit (about
+   1 px/ms) and the easing test on its own `if`; the sequence as a red test.
+2. **LOW — no test of a real snap tail before a rest** — add one.
+3. **LOW — nothing pins (f)'s other half** (a cancel past the end, then an unseen further pull, crossing) — add one.
+Fixed in the next commit, the three tests with it (the first red first); the third fix round, the last (§5's cap) — no
+further read; what carries the rest: the 41 swipe tests and his iPhone look.

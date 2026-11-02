@@ -307,3 +307,45 @@ and the plain-user round) 18 / 18; re-walks of every fix green; 464 pictures, wi
 **For his iPhone look (only a real iPhone can show these):** the cross on Edit Schedule, Monday 13 Jul ↔ Sunday 12 Jul — slow, a short
 flick, and twice quickly; the new pace (340ms); whether the bounce past the end before the slide still reads as abrupt; on his
 iPhone held sideways the page is the desktop layout (wider than 820), with arrows — no swipe, as before.
+
+## 11. His iPhone, the morning after: the swipe Safari gave the page no touch for
+**His report (05:41, a recording):** *"Better swipe but still gave the same issue if I swipe Monday to Tuesday then back to
+Monday Sunday. Monday bounces and I need to swipe again to go to Sunday. Sometimes I keep swiping right on Monday it keep
+bounces."* Read at 30 frames a second (`raptor-port/docs/img/handpass/2026-11-03-week-swipe/owner/second-recording-bounce.png`):
+back on Monday from Tuesday, still easing in (Tuesday's edge showing), a swipe right only stretched Monday and sprang back;
+the next swipe, from rest, crossed. **Tier: WALK** (a gesture's reading; no saved data, record, OIL or role).
+**Why the walk missed it — lesson 21 (`bug-check-order.md` §7.11):** every test browser hands the page every touch.
+**Finding the cause:** a log on his own screen, on only with `?swdebug` (commit `adf140c98`, `src/ui/swdebug.ts`), and one
+recording of his (06:00): a swipe begun while the strip was still gliding into its snap reached the page as NO touch at all
+(his Tuesday → Monday swipe left no line), though Safari moved the strip; and Safari reports the strip pulled past Monday
+below 0 (-26 to -72 seen) and past Sunday above the last day (+10 to +16). Nothing in the app stops the touch (checked: no
+listener stops a touch's propagation). Seen, not changed: a swipe to Saturday 0.5 s after landing on Sunday was read (stay,
+correct) yet Safari sprang the strip back to Sunday — Safari's own snap, filed in [WEEK-SWIPE-CROSS] for his look.
+**The fix (commit `c40723cc4`, red first — 2 tests):** `pan.ts pullPastEnd` reads the strip itself: with no touch being read,
+a pull past an end day that began with the strip on that day crosses when it springs back. **Three reads, two fix rounds**
+(`parts/ws-read-pull.md`): the fresh blind Opus read of `c40723cc4` — 1 high (a late frame in a flick faked a rest), 2 medium
+(a 3 px retreat read as let go; Sunday's mark too high), 3 low — fixed in `d1e34600b` (4 tests red first, two older tests
+corrected; its finding 6, a repaint mid-pull, left: the day-follow repaint needs the day at the left to change); the narrow
+read of `d1e34600b` — 1 medium (a cancelled short tug crossed), 4 low — fixed in `623178b30` (4 tests red first, two renamed).
+Swipe tests 38 / 38, each new one alone too; with the swipe, glide and arrow files 90 / 90; `e2e/weekswipe.spec.ts` 6 / 6;
+build; `lint:changed` clean; tfin 728 / 0.
+**Re-walks (the host, walker A's scripts, `WALK_OUT` to new folders):** `rewalk3/` (the fix), `rewalk4/` (round 1),
+`rewalk5/` (round 2): A1, A2, A3, A5, A6, A8, A9, A10 PASS; walker A's double swipe 24 / 24 crossed each time; the
+`?swdebug` check crosses with the log on. FAIL lines seen and read: A12 at 844 wide (the desktop layout, as §6); A12x's speed
+ceiling (as §7); and A2 / A3 / A6 single tries over the script's 3.4 px/ms ceiling from one late frame (31–48 ms) — the build
+from before the fix missed it the same way 3 times in 5 (this PC's frame timing), positions exact every time.
+**What no test browser can show — for his iPhone:** the pull itself (neither test browser scrolls a strip past its end), so
+the fix is proved on his phone only: Tuesday → Monday and straight on toward Sunday; repeated swipes right on Monday; the same
+on Sunday toward Monday; and a short tug on Monday that should stay.
+**The third read and the last fix round (commit after `623178b30`):** the last narrow read (`parts/ws-read-pull.md`, third part) —
+1 high (a stand at the end of a glide the finger caught arrived at 0.2–0.45 px/ms, so the "arrived slowly" rule missed the very
+case this reading exists for), 2 low (no test of a real snap tail; nothing pinned a cancel then a further unseen pull) — fixed
+with a separate arrival limit (1 px/ms) and the easing test on its own; three tests (the first red first). 41 swipe tests, with
+the swipe, glide and arrow files 93 / 93, each new one alone; `e2e/weekswipe.spec.ts` 6 / 6; build; `lint:changed` clean.
+Re-walk `rewalk6/`: A1–A3, A5, A6, A8–A10 PASS, single tries over the 3.4 px/ms ceiling from a late frame as before; the double
+swipe 24 / 24 in three runs (one earlier run of that round counted 23 lines of 24 crossed; not reproduced in three runs after).
+Third fix round — the last (§5's cap); no further read. What carries the rest: the swipe tests and his iPhone look.
+
+**Walk:** this morning's fix — no walker (a test browser cannot pull a strip past its end, lesson 21); the cause read from his
+own phone's log; the host re-ran walker A's scripts after the fix and each fix round for harm to the swipe — `rewalk3/`–`rewalk6/`,
+all PASS but the script's speed ceiling and the 844-wide desktop layout, both as before; the pull itself proved only on his iPhone.

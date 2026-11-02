@@ -513,3 +513,36 @@ describe('a swipe Safari gave the page no touch for — the narrow read’s case
     expect(CURWEEK, 'and only once').toBe('06/07/2026')
   })
 })
+
+describe('a swipe Safari gave the page no touch for — the last read’s cases', () => {
+  let clock = 7_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+  const steps = async (w: HTMLElement, t0: number, pts: [number, number][]) => { for (const [dt, x] of pts) { at(t0 + dt); await scrolled(w, x) } }
+
+  it('the glide onto Monday caught in its last few px, held a moment, then pulled past, crosses', async () => {
+    const w = stubWeek(80)
+    await steps(w, 7_000_000, [[0, 80], [16, 60], [33, 45], [50, 33], [66, 24], [83, 18]])     // the glide's tail, 0.35-1.2 px/ms
+    await steps(w, 7_000_000, [[233, 12], [250, 0], [266, -15], [283, -30], [300, -15]])        // caught, held, pulled, let go
+    expect(CURWEEK, 'crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('Monday at rest after a real snap tail, then a pull past it, crosses', async () => {
+    const w = stubWeek(60)
+    await steps(w, 7_100_000, [[0, 60], [16, 40], [33, 28], [50, 20], [66, 16], [83, 13], [100, 12]])
+    await steps(w, 7_100_000, [[900, 6], [916, -10], [933, -24], [950, -8]])
+    expect(CURWEEK, 'crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('a touch the browser cancelled past the end, the finger pulling on further unseen, crosses when let go', async () => {
+    const w = stubWeek(12)
+    at(7_200_000); await scrolled(w, 12)
+    at(7_200_400); await scrolled(w, 12)
+    at(7_200_500); await touch(w, 'touchstart', 100)
+    at(7_200_516); await touch(w, 'touchmove', 115); await scrolled(w, -2)
+    at(7_200_533); await touch(w, 'touchmove', 125); await scrolled(w, -14)
+    at(7_200_540); await touch(w, 'touchcancel', 125)
+    await steps(w, 7_200_540, [[16, -24], [33, -32], [50, -18]])
+    expect(CURWEEK, 'the unseen rest of the pull crossed').toBe('06/07/2026')
+  })
+})
