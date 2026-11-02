@@ -3164,3 +3164,18 @@ reset mode disables before reusing it.
 **Suggested improvement:** In the phase that tests a hypothesis, add: for a failure of rate p, a pass count proves nothing until it is large enough that the old failure rate would almost surely have shown (at one in five, 8 clean runs happen about one time in six); before believing a story, instrument the failing step to record what actually happened (the event's target, the element's position at each moment) rather than reasoning from the code.
 
 **Principle:** An intermittent failure is diagnosed by recording what the failing step actually did, and a fix is believed only after a run long enough that the old rate could not hide in it.
+
+### Observation 771: A walk script's step filter emptied the whole run's picture folder
+
+**Status:** OPEN
+**Date:** 2026-11-02
+**Session context:** the schedule leftovers' WALK (pull request 620) — a filtered re-run of one step group (`ONLY=S`) after fixing a script step
+**Skill:** project doc `raptor-port/docs/walk-scripts.md` (§5 "One run, one folder", §6 the re-walk's step filter)
+**Type:** open-source
+**Phase/Area:** walk scripts — folders and step filters
+
+**Issue:** The new walk script emptied its picture folder at start (as §5 asks of a numbering script) and also took a step filter (as §6 asks). Run with the filter to fix one step, it wiped the desktop and phone pictures of the full run before it, and the whole walk had to be run again to have one folder of evidence.
+
+**Suggested improvement:** In §5/§6 add: a script that empties its folder empties it only on an unfiltered run; a filtered run writes to its own sub-folder (`<folder>/only-<filter>`), or refuses to clear.
+
+**Principle:** A cleanup step that is right for a full run destroys evidence when the same script is run in part; tie destructive setup to the run's scope, not to the script.

@@ -120,7 +120,9 @@ export function withDaySnap(di:any,ver:any,fn:any){
   if(!snap)return fn(false)
   /* capture the LIVE discard count BEFORE the swap zeroes pending (P2-IMPL-09) —
      the confirm button reads it as PVND, so it never shows "Discard 0 edits". */
-  const nd0=dayDiscardCount(di,ver), pc0=dayApproved(di)?dayShownPendCount(di):0
+  /* PVPC only for a look (PV && !PVQ): the issued face shows no count, and View-only Sched draws every published day
+     through here on every redraw — the full comparison there would be thrown away (the fresh read's F1, 2 Nov 26) */
+  const nd0=dayDiscardCount(di,ver), pc0=(!PVQ&&dayApproved(di))?dayShownPendCount(di):0
   const d0=DAYS[di], c0=SCHED.changes, p0=SCHED.pending, nd=PVND, pc=PVPC
   DAYS[di]=snap.d; SCHED.changes=snap.c||{}; SCHED.pending={}
   PV=true; PVV=ver; PVND=nd0; PVPC=pc0

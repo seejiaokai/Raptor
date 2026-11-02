@@ -737,7 +737,10 @@ function tdOver(x: any, y: any, scroll = true) {
      box, so a puck carried past the pane's edge goes on scrolling that pane, as a seat's puck always did. The finger
      only: a mouse on a desktop scrolls the page, which the source's box already is, and the week has its own sideways
      step. */
-  if (!TD.mouse && el) {
+  /* …asked again only when the finger reaches another element (performance.md: nothing new runs on every move), and not
+     at all in the board's desktop layout, whose own loop scrolls the box under the finger (tdWideLoop) — the fresh read's F2 */
+  if (!TD.mouse && !TD.wide && el && el !== TD.scEl) {
+    TD.scEl = el
     const sc = tdScrollerFor(el)
     const page = sc === document.scrollingElement || sc === document.documentElement
     if (!page || sc.scrollHeight > sc.clientHeight + 4) TD.scroller = sc
