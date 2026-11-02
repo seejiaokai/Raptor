@@ -326,3 +326,99 @@ describe('a swipe off an end day that the old reading missed', () => {
     expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
   })
 })
+
+/* A SWIPE SAFARI GAVE THE PAGE NO TOUCH FOR ([WEEK-SWIPE-CROSS], his iPhone recordings of 3 Nov 26, 05:41 and 06:00 — read
+   by the ?swdebug log): swiping Tuesday → Monday and straight on, Monday stretched and sprang back. The log showed a swipe
+   begun while the strip was still gliding into its snap reaching the page as NO touch at all — no start, no move, no end —
+   so the touch reading never saw it. Safari still reports the strip pulled past its end (its scrollLeft below 0, or above
+   the last day) — so a pull past an end day that began with the strip at rest or easing in there, seen with no touch,
+   crosses when the strip springs back. Steps of the strip as Safari reported them; `Date.now` held and stepped by hand. */
+describe('a swipe Safari gave the page no touch for', () => {
+  let clock = 2_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+  const steps = async (w: HTMLElement, t0: number, pts: [number, number][]) => { for (const [dt, x] of pts) { at(t0 + dt); await scrolled(w, x) } }
+
+  it('Monday easing in, pulled past its edge and springing back, crosses to the previous week', async () => {
+    const w = stubWeek(40)
+    await steps(w, 2_000_000, [[0, 40], [50, 34], [100, 29]])           // easing onto Monday, slowly
+    await steps(w, 2_000_100, [[16, 12], [33, -6], [50, -22], [66, -34]]) // the finger nobody was told of pulls it past
+    expect(CURWEEK, 'not while it is still being pulled').toBe('13/07/2026')
+    await steps(w, 2_000_100, [[83, -29]])                               // let go: it springs back
+    expect(CURWEEK, 'the pull crossed into the previous week').toBe('06/07/2026')
+  })
+
+  it('Sunday at rest, pulled past its end and springing back, crosses to the next week', async () => {
+    const w = stubWeek(2400)
+    await steps(w, 2_100_000, [[0, 2400], [400, 2402], [416, 2414], [433, 2424], [450, 2431], [466, 2426]])
+    expect(CURWEEK, 'the pull crossed into the next week').toBe('20/07/2026')
+  })
+
+  it('a flick from Tuesday whose own momentum runs past Monday does not cross', async () => {
+    const w = stubWeek(414)
+    await steps(w, 2_200_000, [[0, 414], [16, 330], [33, 240], [50, 160], [66, 90], [83, 35], [100, -5], [116, -30], [133, -40], [150, -33], [166, -15], [183, 4], [200, 12]])
+    expect(CURWEEK, 'the overshoot of a swipe inside the week stays on the week').toBe('13/07/2026')
+  })
+
+  it('a pull the page did see, too short to cross, does not cross on its spring-back', async () => {
+    const w = stubWeek(12)
+    at(2_300_000); await scrolled(w, 12)
+    at(2_300_400); await touch(w, 'touchstart', 100)
+    at(2_300_416); await touch(w, 'touchmove', 115); await scrolled(w, 0)
+    at(2_300_433); await touch(w, 'touchmove', 125); await scrolled(w, -14)
+    at(2_300_600); await touch(w, 'touchend', 130)                         // 30px and held still: the touch reading says stay
+    await steps(w, 2_300_600, [[16, -14], [33, -9], [50, -2], [66, 8], [83, 12]])
+    expect(CURWEEK, 'stayed on the seed week').toBe('13/07/2026')
+  })
+
+  it('a pull the page did see crosses once, never twice on its spring-back', async () => {
+    const w = stubWeek(12)
+    at(2_400_000); await scrolled(w, 12)
+    at(2_400_400); await touch(w, 'touchstart', 100)
+    at(2_400_416); await touch(w, 'touchmove', 140); await scrolled(w, -10)
+    at(2_400_433); await touch(w, 'touchmove', 180); await scrolled(w, -25)
+    at(2_400_450); await touch(w, 'touchend', 200)
+    expect(CURWEEK, 'the touch crossed').toBe('06/07/2026')
+    await steps(w, 2_400_450, [[16, -25], [33, -18], [50, -6]])
+    expect(CURWEEK, 'and only once').toBe('06/07/2026')
+  })
+})
+
+describe('a swipe Safari gave the page no touch for — its edges', () => {
+  let clock = 3_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+  const steps = async (w: HTMLElement, t0: number, pts: [number, number][]) => { for (const [dt, x] of pts) { at(t0 + dt); await scrolled(w, x) } }
+
+  it('two pulls in a row: the second is measured from its own furthest point, not the first', async () => {
+    const w = stubWeek(12)
+    await steps(w, 3_000_000, [[0, 12], [500, 12]])
+    await steps(w, 3_000_500, [[16, 0], [33, -10], [50, -8], [66, 4], [83, 12]])   // a short pull, under the crossing distance
+    await steps(w, 3_001_000, [[16, 0], [33, -13], [50, -20]])                       // a second, deeper pull, still held
+    expect(CURWEEK, 'not while the second pull is still held').toBe('13/07/2026')
+    await steps(w, 3_001_000, [[66, -16]])
+    expect(CURWEEK, 'crossed when it springs back').toBe('06/07/2026')
+  })
+
+  it('the strip settling just after a cross never counts as a pull', async () => {
+    const w = stubWeek(2400)
+    at(3_100_000); await touch(w, 'touchstart', 300); await touch(w, 'touchend', 200)   // a swipe off Sunday crosses …
+    expect(CURWEEK).toBe('20/07/2026')
+    const w2 = stubWeek(2400)
+    await steps(w2, 3_100_000, [[16, 2400], [300, 2400], [400, 2415], [450, 2404]])     // … and the landing's own settle
+    expect(CURWEEK, 'no second cross').toBe('20/07/2026')
+  })
+})
+
+describe('a touch whose end Safari never sent', () => {
+  let clock = 4_000_000
+  const at = (t: number) => { clock = t; vi.spyOn(Date, 'now').mockImplementation(() => clock) }
+  const scrolled = async (w: HTMLElement, x: number) => { w.scrollLeft = x; await act(async () => { w.dispatchEvent(new Event('scroll', { bubbles: false })) }) }
+  it('does not stop a later pull past Monday from being read', async () => {
+    const w = stubWeek(12)
+    at(4_000_000); await scrolled(w, 12)
+    at(4_000_100); await touch(w, 'touchstart', 100)              // a touch begins … and nothing more of it comes
+    for (const [t, x] of [[4_002_000, 12], [4_002_016, 0], [4_002_033, -14], [4_002_050, -24], [4_002_066, -20]] as [number, number][]) { at(t); await scrolled(w, x) }
+    expect(CURWEEK, 'the later pull crossed').toBe('06/07/2026')
+  })
+})
