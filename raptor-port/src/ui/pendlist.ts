@@ -363,7 +363,13 @@ export function pendItemWords(di: number, it: PendItem): Words {
     /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the
        programme → deleted"); the details words speak where the record itself was edited, or where it has no filing */
     const w = inputWords(di, it), fil = !!it.inp || String(e.addr || '').startsWith('inp:')
-    if (!fil || (w as any).edited) return w
+    /* …BUT NOT FOR A REQUEST THE PUBLISHED DAY NEVER SHOWED (F4 of the 3 Nov 26 re-check — the Inputs batch): taken off
+       before the day went out, retitled while off, then put back, it read "Sports day → Games afternoon", a change to
+       something no reader of the published day ever saw. Where its filing moves out of "taken off" it is said as what it
+       is to them — put on the programme, or under Unavailable — by the filing's own words below. */
+    const f: any = it.inp || (String(e.addr || '').startsWith('inp:') ? e : null)
+    const unseen = !!f && f.from === 'r' && (f.to === 'g' || f.to === 'u')
+    if (!fil || ((w as any).edited && !unseen)) return w
   }
   if (it.kind === 'warn') return faceWords(di)
   /* a warning hidden, or flagged again, since the day went out ([WARN-HIDE-KEPT], D471): the line is led by its item
