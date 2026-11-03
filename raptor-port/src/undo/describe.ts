@@ -450,6 +450,13 @@ export function describeEntry(entry: UndoEntry): string {
   }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
+  /* a note made scheduler-only again is not "making a note public" (the bug check of 3 Nov 26): the step's own note says
+     which way it went (ui/interactions.ts) */
+  if (entry.type === 'sched.notePub') {
+    let n: any = null
+    try { n = JSON.parse(entry.detail || 'null') } catch { /* no note: the plain words */ }
+    return n && n.public === false ? 'making a note scheduler-only' : TYPE_PHRASE['sched.notePub']!
+  }
   if (entry.type === 'sched.warnMute') { const h = parseHideDetail(entry.detail); return h && !h.hidden ? 'flagging a warning again' : TYPE_PHRASE['sched.warnMute'] }
   /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note — its words, its people (`plan/pp:<id>`; D684) — one record
      each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
@@ -461,6 +468,12 @@ export function describeEntry(entry: UndoEntry): string {
   }
   /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
      input's row, or its OIL answer, read "Undid: a personal input" — true, and no help. Read off the entry's own change. */
+  /* a LATE mark dropped or brought back names its input too (D1582's own words: "name the input they take back by its
+     person and kind"; the bug check of 3 Nov 26) — "the LATE mark on Nasty’s LL"; a shared input's several records, one */
+  if (entry.type === 'inputs.lateOff') {
+    const named = inputsCount(entry) === 1 ? oneInputNamed(entry) : null
+    return named ? `the LATE mark on ${named}` : TYPE_PHRASE['inputs.lateOff']!
+  }
   if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') {
     const w = oneInputWords(entry); if (w) return w
     /* one input: whose and what (D1582); several at once: their count — "Undid: 3 inputs" */

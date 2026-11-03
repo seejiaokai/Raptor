@@ -27,7 +27,7 @@ import { validTones } from '../state/flyplan-model'
 import { cutProblem, getCut, saveCut, type CutRule } from '../state/cutoff'
 import { CALMONTH } from '../state/view'
 import { FloatWin } from './FloatWindow'
-import { bringForward } from './winorder'
+import { bringForward, openBeside } from './winorder'
 import { SANSSET, setDaysWin, setSansSet } from './pops'
 import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
 import { useVersion } from './useStore'
@@ -73,6 +73,8 @@ function Body() {
   }
   const openDays = () => {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
+    /* beside this window, never over it (F9's rule, met at every Calendar door — the bug check of 3 Nov 26, W1 S21.4pre) */
+    openBeside('days', 'sansset')
     setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
   const box = (id: string, label: string, tone: string, v: string, set: (s: string) => void) => (

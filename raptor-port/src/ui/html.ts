@@ -821,15 +821,20 @@ export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
     return `<div class="blknote-h">Notes</div><div class="blknote"${a}>${esc(v)}</div>`;
   }
   const ce=canEditSched();
-  return `<div class="blknote-h">${pub?'Public notes':'Scheduler notes'}${ce?notePubTog(k,pub):''}</div>`
+  return `<div class="blknote-h">${pub?'Public notes':'Scheduler notes'}${ce?notePubTog(k,pub,/data-alp=/.test(a)):''}</div>`
     +(ce
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
 /* The show-on-view-only toggle that rides a scheduler-note header, on the edit
    week and the board alike. One builder so the two surfaces cannot drift. */
-export function notePubTog(k:any,pub:any){
-  return `<button class="notepub${pub?' on':''}" data-notepub="${esc(k)}" title="${pub?'Showing on the view-only schedule — tap to keep it scheduler-only':'Show this note on the view-only schedule'}">${pub?'On view-only ✓':'Make public'}</button>`;
+/* `waits` — the note's choice is waiting for the next amendment on a published day (its own pending mark is up — D1592):
+   the button's words said "Showing on the view-only schedule" there, untrue until the amendment goes out (the bug check
+   of 3 Nov 26). Its label stays the choice the working copy holds. */
+export function notePubTog(k:any,pub:any,waits?:boolean){
+  const t=waits?(pub?'Public: goes out with the next amendment — tap to keep it scheduler-only':'Scheduler-only: goes out with the next amendment — tap to show it on the view-only schedule')
+    :pub?'Showing on the view-only schedule — tap to keep it scheduler-only':'Show this note on the view-only schedule';
+  return `<button class="notepub${pub?' on':''}" data-notepub="${esc(k)}" title="${t}">${pub?'On view-only ✓':'Make public'}</button>`;
 }
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day.

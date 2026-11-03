@@ -11,7 +11,7 @@ import { isOD, INPUTS, DATES, inpId, inpLabel, defaultAllday, isLateInput, idsOf
 import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial, whoId } from '../engine/people'
 import { hideDetail } from '../engine/warnhide'
-import { dayApproved, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut, unpublishBackTo } from '../engine/publish'
+import { dayApproved, dayDelta, signClear, markEdit, dayCurVer, dayDiscardCount, verLabel, protectedWeek, alColor, nextSeq, daySnapOf, rowsLeftOut, unpublishBackTo } from '../engine/publish'
 import { verSeq } from '../engine/verid'
 import { posKey } from '../engine/rowids'
 import { closePendList } from './pendlist'
@@ -1814,9 +1814,18 @@ export function routeClick(e: MouseEvent) {
     /* saved with the note, for everyone (D1588): one command of its own, so Undo names it, and the note's own pending mark,
        which a published day reads until the next amendment carries the choice out (D1592) */
     const k = npb.dataset.notepub!
-    const on = schedWriteValue(SCHED_TYPES.notePub, () => { const v = view.toggleNotePub(k); noteChange(k); return v })
+    /* the step's own note says which note and which way (the bug check of 3 Nov 26): the change history writes its line
+       from it (state/changelines.ts) — the press wrote none, only its Undo and Redo did — and Undo's words read it */
+    const detail = JSON.stringify({ note: k, public: !view.notePub(k) })
+    const on = schedWriteValue(SCHED_TYPES.notePub, () => { const v = view.toggleNotePub(k); noteChange(k); return v }, { key: detail })
     HOOKS.histPush()
-    HOOKS.toast(on ? 'Note now shows on the view-only schedule' : 'Note is scheduler-only again', 'ok')
+    /* ON A PUBLISHED DAY THE CHOICE WAITS (D1592; the bug check of 3 Nov 26): "Note now shows on the view-only schedule" was
+       untrue there — the view-only schedule keeps the day as it went out until the amendment. While it waits, the note
+       says so; put back as it went out, nothing waits and the plain words stand (N16, as approved). */
+    const ndi = +k.slice(k.lastIndexOf(':') + 1)
+    const waits = dayApproved(ndi) && dayDelta(ndi).some((d: any) => d.addr === k)
+    HOOKS.toast(waits ? (on ? 'Note made public. It goes out with the next amendment.' : 'Note made scheduler-only. It goes out with the next amendment.')
+      : on ? 'Note now shows on the view-only schedule' : 'Note is scheduler-only again', 'ok')
     notify(); return
   }
 

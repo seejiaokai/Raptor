@@ -285,3 +285,33 @@ describe('D710 — a note line in the changes window, and its Undo', () => {
     expect(u.date).toBe('2026-07-17')
   })
 })
+
+/* A NOTE MADE PUBLIC, OR SCHEDULER-ONLY AGAIN (D1588 — saved with the note and shared). The bug check of 3 Nov 26 found the
+   press itself wrote no line in the change history — only its Undo and Redo did — so who made a note public could not be
+   found. Pressed through the app's own click router, as the week and the board do. */
+describe('a note made public', () => {
+  const press = async (key: string) => {
+    const { routeClick } = await import('../ui/interactions')
+    const b = document.createElement('button'); b.dataset.notepub = key; document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+  }
+  it('writes one line under the note, naming which way, and its Undo words say which way', async () => {
+    const { DAYS } = await import('../engine/data')
+    const { describeEntry } = await import('../undo/describe')
+    ;(DAYS[2] as any).prognotes = 'All crews brief 0700'; delete (DAYS[2] as any).npub
+    await press('pn:2')
+    expect((DAYS[2] as any).npub, 'premise: the press made it public').toEqual(['pn'])
+    const made = ELOG.rows.filter(r => r.key === 'pn:2')
+    expect(made, 'one line for the press').toHaveLength(1)
+    expect(made[0]!.lbl).toMatch(/Programme notes · view-only/)
+    expect([made[0]!.from, made[0]!.to]).toEqual(['scheduler-only', 'public'])
+    await press('pn:2')
+    const back = ELOG.rows.filter(r => r.key === 'pn:2')
+    expect(back, 'a second line for taking it back').toHaveLength(2)
+    expect([back.at(-1)!.from, back.at(-1)!.to]).toEqual(['public', 'scheduler-only'])
+    /* Undo's words read the step's own note: the second press made it scheduler-only */
+    const entry = { type: 'sched.notePub', detail: JSON.stringify({ note: 'pn:2', public: false }), forward: [], inverse: [] } as any
+    expect(describeEntry(entry)).toBe('making a note scheduler-only')
+    expect(describeEntry({ ...entry, detail: JSON.stringify({ note: 'pn:2', public: true }) })).toBe('making a note public')
+  })
+})

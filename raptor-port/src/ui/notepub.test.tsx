@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, it, expect, beforeEach, afterEach } from 'vitest'
 import { blkNoteHTML } from './html'
 import { sbNote } from './board-html'
@@ -106,5 +107,53 @@ describe('a note made public on a day already published (D1592)', () => {
     expect(dayDelta(0).map((e: any) => e.addr), 'the note is waiting for the next amendment').toContain('pn:0')
     toggleNotePub('pn:0')
     expect(dayDelta(0), 'put back as it went out: nothing waiting').toEqual([])
+  })
+})
+
+/* To go out on a published day (D1592; the bug check of 3 Nov 26): where only the choice changed it read the whole note
+   struck through and written again with "· public" after it, as if the note had been rewritten */
+describe('To go out words for a note made public', () => {
+  it('says "scheduler-only → shown on view-only" where only the choice changed, and nothing special where the words changed', async () => {
+    const { notePubWords } = await import('./pendlist')
+    expect(notePubWords('pn:3', 'brief 0700', 'brief 0700␟public')).toEqual({ from: 'scheduler-only', to: 'shown on view-only' })
+    expect(notePubWords('gn:3', 'x␟public', 'x')).toEqual({ from: 'shown on view-only', to: 'scheduler-only' })
+    expect(notePubWords('pn:3', 'brief 0700', 'brief 0730␟public'), 'words changed too: the plain words say both').toBeNull()
+    expect(notePubWords('dn:3.0', 'a', 'a␟public'), 'not a section note').toBeNull()
+  })
+})
+
+/* The bug check of 3 Nov 26, on a day already published (D1592, D45, D103) */
+describe('a note made public on a published day — what waits and what is said', () => {
+  beforeEach(() => {
+    SCHED.pending = {}; SCHED.changes = {}; SCHED.added = {}; SCHED.als = []
+    SCHED.al = 0; SCHED.dayOK = {}; SCHED.sign = {}; SCHED.orig = {}; SCHED.cur = {}
+    stashClear()
+  })
+  const publish = () => { const g = signOf(0); g.cur = 'ignite'; g.sked = 'bane'; g.plan = 'stiff'; g.appr = 'pump'; setDayApproved(0, true) }
+  it('an EMPTY note made public changes nothing that went out: nothing waits', () => {
+    ;(DAYS[0] as any).simnotes = ''
+    publish()
+    toggleNotePub('sn:0')
+    expect(dayDelta(0), 'the view-only schedule prints no empty note: nothing to amend').toEqual([])
+    ;(DAYS[0] as any).simnotes = 'OFT 2 u/s'
+    expect(dayDelta(0).map((e: any) => e.addr), 'words typed: the note and its choice wait together').toContain('sn:0')
+  })
+  it('the press says the choice waits for the next amendment, and the plain words once it is put back', async () => {
+    const { routeClick } = await import('./interactions')
+    const { HOOKS } = await import('../engine/hooks')
+    ;(DAYS[0] as any).prognotes = 'brief the duty crew'
+    publish()
+    const said: string[] = [], was = HOOKS.toast
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    const press = () => { const b = document.createElement('button'); b.dataset.notepub = 'pn:0'; document.body.appendChild(b); try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() } }
+    try {
+      press()
+      expect(said.at(-1)).toBe('Note made public. It goes out with the next amendment.')
+      /* …and the button's own words say it waits, on the week and the board alike */
+      expect(blkNoteHTML(0, DAYS[0], true, 'pn', 'prognotes')).toContain('Public: goes out with the next amendment')
+      expect(sbNote(DAYS[0], 0, 'pn', 'prognotes', '', false)).toContain('Public: goes out with the next amendment')
+      press()
+      expect(said.at(-1), 'put back as it went out: nothing waits').toBe('Note is scheduler-only again')
+    } finally { HOOKS.toast = was }
   })
 })

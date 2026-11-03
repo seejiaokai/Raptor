@@ -887,7 +887,9 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
      its reason, the red box and "information only" ride an input he may otherwise change in full: a record he changes
      keeps them exactly; one he creates carries none — unless it is a piece the app cut from a record this same command
      changed (one man split out of a cancelled input), which carries that record's. */
-  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
+  /* …and a LATE mark a scheduler dropped (D1586 — §11's note: "never mine to set or clear"; the bug check of 3 Nov 26:
+     the drop rides the input now, and this list did not carry it) */
+  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info, !!x.lateOff] : [false, '', false, false, false])
     const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
     if (mk(f) !== mk(src)) return `a scheduler's mark on an input`
     /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it

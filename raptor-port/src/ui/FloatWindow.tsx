@@ -121,8 +121,12 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     const other = document.querySelector(`.floatwin[data-winid="${by}"]`)
     if (!other) return
     const a = other.getBoundingClientRect(), r = n.getBoundingClientRect()
-    const x = Math.round(a.left - r.width - 12)
-    if (x < 8) return
+    /* WHERE THE LEFT HAS NOT ROOM ENOUGH, AS FAR LEFT AS IT GOES — so long as the other window's own end, its ✕ with it,
+       stays clear (the bug check of 3 Nov 26, walker W1 S21: at his PC's 1536 wide the SANS day stood at 1090, the
+       Calendar window is 1094 wide, and it fell back to its corner, right over the day and its ✕). Less room than that:
+       its own corner, as before. */
+    const x = Math.max(8, Math.round(a.left - r.width - 12))
+    if (x + r.width > a.right - 72) return
     setWinBox(id, { x, y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height), phone: false })
     placed(k => k + 1)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- once, as the window opens: the request is taken and gone

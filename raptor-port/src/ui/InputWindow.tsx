@@ -411,7 +411,10 @@ export function InputEditor() {
            none of its own questions up, the editor takes Escape only when it is the front window; otherwise the
            key is left for the shell, which closes the front one (ui/FloatWindow.tsx). A question of its own (the
            OIL, upchit, medical or document sheet) blocks the page, so it still answers first. */
-        if (!docConf && !upConf && !medConf && !oilConf && !escAsk && frontWin() !== 'inputedit') return
+        /* The unsaved-work question is NOT one of those: it sits in this window and blocks nothing behind it, so with
+           another window brought in front of it, that one is Escape's (the bug check of 3 Nov 26, walker W1 S08 — the
+           question answered "Keep editing" and the settings window in front stayed up). */
+        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
       }
       e.preventDefault()
       e.stopPropagation()
@@ -419,7 +422,9 @@ export function InputEditor() {
       else if (upConf) setUpConf(null)
       else if (medConf) setMedConf(null)
       else if (oilConf) setOilConf(null)
-      /* its own question up: Escape is "Keep editing" */
+      /* its own question up: Escape is "Keep editing" — the swap's too (another input asked for over unsaved work: the bug
+         check of 3 Nov 26, walker W1 S07 — Escape did nothing there) */
+      else if (swap) setSwap(null)
       else if (escAsk) setEscAsk(false)
       /* A WINDOW HOLDING TYPED WORDS ASKS FIRST (F2 of the 3 Nov 26 re-check): one Escape threw away what was typed, with
          no word. With anything of his not saved — a field, or who it is for — it asks; nothing typed, it closes. */
@@ -430,7 +435,7 @@ export function InputEditor() {
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
   // eslint-disable-next-line react-hooks/exhaustive-deps -- unsavedNow reads the draft and the people, which re-render this effect's owner; the listed deps re-arm it on every question that changes what Escape peels
-  }, [open, win, upConf, medConf, oilConf, docConf, escAsk, draft, ppl])
+  }, [open, win, upConf, medConf, oilConf, docConf, escAsk, swap, draft, ppl])
 
   const close = () => { setEscAsk(false); setInpEdit(null); notify() }
   /* anything of his not saved: a field of the window, or who it is for (the swap's own test, above) */

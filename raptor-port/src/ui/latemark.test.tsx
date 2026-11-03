@@ -207,3 +207,31 @@ describe('the per-input LATE dismissal', () => {
     expect(!!rec.lateOff, 'the same spot brings it back').toBe(false)
   })
 })
+
+/* A MEMBER NEVER SETS OR CLEARS THE DROP (D1586, §11's own-row note: "its LATE mark dropped … never mine to set or clear,
+   on my own input too"). The bug check of 3 Nov 26: the commit gate compared the cancel, the red box and information
+   only, not the new mark — so his own save of an input could take a scheduler's drop off, or put one on. */
+describe('the commit gate: a member\'s command never sets or clears a dropped LATE mark', () => {
+  it('his own input: the drop set or cleared by him is refused; his words changed with the drop kept are not', async () => {
+    const { ownershipViolation } = await import('../state/perms')
+    const env = (before: any, after: any) => ({ type: 'inputs.batch', actor: { id: 'us', role: 'member', personId: 'bane' },
+      changes: [{ op: 'put', collection: 'inputs', id: 'lx', before, after }] }) as any
+    const base = { iid: 'lx', person: 'bane', by: 'bane', at: '2026-07-01T08:00:00.000Z', type: 'Training', date: 'Jul 14', yr: 2026, allday: true, remarks: 'Why', mod: '2026-07-10' }
+    expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base })), 'a drop taken off by him').toBeTruthy()
+    expect(ownershipViolation(env({ ...base }, { ...base, lateOff: true })), 'a drop put on by him').toBeTruthy()
+    expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, lateOff: true, remarks: 'New' })), 'his words, the drop kept').toBeNull()
+  })
+})
+
+/* Undo names the input whose LATE mark it takes back (D1582 — "by its person and kind"; the bug check of 3 Nov 26) */
+describe('Undo\'s words for a LATE mark', () => {
+  it('name the input: "the LATE mark on Nasty’s LL"', async () => {
+    const { describeEntry, setDescribeNames } = await import('../undo/describe')
+    const { PEOPLE } = await import('../engine/people')
+    /* the app wires the names at boot (state/undo-wire.ts) */
+    setDescribeNames((pid) => ((PEOPLE as any)[pid] ? String((PEOPLE as any)[pid].cs) : null))
+    const rec = { iid: 'lw1', person: 'nasty', type: 'LL', date: 'Jul 14', yr: 2026, allday: true }
+    const e = { type: 'inputs.lateOff', forward: [{ op: 'put', collection: 'inputs', id: 'lw1', before: rec, after: { ...rec, lateOff: true } }], inverse: [] } as any
+    expect(describeEntry(e)).toBe('the LATE mark on Quill’s LL')
+  })
+})

@@ -47,7 +47,10 @@ export function dayKeys(d:any,di:any){
   (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(noteText(t))));
   /* a note made public (D1588, D1592) rides its note's own address as a composite, as a row's CX does on its name: a
      choice made after the day went out reads as that note pending, and a note never made public compares as before */
-  const NP=(blk:string,v:any)=>S(v)+(Array.isArray(d.npub)&&d.npub.includes(blk)?'␟public':'');
+  /* …only while the note has words (the bug check of 3 Nov 26): an empty note made public shows nothing on the view-only
+     schedule, which prints a public note only with words (ui/html.ts blkNoteHTML), so it changes nothing that went out —
+     no pending, no sign-off lost; once words are typed the choice rides them */
+  const NP=(blk:string,v:any)=>S(v)+(S(v)&&Array.isArray(d.npub)&&d.npub.includes(blk)?'␟public':'');
   m.set(`sn:${di}`,NP('sn',d.simnotes));
   m.set(`pn:${di}`,NP('pn',d.prognotes));
   m.set(`dtn:${di}`,NP('dtn',d.dutynotes));

@@ -42,8 +42,21 @@ describe('a window opened beside another (F9)', () => {
     expect(b!.x + 880, 'its right edge left of the day').toBeLessThanOrEqual(994 - 12)
     expect(b!.moved, 'its top stays the stylesheet’s').toBeFalsy()
   })
-  it('where it would run off the screen’s left edge, it opens at its own corner', async () => {
-    RECTS.sansday = { left: 600, top: 96, width: 430, height: 441 }
+  /* AT HIS PC'S 1536 WIDE (the bug check of 3 Nov 26, walker W1 S21): the SANS day at 1090–1520 and the Calendar window
+     1094 wide left no room on the left, and it fell back to its corner — right over the day and its ✕. Where the left has
+     not room enough it opens as far left as it goes, so long as the other window's own end, its ✕ with it, stays clear. */
+  it('at 1536 wide, with no room on the left, it opens at the screen’s left edge and the day’s ✕ stays clear', async () => {
+    RECTS.sansday = { left: 1090, top: 96, width: 430, height: 441 }
+    RECTS.days = { left: 434, top: 96, width: 1094, height: 547 }
+    openBeside('days', 'sansday')
+    await two()
+    const b = winBox('days')
+    expect(b, 'given a place').toBeTruthy()
+    expect(b!.x, 'at the left edge').toBe(8)
+    expect(b!.x + 1094, 'its right edge well short of the day’s ✕').toBeLessThanOrEqual(1520 - 72)
+  })
+  it('where even the left edge would cover the other window’s end, it opens at its own corner, as before', async () => {
+    RECTS.sansday = { left: 9, top: 96, width: 430, height: 441 }
     RECTS.days = { left: 544, top: 96, width: 880, height: 605 }
     openBeside('days', 'sansday')
     await two()

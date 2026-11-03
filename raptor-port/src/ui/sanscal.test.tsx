@@ -230,6 +230,20 @@ describe('opening a day', () => {
     fireEvent.keyDown(day(WED), { key: 'Enter' })
     expect(q('win-sansday')).toBeTruthy()
   })
+  /* the bug check of 3 Nov 26 (walker W1 S01, the Inputs calendar's twin): with another window in front of the day — the
+     settings, the Calendar window — Escape on a date closed the day BEHIND it; it is that window's now */
+  it('Escape on a date leaves the day open while another window is in front', async () => {
+    const { raiseWin } = await import('./floatwin')
+    show()
+    fireEvent.keyDown(day(WED), { key: 'Enter' })
+    expect(q('win-sansday')).toBeTruthy()
+    raiseWin('sansset')
+    fireEvent.keyDown(day(WED), { key: 'Escape' })
+    expect(q('win-sansday'), 'the day behind stays').toBeTruthy()
+    raiseWin('sansday')
+    fireEvent.keyDown(day(WED), { key: 'Escape' })
+    expect(q('win-sansday'), 'in front again: the date closes it').toBeNull()
+  })
   it('a commitment just saved opens its own day, on its own month — once (the saved-row reveal)', () => {
     setCalMonth({ y: 2026, m: 8 })
     const r = commit(sansP[0], { date: 'Oct 23' })

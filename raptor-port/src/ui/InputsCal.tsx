@@ -55,6 +55,7 @@ import { InputCard } from './InputCard'
 import { cardOf, cardWhen, cxSays, lateNoteOf } from './inputcard-model'
 import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
+import { frontWin } from './floatwin'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
 import { edgeAutoScroll, findScroller } from './edgescroll'
@@ -593,7 +594,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     } else if (e.key === 'Escape') {
       /* the front window first, then the run (the plan §3.6). The keyboard is on a date — the page BEHIND the window —
          where the shell leaves Escape to whatever has it (ui/FloatWindow.tsx), so the date itself closes its day. */
-      if (popIso) { e.preventDefault(); e.stopPropagation(); closePop() }
+      /* …BUT ONLY WHILE THE DAY IS THE WINDOW IN FRONT (the bug check of 3 Nov 26, walker W1 S01): with the settings or the
+         Calendar window in front of it, the date closed the day BEHIND them and left the front one up. Then the key is the
+         shell's, which closes the front window ("one Escape, the newest window" — F2, F7). */
+      if (popIso) { if (frontWin() && frontWin() !== 'inputsday') return; e.preventDefault(); e.stopPropagation(); closePop() }
       else if (kb) { e.preventDefault(); e.stopPropagation(); setKb(null) }
     }
   }
@@ -776,6 +780,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        window.removeEventListener('keydown', esc, true)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
         setSecDrag(null); setSecOver(null)
         /* A COMMITTED DROP WITH A TARGET FLASHES WHERE THE THING ENDED UP,
@@ -807,9 +812,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       }
       const up = () => end(true)
       const cancel = () => end(false)
+      /* ESCAPE WHILE A NOTE IS CARRIED PUTS IT BACK (as a bar carried on the month — D1581; the bug check of 3 Nov 26,
+         walker W1 S23c: Escape closed the whole day window with the note still in the hand). The carry is the newest
+         thing on screen: heard first (the window, capture) and kept, so the day stays open; the release after it finds
+         no carry, and nothing moves. */
+      const esc = (ev: KeyboardEvent) => { if (ev.key !== 'Escape') return; ev.preventDefault(); ev.stopImmediatePropagation(); end(false) }
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      window.addEventListener('keydown', esc, true)
       dragCancelRef.current = cancel        // popover close → cancel, don't reorder
     }
     /* DRAG A SEATED PUCK — reorder it, swap it, or lift it off the row (owner,
@@ -874,6 +885,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        window.removeEventListener('keydown', esc, true)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
         clearLit()
         chip.classList.remove('pk-drag'); chip.style.transform = ''
@@ -900,9 +912,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       }
       const up = (ev: PointerEvent) => done(ev)
       const cancel = () => done(null)
+      /* …and a puck carried off its note the same (W1 S23c's twin): once it is lifted, Escape seats it back; a press that
+         never drifted is no carry and leaves Escape alone */
+      const esc = (ev: KeyboardEvent) => { if (ev.key !== 'Escape' || !dragging) return; ev.preventDefault(); ev.stopImmediatePropagation(); done(null) }
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      window.addEventListener('keydown', esc, true)
       dragCancelRef.current = cancel        // popover close → cancel, don't drop/swap
     }
     /* what the day lists: every input covering it, as the month's own items (one a record — ui/inputscal-model.ts),

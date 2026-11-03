@@ -285,9 +285,9 @@ export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
   /* the show-on-view-only toggle (owner, Aug 26) — same builder the week uses, so
      a note's public state and label read the same on both surfaces. Only a live,
      editable board offers it; a read-only board just shows the current label. */
-  const tog=(!pv&&canEditSched())?notePubTog(k,pub):'';
+  const al=alAttr(k), tog=(!pv&&canEditSched())?notePubTog(k,pub,/data-alp=/.test(al)):'';
   return `<div class="sb-note"><div class="sb-nh">${pub?'Public notes':'Scheduler notes'}${tog}</div>`
-    +`<textarea class="sb-nbox" data-bfld="${k}"${alAttr(k)}${pv?' disabled':''}>${esc(d[field]||'')}</textarea></div>`;
+    +`<textarea class="sb-nbox" data-bfld="${k}"${al}${pv?' disabled':''}>${esc(d[field]||'')}</textarea></div>`;
 }
 /* ---- duty / sim / ground panels (owner request, Aug 26) -------------------
    The board finally carries every section the week day carries. Same
