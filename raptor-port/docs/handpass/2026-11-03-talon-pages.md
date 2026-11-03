@@ -86,7 +86,9 @@ The claw taken out of both placeholders, rebuilt, the two slow opens walked (`ON
 - The app's first load (`scripts/handpass/talon-load-time.mjs`, 9 runs, a phone slowed 4x on 4G): 1,659 ms to the
   sign-in, first paint 548 ms — the claw's own build measured 1,691 ms and 552 ms; `index.html` 9,985 bytes (7,701
   before).
-- GitHub's run of the pull request is the full gate set (D1086).
+- GitHub's run of pull request 627 is the full gate set (D1086): 24 of 25 jobs green on its first run; the Leave War
+  desktop group's Ctrl+scroll zoom test ran out of its 30 s twice (main's runs of it take 12–23 s; it passed here in
+  16 s with this change) — one re-run of the failed group by his rule (D84): green, the test in 12.1 s.
 
 ## Not walked, and why
 
