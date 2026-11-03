@@ -21,6 +21,8 @@ import { onCommon } from './grouprows'
 export const DAY_CANONICAL_FIELDS = [
   'notes', 'allhands', 'waves', 'sims', 'dutywaves', 'ground',
   'simnotes', 'prognotes', 'dutynotes', 'grndnotes',
+  /* which of the four section notes are public (D1588): content, compared on the note's own address (restore.ts) */
+  'npub',
 ] as const
 
 /* NOT part of the signed content:

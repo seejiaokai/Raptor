@@ -1,0 +1,73 @@
+INFO B1a calendar on — "JULY 2026"
+PASS B1a premise: every bar control is free with no window up — saw {"#undoBtn":"free","#redoBtn":"free","#icPrev":"free","#icNext":"free","#inGear":"free"}
+INFO B1a opened day: window box — {"l":398,"t":157,"r":828,"b":378,"w":430,"h":221}
+FAIL B1a (day window) nothing of the top bar / arrows / gear is under the opened day — saw {"#undoBtn":"free","#redoBtn":"free","#icPrev":"free","#icNext":"COVERED by win-inputsday","#inGear":"COVERED by win-inputsday"}
+INFO B1a input window: box — {"l":398,"t":157,"r":828,"b":378,"w":430,"h":221}
+FAIL B1a (input window) nothing of the bar is under the input window — saw {"#undoBtn":"free","#redoBtn":"free","#icPrev":"free","#icNext":"COVERED by win-inputedit","#inGear":"COVERED by win-inputedit"}
+INFO B1a settings window: box — {"l":428,"t":157,"r":828,"b":378,"w":400,"h":221}
+FAIL B1a (Inputs settings window) nothing of the bar is under it — saw {"#undoBtn":"free","#redoBtn":"free","#icPrev":"free","#icNext":"COVERED by win-inputsset","#inGear":"COVERED by win-inputsset"}
+INFO B1a Calendar window: box — {"l":16,"t":157,"r":828,"b":378,"w":812,"h":221}
+FAIL B1a (Calendar window) nothing of the bar is under it — saw {"#undoBtn":"free","#redoBtn":"free","#icPrev":"COVERED by win-days","#icNext":"COVERED by win-days","#inGear":"COVERED by win-days"}
+INFO B1a SANS day: box — {"l":398,"t":157,"r":828,"b":378,"w":430,"h":221}
+FAIL B1a (SANS day) nothing of the bar is under the SANS day — saw {"#undoBtn":"free","#redoBtn":"free","[data-testid=\"sc-prev\"]":"free","[data-testid=\"sc-next\"]":"COVERED by win-sansday","[data-testid=\"sc-gear\"]":"free"}
+INFO B1a Calendar window from SANS day: box — {"l":16,"t":157,"r":828,"b":378,"w":812,"h":221}
+FAIL B1a (Calendar... from the SANS day) nothing of the bar is under it — saw {"#undoBtn":"free","#redoBtn":"free","[data-testid=\"sc-prev\"]":"COVERED by win-days","[data-testid=\"sc-next\"]":"COVERED by win-days","[data-testid=\"sc-gear\"]":"COVERED by win-days"}
+INFO B1b menu as it opens — {"vh":390,"menu":[253,382],"items":12,"lastItem":[678,714],"menuScroll":[0,466,127],"pageScrollY":0,"maxPageScroll":473,"overflowY":"auto","pos":"absolute"}
+PASS B1b the Highlight list lies wholly on the screen as it opens (bottom <= screen height) — saw {"vh":390,"menu":[253,382],"items":12,"lastItem":[678,714],"menuScroll":[0,466,127],"pageScrollY":0,"maxPageScroll":473,"overflowY":"auto","pos":"absolute"}
+INFO B1b after scrolling the page to its foot — {"vh":390,"menu":[-220,-91],"items":12,"lastItem":[205,241],"menuScroll":[0,466,127],"pageScrollY":473,"maxPageScroll":473,"overflowY":"auto","pos":"absolute"}
+INFO B1b after also scrolling the list itself to its foot — {"vh":390,"menu":[-220,-91],"items":12,"lastItem":[-134,-98],"menuScroll":[339,466,127],"pageScrollY":473,"maxPageScroll":473,"overflowY":"auto","pos":"absolute"}
+PASS B1b the last person in the list can be brought wholly on screen by scrolling (page or list) — saw {"page":[205,241],"list":[-134,-98],"vh":390}
+INFO B1c Figures toggle reads — null
+INFO B1c Required cell used — "2026-02-25"
+INFO B1c measures — {"vh":390,"pad":[162,69,682,390],"cell":[409,64,434,86],"topbarBottom":149,"availP":[-1192,108,8093,130],"availW":[-1192,130,8093,152],"strip":[162,70,682,172],"cellHit":"fly-edit-strip"}
+FAIL B1c the Required cell being typed is in sight: below the top bar, above the pad, and what a finger meets — saw {"vh":390,"pad":[162,69,682,390],"cell":[409,64,434,86],"topbarBottom":149,"availP":[-1192,108,8093,130],"availW":[-1192,130,8093,152],"strip":[162,70,682,172],"cellHit":"fly-edit-strip"}
+INFO B1c pad keys on screen (all?) — {"n":14,"all":true}
+INFO B1c after typing 7: what the pad strip says, and the cell itself (behind the pad) — {"strip":"Req P Wed 25 Feb ‹ › Done This day From 25 Feb on","cell":"–"}
+INFO B1c after Done: the cell reads — "7"
+PASS B2a (finger rests 100 ms) premise: the counter Delta exists — saw ["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","count-delta","fly-row-req-p","fly-row-req-w","fly-row-avail-p","fly-row-avail-w"]
+PASS B2a (true) premise: Rearrange is on — saw null
+PASS B2a (true) premise: the finger-drag moved the counter row (order changed) — saw {"before":["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","count-delta","fly-row-req-p","fly-row-req-w","fly-row-avail-p","fly-row-avail-w"],"after":["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","fly-row-req-p","fly-row-req-w","count-delta","fly-row-avail-p","fly-row-avail-w"]}
+PASS B2a (rest) ONE tap on Done (Rearrange off) after the drag leaves Rearrange — saw {"stillOnAfterTap1":false,"stillOnAfterTap2":null,"button":{"x":256.671875,"y":160.296875,"width":63.203125,"height":26}}
+PASS B2a (no rest, as the 8 Oct script) premise: the counter Delta exists — saw ["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","count-delta","fly-row-req-p","fly-row-req-w","fly-row-avail-p","fly-row-avail-w"]
+PASS B2a (false) premise: Rearrange is on — saw null
+PASS B2a (false) premise: the finger-drag moved the counter row (order changed) — saw {"before":["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","count-delta","fly-row-req-p","fly-row-req-w","fly-row-avail-p","fly-row-avail-w"],"after":["count-sets","count-ip","count-iwso","count-opsp","count-opsw","count-sxo","fly-row-req-p","fly-row-req-w","count-delta","fly-row-avail-p","fly-row-avail-w"]}
+FAIL B2a (no rest) ONE tap on Done (Rearrange off) after the drag leaves Rearrange — saw {"stillOnAfterTap1":true,"stillOnAfterTap2":false,"button":{"x":256.671875,"y":160.296875,"width":63.203125,"height":26}}
+INFO B2b before / mid-drag — {"s0":{"ghost":0,"over":0,"bodyDragging":false,"pk":0,"rec":"[[\"Jul 4\",null]]"},"mid":{"ghost":1,"over":1,"bodyDragging":true,"pk":0,"rec":"[[\"Jul 4\",null]]"}}
+PASS B2b premise: the bar is held and the drag is under way (a ghost or the dragging state is up) — saw {"ghost":1,"over":1,"bodyDragging":true,"pk":0,"rec":"[[\"Jul 4\",null]]"}
+INFO B2b after Escape (button down) / after release / after moving the pointer away — {"afterEsc":{"ghost":0,"over":0,"bodyDragging":false,"pk":0,"rec":"[[\"Jul 4\",null]]"},"afterUp":{"ghost":0,"over":0,"bodyDragging":false,"pk":0,"rec":"[[\"Jul 4\",null]]"},"away":{"ghost":0,"over":0,"bodyDragging":false,"pk":0,"rec":"[[\"Jul 4\",null]]"}}
+PASS B2b after Escape, release and moving the pointer away no picked-up copy follows the pointer and the page is out of its dragging state — saw {"ghost":0,"over":0,"bodyDragging":false,"pk":0,"rec":"[[\"Jul 4\",null]]"}
+INFO B2b OBSERVATION: Escape while the bar is held does not cancel the drag; the release still drops the bar (record before / after) — {"before":"[[\"Jul 4\",null]]","after":"[[\"Jul 4\",null]]","droppedStill":false}
+INFO B2b2 widest bar in July 2026 — {"iid":"imw0hlacf4xu5ml","w":1004}
+PASS B2b2 premise: the drag is under way (ghost up) — saw {"ghost":1,"over":1,"bodyDragging":true,"rec":"[[\"Jul 13\",\"Jul 17\"]]"}
+INFO B2b2 states: before / mid / after Escape / after release+move away / after a later click — {"s0":{"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"},"mid":{"ghost":1,"over":1,"bodyDragging":true,"rec":"[[\"Jul 13\",\"Jul 17\"]]"},"afterEsc":{"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"},"away":{"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"},"later":{"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"}}
+PASS B2b2 after Escape + release + moving away: no picked-up copy follows the pointer, page out of the dragging state — saw {"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"}
+PASS B2b2 a later click does not find a copy still held — saw {"ghost":0,"over":0,"bodyDragging":false,"rec":"[[\"Jul 13\",\"Jul 17\"]]"}
+INFO B3 Calendar window month — "August 2026"
+INFO B3 as opened — {"vh":568,"win":[6,54,314,562],"winH":508,"lastCell":[631,695],"bodyScroll":[0,594,449]}
+PASS B3 premise: the window as opened is no taller than the screen and its last date (31 Aug) is drawn — saw {"vh":568,"win":[6,54,314,562],"winH":508,"lastCell":[631,695],"bodyScroll":[0,594,449]}
+INFO B3 dragged low — {"vh":568,"win":[6,354,314,562],"winH":208,"lastCell":[931,995],"bodyScroll":[0,594,149]}
+INFO B3 dragged back to the top — {"vh":568,"win":[6,0,314,562],"winH":562,"lastCell":[577,641],"bodyScroll":[0,594,503]}
+PASS B3 premise: the window really moved (top changed after the drags) — saw {"g0top":54,"g1top":354,"g2top":0}
+PASS B3 after being dragged and brought back the window is no taller than the screen — saw {"winH":562,"vh":568}
+FAIL B3 the last week (31 Aug) is wholly on screen and what a finger meets — saw {"bottom":641,"vh":568,"hitIsCell":false}
+PASS B4 premise: the opened day lists inputs — saw 4
+PASS B4 premise: Delete on a line asks "Delete this input?" — saw "Delete this input?\nDelete\nKeep"
+INFO B4 quiet place pressed on the page behind — {"x":860,"y":20,"hit":"topbar has-undo"}
+PASS B4 premise: after the press behind, the question is still up, the day still open, nothing deleted — saw {"ask":1,"wins":["win-inputsday"],"lines":4,"active":"in-cal"}
+PASS B4 Escape closes only the question: the question gone, the day window still open, nothing deleted — saw {"ask":0,"wins":["win-inputsday"],"lines":4,"active":"in-cal"}
+PASS B5 premise: the day window is still open and a control behind it holds the keyboard — saw {"wins":["win-inputsday"],"active":"icNext","month":"AUGUST 2026"}
+PASS B5a Escape with a page control focused (window open) closes the window — saw {"before":{"wins":["win-inputsday"],"active":"icNext","month":"AUGUST 2026"},"after":{"wins":[],"active":"icNext"}}
+PASS B5b Escape after the window's own title was pressed closes the window — saw {"pre":{"wins":["win-inputsday"],"active":"icNext"},"post":{"wins":[],"active":"icNext"}}
+PASS B6 premise: the Inputs settings window is open — saw ["win-inputsset"]
+PASS B6 premise: the page is now Edit Schedule — saw "editsched"
+PASS B6 the settings window is gone after the page is changed — saw {"after":[],"box":null}
+PASS B6 (real tab press) the settings window is gone after pressing the Edit Schedule tab — saw {"after2":[],"page":"editsched"}
+PASS B6 (SANS settings window) gone after pressing the Edit Schedule tab — saw {"sup":["win-sansset"],"after3":[]}
+INFO B7 boxes — {"dayBefore":{"l":994,"t":96,"r":1424,"b":537,"w":430,"h":441},"dayAfter":{"l":994,"t":96,"r":1424,"b":537,"w":430,"h":441},"calendar":{"l":102,"t":96,"r":982,"b":701,"w":880,"h":605},"shareOfDayCovered":0,"dayCrossHit":{"own":true,"at":[1401,121],"hit":"win-sansday-x","inWin":"win-sansday-x"}}
+PASS B7 the Calendar window does not lie wholly over the SANS day window (its cross is still reachable) — saw {"dayAfter":{"l":994,"t":96,"r":1424,"b":537,"w":430,"h":441},"calBox":{"l":102,"t":96,"r":982,"b":701,"w":880,"h":605},"cover":0,"xb":{"own":true,"at":[1401,121],"hit":"win-sansday-x","inWin":"win-sansday-x"}}
+PASS B8 premise: one shared input of three was filed through "+ Input" — saw ["imw0hmazlw5kkqd"]
+PASS B8 premise: its card is drawn in the opened day — saw 1
+INFO B8 the card: who it names and every LATE mark in it — {"who":"Drifter, Ranger, Warden","lateEls":[{"tag":"BUTTON","cls":"sd-late","title":"after the cut-off, Mon 29 Jun","text":"LATE"}]}
+PASS B8 premise: the input is late (a LATE mark is drawn) — saw {"who":"Drifter, Ranger, Warden","lateEls":[{"tag":"BUTTON","cls":"sd-late","title":"after the cut-off, Mon 29 Jun","text":"LATE"}]}
+PASS B8 every LATE mark on the shared card is a button (a finger can open what it says) — saw [{"tag":"BUTTON","cls":"sd-late","title":"after the cut-off, Mon 29 Jun","text":"LATE"}]
+PASS B8 a finger on the LATE mark opens its note — saw "after the cut-off, Mon 29 Jun"

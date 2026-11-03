@@ -2869,8 +2869,10 @@ all three surfaces:
   SECTION has no rows on the view-only week is not drawn, because the empty
   section itself is not — an accepted edge; the note still reads on the edit side.
 
-*[NARROWED 3 Nov 26 by D1588 — to build in [INPUTS-FIXES-1103]: the choice is saved with the note and shared, kept
-across a reload, a sign-out and a week change; the paragraph below is the rule as it stood.]*
+*[NARROWED 3 Nov 26 by D1588 — built in [INPUTS-FIXES-1103], live 3 Nov 26: the choice is saved with the note and shared, kept
+across a reload, a sign-out and a week change; the paragraph below is the rule as it stood. D1592 (3 Nov 26): on a day
+already published, the choice waits for the next amendment like any other change there — the view-only schedule shows
+the note as the day went out until that amendment is published. BUILT 3 Nov 26: the flag is the day's own `npub` (`state/view.ts notePub`, read from the day being drawn), its own command `sched.notePub` (one Undo step), and the comparison folds it into the note's own address (`engine/restore.ts dayKeys`), so the note reads pending.]*
 The flag is a display choice, not schedule data: session-only on the LATEOFF
 precedent (`view.NOTEPUB`), admin-gated, cleared on a session/week change, never
 persisted and never in a history snapshot. The toggle builder is `notePubTog`
@@ -5780,9 +5782,12 @@ again it will show."
 This REPLACED the 20 Aug global "Hide LATE marks" header button (removed at the
 owner's ask). Each late input now carries its OWN control on the board.
 
-*[NARROWED 3 Nov 26 by D1586 — to build in [INPUTS-FIXES-1103]: a dropped mark is saved on the input and dropped for
+*[NARROWED 3 Nov 26 by D1586 — built in [INPUTS-FIXES-1103], live 3 Nov 26: a dropped mark is saved on the input and dropped for
 everyone, every scheduler and member, kept across a reload, a sign-out and a week change; the session-only `LATEOFF`
-registry below goes. The chip, the tap to drop and to restore, and the admin-only write stay.]*
+registry below goes. The chip, the tap to drop and to restore, and the admin-only write stay. BUILT 3 Nov 26: the drop is the input's own `lateOff`, written by its own command `inputs.lateOff` (one Undo step, a line in the change history "· LATE mark: shown → hidden"); it stamps no change time and is no field the published-day comparison reads, and every surface reads it from the live record by id (`state/view.ts lateShown`).]*
+
+*[NARROWED 3 Nov 26 by D1620: a member's own later change of his input — a save from its window, or a person he adds, the same day too — takes the drop off in the same change, so LATE shows again if that change is late; a scheduler's change, a medical that cuts his leave, an OIL answer alone and a document added keep it. The commit gate lets a member clear it only in a save that stamps his input anew (its change date or time, or a person's own date), never in one that takes him out of it, and never set it.]*
+*[D1621, 3 Nov 26: on a day already published the drop leaves the issued schedule at once — nothing reads pending, the four sign-offs stay; unlike a hidden warning it does not wait for the next amendment (D471).]*
 
 - **The chip rides the ITEM cell of a live board input row**, on BOTH the
   Personal Inputs and the Unavailable panels — the two surfaces the owner named
@@ -10601,6 +10606,15 @@ kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this 
 one, and the page behind it works (D641). Each window's own rules are with its screen: "Days — the month", "The
 SANS calendar", "The Inputs calendar".)*
 
+*(ONE ESCAPE, ONE WINDOW — the Inputs batch, 3 Nov 26 (F2, F6, F7 of `handpass/2026-11-03-inputs-seen-recheck.md`): the
+shell marks the key used (`preventDefault`) as it closes the front window, and every window's Escape asks `defaultPrevented`
+first — so the window that comes forward as one closes never takes the same press. Escape typed in a box on the page behind
+(an input, a text area, a select, editable text) is that box's; a BUTTON behind that still holds the keys owns no Escape, and
+the front window closes. A question up in a window answers Escape wherever the keys are: the opened day's "Delete this
+input?" is Keep, the day staying; the input's window with anything not saved asks "Close it and lose them?" (Discard and
+close · Keep editing — Escape on it is Keep editing). A bar being carried on the Inputs calendar is put back by Escape and
+nothing moves (D1581, `ui/caldrag.ts`). **✕ is to ask the same question as Escape when anything is not saved, and Cancel still closes at once (D1622, 3 Nov 26) — not yet built, filed as [INPUT-WIN-X-ASKS].**)*
+
 *(And which one is "in front" — the same check, 8 Oct 26: the shell keeps the windows that are up in the order they were
 last brought forward (`ui/FloatWindow.tsx`, `UP`), so when the front one closes the one LEFT is in front — it wears
 `.front`, and the next Escape closes it. Before, "in front" was one remembered name that a closing window left behind:
@@ -10940,6 +10954,8 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 
 **Its top row on a desktop (owner D1125, 21 Oct 26):** the tabs, then ‹ month › and Today — in the same place as on the SANS calendar — then at the right end the Calendar / List switch, the filters and the gear; the switch stands there on the Calendar and on the List alike, so it never moves (D687), as on the phone (D705); the row's buttons drawn 36 tall. Where a line below puts the switch first on a desktop, this one wins.
 **On a phone its tab row sits 4px under the app's top bar (owner D1280, 23 Oct 26 — "choose the one that uses less vertical space"),** as the Leave War's does, so the tabs stand in the same place on both pages; every tab of the page (the calendar, the list, SANS, Medical) shares it (`25-inputs-calendar.css`, `.inputs-top` at 820 and under).
+
+**The Calendar window stays up across a page change (D1623, 3 Nov 26 — left as built):** it is opened from several places (the Inputs and SANS settings, a SANS day) and belongs to no one page, so only its own ✕ or Escape closes it; the Inputs settings window, which belongs to the page, closes with it.
 
 `ui/InputsPage.tsx`, `ui/InputsCal.tsx`, `ui/inputscal-model.ts`, `ui/InputsSettings.tsx`, `ui/inputedit.tsx`; styles
 `ui/scheduler/25-inputs-calendar.css`. The plan: `docs/superpowers/plans/2026-10-07-inputs-sans-redesign-plan.md` §3.6–§3.9.

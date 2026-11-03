@@ -217,3 +217,7 @@ VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(fa
    (Modals.tsx), an undo can land on another page or week — and a nav tab pressed by the keys changes page — and the
    window's 'di|gi' would then name a wave of a week or page nobody is looking at. */
 VIEW_RESET.push({ name: 'AIRKEY_NAV', scopes: ['week', 'page'], reset: () => setAirKey(null) })
+/* THE INPUTS AND SANS SETTINGS CLOSE ON A PAGE CHANGE (F8 of the 3 Nov 26 re-check — the Inputs batch): opened from their
+   calendar's gear (or Logic's rows), they stayed up over Edit Schedule, a window about a page nobody is on. A week change
+   leaves them: their settings are the squadron's, not the week's. */
+VIEW_RESET.push({ name: 'SETTINGS_NAV', scopes: ['page'], reset: () => { setInpSet(false); setSansSet(false) } })

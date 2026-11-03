@@ -123,3 +123,23 @@ describe('RangeCal', () => {
     expect(day('2025-12-31'), 'the grid speaks that year\'s ISO dates').toBeTruthy()
   })
 })
+
+/* F3 of the 3 Nov 26 re-check (the Inputs batch): in the input's own window (`startHolds`) a second tap on the day already
+   picked keeps it waiting for its end — 14, 14 again, then 16 gave 16 alone, where 14 then 16 gives 14 → 16. The Inputs
+   list's dates (no `startHolds`) keep two taps on a day as a one-day window — the test above. */
+describe('RangeCal in the input’s own window (startHolds — F3)', () => {
+  function HoldHarness() {
+    const [r, setR] = useState({ s: '2026-07-14', e: '' })
+    picked = r
+    return <RangeCal idPrefix="au" startHolds start={r.s} end={r.e} onPick={(s, e) => setR({ s, e })} />
+  }
+  it('a tap on the day already picked, then another day, is the same as one tap on that day', async () => {
+    await act(async () => { root.render(<HoldHarness />) })
+    await click(day('2026-07-14'))
+    expect(picked, 'still waiting for its end').toEqual({ s: '2026-07-14', e: '' })
+    await click(day('2026-07-16'))
+    expect(picked).toEqual({ s: '2026-07-14', e: '2026-07-16' })
+    await click(day('2026-07-20'))
+    expect(picked, 'a finished range still starts fresh').toEqual({ s: '2026-07-20', e: '' })
+  })
+})

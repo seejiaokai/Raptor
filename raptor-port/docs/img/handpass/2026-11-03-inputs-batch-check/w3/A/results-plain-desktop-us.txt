@@ -1,0 +1,26 @@
+NOTE 1 dk — the new input's window is on screen: {"inside":true,"top":true,"box":[994,96,430,780]}
+PASS 1 dk exactly one new input saved — saw ["imw0ir3kqlo98ws"]
+NOTE 1 dk — passing notes seen: {"now":null,"all":[]}; the card in the day: {"txt":"LATE 06:00–18:00 RangerAPPOINTMENT ISR brief · Room 2","fresh":true,"cls":"icard amb innew"}; month bars wearing the just-added mark: 1; windows: ["inputsday"]
+PASS 1 dk no "Input added" note is shown where the new input is in view (D851) — saw {"now":null,"all":[]}
+PASS 1 dk the card in the day wears the just-added mark — saw {"txt":"LATE 06:00–18:00 RangerAPPOINTMENT ISR brief · Room 2","fresh":true,"cls":"icard amb innew"}
+PASS 2 dk the window closes on Save with nothing changed — saw ["inputsday"]
+PASS 2 dk no "changed by" stamp and no new Undo step (F1) — saw {"rec0":{"remarks":"Room 2","mod":"2026-11-03","modBy":"bane","modAt":1793700142298,"lateOff":false,"type":"Appointment","title":"ISR brief"},"rec1":{"remarks":"Room 2","mod":"2026-11-03","modBy":"bane","modAt":1793700142298,"lateOff":false,"type":"Appointment","title":"ISR brief"},"undo0":{"undo":"Undo — Ranger’s ISR brief","undoOff":false,"redo":"Redo","redoOff":true},"undo1":{"undo":"Undo — Ranger’s ISR brief","undoOff":false,"redo":"Redo","redoOff":true}}
+PASS 3 dk Escape with typing asks "This input has unsaved changes. Close it and lose them?" (F2) — saw {"buttons":["Discard and close","Keep editing"],"words":"This input has unsaved changes. Close it and lose them?"}
+PASS 3 dk Keep editing leaves the window and its typing — saw {"wins":["inputsday","inputedit"],"rmk":"Room 3"}
+PASS 3 dk Save wrote Room 3 — saw {"remarks":"Room 3","mod":"2026-11-03","modBy":"bane","modAt":1793700146749,"lateOff":false,"type":"Appointment","title":"ISR brief"}
+NOTE 3 dk — Undo's own label now: {"undo":"Undo — Ranger’s ISR brief","undoOff":false,"redo":"Redo","redoOff":true}
+NOTE 3 dk — after Undo: notes {"now":"Undid: Ranger’s ISR brief","all":["Undid: Ranger’s ISR brief"]}; remarks "Room 2"
+FAIL 3 dk the Undo bubble reads "Undid: Ranger's ISR brief" (D1582) — saw {"now":"Undid: Ranger’s ISR brief","all":["Undid: Ranger’s ISR brief"]}
+NOTE 3 dk — after Redo: notes {"now":"Redid: Ranger’s ISR brief","all":["Undid: Ranger’s ISR brief","Redid: Ranger’s ISR brief"]}; remarks "Room 3"
+PASS 3 dk Redo puts Room 3 back — saw {"remarks":"Room 3","mod":"2026-11-03","modBy":"bane","modAt":1793700146749,"lateOff":false,"type":"Appointment","title":"ISR brief"}
+NOTE 4 dk — the window's ✕ with typing: {"wins":["inputsday"],"asked":false,"rmk":"Room 3"}
+NOTE 4 dk — Cancel with typing: {"wins":["inputsday"],"asked":false,"rmk":"Room 3"}
+PASS 4 dk the saved remarks are still Room 3 after both — saw {"remarks":"Room 3","mod":"2026-11-03","modBy":"bane","modAt":1793700146749,"lateOff":false,"type":"Appointment","title":"ISR brief"}
+PASS 5 dk the day closes by its ✕ — saw []
+PASS 5 dk Enter on the date reopens it — saw ["inputsday"]
+PASS 5 dk Escape closes it — saw []
+PASS 5 dk a tap on the page behind leaves the day open (D641) — saw {"pt":{"x":6,"y":120,"el":"DIV.inputs-workspace tab-inpu"},"wins":["inputsday"]}
+NOTE 6 dk — View-only Sched, Wed 15 Jul, words naming ISR/Ranger: ["ND PROGRAMME NAME START END PEOPLE RMKS ISR BRIEF APPOINTMENT 06:00 18:00 Ranger IP"]
+NOTE 6 dk — the bell for the member: "(no panel found)"
+NOTE 6 dk — person window after a tap on Ranger's puck: windows []; text "(none)"
+NOTE 6 dk — back on July, the input's bar on the month: true

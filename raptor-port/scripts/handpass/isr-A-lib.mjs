@@ -4,9 +4,10 @@ import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { serveFrozen } from './isr-serve.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const OUT = join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/A')
+export const OUT = process.env.ISR_OUT ? join(process.env.ISR_OUT, 'A') : join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/A')
 export const URL = process.env.LOOK_URL || 'http://localhost:4241/'
 export const clean = () => { rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true }) }
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true })
@@ -23,6 +24,7 @@ export const notWalked = (id, why) => say(`NOT WALKED ${id} — ${why}`)
 export async function session(size, user = 'ad', dsf = 2) {
   const [opts] = SIZES[size]
   const ctx = await browser.newContext({ ...opts, deviceScaleFactor: dsf })
+  await serveFrozen(ctx, URL)
   const page = await ctx.newPage()
   page.on('pageerror', e => errs.push(`page error ${e.message}`))
   page.on('console', m => { if (m.type() === 'error') errs.push(`console ${m.text()}`) })
@@ -95,7 +97,7 @@ export async function fileOn(page, tap, iso, spec, keepDay = false) {
     for (const id of spec.people) if ((await page.locator(`#inpEditPop [data-pp="${id}"]`).getAttribute('aria-pressed')) !== 'true') await press(page, tap, `#inpEditPop [data-pp="${id}"]`)
     const lit = await page.evaluate(() => [...document.querySelectorAll('#inpEditPop [data-pp][aria-pressed="true"]')].map(b => b.getAttribute('data-pp')))
     for (const id of lit) if (!spec.people.includes(id)) await press(page, tap, `#inpEditPop [data-pp="${id}"]`)
-  } else await page.selectOption('#inpEditPop #inpEditPerson', spec.people[0])
+  } else if (await page.locator('#inpEditPop #inpEditPerson').count()) await page.selectOption('#inpEditPop #inpEditPerson', spec.people[0])   // a member files for himself: no picker
   if (spec.end) { await winMonth(page, tap, spec.end); await press(page, tap, `#inpEdCal [data-iso="${spec.end}"]`) }
   const ad = page.locator('#inpEditPop #inpEditAllday')
   if (spec.from) { if (await ad.count() && await ad.isChecked()) await ad.click(); await page.fill('#inpEditPop #inpEditStart', spec.from); await page.fill('#inpEditPop #inpEditEnd', spec.to) }

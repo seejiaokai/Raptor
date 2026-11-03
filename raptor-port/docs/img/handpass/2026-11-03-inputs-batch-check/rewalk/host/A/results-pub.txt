@@ -1,0 +1,27 @@
+PASS B1 premise: the Programme note holds the words typed — saw "All crews brief 0700 in the main room"
+PASS B3 before Make public, View-only Sched does not show the note — saw {"notesHead":0,"shows":false}
+NOTE B1 — note said: "Note now shows on the view-only schedule"
+PASS B1 Make public is saved on the day — saw ["pn"]
+PASS B1 the week's header reads "Public notes" and the button "On view-only ✓" — saw {"head":"Public notesOn view-only ✓","btn":"On view-only ✓"}
+PASS B7 Undo names it — saw {"undo":"Undo — making a note public","redo":"Redo","redoOff":true}
+PASS B3 View-only Sched shows the note under "Notes" — saw {"notesHead":1,"shows":true}
+PASS B2 the Scheduler Board reads the same: "Public notes", toggle on — saw {"head":"Public notesOn view-only ✓","on":true}
+PASS B7 Undo makes it scheduler-only again (the day's npub gone) — saw {"npub":null,"notes":["Note now shows on the view-only schedule","Undid: making a note public"]}
+PASS B7 the note's words stay after the Undo — saw "All crews brief 0700 in the main room"
+PASS B7 Redo makes it public again — saw ["pn"]
+PASS B6 after a reload it is still public — saw ["pn"]
+PASS B6 after a week change and back it is still public — saw ["pn"]
+PASS B6 the member sees the note on View-only Sched — saw {"notesHead":1,"shows":true}
+PASS B6 the member has no Make public button anywhere — saw 0
+NOTE B8 — the change history's last rows: ["{\"seq\":4,\"lineId\":\"mw0l89hg49iz.000004\",\"t\":1793704311740,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":null,\"date\":\"2026-07-15\",\"key\":\"\",\"lbl\":\"Redo — making a note public\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\"}","{\"seq\":3,\"lineId\":\"mw0l89hg49iz.000003\",\"t\":1793704311066,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":null,\"date\":\"2026-07-15\",\"key\":\"\",\"lbl\":\"Undo — making a note public\",\"from\":\"\",\"to\":\"\",\"sect\":\"day\"}","{\"seq\":2,\"lineId\":\"mw0l89hg49iz.000002\",\"t\":1793704306603,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":2,\"date\":\"2026-07-15\",\"key\":\"pn:2\",\"lbl\":\"Programme notes · view-only\",\"from\":\"scheduler-only\",\"to\":\"public\"}","{\"seq\":1,\"lineId\":\"mw0l89hg49iz.000001\",\"t\":1793704304259,\"who\":\"Saber\",\"pid\":\"stiff\",\"di\":2,\"date\":\"2026-07-15\",\"key\":\"pn:2\",\"lbl\":\"Programme notes\",\"from\":\"—\",\"to\":\"All crews brief 0700 in the main room\"}"]
+NOTE B4 — published Thu 16 Jul with the note scheduler-only: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+PASS B4 premise: the day is published with nothing pending — saw {"tag":"ORIG","pend":[],"nys":""}
+PASS B5 Make public on a published day reads 1 pending and "Not yet signed" (D1592, D103) — saw {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE B5 — To go out reads: "Waiting to go out as AL1 · 1 change Programme notes Saber 3/11 19:12 scheduler-only → shown on view-only Tap a change to go to it."
+PASS B5 To go out shows no raw marker character — saw "Waiting to go out as AL1 · 1 change Programme notes Saber 3/11 19:12 scheduler-only → shown on view-only Tap a change to go to it."
+PASS B4 View-only Sched shows the day as it went out — no note — saw {"notesHead":0,"shows":false}
+PASS B5 made scheduler-only again before the amendment: nothing pending — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE B5 — published the amendment: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish AL1"},"kind":"AL"}
+PASS B5 the amendment carries it: tag AL1, nothing pending — saw {"tag":"AL1","pend":[],"nys":""}
+PASS B4 after the amendment, View-only Sched shows the note — saw {"notesHead":1,"shows":true}
+PASS B2p a finger on the board's Make public saves it — saw ["pn"]

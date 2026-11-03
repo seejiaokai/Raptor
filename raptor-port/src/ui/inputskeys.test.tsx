@@ -14,7 +14,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor } from './inputedit'
+import { InputEditor } from './InputWindow'
 import { initStore, notify, setSession, undo, writeInputs } from '../state/store'
 import { CALMONTH, setCalMonth, setInpMode, setInpView, setPage } from '../state/view'
 import { INPUTS } from '../engine/inputs'
@@ -23,7 +23,7 @@ import { HOOKS, storeBackend } from '../engine/hooks'
 import { me } from '../state/perms'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { INPEDIT, setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -179,5 +179,184 @@ describe('Delete on an input in an opened day removes it — asking first', () =
     const before = INPUTS.length
     await key(day('2026-10-07'), 'Delete')
     expect(INPUTS.length).toBe(before); expect(tid('idy-ask')).toBeNull()
+  })
+})
+
+/* THE 3 NOV 26 RE-CHECK'S ESCAPE FINDS (the Inputs batch [INPUTS-FIXES-1103]; docs/handpass/2026-11-03-inputs-seen-recheck.md) */
+describe('Escape: one window at a time, wherever the keys are (F2, F6, F7)', () => {
+  it('F6: with the keys on the page behind, Escape on "Delete this input?" is Keep — the day stays, nothing deleted', async () => {
+    const r = await file({})
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask')).toBeTruthy()
+    /* a press behind: the keyboard goes back to the month */
+    day('2026-10-07').focus()
+    await key(day('2026-10-07'), 'Escape')
+    expect(tid('idy-ask'), 'the question went').toBeNull()
+    expect(tid('win-inputsday'), 'the day did not').toBeTruthy()
+    expect(INPUTS.some((x: any) => x.iid === r.iid), 'nothing deleted').toBe(true)
+    await key(day('2026-10-07'), 'Escape')
+    expect(tid('win-inputsday'), 'the next Escape is the day’s').toBeNull()
+  })
+  it('F7: with a button behind holding the keys, Escape still closes the window in front', async () => {
+    await key(day('2026-10-13'), 'Enter')
+    expect(tid('win-inputsday')).toBeTruthy()
+    const next = $('#icNext')!
+    next.focus()
+    expect(document.activeElement).toBe(next)
+    await key(next, 'Escape')
+    expect(tid('win-inputsday'), 'the window closes').toBeNull()
+  })
+  it('F7: a box he types in on the page behind keeps its own Escape', async () => {
+    await key(day('2026-10-13'), 'Enter')
+    const search = $('#inFSearch')!
+    search.focus()
+    await key(search, 'Escape')
+    expect(tid('win-inputsday'), 'the window stays: Escape was the box’s').toBeTruthy()
+  })
+  it('F2: the day in front of an input’s window with typed words: one Escape closes the day only, and the typing stays', async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    expect(tid('win-inputedit'), 'the input’s window is up').toBeTruthy()
+    const rmk = document.querySelector('#inpEditRmk') as HTMLInputElement
+    await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'typed'); rmk.dispatchEvent(new Event('input', { bubbles: true })) })
+    /* the day's window pressed: it comes in front, the keys stay in Remarks */
+    await act(async () => { tid('win-inputsday')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    rmk.focus()
+    await key(rmk, 'Escape')
+    expect(tid('win-inputsday'), 'the window in front closed').toBeNull()
+    expect(tid('win-inputedit'), 'the one behind did not').toBeTruthy()
+    expect((document.querySelector('#inpEditRmk') as HTMLInputElement).value, 'with what was typed').toBe('typed')
+    /* the next Escape is the input's window — with typed words, it asks */
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-escask'), 'it asks before losing them').toBeTruthy()
+    expect(tid('win-inputedit')).toBeTruthy()
+    await act(async () => { tid('inped-escask-go')!.click() })
+    expect(tid('win-inputedit'), 'Discard and close').toBeNull()
+  })
+  it('F2: an input’s window with nothing typed closes on Escape without asking', async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    await act(async () => { tid('win-inputedit')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-escask')).toBeNull()
+    expect(tid('win-inputedit')).toBeNull()
+  })
+})
+
+/* THE BUG CHECK OF 3 NOV 26 (walker W1): four places where Escape still answered the wrong layer. "Another window in front"
+   is the window shell's own name for the front window (ui/floatwin.ts raiseWin) — the settings or the Calendar window
+   brought forward, as a press on its bar or its door does. */
+describe('Escape answers the newest layer only (the bug check of 3 Nov 26)', () => {
+  const typeIn = async (el: HTMLInputElement, v: string) => act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) })
+  it('S01: the keys on a date and another window in front of the day — the day stays; Escape is that window\'s', async () => {
+    const { raiseWin } = await import('./floatwin')
+    await key(day('2026-10-13'), 'Enter')
+    expect(tid('win-inputsday')).toBeTruthy()
+    raiseWin('inputsset')
+    day('2026-10-13').focus()
+    await key(day('2026-10-13'), 'Escape')
+    expect(tid('win-inputsday'), 'the day behind stays open').toBeTruthy()
+    raiseWin('inputsday')
+    await key(day('2026-10-13'), 'Escape')
+    expect(tid('win-inputsday'), 'in front again: the date closes its day').toBeNull()
+  })
+  it('S08: the unsaved question up and another window brought in front — the question stays', async () => {
+    const { raiseWin } = await import('./floatwin')
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    await act(async () => { tid('win-inputedit')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    const rmk = document.querySelector('#inpEditRmk') as HTMLInputElement
+    await typeIn(rmk, 'typed')
+    await key(rmk, 'Escape')
+    expect(tid('inped-escask'), 'premise: it asks').toBeTruthy()
+    raiseWin('inputsset')
+    await key(document.body, 'Escape')
+    expect(tid('inped-escask'), 'the question is not answered by an Escape meant for the window in front').toBeTruthy()
+  })
+  it('S07: Escape on the swap question ("…open the other input and lose them?") is Keep editing', async () => {
+    const r1 = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    const r2 = await file({ type: 'Meeting', allday: false, s: 660, e: 720, person: crew()[1] })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r1).click() })
+    await act(async () => { tid('win-inputedit')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    await typeIn(document.querySelector('#inpEditRmk') as HTMLInputElement, 'typed')
+    await act(async () => { line(r2).click() })
+    expect(tid('inped-swap'), 'premise: the swap question').toBeTruthy()
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-swap'), 'Escape puts the question away').toBeNull()
+    expect(tid('win-inputedit'), 'the window stays').toBeTruthy()
+    expect((document.querySelector('#inpEditRmk') as HTMLInputElement).value, 'with what was typed').toBe('typed')
+  })
+  /* the code read of 3 Nov 26 (F-A1): K9's twin — "Delete this input?" heard Escape first whoever was in front */
+  it('S01b: "Delete this input?" up and another window brought in front — Escape is that window\'s, the question stays', async () => {
+    const { raiseWin } = await import('./floatwin')
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask'), 'premise: it asks').toBeTruthy()
+    raiseWin('inputsset')
+    await key(document.body, 'Escape')
+    expect(tid('idy-ask'), 'not answered by an Escape meant for the window in front').toBeTruthy()
+    raiseWin('inputsday')
+    await key(document.body, 'Escape')
+    expect(tid('idy-ask'), 'in front again: Escape is Keep').toBeNull()
+    expect(tid('win-inputsday'), 'the day stays open').toBeTruthy()
+  })
+  /* (F-A1's second half) the question's row gone another way — here its input taken back by Undo — leaves no listener
+     behind to eat the next Escape: the day closes on it, as with no question ever asked */
+  it('S01c: the asked-about input gone by Undo — the next Escape is the day\'s', async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask'), 'premise: it asks').toBeTruthy()
+    await act(async () => { undo(); notify() })
+    expect(tid('idy-row-' + r.iid), 'premise: Undo took the input back').toBeNull()
+    await key(document.body, 'Escape')
+    expect(tid('win-inputsday'), 'the day closes').toBeNull()
+  })
+  /* the fix round's read (F4): the question was left armed on a row Undo took away — Redo bringing the row back brought
+     the question back with it, unasked */
+  it('S01d: the asked-about input taken by Undo and brought back by Redo — the question does not come back', async () => {
+    const { redo } = await import('../state/store')
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask'), 'premise: it asks').toBeTruthy()
+    await act(async () => { undo(); notify() })
+    await act(async () => { redo(); notify() })
+    expect(tid('idy-row-' + r.iid), 'premise: Redo brought it back').toBeTruthy()
+    expect(tid('idy-ask'), 'nobody asked again').toBeNull()
+  })
+  /* (F-A4) the unsaved question stayed armed across a swap: the input opened next, nothing typed, said it had changes */
+  it('S07b: the unsaved question up, another input opened through the swap question — the new one asks nothing', async () => {
+    const typeIn = async (el: HTMLInputElement, v: string) => act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) })
+    const r1 = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    const r2 = await file({ type: 'Meeting', allday: false, s: 660, e: 720, person: crew()[1] })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r1).click() })
+    await act(async () => { tid('win-inputedit')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    await typeIn(document.querySelector('#inpEditRmk') as HTMLInputElement, 'typed')
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-escask'), 'premise: it asks').toBeTruthy()
+    await act(async () => { line(r2).click() })
+    expect(tid('inped-swap'), 'premise: the swap question').toBeTruthy()
+    await act(async () => { (tid('inped-swap-go') ?? document.querySelector('[data-testid="inped-swap"] .danger') as HTMLElement).click() })
+    expect(tid('inped-escask'), 'a freshly opened input with nothing typed asks nothing').toBeNull()
+  })
+  it('S23c: a note carried in the opened day — Escape puts it back and the day stays open', async () => {
+    const { addPlanPuck } = await import('../state/plan')
+    await act(async () => { writeInputs(() => { addPlanPuck('2026-10-13', 'one'); addPlanPuck('2026-10-13', 'two') }); notify() })
+    await key(day('2026-10-13'), 'Enter')
+    const handles = Array.from(document.querySelectorAll('[data-sechandle]')) as HTMLElement[]
+    expect(handles.length, 'premise: two notes, each with its handle').toBeGreaterThanOrEqual(2)
+    await act(async () => { handles[1]!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, button: 0 })) })
+    expect(document.querySelector('.ic-sec.dragging'), 'premise: the note is carried').toBeTruthy()
+    await key(document.body, 'Escape')
+    expect(document.querySelector('.ic-sec.dragging'), 'the carry is put down').toBeNull()
+    expect(tid('win-inputsday'), 'and the day stays open').toBeTruthy()
   })
 })

@@ -3248,6 +3248,35 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
 
+### Observation 776: A test that writes records by hand leaves the save layer's baseline stale, and a later real tap then records nothing
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** the Inputs batch ([INPUTS-FIXES-1103]) — moving the LATE mark's drop from a session-only set onto the input, through its own command
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the regression test for a change that moves state into saved records
+
+**Issue:** The new test (tap the chip → a command of its own changes the input record) passed alone and failed in its file. An earlier test in the same file set and cleared the field straight on the records (a fixture, outside any command) and then signed out and in, which re-based the save layer's snapshot while the field was set. The later tap wrote the same value as that stale snapshot, so the command layer saw no change, emitted nothing, and Undo said "Nothing to undo" — a test-order artefact that looked exactly like the feature being broken.
+
+**Suggested improvement:** In "Write the failing test", add: when a test file mixes hand-written fixtures on saved records with tests that drive the real write path, put the save layer's baseline back level with the records in the shared setup (beforeEach), and when a commit-level assertion fails only in the full file, run it alone before debugging the code.
+
+**Principle:** A diff-based save layer judges a change against its last snapshot; any test that edits the records behind its back must re-level that snapshot, or later tests inherit a false "nothing changed".
+
+### Observation 777: A walk's frozen build served from inside the test browser frees the lock question from the server
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** the FULL bug check of the Inputs batch (PR 625) — a host walk, a re-run of an earlier round's scripts and three Sonnet walkers, all on one frozen build
+**Skill:** New skill candidate: bug-check walk set-up (or `raptor-port/docs/walk-scripts.md` §1)
+**Type:** internal
+**Phase/Area:** standing up the walk
+
+**Issue:** The earlier round's scripts were hard-wired to a running preview on a fixed port and a fixed picture folder, so a re-walk would have overwritten the first round's evidence and needed a server per walker. A small module that answers every request from a frozen build folder inside the test browser (`page.context().route`), plus two settings (the build folder and the picture folder), let the old scripts re-run unchanged into a new folder and let three walkers share one build with no port and no server to start or stop.
+
+**Suggested improvement:** walk-scripts.md §1 names the frozen-folder serve as the default for every walk library (not only "the build before the change"), and every new walk library takes the picture folder from a setting from its first line.
+
+**Principle:** Evidence-producing scripts take their output location and their target as settings from the start; a re-run must never overwrite the run it is compared with.
 ### Observation 786: A motion mock-up checked on the iPhone's engine without a phone, by pausing its animations at fixed moments
 
 **Status:** OPEN
@@ -3278,6 +3307,36 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In session-handoff, where two chats are to run side by side: the second opening line creates its own folder (`git worktree add ../<repo>-<name> <branch>`, a short path beside the repository, never under a temp or scratchpad folder) and works only there; and every chat checks `git branch --show-current` against its own branch before each commit.
 
 **Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.
+
+### Observation 778: A walk script saved in a Windows encoding blinds the code check, and its message blames main
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** Inputs batch [INPUTS-FIXES-1103] — reading GitHub's run after main was merged in; number 778 from this branch's reserved range 776–785.
+**Skill:** internal — the code check (`raptor-port/scripts/code-check.mjs`) and `docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** the code check's failure message; how walkers write scripts
+
+**Issue:** A walker's script carried one em dash in Windows-1252 (byte 0x97). React Doctor's linter refused the file ("stream did not contain valid UTF-8"), skipped the whole lint, and marked the comparison degraded. The code check reported only "could not read origin/main's side, so it compared nothing" — pointing at main, when the unreadable file was on the branch. It looked like a GitHub or merge problem; finding the cause took reading React Doctor's raw report (`projects[].skippedCheckReasons.lint`).
+
+**Suggested improvement:** (1) In `code-check.mjs read()`, when `baselineDegraded` is set, print `skippedCheckReasons` too (the real cause). (2) A cheap guard: the code check (or the walk-script lint) refuses a changed code file that is not valid UTF-8, naming the file. (3) `docs/walk-scripts.md`: walk scripts are written with the Write tool or a UTF-8 writer — never through a tool that saves in the console's code page.
+
+**Principle:** When a checker gives up, its message must carry the reason the tool itself gave, not a guess at which side failed; a misleading "could not compare" sends the reader to the wrong half of the problem.
+
+### Observation 779: A reader's word for a thing reached the owner without being checked against the app
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** Inputs batch [INPUTS-FIXES-1103] — relaying the security reader's finding; number 779 from this branch's reserved range 776–785.
+**Skill:** internal — the bug-check order's "What to do with what they hand back" (§4), and plain-language.md check 2
+**Type:** internal
+**Phase/Area:** turning a reader's report into words for the owner
+
+**Issue:** The security reader's probe test named a medical kind "MC", which this app does not have (its kinds are HL, OML, ATT C, ATT B). The host carried "MC" into its message to the owner, then translated it as "sick leave"; when the owner asked why "sick leave", the host said "the app calls it an MC" — a second wrong claim. The walk later failed to select "MC" in the kind list, which is how the error surfaced. A hand-made probe works on any string, so the reader's test passed on a kind no screen can make.
+
+**Suggested improvement:** In the order's §4 step 1 ("Reproduce each finding through the real production route"), add: every app noun a reader's finding uses — a kind, a page, a control — is checked against the app's own list (the code's type table, the screen) before it is repeated to the owner; a probe built on a value the app cannot produce is re-run with one it can. The walk helper `fileOn` also assumed an admin's person picker; scripts should be written for the role they sign in as.
+
+**Principle:** A reviewer's vocabulary is evidence about the reviewer, not about the product: check each name against the product before passing it on, or the error is multiplied by every reader downstream.
 
 ### Observation 788: A frame recorder that starts its clock at the click, or stamps frames with their start time, hides a freeze that begins at the press
 

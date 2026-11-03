@@ -26,7 +26,7 @@ import { CURPAGE, setCalMonth, setPage } from '../state/view'
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { DAYSWIN, SANSSET, POPS_RESET, setDaysWin, setSansSet } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { SansSettings } from './SansSettings'
 
 const mem = new Map<string, string>()

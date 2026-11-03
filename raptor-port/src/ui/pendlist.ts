@@ -99,6 +99,20 @@ export function valueWords(addr: string, v: any): string {
   }
   return s
 }
+/* A NOTE MADE PUBLIC, OR SCHEDULER-ONLY AGAIN, ON A PUBLISHED DAY (D1592; the bug check of 3 Nov 26). The choice rides the
+   note's own address as "words␟public" (engine/restore.ts dayKeys), so where only the choice changed To go out read the
+   whole note struck through and written again with "· public" after it — as if the note had been rewritten. Said as what
+   changed: "scheduler-only → shown on view-only", or back. Null where the words changed too: valueWords says both. */
+const NOTE_PREFIX = new Set(['pn', 'dtn', 'sn', 'gn'])
+export function notePubWords(addr: any, from: any, to: any): { from: string; to: string } | null {
+  const a = String(addr || ''), c = a.indexOf(':')
+  if (c < 0 || !NOTE_PREFIX.has(a.slice(0, c))) return null
+  const part = (v: any) => { const s = String(v ?? ''), i = s.indexOf(U); return i < 0 ? { words: s, pub: false } : { words: s.slice(0, i), pub: s.slice(i + 1) === 'public' } }
+  const f = part(from), t = part(to)
+  if (f.words !== t.words || f.pub === t.pub) return null
+  const say = (pub: boolean) => pub ? 'shown on view-only' : 'scheduler-only'
+  return { from: say(f.pub), to: say(t.pub) }
+}
 /* [PEND-INTIME-WORDS] (reader AB's second pass, 6 Oct 26): a wave's In-time / Rally lines are one list, and "To go out"
    worded only its length, so a line whose clock changed read "2 In-time lines → 2 In-time lines". The
    lines that differ are named instead — those only in the issued list before, those only in the new one after, as
@@ -363,7 +377,13 @@ export function pendItemWords(di: number, it: PendItem): Words {
     /* a request whose filing moved too — filed, taken off, deleted — keeps the request's own words below ("on the
        programme → deleted"); the details words speak where the record itself was edited, or where it has no filing */
     const w = inputWords(di, it), fil = !!it.inp || String(e.addr || '').startsWith('inp:')
-    if (!fil || (w as any).edited) return w
+    /* …BUT NOT FOR A REQUEST THE PUBLISHED DAY NEVER SHOWED (F4 of the 3 Nov 26 re-check — the Inputs batch): taken off
+       before the day went out, retitled while off, then put back, it read "Sports day → Games afternoon", a change to
+       something no reader of the published day ever saw. Where its filing moves out of "taken off" it is said as what it
+       is to them — put on the programme, or under Unavailable — by the filing's own words below. */
+    const f: any = it.inp || (String(e.addr || '').startsWith('inp:') ? e : null)
+    const unseen = !!f && f.from === 'r' && (f.to === 'g' || f.to === 'u')
+    if (!fil || ((w as any).edited && !unseen)) return w
   }
   if (it.kind === 'warn') return faceWords(di)
   /* a warning hidden, or flagged again, since the day went out ([WARN-HIDE-KEPT], D471): the line is led by its item
@@ -401,7 +421,7 @@ export function pendItemWords(di: number, it: PendItem): Words {
       ? { where: placeName(it.place || ''), from: '', to: 'order changed', ...byLog(), jump }
       : { where: placeName(it.place || ''), from: names(it.off), to: names(it.on) || (it.off && it.off.length ? 'taken off' : ''), ...byLog(), jump }
   if (it.kind === 'change') {
-    const lines = reportingLineWords(e.addr, e.from, e.to)
+    const lines = reportingLineWords(e.addr, e.from, e.to) || notePubWords(e.addr, e.from, e.to)
     if (lines) return { where: keyLabel(it.addr || e.addr), ...lines, ...byLog(), jump }
     return { where: keyLabel(it.addr || e.addr), from: valueWords(e.addr, e.from), to: valueWords(e.addr, e.to), ...byLog(), jump }
   }

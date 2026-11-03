@@ -3247,7 +3247,7 @@ export function flyMonth(y: number, m: number): Record<string, DayAnswer> {
 /* A LEAVE REQUEST'S DOCUMENT AND REMARKS (M3 5.9, 5.10 — D1159, D1226): the bid windows draw the app's one Document
    button and the Inputs page's own "till <date>" — reached through this seam, never imported across it (a rider on the
    inputs wire, as the published remarks editor's is) */
-export { DocField } from '../ui/inputedit'
+export { DocField } from '../ui/InputWindow'
 export { tillOfISO } from '../engine/inputs'
 export { rowDocIds }
 export { docGet } from '../state/docs'

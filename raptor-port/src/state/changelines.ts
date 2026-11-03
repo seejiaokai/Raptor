@@ -33,7 +33,7 @@
    The subscriber is registered once, at boot (initStore). */
 import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
-import { logAction } from '../engine/editlog'
+import { logAction, keyLabel } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
 import { decodeRoleId } from '../engine/mission-role'
 import type { RoleIdentity } from '../engine/mission-role'
@@ -197,7 +197,9 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
   { const cxW = (x: any) => (x.cx ? `cancelled${x.cxr ? ' — ' + String(x.cxr) : ''}` : 'not cancelled')
     if (cxW(b) !== cxW(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · CX`, base({ from: cxW(b), to: cxW(a) }))
     if (!!b.flag !== !!a.flag) logAction(null, `${who} · ${what} ${spanWords(sa)} · red box`, base({ from: b.flag ? 'on' : 'off', to: a.flag ? 'on' : 'off' }))
-    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' })) }
+    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' }))
+    /* the LATE mark dropped or brought back (D1586) — kept on the input for everyone now, so who did it is answerable here */
+    if (!!b.lateOff !== !!a.lateOff) logAction(null, `${who} · ${what} ${spanWords(sa)} · LATE mark`, base({ from: b.lateOff ? 'hidden' : 'shown', to: a.lateOff ? 'hidden' : 'shown' })) }
   /* WHAT A SANS AVAILABILITY OFFERS (found building D629, 7 Oct 26 — the plan §3.8): a change to the Fly / OFT / AMT
      ticks alone wrote no line at all — the one thing a person reads on that record that the list above never compared.
      Only where both sides are a SANS availability: a change of type is the type line's to say. */
@@ -690,6 +692,17 @@ export function changeLinesFor(env: CommitEnvelope): void {
       const h = parseHideDetail((env as any).detail)
       if (h && env.changes.some(c => c.collection === 'sched.mutes'))
         logAction(h.di, `Warning · ${h.words}`, { sect: 'day', from: h.hidden ? 'flagged' : 'hidden', to: h.hidden ? 'hidden' : 'flagged again' })
+    }
+    /* A NOTE MADE PUBLIC, OR SCHEDULER-ONLY AGAIN (D1588 — saved with the note and shared). The choice is everyone's now,
+       so who made it is answerable here, as a hidden warning's is (the bug check of 3 Nov 26: the press wrote no line, only
+       its Undo and Redo did). One line under the note's own item, from the command's own note (ui/interactions.ts). */
+    if (env.type === 'sched.notePub' && env.changes.length) {
+      let n: any = null
+      try { n = JSON.parse((env as any).detail || 'null') } catch { /* no note: no line to write */ }
+      if (n && typeof n.note === 'string') {
+        const di = +n.note.slice(n.note.lastIndexOf(':') + 1)
+        logAction(di, `${keyLabel(n.note)} · view-only`, { key: n.note, from: n.public ? 'scheduler-only' : 'public', to: n.public ? 'public' : 'scheduler-only' })
+      }
     }
     if (war) { warLines(env, wi.approvedFor, wi.backToBid); configLines(env) }
     else crossLines(env)

@@ -1,0 +1,15 @@
+NOTE S15-Event — three free men for Thu 16 Jul: ["stiff","slipway","prowler"]
+NOTE S15-Event — Event filed by member: iid imw0ifpa3f9ifsk; record {"type":"Event","people":["stiff","slipway","prowler"],"title":"Games afternoon"}
+NOTE S15-Event — LATE tags on View-only Thu before: ["GAMES AFTERNOONEvent06:0018:00DrifterAHunterIPSaberIPLATEW2 "]
+NOTE S15-Event — board chips Thu: []
+FAIL S15-Event premise: the shared Event shows exactly one LATE chip (one row for a shared input, D661) — saw []
+NOTE S15-Event — board elements mentioning late: ["DIV.sb-arow c6r gr-frominput lateinp|⠿GAMES AFTERNOONEventDrifterAHunterIPSaberIP+ addW2  hared eventCXⓘ■✕"]
+NOTE S15-Appt — three free men for Thu 16 Jul: ["stiff","slipway","prowler"]
+NOTE S15-Appt — Event filed by member: iid imw0ifwmxpwsshg; record {"type":"Appointment","people":["stiff","slipway","prowler"]}
+NOTE S15-Appt — LATE tags on View-only Thu before: ["APPOINTMENT06:0018:00DrifterAHunterIPSaberIPLATEW2 shared ev"]
+NOTE S15-Appt — board chips Thu: []
+FAIL S15-Appt premise: the shared Event shows exactly one LATE chip (one row for a shared input, D661) — saw []
+NOTE S15-Appt — board elements mentioning late: ["DIV.sb-arow c6r gr-frominput lateinp|⠿APPOINTMENTDrifterAHunterIPSaberIP+ addW2  hared eventCXⓘ■✕"]
+NOTE S15u — two-man OL: iid imw0ig3wwfloa60 men ["bane","slipway"]
+NOTE S15u — board chips Fri: [{"id":"imw0ig3wwfloa60","off":false,"row":"⠿OLLATERangerIPW2 two-man leavetill 17 Jul"},{"id":"imw0ig3wwfloa60","off":false,"row":"⠿OLLATEDrifterAW2 two-man leavetill 17 Jul"}]
+NOTE S15u — RECORD chips after dropping on the FIRST row: [{"id":"imw0ig3wwfloa60","off":true,"row":"⠿OLLATERangerIPW2 two-man leavetill 17 Jul"},{"id":"imw0ig3wwfloa60","off":true,"row":"⠿OLLATEDrifterAW2 two-man leavetill 17 Jul"}]

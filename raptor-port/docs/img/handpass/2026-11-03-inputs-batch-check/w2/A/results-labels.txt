@@ -1,0 +1,10 @@
+NOTE S13 — men ["slipway","prowler","pump","snap"]
+NOTE S13 — 1 filed one Appointment: Undo "Undo — Drifter’s Dental"
+NOTE S13 — 2 filed one Event for 3 people: Undo "Undo — Games afternoon for 3 people"
+NOTE S13 — 2 after Undo: toast "Undid: Games afternoon for 3 people"; Redo "Redo — Games afternoon for 3 people"
+NOTE S13 — 2 after Redo: "Redid: Games afternoon for 3 people"
+NOTE S13 — 3 delete via window: Undo "Undo — Drifter’s Dental"
+NOTE S13 — 3 after Undo of the delete: "Undid: Drifter’s Dental"; Redo "Redo — Drifter’s Dental"
+NOTE S13 — 4 Delete key on the card: question? 0; Undo "Undo — Games afternoon for 3 people"; toast "Undid: Drifter’s Dental"
+NOTE S13 — 5 board: ground row taken off: board Undo "{"undo":"Undo — a change to the schedule","redo":"Redo — Drifter’s Dental"}"; toast "Ground item removed — back under Personal Inputs — GAMES AFTERNOON, 06:00–18:00, 3 people"
+NOTE S13 — 5 board: Undo -> toast "Undid: a change to the schedule"; Redo {"undo":"Undo — Games afternoon for 3 people","redo":"Redo — a change to the schedule"}

@@ -173,6 +173,9 @@ describe('the OIL ask gates a weekend/PH duty-&-commitments save', () => {
     await click($('[data-testid="oilconf-save"]'))
     const r = mine()[0]
     await act(async () => { setInpEdit(r); notify() })
+    /* a save that saves something (F1 of the 3 Nov 26 re-check: Save with nothing changed changes nothing and closes) */
+    { const rmk: any = document.querySelector('#inpEditRmk')
+      await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'duty desk'); rmk.dispatchEvent(new Event('input', { bubbles: true })) }) }
     await click($('#inpEditSave'))
     expect($('[data-testid="oilconf"]'), 'answers current — no sheet').toBeFalsy()
     expect(TOASTS.join('|')).toContain('Input updated')

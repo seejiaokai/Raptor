@@ -505,6 +505,9 @@ export type Day = {
   dutynotes?: string
   /** Ground section note — screen. */
   grndnotes?: string
+  /** Which section notes are public — shown on the view-only schedule ('pn', 'dtn', 'sn', 'gn'); absent = none — screen
+   *  (the "Make public" toggle, D1588). Day content: it rides the issued copy and the next amendment (D1592). */
+  npub?: string[]
   /** Section display order override; absent = house default — engine (order.ts). */
   secOrder?: string[]
   /** Ground list frozen to hand order — engine (reorder.ts). */

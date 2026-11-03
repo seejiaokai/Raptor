@@ -134,3 +134,21 @@ describe('the input funnel is the quarantine choke-point (P2-REV2-04)', () => {
     expect(said.join(' ')).toContain('This week is locked. It was published by an older version of the app, so it can’t be edited.')
   })
 })
+
+/* the code read of 3 Nov 26: the LATE chip's command was the one input write that skipped this funnel, so a scheduler's
+   drop changed an input covering a locked week, where every other door refuses — and its note said "hidden" even when
+   the command was refused. It goes through the same input write now, and speaks only when the change went through. */
+describe('the LATE chip goes through the input funnel too (D1586)', () => {
+  it('a drop on an input covering a locked week is refused, and says so — not "hidden"', async () => {
+    const { setSession } = await import('./store')
+    const { routeClick } = await import('../ui/interactions')
+    setSession({ user: 'a', role: 'admin' } as any)
+    stashProtected('20/07/2026')
+    INPUTS.unshift({ person: 'dj', type: 'Meeting', allday: true, date: 'Jul 20', yr: 2026, iid: 'zzq9', mod: '2026-07-19' })
+    const b = document.createElement('button'); b.setAttribute('data-lateoff', 'zzq9'); document.body.appendChild(b)
+    try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() }
+    expect(!!(INPUTS.find((r: any) => r.iid === 'zzq9') as any).lateOff, 'the drop was not written').toBe(false)
+    expect(said.join(' '), 'the refusal is said').toContain('This week is locked')
+    expect(said.join(' '), 'and not "hidden"').not.toContain('LATE mark hidden')
+  })
+})

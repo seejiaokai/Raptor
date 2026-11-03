@@ -20,8 +20,7 @@ import { INPUTS } from '../engine/inputs'
 /* put every registry field into a non-default state, so a clear is observable */
 function dirtyAll() {
   view.DPREV.set(0, 'orig'); view.VWORK.add(0); view.AVSHUT.add(1); view.PIOPEN.add(2)
-  view.LATEOFF.add('i1'); view.BELLLIT.add('viewsched|bane'); view.WARNOFF.add('w1')
-  view.NOTEPUB.add('pn:0')
+  view.BELLLIT.add('viewsched|bane'); view.WARNOFF.add('w1')
   view.setHistMode(true); view.setCarryDay(5)
   view.setHlOpen(true); view.setHlGroup('cat'); view.setInpView('cal'); view.setCalMonth({ y: 2026, m: 7 }); view.setMedAsOf('2026-07-01')
   view.setRestArm(1, 'orig')
@@ -32,8 +31,7 @@ function dirtyAll() {
    — a week swap clears them (loadWeek puts the arriving week's back), a sign-in does not */
 const setsEmpty = () =>
   view.DPREV.size === 0 && view.VWORK.size === 0 && view.AVSHUT.size === 0 && view.PIOPEN.size === 0 &&
-  view.LATEOFF.size === 0 && view.BELLLIT.size === 0 &&
-  view.NOTEPUB.size === 0
+  view.BELLLIT.size === 0
 
 afterEach(() => { view.resetViewState('session'); view.resetViewState('week') })
 

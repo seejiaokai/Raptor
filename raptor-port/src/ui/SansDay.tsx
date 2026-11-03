@@ -27,7 +27,8 @@ import { isAdmin } from '../state/perms'
 import { notify } from '../state/store'
 import { sansCommittedOn } from '../state/flyplan'
 import { dayFacts, flyAnswer, useWarFacts } from '../leavewar/sync'
-import { FloatWin, bringForward } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { bringForward, openBeside } from './winorder'
 import { puck } from './html'
 import { setDaysWin, setInpEdit } from './pops'
 import { maySansAdd, openSansAdd } from './sansadd'
@@ -132,7 +133,7 @@ export function SansDay({ iso, hi, onClose }: {
           <button type="button" className="abtn primary sd-add" data-testid="sd-add" disabled={!canAdd} onClick={() => { openSansAdd(iso) }}>+ Commitment</button>
           {isAdmin() && (
             <button type="button" className="abtn sd-days" data-testid="sd-days" title="Set this month’s day, night and no-fly days, and the year’s holidays"
-              onClick={() => { setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
+              onClick={() => { openBeside('days', 'sansday'); setDaysWin(iso); notify(); bringForward('days') }}>Calendar…</button>
           )}
         </div>
         {!canAdd && <p className="sd-note" data-testid="sd-addwhy">SANS aircrew add their availability here.</p>}

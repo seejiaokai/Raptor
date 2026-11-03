@@ -92,6 +92,8 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1623 | 3 Nov 26 | The Calendar window stays open when he changes page; it closes only with its own ✕ or Escape, because it is opened from several places (the Inputs and SANS settings, a SANS day) and belongs to no one page. |
+| D1622 | 3 Nov 26 | An input's window with anything typed and not saved asks before ✕ closes it, the same question Escape asks ("Close it and lose them?"); Cancel still closes at once, since it already means throw this away. |
 | D1585 | 3 Nov 26 | On the Inputs page the OIL question of a weekend no Leave War period covers says nothing about the missing period: the person filing cannot create one, and the scheduler, who can, is told on the schedule (D19). |
 | D1583 | 3 Nov 26 | On a phone held sideways a window over the Inputs or SANS calendar may cover the month's arrows and gear (it drags away, Undo and Redo stay clear) and is left as built; the SANS calendar's Highlight list fits the screen and scrolls inside itself. |
 | D1582 | 3 Nov 26 | Undo and Redo name the input they take back by its person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by their count, "Undid: 3 inputs", never "a personal input". |

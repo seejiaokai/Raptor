@@ -502,9 +502,22 @@ describe('B8 — Undo says what came back', () => {
     writeInputs(() => setDayRemark('2026-07-16', 'B8 TITLE'))
     expect(undoState().undoLabel).toBe('a day title on the calendar')
   })
-  it('one input filed through the Inputs page’s batch door is "a personal input"', () => {
+  /* D1582 (owner, 3 Nov 26): one input is named by its person and kind — never "a personal input" — and several by their count */
+  it('one input filed through the Inputs page’s batch door is named by whose and what (D1582)', () => {
     writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire2' } as any) })
-    expect(undoState().undoLabel).toBe('a personal input')
+    expect(undoState().undoLabel).toBe('Ranger’s LL')
+  })
+  it('an input with its own title is named by the title; one of several people by its kind and their count; several inputs by their count (D1582)', () => {
+    writeInputsBatch(() => { INPUTS.push({ person: 'bane', type: 'Event', title: 'ISR brief', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire5' } as any) })
+    expect(undoState().undoLabel).toBe('Ranger’s ISR brief')
+    writeInputsBatch(() => { INPUTS.push({ people: [{ p: 'bane' }, { p: 'stiff' }], type: 'Meeting', date: 'Jul 16', yr: 2026, rmk: '', iid: 'iwire6' } as any) })
+    expect(undoState().undoLabel).toBe('Meeting for 2 people')
+    writeInputsBatch(() => {
+      INPUTS.push({ person: 'bane', type: 'Meeting', date: 'Jul 17', yr: 2026, rmk: '', iid: 'iwire7' } as any)
+      INPUTS.push({ person: 'stiff', type: 'Meeting', date: 'Jul 17', yr: 2026, rmk: '', iid: 'iwire8' } as any)
+      INPUTS.push({ person: 'bane', type: 'LL', date: 'Jul 20', yr: 2026, rmk: '', iid: 'iwire9' } as any)
+    })
+    expect(undoState().undoLabel).toBe('3 inputs')
   })
   /* [OIL-NOTIFY-SEEN] (1) (the OIL-ask walk, 13 Oct 26): Undo after a swap on an input's row, or after an OIL answer,
      read "a personal input" — it names what was done */
@@ -519,7 +532,7 @@ describe('B8 — Undo says what came back', () => {
     writeInputs(() => { r.oil = { '2026-07-16': false }; r.modBy = 'saber'; r.modAt = 12345 })
     expect(undoState().undoLabel, 'the window\u2019s answer, with its stamp').toBe('an OIL answer')
     writeInputsBatch(() => { r.rmk = 'room 2' })
-    expect(undoState().undoLabel, 'any other change of one input is as it was').toBe('a personal input')
+    expect(undoState().undoLabel, 'any other change of one input names it (D1582)').toBe('Saber’s Meeting')
   })
   /* the scenario designer's suspicion (19 Oct 26, S3-01): a swap with a placeholder would read its stored id */
   it('a swap with ALL AVAIL names it as the puck does, never by its stored id', () => {
