@@ -180,3 +180,29 @@ added. GitHub's run: the pull request's.
 
 **Walk:** start-up claw 27/27 + page claw 75/75 on the built app, Chromium and WebKit 402/390 phone and 1536 desktop,
 pictures in `docs/img/handpass/2026-11-03-talon-pages/walk-bg-boot/` and `walk-bg-pages/`; his iPhone look owed.
+
+### The design look of the claw (/impeccable critique, his ask, 3 Nov 26)
+
+Two fresh readers, blind to each other: a design review (Opus) and the design checker with the browser (the skill's
+detector on the page, measurements). The skill's own snapshot is not kept here (observation log, the critique's
+"Persist" step); its scores are recorded below. **Verdict: good — the app's own mark, drawn with the gesture the mark
+suggests; specific to TALON, not a spinner.** Scores (Nielsen, 0–4; four do not apply to a loading state): status 3, the
+real world 4, control 4 (the page claw; the start-up n/a), consistency 3, minimalism 3, recovery 2 — 19 of 24. The
+checker: nothing on the claw (the page-wide findings it lists are the app's older ones, none on the claw's parts; two on
+the page body were its own banner's); the cyan on the dark 9.66 : 1; less motion stops all seven animations, the claw
+whole; the start-up and page claws centred exactly; the page claw starts at the top bar's foot.
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | The hand-over to the sign-in shows both logos at once, in two places and sizes (72px mid-screen against the sign-in's 32px at the top on a phone) — a quick start reads as a flicker | put to him — [TALON-CLAW-HANDOVER]; picture `look/1-handover-mid-fade.png` |
+| 2 | About 0.3 s of plain dark at the end of every round (the fade done by 1.57 s, the next draw easing in from nothing) | put to him — [TALON-CLAW-ROUND-GAP]; pictures `look/2a…2d` (2c and 2d draw nothing) |
+| 3 | The page claw says nothing to a screen reader | filed — [TALON-CLAW-SPOKEN], a small fix with the next claw change |
+| 4 | A failed download of either slow page is caught by nothing (from the code, not seen) | filed — [LAZY-PAGE-LOAD-FAIL], reproduced in the walk first |
+| 5 | Small on a desktop (72px in a 1536-wide page) | leave — calm for a working tool (the reader's own view) |
+| 6 | The design guide named the claw's light only "while the app starts" | fixed — the page claw added (`design-practices.md` §no glow) |
+| — | The light, the 0.2 s fade, the 1.77 s rhythm, contrast, less motion | right as built — leave |
+
+**His question (3 Nov 26): do the loaded pages look different without the wash?** Only their bare background: cards,
+buttons, pucks, words and colours are as they were; busy pages barely change, sparse ones (Admin, Help) lose the faint
+tint at the top and the hard line where it repeated. Pictures, before and after: `loaded-pages/` (phone and desktop, four
+pages; `scripts/handpass/talon-bg-loaded-pages.mjs`).
