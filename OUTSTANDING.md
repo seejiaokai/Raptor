@@ -90,7 +90,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Leave War**
 - [TALON-CLAW-BG] — every page's background the claw's plain dark, the one-frame raise out (D1614); the start-up claw on every start, no wait (D1615): BUILT and walked on pull request 628 (27/27 and 75/75); his iPhone look, then "merge live".
-- [TALON-CLAW-HANDOVER] — his yes (D1616): as the start-up claw goes it glides and shrinks onto the first screen's logo (the sign-in's today, the top bar's small claw after the M365 move); the top-bar version drawn for him first, then a small build.
 - [TALON-CLAW-SPOKEN] — the page claw says nothing to a screen reader; "Loading Leave War" / "Loading Tracker" as quiet status words — a small fix with the next claw change.
 - [LAZY-PAGE-LOAD-FAIL] — if the Leave War's or the Tracker's download fails (a weak signal, a tab open across an update) nothing catches it — worked out from the code, not seen; a message with Retry.
 - [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
@@ -246,9 +245,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
-
-### [TALON-CLAW-HANDOVER] The start-up claw and the sign-in's logo show at once (found 3 Nov 26, the design look of the claw)
-**What:** the start-up claw is 72px in the middle of the screen; the sign-in's logo is 32px at the top on a phone (42px on a desktop), 377px higher and 75px left on a phone (173px and 88px on a desktop), its light 16px against the claw's 26px. During the claw's 0.2 s fade both show, so a quick start (D1615: on every start) reads as a flicker. Picture: `raptor-port/docs/img/handpass/2026-11-03-talon-pages/look/1-handover-mid-fade.png` (the fade slowed to be pictured). **The look's recommendation:** when the sign-in has drawn, the claw glides and shrinks onto the sign-in's logo over the same 0.22 s (sliding and fading only, so it adds no time and keeps running on a busy phone) while the dark behind it fades; the sign-in's logo shows the moment the claw lands — the claw becomes the logo. Also asked: on a reload when signed in, should it settle onto the top bar's small claw instead? **Place:** a design question for him with its picture (D853), then a small build with the claw's walk.
 
 ### [TALON-CLAW-SPOKEN] The page claw says nothing to a screen reader (found 3 Nov 26, the design look of the claw)
 **What:** the page claw (`ui/pageclaw.ts raisePageClaw`) is put on the page as a picture labelled "TALON is loading", with no status words: a VoiceOver user who taps the Leave War hears nothing until the page appears. **To do:** quiet status words naming the page ("Loading Leave War", "Loading Tracker") and the page area marked busy while it is up; the start-up claw's label may stay. **Place:** a small fix with the next claw change (with [TALON-CLAW-HANDOVER]), red-first in `ui/pageclaw.test.tsx`.

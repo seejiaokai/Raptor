@@ -27,8 +27,8 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1618 | 4 Nov 26 | The start-up claw does not glide onto the logo: it keeps today's plain 0.2 s fade where it stands while the first screen appears, both logos briefly on screen; the hand-over of D1616 is not built. |
 | D1617 | 4 Nov 26 | The claw's round stays as it is — its three claws drawn, held, faded, and drawn again from nothing, with its short dark moment between rounds; the overlapping next round is not built. |
-| D1616 | 4 Nov 26 | As the start-up claw goes, it glides and shrinks onto the logo of the screen it hands over to — the sign-in's logo today, the top bar's small claw beside "142 TALON" once Microsoft's sign-in replaces the page — so the two never show at once; it adds no time; the top-bar version is drawn for him before it is built. |
 | D1615 | 3 Nov 26 | The start-up claw shows on every start of the app, from its first moment, with no 0.3 s wait, even when the app is up a moment later; it still goes the moment the app has drawn itself, never adding to the load. |
 | D1614 | 3 Nov 26 | Every page's background is the claw's plain dark: the faint blue wash at the top of the page goes, everywhere, so the moment before a slow page's claw and the claw look the same and the claw simply appears; the claw's one-frame-early raise (D1612) is taken out, so no time is added. |
 | D1611 | 3 Nov 26 | The loading claw over a slow page shows from the tap, with no 0.3 s wait; only the pages measured to go blank raise it — the Leave War and the Tracker, on their first open after sign-in — so a page that opens at once never shows it. |

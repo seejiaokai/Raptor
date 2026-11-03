@@ -6852,10 +6852,9 @@ round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the 
 - **Still and whole for a reader who asked for less motion**, removed at once with no fade.
 - **Its round stays as built (D1617, his "no, I like how it is now", 4 Nov 26):** drawn, held, faded and drawn again from
   nothing, the short dark moment between rounds kept — the overlapping next round of the design look was not taken.
-- **To build — the hand-over (D1616, 4 Nov 26, filed as [TALON-CLAW-HANDOVER]):** as it goes, the claw glides and shrinks
-  onto the logo of the screen it hands over to — the sign-in's logo today, the top bar's small claw once Microsoft's sign-in
-  replaces the page — in the same 0.22 s, any claw not yet drawn finishing on the way; less motion keeps the plain removal.
-  Until then: today's fade where it stands, both logos briefly on screen.
+- **Its hand-over stays a plain fade (D1618, his "No change", 4 Nov 26):** the claw fades where it stands in 0.2 s while
+  the first screen appears, both logos briefly on screen; the glide onto the logo (D1616, replaced) was drawn for him and
+  not taken.
 - Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
   1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
 
