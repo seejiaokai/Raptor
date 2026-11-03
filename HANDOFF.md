@@ -21,15 +21,15 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/week-cross-end-cards -->
-### `claude/week-cross-end-cards` — [WEEK-CROSS-END-CARDS]: the feel mock-up, before any plan is settled — written 3 Nov 26 — verify before use
-- **Where it started:** his "start [WEEK-CROSS-END-CARDS] — plan it with me first … show me a mock up to test the feel first before building". Pull request 621 (the week swipe) is merged; its block was removed here, its leftovers filed.
-- **Done:** a swipeable mock-up of the phone's Edit Schedule from real pictures (three weeks, 6–26 Jul; a switch for the end card: preview, preview dimmed, full day), published to him privately as an Artifact — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf. Page and pictures `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/mock/`, their script `raptor-port/scripts/handpass/ws-endcards-mock.mjs`. What drawing it showed is in the item (four requirements). One walk trap written into `raptor-port/docs/walk-scripts.md` §4: a CDP finger in headless Chromium never ends the browser's own scroll.
-- **His rulings:** D1574 (the full-day end card, chosen by feel) and D1575 (the load moves nothing on screen — from his recording; fixed in the mock-up, version 2, measured still to the pixel). Whether the desktop does the same was put to him with a picture (`raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/desktop/`), recommended no.
-- **Unfinished:** everything of the build. Waiting on him: the desktop answer, then the plan (how a full day of the other week is drawn ahead without slowing a week's load, its cost, the FULL check), then the build. Nothing in `raptor-port/src` changed.
-- **Branch:** `claude/week-cross-end-cards`, cut from `main` at the merge of pull request 622; no pull request yet (it opens when the build starts — D1086).
-- **Running when written:** this chat's preview on port 4237 and a picture server on 4239 (both stopped at the end).
-- **Note:** the scheduler rulings file (`.claude/rules/decisions/scheduler.md`) now sits within 16 bytes of its size tripwire — the next ruling there needs the area split or the tripwire raised with its reason (the document check says how), never a trim.
-- **Pick up here:** the build plan (`raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`), its fresh read, then his approval before any code. The desktop answered: stays as it is (D1576).
+### `claude/week-cross-end-cards` — [WEEK-CROSS-END-CARDS]: drawn, tried, set aside — written 3 Nov 26 — verify before use
+- **Where it started:** his "start [WEEK-CROSS-END-CARDS] — plan it with me first … show me a mock up to test the feel first".
+- **What happened:** a swipeable feel mock-up of real pictures (published to him privately — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf); he chose the full-day end card (D1574), had a 12 px jump at Monday's load fixed from his recording (D1575), kept the desktop as it is (D1576); the plan was written and read by a fresh Opus reader (eleven findings folded in, cost three to four days); he then kept the cross as built (D1577, replacing the three) and the item is archived, closed unbuilt. Kept for a return: the mock-up `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/`, its scripts `raptor-port/scripts/handpass/ws-endcards-mock.mjs` and `ws-endcards-desktop-pic.mjs`, the plan `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`.
+- **Filed from his questions:** [ONE-LIVE-WEEK-WEIGH] (whether the app should hold several weeks at once — weighed at the database step; recommended keep) and [DB-WEEK-AHEAD] (fetch the neighbouring weeks ahead at the database step so a cross never waits on the network). One walk trap written to `raptor-port/docs/walk-scripts.md` §4 (a CDP finger in headless Chromium never ends a native scroll); skill log observation 773.
+- **Unfinished:** nothing of the job. Nothing in `raptor-port/src` changed.
+- **Branch:** `claude/week-cross-end-cards`; its pull request carries notes, the mock-up and two picture scripts — not notes-only (the scripts and the skill log), so it waits for his "merge live".
+- **Note:** the scheduler rulings file (`.claude/rules/decisions/scheduler.md`) sits close to its size tripwire — a later ruling there may need the area split or the tripwire raised with its reason, never a trim.
+- **Running when written:** nothing.
+- **Pick up here:** his "merge live" for this pull request; then a new job from `## Next, in order`.
 <!-- /now -->
 ## Next, in order
 
