@@ -5786,7 +5786,7 @@ owner's ask). Each late input now carries its OWN control on the board.
 everyone, every scheduler and member, kept across a reload, a sign-out and a week change; the session-only `LATEOFF`
 registry below goes. The chip, the tap to drop and to restore, and the admin-only write stay. BUILT 3 Nov 26: the drop is the input's own `lateOff`, written by its own command `inputs.lateOff` (one Undo step, a line in the change history "· LATE mark: shown → hidden"); it stamps no change time and is no field the published-day comparison reads, and every surface reads it from the live record by id (`state/view.ts lateShown`).]*
 
-*[NARROWED 3 Nov 26 by D1620: a member's own later change — a save that writes the input a new change date — takes the drop off in the same change, so LATE shows again if that change is late; a scheduler's change keeps the drop. The commit gate lets a member clear it only in such a save, never set it.]*
+*[NARROWED 3 Nov 26 by D1620: a member's own later change of his input — a save from its window, or a person he adds, the same day too — takes the drop off in the same change, so LATE shows again if that change is late; a scheduler's change, a medical that cuts his leave, an OIL answer alone and a document added keep it. The commit gate lets a member clear it only in a save that stamps his input anew (its change date or time, or a person's own date), never in one that takes him out of it, and never set it.]*
 
 - **The chip rides the ITEM cell of a live board input row**, on BOTH the
   Personal Inputs and the Unavailable panels — the two surfaces the owner named

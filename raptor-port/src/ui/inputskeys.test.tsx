@@ -318,6 +318,19 @@ describe('Escape answers the newest layer only (the bug check of 3 Nov 26)', () 
     await key(document.body, 'Escape')
     expect(tid('win-inputsday'), 'the day closes').toBeNull()
   })
+  /* the fix round's read (F4): the question was left armed on a row Undo took away — Redo bringing the row back brought
+     the question back with it, unasked */
+  it('S01d: the asked-about input taken by Undo and brought back by Redo — the question does not come back', async () => {
+    const { redo } = await import('../state/store')
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask'), 'premise: it asks').toBeTruthy()
+    await act(async () => { undo(); notify() })
+    await act(async () => { redo(); notify() })
+    expect(tid('idy-row-' + r.iid), 'premise: Redo brought it back').toBeTruthy()
+    expect(tid('idy-ask'), 'nobody asked again').toBeNull()
+  })
   /* (F-A4) the unsaved question stayed armed across a swap: the input opened next, nothing typed, said it had changes */
   it('S07b: the unsaved question up, another input opened through the swap question — the new one asks nothing', async () => {
     const typeIn = async (el: HTMLInputElement, v: string) => act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) })

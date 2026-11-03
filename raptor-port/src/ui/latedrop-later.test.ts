@@ -48,12 +48,14 @@ describe('D1620 — his own later change takes the drop off', () => {
     scrap(r)
   })
 
-  it('a save on the same day writes the same change date: the drop stays', () => {
+  /* the fix round's read (3 Nov 26): his second change on the same day is a new change too — the ruling says "changes his
+     input again", and the drop the scheduler made was of the change before it */
+  it('a save on the same day is a new change too: the drop goes', () => {
     const r = plant({ mod: nowStamp() })
     asMember()
     const d = draftOf(r); d.remarks = 'D1620 — same day'
-    expect(commitInputEdit(r, d)).toBe(true)
-    expect(r.lateOff, 'the scheduler has seen this date already').toBe(true)
+    expect(commitInputEdit(r, d), 'his save goes through the commit gate').toBe(true)
+    expect(!!r.lateOff, 'the drop went with it').toBe(false)
     scrap(r)
   })
 

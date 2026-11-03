@@ -1204,11 +1204,11 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
     r.s = s; r.e = e; r.date = date; r.remarks = rem
     /* the date the late mark reads — left as it is by a scheduler's change made from a row on the schedule (D741, D742) */
     if (!sched && !docsOnly) {
-      const was = r.mod
       r.mod = nowStamp()
-      /* …and a member's save that writes a NEW change date takes a scheduler's LATE drop off (owner D1620 — a new late
-         change brings the mark back); a scheduler's own change keeps it. The commit gate allows exactly this. */
-      if (r.mod !== was && !canEditSched()) delete r.lateOff
+      /* …and a member's own change of his input takes a scheduler's LATE drop off (owner D1620 — a new late change brings
+         the mark back), the same day too: the drop was of the change before; a scheduler's own change keeps it. The save
+         stamps the record's change time anew (stampChanged, below), which is what the commit gate checks. */
+      if (!canEditSched()) delete r.lateOff
     }
     /* THE TITLE FOLLOWS THE DRAFT ([INPUT-OWN-TITLE]): written where one was typed, and the key REMOVED where the box
        was put back to the kind's own name, emptied, or the kind retyped to one that takes no title — a leave never
@@ -2065,8 +2065,8 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
         /* only the person added can be late: his own date, where this save is the input's own window and falls after
            the input's (a change from the schedule never makes anyone read late — D741) */
         if (st && !schedSide(opts)) { const today = nowStamp(); if (String(inputStampISO(r) || '') < today) st.mod = today }
-        /* a person a member adds on a new change date takes a scheduler's LATE drop off (owner D1620) */
-        if (st && st.mod != null && !scheduler) delete r.lateOff
+        /* a person a member adds is a change of the input: it takes a scheduler's LATE drop off (owner D1620) */
+        if (added.length && !scheduler && !schedSide(opts)) delete r.lateOff
         for (const p of added) putPerson(r, p, st)
         /* …and an input filed for ALL AVAIL / ALL is never under Unavailable — it goes back onto the programme (the
            same rule the one-person save keeps, commitInputEdit; found by the re-expressed tests, 12 Oct 26) — a

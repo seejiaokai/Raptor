@@ -232,6 +232,13 @@ describe('the commit gate: a member\'s command never sets or clears a dropped LA
     expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, date: 'Jul 15', mod: '2026-07-12' })), 'a new change, the drop gone with it').toBeNull()
     expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, date: 'Jul 15' })), 'no new change date: still his to keep').toBeTruthy()
     expect(ownershipViolation(env({ ...base }, { ...base, lateOff: true, mod: '2026-07-12' })), 'never his to put on').toBeTruthy()
+    /* the fix round's read: the same day is a new change too — his save stamps the record's change time anew */
+    expect(ownershipViolation(env({ ...base, modAt: 1000, lateOff: true }, { ...base, modAt: 2000, remarks: 'later the same day' })), 'the same day, a new save').toBeNull()
+    /* …and a person's own date in an input of several is matched by the person, not by place in the list: taking himself
+       out of a shared input is no new change of it, so it never takes the drop off for the others */
+    const shared = { ...base, people: [{ p: 'bane', mod: '2026-07-10' }, { p: 'stiff', mod: '2026-07-10' }], modAt: 1000, lateOff: true }
+    delete (shared as any).person
+    expect(ownershipViolation(env(shared, { ...shared, people: [{ p: 'stiff', mod: '2026-07-10' }], lateOff: undefined, modAt: 2000 })), 'leaving it, the drop taken off').toBeTruthy()
   })
 
   /* The security read of 3 Nov 26 (finding 1): a NEW record of his — an MC over his own leave — was compared with the marks

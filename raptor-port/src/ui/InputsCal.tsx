@@ -159,7 +159,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     /** puts the page's filters back to none — "Clear filters" in a day whose inputs they all hide (D731 (2)) */
     onClearFilters?: () => void }) {
   const mode = 'member' as const
-  useVersion()
+  const ver = useVersion()
   useWarFacts()
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
@@ -211,6 +211,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     window.addEventListener('keydown', esc, true)
     return () => window.removeEventListener('keydown', esc, true)
   }, [delAsk])
+  /* …and a question whose row went another way — taken by an Undo — is put away with it, so a Redo that brings the row
+     back does not bring the question back unasked (the fix round's read, 3 Nov 26). Read after every change of the store. */
+  useEffect(() => {
+    if (delAsk != null && !document.querySelector('[data-testid="idy-ask"]')) setDelAsk(null)
+  }, [delAsk, ver])
   /* WHAT THE DELETE QUESTION ASKED, kept from the moment it was put (Astra's scenario design of the second batch,
      10 Oct 26 — scenario 9; an older fault of this door). The question's words were worked out again at every paint
      from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch
