@@ -117,6 +117,7 @@ export function DocField({ ids, onIds, viewRow }: { ids: string[], onIds: (ids: 
   </span>
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the ONE window every door opens (the Inputs page, the week, the board): one draft, its questions and its record-follow kept together so a Save can never write from a half; split it and the draft's rules split with it — a design job of its own, not a tidy-up; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch)
 export function InputEditor() {
   useVersion()
   const r = INPEDIT
@@ -222,6 +223,7 @@ export function InputEditor() {
      took its dates. A first tap ON the saved day leaves the dates as they were, and "not different from what was
      saved" read as "not touched": a move made behind the window then replaced his start without a word (Sol 3). */
   const [calKey, setCalKey] = useState(0)
+  // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- read by the record-follow effect after a paint (below), beside the draft it qualifies; kept as state so the two can never disagree in one render; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch)
   const [datesPicked, setDatesPicked] = useState(false)
   /* THE INPUT IS ONE RECORD WITH ITS PEOPLE (the one-rule build, step 2 (g) — owner D756): `rows` is that record while
      it is live (one, or none), and `recPpl` who is in it. "Several people" is asked of the PEOPLE, never of a count of
@@ -926,6 +928,7 @@ export function InputEditor() {
           {/* an upchit is ONE date (the write path refuses a range), picked
               plainly — defaulting to today, editable for a certificate
               signed a day or two back (owner, 27 Aug 26) */}
+          {/* eslint-disable-next-line react-doctor/label-has-associated-control -- it wraps the app's own date box (DateBox), which names its control itself (its `label`); moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */}
           {ctx === 'up' && <label className="inped-f">
             <span className="inped-k">Date</span>
             {/* the app's own date box (owner D796, D797 — over its form) */}
@@ -1117,6 +1120,7 @@ export function InputEditor() {
         {mineRow && draft && (
           <div className="inped-own">
             {takeOut && (
+              /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
               <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">
                 <span className="inped-ask-q">Take yourself out of this input? It stays for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl.filter(p => !isMe(p))) : `the other ${recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}`}.</span>
                 <button type="button" className="abtn danger" data-testid="inped-takeout-yes" autoFocus onClick={takeMeOut}>Take me out</button>
@@ -1126,6 +1130,7 @@ export function InputEditor() {
           </div>
         )}
         {delAll && (
+          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
           <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?" ref={delAsk}>
             <span className="inped-ask-q">Delete this input for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl) : `all ${recPpl.length} people`}?</span>
             <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
@@ -1218,6 +1223,7 @@ export function InputEditor() {
       <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
         {swap && (
+          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
           <div className="inped-ask" data-testid="inped-swap" role="alertdialog" aria-label="Unsaved changes">
             <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</span>
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
@@ -1263,6 +1269,7 @@ export function InputEditor() {
     {sheets}
   </>)
   return (
+    // eslint-disable-next-line react-doctor/no-static-element-interactions -- a press on the veil around the schedule's pop-up closes it (a click outside, D1 of the pop-up rule); the keyboard closes it with Escape; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch)
     <div className="airpop" id="inpEditPop" hidden={!open} ref={pop}
       onClick={e => { if (clickedOutside(e, 'inpEditPop')) close() }}>
       <div className="airpop-box inpedbox" ref={box} tabIndex={-1} style={{ outline: 'none' }}>
