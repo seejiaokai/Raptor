@@ -7467,3 +7467,29 @@ not reproduced or explained by the host; nothing about a warning. **To do:** fin
 whether a pending chip belongs on a look at an issued version at all. **Place:** low — with the next change to the
 changes window or the version look.
 
+
+*Moved here 2026-11-03 by backlog-archive.mjs ([WEEK-SWIPE-CROSS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md`.*
+
+### [WEEK-SWIPE-CROSS] On his iPhone the swipe from one week into the next is abrupt, and sometimes does not cross at all (his recording, 3 Nov 26)
+**His words (3 Nov 26, 00:05, a 7.7-second iPhone recording of Edit Schedule on the preview):** *"could u fix the transition
+between week when I slide between them? Sometimes it triggers but it's very abrupt, not smooth. Sometimes it doesn't allow me
+to go to the next week. Like Monday to Sunday."* What the recording shows, a quarter-second a frame
+(`raptor-port/docs/img/handpass/2026-11-03-week-swipe/owner/rec-*.png`): on Monday 13 Jul a swipe right puts up Sunday 12 Jul
+in one frame with no slide (0.75 → 1.0 s); later, on Monday again, several swipes right only bounce the day and leave him on
+Monday (4.5 → 6.25 s), until one jumps to Sunday, again with no slide (6.5 s). Swipes between days inside the week slide as
+normal. **This is a fault in a settled design, not a new one:** since 22–24 Aug 26 the phone's swipe is continuous across
+weeks and the cross GLIDES — two frozen one-day copies slide, the real week covered behind them (`ui/weekglide.ts`, `ui/pan.ts`
+§CONTINUOUS SWIPE ACROSS WEEKS; `scheduler.md` §Week navigation & cross-week continuity — "the cross GLIDES"). On his iPhone
+the glide is not seen, and the edge swipe is missed. Both are to be found on Safari's engine before any fix (the
+debugging guide), each fixed red first. **Place:** the night of 3 Nov 26, job 1, on `claude/week-swipe-pdf-print`.
+**BUILT the night of 3 Nov 26 (commit `4b377ec6e`):** four causes of the jump and three of the missed cross, each fixed red first — the
+builder's report in `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1; the lesson `bug-check-order.md` §7.11 lesson 20.
+**WALK-checked** (pull request 621): the walk's one fault (a second swipe while the week stood short of Monday) and the read's (a page scroll drifting sideways) fixed red first, every re-walk green (the sheet §6–§10). **His iPhone, the morning after (05:41, 06:00):** Tuesday → Monday and straight on still only bounced Monday; a log on his screen (`?swdebug`) showed Safari giving the page no touch at all for a swipe begun while the strip still glides into its snap — fixed by reading the strip's own pull past its end (commit `c40723cc4`, the sheet §11; lesson 21). Seen on his recordings, not changed: a swipe to Saturday made just after landing on Sunday sometimes springs back to Sunday — the touch is read and stays, as it should; the snap back is Safari's (the sheet §11). **His 07:32 and 08:35 recordings:** a small bounce before the slide (a trial freeze felt the same, taken out); a swipe toward Saturday straight after landing on Sunday sprung back by Safari's leftover spring — the real week now cannot scroll under the slide (the sheet §12). Known, not fixed (the fourth read's finding 2): a cross on Edit Schedule, a switch to View-only and a cross there within half a second would leave the Edit week unscrollable until a reload — practically unreachable. Left: his iPhone look and "merge live".
+
+
+*Moved here 2026-11-03 by backlog-archive.mjs ([BOARD-OPEN-BY-KEYS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md`.*
+
+### [BOARD-OPEN-BY-KEYS] The Scheduler Board cannot be opened from the keyboard (found 30 Oct 26 by [BOARD-ESCAPE-CLOSE]'s build; older; low)
+**BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
+On Edit Schedule's week the day's date that opens the board (`raptor-port/src/ui/html.ts`, the `.dt.sb-open` span) is not a stop for the keys and answers no key, so a keyboard user cannot open the board, and the design guide §2 (D812) says anything can be opened, used and closed without a mouse. Escape and ✓ Done now give the keyboard back to where it was when the board opened (`raptor-port/src/ui/SchedBoard.tsx`), which today is nowhere after a press on the date. **To do:** make the date a stop that Enter and Space open (role and focus ring as the week's other controls), checked against the schedule's own Tab route (D551–D555, D597 — the Tab route walks text boxes only, so its order must not change) and the reference copy of the view week (the date is on the EDIT week only). **Place:** low — with the next keyboard batch; a picture first if the ring shows on the week.
+

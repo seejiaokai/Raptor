@@ -70,7 +70,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [WEEK-SWIPE-CROSS] — on his iPhone the swipe from one week into the next jumps with no slide, and sometimes only bounces (his recording, 3 Nov 26): BUILT and WALK-checked the night of 3 Nov 26 (pull request 621, the evidence `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md`); his iPhone look and "merge live" next.
 - [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes; set for the night of 3 Nov 26, then skipped on his word that night ("Skip the pdf") — waits for a later batch.
 - [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
@@ -152,7 +151,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
-- [BOARD-OPEN-BY-KEYS] — the Scheduler Board cannot be opened from the keyboard: the day's date that opens it takes no keys (found 30 Oct 26; low). **BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); archive once live.
 - [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
@@ -165,6 +163,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); his to place — nothing built.
+- [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -1400,22 +1400,6 @@ PR merged 29 Sep 26 (PR #469), so the change is ready to picture whenever he ask
 `claude/lw-drag-flaky-tests-batch-c0719b`): the "Other ways to bid" slide's check line is already corrected in `scripts/itflow/content.mjs`
 (it said the drag "can go below zero without asking") — the deck and PDF carry the old line until the rebuild he asks for.
 
-### [WEEK-SWIPE-CROSS] On his iPhone the swipe from one week into the next is abrupt, and sometimes does not cross at all (his recording, 3 Nov 26)
-**His words (3 Nov 26, 00:05, a 7.7-second iPhone recording of Edit Schedule on the preview):** *"could u fix the transition
-between week when I slide between them? Sometimes it triggers but it's very abrupt, not smooth. Sometimes it doesn't allow me
-to go to the next week. Like Monday to Sunday."* What the recording shows, a quarter-second a frame
-(`raptor-port/docs/img/handpass/2026-11-03-week-swipe/owner/rec-*.png`): on Monday 13 Jul a swipe right puts up Sunday 12 Jul
-in one frame with no slide (0.75 → 1.0 s); later, on Monday again, several swipes right only bounce the day and leave him on
-Monday (4.5 → 6.25 s), until one jumps to Sunday, again with no slide (6.5 s). Swipes between days inside the week slide as
-normal. **This is a fault in a settled design, not a new one:** since 22–24 Aug 26 the phone's swipe is continuous across
-weeks and the cross GLIDES — two frozen one-day copies slide, the real week covered behind them (`ui/weekglide.ts`, `ui/pan.ts`
-§CONTINUOUS SWIPE ACROSS WEEKS; `scheduler.md` §Week navigation & cross-week continuity — "the cross GLIDES"). On his iPhone
-the glide is not seen, and the edge swipe is missed. Both are to be found on Safari's engine before any fix (the
-debugging guide), each fixed red first. **Place:** the night of 3 Nov 26, job 1, on `claude/week-swipe-pdf-print`.
-**BUILT the night of 3 Nov 26 (commit `4b377ec6e`):** four causes of the jump and three of the missed cross, each fixed red first — the
-builder's report in `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1; the lesson `bug-check-order.md` §7.11 lesson 20.
-**WALK-checked** (pull request 621): the walk's one fault (a second swipe while the week stood short of Monday) and the read's (a page scroll drifting sideways) fixed red first, every re-walk green (the sheet §6–§10). **His iPhone, the morning after (05:41, 06:00):** Tuesday → Monday and straight on still only bounced Monday; a log on his screen (`?swdebug`) showed Safari giving the page no touch at all for a swipe begun while the strip still glides into its snap — fixed by reading the strip's own pull past its end (commit `c40723cc4`, the sheet §11; lesson 21). Seen on his recordings, not changed: a swipe to Saturday made just after landing on Sunday sometimes springs back to Sunday — the touch is read and stays, as it should; the snap back is Safari's (the sheet §11). **His 07:32 and 08:35 recordings:** a small bounce before the slide (a trial freeze felt the same, taken out); a swipe toward Saturday straight after landing on Sunday sprung back by Safari's leftover spring — the real week now cannot scroll under the slide (the sheet §12). Known, not fixed (the fourth read's finding 2): a cross on Edit Schedule, a switch to View-only and a cross there within half a second would leave the Edit week unscrollable until a reload — practically unreachable. Left: his iPhone look and "merge live".
-
 ### [PDF-PRINT-TWICE] Edit Schedule's "Export as PDF" asks the browser to print twice — the first time on a blank page (found 29 Sep 26)
 **SEEN ON HIS IPHONE, 1 Nov 26 — and worse than this item says:** one press of Export as PDF opened the iPhone's print preview on
 the APP SCREEN itself — 4 pages of the working copy (DRAFT, "Live working copy", the open Aircrew panel, the "Print dialog opened"
@@ -2022,7 +2006,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | A leave of several days opens whole in its bid window, with D1289's cyan mark ([LW-WHOLE-LEAVE-WINDOW], `claude/lw-whole-leave-window`, pull request 582) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
 | The night of 30 Oct 26, job 2 (`claude/lw-small-fixes-1030`): `[LW-DELETED-NO-ROW-APPROVE]`, `[LW-HALF-DAY-WORDS-LEFT]`, `[LW-M1-READ-LEFTOVERS]` (2), `[LW-MONTH-MEMO-UNPINNED]` — an approval that writes an input (saved data) | one fresh, blind Opus reader of the finished code (D790, D903) | Astra's and Sol 6.1's two independent reads (D590) |
 | The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
-| The night of 3 Nov 26 (`claude/week-swipe-pdf-print`): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks), the keyboard leftovers (`[BOARD-OPEN-BY-KEYS]`, `[VEILED-WINDOWS-BAR]`'s Escape part) and the schedule's React Doctor warnings — WALK for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The night of 3 Nov 26 and the morning after (`claude/week-swipe-pdf-print` — the morning: the swipe Safari gives no touch for, the week stilled under the slide; four fresh Opus reads in all): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks), the keyboard leftovers (`[BOARD-OPEN-BY-KEYS]`, `[VEILED-WINDOWS-BAR]`'s Escape part) and the schedule's React Doctor warnings — WALK for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -2125,6 +2109,29 @@ the keys — the keyboard stays on the button and the menu is added at the page'
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
 (3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
 
+### [WEEK-CROSS-END-CARDS] A smoother cross between weeks on the phone: a preview card at each end of the strip (Fable, 3 Nov 26 — his idea to place)
+**His words (3 Nov 26, after the swipe was fixed, with a recording):** *"Fable see if there's a smoother way."* Today the swipe inside
+a week is Safari's own scroll (120 frames a second on his iPhone, at his finger's speed), but the cross into another week is the
+app's own slide of two pictures (`ui/weekglide.ts`, about 60 frames, a fixed 340 ms), started by reading a pull past the end
+(`ui/pan.ts` — the touch reading and, where Safari gives the page no touch, `pullPastEnd`); every bounce he reported on 3 Nov 26
+came from Safari and the app moving the day at once. **The design:** on a phone the strip carries one read-only preview card at each
+end — last week's Sunday before Monday, next week's Monday after Sunday (drawn as the desktop's next-week preview, `ui/peek.ts`);
+a swipe past Monday is an ordinary scroll onto that card, and the moment the strip comes to rest there the week is loaded in place
+under it, landing on that day, so nothing slides and nothing springs back. **Its costs, as put to him:** the end card is plainer than
+the live day for about a tenth of a second (no issues bar, no sign-off box) until the load; a tap on it does nothing in that moment;
+about a day's build and a full bug check; the swipe reading and the slide retire on the phone (the desktop's arrows untouched).
+**The picture he was shown:** `raptor-port/docs/img/handpass/2026-11-03-week-swipe/smoother/smoother-cross.png` (its script
+`raptor-port/scripts/handpass/ws-smoother-pictures.mjs`). Changes the settled cross (`scheduler.md` §Week navigation — "the cross
+GLIDES", 23–24 Aug 26), so it needs his word. **Place:** his to place.
+
+### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
+The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
+baseline per burst and restoring it on `lastRoot` only. A cross on Edit Schedule, a switch to View-only Sched and a cross there before
+the first slide ends (about half a second) restores only View-only Sched's week: Edit Schedule's keeps its touches off (older than
+3 Nov 26) and its scrolling off (since 3 Nov 26) until a reload. **Fix:** keep every week touched in a burst and restore each at the
+last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
+unreachable; with the next change to the slide.
+
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
 `62556cdde` failed one job, `geometry (lw-desktop 2/2)`: `e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the
@@ -2132,10 +2139,6 @@ whole grid down and back, within its limits" ran out of time at 31.8s and again 
 `f5c1b0046`, passed it with everything else. D84: a Leave War desktop timeout gets one re-run, not an investigation — the next run
 was that. **To do:** if it fails again, make it wait on what it needs, not on time (D87), and measure its length on GitHub's machines.
 **Place:** low — watch.
-
-### [BOARD-OPEN-BY-KEYS] The Scheduler Board cannot be opened from the keyboard (found 30 Oct 26 by [BOARD-ESCAPE-CLOSE]'s build; older; low)
-**BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
-On Edit Schedule's week the day's date that opens the board (`raptor-port/src/ui/html.ts`, the `.dt.sb-open` span) is not a stop for the keys and answers no key, so a keyboard user cannot open the board, and the design guide §2 (D812) says anything can be opened, used and closed without a mouse. Escape and ✓ Done now give the keyboard back to where it was when the board opened (`raptor-port/src/ui/SchedBoard.tsx`), which today is nowhere after a press on the date. **To do:** make the date a stop that Enter and Space open (role and focus ring as the week's other controls), checked against the schedule's own Tab route (D551–D555, D597 — the Tab route walks text boxes only, so its order must not change) and the reference copy of the view week (the date is on the EDIT week only). **Place:** low — with the next keyboard batch; a picture first if the ring shows on the week.
 
 ### [VEILED-WINDOWS-BAR] The other veiled windows keep the bar covered; three things do not close on Escape (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s roll-call; older; low)
 **The Escape part BUILT the night of 3 Nov 26 (commit `e76f32440`):** the board's small menus (and the duty role list, built by the same menu), the Traffic window and the day-details window close on Escape, newest first, the board staying open, the keys back on their button; a Traffic line being typed is saved as ✕ saves it. Which windows cover the top bar is unchanged — that part stays open. The report: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
