@@ -67,6 +67,23 @@ describe('D1620 — his own later change takes the drop off', () => {
     scrap(r)
   })
 
+  /* the second fix round's read (3 Nov 26): the gate's "leaving never clears it" refused the filer's own hand-over — his
+     input given to another man, or changed with himself taken out — which the app allows him (D660) */
+  it('his input handed to another man, or changed with himself taken out, still saves', () => {
+    const r = plant({ people: [{ p: 'bane', by: 'bane', mod: '2026-07-14' }] })
+    delete r.person
+    asMember()
+    expect(commitInput(r, draftOf(r), ['stiff']), 'handed to Stiff').toBe(true)
+    expect(!!r.lateOff, 'a change of the input: the drop goes').toBe(false)
+    scrap(r)
+    const r2 = plant({ people: [{ p: 'bane', by: 'bane', mod: '2026-07-14' }, { p: 'stiff', by: 'bane', mod: '2026-07-14' }] })
+    delete r2.person
+    asMember()
+    const d = draftOf(r2); d.remarks = 'D1620 — moved, and I am out'
+    expect(commitInput(r2, d, ['stiff']), 'changed, himself taken out').toBe(true)
+    scrap(r2)
+  })
+
   it('a person he adds to his input of several, late, takes the drop off too', () => {
     const r = plant({ people: [{ p: 'bane', by: 'bane', mod: '2026-07-14' }] })
     delete r.person

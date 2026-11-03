@@ -902,15 +902,16 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
     /* THE LATE DROP: never his to put on; his own later change takes it off (owner D1620, 3 Nov 26 — "as recommended": a new
        late change brings the mark back) — so he may clear it only in a save that stamps his input anew: its change date or
        change time (`mod`, `modAt` — the same day is a new change too), or a person's own date in an input of several,
-       matched by the person; and never in a save that takes him out of it (the fix round's read: leaving is no change of
-       the input for the others). */
+       matched by the person; and never in a save that is nothing but his own leaving (the fix round's read: leaving is
+       no change of the input for the others) — a filer's hand-over, or a change made as he leaves, is a change of it (the
+       second fix round's read: the wider test refused those, which the app allows him — D660). */
     if (!!f.lateOff && !(src && src.lateOff)) return `a scheduler's mark on an input`
     if (!f.lateOff && src && src.lateOff) {
       const dateOf = (x: any) => new Map<string, unknown>(peopleOf(x).map((e: any) => [String(e && e.p), (e && e.mod) ?? null] as [string, unknown]))
       const was = dateOf(src)
       const anew = !same(f.mod, src.mod) || !same(f.modAt, src.modAt)
         || [...dateOf(f)].some(([p, d]) => d != null && (!was.has(p) || was.get(p) !== d))
-      if (!anew || (holds(src, pid) && !holds(f, pid))) return `a scheduler's mark on an input`
+      if (!anew || (holds(src, pid) && !holds(f, pid) && ownPart(pid, src, { ...f, lateOff: src.lateOff }))) return `a scheduler's mark on an input`
     }
     /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it
        stands — or his Reject does — a member's change leaves it where it is: under Unavailable, parked, or on the
