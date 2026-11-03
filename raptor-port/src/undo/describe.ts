@@ -17,7 +17,7 @@
      page", "suspending Outlaw's sign-in" (Fable 3e, S23).
 
    The bubble prepends "Undid: " / "Redid: "; this returns the bare label. */
-import { leadOf, idsOf } from '../engine/inputs'
+import { leadOf, idsOf, inpLabel } from '../engine/inputs'
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
@@ -383,6 +383,19 @@ function oneInputWords(entry: UndoEntry): string | null {
   if (JSON.stringify(b.oil ?? null) !== JSON.stringify(a.oil ?? null) && rest(b) === rest(a)) return 'an OIL answer'
   return null
 }
+/* ONE INPUT NAMED BY ITS PERSON AND KIND (owner D1582, 3 Nov 26): "Undid: Drifter’s ISR brief", "Undo — Ranger’s OL" —
+   never "a personal input". Where it has its own title the title stands for its kind, as on its card (D716 — inpLabel); an
+   input of several people is named by its kind and how many are in it. Read off the step's own record. */
+function oneInputNamed(entry: UndoEntry): string | null {
+  const ch = entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order')
+  if (ch.length !== 1) return null
+  const rec: any = ch[0]!.after || ch[0]!.before
+  if (!rec) return null
+  const label = inpLabel(rec), ids = idsOf(rec).map(String)
+  if (!label) return null
+  if (ids.length === 1) { const who = nameOf(ids[0]!); return who ? `${who}’s ${label}` : label }
+  return ids.length > 1 ? `${label} for ${ids.length} people` : label
+}
 function inputsCount(entry: UndoEntry): number {
   return entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order').length
 }
@@ -448,7 +461,13 @@ export function describeEntry(entry: UndoEntry): string {
   }
   /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
      input's row, or its OIL answer, read "Undid: a personal input" — true, and no help. Read off the entry's own change. */
-  if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') { const w = oneInputWords(entry); if (w) return w }
+  if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') {
+    const w = oneInputWords(entry); if (w) return w
+    /* one input: whose and what (D1582); several at once: their count — "Undid: 3 inputs" */
+    const n = inputsCount(entry)
+    if (n === 1) { const named = oneInputNamed(entry); if (named) return named }
+    if (n > 1) return `${n} inputs`
+  }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }
   if ((entry.scope && entry.scope.module) === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)
