@@ -199,6 +199,22 @@ describe('a fired glide leaves nothing behind', () => {
      already-set styles as ITS baseline and restore to them, so the whole week
      stayed covered and the page clipped until a reload. The burst now shares
      one baseline, captured on the first glide and restored on the last. */
+  /* the fourth read's finding 1 (3 Nov 26): a narrow desktop window with classic scrollbars draws the week's own scrollbar
+     (it is hidden only above 820), so hiding sideways scrolling there shortened the week by that bar for the slide — and
+     there is no leftover spring to stop. Only a week whose scrollbar takes no room is stilled. */
+  it('a week whose own scrollbar takes room is not stilled — its height never jolts', () => {
+    vi.useFakeTimers()
+    setW(400); view.setWeekJump('mon')
+    const root = mkRoot(390)
+    Object.defineProperty(root, 'offsetHeight', { value: 815, configurable: true })
+    Object.defineProperty(root, 'clientHeight', { value: 800, configurable: true })
+    beginGlide(root)!()
+    expect(root.style.pointerEvents, 'still covered').toBe('none')
+    expect(root.style.overflowX, 'but its scrolling is left alone').toBe('')
+    vi.runAllTimers()
+    expect(root.style.overflowX).toBe('')
+  })
+
   it('two overlapping glides uncover the real week once, never restore it to covered', () => {
     vi.useFakeTimers()
     setW(400)

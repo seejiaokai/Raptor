@@ -57,3 +57,14 @@ switch all still arm; the originally reported case (easing in at ~0.06 px/ms) st
 3. **LOW — nothing pins (f)'s other half** (a cancel past the end, then an unseen further pull, crossing) — add one.
 Fixed in the next commit, the three tests with it (the first red first); the third fix round, the last (§5's cap) — no
 further read; what carries the rest: the 41 swipe tests and his iPhone look.
+
+## The narrow read of the week stilled under the slide, commit 59ce78210 — a fourth fresh Opus reader (3 Nov 26)
+14 / 14; no high, no medium. Clean: the finish always runs (the fallback timer beside the transition's end); reduced motion,
+a hidden page and a wide window set nothing; overlapping glides share one baseline; writes while hidden are allowed and the
+second landing write sits inside instant scrolling; hidden and auto give the same box; nothing else reads the inline value.
+1. **LOW — a narrow desktop window (820 wide or less) with classic scrollbars jolts by a scrollbar's height for the slide**
+   (the hidden-scrollbar rule applies only above 820). Fix: hide only where the week's scrollbar takes no room
+   (`offsetHeight − clientHeight` is 0) — fixed in the next commit, a test with it.
+2. **LOW — in theory, a cross on Edit Schedule, a switch to View-only and a cross there within half a second leaves the Edit
+   week unscrollable** (its touches off too — that half older than this change) until a reload; the fix would be to restore
+   every touched week at the last finish. Not fixed: practically unreachable; filed in [WEEK-SWIPE-CROSS].

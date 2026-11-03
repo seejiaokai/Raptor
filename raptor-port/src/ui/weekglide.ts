@@ -251,8 +251,10 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        a cross onto Sunday the real week was still moving half a second on — a few px past Sunday's end, Safari's spring from
        the pull that crossed carrying on after the landing was written, Sunday resting on the strip's very end — and a swipe
        toward Saturday in that half second was sprung back to Sunday. Under the slide the real week cannot scroll: Safari
-       stops its leftover movement there, and the finish lands the week and lets it scroll again, still. */
-    root.style.overflowX = 'hidden'
+       stops its leftover movement there, and the finish lands the week and lets it scroll again, still. Only where the
+       week's own scrollbar takes no room (a phone's floats over it): a narrow desktop window with classic scrollbars would
+       lose that bar's height for the slide, and has no spring to stop (the fourth read, 3 Nov 26). */
+    if (root.offsetHeight - root.clientHeight === 0) root.style.overflowX = 'hidden'
 
     let done = false
     const finish = () => {

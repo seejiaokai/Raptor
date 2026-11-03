@@ -10,9 +10,9 @@
      "landed sl 2328, Mon -2316, Sun 24",
      "leaving copy first 12 vs day stood 12 (Δ 0)",
      "arriving copy ended 24 vs real day 24/24 (Δ 0)",
-     "leaving copy: 12 -> 414, max 3.06px/ms, biggest single step 49.6px (13ms); arriving copy: -378 -> 24, max 3.06px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
-     "arriving copy stood on screen at 24 for 2 frames (40ms) under the leaving one before it jumped to -378",
-     "copies up 424ms, first copy 94ms after the lift"
+     "leaving copy: 12 -> 414, max 2.77px/ms, biggest single step 49.6px (17ms); arriving copy: -378 -> 24, max 2.77px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 24 for 2 frames (54ms) under the leaving one before it jumped to -378",
+     "copies up 426ms, first copy 80ms after the lift"
     ],
     "from": "13/07/2026",
     "fin": {
@@ -27,7 +27,7 @@
     "logs": [
      {
       "moves": 10,
-      "startToLiftMs": 524
+      "startToLiftMs": 509
      }
     ]
    }
@@ -37,9 +37,9 @@
    "landed sl 2328, Mon -2316, Sun 24",
    "leaving copy first 12 vs day stood 12 (Δ 0)",
    "arriving copy ended 24 vs real day 24/24 (Δ 0)",
-   "leaving copy: 12 -> 414, max 3.06px/ms, biggest single step 49.6px (13ms); arriving copy: -378 -> 24, max 3.06px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
-   "arriving copy stood on screen at 24 for 2 frames (40ms) under the leaving one before it jumped to -378",
-   "copies up 424ms, first copy 94ms after the lift"
+   "leaving copy: 12 -> 414, max 2.77px/ms, biggest single step 49.6px (17ms); arriving copy: -378 -> 24, max 2.77px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 24 for 2 frames (54ms) under the leaving one before it jumped to -378",
+   "copies up 426ms, first copy 80ms after the lift"
   ],
   "analysis": {
    "frames": 102,
@@ -49,7 +49,7 @@
     "stoodDayIdx": 0,
     "copyFirstCard": 12,
     "delta": 0,
-    "tBeforeMs": 94
+    "tBeforeMs": 81
    },
    "arriving": {
     "lastCopyCard": 24,
@@ -62,9 +62,9 @@
     "n": 25,
     "maxStep": 12,
     "maxStepAt": {
-     "dt": 33
+     "dt": 34
     },
-    "maxSpeedPxMs": 0.36,
+    "maxSpeedPxMs": 0.35,
     "accelSpikes": [],
     "reversals": 0,
     "from": 0,
@@ -74,9 +74,9 @@
     "n": 21,
     "maxStep": 49.6,
     "maxStepAt": {
-     "dt": 13
+     "dt": 17
     },
-    "maxSpeedPxMs": 3.06,
+    "maxSpeedPxMs": 2.77,
     "accelSpikes": [],
     "reversals": 0,
     "from": 12,
@@ -85,24 +85,24 @@
    "arrivingParked": {
     "frames": 2,
     "at": 24,
-    "ms": 40,
+    "ms": 54,
     "jumpsTo": -378
    },
    "arrivingSeries": {
     "n": 23,
     "maxStep": 49.6,
     "maxStepAt": {
-     "dt": 13
+     "dt": 17
     },
-    "maxSpeedPxMs": 3.06,
+    "maxSpeedPxMs": 2.77,
     "accelSpikes": [],
     "reversals": 0,
     "from": -378,
     "to": 24
    },
    "seenJumps": [],
-   "copiesUpMs": 424,
-   "liftToCopiesUpMs": 94
+   "copiesUpMs": 426,
+   "liftToCopiesUpMs": 80
   },
   "trace": "A1-chromium-trace.json",
   "pics": [
@@ -119,16 +119,16 @@
     "landed sl 2328, Mon -2316, Sun 24",
     "leaving copy first 12 vs day stood 12 (Δ 0)",
     "arriving copy ended 24 vs real day 24/24 (Δ 0)",
-    "leaving copy: 12 -> 414, max 3.12px/ms, biggest single step 49.6px (15ms); arriving copy: -378 -> 24, max 3.12px/ms, biggest step 49.6px; no step over 30px that is not the glide: yes",
-    "arriving copy stood on screen at 24 for 2 frames (50ms) under the leaving one before it jumped to -378",
-    "copies up 416ms, first copy 68ms after the lift"
+    "leaving copy: 12 -> 414, max 2.9px/ms, biggest single step 49.3px (17ms); arriving copy: -378 -> 24, max 2.9px/ms, biggest step 49.3px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 24 for 2 frames (63ms) under the leaving one before it jumped to -378",
+    "copies up 433ms, first copy 71ms after the lift"
    ],
    "picNote": {
     "castFrames": 32,
     "inWindow": 28,
     "windowMsAfterLift": [
-     68,
-     484
+     71,
+     503
     ]
    }
   },
@@ -276,42 +276,14 @@
   "title": "back: Sunday 12 Jul -> slow left swipe -> Monday 13 Jul",
   "tries": [
    {
-    "verdict": "FAIL",
-    "notes": [
-     "landed sl 12, Mon 0, Sun 2340",
-     "leaving copy first at -85.5, day stood at -135 (Δ 49.5)",
-     "arriving copy ended 0 vs real day 0/0 (Δ 0)",
-     "motion: the day moved 621px in one frame before the copies",
-     "leaving copy: -85.5 -> -487.5, max 2.9px/ms, biggest single step -49.3px (17ms); arriving copy: 402 -> 0, max 2.9px/ms, biggest step -49.3px; no step over 30px that is not the glide: NO",
-     "arriving copy stood on screen at 0 for 2 frames (72ms) under the leaving one before it jumped to 402",
-     "copies up 472ms, first copy 98ms after the lift"
-    ],
-    "from": "06/07/2026",
-    "fin": {
-     "week": "13/07/2026",
-     "sl": 12,
-     "max": 2328,
-     "d0": 0,
-     "d6": 2340,
-     "scrollY": 0,
-     "copies": 0
-    },
-    "logs": [
-     {
-      "moves": 10,
-      "startToLiftMs": 515
-     }
-    ]
-   },
-   {
     "verdict": "PASS",
     "notes": [
      "landed sl 12, Mon 0, Sun 2340",
      "leaving copy first 24 vs day stood 24 (Δ 0)",
      "arriving copy ended 0 vs real day 0/0 (Δ 0)",
-     "leaving copy: 24 -> -378, max 3.1px/ms, biggest single step -49.6px (15ms); arriving copy: 402 -> 0, max 3.1px/ms, biggest step -49.6px; no step over 30px that is not the glide: yes",
-     "arriving copy stood on screen at 0 for 2 frames (36ms) under the leaving one before it jumped to 402",
-     "copies up 466ms, first copy 97ms after the lift"
+     "leaving copy: 24 -> -378, max 2.98px/ms, biggest single step -49.7px (17ms); arriving copy: 402 -> 0, max 2.98px/ms, biggest step -49.7px; no step over 30px that is not the glide: yes",
+     "arriving copy stood on screen at 0 for 2 frames (33ms) under the leaving one before it jumped to 402",
+     "copies up 442ms, first copy 124ms after the lift"
     ],
     "from": "06/07/2026",
     "fin": {
@@ -326,7 +298,7 @@
     "logs": [
      {
       "moves": 10,
-      "startToLiftMs": 522
+      "startToLiftMs": 524
      }
     ]
    }
@@ -336,19 +308,19 @@
    "landed sl 12, Mon 0, Sun 2340",
    "leaving copy first 24 vs day stood 24 (Δ 0)",
    "arriving copy ended 0 vs real day 0/0 (Δ 0)",
-   "leaving copy: 24 -> -378, max 3.1px/ms, biggest single step -49.6px (15ms); arriving copy: 402 -> 0, max 3.1px/ms, biggest step -49.6px; no step over 30px that is not the glide: yes",
-   "arriving copy stood on screen at 0 for 2 frames (36ms) under the leaving one before it jumped to 402",
-   "copies up 466ms, first copy 97ms after the lift"
+   "leaving copy: 24 -> -378, max 2.98px/ms, biggest single step -49.7px (17ms); arriving copy: 402 -> 0, max 2.98px/ms, biggest step -49.7px; no step over 30px that is not the glide: yes",
+   "arriving copy stood on screen at 0 for 2 frames (33ms) under the leaving one before it jumped to 402",
+   "copies up 442ms, first copy 124ms after the lift"
   ],
   "analysis": {
-   "frames": 102,
+   "frames": 100,
    "up": 33,
    "leaving": {
     "stoodCard": 24,
     "stoodDayIdx": 6,
     "copyFirstCard": 24,
     "delta": 0,
-    "tBeforeMs": 98
+    "tBeforeMs": 124
    },
    "arriving": {
     "lastCopyCard": 0,
@@ -369,11 +341,11 @@
    },
    "leavingSeries": {
     "n": 21,
-    "maxStep": -49.6,
+    "maxStep": -49.7,
     "maxStepAt": {
-     "dt": 15
+     "dt": 17
     },
-    "maxSpeedPxMs": 3.1,
+    "maxSpeedPxMs": 2.98,
     "accelSpikes": [],
     "reversals": 0,
     "from": 24,
@@ -382,24 +354,24 @@
    "arrivingParked": {
     "frames": 2,
     "at": 0,
-    "ms": 36,
+    "ms": 33,
     "jumpsTo": 402
    },
    "arrivingSeries": {
     "n": 23,
-    "maxStep": -49.6,
+    "maxStep": -49.7,
     "maxStepAt": {
-     "dt": 15
+     "dt": 17
     },
-    "maxSpeedPxMs": 3.1,
+    "maxSpeedPxMs": 2.98,
     "accelSpikes": [],
     "reversals": 0,
     "from": 402,
     "to": 0
    },
    "seenJumps": [],
-   "copiesUpMs": 466,
-   "liftToCopiesUpMs": 97
+   "copiesUpMs": 442,
+   "liftToCopiesUpMs": 124
   },
   "trace": "A5-chromium-trace.json",
   "pics": [
@@ -416,16 +388,16 @@
     "landed sl 12, Mon 0, Sun 2340",
     "leaving copy first 24 vs day stood 24 (Δ 0)",
     "arriving copy ended 0 vs real day 0/0 (Δ 0)",
-    "leaving copy: 24 -> -378, max 2.93px/ms, biggest single step -49.7px (17ms); arriving copy: 402 -> 0, max 2.93px/ms, biggest step -49.7px; no step over 30px that is not the glide: yes",
-    "arriving copy stood on screen at 0 for 2 frames (31ms) under the leaving one before it jumped to 402",
-    "copies up 453ms, first copy 95ms after the lift"
+    "leaving copy: 24 -> -378, max 3.04px/ms, biggest single step -49.3px (17ms); arriving copy: 402 -> 0, max 3.04px/ms, biggest step -49.3px; no step over 30px that is not the glide: yes",
+    "arriving copy stood on screen at 0 for 2 frames (40ms) under the leaving one before it jumped to 402",
+    "copies up 438ms, first copy 93ms after the lift"
    ],
    "picNote": {
     "castFrames": 26,
     "inWindow": 25,
     "windowMsAfterLift": [
-     95,
-     548
+     93,
+     532
     ]
    }
   },
@@ -597,7 +569,7 @@
     "logs": [
      {
       "moves": 10,
-      "startToLiftMs": 512
+      "startToLiftMs": 511
      }
     ]
    }
@@ -607,7 +579,7 @@
    "sl 792 -> 1182"
   ],
   "analysis": {
-   "frames": 269,
+   "frames": 267,
    "up": -1,
    "note": "no copies seen (no glide)"
   },
