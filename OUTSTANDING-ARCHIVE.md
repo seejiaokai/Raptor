@@ -7557,3 +7557,18 @@ Met by the walkers of `[INPUT-OWN-TITLE]`'s check (`raptor-port/docs/handpass/20
 **Added 9 Oct 26 (Astra, scenario 2.4 of the day-window check):** on a shared input’s card in an opened day, each man’s own LATE tag is a tag with a hover title, not a button — a finger on a phone cannot open what it says (the whole-entry LATE tag is a button and can). `raptor-port/src/ui/InputsCal.tsx` (`idy-manlate`). Not fixed: it is the calendar job’s, seen while checking the next job.
 **ANSWERED 10 Oct 26 (D731 (11) — kept as built, the window at once); as it was filed — Still his to answer (carried from the merged calendar job's handoff, 9 Oct 26):** picking several days on the Inputs month opens the new-input window at once, where the drawing had a bar to confirm first — he was shown both and withdrew his answer; keep as built until he says.
 
+*Moved here 2026-11-03 by backlog-archive.mjs ([LW-B8-STAMP-FLAKE]). Forward facts: `raptor-port/src/leavewar/opendates-store.test.ts`.*
+
+### [LW-B8-STAMP-FLAKE] A Leave War unit test fails now and then: two stamps a millisecond apart (found 3 Nov 26, pull request 623's run)
+**BUILT 3 Nov 26 on `claude/lw-b8-stamp-flake`:** the B8 block takes ONE stamp a test (`T0`, set in its `beforeEach`), and its clock now moves one millisecond at every read for the whole block, so the slow machine's case runs every time — red first (both B8 tests failed with GitHub's exact message), then 37 / 37 plain and under `TZ=Pacific/Midway`. The sweep for other before / after pairs built from two live stamps found none: `m4ride.test.ts` and `m4sec.test.ts` stamp live times but freeze the clock for every test. Archive once live.
+On pull request 623 (notes, a mock-up and picture scripts — no app code), GitHub's `unit (leavewar 3/4)` failed one test:
+`src/leavewar/opendates-store.test.ts` "B8 — … a restore the timeline is not applying adds or changes nothing on a closed day"
+— *expected 'who placed a request …' to match /not open for bidding/*. The same code passed on `main` two hours before, and here
+(plain and under `TZ=Pacific/Midway`). **Cause, proven:** the test's `bid()` stamps `placedAt: Date.now()` at each call, and its
+before/after pairs call it twice (`[bid('n1')]` → `[bid('n1','OL')]`); on a slow machine the two stamps fall a millisecond apart,
+so `state/perms.ts ownershipViolation` rightly reports the request's placing changed ("who placed a request") before the closed
+day. A copy of the file with a clock that moves one millisecond at every read failed both B8 tests with exactly that message
+(3 Nov 26). The app is right; the test is wrong. **Fix:** stamp one time for the block (`const T0 = Date.now()`, `placedAt: T0`
+— still inside the check's five minutes), and keep the ticking-clock copy as the proof that it holds; look for other tests that
+build a before/after pair from two `Date.now()` stamps. **Place:** small — the next Leave War change, or on its own.
+
