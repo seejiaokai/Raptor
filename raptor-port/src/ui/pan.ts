@@ -10,6 +10,7 @@ import { CURWEEK } from '../engine/waves'
 import { HOOKS } from '../engine/hooks'
 import { shiftWeek } from './weeknav'
 import { mountPeek } from './peek'
+import { swDebugOn, swLog, swScroll, swScrollTake } from './swdebug'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -63,6 +64,22 @@ export function weekScrollMax(w: any): number {
   const step = Math.round((ds[1] as HTMLElement).offsetLeft - (ds[0] as HTMLElement).offsetLeft)
   if (step <= 0) return cap
   return Math.min(cap, (ds.length - 1) * step)
+}
+/* WHERE A WEEK CROSS LANDS — the one place both weeks and the glide (ui/weekglide.ts) read it, so the arriving copy and
+   the real week can never disagree. 'sun' is weekScrollMax. 'mon' on a PHONE is Monday's own snap point, not 0
+   ([WEEK-SWIPE-CROSS], 3 Nov 26): the week's 12px padding puts that 12px in, so a landing at 0 left the snap to carry
+   Monday the last 12px after the glide had handed over — Chromium does it at once, a visible hop as the copies came
+   off, and Safari does not re-snap after a scroll written by the page at all (the snap-hold note, ui-contracts.md), so
+   on his iPhone Monday sat 12px off its place until his next touch. Measured from the live layout, as the snap is;
+   no layout (jsdom), or a desktop — which never snaps and always landed 0 — keeps 0. */
+export function weekLanding(w: HTMLElement, at: 'mon' | 'sun'): number {
+  if (at === 'sun') return weekScrollMax(w)
+  if (window.innerWidth > 820) return 0
+  const d0 = w.querySelector('.day:not(.peek)') as HTMLElement | null
+  const r0 = d0 ? d0.getBoundingClientRect() : null
+  if (!r0 || !(r0.width > 0)) return 0
+  const off = r0.left - w.getBoundingClientRect().left
+  return Math.max(0, Math.min(weekScrollMax(w), Math.round(w.scrollLeft + off)))
 }
 /* COUNT FROM WHERE THE LAST PRESS WAS HEADING, NOT THE LIVE SCROLL (owner, 23
    Aug 26 — "twice on Tuesday to get to Wednesday", and its mirror the same day
@@ -455,6 +472,14 @@ function onDocScroll(e: Event) {
        lands is honoured (GLIDE_MS is only the backstop for a glide that never
        reaches its target). */
     if (glideEnd && panWk === CURWEEK && panTgt >= 0 && Math.abs(w.scrollLeft - panTgt) <= 1) glideEnd = 0
+    /* the strip's last movement, for a swipe begun while it is still settling onto an end day ((1) at the phone swipe,
+       below) — three writes, the cost a scroll tick here can bear */
+    const sl = w.scrollLeft
+    swScroll(sl)
+    if (w !== wkPrevEl) { wkPrevEl = w; wkMoveDir = 0 }
+    else if (sl !== wkPrevSL) { wkMoveDir = sl < wkPrevSL ? -1 : 1; wkMovedAt = Date.now() }
+    wkPrevSL = sl
+    pullPastEnd(w, sl)
     hsLabel(); rosDayFollow()
     const trk = $('hsTrack'); if (!trk) return
     const tmax = trk.scrollWidth - trk.clientWidth, wmax = w.scrollWidth - w.clientWidth
@@ -519,8 +544,48 @@ const SWIPE_TH = 45
    (~350px+ at any phone width), so a genuine mid-week swipe still cannot be
    mistaken for an edge one. */
 const EDGE_SLOP = 24
+/* THREE MORE SWIPES OFF AN END DAY THAT WERE READ AS NO SWIPE ([WEEK-SWIPE-CROSS], his iPhone recording, 3 Nov 26 —
+   "Sometimes it doesn't allow me to go to the next week. Like Monday to Sunday": on Monday, swipe after swipe only
+   bounced the day). Each is a gesture the browser itself plainly took as a sideways swipe — the day moved sideways
+   under his finger, the page did not scroll — and that a swipe inside the week would have turned into a day's move.
+   Measured on the built app by real touch (e2e/weekswipe.spec.ts, red on the old reading):
+   (1) A SWIPE BEGUN WHILE THE WEEK IS STILL SETTLING ONTO ITS END DAY. Swiping back from Tuesday and straight on, the
+       second touch lands while the snap is still carrying the strip to Monday — 140–200px out — so "at the edge" read
+       false and the swipe only finished the move to Monday. The week counts as on its end day too while it is still
+       moving toward it and is within half a day of it (SETTLE_MS: a strip that scrolled that recently is still moving;
+       scroll events come every frame while it does).
+       …AND A STRIP LEFT STANDING SHORT OF IT (the walk's A6b, 3 Nov 26 — 4 of 24 runs): the browser does not always begin
+       its snap at once, and a strip that stood still 84–127px short of Monday for 160ms and more was neither at the
+       edge nor moving, so the second swipe again only carried it home. That reading cannot hang on the snap's timing:
+       a swipe begun within half a day of an end day, toward it, also crosses when its own travel is enough to bring
+       that day to its resting place (the distance past EDGE_SLOP) and go on past it by the crossing distance below —
+       for a strip at rest on the day the distance to bring it home is nothing, so this is the same rule as before
+       there. A swipe that only brings the day home stays on the week.
+   (2) A SHORT QUICK FLICK. The snap turns a quick flick shorter than SWIPE_TH into a whole day's move inside the week,
+       but at the edge it needed 45px of travel. A flick of FLICK_MIN or more, still moving at FLICK_V or faster over its
+       last FLICK_WIN before the lift, now crosses too; a finger that stops before it lifts is judged by distance alone,
+       and a tap's jiggle (under FLICK_MIN) never crosses however quick.
+   (3) A THUMB'S ARC. The test was the whole path — more across than down — so a sideways swipe that curls down at its
+       end, as a thumb does, was read as the page being scrolled. A browser decides a touch's direction by its FIRST
+       clear movement and holds it for the gesture (the page did not move, the day did), so the reading does the same:
+       the axis is the first movement past AXIS_SLOP. The same rule closes the reverse fault the old test had: a drag
+       that began DOWN the day and drifted sideways crossed weeks when its sideways part outgrew its drop. A gesture
+       that never moved past AXIS_SLOP before the lift keeps the old whole-path test. */
+const SETTLE_MS = 150
+const FLICK_MIN = 24, FLICK_V = 0.3, FLICK_WIN = 100
+const AXIS_SLOP = 10
 let swEl: HTMLElement | null = null
 let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAtRight = false
+/* (1) a strip standing short of an end day: within half a day of it, and how far the finger must carry it home first */
+let swNearLeft = false, swNearRight = false, swHomeL = 0, swHomeR = 0
+let swAxis: 'x' | 'y' | null = null
+/* (3) the page's own up-and-down scroll at the touch's start — on the phone weeks the document is the one vertical
+   scroller (the week and its days do not scroll up and down) */
+let swPageY = 0
+/* the finger's recent path, for its speed at the lift: [x, time] newest last, trimmed to FLICK_WIN */
+let swTrail: [number, number][] = []
+/* the strip's own last movement — when, which way, which strip — read by (1) above; written by onDocScroll */
+let wkMovedAt = -Infinity, wkMoveDir = 0, wkPrevSL = 0, wkPrevEl: HTMLElement | null = null
 /* THE WAVE BLOCK A GESTURE BEGINS ON, and its scroll position at that instant.
    A day's flying waves each scroll sideways in their own `.go` block. We used to
    cede the WHOLE gesture to that block the moment a touch began inside one — but
@@ -534,8 +599,99 @@ let swStartX = 0, swStartY = 0, swLastX = 0, swLastY = 0, swAtLeft = false, swAt
    it owned the swipe; if it did not (it was at its edge), the gesture falls
    through to the week-cross like a touch on any bare part of the day. */
 let swGo: HTMLElement | null = null, swGoSL = -1
+/* (4) A SWIPE SAFARI GIVES THE PAGE NO TOUCH FOR ([WEEK-SWIPE-CROSS], his iPhone recordings of 3 Nov 26, 05:41 and 06:00,
+   read by the ?swdebug log — ui/swdebug.ts). Swiping Tuesday → Monday and straight on, Monday only stretched and sprang
+   back; the swipe after it, from rest, crossed. The log showed why: a swipe begun while the strip is still gliding into its
+   snap can reach the page as NO touch at all — no start, no move, no end — though Safari moves the strip under the finger
+   as usual. Nothing above can read a swipe it never hears of. What Safari does still report is the strip itself: pulled
+   past Monday its scrollLeft goes below 0, past Sunday above the last day, and back when let go. So, with no touch being
+   read, a pull past an end day by PULL_OVER that began with the strip on that day — at rest there, or easing in slowly
+   (slower than PULL_REST) within half a day of it — crosses the moment the strip springs back by PULL_BACK (the finger
+   has let go). Not a pull past the end that a swipe's own momentum makes: a flick from Tuesday reaches Monday fast and
+   overshoots, and the strip was never on Monday first. Not the spring-back of a swipe the page did read: that touch has
+   already decided, cross or stay. A browser that never scrolls a strip past its ends (Chrome, Android) never comes here. */
+const PULL_OVER = 8, PULL_BACK = 6, PULL_REST = 0.15, PULL_GAP = 100
+/* THE FRESH READ OF THIS READING (3 Nov 26, `docs/handpass/parts/ws-read-pull.md`): (a) a strip that stood still counts as on
+   an end day only within EDGE_SLOP of it — one late frame in a flick's momentum looked like a rest anywhere within half a
+   day, armed the pull and crossed on the flick's own overshoot; (b) let go is a spring-back of at least PULL_BACK_PART of
+   how far past the end it was pulled, never a finger easing back a few px while it still holds; (c) the mark is 8 px past
+   the end — his log's pulls past Sunday read +10 to +16, and Sunday rests on its end where Monday rests 12 px in; (d) a
+   cancel from the browser leaves the reading alone: the finger may pull on unseen.
+   THE NARROW READ OF THOSE FIXES (the same file, its second part): (e) a stand counts only where the strip also ARRIVED
+   slowly — one late frame of a flick within 24 px of the end is no rest; the app's own placing (a landing, inside
+   PULL_QUIET) counts as arrived; (f) after a cancel that stayed, only a pull PULL_OVER further out than where the strip
+   stood at the cancel arms — its spring-back is no new pull; (g) let go needs at least PULL_BACK (6) px, so a finger
+   wobbling a few px at a shallow pull is still holding; (h) a cross here ends the touch being read, so a late end of it
+   cannot cross again. A held finger dragging the strip back into the week reads as let go — without touches the two
+   cannot be told apart. */
+const PULL_BACK_PART = 0.4
+/* (i) the last read (the same file's third part): a stand that came at the end of a glide caught by the finger arrived at
+   0.2–0.45 px/ms — slower than a flick's late frame (several px/ms) but not under PULL_REST; arriving is judged by its own
+   limit, and a slow frame on the strip arms whether or not it ended a stand */
+const PULL_ARRIVE = 1
+/* and not in the first PULL_QUIET after a cross: the slide and the landing's own settle are the app's, never a finger's */
+const PULL_QUIET = 700
+let pullEl: HTMLElement | null = null, pullWeek = '', pullPrevSL = 0, pullPrevT = 0, pullCrossAt = -Infinity
+let pullOnL = false, pullOnR = false, pullPeak = 0, pullSide: -1 | 0 | 1 = 0
+/* the speed of the strip's move into where it last stood (e); how far past each end it stood at a cancel that stayed (f) */
+let pullPrevV = 0, pullOverL = 0, pullOverR = 0
+function pullReset() { pullOnL = pullOnR = false; pullSide = 0; pullOverL = pullOverR = 0 }
+/* every cross starts the reading afresh on the week it lands on — the same week can come back with no scroll between */
+function pullCrossed() { pullReset(); pullWeek = ''; pullCrossAt = Date.now() }
+function pullPastEnd(w: HTMLElement, sl: number) {
+  const t = Date.now()
+  if (w !== pullEl || pullWeek !== CURWEEK) { pullEl = w; pullWeek = CURWEEK; pullReset(); pullPrevSL = sl; pullPrevT = t; pullPrevV = 0; return }
+  const prev = pullPrevSL, dt = t - pullPrevT, prevV = pullPrevV
+  const v = dt > 0 ? Math.abs(sl - prev) / dt : Infinity
+  pullPrevSL = sl; pullPrevT = t; pullPrevV = v
+  if (window.innerWidth > 820 || (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') || view.SBDAY != null) { pullReset(); return }
+  /* a touch being read decides its own swipe — unless Safari has said nothing of it for a second: a touch whose end never
+     came is no touch being read */
+  if (swEl && t - swSeenAt < 1000) return
+  const sinceCross = t - pullCrossAt
+  if (sinceCross >= 0 && sinceCross < PULL_QUIET) { pullPrevV = 0; return }   // the app is placing the strip (e)
+  const max = w.scrollWidth - w.clientWidth, half = w.clientWidth / 2
+  if (max <= 1) return
+  /* on an end day: it stood still at its resting place, having arrived there slowly (a, e), or it is easing in slowly
+     within half a day of it */
+  if (dt >= PULL_GAP) {
+    if (prevV < PULL_ARRIVE && prev >= 0 && prev <= EDGE_SLOP) pullOnL = true
+    if (prevV < PULL_ARRIVE && prev <= max && prev >= max - EDGE_SLOP) pullOnR = true
+  }
+  if (v < PULL_REST) {
+    if (sl >= 0 && sl < half) pullOnL = true
+    if (sl <= max && sl > max - half) pullOnR = true
+  }
+  /* back on the strip: a cancel's standing place no longer counts (f) */
+  if (sl >= 0) pullOverL = 0
+  if (sl <= max) pullOverR = 0
+  /* pulled past the end by PULL_OVER (beyond where a cancel left it — f), from an end day it was on … */
+  if (pullOnL && sl <= -(pullOverL + PULL_OVER)) { if (pullSide !== -1) { pullSide = -1; pullPeak = sl } else if (sl < pullPeak) pullPeak = sl }
+  if (pullOnR && sl >= max + pullOverR + PULL_OVER) { if (pullSide !== 1) { pullSide = 1; pullPeak = sl } else if (sl > pullPeak) pullPeak = sl }
+  /* … and let go: it springs back (b, g); the cross ends any touch still held as being read (h) */
+  if (pullSide === -1 && sl >= pullPeak + Math.max(PULL_BACK, PULL_BACK_PART * -pullPeak)) {
+    if (swDebugOn) swLog(`PULL past Monday ${Math.round(pullPeak)}, no touch seen → PREV WEEK`)
+    pullCrossed(); swEl = null
+    view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1))
+    return
+  }
+  if (pullSide === 1 && sl <= pullPeak - Math.max(PULL_BACK, PULL_BACK_PART * (pullPeak - max))) {
+    if (swDebugOn) swLog(`PULL past Sunday +${Math.round(pullPeak - max)}, no touch seen → NEXT WEEK`)
+    pullCrossed(); swEl = null
+    view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1))
+    return
+  }
+  /* half a day into the week: no longer on that end day */
+  if (sl >= half) pullOnL = false
+  if (sl <= max - half) pullOnR = false
+}
+/* ?swdebug only (ui/swdebug.ts): the touch's moves, and whether a move came with no touch begun */
+let swMoves = 0, swOrphan = false
+/* when the touch being read was last heard of — its start or a move — read by (4) */
+let swSeenAt = 0
 function onWeekTouchStart(e: TouchEvent) {
   swEl = null; swGo = null
+  if (swDebugOn) { swMoves = 0; swOrphan = false }
   if (window.innerWidth > 820) return
   if (view.CURPAGE !== 'viewsched' && view.CURPAGE !== 'editsched') return
   if (view.SBDAY != null) return                 // the board is open — its arrows own week-stepping
@@ -548,19 +704,50 @@ function onWeekTouchStart(e: TouchEvent) {
   const max = w.scrollWidth - w.clientWidth
   if (max <= 1) return                           // nothing to be at the edge OF (headless / not laid out)
   swEl = w
+  pullSide = 0; swSeenAt = Date.now()
   swGo = go; swGoSL = go ? go.scrollLeft : -1
   swStartX = swLastX = e.touches[0].clientX
   swStartY = swLastY = e.touches[0].clientY
-  swAtLeft = w.scrollLeft <= EDGE_SLOP
-  swAtRight = w.scrollLeft >= max - EDGE_SLOP
+  swAxis = null
+  swPageY = window.scrollY
+  swTrail = [[swStartX, Date.now()]]
+  const sl = w.scrollLeft
+  /* (1) still on its way to an end day: moved within SETTLE_MS, toward that end, within half a day of it. On a phone a
+     day is one screen, so half the strip's width is half a day without a layout read. */
+  const settling = wkPrevEl === w && Date.now() - wkMovedAt < SETTLE_MS
+  const half = w.clientWidth / 2
+  swAtLeft = sl <= EDGE_SLOP || (settling && wkMoveDir < 0 && sl < half)
+  swAtRight = sl >= max - EDGE_SLOP || (settling && wkMoveDir > 0 && sl > max - half)
+  swNearLeft = sl < half; swHomeL = Math.max(0, sl - EDGE_SLOP)
+  swNearRight = sl > max - half; swHomeR = Math.max(0, max - EDGE_SLOP - sl)
+  if (swDebugOn) swLog(`START sl${Math.round(sl)}/${Math.round(max)} ${settling ? 'settling' : 'still'} dir${wkMoveDir} ${Date.now() - wkMovedAt}ms L${+swAtLeft} R${+swAtRight} nL${+swNearLeft} | ${swScrollTake()}`)
 }
 /* Track the finger so a gesture the browser CANCELS mid-way (see below) still
    has a real end position to measure — a passive move listener can't steer the
    scroll, it only remembers where the finger went. */
 function onWeekTouchMove(e: TouchEvent) {
+  if (swDebugOn) { if (swEl) swMoves++; else if (!swOrphan && e.target && (e.target as HTMLElement).closest?.('.week')) { swOrphan = true; swLog('MOVE with no touch begun') } }
   if (!swEl || !e.touches || !e.touches.length) return
   swLastX = e.touches[0].clientX
   swLastY = e.touches[0].clientY
+  swSeenAt = Date.now()
+  /* (3) the axis is the first clear movement's, held for the gesture */
+  if (!swAxis) {
+    const mx = Math.abs(swLastX - swStartX), my = Math.abs(swLastY - swStartY)
+    if (mx >= AXIS_SLOP || my >= AXIS_SLOP) swAxis = mx > my ? 'x' : 'y'
+  }
+  const now = Date.now()
+  swTrail.push([swLastX, now])
+  while (swTrail.length > 2 && now - swTrail[1]![1] > FLICK_WIN) swTrail.shift()
+}
+/* (2) the finger's speed at the lift, px/ms, signed: over the last FLICK_WIN of its path, measured to the lift itself —
+   so a finger that held still before it lifted has none. Zero without a movement to measure from. */
+function liftSpeed(endX: number): number {
+  const now = Date.now()
+  const from = swTrail.find(([, t]) => now - t <= FLICK_WIN)
+  if (!from || swTrail.length < 2) return 0
+  const dt = now - from[1]
+  return dt > 0 ? (endX - from[0]) / dt : 0
 }
 /* Wired to BOTH touchend and touchcancel. When an overswipe off an end day has
    any sub-pixel scroll room left, the browser claims the touch as a scroll and
@@ -570,22 +757,42 @@ function onWeekTouchMove(e: TouchEvent) {
    both, and swEl is nulled on the first, so this can't cross twice. */
 function onWeekTouchEnd(e: TouchEvent) {
   const w = swEl; swEl = null
+  if (swDebugOn && !w && e.target && (e.target as HTMLElement).closest?.('.week')) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} with no touch begun | ${swScrollTake()}`)
   if (!w || window.innerWidth > 820) return
   const ct = (e.changedTouches && e.changedTouches.length) ? e.changedTouches[0] : null
   const endX = ct ? ct.clientX : swLastX
   const endY = ct ? ct.clientY : swLastY
   const dx = endX - swStartX, dy = endY - swStartY
-  /* horizontal intent only: a mostly-vertical drag (paging the day down) that
-     drifts sideways past the threshold must not be read as a week cross */
-  if (Math.abs(dx) <= Math.abs(dy)) return
+  /* (4) a touch that ended decides its own swipe — its spring-back is no pull of a touch unseen; a cancel is the browser
+     taking the gesture, and the finger may pull on unseen, so it leaves (4) to read the strip (the fresh read's (d)) */
+  if (e.type !== 'touchcancel') pullReset()
+  else { const s0 = w.scrollLeft, m0 = w.scrollWidth - w.clientWidth; pullOverL = Math.max(0, -s0); pullOverR = Math.max(0, s0 - m0) }   // (f)
+  const said = (why: string) => { if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} ax${swAxis || '-'} mv${swMoves} → stay: ${why} | ${swScrollTake()}`) }
+  /* horizontal intent only: a drag that began down the day (paging it) is the page being scrolled, however far it
+     drifts sideways after — the axis its first clear movement took, (3) above; one that never moved that far keeps
+     the whole-path test */
+  if (swAxis === 'y' || (!swAxis && Math.abs(dx) <= Math.abs(dy))) { said('read as up-down'); return }
+  /* …and whatever its first movement looked like, a gesture that moved the PAGE up or down was the browser's page scroll
+     (the fresh read's finding 4, 3 Nov 26): a thumb scrolling down whose first 10px slanted sideways, then drifting 45px
+     across, crossed the week. The page moving is the browser's own answer, so it wins over the first-movement guess; a
+     thumb's arc that moved the day sideways leaves the page where it was, and still crosses. */
+  if (Math.abs(window.scrollY - swPageY) > AXIS_SLOP) { said(`page moved ${Math.round(window.scrollY - swPageY)}`); return }
   /* the gesture began inside a wave block that actually scrolled → it owned the
      swipe, so this is not a week cross. A block that never moved (it was at its
      own edge) falls through, which is what unsticks a wave-dense day's swipe. */
-  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) return
+  if (swGo && Math.abs(swGo.scrollLeft - swGoSL) > 2) { said('a wave block scrolled'); return }
   /* right edge + swipe left (content advancing) → next week, land on Monday;
      left edge + swipe right (retreating) → previous week, land on Sunday */
-  if (swAtRight && dx <= -SWIPE_TH) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
-  else if (swAtLeft && dx >= SWIPE_TH) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
+  /* far enough, or (2) a short flick still moving that way at the lift */
+  const v = liftSpeed(endX)
+  const crossing = (d: number, sp: number) => d >= SWIPE_TH || (d >= FLICK_MIN && sp >= FLICK_V)
+  /* travel measured from the edge, or (1) from where the travel has brought the end day home */
+  const left = (swAtRight && crossing(-dx, -v)) || (swNearRight && crossing(-dx - swHomeR, -v))
+  const right = (swAtLeft && crossing(dx, v)) || (swNearLeft && crossing(dx - swHomeL, v))
+  if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} v${v.toFixed(2)} ax${swAxis || '-'} mv${swMoves} → ${left ? 'NEXT WEEK' : right ? 'PREV WEEK' : 'stay'} | ${swScrollTake()}`)
+  if (left || right) pullCrossed()
+  if (left) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
+  else if (right) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }
 
 /* THE PEEK PREVIEW ACROSS A RESIZE CROSSING (ui/peek.ts). ViewWeek/EditWeek's

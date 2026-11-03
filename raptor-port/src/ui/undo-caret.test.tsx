@@ -1,5 +1,5 @@
 // @vitest-environment jsdom
-/* UNDO AND REDO PRESSED WITH THE CARET STILL IN A BOX LET IT GO FIRST (ui/topbits.tsx globalUndoEngine — the narrow read
+/* UNDO AND REDO PRESSED WITH THE CARET STILL IN A BOX LET IT GO FIRST (ui/topstate.ts globalUndoEngine — the narrow read
    of the D994 batch's fix round, round 2, 19 Oct 26, its F1; older than the batch, reproduced on the built app).
    An In-time line emptied, the caret moved on to the next line, Undo pressed WITHOUT the focus moving (a tap on Safari
    never moves it; the button is clicked here as jsdom clicks, the focus staying put), then that line left: the held line

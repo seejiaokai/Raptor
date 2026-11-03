@@ -19,10 +19,13 @@ import { dayInfoHTML, issuedFaceVer, withChipWorld } from './html'
 import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll, AIRKEY, AIRRID, setAirKey, reKeyAir } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
-import { useSheetFocus, useEscClose } from './sheetfocus'
+import { useSheetFocus, useEscClose, useEscWindow } from './sheetfocus'
 
 export function DayPop() {
   useVersion()
+  /* Escape closes it, the keys back on its ⓘ ([VEILED-WINDOWS-BAR], 3 Nov 26 — ui/sheetfocus.ts useEscWindow) */
+  const popRef = useRef<HTMLDivElement>(null)
+  useEscWindow(popRef, DAYPOP != null, () => { setDayPop(null); notify() })
   if (DAYPOP == null) return <div className="airpop" id="dayPop" hidden />
   const di = DAYPOP
   validate()
@@ -49,7 +52,7 @@ export function DayPop() {
     : dayDisplaysOfficial(di) ? withOfficialWarn(draw) : draw()
   const close = () => { setDayPop(null); notify() }
   return (
-    <div className="airpop" id="dayPop" onClick={e => { if (clickedOutside(e, 'dayPop')) close() }}>
+    <div className="airpop" id="dayPop" ref={popRef} onClick={e => { if (clickedOutside(e, 'dayPop')) close() }}>
       <div className="airpop-box" style={{ width: 520 }}>
         <div className="airpop-head"><b id="dayPopTitle">{title}</b><button className="x" id="dayPopClose" onClick={close}>✕</button></div>
         {/* scroll the list INSIDE its own height (owner, 26 Aug 26 — the Close
@@ -248,6 +251,11 @@ export function AirPop() {
     document.addEventListener('click', press, true)
     return () => document.removeEventListener('click', press, true)
   }, [open])
+  /* ESCAPE CLOSES IT, AND ONLY IT ([VEILED-WINDOWS-BAR], 3 Nov 26 — ui/sheetfocus.ts useEscWindow): it holds no keys, so
+     Escape used to do nothing with it up — over the Scheduler Board the board waits for it (boardescape.ts overBoard). A
+     line being typed is saved first by its own blur (airEdit), as a press on ✕ saves it; the keys go back to the Traffic
+     button that opened it. */
+  useEscWindow(popRef, open, () => { setAirKey(null); notify() })
   if (!open) return <div className="airpop" id="airpop" hidden />
   const close = () => { setAirKey(null); notify() }
   const admin = isAdmin()

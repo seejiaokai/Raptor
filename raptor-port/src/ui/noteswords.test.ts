@@ -73,7 +73,7 @@ const BUILT: [string, string, string, number][] = [
   ['"is not a time" — a wave template', 'ui/WaveTplModal.tsx', '`${v} is not a time. Try 0900 or 09:00.`', 1],
   ['Red box', 'ui/board.ts', "'Red box: flagged for the next scheduler'", 6],
   ['LATE mark hidden', 'ui/interactions.ts', "'LATE mark hidden. The Inputs page still shows it.'", 1],
-  ['Left OIL Earn (List 3 row 7)', 'ui/topbits.tsx', "'Left OIL Earn without undoing. The next undo would change the day itself.'", 1],
+  ['Left OIL Earn (List 3 row 7)', 'ui/topstate.ts', "'Left OIL Earn without undoing. The next undo would change the day itself.'", 1],
 ]
 
 /* the old words of the notes above — gone from the file that said them */
@@ -117,7 +117,7 @@ const GONE: [string, string][] = [
   ['state/quals-write.ts', 'can carry it — the tick comes off instead'],
   ['ui/QualsPage.tsx', "Nobody's record changed —"],
   ['ui/QualsPage.tsx', "toast('Shortcut to the Admin page"],
-  ['ui/topbits.tsx', 'Left OIL Earn —'],
+  ['ui/topstate.ts', 'Left OIL Earn —'],
 ]
 
 /* NOT ON HIS LIST OF 13 OCT 26 — left for the whole-app words job (D808) unless he says otherwise, never changed unasked

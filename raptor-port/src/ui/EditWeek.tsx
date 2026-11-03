@@ -14,7 +14,7 @@ import { paletteHTML, paletteDay } from './palette-html'
 import { ARM, CARRYDAY, CURPAGE, DPREV, PEEKLAND, WEEKJUMP, navGen, setCarryDay, setPeekLand, setWeekJump, scrollWeekToDay, scrollWeekToLanding } from '../state/view'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekScrollMax, panHold } from './pan'
+import { weekLanding, panHold } from './pan'
 import { mountPeek } from './peek'
 import { editingText, textCaret, CARET_GONE } from './textedit'
 import { wireRowDrag } from './rowdrag'
@@ -204,8 +204,8 @@ export function EditWeek() {
     if (WEEKJUMP != null) {
       const was = root.style.scrollBehavior
       root.style.scrollBehavior = 'auto'
-      if (WEEKJUMP === 'mon') root.scrollLeft = 0
-      else if (WEEKJUMP === 'sun') root.scrollLeft = weekScrollMax(root)
+      /* Monday's and Sunday's resting places, one reading with the glide's (pan.ts weekLanding) */
+      if (WEEKJUMP === 'mon' || WEEKJUMP === 'sun') root.scrollLeft = weekLanding(root, WEEKJUMP)
       else scrollWeekToDay(root, WEEKJUMP)
       root.style.scrollBehavior = was
       setWeekJump(null)

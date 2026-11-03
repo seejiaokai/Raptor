@@ -184,4 +184,8 @@ body.dnd .availpuck::after,body.dnd .eroster::after{content:'drop to unassign';p
 .sb-open{cursor:pointer}
 .page.editing .day-head .dow,.page.editing .day-head .dt{cursor:pointer}
 .day-head .dow.sb-open:hover,.day-head .dt.sb-open:hover,.day-head .dow.crewday:hover{color:var(--accent)}
+/* the edit week's date is a Tab stop that opens the board ([BOARD-OPEN-BY-KEYS]): the app's keyboard ring, for the keys
+   only — a click on it shows none (:focus-visible) */
+.day-head .dt.sb-open:focus{outline:none}
+.day-head .dt.sb-open:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:3px}
 

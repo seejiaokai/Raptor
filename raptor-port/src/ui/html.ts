@@ -603,6 +603,7 @@ export function exemptDeskOwn(di:any,key:any,id:any){
   const rk=`d:${m[1]}.${m[2]}.${m[3]}`, g=WARN.byDay[di];
   /* a hidden warning flags no puck (D469) — this row works its flag out from the list, so it skips one */
   const hit=shownWarns(g&&g.warns).find((x:any)=>(x.code==='DNIF_FLY'||x.code==='LEAVE_FLY'||x.code==='DOUBLE_BOOK')
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     &&(x.who||[]).includes(id)&&(x.key===rk||x.also===rk));
   return hit?'C':null;
 }
@@ -634,6 +635,7 @@ export function exemptLineOwn(di:any,key:any,id:any,off?:any){
        seat): the clash anchors on the first place, the other in `also`
        — same match the exempt DESK puck already makes (7 Sep 26). A
        same-formation pair already rings off the shared key prefix. */
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     &&(x.who||[]).includes(id)&&(placeOf(x.code,x.key)||placeOf(x.code,x.also)));
   return hit?((hit.code==='SC_QUAL'||hit.code==='QUAL')?'Q':'C'):null;
 }
@@ -863,6 +865,7 @@ export function personWarnMsgs(di:any,id:any):{sev:string,msg:string}[]{
   if(PV&&!OFW)return []
   const g=WARN.byDay&&WARN.byDay[+di]
   return shownWarns(g&&g.warns)   /* a hidden warning is no reason and no flag here either (D469) */
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
     .filter(w=>w&&(w.who||[]).includes(String(id)))
     .map(w=>({sev:String(w.sev||'note'),msg:String(w.msg||'')}))
     .filter(w=>w.msg)
@@ -1766,9 +1769,15 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
       : (!ed&&!PV&&ok&&VWORK.has(+di)&&CURPAGE==='viewsched')
       ? `<div class="dprev-bar work">Viewing <b>Working draft</b> — not issued · the issued schedule is ${esc(verLabel(dayCurVer(di)))}</div>`
       : '';
+    /* THE EDIT WEEK'S DATE IS A STOP FOR THE KEYS ([BOARD-OPEN-BY-KEYS], 3 Nov 26 — the design guide §2: anything can be
+       opened without a mouse). It opens the Scheduler Board on a press, and took no key, so a keyboard user could not open
+       the board at all. role="button" + tabindex="0" make it one Tab stop that a screen reader names as a button; Enter and
+       Space open it (interactions.ts routeOpenKey), the ring is keyboard-only (11-drag.css). Not a text box, so the
+       schedule's own Tab route (schedule-tab.ts, D551–D555) never visits it. EDIT week only: the view week's date keeps the
+       reference's markup byte for byte (the parity gate, html.test.ts normDt). */
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
-        ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
+        ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : isGuest()   /* a guest's tree has no day panel (GuestApp) — plain text, never a dead door */
         ? `<span class="dow">${d.dow}</span><span class="dt">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${shortYear(d.dt)}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
@@ -2432,7 +2441,8 @@ export function signoffHTML(di:any,full:any){
      names and just "1 to sign", and a phone has no hover to say which one ([HUMAN-RETEST] walk W3
      F-w3-6, 24 Sep 26) — so the line names it, on the week too (AM15b). An ordinary gap stays a count
      there: its empty pill already says which. */
-  const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&miss.includes(r[1])).map((r:any)=>r[1]);
+  const missing=new Set(miss);
+  const stale=SIGN_ROLES.filter((r:any)=>r[2]&&g[r[0]]&&missing.has(r[1])).map((r:any)=>r[1]);
   const why=(l:any)=>stale.includes(l)?`${l} needs an appointed scheduler`:l;
   return `<span class="so-h">Sign-off</span>`
     +SIGN_ROLES.map(([k,lbl,sch]:any)=>{

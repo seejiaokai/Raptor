@@ -377,6 +377,34 @@ Four things make it work, and each is load-bearing:
   Nothing moved the strip, so there is nothing to hold it against. Pinned
   `ui/snaphold.test.tsx` (both weeks: no write on a no-change repaint, one
   write on a rewrite).
+- **The phone's cross into another week** ([WEEK-SWIPE-CROSS], his iPhone recording of 3 Nov 26 — "very abrupt,
+  not smooth" and "sometimes it doesn't allow me to go to the next week"; the design itself is settled —
+  scheduler.md §Week navigation). **The swipe is read as the browser read it** (`pan.ts` §CONTINUOUS SWIPE ACROSS
+  WEEKS): the week still settling onto Monday or Sunday — moved in the last 150 ms, toward that end, within half a
+  day of it — counts as on that day, so a second swipe straight after the first crosses instead of only finishing the
+  move; so does a swipe begun within half a day of it, whether the strip is moving or standing still, whose own travel
+  brings that day home and goes on past it by the crossing distance (the walk's A6b: the test browser sometimes left
+  the strip standing 84–127 px short of Monday for 160 ms before its snap began — the reading no longer hangs on the
+  snap's timing); a short flick (24 px or more, still moving at 0.3 px/ms over its last 100 ms) crosses as a 45 px drag does,
+  as a quick flick inside the week moves a day; and the direction is the first clear movement's (10 px), held for the
+  gesture — a thumb's arc that curls down still crosses, a drag that began down the day never does, and nor does any
+  gesture that moved the page up or down (the document is the phone weeks' one vertical scroller; the page moving is
+  the browser's own answer, so it wins over the first-movement reading). **A swipe Safari gives the page no touch for**
+  (his iPhone recordings the morning after, 05:41 and 06:00, read by the `?swdebug` log — `ui/swdebug.ts`): a swipe begun
+  while the strip is still gliding into its snap can reach the page as no touch at all, though Safari moves the strip.
+  Safari still reports the strip pulled past its end (below 0 past Monday, above the last day past Sunday), so with no
+  touch being read a pull past an end day by 12 px that began with the strip on that day — at rest there, or easing in
+  slower than 0.15 px/ms within half a day of it — crosses when the strip springs back by 3 px; never a flick's own
+  overshoot, the spring-back of a touch the page did read, or the 700 ms after a cross (`pan.ts pullPastEnd`). **The slide
+  starts where the day stands and ends where it rests** (`weekglide.ts`): the leaving copy keeps the day's live
+  place — on an iPhone the pull past the end Safari draws, read from the strip's scroll — held to a quarter of a
+  day; neither copy snaps (`scroll-snap-type:none` — the copy carries the week's class, and its own snap moved its
+  card 12 px, at the start and again as the copies came off); the arriving copy and the real week land on the same
+  place, `pan.ts weekLanding` — Monday's own snap point on a phone (12 px in, the week's padding), never 0, which
+  Safari would not re-snap from (the hold above); and the slide starts at a hand's pace, about 2.4 px/ms, easing out
+  over 340 ms, not the 3.9 px/ms that crossed three-quarters of the screen in a tenth of a second. Pinned
+  `ui/swipeweeks.test.tsx`, `ui/weekglide.test.ts`, and by a real finger `e2e/weekswipe.spec.ts`; the feel on his
+  iPhone is his look's to judge.
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other
@@ -652,8 +680,8 @@ window opened from the schedule, Week insights, the document viewer and the four
 templates, Flying waves, Plans); those last four and Insights close on Escape, heard before the Scheduler Board's own Escape and
 only while the window is the topmost sheet, and a window opened from a menu item gives the keyboard back to the menu's button
 (`useEscClose`, `noteOpener` — [BOARD-MODALS-ESCAPE], [WINDOWS-KEEP-KEYS]); a request's window leaves Escape to a sheet of
-another's over it (the document viewer) — one Escape closes the front one only (`topSheet`). The Scheduler Board itself does not
-close on Escape — only ✓ Done (D349); filed [BOARD-ESCAPE-CLOSE]. **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
+another's over it (the document viewer) — one Escape closes the front one only (`topSheet`). The Scheduler Board itself
+closes on Escape too since 30 Oct 26 ([BOARD-ESCAPE-CLOSE] — §Escape closes the board as ✓ Done does). **Spacing alone is no change** (`engine/slots.ts txtSet` folds the
 stored words too): a box whose stored words hold a doubled space is not written by a click or a Tab through it.
 **After a day's last box with no button below it** the caret stays in that box (D597 — the paragraph above; it ended on
 nothing until 6 Oct 26, the stack check's W14).
@@ -1573,8 +1601,38 @@ the board is read as the key goes DOWN (the window's capture phase, before any w
 the bell's list does) and the board closes as it comes back UP at the window, only if no listener stopped or answered it;
 a held key's repeats are not a press. When the board closes by any way out, the keyboard goes back to where it was when
 the board opened (`sheetfocus.ts locate`), or off the board's hidden buttons. Pinned by `ui/boardescape.test.tsx` and
-`e2e/board-escape-traffic.spec.ts`; the day's date that opens the board takes no keyboard (`OUTSTANDING.md`
-`[BOARD-OPEN-BY-KEYS]`).
+`e2e/board-escape-traffic.spec.ts`.
+
+**The week's date opens the board by the keys (`[BOARD-OPEN-BY-KEYS]`, 3 Nov 26).** On Edit Schedule's week the day's
+date (`html.ts`, `.dt.sb-open`) carries `role="button"` and `tabindex="0"`: one Tab stop, named as a button; Enter and
+Space open the board (`interactions.ts routeOpenKey`, delegated on the document with the click route — the same edit-page
+gate; a held key's repeats and a key with Ctrl, Alt, ⌘ or Shift open nothing). Opened so, the keys go onto the board's
+own box (`board.ts openSchedulerByKeys` → `SchedBoard.tsx`, tabindex -1 only until the keys first leave it, no ring), so the
+next Tab reaches the board's first button and never the week hidden behind it — only when a board opens: Enter on a date
+behind a board already open changes its day and leaves no note for the next open, and a close clears it; Escape or ✓ Done gives them back to the
+date. The ring is the app's keyboard ring (`11-drag.css`), for `:focus-visible` only — a click on the date shows none,
+though the date then holds the focus and gets it back when the board closes. The date is no text box, so the schedule's
+own Tab route (D551–D555, D597) never visits it, and Shift+Tab from a day's first box does not land on it. The VIEW week's
+date keeps the reference's markup (`html.test.ts normDt` lifts the two attributes off the edit week's parity compare).
+Pinned by `ui/boardkeys.test.tsx`, `html.test.ts` and `e2e/board-escape-traffic.spec.ts`.
+
+**The board's small menus and the two windows that hold no keys close on Escape (`[VEILED-WINDOWS-BAR]`'s Escape part,
+3 Nov 26 — `sheetfocus.ts escCloses`).** The + Block, Templates, plans-selector, + Wave (`board.ts popMenu`) and stores
+(`interactions.ts openStoresMenu`) menus, the Traffic window and the day-details window (`Modals.tsx`, `useEscWindow`)
+each join one list as they open and leave it as they close; the newest answers Escape, on the document's capture phase,
+and takes the press — the Scheduler Board under it stays (the next Escape closes the board). A menu's Escape unhooks its
+outside-click listener and puts the keys back on its button (`menuEscape`); a window's puts them back, by any way out,
+where they were when it opened — its Traffic button or ⓘ — if they are nowhere or were inside it, found again on the
+board itself when it opened there (`locate` looks inside `#schedBoard` for a control of the board). In a Traffic line
+Escape closes the window after the line's own blur has saved it, as a press on ✕ does. A question sheet or a window that
+holds the keys (`topSheet`) over any of them answers first; a held key's repeats are not a press. With the keys in one of
+the schedule's own boxes on the page behind — only those whose Escape puts the old words back (`textedit.ts routeKeyDown`:
+the week's text cells, an input's cells, the board's wrapping boxes and time boxes, the in-time lines, the stores, area and
+area-time cells), Tabbed to while the window or menu stays up — Escape is the box's and the window or menu waits for the
+next Escape, as the movable windows and the board leave it; from any other box (a search box, a select, a checkbox) Escape
+closes the window or menu; not the box the menu hangs from (the duty role's list: the first Escape closes the list,
+the second puts the role back). Which windows cover the
+top bar is unchanged. Pinned by `ui/boardkeys.test.tsx`, `ui/boardescape.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
 
 **The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**
 Its veil (`.airpop.air-below`) starts at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while

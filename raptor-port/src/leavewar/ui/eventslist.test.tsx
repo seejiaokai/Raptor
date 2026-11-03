@@ -5,10 +5,10 @@ import { act, fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { getState, initStore, setDayEvent, setRole } from '../state/store'
 
-/* the Undo on the note after a delete is the top bar's own Undo (the one timeline — ui/topbits.tsx globalUndoEngine); a
+/* the Undo on the note after a delete is the top bar's own Undo (the one timeline — ui/topstate.ts globalUndoEngine); a
    unit test has no timeline wired, so its press is caught here and the restore itself is proved by the walk */
 const undoPress = vi.fn()
-vi.mock('../../ui/topbits', async orig => ({ ...(await orig<typeof import('../../ui/topbits')>()), globalUndoEngine: () => ({ canUndo: true, canRedo: false, undoTitle: 'Undo', redoTitle: 'Redo', undo: undoPress, redo: () => {} }) }))
+vi.mock('../../ui/topstate', async orig => ({ ...(await orig<typeof import('../../ui/topstate')>()), globalUndoEngine: () => ({ canUndo: true, canRedo: false, undoTitle: 'Undo', redoTitle: 'Redo', undo: undoPress, redo: () => {} }) }))
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { setMemberTodayForTests } from '../engine'

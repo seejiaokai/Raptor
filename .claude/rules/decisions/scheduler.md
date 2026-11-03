@@ -631,6 +631,12 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
     week, or start a clone off-screen.
     Swipe NOT locked to one day (owner kept this) — no `scroll-snap-stop`; within-week
     swipes never glide, desktop instant.
+    *[AMENDED 3 Nov 26 by [WEEK-SWIPE-CROSS] — his iPhone recording, the cross abrupt and some swipes only bouncing; a
+    fault fix inside this design, no new ruling: the landing is `pan.ts weekLanding` (on a phone Monday's own snap point,
+    12px in, not 0); neither clone snaps; the leaving clone starts where the day stands (a pull past the end capped at a
+    quarter of a day); the slide is 340ms, starting near the browser's own snap speed; the edge counts while the week is
+    still settling toward its end day, a quick flick of 24px crosses, and a swipe's direction is its first 10px —
+    `ui-contracts.md` §the snap-hold's next bullet The morning after (his recordings 05:41, 06:00): a swipe Safari gives the page no touch for — begun while the strip still glides into its snap — crosses by the strip's own pull past its end, `pan.ts pullPastEnd`.]*
   - **Desktop arrows are continuous across weeks** (owner, 23 Aug), landings instant.
     They **walk EVERY live day incl Sat/Sun to the FRONT before crossing** —
     `weekScrollMax` = "last live day at the front" (`(liveDays−1)×dayStep` clamped),

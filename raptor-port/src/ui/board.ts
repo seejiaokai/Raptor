@@ -37,8 +37,8 @@ import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
-import { noteOpener } from './sheetfocus'
-import { openAvailWinFrom } from './AvailWindow'
+import { noteOpener, menuEscape } from './sheetfocus'
+import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
@@ -530,6 +530,7 @@ export function boardWarnHTML(di: number, look = false) {
          any flagging … the top right warning column will snap to that puck and
          show what triggered that flagging"). selectPerson clears WFOCUS, so
          `.pksel` and `.on` never apply to the same row. */
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own short list of the men it names, asked once for one man: it is a different list for every warning, so a Set would be built for a single look-up
       const sel = view.SELID && (w.who || []).includes(view.SELID) ? ' pksel' : ''
       wh += `<div class="wln ${w.sev}${on}${sel}${hid ? ' hid' : ''}" data-wdi="${di}" data-wix="${ix}" title="${hid ? 'Hidden — it flags no puck and is not counted. ' : ''}Jump to the puck that caused this">`
         + `<span class="wln-t">${wtext(w)}</span>`
@@ -965,7 +966,8 @@ export function boardMbtn(e: MouseEvent) {
     else if (kind === 'p') changed = sortProg(n[0])
     if (changed) {
       afterSchedMutate(); notify()
-      const gNow = kind === 'g' ? ((DAYS[n[0]] || {}).ground || []).map(gSig).filter((x: string) => gRowsBefore.includes(x)) : []
+      const before = new Set(gRowsBefore)
+      const gNow = kind === 'g' ? ((DAYS[n[0]] || {}).ground || []).map(gSig).filter((x: string) => before.has(x)) : []
       if (kind === 'g' && gWasMan && gNow.join('|') === gRowsBefore.join('|')) toast('Ground programme back to time order')
     }
     else toast('Already in order')
@@ -1619,6 +1621,7 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
     const h = box.offsetHeight
     let top = r.bottom + 6
     if (top + h > visBot - 8 && r.top - 6 - h >= visTop + 8) top = r.top - 6 - h
+    // eslint-disable-next-line react-doctor/no-unthrottled-scroll-mutation -- the list must stand by the box it hangs off on every scroll, as the box moves ([KEYBOARD-SCROLL], D1081): the browser sends a scroll event at most once a frame, so this writes two numbers of one small box no oftener than that, and a timer or a later frame would leave the list a frame behind its box — the jump D1081 rules out; it lays out nothing of the board
     box.style.left = Math.max(8, Math.min(window.innerWidth - box.offsetWidth - 8, Math.round(r.left))) + 'px'
     box.style.top = Math.round(Math.max(visTop + 8, Math.min(visBot - h - 8, top)) - lay) + 'px'
   }
@@ -1627,6 +1630,8 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   box.addEventListener('click', (e: any) => onPick(e, () => box.remove()))
   /* deferred by a tick, or the very click that OPENED this box closes it */
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
+  /* Escape takes it away, the board under it staying, and the keys go back to its button ([VEILED-WINDOWS-BAR]) */
+  menuEscape(box, anchor)
   return box
 }
 /* + BLOCK's picker (owner, 13 Aug 26): the saved duty TEMPLATES, straight up \u2014
@@ -2294,6 +2299,16 @@ export function wireDayDots(el: HTMLElement) {
 }
 
 export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di); validate(); notify() }
+/* OPENED BY THE KEYS ([BOARD-OPEN-BY-KEYS], 3 Nov 26): Enter or Space on the week's date. The board covers the whole
+   screen, so the keys must go onto it — left on the date behind it, the next Tab walked the hidden week. The note is taken
+   once by the board as it opens (SchedBoard.tsx), which puts the keys on its own box and still gives them back to the date
+   when it closes. A press or a tap opens it as before, the keys left where they were.
+   ONLY WHEN THE BOARD OPENS (the fresh read of 3 Nov 26, finding 3): Enter on a date behind a board already open only
+   changes its day, and no board opens to take the note — left set, it put the keys on the box of the next board opened by
+   the mouse. A close clears it too (closeScheduler). */
+let KEYSIN = false
+export function openSchedulerByKeys(di: number) { KEYSIN = view.SBDAY == null; openScheduler(di) }
+export function takeKeysIn(): boolean { const k = KEYSIN; KEYSIN = false; return k }
 /* Done/Close also parks the aircrew drawer: ros-open is a body class shared
    with the edit week's own drawer, and leaving it set would surprise-open
    the week's palette the moment the board lifts (owner's one-window phone
@@ -2303,4 +2318,4 @@ export function openScheduler(di: number) { SBWOPEN = false; view.setBoardDay(di
    click and the Done/Close buttons close the board through the exact same
    path rather than two copies of "SBDAY null, park the drawer" drifting
    apart. */
-export function closeScheduler() { view.closeBoardState(); notify() }
+export function closeScheduler() { KEYSIN = false; view.closeBoardState(); notify() }

@@ -29,13 +29,14 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
+import { menuEscape } from './sheetfocus'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
 import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
 import { oilWaitThen, holdForOil } from './oilwait'
-import { openAvailWinFrom } from './AvailWindow'
+import { openAvailWinFrom } from './availopen'
 import { withDaySnap, lateMates } from './html'
-import { openScheduler, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
+import { openScheduler, openSchedulerByKeys, toggleSbwarn, boardTab, dayTplMenu, planMenu, switchDraft, SBWOPEN } from './board'
 import { findInputCell, hideHistBub, pinHistBubAt, findHistCell, findSeatRow, isSeatKey, onlyOn } from './histbubble'
 import { pickRosDay, hsSync } from './pan'
 import { isStandalone, saTyped, saFlies, CURWEEK } from '../engine/waves'
@@ -602,6 +603,8 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   }
   ;(box as any)._offClick = off
   setTimeout(() => document.addEventListener('click', off), 0)
+  /* Escape takes it away too, unhooking `off`, the board under it staying; the keys back on the C ([VEILED-WINDOWS-BAR]) */
+  menuEscape(box, anchor)
 }
 
 /* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
@@ -905,6 +908,22 @@ if (typeof document !== 'undefined') {
        nothing is the suggestion's, and the arrival's own refresh cannot spoil it — the value is read on beforeinput */
     if (!el.dataset.placed && boxValue(el).trim()) armFreshTime(el)
   }, true)
+}
+
+/* ENTER AND SPACE ON THE WEEK'S DATE OPEN THE SCHEDULER BOARD ([BOARD-OPEN-BY-KEYS], 3 Nov 26 — the design guide §2).
+   The date (html.ts, `.dt.sb-open`, a Tab stop with role="button") opens the board on a press; these are the two keys a
+   button answers. Delegated on the document with the click route (Shell.tsx), the same gate as the press (edit page,
+   may edit). Space's own job — scrolling the page — is not done. A held key's repeats and a key with Ctrl, Alt or ⌘ open
+   nothing. */
+export function routeOpenKey(e: KeyboardEvent) {
+  if ((e.key !== 'Enter' && e.key !== ' ') || e.defaultPrevented || e.repeat || e.isComposing) return
+  if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+  const t = e.target as HTMLElement | null
+  if (!t || typeof t.closest !== 'function') return
+  const sbo = t.closest('#eWeek .sb-open[data-sbday]') as HTMLElement | null
+  if (!sbo || !canEditSched() || view.CURPAGE !== 'editsched') return
+  e.preventDefault()
+  openSchedulerByKeys(+sbo.dataset.sbday!)
 }
 
 export function routeClick(e: MouseEvent) {

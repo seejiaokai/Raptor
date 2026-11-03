@@ -304,6 +304,7 @@ export function anchorEl(root:any,key:any){
    selectors across two surfaces and a list that rots the next time a section
    is added. */
 function warnTarget(root:any,ids:any[],key?:any){
+  const named=new Set(ids)   /* one look-up a puck, the same match `includes` made (React Doctor, 3 Nov 26) */
   const a=anchorEl(root,key)
   if(a){
     /* the seat's row: .acrow / .pl-row / .ah-row on the week, .sb-line /
@@ -311,7 +312,7 @@ function warnTarget(root:any,ids:any[],key?:any){
        outside any of them */
     const row=a.closest('.acrow,.pl-row,.ah-row,.sb-line,.sb-arow')||a
     const pk=[...row.querySelectorAll('.puck[data-person]')]
-      .find((el:any)=>ids.includes(el.dataset.person))
+      .find((el:any)=>named.has(el.dataset.person))
     return pk||row
   }
   /* ONE query, so the candidates come back in document order — looping the ids
@@ -321,7 +322,7 @@ function warnTarget(root:any,ids:any[],key?:any){
      it would out-score a puck nested in a flying line under any depth rule
      (it renders on the edit week only, which is where this was reported). */
   const cand=[...root.querySelectorAll('.puck[data-person]')]
-    .filter((el:any)=>ids.includes(el.dataset.person)&&!el.closest('.availpuck'));
+    .filter((el:any)=>named.has(el.dataset.person)&&!el.closest('.availpuck'));
   /* One named person cannot have a "row holding two of them", so there is
      nothing to weigh: take the first, which is the old behaviour. Testing the
      CANDIDATE count here instead of the NAME count was the bug — a lone name
@@ -335,7 +336,7 @@ function warnTarget(root:any,ids:any[],key?:any){
     for(let a=el.parentElement; a&&a!==root.parentElement; a=a.parentElement){
       d++;
       const seen=new Set([...a.querySelectorAll('.puck[data-person]')]
-        .map((x:any)=>x.dataset.person).filter((p:any)=>ids.includes(p)));
+        .map((x:any)=>x.dataset.person).filter((p:any)=>named.has(p)));
       /* only a REAL co-location scores; strict < leaves document order to
          break ties */
       if(seen.size>=2){if(d<bestD){bestD=d; best=el;} break;}

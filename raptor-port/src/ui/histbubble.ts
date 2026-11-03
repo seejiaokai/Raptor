@@ -306,13 +306,16 @@ export function storyOf(el: HTMLElement): ELogRow[] {
        one person put in or taken out (`one`) is on that person's row alone; a line written before the build, which
        says `iu:<iid>` with its man in `sub`, lands on his row the same way (Fable's read of the one-rule plan, F16) */
     const at = iuParts(key)!, iid = at.iid, day = dayOfCell(el)
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each history line's own short list of the inputs it was filed under (a move re-files one), asked once for one input: a different list for every line, so a Set would be built for a single look-up
     return ELOG.rows.filter(r => (r.iid === iid || (r.iids || []).includes(iid)) && (!day || rowTouches(r, day))
       && (!at.person || !(r as any).one || !oneMansRow(iid) || String(r.sub || '') === at.person))
   }
   /* …and a seat of a row that CAME from an input tells the input's lines about the man standing on it too, in the
      order they were written (seatInputLines, below) */
   const own = elogAllFor(key), his = seatInputLines(key, el)
-  return his.length ? ELOG.rows.filter(r => own.includes(r) || his.includes(r)) : own
+  if (!his.length) return own
+  const told = new Set([...own, ...his])   // one look-up a line of the whole history, in its own order (React Doctor, 3 Nov 26)
+  return ELOG.rows.filter(r => told.has(r))
 }
 /* A SEAT OF A PROGRAMME ROW THAT CAME FROM AN INPUT ALSO ANSWERS FOR THE INPUT'S LINES ABOUT THE PERSON STANDING ON IT
    (`[HIST-DOT-INPUT-ROW]` — the one-rule job's walk, share L, L13). A man put in by a drop on the row is a line of the
@@ -330,6 +333,7 @@ function seatInputLines(key: string, el: HTMLElement, rows?: (iid: string) => EL
   const v = slotVal(key), who = String(whoId(v) || v || '')
   if (!who) return []
   const day = dayOfCell(el)
+  // eslint-disable-next-line react-doctor/js-set-map-lookups -- each history line's own short list of the inputs it was filed under (a move re-files one), asked once for one input: a different list for every line, so a Set would be built for a single look-up
   const of = rows ? rows(iid) : ELOG.rows.filter(r => r.iid === iid || (r.iids || []).includes(iid))
   /* (`one` — put in or taken out; `whose` — the hand-over line of a man dropped on the input's ONLY person, who
      replaces him: the other way onto the row, and it carries the new man in `sub` — the Opus read, F3) */

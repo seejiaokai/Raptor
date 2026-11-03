@@ -50,9 +50,19 @@
    both are removed the instant the slide ends. It does NOT lock the swipe to one
    day: a firmer flick still crosses several days within a week exactly as before. */
 import { WEEKJUMP } from '../state/view'
-import { weekScrollMax } from './pan'
+import { weekLanding } from './pan'
 
-const DUR = 280
+/* THE SLIDE'S PACE ([WEEK-SWIPE-CROSS], his iPhone recording, 3 Nov 26 — "it triggers but it's very abrupt, not
+   smooth"). The glide ran on his phone (two frames of the recording catch it near its end, 2.75 s and 6.5 s), but it
+   ran at 280ms on cubic-bezier(.22,.61,.36,1): it STARTED at about 3.9px a millisecond and was three-quarters across
+   the screen in its first tenth of a second — twice the pace of a day swiped by hand inside the week, which the
+   browser's own snap carries at about 2.3px/ms at its fastest (measured on the built app at his iPhone's size). After
+   a pull that moved the day only a little, a whole screen going in a tenth of a second reads as a jump, and in his
+   recording, a frame every quarter second, it showed as one. Now it starts at the hand's own pace — (y1/x1) × width ÷
+   DUR, about 2.4px/ms on his 402 wide — and eases out to rest over 340ms, still inside the time a hand-swiped day
+   takes. Pinned in weekglide.test.ts. */
+const DUR = 340
+const EASE = 'cubic-bezier(.25,.5,.25,1)'
 
 /* OVERLAPPING GLIDES share ONE baseline (owner-scale robustness, 24 Aug 26).
    A glide takes the real week's touches (pointer-events:none) and clips the page
@@ -69,6 +79,7 @@ const DUR = 280
 let inFlight = 0
 let savedPE: string | null = null
 let savedOverflowX: string | null = null
+let savedRootOX: string | null = null
 let lastRoot: HTMLElement | null = null
 let lastLanded = 0
 
@@ -89,20 +100,34 @@ function reducedMotion() {
    week with no day cards falls back to its whole markup parked by scroll. */
 type Snapshot = { html: string; shift: number; park: number }
 
-/* The day card a scroll offset `x` parks on, by the week's live day pitch.
-   `wholeDay` snaps to the nearest whole card (the LEAVING clone: a finger that
-   let go mid-scroll freezes on one clean day, not a two-day sliver); otherwise
-   the residual between the card's own offset and `x` is kept as `shift`, so the
-   ARRIVING clone sits pixel-for-pixel where the real week will land it. In a
-   one-card clone the card sits at the week's own padding (where card 0 sits in
-   the real week), so the nudge is `card.k − x` relative to card 0. */
-function snapshot(week: HTMLElement, x: number, wholeDay: boolean): Snapshot {
+/* The day card a scroll offset `x` parks on, by the week's live day pitch, and
+   the residual between the card's own offset and `x` kept as `shift`, so the
+   clone sits pixel-for-pixel where the week shows (the LEAVING clone) or will
+   land (the ARRIVING clone) that day. In a one-card clone the card sits at the
+   week's own padding (where card 0 sits in the real week), so the nudge is
+   `card.k − x` relative to card 0.
+
+   THE LEAVING CLONE KEEPS WHERE THE DAY STANDS ([WEEK-SWIPE-CROSS], his iPhone
+   recording, 3 Nov 26 — "very abrupt, not smooth"). It used to be snapped to the
+   nearest whole day, so the day jumped back against the swipe the moment the
+   clones went up, before the slide began: 12px off Sunday on the built app (the
+   strip rests Sunday 12px further in than Monday — e2e/weekswipe.spec.ts), and
+   on his iPhone the whole pull past the end Safari draws (about 80px in the
+   recording at 0.75 s; Safari reports that pull as a scroll past 0 or the end,
+   which `x` carries as it is — a reading the test browsers cannot show, his look
+   is its proof). The snap was there so a finger that let go mid-scroll froze on
+   one clean day, not a two-day sliver — a one-card clone cannot show a sliver of
+   another day, so the residual is kept, held to a quarter of a day: a day
+   caught further than that from its resting place is drawn a quarter of a day
+   off it, in the direction it stood, never further. */
+function snapshot(week: HTMLElement, x: number): Snapshot {
   const ds = week.querySelectorAll<HTMLElement>('.day:not(.peek)')
   if (!ds.length) return { html: week.innerHTML, shift: 0, park: x }
   const step = ds.length > 1 ? ds[1]!.offsetLeft - ds[0]!.offsetLeft : 0
   const k = step > 0 ? Math.max(0, Math.min(ds.length - 1, Math.round(x / step))) : 0
   const at = ds[k]!.offsetLeft - ds[0]!.offsetLeft          // card k's offset in the week's content
-  return { html: ds[k]!.outerHTML, shift: wholeDay ? 0 : at - x, park: 0 }
+  const lim = step > 0 ? step / 4 : Infinity
+  return { html: ds[k]!.outerHTML, shift: Math.max(-lim, Math.min(lim, at - x)), park: 0 }
 }
 
 /* Call at the TOP of the week's repaint effect, BEFORE the new markup is
@@ -117,7 +142,7 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
   if (reducedMotion()) return null
   const rect = root.getBoundingClientRect()
   if (!rect.width) return null               // headless / not laid out — no-op
-  const outSnap = snapshot(root, root.scrollLeft, true)   // the day the finger was on, frozen
+  const outSnap = snapshot(root, root.scrollLeft)   // the day the finger was on, frozen where it stands
   const w = rect.width
   const fwd = dir === 'mon'                   // forward: new IN from the right, old OUT to the left
 
@@ -142,14 +167,22 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
          clipped at that height and its lower part showed whatever lay under
          it (the 16:02 black, the 16:46/17:23 split).
        - will-change + a resting transform give the clone its own compositor
-         layer from the first frame, so it is painted where it is inserted. */
+         layer from the first frame, so it is painted where it is inserted.
+       - scroll-snap-type:none ([WEEK-SWIPE-CROSS], 3 Nov 26). The clone carries
+         the week's class, and with it the week's scroll-snap: a one-card clone
+         with its card nudged by `shift` overflows by that nudge, so the browser
+         SNAPPED the clone's card back to its start a moment after it went up —
+         traced frame by frame on the built app, the leaving day hopped 12px off
+         where it stood, and the arriving day settled 12px off where the real
+         day then rested, so it hopped again as the copies came off. A frozen
+         copy must not snap: it stands exactly where `shift` puts it. */
     const mkClone = (s: Snapshot, z: number) => {
       const c = document.createElement('div')
       c.className = root.className
       c.style.cssText =
         `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;` +
         `height:${h}px;margin:0;overflow:hidden;pointer-events:none;z-index:${z};` +
-        `scroll-behavior:auto;background:var(--bg);will-change:transform;transform:translateX(0)`
+        `scroll-behavior:auto;scroll-snap-type:none;background:var(--bg);will-change:transform;transform:translateX(0)`
       c.innerHTML = s.html
       const card = c.firstElementChild as HTMLElement | null
       if (card && s.shift) card.style.marginLeft = `${s.shift}px`
@@ -171,13 +204,14 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        there is no live element on screen to fling — nothing to fight, nothing to
        scrub. The real week is simply re-landed and uncovered once the clones come
        off (its fling has died by then).
-         out  — the week being LEFT, frozen on the day the finger was on (its
-                scroll snapped to a whole day so a mid-scroll release shows one
-                clean day).
+         out  — the week being LEFT, frozen on the day the finger was on,
+                where it stands on screen (see snapshot — no longer snapped
+                back to the day's resting place first).
          inc  — the freshly-loaded week, frozen on its LANDING day. Derived from
                 the cross DIRECTION, not the live scrollLeft: a forward cross
-                lands Monday (0), a `sun` cross back lands the last day
-                (weekScrollMax). The live scrollLeft is unreliable here — the
+                lands Monday's resting place, a `sun` cross back the last day's
+                (pan.ts weekLanding — the one reading the repaint lands the
+                real week by too). The live scrollLeft is unreliable here — the
                 phone snap does not always hold the far edge the instant the
                 landing is written — so reading it risked freezing the clone on
                 the wrong day and jumping when the clones came off. The finish
@@ -188,8 +222,8 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        before the swap) and the one arriving (root's box now). A clone sized from
        the leaving week alone clipped a tall arriving day at a short week's height. */
     const h = Math.max(rect.height, root.getBoundingClientRect().height)
-    const landed = fwd ? 0 : weekScrollMax(root)
-    const inc = mkClone(snapshot(root, landed, false), 40)   // underneath …
+    const landed = weekLanding(root, dir)
+    const inc = mkClone(snapshot(root, landed), 40)   // underneath …
     const out = mkClone(outSnap, 41)                          // … the leaving day, on top
     /* COVER the real week for the length of the slide — never hide it. The two
        clones tile the viewport edge to edge, so the live week — which the
@@ -207,11 +241,20 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     if (inFlight === 0) {
       savedPE = root.style.pointerEvents
       savedOverflowX = document.body.style.overflowX
+      savedRootOX = root.style.overflowX
     }
     inFlight++
     lastRoot = root; lastLanded = landed        // the most recent cross owns the final landing
     root.style.pointerEvents = 'none'
     document.body.style.overflowX = 'hidden'
+    /* AND STILL IT ([WEEK-SWIPE-CROSS], his iPhone recordings of 3 Nov 26, 06:00 to 08:35, read by the ?swdebug log): after
+       a cross onto Sunday the real week was still moving half a second on — a few px past Sunday's end, Safari's spring from
+       the pull that crossed carrying on after the landing was written, Sunday resting on the strip's very end — and a swipe
+       toward Saturday in that half second was sprung back to Sunday. Under the slide the real week cannot scroll: Safari
+       stops its leftover movement there, and the finish lands the week and lets it scroll again, still. Only where the
+       week's own scrollbar takes no room (a phone's floats over it): a narrow desktop window with classic scrollbars would
+       lose that bar's height for the slide, and has no spring to stop (the fourth read, 3 Nov 26). */
+    if (root.offsetHeight - root.clientHeight === 0) root.style.overflowX = 'hidden'
 
     let done = false
     const finish = () => {
@@ -227,10 +270,12 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
       const wasSB = r.style.scrollBehavior
       r.style.scrollBehavior = 'auto'
       r.scrollLeft = lastLanded
+      r.style.overflowX = savedRootOX ?? ''          // scrolls again, standing still on its landing
+      r.scrollLeft = lastLanded
       r.style.scrollBehavior = wasSB
       r.style.pointerEvents = savedPE ?? ''          // the settled week takes touches again
       document.body.style.overflowX = savedOverflowX ?? ''
-      savedPE = savedOverflowX = null; lastRoot = null
+      savedPE = savedOverflowX = savedRootOX = null; lastRoot = null
       /* the incoming clone is the landed week's own picture, so it stays on top
          for two more frames while the browser commits the real week's paint
          underneath — then comes off over identical pixels, never over black */
@@ -254,7 +299,7 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
       if (done) return
       inc.style.transition = 'none'; inc.style.transform = `translateX(${fwd ? w : -w}px)`
       void getComputedStyle(inc).transform
-      const ease = `transform ${DUR}ms cubic-bezier(.22,.61,.36,1)`
+      const ease = `transform ${DUR}ms ${EASE}`
       out.style.transition = ease; out.style.transform = `translateX(${fwd ? -w : w}px)`
       inc.style.transition = ease; inc.style.transform = 'translateX(0)'
       inc.addEventListener('transitionend', finish, { once: true })

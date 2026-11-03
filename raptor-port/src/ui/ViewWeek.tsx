@@ -11,7 +11,7 @@ import { CARRYDAY, CURPAGE, PEEKLAND, WEEKJUMP, setCarryDay, setPeekLand, setWee
 import { viewDayHTML } from './html'
 import { refreshHighlights } from './highlights'
 import { beginGlide } from './weekglide'
-import { weekScrollMax, panHold } from './pan'
+import { weekLanding, panHold } from './pan'
 import { mountPeek } from './peek'
 import { useVersion } from './useStore'
 import { swapDay, chunksOfHTML, type DayChunks } from './dayswap'
@@ -92,8 +92,8 @@ export function ViewWeek() {
     if (WEEKJUMP != null) {
       const was = root.style.scrollBehavior
       root.style.scrollBehavior = 'auto'
-      if (WEEKJUMP === 'mon') root.scrollLeft = 0
-      else if (WEEKJUMP === 'sun') root.scrollLeft = weekScrollMax(root)
+      /* Monday's and Sunday's resting places, one reading with the glide's (pan.ts weekLanding) */
+      if (WEEKJUMP === 'mon' || WEEKJUMP === 'sun') root.scrollLeft = weekLanding(root, WEEKJUMP)
       else scrollWeekToDay(root, WEEKJUMP)
       root.style.scrollBehavior = was
       setWeekJump(null)

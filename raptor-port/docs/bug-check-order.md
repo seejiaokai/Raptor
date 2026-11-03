@@ -965,6 +965,28 @@ the reader's instructions or model change, it is run on every case and a change 
    in the walk by each of its own ways — its Close, its ✕, its own surround, Escape — on a touch screen in WebKit as well as a
    desktop, with a picture after the one tap, and the walk asks: is it gone, and is the window under it still there as it was
    (`scripts/handpass/lw-nb-docclose.mjs` on the branch `claude/lw-next-batch-1101`; its evidence `docs/handpass/2026-11-01-lw-next-batch.md` §His find).
+20. **A gesture walked once, slowly, and pictured only at rest (his iPhone recording, the swipe from one week into the next on
+   Edit Schedule, 3 Nov 26).** The August walks of the cross between weeks drove one clean, slow drag off Monday and Sunday and
+   pictured the day before and after; nobody swiped again before the snap settled, flicked short and quick, swiped with a
+   thumb's curling arc, or measured where the two sliding copies stood on their first and last frames against the real day. On
+   his iPhone the cross jumped (the leaving copy snapped back, each copy snapped itself, the slide was over in a frame) and
+   swipes only bounced (a second swipe while settling, a short flick under the distance, a curl judged on the whole path).
+   **Lesson:** a gesture is walked the ways a hand does it — slow and quick, short and long, straight and curling, again at
+   once before what it started has settled — and a moving change is checked by a frame-by-frame trace of where each moving
+   part stands, its first and last frame against the place the page settles; a picture at rest proves neither (`e2e/weekswipe.spec.ts`;
+   its evidence `docs/handpass/2026-11-03-week-swipe-keys.md`).
+21. **A test browser's touch taken for his phone's (his iPhone recordings the morning after lesson 20, 3 Nov 26, 05:41 and
+   06:00).** The night's walk swiped Tuesday → Monday and straight on, by real touch in Chromium and by touches raised inside
+   the page in WebKit — 24 of 24 crossed. On his iPhone Monday only stretched and sprang back: a swipe begun while the strip
+   is still gliding into its snap reaches the page as no touch at all — no start, no move, no end — though Safari moves the
+   strip under the finger. Neither test browser can do that: both hand the page every touch the script sends, and neither
+   pulls a strip past its end. Only a log on his own screen (`?swdebug`) showed it, in one recording.
+   **Lesson:** a gesture's walk in a test browser proves what the app does with the events it is given, never which events his
+   phone gives it. Where a fault he sees on his iPhone does not happen in the walk, the next step is an on-screen log of what
+   his phone hands the page (switched on by the address, off for everyone else), read off one recording of his — before any
+   fix is guessed; and every gesture's evidence sheet names what only his phone can show (`src/ui/swdebug.ts`;
+   `src/ui/swipeweeks.test.tsx` "a swipe Safari gave the page no touch for"; its evidence
+   `docs/handpass/2026-11-03-week-swipe-keys.md` §11).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

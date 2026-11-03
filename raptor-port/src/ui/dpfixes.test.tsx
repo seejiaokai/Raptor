@@ -33,7 +33,7 @@ import { dayInfoHTML, withDaySnap, dayHTML } from './html'
 import { sbUnavailPanel } from './board-html'
 import { pendListHTML } from './pendlist'
 import { jumpToChange } from './interactions'
-import { jumpOf } from './ChangesWindow'
+import { jumpOf } from './changesjump'
 import { PIOPEN } from '../state/view'
 import './changesmodel'
 

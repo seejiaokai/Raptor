@@ -34,7 +34,7 @@ import { HIST } from '../state/history'
 import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
-import { routeClick } from './interactions'
+import { routeClick, routeOpenKey } from './interactions'
 import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
@@ -70,7 +70,8 @@ import { HelpPage } from './HelpPage'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
-import { UndoPair, SyncChip, BellButton, BellList, globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topbits'
+import { UndoPair, SyncChip, BellButton, BellList } from './topbits'
+import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } from './topstate'
 
 /* THE WEEK BANNER IS GONE (owner, 15 Sep 26 — item 2). First the week-STATUS
    text went (each day wears its own green issued-version tag / dashed DRAFT tag);
@@ -164,7 +165,7 @@ export function Shell() {
     return () => { done = true; clearTimeout(timer); teardown() }
   }, [])
   /* fast sync (demo) — the toggle only demonstrates itself, as the reference notes: no server in the prototype. Its state
-     is module state in ui/topbits.tsx now, shared with the board's chip ([UNDO-TOPBAR], D349 (3)). */
+     is module state in ui/topstate.ts now, shared with the board's chip ([UNDO-TOPBAR], D349 (3)). */
   /* one delegated click listener, exactly as the reference wires it — plus
      the sign-off change listener and right-click-to-clear */
   useEffect(() => {
@@ -266,6 +267,7 @@ export function Shell() {
     document.addEventListener('focusin', routeFocusIn)
     document.addEventListener('input', routeReportingInput)
     document.addEventListener('keydown', routeKeyDown)
+    document.addEventListener('keydown', routeOpenKey)
     const dragOff = initDrag()
     const panOff = initPan()
     return () => {
@@ -276,6 +278,7 @@ export function Shell() {
       document.removeEventListener('focusout', routeFocusOut)
       document.removeEventListener('input', routeReportingInput)
       document.removeEventListener('keydown', routeKeyDown)
+      document.removeEventListener('keydown', routeOpenKey)
       document.removeEventListener('focusin', routeFocusIn)
       dragOff()
     }
@@ -462,7 +465,7 @@ export function Shell() {
               many are waiting and opens Admin → Users, whose list on screen puts it out.
               First because someone locked out of the app outranks a bug report or an OIL
               question (the agent's call, on the look card). */}
-          {/* ONE bell, the board's too (ui/topbits.tsx bellTap): its four triggers and their order are unchanged — and
+          {/* ONE bell, the board's too (ui/topstate.ts bellTap): its four triggers and their order are unchanged — and
               since the one-rule build's step 7 (D769) a tap that finds none of them opens the list of notices
               (BellList, mounted once at the foot of this component) */}
           <BellButton id="notifyBell" />

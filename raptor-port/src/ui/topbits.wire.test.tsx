@@ -38,7 +38,7 @@ import { commitInput, draftOf } from './inputedit'
 import * as pops from './pops'
 import { NOTICES } from '../state/notices'
 import { unreadFor } from '../state/noticeseen'
-import { bellOn, bellTap, bellListOpen, closeBellList } from './topbits'
+import { bellOn, bellTap, bellListOpen, closeBellList } from './topstate'
 
 const ISNAP = JSON.stringify(INPUTS)
 const PSNAP = JSON.stringify(PEOPLE)

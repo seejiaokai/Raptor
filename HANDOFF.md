@@ -20,16 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/schedule-leftovers -->
-### `claude/schedule-leftovers` — the schedule leftovers: [OIL-NOTIFY-SEEN]'s three left and [LOOK-PENDING-COUNT] — written 2 Nov 26 — **his "merge live" 3 Nov 26 — remove this block at the next handoff**
-- **His pick (D994):** offered three small-fix batches, he chose the schedule leftovers over the recommended PDF export fix ([PDF-PRINT-TWICE] stays first for the next batch). Mid-job he asked about dragging a puck across weeks; told it is about a day's build plus a FULL check, he said skip it — **D1573** (D1529 stands; not filed).
-- **Built (each red first):** (1) a puck let go over nothing says "<callsign> removed" (`drag.ts applyDrop`); (2) the desktop crew panel's ALL / ALL AVAIL stays in reach — a drag-time rule no longer takes the panel out of its sticky place (`11-drag.css`), and at the page's foot it is no longer pushed 86px under the top bar (`03-week.css`); (3) a finger drag scrolls the box under the finger (`drag.ts tdOver`) — the sideways phone's day pane; (4) the look at an issued version prints the working copy's own "N pending" (`html.ts` PVPC), its Discard button the discard count (D863).
-- **Checked:** tier WALK — `raptor-port/docs/handpass/2026-11-02-schedule-leftovers.md`, the walk 29 / 29 at 1536 (a mouse), 402 upright and 844 on its side (fingers), 18 pictures; unit files near the change 669 / 669, stylesheet tests 350 / 350, three new browser tests (red on the old code); GitHub's run on `ffb7ea58f` 25 pass, 0 failing. A fresh blind Opus read of the commit: no fault in behaviour, two speed costs fixed; the re-walk 25 / 25.
-- **Records:** contracts in `ui-contracts.md` (the crew panel, the removal note, a finger's scroll), AM23 refined in the amendment register, the file map, the walk ledger, the backlog ([OIL-NOTIFY-SEEN] built — archive once live; [LOOK-PENDING-COUNT] built, its question kept for him: the board's look shows no count where the week's does).
-- **Rulings:** D1573 → `scheduler.md` (home `ui-contracts.md`).
-- **Closed:** his "merge live" 3 Nov 26; [OIL-NOTIFY-SEEN] and [LOOK-PENDING-COUNT] archived; the board question filed as [LOOK-COUNT-BOARD-ASK] (waits under D994).
-- **Pick up here:** nothing left of this job. The agent's recommendation for his next pick: [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy) instead of the published report; his "Later — the next batch of small fixes" (2 Nov 26). A fresh chat, on a new branch from `main`.
-- **Opening line:** "Read HANDOFF.md. On a new branch from main, start my next pick from the backlog."
+<!-- now:claude/week-swipe-pdf-print -->
+### `claude/week-swipe-pdf-print` — the night of 3 Nov 26 and the morning after: the phone's swipe across weeks, the board by the keys, the schedule's React Doctor warnings — written 3 Nov 26, at his "merge live" — verify before use
+- **Where it started:** his "/overnight 12" with an iPhone recording of the week swipe; the PDF job skipped on his word, the keyboard leftovers and the schedule's React Doctor warnings in its place; then, the morning after, four more recordings (05:41 to 09:47) read with an on-screen log (`?swdebug`).
+- **Shipped (pull request 621 — merging on his "merge live" when written; check before acting):** the cross between weeks slides from where the day stands; a swipe Safari gives the page no touch for crosses by the strip's own pull past its end; the week is stilled under the slide; the board opens by the keys and its small menus, the Traffic and day-details windows close on Escape; the schedule's 67 React Doctor warnings handled. Evidence: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` (§1–§12), lessons 20 and 21. [WEEK-SWIPE-CROSS] and [BOARD-OPEN-BY-KEYS] archived.
+- **Unfinished:** none of the job. Filed: [WEEK-CROSS-END-CARDS] (Fable's smoother cross — a preview card at each end of the strip, his to place, picture in the item), [WEEK-GLIDE-TWO-PAGES] (low), [BOARD-KEYS-LEFT], [DOCTOR-INPUTS-RIDE], [LW-ZOOM-TEST-SLOW]; [VEILED-WINDOWS-BAR]'s bar part stays open; [PDF-PRINT-TWICE] as it was.
+- **Branch:** `claude/week-swipe-pdf-print`; pull request 621; merged — the next chat starts a new job on its own fresh branch, level with `origin/main`, and never switches to this one.
+- **Gates:** GitHub's run of the pull request is the full check (D1086) — green on every code commit since `f5c1b0046`; the closing records' run read before the merge.
+- **Also open, waiting for his merge live:** pull request 578 (`claude/handoff-1027-review` — notes), 541 commits behind `main`.
+- **Running when written:** the walk's preview on port 4173 (this chat's — stopped at the end); nothing else.
+- **Pick up here:** a new job from `## Next, in order` — or [WEEK-CROSS-END-CARDS] if he places it.
 <!-- /now -->
 ## Next, in order
 
