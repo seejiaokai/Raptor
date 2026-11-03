@@ -10,7 +10,7 @@
    and what the store keeps: the old saved shape still loads (D401's reading — the build plan, batch 1), the open dates
    and the last-closed note survive a reload, one gesture is one Undo step (B12; D352 narrowed), and the page lands on
    the first open date from today, in whichever period holds it. */
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { INPUTS } from '../engine/inputs'
 import { DAYS } from '../engine/data'
 import { SCHED } from '../engine/publish'
@@ -186,12 +186,21 @@ describe('B8 — a member\'s bid on a closed day is refused at the commit, not o
     expect(getState().people.some(p => p.id === pid)).toBe(true)
     setSession({ user: 'us', role: 'main' }); setMe(pid)
     setRole('member'); setViewer(pid)
+    /* a clock that moves one millisecond at every read — what a slow machine does to two stamps taken a moment apart
+       ([LW-B8-STAMP-FLAKE], 3 Nov 26: GitHub's run once put the before and after bids a millisecond apart, and the
+       permission rightly read it as the request's placing changed). Ticking every run makes that case the usual one. */
+    let t = Date.now()
+    vi.spyOn(Date, 'now').mockImplementation(() => ++t)
+    T0 = Date.now()
   })
-  afterEach(() => { setSession(null); setMe(null as any) })
+  afterEach(() => { vi.restoreAllMocks(); setSession(null); setMe(null as any) })
 
   /* (stamped as the app writes a member's bid since M4 — placed by him, now — so what refuses each case below is the
-     closed day, not a missing stamp: perms.ts stampForged, the security read's finding 2) */
-  const bid = (id: string, code = 'LL'): WarRec => ({ id, kind: 'request', code, state: 'pending', placedBy: pid, placedAt: Date.now() } as WarRec)
+     closed day, not a missing stamp: perms.ts stampForged, the security read's finding 2). ONE stamp for every bid of a
+     test, taken in beforeEach: a before / after pair is the same request, and two stamps a moment apart would make its
+     placing change, which the permission rightly refuses first ([LW-B8-STAMP-FLAKE]) */
+  let T0 = 0
+  const bid = (id: string, code = 'LL'): WarRec => ({ id, kind: 'request', code, state: 'pending', placedBy: pid, placedAt: T0 } as WarRec)
   const env = (date: string, before: WarRec[], after: WarRec[]): CommitEnvelope => ({
     seq: 0, at: '', type: 'lw.edit', origin: 'user', scope: { module: 'lw', warId: Y26 } as any,
     actor: { id: 'us', role: 'member', personId: pid, session: {} },

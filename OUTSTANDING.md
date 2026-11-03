@@ -91,7 +91,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [LW-B8-STAMP-FLAKE] — a Leave War unit test fails now and then (two stamps a millisecond apart); the cause proven, a one-line test fix — small.
+- [LW-B8-STAMP-FLAKE] — a Leave War unit test failed now and then (two stamps a millisecond apart): BUILT 3 Nov 26 on `claude/lw-b8-stamp-flake` (one stamp a test, the clock ticking every read as its proof); archive once live.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -688,6 +688,7 @@ person has, D1570), refreshed when another scheduler changes them (the sharing d
 time with no signal shows a plain "loading" state, never another week's data. **Place:** with [DB-STEP].
 
 ### [LW-B8-STAMP-FLAKE] A Leave War unit test fails now and then: two stamps a millisecond apart (found 3 Nov 26, pull request 623's run)
+**BUILT 3 Nov 26 on `claude/lw-b8-stamp-flake`:** the B8 block takes ONE stamp a test (`T0`, set in its `beforeEach`), and its clock now moves one millisecond at every read for the whole block, so the slow machine's case runs every time — red first (both B8 tests failed with GitHub's exact message), then 37 / 37 plain and under `TZ=Pacific/Midway`. The sweep for other before / after pairs built from two live stamps found none: `m4ride.test.ts` and `m4sec.test.ts` stamp live times but freeze the clock for every test. Archive once live.
 On pull request 623 (notes, a mock-up and picture scripts — no app code), GitHub's `unit (leavewar 3/4)` failed one test:
 `src/leavewar/opendates-store.test.ts` "B8 — … a restore the timeline is not applying adds or changes nothing on a closed day"
 — *expected 'who placed a request …' to match /not open for bidding/*. The same code passed on `main` two hours before, and here
