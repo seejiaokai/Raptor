@@ -20,16 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/week-swipe-pdf-print -->
-### `claude/week-swipe-pdf-print` — the night of 3 Nov 26 and the morning after: the phone's swipe across weeks, the board by the keys, the schedule's React Doctor warnings — written 3 Nov 26, at his "merge live" — verify before use
-- **Where it started:** his "/overnight 12" with an iPhone recording of the week swipe; the PDF job skipped on his word, the keyboard leftovers and the schedule's React Doctor warnings in its place; then, the morning after, four more recordings (05:41 to 09:47) read with an on-screen log (`?swdebug`).
-- **Shipped (pull request 621 — merging on his "merge live" when written; check before acting):** the cross between weeks slides from where the day stands; a swipe Safari gives the page no touch for crosses by the strip's own pull past its end; the week is stilled under the slide; the board opens by the keys and its small menus, the Traffic and day-details windows close on Escape; the schedule's 67 React Doctor warnings handled. Evidence: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` (§1–§12), lessons 20 and 21. [WEEK-SWIPE-CROSS] and [BOARD-OPEN-BY-KEYS] archived.
-- **Unfinished:** none of the job. Filed: [WEEK-CROSS-END-CARDS] (Fable's smoother cross — a preview card at each end of the strip, his to place, picture in the item), [WEEK-GLIDE-TWO-PAGES] (low), [BOARD-KEYS-LEFT], [DOCTOR-INPUTS-RIDE], [LW-ZOOM-TEST-SLOW]; [VEILED-WINDOWS-BAR]'s bar part stays open; [PDF-PRINT-TWICE] as it was.
-- **Branch:** `claude/week-swipe-pdf-print`; pull request 621; merged — the next chat starts a new job on its own fresh branch, level with `origin/main`, and never switches to this one.
-- **Gates:** GitHub's run of the pull request is the full check (D1086) — green on every code commit since `f5c1b0046`; the closing records' run read before the merge.
-- **Open pull requests:** none. Pull request 621 merged live on his word; 578 (`claude/handoff-1027-review`) closed unmerged on his word, 3 Nov 26 — everything it recorded was already on `main`, its handoff block stale and its size line below main's.
-- **Running when written:** the walk's preview on port 4173 (this chat's — stopped at the end); nothing else.
-- **Pick up here:** a new job from `## Next, in order` — or [WEEK-CROSS-END-CARDS] if he places it.
+<!-- now:claude/week-cross-end-cards -->
+### `claude/week-cross-end-cards` — [WEEK-CROSS-END-CARDS]: drawn, tried, set aside — written 3 Nov 26 — verify before use
+- **Where it started:** his "start [WEEK-CROSS-END-CARDS] — plan it with me first … show me a mock up to test the feel first".
+- **What happened:** a swipeable feel mock-up of real pictures (published to him privately — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf); he chose the full-day end card (D1574), had a 12 px jump at Monday's load fixed from his recording (D1575), kept the desktop as it is (D1576); the plan was written and read by a fresh Opus reader (eleven findings folded in, cost three to four days); he then kept the cross as built (D1577, replacing the three) and the item is archived, closed unbuilt. Kept for a return: the mock-up `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/`, its scripts `raptor-port/scripts/handpass/ws-endcards-mock.mjs` and `ws-endcards-desktop-pic.mjs`, the plan `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`.
+- **Filed from his questions:** [ONE-LIVE-WEEK-WEIGH] (whether the app should hold several weeks at once — weighed at the database step; recommended keep) and [DB-WEEK-AHEAD] (fetch the neighbouring weeks ahead at the database step so a cross never waits on the network). One walk trap written to `raptor-port/docs/walk-scripts.md` §4 (a CDP finger in headless Chromium never ends a native scroll); skill log observation 773.
+- **Unfinished:** nothing of the job. Nothing in `raptor-port/src` changed.
+- **Branch:** `claude/week-cross-end-cards`; pull request 623 (notes, the mock-up, two picture scripts) — merging on his "merge live" of 3 Nov 26 when written; check before acting. The next chat starts a new job on a fresh branch level with `origin/main`. Its first run failed one Leave War unit test that fails now and then — cause proven, filed as [LW-B8-STAMP-FLAKE], not fixed inside this merge (D1088).
+- **Note:** the scheduler rulings file (`.claude/rules/decisions/scheduler.md`) sits close to its size tripwire — a later ruling there may need the area split or the tripwire raised with its reason, never a trim.
+- **Running when written:** nothing.
+- **Pick up here:** a new job from `## Next, in order` — [LW-B8-STAMP-FLAKE] is a quick one if wanted.
 <!-- /now -->
 ## Next, in order
 

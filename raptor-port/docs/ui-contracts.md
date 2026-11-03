@@ -404,7 +404,7 @@ Four things make it work, and each is load-bearing:
   Safari would not re-snap from (the hold above); and the slide starts at a hand's pace, about 2.4 px/ms, easing out
   over 340 ms, not the 3.9 px/ms that crossed three-quarters of the screen in a tenth of a second. Pinned
   `ui/swipeweeks.test.tsx`, `ui/weekglide.test.ts`, and by a real finger `e2e/weekswipe.spec.ts`; the feel on his
-  iPhone is his look's to judge.
+  iPhone is his look's to judge. *[D1577, 3 Nov 26: this slide stays — the end cards that would have replaced it (D1574) were set aside.]*
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other

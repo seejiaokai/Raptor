@@ -7493,3 +7493,41 @@ builder's report in `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §
 **BUILT the night of 3 Nov 26 (commit `e76f32440`, `claude/week-swipe-pdf-print`):** the edit week's date is a key stop (Enter and Space open the board, the ring only for the keys), the board takes the keys when opened by them, Escape and ✓ Done put them back on the date; the Tab route over the text boxes unchanged; the report `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
 On Edit Schedule's week the day's date that opens the board (`raptor-port/src/ui/html.ts`, the `.dt.sb-open` span) is not a stop for the keys and answers no key, so a keyboard user cannot open the board, and the design guide §2 (D812) says anything can be opened, used and closed without a mouse. Escape and ✓ Done now give the keyboard back to where it was when the board opened (`raptor-port/src/ui/SchedBoard.tsx`), which today is nowhere after a press on the date. **To do:** make the date a stop that Enter and Space open (role and focus ring as the week's other controls), checked against the schedule's own Tab route (D551–D555, D597 — the Tab route walks text boxes only, so its order must not change) and the reference copy of the view week (the date is on the EDIT week only). **Place:** low — with the next keyboard batch; a picture first if the ring shows on the week.
 
+
+*Moved here 2026-11-03 by backlog-archive.mjs ([WEEK-CROSS-END-CARDS]). Forward facts: `.claude/rules/decisions/scheduler.md`, `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`, `raptor-port/docs/walk-scripts.md`.*
+
+### [WEEK-CROSS-END-CARDS] A smoother cross between weeks on the phone: a preview card at each end of the strip (Fable, 3 Nov 26 — his idea to place)
+**His words (3 Nov 26, after the swipe was fixed, with a recording):** *"Fable see if there's a smoother way."* Today the swipe inside
+a week is Safari's own scroll (120 frames a second on his iPhone, at his finger's speed), but the cross into another week is the
+app's own slide of two pictures (`ui/weekglide.ts`, about 60 frames, a fixed 340 ms), started by reading a pull past the end
+(`ui/pan.ts` — the touch reading and, where Safari gives the page no touch, `pullPastEnd`); every bounce he reported on 3 Nov 26
+came from Safari and the app moving the day at once. **The design:** on a phone the strip carries one read-only preview card at each
+end — last week's Sunday before Monday, next week's Monday after Sunday (drawn as the desktop's next-week preview, `ui/peek.ts`);
+a swipe past Monday is an ordinary scroll onto that card, and the moment the strip comes to rest there the week is loaded in place
+under it, landing on that day, so nothing slides and nothing springs back. **Its costs, as put to him:** the end card is plainer than
+the live day for about a tenth of a second (no issues bar, no sign-off box) until the load; a tap on it does nothing in that moment;
+about a day's build and a full bug check; the swipe reading and the slide retire on the phone (the desktop's arrows untouched).
+**The picture he was shown:** `raptor-port/docs/img/handpass/2026-11-03-week-swipe/smoother/smoother-cross.png` (its script
+`raptor-port/scripts/handpass/ws-smoother-pictures.mjs`). Changes the settled cross (`scheduler.md` §Week navigation — "the cross
+GLIDES", 23–24 Aug 26), so it needs his word. **Place:** his to place.
+**The feel mock-up (3 Nov 26, his "show me a mock up to test the feel first before building"):** a swipeable page of real
+pictures at his iPhone's size, three weeks (6, 13, 20 Jul), the strip built to the phone's own rules, a week "loading" a
+tenth of a second after the strip rests on an end card; a switch for the end card — the preview, the preview dimmed (the
+desktop's veil), or a full picture of the day. Page and pictures: `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/mock/`
+(published privately to him as an Artifact); the pictures' script `raptor-port/scripts/handpass/ws-endcards-mock.mjs`.
+**What drawing it showed (requirements the design note did not name):** (1) the preview is far plainer than the live day —
+no sign-off box, issues bar, scheduler notes or available crew; Monday 13 Jul's preview starts its programme about 300 px
+higher than the live day, and Sunday 12 Jul's is one line ("No flying — ground day") where the live day is a full card —
+so with the preview, the card visibly changes the moment the week loads; a full picture of the day would hide the load but
+means drawing the neighbouring weeks' days in full ahead of time (more build, and a cost on every week load to weigh against
+`performance.md`); (2) the preview's first card carries the desktop's line "Next week: click a day to load it", wrong on a
+phone, so a phone end card leaves it out; (3) the desktop's dark veil over a preview is a desktop-only rule, so a phone end
+card is plain unless he chooses the dimmed one; (4) the last card of the strip can never scroll fully to its left edge (the
+strip ends 12 px short), so "resting on the end card" is "resting at the strip's end" — the build's rest test must read it so.
+**His choice (D1574, 3 Nov 26 — "Ok the full day feels best"):** the full-day end card. The plan — how a full day of the other
+week is drawn ahead without slowing a week's load, its cost and the check — is put to him before any code.
+**Smooth load (D1575, 3 Nov 26 — his recording, "Make it smooth"):** resting on next week's Monday the card jumped 12 px as the
+week loaded (the last card could not scroll fully in); fixed in the mock-up by 24 px after the last card and by putting the
+loaded day on the resting card's exact place; measured still to the pixel both ways. The build carries both, with that measure.
+**The desktop stays as it is (D1576, 3 Nov 26 — "Leave the desktop").** **The plan:** `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md` — HEAVY, a proof step first (drawing a day of a week not loaded, leaving the app exactly as it was), read by a fresh Opus reader before it is put to him.
+

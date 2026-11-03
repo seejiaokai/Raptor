@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1577 | 3 Nov 26 | The cross between weeks stays as built, on the phone and the desktop: the phone's swipe past Monday or Sunday still slides into the other week, and the end cards are not built. |
 | D1573 | 2 Nov 26 | Cross-week dragging is not built: on Edit Schedule a carried man still stops at Monday and Sunday and is never carried into another week (D1529 stands), and the work is not filed in the backlog. |
 | D1529 | 31 Oct 26 | On Edit Schedule a man carried with the mouse and held at the left or right side of the week moves the week one day at a time, as one press of ‹ or › does: after a short wait at the side it glides one day, and again while he is held; a name only passing through moves nothing; it stops at Monday and Sunday, never carrying him into another week. |
 | D1528 | 30 Oct 26 | Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown. |
@@ -609,6 +610,7 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
   big `#vTitle`/`#vSub` were removed as clutter (cards carry dates) — don't re-add
   them, the fixed chips, or the end-of-week clamp. `WEEKS` kept for probe-bridge/
   reference only. Pinned mechanics:
+  - *[D1577, 3 Nov 26: the glide below stays — the end cards of D1574, D1575, D1576 set aside.]*
   - **Phone**: view/edit stepped day-to-day by SWIPE, continuous across weeks
     (`pan.ts` edge-overswipe + `WEEKJUMP`). A wave-dense day no longer traps it
     (owner, 23 Aug) — the `.go` block's ownership is decided at touch-END (a wave

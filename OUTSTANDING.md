@@ -91,6 +91,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-B8-STAMP-FLAKE] — a Leave War unit test fails now and then (two stamps a millisecond apart); the cause proven, a one-line test fix — small.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -163,7 +164,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); his to place — nothing built.
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -206,6 +206,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-WEEK-AHEAD] — at the database step, the weeks on either side are fetched ahead and kept on the phone, so a cross never waits on the network (his question, 3 Nov 26).
+- [ONE-LIVE-WEEK-WEIGH] — whether the app should hold several weeks at once instead of one live week — weighed at the database step, not before (his question, 3 Nov 26).
 - [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
 - [SYSTEM-ACTOR-ONE-TEST] — "the app itself" is decided two ways (the posting pass's wait by a command's origin, the commit gate by its actor); make them one before any seed or remote commit exists.
 - [POSTPASS-FIRSTWRITE-WHOLE-SEED] — this build only, out of the app's reach: the posting pass's first account write is checked row by row but never that the whole seeded list is there.
@@ -672,6 +674,41 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
   War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
+
+### [DB-WEEK-AHEAD] Fetch the neighbouring weeks ahead, so a cross never waits on the network (3 Nov 26, his question)
+**His question (3 Nov 26):** *"so with the database, the scroll between every day including next week will have no delay? Just
+like limit of how fast the data is being called up?"* — answered: not by itself. Today every week is already on the phone, so a
+cross costs only the app's own preparation of the week (measured 3 Nov 26: about 84 ms on his PC to the next paint, ~470 ms with
+the processor slowed 4×). With the database a week the phone has not fetched must first come over the network (a Dataverse read
+— typically a fraction of a second, longer on poor signal), and that wait would come on top. Scrolling inside a loaded week
+stays the phone's own scroll, no fetch. **To do at the database step:** when a week opens, fetch the week before and after in
+the background and keep them on the phone (one read of a week's day rows each — well inside the 40,000 requests a day each
+person has, D1570), refreshed when another scheduler changes them (the sharing design, [DB-SYNC-MODEL]); a cross then costs only the app's own preparation, as today
+(the end cards that would have hidden it were set aside, D1577). A week fetched for the first
+time with no signal shows a plain "loading" state, never another week's data. **Place:** with [DB-STEP].
+
+### [LW-B8-STAMP-FLAKE] A Leave War unit test fails now and then: two stamps a millisecond apart (found 3 Nov 26, pull request 623's run)
+On pull request 623 (notes, a mock-up and picture scripts — no app code), GitHub's `unit (leavewar 3/4)` failed one test:
+`src/leavewar/opendates-store.test.ts` "B8 — … a restore the timeline is not applying adds or changes nothing on a closed day"
+— *expected 'who placed a request …' to match /not open for bidding/*. The same code passed on `main` two hours before, and here
+(plain and under `TZ=Pacific/Midway`). **Cause, proven:** the test's `bid()` stamps `placedAt: Date.now()` at each call, and its
+before/after pairs call it twice (`[bid('n1')]` → `[bid('n1','OL')]`); on a slow machine the two stamps fall a millisecond apart,
+so `state/perms.ts ownershipViolation` rightly reports the request's placing changed ("who placed a request") before the closed
+day. A copy of the file with a clock that moves one millisecond at every read failed both B8 tests with exactly that message
+(3 Nov 26). The app is right; the test is wrong. **Fix:** stamp one time for the block (`const T0 = Date.now()`, `placedAt: T0`
+— still inside the check's five minutes), and keep the ticking-clock copy as the proof that it holds; look for other tests that
+build a before/after pair from two `Date.now()` stamps. **Place:** small — the next Leave War change, or on its own.
+
+### [ONE-LIVE-WEEK-WEIGH] One live week at a time — weigh at the database step whether to change it (3 Nov 26, his question)
+**His question (3 Nov 26, after the [WEEK-CROSS-END-CARDS] plan's fresh read):** *"Does that mean that the way the app is designed now
+is not right? … do u recommend me to keep the same as now or change it"* — answered: keep it. The app holds ONE week live at a
+time (the original app's design: `state/store.ts loadWeek` swaps the days, dates and schedule book in place; `engine/validate.ts`
+and the day builders work on that one week), and the rules engine stays word for word (D1537), protected by the original's 728
+tests. It is correct for everything built; it only makes a feature that needs two weeks at once more work: cross-week dragging
+(D1573, skipped) and the full-day end cards (D1574, which needed a neighbour's day drawn in a borrowed moment — the plan,
+`raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`; set aside by D1577). **To do:** at the database step, with the list of
+features that then want several weeks at once, weigh whether weeks become separately held (and the engine reads any week, not
+the live one) — put to him with its cost; until then nothing changes. **Place:** with [DB-STEP].
 
 ### [XFER] Multi-squadron + transfer a person with their data — future milestone (with [DB-STEP])
 **Behaviour (owner, 13 Sep 26):** many squadrons on one app / one backend; transferring a
@@ -2108,21 +2145,6 @@ Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape pa
 the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
 (3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
-
-### [WEEK-CROSS-END-CARDS] A smoother cross between weeks on the phone: a preview card at each end of the strip (Fable, 3 Nov 26 — his idea to place)
-**His words (3 Nov 26, after the swipe was fixed, with a recording):** *"Fable see if there's a smoother way."* Today the swipe inside
-a week is Safari's own scroll (120 frames a second on his iPhone, at his finger's speed), but the cross into another week is the
-app's own slide of two pictures (`ui/weekglide.ts`, about 60 frames, a fixed 340 ms), started by reading a pull past the end
-(`ui/pan.ts` — the touch reading and, where Safari gives the page no touch, `pullPastEnd`); every bounce he reported on 3 Nov 26
-came from Safari and the app moving the day at once. **The design:** on a phone the strip carries one read-only preview card at each
-end — last week's Sunday before Monday, next week's Monday after Sunday (drawn as the desktop's next-week preview, `ui/peek.ts`);
-a swipe past Monday is an ordinary scroll onto that card, and the moment the strip comes to rest there the week is loaded in place
-under it, landing on that day, so nothing slides and nothing springs back. **Its costs, as put to him:** the end card is plainer than
-the live day for about a tenth of a second (no issues bar, no sign-off box) until the load; a tap on it does nothing in that moment;
-about a day's build and a full bug check; the swipe reading and the slide retire on the phone (the desktop's arrows untouched).
-**The picture he was shown:** `raptor-port/docs/img/handpass/2026-11-03-week-swipe/smoother/smoother-cross.png` (its script
-`raptor-port/scripts/handpass/ws-smoother-pictures.mjs`). Changes the settled cross (`scheduler.md` §Week navigation — "the cross
-GLIDES", 23–24 Aug 26), so it needs his word. **Place:** his to place.
 
 ### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
 The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
