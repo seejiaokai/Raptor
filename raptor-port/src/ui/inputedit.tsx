@@ -3276,7 +3276,7 @@ export function InputEditor() {
           {(ctx === 'u' || (isNew && r._calendar) || datesHere) && <div className="inped-f">
             <span className="inped-k">Dates</span>
             <div className="inped-dates">
-              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" start={draft.start}
+              <RangeCal key={'cal-' + calKey} idPrefix="inpEd" startHolds start={draft.start}
                 end={datesHere && !midPick ? (draft.end || draft.start) : draft.end}
                 onPick={(s2, e2) => {
                   if (datesHere) { setMidPick(!e2); setDatesPicked(true); setDraft({ ...draft, start: s2, end: e2 }); return }
