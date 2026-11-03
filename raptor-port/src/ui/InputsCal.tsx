@@ -200,6 +200,11 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     if (delAsk == null) return
     const esc = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || e.defaultPrevented) return
+      /* …only while the day is the window in front (K9's twin, the code read of 3 Nov 26: an Escape meant for the settings
+         or an input's window in front put the question behind away instead), and only while the question is on screen —
+         its row gone another way (an Undo) leaves nothing here to eat the next Escape */
+      if (frontWin() && frontWin() !== 'inputsday') return
+      if (!document.querySelector('[data-testid="idy-ask"]')) { setDelAsk(null); return }
       e.preventDefault(); e.stopImmediatePropagation()
       setDelAsk(null)
     }

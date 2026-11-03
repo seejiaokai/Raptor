@@ -341,7 +341,7 @@ export function filerSwitchedOff(rows: readonly any[]): boolean {
 }
 /* §11's own-row note for `Input`, word for word — perms.test.ts fails when docs/data-model.md says anything else
    (D200: "the server's rules at the database step are a translation of an agreed list") */
-export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only, its LATE mark dropped (`lateMarkDropped`, D1586) — are never mine to set or clear, on my own input too (D760); where an input stands — on the Ground Programme, under Unavailable or rejected — is never mine to change once a scheduler has moved it (`movedByScheduler`), by its Goes to or by changing its kind, on my own input too, and that mark is never mine to set or clear (D1388); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
+export const INPUT_FILER_NOTE = 'or — while the squadron\'s members-file-for-others setting is on — a Duty & other commitments input (not SANS Availability) that I FILED (`filedBy` = my person; D654, D655, D658), while everyone else in it was put in by me: I may create, change and delete it, change who is in it, and give its one OIL answer for everyone in it (D660, D762); my own one-person input that I add people to is one I filed from then on, whoever filed it for me; once a scheduler has put someone in it, changing it for everyone is the scheduler\'s (D755); from an input I am in I may always take myself out, and I add nobody to an input I did not file (D755, D763); the scheduler\'s marks on an input — cancelled with its reason, the red box, information only, its LATE mark dropped (`lateMarkDropped`, D1586) — are never mine to set or clear, on my own input too (D760), save that my own later change that gives the input a new change date takes a dropped LATE mark off (D1620); where an input stands — on the Ground Programme, under Unavailable or rejected — is never mine to change once a scheduler has moved it (`movedByScheduler`), by its Goes to or by changing its kind, on my own input too, and that mark is never mine to set or clear (D1388); an input filed for ALL AVAIL / ALL counts as filed for another person — one of seven kinds, one day (D700, D711, D712, D713, D778)'
 /* THE MEMBERS' SWITCH (owner D654 — "allow both admin and members (for now)"; D655, reading 6: "one switch puts it back
    to admins only"). One squadron setting, `memberfile`: absent = ON, `false` = OFF — anything else stored reads as ON.
    Written only by its admin command (`settings.memberfile`, state/memberfile.ts). Read live, never cached: a rollback
@@ -459,8 +459,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'inputs.write': op(T.input, 'U', 'optional'),
   'inputs.batch': op(T.input, 'U', 'optional'),
   /* a LATE mark dropped or brought back (D1586): a scheduler's, on any input — the old session-only set was admin-gated
-     at its write path; the command keeps it so */
-  'inputs.lateOff': op(T.sched, 'U'),
+     at its write path; the command keeps it so. It writes the INPUT, so it names the Input table (the security read of
+     3 Nov 26: the database's rules are built from this list), and 'never' keeps a member out even on his own row */
+  'inputs.lateOff': op(T.input, 'U'),
   /* the roster: the Quals write names its row (D149); add / archive / restore name none */
   'people.edit': op(T.person, 'U', 'required'),
   /* undo: mayReverse (undo/timeline.ts) decides whose change; this keeps non-members out */
@@ -889,9 +890,23 @@ function inputBreach(env: CommitEnvelope, c: Change, pid: string, replayed: bool
      changed (one man split out of a cancelled input), which carries that record's. */
   /* …and a LATE mark a scheduler dropped (D1586 — §11's note: "never mine to set or clear"; the bug check of 3 Nov 26:
      the drop rides the input now, and this list did not carry it) */
-  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info, !!x.lateOff] : [false, '', false, false, false])
-    const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
+  /* A record he creates takes marks only from the record it is a PIECE of — the one it was cut from, which hands it its
+     filer and its filing time (engine/inputown.ts pieceOf, ui/inputedit.tsx's tail and medical pieces). Any other record of
+     his the command changed is not its source (the security read of 3 Nov 26: his own MC, filed over a leave whose LATE
+     mark a scheduler had dropped, was compared with the leave's marks and refused; and a new filing could borrow another
+     input's cancel or drop). */
+  { const mk = (x: any) => JSON.stringify(x ? [!!x.cx, x.cx ? String(x.cxr || '') : '', !!x.flag, !!x.info] : [false, '', false, false])
+    const src = b || (env.changes.find(o => o !== c && isInputChange(o) && o.before != null && same((o.before as any).by, f.by) && same((o.before as any).at, f.at)
+      && idsOf(f).some((p: any) => holds(o.before, p))) || {} as any).before || null
     if (mk(f) !== mk(src)) return `a scheduler's mark on an input`
+    /* THE LATE DROP: never his to put on; his own later change takes it off (owner D1620, 3 Nov 26 — "as recommended": a new
+       late change brings the mark back) — so he may clear it only in a save that writes the input a new change date, the
+       date the mark measures (the record's, or a person's own in an input of several). */
+    if (!!f.lateOff && !(src && src.lateOff)) return `a scheduler's mark on an input`
+    if (!f.lateOff && src && src.lateOff) {
+      const stamps = (x: any) => JSON.stringify([x.mod ?? null, ...peopleOf(x).map((e: any) => (e && e.mod) ?? null)])
+      if (stamps(f) === stamps(src)) return `a scheduler's mark on an input`
+    }
     /* …AND SO IS WHERE A SCHEDULER PUT IT (his D1388): the mark that he moved it is his to set and clear, and while it
        stands — or his Reject does — a member's change leaves it where it is: under Unavailable, parked, or on the
        Ground Programme. Asked of WHERE IT STANDS (engine/inputs.ts placeOf — the one answer the save keeps), never of the

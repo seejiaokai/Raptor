@@ -302,6 +302,13 @@ describe('the command gate (cmdAuthorize) — every command the app registers', 
       for (const [mt] of o.more || []) expect(PERMS[mt], `${t} → more ${mt}`).toBeTruthy()
     }
   })
+  /* the security read of 3 Nov 26 (finding 3): the LATE drop writes the INPUT, so the list the database's rules are built
+     from names the Input table — a scheduler's to change on any input, never a member's, even on his own row */
+  it('a LATE drop names the table it writes, the Input, and stays a scheduler\'s (D1586)', () => {
+    expect(COMMAND_OPS['inputs.lateOff']).toEqual({ table: T.input, act: 'U', own: 'never' })
+    expect(cmdAuthorize('inputs.lateOff', actor('admin', 'stiff'))).toBe(true)
+    expect(cmdAuthorize('inputs.lateOff', actor('member', 'bane'))).toBe(false)
+  })
   it("NP8 — a command is authorised only if EVERY table it writes allows it (Astra's plan read 1)", () => {
     /* [ONE-DOOR] (D308; round 1 — Fable F11 / Astra 6): each also writes his post-in date on the war */
     expect(COMMAND_OPS['account.addNew'].more).toEqual([[T.person, 'C'], [T.accessreq, 'D'], [T.profile, 'U']])

@@ -21,8 +21,8 @@ import { dayDrafts, loadVersionToWorkingCopy, LOADLEFT, loadMovedNow, ROWSLEFT, 
 import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
-import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
-import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish, commitInputs } from '../state/sched-commit'
+import { notify, loadWeek, commitSetDayApproved, commitPublishALDay, writeInputsAs } from '../state/store'
+import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
 import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
@@ -1165,10 +1165,11 @@ export function routeClick(e: MouseEvent) {
      (live board only), but the gate is repeated here the way every other
      input control's is. */
   /* THE PER-INPUT LATE CHIP (owner, 21 Aug 26 — "when I click on the late
-     orange icon beside the line, it will remove the late icon"). A view toggle,
-     so it neither mutates the schedule nor validates — it repaints, and the
-     helpers in html.ts read LATEOFF on the way past. `toggleLateOff` refuses a
-     member at the write path (state/view.ts); the toast here is so a hand-made
+     orange icon beside the line, it will remove the late icon"). Since D1586 the
+     drop is the input's own mark (`lateOff`), saved for everyone by one command
+     of its own; it changes no schedule record and no change date, and every
+     surface reads it from the live record (state/view.ts lateShown). A member is
+     refused at the command and the write path; the toast here is so a hand-made
      button says why rather than doing nothing. It carries the input's own id,
      not a schedule address — one input can cover several loaded days — so it
      resolves against INPUTS, like the Unavailable reassign arm. */
@@ -1184,8 +1185,10 @@ export function routeClick(e: MouseEvent) {
       const late = lateMates(inp).filter((r: any) => isLateInput(r))
       const hide = late.some((r: any) => view.lateShown(r))
       /* saved on the input for everyone (D1586): one command, so it is kept, shared and one Undo step */
-      commitInputs(SCHED_TYPES.lateOff, () => { for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.setLateOff(r, hide) })
-      HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
+      /* …through the input funnel every other input write takes (the locked-week refusal, the absence rules), and its
+         note only once the change went through (the code read of 3 Nov 26) */
+      const ok = writeInputsAs(SCHED_TYPES.lateOff, () => { for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.setLateOff(r, hide) })
+      if (ok) HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
     }
     notify(); return
   }
@@ -1817,12 +1820,14 @@ export function routeClick(e: MouseEvent) {
     /* the step's own note says which note and which way (the bug check of 3 Nov 26): the change history writes its line
        from it (state/changelines.ts) — the press wrote none, only its Undo and Redo did — and Undo's words read it */
     const detail = JSON.stringify({ note: k, public: !view.notePub(k) })
-    const on = schedWriteValue(SCHED_TYPES.notePub, () => { const v = view.toggleNotePub(k); noteChange(k); return v }, { key: detail })
+    const ndi = +k.slice(k.lastIndexOf(':') + 1)
+    /* …and the sweep every schedule edit runs, which drops the note's pending mark once it stands as it went out (the code
+       read of 3 Nov 26: pressed twice, or an empty note made public, it kept "Edited — goes out as AL1" with nothing waiting) */
+    const on = schedWriteValue(SCHED_TYPES.notePub, () => { const v = view.toggleNotePub(k); noteChange(k); reconcileIssuedMarks([ndi]); return v }, { key: detail })
     HOOKS.histPush()
     /* ON A PUBLISHED DAY THE CHOICE WAITS (D1592; the bug check of 3 Nov 26): "Note now shows on the view-only schedule" was
        untrue there — the view-only schedule keeps the day as it went out until the amendment. While it waits, the note
        says so; put back as it went out, nothing waits and the plain words stand (N16, as approved). */
-    const ndi = +k.slice(k.lastIndexOf(':') + 1)
     const waits = dayApproved(ndi) && dayDelta(ndi).some((d: any) => d.addr === k)
     HOOKS.toast(waits ? (on ? 'Note made public. It goes out with the next amendment.' : 'Note made scheduler-only. It goes out with the next amendment.')
       : on ? 'Note now shows on the view-only schedule' : 'Note is scheduler-only again', 'ok')

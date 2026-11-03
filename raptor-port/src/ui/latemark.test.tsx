@@ -221,6 +221,53 @@ describe('the commit gate: a member\'s command never sets or clears a dropped LA
     expect(ownershipViolation(env({ ...base }, { ...base, lateOff: true })), 'a drop put on by him').toBeTruthy()
     expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, lateOff: true, remarks: 'New' })), 'his words, the drop kept').toBeNull()
   })
+
+  /* D1620 (owner, 3 Nov 26 — "as recommended"): his own later change takes the drop off. The gate lets him clear it only in
+     a save that writes his input a new change date — the date the mark measures — and never lets him set it. */
+  it('D1620: he may clear the drop in a save that writes a new change date, never in one that does not', async () => {
+    const { ownershipViolation } = await import('../state/perms')
+    const env = (before: any, after: any) => ({ type: 'inputs.write', actor: { id: 'us', role: 'member', personId: 'bane' },
+      changes: [{ op: 'put', collection: 'inputs', id: 'lx', before, after }] }) as any
+    const base = { iid: 'lx', person: 'bane', by: 'bane', at: '2026-07-01T08:00:00.000Z', type: 'Training', date: 'Jul 14', yr: 2026, allday: true, remarks: 'Why', mod: '2026-07-10' }
+    expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, date: 'Jul 15', mod: '2026-07-12' })), 'a new change, the drop gone with it').toBeNull()
+    expect(ownershipViolation(env({ ...base, lateOff: true }, { ...base, date: 'Jul 15' })), 'no new change date: still his to keep').toBeTruthy()
+    expect(ownershipViolation(env({ ...base }, { ...base, lateOff: true, mod: '2026-07-12' })), 'never his to put on').toBeTruthy()
+  })
+
+  /* The security read of 3 Nov 26 (finding 1): a NEW record of his — an MC over his own leave — was compared with the marks
+     of whatever other record of his the same command changed, so the leave's dropped LATE mark refused his MC. A new record
+     takes marks only from the record it is a piece of: the one it was cut from, which hands it its filer and filing time. */
+  it('his own MC over his own leave whose LATE mark was dropped is not refused', async () => {
+    const { ownershipViolation } = await import('../state/perms')
+    const actor = { id: 'us', role: 'member', personId: 'bane' }
+    const L: any = { iid: 'll', person: 'bane', by: 'bane', at: '2026-07-01T08:00:00.000Z', type: 'LL', date: 'Jul 14', endDate: 'Jul 18', yr: 2026, allday: true, mod: '2026-07-10', lateOff: true }
+    const MC: any = { iid: 'mc', person: 'bane', by: 'bane', at: '2026-07-15T08:00:00.000Z', type: 'MC', date: 'Jul 16', endDate: 'Jul 18', yr: 2026, allday: true, mod: '2026-07-15' }
+    expect(ownershipViolation({ type: 'inputs.batch', actor, changes: [
+      { op: 'put', collection: 'inputs', id: 'll', before: L, after: { ...L, endDate: 'Jul 15' } },
+      { op: 'put', collection: 'inputs', id: 'mc', before: null, after: MC },
+    ] } as any), 'the leave cut back').toBeNull()
+    expect(ownershipViolation({ type: 'inputs.batch', actor, changes: [
+      { op: 'delete', collection: 'inputs', id: 'll', before: L, after: null },
+      { op: 'put', collection: 'inputs', id: 'mc', before: null, after: { ...MC, date: 'Jul 14' } },
+    ] } as any), 'the leave wholly covered').toBeNull()
+  })
+
+  /* …and its twin (finding 2): a brand-new input of his borrowed another record's marks, so a scheduler's drop — or a cancel —
+     could be put on a new filing beside a trivial change to an input that carries one. A true piece still carries its own. */
+  it('a new input of his never borrows another input\'s scheduler marks; a true piece keeps its own', async () => {
+    const { ownershipViolation } = await import('../state/perms')
+    const actor = { id: 'us', role: 'member', personId: 'bane' }
+    const A0: any = { iid: 'la', person: 'bane', by: 'bane', at: '2026-07-01T08:00:00.000Z', type: 'Training', date: 'Jul 14', yr: 2026, allday: true, remarks: 'Why', mod: '2026-07-10', lateOff: true }
+    const B0: any = { iid: 'lb', person: 'bane', by: 'bane', at: '2026-07-12T08:00:00.000Z', type: 'LL', date: 'Jul 20', yr: 2026, allday: true, mod: '2026-07-12' }
+    const pair = (a: any, b: any) => ({ type: 'inputs.batch', actor, changes: [
+      { op: 'put', collection: 'inputs', id: 'la', before: a, after: { ...a, remarks: 'Why.' } },
+      { op: 'put', collection: 'inputs', id: 'lb', before: null, after: b },
+    ] }) as any
+    expect(ownershipViolation(pair(A0, { ...B0, lateOff: true })), 'a LATE drop borrowed').toBeTruthy()
+    const A1 = { ...A0, cx: true, cxr: 'Weather' }; delete A1.lateOff
+    expect(ownershipViolation(pair(A1, { ...B0, cx: true, cxr: 'Weather' })), 'a cancel borrowed').toBeTruthy()
+    expect(ownershipViolation(pair(A0, { ...B0, at: A0.at, lateOff: true })), 'a piece cut from it').toBeNull()
+  })
 })
 
 /* Undo names the input whose LATE mark it takes back (D1582 — "by its person and kind"; the bug check of 3 Nov 26) */

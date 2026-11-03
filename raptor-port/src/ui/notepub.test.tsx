@@ -156,4 +156,21 @@ describe('a note made public on a published day — what waits and what is said'
       expect(said.at(-1), 'put back as it went out: nothing waits').toBe('Note is scheduler-only again')
     } finally { HOOKS.toast = was }
   })
+  /* the code read of 3 Nov 26 (F-A2): the count was right, but the note kept its pending tint, "Edited — goes out as AL1",
+     and the button's hover said it waits — the press never ran the sweep that drops a mark once the value is back to what
+     went out (engine/drafts.ts reconcileIssuedMarks), which every other schedule edit runs */
+  it('put back as it went out — or an empty note made public — wears no pending mark and no "goes out" words', async () => {
+    const { routeClick } = await import('./interactions')
+    const { alAttr } = await import('../engine/publish')
+    const press = (k: string) => { const b = document.createElement('button'); b.dataset.notepub = k; document.body.appendChild(b); try { routeClick({ target: b, stopPropagation() {}, preventDefault() {} } as any) } finally { b.remove() } }
+    ;(DAYS[0] as any).prognotes = 'brief the duty crew'
+    ;(DAYS[0] as any).simnotes = ''
+    publish()
+    press('pn:0'); press('pn:0')
+    expect(dayDelta(0), 'premise: nothing waits').toEqual([])
+    expect(alAttr('pn:0'), 'no pending mark on a note that stands as it went out').toBe('')
+    expect(blkNoteHTML(0, DAYS[0], true, 'pn', 'prognotes'), 'nor the button\'s "goes out" words').not.toContain('goes out with the next amendment')
+    press('sn:0')
+    expect(alAttr('sn:0'), 'an empty note made public: no mark either').toBe('')
+  })
 })

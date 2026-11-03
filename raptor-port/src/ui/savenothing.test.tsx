@@ -92,3 +92,30 @@ describe('Save with nothing changed (F1)', () => {
     expect(stampOf(byId(id)), 'stamped as changed').not.toBe(before)
   })
 })
+
+/* the code read of 3 Nov 26 (F-A3): F1 held for one person's input only — an input of several went to its own save, which
+   wrote nothing but still said "Input updated" and lit the row as just changed */
+describe('Save with nothing changed — an input of several people (F1)', () => {
+  it('no stamp, no command, and nothing said or lit', async () => {
+    const id = plant({ person: 'bane', people: [{ p: 'bane' }, { p: 'stiff' }], type: 'Meeting', date: 'Jul 14', allday: false, s: 540, e: 600 })
+    const before = stampOf(byId(id)), rec = JSON.stringify(byId(id))
+    const said: string[] = []
+    HOOKS.toast = ((m: any) => { said.push(String(m)) }) as any
+    await act(async () => { setInpEdit(byId(id)); notify() })
+    const seen: string[] = []
+    const off = onCommit(env => { seen.push(env.type) })
+    try { await click($('#inpEditSave')) } finally { off(); HOOKS.toast = () => {} }
+    expect(stampOf(byId(id))).toBe(before)
+    expect(JSON.stringify(byId(id))).toBe(rec)
+    expect(seen.filter(t => t.startsWith('inputs.'))).toEqual([])
+    expect(INPEDIT, 'the window closes').toBeFalsy()
+    expect(said, 'nothing was updated, so nothing says it was').not.toContain('Input updated')
+  })
+  it('one thing changed still saves', async () => {
+    const id = plant({ person: 'bane', people: [{ p: 'bane' }, { p: 'stiff' }], type: 'Meeting', date: 'Jul 14', allday: false, s: 540, e: 600 })
+    await act(async () => { setInpEdit(byId(id)); notify() })
+    await setV($('#inpEditRmk'), 'with the room booked')
+    await click($('#inpEditSave'))
+    expect(byId(id).remarks).toBe('with the room booked')
+  })
+})

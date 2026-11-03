@@ -264,6 +264,13 @@ export function writeInputsBatch(fn: () => void): boolean {
   return batchResult(commitInputsWith([], SCHED_TYPES.inputsBatch, () => { runInputWrite(fn, true) }))
 }
 
+/* The same funnel under a command type of its own — for an input write whose step is named apart (the LATE chip,
+   `inputs.lateOff`, D1586: the code read of 3 Nov 26 found it the one input write that skipped the locked-week refusal
+   and the absence rules). */
+export function writeInputsAs(type: string, fn: () => void): boolean {
+  return batchResult(commitInputsWith([], type, () => { runInputWrite(fn, true) }))
+}
+
 /* A SAVE TRIED AND THROWN AWAY ([OIL-ASK-NOTIFY] — owner D783: a swap or an add that raises the OIL question "is not
    made until the question is answered"; Fable's read of the plan, A2). The door must know, BEFORE it asks, that the
    change would go through — or a man answers a question for a change that is then refused (leave over recorded work,

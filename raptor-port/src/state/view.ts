@@ -884,9 +884,10 @@ export function togglePInputs(di:any){ if(PIOPEN.has(+di))PIOPEN.delete(+di); el
    for that view as person. I'll add next time when this will be triggered").
    The bell in the top bar glows when the CURRENT page + view-as person has an
    alert. What SETS a bell is deliberately left for the owner to wire; this is
-   the seam the shell needs now — a session-only registry keyed by page|person,
-   the LATEOFF precedent (cleared on login/logout by resetSession, never
-   persisted, never in a snapshot). A future trigger calls markBell(page,who);
+   the seam the shell needs now — a session-only registry keyed by page|person
+   (cleared on login/logout by resetSession, never persisted, never in a
+   snapshot; the LATE marks' old session-only set it once followed is gone —
+   a dropped mark is saved on the input since D1586). A future trigger calls markBell(page,who);
    the bell reads bellLit() for the view it is drawn in and clearBell() drops it
    when the reader acknowledges it. */
 export const BELLLIT=new Set<string>()

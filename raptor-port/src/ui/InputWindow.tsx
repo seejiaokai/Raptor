@@ -285,7 +285,7 @@ export function InputEditor() {
     shown.current = r
     base.current = r ? draftOf(r) : null
     madeOver.current = {}
-    setClash([]); setSwap(null)
+    setClash([]); setSwap(null); setEscAsk(false)   // the unsaved question goes with the record it asked about (the code read of 3 Nov 26, F-A4)
     setDraft(r ? draftOf(r) : null); setUpConf(null); setMedConf(null); setOilConf(null); setDocConf(null)
     /* who it is for: a saved input's own list; a new one's seed names its one person */
     const p0 = !r ? [] : r._new ? [String(r.person ?? '')] : idsOf(r).map(String)
@@ -501,6 +501,13 @@ export function InputEditor() {
     if (grouped) {
       const had = new Set(INPUTS.map((x: any) => x.iid))
       const rec = isNew ? null : r
+      /* F1 for an input of several too (the code read of 3 Nov 26): every field, its "To" and "Goes to", and who is in it
+         as the record has them, no OIL answer or removal riding along — the window just closes, saying nothing */
+      if (rec && !oilDec && !removals.length) {
+        const saved = draftOf(rec), inIt = new Set(idsOf(rec).map(String))
+        if (WIN_FIELDS.every(f => fieldSame(f, draft, saved)) && String(draft.to ?? '') === String(saved.to ?? '')
+          && (!('goes' in draft) || draft.goes === saved.goes) && ppl.length === inIt.size && ppl.every(id => inIt.has(String(id)))) { close(); return }
+      }
       if (commitInput(rec, draft, ppl, oilDec ? { oil: oilDec } : undefined)) {
         const row = (rec && INPUTS.indexOf(rec) >= 0 ? rec : null) || INPUTS.find((x: any) => !had.has(x.iid))
         saidSaved(row, show(row, true), isNew ? (ppl.length > 1 ? `Input added for ${howMany(ppl)}` : 'Input added') : 'Input updated'); close()
