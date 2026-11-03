@@ -485,7 +485,23 @@ body.in-cal{padding-bottom:0}
 .inped-ask-q{flex:1 1 100%}
 .inped-clash-row{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
 .inped-ask .abtn{min-height:36px;padding:6px 12px;font-size:12px}
+/* THE CLOSE QUESTION HANGS FROM THE ✕ (owner D1626, 3 Nov 26, design C — ui/InputWindow.tsx): a card under the ✕, a
+   pointer up to it, on a surface a step lighter than the window with a soft shadow, the app's own danger and primary
+   buttons. The anchor takes no room and sticks to the body's top; --xask-r places the card's right edge under the ✕
+   (the body's own inset subtracted: 3px on a desktop, 9px on a phone, where the form's inset is wider), measured by
+   scripts/handpass/xask-walk.mjs — the pointer's centre under the ✕'s within 3px, the card inside the window. */
+.inped-xask-at{position:sticky;top:0;height:0;z-index:6}
+.inped-xask{position:absolute;top:6px;right:var(--xask-r,3px);width:min(300px,calc(100% - 8px));display:flex;flex-direction:column;gap:10px;
+  padding:12px;border:1px solid color-mix(in srgb,var(--ink) 22%,var(--panel));border-radius:12px;
+  background:color-mix(in srgb,var(--ink) 8%,var(--panel));box-shadow:0 10px 28px rgba(0,0,0,.55)}
+.inped-xask::before{content:'';position:absolute;top:-6px;right:14px;width:10px;height:10px;transform:rotate(45deg);background:inherit;
+  border-left:1px solid color-mix(in srgb,var(--ink) 22%,var(--panel));border-top:1px solid color-mix(in srgb,var(--ink) 22%,var(--panel))}
+.inped-xask-q{font-size:12.5px;font-weight:700;line-height:1.35;color:var(--ink)}
+.inped-xask-btns{display:flex;gap:8px;justify-content:flex-end}
+.inped-xask-btns .abtn{min-height:36px;padding:6px 12px;font-size:12px;white-space:nowrap}
 @media (max-width:620px){
+  .inped-xask-btns .abtn{min-height:44px}
+  .inped-xask{--xask-r:9px}
   .floatwin.inpedwin{max-height:calc(100vh - 24px);max-height:calc(100dvh - 24px)}
   .inped-ask .abtn{min-height:44px}
 }

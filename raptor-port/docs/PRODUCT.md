@@ -86,6 +86,8 @@ Success is a week planned, checked and published with less effort and nothing mi
 4. **One record, seen the same everywhere** — the schedule, the inputs, leave and OIL always agree.
 5. **A published record changes only in the open** — by amendment, with who and what.
 6. **Nothing is paid for with speed.**
+7. **A question asked of a press appears where the press was** (D1626) — a confirmation or a choice put up because a control
+   was pressed hangs from that control, where the hand already is; never at the window's foot.
 
 ## Accessibility & Inclusion
 

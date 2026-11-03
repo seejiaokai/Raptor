@@ -43,3 +43,17 @@ None at this tier (§5: WALK has no model read); the change is one guard in one 
 
 ## His look
 The preview link and X1's two pictures; then his "merge live".
+
+## Then: the question's look, design C (D1624, D1626 — his pick, "C for all similar cases")
+He called the box ugly and said it had reached him without a mock-up (D1625). Three designs were drawn on the real app
+(`scripts/handpass/xask-mock.mjs`, pictures `docs/img/handpass/2026-11-03-input-ask-look/A/`): A the window's foot, B a line
+under the title, C a card from the ✕. He picked C. Built: the close question is a card hanging from the ✕
+(`InputWindow.tsx`, `.inped-xask` in `25-inputs-calendar.css`), its anchor taking no room and sticking to the body's top.
+Its test ids are unchanged, so every test of the question still holds (59 green in the three files that press it).
+**Walk** `scripts/handpass/xask-walk.mjs` on a frozen build: **12 PASS · 0 FAIL · 1 NOT WALKED** (Escape, phone) · 0 browser
+errors: the pointer's centre exactly under the ✕'s (desktop 1401/1401, phone 361/361), the card inside the window, the
+form's first field where it stood (145 and 165), a form scrolled to its foot still showing the card under the ✕, Escape
+the same card, Discard closing with nothing saved. The first run measured the pointer 7px (desktop) and 13px (phone) off
+and the card past the window's edge; the card's place was set per size and measured again. The host opened K1 (phone) and
+K2 (desktop, scrolled). Not yet in this look: the window's other questions ("Open the other input…", "Take yourself
+out?", "Delete for everyone?"), filed as [ASK-AT-THE-CONTROL], each drawn for him first.

@@ -1251,13 +1251,21 @@ export function InputEditor() {
             <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
           </div>
         )}
-        {/* ESCAPE OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check): the swap's own question, worded for closing */}
+        {/* ESCAPE OR ✕ OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check; ✕ since D1622). A SMALL CARD HANGING FROM THE ✕
+            (owner D1626, 3 Nov 26, design C — "if u want to close, you position your hand to reach it"): the question
+            stands where the hand already is, pointing at the ✕, and covers the form's top only while it is up. Its
+            anchor has no height and sticks to the top of the window's body, so the form never moves and a scrolled
+            form still shows the card under the ✕. */}
         {escAsk && !swap && (
-          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow as the swap's ask above is: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window */
-          <div className="inped-ask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
-            <span className="inped-ask-q">This input has unsaved changes. Close it and lose them?</span>
-            <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
-            <button type="button" className="abtn ghost" data-testid="inped-escask-stay" autoFocus onClick={() => setEscAsk(false)}>Keep editing</button>
+          <div className="inped-xask-at">
+            {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window: it leaves the page behind working (D641) and hangs from the window's own ✕; a <dialog> would open in the top layer over every window */}
+            <div className="inped-xask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
+              <span className="inped-xask-q">This input has unsaved changes. Close it and lose them?</span>
+              <span className="inped-xask-btns">
+                <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
+                <button type="button" className="abtn primary" data-testid="inped-escask-stay" autoFocus onClick={() => setEscAsk(false)}>Keep editing</button>
+              </span>
+            </div>
           </div>
         )}
         {/* A FIELD CHANGED BOTH WAYS — his, in the window, and someone's on the page behind it: listed, each with its

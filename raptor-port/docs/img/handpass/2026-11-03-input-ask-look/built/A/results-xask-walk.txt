@@ -1,0 +1,15 @@
+NOTE K1 — desktop: {"field0":145,"xCx":1401,"ptCx":1401,"cardTopBelowX":15,"inWin":true,"fieldTop":145,"btns":[{"t":"Discard and close","h":36,"inside":true},{"t":"Keep editing","h":36,"inside":true}],"focus":"inped-escask-stay"}
+PASS K1 desktop: ✕ puts up the card, its pointer under the ✕ — saw {"xCx":1401,"ptCx":1401,"cardTopBelowX":15,"inWin":true,"fieldTop":145,"btns":[{"t":"Discard and close","h":36,"inside":true},{"t":"Keep editing","h":36,"inside":true}],"focus":"inped-escask-stay"}
+PASS K1 desktop: the card inside the window, the form not moved — saw {"field0":145,"fieldTop":145}
+PASS K1 desktop: the answers' words inside their buttons, Keep editing holds the keys — saw {"btns":[{"t":"Discard and close","h":36,"inside":true},{"t":"Keep editing","h":36,"inside":true}],"focus":"inped-escask-stay"}
+PASS K2 desktop: the form scrolled to its foot — the card still hangs under the ✕ — saw {"xCx":1401,"ptCx":1401,"cardTopBelowX":15,"inWin":true,"fieldTop":-25,"btns":[{"t":"Discard and close","h":36,"inside":true},{"t":"Keep editing","h":36,"inside":true}],"focus":"inped-escask-stay"}
+PASS K3 desktop: Escape puts up the same card — saw {"xCx":1401,"ptCx":1401,"cardTopBelowX":15,"inWin":true,"fieldTop":-25,"btns":[{"t":"Discard and close","h":36,"inside":true},{"t":"Keep editing","h":36,"inside":true}],"focus":"inped-escask-stay"}
+PASS K3 desktop: Escape again — the card goes, the words stay — saw null
+PASS K4 desktop: Discard and close — closed, nothing saved — saw "as filed"
+NOTE K1 — phone: {"field0":165,"xCx":361,"ptCx":361,"cardTopBelowX":13,"inWin":true,"fieldTop":165,"btns":[{"t":"Discard and close","h":44,"inside":true},{"t":"Keep editing","h":44,"inside":true}],"focus":"inped-escask-stay"}
+PASS K1 phone: ✕ puts up the card, its pointer under the ✕ — saw {"xCx":361,"ptCx":361,"cardTopBelowX":13,"inWin":true,"fieldTop":165,"btns":[{"t":"Discard and close","h":44,"inside":true},{"t":"Keep editing","h":44,"inside":true}],"focus":"inped-escask-stay"}
+PASS K1 phone: the card inside the window, the form not moved — saw {"field0":165,"fieldTop":165}
+PASS K1 phone: the answers' words inside their buttons, Keep editing holds the keys — saw {"btns":[{"t":"Discard and close","h":44,"inside":true},{"t":"Keep editing","h":44,"inside":true}],"focus":"inped-escask-stay"}
+PASS K2 phone: the form scrolled to its foot — the card still hangs under the ✕ — saw {"xCx":361,"ptCx":361,"cardTopBelowX":13,"inWin":true,"fieldTop":45,"btns":[{"t":"Discard and close","h":44,"inside":true},{"t":"Keep editing","h":44,"inside":true}],"focus":"inped-escask-stay"}
+NOT WALKED K3 — phone: a phone has no Escape key
+PASS K4 phone: Discard and close — closed, nothing saved — saw "as filed"

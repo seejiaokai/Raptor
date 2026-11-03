@@ -92,7 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
-| D1624 | 3 Nov 26 | The input window's unsaved-changes question — "Close it and lose them?", and the "open the other input and lose them?" question drawn the same way — is redesigned: better designs are drawn on the real app at his iPhone's and a desktop's size and put to him, and nothing is built before he picks one. |
+| D1624 | 3 Nov 26 | The input window's unsaved-changes question, and the "open the other input and lose them?" question drawn the same way, is redesigned: design C is built for the close question, a small card hanging from the ✕ (D1626); nothing beyond it is built before he sees its picture. — changed by D1626 |
 | D1623 | 3 Nov 26 | The Calendar window stays open when he changes page; it closes only with its own ✕ or Escape, because it is opened from several places (the Inputs and SANS settings, a SANS day) and belongs to no one page. |
 | D1622 | 3 Nov 26 | An input's window with anything typed and not saved asks before ✕ closes it, the same question Escape asks ("Close it and lose them?"); Cancel still closes at once, since it already means throw this away. |
 | D1585 | 3 Nov 26 | On the Inputs page the OIL question of a weekend no Leave War period covers says nothing about the missing period: the person filing cannot create one, and the scheduler, who can, is told on the schedule (D19). |

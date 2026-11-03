@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1626 | 3 Nov 26 | A question raised by pressing a control appears right at that control, a small card hanging from it, because the hand is already there, never at the window's foot; the input window's "Close it and lose them?" (✕ and Escape) is built so, and every similar question in the app follows it. |
 | D1611 | 3 Nov 26 | The loading claw over a slow page shows from the tap, with no 0.3 s wait; only the pages measured to go blank raise it — the Leave War and the Tracker, on their first open after sign-in — so a page that opens at once never shows it. |
 | D1610 | 3 Nov 26 | The loading claw for a slow page is one overlay for the whole app, covering the page area under the top bar, the top bar staying in view and in reach; any page not drawn within 0.3 s raises it; it is tried first on the Leave War, built on the branch as a test for his phone before the other pages are measured. — changed by D1611 |
 | D1608 | 3 Nov 26 | On the sign-in and the access screens the claw sits 7px nearer "TALON" (option B): the word's left padding, which only balanced the letter spacing after its last letter, becomes a pull-in on its right, so the pair stays centred and reads as one mark. |
