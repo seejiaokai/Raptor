@@ -3262,3 +3262,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In "Write the failing test", add: when a test file mixes hand-written fixtures on saved records with tests that drive the real write path, put the save layer's baseline back level with the records in the shared setup (beforeEach), and when a commit-level assertion fails only in the full file, run it alone before debugging the code.
 
 **Principle:** A diff-based save layer judges a change against its last snapshot; any test that edits the records behind its back must re-level that snapshot, or later tests inherit a false "nothing changed".
+
+### Observation 777: A walk's frozen build served from inside the test browser frees the lock question from the server
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** the FULL bug check of the Inputs batch (PR 625) — a host walk, a re-run of an earlier round's scripts and three Sonnet walkers, all on one frozen build
+**Skill:** New skill candidate: bug-check walk set-up (or `raptor-port/docs/walk-scripts.md` §1)
+**Type:** internal
+**Phase/Area:** standing up the walk
+
+**Issue:** The earlier round's scripts were hard-wired to a running preview on a fixed port and a fixed picture folder, so a re-walk would have overwritten the first round's evidence and needed a server per walker. A small module that answers every request from a frozen build folder inside the test browser (`page.context().route`), plus two settings (the build folder and the picture folder), let the old scripts re-run unchanged into a new folder and let three walkers share one build with no port and no server to start or stop.
+
+**Suggested improvement:** walk-scripts.md §1 names the frozen-folder serve as the default for every walk library (not only "the build before the change"), and every new walk library takes the picture folder from a setting from its first line.
+
+**Principle:** Evidence-producing scripts take their output location and their target as settings from the start; a re-run must never overwrite the run it is compared with.
