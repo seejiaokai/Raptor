@@ -83,11 +83,12 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;color-scheme:dark}
 @media (pointer:coarse){html{touch-action:pan-x pan-y}}
 select option,select optgroup{background:#1A1F26;color:#F1F4F7}
 select{color-scheme:dark}
+/* The page's background is the loading claw's own plain dark (D1614, 3 Nov 26): the faint blue and green wash that sat at
+   the top went, because on an empty page it repeated down the screen in stripes, and the moment before a slow page's claw
+   showed it, so the claw seemed to come after a blank. Now that moment and the claw look the same. The sign-in's light
+   round its logo is its own thing and stays (.login, D887). */
 body{
-  background:
-    radial-gradient(900px 420px at 12% -8%,rgba(59,198,232,.09),transparent 62%),
-    radial-gradient(760px 380px at 98% -6%,rgba(87,201,122,.05),transparent 58%),
-    var(--bg);
+  background:var(--bg);
   color:var(--ink); font-family:'Inter Tight',system-ui,sans-serif;
   font-size:13px;-webkit-font-smoothing:antialiased;letter-spacing:-.005em;padding-bottom:120px;
 }

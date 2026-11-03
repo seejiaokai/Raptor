@@ -9,7 +9,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { BOOTCLAW_FADE_MS } from './bootclaw'
-import { PAGECLAW_PATHS, PAGECLAW_QUICK_MS, PAGECLAW_WAIT_MAX_MS, PageClaw, dismissPageClaw, dismissWhenDrawn, openPage, raisePageClaw, setPageReady } from './pageclaw'
+import { PAGECLAW_PATHS, PAGECLAW_QUICK_MS, PAGECLAW_WAIT_MAX_MS, PageClaw, dismissPageClaw, dismissWhenDrawn, raisePageClaw } from './pageclaw'
 import { setPage } from '../state/view'
 
 const page = readFileSync(join(__dirname, '../../index.html'), 'utf8')
@@ -35,12 +35,11 @@ describe('the page claw is the start-up claw', () => {
     expect(rule).toContain('top:var(--topbar-h')
     expect(rule).not.toContain('bc-wait')
     expect(rule).toContain('transition:opacity .2s ease-out')
-    // the shared rules start each animation 0.3 s in (the start-up claw's wait); the page claw's own rule, after them, starts at once
-    // …and 0.2 s into its round, so the left claw is already 66% drawn in the first frame (his iPhone recording, 3 Nov 26:
-    // from the very start it drew almost nothing for 0.1 s, a dark page)
-    const delay = css.indexOf('.pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:-.2s}')
-    expect(delay).toBeGreaterThan(css.lastIndexOf('.pgclaw .pw2 svg{'))
-    expect(delay).toBeLessThan(css.indexOf('@media (prefers-reduced-motion'))
+    // the shared rules start every animation 0.2 s into its round, for both claws (D1611, D1615), so the left claw is
+    // already 66% drawn in the first frame (his iPhone recording, 3 Nov 26: from the very start it drew almost nothing for
+    // 0.1 s, a dark page); no separate rule for the page claw, no wait for either
+    expect(css.match(/1\.77s linear -\.2s infinite/g)).toHaveLength(7)
+    expect(css).not.toMatch(/animation-delay/)
     expect(css).not.toContain('pgclaw.now')
     // under the top bar (z-index 60), so the bar stays in view and in reach
     expect(Number(rule.match(/z-index:(\d+)/)![1])).toBeLessThan(60)
@@ -136,51 +135,5 @@ describe('taking the page claw away', () => {
     await act(async () => { root.render(<></>) })
     expect(document.querySelector('.pgclaw')).toBeNull()
     await act(async () => { root.unmount() })
-  })
-})
-
-describe('up at the tap, the page switched a frame later (D1612)', () => {
-  afterEach(() => { document.body.innerHTML = ''; vi.useRealTimers(); vi.unstubAllGlobals(); setPage('viewsched'); setPageReady('leavewar', false); setPageReady('tracker', false) })
-  const frames = () => vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => setTimeout(() => cb(Date.now()), 16))
-
-  it('a slow page not yet on the page: the claw at once, the switch only after a frame', () => {
-    vi.useFakeTimers(); frames()
-    const go = vi.fn(() => setPage('leavewar'))
-    openPage('leavewar', go)
-    expect(document.querySelector('.pgclaw')).not.toBeNull()
-    expect(go).not.toHaveBeenCalled()
-    vi.advanceTimersByTime(20)
-    expect(go).toHaveBeenCalledTimes(1)
-    vi.advanceTimersByTime(20)   // no placeholder took it here: it goes, and nothing is left for the next open
-    expect(document.querySelector('.pgclaw')).toBeNull()
-  })
-  it("the page's placeholder takes that claw over — one claw, never two", async () => {
-    vi.useFakeTimers(); frames()
-    const host = document.createElement('div'); document.body.appendChild(host)
-    const root = createRoot(host)
-    openPage('leavewar', () => setPage('leavewar'))
-    const early = document.querySelector('.pgclaw')
-    vi.advanceTimersByTime(20)
-    await act(async () => { root.render(<PageClaw page="leavewar" />) })
-    expect(document.querySelectorAll('.pgclaw')).toHaveLength(1)
-    expect(document.querySelector('.pgclaw')).toBe(early)
-    vi.advanceTimersByTime(40)
-    expect(early!.isConnected).toBe(true)   // still held: the placeholder has it
-    await act(async () => { root.unmount() })
-  })
-  it('a page that needed no wait after all leaves the claw unclaimed, and it goes', () => {
-    vi.useFakeTimers(); frames()
-    openPage('tracker', () => setPage('tracker'))
-    vi.advanceTimersByTime(20 + 20)
-    expect(document.querySelector('.pgclaw')).toBeNull()
-  })
-  it('every other page, a slow page already on the page, or the page he is on: switched at once, no claw', () => {
-    vi.useFakeTimers(); frames()
-    const go = vi.fn()
-    openPage('inputs', go)
-    setPageReady('leavewar', true); openPage('leavewar', go)
-    setPage('tracker'); openPage('tracker', go)
-    expect(go).toHaveBeenCalledTimes(3)
-    expect(document.querySelector('.pgclaw')).toBeNull()
   })
 })

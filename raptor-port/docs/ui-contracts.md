@@ -3909,7 +3909,7 @@ glow off", after the pictures `G9-pick-chip-*`) keeps its thin blue ring (`0 0 0
 guide's rule, D880–D882, D887): the take ring, the open-bidding box, his own Leave War row's ring, the Tracker's rings
 (D881); today's day card, the SANS stripe's light, the Leave War's landing line, Rearrange / Show SANS while on — the
 filter chip's pale fill (D882); the docked balance bar and move banner's band, the Fast sync and Admin → Users' dots'
-bands (D887). Kept: the sign-in logo's light and the page's faint wash, the app's own sign (D887). The whole app's
+bands (D887). Kept: the sign-in logo's light, the app's own sign (D887); the page's faint wash went with D1614 (3 Nov 26) — every page's background is the claw's plain dark. The whole app's
 roll-call: `src/ui/noglow-css.test.ts`.
 
 **The just-added row's flash is now the SAME steady shape everywhere it
@@ -6834,9 +6834,9 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the
 middle 0.16 s later, the right 0.16 s after that, 0.42 s each; all three held whole 0.55 s, faded, and drawn again — one
 round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the app's own sign), no name beside it.
-- **Hidden for its first 0.3 s** (the overlay's own opacity), so a load quicker than that shows nothing (walked 3 Nov 26:
-  the app up at 160 ms, the claw never shown). **To change (D1615, his "Always", 3 Nov 26 — filed as [TALON-CLAW-BG]):** no wait —
-  shown on every start from its first moment, starting 0.2 s into its round like the page claw.
+- **Shown from the first moment, on every start** (D1615, his "Always", 3 Nov 26, narrowing D1605's 0.3 s wait): a quick
+  start shows it for a moment, then the sign-in. It starts **0.2 s into its round**, as the page claw does, so the first
+  frame already shows two-thirds of the left claw (the bug-check order's lesson 22) — every animation's delay `-.2s`.
 - **Gone the moment the app has drawn itself** — a 0.2 s fade (`ui/bootclaw.ts`, run by an effect after the first render,
   `main.tsx BootClawGone`), never waiting for its round; under the fade it takes no taps. The boot's failure messages
   take it away first (`main.tsx`), so a message never sits under it.
@@ -6858,14 +6858,14 @@ view and in reach (D1610, his "A").
   fetched on its first open in a visit; their placeholders in `ui/Shell.tsx` raise it, only while the page is on screen
   (never for the desktop's hidden pre-warm). Every other page is drawn at the tap and is never blank (the old screen
   held at most 0.28 s slowed), so none raises it. A second open in the same visit shows the page at once, no claw.
-- **From the tap, no 0.3 s wait (D1611):** with the wait it was on his phone one to three frames, a flicker. The
-  start-up claw keeps its wait. **And 0.2 s into its round** (his recording, 3 Nov 26): from the very start its left claw
+- **From the tap, no 0.3 s wait (D1611):** with the wait it was on his phone one to three frames, a flicker; the
+  start-up claw lost its wait too (D1615). **And 0.2 s into its round** (his recording, 3 Nov 26): from the very start its left claw
   drew almost nothing for 0.1 s, a dark page; now two-thirds of it shows in the first frame (walk case V reads the pixels).
-- **Up at the tap, the page a frame later (D1612):** from the ☰ menu and the top bar, a tap on either page not yet on the
-  page puts the claw up at once and switches the page one frame later (`pageclaw.ts openPage`), so the screen's big
-  repaint happens under a claw already drawn — his recording showed Safari's one frame of plain dark tiles before it; the
-  page's placeholder takes that claw over, and a page that needed no wait leaves it to go. About 0.016 s added to the
-  first open, his choice. Other ways in (the bell, the Holidays list) switch at once, the placeholder raising its own.
+- **The page switches at the tap; the moment before the claw is the same dark (D1614, replacing D1612):** the page's
+  placeholder raises the claw as the page appears, with no time added. The one frame Safari may draw first, before the claw,
+  is the page area's own background — since D1614 the claw's plain dark (`#0B0D10`), with no blue wash at the top that
+  once repeated down an empty page in stripes — so the claw simply appears on it. (D1612's one-frame-early raise, `openPage`,
+  was built and taken out the same day.)
 - **Gone as the page is drawn:** a 0.2 s fade from the frame the page arrives, never waiting for its round. The Tracker
   draws its chart just after its page appears, so its claw waits for the chart, or its "no course yet" (`until`),
   noticed the moment it is added, at most 3 s. Up under 0.2 s, or he left for another page first, or less motion asked

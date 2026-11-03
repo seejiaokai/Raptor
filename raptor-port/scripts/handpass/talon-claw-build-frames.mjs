@@ -1,10 +1,13 @@
-// The loading claw on the BUILT app ([TALON-LOADING-CLAW], D1591, D1605) — the walk's script, written as assertions of
+// The loading claw on the BUILT app ([TALON-LOADING-CLAW], D1591, D1605; on every start, no wait, D1615) — the walk's script, written as assertions of
 // the right behaviour (a PASS means correct). Serves dist/ with Vite's preview, slows the app's code (its scripts held
 // back by DELAY ms, so the claw has time to show), and records the claw every frame from the page's first moment:
 // whether it shows, its fade, and how far each claw's window has slid. Cases, in Chromium and WebKit (the iPhone's engine):
-//   A  a slow load on a phone: hidden for 0.3 s, then left, middle, right, each along its line; gone once the app is up,
-//      the sign-in usable at once                        B  the same in WebKit
-//   C  less motion asked for: the claw still and whole, removed at once      D  a quick load: never shown before 0.3 s
+//   A  a slow load on a phone: shown from its first frame, 0.2 s into its round (the left claw mostly drawn, the middle
+//      begun, the right not yet), then the right along its line; gone once the app is up, the sign-in usable at once
+//      B  the same in WebKit        C  less motion asked for: the claw still and whole, removed at once
+//   D  a quick load (D1615): shown from its first frame, gone with the sign-in
+//   Q  the first frame the screen draws of the page already carries a clear part of the claw — its pixels counted in the
+//      screen's own frames (the order §7.11, lesson 22)
 //   E  the plain user's round: signed in, the top bar reading "142 TALON", nothing of the claw left; a reload, the claw again
 //   F  the app cannot start (its saved data from a newer version): the message shows, never under the claw
 //   G  a desktop: the claw in the middle      K  the page busy 1.5 s: the claw keeps moving (Chromium)
@@ -92,10 +95,15 @@ async function slowLoad(engine, tag) {
   const rec = await page.evaluate(() => window.__bc)
   const r = read(rec)
   writeFileSync(join(OUT, `${tag}-record.json`), JSON.stringify({ summary: r, rec }, null, 1))
-  check(r.firstVisible != null && r.firstVisible >= 300, `${tag}: hidden for its first 0.3 s, then shown (first seen at ${r.firstVisible} ms)`)
-  check(r.start.every(x => x != null) && r.start[0] < r.start[1] && r.start[1] < r.start[2], `${tag}: left, then middle, then right (${r.start.join(' / ')} ms)`)
-  const gaps = [r.start[1] - r.start[0], r.start[2] - r.start[1]]
-  check(gaps.every(g => g > 80 && g < 260), `${tag}: about 0.16 s between claws (${gaps.join(', ')} ms)`)
+  const first = rec.find(x => !x.removed)
+  check(first && first.vis === 'visible', `${tag}: shown from the first frame, no wait (D1615 — the first frame at ${first?.t} ms ${first?.vis})`)
+  /* 0.2 s into its round (D1615, as the page claw): the left claw (0–0.42 s) about two-thirds drawn, the middle (from 0.16 s)
+     just begun, the right (from 0.32 s) not yet — so left ahead of middle ahead of right, and the right starts about
+     0.12 s after the claw first shows */
+  const drawn = first && first.ms ? first.ms.map((v, i) => Math.round((1 - v / LEN[i]) * 100)) : [0, 0, 0]
+  check(drawn[0] >= 40 && drawn[0] > drawn[1] && drawn[1] >= drawn[2] && drawn[2] < 5, `${tag}: its first frame 0.2 s into the round — left, middle, right drawn ${drawn.join('% / ')}%`)
+  const right = r.start[2] != null && r.firstVisible != null ? r.start[2] - r.firstVisible : null
+  check(right != null && right > 40 && right < 260, `${tag}: then the right claw starts about 0.12 s later (${right} ms)`)
   check(r.goneAt != null && r.appAt != null && r.goneAt - r.appAt < 250, `${tag}: fading starts as the app appears (app ${r.appAt} ms, fade ${r.goneAt} ms)`)
   check(r.removedAt != null && r.removedAt - r.goneAt < 400, `${tag}: gone from the page ${r.removedAt - r.goneAt} ms after its fade began`)
   await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a')
@@ -119,14 +127,61 @@ await slowLoad('webkit', 'B-webkit')
   await ctx.close()
 }
 
-{ // D — a quick load
+{ // D — a quick load (D1615, his "Always"): the claw on every start, from its first frame, gone with the sign-in
   const { ctx, page } = await open('chromium', { delay: 0 })
   await page.goto(URL + '?fresh=1', { waitUntil: 'commit' })
   await page.waitForSelector('#luser', { state: 'visible', timeout: 20000 })
   await page.waitForTimeout(400)
-  const r = read(await page.evaluate(() => window.__bc))
-  check(r.firstVisible == null || r.firstVisible >= 300, `D: a quick load — the app up at ${r.appAt} ms; the claw ${r.firstVisible == null ? 'never shown' : 'first shown at ' + r.firstVisible + ' ms'}`)
+  const rec = await page.evaluate(() => window.__bc)
+  const r = read(rec), first = rec.find(x => !x.removed)
+  check(first && first.vis === 'visible' && r.removedAt != null, `D: a quick load — the claw shown from the first frame (${first?.t} ms), the app up at ${r.appAt} ms, the claw gone at ${r.removedAt} ms`)
   await ctx.close()
+}
+
+{ // Q — what the first frame DRAWS (the order §7.11, lesson 22): the screen's own frames (Chromium's screencast) from
+  //     before the page is asked for; the first frame showing the page (its dark, where the blank tab was white) must
+  //     already carry a clear part of the claw, its pixels counted in the claw's box against the whole claw's
+  const ctx = await browsers.chromium.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 })
+  const page = await ctx.newPage()
+  await page.route('**/assets/*.js', async r => { await new Promise(res => setTimeout(res, 8000)); await r.continue() })
+  const cdp = await ctx.newCDPSession(page)
+  const frames = []
+  cdp.on('Page.screencastFrame', e => { frames.push({ data: e.data, t: e.metadata.timestamp * 1000 }); cdp.send('Page.screencastFrameAck', { sessionId: e.sessionId }).catch(() => {}) })
+  await page.setContent('<body style="margin:0;background:#fff"></body>')
+  await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 })
+  await page.waitForTimeout(200)
+  await page.goto(URL + '?fresh=1', { waitUntil: 'commit' })
+  await page.waitForSelector('#bootclaw .mk', { state: 'attached' })
+  await page.waitForTimeout(900)
+  await cdp.send('Page.stopScreencast')
+  const box = await page.evaluate(() => { const m = document.querySelector('#bootclaw .mk').getBoundingClientRect(); return { x: m.left - 6, y: m.top - 6, w: m.width + 12 } })
+  await page.evaluate(() => { for (const a of document.getAnimations()) { a.pause(); a.currentTime = 1000 } })
+  await page.waitForTimeout(80)
+  const whole = (await page.screenshot()).toString('base64')
+  await ctx.close()
+  const viewer = await browsers.chromium.newPage()
+  const res = await viewer.evaluate(async ({ list, box }) => {
+    const load = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + s })
+    const n = Math.round(box.w * 2), c = document.createElement('canvas'); c.width = n; c.height = n
+    const g = c.getContext('2d', { willReadFrequently: true })
+    const out = []
+    for (const s of list) {
+      const img = await load(s), k = img.width / 390
+      g.clearRect(0, 0, n, n); g.drawImage(img, 4 * k, 4 * k, 1, 1, 0, 0, 1, 1)
+      const corner = g.getImageData(0, 0, 1, 1).data
+      g.clearRect(0, 0, n, n); g.drawImage(img, box.x * k, box.y * k, box.w * k, box.w * k, 0, 0, n, n)
+      const d = g.getImageData(0, 0, n, n).data; let px = 0
+      for (let i = 0; i < d.length; i += 4) if (d[i + 2] > 150 && d[i + 1] > 120 && d[i] < 140) px++
+      out.push({ dark: corner[0] < 40 && corner[1] < 40 && corner[2] < 40, px })
+    }
+    return out
+  }, { list: [whole, ...frames.map(f => f.data)], box })
+  await viewer.close()
+  const [all, ...each] = res
+  const i = each.findIndex(x => x.dark)
+  const share = i < 0 ? null : each.slice(i, i + 4).map(x => Math.round(100 * x.px / Math.max(1, all.px)))
+  if (i >= 0) writeFileSync(join(OUT, 'Q-first-frame.png'), Buffer.from(frames[i].data, 'base64'))
+  check(share != null && share[0] >= 6, `Q: the first frame showing the page already draws a clear part of the claw (${share ? share.join('% / ') : 'no page frame'}% of the whole claw's pixels, the first four frames; at least 6% wanted)`)
 }
 
 { // E — the plain user's round: through the claw, sign in, the schedule, sign out, and a reload (a reload always
@@ -232,7 +287,7 @@ await slowLoad('webkit', 'B-webkit')
 }
 
 for (const engine of ['chromium']) { // P — pictures of the drawing (Chromium; WebKit's Windows build cannot picture a paused frame — its timing is case B's record): every animation paused at
-  //     fixed moments of the first round (counted from the page's start, the 0.3 s wait included), the claw pictured.
+  //     fixed moments of the round (each animation's own time, its 0.2 s head start included — D1615), the claw pictured.
   //     The app is held back long enough for WebKit's Windows build, which takes seconds over each picture.
   const { ctx, page } = await open(engine, { delay: engine === 'webkit' ? 120000 : 8000 })
   await page.goto(URL + '?fresh=1', { waitUntil: 'commit' })

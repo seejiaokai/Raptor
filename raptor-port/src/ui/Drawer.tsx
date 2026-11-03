@@ -15,7 +15,6 @@ import { logOut } from './logout'
 import { DRAWER, setDrawer } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
-import { openPage } from './pageclaw'
 
 export function Drawer() {
   useVersion()
@@ -71,8 +70,7 @@ export function Drawer() {
             these). Tag stays <a> so `#drawerNav a[data-page]` selectors hold. */}
         <nav className="drawer-nav" id="drawerNav">
           {items.filter(i => i[2]).map(([p, label]) => {
-            // the menu closes at the tap; a slow page's switch waits one frame under its claw (ui/pageclaw.ts, D1612)
-            const go = () => { setDrawer(false); notify(); openPage(p, () => { setPage(p); notify() }) }
+            const go = () => { setPage(p); setDrawer(false); notify() }
             return <a key={p} data-page={p} role="button" tabIndex={0} className={p === CURPAGE ? 'on' : ''}
               onClick={go} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go() } }}>{label}{p === 'admin' && waiting > 0 && <span className="navbadge" id="drawerWaitBadge">{waiting}</span>}</a>
           })}
