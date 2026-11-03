@@ -152,8 +152,10 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .lb-glyph{flex:0 0 auto;width:42px;height:42px;display:block;fill:var(--accent);
   filter:drop-shadow(0 0 16px rgba(59,198,232,.55))}
 .rglyph{flex:0 0 auto;width:1.55em;height:1.55em;display:block;fill:var(--accent)}
+/* the letter spacing after the last letter is pulled back on the right, so the pair is centred on its ink; no left
+   padding — TALON's T stands its upright 8px in from its edge, and a padding there set the claw apart (D1608) */
 .lb-word{font-size:38px;font-weight:800;letter-spacing:.19em;line-height:1;color:var(--ink);
-  padding-left:.19em}
+  margin-right:-.19em}
 .lb-sub{text-align:center;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;
   color:var(--ink-3);line-height:2;margin-bottom:26px}
 .lb-sub b{color:var(--accent);font-weight:700}

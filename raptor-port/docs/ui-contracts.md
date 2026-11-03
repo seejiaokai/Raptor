@@ -6847,6 +6847,13 @@ round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the 
 - Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
   1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
 
+## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
+
+On the sign-in and the access screens the claw stands 13px from "TALON"'s box: the word carries no left padding, and the
+letter spacing after its N is pulled back by a matching negative right margin, so the claw and the word are centred as
+one mark. Its gap was measured to the letters' ink, the T's upright standing 8px in from its edge
+(`scripts/handpass/talon-lockup-measure.mjs`, `talon-lockup-options.mjs`).
+
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access

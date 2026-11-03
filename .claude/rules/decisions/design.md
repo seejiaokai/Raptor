@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1608 | 3 Nov 26 | On the sign-in and the access screens the claw sits 7px nearer "TALON" (option B): the word's left padding, which only balanced the letter spacing after its last letter, becomes a pull-in on its right, so the pair stays centred and reads as one mark. |
 | D1607 | 3 Nov 26 | The loading claw also shows while any page that loads slowly opens — the Leave War and the Tracker among them, as his recording shows — in the blank moment before the page is drawn, never added to the time it takes; designed and drawn for him before it is built. |
 | D1606 | 3 Nov 26 | The rename to TALON is built as the page listed: the sign-in and access screens, the line "Training · Availability / Leave & Ops Nexus", the top bars' "142 TALON", the tab title, the start-up failure messages, the spoken names; the Leave War's "Raptor-owned" words become "filed on the Inputs page"; a home-screen name TALON; the web address stays. |
 | D1605 | 3 Nov 26 | The loading claw is built as its page recommended: each claw drawn along its own line, 0.42 s each, 0.16 s apart, held whole 0.55 s, then faded and drawn again; the sign-in's light round it, 72px, the claw alone; shown only after 0.3 s, so a quick load shows nothing; still for less motion; gone the moment the app is up. |
