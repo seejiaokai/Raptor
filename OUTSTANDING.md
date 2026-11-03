@@ -163,7 +163,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); a swipeable feel mock-up drawn 3 Nov 26, his to try — nothing built.
+- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); his choice by feel, 3 Nov 26: the full-day end card (D1574) — the plan next, nothing built.
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -2137,6 +2137,11 @@ means drawing the neighbouring weeks' days in full ahead of time (more build, an
 phone, so a phone end card leaves it out; (3) the desktop's dark veil over a preview is a desktop-only rule, so a phone end
 card is plain unless he chooses the dimmed one; (4) the last card of the strip can never scroll fully to its left edge (the
 strip ends 12 px short), so "resting on the end card" is "resting at the strip's end" — the build's rest test must read it so.
+**His choice (D1574, 3 Nov 26 — "Ok the full day feels best"):** the full-day end card. The plan — how a full day of the other
+week is drawn ahead without slowing a week's load, its cost and the check — is put to him before any code.
+**Smooth load (D1575, 3 Nov 26 — his recording, "Make it smooth"):** resting on next week's Monday the card jumped 12 px as the
+week loaded (the last card could not scroll fully in); fixed in the mock-up by 24 px after the last card and by putting the
+loaded day on the resting card's exact place; measured still to the pixel both ways. The build carries both, with that measure.
 
 ### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
 The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one

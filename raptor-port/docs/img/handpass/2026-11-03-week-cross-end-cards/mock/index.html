@@ -28,7 +28,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:block;width:100%;height:auto}
 .toolrow{display:block;width:100%;height:auto}
 /* the week strip, as the app draws it on a phone */
-.week{position:relative;display:flex;gap:12px;padding:2px 12px 30px;overflow-x:auto;align-items:flex-start;
+/* 24px after the last card, not the app's 12: the last card (next week's Monday) can then scroll fully to its place and
+   rests where every other day rests, so the load under it moves nothing (his D1575 — with 12 it rested 12px right and
+   jumped back as the week loaded) */
+.week{position:relative;display:flex;gap:12px;padding:2px 24px 30px 12px;overflow-x:auto;align-items:flex-start;
   scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:auto}
 .week::-webkit-scrollbar{display:none}
 .card{flex:0 0 calc(var(--aw,402px) - 24px);scroll-snap-align:start;position:relative;border-radius:var(--r)}
@@ -102,7 +105,7 @@ let wk = 1, mode = 'plain', touching = false, restTimer = null, pending = null
 
 function img(name, alt){ return `<img src="img/${name}.webp" width="378" height="${H[name]}" alt="${alt}" decoding="async">` }
 function dayDate(w, d){ const base = [6,13,20][w]; return base + d }
-function build(w, landDay){
+function build(w, landDay, holdLeft){
   wk = w
   let h = ''
   if (w > 0) {           /* last week's Sunday */
@@ -115,16 +118,18 @@ function build(w, landDay){
     h += `<div class="card end ${mode==='dim'?'dim':''}" data-side="1">${img(mode==='full' ? nb+'-0' : 'end-'+nb+'-0', 'Preview of Monday '+dayDate(w+1,0)+' Jul')}</div>`
   }
   strip.innerHTML = h
-  jumpTo(strip.querySelector(`.card[data-day="${landDay}"]`))
+  jumpTo(strip.querySelector(`.card[data-day="${landDay}"]`), holdLeft)
   statusEl.innerHTML = `Week loaded: <b>${WEEKS[w].label}</b>`
 }
-/* put a card on its snap point at once — no slide — as the real load would */
-function jumpTo(card){
+/* put a card on its snap point at once — no slide — as the real load would. At a load, `holdLeft` is where the card
+   he rests on stood on screen: the loaded day is put on exactly that place, to the fraction of a pixel, so nothing on
+   screen moves (his D1575) */
+function jumpTo(card, holdLeft){
   strip.style.scrollSnapType = 'none'
   strip.scrollLeft = card.offsetLeft
+  if (holdLeft != null) strip.scrollLeft += card.getBoundingClientRect().left - holdLeft
   strip.getBoundingClientRect()
   strip.style.scrollSnapType = ''
-  strip.scrollLeft = card.offsetLeft
 }
 /* the card the strip rests on. The last card can never scroll fully to its left edge (the strip ends 12px short of
    it), so resting at the strip's end means resting on the last card */
@@ -142,7 +147,7 @@ function atRest(){
     pending = null
     /* still resting on that same card, and no finger down? then load the week under it */
     if (touching || cardAtRest() !== c) return
-    build(wk + side, side < 0 ? 6 : 0)
+    build(wk + side, side < 0 ? 6 : 0, c.getBoundingClientRect().left)
     statusEl.classList.add('flash'); setTimeout(() => statusEl.classList.remove('flash'), 600)
   }, LOAD_MS)
 }

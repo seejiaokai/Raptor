@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1575 | 3 Nov 26 | When the week loads under an end card on a phone, nothing on screen moves: the day he rests on stays exactly where it came to rest, Monday after Sunday as well as Sunday before Monday, so the load cannot be seen. |
+| D1574 | 3 Nov 26 | On a phone the cross between weeks becomes the phone's own scroll onto an end card at each end of the week, a full picture of the neighbouring week's day (Sunday before Monday, Monday after Sunday), that week then loaded under it once the strip rests there; the slide between weeks retires on the phone, the desktop's arrows unchanged. |
 | D1573 | 2 Nov 26 | Cross-week dragging is not built: on Edit Schedule a carried man still stops at Monday and Sunday and is never carried into another week (D1529 stands), and the work is not filed in the backlog. |
 | D1529 | 31 Oct 26 | On Edit Schedule a man carried with the mouse and held at the left or right side of the week moves the week one day at a time, as one press of ‹ or › does: after a short wait at the side it glides one day, and again while he is held; a name only passing through moves nothing; it stops at Monday and Sunday, never carrying him into another week. |
 | D1528 | 30 Oct 26 | Edit Schedule, like View-only, never shows the browser's own grey sideways scroll bar on a desktop — the week's foot bar is its one sideways scroll — and that foot bar fits the week each time the crew panel is hidden or shown. |
@@ -609,6 +611,7 @@ Contract: `docs/ui-contracts.md` §Dragging sections and waves, §Dense row reor
   big `#vTitle`/`#vSub` were removed as clutter (cards carry dates) — don't re-add
   them, the fixed chips, or the end-of-week clamp. `WEEKS` kept for probe-bridge/
   reference only. Pinned mechanics:
+  - *[D1574, 3 Nov 26: on a phone the cross below is to become the scroll onto a full-day end card at each end of the week, the slide retiring there — filed as [WEEK-CROSS-END-CARDS]; until it is built, the glide below stands The load under the end card moves nothing on screen (D1575).]*
   - **Phone**: view/edit stepped day-to-day by SWIPE, continuous across weeks
     (`pan.ts` edge-overswipe + `WEEKJUMP`). A wave-dense day no longer traps it
     (owner, 23 Aug) — the `.go` block's ownership is decided at touch-END (a wave

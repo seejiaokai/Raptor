@@ -24,10 +24,11 @@ the later merge keeps both (D78).
 ### `claude/week-cross-end-cards` — [WEEK-CROSS-END-CARDS]: the feel mock-up, before any plan is settled — written 3 Nov 26 — verify before use
 - **Where it started:** his "start [WEEK-CROSS-END-CARDS] — plan it with me first … show me a mock up to test the feel first before building". Pull request 621 (the week swipe) is merged; its block was removed here, its leftovers filed.
 - **Done:** a swipeable mock-up of the phone's Edit Schedule from real pictures (three weeks, 6–26 Jul; a switch for the end card: preview, preview dimmed, full day), published to him privately as an Artifact — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf. Page and pictures `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/mock/`, their script `raptor-port/scripts/handpass/ws-endcards-mock.mjs`. What drawing it showed is in the item (four requirements). One walk trap written into `raptor-port/docs/walk-scripts.md` §4: a CDP finger in headless Chromium never ends the browser's own scroll.
-- **Unfinished:** everything of the build. Waiting on him: which end card feels right (or whether the cross stays the slide), then the plan put to him, then the build. Nothing in `raptor-port/src` changed.
+- **His rulings:** D1574 (the full-day end card, chosen by feel) and D1575 (the load moves nothing on screen — from his recording; fixed in the mock-up, version 2, measured still to the pixel). Whether the desktop does the same was put to him with a picture (`raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/desktop/`), recommended no.
+- **Unfinished:** everything of the build. Waiting on him: the desktop answer, then the plan (how a full day of the other week is drawn ahead without slowing a week's load, its cost, the FULL check), then the build. Nothing in `raptor-port/src` changed.
 - **Branch:** `claude/week-cross-end-cards`, cut from `main` at the merge of pull request 622; no pull request yet (it opens when the build starts — D1086).
 - **Running when written:** this chat's preview on port 4237 and a picture server on 4239 (both stopped at the end).
-- **Pick up here:** his answer on the mock-up, then the plan in this chat's closing message.
+- **Pick up here:** his desktop answer, then the build plan put to him before any code.
 <!-- /now -->
 ## Next, in order
 
