@@ -73,3 +73,40 @@ sized in `walk-ledger.md`, plain-user round included (D1557). A fresh, blind Opu
 finding. His look on his iPhone.
 
 **Time:** about two days with the check. **Model:** Opus, high thinking.
+
+## The fresh read (3 Nov 26, one blind Opus reader — D790) — folded in; these override the steps above where they differ
+
+1. **The neighbour is checked against the live week, not its saved copy.** Its Monday crew rest, the run of days, "Breaks
+   Monday" and `windowDiverges` read this week through `weekctx.ts bundle()` (the saved copy); a real load saves the week
+   first. During the draw, hand the checker the live week's current copy by a small override in `weekstash.ts stashGet`
+   — never `stashPut` / `snapshotStash` / `restoreStash` (they bump the saved copy's generation, which saving and the
+   preview's cache read). The proof test adds an edit on live Sunday not yet saved.
+2. **One install path, refactored out of `loadWeek`, with a draw-only flag:** no saved-copy write, no `HOOKS.weekSwapped`,
+   no view resets, no `histInit`, no notify, no disarm or paint. It still runs the request working-out (`workOutLoadedWeek`
+   → `rederive`, `INPUTS[].acc`, ids, the preserved registry, `resyncSchedBaseline`) so the card shows what the load
+   will; and the WHOLE world is snapshotted and restored around it (`histSnap()`, the holder-base state, every `acc`, the
+   preserved registry, `weekBaseline`, the schedule baseline) — never a hand-picked list.
+3. **The checker is run again after the restore** (`validate()`, 3.6 ms) rather than restoring its private tables by
+   hand; its page counters are not written during the draw (a flag, or put back by that run).
+4. **Per-week view state is emptied for the draw and put back:** the neighbour's own hidden warnings (its saved copy's
+   `wo`) installed, and every 'week'-scoped view field (`DPREV`, `VWORK`, `OILDAY`, `ARM`, selection, highlights) empty.
+5. **Drawn exactly, then made inert:** the section gets `inert` and `aria-hidden`, an end-card class, and is kept out of
+   every `[data-slot]` / `[data-person]` query and the highlight sweep (its markup carries the live week's day numbers).
+6. **Every `.day` selector is fixed for the leading card** (`pan.ts` `weekLanding`, `weekScrollMax`, the day-step measure,
+   `rosDayFollow`, the tail sizer, the day dots by index, `closest('.day')`), with a unit test for the leading card.
+7. **Rest:** the quiet timer after the finger lifts (140 ms) as well as `scrollend`, and the scroll on the card's snap point
+   within 1 px. **The write after the load:** the place read in the same layout step that swaps the card, the old node
+   kept until then, the write skipped if the strip moved during the load (iOS scrolls on while the page's code is busy).
+8. **When to redraw:** at idle after any store change (the counter `notify()` bumps; ~50 ms on a slow phone), not a
+   hand-named key — people, Logic, holidays, Leave War facts, role and History mode all reach the card.
+9. **A damaged or read-only neighbour** is drawn as protected (locked) when `stashWeekState(v) !== 'ok'`.
+10. **What stays:** `WEEKJUMP` (the week calendar and the desktop arrows), `weekLanding` (the arrows). Tests to rework:
+    `e2e/weekswipe.spec.ts`, `ui/swipeweeks.test.tsx`, `ui/pan.test.tsx`, `ui/weekglide.test.ts`, `testing/unit-times.ts`.
+11. **A quick second cross:** the arriving week's opposite end card is the day just left — its markup reused at once,
+    made inert — so a fast back-swipe never meets the plain preview.
+
+**The proof test covers:** an armed seat, OIL mode, a look at a published version, a hidden warning, an edit on Sunday not
+yet saved, a late request, a damaged week — the live app equal before and after, the card equal to the loaded day.
+**Cost after the read:** about three to four days with the FULL check, the first day the proof. **If the proof fails:**
+the kept picture of each week's Monday and Sunday (exact for a week seen this session and unchanged since; the plain
+preview, filling out at the load, for a first cross) — his choice then.
