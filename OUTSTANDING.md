@@ -2142,6 +2142,7 @@ week is drawn ahead without slowing a week's load, its cost and the check — is
 **Smooth load (D1575, 3 Nov 26 — his recording, "Make it smooth"):** resting on next week's Monday the card jumped 12 px as the
 week loaded (the last card could not scroll fully in); fixed in the mock-up by 24 px after the last card and by putting the
 loaded day on the resting card's exact place; measured still to the pixel both ways. The build carries both, with that measure.
+**The desktop stays as it is (D1576, 3 Nov 26 — "Leave the desktop").** **The plan:** `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md` — HEAVY, a proof step first (drawing a day of a week not loaded, leaving the app exactly as it was), read by a fresh Opus reader before it is put to him.
 
 ### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
 The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
