@@ -194,8 +194,8 @@ whole; the start-up and page claws centred exactly; the page claw starts at the 
 
 | # | Finding | Disposition |
 |---|---|---|
-| 1 | The hand-over to the sign-in shows both logos at once, in two places and sizes (72px mid-screen against the sign-in's 32px at the top on a phone) — a quick start reads as a flicker | put to him — [TALON-CLAW-HANDOVER]; picture `look/1-handover-mid-fade.png` |
-| 2 | About 0.3 s of plain dark at the end of every round (the fade done by 1.57 s, the next draw easing in from nothing) | put to him — [TALON-CLAW-ROUND-GAP]; pictures `look/2a…2d` (2c and 2d draw nothing) |
+| 1 | The hand-over to the sign-in shows both logos at once, in two places and sizes (72px mid-screen against the sign-in's 32px at the top on a phone) — a quick start reads as a flicker | his yes (D1616): the claw glides onto the first screen's logo — filed as [TALON-CLAW-HANDOVER], the top-bar version drawn first; mock-up `handover-mock/claw-ideas.html` |
+| 2 | About 0.3 s of plain dark at the end of every round (the fade done by 1.57 s, the next draw easing in from nothing) | put to him with a moving mock-up — his "no, I like how it is now" (D1617): kept as built |
 | 3 | The page claw says nothing to a screen reader | filed — [TALON-CLAW-SPOKEN], a small fix with the next claw change |
 | 4 | A failed download of either slow page is caught by nothing (from the code, not seen) | filed — [LAZY-PAGE-LOAD-FAIL], reproduced in the walk first |
 | 5 | Small on a desktop (72px in a 1536-wide page) | leave — calm for a working tool (the reader's own view) |

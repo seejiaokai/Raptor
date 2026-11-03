@@ -12,6 +12,13 @@
    "filter": "drop-shadow(rgba(59, 198, 232, 0.55) 0px 0px 16px)",
    "tag": "svg",
    "html": "<svg class=\"lb-glyph\" viewBox=\"0 -2 60 64\" role=\"img\" aria-label=\"TALON\"><path d=\"M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z\"></path></svg>"
+  },
+  "topbarLogo": {
+   "x": 54,
+   "y": 12,
+   "w": 24,
+   "h": 24,
+   "filter": "none"
   }
  },
  "desktop": {
@@ -27,6 +34,13 @@
    "filter": "drop-shadow(rgba(59, 198, 232, 0.55) 0px 0px 16px)",
    "tag": "svg",
    "html": "<svg class=\"lb-glyph\" viewBox=\"0 -2 60 64\" role=\"img\" aria-label=\"TALON\"><path d=\"M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z\"></path></svg>"
+  },
+  "topbarLogo": {
+   "x": 20,
+   "y": 17,
+   "w": 22,
+   "h": 22,
+   "filter": "none"
   }
  }
 }

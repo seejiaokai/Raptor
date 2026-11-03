@@ -88,8 +88,8 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
 
 <div class="wrap">
   <header style="display:flex;flex-direction:column;gap:6px">
-    <h1>The loading claw: two ideas</h1>
-    <p>Each one plays today's claw beside the suggestion, using the real sign-in page at your iPhone's size and the real claw. Both play on a loop. The changes happen in a fifth of a second, so use <b style="color:var(--ink)">Slow ×5</b> to see them clearly.</p>
+    <h1>The loading claw becomes the logo</h1>
+    <p>As the app finishes loading, the big claw slides up and shrinks into the logo of the first screen, so you never see two logos at once. Each pair plays how it looks with no change beside the suggestion, on the real pages at your iPhone's size, with the real claw. It all happens in a fifth of a second, so use <b style="color:var(--ink)">Slow ×5</b> to see it clearly.</p>
     <p class="rm">Your phone is set to reduce motion. These mock-ups move anyway, because the motion is the question.</p>
   </header>
 
@@ -101,8 +101,24 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
   </div>
 
   <section aria-labelledby="q1">
-    <h2 id="q1">1 · The claw becomes the sign-in's logo</h2>
-    <p>Today, the big claw fades out where it is while the sign-in fades in, so for a moment you see two logos. In the suggestion, the claw slides up and shrinks into the sign-in's logo and becomes it. Any claw not yet drawn finishes on the way up. It takes the same 0.2 s, so it adds no time.</p>
+    <h2 id="q1">After the M365 move: into the top bar's claw</h2>
+    <p>Microsoft signs people in before the app opens, so the claw hands over straight to View-only Sched. It lands on the small claw beside “142 TALON”. That claw has no light, so the big claw's light fades out as it lands. With no change, the big claw would fade out in the middle of the schedule.</p>
+    <div class="pair">
+      <div class="col"><span class="tag today">No change</span><div class="frame" id="m-today"></div></div>
+      <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="m-new"></div></div>
+    </div>
+    <details>
+      <summary style="cursor:pointer;color:var(--dim)">On a desktop</summary>
+      <div class="pair" style="margin-top:10px">
+        <div class="col"><span class="tag today">No change</span><div class="frame" id="md-today"></div></div>
+        <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="md-new"></div></div>
+      </div>
+    </details>
+  </section>
+
+  <section aria-labelledby="q1b">
+    <h2 id="q1b">Until then: into the sign-in's logo</h2>
+    <p>The same idea on today's sign-in page. Any claw not yet drawn finishes on the way up, and it takes the same 0.2 s as today's fade, so it adds no time.</p>
     <div class="pair">
       <div class="col"><span class="tag today">Today</span><div class="frame" id="p-today"></div></div>
       <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="p-new"></div></div>
@@ -116,16 +132,7 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
     </details>
   </section>
 
-  <section aria-labelledby="q2">
-    <h2 id="q2">2 · No dark gap between loops</h2>
-    <p>Today, each loop ends with the claw faded out and the next one starting from nothing, so the screen is dark for about 0.3 s every 1.77 s. In the suggestion, the next scratch starts drawing while the last one is still fading, so part of the claw is always on screen. A new scratch still starts every 1.77 s, and each claw draws at the same speed.</p>
-    <div class="pair big">
-      <div class="col"><span class="tag today">Today</span><div class="frame" id="g-today"></div><div class="strip today" title="black: the dark moment in each loop"></div><span class="note">Black on the bar: the dark moment in each loop</span></div>
-      <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="g-new"></div><div class="strip new"></div><span class="note">No dark moment</span></div>
-    </div>
-  </section>
-
-  <p class="answer">To answer, reply for example <b>“1 yes, 2 yes”</b>. These would be a small follow-up after today's work. They aren't needed for today's merge.</p>
+  <p class="answer">The loop's dark moment between rounds stays as it is, as you said. If this looks right, reply <b>“build it”</b>. It's a small follow-up after today's merge, built to land on whichever logo the first screen shows.</p>
 </div>
 
 <template id="claw">
@@ -140,8 +147,10 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
 (() => {
   // the real sign-in's measures (scripts/handpass/talon-claw-handover-mock.mjs, measures.json)
   const SIZES = {
-    phone:   { w: 402,  h: 874, logo: { x: 110.27, y: 44,     s: 32 }, img: 'signin-phone.png',   imgNo: 'signin-phone-nologo.png',   show: 260 },
-    desktop: { w: 1536, h: 864, logo: { x: 659.47, y: 238.42, s: 42 }, img: 'signin-desktop.png', imgNo: 'signin-desktop-nologo.png', show: 520 },
+    phone:          { w: 402,  h: 874, logo: { x: 110.27, y: 44,     s: 32 }, glow: true,  img: 'signin-phone.png',     imgNo: 'signin-phone-nologo.png',     show: 260 },
+    desktop:        { w: 1536, h: 864, logo: { x: 659.47, y: 238.42, s: 42 }, glow: true,  img: 'signin-desktop.png',   imgNo: 'signin-desktop-nologo.png',   show: 520 },
+    'move-phone':   { w: 402,  h: 874, logo: { x: 54,     y: 12,     s: 24 }, glow: false, img: 'viewsched-phone.png',  imgNo: 'viewsched-phone-nologo.png',  show: 260 },
+    'move-desktop': { w: 1536, h: 864, logo: { x: 20,     y: 17,     s: 22 }, glow: false, img: 'viewsched-desktop.png',imgNo: 'viewsched-desktop-nologo.png',show: 520 },
   }
   // each claw's window and the claw inside it, drawn whole (index.html's end states)
   const WHOLE = [['rotate(-21.25deg) translateY(0px)', 'translateY(0px) rotate(21.25deg)'],
@@ -168,7 +177,7 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
   async function handover(host, size, suggested, g) {
     host.textContent = ''
     const { sc, S } = screen(host, size)
-    const img = document.createElement('img'); img.alt = 'The sign-in page'; img.src = suggested ? S.imgNo : S.img
+    const img = document.createElement('img'); img.alt = size.startsWith('move') ? 'View-only Sched' : 'The sign-in page'; img.src = suggested ? S.imgNo : S.img
     sc.appendChild(img)
     const boot = document.createElement('div'); boot.className = 'boot cl'
     const shade = document.createElement('div'); shade.className = 'shade'
@@ -191,6 +200,8 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
       svgs.forEach((s, i) => anims.push(s.animate([{ transform: getComputedStyle(s).transform }, { transform: WHOLE[i][1] }], { duration: 220, easing: ease, fill: 'forwards' })))
       const from = { x: S.w / 2, y: S.h / 2 }, to = { x: S.logo.x + S.logo.s / 2, y: S.logo.y + S.logo.s / 2 }
       anims.push(mk.animate([{ transform: 'none' }, { transform: `translate(${to.x - from.x}px, ${to.y - from.y}px) scale(${S.logo.s / 72})` }], { duration: 220, easing: ease, fill: 'forwards' }))
+      // the top bar's claw has no light: the big claw's light fades out on the way, so nothing pops at the landing
+      if (!S.glow) anims.push(mk.animate([{ filter: 'drop-shadow(0 0 26px rgba(59,198,232,.55))' }, { filter: 'drop-shadow(0 0 26px rgba(59,198,232,0))' }], { duration: 220, easing: ease, fill: 'forwards' }))
       anims.push(shade.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out', fill: 'forwards' }))
       anims.forEach(a => { a.playbackRate = rate })
       if (!await later(220, g)) return
@@ -218,8 +229,10 @@ section{display:flex;flex-direction:column;gap:12px;background:var(--panel);bord
     handover(document.getElementById('p-new'), 'phone', true, g)
     handover(document.getElementById('d-today'), 'desktop', false, g)
     handover(document.getElementById('d-new'), 'desktop', true, g)
-    gap(document.getElementById('g-today'), false)
-    gap(document.getElementById('g-new'), true)
+    handover(document.getElementById('m-today'), 'move-phone', false, g)
+    handover(document.getElementById('m-new'), 'move-phone', true, g)
+    handover(document.getElementById('md-today'), 'move-desktop', false, g)
+    handover(document.getElementById('md-new'), 'move-desktop', true, g)
   }
   const speed = r => {
     rate = r

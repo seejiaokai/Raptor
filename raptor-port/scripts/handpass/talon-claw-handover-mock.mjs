@@ -32,9 +32,23 @@ for (const [name, vp] of [['phone', { width: 402, height: 874 }], ['desktop', { 
   })
   out[name] = { viewport: vp, logo: m }
   await page.screenshot({ path: join(OUT, `signin-${name}.png`) })
-  await page.addStyleTag({ content: '.lb-glyph{visibility:hidden!important}' })
+  const hide = await page.addStyleTag({ content: '.lb-glyph{visibility:hidden!important}' })
   await page.waitForTimeout(100)
   await page.screenshot({ path: join(OUT, `signin-${name}-nologo.png`) })
+  await hide.evaluate(t => t.remove())
+  // after the M365 move there is no sign-in page: the first screen is View-only Sched (D1616); its top bar's small claw
+  await page.fill('#luser', 'ad'); await page.fill('#lpass', 'a'); await page.click('#loginForm button[type=submit]')
+  await page.waitForSelector('#vWeek .day', { state: 'attached' })
+  await page.waitForTimeout(800)
+  await page.evaluate(() => { window.scrollTo(0, 0); document.activeElement && document.activeElement.blur() })
+  out[name].topbarLogo = await page.evaluate(() => {
+    const g = document.querySelector('.topbar .rglyph'); const r = g.getBoundingClientRect()
+    return { x: r.left, y: r.top, w: r.width, h: r.height, filter: getComputedStyle(g).filter }
+  })
+  await page.screenshot({ path: join(OUT, `viewsched-${name}.png`) })
+  await page.addStyleTag({ content: '.topbar .rglyph{visibility:hidden!important}' })
+  await page.waitForTimeout(100)
+  await page.screenshot({ path: join(OUT, `viewsched-${name}-nologo.png`) })
   await ctx.close()
 }
 writeFileSync(join(OUT, 'measures.json'), JSON.stringify(out, null, 1))
