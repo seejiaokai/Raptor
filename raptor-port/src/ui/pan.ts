@@ -11,7 +11,6 @@ import { HOOKS } from '../engine/hooks'
 import { shiftWeek } from './weeknav'
 import { mountPeek } from './peek'
 import { swDebugOn, swLog, swScroll, swScrollTake } from './swdebug'
-import { freezeLeaving } from './weekglide'
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement | null
 
@@ -672,13 +671,13 @@ function pullPastEnd(w: HTMLElement, sl: number) {
   /* … and let go: it springs back (b, g); the cross ends any touch still held as being read (h) */
   if (pullSide === -1 && sl >= pullPeak + Math.max(PULL_BACK, PULL_BACK_PART * -pullPeak)) {
     if (swDebugOn) swLog(`PULL past Monday ${Math.round(pullPeak)}, no touch seen → PREV WEEK`)
-    pullCrossed(); swEl = null; freezeLeaving(w)
+    pullCrossed(); swEl = null
     view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1))
     return
   }
   if (pullSide === 1 && sl <= pullPeak - Math.max(PULL_BACK, PULL_BACK_PART * (pullPeak - max))) {
     if (swDebugOn) swLog(`PULL past Sunday +${Math.round(pullPeak - max)}, no touch seen → NEXT WEEK`)
-    pullCrossed(); swEl = null; freezeLeaving(w)
+    pullCrossed(); swEl = null
     view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1))
     return
   }
@@ -791,7 +790,7 @@ function onWeekTouchEnd(e: TouchEvent) {
   const left = (swAtRight && crossing(-dx, -v)) || (swNearRight && crossing(-dx - swHomeR, -v))
   const right = (swAtLeft && crossing(dx, v)) || (swNearLeft && crossing(dx - swHomeL, v))
   if (swDebugOn) swLog(`${e.type === 'touchcancel' ? 'CANCEL' : 'END'} dx${Math.round(dx)} dy${Math.round(dy)} v${v.toFixed(2)} ax${swAxis || '-'} mv${swMoves} → ${left ? 'NEXT WEEK' : right ? 'PREV WEEK' : 'stay'} | ${swScrollTake()}`)
-  if (left || right) { pullCrossed(); freezeLeaving(w) }   // ?freeze trial (ui/weekglide.ts)
+  if (left || right) pullCrossed()
   if (left) { view.setWeekJump('mon'); loadWeek(shiftWeek(CURWEEK, 1)) }
   else if (right) { view.setWeekJump('sun'); loadWeek(shiftWeek(CURWEEK, -1)) }
 }

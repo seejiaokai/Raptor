@@ -94,36 +94,6 @@ function reducedMotion() {
   try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches } catch { return false }
 }
 
-/* THE TRIAL: THE LEAVING DAY FROZEN THE INSTANT THE FINGER LIFTS ([WEEK-SWIPE-CROSS], his 07:32 recording, 3 Nov 26 —
-   "there is a slight bounce because it takes some time for the next week to load correct?"; his "Trial"). Between the lift
-   and the slide, the app builds the next week and readies the two copies — about a twentieth of a second — and Safari
-   springs the day back in that moment: a small bounce before the slide. With `?freeze` in the address (off for everyone
-   else, for him to feel against the app without it): the copy of the day being left goes up the instant a cross is
-   decided, where the day stands, so Safari's spring-back plays out of sight under it; the slide then takes that same copy
-   on. Never up for longer than FREEZE_MAX if no slide comes. */
-export const freezeOn = typeof location !== 'undefined' && /[?&]freeze\b/.test(location.search)
-const FREEZE_MAX = 800
-let frozen: { el: HTMLElement; snap: Snapshot; root: HTMLElement; t: any } | null = null
-function dropFrozen() { if (frozen) { clearTimeout(frozen.t); frozen.el.remove(); frozen = null } }
-export function freezeLeaving(root: HTMLElement) {
-  if (!freezeOn || window.innerWidth > 820 || reducedMotion()) return
-  const rect = root.getBoundingClientRect()
-  if (!rect.width) return
-  dropFrozen()
-  const snap = snapshot(root, root.scrollLeft)
-  const c = document.createElement('div')
-  c.className = root.className
-  c.style.cssText =
-    `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;` +
-    `height:${rect.height}px;margin:0;overflow:hidden;pointer-events:none;z-index:41;` +
-    `scroll-behavior:auto;scroll-snap-type:none;background:var(--bg);will-change:transform;transform:translateX(0)`
-  c.innerHTML = snap.html
-  const card = c.firstElementChild as HTMLElement | null
-  if (card && snap.shift) card.style.marginLeft = `${snap.shift}px`
-  document.body.appendChild(c)
-  frozen = { el: c, snap, root, t: setTimeout(dropFrozen, FREEZE_MAX) }
-}
-
 /* What a clone shows: ONE day card's markup, and how far (px) to nudge it so it
    sits at exactly the pixel the full week shows it at when scrolled to `x`. A
    week with no day cards falls back to its whole markup parked by scroll. */
@@ -167,14 +137,11 @@ function snapshot(week: HTMLElement, x: number): Snapshot {
 export function beginGlide(root: HTMLElement): (() => void) | null {
   const dir = WEEKJUMP                       // read before the effect consumes it
   if (dir !== 'mon' && dir !== 'sun') return null
-  if (window.innerWidth > 820 || reducedMotion()) { dropFrozen(); return null }
+  if (window.innerWidth > 820) return null
+  if (reducedMotion()) return null
   const rect = root.getBoundingClientRect()
-  if (!rect.width) { dropFrozen(); return null }   // headless / not laid out — no-op
-  /* the day the finger was on, frozen where it stands — or, in the trial, the copy already up since the lift */
-  const pre = frozen && frozen.root === root ? frozen : null
-  if (frozen && !pre) dropFrozen()
-  if (pre) { clearTimeout(pre.t); frozen = null }
-  const outSnap = pre ? pre.snap : snapshot(root, root.scrollLeft)
+  if (!rect.width) return null               // headless / not laid out — no-op
+  const outSnap = snapshot(root, root.scrollLeft)   // the day the finger was on, frozen where it stands
   const w = rect.width
   const fwd = dir === 'mon'                   // forward: new IN from the right, old OUT to the left
 
@@ -256,8 +223,7 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     const h = Math.max(rect.height, root.getBoundingClientRect().height)
     const landed = weekLanding(root, dir)
     const inc = mkClone(snapshot(root, landed), 40)   // underneath …
-    const out = pre ? pre.el : mkClone(outSnap, 41)           // … the leaving day, on top
-    if (pre) out.style.height = `${h}px`
+    const out = mkClone(outSnap, 41)                          // … the leaving day, on top
     /* COVER the real week for the length of the slide — never hide it. The two
        clones tile the viewport edge to edge, so the live week — which the
        browser's fling can still drag, and whose `sun` landing the phone snap
