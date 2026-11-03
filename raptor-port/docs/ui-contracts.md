@@ -6847,6 +6847,17 @@ round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the 
 - Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
   1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
 
+## The loading claw while a slow page opens (`[TALON-CLAW-PAGES]`, D1607, D1610, 3 Nov 26)
+
+One overlay for the whole app (`ui/pageclaw.ts`): the start-up claw above, drawn by the same rules in `index.html`
+(`.pgclaw` beside `#bootclaw`, nothing more to download), laid over the page area under the top bar — the bar stays in
+view and in reach (D1610, his "A"). A page raises it by rendering `PageClaw` while it is not drawn; first and so far only
+the Leave War, as its separate download's placeholder, and only while the page is on screen (never for the desktop's
+hidden pre-warm). Hidden its first 0.3 s, as at start-up; when its page arrives it fades over it in 0.2 s, never
+waiting for its round; when he leaves for another page first, or asked for less motion, it goes at once. It is put on
+the page and taken away by hand, not drawn by React, so the fade outlives the placeholder that raised it. Which other
+pages raise it waits on the measure of every page (D1607).
+
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
 On the sign-in and the access screens the claw stands 13px from "TALON"'s box: the word carries no left padding, and the
