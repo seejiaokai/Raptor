@@ -3202,3 +3202,18 @@ Edge channel, file page, seek + element screenshot, contact sheets; frames saved
 
 **Principle:** When a fault lives in motion, read the recording frame by frame before theorising; a browser that can decode the
 format is a sufficient video tool, and a contact sheet of evenly spaced frames shows the whole gesture at a glance.
+
+### Observation 773: A question about how something FEELS (motion) gets a swipeable page of real pictures, not a picture
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [WEEK-CROSS-END-CARDS] — he asked for a mock-up "to test the feel first before building" a change to how the phone crosses between weeks.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal / Showing It
+
+**Issue:** The guide covers pictures and working markup for layout questions, but not a question about motion or touch feel. A still picture (the earlier strips picture) could not answer it. What worked: real element screenshots of every card at the phone's size and density, laid in a strip that copies the app's own scroll rules (padding, gap, snap), with the proposed behaviour scripted on top and a switch per open choice, published as a page he opens on his own phone. Drawing it surfaced four requirements nobody had written (the preview card far plainer than the live one, so the card jumps at the load; a desktop-only label; a desktop-only veil; the last card never scrolling fully in). Two harness traps on the way: a file without the viewport line lays out 980 wide (already in the guide), and a CDP finger in headless Chromium never ends a native scroll (written to walk-scripts.md §4).
+
+**Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, add: "A question about feel — a swipe, a scroll, an animation — is answered by a page the owner operates on his own device: real pictures of each part at the device's size, the container built to the app's own measured scroll rules, the proposed behaviour scripted, a switch per open choice; checked by a real finger in a visible browser before it is sent."
+
+**Principle:** When the question is how an interaction feels, the mock-up must be operable on the target device; build it from real captures inside a container that reproduces the real scroll physics, so what is judged is the behaviour, not a drawing of it.
