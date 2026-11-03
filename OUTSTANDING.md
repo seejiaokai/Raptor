@@ -163,7 +163,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); his to place — nothing built.
+- [WEEK-CROSS-END-CARDS] — an idea for a smoother cross between weeks on the phone: one preview card at each end of the week's strip, so the swipe past Monday or Sunday is the phone's own scroll and the week loads in place under it (Fable, 3 Nov 26, his "see if there's a smoother way"); a swipeable feel mock-up drawn 3 Nov 26, his to try — nothing built.
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -2123,6 +2123,20 @@ about a day's build and a full bug check; the swipe reading and the slide retire
 **The picture he was shown:** `raptor-port/docs/img/handpass/2026-11-03-week-swipe/smoother/smoother-cross.png` (its script
 `raptor-port/scripts/handpass/ws-smoother-pictures.mjs`). Changes the settled cross (`scheduler.md` §Week navigation — "the cross
 GLIDES", 23–24 Aug 26), so it needs his word. **Place:** his to place.
+**The feel mock-up (3 Nov 26, his "show me a mock up to test the feel first before building"):** a swipeable page of real
+pictures at his iPhone's size, three weeks (6, 13, 20 Jul), the strip built to the phone's own rules, a week "loading" a
+tenth of a second after the strip rests on an end card; a switch for the end card — the preview, the preview dimmed (the
+desktop's veil), or a full picture of the day. Page and pictures: `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/mock/`
+(published privately to him as an Artifact); the pictures' script `raptor-port/scripts/handpass/ws-endcards-mock.mjs`.
+**What drawing it showed (requirements the design note did not name):** (1) the preview is far plainer than the live day —
+no sign-off box, issues bar, scheduler notes or available crew; Monday 13 Jul's preview starts its programme about 300 px
+higher than the live day, and Sunday 12 Jul's is one line ("No flying — ground day") where the live day is a full card —
+so with the preview, the card visibly changes the moment the week loads; a full picture of the day would hide the load but
+means drawing the neighbouring weeks' days in full ahead of time (more build, and a cost on every week load to weigh against
+`performance.md`); (2) the preview's first card carries the desktop's line "Next week: click a day to load it", wrong on a
+phone, so a phone end card leaves it out; (3) the desktop's dark veil over a preview is a desktop-only rule, so a phone end
+card is plain unless he chooses the dimmed one; (4) the last card of the strip can never scroll fully to its left edge (the
+strip ends 12 px short), so "resting on the end card" is "resting at the strip's end" — the build's rest test must read it so.
 
 ### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
 The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one

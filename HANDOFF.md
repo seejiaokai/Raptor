@@ -20,16 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/week-swipe-pdf-print -->
-### `claude/week-swipe-pdf-print` — the night of 3 Nov 26 and the morning after: the phone's swipe across weeks, the board by the keys, the schedule's React Doctor warnings — written 3 Nov 26, at his "merge live" — verify before use
-- **Where it started:** his "/overnight 12" with an iPhone recording of the week swipe; the PDF job skipped on his word, the keyboard leftovers and the schedule's React Doctor warnings in its place; then, the morning after, four more recordings (05:41 to 09:47) read with an on-screen log (`?swdebug`).
-- **Shipped (pull request 621 — merging on his "merge live" when written; check before acting):** the cross between weeks slides from where the day stands; a swipe Safari gives the page no touch for crosses by the strip's own pull past its end; the week is stilled under the slide; the board opens by the keys and its small menus, the Traffic and day-details windows close on Escape; the schedule's 67 React Doctor warnings handled. Evidence: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` (§1–§12), lessons 20 and 21. [WEEK-SWIPE-CROSS] and [BOARD-OPEN-BY-KEYS] archived.
-- **Unfinished:** none of the job. Filed: [WEEK-CROSS-END-CARDS] (Fable's smoother cross — a preview card at each end of the strip, his to place, picture in the item), [WEEK-GLIDE-TWO-PAGES] (low), [BOARD-KEYS-LEFT], [DOCTOR-INPUTS-RIDE], [LW-ZOOM-TEST-SLOW]; [VEILED-WINDOWS-BAR]'s bar part stays open; [PDF-PRINT-TWICE] as it was.
-- **Branch:** `claude/week-swipe-pdf-print`; pull request 621; merged — the next chat starts a new job on its own fresh branch, level with `origin/main`, and never switches to this one.
-- **Gates:** GitHub's run of the pull request is the full check (D1086) — green on every code commit since `f5c1b0046`; the closing records' run read before the merge.
-- **Open pull requests:** none. Pull request 621 merged live on his word; 578 (`claude/handoff-1027-review`) closed unmerged on his word, 3 Nov 26 — everything it recorded was already on `main`, its handoff block stale and its size line below main's.
-- **Running when written:** the walk's preview on port 4173 (this chat's — stopped at the end); nothing else.
-- **Pick up here:** a new job from `## Next, in order` — or [WEEK-CROSS-END-CARDS] if he places it.
+<!-- now:claude/week-cross-end-cards -->
+### `claude/week-cross-end-cards` — [WEEK-CROSS-END-CARDS]: the feel mock-up, before any plan is settled — written 3 Nov 26 — verify before use
+- **Where it started:** his "start [WEEK-CROSS-END-CARDS] — plan it with me first … show me a mock up to test the feel first before building". Pull request 621 (the week swipe) is merged; its block was removed here, its leftovers filed.
+- **Done:** a swipeable mock-up of the phone's Edit Schedule from real pictures (three weeks, 6–26 Jul; a switch for the end card: preview, preview dimmed, full day), published to him privately as an Artifact — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf. Page and pictures `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/mock/`, their script `raptor-port/scripts/handpass/ws-endcards-mock.mjs`. What drawing it showed is in the item (four requirements). One walk trap written into `raptor-port/docs/walk-scripts.md` §4: a CDP finger in headless Chromium never ends the browser's own scroll.
+- **Unfinished:** everything of the build. Waiting on him: which end card feels right (or whether the cross stays the slide), then the plan put to him, then the build. Nothing in `raptor-port/src` changed.
+- **Branch:** `claude/week-cross-end-cards`, cut from `main` at the merge of pull request 622; no pull request yet (it opens when the build starts — D1086).
+- **Running when written:** this chat's preview on port 4237 and a picture server on 4239 (both stopped at the end).
+- **Pick up here:** his answer on the mock-up, then the plan in this chat's closing message.
 <!-- /now -->
 ## Next, in order
 
