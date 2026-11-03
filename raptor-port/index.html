@@ -58,14 +58,11 @@
     <style>
       #bootclaw{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;background:#0B0D10;
         transition:opacity .2s ease-out;animation:bc-wait .3s linear}
-      /* THE SAME CLAW WHILE A SLOW PAGE OPENS (D1607, D1610): ui/pageclaw.ts lays .pgclaw over the page area under the
-         top bar, the bar staying, and these rules draw it — one definition for both, nothing more to download. */
+      /* THE SAME CLAW WHILE A SLOW PAGE OPENS (D1607, D1610, D1611): ui/pageclaw.ts lays .pgclaw over the page area under
+         the top bar, the bar staying, and these rules draw it — one definition for both, nothing more to download. From
+         the tap, with no 0.3 s wait (D1611): only pages measured to go blank raise it, and the wait left a flicker. */
       .pgclaw{position:fixed;left:0;right:0;bottom:0;top:var(--topbar-h,58px);z-index:50;display:grid;place-items:center;
-        background:#0B0D10;transition:opacity .2s ease-out;animation:bc-wait .3s linear}
-      /* TEST ONLY, for his phone (D1610's test): ?pageclaw=now shows the page claw from the tap, no 0.3 s wait — the
-         Leave War's first open takes about 0.45 s on his iPhone, so the wait leaves only a flicker of the first claw. */
-      .pgclaw.now{animation:none}
-      .pgclaw.now .cs,.pgclaw.now .w,.pgclaw.now .w svg{animation-delay:0s}
+        background:#0B0D10;transition:opacity .2s ease-out}
       #bootclaw.gone,.pgclaw.gone{opacity:0;pointer-events:none}
       @keyframes bc-wait{from,to{opacity:0}}
       #bootclaw .mk,.pgclaw .mk{position:relative;width:72px;height:72px;filter:drop-shadow(0 0 26px rgba(59,198,232,.55))}
@@ -85,6 +82,7 @@
       #bc-w2 svg,.pgclaw .pw2 svg{left:-27.13px;top:1px;transform-origin:37.13px 0px;transform:rotate(34.02deg);animation:bc-i2 1.77s linear .3s infinite backwards}
       @keyframes bc-w2{0%,18.079%{transform:rotate(-34.02deg) translateY(-56.29px);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:rotate(-34.02deg) translateY(0)}}
       @keyframes bc-i2{0%,18.079%{transform:translateY(56.29px) rotate(34.02deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:translateY(0) rotate(34.02deg)}}
+      .pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:0s}
       @keyframes bc-fade{0%,72.881%{opacity:1;animation-timing-function:ease-in}88.701%,100%{opacity:0}}
       @media (prefers-reduced-motion:reduce){
         #bootclaw,.pgclaw{transition:none}
