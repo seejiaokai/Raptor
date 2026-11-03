@@ -561,7 +561,7 @@ pictures to him — a look does not report each instance, and nothing is recolou
   same look unless he rules otherwise, and the app's other "on" looks (Fast sync, the week buttons, OIL Earn, the bell)
   stay as they are. A dark shadow that lifts a thing off the page — a window, a menu, a thing being dragged — is depth,
   not a glow, and stays. The app's own sign is not a mark: the claw logo on the sign-in page keeps its light, as does the loading claw while the app
-  starts (D1605), and so does the faint wash at the top of a page (D887). A new glow on a mark is his to rule, never added without his word. (His
+  starts (D1605), and so did the faint wash at the top of a page (D887) until D1614 took it away: every page's background is now the claw's plain dark. A new glow on a mark is his to rule, never added without his word. (His
   ruling: "a ring in this app never glows" — his yes, D880. The places that lost theirs: a flagged puck, D164; the
   just-added mark, D860; the board's other marks, D877; the picked person's chip, D879; the take ring, the bidding box,
   his own row's ring and the Tracker's rings, D881; today's card, the SANS stripe's light, the landing line's light, and
