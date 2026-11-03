@@ -316,7 +316,10 @@ const RULING_BYTES = [
   /* scheduler 111000 -> 115000 (27 Oct 26, the skill-notes review): 111,099 bytes — D1412 (the keyboard's feel, 27 Oct
      26) took it over on main, where a docs-only change then failed this check; live, none trimmed (D136), the file stays
      one (D976). Room, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 115000],
+  /* scheduler 115000 -> 119000 (3 Nov 26, claude/inputs-small-fixes-2): 115,226 bytes with D1586, D1588, D1589 - his
+     answers on the late mark, Make public and history names, live; none is trimmed (D136); the file stays one (D976).
+     Room, not a target. */
+  ['.claude/rules/decisions/scheduler.md', 2, 119000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
@@ -394,7 +397,9 @@ const RULING_BYTES = [
      the pencils, the top bar, search boxes, arrows, pinned bars, the failed-save band, rings, glows, drag) - moved here
      whole by the script from How we work, which carried them into every chat; they load with the design guide's paths
      and the walks' pictures (D137, D141). Set about a tenth above what it holds - a tripwire, not a target. */
-  ['.claude/rules/decisions/design.md',  2, 7600],
+  /* design 7600 -> 9000 (3 Nov 26, claude/inputs-small-fixes-2): 7,709 bytes with D1590, D1591 - the app's new name and
+     its loading screen, live; none is trimmed (D136). Room, not a target. */
+  ['.claude/rules/decisions/design.md',  2, 9000],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
