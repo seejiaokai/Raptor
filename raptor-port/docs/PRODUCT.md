@@ -63,9 +63,9 @@ Success is a week planned, checked and published with less effort and nothing mi
   sense"). Apple's cleanliness and sense of place — not its light colours, its single accent or its empty space.
 - **Pucks stay as they are and never wrap; buttons keep their size.**
 - **The login page stays simple.**
-- **The app is TALON — Training, Availability, Leave & Ops Nexus** (D1590, 3 Nov 26): the name everywhere the app names
+- **The app is TALON — Training, Availability, Leave & Ops Nexus** (D1590, 3 Nov 26; built as listed on its page, D1606): the name everywhere the app names
   itself to a person; the talon logo stays; the code and the project keep "Raptor" inside.
-- **While it loads, the talon claws scratch in** (D1591): the left claw, then the middle, then the right, each top to
+- **While it loads, the talon claws scratch in** (D1591; its timing and look, D1605): the left claw, then the middle, then the right, each top to
   bottom, repeating — drawn by the browser alone, adding nothing to the load time.
 - A working screen stays dense: "sleek" here is fewer words and fewer boxes, never more empty space.
 

@@ -27,6 +27,8 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1606 | 3 Nov 26 | The rename to TALON is built as the page listed: the sign-in and access screens, the line "Training · Availability / Leave & Ops Nexus", the top bars' "142 TALON", the tab title, the start-up failure messages, the spoken names; the Leave War's "Raptor-owned" words become "filed on the Inputs page"; a home-screen name TALON; the web address stays. |
+| D1605 | 3 Nov 26 | The loading claw is built as its page recommended: each claw drawn along its own line, 0.42 s each, 0.16 s apart, held whole 0.55 s, then faded and drawn again; the sign-in's light round it, 72px, the claw alone; shown only after 0.3 s, so a quick load shows nothing; still for less motion; gone the moment the app is up. |
 | D1591 | 3 Nov 26 | While the app loads it shows the blue talon logo drawn as a claw scratch: the left claw first, top to bottom, then the middle, then the right, then all three whole, repeating; light enough to add nothing to the load time, and shown to him as a moving mock-up before it is built. |
 | D1590 | 3 Nov 26 | The app is called TALON (Training, Availability, Leave & Ops Nexus), not RAPTOR: everywhere the app names itself for a person is changed, the sign-in, the top bar, the browser tab, prints and exports; the talon logo stays. |
 | D1567 | 2 Nov 26 | On a phone the page itself never zooms: only the grids that zoom by their own pinch (the Leave War grid and its OIL tab, Quals, the Scheduler Board’s desktop layout) zoom, and a pinch anywhere else does nothing, so the page can never be left zoomed in with no way out. |
