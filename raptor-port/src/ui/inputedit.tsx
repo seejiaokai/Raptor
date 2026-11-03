@@ -2756,7 +2756,14 @@ export function InputEditor() {
        way to an answer. Where nothing of the input itself differs from the record as it stands, the answer is written
        by itself — who answered and when is stamped, the late date is not moved — one step, one Undo. Anything he has
        also changed goes through the full save, answer and change together, as before. */
-    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, draftOf(r)))) {
+    /* A SAVE WITH NOTHING CHANGED CHANGES NOTHING (F1 of the 3 Nov 26 re-check — the Inputs batch [INPUTS-FIXES-1103]):
+       Save pressed on an input as it stands wrote "changed by" and the time, an Undo step of its own and the just-changed
+       mark — for nothing. Where every field of the window, an Attach's "To" and an Other's "Goes to" included, is the
+       record's own, and no OIL answer or medical removal rides the save, the window just closes. */
+    const saved = draftOf(r)
+    if (!oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))
+      && String(draft.to ?? '') === String(saved.to ?? '') && (!('goes' in draft) || draft.goes === saved.goes)) { close(); return }
+    if (oilDec && !removals.length && WIN_FIELDS.every(f => fieldSame(f, draft, saved))) {
       if (!mayEditInput(r) || protectedInput(r)) { stay(); return }
       const s = saveBatchX(() => { r.oil = { ...oilDec }; stampChanged(r); return true })
       if (s.ok) { if (CURPAGE === 'inputs' && !onMedTab()) revealInput(r); HOOKS.toast('OIL answer saved', 'ok'); close() }
