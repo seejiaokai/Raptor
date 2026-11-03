@@ -2872,7 +2872,7 @@ all three surfaces:
 *[NARROWED 3 Nov 26 by D1588 — to build in [INPUTS-FIXES-1103]: the choice is saved with the note and shared, kept
 across a reload, a sign-out and a week change; the paragraph below is the rule as it stood. D1592 (3 Nov 26): on a day
 already published, the choice waits for the next amendment like any other change there — the view-only schedule shows
-the note as the day went out until that amendment is published.]*
+the note as the day went out until that amendment is published. BUILT 3 Nov 26: the flag is the day's own `npub` (`state/view.ts notePub`, read from the day being drawn), its own command `sched.notePub` (one Undo step), and the comparison folds it into the note's own address (`engine/restore.ts dayKeys`), so the note reads pending.]*
 The flag is a display choice, not schedule data: session-only on the LATEOFF
 precedent (`view.NOTEPUB`), admin-gated, cleared on a session/week change, never
 persisted and never in a history snapshot. The toggle builder is `notePubTog`

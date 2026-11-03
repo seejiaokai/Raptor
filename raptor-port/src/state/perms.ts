@@ -443,6 +443,7 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'sched.sign': op(T.amendment, 'C'),
   'sched.signClear': op(T.amendment, 'C'),
   'sched.warnMute': op(T.sched, 'U'),
+  'sched.notePub': op(T.sched, 'U'),
   'sched.oil': op(T.sched, 'U'),
   'sched.draft.rename': op(T.sched, 'U'),
   'sched.draft.delete': op(T.sched, 'U'),

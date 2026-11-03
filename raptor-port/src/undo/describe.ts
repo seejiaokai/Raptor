@@ -59,6 +59,7 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.signClear': 'clearing a sign-off',
   'sched.stores': 'the stores on a jet',
   'sched.warnMute': 'hiding a warning',
+  'sched.notePub': 'making a note public',
   'sched.draft.rename': 'renaming a saved plan',
   'sched.draft.delete': 'deleting a saved plan',
   'inputs.write': 'a personal input',

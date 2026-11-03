@@ -807,15 +807,15 @@ export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
    normally carries none of it. But a scheduler can now MAKE ONE PUBLIC (owner,
    Aug 26): a public note also shows on the view-only week, under the header
    "Notes", while the edit week and board header read "Public notes" and carry
-   the toggle. The public flag is view.NOTEPUB, keyed by this note's own funnel
-   key. On the view-only week a public note prints only when it has text (an
+   the toggle. The public flag is the drawn day's own `npub` (D1588 — view.ts notePub), so the issued face shows it as
+   the day went out. On the view-only week a public note prints only when it has text (an
    empty box is nothing to issue); note that a public note whose SECTION has no
    rows on the view-only week is not drawn, because the empty section itself is
    not — an acceptable edge, the note still reads on the edit side. Reading a
    scheduler-side note is open to any scheduler-side viewer; only writing (and
    flipping the public flag) needs canEditSched(). */
 export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
-  const k=`${key}:${di}`, v=d[field]||'', a=alAttr(k), pub=notePub(k);
+  const k=`${key}:${di}`, v=d[field]||'', a=alAttr(k), pub=notePub(k,d);
   if(!ed){
     if(!pub||!v)return '';
     return `<div class="blknote-h">Notes</div><div class="blknote"${a}>${esc(v)}</div>`;

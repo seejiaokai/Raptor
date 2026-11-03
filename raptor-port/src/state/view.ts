@@ -937,12 +937,37 @@ HOOKS.setDayHides=(di:number,keys:string[])=>{
    OFF (default): the block is scheduler-side only, header "Scheduler notes". ON:
    it also renders on the view-only week under the header "Notes", and the edit
    week + board header read "Public notes". It is a display CHOICE, not schedule
-   data, so it stays a session-only view set on the LATEOFF precedent: admin-gated
-   at the write path, cleared on a session/week change, never persisted, never in
-   a history snapshot (unlike a mute, this one the owner did not ask to undo). */
-export const NOTEPUB=new Set<string>()
-export function notePub(key:any){ return NOTEPUB.has(String(key)) }
-export function toggleNotePub(key:any){ if(!canEditSched())return false; const k=String(key); if(NOTEPUB.has(k)){NOTEPUB.delete(k);return false} NOTEPUB.add(k); return true }
+   data, so it stayed a session-only view set: admin-gated at the write path,
+   cleared on a session/week change, never persisted, never in a history snapshot.
+
+   SAVED WITH THE NOTE, SHARED, SINCE D1588 (owner, 3 Nov 26): the choice is the DAY's own `npub` — the list of its note
+   blocks made public ('pn', 'dtn', 'sn', 'gn') — so every scheduler and member sees the same, after a reload, a sign-out
+   and a week change, and Undo takes it back. Being the day's, it rides the issued copy like the note's words: the
+   view-only schedule draws the note as the day WENT OUT, and on a day already published a choice made since waits for
+   the next amendment like any other change there (D1592) — the comparison folds it into the note's own address
+   (engine/restore.ts dayKeys), so the note reads pending. `d` is the day being drawn (the issued copy on the issued
+   face); omitted, the working copy. */
+const NOTE_BLOCKS=['pn','dtn','sn','gn']
+const notePubParts=(key:any)=>{ const s=String(key), i=s.lastIndexOf(':'); return { blk:s.slice(0,i), di:+s.slice(i+1) } }
+export function notePub(key:any,d?:any){
+  const { blk, di }=notePubParts(key)
+  const day:any=d||DAYS[di]
+  return !!day && Array.isArray(day.npub) && day.npub.includes(blk)
+}
+/* the write, inside the caller's command: returns whether the note is public afterwards (false for a member, or a key
+   that names no note block of a loaded day) */
+export function toggleNotePub(key:any){
+  if(!canEditSched())return false
+  const { blk, di }=notePubParts(key)
+  const day:any=DAYS[di]
+  if(!day||!NOTE_BLOCKS.includes(blk))return false
+  const was=Array.isArray(day.npub)&&day.npub.includes(blk)
+  const next=(Array.isArray(day.npub)?day.npub:[]).filter((b:any)=>b!==blk)
+  if(!was)next.push(blk)
+  next.sort((a:any,b:any)=>NOTE_BLOCKS.indexOf(a)-NOTE_BLOCKS.indexOf(b))
+  if(next.length)day.npub=next; else delete day.npub
+  return !was
+}
 
 /* ---- THE SESSION-STATE RESET REGISTRY (ARCH-STACK 1b, RC6/ARCH-06) ---------
    The transient view-state above is cleared in TWO places — resetSession (a
@@ -981,7 +1006,6 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'PIOPEN',  scopes:['session','week'], reset:()=>PIOPEN.clear() },
   { name:'BELLLIT', scopes:['session','week'], reset:()=>BELLLIT.clear() },
   { name:'WARNOFF', scopes:['week'], reset:()=>WARNOFF.clear() },
-  { name:'NOTEPUB', scopes:['session','week'], reset:()=>NOTEPUB.clear() },
   { name:'HISTMODE',scopes:['session','week'], reset:()=>setHistMode(false) },
   { name:'CARRYDAY',scopes:['session','week'], reset:()=>setCarryDay(null) },
   /* session-only: the Inputs-page view and the highlight-strip fold are page

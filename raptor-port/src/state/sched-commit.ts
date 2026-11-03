@@ -571,6 +571,8 @@ export const SCHED_TYPES = {
   sign: 'sched.sign',
   signClear: 'sched.signClear',
   warnMute: 'sched.warnMute',
+  /* a scheduler note made public or scheduler-only again (D1588) — its own type so Undo names it */
+  notePub: 'sched.notePub',
   /* [OIL-SEATS-CAN-EARN] step 11 / [OIL-UNDO-WORDS]. An OIL decision rode the
      `mutate` backstop, so undo called it "a change to the schedule" — inside a
      mode that exists precisely because the schedule must NOT move while OIL is

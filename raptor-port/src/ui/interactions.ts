@@ -3,7 +3,7 @@
    blank-space clear), with the state halves in src/state/view.ts and the
    repaint replaced by the store's notify() (the week re-renders and the
    highlight pass re-runs from ViewWeek's effect). */
-import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT } from '../engine/slots'
+import { slotVal, acceptInput, unacceptInput, txtSet, acceptedDay, TIME_TXT, noteChange } from '../engine/slots'
 import { CmdRefused } from '../command'
 import { rowElsewhere, isoDayWords } from '../engine/weekstash'
 import { standsOn } from '../engine/overlay'
@@ -1806,13 +1806,16 @@ export function routeClick(e: MouseEvent) {
   }
   /* make a scheduler note public / scheduler-only (owner, Aug 26). Caught before
      the text-cell routing below so tapping the header chip never opens an editor.
-     Admin-gated at the write path; not an undo step (the owner asked undo only
-     for hidden warnings). */
+     Admin-gated at the write path. An undo step since D1588: the choice is the day's own, saved and shared. */
   const npb = t.closest('[data-notepub]') as HTMLElement | null
   if (npb) {
     e.stopPropagation()
     if (!canEditSched()) { HOOKS.toast('Only a scheduler can change this', 'warn'); return }
-    const on = view.toggleNotePub(npb.dataset.notepub!)
+    /* saved with the note, for everyone (D1588): one command of its own, so Undo names it, and the note's own pending mark,
+       which a published day reads until the next amendment carries the choice out (D1592) */
+    const k = npb.dataset.notepub!
+    const on = schedWriteValue(SCHED_TYPES.notePub, () => { const v = view.toggleNotePub(k); noteChange(k); return v })
+    HOOKS.histPush()
     HOOKS.toast(on ? 'Note now shows on the view-only schedule' : 'Note is scheduler-only again', 'ok')
     notify(); return
   }

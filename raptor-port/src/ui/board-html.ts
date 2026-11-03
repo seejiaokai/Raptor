@@ -281,7 +281,7 @@ export function sbProgPanel(d:any,di:any,pv?:any,ro?:any){
    for. `ph` is kept in the signature and ignored, so the four call sites stay
    self-documenting about what each note is FOR without printing it. */
 export function sbNote(d:any,di:any,key:any,field:any,_ph:any,pv?:any){
-  const k=`${key}:${di}`, pub=notePub(k);
+  const k=`${key}:${di}`, pub=notePub(k,d);
   /* the show-on-view-only toggle (owner, Aug 26) — same builder the week uses, so
      a note's public state and label read the same on both surfaces. Only a live,
      editable board offers it; a read-only board just shows the current label. */

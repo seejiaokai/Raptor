@@ -45,10 +45,13 @@ export function dayKeys(d:any,di:any){
   const P=(v:any)=>{const s=S(v);return whoId(s)||s;};
   const T=(v:any)=>{const s=S(v);const min=parseHM(s);return min==null?s:hhmm(min);};
   (d.notes||[]).forEach((t:any,ni:any)=>m.set(`dn:${di}.${ni}`,S(noteText(t))));
-  m.set(`sn:${di}`,S(d.simnotes));
-  m.set(`pn:${di}`,S(d.prognotes));
-  m.set(`dtn:${di}`,S(d.dutynotes));
-  m.set(`gn:${di}`,S(d.grndnotes));
+  /* a note made public (D1588, D1592) rides its note's own address as a composite, as a row's CX does on its name: a
+     choice made after the day went out reads as that note pending, and a note never made public compares as before */
+  const NP=(blk:string,v:any)=>S(v)+(Array.isArray(d.npub)&&d.npub.includes(blk)?'␟public':'');
+  m.set(`sn:${di}`,NP('sn',d.simnotes));
+  m.set(`pn:${di}`,NP('pn',d.prognotes));
+  m.set(`dtn:${di}`,NP('dtn',d.dutynotes));
+  m.set(`gn:${di}`,NP('gn',d.grndnotes));
   (d.allhands||[]).forEach((r:any,ri:any)=>{
     /* `info` (the ⓘ info-only flag) rides the composite (audit, 8 Sep 26):
        without it a flip on a published day fingerprinted as "no change" and

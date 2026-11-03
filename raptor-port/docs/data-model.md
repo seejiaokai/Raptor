@@ -522,7 +522,7 @@ did AL 3 change" are queries, not a book beside the week.
 
 | Entity | Parent | Key fields |
 |---|---|---|
-| `ScheduleDay` | ScheduleWeek | `dayIndex` 0–6, `date`, `dayOfWeek`, `flyingTally` (`wc`), `notes` string[], `programmeNotes`, `dutyNotes`, `simNotes`, `groundNotes`, `sectionOrder` string[] (absent = canonical), `groundManualOrder` (`gman`), `approved` (`dayOK`), `shownAmendmentId` (ref Amendment, null = the original — `cur`), `original` JSON (`orig`, the day as first published) |
+| `ScheduleDay` | ScheduleWeek | `dayIndex` 0–6, `date`, `dayOfWeek`, `flyingTally` (`wc`), `notes` string[], `programmeNotes`, `dutyNotes`, `simNotes`, `groundNotes`, `publicNotes` string[] (`npub` — which of the four section notes show on the view-only schedule, absent = none; D1588: saved with the note and shared, part of the issued day, so on a published day a change waits for the next amendment — D1592), `sectionOrder` string[] (absent = canonical), `groundManualOrder` (`gman`), `approved` (`dayOK`), `shownAmendmentId` (ref Amendment, null = the original — `cur`), `original` JSON (`orig`, the day as first published) |
 | `DayDraft` | ScheduleDay | `blob` JSON (one alternate draft of the day — `SCHED.drafts[di][i]`), `isLive` (`curDraft`), `sortIndex` |
 | `Wave` | ScheduleDay | `label`, `night`, `inTimes` string[], `traffic` string[], `standalone`, `kind` (`sc\|avalon\|bb`), `noConflictCheck` (`noconf`), `sortIndex` |
 | `Formation` | Wave | `callsign` (`cs`), `mission` (`msn`), `shift`, `takeOff` (`to`), `land` (`ld`), `inTime` (`br`), `rally` (`rl` — the formation's own rally time, optional; D1026, 19 Oct 26), `area`, `areaTime` (`atime`), `cancelled` (`cx`), `cancelReason` (`cxr`), `sortIndex` |

@@ -213,6 +213,8 @@ One record per day of the loaded week, Monday first. Times inside a day are
   dutywaves: [{ label, rows: [{ role, id, str, end }] }],
   ground: [{ prog, str, end, who }],
   simnotes, prognotes, dutynotes, grndnotes: string,   // per-section notes
+  npub?: string[]                           // the section notes made public ('pn' 'dtn' 'sn' 'gn'), absent = none —
+                                           //   D1588: saved with the note and shared; rides the issued copy (D1592)
   secOrder?: string[]                       // section display order, absent = canonical
 }
 ```
