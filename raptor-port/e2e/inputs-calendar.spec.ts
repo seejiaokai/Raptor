@@ -994,7 +994,10 @@ test('a phone: a finger on a window moves what is in the window — its own cont
     expect(s2.page, 'at the foot of the form the page behind still does not move').toBe(s0.page)
     await cdp.detach()
     /* and a finger on the page BEHIND still scrolls the page (D641) — the strip above the window */
+    /* the form holds a changed type, so its ✕ asks first (D1622) */
     await page.locator('[data-testid="win-inputedit-x"]').tap()
+    await expect(page.locator('[data-testid="inped-escask"]')).toBeVisible()
+    await page.locator('[data-testid="inped-escask-go"]').tap()
     await expect(edWin(page)).toHaveCount(0)
   } finally { await context.close() }
 })

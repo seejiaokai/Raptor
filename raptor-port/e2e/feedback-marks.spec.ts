@@ -277,7 +277,7 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
     { seg: false, bg: 'rgba(0, 0, 0, 0)', line: '0px', pad: '0px', under: true, endsAtRight: true, n: 1, oneLine: true })
   await page.locator('[data-testid="medclash"] .airpop-foot .abtn.ghost').click()
   await page.locator('[data-testid="win-inputedit-x"]').click()
-  { const lose = page.locator('[data-testid="inped-swap-go"], [data-testid="inped-leave-go"]'); if (await lose.count()) await lose.first().click() }
+  { const lose = page.locator('[data-testid="inped-swap-go"], [data-testid="inped-leave-go"], [data-testid="inped-escask-go"]'); if (await lose.count()) await lose.first().click() }
   await page.locator('[data-testid="win-inputsday-x"]').click()
   /* …then with two: ATT B is filed over 14–16 */
   await newMed('ATT B', '2026-10-14', '2026-10-16')
@@ -286,7 +286,7 @@ test('D849 (3) — the medical-clash and the upchit questions: their answers sit
     { seg: false, bg: 'rgba(0, 0, 0, 0)', line: '0px', pad: '0px', under: true, endsAtRight: true, n: 2, oneLine: true })
   await page.locator('[data-testid="medclash"] .airpop-foot .abtn.ghost').click()
   await page.locator('[data-testid="win-inputedit-x"]').click()
-  const lose = page.locator('[data-testid="inped-swap-go"], [data-testid="inped-leave-go"]'); if (await lose.count()) await lose.first().click()
+  const lose = page.locator('[data-testid="inped-swap-go"], [data-testid="inped-leave-go"], [data-testid="inped-escask-go"]'); if (await lose.count()) await lose.first().click()
   await page.locator('[data-testid="win-inputsday-x"]').click()
   /* the upchit: a later entry still on file after it */
   await page.evaluate(who => (window as any).fileInput({ iid: 'fm-b', person: who, type: 'ATT B', date: 'Oct 17', endDate: 'Oct 18', yr: 2026, allday: true }), who)

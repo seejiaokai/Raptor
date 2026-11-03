@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1625 | 3 Nov 26 | Anything new a person will see — a question box, a message, a mark, a button — is drawn and shown to him as a mock-up before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first. |
 | D1594 | 3 Nov 26 | Astra and Sol 6.1 are not his to use yet: every code read stays the fresh, blind Opus read (D790), a scenario design a fresh Opus reader's, each such job on the list of reads owed ([NO-ASTRA-LIST], D761); a Codex sign-in that answers is not his subscription, and Codex is not called until he says it is back. |
 | D1587 | 3 Nov 26 | The check's places that do not read the one table are filed as one item for the database step: Quals ticks homed in QualMark alone, holidays a table of their own by date, a posted-out man and a Tracker student read from the person, medical documents shared, and the four smaller ones; nothing of it is built before then (D473). |
 | D1580 | 3 Nov 26 | The database tables are the one master of the app's saved data: every screen and area reads from them and writes to them, so everything stays in step; only what makes no sense in a table stays out, each named with its reason. The agent checks the app for what does not follow this and reports it to him. |

@@ -244,6 +244,61 @@ describe('Escape: one window at a time, wherever the keys are (F2, F6, F7)', () 
     expect(tid('inped-escask')).toBeNull()
     expect(tid('win-inputedit')).toBeNull()
   })
+  /* D1622 (3 Nov 26, "As recommended"): the window's ✕ asks Escape's question when anything is not saved; Cancel, which
+     already means "throw this away", still closes at once */
+  const typeRmk = async (v: string) => {
+    const rmk = document.querySelector('#inpEditRmk') as HTMLInputElement
+    await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, v); rmk.dispatchEvent(new Event('input', { bubbles: true })) })
+  }
+  const openOne = async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    expect(tid('win-inputedit'), 'premise: the input’s window is up').toBeTruthy()
+    return r
+  }
+  it('D1622: typed words, ✕ asks; Keep editing keeps them; ✕ then Discard and close closes', async () => {
+    await openOne()
+    await typeRmk('typed')
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    expect(tid('inped-escask'), '✕ asks before losing them').toBeTruthy()
+    expect(tid('win-inputedit'), 'the window stays while it asks').toBeTruthy()
+    await act(async () => { tid('inped-escask-stay')!.click() })
+    expect(tid('inped-escask')).toBeNull()
+    expect((document.querySelector('#inpEditRmk') as HTMLInputElement).value, 'Keep editing keeps what was typed').toBe('typed')
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    await act(async () => { tid('inped-escask-go')!.click() })
+    expect(tid('win-inputedit'), 'Discard and close').toBeNull()
+  })
+  it('D1622: nothing typed, ✕ closes without asking', async () => {
+    await openOne()
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    expect(tid('inped-escask')).toBeNull()
+    expect(tid('win-inputedit')).toBeNull()
+  })
+  it('D1622: typed words, Cancel closes at once without asking', async () => {
+    await openOne()
+    await typeRmk('typed')
+    await act(async () => { (document.querySelector('#inpEditCancel') as HTMLElement).click() })
+    expect(tid('inped-escask')).toBeNull()
+    expect(tid('win-inputedit'), 'Cancel already means throw this away').toBeNull()
+  })
+  it('D1622: ✕ pressed again while the question stands keeps the question, and the window', async () => {
+    await openOne()
+    await typeRmk('typed')
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    expect(tid('inped-escask'), 'still asking').toBeTruthy()
+    expect(tid('win-inputedit')).toBeTruthy()
+  })
+  it('D1622: typed words then ✕ with the window behind the day: it asks, and the day stays', async () => {
+    await openOne()
+    await typeRmk('typed')
+    await act(async () => { tid('win-inputsday')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    await act(async () => { tid('win-inputedit-x')!.click() })
+    expect(tid('inped-escask'), 'its own ✕ asks wherever it stands').toBeTruthy()
+    expect(tid('win-inputsday'), 'the day is untouched').toBeTruthy()
+  })
 })
 
 /* THE BUG CHECK OF 3 NOV 26 (walker W1): four places where Escape still answered the wrong layer. "Another window in front"
