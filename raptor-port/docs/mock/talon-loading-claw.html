@@ -1,0 +1,356 @@
+<meta charset="utf-8">
+<title>TALON Loading Claw</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column — what he answers first, then the phone-shaped player with its switches, then every place the
+   name shows. The app's own world (single dark look, D765): its background, panel, edge, ink and accent tokens copied
+   from src/ui/scheduler/00-foundation-login.css; the app loads no fonts, so neither does this page. */
+:root{
+  --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
+  --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
+  --accent:#3BC6E8; --accent-ink:#052A34; --mark:#ff3b6b;
+  --ui:'Inter Tight',-apple-system,system-ui,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--ui);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  padding-block:20px 48px}
+.wrap{max-width:760px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:20px;font-weight:800;letter-spacing:.02em;margin:0;text-wrap:balance}
+h2{font-size:15px;font-weight:700;margin:0 0 10px;letter-spacing:.01em;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--ink-3)}
+b.k{color:var(--accent)}
+
+/* ---- what to look at now ---- */
+.now{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:14px 16px}
+.now ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:9px}
+.now li{padding-left:2px}
+.rec{color:var(--accent);font-weight:600}
+
+/* ---- the player ---- */
+.player{display:grid;grid-template-columns:minmax(0,390px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:720px){.player{grid-template-columns:minmax(0,1fr)}}
+.stage{position:relative;width:100%;aspect-ratio:390/844;max-height:78svh;margin:0 auto;border-radius:28px;
+  overflow:hidden;border:1px solid var(--edge-2);background:var(--bg);isolation:isolate}
+.stage.fs{position:fixed;inset:0;width:auto;max-height:none;aspect-ratio:auto;border-radius:0;border:0;z-index:50;margin:0}
+.fsx{position:absolute;z-index:5;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);
+  display:none;font:600 13px var(--ui);color:var(--ink-2);background:rgba(20,24,29,.72);border:1px solid var(--edge-2);
+  border-radius:999px;padding:7px 13px;cursor:pointer}
+.stage.fs .fsx{display:block}
+
+/* the loading screen: the app's own background, the claw in the middle */
+.ld{position:absolute;inset:0;display:grid;place-items:center;background:var(--bg);transition:opacity .2s ease-out}
+.ld.gone{opacity:0;pointer-events:none}
+.ld.wait{animation:ldwait 0s linear .3s backwards}
+@keyframes ldwait{from{visibility:hidden}to{visibility:hidden}}
+.mark{display:flex;align-items:center;gap:calc(var(--sz) * .3)}
+.claw{width:var(--sz);height:var(--sz);display:block;overflow:visible}
+.claw .c{fill:var(--accent)}
+.glow .claw{filter:drop-shadow(0 0 calc(var(--sz) * .36) rgba(59,198,232,.55))}
+.sw{fill:none;stroke:#fff;stroke-width:9;stroke-linecap:butt}
+.wp{fill:#fff;transform-box:fill-box;transform-origin:50% 0}
+.along .wp,.straight .sw{display:none}
+.word{font-size:calc(var(--sz) * .78);font-weight:800;letter-spacing:.19em;line-height:1;color:var(--ink);padding-left:.19em}
+.still .claws,.still .sw,.still .wp{animation:none!important}
+.still .sw{stroke-dashoffset:0!important}
+.still .wp{transform:none!important}
+
+/* the sign-in the app hands to, already renamed — copied from the login's own rules (phone sizes) */
+.si{position:absolute;inset:0;padding:44px 18px 28px;display:flex;justify-content:center;
+  background:radial-gradient(760px 420px at 50% 6%,rgba(59,198,232,.13),transparent 62%),var(--bg)}
+.si-wrap{width:100%;max-width:352px;display:flex;flex-direction:column}
+.si .lb-mark{display:flex;align-items:center;justify-content:center;gap:13px;margin-bottom:12px}
+.si .lb-glyph{width:32px;height:32px;fill:var(--accent);filter:drop-shadow(0 0 16px rgba(59,198,232,.55))}
+.si .lb-word{font-size:32px;font-weight:800;letter-spacing:.19em;line-height:1;padding-left:.19em}
+.si .lb-sub{text-align:center;font-size:9.5px;letter-spacing:.15em;text-transform:uppercase;color:var(--ink-3);line-height:2;margin-bottom:26px}
+.si .lb-sub b{color:var(--accent);font-weight:700}
+.si .card{background:linear-gradient(180deg,rgba(255,255,255,.035),rgba(255,255,255,0)),var(--panel);border:1px solid var(--edge);
+  border-radius:16px;padding:22px 20px}
+.si label{display:block;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;margin:0 0 5px}
+.si .in{height:40px;box-sizing:border-box;background:var(--bg);border:1px solid var(--edge);border-radius:10px;margin-bottom:13px;
+  color:var(--ink-3);font-size:14px;padding:10px 12px}
+.si .go{background:var(--accent);color:var(--accent-ink);font-size:14px;font-weight:700;padding:12px;border-radius:10px;text-align:center;letter-spacing:.04em;margin-top:5px}
+
+/* ---- the switches ---- */
+.ctl{display:flex;flex-direction:column;gap:14px;min-width:0}
+.row{display:flex;flex-direction:column;gap:6px}
+.lab{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.lab output{color:var(--ink-2);letter-spacing:.02em;text-transform:none;font-variant-numeric:tabular-nums}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button,.btn{font:600 13px var(--ui);color:var(--ink-2);background:var(--panel-2);border:1px solid var(--edge);
+  border-radius:9px;padding:8px 12px;cursor:pointer;min-height:36px}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.seg button .r{font-weight:500;opacity:.75}
+.btn.main{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:0;height:28px}
+.note{font-size:12.5px;color:var(--ink-3);border-left:2px solid var(--edge-2);padding-left:10px}
+.note[hidden]{display:none}
+
+/* ---- the name places ---- */
+.places{display:flex;flex-direction:column;gap:12px}
+.pl{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.pl h3{margin:0;font-size:14px;font-weight:700}
+.pl .ch{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 10px;font-size:13px}
+.pl .ch dt{color:var(--ink-3);font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding-top:3px}
+.pl .ch dd{margin:0;overflow-wrap:anywhere}
+.old{color:#FBB4B9}
+.new{color:#A8E8B9}
+.pics{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px}
+.pics a{flex:0 0 auto;display:block;border:1px solid var(--edge-2);border-radius:8px;overflow:hidden;background:var(--bg)}
+.pics img{display:block;height:230px;width:auto;max-width:none}
+.tab{display:inline-flex;align-items:center;gap:7px;background:#2B2F36;border-radius:8px 8px 0 0;padding:7px 12px;font-size:12px;color:#E6E9ED;max-width:100%}
+.tab svg{width:13px;height:13px;fill:var(--accent);flex:0 0 auto}
+.stays{font-size:13px;color:var(--ink-2)}
+.stays ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.lb{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.88);display:grid;place-items:center;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) max(12px,env(safe-area-inset-right,0px)) calc(env(safe-area-inset-bottom,0px) + 12px) max(12px,env(safe-area-inset-left,0px))}
+.lb img{max-width:100%;max-height:100%;object-fit:contain}
+@media (prefers-reduced-motion:reduce){.ld{transition:none}}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>TALON: the loading claw and the new name</h1>
+    <p class="muted">Nothing is built yet. Play the claw, try the switches, then answer the four points below.</p>
+  </header>
+
+  <section class="now" aria-labelledby="nowh">
+    <h2 id="nowh">What I need from you</h2>
+    <ol>
+      <li><b>The feel.</b> Press <b>Full screen</b> and watch a few rounds; tune the speed, the gap and the hold. Reply "as is" or tell me what to change. <span class="rec">Recommended: "Along the claw" at the starting values.</span></li>
+      <li><b>Its look.</b> Light round the claw, size, name beside it. <span class="rec">Recommended: light on (the same light the sign-in's claw has), medium size, claw alone.</span></li>
+      <li><b>A quick load.</b> When the app opens in a moment, show nothing, or always show the claw? Try it with <b>Try a page load</b> at 0.3 s. <span class="rec">Recommended: wait 0.3 s before showing it, so a quick load never flashes half a claw.</span></li>
+      <li><b>The name.</b> Check each place in the list further down and its new words. <span class="rec">Recommended: as listed, and a short "TALON" under the app's icon on an iPhone home screen.</span></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="plh">
+    <h2 id="plh">The loading claw</h2>
+    <div class="player">
+      <div class="stage" id="stage">
+        <div class="si" id="si" hidden aria-label="The sign-in, renamed">
+          <div class="si-wrap">
+            <div class="lb-mark">
+              <svg class="lb-glyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg>
+              <span class="lb-word">TALON</span>
+            </div>
+            <div class="lb-sub"><b>T</b>raining · <b>A</b>vailability<br><b>L</b>eave &amp; <b>O</b>ps <b>N</b>exus</div>
+            <div class="card">
+              <label>Username</label><div class="in">username</div>
+              <label>Password</label><div class="in">password</div>
+              <div class="go">Sign in</div>
+            </div>
+          </div>
+        </div>
+        <div class="ld glow along" id="ld" role="img" aria-label="TALON is loading">
+          <div class="mark" id="mark">
+            <svg class="claw" id="claw" viewBox="0 -2 60 64" aria-hidden="true">
+              <defs>
+                <mask id="m0" maskUnits="userSpaceOnUse" x="-8" y="-10" width="76" height="82"><path class="sw" id="sw0" d="M3 8 Q8.2 37.05 24 62"/><rect class="wp" id="wp0" x="-8" y="8" width="76" height="54"/></mask>
+                <mask id="m1" maskUnits="userSpaceOnUse" x="-8" y="-10" width="76" height="82"><path class="sw" id="sw1" d="M16 0 Q22 33 42 60"/><rect class="wp" id="wp1" x="-8" y="0" width="76" height="60"/></mask>
+                <mask id="m2" maskUnits="userSpaceOnUse" x="-8" y="-10" width="76" height="82"><path class="sw" id="sw2" d="M31 -2 Q39.65 21.3 58 38"/><rect class="wp" id="wp2" x="-8" y="-2" width="76" height="40"/></mask>
+              </defs>
+              <g class="claws">
+                <path class="c" mask="url(#m0)" d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z"/>
+                <path class="c" mask="url(#m1)" d="M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z"/>
+                <path class="c" mask="url(#m2)" d="M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/>
+              </g>
+            </svg>
+            <span class="word" id="word" hidden>TALON</span>
+          </div>
+        </div>
+        <button class="fsx" id="fsx" type="button">✕ Close</button>
+      </div>
+
+      <div class="ctl">
+        <div class="btns">
+          <button class="btn main" id="fs" type="button">Full screen</button>
+          <button class="btn" id="load" type="button">Try a page load</button>
+          <button class="btn" id="loop" type="button">Loop again</button>
+        </div>
+        <p class="note" id="loadnote" hidden></p>
+
+        <div class="row">
+          <span class="lab">How each claw appears</span>
+          <div class="seg" data-k="style">
+            <button type="button" data-v="along" aria-pressed="true">Along the claw <span class="r">· rec.</span></button>
+            <button type="button" data-v="straight" aria-pressed="false">Straight down</button>
+          </div>
+        </div>
+        <div class="row">
+          <label class="lab" for="draw">Scratch speed (each claw) <output id="drawo"></output></label>
+          <input type="range" id="draw" min="0.2" max="1" step="0.02" value="0.42">
+        </div>
+        <div class="row">
+          <label class="lab" for="gap">Gap between claws <output id="gapo"></output></label>
+          <input type="range" id="gap" min="0.04" max="0.5" step="0.02" value="0.16">
+        </div>
+        <div class="row">
+          <label class="lab" for="hold">Held whole before it repeats <output id="holdo"></output></label>
+          <input type="range" id="hold" min="0.1" max="1.6" step="0.05" value="0.55">
+        </div>
+        <p class="muted" style="font-size:12.5px">One round lasts <b id="cyc"></b>.</p>
+
+        <div class="row">
+          <span class="lab">Light round the claw</span>
+          <div class="seg" data-k="glow">
+            <button type="button" data-v="on" aria-pressed="true">On <span class="r">· rec.</span></button>
+            <button type="button" data-v="off" aria-pressed="false">Off</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lab">Size</span>
+          <div class="seg" data-k="size">
+            <button type="button" data-v="52" aria-pressed="false">Small</button>
+            <button type="button" data-v="72" aria-pressed="true">Medium <span class="r">· rec.</span></button>
+            <button type="button" data-v="96" aria-pressed="false">Large</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lab">Name beside it</span>
+          <div class="seg" data-k="word">
+            <button type="button" data-v="off" aria-pressed="true">Claw alone <span class="r">· rec.</span></button>
+            <button type="button" data-v="on" aria-pressed="false">Claw and TALON</button>
+          </div>
+        </div>
+        <div class="row">
+          <label class="lab" for="lt">In "Try a page load", the app takes <output id="lto"></output></label>
+          <input type="range" id="lt" min="0.2" max="5" step="0.1" value="1.5">
+        </div>
+        <div class="row">
+          <span class="lab">A quick load</span>
+          <div class="seg" data-k="wait">
+            <button type="button" data-v="on" aria-pressed="true">Wait 0.3 s first <span class="r">· rec.</span></button>
+            <button type="button" data-v="off" aria-pressed="false">Always show</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="lab">For someone whose phone asks for less motion</span>
+          <div class="seg" data-k="still">
+            <button type="button" data-v="off" aria-pressed="true">Moving</button>
+            <button type="button" data-v="on" aria-pressed="false">Still claw</button>
+          </div>
+        </div>
+        <p class="note" id="rmnote" hidden>Your phone is set to reduce motion, so the real app would show the claw still. It moves here so you can judge it.</p>
+        <p class="note">How it is built: the claw is drawn by the browser from the logo's own three lines, written into the first page the phone receives, so it shows before the rest of the app arrives. Nothing extra to download (no animation library), so it adds nothing to the load. I will measure the load time before and after the build.</p>
+        <p class="note">After the move to Power Apps: Power Apps most likely shows its own loading screen first, and the claw would follow it while TALON itself loads. I will confirm this in the Power Apps hosting trial.</p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="nmh">
+    <h2 id="nmh">Every place the app shows its name</h2>
+    <p class="muted" style="margin-bottom:12px">Found by searching the whole app for the name. <span class="old">Red</span> is today, <span class="new">green</span> is the new wording. Tap a picture to see it large; the place is ringed in red.</p>
+    <div class="places" id="places"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var S={style:'along',glow:'on',size:'72',word:'off',wait:'on',still:'off'};
+  var ld=$('ld'), stage=$('stage');
+  var lens=[0,1,2].map(function(i){return $('sw'+i).getTotalLength()});
+  var styleEl=document.createElement('style'); document.head.appendChild(styleEl);
+  var EASE='cubic-bezier(.5,0,.25,1)';
+  var f=function(x){return (Math.round(x*100)/100).toFixed(2)+' s'};
+
+  function build(){
+    var d=+$('draw').value, g=+$('gap').value, h=+$('hold').value, fade=0.28, rest=0.2;
+    var H=2*g+d+h, T=H+fade+rest, p=function(x){return (x/T*100).toFixed(3)+'%'};
+    var css='';
+    for(var i=0;i<3;i++){
+      var s=i*g, e=s+d, L=lens[i].toFixed(2);
+      css+='@keyframes sw'+i+'{0%,'+p(s)+'{stroke-dashoffset:'+L+';animation-timing-function:'+EASE+'}'+p(e)+',100%{stroke-dashoffset:0}}';
+      css+='@keyframes wp'+i+'{0%,'+p(s)+'{transform:scaleY(0);animation-timing-function:'+EASE+'}'+p(e)+',100%{transform:scaleY(1)}}';
+      css+='#sw'+i+'{stroke-dasharray:'+L+' '+L+';animation:sw'+i+' '+T+'s linear infinite}';
+      css+='#wp'+i+'{animation:wp'+i+' '+T+'s linear infinite}';
+    }
+    css+='@keyframes claws{0%,'+p(H)+'{opacity:1;animation-timing-function:ease-in}'+p(H+fade)+',100%{opacity:0}}';
+    css+='.claws{animation:claws '+T+'s linear infinite}';
+    styleEl.textContent=css;
+    $('drawo').textContent=f(d); $('gapo').textContent=f(g); $('holdo').textContent=f(h); $('cyc').textContent=f(T);
+    $('lto').textContent=f(+$('lt').value);
+  }
+  /* restart every animation from its first frame */
+  function restart(){
+    var c=document.querySelectorAll('#claw .claws,#claw .sw,#claw .wp');
+    c.forEach(function(n){n.style.animation='none'}); void ld.offsetWidth; c.forEach(function(n){n.style.animation=''});
+  }
+  function apply(){
+    ld.classList.toggle('along',S.style==='along'); ld.classList.toggle('straight',S.style==='straight');
+    ld.classList.toggle('glow',S.glow==='on'); ld.classList.toggle('still',S.still==='on');
+    ld.style.setProperty('--sz',S.size+'px'); $('word').hidden=S.word!=='on';
+  }
+  var timer=null;
+  function loop(){
+    clearTimeout(timer); $('si').hidden=true; ld.classList.remove('gone','wait'); $('loadnote').hidden=true; restart();
+  }
+  function pageLoad(){
+    loop(); var t=+$('lt').value;
+    if(S.wait==='on'){ld.classList.add('wait')}
+    restart();
+    timer=setTimeout(function(){
+      $('si').hidden=false; ld.classList.add('gone');
+      var n=$('loadnote'); n.hidden=false;
+      n.textContent=(S.wait==='on'&&t<0.3)
+        ? 'The app was ready in '+f(t)+', before the 0.3 s wait ended, so no claw was shown.'
+        : 'The app was ready after '+f(t)+'; the claw faded as it arrived, without waiting for the round to finish.';
+    },t*1000);
+  }
+  document.querySelectorAll('.seg').forEach(function(seg){
+    seg.addEventListener('click',function(e){
+      var b=e.target.closest('button'); if(!b)return;
+      S[seg.dataset.k]=b.dataset.v;
+      seg.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false')});
+      apply(); if(seg.dataset.k==='style'||seg.dataset.k==='still')restart();
+    });
+  });
+  ['draw','gap','hold'].forEach(function(id){$(id).addEventListener('input',function(){build();restart()})});
+  $('lt').addEventListener('input',build);
+  $('loop').addEventListener('click',loop);
+  $('load').addEventListener('click',pageLoad);
+  function fsOn(on){stage.classList.toggle('fs',on);document.documentElement.style.overflow=on?'hidden':'';if(on)loop();(on?$('fsx'):$('fs')).focus()}
+  $('fs').addEventListener('click',function(){fsOn(true)});
+  $('fsx').addEventListener('click',function(){fsOn(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(stage.classList.contains('fs'))fsOn(false);var l=document.querySelector('.lb');if(l)l.remove()}});
+  try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)$('rmnote').hidden=false}catch(e){}
+
+  /* the places the name shows (pictures filled in from the pictures folder beside this page) */
+  var P=[
+    {h:'Sign-in',old:'RAPTOR, and under it "Readiness · Availability · Planning / Tracking & Ops Reporting"',neu:'TALON, and under it "Training · Availability / Leave & Ops Nexus", the five first letters in blue (the player above shows it after "Try a page load")',pics:['01-signin-phone.png','02-signin-desktop.png']},
+    {h:'Request access, waiting and switched-off screens',old:'RAPTOR beside the claw (drawn as on the sign-in above)',neu:'TALON beside the claw, the same as the sign-in'},
+    {h:'Top bar, every page (the guest view too)',old:'142 RAPTOR',neu:'142 TALON',pics:['03-topbar-phone.png','04-topbar-desktop.png']},
+    {h:'Browser tab',old:'RAPTOR — 142 Flying Programme',neu:'TALON — 142 Flying Programme',tab:true},
+    {h:'Name under the icon on an iPhone home screen (new)',old:'today the phone offers the tab’s whole title',neu:'TALON'},
+    {h:'Messages when the app cannot start (only seen on a failure)',old:'"RAPTOR has been updated", "RAPTOR is not set up yet", "RAPTOR needs more room to update your saved data", "RAPTOR could not load its data", and "Ask whoever looks after RAPTOR for help"',neu:'the same, with TALON'},
+    {h:'Leave War: the note after deciding several bids at once',old:'"1 skipped (no bid, or Raptor-owned)." and "a decision needs a bid that is not Raptor-owned"',neu:'"1 skipped (no bid, or filed on the Inputs page)." and "a decision needs a bid, not a leave filed on the Inputs page"',pics:['06-leavewar-select-note.png']},
+    {h:'Names a screen reader says aloud (nothing on screen)',old:'the claw logo: "RAPTOR"; the Leave War window a leave filed on the Inputs page opens: "Leave from Raptor"',neu:'"TALON"; "Leave filed on the Inputs page" (the window itself already reads "Filed on the Inputs page")'}
+  ];
+  var esc=function(s){return s.replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})};
+  var tabSvg='<svg viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg>';
+  var html=P.map(function(x){
+    var pics=(x.pics||[]).map(function(s){return '<a href="names/'+s+'" data-big="names/'+s+'"><img loading="lazy" src="names/'+s+'" alt="'+esc(x.h)+', ringed" onerror="this.parentNode.remove()"></a>'}).join('');
+    var tab=x.tab?'<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tab old">'+tabSvg+esc(x.old)+'</span><span class="tab new">'+tabSvg+esc(x.neu)+'</span></div>':'';
+    return '<div class="pl"><h3>'+esc(x.h)+'</h3><dl class="ch"><dt>Today</dt><dd class="old">'+esc(x.old)+'</dd><dt>New</dt><dd class="new">'+esc(x.neu)+'</dd></dl>'+tab+(pics?'<div class="pics">'+pics+'</div>':'')+'</div>';
+  }).join('');
+  html+='<div class="pl stays"><h3>Checked, nothing changes</h3><ul>'+
+    '<li>The printed schedule is headed "142 — Flying Programme", and the files saved from the app (142-schedule.csv, the Quals list, the holidays) carry no app name.</li>'+
+    '<li>Help and the Logic page never name the app.</li>'+
+    '<li>Inside the app’s workings, its saved data and the project’s own notes keep "Raptor", as you agreed (renaming them changes nothing you see and would empty every browser’s saved data).</li>'+
+    '<li>The claw logo, and the small claw in the browser tab, stay as they are.</li>'+
+    '<li>The web address you open the app at still says "raptor": it is the hosting project’s name, changed in your Vercel settings, and changing it changes the link everyone has saved. I suggest leaving it, since the app gets a new address anyway when it moves to Power Apps.</li></ul></div>';
+  $('places').innerHTML=html;
+  $('places').addEventListener('click',function(e){
+    var a=e.target.closest('a[data-big]'); if(!a)return; e.preventDefault();
+    var d=document.createElement('div'); d.className='lb'; d.innerHTML='<img alt="" src="'+a.dataset.big+'">';
+    d.addEventListener('click',function(){d.remove()}); document.body.appendChild(d);
+  });
+
+  apply(); build();
+})();
+</script>

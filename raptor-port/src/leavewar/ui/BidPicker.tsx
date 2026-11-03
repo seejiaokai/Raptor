@@ -1210,7 +1210,7 @@ export function RaptorSheet({
      pointer to the Inputs page and loses leave's word. */
   const leave = !creditShown && LEAVE_TYPES.some(t => t.type === code.replace(/\*/g, ''))
   return (
-    <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave from Raptor'} onClose={onClose}>
+    <Sheet testid="raptor-sheet" label={creditShown ? 'OIL the app credited' : 'Leave filed on the Inputs page'} onClose={onClose}>
       <div className="bidsheet-hd">
         <span className="who">{callsign}</span>
         <span className="dt when">{dayLabel(date)}</span>

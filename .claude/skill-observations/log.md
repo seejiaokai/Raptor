@@ -3217,3 +3217,64 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, add: "A question about feel — a swipe, a scroll, an animation — is answered by a page the owner operates on his own device: real pictures of each part at the device's size, the container built to the app's own measured scroll rules, the proposed behaviour scripted, a switch per open choice; checked by a real finger in a visible browser before it is sent."
 
 **Principle:** When the question is how an interaction feels, the mock-up must be operable on the target device; build it from real captures inside a container that reproduces the real scroll physics, so what is judged is the behaviour, not a drawing of it.
+
+### Observation 774: The handoff's "Next, in order" section had become history, so a fresh chat read the order from the backlog
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** a fresh chat told to "start the next job from ## Next, in order" — HANDOFF.md's section opened with "RIGHT NOW" lines dated 13–21 Oct 26, every step done; the live order was the backlog's priority list (his D994: small fixes by area).
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Writing the handoff — the project-order section
+
+**Issue:** Each handoff rewrites only its own `## Now` block; nobody rewrites the shared "Next, in order" section, so its "RIGHT NOW" lines pile up and go stale while the owner's opening line still points a new chat at it. The chat had to notice the dates, discard the section and find the real order in OUTSTANDING.md's priority list. A less careful chat would start a long-finished job or ask him a settled question.
+
+**Suggested improvement:** In the session-handoff skill, add a step: before committing, read the top of "Next, in order"; if its first "RIGHT NOW" line names work that is merged, replace the stale lines with one line pointing at the backlog's priority list ("His order, as it stands"), moving the old lines whole to the archive. Or retire the section's "RIGHT NOW" lines for good, since the backlog already carries the order.
+
+**Principle:** A shared section that no writer owns goes stale; give it an owner at the moment every chat already touches the file, or point it at the one place that is kept current.
+
+### Observation 775: A backlog of small "seen" finds goes stale as later batches fix them — re-walk before planning
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** planning the next Inputs small-fixes batch from [TITLE-CHECK-SEEN], [ALLAVAIL-CHECK-SEEN] and [CAL-CHECK-SEEN], filed 8–10 Oct 26.
+**Skill:** New skill candidate: batch-planning (or the bug-check order's sizing step)
+**Type:** internal
+**Phase/Area:** Planning a small-fixes batch from old filed finds
+
+**Issue:** Of 31 open finds, 15 were already gone — fixed in passing by later batches whose code comments even cite the item, but nobody updated the item. A batch planned from the text alone would have built fixes for faults that no longer exist, or asked him settled questions. Two Sonnet walkers re-checking every find on the built app (about 35 minutes, host opening the deciding pictures) sorted them reliably, and found one new, worse fault in passing.
+
+**Suggested improvement:** (1) Before planning a batch from filed small finds older than a week or two, re-walk each on today's build and sort it still there / gone / can't reproduce, pictures kept. (2) When a fix lands for a find that lives inside a multi-find backlog item, the same change marks that find fixed in the item (a grep of the item id in the diff's comments makes this checkable).
+
+**Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
+
+### Observation 786: A motion mock-up checked on the iPhone's engine without a phone, by pausing its animations at fixed moments
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] — a loading animation (three claws drawn in turn) put to the owner as a page he plays on his iPhone.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal — a question about feel (observation 773)
+**Number range:** this chat holds 786–795 (the Inputs batch chat holds 776–785).
+
+**Issue:** The animation used SVG masks animated by CSS — a technique Safari has historically repainted badly — and the owner judges it on an iPhone. A screen recording of a headless browser is unreliable for timing. What worked: open the page in Playwright's WebKit as well as Chromium, call `document.getAnimations()`, pause each and set `currentTime` to a list of fixed moments, screenshot the element at each, and lay the frames out as one strip per engine (`raptor-port/scripts/handpass/talon-claw-frames.mjs`). Both strips matched frame for frame, so the order and direction of the drawing were proved on the phone's engine before the link was sent.
+
+**Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, beside observation 773's line on feel: "An animation is checked frame by frame before it is sent: in WebKit (the iPhone's engine) as well as Chromium, every animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip of frames per engine and per option, read by eye for order and direction."
+
+**Principle:** Motion is verified by sampling it at known times on the target device's engine, not by watching it play: a paused frame at a fixed moment is a fact, a recording is an impression.
+
+### Observation 787: Two parallel chats told to switch branches in the same folder — one chat's commit landed on the other's branch
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] / [TALON-RENAME], run beside the Inputs batch chat as the handoff allowed ("Two chats may run side by side").
+**Skill:** session-handoff (the opening lines it writes for parallel chats)
+**Type:** open-source
+**Phase/Area:** Writing the opening line when two chats will run side by side
+
+**Issue:** The handoff gave two opening lines, both working in the main folder: one cut a new branch there with `git switch -c`, the other ran `git switch` to its own branch there. The second chat started 16 minutes after the first and switched the shared folder, so the first chat's later commit landed on the second chat's branch (caught at once by comparing the branch with its remote; moved with `git branch -f` to the right branch, pushed, and the other branch put back with `git reset --keep`, nothing of the other chat lost). A worktree made under the session's scratchpad then failed on Windows: the repository holds paths too long for it.
+
+**Suggested improvement:** In session-handoff, where two chats are to run side by side: the second opening line creates its own folder (`git worktree add ../<repo>-<name> <branch>`, a short path beside the repository, never under a temp or scratchpad folder) and works only there; and every chat checks `git branch --show-current` against its own branch before each commit.
+
+**Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.

@@ -202,6 +202,10 @@ Each stage is independently deployable and reversible; none needs the next.
   the two known exceptions, listed as stage 2 in `HANDOFF.md`.
 - **Tests per module, gates per PR.** The five gates already run as parallel
   CI jobs per module; keep it that way as modules gain server-side tests.
+- **The tables are the one master (owner D1580, 3 Nov 26).** Every saved fact lives in ONE table, and every screen
+  and area reads it from there and writes it there, so everything stays in step; a copy of it, or a result worked out
+  from it and stored, is a drift seam. What makes no sense in a table stays out, each named with its reason. The
+  first case he ruled: earned OIL gets its own table by person and date, not tied to a Leave War period (D1579).
 - **One place per rule.** A rule read in two places is a drift seam (the
   robustness doctrine). On the server this means the API validates; the front
   end mirrors for feedback but never decides.

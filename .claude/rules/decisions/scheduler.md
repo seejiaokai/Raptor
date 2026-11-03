@@ -54,6 +54,9 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1589 | 3 Nov 26 | The change history and every other record of who did something show the person's name as it was at the time, and keep the person himself underneath, so his record can still be found after a rename. |
+| D1588 | 3 Nov 26 | A scheduler note's "Make public" is saved with the note and shared: every scheduler and member sees the same choice, and it stays after a reload, a sign-out and a week change; built with the next Inputs batch. |
+| D1586 | 3 Nov 26 | A LATE mark a scheduler drops is dropped for everyone: saved on the input, so every scheduler and member sees it gone, and it stays gone after a reload, a sign-out and a week change; a tap on the dimmed chip brings it back for everyone. |
 | D1577 | 3 Nov 26 | The cross between weeks stays as built, on the phone and the desktop: the phone's swipe past Monday or Sunday still slides into the other week, and the end cards are not built. |
 | D1573 | 2 Nov 26 | Cross-week dragging is not built: on Edit Schedule a carried man still stops at Monday and Sunday and is never carried into another week (D1529 stands), and the work is not filed in the backlog. |
 | D1529 | 31 Oct 26 | On Edit Schedule a man carried with the mouse and held at the left or right side of the week moves the week one day at a time, as one press of ‹ or › does: after a short wait at the side it glides one day, and again while he is held; a name only passing through moves nothing; it stops at Monday and Sunday, never carrying him into another week. |
@@ -396,7 +399,7 @@ Rules: `docs/engine-rules.md` §The late-input mark. Placement: `docs/ui-contrac
   word at END of remark saved nothing (759); turning off mid-word breaking saved
   nothing (757). Don't "fix" the split by shrinking the badge — its WIDTH is the
   whole cost. (These measurements live only here.)
-- **It CAN be dropped per input** (owner, 21 Aug 26; REPLACED the 20 Aug global
+- *[NARROWED 3 Nov 26 by D1586: a dropped mark is saved on the input and dropped for everyone, kept across a reload, a sign-out and a week change — no longer a session-only registry.]* **It CAN be dropped per input** (owner, 21 Aug 26; REPLACED the 20 Aug global
   "Hide LATE marks" button, now removed). A session-only forgiven registry
   (`LATEOFF` in `state/view.ts`) with the way back = tapping the same chip again.
   Three fixed parts: the board's LIVE rows (Personal Inputs + Unavailable) always

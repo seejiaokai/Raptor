@@ -777,6 +777,10 @@ plus the Inputs on read.
 | `sortIndex` | decimal | yes | its place among the records at its (`warId`, `personId`, `date`); they read back by (`sortIndex`, key) (`ord`, `[DB-READINESS]` group A, phase 3) |
 | `isDeleted` | bool | yes | |
 
+**At the database step (owner D1579, 3 Nov 26): earned OIL leaves this table** for one of its own, one row a person
+and a date, with no `warId`, read by the Leave War, the OIL tracker and every other screen — so a weekend in a year no
+period covers is still counted. Filed as [DB-OIL-OWN-TABLE]; until then the `credit` kind above stands (D1578).
+
 Relationships: n–1 `LeaveWar`, n–1 `Person`; n–n `Attachment` through
 `LeaveBidAttachment` (`leaveBidId`, `attachmentId`) — today the request's `docIds` (≤ 20; D1150, D1159, M3 7.1), carried
 onto the Input's `InputAttachment` links at approval and back at an un-approval.

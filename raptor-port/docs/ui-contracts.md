@@ -2869,6 +2869,8 @@ all three surfaces:
   SECTION has no rows on the view-only week is not drawn, because the empty
   section itself is not — an accepted edge; the note still reads on the edit side.
 
+*[NARROWED 3 Nov 26 by D1588 — to build in [INPUTS-FIXES-1103]: the choice is saved with the note and shared, kept
+across a reload, a sign-out and a week change; the paragraph below is the rule as it stood.]*
 The flag is a display choice, not schedule data: session-only on the LATEOFF
 precedent (`view.NOTEPUB`), admin-gated, cleared on a session/week change, never
 persisted and never in a history snapshot. The toggle builder is `notePubTog`
@@ -5778,6 +5780,10 @@ again it will show."
 This REPLACED the 20 Aug global "Hide LATE marks" header button (removed at the
 owner's ask). Each late input now carries its OWN control on the board.
 
+*[NARROWED 3 Nov 26 by D1586 — to build in [INPUTS-FIXES-1103]: a dropped mark is saved on the input and dropped for
+everyone, every scheduler and member, kept across a reload, a sign-out and a week change; the session-only `LATEOFF`
+registry below goes. The chip, the tap to drop and to restore, and the admin-only write stay.]*
+
 - **The chip rides the ITEM cell of a live board input row**, on BOTH the
   Personal Inputs and the Unavailable panels — the two surfaces the owner named
   — drawn by `lateChip` (`ui/html.ts`) whenever `isLateInput`. It sits beside
@@ -6823,6 +6829,31 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 
 **Quals** keeps quals, CAT, flight and initials (D310): no ✕ in edit mode, no Archived section; its help line says
 "Archive, restore and delete are on Admin → Users."; the admin's "he's back" prompt stays (it skips a man archived again).
+## The loading claw (`[TALON-LOADING-CLAW]`, D1591, D1605, 3 Nov 26)
+
+While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the
+middle 0.16 s later, the right 0.16 s after that, 0.42 s each; all three held whole 0.55 s, faded, and drawn again — one
+round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the app's own sign), no name beside it.
+- **Hidden for its first 0.3 s** (the overlay's own opacity), so a load quicker than that shows nothing (walked 3 Nov 26:
+  the app up at 160 ms, the claw never shown).
+- **Gone the moment the app has drawn itself** — a 0.2 s fade (`ui/bootclaw.ts`, run by an effect after the first render,
+  `main.tsx BootClawGone`), never waiting for its round; under the fade it takes no taps. The boot's failure messages
+  take it away first (`main.tsx`), so a message never sits under it.
+- **Moves only by sliding and fading**: each claw sits in a narrow window laid along it from its tip; the window slides
+  down the claw while the claw inside slides back by the same amount. Those two kinds of movement keep running while the
+  app's code starts (walked 3 Nov 26: 53 frames, 39 different, drawn while the page was held busy 1.5 s); a claw drawn by
+  masks froze, or never showed, on a slowed phone. The whole claw matches the logo to the pixel, bar a softened edge.
+- **Still and whole for a reader who asked for less motion**, removed at once with no fade.
+- Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
+  1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
+
+## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
+
+On the sign-in and the access screens the claw stands 13px from "TALON"'s box: the word carries no left padding, and the
+letter spacing after its N is pulled back by a matching negative right margin, so the claw and the word are centred as
+one mark. Its gap was measured to the letters' ink, the T's upright standing 8px in from its edge
+(`scripts/handpass/talon-lockup-measure.mjs`, `talon-lockup-options.mjs`).
+
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access
@@ -10491,6 +10522,12 @@ year, in DRAFT, and moves to the Leave War so he can set the bidding window — 
 period for bidding is his own act and is never done behind him from a schedule screen. A
 member sees the reason and is offered nothing. A year another war already reaches is
 refused with a line saying so, rather than made twice.
+
+**On the Inputs page (owner D1578, 3 Nov 26).** An input filed for a weekend no period covers is asked its OIL
+question as on any other day, and the answer is kept on the input. The input never creates a period and never
+offers to: a period is the Leave War's own record (above), made from the schedule's check or on the Leave War. The OIL the
+input earns shows on the Leave War, in his OIL count and as OIL earned, once a period holding its date exists, by the
+same pass that credits every other day.
 
 ### The mode is read-only, and where that stops (fix 5, 22 Sep 26)
 

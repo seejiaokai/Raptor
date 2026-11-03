@@ -391,9 +391,9 @@ export function SelectSheet({
     /* (a Refuse or a send-back the rules stopped is "not changed" — he asked for no approval: round 3, R3-3) */
     const ruled = refused ? `${refused} ${bid === 'approved' ? 'not approved' : 'not changed'}: ${reasons(why, res.whyBy)}.` : ''
     const rest = skipped - refused
-    const other = rest > 0 ? `${rest} skipped (no bid, or Raptor-owned).` : ''
+    const other = rest > 0 ? `${rest} skipped (no bid, or filed on the Inputs page).` : ''
     setNote(decided === 0
-      ? (skipped ? (refused ? [ruled, other].filter(Boolean).join(' ') : 'None of those could be decided — a decision needs a bid that is not Raptor-owned.') + was : `Nothing to decide —${was}`)
+      ? (skipped ? (refused ? [ruled, other].filter(Boolean).join(' ') : 'None of those could be decided — a decision needs a bid, not a leave filed on the Inputs page.') + was : `Nothing to decide —${was}`)
       : [`${decided} decided.${was}`, ruled, other].filter(Boolean).join(' '))
     if (decided > 0) onDone(true, true)
   }

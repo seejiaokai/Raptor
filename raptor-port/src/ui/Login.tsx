@@ -35,11 +35,12 @@ export function Login() {
             (8 Sep 26); the .lb-unit CSS is left in place, unused, harmless */}
         {/* the mark: a raptor in the stoop, wings swept, tail split */}
         <div className="lb-mark">
-          <svg className="lb-glyph" viewBox="0 -2 60 64" role="img" aria-label="RAPTOR"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-          <span className="lb-word">RAPTOR</span>
+          <svg className="lb-glyph" viewBox="0 -2 60 64" role="img" aria-label="TALON"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
+          <span className="lb-word">TALON</span>
         </div>
-        <div className="lb-sub"><b>R</b>eadiness · <b>A</b>vailability · <b>P</b>lanning<br />
-          <b>T</b>racking &amp; <b>O</b>ps <b>R</b>eporting</div>
+        {/* the name it stands for (D1590, D1606): Training, Availability, Leave & Ops Nexus */}
+        <div className="lb-sub"><b>T</b>raining · <b>A</b>vailability<br />
+          <b>L</b>eave &amp; <b>O</b>ps <b>N</b>exus</div>
 
         <form className="login-card" id="loginForm" onSubmit={submit}>
           <label>Username</label>
