@@ -206,6 +206,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [ONE-LIVE-WEEK-WEIGH] — whether the app should hold several weeks at once instead of one live week — weighed at the database step, not before (his question, 3 Nov 26).
 - [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
 - [SYSTEM-ACTOR-ONE-TEST] — "the app itself" is decided two ways (the posting pass's wait by a command's origin, the commit gate by its actor); make them one before any seed or remote commit exists.
 - [POSTPASS-FIRSTWRITE-WHOLE-SEED] — this build only, out of the app's reach: the posting pass's first account write is checked row by row but never that the whole seeded list is there.
@@ -672,6 +673,17 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
   War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
+
+### [ONE-LIVE-WEEK-WEIGH] One live week at a time — weigh at the database step whether to change it (3 Nov 26, his question)
+**His question (3 Nov 26, after the [WEEK-CROSS-END-CARDS] plan's fresh read):** *"Does that mean that the way the app is designed now
+is not right? … do u recommend me to keep the same as now or change it"* — answered: keep it. The app holds ONE week live at a
+time (the original app's design: `state/store.ts loadWeek` swaps the days, dates and schedule book in place; `engine/validate.ts`
+and the day builders work on that one week), and the rules engine stays word for word (D1537), protected by the original's 728
+tests. It is correct for everything built; it only makes a feature that needs two weeks at once more work: cross-week dragging
+(D1573, skipped) and the full-day end cards (D1574, built by drawing a neighbour's day in a borrowed moment — the plan,
+`raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`). **To do:** at the database step, with the list of
+features that then want several weeks at once, weigh whether weeks become separately held (and the engine reads any week, not
+the live one) — put to him with its cost; until then nothing changes. **Place:** with [DB-STEP].
 
 ### [XFER] Multi-squadron + transfer a person with their data — future milestone (with [DB-STEP])
 **Behaviour (owner, 13 Sep 26):** many squadrons on one app / one backend; transferring a
