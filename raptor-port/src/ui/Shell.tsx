@@ -67,7 +67,7 @@ import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
-import { PageClaw } from './pageclaw'
+import { PageClaw, openPage, setPageReady } from './pageclaw'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
@@ -129,6 +129,9 @@ export function Shell() {
      The section still only DOZES while hidden; the flag just adds "pre-warmed"
      to the same "ever visited" mount gate below. */
   const [prewarmed, setPrewarmed] = useState(false)
+  /* a slow page already on the page (kept since its first visit, or the desktop's pre-warm) opens at once, with no claw
+     put up at the tap (ui/pageclaw.ts openPage, D1612) */
+  useEffect(() => { setPageReady('leavewar', lwEver || prewarmed); setPageReady('tracker', trEver) }, [lwEver, prewarmed, trEver])
   /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
   const topbarRef = useRef<HTMLDivElement>(null)
   useEffect(() => wireTopbarVar(topbarRef.current), [])
@@ -304,7 +307,7 @@ export function Shell() {
   const canSwitch = mayViewAsMember()
   /* access requests waiting (D204 "a badge on the Admin tab") — admins only */
   const waiting = admin ? waitingCount() : 0
-  const nav = (p: string) => { setPage(p); notify() }
+  const nav = (p: string) => openPage(p, () => { setPage(p); notify() })
   /* The five page tabs are <a>s with no href — visually a nav, but the reference
      built them as links, so a keyboard user could not Tab to them and could not
      switch pages at all (design critique, 15 Aug 26 — a P0: "someone navigating

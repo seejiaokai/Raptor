@@ -174,6 +174,23 @@ async function clawSeenEarly(which) {
   check(firsts.length > 0 && share[0] >= 6, `V-${which}: the first frame after the claw is put up already shows a clear part of it (${share.join('% / ')}% of the whole claw's pixels, frame by frame over the first 0.1 s; at least 6% wanted)`)
 }
 for (const which of ['leavewar', 'tracker']) await clawSeenEarly(which)
+// W — his D1612: from the menu and the top bar the claw is up in a frame of its own BEFORE the page switches, so the screen's
+// big repaint happens under a claw already drawn (his recording of 21:52: one blank frame on the Leave War before it)
+async function clawBeforeSwitch(which, size, from) {
+  const { ctx, page, release } = await signIn('chromium', size, { hold: which })
+  if (from === 'menu') { await page.click('#burger'); await page.waitForSelector('#drawer.open'); await page.waitForTimeout(350) }
+  await page.evaluate(p => { window.__w = []; const loop = () => { window.__w.push({ claw: !!document.querySelector('.pgclaw'), on: !!document.querySelector('#page-' + p + '.on') }); if (window.__w.length < 120) requestAnimationFrame(loop) }; requestAnimationFrame(loop) }, which)
+  await page.click(from === 'menu' ? `#drawerNav a[data-page="${which}"]` : `#topnav a[data-page="${which}"]`)
+  await page.waitForTimeout(800)
+  const fr = await page.evaluate(() => window.__w)
+  const firstClaw = fr.findIndex(f => f.claw), firstOn = fr.findIndex(f => f.on)
+  check(firstClaw >= 0 && firstOn > firstClaw, `W-${which}-${from}: the claw is up ${firstOn - firstClaw} frame(s) before the page switches (claw at frame ${firstClaw}, page at ${firstOn})`)
+  check(await page.evaluate(() => document.querySelectorAll('.pgclaw').length) === 1, `W-${which}-${from}: one claw, the page's placeholder took it over`)
+  release(); await isDrawn(page, which); await page.waitForTimeout(400)
+  check(!(await page.$('.pgclaw')), `W-${which}-${from}: and it goes once the page arrives`)
+  await ctx.close()
+}
+for (const which of ['leavewar', 'tracker']) { await clawBeforeSwitch(which, PHONE, 'menu'); await clawBeforeSwitch(which, DESK, 'top bar') }
 if (process.env.ONLY_V) { await browsers.chromium.close(); await browsers.webkit.close(); await new Promise(r => server.httpServer.close(r)); console.log(fails ? `${fails} FAILED` : 'all passed'); process.exit(fails ? 1 : 0) }
 
 for (const engine of process.env.ONLY_AT ? ['chromium'] : ['chromium', 'webkit']) { await slowOpen(engine, 'leavewar', `A-${engine}`); await slowOpen(engine, 'tracker', `T-${engine}`) }

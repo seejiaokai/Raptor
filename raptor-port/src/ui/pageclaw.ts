@@ -74,12 +74,45 @@ export function dismissWhenDrawn(el: HTMLElement, page: string, until: string, m
   check()
 }
 
+/* UP AT THE TAP, THE PAGE SWITCHED A FRAME LATER (his D1612, 3 Nov 26). Switching to a page repaints the whole screen in
+   one go, and the claw, drawn by the new page's placeholder, is part of that repaint: on his iPhone, coming from a
+   schedule page, Safari drew one frame of plain dark blocks first (his recording of 21:52). So a tap on one of the two
+   slow pages, not yet on the page, puts the claw up at once and switches the page one frame later, under it — about
+   0.016 s added to the page's first open, his choice (D1612, narrowing D1591). The page's placeholder then takes this
+   claw over instead of raising its own; a page that turns out to need no wait leaves it unclaimed, and it goes. */
+const SLOW_PAGES = new Set(['leavewar', 'tracker'])
+const ready = new Set<string>()
+let early: { page: string; el: HTMLElement } | null = null
+
+/** Shell says which slow pages are already on the page (kept, or the desktop's pre-warm): those open at once. */
+export function setPageReady(page: string, on: boolean): void { if (on) ready.add(page); else ready.delete(page) }
+
+/** Open a page from the menu or the top bar: a slow page not yet on the page gets the claw first, the switch a frame
+ *  later (`go` does the switch); every other page switches at once. */
+export function openPage(page: string, go: () => void): void {
+  if (!SLOW_PAGES.has(page) || ready.has(page) || CURPAGE === page || early || typeof window.requestAnimationFrame !== 'function') { go(); return }
+  const el = raisePageClaw(page)
+  early = { page, el }
+  // the frame with the claw is drawn first (a timer from inside the frame runs after it is painted), then the switch
+  window.requestAnimationFrame(() => window.setTimeout(() => {
+    go()
+    // not taken over by the page's placeholder (no wait after all, or he left): it goes
+    window.requestAnimationFrame(() => { if (early && early.el === el) { early = null; dismissPageClaw(el, CURPAGE === page) } })
+  }, 0))
+}
+
+/** The placeholder's claw: the one put up at the tap for this page, else a new one. */
+function claimOrRaise(page: string): HTMLElement {
+  if (early && early.page === page && early.el.isConnected) { const el = early.el; early = null; return el }
+  return raisePageClaw(page)
+}
+
 /** Rendered where a page is not yet drawn (a Suspense placeholder); the claw stays while this is mounted. `until`: a
  *  page that draws its content only after it appears (the Tracker's chart, drawn by its engine once mounted) names
  *  that content, and the claw stays until it is there (3 Nov 26: in WebKit the chart came about 0.2 s after the page). */
 export function PageClaw({ page, until }: { page: string; until?: string }) {
   useLayoutEffect(() => {
-    const el = raisePageClaw(page)
+    const el = claimOrRaise(page)
     // read at the moment it goes: still on this page means the page has arrived; anywhere else, he left before it did
     return () => { if (until && CURPAGE === page) dismissWhenDrawn(el, page, until); else dismissPageClaw(el, CURPAGE === page) }
   }, [page, until])

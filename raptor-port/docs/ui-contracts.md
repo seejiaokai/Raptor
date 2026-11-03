@@ -6860,6 +6860,11 @@ view and in reach (D1610, his "A").
 - **From the tap, no 0.3 s wait (D1611):** with the wait it was on his phone one to three frames, a flicker. The
   start-up claw keeps its wait. **And 0.2 s into its round** (his recording, 3 Nov 26): from the very start its left claw
   drew almost nothing for 0.1 s, a dark page; now two-thirds of it shows in the first frame (walk case V reads the pixels).
+- **Up at the tap, the page a frame later (D1612):** from the ☰ menu and the top bar, a tap on either page not yet on the
+  page puts the claw up at once and switches the page one frame later (`pageclaw.ts openPage`), so the screen's big
+  repaint happens under a claw already drawn — his recording showed Safari's one frame of plain dark tiles before it; the
+  page's placeholder takes that claw over, and a page that needed no wait leaves it to go. About 0.016 s added to the
+  first open, his choice. Other ways in (the bell, the Holidays list) switch at once, the placeholder raising its own.
 - **Gone as the page is drawn:** a 0.2 s fade from the frame the page arrives, never waiting for its round. The Tracker
   draws its chart just after its page appears, so its claw waits for the chart, or its "no course yet" (`until`),
   noticed the moment it is added, at most 3 s. Up under 0.2 s, or he left for another page first, or less motion asked

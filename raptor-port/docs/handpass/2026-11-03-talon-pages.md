@@ -116,3 +116,13 @@ the tap the claw already shows") read the element's presence and opacity, never 
 - **Not changed:** the two frames of the old page at the switch on the Leave War (the page switching, before the claw can
   be drawn — measured for every page in §Which pages go blank); the start-up claw before the sign-in shows only on a load
   slower than 0.3 s (D1605) — put to him.
+
+### His second recording (21:52) and D1612
+
+On the fixed preview the Tracker showed the claw in the frame after the tap; the Leave War, from View-only Sched, one
+frame of plain dark tiles first (Safari repainting the whole screen; the claw is part of that repaint). His "Do it" (D1612):
+the claw goes up at the tap and the page switches one frame later, under it. Walk case W (both pages, the menu on a phone and
+the top bar on a desktop): the claw up one frame before the page, one claw, gone once the page arrives — 12 of 12; the whole
+walk 75 of 75 (`walk-tap/`); unit checks 21 of 21; the Shell, Leave War and Tracker suites 218 of 218. What his phone draws
+in that frame only his phone can show: his look is the proof. His follow-up idea — that frame in the claw's own background —
+is the next step if a frame remains (the page's base is the dark with its faint wash, D887; the claw's is the plain dark).
