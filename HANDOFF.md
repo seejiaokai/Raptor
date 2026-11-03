@@ -27,7 +27,8 @@ the later merge keeps both (D78).
 - **Unfinished:** the build of both items — waits on his four answers (the feel and timing, the look, a quick load, the name list).
 - **Open questions for him:** the four on the page — (1) the feel: "Along the claw", draw 0.42 s, gap 0.16 s, hold 0.55 s recommended; (2) light on, medium, claw alone; (3) wait 0.3 s before showing; (4) the name list as written, the Leave War's two "Raptor" wordings becoming "filed on the Inputs page", a short "TALON" home-screen name; the web address left as it is.
 - **Gates:** none run (no app code). **Running when written:** nothing.
-- **Numbers held:** rulings D1605–D1619, observations 786–795 (786 used), design lessons 81–84.
+- **Folder:** this branch lives in its own worktree, `C:\Users\User\projects\Raptor-talon` — never in the main folder, which the Inputs batch chat uses (3 Nov 26: sharing it put this chat's first commit on that chat's branch; moved back before any push, observation 787). Republish the page from this folder's copy with the Artifact's `url`.
+- **Numbers held:** rulings D1605–D1619, observations 786–795 (786, 787 used), design lessons 81–84.
 - **Pick up here:** record his answers as rulings, then build both on this branch: the claw inline in `raptor-port/index.html` (no library), gone once the app is up; the rename (sign-in, access screens, top bar, guest bar, tab title, the start-up error pages in `main.tsx`, the logo's spoken name, the two Leave War wordings, the home-screen name); load time measured before and after; bug check by the order (a LOOK at least: sign-in, top bar and tab, phone and desktop).
 <!-- /now -->
 <!-- now:claude/inputs-small-fixes-2 -->

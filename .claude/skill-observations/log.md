@@ -3263,3 +3263,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, beside observation 773's line on feel: "An animation is checked frame by frame before it is sent: in WebKit (the iPhone's engine) as well as Chromium, every animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip of frames per engine and per option, read by eye for order and direction."
 
 **Principle:** Motion is verified by sampling it at known times on the target device's engine, not by watching it play: a paused frame at a fixed moment is a fact, a recording is an impression.
+
+### Observation 787: Two parallel chats told to switch branches in the same folder — one chat's commit landed on the other's branch
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] / [TALON-RENAME], run beside the Inputs batch chat as the handoff allowed ("Two chats may run side by side").
+**Skill:** session-handoff (the opening lines it writes for parallel chats)
+**Type:** open-source
+**Phase/Area:** Writing the opening line when two chats will run side by side
+
+**Issue:** The handoff gave two opening lines, both working in the main folder: one cut a new branch there with `git switch -c`, the other ran `git switch` to its own branch there. The second chat started 16 minutes after the first and switched the shared folder, so the first chat's later commit landed on the second chat's branch (caught at once by comparing the branch with its remote; moved with `git branch -f` to the right branch, pushed, and the other branch put back with `git reset --keep`, nothing of the other chat lost). A worktree made under the session's scratchpad then failed on Windows: the repository holds paths too long for it.
+
+**Suggested improvement:** In session-handoff, where two chats are to run side by side: the second opening line creates its own folder (`git worktree add ../<repo>-<name> <branch>`, a short path beside the repository, never under a temp or scratchpad folder) and works only there; and every chat checks `git branch --show-current` against its own branch before each commit.
+
+**Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.
