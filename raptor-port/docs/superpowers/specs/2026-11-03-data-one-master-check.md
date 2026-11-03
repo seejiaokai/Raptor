@@ -9,6 +9,11 @@ first case, already ruled (D1579, [DB-OIL-OWN-TABLE]). **Host's checks:** A1 and
 (`state/quals-write.ts` writes `p.quals[k]`; `data-model.md` §5's people row says `quals` "is not migrated";
 `state/view.ts` `NOTEPUB` is a session-only set). Nothing here is built before the database step (D473) unless he says so.
 
+**His answers (3 Nov 26, "1-4 as recommended"):** A1 and A4–A11 filed for the database step as [DB-ONE-MASTER-FIXES]
+(D1587); A2 "Make public" saved with the note, in the Inputs batch (D1588); A3 a dropped LATE mark dropped for
+everyone, in the Inputs batch (D1586); §C's history names: the name as it was at the time, the person kept underneath
+(D1589).
+
 ## A. Should change at the database step
 
 | # | What he sees | Where it lives today | What goes wrong | Fix |

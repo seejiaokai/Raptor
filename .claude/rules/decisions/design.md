@@ -27,6 +27,8 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1591 | 3 Nov 26 | While the app loads it shows the blue talon logo drawn as a claw scratch: the left claw first, top to bottom, then the middle, then the right, then all three whole, repeating; light enough to add nothing to the load time, and shown to him as a moving mock-up before it is built. |
+| D1590 | 3 Nov 26 | The app is called TALON (Training, Availability, Leave & Ops Nexus), not RAPTOR: everywhere the app names itself for a person is changed, the sign-in, the top bar, the browser tab, prints and exports; the talon logo stays. |
 | D1567 | 2 Nov 26 | On a phone the page itself never zooms: only the grids that zoom by their own pinch (the Leave War grid and its OIL tab, Quals, the Scheduler Board’s desktop layout) zoom, and a pinch anywhere else does nothing, so the page can never be left zoomed in with no way out. |
 | D1523 | 30 Oct 26 | A window he has resized but never moved moves down below a failed save's "Not saved" band, as a window not yet placed does, so the band and its Retry are never covered (D587); a window he has moved keeps its place. |
 | D1518 | 29 Oct 26 | Nothing pinned on screen leaks: a bar, or any other part that stays put while what is under it scrolls, shows none of that content behind it or through a gap at its edges — at every zoom and every scroll position; the desktop week's ‹ › arrows excepted, which stay see-through (D1522). — changed by D1522 |
