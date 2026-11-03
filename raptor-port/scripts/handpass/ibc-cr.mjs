@@ -50,7 +50,7 @@ const c0 = await chipOf(page, ll)
 check('C1', 'premise: the board shows its LATE chip, solid', c0 && !c0.off, c0)
 await page.locator(`#schedBoard .latechip[data-lateoff="${ll}"]`).first().click(); await sleep(600)
 check('C1', 'the scheduler drops it', (await rec(page, ll)).lateOff === true && (await chipOf(page, ll)).off, await rec(page, ll))
-await shot(page, 'C1', 'desktop', '1-scheduler-dropped')
+await L.mark(page, `#schedBoard .latechip[data-lateoff="${ll}"]`); await shot(page, 'C1', 'desktop', '1-scheduler-dropped'); await L.unmark(page, '#schedBoard .latechip')
 /* a scheduler's own change keeps it */
 await openInput(page, A, ll)
 await page.fill('#inpEditPop #inpEditRmk', 'family — seen by the scheduler'); await L.press(page, false, '#inpEditSave'); await sleep(500)
@@ -69,7 +69,7 @@ await signIn(page, 'ad')
 await openBoard(page, D1)
 const c1 = await chipOf(page, ll)
 check('C1', 'the scheduler sees LATE again on the board (the chip solid)', c1 && !c1.off, c1)
-await shot(page, 'C1', 'desktop', '2-late-back-after-his-change')
+await L.mark(page, `#schedBoard .latechip[data-lateoff="${ll}"]`); await shot(page, 'C1', 'desktop', '2-late-back-after-his-change'); await L.unmark(page, '#schedBoard .latechip')
 
 /* ---------- C2: his MC over his leave whose LATE mark was dropped ---------- */
 await page.locator(`#schedBoard .latechip[data-lateoff="${ll}"]`).first().click(); await sleep(600)
