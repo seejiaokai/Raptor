@@ -128,9 +128,9 @@ input,textarea,select,[contenteditable]{
 .puck,.puck *,.rpuck,.rpuck *,[data-drag],[data-drag] *,.dragimg,.tdghost,
 img,a{-webkit-user-drag:none;user-drag:none}
 
-/* ============ LOGIN · RAPTOR ============ */
-/* The app is RAPTOR — Readiness, Availability, Planning, Tracking & Ops
-   Reporting. One centred column: the mark, the name, the line it stands for,
+/* ============ LOGIN · TALON ============ */
+/* The app is TALON — Training, Availability, Leave & Ops Nexus (D1590, D1606;
+   its code keeps the name Raptor inside). One centred column: the mark, the name, the line it stands for,
    and the two fields. Nothing else. The build note is folded away behind its
    own stamp — it is a changelog, not part of the page. */
 .login{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;

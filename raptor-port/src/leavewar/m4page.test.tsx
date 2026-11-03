@@ -484,7 +484,7 @@ describe('the day’s list (a day with two entries) says who placed each (the sc
       expect(setPostOut('bane', WED, 'delete')).toBe(true)
       render(<SelectSheet sel={sel([TUE, WED, THU, FRI].filter(d => d !== WED))} people={() => 'Ranger'} role="admin" canDecide onDone={noop} onMove={noop} onClose={noop} />)
       fireEvent.click(screen.getByTestId('sel-approve'))
-      expect(screen.getByTestId('sel-note').textContent).toBe('1 decided. 1 not approved: He posts out on 11 Feb: refuse or delete it. 1 skipped (no bid, or Raptor-owned).')
+      expect(screen.getByTestId('sel-note').textContent).toBe('1 decided. 1 not approved: He posts out on 11 Feb: refuse or delete it. 1 skipped (no bid, or filed on the Inputs page).')
     })
   })
 
