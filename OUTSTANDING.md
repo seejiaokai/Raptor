@@ -90,6 +90,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
 - [LW-PAD-SHOWS-FIGURE] — the Leave War's number pad shows the figure as it is typed in its top line (D1584, 3 Nov 26) — with the next Leave War batch.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -158,7 +159,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
 - [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
-- [TALON-CLAW-PAGES] — the loading claw while any slow page opens, the Leave War and the Tracker among them (D1607): designed and drawn for him first — next.
+- [TALON-CLAW-PAGES] — the loading claw while any slow page opens, the Leave War and the Tracker among them (D1607): one overlay over the page area under the top bar, from the tap, on the Leave War and the Tracker (D1610, D1611) — being built.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
@@ -243,6 +244,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-ZOOM-E2E-SLOW-RUNNER] The Leave War's Ctrl+scroll zoom test runs out of time on a slow GitHub machine (found 3 Nov 26, pull request 627)
+**What:** `raptor-port/e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back, within its limits", in the `lw-desktop` group, takes 12–23 s on main's runs and fails at its 30 s on a machine about twice as slow (`mouse.wheel` waits for each zoom step's redraw of the grid; some twenty steps). On pull request 627 it failed on two of three runs, both attempts each, the group's other tests about twice main's times on those runs; re-run once on a fresh machine (D84) it passed in 12.1 s. Measured on his PC 3 Nov 26: with and without 627's loading claw, at 2x slower, three runs each all pass, the same time; at 4x both fail the same way — not that change. **To do:** make it wait on what it needs (D87) — fewer or bigger zoom steps, or a time budget that names why — and check its phone twin. **Place:** a small fix of the Leave War's next batch, or alone if it blocks a merge again.
 
 ### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
 From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
@@ -686,9 +690,6 @@ On a phone held sideways the pad covers the Required cell being typed, so the fi
 
 ### [PRINT-FLYING-ONLY-ASK] The print and the schedule's spreadsheet carry flying lines only (filed 9 Oct 26 in [ALLAVAIL-CHECK-SEEN]; its own item 3 Nov 26)
 Seen by the ALL AVAIL / Event check (`raptor-port/docs/handpass/2026-10-09-all-avail-event-check.md` §5.3): the printed page and the schedule's CSV carry flying lines only — no Ground Programme row of any kind. Whether they should is his question, put to him with pictures when he raises print or export (D994); `[FLAG-EXPORT]` and `[PDF-PRINT-TWICE]` touch the same pages.
-
-### [TALON-CLAW-PAGES] The loading claw while any slow page opens (3 Nov 26, D1607)
-**His words:** "I'm saying to have this loading page on pages that take longer to load such as the leave war and tracker as shown", then "so not only these pages. any pages that loads slowly" — with his iPhone recording of pull request 626's preview (the menu → Leave War: the area under the top bar blank about half a second, then the page; the same for the Tracker). **To do, in order:** measure how long each page stays blank on his iPhone's speed and a slowed phone (the Leave War, the Tracker, and every other page, so "slower" is measured); find where the blank comes from (a page's code fetched on first visit, or its first drawing holding the page's thread — the claw must be on screen and moving before that starts, and it moves only by sliding and fading, so it keeps going, `docs/ui-contracts.md` §The loading claw); put the design to him with pictures — the claw in the page area under the top bar (recommended), the 0.3 s wait or none, which pages; then build, with the claw's walk script extended (`scripts/handpass/talon-claw-build-frames.mjs`). Never adds to the time a page takes (D1591). **Place:** after pull request 626, its own job; the Leave War's and the Tracker's performance rules apply (`docs/performance.md` §E, the Tracker's chart engine kept out of other visits).
 
 ### [DB-ONE-MASTER-FIXES] What does not read the one table — for the database step (3 Nov 26, D1587, D1589)
 The list and why each: `raptor-port/docs/superpowers/specs/2026-11-03-data-one-master-check.md` §A, A1 and A4–A11 — A1 Quals ticks homed in QualMark alone (and the table plan's §5 people row corrected: it maps from the top-level flags, not what Quals writes); A4 an input's "landed on the Ground Programme" worked out per day, never stored; A5 holidays and Off days a table of their own by date (D638's two doors stand); A6 a posted-out man read from Person (LeavePersonProfile keeps dates and outcome only); A7 a Tracker student linked to the roster shows Person's callsign live; A8 medical documents in the shared file store; A9 a Ground row's `sourceInputId`; A10 the shared "last period opened" setting dropped or per person; A11 SANS quarter "flown" worked out from published days. And D1589: every who-stamp keeps the person's id beside his name as it was. Earned OIL is its own item, [DB-OIL-OWN-TABLE]. **Place:** the Database step (D473).

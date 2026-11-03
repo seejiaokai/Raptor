@@ -1,0 +1,54 @@
+{
+  "label": "claw-pages",
+  "runs": 9,
+  "firstPaintMs": 548,
+  "appReadyMs": 1659,
+  "indexHtmlBytes": 9985,
+  "rows": [
+    {
+      "firstPaint": 556,
+      "ready": 1683,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 556,
+      "ready": 1643,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 572,
+      "ready": 1766,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 488,
+      "ready": 1659,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 548,
+      "ready": 1707,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 500,
+      "ready": 1669,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 548,
+      "ready": 1655,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 480,
+      "ready": 1624,
+      "htmlBytes": 4033
+    },
+    {
+      "firstPaint": 560,
+      "ready": 1625,
+      "htmlBytes": 4033
+    }
+  ]
+}
