@@ -29,6 +29,13 @@ side (844 × 390) and a small phone (320 × 568). Two Sonnet walkers (D588); the
 | F9 | "Calendar…" from a SANS day, 1440 | covers the day's window whole, its ✕ included | B/B7-* |
 | F10 | ALL AVAIL window, phone | a 2–3 px speck of the resize corner (D77: no phone corner); Chromium's own glyph — his iPhone not seen | A/A7-* |
 
+## His answers (3 Nov 26)
+
+Q2 — D1578 (and D1579: earned OIL its own table at the database step). Q1 — D1581: Escape during a carry puts the bar
+back. Q3 — D1582: Undo names the person and kind. Q4 — D1583: (a) left as built, (b) the Highlight list fits the screen;
+D1584: (c) the Leave War's pad shows the figure typed, with the next Leave War batch ([LW-PAD-SHOWS-FIGURE]). Q5 — D1585:
+the Inputs page says nothing about a missing period. F1–F10 stand as fixes, none struck. The batch: [INPUTS-FIXES-1103].
+
 ## Gone
 
 The List's row flashes on Undo / Redo (V1, D729) · the Quals save note's "prototype" · "till <date>" on a one-day input

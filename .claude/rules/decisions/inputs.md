@@ -92,6 +92,10 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1585 | 3 Nov 26 | On the Inputs page the OIL question of a weekend no Leave War period covers says nothing about the missing period: the person filing cannot create one, and the scheduler, who can, is told on the schedule (D19). |
+| D1583 | 3 Nov 26 | On a phone held sideways a window over the Inputs or SANS calendar may cover the month's arrows and gear (it drags away, Undo and Redo stay clear) and is left as built; the SANS calendar's Highlight list fits the screen and scrolls inside itself. |
+| D1582 | 3 Nov 26 | Undo and Redo name the input they take back by its person and kind — "Undid: Drifter's ISR brief", "Undo — Ranger's OL" — and several at once by their count, "Undid: 3 inputs", never "a personal input". |
+| D1581 | 3 Nov 26 | On the Inputs calendar, Escape while a bar is carried puts it back where it was and moves nothing, whatever is done after. |
 | D1578 | 3 Nov 26 | An input filed for a weekend no Leave War period covers asks its OIL question and saves the answer as on any other day, and never creates or offers to create a period; the OIL it earns shows on the Leave War, in his OIL count and as OIL earned, once a period holding that date exists. |
 | D1562 | 2 Nov 26 | On the Inputs and SANS calendars the month's title wears the small cyan ▾ of Jump to a date's title, and a tap on it opens the app's own floating calendar straight on its month and year wheels (design A of 2 Nov 26): the month follows the wheels, a tap outside closes it, and ‹ › and Today stay as they are. |
 | D1560 | 2 Nov 26 | On the Inputs calendar and the SANS calendar a tap on the month's title ("JUL 2027") opens a month-and-year picker like Edit Schedule's "Jump to a date" wheels, so any month of any year is reached in one step; drawn with the design skill and put to him with pictures before it is built. — changed by D1562 |
