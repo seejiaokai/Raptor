@@ -3322,3 +3322,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** (1) In `code-check.mjs read()`, when `baselineDegraded` is set, print `skippedCheckReasons` too (the real cause). (2) A cheap guard: the code check (or the walk-script lint) refuses a changed code file that is not valid UTF-8, naming the file. (3) `docs/walk-scripts.md`: walk scripts are written with the Write tool or a UTF-8 writer — never through a tool that saves in the console's code page.
 
 **Principle:** When a checker gives up, its message must carry the reason the tool itself gave, not a guess at which side failed; a misleading "could not compare" sends the reader to the wrong half of the problem.
+
+### Observation 779: A reader's word for a thing reached the owner without being checked against the app
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** Inputs batch [INPUTS-FIXES-1103] — relaying the security reader's finding; number 779 from this branch's reserved range 776–785.
+**Skill:** internal — the bug-check order's "What to do with what they hand back" (§4), and plain-language.md check 2
+**Type:** internal
+**Phase/Area:** turning a reader's report into words for the owner
+
+**Issue:** The security reader's probe test named a medical kind "MC", which this app does not have (its kinds are HL, OML, ATT C, ATT B). The host carried "MC" into its message to the owner, then translated it as "sick leave"; when the owner asked why "sick leave", the host said "the app calls it an MC" — a second wrong claim. The walk later failed to select "MC" in the kind list, which is how the error surfaced. A hand-made probe works on any string, so the reader's test passed on a kind no screen can make.
+
+**Suggested improvement:** In the order's §4 step 1 ("Reproduce each finding through the real production route"), add: every app noun a reader's finding uses — a kind, a page, a control — is checked against the app's own list (the code's type table, the screen) before it is repeated to the owner; a probe built on a value the app cannot produce is re-run with one it can. The walk helper `fileOn` also assumed an admin's person picker; scripts should be written for the role they sign in as.
+
+**Principle:** A reviewer's vocabulary is evidence about the reviewer, not about the product: check each name against the product before passing it on, or the error is multiplied by every reader downstream.
