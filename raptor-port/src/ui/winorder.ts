@@ -1,5 +1,5 @@
 /* THE FLOATING WINDOWS' OWN STATE — where each was left, and the order they were brought forward in (moved whole out of
-   ui/FloatWindow.tsx on 3 Nov 26, the Inputs batch's React Doctor ride [DOCTOR-INPUTS-RIDE]: a file that draws a component
+   ui/FloatWindow.tsx on 3 Nov 26, the Inputs batch's React Doctor ride: a file that draws a component
    exports only components, so the doors that open a window — the input's own window, the Inputs and SANS settings, the
    SANS day — and the tests that forget every window's place import these from here). Module state, never component
    state, as it always was. */

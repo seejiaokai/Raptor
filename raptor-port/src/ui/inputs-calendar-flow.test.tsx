@@ -15,7 +15,7 @@ import { _resetFloatWins } from './winorder'
 import { INPEDIT, setInpEdit } from './pops'
 import { storeBackend } from '../engine/hooks'
 import { setInpMode } from '../state/view'
-import { InputEditor } from './inputedit'
+import { InputEditor } from './InputWindow'
 import { setPage } from '../state/view'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 let host: HTMLDivElement, root: Root

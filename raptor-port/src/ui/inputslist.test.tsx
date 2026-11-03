@@ -14,7 +14,7 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { InputsPage } from './InputsPage'
-import { InputEditor } from './inputedit'
+import { InputEditor } from './InputWindow'
 import { initStore, notify, setSession, writeInputs } from '../state/store'
 import { setInpMode, setInpView, setPage } from '../state/view'
 import { setMe } from '../state/auth'
@@ -361,6 +361,9 @@ describe('a just-saved input the filters would hide still shows — on a phone, 
     expect(card(hidden), 'the search hides it').toBeNull()
     /* opened and saved through the window: the save reveals it (ui/inputedit.tsx revealInput) */
     await act(async () => { setInpEdit(hidden); notify() })
+    /* a save that saves something (F1 of the 3 Nov 26 re-check: Save with nothing changed changes nothing and closes) */
+    { const rmk: any = document.querySelector('#inpEditRmk')
+      await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'elsewhere too'); rmk.dispatchEvent(new Event('input', { bubbles: true })) }) }
     await click($('#inpEditSave'))
     const order = $$('[data-testid="inl-day"], [data-testid^="inl-row-"]').map(el => el.getAttribute('data-testid') === 'inl-day' ? el.querySelector('b')!.textContent : el.getAttribute('data-iid'))
     expect(order[0]).toBe('Mon 26 Oct'); expect(order[1]).toBe(hidden.iid)
@@ -379,6 +382,9 @@ describe('a just-saved input the filters would hide still shows — on a phone, 
     const hidden = await file({ person: c, date: 'Oct 20', s: 900, e: 960, remarks: 'elsewhere' })
     expect(card(hidden), 'the search hides it').toBeNull()
     await act(async () => { setInpEdit(hidden); notify() })
+    /* a save that saves something (F1 of the 3 Nov 26 re-check: Save with nothing changed changes nothing and closes) */
+    { const rmk: any = document.querySelector('#inpEditRmk')
+      await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'saved again'); rmk.dispatchEvent(new Event('input', { bubbles: true })) }) }
     await click($('#inpEditSave'))
     const heads = $$('[data-testid="inl-day"]').map(h => [h.querySelector('b')!.textContent, h.querySelector('i')!.textContent])
     expect(heads).toEqual([['Tue 20 Oct', '2 inputs'], ['Mon 19 Oct', '1 input']])

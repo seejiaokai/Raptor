@@ -17,7 +17,7 @@ import { initStore, notify, setSession } from '../state/store'
 import { setMe } from '../state/auth'
 import { INPUTS, inpId } from '../engine/inputs'
 import { initCalDrag } from './caldrag'
-import { InputEditor } from './inputedit'
+import { InputEditor } from './InputWindow'
 import { setInpEdit } from './pops'
 
 const ISNAP = JSON.stringify(INPUTS)

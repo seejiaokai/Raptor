@@ -106,6 +106,8 @@ const WRITERS: Record<string, string> = {
   'leavewar/sync.ts': 'MIXED — the war\'s approve-extend, cutDates and moves WRITE; the absence index (refreshAbsences, restoreAbsencesOf), the ALL AVAIL crowd (availableFor) and "has he a past here" (pastOnWar) read LINES; the bell\'s OIL question (oilPendingFor) reads the record — it also answers for an input filed for ALL AVAIL, which has no line',
   'probe-bridge.ts': 'the test bridge files a raw row',
   'ui/inputedit.tsx': 'every save, delete and reassign of an input',
+  /* the input's own window, moved out of inputedit.tsx (3 Nov 26, [DOCTOR-INPUTS-RIDE]): its OIL answer and the refound record write */
+  'ui/InputWindow.tsx': 'the input\'s own window — its saves (through inputedit.tsx) and the OIL answer it writes alone',
   'ui/InputsPage.tsx': 'MIXED — the List\'s add and delete WRITE; which deleted men still have an input (DeletedGroup) reads LINES',
 }
 
