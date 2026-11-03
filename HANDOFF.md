@@ -26,10 +26,10 @@ the later merge keeps both (D78).
 - **What happened:** a swipeable feel mock-up of real pictures (published to him privately — https://claude.ai/artifact/Ng6jUyvWE29Y5N1LJMQLXf); he chose the full-day end card (D1574), had a 12 px jump at Monday's load fixed from his recording (D1575), kept the desktop as it is (D1576); the plan was written and read by a fresh Opus reader (eleven findings folded in, cost three to four days); he then kept the cross as built (D1577, replacing the three) and the item is archived, closed unbuilt. Kept for a return: the mock-up `raptor-port/docs/img/handpass/2026-11-03-week-cross-end-cards/`, its scripts `raptor-port/scripts/handpass/ws-endcards-mock.mjs` and `ws-endcards-desktop-pic.mjs`, the plan `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`.
 - **Filed from his questions:** [ONE-LIVE-WEEK-WEIGH] (whether the app should hold several weeks at once — weighed at the database step; recommended keep) and [DB-WEEK-AHEAD] (fetch the neighbouring weeks ahead at the database step so a cross never waits on the network). One walk trap written to `raptor-port/docs/walk-scripts.md` §4 (a CDP finger in headless Chromium never ends a native scroll); skill log observation 773.
 - **Unfinished:** nothing of the job. Nothing in `raptor-port/src` changed.
-- **Branch:** `claude/week-cross-end-cards`; its pull request carries notes, the mock-up and two picture scripts — not notes-only (the scripts and the skill log), so it waits for his "merge live".
+- **Branch:** `claude/week-cross-end-cards`; pull request 623 (notes, the mock-up, two picture scripts) — merging on his "merge live" of 3 Nov 26 when written; check before acting. The next chat starts a new job on a fresh branch level with `origin/main`. Its first run failed one Leave War unit test that fails now and then — cause proven, filed as [LW-B8-STAMP-FLAKE], not fixed inside this merge (D1088).
 - **Note:** the scheduler rulings file (`.claude/rules/decisions/scheduler.md`) sits close to its size tripwire — a later ruling there may need the area split or the tripwire raised with its reason, never a trim.
 - **Running when written:** nothing.
-- **Pick up here:** his "merge live" for this pull request; then a new job from `## Next, in order`.
+- **Pick up here:** a new job from `## Next, in order` — [LW-B8-STAMP-FLAKE] is a quick one if wanted.
 <!-- /now -->
 ## Next, in order
 
