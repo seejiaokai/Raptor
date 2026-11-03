@@ -3307,3 +3307,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In session-handoff, where two chats are to run side by side: the second opening line creates its own folder (`git worktree add ../<repo>-<name> <branch>`, a short path beside the repository, never under a temp or scratchpad folder) and works only there; and every chat checks `git branch --show-current` against its own branch before each commit.
 
 **Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.
+
+### Observation 778: A walk script saved in a Windows encoding blinds the code check, and its message blames main
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** Inputs batch [INPUTS-FIXES-1103] — reading GitHub's run after main was merged in; number 778 from this branch's reserved range 776–785.
+**Skill:** internal — the code check (`raptor-port/scripts/code-check.mjs`) and `docs/walk-scripts.md`
+**Type:** internal
+**Phase/Area:** the code check's failure message; how walkers write scripts
+
+**Issue:** A walker's script carried one em dash in Windows-1252 (byte 0x97). React Doctor's linter refused the file ("stream did not contain valid UTF-8"), skipped the whole lint, and marked the comparison degraded. The code check reported only "could not read origin/main's side, so it compared nothing" — pointing at main, when the unreadable file was on the branch. It looked like a GitHub or merge problem; finding the cause took reading React Doctor's raw report (`projects[].skippedCheckReasons.lint`).
+
+**Suggested improvement:** (1) In `code-check.mjs read()`, when `baselineDegraded` is set, print `skippedCheckReasons` too (the real cause). (2) A cheap guard: the code check (or the walk-script lint) refuses a changed code file that is not valid UTF-8, naming the file. (3) `docs/walk-scripts.md`: walk scripts are written with the Write tool or a UTF-8 writer — never through a tool that saves in the console's code page.
+
+**Principle:** When a checker gives up, its message must carry the reason the tool itself gave, not a guess at which side failed; a misleading "could not compare" sends the reader to the wrong half of the problem.
