@@ -28,7 +28,8 @@ the later merge keeps both (D78).
 - **Unfinished:** everything of the build. Waiting on him: the desktop answer, then the plan (how a full day of the other week is drawn ahead without slowing a week's load, its cost, the FULL check), then the build. Nothing in `raptor-port/src` changed.
 - **Branch:** `claude/week-cross-end-cards`, cut from `main` at the merge of pull request 622; no pull request yet (it opens when the build starts — D1086).
 - **Running when written:** this chat's preview on port 4237 and a picture server on 4239 (both stopped at the end).
-- **Pick up here:** his desktop answer, then the build plan put to him before any code.
+- **Note:** the scheduler rulings file (`.claude/rules/decisions/scheduler.md`) now sits within 16 bytes of its size tripwire — the next ruling there needs the area split or the tripwire raised with its reason (the document check says how), never a trim.
+- **Pick up here:** the build plan (`raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md`), its fresh read, then his approval before any code. The desktop answered: stays as it is (D1576).
 <!-- /now -->
 ## Next, in order
 
