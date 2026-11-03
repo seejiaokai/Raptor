@@ -36,7 +36,8 @@ import { PEOPLE } from '../engine/people'
 import { HOOKS, storeBackend } from '../engine/hooks'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
-import { FloatWin, _resetFloatWins } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

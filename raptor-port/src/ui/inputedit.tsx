@@ -12,7 +12,8 @@
    `till` remarks tail, the pins and the flashes. Those belong to a page that
    is a list; the dialog is a single row, opened from a day. */
 import { cxOf, cxWhy, cxSays } from './inputcard-model'
-import { FloatWin, bringForward } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { bringForward } from './winorder'
 import { frontWin, holdPageScroll } from './floatwin'
 import { placedLine, placedLineOf } from './placedline'
 import { PeoplePick, PlaceholderGroup, pickProblem } from './PeoplePick'

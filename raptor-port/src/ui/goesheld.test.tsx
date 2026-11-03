@@ -32,7 +32,7 @@ import { accCtl } from './html'
 import { routeClick } from './interactions'
 import { boardMbtn } from './board'
 import { setInpEdit } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

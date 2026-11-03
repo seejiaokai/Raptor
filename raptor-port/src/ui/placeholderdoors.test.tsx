@@ -47,7 +47,7 @@ import { HIST } from '../state/history'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { oilPendingFor } from '../leavewar/sync'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

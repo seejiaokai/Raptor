@@ -14,7 +14,8 @@ import { useState } from 'react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { DateBox } from './DateBox'
-import { FloatWin, _resetFloatWins } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { boxValue, calMonth, pickDate } from './datecal-testkit'
 
 beforeEach(() => {

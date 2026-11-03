@@ -12,7 +12,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react'
 import { useState } from 'react'
-import { FloatWin, _resetFloatWins, bringForward } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { _resetFloatWins, bringForward } from './winorder'
 import { frontWin } from './floatwin'
 
 afterEach(() => { cleanup(); _resetFloatWins() })

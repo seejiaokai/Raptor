@@ -49,43 +49,12 @@
    so the bar is dragged by it as by the title. The title then takes only the room its words need and the mark what is
    left, so a long reason is cut short before the title is (22-float-windows.css `.has-mark`). */
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
-import { frontWin, holdPageScroll, phoneLayout, raiseWin, useFloatWin, type FloatBox } from './floatwin'
+import { frontWin, holdPageScroll, phoneLayout, useFloatWin } from './floatwin'
+import { forward, gone, winBox, setWinBox, takeBeside } from './winorder'
 import { putBack, refit } from './kbscroll'
 import { useVersion } from './useStore'
 import { notify } from '../state/store'
 import { placeToast } from './toast'
-
-/* where he left each window, by its id — module state, never component state: the page behind re-renders on every
-   keystroke, and component state would throw a window back to its corner mid-drag (floatwin.ts) */
-const BOXES = new Map<string, FloatBox | null>()
-/** test-only: forget every window's place and which was in front */
-// eslint-disable-next-line react-doctor/only-export-components -- the windows' remembered places and their in-front order are this module's own state, read by every window it draws; moved to a file of their own, the doors that call this (the input's own window, the Inputs and SANS settings, the SANS day) and some forty tests would change with it — the Inputs batch's files, whose findings ride with that batch (D490), so it moves then
-export function _resetFloatWins(): void { BOXES.clear(); UP.length = 0; raiseWin('') }
-
-/* THE WINDOWS THAT ARE UP, in the order they were last brought forward - so that when the front one closes, the one
-   left is in front. "In front" (ui/floatwin.ts) is one remembered name; a closing window used to leave it behind, so
-   NO window on screen was in front: none wore the mark, and Escape did nothing until one was pressed (the calendar
-   job's bug check, 8 Oct 26). The input editor asks the same question before it takes an Escape (ui/inputedit.tsx). */
-const UP: string[] = []
-function forward(id: string): boolean {
-  const i = UP.indexOf(id)
-  if (i >= 0) UP.splice(i, 1)
-  UP.push(id)
-  return raiseWin(id)
-}
-/** A DOOR THAT OPENS A WINDOW BRINGS IT FORWARD WHEN IT IS ALREADY UP. Opening sets a flag; a window that is up does
- *  not mount again, so nothing raised it: "Calendar..." pressed in a settings window left the Calendar window BEHIND
- *  the settings window that asked for it (the calendar job's bug check, 8 Oct 26 - walker G). A window that is not up
- *  is never named in front. */
-// eslint-disable-next-line react-doctor/only-export-components -- the windows' remembered places and their in-front order are this module's own state, read by every window it draws; moved to a file of their own, the doors that call this (the input's own window, the Inputs and SANS settings, the SANS day) and some forty tests would change with it — the Inputs batch's files, whose findings ride with that batch (D490), so it moves then
-export function bringForward(id: string): void {
-  if (UP.includes(id) && forward(id)) notify()
-}
-function gone(id: string): boolean {
-  const i = UP.indexOf(id)
-  if (i >= 0) UP.splice(i, 1)
-  return frontWin() === id && raiseWin(UP[UP.length - 1] || '')
-}
 
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
@@ -116,8 +85,8 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   const [, placed] = useState(0)
   const { el, onBarDown, onBarMove, onBarUp } = useFloatWin({
     open: true,
-    getBox: () => BOXES.get(id) ?? null,
-    setBox: b => { BOXES.set(id, b); placed(n => n + 1) },
+    getBox: () => winBox(id),
+    setBox: b => { setWinBox(id, b); placed(n => n + 1) },
     deps: [id],
     closeSel: '.win-x, .win-tools',
   })
@@ -133,9 +102,31 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
     const n = el.current
     if (!n) return
     n.style.width = ''; n.style.height = ''
-    const b = BOXES.get(id)
+    const b = winBox(id)
     if (b && !b.phone && !phoneLayout()) n.style.maxHeight = Math.max(160, window.innerHeight - n.getBoundingClientRect().top - 8) + 'px'
+    /* …AND ON A PHONE TOO, ONCE DRAGGED (F5 of the 3 Nov 26 re-check): a dragged window keeps only its top there, so it lost
+       its foot and took its whole height — the Calendar window on a 320 × 568 phone grew from 508 to 653, dragged low and
+       back, its last week under the screen's foot. It is capped at the room under its top, as a desktop's placed window
+       is; its body scrolls. Not a panel with two rest heights — its own pull sets those. */
+    else if (b && b.phone && phoneLayout() && !rests) n.style.maxHeight = Math.max(160, window.innerHeight - n.getBoundingClientRect().top - 6) + 'px'
   })
+
+  /* OPENED BESIDE ANOTHER WINDOW (F9 of the 3 Nov 26 re-check — winorder.ts openBeside): asked for by a door in that window,
+     and with no place of his yet, this one opens to the LEFT of it, its top where the stylesheet puts it, so neither covers
+     the other; where that would run off the screen's left edge it opens at its own corner, as before. A desktop's alone.
+     Its place is then remembered as any window's is; its size stays the content's (above). */
+  useLayoutEffect(() => {
+    const by = takeBeside(id), n = el.current
+    if (!by || !n || phoneLayout() || winBox(id)) return
+    const other = document.querySelector(`.floatwin[data-winid="${by}"]`)
+    if (!other) return
+    const a = other.getBoundingClientRect(), r = n.getBoundingClientRect()
+    const x = Math.round(a.left - r.width - 12)
+    if (x < 8) return
+    setWinBox(id, { x, y: Math.round(r.top), w: Math.round(r.width), h: Math.round(r.height), phone: false })
+    placed(k => k + 1)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once, as the window opens: the request is taken and gone
+  }, [])
 
   /* THE PHONE PANEL'S TWO HEIGHTS. While a finger holds the bar the panel's top follows it, written straight onto the
      element (no re-render per frame, as a window's drag is); let go, the inline styles are taken away and the
@@ -256,6 +247,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       aria-label={title}
       tabIndex={-1}
       data-testid={testid}
+      data-winid={id}
       onPointerDownCapture={() => { if (forward(id)) notify() }}
     >
       <div className={'win-bar' + (mark ? ' has-mark' : '')} {...bar}>

@@ -26,7 +26,7 @@ import { initStore as lwInitStore, getState, rawState, setCell, setPeople, setRo
 import { projectPeople } from '../leavewar/state/raptorRoster'
 import { memoryBackend } from '../leavewar/state/storage'
 import { wireLeaveWarSync } from '../leavewar/sync'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { INPEDIT, MEDMOVE, setInpEdit, setMedMove } from './pops'
 import { docAdd } from '../state/docs'
 import { gateCuts, setInputGate } from '../state/inputgate-hook'

@@ -24,7 +24,7 @@ import { setFlyDays } from '../state/flyplan'
 import { PLANPUCKS, addPlanPuck } from '../state/plan'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { INPEDIT, setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

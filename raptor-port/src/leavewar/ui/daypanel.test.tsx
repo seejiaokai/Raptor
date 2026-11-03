@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { closeDates, initStore, setCell, setCellRange, setRole, setViewer } from '../state/store'
 import { memoryBackend } from '../state/storage'
-import { _resetFloatWins } from '../../ui/FloatWindow'
+import { _resetFloatWins } from '../../ui/winorder'
 import { Matrix } from './Matrix'
 import { closeDayPanel, dayPanelDate, openDayPanel } from './daypanelopen'
 

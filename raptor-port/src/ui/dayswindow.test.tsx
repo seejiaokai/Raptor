@@ -26,7 +26,7 @@ import { memoryBackend } from '../leavewar/state/storage'
 import { flyAnswer } from '../leavewar/sync'
 import { DAYSWIN, POPS_RESET, setDaysWin } from './pops'
 import { notify } from '../state/store'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { DaysWindow } from './DaysWindow'
 
 const mem = new Map<string, string>()

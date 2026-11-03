@@ -25,7 +25,7 @@ import { HOOKS, storeBackend } from '../engine/hooks'
 import { docAdd } from '../state/docs'
 import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { DOCVIEW, setDocView, setInpEdit } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

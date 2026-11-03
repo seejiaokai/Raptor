@@ -26,7 +26,7 @@ import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { flyAnswer, holidayAdd } from '../leavewar/sync'
 import { INPEDIT, SANSSET, setDaysWin, setInpEdit, setSansSet } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { SansCal } from './SansCal'
 
 const mem = new Map<string, string>()
@@ -335,6 +335,25 @@ describe('picking several days with the pointer', () => {
    to"; D626: no second chooser for F, O or A — the ring, and the letters he offered underlined; D647 / D649: the list
    shows each man as his puck with his CAT). A way of LOOKING: nothing is hidden, no count changes, nothing is saved. */
 describe('Highlight', () => {
+  /* D1583 (b) (owner, 3 Nov 26): on a phone held sideways the list ran past the screen's foot as it opened; it is held to
+     the room under its top and scrolls inside itself. jsdom draws nothing: the list's box is given here. */
+  it('opens no taller than the room under it, on a short screen (D1583)', () => {
+    show()
+    const was = Object.getOwnPropertyDescriptor(window, 'innerHeight')
+    Object.defineProperty(window, 'innerHeight', { value: 390, configurable: true })
+    const real = Element.prototype.getBoundingClientRect
+    Element.prototype.getBoundingClientRect = function (this: Element) {
+      if ((this as HTMLElement).dataset?.testid === 'sc-hl-menu') return { top: 253, bottom: 487, height: 234, left: 0, right: 250, width: 250, x: 0, y: 253, toJSON() {} } as DOMRect
+      return real.call(this)
+    }
+    try {
+      fireEvent.click(t('sc-hl'))
+      expect((t('sc-hl-menu') as HTMLElement).style.maxHeight, 'held to the screen: 390 − 253 − 8').toBe('129px')
+    } finally {
+      Element.prototype.getBoundingClientRect = real
+      if (was) Object.defineProperty(window, 'innerHeight', was)
+    }
+  })
   const pick = (id: string | null) => {
     fireEvent.click(t('sc-hl'))
     fireEvent.click(t(id ? 'sc-hl-' + id : 'sc-hl-none'))
