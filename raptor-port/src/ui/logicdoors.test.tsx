@@ -16,7 +16,7 @@ import { storeBackend } from '../engine/hooks'
 import { VCONF, rulesResetMem } from '../engine/rules'
 import { membersFileOn } from '../state/perms'
 import { setMembersFile } from '../state/memberfile'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { setInpSet, setSansSet } from './pops'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

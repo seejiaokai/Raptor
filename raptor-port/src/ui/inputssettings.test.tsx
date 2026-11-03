@@ -27,7 +27,7 @@ import { setCalMonth } from '../state/view'
 import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { DAYSWIN, INPSET, POPS_RESET, setDaysWin, setInpSet } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { InputsSettings } from './InputsSettings'
 
 const mem = new Map<string, string>()

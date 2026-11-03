@@ -193,25 +193,34 @@ export function toggleHlGroup(g:any){ HLGROUP = HLGROUP===g ? '' : g }
    live Personal-Inputs and Unavailable rows always draw the chip on a late
    input — solid while the mark shows, a dim ghost once dropped — so the dropped
    state stays reachable; the week, the view-only programme and a read-only
-   board show the amber badge only while the id is NOT in this set. The Inputs
+   board show the amber badge only while the mark is not dropped. The Inputs
    page keeps its own — that page is the paperwork record of what came in late
    (owner, 20 Aug 26), and reads `isLateInput` straight.
 
    ADMIN at the write path, like every other write in this app: a member must
-   not clear the mark on their own late input, or anyone's. Session-scoped and
-   not persisted, like HISTMODE and the Available-crew folds — the set is
-   cleared on every login/logout by resetSession, so a next user never inherits
-   a board with marks quietly dropped. If "we run no deadline" should stick,
-   that is the same server work as the rest of HANDOFF's list. */
-export const LATEOFF=new Set<string>()
-export function lateShown(inp:any){ return !!inp && !LATEOFF.has(inpId(inp)) }
-/* returns the NEW shown-state (true = the mark is back on), or false when a
-   member is refused — the caller toasts either way. */
-export function toggleLateOff(inp:any){
+   not clear the mark on their own late input, or anyone's.
+
+   SAVED ON THE INPUT, FOR EVERYONE (owner D1586, 3 Nov 26 — "everyone, so the whole squadron sees one answer"). It was
+   a session-only set here, cleared on a sign-in and a week change — the agent's reading of his ask, never his words.
+   Now the drop is the input's own `lateOff`, written by its own command (`inputs.lateOff`, ui/interactions.ts), so every
+   scheduler and member sees the mark gone, after a reload, a sign-out and a week change, and Undo takes it back. A MARK,
+   NOT A CHANGE OF THE INPUT: it stamps no change time (the LATE rule measures the input's last change, which this is
+   not), it is no field the published-day comparison reads (engine/inputs.ts inpDetailKey), and it is read from the LIVE
+   record by id — so the issued face's frozen copy of the input (engine/publish.ts dayInputsFrozen) drops the mark the
+   moment a scheduler does, as it did when this was a set. */
+export function lateShown(inp:any){
+  if(!inp) return false
+  const id=inp.iid
+  const live=id?(INPUTS as any[]).find((r:any)=>r&&r.iid===id):null
+  return !(live||inp).lateOff
+}
+/* the write, inside the caller's command: the live record by id gets the mark or loses it. False for a member. */
+export function setLateOff(inp:any, off:boolean){
   if(!canEditSched()) return false
   const id=inpId(inp)
-  if(LATEOFF.has(id)){ LATEOFF.delete(id); return true }
-  LATEOFF.add(id); return false
+  const live:any=(INPUTS as any[]).find((r:any)=>r&&inpId(r)===id)||inp
+  if(off) live.lateOff=true; else delete live.lateOff
+  return true
 }
 
 /* ---- THE STORES FREE-TEXT BOX THAT JUST SAVED ----------------------------
@@ -875,9 +884,10 @@ export function togglePInputs(di:any){ if(PIOPEN.has(+di))PIOPEN.delete(+di); el
    for that view as person. I'll add next time when this will be triggered").
    The bell in the top bar glows when the CURRENT page + view-as person has an
    alert. What SETS a bell is deliberately left for the owner to wire; this is
-   the seam the shell needs now — a session-only registry keyed by page|person,
-   the LATEOFF precedent (cleared on login/logout by resetSession, never
-   persisted, never in a snapshot). A future trigger calls markBell(page,who);
+   the seam the shell needs now — a session-only registry keyed by page|person
+   (cleared on login/logout by resetSession, never persisted, never in a
+   snapshot; the LATE marks' old session-only set it once followed is gone —
+   a dropped mark is saved on the input since D1586). A future trigger calls markBell(page,who);
    the bell reads bellLit() for the view it is drawn in and clearBell() drops it
    when the reader acknowledges it. */
 export const BELLLIT=new Set<string>()
@@ -928,12 +938,37 @@ HOOKS.setDayHides=(di:number,keys:string[])=>{
    OFF (default): the block is scheduler-side only, header "Scheduler notes". ON:
    it also renders on the view-only week under the header "Notes", and the edit
    week + board header read "Public notes". It is a display CHOICE, not schedule
-   data, so it stays a session-only view set on the LATEOFF precedent: admin-gated
-   at the write path, cleared on a session/week change, never persisted, never in
-   a history snapshot (unlike a mute, this one the owner did not ask to undo). */
-export const NOTEPUB=new Set<string>()
-export function notePub(key:any){ return NOTEPUB.has(String(key)) }
-export function toggleNotePub(key:any){ if(!canEditSched())return false; const k=String(key); if(NOTEPUB.has(k)){NOTEPUB.delete(k);return false} NOTEPUB.add(k); return true }
+   data, so it stayed a session-only view set: admin-gated at the write path,
+   cleared on a session/week change, never persisted, never in a history snapshot.
+
+   SAVED WITH THE NOTE, SHARED, SINCE D1588 (owner, 3 Nov 26): the choice is the DAY's own `npub` — the list of its note
+   blocks made public ('pn', 'dtn', 'sn', 'gn') — so every scheduler and member sees the same, after a reload, a sign-out
+   and a week change, and Undo takes it back. Being the day's, it rides the issued copy like the note's words: the
+   view-only schedule draws the note as the day WENT OUT, and on a day already published a choice made since waits for
+   the next amendment like any other change there (D1592) — the comparison folds it into the note's own address
+   (engine/restore.ts dayKeys), so the note reads pending. `d` is the day being drawn (the issued copy on the issued
+   face); omitted, the working copy. */
+const NOTE_BLOCKS=['pn','dtn','sn','gn']
+const notePubParts=(key:any)=>{ const s=String(key), i=s.lastIndexOf(':'); return { blk:s.slice(0,i), di:+s.slice(i+1) } }
+export function notePub(key:any,d?:any){
+  const { blk, di }=notePubParts(key)
+  const day:any=d||DAYS[di]
+  return !!day && Array.isArray(day.npub) && day.npub.includes(blk)
+}
+/* the write, inside the caller's command: returns whether the note is public afterwards (false for a member, or a key
+   that names no note block of a loaded day) */
+export function toggleNotePub(key:any){
+  if(!canEditSched())return false
+  const { blk, di }=notePubParts(key)
+  const day:any=DAYS[di]
+  if(!day||!NOTE_BLOCKS.includes(blk))return false
+  const was=Array.isArray(day.npub)&&day.npub.includes(blk)
+  const next=(Array.isArray(day.npub)?day.npub:[]).filter((b:any)=>b!==blk)
+  if(!was)next.push(blk)
+  next.sort((a:any,b:any)=>NOTE_BLOCKS.indexOf(a)-NOTE_BLOCKS.indexOf(b))
+  if(next.length)day.npub=next; else delete day.npub
+  return !was
+}
 
 /* ---- THE SESSION-STATE RESET REGISTRY (ARCH-STACK 1b, RC6/ARCH-06) ---------
    The transient view-state above is cleared in TWO places — resetSession (a
@@ -970,10 +1005,8 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'VWORK',   scopes:['session','week'], reset:()=>VWORK.clear() },
   { name:'AVSHUT',  scopes:['session','week'], reset:()=>AVSHUT.clear() },
   { name:'PIOPEN',  scopes:['session','week'], reset:()=>PIOPEN.clear() },
-  { name:'LATEOFF', scopes:['session','week'], reset:()=>LATEOFF.clear() },
   { name:'BELLLIT', scopes:['session','week'], reset:()=>BELLLIT.clear() },
   { name:'WARNOFF', scopes:['week'], reset:()=>WARNOFF.clear() },
-  { name:'NOTEPUB', scopes:['session','week'], reset:()=>NOTEPUB.clear() },
   { name:'HISTMODE',scopes:['session','week'], reset:()=>setHistMode(false) },
   { name:'CARRYDAY',scopes:['session','week'], reset:()=>setCarryDay(null) },
   /* session-only: the Inputs-page view and the highlight-strip fold are page

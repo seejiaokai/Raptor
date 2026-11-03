@@ -1,0 +1,23 @@
+NOTE S18.1 desktop — opened from the List's + Input: {"read":"pick a start date","marks":"12:- 13:is-today, today 14:- 15:- 16:- 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+NOTE S18.1 desktop — July shown: {"read":"pick a start date","marks":"12:- 13:is-today, today 14:- 15:- 16:- 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+PASS S18.1 desktop Save with nothing picked is refused with "Pick a start date…" and nothing is saved — saw {"toast":"Pick a start date on the calendar first","saved":0,"windowOpen":1}
+NOTE S18.1 desktop — tap 14 first: {"read":"Jul 14","marks":"12:- 13:is-today, today 14:is-sel, picked 15:- 16:- 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+PASS S18.1 desktop first tap sets the start (line reads Jul 14) — saw "Jul 14"
+NOTE S18.2 desktop — tap 14 again: {"read":"Jul 14","marks":"12:- 13:is-today, today 14:is-sel, picked 15:- 16:- 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+PASS S18.2 desktop a tap on the same day stays 14, still waiting (line reads Jul 14 only) — saw "Jul 14"
+PASS S18.2 desktop then a tap on 16 gives 14 → 16 — saw "Jul 14 → Jul 16"
+NOTE S18.2 desktop — after 14, 14, 16: {"read":"Jul 14 → Jul 16","marks":"12:- 13:is-today, today 14:is-sel.is-in.is-from, picked 15:is-in 16:is-sel.is-in.is-to, picked 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+PASS S18.3 desktop finished range 14→16, a tap on 14: a new start 14 — saw "Jul 14"
+PASS S18.3 desktop finished 14→16, a tap on 18: a new start 18 (not 14→18) — saw "Jul 18"
+NOTE S18.3 desktop — 16, 17 -> finished 16→17: "Jul 16 → Jul 17"
+PASS S18.3 desktop finished 16→17, a tap on the earlier 13: a new start 13 — saw "Jul 13"
+PASS S18.2 desktop start 15 waiting, a tap on the earlier 13: a new start 13, waiting — saw "Jul 13"
+NOTE S18.2 desktop — 13 then 14: "Jul 13 → Jul 14"
+NOTE S18.2 desktop — Save with 14 waiting (read "Jul 14"): INPUTS 52 -> 53; the new record: [{"iid":"imw0iq30qfnhc8x","type":"OL","date":"Jul 14","people":["stiff"]}]
+NOTE S18.4 desktop — existing one-day input opened: {"read":"Jul 14","marks":"12:- 13:is-today, today 14:is-sel, picked 15:- 16:- 17:- 18:-","rootCls":"dcal","month":"2026-07"}
+PASS S18.4 desktop a tap on its own day stays 14 — saw "Jul 14"
+NOTE S18.4 desktop — tap 14 then 16 on an existing one-day input (record's own table row: extends 14→16): "Jul 14 → Jul 16"
+PASS S18.4 desktop Save with nothing changed closes the window and stamps nothing — saw {"closed":true,"before":{"mod":"2026-11-03","modBy":"stiff","modAt":1793700094922},"after":{"mod":"2026-11-03","modBy":"stiff","modAt":1793700094922}}
+NOTE S18.6 desktop — window waiting (14 picked) "Jul 14"; the date 24 Jul behind: {"box":[564,625,137,132],"top":"the date 2026-07-24"}
+NOTE S18.6 desktop — after the tap behind: window line "Jul 14"; page dates lit before ["2026-07-14:ib-day is-open"] after ["2026-07-24:ib-day is-open"]; windows open: win-inputsday,win-inputsday-x,win-inputedit,win-inputedit-x; records 53 -> 53; the day window behind now reads: "⠿Fri 24 Jul+ Note✕+ Input1 inputLATENo d"
+PASS S18.5 desktop the dates of the List: a tap on 14 then 14 again is the one day 14 — saw "14 Jul → 14 Jul"

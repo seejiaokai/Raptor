@@ -28,7 +28,8 @@ import { cutProblem, getCut, saveCut } from '../state/cutoff'
 import { setMembersFile, type SwitchSave } from '../state/memberfile'
 import { CALMONTH } from '../state/view'
 import { CutFields, cutDraftOf, cutRuleOf } from './CutFields'
-import { FloatWin, bringForward } from './FloatWindow'
+import { FloatWin } from './FloatWindow'
+import { bringForward, openBeside } from './winorder'
 import { INPSET, setDaysWin, setInpSet } from './pops'
 import { useVersion } from './useStore'
 
@@ -62,6 +63,8 @@ function Body() {
   }
   const openDays = () => {
     const now = new Date(), m = CALMONTH || { y: now.getFullYear(), m: now.getMonth() + 1 }
+    /* beside this window, never over it (F9's rule, met at every Calendar door — the bug check of 3 Nov 26, W1 S21.3f) */
+    openBeside('days', 'inputsset')
     setDaysWin(`${m.y}-${String(m.m).padStart(2, '0')}-01`); notify(); bringForward('days')
   }
 

@@ -54,7 +54,7 @@ records, permissions or persistence — and **never another static review when w
 someone running the app.** That last one has a name now: review pile-on.
 **Who they are now (D590, 5 Oct 26):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
 required; Fable is on call only (a bug Opus cannot crack, or a big open-ended plan, on his word). What Codex wrote, Opus reads.
-**While the ChatGPT readers are out (D790, 13 Oct 26 — "Yes option 2"):** every job that needs a code read gets a FRESH, blind
+**While the ChatGPT readers are out (D790, 13 Oct 26 — "Yes option 2"; still out — D1594, 3 Nov 26, replacing D1593 of the same day: a Codex sign-in that answers is not his subscription; Codex is not called until he says it is back):** every job that needs a code read gets a FRESH, blind
 Opus read of its finished code (never by the chat that wrote it). **Fable is used for nothing unless he calls for it (D903,
 15 Oct 26 — "don't include fable in anything anymore unless I call for it")** — the riskiest changes get the Opus read alone.
 

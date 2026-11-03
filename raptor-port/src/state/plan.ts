@@ -221,7 +221,7 @@ export function movePlanSection(id: string, beforeId: string | null) {
 }
 
 /* the session-reset hook (state/store.ts's resetSession) — NOT a user verb,
-   so it carries no canEditSched gate, the same as view.ts's LATEOFF/WARNOFF
+   so it carries no canEditSched gate, the same as view.ts's WARNOFF
    clears there. Both stores are emptied IN PLACE (length=0 / delete each
    key) rather than reassigned: ESM cannot reassign an exported binding from
    outside its own module, and every reader (history.ts, the calendar UI)

@@ -50,6 +50,7 @@ import { useMedia } from './usemedia'
 import { MonthJump } from './MonthJump'
 import { useVersion } from './useStore'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
+import { frontWin } from './floatwin'
 
 /** "1–2", "3–4", "5+" — the three colours' ranges, from the figures as set */
 const span = (from: number, below?: number): string => below === undefined ? `${from}+` : below - 1 <= from ? String(from) : `${from}–${below - 1}`
@@ -74,6 +75,17 @@ function Highlight({ people, hi }: { people: string[]; hi: string | null }) {
   const [open, setOpen] = useState(false)
   const wrap = useRef<HTMLDivElement>(null)
   const btn = useRef<HTMLButtonElement>(null)
+  const menu = useRef<HTMLDivElement>(null)
+  /* THE LIST FITS THE SCREEN AND SCROLLS INSIDE ITSELF (owner D1583 (b), 3 Nov 26): on a phone held sideways it ran past the
+     screen's foot as it opened (390 high, the list's foot at 487), reached only by scrolling the page. As it opens it is
+     held to the room under its top; the stylesheet's own cap stays the larger limit. */
+  useLayoutEffect(() => {
+    const n = menu.current
+    if (!open || !n) return
+    n.style.maxHeight = ''
+    const room = Math.floor(window.innerHeight - n.getBoundingClientRect().top - 8)
+    if (room > 0 && n.getBoundingClientRect().height > room) n.style.maxHeight = Math.max(120, room) + 'px'
+  }, [open])
   useEffect(() => {
     if (!open) return
     const outside = (e: PointerEvent) => { if (!wrap.current?.contains(e.target as Node)) setOpen(false) }
@@ -92,7 +104,7 @@ function Highlight({ people, hi }: { people: string[]; hi: string | null }) {
       <button type="button" ref={btn} className={'abtn sc-hl' + (hi ? ' lit' : '')} data-testid="sc-hl" aria-haspopup="listbox" aria-expanded={open}
         title="Ring one SANS person’s days" onClick={() => setOpen(o => !o)}><HlIcon /><span className="sc-hl-t">{hi ? PEOPLE[hi].cs : 'Highlight'}</span></button>
       {open && (
-        <div className="sc-hl-menu" data-testid="sc-hl-menu" role="listbox" aria-label="Highlight one SANS person">
+        <div className="sc-hl-menu" ref={menu} data-testid="sc-hl-menu" role="listbox" aria-label="Highlight one SANS person">
           <button type="button" role="option" aria-selected={!hi} className={'sc-hl-item' + (!hi ? ' lit' : '')} data-testid="sc-hl-none" onClick={() => pick(null)}>No highlight</button>
           {people.map(id => (
             <button key={id} type="button" role="option" aria-selected={hi === id} aria-label={PEOPLE[id].cs} className={'sc-hl-item' + (hi === id ? ' lit' : '')}
@@ -209,7 +221,9 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
       else showDay(iso)
     } else if (e.key === 'Escape') {
       if (kb) { e.preventDefault(); e.stopPropagation(); setKb(null) }
-      else if (dayIso) { e.preventDefault(); e.stopPropagation(); showDay(null) }
+      /* the day only while it is the window in front (the bug check of 3 Nov 26, W1 S01 — the Inputs calendar's twin): with
+         the settings or the Calendar window in front, the key is the shell's, which closes the front one */
+      else if (dayIso) { if (frontWin() && frontWin() !== 'sansday') return; e.preventDefault(); e.stopPropagation(); showDay(null) }
     }
   }
 

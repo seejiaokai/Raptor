@@ -27,12 +27,13 @@ import { installGlobalUndo } from '../state/undo-wire'
 import { setSession, setMe } from '../state/auth'
 import { ownershipViolation } from '../state/perms'
 import { setPage } from '../state/view'
-import { commitInput, commitInputEdit, draftOf, InputEditor } from './inputedit'
+import { commitInput, commitInputEdit, draftOf } from './inputedit'
+import { InputEditor } from './InputWindow'
 import { accCtl } from './html'
 import { routeClick } from './interactions'
 import { boardMbtn } from './board'
 import { setInpEdit } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

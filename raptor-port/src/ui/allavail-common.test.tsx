@@ -16,7 +16,7 @@ import { acceptInput } from '../engine/slots'
 import { validate } from '../engine/validate'
 import { initStore, writeInputs } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, NOTEPUB, slotTitle } from '../state/view'
+import { setPage, slotTitle } from '../state/view'
 import { dayHTML, dayInfoHTML, onCommon, commonOrder, GP_TAKEOFF_NOTE, accCtl } from './html'
 import { sbGroundPanel, sbProgPanel } from './board-html'
 import { peekDayHTML } from './peek'
@@ -148,13 +148,13 @@ describe('the scenario designer\'s finds', () => {
     allAvailMeeting()
     DAYS[MON].ground = DAYS[MON].ground.filter((g: any) => onCommon(g))     // its only row: the ALL AVAIL input's
     DAYS[MON].grndnotes = 'Range closed after 1500'
-    NOTEPUB.add(`gn:${MON}`)
+    ;(DAYS[MON] as any).npub = ['gn']                                    // made public (the day's own flag, D1588)
     try {
       setPage('viewsched')
       const day = el(dayHTML(MON, false))
       expect(text(day.querySelector('.sec-grnd'))).toContain('Range closed after 1500')
       expect(day.querySelector('.sec-grnd .pl-cols'), 'no rows to head').toBeNull()
-    } finally { NOTEPUB.clear() }
+    } finally { delete (DAYS[MON] as any).npub }
   })
   it('3: the week draws its row with the "came from an input" class there too', () => {
     const { ri } = allAvailMeeting()

@@ -27,6 +27,8 @@ const ALL_DAY_KEYS = [
   /* the OIL evidence block — excluded from the canonical FIELD map and carried
      by its own aggregate axis in publish.ts (canonical.ts says why) */
   'oild', 'oilev',
+  /* which section notes are public (D1588) — content, compared on the note's own address (restore.ts) */
+  'npub',
 ].sort()
 
 /* A controlled day with every content structure present, so the visibility

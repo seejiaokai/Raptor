@@ -3,9 +3,10 @@ import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { serveFrozen } from './isr-serve.mjs'
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const OUT = join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/B')
-export const URL = 'http://localhost:4241/'
+export const OUT = process.env.ISR_OUT ? join(process.env.ISR_OUT, 'B') : join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/B')
+export const URL = process.env.LOOK_URL || 'http://localhost:4241/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 export const launch = () => chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 export const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
@@ -24,6 +25,7 @@ export const notWalked = (name, why) => say(`NOT WALKED ${name} — ${why}`)
 export function startRun(only) { if (!only) { rmSync(OUT, { recursive: true, force: true }) } mkdirSync(OUT, { recursive: true }) }
 export async function session(browser, size) {
   const ctx = await browser.newContext({ ...SIZES[size], deviceScaleFactor: 2 })
+  await serveFrozen(ctx, URL)
   const page = await ctx.newPage()
   const touch = !!SIZES[size].hasTouch
   page.on('pageerror', e => errs.push(`${size} page error ${e.message}`))

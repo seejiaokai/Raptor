@@ -55,6 +55,7 @@ import { InputCard } from './InputCard'
 import { cardOf, cardWhen, cxSays, lateNoteOf } from './inputcard-model'
 import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
+import { frontWin } from './floatwin'
 import { WD } from './daysfmt'
 import { landOn, markLand, paintLand } from './lift'
 import { edgeAutoScroll, findScroller } from './edgescroll'
@@ -158,7 +159,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     /** puts the page's filters back to none — "Clear filters" in a day whose inputs they all hide (D731 (2)) */
     onClearFilters?: () => void }) {
   const mode = 'member' as const
-  useVersion()
+  const ver = useVersion()
   useWarFacts()
   useVersion()
   const gridRef = useRef<HTMLDivElement>(null)
@@ -191,6 +192,30 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const wantFocus = useRef<string | null>(null)
   /* which input of the opened day Delete has asked about (its entry's key) */
   const [delAsk, setDelAsk] = useState<string | null>(null)
+  /* ESCAPE ON "DELETE THIS INPUT?" IS KEEP, WHEREVER THE KEYS ARE (F6 of the 3 Nov 26 re-check): the question answered
+     Escape only while the keyboard was on it — after a press on the page behind, Escape reached the month, which closed
+     the day and the question with it. While it is up it hears Escape first (the window, capture), puts the question
+     away, deletes nothing and leaves the day open; the next Escape is the day's. */
+  useEffect(() => {
+    if (delAsk == null) return
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented) return
+      /* …only while the day is the window in front (K9's twin, the code read of 3 Nov 26: an Escape meant for the settings
+         or an input's window in front put the question behind away instead), and only while the question is on screen —
+         its row gone another way (an Undo) leaves nothing here to eat the next Escape */
+      if (frontWin() && frontWin() !== 'inputsday') return
+      if (!document.querySelector('[data-testid="idy-ask"]')) { setDelAsk(null); return }
+      e.preventDefault(); e.stopImmediatePropagation()
+      setDelAsk(null)
+    }
+    window.addEventListener('keydown', esc, true)
+    return () => window.removeEventListener('keydown', esc, true)
+  }, [delAsk])
+  /* …and a question whose row went another way — taken by an Undo — is put away with it, so a Redo that brings the row
+     back does not bring the question back unasked (the fix round's read, 3 Nov 26). Read after every change of the store. */
+  useEffect(() => {
+    if (delAsk != null && !document.querySelector('[data-testid="idy-ask"]')) setDelAsk(null)
+  }, [delAsk, ver])
   /* WHAT THE DELETE QUESTION ASKED, kept from the moment it was put (Astra's scenario design of the second batch,
      10 Oct 26 — scenario 9; an older fault of this door). The question's words were worked out again at every paint
      from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch
@@ -579,7 +604,10 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     } else if (e.key === 'Escape') {
       /* the front window first, then the run (the plan §3.6). The keyboard is on a date — the page BEHIND the window —
          where the shell leaves Escape to whatever has it (ui/FloatWindow.tsx), so the date itself closes its day. */
-      if (popIso) { e.preventDefault(); e.stopPropagation(); closePop() }
+      /* …BUT ONLY WHILE THE DAY IS THE WINDOW IN FRONT (the bug check of 3 Nov 26, walker W1 S01): with the settings or the
+         Calendar window in front of it, the date closed the day BEHIND them and left the front one up. Then the key is the
+         shell's, which closes the front window ("one Escape, the newest window" — F2, F7). */
+      if (popIso) { if (frontWin() && frontWin() !== 'inputsday') return; e.preventDefault(); e.stopPropagation(); closePop() }
       else if (kb) { e.preventDefault(); e.stopPropagation(); setKb(null) }
     }
   }
@@ -762,6 +790,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        window.removeEventListener('keydown', esc, true)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
         setSecDrag(null); setSecOver(null)
         /* A COMMITTED DROP WITH A TARGET FLASHES WHERE THE THING ENDED UP,
@@ -793,9 +822,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       }
       const up = () => end(true)
       const cancel = () => end(false)
+      /* ESCAPE WHILE A NOTE IS CARRIED PUTS IT BACK (as a bar carried on the month — D1581; the bug check of 3 Nov 26,
+         walker W1 S23c: Escape closed the whole day window with the note still in the hand). The carry is the newest
+         thing on screen: heard first (the window, capture) and kept, so the day stays open; the release after it finds
+         no carry, and nothing moves. */
+      const esc = (ev: KeyboardEvent) => { if (ev.key !== 'Escape') return; ev.preventDefault(); ev.stopImmediatePropagation(); end(false) }
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      window.addEventListener('keydown', esc, true)
       dragCancelRef.current = cancel        // popover close → cancel, don't reorder
     }
     /* DRAG A SEATED PUCK — reorder it, swap it, or lift it off the row (owner,
@@ -860,6 +895,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
         window.removeEventListener('pointermove', move)
         window.removeEventListener('pointerup', up)
         window.removeEventListener('pointercancel', cancel)
+        window.removeEventListener('keydown', esc, true)
         if (dragCancelRef.current === cancel) dragCancelRef.current = null
         clearLit()
         chip.classList.remove('pk-drag'); chip.style.transform = ''
@@ -886,9 +922,13 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
       }
       const up = (ev: PointerEvent) => done(ev)
       const cancel = () => done(null)
+      /* …and a puck carried off its note the same (W1 S23c's twin): once it is lifted, Escape seats it back; a press that
+         never drifted is no carry and leaves Escape alone */
+      const esc = (ev: KeyboardEvent) => { if (ev.key !== 'Escape' || !dragging) return; ev.preventDefault(); ev.stopImmediatePropagation(); done(null) }
       window.addEventListener('pointermove', move)
       window.addEventListener('pointerup', up)
       window.addEventListener('pointercancel', cancel)
+      window.addEventListener('keydown', esc, true)
       dragCancelRef.current = cancel        // popover close → cancel, don't drop/swap
     }
     /* what the day lists: every input covering it, as the month's own items (one a record — ui/inputscal-model.ts),

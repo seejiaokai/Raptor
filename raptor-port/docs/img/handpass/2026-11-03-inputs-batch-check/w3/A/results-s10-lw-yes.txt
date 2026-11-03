@@ -1,0 +1,36 @@
+NOTE S10b-0 — Leave War period picker before: {"opts":["JAN - DEC 26","JAN - DEC 27","+ New period"],"sel":"JAN - DEC 26"}
+PASS S10b-0 no Leave War period holds 2029 — saw {"opts":["JAN - DEC 26","JAN - DEC 27","+ New period"],"sel":"JAN - DEC 26"}
+NOTE S10b-0 — OIL tracker as first seen (Drifter): "Drifter A 4 + 6.5 − 2.5 +3 carried in opening figure −0.5 10 Feb −1 11 May −1 12 May 0.5 left +1 3 Jan Weekend recovery 1 left +2 14 Mar OC Ops Exerci"
+PASS S10b-1 the OIL question is asked for a weekend no period covers — saw {"asked":1,"q":"OIL: Drifter, Duty✕This input falls on Sat 10 Mar 29, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL?Yes: credit FONo OILBackAdd"}
+PASS S10b-1 the question says nothing of a missing period (D1585) — saw "OIL: Drifter, Duty✕This input falls on Sat 10 Mar 29, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL?Yes: credit FONo OILBackAdd"
+NOTE S10b-1 — records made: [{"iid":"imw0ii6wharoj5q","type":"Duty","people":["slipway"],"date":"Mar 10 2029","yr":2026,"oil":{"2029-03-10":1},"allday":false}]
+PASS S10b-1 exactly one Duty record saved, for Drifter on Sat 10 Mar 2029 — saw [{"iid":"imw0ii6wharoj5q","type":"Duty","people":["slipway"],"date":"Mar 10 2029","yr":2026,"oil":{"2029-03-10":1},"allday":false}]
+PASS S10b-1 the Inputs page names no missing period after the save (D1585) — saw []
+NOTE S10b-1 — day window words: "⠿Sat 10 Mar+ Note✕+ Input1 input06:00–18:00DrifterDutyBy Saber"
+NOTE S10b-2 — week reached: 05/03/2029
+PASS S10b-2 the Saturday shows D19's advisory naming the missing 2029 period — saw "No OIL — no Leave War period covers this date There is no leave war period for 2029, so no OIL can be earned for this day — create the period on the Leave War "
+PASS S10b-2 and still offers "Create the 2029 period" — saw ["Create the 2029 period"]
+NOTE S10b-3 — publish: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+PASS S10b-3 Saturday is published (a version tag shows) — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S10b-3 — Saturday head after publish: "Saturday Mar 10 Templates Live working copy ▾ ORIG 0 X 0 X 0 6 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKAnvil PLANNEDAnvil APPROVEDAnvil SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Dr"
+NOTE S10b-3 — after publish the offer: ["Create the 2029 period"]
+NOTE S10b-4 — sheet shows selection: 1 Jan 29 – 31 Dec 29
+NOTE S10b-4 — after Create: {"opts":["JAN - DEC 26","JAN - DEC 27","JAN - DEC 29","+ New period"],"sel":"JAN - DEC 29"}, problem: null
+PASS S10b-4 a 2029 period now exists — saw {"opts":["JAN - DEC 26","JAN - DEC 27","JAN - DEC 29","+ New period"],"sel":"JAN - DEC 29"}
+NOTE S10b-5 — Drifter's 10 Mar 2029 cell: {"text":"FO*","cls":"duty weekend act hasc","kids":[]}; war picker: {"opts":["JAN - DEC 26","JAN - DEC 27","JAN - DEC 29","+ New period"],"sel":"JAN - DEC 29"}
+PASS S10b-5 Drifter's 10 Mar 2029 cell shows the OIL (FO) — saw {"text":"FO*","cls":"duty weekend act hasc","kids":[]}
+NOTE S10b-5 — OIL tracker Drifter before "Drifter A 4 + 6.5 − 2.5 +3 carried in opening figure −0.5 10 Feb −1 11 May −1 12 May 0.5 left +1 3 Jan Weekend recovery 1 left +2 14 Mar OC Ops Exerci" after "Drifter A 5 + 7.5 − 2.5 +3 carried in opening figure −0.5 10 Feb −1 11 May −1 12 May 0.5 left +1 3 Jan Weekend recovery 1 left +2 14 Mar OC Ops Exerci"
+NOTE S10b-5 — Drifter's person window: "Drifter ✕ BALANCES LVE 0 taken App bal Pending War bal – 24 incl. carried fwd · till 31 Dec OIL 5 › MED 0 days CCL FCL PL EL CL LEAVE 2026 and ahead OL Thu 1 Jan 0 Approved OIL Tue 10 Feb, AM 0.5 Pending OIL Mon 11 May 1 Approved OIL Tue 12 May 1 Approved OIL Sat 13 Jun 0 Approved"
+PASS S10b-5 the OIL balance of Drifter rose by one day after the period was made — saw {"before":4,"after":5}
+NOTE S10b-6 — Unpublish pressed; armed confirm shown: 0
+NOTE S10b-6 — Saturday after unpublish: {"tag":"DRAFT","pend":[],"nys":""}
+NOTE S10b-6 — cell after unpublish: {"text":"","cls":"weekend act","kids":[]}
+PASS S10b-6 unpublished: the OIL has gone from the cell — saw {"text":"","cls":"weekend act","kids":[]}
+NOTE S10b-6 — OIL tracker after unpublish Drifter balance 4 (before the day was published 4)
+PASS S10b-6 unpublished: the balance of Drifter is back to what it was before — saw {"before":4,"after":4}
+NOTE S10b-6 — republish: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+NOTE S10b-6 — cell after republish: {"text":"FO*","cls":"duty weekend act hasc","kids":[]}
+PASS S10b-6 republished: the OIL is back on the cell — saw {"text":"FO*","cls":"duty weekend act hasc","kids":[]}
+NOTE S10b-6 — OIL tracker after republish Drifter balance 5
+PASS S10b-6 republished: the balance of Drifter is up by one again — saw {"before":4,"after":5}
+NOTE S10b-7 — Inputs day window after: "⠿Sat 10 Mar+ Note✕+ Input1 input06:00–18:00DrifterDutyBy Saber"

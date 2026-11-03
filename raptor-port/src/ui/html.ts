@@ -807,29 +807,34 @@ export function plRmk(base:any,ed:any,o:any,rmkTxt:any,late?:any){
    normally carries none of it. But a scheduler can now MAKE ONE PUBLIC (owner,
    Aug 26): a public note also shows on the view-only week, under the header
    "Notes", while the edit week and board header read "Public notes" and carry
-   the toggle. The public flag is view.NOTEPUB, keyed by this note's own funnel
-   key. On the view-only week a public note prints only when it has text (an
+   the toggle. The public flag is the drawn day's own `npub` (D1588 — view.ts notePub), so the issued face shows it as
+   the day went out. On the view-only week a public note prints only when it has text (an
    empty box is nothing to issue); note that a public note whose SECTION has no
    rows on the view-only week is not drawn, because the empty section itself is
    not — an acceptable edge, the note still reads on the edit side. Reading a
    scheduler-side note is open to any scheduler-side viewer; only writing (and
    flipping the public flag) needs canEditSched(). */
 export function blkNoteHTML(di:any,d:any,ed:any,key:any,field:any){
-  const k=`${key}:${di}`, v=d[field]||'', a=alAttr(k), pub=notePub(k);
+  const k=`${key}:${di}`, v=d[field]||'', a=alAttr(k), pub=notePub(k,d);
   if(!ed){
     if(!pub||!v)return '';
     return `<div class="blknote-h">Notes</div><div class="blknote"${a}>${esc(v)}</div>`;
   }
   const ce=canEditSched();
-  return `<div class="blknote-h">${pub?'Public notes':'Scheduler notes'}${ce?notePubTog(k,pub):''}</div>`
+  return `<div class="blknote-h">${pub?'Public notes':'Scheduler notes'}${ce?notePubTog(k,pub,/data-alp=/.test(a)):''}</div>`
     +(ce
       ? `<div class="blknote ed" contenteditable="true" spellcheck="false" data-txt="${key}:${di}"${a}>${esc(v)}</div>`
       : `<div class="blknote"${a}>${esc(v)}</div>`);
 }
 /* The show-on-view-only toggle that rides a scheduler-note header, on the edit
    week and the board alike. One builder so the two surfaces cannot drift. */
-export function notePubTog(k:any,pub:any){
-  return `<button class="notepub${pub?' on':''}" data-notepub="${esc(k)}" title="${pub?'Showing on the view-only schedule — tap to keep it scheduler-only':'Show this note on the view-only schedule'}">${pub?'On view-only ✓':'Make public'}</button>`;
+/* `waits` — the note's choice is waiting for the next amendment on a published day (its own pending mark is up — D1592):
+   the button's words said "Showing on the view-only schedule" there, untrue until the amendment goes out (the bug check
+   of 3 Nov 26). Its label stays the choice the working copy holds. */
+export function notePubTog(k:any,pub:any,waits?:boolean){
+  const t=waits?(pub?'Public: goes out with the next amendment — tap to keep it scheduler-only':'Scheduler-only: goes out with the next amendment — tap to show it on the view-only schedule')
+    :pub?'Showing on the view-only schedule — tap to keep it scheduler-only':'Show this note on the view-only schedule';
+  return `<button class="notepub${pub?' on':''}" data-notepub="${esc(k)}" title="${t}">${pub?'On view-only ✓':'Make public'}</button>`;
 }
 /* Available-crew block: active aircrew by wave, then SANS grouped separately (they run to
    different currency requirements — see sanStatus()). Rendered at the bottom of the day.
@@ -1453,12 +1458,12 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
 /* THE MARK IS READ HERE, ONCE PER INPUT (owner, 21 Aug 26 — per-input dismissal
    replaced the 20 Aug global switch). All four passive helpers below funnel
    through `isLateInput(inp) && lateShown(inp)`, so a mark a scheduler has
-   dropped on the board (state/view.ts's LATEOFF) vanishes at a stroke from
+   dropped on the board (the input's own lateOff, D1586 — state/view.ts lateShown) vanishes at a stroke from
    every READ surface: the board's inputs bands and read-only panels (via
    `sbiRmk`, which calls `lateTag`), the edit week, the view-only week and the
    board's promoted ground row. The board's LIVE input rows draw `lateChip`
    instead — the clickable control that is always present so the dropped state
-   stays reachable. The Inputs page keeps its own mark — see LATEOFF in
+   stays reachable. The Inputs page keeps its own mark — see lateShown in
    state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
    answering, and the mark was never a rule (§Stable decisions). */
 /* THE MARK OF A SHARED INPUT IS ITS ONE ROW'S (`[GROUP-INPUT-ONE-ROW]`; owner D661 — the plan

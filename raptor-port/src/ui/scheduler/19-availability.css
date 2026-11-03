@@ -106,7 +106,9 @@
    margin, 12 on the left and 20 on the right, a quirk the mock itself carries.
    Only reachable now that no inline size is pinned over this rule (Fable S8). */
 @media (max-width:620px){
-  .availwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh;max-width:calc(100vw - 24px)}
+  /* …and no resize corner (D77 — on a phone the panel moves, it does not resize): F10 of the 3 Nov 26 re-check found a
+     2–3 px speck of the browser's own corner at its foot; the changes window already had this (20-changes-quals.css) */
+  .availwin{left:12px;right:12px;width:auto;top:auto;bottom:12px;height:62vh;max-height:62vh;max-width:calc(100vw - 24px);resize:none}
 }
 /* WHICH ANSWER THE LIST IS (D37/D44) — always on screen, under the body rather
    than in the footer, because the footer is overwritten the moment he taps a man.

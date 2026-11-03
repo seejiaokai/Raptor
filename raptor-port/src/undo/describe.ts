@@ -17,7 +17,7 @@
      page", "suspending Outlaw's sign-in" (Fable 3e, S23).
 
    The bubble prepends "Undid: " / "Redid: "; this returns the bare label. */
-import { leadOf, idsOf } from '../engine/inputs'
+import { leadOf, idsOf, inpLabel } from '../engine/inputs'
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
@@ -59,10 +59,12 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.signClear': 'clearing a sign-off',
   'sched.stores': 'the stores on a jet',
   'sched.warnMute': 'hiding a warning',
+  'sched.notePub': 'making a note public',
   'sched.draft.rename': 'renaming a saved plan',
   'sched.draft.delete': 'deleting a saved plan',
   'inputs.write': 'a personal input',
   'inputs.batch': 'a batch of inputs',
+  'inputs.lateOff': 'a LATE mark',
   /* the accounts (Admin → Users) — the account-level ones read the change itself, below */
   'account.add': 'giving a sign-in',
   'access.approve': 'giving access',
@@ -381,6 +383,19 @@ function oneInputWords(entry: UndoEntry): string | null {
   if (JSON.stringify(b.oil ?? null) !== JSON.stringify(a.oil ?? null) && rest(b) === rest(a)) return 'an OIL answer'
   return null
 }
+/* ONE INPUT NAMED BY ITS PERSON AND KIND (owner D1582, 3 Nov 26): "Undid: Drifter’s ISR brief", "Undo — Ranger’s OL" —
+   never "a personal input". Where it has its own title the title stands for its kind, as on its card (D716 — inpLabel); an
+   input of several people is named by its kind and how many are in it. Read off the step's own record. */
+function oneInputNamed(entry: UndoEntry): string | null {
+  const ch = entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order')
+  if (ch.length !== 1) return null
+  const rec: any = ch[0]!.after || ch[0]!.before
+  if (!rec) return null
+  const label = inpLabel(rec), ids = idsOf(rec).map(String)
+  if (!label) return null
+  if (ids.length === 1) { const who = nameOf(ids[0]!); return who ? `${who}’s ${label}` : label }
+  return ids.length > 1 ? `${label} for ${ids.length} people` : label
+}
 function inputsCount(entry: UndoEntry): number {
   return entry.forward.filter((c: Change) => c.collection === 'inputs' && c.id !== '__order').length
 }
@@ -435,6 +450,13 @@ export function describeEntry(entry: UndoEntry): string {
   }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
+  /* a note made scheduler-only again is not "making a note public" (the bug check of 3 Nov 26): the step's own note says
+     which way it went (ui/interactions.ts) */
+  if (entry.type === 'sched.notePub') {
+    let n: any = null
+    try { n = JSON.parse(entry.detail || 'null') } catch { /* no note: the plain words */ }
+    return n && n.public === false ? 'making a note scheduler-only' : TYPE_PHRASE['sched.notePub']!
+  }
   if (entry.type === 'sched.warnMute') { const h = parseHideDetail(entry.detail); return h && !h.hidden ? 'flagging a warning again' : TYPE_PHRASE['sched.warnMute'] }
   /* the Inputs calendar's own records — a day title (`plan/dm:<iso>`), a note — its words, its people (`plan/pp:<id>`; D684) — one record
      each since [DB-READINESS] group A, phase 2 — saved through the Inputs page's door: with no input row, the change is
@@ -446,7 +468,19 @@ export function describeEntry(entry: UndoEntry): string {
   }
   /* …and ONE input changed in a way a person names ([OIL-NOTIFY-SEEN] (1), the OIL-ask walk, 13 Oct 26): a swap on an
      input's row, or its OIL answer, read "Undid: a personal input" — true, and no help. Read off the entry's own change. */
-  if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') { const w = oneInputWords(entry); if (w) return w }
+  /* a LATE mark dropped or brought back names its input too (D1582's own words: "name the input they take back by its
+     person and kind"; the bug check of 3 Nov 26) — "the LATE mark on Nasty’s LL"; a shared input's several records, one */
+  if (entry.type === 'inputs.lateOff') {
+    const named = inputsCount(entry) === 1 ? oneInputNamed(entry) : null
+    return named ? `the LATE mark on ${named}` : TYPE_PHRASE['inputs.lateOff']!
+  }
+  if (entry.type === 'inputs.batch' || entry.type === 'inputs.write') {
+    const w = oneInputWords(entry); if (w) return w
+    /* one input: whose and what (D1582); several at once: their count — "Undid: 3 inputs" */
+    const n = inputsCount(entry)
+    if (n === 1) { const named = oneInputNamed(entry); if (named) return named }
+    if (n > 1) return `${n} inputs`
+  }
   /* one input filed through the Inputs page's batch door is one input (walker A2-F2) */
   if (entry.type === 'inputs.batch') { const n = inputsCount(entry); return n === 1 ? 'a personal input' : n > 1 ? `${n} inputs` : TYPE_PHRASE['inputs.batch'] }
   if ((entry.scope && entry.scope.module) === 'lw' || entry.type.startsWith('lw.')) return lwLabel(entry)

@@ -23,8 +23,11 @@ import { TODAY, keyToIso } from './weeknav'
 /* the demo week is Jul 2026, so an untouched picker opens where the data is */
 const DEFAULT_AT = '2026-07-01'
 
-export function RangeCal({ start, end, onPick, idPrefix }:
-  { start: string, end: string, onPick: (s: string, e: string) => void, idPrefix?: string }) {
+/* `startHolds` — the input's own window (F3, below): one day picked is already a whole input there, so a second tap on it
+   only keeps it waiting for an end. The Inputs list's dates leave it off: two taps on a day are how a one-day window of
+   dates is picked. */
+export function RangeCal({ start, end, onPick, idPrefix, startHolds }:
+  { start: string, end: string, onPick: (s: string, e: string) => void, idPrefix?: string, startHolds?: boolean }) {
   const tid = (idPrefix || 'range') + 'Cal'
   return (
     <div className="dcal-inline in-cal" id={idPrefix ? tid : undefined}>
@@ -33,6 +36,10 @@ export function RangeCal({ start, end, onPick, idPrefix }:
         onRun={(f, t) => {
           /* the one calendar began a new run (a finished range, or a tap before the start): it waits for its end */
           if (!start || end || f < start) onPick(f, '')
+          /* A TAP ON THE DAY ALREADY PICKED, WAITING FOR ITS END, KEEPS IT WAITING (F3 of the 3 Nov 26 re-check): it closed the
+             range on that one day, so the next tap began anew — 14, then 14 again, then 16 gave 16 alone, where 14 then 16
+             gives 14 → 16. Now a second tap on the start changes nothing, and the next tap is its end. */
+          else if (startHolds && f === start && t === start) onPick(start, '')
           else onPick(f, t)
         }} />
     </div>

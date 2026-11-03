@@ -282,6 +282,42 @@ describe('initCalDrag — the pointer machine', () => {
     } finally { off() }
   })
 
+  /* D1581 (owner, 3 Nov 26): Escape while a bar is carried puts it back where it was and moves nothing, whatever is done
+     after — it cancelled nothing, and letting go moved Grit's ATT C from 13–17 to 14–18 Jul */
+  it('D1581: Escape while carried ends the carry — the copy goes, and the release that follows moves nothing', () => {
+    const row: any = { person: 'bane', date: 'Jul 20', allday: true, type: 'LL', remarks: '', mod: 'now' }
+    inpId(row)
+    INPUTS.unshift(row)
+    const { root, cellB, chip } = buildCalDom(row.iid)
+    EFP_TARGET = cellB
+    let tapped = false
+    const off = initCalDrag(root, { onTap: () => { tapped = true } })
+    try {
+      chip.dispatchEvent(ptr('pointerdown', 10, 10))
+      chip.dispatchEvent(ptr('pointermove', 20, 10))
+      expect(document.body.classList.contains('ic-dragging'), 'carried').toBe(true)
+      const esc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
+      document.body.dispatchEvent(esc)
+      expect(esc.defaultPrevented, 'the key is used: the window the month sits in stays').toBe(true)
+      expect(document.querySelector('.ic-ghost'), 'the copy goes').toBeFalsy()
+      expect(document.body.classList.contains('ic-dragging')).toBe(false)
+      expect(cellB.classList.contains('ic-over')).toBe(false)
+      chip.dispatchEvent(ptr('pointermove', 30, 10))
+      chip.dispatchEvent(ptr('pointerup', 30, 10))
+      expect(row.date, 'nothing moved').toBe('Jul 20')
+      expect(tapped, 'and the release is no tap').toBe(false)
+    } finally { off() }
+  })
+  it('D1581: Escape with nothing carried is not the drag machine’s', () => {
+    const { root } = buildCalDom('esc-idle')
+    const off = initCalDrag(root, { onTap: () => {} })
+    try {
+      const esc = new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })
+      document.body.dispatchEvent(esc)
+      expect(esc.defaultPrevented).toBe(false)
+    } finally { off() }
+  })
+
   /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26 — "the thing u are grabbing glows
      evenly … once I drop the item, it should flash to show where the new item
      ended up"). The chip's ghost is one element, so it wears the shared `.lift`

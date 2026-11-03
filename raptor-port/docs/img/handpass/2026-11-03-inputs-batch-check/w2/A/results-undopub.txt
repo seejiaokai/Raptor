@@ -1,0 +1,20 @@
+PASS S17 premise: ORIG nothing pending — saw {"tag":"ORIG","pend":[],"nys":""}
+PASS S17 premise: AL1 published carrying the public note, nothing pending — saw {"p2":"AL","f1":{"tag":"AL1","pend":[],"nys":""}}
+PASS S17 premise: view-only shows the note — saw {"notes":["Brief 0700 main room"],"heads":["Notes"]}
+NOTE S17 — Undo button before pressing: {"undo":"Undo — publishing an amendment","undoOff":false,"redo":"Redo","redoOff":true}
+NOTE S17 — after Undo 1: toast "Undid: publishing an amendment"; last notes ["Note now shows on the view-only schedule","Published AL1 · 1 item on Wed only · approved by Anvil","Undid: publishing an amendment"]; npub ["pn"]; face {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+FAIL S17 EXPECTED undo refused with "A day on this week was published after that change — tap Unpublish…" (literal: the first Undo) — saw {"toast":"Undid: publishing an amendment","npub":["pn"]}
+NOTE S17 — Undo button now: {"undo":"Undo — a sign-off","undoOff":false,"redo":"Redo — publishing an amendment","redoOff":false}
+NOTE S17 — after Undo 2: toast "Undid: a sign-off"; last notes ["Undid: publishing an amendment","Undid: a sign-off"]; npub ["pn"]; face {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S17 — after Redo x2: face {"tag":"AL1","pend":[],"nys":""}; npub ["pn"]; notes ["Redid: a sign-off","Redid: publishing an amendment"]
+NOTE S17 — Unpublish button present: 1; title "Unpublish Wednesday — pull AL1 back to a working copy to correct it; republishing reissues the same version"
+NOTE S17 — Unpublish toast: "Wednesday: AL1 withdrawn. Its changes are back on the working copy as pending, and Original is the issued schedule. Publishing reissues AL1."
+NOTE S17 — after Unpublish: face {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}; npub ["pn"]
+PASS S17 EXPECTED Unpublish: working copy keeps public — saw ["pn"]
+NOTE S17 — view-only after Unpublish: {"notes":[],"heads":[]}
+PASS S17 EXPECTED publish again -> view-only shows it — saw {"kind":"AL","f3":{"tag":"AL1","pend":[],"nys":""},"v3":{"notes":["Brief 0700 main room"],"heads":["Notes"]}}
+NOTE S17 — plan menu Original item present: 1
+NOTE S17 — Load button: 1 label "Load onto working copy"
+NOTE S17 — after Load: toast "Wednesday is back to the Original. Viewers still see AL1."; npub null
+PASS S17 EXPECTED Load of Original: note returns to scheduler-only, pending as a change — saw {"f4":{"tag":"AL1","pend":["1 pending"],"nys":"Not yet signed"},"h4":{"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"},"npub":null}
+NOTE S17 — To go out after Load: "Waiting to go out as AL2 · 1 change Programme notes Saber 3/11 17:48 Brief 0700 main room · public → Brief 0700 main room Tap a change to go to it."

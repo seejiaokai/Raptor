@@ -1,0 +1,11 @@
+NOTE S20 — both tabs on Edit Schedule; input imw0isipumpdo4l
+PASS S20 tab A: LATE dropped — saw {"lateOff":true,"remarks":"Local leave"}
+NOTE S20 — tab B (untouched) sees: {"lateOff":false,"remarks":"Local leave"}
+NOTE S20 — after B's write: B holds {"lateOff":false,"remarks":"W2 B edit"}; A holds {"lateOff":true,"remarks":"Local leave"}
+FAIL S20 EXPECTED (RECORD in brief): after both reload, LATE still dropped AND B's remarks kept — saw {"A":{"lateOff":false,"remarks":"W2 B edit"},"B":{"lateOff":false,"remarks":"W2 B edit"}}
+PASS S20 tab A: Wed note made public — saw ["pn"]
+NOTE S20 — tab B (untouched) sees npub: null
+NOTE S20 — after B's edit: B npub null; A npub ["pn"]
+FAIL S20 EXPECTED (RECORD): after both reload the note is still public and B's text is kept — saw {"A":null,"B":null,"text":"\"B typed\""}
+NOTE S20r — after filing and Undo: {"undo":"Undo","undoOff":true,"redo":"Redo — Saber’s Sports day","redoOff":false}
+FAIL S20r a new change after an Undo empties the Redo (RECORD the state) — saw {"undo":"Undo — a note on the schedule","undoOff":false,"redo":"Redo — Saber’s Sports day","redoOff":false}

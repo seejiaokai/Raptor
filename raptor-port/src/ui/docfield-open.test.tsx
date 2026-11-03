@@ -8,7 +8,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { act, useState } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
-import { DocField } from './inputedit'
+import { DocField } from './InputWindow'
 import { DocViewer } from './DocViewer'
 import { DOCVIEW, INPEDIT, setDocView, setInpEdit } from './pops'
 import { initStore, setSession, notify } from '../state/store'

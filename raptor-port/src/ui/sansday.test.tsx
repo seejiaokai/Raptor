@@ -21,7 +21,7 @@ import { initStore as lwInitStore, setRole } from '../leavewar/state/store'
 import { memoryBackend } from '../leavewar/state/storage'
 import { dayFacts, flyAnswer } from '../leavewar/sync'
 import { DAYSWIN, INPEDIT, setDaysWin, setInpEdit } from './pops'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { SansDay } from './SansDay'
 import { maySansAdd, openSansAdd } from './sansadd'
 

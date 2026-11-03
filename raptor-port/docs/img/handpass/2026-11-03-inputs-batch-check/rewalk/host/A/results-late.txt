@@ -1,0 +1,25 @@
+NOTE A0 — LATE badges before any drop: {"edit":3,"view":3,"inputs":0}
+NOTE A0 — live LATE chips on the board, Tue 14 Jul: [{"id":"imw0l7dy90rmx4p","off":false,"pressed":"false"},{"id":"imw0l7dy97rgwr1","off":false,"pressed":"false"}]
+PASS A1 the tapped chip turns dim (dropped) — saw {"id":"imw0l7dy90rmx4p","off":true,"pressed":"true"}
+PASS A1 the drop is saved on the input — saw true
+PASS A1 the drop stamps no change (a mark, not a change of the input) — saw {"before":{"mod":"2026-06-30","modBy":"nasty","modAt":1782793680000,"at":1782793680000},"after":{"mod":"2026-06-30","modBy":"nasty","modAt":1782793680000,"at":1782793680000}}
+NOTE A1 — note said: "LATE mark hidden. The Inputs page still shows it."
+PASS A9 Undo names the drop "a LATE mark" — saw {"undo":"Undo — the LATE mark on Quill’s LL","undoOff":false,"redo":"Redo"}
+PASS A9 Undo brings the mark back — saw {"lateOff":false,"notes":["LATE mark hidden. The Inputs page still shows it.","Undid: the LATE mark on Quill’s LL"]}
+PASS A9 Redo drops it again — saw true
+PASS A3 Edit Schedule shows one LATE badge fewer — saw {"before":3,"after":2}
+PASS A4 View-only Sched shows one LATE badge fewer — saw {"before":3,"after":2}
+PASS A6 the Inputs page keeps every LATE — saw {"before":0,"after":0}
+PASS A8 after a reload the drop is kept — saw {"lateOff":true,"view":2}
+PASS A8 after a week change and back the drop is kept — saw {"lateOff":true}
+PASS A7 the member sees the mark dropped on View-only Sched — saw {"member":2,"admin":2}
+NOTE A7 — the member's Inputs page LATE count: 0 (admin's 0; a member sees his own inputs and others' as the page allows)
+PASS A8 after a sign-out and in, the board chip is still dim — saw {"id":"imw0l7dy90rmx4p","off":true,"pressed":"true"}
+PASS A1 a tap on the dim chip brings the mark back — saw false
+PASS A3 the week shows the badge again — saw 3
+NOTE A10 — the change history's last lines (read, not judged here): ["ELOG","elogRows","elogFor","elogWhen","elogClear","elogRemap"]
+NOTE A11 — published Tue 14 Jul: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+PASS A11 a drop on a published day leaves nothing pending (the builder's call — a mark, not a change) — saw {"before":{"tag":"ORIG","pend":[],"nys":""},"after":{"tag":"ORIG","pend":[],"nys":""}}
+PASS A4 the issued face drops the badge at once — saw {"before":3,"after":2}
+NOTE A1p — phone board chips: [{"id":"imw0l86bjuq8z7v","off":false,"pressed":"false"},{"id":"imw0l86bjod7987","off":false,"pressed":"false"}]
+PASS A1p a finger tap drops it (dim chip, saved) — saw {"lateOff":true}

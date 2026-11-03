@@ -23,7 +23,7 @@ import { holidaysIn, wireLeaveWarSync, type HolidayLine } from '../leavewar/sync
 import { setDaysWin } from './pops'
 import { CURPAGE, setPage } from '../state/view'
 import { clearNewWarAsk, peekNewWarAsk } from '../leavewar/ui/warask'
-import { _resetFloatWins } from './FloatWindow'
+import { _resetFloatWins } from './winorder'
 import { DaysWindow } from './DaysWindow'
 
 const mem = new Map<string, string>()
