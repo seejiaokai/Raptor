@@ -507,6 +507,8 @@ before the database step (D473), ONE check of the whole app is run; its shape is
 the gate set — the pull request opened once the job is built, so it runs during the walk; on his PC only the touched tests
 and the walk's build. Once the repo is private again, the gates run on his PC (`.claude/rules/shipping.md` §The checks).
 
+**Before building any change, a fix included — does it add something he will see? (owner D1625, 3 Nov 26 — "U didn’t show me a mock up right before u built this").** A question box, a message, a mark, a button — new to the screen, even one that is only part of a fault fix or copies a look the app already has — is drawn as a mock-up and shown to him before it is built (D541, D853). The Inputs batch's F2 put a new "Close it and lose them?" box into the input window, its look copied from the swap question, as part of a fix; he saw it first in the walk's pictures.
+
 **Order of steps in FULL:** build → open the pull request into `main` (GitHub's run is the gates; it goes during the walk)
 → roll-call and door check → **the sizing step (§7.0)** → walk, and fix what it finds (the touched tests on his PC; the
 fixes pushed once the run in progress has finished, D151) → the two reads, *with the evidence sheet in their hands* → fix

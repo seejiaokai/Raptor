@@ -3352,3 +3352,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In walk-scripts.md: a tap's response is timed from a capture-phase pointerdown (performance.now()) and each frame is stamped with performance.now() inside its callback; any "it was instant" result is cross-checked once against the long-task record before it is reported. And a check that something animates samples a whole cycle (or aligns its window to the cycle's start), never two looks or a window that may fall in a hold.
 
 **Principle:** Time a response from the moment the input happened, measured by the clock you control, and confirm a suspiciously good number by a second, independent instrument; when checking that a cyclic animation moves, sample a whole cycle.
+
+### Observation 780: A new box on screen slipped in as "part of a fix" and reached the owner with no mock-up
+
+**Status:** OPEN
+**Date:** 2026-11-03
+**Session context:** [INPUT-WIN-X-ASKS] — the owner saw the input window's "Close it and lose them?" box in the walk's pictures, said it was ugly, then "U didn't show me a mock up right before u built this"; number 780 from this branch's reserved range 776–785.
+**Skill:** internal — the bug-check order §5 (the build's first step), and `.claude/rules/ui-design.md` short form 1 (D541, D853)
+**Type:** internal
+**Phase/Area:** deciding whether a change needs a picture before it is built
+
+**Issue:** The Inputs batch's F2 ("Escape throws away typed words with no word") was filed and built as a fault fix. Its fix added a new question box to the input window, its look copied from the window's existing swap question. Because the work was classed as a fix and the look was "already the app's", the mock-up step never fired; the box went through the walk, the code reads and a second change (✕ asks) before the owner first saw it. The rule (D541, D853) already said a visual change is a picture first; nothing in the build's checklist asked the question at the moment of building a fix.
+
+**Suggested improvement:** Done for the order: a line before "Order of steps in FULL" asks, before any build including a fix, "does this add something he will see?" (D1625). Also worth adding to the walk-sizing step (§7.0): a sizing that finds a new visible part in a fix stops and checks a picture was put to him.
+
+**Principle:** A rule keyed to the kind of work ("a design change") is skipped when the same output arrives under another kind ("a fix"); key the check to the output — something new on screen — not to the label of the task.
