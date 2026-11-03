@@ -1,0 +1,5 @@
+PASS 8 phone: the sheet hangs from the control, on screen — saw {"side":"above","scrolls":true,"card":{"l":16,"t":487,"w":360,"h":289},"ctl":{"l":325,"t":786,"w":49,"h":28},"onScreen":true}
+PASS 9 phone: the sheet hangs from the control, on screen — saw {"side":"above","scrolls":true,"card":{"l":26,"t":581,"w":360,"h":208},"ctl":{"l":28,"t":799,"w":62,"h":28},"onScreen":true}
+PASS 10 phone: the sheet hangs from the control, on screen — saw {"side":"above","scrolls":true,"card":{"l":16,"t":578,"w":360,"h":232},"ctl":{"l":325,"t":820,"w":49,"h":28},"onScreen":true}
+PASS 14 phone: the sheet hangs from the control, on screen — saw {"side":"above","scrolls":true,"card":{"l":16,"t":575,"w":360,"h":238},"ctl":{"l":325,"t":823,"w":49,"h":28},"onScreen":true}
+PASS 15 phone: the sheet hangs from the control, on screen — saw {"side":"above","scrolls":true,"card":{"l":16,"t":541,"w":360,"h":199},"ctl":{"l":205,"t":750,"w":78,"h":24},"onScreen":true}

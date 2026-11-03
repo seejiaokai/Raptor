@@ -3396,3 +3396,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** Done for the order: a line before "Order of steps in FULL" asks, before any build including a fix, "does this add something he will see?" (D1625). Also worth adding to the walk-sizing step (§7.0): a sizing that finds a new visible part in a fix stops and checks a picture was put to him.
 
 **Principle:** A rule keyed to the kind of work ("a design change") is skipped when the same output arrives under another kind ("a fix"); key the check to the output — something new on screen — not to the label of the task.
+
+### Observation 796: A drawing helper handed to the page loses every function beside it in its file
+
+**Status:** OPEN
+**Date:** 4 Nov 26
+**Session context:** [ASK-AT-THE-CONTROL] — a shared kit (`raptor-port/scripts/handpass/ask-at-lib.mjs`) that hangs any question as a card from its control, for five drawing helpers at once
+**Skill:** brainstorming (`mockups-on-the-real-app.md` §Traps) and the walk-script guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** injecting into a live page
+
+**Issue:** The kit's placing function, passed to the browser as `page.evaluate(hangInPage, args)`, called a small helper defined beside it in the same module. The browser receives only the function's own text, so the helper was undefined there and the first trial failed with a reference error inside the page. A second trap in the same trial: the card lined itself up by the halves of the SCREEN, so a Delete on the left of a window docked at the screen's right got a card hanging out over the page beside the window.
+
+**Suggested improvement:** In §Traps: a function given to the page is self-contained — every helper it calls is declared inside it (or passed as text); a shared kit is tried once on one real case at both sizes before it is handed to parallel helpers. And a card or pop-up placed "by the side the control is on" measures that side within the control's own window or sheet, not the screen.
+
+**Principle:** Code sent into a page runs without its module: make it self-contained, and try a shared kit once before several helpers rely on it; place anything anchored to a control relative to the control's own container.

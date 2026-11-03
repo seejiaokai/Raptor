@@ -1,0 +1,1152 @@
+[
+ {
+  "n": 22,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/22-desktop-today.png",
+    "phone": "A/22-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/22-desktop-card.png",
+    "phone": "A/22-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 509,
+     "t": 387,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 509,
+     "t": 355,
+     "w": 145,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Discard & load",
+      "w": 110,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep editing",
+      "w": 98,
+      "h": 36,
+      "fits": true
+     }
+    ],
+    "shiftedIntoDay": -137.359375
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 56,
+     "t": 330,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 211,
+     "t": 298,
+     "w": 145,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Discard & load",
+      "w": 110,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep editing",
+      "w": 98,
+      "h": 44,
+      "fits": true
+     }
+    ],
+    "shiftedIntoDay": 0
+   }
+  },
+  "newWords": [
+   "\"Discard 1 edit & load?\" (the armed label as a question)",
+   "\"Discard & load\""
+  ],
+  "notes": [],
+  "screen": "Edit Schedule — a published day, looking at its Original",
+  "control": "\"Load onto working copy\" in the preview bar",
+  "question": "Discard 1 edit & load — confirm",
+  "answers": [
+   "Discard 1 edit & load — confirm",
+   "Keep editing"
+  ],
+  "today": "the button turns into \"Discard 1 edit & load — confirm\" and \"Keep editing\" appears beside it, in place",
+  "proposal": "card"
+ },
+ {
+  "n": 23,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/23-desktop-today.png",
+    "phone": "A/23-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/23-desktop-card.png",
+    "phone": "A/23-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 1107,
+     "t": 249,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 1262,
+     "t": 217,
+     "w": 145,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Discard & load",
+      "w": 110,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep editing",
+      "w": 98,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 51,
+     "t": 268,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 206,
+     "t": 236,
+     "w": 145,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Discard & load",
+      "w": 110,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep editing",
+      "w": 98,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Discard 1 edit & load?\" (the armed label as a question)",
+   "\"Discard & load\""
+  ],
+  "notes": [],
+  "screen": "The Scheduler Board — a published day, looking at its Original",
+  "control": "\"Load onto working copy\" in the preview bar",
+  "question": "Discard 1 edit & load — confirm",
+  "answers": [
+   "Discard 1 edit & load — confirm",
+   "Keep editing"
+  ],
+  "today": "the button turns into \"Discard 1 edit & load — confirm\" and \"Keep editing\" appears beside it, in place",
+  "proposal": "card"
+ },
+ {
+  "n": 24,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/24-desktop-today.png",
+    "phone": "A/24-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/24-desktop-card.png",
+    "phone": "A/24-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 547,
+     "t": 284,
+     "w": 300,
+     "h": 123
+    },
+    "ctl": {
+     "l": 547,
+     "t": 252,
+     "w": 70,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Withdraw",
+      "w": 80,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 16,
+     "t": 233,
+     "w": 300,
+     "h": 131
+    },
+    "ctl": {
+     "l": 16,
+     "t": 201,
+     "w": 70,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Withdraw",
+      "w": 80,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "Withdraw (the armed button's verb, as an answer)",
+   "Keep"
+  ],
+  "notes": [],
+  "screen": "Edit Schedule — a published day's head",
+  "control": "\"Unpublish\" in the day head",
+  "question": "Some of Saturday’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.",
+  "answers": [
+   "Withdraw — confirm (the same button, pressed again)"
+  ],
+  "today": "the button changes to \"Withdraw — confirm\" in place; a passing note at the foot of the screen says why: \"Some of Saturday’s OIL credits are already spent on the Leave War. Unpublishing withdraws them until you republish. Tap again to confirm.\"",
+  "proposal": "card"
+ },
+ {
+  "n": 25,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/25-desktop-today.png",
+    "phone": "A/25-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/25-desktop-card.png",
+    "phone": "A/25-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 765,
+     "t": 105,
+     "w": 300,
+     "h": 228
+    },
+    "ctl": {
+     "l": 982,
+     "t": 66,
+     "w": 83,
+     "h": 29
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Sort all",
+      "w": 67,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 90,
+     "t": 78,
+     "w": 300,
+     "h": 236
+    },
+    "ctl": {
+     "l": 90,
+     "t": 42,
+     "w": 30,
+     "h": 26
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Sort all",
+      "w": 67,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [],
+  "notes": [
+   "Sort all is not destructive (one Undo reverses it), so its own blue \"Sort all\" and the plain \"Cancel\" keep today's looks; no answer was recoloured"
+  ],
+  "screen": "The Scheduler Board",
+  "control": "⋯ in the board's bar, then \"Sort all\" in its menu (the menu closes as the question opens, so the card hangs from ⋯)",
+  "question": "Sort all — Monday — Every section on Monday — flying, duties, sims, ground and the overall programme — goes back into its own reading order, and the flying waves and duty blocks themselves move into take-off and start-time order. Unlike every other control on this board, this acts on the WHOLE day at once, not one row; a single Undo reverses all of it together.",
+  "answers": [
+   "Cancel",
+   "Sort all"
+  ],
+  "today": "a centred box over the whole board, the board dimmed behind it",
+  "proposal": "card"
+ },
+ {
+  "n": 26,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/26-desktop-today.png",
+    "phone": "A/26-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/26-desktop-card.png",
+    "phone": "A/26-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 537,
+     "t": 586,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 537,
+     "t": 554,
+     "w": 113,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Reset",
+      "w": 59,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 49,
+     "t": 573,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 49,
+     "t": 541,
+     "w": 113,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Reset",
+      "w": 59,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Reset the cancel reasons to the standard set?\"",
+   "\"Reset\"",
+   "\"Keep\" (not \"Cancel\": in this box \"Cancel\" means cancelling the line)"
+  ],
+  "notes": [],
+  "screen": "The Scheduler Board — a line's cancel box, its quick reasons being edited",
+  "control": "\"Reset to standard\" at the foot of the reasons list",
+  "question": "Tap again to reset",
+  "answers": [
+   "Tap again to reset (the same button, pressed again)"
+  ],
+  "today": "the button turns red and reads \"Tap again to reset\", in place",
+  "proposal": "card"
+ },
+ {
+  "n": 27,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {},
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not pictured: raised by a drop, not a press (D1626 covers presses); its sheet is the same OIL question as #30 and #31, drawn there"
+  ],
+  "screen": "The Scheduler Board / Edit Schedule — a puck dropped on an input's row",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 28,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {},
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not pictured: raised by a drop, not a press; the same OIL sheet as #30"
+  ],
+  "screen": "The Scheduler Board / Edit Schedule — a puck moved between rows",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 29,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {},
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not pictured: raised by a drop, not a press; the same OIL sheet as #30"
+  ],
+  "screen": "The Scheduler Board / Edit Schedule — a puck dropped on a medical's Unavailable row",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 30,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/30-desktop-today.png",
+    "phone": "A/30-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/30-desktop-card.png",
+    "phone": "A/30-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "scrolls": false,
+    "card": {
+     "l": 675,
+     "t": 522,
+     "w": 360,
+     "h": 225
+    },
+    "ctl": {
+     "l": 968,
+     "t": 494,
+     "w": 67,
+     "h": 18
+    },
+    "onScreen": true
+   },
+   "phone": {
+    "side": "below",
+    "scrolls": false,
+    "card": {
+     "l": 28,
+     "t": 493,
+     "w": 360,
+     "h": 225
+    },
+    "ctl": {
+     "l": 28,
+     "t": 465,
+     "w": 67,
+     "h": 18
+    },
+    "onScreen": true
+   }
+  },
+  "newWords": [],
+  "notes": [],
+  "screen": "The Scheduler Board — Friday made a public holiday; an input taken off the programme, its card under Personal Inputs",
+  "control": "\"→ Ground\" on the input's card",
+  "question": "Putting Ranger's Range brief back on the programme",
+  "answers": [
+   "Don’t put back",
+   "Put back"
+  ],
+  "today": "the OIL question as a centred box over the board",
+  "proposal": "sheet"
+ },
+ {
+  "n": 31,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/31-desktop-today.png",
+    "phone": "A/31-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/31-desktop-card.png",
+    "phone": "A/31-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "scrolls": false,
+    "card": {
+     "l": 670,
+     "t": 522,
+     "w": 360,
+     "h": 225
+    },
+    "ctl": {
+     "l": 1002,
+     "t": 494,
+     "w": 28,
+     "h": 18
+    },
+    "onScreen": true
+   },
+   "phone": {
+    "side": "below",
+    "scrolls": false,
+    "card": {
+     "l": 28,
+     "t": 493,
+     "w": 360,
+     "h": 225
+    },
+    "ctl": {
+     "l": 28,
+     "t": 465,
+     "w": 28,
+     "h": 18
+    },
+    "onScreen": true
+   }
+  },
+  "newWords": [],
+  "notes": [],
+  "screen": "The Scheduler Board — Friday made a public holiday; an input's row on the Ground Programme, cancelled",
+  "control": "the row's CX, then \"Un-cancel\" in the cancel box (the box closes as the question opens, so the card hangs from the row's CX — the button the app already flashes when the question is left unanswered)",
+  "question": "Un-cancelling Saber's Sim review",
+  "answers": [
+   "Don’t un-cancel",
+   "Un-cancel"
+  ],
+  "today": "the OIL question as a centred box over the board",
+  "proposal": "sheet"
+ },
+ {
+  "n": 32,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {},
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not pictured: raised by leaving a mission or remarks box that mentions DS or RED (Logic's switch on), not by a press; it already stands under the formation it is about"
+  ],
+  "screen": "Edit Schedule / the Scheduler Board — \"Blue or Red?\" under a formation",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 33,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {},
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not pictured: raised by dragging a section's grip, not by a press"
+  ],
+  "screen": "Edit Schedule / the Scheduler Board — \"Use this section order as the default…?\"",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 34,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/34-desktop-today.png",
+    "phone": "A/34-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/34-desktop-card.png",
+    "phone": "A/34-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 430,
+     "t": 253,
+     "w": 300,
+     "h": 147
+    },
+    "ctl": {
+     "l": 711,
+     "t": 225,
+     "w": 19,
+     "h": 18
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Remove",
+      "w": 73,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 8,
+     "t": 321,
+     "w": 300,
+     "h": 155
+    },
+    "ctl": {
+     "l": 192,
+     "t": 293,
+     "w": 19,
+     "h": 18
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Remove",
+      "w": 73,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Remove Scheduler?\"",
+   "\"Remove\"",
+   "\"Keep\"",
+   "(the note's sentence kept, its \"Press REMOVE? to take it off the LoX\" replaced by the answers)"
+  ],
+  "notes": [],
+  "screen": "Quals — editing the columns",
+  "control": "the ✕ on the Scheduler column's heading",
+  "question": "Scheduler is read by the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY. Press REMOVE? to take it off the LoX — who already holds it is kept.",
+  "answers": [
+   "\"remove?\" (the ✕ itself, pressed again)"
+  ],
+  "today": "the ✕ turns into \"remove?\" in place; a passing note at the foot of the screen says why: \"Scheduler is read by the sign-off drop-downs — SKED CK, PLANNED BY and APPROVED BY. Press REMOVE? to take it off the LoX — who already holds it is kept.\"",
+  "proposal": "card"
+ },
+ {
+  "n": 35,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/35-desktop-today.png",
+    "phone": "A/35-phone-today.png"
+   },
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "not a confirmation of the press: a reminder shown on another page afterwards — outside D1626"
+  ],
+  "screen": "Quals, after a man is restored on Admin → Users",
+  "control": "\"Restore\" on Admin → Users (another page)",
+  "question": "Blade is back — quals and CAT as he left them.Check his qualsLater",
+  "answers": [
+   "Check his quals",
+   "Later"
+  ],
+  "today": "a banner over the Quals table, on the page the Restore leads to",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 36,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/36-desktop-today.png"
+   },
+   "card": {}
+  },
+  "measures": {},
+  "newWords": [],
+  "notes": [
+   "raised by signing in, not by a control — outside D1626",
+   "phone: no Welcome back banner after signing in"
+  ],
+  "screen": "The first screen a restored man sees after signing in",
+  "control": "signing in (no control)",
+  "question": "Welcome back, Ranger — check your quals and CAT.Check my qualsLater",
+  "answers": [
+   "Check my quals",
+   "Later"
+  ],
+  "today": "a banner at the top of his first screen",
+  "proposal": "none — not a press"
+ },
+ {
+  "n": 37,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/37-desktop-today.png",
+    "phone": "A/37-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/37-desktop-card.png",
+    "phone": "A/37-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 498,
+     "t": 437,
+     "w": 300,
+     "h": 147
+    },
+    "ctl": {
+     "l": 736,
+     "t": 399,
+     "w": 62,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 8,
+     "t": 460,
+     "w": 300,
+     "h": 155
+    },
+    "ctl": {
+     "l": 214,
+     "t": 422,
+     "w": 62,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Ace?\"",
+   "\"Keep\" (the app’s own Delete / Keep pair; the row’s own Cancel closes the row)"
+  ],
+  "notes": [],
+  "screen": "Admin → Users — a person's row, opened",
+  "control": "\"Delete\" in the row's buttons",
+  "question": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+  "answers": [
+   "\"Tap again to delete Ace\" (the same button, pressed again)",
+   "Cancel (beside it)"
+  ],
+  "today": "the button turns into \"Tap again to delete Ace\" and a line under the buttons says what goes",
+  "proposal": "card"
+ },
+ {
+  "n": 38,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/38-desktop-today.png",
+    "phone": "A/38-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/38-desktop-card.png",
+    "phone": "A/38-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 636,
+     "t": 474,
+     "w": 300,
+     "h": 147
+    },
+    "ctl": {
+     "l": 636,
+     "t": 436,
+     "w": 62,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 94,
+     "t": 461,
+     "w": 300,
+     "h": 155
+    },
+    "ctl": {
+     "l": 114,
+     "t": 423,
+     "w": 62,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Blade?\"",
+   "\"Keep\" (the app’s own Delete / Keep pair; the row’s own Cancel closes the row)"
+  ],
+  "notes": [],
+  "screen": "Admin → Users → ▸ Archived — an archived man's row, opened",
+  "control": "\"Delete\" in the row's buttons",
+  "question": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone.",
+  "answers": [
+   "\"Tap again to delete Blade\" (the same button, pressed again)",
+   "Cancel (beside it)"
+  ],
+  "today": "the button turns into \"Tap again to delete Blade\" and a line under the buttons says what goes",
+  "proposal": "card"
+ },
+ {
+  "n": 39,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/39-desktop-today.png",
+    "phone": "A/39-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/39-desktop-card.png",
+    "phone": "A/39-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 843,
+     "t": 325,
+     "w": 300,
+     "h": 196
+    },
+    "ctl": {
+     "l": 559,
+     "t": 287,
+     "w": 584,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Clear",
+      "w": 56,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 37,
+     "t": 324,
+     "w": 300,
+     "h": 204
+    },
+    "ctl": {
+     "l": 37,
+     "t": 286,
+     "w": 328,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Clear",
+      "w": 56,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Clear 1 item?\"",
+   "\"Clear\"",
+   "\"Keep\"",
+   "(the note under the button moves into the card)"
+  ],
+  "notes": [],
+  "screen": "Admin → Data — Old clutter",
+  "control": "\"Clear old clutter…\"",
+  "question": "Tap again to clear 1 item",
+  "answers": [
+   "\"Tap again to clear 1 item\" (the same button, pressed again)"
+  ],
+  "today": "the full-width button turns red and reads \"Tap again to clear 1 item\", in place; the note under it is the standing explanation",
+  "proposal": "card"
+ },
+ {
+  "n": 40,
+  "area": "schedule-admin",
+  "pics": {
+   "today": {
+    "desktop": "A/40-desktop-today.png",
+    "phone": "A/40-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/40-desktop-card.png",
+    "phone": "A/40-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 843,
+     "t": 595,
+     "w": 300,
+     "h": 147
+    },
+    "ctl": {
+     "l": 559,
+     "t": 557,
+     "w": 584,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Clear",
+      "w": 56,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 37,
+     "t": 610,
+     "w": 300,
+     "h": 155
+    },
+    "ctl": {
+     "l": 37,
+     "t": 572,
+     "w": 328,
+     "h": 28
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Clear",
+      "w": 56,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "newWords": [
+   "\"Clear 1 entry?\"",
+   "\"Clear\"",
+   "\"Keep\"",
+   "(the note under the button moves into the card)"
+  ],
+  "notes": [],
+  "screen": "Admin → Data — Edit history",
+  "control": "\"Clear edit history…\"",
+  "question": "Tap again to clear 1 entry",
+  "answers": [
+   "\"Tap again to clear 1 entry\" (the same button, pressed again)"
+  ],
+  "today": "the full-width button turns red and reads \"Tap again to clear 1 entry\", in place; the note under it is the standing explanation",
+  "proposal": "card"
+ }
+]

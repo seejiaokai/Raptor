@@ -1,0 +1,465 @@
+[
+  {
+    "n": 1,
+    "area": "Inputs",
+    "screen": "an input’s window (Inputs page)",
+    "control": "the window’s ✕ (and Escape)",
+    "proposal": "none — already at the control",
+    "pics": {
+      "today": {
+        "desktop": "A/01-desktop-today.png",
+        "phone": "A/01-phone-today.png"
+      }
+    },
+    "newWords": [],
+    "notes": "the approved card (D1626, design C), built and live; drawn here as the reference every other card copies",
+    "question": "This input has unsaved changes. Close it and lose them?",
+    "answers": [
+      "Discard and close",
+      "Keep editing"
+    ],
+    "today": "a card hanging from the ✕, over the top of the form"
+  },
+  {
+    "n": 2,
+    "area": "Inputs",
+    "screen": "an input’s window, with another input pressed on the page behind it",
+    "control": "the other input — its bar on the Inputs calendar (desktop), its card in the opened day (phone)",
+    "proposal": "card",
+    "pics": {
+      "today": {
+        "desktop": "A/02-desktop-today.png",
+        "phone": "A/02-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/02-desktop-card.png",
+        "phone": "A/02-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "card": {
+          "l": 292,
+          "t": 647,
+          "w": 300,
+          "h": 106
+        },
+        "ctl": {
+          "l": 292,
+          "t": 619,
+          "w": 131,
+          "h": 18
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Discard and open",
+            "w": 127,
+            "h": 36,
+            "fits": true
+          },
+          {
+            "t": "Keep editing",
+            "w": 98,
+            "h": 36,
+            "fits": true
+          }
+        ]
+      },
+      "phone": {
+        "side": "above",
+        "card": {
+          "l": 8,
+          "t": 622,
+          "w": 300,
+          "h": 114
+        },
+        "ctl": {
+          "l": 8,
+          "t": 746,
+          "w": 386,
+          "h": 51
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Discard and open",
+            "w": 127,
+            "h": 44,
+            "fits": true
+          },
+          {
+            "t": "Keep editing",
+            "w": 98,
+            "h": 44,
+            "fits": true
+          }
+        ]
+      }
+    },
+    "newWords": [],
+    "notes": "desktop: input window in front after the press: true. phone: day window brought forward by its bar: true; the other card reachable: true. phone: input window in front after the press: true.  DESIGN CALL (phone): today the input window comes to the front and covers the card tapped, so a card hanging from that card would be hidden; in the card picture the day window is kept in front while the card is up. On the phone the other input is reachable only through a 12px strip of the day window left showing beside the input window.",
+    "question": "This input has unsaved changes. Open Drifter’s input and lose them?",
+    "answers": [
+      "Discard and open",
+      "Keep editing"
+    ],
+    "today": "a box across the top of the input window’s body, above the form — away from the bar or card pressed"
+  },
+  {
+    "n": 3,
+    "area": "Inputs",
+    "screen": "an input’s window (an input for several people)",
+    "control": "Delete, at the window’s foot",
+    "proposal": "card",
+    "pics": {
+      "today": {
+        "desktop": "A/03-desktop-today.png",
+        "phone": "A/03-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/03-desktop-card.png",
+        "phone": "A/03-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "card": {
+          "l": 1010,
+          "t": 738,
+          "w": 300,
+          "h": 89
+        },
+        "ctl": {
+          "l": 1010,
+          "t": 837,
+          "w": 62,
+          "h": 28
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Delete",
+            "w": 62,
+            "h": 36,
+            "fits": true
+          },
+          {
+            "t": "Keep",
+            "w": 55,
+            "h": 36,
+            "fits": true
+          }
+        ]
+      },
+      "phone": {
+        "side": "above",
+        "card": {
+          "l": 28,
+          "t": 716,
+          "w": 300,
+          "h": 97
+        },
+        "ctl": {
+          "l": 28,
+          "t": 823,
+          "w": 62,
+          "h": 28
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Delete",
+            "w": 62,
+            "h": 44,
+            "fits": true
+          },
+          {
+            "t": "Keep",
+            "w": 55,
+            "h": 44,
+            "fits": true
+          }
+        ]
+      }
+    },
+    "newWords": [],
+    "notes": "",
+    "question": "Delete this input for all 3 people?",
+    "answers": [
+      "Delete",
+      "Keep"
+    ],
+    "today": "a box in the form’s flow just above the window’s foot, scrolled into view"
+  },
+  {
+    "n": 4,
+    "area": "Inputs",
+    "screen": "an input’s window, opened by a member who is in it but did not file it",
+    "control": "Take me out, at the window’s foot",
+    "proposal": "card",
+    "pics": {
+      "today": {
+        "desktop": "A/04-desktop-today.png",
+        "phone": "A/04-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/04-desktop-card.png",
+        "phone": "A/04-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "card": {
+          "l": 1010,
+          "t": 707,
+          "w": 300,
+          "h": 106
+        },
+        "ctl": {
+          "l": 1010,
+          "t": 823,
+          "w": 75,
+          "h": 42
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Take me out",
+            "w": 95,
+            "h": 36,
+            "fits": true
+          },
+          {
+            "t": "Stay in",
+            "w": 65,
+            "h": 36,
+            "fits": true
+          }
+        ]
+      },
+      "phone": {
+        "side": "above",
+        "card": {
+          "l": 28,
+          "t": 685,
+          "w": 300,
+          "h": 114
+        },
+        "ctl": {
+          "l": 28,
+          "t": 809,
+          "w": 66,
+          "h": 42
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Take me out",
+            "w": 95,
+            "h": 44,
+            "fits": true
+          },
+          {
+            "t": "Stay in",
+            "w": 65,
+            "h": 44,
+            "fits": true
+          }
+        ]
+      }
+    },
+    "newWords": [],
+    "notes": "In the card picture the Take me out button stays where it was, so the card has something to hang from — today it disappears while its question stands; the build would keep it. Seen on the copy put back in the foot: Take me out wraps to two lines (42px tall) beside the foot note \"Only Saber — who filed it — or an admin can change this for everyone.\", on both sizes; the real button stands in the same row with the same class, so it likely wraps today too — not checked on the real one.",
+    "question": "Take yourself out of this input? It stays for the other 2 people.",
+    "answers": [
+      "Take me out",
+      "Stay in"
+    ],
+    "today": "a box in the form’s flow just above the window’s foot; the Take me out button itself disappears while it stands"
+  },
+  {
+    "n": 5,
+    "area": "Inputs",
+    "screen": "a day opened on the Inputs calendar",
+    "control": "no control — the Delete (or Backspace) key on a card that has the keyboard’s focus; the card hangs from the card itself",
+    "proposal": "card",
+    "pics": {
+      "today": {
+        "desktop": "A/05-desktop-today.png",
+        "phone": "A/05-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/05-desktop-card.png",
+        "phone": "A/05-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "card": {
+          "l": 1007,
+          "t": 551,
+          "w": 300,
+          "h": 89
+        },
+        "ctl": {
+          "l": 1007,
+          "t": 489,
+          "w": 404,
+          "h": 51
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Delete",
+            "w": 62,
+            "h": 36,
+            "fits": true
+          },
+          {
+            "t": "Keep",
+            "w": 55,
+            "h": 36,
+            "fits": true
+          }
+        ]
+      },
+      "phone": {
+        "side": "below",
+        "card": {
+          "l": 8,
+          "t": 475,
+          "w": 300,
+          "h": 97
+        },
+        "ctl": {
+          "l": 8,
+          "t": 413,
+          "w": 386,
+          "h": 51
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "Delete",
+            "w": 62,
+            "h": 44,
+            "fits": true
+          },
+          {
+            "t": "Keep",
+            "w": 55,
+            "h": 44,
+            "fits": true
+          }
+        ]
+      }
+    },
+    "newWords": [],
+    "notes": "Raised by a key, not a control: D1626’s reading says a key hangs from the control that does the same thing; a card in the opened day has no Delete button of its own, so the card hangs from the card the key acted on. On a phone this needs a keyboard.",
+    "question": "Delete this input for all 2 people?",
+    "answers": [
+      "Delete",
+      "Keep"
+    ],
+    "today": "a row inside the card itself, under its facts"
+  },
+  {
+    "n": 6,
+    "area": "Inputs",
+    "screen": "an input’s window, after its bar was dragged on the calendar behind it",
+    "control": "none — raised by a drag on the page behind, not a press",
+    "proposal": "none — not a press",
+    "pics": {
+      "today": {
+        "desktop": "A/06-desktop-today.png"
+      }
+    },
+    "newWords": [],
+    "notes": "phone not pictured: raised by dragging a bar on the month, which the phone does not offer beside an open window; the desktop picture shows how it is drawn",
+    "question": "Changed while this window was openstart date — theirs 28 Jul, yours 22 JulKeep mineTake theirs",
+    "answers": [
+      "Keep mine",
+      "Take theirs"
+    ],
+    "today": "a block at the top of the window’s body"
+  },
+  {
+    "n": 21,
+    "area": "Inputs / Calendar window",
+    "screen": "the Calendar window’s Holidays part (opened from the Leave War’s ⚙ → Days)",
+    "control": "Import (a file picked)",
+    "pics": {
+      "today": {
+        "desktop": "A/21-desktop-today.png",
+        "phone": "A/21-phone-today.png"
+      },
+      "card": {},
+      "before": {
+        "desktop": "A/21-desktop-before.png",
+        "phone": "A/21-phone-before.png"
+      }
+    },
+    "measures": {
+      "desktop-import": {
+        "t": 461,
+        "b": 491,
+        "l": 686,
+        "r": 806
+      },
+      "desktop": {
+        "today": {
+          "imp": null,
+          "pv": {
+            "t": 281,
+            "b": 472,
+            "l": 557,
+            "r": 1411
+          },
+          "foot": {
+            "t": 444,
+            "b": 472,
+            "l": 557,
+            "r": 1411
+          }
+        }
+      },
+      "phone-import": {
+        "t": 422,
+        "b": 452,
+        "l": 142,
+        "r": 262
+      },
+      "phone": {
+        "today": {
+          "imp": null,
+          "pv": {
+            "t": 242,
+            "b": 433,
+            "l": 13,
+            "r": 389
+          },
+          "foot": {
+            "t": 405,
+            "b": 433,
+            "l": 13,
+            "r": 389
+          }
+        }
+      }
+    },
+    "newWords": [],
+    "notes": "",
+    "question": "3 to add · 0 already here · 0 not read",
+    "answers": [
+      "Cancel",
+      "Add 3 holidays"
+    ],
+    "today": "the preview takes the place of the year’s list AND of the file row that holds Import (Import is gone while it stands), in the Holidays tab of the Calendar window",
+    "proposal": "none (recommended) — not a question at a control: the system’s file picker stands between the press and the preview, and the preview is the list it would change, drawn in that list’s place"
+  }
+]

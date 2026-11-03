@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/ask-at-the-control -->
+### `claude/ask-at-the-control` — [ASK-AT-THE-CONTROL]: every question raised by a press, drawn as a card hanging from its button — DRAWN, nothing built; waiting on his five answers — written 4 Nov 26 — verify before use
+- **Done:** the roll-call (71 questions, numbered as on the page) and every press-raised one drawn on the real app, today beside the card, at his iPhone's size and a desktop's; the look page https://claude.ai/artifact/1kU5EHYgJUVQCPejKhzuRi, its top the five things he decides (each with its recommendation). Detail, and the three side-finds: `OUTSTANDING.md` [ASK-AT-THE-CONTROL].
+- **How it was drawn:** the kit `raptor-port/scripts/handpass/ask-at-lib.mjs`; one script per area (`ask-at-<area>.mjs`, run from `raptor-port/` with `WALK_DIR` a frozen build and `ISR_OUT` the area's picture folder); `ask-at-page.mjs <folder>` builds the page (light JPEG copies; the PNGs in the project are the record). No app code changed; no check run beyond the drawing scripts' own (0 browser errors).
+- **Next, in order:** (1) his answers, recorded as rulings in `design.md` (and the four Leave War rulings his answer 3 touches, if he changes them); (2) the build area by area (D490), each with its walk; the input window first.
+- **Numbers held:** rulings D1627–D1636 (none used); observations 796–805 (796 used); design lessons 85–88 (none used).
+- **Opening line (to continue):** Switch this chat to the branch `claude/ask-at-the-control`: `git fetch origin`, `git switch claude/ask-at-the-control`, `git pull --ff-only`. Read `HANDOFF.md` — its block under `## Now` — then carry on from "Next, in order".
+<!-- /now -->
 <!-- now:claude/talon-claw-visible -->
 ### `claude/talon-claw-visible` — the loading claw's plain dark and its first moment, pull request 628 — MERGING on his "merge live" (4 Nov 26); once live this block goes at the next handoff — written 4 Nov 26 — verify before use
 - **What goes live:** [TALON-CLAW-BG] — every page's background the claw's plain dark, the faint wash gone (D1614); D1612's one-frame raise taken out; the start-up claw on every start from its first frame (D1615). Walks: start-up 27/27, page claw 75/75; load 1.65 s. Evidence `raptor-port/docs/handpass/2026-11-03-talon-pages.md`. [TALON-CLAW-BG] archived. `main` merged in (the input window's ✕ question, D1624–D1626) — record files clashed, both sides kept.
