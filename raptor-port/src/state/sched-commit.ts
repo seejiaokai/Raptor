@@ -556,6 +556,9 @@ export const SCHED_TYPES = {
   sectionReorder: 'sched.section.reorder',
   inputsWrite: 'inputs.write',
   inputsBatch: 'inputs.batch',
+  /* a scheduler's tap on the LATE chip drops the mark, or brings it back, for everyone (owner D1586) — its own type so
+     Undo names it and the gate holds it to a scheduler */
+  lateOff: 'inputs.lateOff',
   // phase 2b — the publish path (design §3.4)
   approve: 'sched.approve',
   publishAL: 'sched.publishAL',

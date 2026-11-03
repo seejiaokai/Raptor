@@ -742,3 +742,41 @@ describe('publishing a day no leave war period covers says so (Codex M8 + D19)',
     expect(said.join(' | ')).not.toMatch(/leave war period/i)
   })
 })
+
+/* D1578 (owner, 3 Nov 26): an input filed for a weekend no Leave War period covers keeps its OIL answer, and the OIL it
+   earns shows on the war once a period holding that date exists — even when the day was published BEFORE the period was
+   made, and even when the week is no longer the one on screen. The period is never made from the input. */
+describe('D1578 — a weekend answered before its year had a period earns once the period is made', () => {
+  afterEach(() => { loadWeek('13/07/2026') })
+  const warOf = (iso: string) => getState().wars.find(w => w.period.start <= iso && iso <= w.period.end)
+
+  it('the answered OIL lands on the new period, from a day published before it existed', () => {
+    setRole('admin')
+    installAbsenceDoor()
+    loadWeek('07/02/2028')
+    const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))
+    const iso = '2028-02-12'
+    INPUTS.unshift({ person: 'bane', type: 'Duty', date: 'Feb 12', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2028, oil: { [iso]: 1 } } as any)
+    publish(sat)
+    runOilPass()
+    expect(warOf(iso), 'no period yet').toBeUndefined()
+    expect(INPUTS[0].oil, 'the answer is kept on the input').toEqual({ [iso]: 1 })
+    expect(createOilPeriodFor('2028')).toBe('created')
+    runOilPass()
+    expect(warOf(iso)!.grid['bane']?.[iso], 'the OIL shows on the new period').toBe('FO')
+  })
+
+  it('the same when the week was left before the period was made (the credit reads every visited week)', () => {
+    setRole('admin')
+    installAbsenceDoor()
+    loadWeek('07/02/2028')
+    const sat = DATES.findIndex((d: any) => /Feb 12/.test(String(d)))
+    const iso = '2028-02-12'
+    INPUTS.unshift({ person: 'bane', type: 'Duty', date: 'Feb 12', allday: true, s: 0, e: 1439, remarks: '', mod: 'now', yr: 2028, oil: { [iso]: 1 } } as any)
+    publish(sat)
+    loadWeek('13/07/2026')
+    expect(createOilPeriodFor('2028')).toBe('created')
+    runOilPass()
+    expect(warOf(iso)!.grid['bane']?.[iso], 'the OIL shows on the new period').toBe('FO')
+  })
+})

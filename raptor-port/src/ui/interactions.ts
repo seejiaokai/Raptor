@@ -22,7 +22,7 @@ import { HOOKS } from '../engine/hooks'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { notify, loadWeek, commitSetDayApproved, commitPublishALDay } from '../state/store'
-import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish } from '../state/sched-commit'
+import { schedWrite, schedWriteValue, SCHED_TYPES, commitUnpublish, commitInputs } from '../state/sched-commit'
 import { oilCreditBidAgainst, createOilPeriodFor, showPeriodOf } from '../leavewar/sync'
 import { scrollToWarnFocus, queueHold, warnWeekId, bringIntoView } from './highlights'
 import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, storesText } from '../engine'
@@ -1183,7 +1183,8 @@ export function routeClick(e: MouseEvent) {
          it (ui/html.ts lateMates), so the tap hides it — or brings it back — for all of them alike */
       const late = lateMates(inp).filter((r: any) => isLateInput(r))
       const hide = late.some((r: any) => view.lateShown(r))
-      for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.toggleLateOff(r)
+      /* saved on the input for everyone (D1586): one command, so it is kept, shared and one Undo step */
+      commitInputs(SCHED_TYPES.lateOff, () => { for (const r of late.length ? late : [inp]) if (view.lateShown(r) === hide) view.setLateOff(r, hide) })
       HOOKS.toast(hide ? 'LATE mark hidden. The Inputs page still shows it.' : 'LATE mark shown', 'ok')
     }
     notify(); return

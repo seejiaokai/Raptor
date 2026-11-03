@@ -193,25 +193,34 @@ export function toggleHlGroup(g:any){ HLGROUP = HLGROUP===g ? '' : g }
    live Personal-Inputs and Unavailable rows always draw the chip on a late
    input — solid while the mark shows, a dim ghost once dropped — so the dropped
    state stays reachable; the week, the view-only programme and a read-only
-   board show the amber badge only while the id is NOT in this set. The Inputs
+   board show the amber badge only while the mark is not dropped. The Inputs
    page keeps its own — that page is the paperwork record of what came in late
    (owner, 20 Aug 26), and reads `isLateInput` straight.
 
    ADMIN at the write path, like every other write in this app: a member must
-   not clear the mark on their own late input, or anyone's. Session-scoped and
-   not persisted, like HISTMODE and the Available-crew folds — the set is
-   cleared on every login/logout by resetSession, so a next user never inherits
-   a board with marks quietly dropped. If "we run no deadline" should stick,
-   that is the same server work as the rest of HANDOFF's list. */
-export const LATEOFF=new Set<string>()
-export function lateShown(inp:any){ return !!inp && !LATEOFF.has(inpId(inp)) }
-/* returns the NEW shown-state (true = the mark is back on), or false when a
-   member is refused — the caller toasts either way. */
-export function toggleLateOff(inp:any){
+   not clear the mark on their own late input, or anyone's.
+
+   SAVED ON THE INPUT, FOR EVERYONE (owner D1586, 3 Nov 26 — "everyone, so the whole squadron sees one answer"). It was
+   a session-only set here, cleared on a sign-in and a week change — the agent's reading of his ask, never his words.
+   Now the drop is the input's own `lateOff`, written by its own command (`inputs.lateOff`, ui/interactions.ts), so every
+   scheduler and member sees the mark gone, after a reload, a sign-out and a week change, and Undo takes it back. A MARK,
+   NOT A CHANGE OF THE INPUT: it stamps no change time (the LATE rule measures the input's last change, which this is
+   not), it is no field the published-day comparison reads (engine/inputs.ts inpDetailKey), and it is read from the LIVE
+   record by id — so the issued face's frozen copy of the input (engine/publish.ts dayInputsFrozen) drops the mark the
+   moment a scheduler does, as it did when this was a set. */
+export function lateShown(inp:any){
+  if(!inp) return false
+  const id=inp.iid
+  const live=id?(INPUTS as any[]).find((r:any)=>r&&r.iid===id):null
+  return !(live||inp).lateOff
+}
+/* the write, inside the caller's command: the live record by id gets the mark or loses it. False for a member. */
+export function setLateOff(inp:any, off:boolean){
   if(!canEditSched()) return false
   const id=inpId(inp)
-  if(LATEOFF.has(id)){ LATEOFF.delete(id); return true }
-  LATEOFF.add(id); return false
+  const live:any=(INPUTS as any[]).find((r:any)=>r&&inpId(r)===id)||inp
+  if(off) live.lateOff=true; else delete live.lateOff
+  return true
 }
 
 /* ---- THE STORES FREE-TEXT BOX THAT JUST SAVED ----------------------------
@@ -970,7 +979,6 @@ export const VIEW_RESET: { name: string; scopes: ResetScope[]; reset: () => void
   { name:'VWORK',   scopes:['session','week'], reset:()=>VWORK.clear() },
   { name:'AVSHUT',  scopes:['session','week'], reset:()=>AVSHUT.clear() },
   { name:'PIOPEN',  scopes:['session','week'], reset:()=>PIOPEN.clear() },
-  { name:'LATEOFF', scopes:['session','week'], reset:()=>LATEOFF.clear() },
   { name:'BELLLIT', scopes:['session','week'], reset:()=>BELLLIT.clear() },
   { name:'WARNOFF', scopes:['week'], reset:()=>WARNOFF.clear() },
   { name:'NOTEPUB', scopes:['session','week'], reset:()=>NOTEPUB.clear() },

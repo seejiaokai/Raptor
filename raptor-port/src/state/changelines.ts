@@ -197,7 +197,9 @@ function inputLines(c: Change, env: CommitEnvelope, warCmd: boolean): void {
   { const cxW = (x: any) => (x.cx ? `cancelled${x.cxr ? ' — ' + String(x.cxr) : ''}` : 'not cancelled')
     if (cxW(b) !== cxW(a)) logAction(null, `${who} · ${what} ${spanWords(sa)} · CX`, base({ from: cxW(b), to: cxW(a) }))
     if (!!b.flag !== !!a.flag) logAction(null, `${who} · ${what} ${spanWords(sa)} · red box`, base({ from: b.flag ? 'on' : 'off', to: a.flag ? 'on' : 'off' }))
-    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' })) }
+    if (!!b.info !== !!a.info) logAction(null, `${who} · ${what} ${spanWords(sa)} · information only`, base({ from: b.info ? 'yes' : 'no', to: a.info ? 'yes' : 'no' }))
+    /* the LATE mark dropped or brought back (D1586) — kept on the input for everyone now, so who did it is answerable here */
+    if (!!b.lateOff !== !!a.lateOff) logAction(null, `${who} · ${what} ${spanWords(sa)} · LATE mark`, base({ from: b.lateOff ? 'hidden' : 'shown', to: a.lateOff ? 'hidden' : 'shown' })) }
   /* WHAT A SANS AVAILABILITY OFFERS (found building D629, 7 Oct 26 — the plan §3.8): a change to the Fly / OFT / AMT
      ticks alone wrote no line at all — the one thing a person reads on that record that the list above never compared.
      Only where both sides are a SANS availability: a change of type is the type line's to say. */

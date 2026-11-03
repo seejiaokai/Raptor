@@ -63,6 +63,7 @@ const TYPE_PHRASE: Record<string, string> = {
   'sched.draft.delete': 'deleting a saved plan',
   'inputs.write': 'a personal input',
   'inputs.batch': 'a batch of inputs',
+  'inputs.lateOff': 'a LATE mark',
   /* the accounts (Admin → Users) — the account-level ones read the change itself, below */
   'account.add': 'giving a sign-in',
   'access.approve': 'giving access',

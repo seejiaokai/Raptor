@@ -26,6 +26,8 @@ import { App } from './App'
 import { initStore, setSession, notify, resetSession } from '../state/store'
 import { INPUTS, isLateInput, inpId } from '../engine/inputs'
 import { HOOKS } from '../engine/hooks'
+import { onCommit } from '../command'
+import { resyncSchedBaseline } from '../state/sched-commit'
 import * as view from '../state/view'
 import { openScheduler } from './board'
 import { sbInputsGroupPanel } from './board-html'
@@ -73,8 +75,14 @@ afterAll(async () => {
 beforeEach(async () => {
   TOASTS = []
   view.PIOPEN.add(LATE_DI)   // Personal Inputs folds by default now — expand the day this file drives so its rows render
-  if (view.LATEOFF.size) await act(async () => { view.LATEOFF.clear(); notify() })
+  /* the tests set the mark straight on the records (a fixture, not a command), so the command layer's baseline is put back
+     level with them — or a later tap that writes the same value as a stale baseline would record no change */
+  await act(async () => { clearDrops(); resyncSchedBaseline(); notify() })
 })
+
+/* the drop is the input's own mark since D1586 — the tests set and clear it on the live records, as the command does */
+const drop = (inp: any) => { (INPUTS.find((i: any) => inpId(i) === inpId(inp)) as any).lateOff = true }
+const clearDrops = () => { for (const i of INPUTS as any[]) delete i.lateOff }
 
 describe('the per-input LATE dismissal', () => {
   it('the seed really does carry late inputs, so the rest of this file is not vacuous', () => {
@@ -97,11 +105,11 @@ describe('the per-input LATE dismissal', () => {
     expect(on).toContain('aria-pressed="false"')
     expect(on, 'not ghosted while showing').not.toContain('latechip off')
 
-    view.LATEOFF.add(inpId(inp))
+    drop(inp)
     const off = lateChip(inp)
     expect(off).toContain('aria-pressed="true"')
     expect(off, 'ghosted once dropped').toContain('latechip off')
-    view.LATEOFF.clear()
+    clearDrops()
   })
 
   it('dropping one mark clears only that input, and pressing its spot again brings it back', async () => {
@@ -132,11 +140,11 @@ describe('the per-input LATE dismissal', () => {
   it('the week is covered by the same read — one gate, every schedule surface', () => {
     const inp = lateSeeds().find((i: any) => i.date === 'Jul 14')!
     expect(dayHTML(LATE_DI, true), 'the week draws it').toContain('latetag')
-    view.LATEOFF.add(inpId(inp))
+    drop(inp)
     // the dropped input's badge is gone from the week too; others may remain,
     // so assert on the specific input via lateTag rather than the whole day.
     expect(lateTag(inp), 'the dropped one stops on the week as well').toBe('')
-    view.LATEOFF.clear()
+    clearDrops()
   })
 
   /* The mark is a display of an engine fact, not the fact itself. Turning the
@@ -146,10 +154,10 @@ describe('the per-input LATE dismissal', () => {
      quietly becoming a rule change. */
   it('the engine is untouched — the input is still late, it is only unprinted', () => {
     const inp = lateSeeds()[0]
-    view.LATEOFF.add(inpId(inp))
+    drop(inp)
     expect(isLateInput(inp), 'the engine still answers').toBe(true)
     expect(lateTag(inp), 'the passive badge prints nothing').toBe('')
-    view.LATEOFF.clear()
+    clearDrops()
     expect(lateTag(inp)).toContain('LATE')
   })
 
@@ -161,20 +169,41 @@ describe('the per-input LATE dismissal', () => {
     bait.setAttribute('data-lateoff', inpId(inp))
     document.body.appendChild(bait)
     await click(bait)
-    expect(view.LATEOFF.has(inpId(inp)), 'the mark stays').toBe(false)
+    expect(!!(INPUTS.find((i: any) => inpId(i) === inpId(inp)) as any).lateOff, 'the mark stays').toBe(false)
     expect(TOASTS.join(' ')).toContain('Only a scheduler')
     bait.remove()
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
   })
 
-  /* A view mode, so it belongs to the session that set it — the same rule
-     HISTMODE and the Available-crew folds follow. The next user must not
-     inherit a board with a mark quietly dropped. */
-  it('a session change brings every dropped mark back', async () => {
+  /* D1586 (owner, 3 Nov 26 — "everyone, so the whole squadron sees one answer"): the drop is saved on the input, so a
+     sign-out and a sign-in keep it — it used to be a session-only view set the next user never inherited. */
+  it('a session change keeps a dropped mark dropped (D1586)', async () => {
     const inp = lateSeeds()[0]
-    view.LATEOFF.add(inpId(inp))
+    drop(inp)
     await act(async () => { resetSession(null); notify() })
-    expect(view.LATEOFF.size).toBe(0)
     await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+    expect(lateTag(inp), 'still dropped for the next person signed in').toBe('')
+    clearDrops()
+  })
+
+  it('the tap is one saved command on the input: it marks the record and stamps no change time (D1586)', async () => {
+    /* the session test above signed out and in again, which leaves Edit Schedule — come back to it */
+    await click($$('.nav a[data-page]').find(a => a.dataset.page === 'editsched')!)
+    await act(async () => { openScheduler(LATE_DI); notify() })
+    const chip = $('#schedBoard [data-lateoff]')!
+    const rec: any = INPUTS.find((i: any) => inpId(i) === chip.getAttribute('data-lateoff'))
+    const modBefore = rec.mod
+    const seen: any[] = []
+    const off = onCommit(env => { seen.push(env) })
+    try { await click(chip) } finally { off() }
+    expect(rec.lateOff, 'kept on the input itself').toBe(true)
+    expect(rec.mod, 'a mark, not a change of the input: the late rule still reads the same stamp').toBe(modBefore)
+    expect(isLateInput(rec), 'still late').toBe(true)
+    /* one command of its own type, whose change is the input's record — so it is saved, shared and one Undo step */
+    const env = seen.find(e => e.type === 'inputs.lateOff')
+    expect(env, 'its own command').toBeTruthy()
+    expect(env.changes.some((c: any) => c.collection === 'inputs' && c.id === rec.iid && c.after && c.after.lateOff === true), 'the input record changed').toBe(true)
+    await click($('#schedBoard [data-lateoff]'))
+    expect(!!rec.lateOff, 'the same spot brings it back').toBe(false)
   })
 })

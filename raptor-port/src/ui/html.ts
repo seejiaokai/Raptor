@@ -1453,12 +1453,12 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
 /* THE MARK IS READ HERE, ONCE PER INPUT (owner, 21 Aug 26 — per-input dismissal
    replaced the 20 Aug global switch). All four passive helpers below funnel
    through `isLateInput(inp) && lateShown(inp)`, so a mark a scheduler has
-   dropped on the board (state/view.ts's LATEOFF) vanishes at a stroke from
+   dropped on the board (the input's own lateOff, D1586 — state/view.ts lateShown) vanishes at a stroke from
    every READ surface: the board's inputs bands and read-only panels (via
    `sbiRmk`, which calls `lateTag`), the edit week, the view-only week and the
    board's promoted ground row. The board's LIVE input rows draw `lateChip`
    instead — the clickable control that is always present so the dropped state
-   stays reachable. The Inputs page keeps its own mark — see LATEOFF in
+   stays reachable. The Inputs page keeps its own mark — see lateShown in
    state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
    answering, and the mark was never a rule (§Stable decisions). */
 /* THE MARK OF A SHARED INPUT IS ITS ONE ROW'S (`[GROUP-INPUT-ONE-ROW]`; owner D661 — the plan
