@@ -91,7 +91,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [LW-B8-STAMP-FLAKE] — a Leave War unit test fails now and then (two stamps a millisecond apart); the cause proven, a one-line test fix — small.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -686,18 +685,6 @@ the background and keep them on the phone (one read of a week's day rows each �
 person has, D1570), refreshed when another scheduler changes them (the sharing design, [DB-SYNC-MODEL]); a cross then costs only the app's own preparation, as today
 (the end cards that would have hidden it were set aside, D1577). A week fetched for the first
 time with no signal shows a plain "loading" state, never another week's data. **Place:** with [DB-STEP].
-
-### [LW-B8-STAMP-FLAKE] A Leave War unit test fails now and then: two stamps a millisecond apart (found 3 Nov 26, pull request 623's run)
-On pull request 623 (notes, a mock-up and picture scripts — no app code), GitHub's `unit (leavewar 3/4)` failed one test:
-`src/leavewar/opendates-store.test.ts` "B8 — … a restore the timeline is not applying adds or changes nothing on a closed day"
-— *expected 'who placed a request …' to match /not open for bidding/*. The same code passed on `main` two hours before, and here
-(plain and under `TZ=Pacific/Midway`). **Cause, proven:** the test's `bid()` stamps `placedAt: Date.now()` at each call, and its
-before/after pairs call it twice (`[bid('n1')]` → `[bid('n1','OL')]`); on a slow machine the two stamps fall a millisecond apart,
-so `state/perms.ts ownershipViolation` rightly reports the request's placing changed ("who placed a request") before the closed
-day. A copy of the file with a clock that moves one millisecond at every read failed both B8 tests with exactly that message
-(3 Nov 26). The app is right; the test is wrong. **Fix:** stamp one time for the block (`const T0 = Date.now()`, `placedAt: T0`
-— still inside the check's five minutes), and keep the ticking-clock copy as the proof that it holds; look for other tests that
-build a before/after pair from two `Date.now()` stamps. **Place:** small — the next Leave War change, or on its own.
 
 ### [ONE-LIVE-WEEK-WEIGH] One live week at a time — weigh at the database step whether to change it (3 Nov 26, his question)
 **His question (3 Nov 26, after the [WEEK-CROSS-END-CARDS] plan's fresh read):** *"Does that mean that the way the app is designed now

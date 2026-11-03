@@ -7531,3 +7531,19 @@ week loaded (the last card could not scroll fully in); fixed in the mock-up by 2
 loaded day on the resting card's exact place; measured still to the pixel both ways. The build carries both, with that measure.
 **The desktop stays as it is (D1576, 3 Nov 26 — "Leave the desktop").** **The plan:** `raptor-port/docs/superpowers/plans/2026-11-03-week-cross-end-cards.md` — HEAVY, a proof step first (drawing a day of a week not loaded, leaving the app exactly as it was), read by a fresh Opus reader before it is put to him.
 
+
+*Moved here 2026-11-03 by backlog-archive.mjs ([LW-B8-STAMP-FLAKE]). Forward facts: `raptor-port/src/leavewar/opendates-store.test.ts`.*
+
+### [LW-B8-STAMP-FLAKE] A Leave War unit test fails now and then: two stamps a millisecond apart (found 3 Nov 26, pull request 623's run)
+**BUILT 3 Nov 26 on `claude/lw-b8-stamp-flake`:** the B8 block takes ONE stamp a test (`T0`, set in its `beforeEach`), and its clock now moves one millisecond at every read for the whole block, so the slow machine's case runs every time — red first (both B8 tests failed with GitHub's exact message), then 37 / 37 plain and under `TZ=Pacific/Midway`. The sweep for other before / after pairs built from two live stamps found none: `m4ride.test.ts` and `m4sec.test.ts` stamp live times but freeze the clock for every test. Archive once live.
+On pull request 623 (notes, a mock-up and picture scripts — no app code), GitHub's `unit (leavewar 3/4)` failed one test:
+`src/leavewar/opendates-store.test.ts` "B8 — … a restore the timeline is not applying adds or changes nothing on a closed day"
+— *expected 'who placed a request …' to match /not open for bidding/*. The same code passed on `main` two hours before, and here
+(plain and under `TZ=Pacific/Midway`). **Cause, proven:** the test's `bid()` stamps `placedAt: Date.now()` at each call, and its
+before/after pairs call it twice (`[bid('n1')]` → `[bid('n1','OL')]`); on a slow machine the two stamps fall a millisecond apart,
+so `state/perms.ts ownershipViolation` rightly reports the request's placing changed ("who placed a request") before the closed
+day. A copy of the file with a clock that moves one millisecond at every read failed both B8 tests with exactly that message
+(3 Nov 26). The app is right; the test is wrong. **Fix:** stamp one time for the block (`const T0 = Date.now()`, `placedAt: T0`
+— still inside the check's five minutes), and keep the ticking-clock copy as the proof that it holds; look for other tests that
+build a before/after pair from two `Date.now()` stamps. **Place:** small — the next Leave War change, or on its own.
+
