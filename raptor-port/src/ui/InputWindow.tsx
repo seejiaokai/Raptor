@@ -445,6 +445,14 @@ export function InputEditor() {
     const pplTouched = ppl.length !== had.size || ppl.some(id => !had.has(id))
     return pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))
   }
+  /* THE WINDOW'S ✕ ASKS AS ESCAPE DOES (owner D1622, 3 Nov 26): with anything of his not saved, ✕ puts up the same
+     "Close it and lose them?" question — a ✕ is easy to hit by mistake; with nothing typed it closes at once. Cancel keeps
+     `close` and asks nothing: it already means "throw this away". Pressed again while the question stands it changes
+     nothing (the question stays); over the swap's question it asks the close question in its place. */
+  const askClose = () => {
+    if (unsavedNow()) { setSwap(null); setEscAsk(true); bringForward('inputedit') }
+    else close()
+  }
   /* the "?" card beside Type takes Escape only while this window is the one in front (ui/TypeLegend.tsx) */
   const legendFront = useRef(() => frontWin() === 'inputedit').current
   /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
@@ -1230,7 +1238,7 @@ export function InputEditor() {
     ? <span className="inped-cx" data-testid="inped-cx" title={cxSays(cxRec)}><span className="icx">CX</span>{cxWhy(cxRec) && <span className="icx-why">{cxWhy(cxRec)}</span>}</span>
     : null
   if (win) return (<>
-    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={close}
+    <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>
       <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
@@ -1243,13 +1251,21 @@ export function InputEditor() {
             <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
           </div>
         )}
-        {/* ESCAPE OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check): the swap's own question, worded for closing */}
+        {/* ESCAPE OR ✕ OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check; ✕ since D1622). A SMALL CARD HANGING FROM THE ✕
+            (owner D1626, 3 Nov 26, design C — "if u want to close, you position your hand to reach it"): the question
+            stands where the hand already is, pointing at the ✕, and covers the form's top only while it is up. Its
+            anchor has no height and sticks to the top of the window's body, so the form never moves and a scrolled
+            form still shows the card under the ✕. */}
         {escAsk && !swap && (
-          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow as the swap's ask above is: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window */
-          <div className="inped-ask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
-            <span className="inped-ask-q">This input has unsaved changes. Close it and lose them?</span>
-            <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
-            <button type="button" className="abtn ghost" data-testid="inped-escask-stay" autoFocus onClick={() => setEscAsk(false)}>Keep editing</button>
+          <div className="inped-xask-at">
+            {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window: it leaves the page behind working (D641) and hangs from the window's own ✕; a <dialog> would open in the top layer over every window */}
+            <div className="inped-xask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
+              <span className="inped-xask-q">This input has unsaved changes. Close it and lose them?</span>
+              <span className="inped-xask-btns">
+                <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
+                <button type="button" className="abtn primary" data-testid="inped-escask-stay" autoFocus onClick={() => setEscAsk(false)}>Keep editing</button>
+              </span>
+            </div>
           </div>
         )}
         {/* A FIELD CHANGED BOTH WAYS — his, in the window, and someone's on the page behind it: listed, each with its
