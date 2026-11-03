@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1621 | 3 Nov 26 | A LATE mark a scheduler drops on a day already published leaves the issued schedule at once, as built: nothing reads pending and the four sign-offs stay; it does not wait for the next amendment, as a hidden warning does (D471). |
 | D1620 | 3 Nov 26 | When a member changes his input again after a scheduler dropped its LATE mark, the drop goes: if that new change is itself late, LATE shows again for everyone until a scheduler drops it again; a scheduler's own change keeps the drop. |
 | D1592 | 3 Nov 26 | On a day already published, making a scheduler note public, or scheduler-only again, waits for the next amendment like any other change there: until that amendment is published the view-only schedule shows the note as the day went out. |
 | D1589 | 3 Nov 26 | The change history and every other record of who did something show the person's name as it was at the time, and keep the person himself underneath, so his record can still be found after a rename. |
