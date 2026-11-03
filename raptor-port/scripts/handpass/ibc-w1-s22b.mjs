@@ -53,7 +53,7 @@ const ask = page => tid(page, 'idy-ask').count()
     row('S23c-0', 'create two day notes via + Note', 'two notes listed', notes, notes.length >= 2 ? 'RECORDED' : 'NOT WALKED premise — notes not made')
     await shot(p, 'S23c-notes')
     const nb = await p.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputsday"] .ic-sechandle')].map(e => { const r = e.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2, w: r.width, h: r.height, txt: (e.parentElement.textContent || '').trim().slice(0, 20) } }))
-    row('S23c-1', 'the two note drag handles (the six dots at the left of each note)', 'RECORD', nb, nb.length >= 2 ? 'RECORDED' : 'NOT WALKED premise � fewer than two notes')
+    row('S23c-1', 'the two note drag handles (the six dots at the left of each note)', 'RECORD', nb, nb.length >= 2 ? 'RECORDED' : 'NOT WALKED premise — fewer than two notes')
     if (nb.length >= 2) {
       const order = () => p.evaluate(() => [...document.querySelectorAll('[data-testid="win-inputsday"] .ic-poppuck.ic-note')].map(e => (e.textContent || '').trim().slice(0, 25)))
       const st = () => p.evaluate(() => ({ body: document.body.className, ghostsOrBars: [...document.querySelectorAll('[class*="ghost"], .pk-drag, [class*="landing"], [class*="drop-bar"], .ic-sec-drag, .is-dragging')].map(e => e.className.toString().slice(0, 30)) }))
