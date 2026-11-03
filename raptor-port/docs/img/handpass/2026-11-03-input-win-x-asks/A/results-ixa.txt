@@ -1,0 +1,23 @@
+PASS X0 desktop: premise — a meeting filed, its day open — saw {"iid":"imw0s46v29s3552","men":["bane"]}
+PASS X1 desktop: ✕ with typed words asks "Close it and lose them?" — saw "This input has unsaved changes. Close it and lose them?Discard and closeKeep editing"
+PASS X1 desktop: Keep editing — the question goes, the words stay — saw "typed, not saved"
+PASS X1 desktop: ✕ again, Discard and close — closed, nothing saved — saw "as filed"
+PASS X2 desktop: ✕ with nothing typed closes at once, no question — saw null
+PASS X3 desktop: Cancel with typed words closes at once, no question, nothing saved — saw "as filed"
+PASS X4 desktop: Escape with typed words asks the same question — saw null
+PASS X4 desktop: Escape again is Keep editing — the words stay — saw null
+PASS X5 desktop: Save still saves, no question — saw "changed and saved"
+PASS X6 desktop: a new input with its type changed — ✕ asks — saw null
+PASS X6 desktop: Discard and close — nothing filed — saw null
+NOTE X — desktop: walked
+PASS X0 phone: premise — a meeting filed, its day open — saw {"iid":"imw0s4kh2mffd0e","men":["bane"]}
+PASS X1 phone: ✕ with typed words asks "Close it and lose them?" — saw "This input has unsaved changes. Close it and lose them?Discard and closeKeep editing"
+PASS X1 phone: Keep editing — the question goes, the words stay — saw "typed, not saved"
+PASS X1 phone: ✕ again, Discard and close — closed, nothing saved — saw "as filed"
+PASS X2 phone: ✕ with nothing typed closes at once, no question — saw null
+PASS X3 phone: Cancel with typed words closes at once, no question, nothing saved — saw "as filed"
+NOT WALKED X4 — phone: a phone has no Escape key
+PASS X5 phone: Save still saves, no question — saw "changed and saved"
+PASS X6 phone: a new input with its type changed — ✕ asks — saw null
+PASS X6 phone: Discard and close — nothing filed — saw null
+NOTE X — phone: walked

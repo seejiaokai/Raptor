@@ -281,7 +281,9 @@ test('a finger held on a date, then dragged, picks the run — the page standing
     await expect(page.locator('#inpEditRmk')).toHaveValue('')
     await page.locator('#inpEdCal [data-iso="2026-10-22"]').tap()
     await expect(page.locator('#inpEditPop .rc-read')).toHaveText('Oct 20 → Oct 22')
-    await page.locator('[data-testid="win-inputedit-x"]').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
+    /* a date tapped in the form is a change of his, so its ✕ asks first (D1622) */
+    await page.locator('[data-testid="win-inputedit-x"]').tap();await expect(page.locator('[data-testid="inped-escask"]')).toBeVisible()
+    await page.locator('[data-testid="inped-escask-go"]').tap();await expect(page.locator('#inpEditPop')).toBeHidden()
   }finally{await context.close()}
 })
 

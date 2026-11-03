@@ -30,15 +30,14 @@ the later merge keeps both (D78).
 - **Numbers held:** rulings D1605–D1619 (D1605–D1611 used; D1609 archived as replaced), observations 786–795 (786–788 used), design lessons 81–84 (81 used).
 - **Pick up here:** nothing of this job is left once 627 is live; the next job is the project's own order (D994's small fixes by area).
 <!-- /now -->
-<!-- now:claude/inputs-small-fixes-2 -->
-### `claude/inputs-small-fixes-2` — the Inputs batch [INPUTS-FIXES-1103]: MERGING on his "merge live" (3 Nov 26, night) — once live this block goes at the next handoff; its one follow-up is [INPUT-WIN-X-ASKS] — written 3 Nov 26 (night, after the compaction) — verify before use
-- **Where it stands:** PR 625 into main; his "merge live" given 3 Nov 26 for the batch as he saw it on the look page (https://claude.ai/artifact/Pd7tmJQ5kPnXbACZNgt2Wc). Main (TALON's loading claw, PR 627) merged in first — four record files clashed, both sides kept; TALON's app change touches no Inputs file. Closing records pushed: [INPUTS-FIXES-1103], [DOCTOR-INPUTS-RIDE], [DATA-ONE-MASTER-CHECK] archived.
-- **His three answers, "As recommended" (D1621–D1623):** Q1 a LATE drop on a published day leaves at once, as built (D1621, scheduler); Q2 ✕ asks before closing an input's window with typed words, Cancel does not (D1622, inputs) — NOT built, he said "merge live" before it, so filed as [INPUT-WIN-X-ASKS], a small job of its own (red-first in `ui/InputWindow.tsx`, re-walk `ibc-w1-s07.mjs`); Q3 the Calendar window stays across a page change (D1623, inputs). The three short lines were made from their bold sentences by the script; not yet read by a second reader (D138) — they are the sentences word for word.
-- **The check (all done):** evidence `raptor-port/docs/handpass/2026-11-03-inputs-batch-check.md`; walk-ledger row written; GitHub green on every pushed head before the merge.
-- **Next, in order:** (1) if the merge is not confirmed live in this chat: the Production deployment of main's merge commit on Vercel (`vercel-can-miss-a-merge` memory); (2) [INPUT-WIN-X-ASKS] on a new branch from main.
-- **Rulings this branch:** D1578–D1594, D1620–D1623. Observations 776–785 reserved (776–779 used); design lessons 77–80 (none used).
-- **Lessons of this chat:** there is no "MC" kind — the medical kinds are HL, OML, ATT C, ATT B; the walk library's `fileOn` skips the person picker a member does not have; the Scheduler Board's phone Tab test (`e2e/schedule-tab.spec.ts`) is flaky on GitHub.
-- **Opening line (the ✕ follow-up):** Start a new branch from main for [INPUT-WIN-X-ASKS]: `git fetch origin`, `git switch -c claude/input-win-x-asks origin/main`. Read `HANDOFF.md` and the `[INPUT-WIN-X-ASKS]` item in `OUTSTANDING.md` (his ruling D1622), then build it red-first, walk it, and bring it to me for "merge live".
+<!-- now:claude/input-win-x-asks -->
+### `claude/input-win-x-asks` — [INPUT-WIN-X-ASKS]: the input window's ✕ asks before throwing away typed words (D1622) — BUILT and WALK-checked, WAITING on his look and "merge live" — written 3 Nov 26 (night) — verify before use
+- **Before it:** the Inputs batch (pull request 625) went live 3 Nov 26 on his "merge live" — main's run green, Vercel's Production ready; its block removed. His three answers D1621–D1623 recorded there.
+- **Built:** `raptor-port/src/ui/InputWindow.tsx askClose` — ✕ with anything unsaved asks the Escape question; nothing unsaved closes; Cancel never asks. Red-first in `inputskeys.test.tsx` (five D1622 cases); three browser tests updated to answer the question where they change a form first.
+- **The check:** WALK — `raptor-port/docs/handpass/2026-11-03-input-win-x-asks.md`; `ixa-walk.mjs` 20 PASS, 0 FAIL, 1 not walked (Escape on a phone), 0 browser errors; lint and docsize clean; no code read at this tier.
+- **Next, in order:** (1) GitHub's run on the pull request, the Vercel preview Ready, his look; (2) on his "merge live": archive [INPUT-WIN-X-ASKS] by `backlog-archive.mjs` (homes: the evidence sheet, `ui-contracts.md`), push, wait for the run, merge, confirm Vercel's Production (D1088).
+- **Numbers:** rulings none new on this branch (the next free is D1624); observations 776–785 reserved (776–779 used).
+- **Opening line (to continue):** Switch this chat to the branch `claude/input-win-x-asks`: `git fetch origin`, `git switch claude/input-win-x-asks`, `git pull --ff-only`. Read `HANDOFF.md` — its block under `## Now` — then carry on from "Next, in order".
 <!-- /now -->
 ## Next, in order
 
