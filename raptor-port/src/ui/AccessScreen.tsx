@@ -30,8 +30,8 @@ import { useVersion } from './useStore'
 function Mark() {
   return (
     <div className="lb-mark">
-      <svg className="lb-glyph" viewBox="0 -2 60 64" role="img" aria-label="RAPTOR"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-      <span className="lb-word">RAPTOR</span>
+      <svg className="lb-glyph" viewBox="0 -2 60 64" role="img" aria-label="TALON"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
+      <span className="lb-word">TALON</span>
     </div>
   )
 }

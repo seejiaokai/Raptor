@@ -6831,6 +6831,31 @@ of shows no row for him (`leavewar/engine/people.ts` — `inSquadron`, `beforeFi
 
 **Quals** keeps quals, CAT, flight and initials (D310): no ✕ in edit mode, no Archived section; its help line says
 "Archive, restore and delete are on Admin → Users."; the admin's "he's back" prompt stays (it skips a man archived again).
+## The loading claw (`[TALON-LOADING-CLAW]`, D1591, D1605, 3 Nov 26)
+
+While the app loads, the talon claws scratch in over a plain dark screen: the left claw from its tip to its end, the
+middle 0.16 s later, the right 0.16 s after that, 0.42 s each; all three held whole 0.55 s, faded, and drawn again — one
+round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the app's own sign), no name beside it.
+- **Hidden for its first 0.3 s** (the overlay's own opacity), so a load quicker than that shows nothing (walked 3 Nov 26:
+  the app up at 160 ms, the claw never shown).
+- **Gone the moment the app has drawn itself** — a 0.2 s fade (`ui/bootclaw.ts`, run by an effect after the first render,
+  `main.tsx BootClawGone`), never waiting for its round; under the fade it takes no taps. The boot's failure messages
+  take it away first (`main.tsx`), so a message never sits under it.
+- **Moves only by sliding and fading**: each claw sits in a narrow window laid along it from its tip; the window slides
+  down the claw while the claw inside slides back by the same amount. Those two kinds of movement keep running while the
+  app's code starts (walked 3 Nov 26: 53 frames, 39 different, drawn while the page was held busy 1.5 s); a claw drawn by
+  masks froze, or never showed, on a slowed phone. The whole claw matches the logo to the pixel, bar a softened edge.
+- **Still and whole for a reader who asked for less motion**, removed at once with no fade.
+- Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
+  1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
+
+## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
+
+On the sign-in and the access screens the claw stands 13px from "TALON"'s box: the word carries no left padding, and the
+letter spacing after its N is pulled back by a matching negative right margin, so the claw and the word are centred as
+one mark. Its gap was measured to the letters' ink, the T's upright standing 8px in from its edge
+(`scripts/handpass/talon-lockup-measure.mjs`, `talon-lockup-options.mjs`).
+
 ## The access screens and the guest view (`[ACCOUNTS]`, D204, 26 Sep 26)
 
 **No "Sign up" button on the sign-in page (D293, 27 Sep 26):** whoever signs in and is on no list lands on Request access

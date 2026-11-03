@@ -560,8 +560,8 @@ pictures to him — a look does not report each instance, and nothing is recolou
   look — a pale cyan fill, cyan words and a cyan edge — never by a glow or a halo (D882); a new on/off control takes the
   same look unless he rules otherwise, and the app's other "on" looks (Fast sync, the week buttons, OIL Earn, the bell)
   stay as they are. A dark shadow that lifts a thing off the page — a window, a menu, a thing being dragged — is depth,
-  not a glow, and stays. The app's own sign is not a mark: the claw logo on the sign-in page keeps its light, and so does
-  the faint wash at the top of a page (D887). A new glow on a mark is his to rule, never added without his word. (His
+  not a glow, and stays. The app's own sign is not a mark: the claw logo on the sign-in page keeps its light, as does the loading claw while the app
+  starts (D1605), and so does the faint wash at the top of a page (D887). A new glow on a mark is his to rule, never added without his word. (His
   ruling: "a ring in this app never glows" — his yes, D880. The places that lost theirs: a flagged puck, D164; the
   just-added mark, D860; the board's other marks, D877; the picked person's chip, D879; the take ring, the bidding box,
   his own row's ring and the Tracker's rings, D881; today's card, the SANS stripe's light, the landing line's light, and
@@ -675,6 +675,8 @@ points here. A branch that will add lessons takes a range of lesson numbers befo
 numbers, and names it in its handoff block; where two branches still meet on a number, the merge renumbers only the
 branch's own side, by script, and the closing report tells him the old and new numbers (22 Oct 26: eleven lessons
 renumbered across five files, and his page still said "lesson 28" for what became 30 — D1417).*
+
+**Lesson 81 (3 Nov 26, D1608 — "seems like the talon page is abit off").** The sign-in's claw, left where it had stood beside RAPTOR, read apart from the word TALON; he picked the claw moved 7px nearer. *(His case: the sign-in page after the rename, where the agent had measured the claw in the same place and found nothing wrong.)* *The agent's reading, not his words: a first letter whose upright stands in from its edge (a T) leaves more room by the mark than one whose upright is at its edge (an R); so after a word beside a mark changes, the spacing is looked at by eye against the letters as drawn, not only measured by the boxes.* *Other places, named under D852: the top bar's claw beside "142 TALON", the request-access screens (fixed with the sign-in — the same mark), the tab's claw beside its title.*
 
 **Lesson 76 (3 Nov 26, D1578 — "shouldnt it save in the leave war OIL count first? as well as the oil earned? If the period is created after then it shows the chip. Doesnt make sense for an input to create a leave war period right?").** An input never creates a Leave War period, and never offers to: its OIL answer is saved as on any other day, and the OIL shows on the Leave War, in his OIL count and as OIL earned, once a period holding the date exists. *(His case: the input's OIL question on a weekend no Leave War period covers, where the agent had recommended the question offer "Create the period".)*
 

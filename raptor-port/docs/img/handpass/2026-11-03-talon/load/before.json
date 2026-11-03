@@ -1,0 +1,54 @@
+{
+  "label": "before",
+  "runs": 9,
+  "firstPaintMs": 564,
+  "appReadyMs": 1662,
+  "indexHtmlBytes": 4184,
+  "rows": [
+    {
+      "firstPaint": 564,
+      "ready": 1762,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 576,
+      "ready": 1662,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 652,
+      "ready": 1664,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 556,
+      "ready": 1674,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 568,
+      "ready": 1632,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 572,
+      "ready": 1646,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 544,
+      "ready": 1645,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 488,
+      "ready": 1640,
+      "htmlBytes": 2071
+    },
+    {
+      "firstPaint": 548,
+      "ready": 1662,
+      "htmlBytes": 2071
+    }
+  ]
+}

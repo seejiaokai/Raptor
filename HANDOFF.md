@@ -20,6 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/talon-name-loading -->
+### `claude/talon-name-loading` — the loading claw and the rename to TALON, pull request 626 — MERGING on his "merge live" (3 Nov 26) — written 3 Nov 26 — verify before use
+- **Where it started:** his opening line — [TALON-LOADING-CLAW] and [TALON-RENAME] (D1590, D1591): the claw as a page he plays on his iPhone and the list of name places first (https://claude.ai/artifact/4E77SDTd1nNkv4JcRgyF7c); his answer "All as recommended" — D1605 (the claw), D1606 (the rename).
+- **Built:** the claw in `raptor-port/index.html` (sliding windows, no script; hidden 0.3 s; still for less motion), `ui/bootclaw.ts` takes it away after the first render (`main.tsx`); TALON on the sign-in and access screens, both bars, the tab, a home-screen name, the start-up messages, the spoken names; the Leave War's two "Raptor-owned" notes read "filed on the Inputs page". Records: `ui-contracts.md` §The loading claw, `feature-impact.md`, `design-practices.md` (D887's exception), `file-map.md`, the walk ledger.
+- **Bug check:** WALK, `raptor-port/docs/handpass/2026-11-03-talon.md` — 25/25 (`scripts/handpass/talon-claw-build-frames.mjs`, Chromium and WebKit); one fault found and fixed (the first, masked claw froze on a busy page); load time unchanged (`talon-load-time.mjs`). Touched tests 50 passed; code check clean. GitHub's run of pull request 626 is the full set (D1086) — main merged in first (D78).
+- **Unfinished:** (1) pull request 626: his "merge live" given 3 Nov 26 — these closing records pushed, its run green, merged, the live app confirmed (D1088); [TALON-RENAME] and [TALON-LOADING-CLAW] archived with them. Then remove the worktree `C:UsersUserprojectsRaptor-talon` (its `node_modules` is a link: remove the link first, never the main folder's packages). (2) [TALON-CLAW-PAGES] (D1607 — the claw while any slow page opens): next, a fresh chat cut from main; measure every page first.
+- **Folder:** this branch lives in its own worktree, `C:UsersUserprojectsRaptor-talon` (its `node_modules` a link to the main folder's) — never in the main folder, which the Inputs batch chat uses (observation 787). Remove the worktree once 626 is merged.
+- **Numbers held:** rulings D1605–D1619 (D1605–D1608 used), observations 786–795 (786, 787 used), design lessons 81–84 (81 used).
+- **Pick up here:** read PR 626's run; when green, send him the preview link; on his "merge live" follow `shipping.md` (D1088).
+<!-- /now -->
 <!-- now:claude/inputs-small-fixes-2 -->
 ### `claude/inputs-small-fixes-2` — the Inputs batch [INPUTS-FIXES-1103]: BUILT; its FULL bug check walked and its walk's faults fixed — the code read, the re-walk and his look still to do — written 3 Nov 26 (evening) — verify before use
 - **Where it started:** his opening line (build [INPUTS-FIXES-1103], plan it with him, build, run its full check); D1592 (Make public on a published day waits for the amendment); D1594 (replacing D1593): the ChatGPT readers are out — scenarios and the code read are fresh Opus readers', the job is on [NO-ASTRA-LIST], Codex is not called.

@@ -3277,3 +3277,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** walk-scripts.md §1 names the frozen-folder serve as the default for every walk library (not only "the build before the change"), and every new walk library takes the picture folder from a setting from its first line.
 
 **Principle:** Evidence-producing scripts take their output location and their target as settings from the start; a re-run must never overwrite the run it is compared with.
+### Observation 786: A motion mock-up checked on the iPhone's engine without a phone, by pausing its animations at fixed moments
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] — a loading animation (three claws drawn in turn) put to the owner as a page he plays on his iPhone.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal — a question about feel (observation 773)
+**Number range:** this chat holds 786–795 (the Inputs batch chat holds 776–785).
+
+**Issue:** The animation used SVG masks animated by CSS — a technique Safari has historically repainted badly — and the owner judges it on an iPhone. A screen recording of a headless browser is unreliable for timing. What worked: open the page in Playwright's WebKit as well as Chromium, call `document.getAnimations()`, pause each and set `currentTime` to a list of fixed moments, screenshot the element at each, and lay the frames out as one strip per engine (`raptor-port/scripts/handpass/talon-claw-frames.mjs`). Both strips matched frame for frame, so the order and direction of the drawing were proved on the phone's engine before the link was sent.
+
+**Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, beside observation 773's line on feel: "An animation is checked frame by frame before it is sent: in WebKit (the iPhone's engine) as well as Chromium, every animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip of frames per engine and per option, read by eye for order and direction."
+
+**Principle:** Motion is verified by sampling it at known times on the target device's engine, not by watching it play: a paused frame at a fixed moment is a fact, a recording is an impression.
+
+### Observation 787: Two parallel chats told to switch branches in the same folder — one chat's commit landed on the other's branch
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] / [TALON-RENAME], run beside the Inputs batch chat as the handoff allowed ("Two chats may run side by side").
+**Skill:** session-handoff (the opening lines it writes for parallel chats)
+**Type:** open-source
+**Phase/Area:** Writing the opening line when two chats will run side by side
+
+**Issue:** The handoff gave two opening lines, both working in the main folder: one cut a new branch there with `git switch -c`, the other ran `git switch` to its own branch there. The second chat started 16 minutes after the first and switched the shared folder, so the first chat's later commit landed on the second chat's branch (caught at once by comparing the branch with its remote; moved with `git branch -f` to the right branch, pushed, and the other branch put back with `git reset --keep`, nothing of the other chat lost). A worktree made under the session's scratchpad then failed on Windows: the repository holds paths too long for it.
+
+**Suggested improvement:** In session-handoff, where two chats are to run side by side: the second opening line creates its own folder (`git worktree add ../<repo>-<name> <branch>`, a short path beside the repository, never under a temp or scratchpad folder) and works only there; and every chat checks `git branch --show-current` against its own branch before each commit.
+
+**Principle:** Parallel agents need separate working folders, not just separate branches: a branch switch is a change to the shared folder, felt by every agent in it.

@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './ui/scheduler.css'
 import { setToast } from './state/store'
@@ -15,6 +15,14 @@ import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
 import { installKbScroll } from './ui/kbscroll'
 import { installNoPageZoom } from './ui/nopagezoom'
+import { dismissBootClaw } from './ui/bootclaw'
+
+/* the loading claw (index.html, D1605) goes once the app's first screen has painted under it — an effect runs after
+   that paint — never waiting for its round to finish */
+function BootClawGone(): null {
+  useEffect(dismissBootClaw, [])
+  return null
+}
 
 /* THE COMPOSITION ROOT. It chooses the two things only a page can: the backend (storage/boot.ts chooseBackend) and
    the boot policy ([DB-READINESS] group A, phase 5 — src/bootpolicy.ts: the demo, or a shared store that nothing demo
@@ -49,19 +57,22 @@ async function boot(): Promise<void> {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
+      <BootClawGone />
     </StrictMode>,
   )
 }
 
 boot().catch((err: unknown) => {
-  console.error('RAPTOR could not load its data', err)
+  console.error('TALON could not load its data', err)
+  /* the message below must never sit hidden under the loading claw */
+  dismissBootClaw()
   const root = document.getElementById('root')
   if (!root) return
   /* the saved data was written by a newer version of the app (storage/schema.ts): reloading fetches it */
   if (err instanceof StoreAheadError) {
     root.innerHTML =
       '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
-      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR has been updated</h1>' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON has been updated</h1>' +
       '<p style="margin:0 0 16px">Reload to get the latest version. Nothing was opened, so nothing can be lost.</p>' +
       '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Reload</button></div>'
     document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
@@ -72,9 +83,9 @@ boot().catch((err: unknown) => {
   if (err instanceof BootConfigError) {
     root.innerHTML =
       '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
-      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR is not set up yet</h1>' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON is not set up yet</h1>' +
       '<p style="margin:0 0 8px">Its first admin is not set up, so nobody could sign in. Nothing was saved.</p>' +
-      `<p style="margin:0">Pass this to whoever set RAPTOR up: ${err.message.replace(/[<>&]/g, c => (c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;'))}</p></div>`
+      `<p style="margin:0">Pass this to whoever set TALON up: ${err.message.replace(/[<>&]/g, c => (c === '<' ? '&lt;' : c === '>' ? '&gt;' : '&amp;'))}</p></div>`
     return
   }
   /* the one-time conversion found this browser's storage too full to write even one of its groups — nothing was changed
@@ -83,16 +94,16 @@ boot().catch((err: unknown) => {
   if (err && (err as any).name === 'StoreFullError') {
     root.innerHTML =
       '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
-      '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR needs more room to update your saved data</h1>' +
-      '<p style="margin:0 0 8px">This browser\u2019s storage is too full to convert the data RAPTOR has saved here. Nothing was changed.</p>' +
-      '<p style="margin:0 0 16px"><b>Do not clear this browser\u2019s data</b> \u2014 your Tracker charts are kept only here. Ask whoever looks after RAPTOR for help.</p>' +
+      '<h1 style="font-size:18px;margin:0 0 8px">TALON needs more room to update your saved data</h1>' +
+      '<p style="margin:0 0 8px">This browser\u2019s storage is too full to convert the data TALON has saved here. Nothing was changed.</p>' +
+      '<p style="margin:0 0 16px"><b>Do not clear this browser\u2019s data</b> \u2014 your Tracker charts are kept only here. Ask whoever looks after TALON for help.</p>' +
       '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
     document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())
     return
   }
   root.innerHTML =
     '<div class="bootfail" role="alert" style="max-width:520px;margin:20vh auto;padding:24px;font:14px system-ui,sans-serif;color:#eee">' +
-    '<h1 style="font-size:18px;margin:0 0 8px">RAPTOR could not load its data</h1>' +
+    '<h1 style="font-size:18px;margin:0 0 8px">TALON could not load its data</h1>' +
     '<p style="margin:0 0 16px">Nothing was opened, so nothing can be lost. Check the connection and try again.</p>' +
     '<button id="bootRetry" type="button" style="padding:8px 14px;border-radius:10px;border:1px solid #888;background:transparent;color:inherit;cursor:pointer">Retry</button></div>'
   document.getElementById('bootRetry')?.addEventListener('click', () => location.reload())

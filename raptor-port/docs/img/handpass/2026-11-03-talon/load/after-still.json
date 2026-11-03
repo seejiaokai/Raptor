@@ -1,0 +1,84 @@
+{
+  "label": "after-still",
+  "runs": 15,
+  "firstPaintMs": 556,
+  "appReadyMs": 1704,
+  "indexHtmlBytes": 7701,
+  "rows": [
+    {
+      "firstPaint": 568,
+      "ready": 1790,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 544,
+      "ready": 1723,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 560,
+      "ready": 1704,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 560,
+      "ready": 1702,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 560,
+      "ready": 1748,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 560,
+      "ready": 1702,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 540,
+      "ready": 1726,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 552,
+      "ready": 1701,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 500,
+      "ready": 1717,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 552,
+      "ready": 1700,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 508,
+      "ready": 1834,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 564,
+      "ready": 1728,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 500,
+      "ready": 1699,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 556,
+      "ready": 1703,
+      "htmlBytes": 3428
+    },
+    {
+      "firstPaint": 564,
+      "ready": 1703,
+      "htmlBytes": 3428
+    }
+  ]
+}
