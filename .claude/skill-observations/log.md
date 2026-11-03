@@ -3247,3 +3247,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** (1) Before planning a batch from filed small finds older than a week or two, re-walk each on today's build and sort it still there / gone / can't reproduce, pictures kept. (2) When a fix lands for a find that lives inside a multi-find backlog item, the same change marks that find fixed in the item (a grep of the item id in the diff's comments makes this checkable).
 
 **Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
+
+### Observation 776: A test that writes records by hand leaves the save layer's baseline stale, and a later real tap then records nothing
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** the Inputs batch ([INPUTS-FIXES-1103]) — moving the LATE mark's drop from a session-only set onto the input, through its own command
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the regression test for a change that moves state into saved records
+
+**Issue:** The new test (tap the chip → a command of its own changes the input record) passed alone and failed in its file. An earlier test in the same file set and cleared the field straight on the records (a fixture, outside any command) and then signed out and in, which re-based the save layer's snapshot while the field was set. The later tap wrote the same value as that stale snapshot, so the command layer saw no change, emitted nothing, and Undo said "Nothing to undo" — a test-order artefact that looked exactly like the feature being broken.
+
+**Suggested improvement:** In "Write the failing test", add: when a test file mixes hand-written fixtures on saved records with tests that drive the real write path, put the save layer's baseline back level with the records in the shared setup (beforeEach), and when a commit-level assertion fails only in the full file, run it alone before debugging the code.
+
+**Principle:** A diff-based save layer judges a change against its last snapshot; any test that edits the records behind its back must re-level that snapshot, or later tests inherit a false "nothing changed".

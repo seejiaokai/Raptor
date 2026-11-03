@@ -73,7 +73,7 @@ describe('a public scheduler note', () => {
   /* D1592: the issued face draws the note as the day WENT OUT — a copy of the day without the flag stays scheduler-only
      there, though the working copy has since made it public */
   it('the day drawn decides: the issued copy keeps its own choice (D1592)', () => {
-    const issued = JSON.parse(JSON.stringify(day()))
+    const issued = structuredClone(day())
     toggleNotePub('pn:0')
     expect(blkNoteHTML(0, issued, false, 'pn', 'prognotes'), 'as it went out').toBe('')
     expect(blkNoteHTML(0, DAYS[0], false, 'pn', 'prognotes'), 'the working copy').toContain('brief the duty crew')

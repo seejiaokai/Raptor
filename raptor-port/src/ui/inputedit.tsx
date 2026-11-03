@@ -2681,7 +2681,8 @@ export function InputEditor() {
   /* anything of his not saved: a field of the window, or who it is for (the swap's own test, above) */
   const unsavedNow = () => {
     if (!draft || !base.current) return false
-    const pplTouched = ppl.length !== basePpl.current.length || ppl.some(id => !basePpl.current.includes(id))
+    const had = new Set(basePpl.current)
+    const pplTouched = ppl.length !== had.size || ppl.some(id => !had.has(id))
     return pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))
   }
   /* the "?" card beside Type takes Escape only while this window is the one in front (ui/TypeLegend.tsx) */
@@ -3473,6 +3474,7 @@ export function InputEditor() {
         )}
         {/* ESCAPE OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check): the swap's own question, worded for closing */}
         {escAsk && !swap && (
+          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow as the swap's ask above is: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window */
           <div className="inped-ask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
             <span className="inped-ask-q">This input has unsaved changes. Close it and lose them?</span>
             <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
