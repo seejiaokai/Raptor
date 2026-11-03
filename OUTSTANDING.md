@@ -78,9 +78,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
 
 **Inputs and calendars**
-- [INPUT-ASK-LOOK] — the input window's "Close it and lose them?" as a card hanging from its ✕ (D1624, D1626): built on `claude/input-win-x-asks`.
 - [ASK-AT-THE-CONTROL] — every other question the app puts up because a control was pressed hangs from that control (D1626): the roll-call, each drawn for him before it changes.
-- [INPUT-WIN-X-ASKS] — an input's window asks before ✕ closes it with typed words, as Escape does; Cancel still closes at once (D1622, 3 Nov 26) — a small build, red-first.
 - [PRINT-FLYING-ONLY-ASK] — the printed page and the schedule's spreadsheet carry flying lines only, no Ground Programme row — his question, kept from [ALLAVAIL-CHECK-SEEN] (not walked again 3 Nov 26).
 - [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 10, 12, 15, 17, 18) next, with the icons (D1507 one gear, D1508 Edit Schedule's calendar — 29 Oct 26).
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
@@ -685,12 +683,6 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
 
 ### [ASK-AT-THE-CONTROL] Every question raised by a press hangs from the control pressed (filed 3 Nov 26, D1626)
 **What:** his "C for all similar cases": a confirmation or a choice the app puts up because a control was pressed appears as a small card hanging from that control, where the hand already is. **Next:** the roll-call of every such question on the running app (the input window's swap question, the opened day's "Delete this input?", the upchit and medical-clash sheets, the Leave War's and others' confirmations), each drawn for him on the real app before it changes (D1625); built in batches by area (D490).
-
-### [INPUT-ASK-LOOK] The input window's two "lose them?" questions redesigned (filed 3 Nov 26, D1624)
-**What:** his "it’s ugly can u design a better one" of the box in the input window that asks "This input has unsaved changes. Close it and lose them?" (Escape, and ✕ since D1622) — an amber-edged brown panel across the window's top, Discard and close / Keep editing as full-width buttons stacked on a phone — and the "Open the other input and lose them?" question drawn the same way. Built in the Inputs batch (F2) without a mock-up to him first (D1625). **Where:** `raptor-port/src/ui/InputWindow.tsx` (`inped-escask`, `inped-swap`), `raptor-port/src/ui/scheduler/25-inputs-calendar.css` (`.inped-ask`). **Next:** designs drawn on the real app at his iPhone's and a desktop's size, put to him with a recommendation; built only on his pick, then walked.
-
-### [INPUT-WIN-X-ASKS] ✕ asks before closing an input's window with typed words (filed 3 Nov 26, D1622)
-**What:** today Escape on an input's window with anything typed and not saved asks "This input has unsaved changes. Close it and lose them?" (Discard and close · Keep editing); ✕ closes at once and the typed words are lost. His answer (D1622, "As recommended" on the Inputs batch look page, Q2): ✕ asks the same question; Cancel still closes at once. **Where:** `raptor-port/src/ui/InputWindow.tsx` (the window's ✕, beside its Escape question); the contract `raptor-port/docs/ui-contracts.md` §ONE ESCAPE, ONE WINDOW. **Check:** red-first unit test (✕ with a typed Remarks asks; ✕ with nothing typed closes; Cancel closes without asking); re-walk `raptor-port/scripts/handpass/ibc-w1-s07.mjs` on a desktop and a phone. **Why it waits:** he said "merge live" for the batch as he had seen it, so this goes as a job of its own rather than unseen into that merge.
 
 ### [LW-PAD-SHOWS-FIGURE] The Leave War's number pad shows the figure typed (3 Nov 26, D1584)
 On a phone held sideways the pad covers the Required cell being typed, so the figure is unseen until Done (the re-check's B1c, `raptor-port/docs/handpass/2026-11-03-inputs-seen-recheck.md`). His answer: the pad's top line shows it as it is typed, "Req P · Wed 25 Feb · 7". **Place:** the next Leave War batch.
