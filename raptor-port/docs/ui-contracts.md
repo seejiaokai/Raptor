@@ -5778,6 +5778,10 @@ again it will show."
 This REPLACED the 20 Aug global "Hide LATE marks" header button (removed at the
 owner's ask). Each late input now carries its OWN control on the board.
 
+*[NARROWED 3 Nov 26 by D1586 — to build in [INPUTS-FIXES-1103]: a dropped mark is saved on the input and dropped for
+everyone, every scheduler and member, kept across a reload, a sign-out and a week change; the session-only `LATEOFF`
+registry below goes. The chip, the tap to drop and to restore, and the admin-only write stay.]*
+
 - **The chip rides the ITEM cell of a live board input row**, on BOTH the
   Personal Inputs and the Unavailable panels — the two surfaces the owner named
   — drawn by `lateChip` (`ui/html.ts`) whenever `isLateInput`. It sits beside
