@@ -765,6 +765,10 @@ test('Escape closes the window in FRONT — the settings window over the editor:
   await expect(edWin(page), 'and the one left is in front').toHaveClass(/front/)
   await page.locator('#inpEditRmk').focus()
   await page.keyboard.press('Escape')
+  /* with what was typed not saved, the window asks first (F2 of the 3 Nov 26 re-check — the Inputs batch) */
+  await expect(page.locator('[data-testid="inped-escask"]'), 'it asks before losing what was typed').toBeVisible()
+  await expect(edWin(page)).toBeVisible()
+  await page.locator('[data-testid="inped-escask-go"]').click()
   await expect(edWin(page)).toHaveCount(0)
   expect(await page.evaluate(iid => (window as any).INPUTS.find((r: any) => r.iid === iid)?.remarks, iid), 'nothing was saved').not.toBe('typed, not saved')
 })
