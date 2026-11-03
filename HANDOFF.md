@@ -20,15 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/talon-claw-pages -->
-### `claude/talon-claw-pages` — the loading claw while the Leave War or the Tracker opens, pull request 627 — MERGING on his "merge live" (3 Nov 26) — written 3 Nov 26 — verify before use
-- **Where it started:** his opening line — [TALON-CLAW-PAGES] (D1607): measure every page first, then the design with pictures. Mid-way his "can u test to show the loading screen on the leave war first?" and "Or can it be an overlay for the app in general", then "B" (D1609, the whole screen) and "ohh A" (D1610, the page area under the top bar); on two preview links his "2" — from the tap, no 0.3 s wait (D1611).
-- **Measured:** every page timed from the press (`raptor-port/scripts/handpass/talon-page-blank.mjs`, `raptor-port/docs/img/handpass/2026-11-03-talon-pages/blank.json`): only the Leave War (0.43 s at his iPhone's speed, 1.45 s slowed 4x) and the Tracker (0.39 s, 0.74 s) go blank; every other page never does.
-- **Built:** `raptor-port/src/ui/pageclaw.ts` (one overlay, the start-up claw's own rules in `index.html` as `.pgclaw`), raised by the Leave War's and the Tracker's placeholders in `ui/Shell.tsx`; the Tracker's claw waits for its chart. Records: `ui-contracts.md` §The loading claw while a slow page opens, `feature-impact.md`, `file-map.md`, the walk ledger.
-- **Bug check:** WALK, `raptor-port/docs/handpass/2026-11-03-talon-pages.md` — 61 checks (`scripts/handpass/talon-page-claw-walk.mjs`), the start-up claw's walk again 25/25, break test red; GitHub's run green after one re-run of the Leave War desktop group (D84).
-- **Unfinished:** (1) pull request 627: his "merge live" given 3 Nov 26 — these closing records pushed, its run green, merged, the live app confirmed (D1088). (2) The worktree `C:/Users/User/projects/Raptor-talon` of pull request 626 (merged) is still on disk: its `node_modules` is a link to the main folder's — remove the link first (`cmd /c rmdir`), never the packages, then `git worktree remove`; only once the "Talon name loading" chat that used it is closed.
-- **Numbers held:** rulings D1605–D1619 (D1605–D1611 used; D1609 archived as replaced), observations 786–795 (786–788 used), design lessons 81–84 (81 used).
-- **Pick up here:** nothing of this job is left once 627 is live; the next job is the project's own order (D994's small fixes by area).
+<!-- now:claude/talon-claw-visible -->
+### `claude/talon-claw-visible` — the loading claw's plain dark and its first moment, pull request 628 — MERGING on his "merge live" (4 Nov 26); once live this block goes at the next handoff — written 4 Nov 26 — verify before use
+- **What goes live:** [TALON-CLAW-BG] — every page's background the claw's plain dark, the faint wash gone (D1614); D1612's one-frame raise taken out; the start-up claw on every start from its first frame (D1615). Walks: start-up 27/27, page claw 75/75; load 1.65 s. Evidence `raptor-port/docs/handpass/2026-11-03-talon-pages.md`. [TALON-CLAW-BG] archived. `main` merged in (the input window's ✕ question, D1624–D1626) — record files clashed, both sides kept.
+- **The design look's questions, all answered:** the round stays (D1617); the hand-over stays a plain fade (D1618, replacing his earlier yes, D1616). Still open, filed: [TALON-CLAW-SPOKEN], [LAZY-PAGE-LOAD-FAIL].
+- **Unfinished:** the worktree `C:/Users/User/projects/Raptor-talon` of pull request 626 (merged): remove its `node_modules` link first (`cmd /c rmdir`), never the packages, then `git worktree remove`; only once the "Talon name loading" chat is closed. `.impeccable/config.json` carries an older uncommitted rewording of two reasons — not this chat's; left alone.
+- **Numbers held:** rulings D1605–D1619 (D1605–D1618 used, D1619 free again); observations 786–795 (786–790 used); design lessons 81–84 (81 used).
+- **Pick up here:** confirm the live app on Vercel; nothing else in hand.
 <!-- /now -->
 <!-- now:claude/input-win-x-asks -->
 ### `claude/input-win-x-asks` — [INPUT-WIN-X-ASKS] + [INPUT-ASK-LOOK]: the input window's ✕ asks (D1622), and its question is a card hanging from the ✕ (D1626, design C) — BUILT and walked, MERGING on his "merge live" (3 Nov 26, night) — once live this block goes at the next handoff; the next job is [ASK-AT-THE-CONTROL] — written 3 Nov 26 (night) — verify before use

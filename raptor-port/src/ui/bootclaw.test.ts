@@ -24,15 +24,18 @@ describe('the first page (index.html)', () => {
       expect(block).toContain(d)
     expect(block.match(/class="w" id="bc-w\d"/g)).toHaveLength(3)
   })
-  it('keeps the ruled timing: a 1.77 s round, hidden for its first 0.3 s, still for less motion', () => {
-    expect(css.match(/1\.77s linear \.3s infinite/g)).toHaveLength(7)
-    expect(css).toContain('animation:bc-wait .3s linear}')
-    expect(css).toContain('@keyframes bc-wait{from,to{opacity:0}}')
+  it('keeps the ruled timing: a 1.77 s round, shown from its first moment 0.2 s into it (D1615), still for less motion', () => {
+    // every one of its seven animations starts 0.2 s into the round, so the first frame already shows two-thirds of the
+    // left claw (the order's lesson 22); no 0.3 s wait hides it on a quick start any more (D1615 narrowing D1605)
+    expect(css.match(/1\.77s linear -\.2s infinite/g)).toHaveLength(7)
+    expect(css).not.toMatch(/linear \.3s/)
+    expect(css).not.toContain('bc-wait')
+    expect(css.match(/#bootclaw\{([^}]*)\}/)![1]).not.toContain('animation')
     expect(css).toMatch(/@media \(prefers-reduced-motion:reduce\)\{[\s\S]*#bootclaw \.cs,#bootclaw \.w,#bootclaw \.w svg\{animation:none\}/)
   })
   it('moves only by sliding and fading, which a browser keeps running while the app starts', () => {
     const frames = [...css.matchAll(/@keyframes [\w-]+\{([\s\S]*?)\}\}/g)].map(m => m[1])
-    expect(frames).toHaveLength(8)
+    expect(frames).toHaveLength(7)   // three claws × (window, claw inside) and the fade; the 0.3 s wait's went with D1615
     const props = new Set(frames.flatMap(f => [...f.matchAll(/([a-z-]+):/g)].map(x => x[1])))
     props.delete('animation-timing-function')
     expect(props).toEqual(new Set(['opacity', 'transform']))

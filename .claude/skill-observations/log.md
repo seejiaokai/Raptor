@@ -3353,6 +3353,35 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** Time a response from the moment the input happened, measured by the clock you control, and confirm a suspiciously good number by a second, independent instrument; when checking that a cyclic animation moves, sample a whole cycle.
 
+### Observation 789: The design hook's suppress command writes its config under the folder it is run from
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-CLAW-BG] — a design-hook finding (the word "img" inside a CSS comment) suppressed with hook-admin.mjs ignore-value
+**Skill:** impeccable (reference/hooks.md; scripts/hook-admin.mjs)
+**Type:** open-source
+**Phase/Area:** hooks — the suppression ladder
+
+**Issue:** Run from the app's subfolder, `hook-admin.mjs ignore-value` created a second `.impeccable/config.json` inside that subfolder, beside the repository root's, which already carried the very same exception (from three weeks earlier). The hook still raised the finding before the suppression, so it seems to read the config of the project root it resolves (the subfolder), not the repository's — two configs, two answers. The duplicate was removed by hand.
+
+**Suggested improvement:** hook-admin resolves the same project root the hook and context.mjs resolve (context.mjs reported the subfolder as projectRoot) and says which config file it wrote; or the hook reads the repository root's config as well. Until then, in this repo: run hook-admin from the repository root, and check for a stray config after it.
+
+**Principle:** A tool that writes a setting and the tool that reads it must agree on where it lives; a write that lands beside an existing copy creates two truths, and the reader silently follows one.
+
+### Observation 790: The critique's browser step writes state into the project, so a read-only reviewer injected the detector directly
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** /impeccable critique of the loading claw — Assessment B (detector + browser evidence), run by a read-only helper
+**Skill:** impeccable (reference/critique.md — Assessment B)
+**Type:** open-source
+**Phase/Area:** Assessment B — the overlay flow
+
+**Issue:** The overlay flow says to start `live-server.mjs` and inject `/detect.js`. Starting the server writes session and annotation folders and a server-info file into the project, which breaks a read-only review; the helper injected the same browser detector file directly with a script tag instead, and it worked. Two more frictions: the detector's own banner (its gradient text, its larger type) was reported as findings on the page body, and the banner blocked the test browser's clicks until its pointer events were switched off. The CLI scan also ran degraded (its HTML parser modules missing), so its empty result was an undercount.
+
+**Suggested improvement:** Assessment B offers the direct injection of the browser detector as the read-only path; the detector skips its own overlay when it scans (and sets pointer-events:none on it); a degraded CLI scan says plainly in the report that an empty list is not a clean bill.
+
+**Principle:** A review step that must not change anything needs a path that writes nothing; and a checker must not report its own drawing as the page's fault.
 ### Observation 780: A new box on screen slipped in as "part of a fix" and reached the owner with no mock-up
 
 **Status:** OPEN

@@ -17,6 +17,11 @@
 //   U  the plain user's round (D1557): signed in, Leave War, a day's window opened and closed, Tracker, Inputs, back to
 //      the Leave War (no claw), signed out, the page reloaded and signed in again (the claw again)
 //   P  pictures: the Leave War and the Tracker, phone and desktop, the claw paused with all three claws whole
+//   V  his find (3 Nov 26, his iPhone recording): the claw is SEEN from its first frames, not only there — the screen's own
+//      frames read for the claw's drawn pixels in the first 0.1 s after it is put up (ONLY_V=1 runs V alone)
+//   Z  D1614 (his "B"): the moment before the claw is the claw's own dark — the page's background is the plain #0B0D10, no
+//      wash; the page area under the top bar, the claw hidden, counted pixel by pixel against it, phone and desktop, in
+//      Chromium and WebKit; and every page's background the same plain dark (ONLY_Z=1 runs Z alone)
 //   npm run build && node scripts/handpass/talon-page-claw-walk.mjs [out dir]
 import { chromium, webkit } from '@playwright/test'
 import { preview } from 'vite'
@@ -125,6 +130,103 @@ async function slowOpen(engine, which, tag) {
   check(errs.length === 0, `${tag}: no page error (${errs.join(' | ') || 'none'})`)
   await ctx.close()
 }
+// V — his find (3 Nov 26): on his iPhone the tap was followed by a dark page with only a speck of claw for 0.1–0.2 s — the
+// claw "showed" (there, fully opaque) while drawing almost nothing, which every check above passed. What a person sees is
+// the claw's drawn pixels: the screen's own frames (Chromium's screencast), the claw's box read in each, against the whole
+// claw's pixels; the first frames after it is put up must already carry a clear part of it (the order §7.11, lesson 22).
+async function clawSeenEarly(which) {
+  const { ctx, page, release } = await signIn('chromium', { ...PHONE, deviceScaleFactor: 2 }, { hold: which })
+  const cdp = await ctx.newCDPSession(page)
+  const frames = []
+  cdp.on('Page.screencastFrame', e => { frames.push({ data: e.data, t: e.metadata.timestamp * 1000 }); cdp.send('Page.screencastFrameAck', { sessionId: e.sessionId }).catch(() => {}) })
+  await page.click('#burger'); await page.waitForSelector('#drawer.open'); await page.waitForTimeout(350)
+  // the moment the claw is put on the page, on the wall clock the screencast stamps its frames with
+  await page.evaluate(() => { new MutationObserver((m, o) => { if (document.querySelector('.pgclaw')) { window.__up = performance.timeOrigin + performance.now(); o.disconnect() } }).observe(document.body, { childList: true }) })
+  await cdp.send('Page.startScreencast', { format: 'png', everyNthFrame: 1 })
+  await page.waitForTimeout(150)
+  await page.click(`#drawerNav a[data-page="${which}"]`)
+  await page.waitForTimeout(1500)
+  await cdp.send('Page.stopScreencast')
+  const up = await page.evaluate(() => window.__up)
+  const box = await page.evaluate(() => { const m = document.querySelector('.pgclaw .mk').getBoundingClientRect(); return { x: m.left - 6, y: m.top - 6, w: m.width + 12 } })
+  // the whole claw, paused with all three whole, for the count to measure against
+  await page.evaluate(() => { for (const a of document.querySelector('.pgclaw').getAnimations({ subtree: true })) { a.pause(); a.currentTime = 1200 } })
+  await page.waitForTimeout(80)
+  const whole = (await page.screenshot()).toString('base64')
+  release(); await ctx.close()
+  const early = frames.filter(f => f.t >= up && f.t <= up + 100)
+  const viewer = await browsers.chromium.newPage()
+  const counts = await viewer.evaluate(async ({ list, box }) => {
+    const load = s => new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + s })
+    const c = document.createElement('canvas'); const n = Math.round(box.w * 2); c.width = n; c.height = n
+    const g = c.getContext('2d', { willReadFrequently: true })
+    const out = []
+    for (const s of list) {
+      const img = await load(s); const k = img.width / 402
+      g.clearRect(0, 0, n, n); g.drawImage(img, box.x * k, box.y * k, box.w * k, box.w * k, 0, 0, n, n)
+      const d = g.getImageData(0, 0, n, n).data; let px = 0
+      for (let i = 0; i < d.length; i += 4) if (d[i + 2] > 150 && d[i + 1] > 120 && d[i] < 140) px++
+      out.push(px)
+    }
+    return out
+  }, { list: [whole, ...early.map(f => f.data)], box })
+  await viewer.close()
+  const [all, ...firsts] = counts
+  const share = firsts.map(px => Math.round(100 * px / Math.max(1, all)))
+  writeFileSync(join(OUT, `V-${which}-first-frame.png`), Buffer.from(early[0]?.data || whole, 'base64'))
+  check(firsts.length > 0 && share[0] >= 6, `V-${which}: the first frame after the claw is put up already shows a clear part of it (${share.join('% / ')}% of the whole claw's pixels, frame by frame over the first 0.1 s; at least 6% wanted)`)
+}
+for (const which of ['leavewar', 'tracker']) if (!process.env.ONLY_Z) await clawSeenEarly(which)
+
+// Z — D1614: the frame before the claw draws is the page area's own background; it must be the claw's plain dark, so the
+// claw simply appears on it. Today's build drew a faint blue wash there that repeated down the empty page in stripes
+// (the mock-up of 3 Nov 26, talon-claw-bg-mock.mjs). Measured as a person sees it: the page area under the top bar with
+// the claw hidden, every pixel against #0B0D10 (a pixel off by more than 3 in any colour counts).
+async function bgPlain(engine, size, tag) {
+  const { ctx, page, release } = await signIn(engine, size, { hold: 'leavewar' })
+  const pages = await page.evaluate(() => [...document.querySelectorAll('#drawerNav a[data-page]')].map(a => a.dataset.page))
+  // Z_OLDWASH=1: the old wash put back, to see this case fail on it (its red run, 3 Nov 26)
+  if (process.env.Z_OLDWASH) await page.addStyleTag({ content: 'body{background:radial-gradient(900px 420px at 12% -8%,rgba(59,198,232,.09),transparent 62%),radial-gradient(760px 380px at 98% -6%,rgba(87,201,122,.05),transparent 58%),#0B0D10}' })
+  const bodies = await page.evaluate(() => { const c = getComputedStyle(document.body); return { img: c.backgroundImage, col: c.backgroundColor } })
+  check(bodies.img === 'none' && bodies.col === 'rgb(11, 13, 16)', `Z-${tag}: the page's background is the claw's plain dark, no wash (${bodies.col}, image ${bodies.img})`)
+  if (size === PHONE) { await page.click('#burger'); await page.waitForSelector('#drawer.open'); await page.waitForTimeout(350); await page.click('#drawerNav a[data-page="leavewar"]') }
+  else await page.click('#topnav a[data-page="leavewar"]')
+  await page.waitForSelector('#page-leavewar.on', { state: 'attached' }); await page.waitForSelector('.pgclaw'); await page.waitForTimeout(500)
+  await page.evaluate(() => { document.querySelector('.pgclaw').style.visibility = 'hidden' })
+  const top = await page.evaluate(() => Math.ceil(document.querySelector('.pgclaw').getBoundingClientRect().top))
+  const shot = await page.screenshot()
+  writeFileSync(join(OUT, `Z-${tag}-before-claw.png`), shot)
+  await page.evaluate(() => { document.querySelector('.pgclaw').style.visibility = '' })
+  await page.waitForTimeout(80)
+  writeFileSync(join(OUT, `Z-${tag}-claw.png`), await page.screenshot())
+  release(); await page.waitForSelector('.pgclaw', { state: 'detached', timeout: 10000 }).catch(() => {})
+  // every page in the menu: the same plain background (a page that paints its own would show here)
+  const others = []
+  for (const p of pages) {
+    await page.evaluate(p => { const a = document.querySelector(`#drawerNav a[data-page="${p}"]`); a && a.click() }, p)
+    await page.waitForTimeout(250)
+    others.push(await page.evaluate(() => { const c = getComputedStyle(document.body); return c.backgroundImage === 'none' && c.backgroundColor === 'rgb(11, 13, 16)' }))
+  }
+  await ctx.close()
+  const viewer = await browsers.chromium.newPage()
+  const off = await viewer.evaluate(async ({ src, top, w }) => {
+    const img = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = 'data:image/png;base64,' + src })
+    const k = img.width / w, c = document.createElement('canvas'); c.width = img.width; c.height = img.height
+    const g = c.getContext('2d'); g.drawImage(img, 0, 0)
+    const y0 = Math.ceil((top + 2) * k), d = g.getImageData(0, y0, img.width, img.height - y0).data
+    let n = 0; for (let i = 0; i < d.length; i += 4) if (Math.abs(d[i] - 11) > 3 || Math.abs(d[i + 1] - 13) > 3 || Math.abs(d[i + 2] - 16) > 3) n++
+    return { n, of: d.length / 4 }
+  }, { src: shot.toString('base64'), top, w: size.viewport.width })
+  await viewer.close()
+  check(off.n === 0, `Z-${tag}: the moment before the claw, the page area is the claw's plain dark — ${off.n} of ${off.of} pixels differ (no wash, no stripes)`)
+  check(others.every(Boolean), `Z-${tag}: every page in the menu has the same plain background (${others.filter(Boolean).length} of ${pages.length})`)
+}
+await bgPlain('chromium', PHONE, 'chromium-phone')
+await bgPlain('webkit', PHONE, 'webkit-phone')
+await bgPlain('chromium', DESK, 'chromium-desktop')
+if (process.env.ONLY_Z) { await browsers.chromium.close(); await browsers.webkit.close(); await new Promise(r => server.httpServer.close(r)); console.log(fails ? `${fails} FAILED` : 'all passed'); process.exit(fails ? 1 : 0) }
+if (process.env.ONLY_V) { await browsers.chromium.close(); await browsers.webkit.close(); await new Promise(r => server.httpServer.close(r)); console.log(fails ? `${fails} FAILED` : 'all passed'); process.exit(fails ? 1 : 0) }
+
 for (const engine of process.env.ONLY_AT ? ['chromium'] : ['chromium', 'webkit']) { await slowOpen(engine, 'leavewar', `A-${engine}`); await slowOpen(engine, 'tracker', `T-${engine}`) }
 // the break test (the order §9): ONLY_AT=1 runs A and T in Chromium alone, on a build with the claw taken out — both must fail
 if (process.env.ONLY_AT) { await browsers.chromium.close(); await browsers.webkit.close(); await new Promise(r => server.httpServer.close(r)); console.log(fails ? `${fails} FAILED` : 'all passed'); process.exit(fails ? 1 : 0) }

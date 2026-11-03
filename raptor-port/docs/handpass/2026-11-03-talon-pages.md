@@ -96,3 +96,113 @@ The claw taken out of both placeholders, rebuilt, the two slow opens walked (`ON
 - His own iPhone: WebKit on Windows stands in for its drawing, not for its speed or its touch (the order's §7.11, 6 and
   21) — his look on the preview is the proof there.
 - A real slow network: the downloads were held back by the script, not slowed; the 4G figures above are the measure.
+
+## His find — a dark page before the claw (3 Nov 26, 20:46, after the merge)
+
+His iPhone recording of the live app (`docs/img/handpass/2026-11-03-talon-pages/his-recording/`, frames every 0.05 s;
+`strip-after-each-tap.png`): after the tap on the Leave War, two frames of the old page dimmed (the page switching), then
+0.1 s of dark page with only a speck of claw, then the claw; on the Tracker the same 0.1 s of speck. The claw's scratch
+starts from nothing and eases in: its left claw is 2% drawn at 0.05 s and 12% at 0.1 s. The walk's check ("0.12 s after
+the tap the claw already shows") read the element's presence and opacity, never its pixels — the order's §7.11, lesson 22.
+
+- **Red first:** walk case V (`talon-page-claw-walk.mjs`, `ONLY_V=1`), the screen's own frames read for the claw's drawn
+  pixels in its first 0.1 s, against the whole claw's: on the live build 0% in all six frames, both pages — FAIL
+  (`visible-before/`).
+- **Fixed** on `claude/talon-claw-visible`: the page claw starts its round 0.2 s in (`index.html`,
+  `.pgclaw … {animation-delay:-.2s}`) — two-thirds of the left claw in the first frame, the scratch running on from there;
+  the start-up claw untouched. Case V green: 20%, 23%, 24%, 26%, 27%, 30% of the whole claw over the first six frames
+  (`walk-visible/`; `first-frame-before-after.png`).
+- **Re-walk:** the whole walk again on the fixed build — 63 of 63 (`walk-visible/`); unit checks 17 of 17.
+- **Not changed:** the two frames of the old page at the switch on the Leave War (the page switching, before the claw can
+  be drawn — measured for every page in §Which pages go blank); the start-up claw before the sign-in shows only on a load
+  slower than 0.3 s (D1605) — put to him.
+
+### His second recording (21:52) and D1612
+
+On the fixed preview the Tracker showed the claw in the frame after the tap; the Leave War, from View-only Sched, one
+frame of plain dark tiles first (Safari repainting the whole screen; the claw is part of that repaint). His "Do it" (D1612):
+the claw goes up at the tap and the page switches one frame later, under it. Walk case W (both pages, the menu on a phone and
+the top bar on a desktop): the claw up one frame before the page, one claw, gone once the page arrives — 12 of 12; the whole
+walk 75 of 75 (`walk-tap/`); unit checks 21 of 21; the Shell, Leave War and Tracker suites 218 of 218. What his phone draws
+in that frame only his phone can show: his look is the proof. His follow-up idea — that frame in the claw's own background —
+is the next step if a frame remains (the page's base is the dark with its faint wash, D887; the claw's is the plain dark).
+
+## [TALON-CLAW-BG] — the page's plain dark, the one-frame raise out, the start-up claw from its first frame (D1614, D1615)
+
+Built on `claude/talon-claw-visible` (pull request 628), 3 Nov 26, in a fresh chat from the handoff. **What changed:** the
+body's two faint radial washes went — every page's background is the claw's plain `#0B0D10` (`00-foundation-login.css`;
+the sign-in's own light round its logo stays, D887); D1612's one-frame-early raise taken out whole (`pageclaw.ts openPage`,
+`setPageReady`, `Shell.tsx`, `Drawer.tsx`, its tests and walk case W) — the pages switch at the tap again, the placeholder
+raising the claw; the start-up claw's 0.3 s wait gone (`bc-wait`), and both claws start every animation 0.2 s into the
+round from one shared rule (`linear -.2s infinite`), the page claw's separate delay rule folded into it.
+
+**Tier — WALK.** The eight questions: 1 money — no; 2 the published record — no; 3 saved data — no; 4 a shared drawer —
+**yes** (the page background is drawn behind every page, and the claw's rules serve both claws); 5 a new gesture — no
+(D1612's raise came out; nothing new is pressed); 6 a new surface — no; 7 roles — no; 8 the warning list — no.
+
+**Roll-call (§6).**
+
+| Place | Has it / must not | Seen and operated |
+|---|---|---|
+| Every page in the menu (nine), phone and desktop | the plain dark, no wash | walk Z: computed background on each of the nine, 9 of 9, Chromium and WebKit phone, Chromium desktop |
+| The moment before a slow page's claw (the page area, claw hidden) | the claw's exact dark | walk Z: 0 of 1,323,384 pixels off (phone, both engines), 0 of 1,236,480 (desktop); `walk-bg-pages/Z-*-before-claw.png` |
+| The sign-in and the access screens | must not change — keep the logo's light (D887, D1614) | the `.login` rule untouched; pictured `walk-bg-boot/A-chromium-phone-app.png` |
+| The start-up claw on a slow start | from the first frame, 0.2 s into its round | walk A (Chromium), B (WebKit): first frame visible; left / middle / right drawn 66 / 1 / 0% (Chromium), 75 / 3 / 0% (WebKit); the right claw starts 0.20 s and 0.18 s later |
+| The start-up claw on a quick start (D1615) | shown from the first frame, gone with the sign-in | walk D: shown at the first frame (66 ms), app up 234 ms, gone 478 ms |
+| What the first frame DRAWS (lesson 22) | a clear part of the claw | walk Q (new): 18, 20, 22, 23% of the whole claw's pixels in the first four frames showing the page; `walk-bg-boot/Q-first-frame.png` |
+| The page claw, every way in (menu, top bar, bell, a member) | switches at the tap, the placeholder's claw | walk A, T, F, G, H — all pass with the raise removed |
+| The page claw's first frames (lesson 22) | a clear part of the claw | walk V: 20–30% over the first 0.1 s, both pages |
+| Less motion, a failure at start, a reload, the desktop | as before | walks C, E, F, G, I, K (start-up) and E, K, U (pages) |
+
+**Sizing (§7.0).** 1 Type: E (a look on every page) with C (a timing change of the start-up claw). 2 What only a walk could
+find: whether the moment before the claw is really the claw's dark on screen (a pixel count, not a style read), whether the
+start-up claw's first frame draws something (lesson 22), and whether the pages still raise the claw with the raise gone.
+3 The ledger: the claw's three walks today found faults only by frames and pixels (the frozen mask, the late fade, his dark
+first frame). 4 The walk: the host alone, the two existing scripts re-run whole on the built app, the start-up one rewritten
+to the new rule (A, D) with a new pixel case Q, the page one with a new case Z (the background, pixel by pixel) and case W
+removed; Chromium and WebKit at a phone's size, Chromium at 1536. Carried by tests: the shared rules' timing, the absence
+of the wait and of any separate delay rule (`bootclaw.test.ts`, `pageclaw.test.tsx` — they read the page's styles; red on
+the old page first). 5 The ledger's row, added below.
+
+**Lessons (§7.11) against this change:** 22 — cases Q and V count drawn pixels, first frames included; 10 — every page
+switch walked from its first frame (V, Z); 6 and 7 — the one frame Safari may draw before the claw only his iPhone can show:
+his look is the proof; 3 — the feedback is the claw itself; 1, 2, 4, 5, 8, 9, 11–21 — no state table, gesture, window, box,
+drawing, list, zoom-dependent reading, pinned bar, typed box, width control, print or swipe is touched.
+
+**Red first.** The unit checks failed on the old page (2 of 17) before the change. Case Z, run with the old wash put back
+(`Z_OLDWASH=1`): 9 of 9 fail — 1,319,984 of 1,323,384 pixels of the empty phone page tinted (the stripes), 612,335 on the
+desktop. On the new build: all pass.
+
+**Checks.** The start-up walk 27 of 27 (`walk-bg-boot/`); the page walk 75 of 75 (`walk-bg-pages/`); the claw unit checks
+17 of 17; the app, menu, Leave War and Tracker suites 264 files, 4,704 passed; the build. Load time
+(`talon-load-time.mjs`, 9 runs, CPU 4x, a phone's 4G): first paint 556 ms, the app up 1,646 ms — 1.70 s before; nothing
+added. GitHub's run: the pull request's.
+
+**Walk:** start-up claw 27/27 + page claw 75/75 on the built app, Chromium and WebKit 402/390 phone and 1536 desktop,
+pictures in `docs/img/handpass/2026-11-03-talon-pages/walk-bg-boot/` and `walk-bg-pages/`; his iPhone look owed.
+
+### The design look of the claw (/impeccable critique, his ask, 3 Nov 26)
+
+Two fresh readers, blind to each other: a design review (Opus) and the design checker with the browser (the skill's
+detector on the page, measurements). The skill's own snapshot is not kept here (observation log, the critique's
+"Persist" step); its scores are recorded below. **Verdict: good — the app's own mark, drawn with the gesture the mark
+suggests; specific to TALON, not a spinner.** Scores (Nielsen, 0–4; four do not apply to a loading state): status 3, the
+real world 4, control 4 (the page claw; the start-up n/a), consistency 3, minimalism 3, recovery 2 — 19 of 24. The
+checker: nothing on the claw (the page-wide findings it lists are the app's older ones, none on the claw's parts; two on
+the page body were its own banner's); the cyan on the dark 9.66 : 1; less motion stops all seven animations, the claw
+whole; the start-up and page claws centred exactly; the page claw starts at the top bar's foot.
+
+| # | Finding | Disposition |
+|---|---|---|
+| 1 | The hand-over to the sign-in shows both logos at once, in two places and sizes (72px mid-screen against the sign-in's 32px at the top on a phone) — a quick start reads as a flicker | his yes (D1616), then, after the moving mock-up `handover-mock/claw-ideas.html` of the top-bar version, his "No change" (D1618): today's fade kept; [TALON-CLAW-HANDOVER] closed |
+| 2 | About 0.3 s of plain dark at the end of every round (the fade done by 1.57 s, the next draw easing in from nothing) | put to him with a moving mock-up — his "no, I like how it is now" (D1617): kept as built |
+| 3 | The page claw says nothing to a screen reader | filed — [TALON-CLAW-SPOKEN], a small fix with the next claw change |
+| 4 | A failed download of either slow page is caught by nothing (from the code, not seen) | filed — [LAZY-PAGE-LOAD-FAIL], reproduced in the walk first |
+| 5 | Small on a desktop (72px in a 1536-wide page) | leave — calm for a working tool (the reader's own view) |
+| 6 | The design guide named the claw's light only "while the app starts" | fixed — the page claw added (`design-practices.md` §no glow) |
+| — | The light, the 0.2 s fade, the 1.77 s rhythm, contrast, less motion | right as built — leave |
+
+**His question (3 Nov 26): do the loaded pages look different without the wash?** Only their bare background: cards,
+buttons, pucks, words and colours are as they were; busy pages barely change, sparse ones (Admin, Help) lose the faint
+tint at the top and the hard line where it repeated. Pictures, before and after: `loaded-pages/` (phone and desktop, four
+pages; `scripts/handpass/talon-bg-loaded-pages.mjs`).

@@ -67,6 +67,9 @@ already says so).
 
 ### The newest owner instruction wins
 
+**An idea he raises mid-build stops the build (D1613, 3 Nov 26 — "Why u keep building when I gave u another solution"):**
+the agent answers his newer idea first — what it would do, its cost, its recommendation — and resumes only on his word.
+
 **THE NEWEST OWNER INSTRUCTION WINS (owner, 17 Sep 26 — "most probably the
 latest instructions I gave is usually the most correct one to follow").** This
 file is full of dated rulings, and some reverse earlier ones. When two rules
