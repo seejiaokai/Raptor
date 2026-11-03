@@ -1354,6 +1354,9 @@ describe('success toasts (owner audit — a tap with no feedback)', () => {
     expect(toasts, 'an add says so').toContain('Input added')
     await withToast(async () => {
       await openRow(0)
+      /* a save that saves something (F1: a Save with nothing changed changes nothing and says nothing) */
+      const rmk: any = D('#inpEditRmk')
+      await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'saved again'); rmk.dispatchEvent(new Event('input', { bubbles: true })) })
       await click(D('#inpEditSave')); await noDocAsk()
     })
     expect(toasts, 'a save says so').toContain('Input updated')

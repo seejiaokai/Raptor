@@ -10557,6 +10557,15 @@ kind too, on ONE shell — `ui/FloatWindow.tsx`, over the placement helper this 
 one, and the page behind it works (D641). Each window's own rules are with its screen: "Days — the month", "The
 SANS calendar", "The Inputs calendar".)*
 
+*(ONE ESCAPE, ONE WINDOW — the Inputs batch, 3 Nov 26 (F2, F6, F7 of `handpass/2026-11-03-inputs-seen-recheck.md`): the
+shell marks the key used (`preventDefault`) as it closes the front window, and every window's Escape asks `defaultPrevented`
+first — so the window that comes forward as one closes never takes the same press. Escape typed in a box on the page behind
+(an input, a text area, a select, editable text) is that box's; a BUTTON behind that still holds the keys owns no Escape, and
+the front window closes. A question up in a window answers Escape wherever the keys are: the opened day's "Delete this
+input?" is Keep, the day staying; the input's window with anything not saved asks "Close it and lose them?" (Discard and
+close · Keep editing — Escape on it is Keep editing). A bar being carried on the Inputs calendar is put back by Escape and
+nothing moves (D1581, `ui/caldrag.ts`).)*
+
 *(And which one is "in front" — the same check, 8 Oct 26: the shell keeps the windows that are up in the order they were
 last brought forward (`ui/FloatWindow.tsx`, `UP`), so when the front one closes the one LEFT is in front — it wears
 `.front`, and the next Escape closes it. Before, "in front" was one remembered name that a closing window left behind:

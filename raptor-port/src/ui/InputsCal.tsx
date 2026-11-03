@@ -191,6 +191,20 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const wantFocus = useRef<string | null>(null)
   /* which input of the opened day Delete has asked about (its entry's key) */
   const [delAsk, setDelAsk] = useState<string | null>(null)
+  /* ESCAPE ON "DELETE THIS INPUT?" IS KEEP, WHEREVER THE KEYS ARE (F6 of the 3 Nov 26 re-check): the question answered
+     Escape only while the keyboard was on it — after a press on the page behind, Escape reached the month, which closed
+     the day and the question with it. While it is up it hears Escape first (the window, capture), puts the question
+     away, deletes nothing and leaves the day open; the next Escape is the day's. */
+  useEffect(() => {
+    if (delAsk == null) return
+    const esc = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape' || e.defaultPrevented) return
+      e.preventDefault(); e.stopImmediatePropagation()
+      setDelAsk(null)
+    }
+    window.addEventListener('keydown', esc, true)
+    return () => window.removeEventListener('keydown', esc, true)
+  }, [delAsk])
   /* WHAT THE DELETE QUESTION ASKED, kept from the moment it was put (Astra's scenario design of the second batch,
      10 Oct 26 — scenario 9; an older fault of this door). The question's words were worked out again at every paint
      from what its reader may do NOW: "Delete this input for all 2 people?" asked of the filer, the members' switch

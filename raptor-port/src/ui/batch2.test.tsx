@@ -317,8 +317,16 @@ describe('A6, D731 (3) — the List’s dates calendar: Escape and a press outsi
     expect($('#inRangePop'), 'the calendar went').toBeNull()
     expect(tid('win-inputedit'), 'the window stayed').toBeTruthy()
     expect(($('#inpEditRmk') as HTMLInputElement).value).toBe('typed')
+    /* a second Escape is the window's — and, with what was typed not saved, it asks first (F2 of the 3 Nov 26 re-check) */
     await key($('#inpEditRmk')!, 'Escape')
-    expect(tid('win-inputedit'), 'a second Escape is the window’s').toBeNull()
+    expect(tid('win-inputedit'), 'the window stays while it asks').toBeTruthy()
+    expect(tid('inped-escask'), 'a second Escape is the window’s: it asks before losing what was typed').toBeTruthy()
+    await key(document.body, 'Escape')
+    expect(tid('inped-escask'), 'Escape on the question is Keep editing').toBeNull()
+    expect(($('#inpEditRmk') as HTMLInputElement).value, 'with what was typed').toBe('typed')
+    await key(document.body, 'Escape')
+    await click(tid('inped-escask-go'))
+    expect(tid('win-inputedit'), 'Discard and close closes it').toBeNull()
   })
   /* Astra's read of the code (10 Oct 26 — finding 3): the row's chips are buttons now, so the keyboard can open the
      document viewer or the OIL question OVER a calendar no press outside ever closed — and the calendar, taking Escape

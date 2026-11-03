@@ -231,8 +231,14 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       if (e.key !== 'Escape' || e.defaultPrevented || frontWin() !== id) return
       const at = document.activeElement as HTMLElement | null
       const inWindow = !!(at && typeof at.closest === 'function' && at.closest('.floatwin'))
-      /* in a box on the page behind, Escape is that box's own */
-      if (!inWindow && at && at !== document.body) return
+      /* in a box on the page behind, Escape is that box's own — a box he types in (a cell being edited puts its text
+         back on Escape). A BUTTON behind that still holds the keys owns no Escape (F7 of the 3 Nov 26 re-check: with the
+         month's arrow last pressed, Escape did nothing, the window staying up); the window in front closes. */
+      if (!inWindow && at && at !== document.body && (/^(INPUT|TEXTAREA|SELECT)$/.test(at.tagName) || at.isContentEditable)) return
+      /* ONE ESCAPE, ONE WINDOW (F2 of the re-check): the key is marked used, so the window that comes to the front as
+         this one goes does not take the same press and close too — the input's window behind the day closed with what
+         was typed in it. Every window here asks `defaultPrevented` first. */
+      e.preventDefault()
       e.stopPropagation()
       closeRef.current()
     }

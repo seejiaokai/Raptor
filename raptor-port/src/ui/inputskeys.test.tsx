@@ -181,3 +181,67 @@ describe('Delete on an input in an opened day removes it — asking first', () =
     expect(INPUTS.length).toBe(before); expect(tid('idy-ask')).toBeNull()
   })
 })
+
+/* THE 3 NOV 26 RE-CHECK'S ESCAPE FINDS (the Inputs batch [INPUTS-FIXES-1103]; docs/handpass/2026-11-03-inputs-seen-recheck.md) */
+describe('Escape: one window at a time, wherever the keys are (F2, F6, F7)', () => {
+  it('F6: with the keys on the page behind, Escape on "Delete this input?" is Keep — the day stays, nothing deleted', async () => {
+    const r = await file({})
+    await key(day('2026-10-07'), 'Enter')
+    await key(line(r), 'Delete')
+    expect(tid('idy-ask')).toBeTruthy()
+    /* a press behind: the keyboard goes back to the month */
+    day('2026-10-07').focus()
+    await key(day('2026-10-07'), 'Escape')
+    expect(tid('idy-ask'), 'the question went').toBeNull()
+    expect(tid('win-inputsday'), 'the day did not').toBeTruthy()
+    expect(INPUTS.some((x: any) => x.iid === r.iid), 'nothing deleted').toBe(true)
+    await key(day('2026-10-07'), 'Escape')
+    expect(tid('win-inputsday'), 'the next Escape is the day’s').toBeNull()
+  })
+  it('F7: with a button behind holding the keys, Escape still closes the window in front', async () => {
+    await key(day('2026-10-13'), 'Enter')
+    expect(tid('win-inputsday')).toBeTruthy()
+    const next = $('#icNext')!
+    next.focus()
+    expect(document.activeElement).toBe(next)
+    await key(next, 'Escape')
+    expect(tid('win-inputsday'), 'the window closes').toBeNull()
+  })
+  it('F7: a box he types in on the page behind keeps its own Escape', async () => {
+    await key(day('2026-10-13'), 'Enter')
+    const search = $('#inFSearch')!
+    search.focus()
+    await key(search, 'Escape')
+    expect(tid('win-inputsday'), 'the window stays: Escape was the box’s').toBeTruthy()
+  })
+  it('F2: the day in front of an input’s window with typed words: one Escape closes the day only, and the typing stays', async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    expect(tid('win-inputedit'), 'the input’s window is up').toBeTruthy()
+    const rmk = document.querySelector('#inpEditRmk') as HTMLInputElement
+    await act(async () => { Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value')!.set!.call(rmk, 'typed'); rmk.dispatchEvent(new Event('input', { bubbles: true })) })
+    /* the day's window pressed: it comes in front, the keys stay in Remarks */
+    await act(async () => { tid('win-inputsday')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    rmk.focus()
+    await key(rmk, 'Escape')
+    expect(tid('win-inputsday'), 'the window in front closed').toBeNull()
+    expect(tid('win-inputedit'), 'the one behind did not').toBeTruthy()
+    expect((document.querySelector('#inpEditRmk') as HTMLInputElement).value, 'with what was typed').toBe('typed')
+    /* the next Escape is the input's window — with typed words, it asks */
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-escask'), 'it asks before losing them').toBeTruthy()
+    expect(tid('win-inputedit')).toBeTruthy()
+    await act(async () => { tid('inped-escask-go')!.click() })
+    expect(tid('win-inputedit'), 'Discard and close').toBeNull()
+  })
+  it('F2: an input’s window with nothing typed closes on Escape without asking', async () => {
+    const r = await file({ type: 'Meeting', allday: false, s: 540, e: 600 })
+    await key(day('2026-10-07'), 'Enter')
+    await act(async () => { line(r).click() })
+    await act(async () => { tid('win-inputedit')!.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true })) })
+    await key(document.querySelector('#inpEditRmk')!, 'Escape')
+    expect(tid('inped-escask')).toBeNull()
+    expect(tid('win-inputedit')).toBeNull()
+  })
+})

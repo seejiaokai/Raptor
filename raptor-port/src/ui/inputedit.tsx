@@ -2438,6 +2438,8 @@ export function InputEditor() {
   const madeOver = useRef<Record<string, any>>({})
   const [, redraw] = useState(0)
   const [swap, setSwap] = useState<any>(null)
+  /* Escape over unsaved work asks first (F2 of the 3 Nov 26 re-check) */
+  const [escAsk, setEscAsk] = useState(false)
   const swapOk = useRef(false)
   /* WHO IT IS FOR (owner D654–D656; the plan §3.13). On the Inputs page the Person field is the people picker
      (ui/PeoplePick.tsx): `ppl` in the order picked, `several` its switch. The editor holds the input's ONE record,
@@ -2631,12 +2633,12 @@ export function InputEditor() {
     /* Escape peels one layer: whichever sheet is up first, then the dialog —
        all are deps so the handler never closes the dialog under a sheet */
     const esc = (e: KeyboardEvent) => {
-      if (e.key !== 'Escape') return
+      if (e.key !== 'Escape' || e.defaultPrevented) return
       /* A SHEET OF ANOTHER'S OVER IT ANSWERS FIRST (the walk of 24 Oct 26, D12): with the document viewer opened from this
          window, one Escape closed the viewer AND this window behind it — this handler runs before the viewer's, on the
          same document. With none of its own questions up, it leaves Escape alone while the topmost keyboard-holding sheet
          is not this window (ui/sheetfocus.ts topSheet); the next Escape is its own. */
-      if (!docConf && !upConf && !medConf && !oilConf) {
+      if (!docConf && !upConf && !medConf && !oilConf && !escAsk) {
         const top = topSheet()
         const own = box.current && (box.current.closest('.floatwin') || box.current)
         if (top && own && !own.contains(top)) return
@@ -2653,20 +2655,34 @@ export function InputEditor() {
            none of its own questions up, the editor takes Escape only when it is the front window; otherwise the
            key is left for the shell, which closes the front one (ui/FloatWindow.tsx). A question of its own (the
            OIL, upchit, medical or document sheet) blocks the page, so it still answers first. */
-        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
+        if (!docConf && !upConf && !medConf && !oilConf && !escAsk && frontWin() !== 'inputedit') return
       }
+      e.preventDefault()
       e.stopPropagation()
       if (docConf) setDocConf(null)
       else if (upConf) setUpConf(null)
       else if (medConf) setMedConf(null)
       else if (oilConf) setOilConf(null)
+      /* its own question up: Escape is "Keep editing" */
+      else if (escAsk) setEscAsk(false)
+      /* A WINDOW HOLDING TYPED WORDS ASKS FIRST (F2 of the 3 Nov 26 re-check): one Escape threw away what was typed, with
+         no word. With anything of his not saved — a field, or who it is for — it asks; nothing typed, it closes. */
+      /* (the Inputs page's window; the schedule's pop-up closes on a tap outside it as well, and keeps that way) */
+      else if (win && unsavedNow()) { setEscAsk(true); bringForward('inputedit') }
       else close()
     }
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
-  }, [open, win, upConf, medConf, oilConf, docConf])
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- unsavedNow reads the draft and the people, which re-render this effect's owner; the listed deps re-arm it on every question that changes what Escape peels
+  }, [open, win, upConf, medConf, oilConf, docConf, escAsk, draft, ppl])
 
-  const close = () => { setInpEdit(null); notify() }
+  const close = () => { setEscAsk(false); setInpEdit(null); notify() }
+  /* anything of his not saved: a field of the window, or who it is for (the swap's own test, above) */
+  const unsavedNow = () => {
+    if (!draft || !base.current) return false
+    const pplTouched = ppl.length !== basePpl.current.length || ppl.some(id => !basePpl.current.includes(id))
+    return pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current))
+  }
   /* the "?" card beside Type takes Escape only while this window is the one in front (ui/TypeLegend.tsx) */
   const legendFront = useRef(() => frontWin() === 'inputedit').current
   /* A REFUSED SAVE KEEPS THE WINDOW, ON THE RECORD, WITH WHAT HE TYPED ([INPUT-SAVE-SAYS-OK-WHEN-REFUSED]; the plan
@@ -3452,6 +3468,14 @@ export function InputEditor() {
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
               onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
             <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
+          </div>
+        )}
+        {/* ESCAPE OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check): the swap's own question, worded for closing */}
+        {escAsk && !swap && (
+          <div className="inped-ask" data-testid="inped-escask" role="alertdialog" aria-label="Unsaved changes">
+            <span className="inped-ask-q">This input has unsaved changes. Close it and lose them?</span>
+            <button type="button" className="abtn danger" data-testid="inped-escask-go" onClick={close}>Discard and close</button>
+            <button type="button" className="abtn ghost" data-testid="inped-escask-stay" autoFocus onClick={() => setEscAsk(false)}>Keep editing</button>
           </div>
         )}
         {/* A FIELD CHANGED BOTH WAYS — his, in the window, and someone's on the page behind it: listed, each with its

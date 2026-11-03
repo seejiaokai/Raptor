@@ -394,6 +394,17 @@ export function initCalDrag(root: HTMLElement, opts: {
      the calendar out from under a held chip. */
   function onTouchMove(e: TouchEvent) { if (st && st.armed) e.preventDefault() }
 
+  /* ESCAPE WHILE A BAR IS CARRIED PUTS IT BACK (owner D1581, 3 Nov 26): Escape cancelled nothing — the copy followed the
+     pointer on, and letting go moved the input (Grit's ATT C, 13–17 Jul became 14–18 Jul). Now it ends the carry where it
+     is: the copy goes, nothing moves, whatever is done after — the release that follows finds no gesture. Heard first (the
+     window, capture) and kept, so the window the month sits in is not closed by the same key. */
+  function onKey(e: KeyboardEvent) {
+    if (e.key !== 'Escape' || !st || !st.armed) return
+    e.preventDefault(); e.stopImmediatePropagation()
+    clearGesture()
+    installClickEater()   // the release still to come must not open the bar it was carrying
+  }
+
   const onPointerUp = once((e: PointerEvent) => {
     if (!st || e.pointerId !== st.pointerId) return
     const { entry, armed, x0, y0, ox, oy, gaveUp } = st
@@ -453,7 +464,9 @@ export function initCalDrag(root: HTMLElement, opts: {
      anywhere off it reached nothing here — the chip stayed lifted under a free mouse, and the side turned the month by
      itself. The window hears the release too; `once` takes it one time. Off the month it moves nothing. */
   window.addEventListener('pointerup', onPointerUp, { passive: true })
+  window.addEventListener('keydown', onKey, true)
   return () => {
+    window.removeEventListener('keydown', onKey, true)
     clearGesture()
     root.removeEventListener('pointerdown', onPointerDown)
     root.removeEventListener('pointermove', onPointerMove)
