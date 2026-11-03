@@ -6851,6 +6851,27 @@ round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the 
 - Drawn by `index.html` alone — no script, no library — so it adds nothing to the load: 3.5 KB more page; the app up in
   1.70 s with the claw moving and 1.70 s with it still, on a slowed phone's speed (`scripts/handpass/talon-load-time.mjs`).
 
+## The loading claw while a slow page opens (`[TALON-CLAW-PAGES]`, D1607, D1610, D1611, 3 Nov 26)
+
+One overlay for the whole app (`ui/pageclaw.ts`): the start-up claw above, drawn by the same rules in `index.html`
+(`.pgclaw` beside `#bootclaw`, nothing more to download), laid over the page area under the top bar — the bar stays in
+view and in reach (D1610, his "A").
+- **Which pages:** only the two measured to go blank (3 Nov 26, `scripts/handpass/talon-page-blank.mjs`, from the press):
+  the Leave War (0.43 s at his iPhone's speed, 1.45 s slowed 4x) and the Tracker (0.39 s, 0.74 s), each a separate download
+  fetched on its first open in a visit; their placeholders in `ui/Shell.tsx` raise it, only while the page is on screen
+  (never for the desktop's hidden pre-warm). Every other page is drawn at the tap and is never blank (the old screen
+  held at most 0.28 s slowed), so none raises it. A second open in the same visit shows the page at once, no claw.
+- **From the tap, no 0.3 s wait (D1611):** with the wait it was on his phone one to three frames, a flicker. The
+  start-up claw keeps its wait.
+- **Gone as the page is drawn:** a 0.2 s fade from the frame the page arrives, never waiting for its round. The Tracker
+  draws its chart just after its page appears, so its claw waits for the chart, or its "no course yet" (`until`),
+  noticed the moment it is added, at most 3 s. Up under 0.2 s, or he left for another page first, or less motion asked
+  for: it goes at once, no fade. It is put on the page and taken away by hand, not drawn by React, so the fade outlives
+  the placeholder that raised it.
+- **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
+  frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
+- Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
+
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
 On the sign-in and the access screens the claw stands 13px from "TALON"'s box: the word carries no left padding, and the

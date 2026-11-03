@@ -1,0 +1,822 @@
+{
+  "runs": 3,
+  "at": "2026-11-03T10:22:11.213Z",
+  "results": {
+    "phone1": {
+      "viewsched": {
+        "firstFrame": 34,
+        "content": 34,
+        "drawn": 34,
+        "longest": 34,
+        "contentMax": 39,
+        "rows": [
+          {
+            "firstFrame": 39,
+            "content": 39,
+            "drawn": 39,
+            "longest": 39,
+            "errors": []
+          },
+          {
+            "firstFrame": 34,
+            "content": 34,
+            "drawn": 34,
+            "longest": 34,
+            "errors": []
+          },
+          {
+            "firstFrame": 34,
+            "content": 34,
+            "drawn": 34,
+            "longest": 34,
+            "errors": []
+          }
+        ]
+      },
+      "editsched": {
+        "firstFrame": 46,
+        "content": 46,
+        "drawn": 46,
+        "longest": 46,
+        "contentMax": 48,
+        "rows": [
+          {
+            "firstFrame": 45,
+            "content": 45,
+            "drawn": 45,
+            "longest": 45,
+            "errors": []
+          },
+          {
+            "firstFrame": 48,
+            "content": 48,
+            "drawn": 48,
+            "longest": 48,
+            "errors": []
+          },
+          {
+            "firstFrame": 46,
+            "content": 46,
+            "drawn": 46,
+            "longest": 46,
+            "errors": []
+          }
+        ]
+      },
+      "inputs": {
+        "firstFrame": 41,
+        "content": 41,
+        "drawn": 41,
+        "longest": 41,
+        "contentMax": 57,
+        "rows": [
+          {
+            "firstFrame": 41,
+            "content": 41,
+            "drawn": 41,
+            "longest": 41,
+            "errors": []
+          },
+          {
+            "firstFrame": 39,
+            "content": 39,
+            "drawn": 39,
+            "longest": 39,
+            "errors": []
+          },
+          {
+            "firstFrame": 57,
+            "content": 57,
+            "drawn": 57,
+            "longest": 57,
+            "errors": []
+          }
+        ]
+      },
+      "quals": {
+        "firstFrame": 35,
+        "content": 35,
+        "drawn": 35,
+        "longest": 35,
+        "contentMax": 45,
+        "rows": [
+          {
+            "firstFrame": 33,
+            "content": 33,
+            "drawn": 33,
+            "longest": 33,
+            "errors": []
+          },
+          {
+            "firstFrame": 35,
+            "content": 35,
+            "drawn": 35,
+            "longest": 35,
+            "errors": []
+          },
+          {
+            "firstFrame": 45,
+            "content": 45,
+            "drawn": 45,
+            "longest": 45,
+            "errors": []
+          }
+        ]
+      },
+      "logic": {
+        "firstFrame": 58,
+        "content": 58,
+        "drawn": 58,
+        "longest": 58,
+        "contentMax": 79,
+        "rows": [
+          {
+            "firstFrame": 57,
+            "content": 57,
+            "drawn": 57,
+            "longest": 57,
+            "errors": []
+          },
+          {
+            "firstFrame": 79,
+            "content": 79,
+            "drawn": 79,
+            "longest": 79,
+            "errors": []
+          },
+          {
+            "firstFrame": 58,
+            "content": 58,
+            "drawn": 58,
+            "longest": 58,
+            "errors": []
+          }
+        ]
+      },
+      "leavewar": {
+        "firstFrame": 19,
+        "content": 434,
+        "drawn": 434,
+        "longest": 121,
+        "contentMax": 440,
+        "rows": [
+          {
+            "firstFrame": 21,
+            "content": 434,
+            "drawn": 434,
+            "longest": 121,
+            "errors": []
+          },
+          {
+            "firstFrame": 18,
+            "content": 430,
+            "drawn": 430,
+            "longest": 115,
+            "errors": []
+          },
+          {
+            "firstFrame": 19,
+            "content": 440,
+            "drawn": 440,
+            "longest": 125,
+            "errors": []
+          }
+        ]
+      },
+      "tracker": {
+        "firstFrame": 16,
+        "content": 386,
+        "drawn": 386,
+        "longest": 90,
+        "contentMax": 388,
+        "rows": [
+          {
+            "firstFrame": 24,
+            "content": 388,
+            "drawn": 388,
+            "longest": 91,
+            "errors": []
+          },
+          {
+            "firstFrame": 16,
+            "content": 379,
+            "drawn": 379,
+            "longest": 82,
+            "errors": []
+          },
+          {
+            "firstFrame": 16,
+            "content": 386,
+            "drawn": 386,
+            "longest": 90,
+            "errors": []
+          }
+        ]
+      },
+      "help": {
+        "firstFrame": 18,
+        "content": 18,
+        "drawn": 18,
+        "longest": 18,
+        "contentMax": 19,
+        "rows": [
+          {
+            "firstFrame": 17,
+            "content": 17,
+            "drawn": 17,
+            "longest": 17,
+            "errors": []
+          },
+          {
+            "firstFrame": 18,
+            "content": 18,
+            "drawn": 18,
+            "longest": 18,
+            "errors": []
+          },
+          {
+            "firstFrame": 19,
+            "content": 19,
+            "drawn": 19,
+            "longest": 19,
+            "errors": []
+          }
+        ]
+      },
+      "admin": {
+        "firstFrame": 25,
+        "content": 25,
+        "drawn": 25,
+        "longest": 25,
+        "contentMax": 35,
+        "rows": [
+          {
+            "firstFrame": 24,
+            "content": 24,
+            "drawn": 24,
+            "longest": 24,
+            "errors": []
+          },
+          {
+            "firstFrame": 35,
+            "content": 35,
+            "drawn": 35,
+            "longest": 35,
+            "errors": []
+          },
+          {
+            "firstFrame": 25,
+            "content": 25,
+            "drawn": 25,
+            "longest": 25,
+            "errors": []
+          }
+        ]
+      }
+    },
+    "phone4": {
+      "viewsched": {
+        "firstFrame": 194,
+        "content": 194,
+        "drawn": 194,
+        "longest": 194,
+        "contentMax": 213,
+        "rows": [
+          {
+            "firstFrame": 213,
+            "content": 213,
+            "drawn": 213,
+            "longest": 213,
+            "errors": []
+          },
+          {
+            "firstFrame": 194,
+            "content": 194,
+            "drawn": 194,
+            "longest": 194,
+            "errors": []
+          },
+          {
+            "firstFrame": 185,
+            "content": 185,
+            "drawn": 185,
+            "longest": 185,
+            "errors": []
+          }
+        ]
+      },
+      "editsched": {
+        "firstFrame": 260,
+        "content": 260,
+        "drawn": 260,
+        "longest": 260,
+        "contentMax": 264,
+        "rows": [
+          {
+            "firstFrame": 249,
+            "content": 249,
+            "drawn": 249,
+            "longest": 249,
+            "errors": []
+          },
+          {
+            "firstFrame": 260,
+            "content": 260,
+            "drawn": 260,
+            "longest": 260,
+            "errors": []
+          },
+          {
+            "firstFrame": 264,
+            "content": 264,
+            "drawn": 264,
+            "longest": 264,
+            "errors": []
+          }
+        ]
+      },
+      "inputs": {
+        "firstFrame": 199,
+        "content": 199,
+        "drawn": 199,
+        "longest": 199,
+        "contentMax": 202,
+        "rows": [
+          {
+            "firstFrame": 190,
+            "content": 190,
+            "drawn": 190,
+            "longest": 190,
+            "errors": []
+          },
+          {
+            "firstFrame": 202,
+            "content": 202,
+            "drawn": 202,
+            "longest": 202,
+            "errors": []
+          },
+          {
+            "firstFrame": 199,
+            "content": 199,
+            "drawn": 199,
+            "longest": 199,
+            "errors": []
+          }
+        ]
+      },
+      "quals": {
+        "firstFrame": 161,
+        "content": 161,
+        "drawn": 161,
+        "longest": 161,
+        "contentMax": 162,
+        "rows": [
+          {
+            "firstFrame": 160,
+            "content": 160,
+            "drawn": 160,
+            "longest": 160,
+            "errors": []
+          },
+          {
+            "firstFrame": 162,
+            "content": 162,
+            "drawn": 162,
+            "longest": 162,
+            "errors": []
+          },
+          {
+            "firstFrame": 161,
+            "content": 161,
+            "drawn": 161,
+            "longest": 161,
+            "errors": []
+          }
+        ]
+      },
+      "logic": {
+        "firstFrame": 283,
+        "content": 283,
+        "drawn": 283,
+        "longest": 283,
+        "contentMax": 289,
+        "rows": [
+          {
+            "firstFrame": 270,
+            "content": 270,
+            "drawn": 270,
+            "longest": 270,
+            "errors": []
+          },
+          {
+            "firstFrame": 289,
+            "content": 289,
+            "drawn": 289,
+            "longest": 289,
+            "errors": []
+          },
+          {
+            "firstFrame": 283,
+            "content": 283,
+            "drawn": 283,
+            "longest": 283,
+            "errors": []
+          }
+        ]
+      },
+      "leavewar": {
+        "firstFrame": 86,
+        "content": 1454,
+        "drawn": 1454,
+        "longest": 752,
+        "contentMax": 1580,
+        "rows": [
+          {
+            "firstFrame": 86,
+            "content": 1580,
+            "drawn": 1580,
+            "longest": 752,
+            "errors": []
+          },
+          {
+            "firstFrame": 88,
+            "content": 1454,
+            "drawn": 1454,
+            "longest": 755,
+            "errors": []
+          },
+          {
+            "firstFrame": 84,
+            "content": 1412,
+            "drawn": 1412,
+            "longest": 728,
+            "errors": []
+          }
+        ]
+      },
+      "tracker": {
+        "firstFrame": 84,
+        "content": 741,
+        "drawn": 741,
+        "longest": 400,
+        "contentMax": 754,
+        "rows": [
+          {
+            "firstFrame": 86,
+            "content": 754,
+            "drawn": 754,
+            "longest": 412,
+            "errors": []
+          },
+          {
+            "firstFrame": 84,
+            "content": 741,
+            "drawn": 741,
+            "longest": 400,
+            "errors": []
+          },
+          {
+            "firstFrame": 83,
+            "content": 741,
+            "drawn": 741,
+            "longest": 398,
+            "errors": []
+          }
+        ]
+      },
+      "help": {
+        "firstFrame": 86,
+        "content": 86,
+        "drawn": 86,
+        "longest": 86,
+        "contentMax": 94,
+        "rows": [
+          {
+            "firstFrame": 86,
+            "content": 86,
+            "drawn": 86,
+            "longest": 86,
+            "errors": []
+          },
+          {
+            "firstFrame": 94,
+            "content": 94,
+            "drawn": 94,
+            "longest": 94,
+            "errors": []
+          },
+          {
+            "firstFrame": 86,
+            "content": 86,
+            "drawn": 86,
+            "longest": 86,
+            "errors": []
+          }
+        ]
+      },
+      "admin": {
+        "firstFrame": 136,
+        "content": 136,
+        "drawn": 136,
+        "longest": 136,
+        "contentMax": 138,
+        "rows": [
+          {
+            "firstFrame": 138,
+            "content": 138,
+            "drawn": 138,
+            "longest": 138,
+            "errors": []
+          },
+          {
+            "firstFrame": 136,
+            "content": 136,
+            "drawn": 136,
+            "longest": 136,
+            "errors": []
+          },
+          {
+            "firstFrame": 134,
+            "content": 134,
+            "drawn": 134,
+            "longest": 134,
+            "errors": []
+          }
+        ]
+      }
+    },
+    "desk1": {
+      "viewsched": {
+        "firstFrame": 42,
+        "content": 42,
+        "drawn": 42,
+        "longest": 42,
+        "contentMax": 43,
+        "rows": [
+          {
+            "firstFrame": 43,
+            "content": 43,
+            "drawn": 43,
+            "longest": 43,
+            "errors": []
+          },
+          {
+            "firstFrame": 41,
+            "content": 41,
+            "drawn": 41,
+            "longest": 41,
+            "errors": []
+          },
+          {
+            "firstFrame": 42,
+            "content": 42,
+            "drawn": 42,
+            "longest": 42,
+            "errors": []
+          }
+        ]
+      },
+      "editsched": {
+        "firstFrame": 53,
+        "content": 53,
+        "drawn": 53,
+        "longest": 53,
+        "contentMax": 65,
+        "rows": [
+          {
+            "firstFrame": 52,
+            "content": 52,
+            "drawn": 52,
+            "longest": 52,
+            "errors": []
+          },
+          {
+            "firstFrame": 65,
+            "content": 65,
+            "drawn": 65,
+            "longest": 65,
+            "errors": []
+          },
+          {
+            "firstFrame": 53,
+            "content": 53,
+            "drawn": 53,
+            "longest": 53,
+            "errors": []
+          }
+        ]
+      },
+      "inputs": {
+        "firstFrame": 46,
+        "content": 46,
+        "drawn": 46,
+        "longest": 46,
+        "contentMax": 47,
+        "rows": [
+          {
+            "firstFrame": 46,
+            "content": 46,
+            "drawn": 46,
+            "longest": 46,
+            "errors": []
+          },
+          {
+            "firstFrame": 47,
+            "content": 47,
+            "drawn": 47,
+            "longest": 47,
+            "errors": []
+          },
+          {
+            "firstFrame": 46,
+            "content": 46,
+            "drawn": 46,
+            "longest": 46,
+            "errors": []
+          }
+        ]
+      },
+      "quals": {
+        "firstFrame": 32,
+        "content": 32,
+        "drawn": 32,
+        "longest": 32,
+        "contentMax": 32,
+        "rows": [
+          {
+            "firstFrame": 32,
+            "content": 32,
+            "drawn": 32,
+            "longest": 32,
+            "errors": []
+          },
+          {
+            "firstFrame": 32,
+            "content": 32,
+            "drawn": 32,
+            "longest": 32,
+            "errors": []
+          },
+          {
+            "firstFrame": 32,
+            "content": 32,
+            "drawn": 32,
+            "longest": 32,
+            "errors": []
+          }
+        ]
+      },
+      "logic": {
+        "firstFrame": 53,
+        "content": 53,
+        "drawn": 53,
+        "longest": 53,
+        "contentMax": 54,
+        "rows": [
+          {
+            "firstFrame": 54,
+            "content": 54,
+            "drawn": 54,
+            "longest": 54,
+            "errors": []
+          },
+          {
+            "firstFrame": 53,
+            "content": 53,
+            "drawn": 53,
+            "longest": 53,
+            "errors": []
+          },
+          {
+            "firstFrame": 53,
+            "content": 53,
+            "drawn": 53,
+            "longest": 53,
+            "errors": []
+          }
+        ]
+      },
+      "leavewar": {
+        "firstFrame": 23,
+        "content": 409,
+        "drawn": 409,
+        "longest": 100,
+        "contentMax": 419,
+        "rows": [
+          {
+            "firstFrame": 36,
+            "content": 419,
+            "drawn": 419,
+            "longest": 116,
+            "errors": []
+          },
+          {
+            "firstFrame": 20,
+            "content": 397,
+            "drawn": 397,
+            "longest": 89,
+            "errors": []
+          },
+          {
+            "firstFrame": 23,
+            "content": 409,
+            "drawn": 409,
+            "longest": 100,
+            "errors": []
+          }
+        ]
+      },
+      "tracker": {
+        "firstFrame": 22,
+        "content": 406,
+        "drawn": 406,
+        "longest": 98,
+        "contentMax": 410,
+        "rows": [
+          {
+            "firstFrame": 20,
+            "content": 390,
+            "drawn": 390,
+            "longest": 81,
+            "errors": []
+          },
+          {
+            "firstFrame": 24,
+            "content": 406,
+            "drawn": 406,
+            "longest": 98,
+            "errors": []
+          },
+          {
+            "firstFrame": 22,
+            "content": 410,
+            "drawn": 410,
+            "longest": 102,
+            "errors": []
+          }
+        ]
+      },
+      "help": {
+        "firstFrame": 23,
+        "content": 23,
+        "drawn": 23,
+        "longest": 23,
+        "contentMax": 24,
+        "rows": [
+          {
+            "firstFrame": 23,
+            "content": 23,
+            "drawn": 23,
+            "longest": 23,
+            "errors": []
+          },
+          {
+            "firstFrame": 21,
+            "content": 21,
+            "drawn": 21,
+            "longest": 21,
+            "errors": []
+          },
+          {
+            "firstFrame": 24,
+            "content": 24,
+            "drawn": 24,
+            "longest": 24,
+            "errors": []
+          }
+        ]
+      },
+      "admin": {
+        "firstFrame": 43,
+        "content": 43,
+        "drawn": 43,
+        "longest": 43,
+        "contentMax": 74,
+        "rows": [
+          {
+            "firstFrame": 43,
+            "content": 43,
+            "drawn": 43,
+            "longest": 43,
+            "errors": []
+          },
+          {
+            "firstFrame": 42,
+            "content": 42,
+            "drawn": 42,
+            "longest": 42,
+            "errors": []
+          },
+          {
+            "firstFrame": 74,
+            "content": 74,
+            "drawn": 74,
+            "longest": 74,
+            "errors": []
+          }
+        ]
+      }
+    }
+  }
+}

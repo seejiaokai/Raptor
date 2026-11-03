@@ -67,6 +67,7 @@ import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
+import { PageClaw } from './pageclaw'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
@@ -680,12 +681,16 @@ export function Shell() {
           display:none — scheduler.css `.page.doze` carries the measurement
           and the why; the keep-alive comment sits at lwEver above */}
       <section className={'page' + (page === 'leavewar' ? ' on' : (lwEver || prewarmed) ? ' doze' : '')} id="page-leavewar">
-        {(page === 'leavewar' || lwEver || prewarmed) && <Suspense fallback={null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
+        {/* while its separate download arrives and its first drawing runs, the loading claw stands over the page area — only
+            while the page is on screen, never for the hidden pre-warm (D1610, D1611, ui/pageclaw.ts) */}
+        {(page === 'leavewar' || lwEver || prewarmed) && <Suspense fallback={page === 'leavewar' ? <PageClaw page="leavewar" /> : null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
       </section>
       {/* once visited the Tracker dozes too (content-visibility, same as Leave
           War above) — its whole reason is in TrackerPage.tsx */}
       <section className={'page' + (page === 'tracker' ? ' on' : trEver ? ' doze' : '')} id="page-tracker">
-        {(page === 'tracker' || trEver) && <Suspense fallback={null}><TrackerPage active={page === 'tracker'} /></Suspense>}
+        {/* the same claw while the Tracker's download arrives and its chart is first drawn — its engine draws the chart
+            just after the page appears, so the claw waits for the chart, or the page's "no course yet" (D1611, ui/pageclaw.ts) */}
+        {(page === 'tracker' || trEver) && <Suspense fallback={page === 'tracker' ? <PageClaw page="tracker" until="#page-tracker #board *, #trk-nocourse" /> : null}><TrackerPage active={page === 'tracker'} /></Suspense>}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

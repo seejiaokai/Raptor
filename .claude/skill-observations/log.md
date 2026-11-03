@@ -3337,3 +3337,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In the order's §4 step 1 ("Reproduce each finding through the real production route"), add: every app noun a reader's finding uses — a kind, a page, a control — is checked against the app's own list (the code's type table, the screen) before it is repeated to the owner; a probe built on a value the app cannot produce is re-run with one it can. The walk helper `fileOn` also assumed an admin's person picker; scripts should be written for the role they sign in as.
 
 **Principle:** A reviewer's vocabulary is evidence about the reviewer, not about the product: check each name against the product before passing it on, or the error is multiplied by every reader downstream.
+
+### Observation 788: A frame recorder that starts its clock at the click, or stamps frames with their start time, hides a freeze that begins at the press
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-CLAW-PAGES] — timing how long every page of the menu stays blank when opened, before the loading claw's design
+**Skill:** New skill candidate: none — the walk-script guide (`raptor-port/docs/walk-scripts.md`) and `mockups-on-the-real-app.md` §Judging the Proposal
+**Type:** open-source
+**Phase/Area:** measuring a screen's response to a tap
+
+**Issue:** The first timing run read every ordinary page as drawn 6–14 ms after the tap on a 4x-slowed phone. A cross-check with the browser's long-task record showed a 150–280 ms freeze starting at the press itself: the click event's own time stamp, and each requestAnimationFrame's frame-start time, both fall after a long task that begins with the press, so the freeze was invisible. The same walk also had two checks of a moving claw fail falsely: two looks 0.12 s apart, and a busy stretch, each landed inside the animation's hold phase, when nothing moves.
+
+**Suggested improvement:** In walk-scripts.md: a tap's response is timed from a capture-phase pointerdown (performance.now()) and each frame is stamped with performance.now() inside its callback; any "it was instant" result is cross-checked once against the long-task record before it is reported. And a check that something animates samples a whole cycle (or aligns its window to the cycle's start), never two looks or a window that may fall in a hold.
+
+**Principle:** Time a response from the moment the input happened, measured by the clock you control, and confirm a suspiciously good number by a second, independent instrument; when checking that a cyclic animation moves, sample a whole cycle.
