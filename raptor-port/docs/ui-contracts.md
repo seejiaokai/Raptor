@@ -6835,7 +6835,8 @@ While the app loads, the talon claws scratch in over a plain dark screen: the le
 middle 0.16 s later, the right 0.16 s after that, 0.42 s each; all three held whole 0.55 s, faded, and drawn again — one
 round 1.77 s. 72px, the sign-in claw's light round it (D887's exception for the app's own sign), no name beside it.
 - **Hidden for its first 0.3 s** (the overlay's own opacity), so a load quicker than that shows nothing (walked 3 Nov 26:
-  the app up at 160 ms, the claw never shown).
+  the app up at 160 ms, the claw never shown). **To change (D1615, his "Always", 3 Nov 26 — filed as [TALON-CLAW-BG]):** no wait —
+  shown on every start from its first moment, starting 0.2 s into its round like the page claw.
 - **Gone the moment the app has drawn itself** — a 0.2 s fade (`ui/bootclaw.ts`, run by an effect after the first render,
   `main.tsx BootClawGone`), never waiting for its round; under the fade it takes no taps. The boot's failure messages
   take it away first (`main.tsx`), so a message never sits under it.
