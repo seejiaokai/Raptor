@@ -349,3 +349,21 @@ Third fix round — the last (§5's cap); no further read. What carries the rest
 **Walk:** this morning's fix — no walker (a test browser cannot pull a strip past its end, lesson 21); the cause read from his
 own phone's log; the host re-ran walker A's scripts after the fix and each fix round for harm to the swipe — `rewalk3/`–`rewalk6/`,
 all PASS but the script's speed ceiling and the 844-wide desktop layout, both as before; the pull itself proved only on his iPhone.
+
+## 12. His look at 07:32 and 08:35: the bounce before the slide, the trial, and the week stilled under the slide
+**His 07:32 recording:** *"It's better. But there is a slight bounce because it takes sometime for the next week to load
+correct?"* — between the lift and the slide Safari springs the day back (`owner/third-recording-bounce.png`). **His "Trial":**
+a switch (`?freeze`, commit `cb7a26db6`) froze the leaving day the instant the cross was decided; checked here (the copy up at
+the lift, the cross landing, nothing left). **His 08:35 recordings, with and without it: "Seems similar"** — taken back out
+(commit `d06c0f0d8`). **What the four recordings since 06:00 do show:** after a cross onto Sunday the log reads the real week
+still moving half a second later, a few px past Sunday's end (Sunday rests on the strip's very end; Monday 12 px in, and its
+landings read still), and a swipe toward Saturday in that half second — read correctly by the app, "stay" — was sprung back
+to Sunday by Safari in all four. **The fix (red first — two glide tests):** under the slide the real week cannot scroll
+(`weekglide.ts`, overflow-x hidden while the copies are up, restored at the finish with the landing written again), so
+Safari's leftover movement stops out of sight. Checks: the glide, swipe and arrow files 93 / 93; `e2e/weekswipe.spec.ts` 6 / 6
+(the frame traces: the leaving copy starts where the day stood, the arriving one ends where the real day rests); build;
+`lint:changed` clean. Re-walk `rewalk7/`: A1, A2, A6, A9, A10 PASS in Chromium; A1, A5 PASS in WebKit; A5 one try's leaving copy
+49 px off then PASS; the double swipe 24 / 24 in five runs of six — the one miss a strip the test browser left standing 157 px
+short of Monday, where a 150 px swipe only brings Monday home and stays by the rule of §7 (Safari always glides the strip in;
+noted, not changed). What no test browser shows: Safari's spring, so his iPhone is the proof — a swipe toward Saturday
+straight after landing on Sunday.

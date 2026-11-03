@@ -84,6 +84,7 @@ describe('a fired glide leaves nothing behind', () => {
     expect(root.style.pointerEvents, 'but it takes no touches while the clones slide').toBe('none')
     expect(root.style.transform, 'the real week never itself transforms now — the clones do').toBe('')
     expect(document.body.style.overflowX).toBe('hidden')
+    expect(root.style.overflowX, 'and it cannot scroll: Safari\'s leftover spring stops under the slide').toBe('hidden')
     // PRE-PAINT (the 16:46 split, 5 Sep 26): for two frames both clones sit
     // on-screen where the week is, the ARRIVING one (z 40) under the LEAVING one
     // (z 41), so the browser paints them where they stand before anything moves
@@ -105,6 +106,8 @@ describe('a fired glide leaves nothing behind', () => {
     // picture, stays two frames more while the real week's paint commits
     vi.advanceTimersByTime(470)
     expect(root.style.pointerEvents, 'the settled week takes touches again').toBe('')
+    expect(root.style.overflowX, 'and scrolls again').toBe('')
+    expect(root.scrollLeft, 'standing on its landing').toBe(0)
     expect(document.body.style.overflowX).toBe('')
     expect(document.querySelectorAll('body > .week').length, 'root + the incoming clone still covering').toBe(2)
     vi.advanceTimersByTime(40)
@@ -208,6 +211,7 @@ describe('a fired glide leaves nothing behind', () => {
     // both clones' fallback timers fire, then the last clone's two-frame handover
     vi.runAllTimers()
     expect(root.style.pointerEvents, 'the week takes touches again, not stranded covered').toBe('')
+    expect(root.style.overflowX, 'and scrolls again, not stranded unscrollable').toBe('')
     expect(document.body.style.overflowX, 'the page clip is lifted').toBe('')
     expect(document.querySelectorAll('body > .week').length, 'all four clones cleaned up').toBe(1)
   })

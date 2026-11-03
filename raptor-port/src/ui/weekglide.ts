@@ -79,6 +79,7 @@ const EASE = 'cubic-bezier(.25,.5,.25,1)'
 let inFlight = 0
 let savedPE: string | null = null
 let savedOverflowX: string | null = null
+let savedRootOX: string | null = null
 let lastRoot: HTMLElement | null = null
 let lastLanded = 0
 
@@ -240,11 +241,18 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
     if (inFlight === 0) {
       savedPE = root.style.pointerEvents
       savedOverflowX = document.body.style.overflowX
+      savedRootOX = root.style.overflowX
     }
     inFlight++
     lastRoot = root; lastLanded = landed        // the most recent cross owns the final landing
     root.style.pointerEvents = 'none'
     document.body.style.overflowX = 'hidden'
+    /* AND STILL IT ([WEEK-SWIPE-CROSS], his iPhone recordings of 3 Nov 26, 06:00 to 08:35, read by the ?swdebug log): after
+       a cross onto Sunday the real week was still moving half a second on — a few px past Sunday's end, Safari's spring from
+       the pull that crossed carrying on after the landing was written, Sunday resting on the strip's very end — and a swipe
+       toward Saturday in that half second was sprung back to Sunday. Under the slide the real week cannot scroll: Safari
+       stops its leftover movement there, and the finish lands the week and lets it scroll again, still. */
+    root.style.overflowX = 'hidden'
 
     let done = false
     const finish = () => {
@@ -260,10 +268,12 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
       const wasSB = r.style.scrollBehavior
       r.style.scrollBehavior = 'auto'
       r.scrollLeft = lastLanded
+      r.style.overflowX = savedRootOX ?? ''          // scrolls again, standing still on its landing
+      r.scrollLeft = lastLanded
       r.style.scrollBehavior = wasSB
       r.style.pointerEvents = savedPE ?? ''          // the settled week takes touches again
       document.body.style.overflowX = savedOverflowX ?? ''
-      savedPE = savedOverflowX = null; lastRoot = null
+      savedPE = savedOverflowX = savedRootOX = null; lastRoot = null
       /* the incoming clone is the landed week's own picture, so it stays on top
          for two more frames while the browser commits the real week's paint
          underneath — then comes off over identical pixels, never over black */
