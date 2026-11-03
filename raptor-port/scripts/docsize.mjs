@@ -399,7 +399,10 @@ const RULING_BYTES = [
      and the walks' pictures (D137, D141). Set about a tenth above what it holds - a tripwire, not a target. */
   /* design 7600 -> 9000 (3 Nov 26, claude/inputs-small-fixes-2): 7,709 bytes with D1590, D1591 - the app's new name and
      its loading screen, live; none is trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/design.md',  2, 9000],
+  /* design 9000 -> 11500 (3 Nov 26, claude/talon-claw-pages): 9,012 bytes on main with D1605-D1608 (the loading claw, the
+     name, the sign-in mark), 10,506 with D1610 (the claw on slow pages); live rulings, never trimmed (D136). Room, not a
+     target (D141). */
+  ['.claude/rules/decisions/design.md',  2, 11500],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
