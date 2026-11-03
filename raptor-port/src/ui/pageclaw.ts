@@ -24,6 +24,8 @@ export const PAGECLAW_PATHS = [
 export function raisePageClaw(page: string): HTMLElement {
   const el = document.createElement('div')
   el.className = 'pgclaw'
+  // TEST ONLY (D1610's test on his phone): ?pageclaw=now drops the 0.3 s wait — taken out once he has chosen
+  if (new URLSearchParams(window.location.search).get('pageclaw') === 'now') el.classList.add('now')
   el.setAttribute('role', 'img')
   el.setAttribute('aria-label', 'TALON is loading')
   el.dataset.page = page

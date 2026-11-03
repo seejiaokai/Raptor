@@ -62,6 +62,10 @@
          top bar, the bar staying, and these rules draw it — one definition for both, nothing more to download. */
       .pgclaw{position:fixed;left:0;right:0;bottom:0;top:var(--topbar-h,58px);z-index:50;display:grid;place-items:center;
         background:#0B0D10;transition:opacity .2s ease-out;animation:bc-wait .3s linear}
+      /* TEST ONLY, for his phone (D1610's test): ?pageclaw=now shows the page claw from the tap, no 0.3 s wait — the
+         Leave War's first open takes about 0.45 s on his iPhone, so the wait leaves only a flicker of the first claw. */
+      .pgclaw.now{animation:none}
+      .pgclaw.now .cs,.pgclaw.now .w,.pgclaw.now .w svg{animation-delay:0s}
       #bootclaw.gone,.pgclaw.gone{opacity:0;pointer-events:none}
       @keyframes bc-wait{from,to{opacity:0}}
       #bootclaw .mk,.pgclaw .mk{position:relative;width:72px;height:72px;filter:drop-shadow(0 0 26px rgba(59,198,232,.55))}

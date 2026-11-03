@@ -36,10 +36,12 @@ const PAGES = [
   ['quals', '#page-quals table'],
   ['logic', '#page-logic .lgttl'],
   ['leavewar', '#page-leavewar table.mx tbody tr'],
-  ['tracker', '#page-tracker #board'],
+  ['tracker', '#page-tracker #board', 20],   // the chart is drawn into the board after it mounts: wait for its parts
   ['help', '#page-help h2'],
   ['admin', '#page-admin h2'],
 ].filter(([p]) => !ONLY.length || ONLY.includes(p))
+// the clock starts at the finger's press (pointerdown) and each frame is stamped when its callback runs — a frame's own
+// start time and the click's time stamp both come AFTER a long task that begins at the press, and hid it (3 Nov 26)
 
 const COND = {
   phone1: { viewport: { width: 402, height: 874 }, mobile: true, cpu: 1 },
@@ -50,7 +52,7 @@ const COND = {
 const server = await preview({ root: ROOT, preview: { port: PORT, strictPort: true, open: false }, logLevel: 'silent' })
 const browser = await chromium.launch(existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {})
 
-async function one(condName, page, sel) {
+async function one(condName, page, sel, minKids = 0) {
   const c = COND[condName]
   const ctx = await browser.newContext({ viewport: c.viewport, deviceScaleFactor: 1, isMobile: c.mobile, hasTouch: c.mobile })
   const pg = await ctx.newPage()
@@ -79,7 +81,7 @@ async function one(condName, page, sel) {
     await pg.waitForTimeout(400)
   }
   // the frame recorder: from the tap on, one sample a frame
-  await pg.evaluate(({ page, sel }) => {
+  await pg.evaluate(({ page, sel, minKids }) => {
     const w = window
     w.__pb = { t0: null, frames: [], done: false }
     const sec = document.getElementById('page-' + page)
@@ -93,12 +95,13 @@ async function one(condName, page, sel) {
       }
       return false
     }
-    const drawn = () => { const el = document.querySelector(sel); return !!el && el.getBoundingClientRect().height > 0 }
-    document.addEventListener('click', e => {
+    const drawn = () => { const el = document.querySelector(sel); return !!el && el.getBoundingClientRect().height > 0 && el.querySelectorAll('*').length >= minKids }
+    document.addEventListener('pointerdown', e => {
       const a = e.target.closest && e.target.closest('[data-page]')
-      if (a && a.getAttribute('data-page') === page && w.__pb.t0 == null) w.__pb.t0 = e.timeStamp
+      if (a && a.getAttribute('data-page') === page && w.__pb.t0 == null) w.__pb.t0 = performance.now()
     }, true)
-    const loop = t => {
+    const loop = () => {
+      const t = performance.now()
       if (w.__pb.t0 != null) {
         w.__pb.frames.push({ t: t - w.__pb.t0, c: hasContent(), d: drawn() })
         if (w.__pb.frames.length > 4 && w.__pb.frames.slice(-3).every(f => f.d)) { w.__pb.done = true; return }
@@ -107,7 +110,7 @@ async function one(condName, page, sel) {
       requestAnimationFrame(loop)
     }
     requestAnimationFrame(loop)
-  }, { page, sel })
+  }, { page, sel, minKids })
   const link = c.mobile ? `#drawerNav a[data-page="${page}"]` : `#topnav a[data-page="${page}"]`
   await pg.click(link)
   await pg.waitForFunction(() => window.__pb.done, null, { timeout: 30000 })
@@ -131,9 +134,9 @@ const med = v => { const s = v.filter(x => x != null).sort((a, b) => a - b); ret
 const out = { runs: RUNS, at: new Date().toISOString(), results: {} }
 for (const cond of CONDS) {
   out.results[cond] = {}
-  for (const [page, sel] of PAGES) {
+  for (const [page, sel, minKids] of PAGES) {
     const rows = []
-    for (let i = 0; i < RUNS; i++) rows.push(await one(cond, page, sel))
+    for (let i = 0; i < RUNS; i++) rows.push(await one(cond, page, sel, minKids))
     const m = k => med(rows.map(r => r[k]))
     out.results[cond][page] = { firstFrame: m('firstFrame'), content: m('content'), drawn: m('drawn'), longest: m('longest'),
       contentMax: Math.max(...rows.map(r => r.content ?? 0)), rows }
