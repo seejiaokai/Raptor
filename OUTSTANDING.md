@@ -90,6 +90,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
+- [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
 - [LW-PAD-SHOWS-FIGURE] — the Leave War's number pad shows the figure as it is typed in its top line (D1584, 3 Nov 26) — with the next Leave War batch.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -243,6 +244,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [LW-ZOOM-E2E-SLOW-RUNNER] The Leave War's Ctrl+scroll zoom test runs out of time on a slow GitHub machine (found 3 Nov 26, pull request 627)
+**What:** `raptor-port/e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back, within its limits", in the `lw-desktop` group, takes 12–23 s on main's runs and fails at its 30 s on a machine about twice as slow (`mouse.wheel` waits for each zoom step's redraw of the grid; some twenty steps). On pull request 627 it failed on two of three runs, both attempts each, the group's other tests about twice main's times on those runs; re-run once on a fresh machine (D84) it passed in 12.1 s. Measured on his PC 3 Nov 26: with and without 627's loading claw, at 2x slower, three runs each all pass, the same time; at 4x both fail the same way — not that change. **To do:** make it wait on what it needs (D87) — fewer or bigger zoom steps, or a time budget that names why — and check its phone twin. **Place:** a small fix of the Leave War's next batch, or alone if it blocks a merge again.
 
 ### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
 From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
