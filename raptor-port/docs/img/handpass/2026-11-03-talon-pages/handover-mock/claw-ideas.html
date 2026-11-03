@@ -1,0 +1,236 @@
+<title>TALON Claw Ideas</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of two questions; each shows TODAY beside the SUGGESTION, moving, on the app's own dark. */
+:root{
+  --bg:#0B0D10;        /* the app's page dark, the claw's own background */
+  --panel:#14181D;     /* the app's panel */
+  --edge:#2A313A;      /* the app's edge */
+  --ink:#F1F4F7;       /* the app's ink */
+  --dim:#9AA6B2;       /* the app's soft words */
+  --cyan:#3BC6E8;      /* the talon's cyan */
+  --amber:#E5C24A;     /* the app's warning amber */
+  --green:#57C97A;     /* the app's good green */
+  --sans:'Inter Tight',system-ui,-apple-system,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:22px;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h2{font-size:18px;margin:0 0 4px;text-wrap:balance}
+p{margin:0;max-width:65ch;color:var(--dim)}
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:10px;border-bottom:1px solid var(--edge)}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.bar .lbl{color:var(--dim);font-size:13px;margin-right:2px}
+button{font:inherit;font-size:14px;color:var(--ink);background:var(--panel);border:1px solid var(--edge);border-radius:9px;padding:7px 12px;cursor:pointer}
+button[aria-pressed="true"]{background:rgba(59,198,232,.14);border-color:var(--cyan);color:var(--cyan)}
+button:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:12px;background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:16px}
+.pair{display:flex;gap:18px;justify-content:center}
+.col{display:flex;flex-direction:column;gap:6px;align-items:center;min-width:0}
+.tag{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.tag.today{color:var(--amber)} .tag.new{color:var(--green)}
+.note{font-size:13px;color:var(--dim);max-width:36ch;text-align:center}
+/* a screen of the app, drawn at its real size and scaled down to fit */
+.frame{position:relative;overflow:hidden;border:1px solid var(--edge);border-radius:18px;background:var(--bg)}
+.screen{position:absolute;left:0;top:0;transform-origin:0 0}
+.screen img{position:absolute;inset:0;width:100%;height:100%;display:block}
+.boot{position:absolute;inset:0;display:grid;place-items:center}
+.boot .shade{position:absolute;inset:0;background:#0B0D10}
+.answer{font-size:14px;color:var(--ink)}
+.answer b{color:var(--cyan)}
+
+/* THE CLAW — the app's own drawing rules (index.html, #bootclaw), copied with the class "cl" in place of its ids */
+.cl .mk{position:relative;width:72px;height:72px;filter:drop-shadow(0 0 26px rgba(59,198,232,.55))}
+.cl .cs{position:absolute;inset:0;animation:bc-fade 1.77s linear -.2s infinite backwards}
+.cl .w{position:absolute;width:13px;overflow:hidden;transform-origin:10px 1px}
+.cl .w svg{position:absolute;width:72px;height:72px;display:block}
+.cl .c{fill:#3BC6E8}
+.cl .w0{left:-4.37px;top:10.25px;height:67.18px;transform:rotate(-21.25deg);animation:bc-w0 1.77s linear -.2s infinite backwards}
+.cl .w0 svg{left:4.37px;top:-10.25px;transform-origin:5.63px 11.25px;transform:rotate(21.25deg);animation:bc-i0 1.77s linear -.2s infinite backwards}
+.cl .w1{left:10.25px;top:1.25px;height:75.57px;transform:rotate(-23.43deg);animation:bc-w1 1.77s linear -.2s infinite backwards}
+.cl .w1 svg{left:-10.25px;top:-1.25px;transform-origin:20.25px 2.25px;transform:rotate(23.43deg);animation:bc-i1 1.77s linear -.2s infinite backwards}
+.cl .w2{left:27.13px;top:-1px;height:56.29px;transform:rotate(-34.02deg);animation:bc-w2 1.77s linear -.2s infinite backwards}
+.cl .w2 svg{left:-27.13px;top:1px;transform-origin:37.13px 0px;transform:rotate(34.02deg);animation:bc-i2 1.77s linear -.2s infinite backwards}
+@keyframes bc-w0{0%{transform:rotate(-21.25deg) translateY(-67.18px);animation-timing-function:cubic-bezier(.5,0,.25,1)}23.729%,100%{transform:rotate(-21.25deg) translateY(0)}}
+@keyframes bc-i0{0%{transform:translateY(67.18px) rotate(21.25deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}23.729%,100%{transform:translateY(0) rotate(21.25deg)}}
+@keyframes bc-w1{0%,9.040%{transform:rotate(-23.43deg) translateY(-75.57px);animation-timing-function:cubic-bezier(.5,0,.25,1)}32.768%,100%{transform:rotate(-23.43deg) translateY(0)}}
+@keyframes bc-i1{0%,9.040%{transform:translateY(75.57px) rotate(23.43deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}32.768%,100%{transform:translateY(0) rotate(23.43deg)}}
+@keyframes bc-w2{0%,18.079%{transform:rotate(-34.02deg) translateY(-56.29px);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:rotate(-34.02deg) translateY(0)}}
+@keyframes bc-i2{0%,18.079%{transform:translateY(56.29px) rotate(34.02deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:translateY(0) rotate(34.02deg)}}
+@keyframes bc-fade{0%,72.881%{opacity:1;animation-timing-function:ease-in}88.701%,100%{opacity:0}}
+
+/* SUGGESTION 2 — no dark gap: two copies of the same claw take turns, each drawn exactly as today (each claw 0.42 s,
+   0.16 s apart), held longer, and fading out while the other copy is already drawing; a new scratch still starts every
+   1.77 s. Each copy's own round is 3.54 s; the second starts 1.77 s after the first. */
+.cl2 .cs{animation:g-fade 3.54s linear -.2s infinite backwards}
+.cl2 .w0{animation:g-w0 3.54s linear -.2s infinite backwards} .cl2 .w0 svg{animation:g-i0 3.54s linear -.2s infinite backwards}
+.cl2 .w1{animation:g-w1 3.54s linear -.2s infinite backwards} .cl2 .w1 svg{animation:g-i1 3.54s linear -.2s infinite backwards}
+.cl2 .w2{animation:g-w2 3.54s linear -.2s infinite backwards} .cl2 .w2 svg{animation:g-i2 3.54s linear -.2s infinite backwards}
+.cl2 .cs.b,.cl2 .cs.b .w,.cl2 .cs.b .w svg{animation-delay:1.57s}
+@keyframes g-w0{0%{transform:rotate(-21.25deg) translateY(-67.18px);animation-timing-function:cubic-bezier(.5,0,.25,1)}11.864%,100%{transform:rotate(-21.25deg) translateY(0)}}
+@keyframes g-i0{0%{transform:translateY(67.18px) rotate(21.25deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}11.864%,100%{transform:translateY(0) rotate(21.25deg)}}
+@keyframes g-w1{0%,4.520%{transform:rotate(-23.43deg) translateY(-75.57px);animation-timing-function:cubic-bezier(.5,0,.25,1)}16.384%,100%{transform:rotate(-23.43deg) translateY(0)}}
+@keyframes g-i1{0%,4.520%{transform:translateY(75.57px) rotate(23.43deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}16.384%,100%{transform:translateY(0) rotate(23.43deg)}}
+@keyframes g-w2{0%,9.040%{transform:rotate(-34.02deg) translateY(-56.29px);animation-timing-function:cubic-bezier(.5,0,.25,1)}20.904%,100%{transform:rotate(-34.02deg) translateY(0)}}
+@keyframes g-i2{0%,9.040%{transform:translateY(56.29px) rotate(34.02deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}20.904%,100%{transform:translateY(0) rotate(34.02deg)}}
+@keyframes g-fade{0%,45.763%{opacity:1;animation-timing-function:ease-in}55.650%,100%{opacity:0}}
+
+/* the dark-moments strip under question 2 */
+.strip{width:min(300px,100%);height:12px;border-radius:6px;border:1px solid var(--edge);overflow:hidden}
+.strip.today{background:linear-gradient(90deg,#000 0 5.6%,var(--cyan) 5.6% 80.8%,#000 80.8% 100%)}
+.strip.new{background:var(--cyan)}
+.big .frame{background:var(--bg)}
+@media (prefers-reduced-motion:reduce){.rm{display:block}}
+.rm{display:none;font-size:13px;color:var(--amber)}
+</style>
+
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:6px">
+    <h1>The loading claw: two ideas</h1>
+    <p>Each one plays today's claw beside the suggestion, using the real sign-in page at your iPhone's size and the real claw. Both play on a loop. The changes happen in a fifth of a second, so use <b style="color:var(--ink)">Slow ×5</b> to see them clearly.</p>
+    <p class="rm">Your phone is set to reduce motion. These mock-ups move anyway, because the motion is the question.</p>
+  </header>
+
+  <div class="bar" role="group" aria-label="Playback speed">
+    <span class="lbl">Speed</span>
+    <button id="spd1" type="button" aria-pressed="true">Normal</button>
+    <button id="spd5" type="button" aria-pressed="false">Slow ×5</button>
+    <button id="replay" type="button">Replay</button>
+  </div>
+
+  <section aria-labelledby="q1">
+    <h2 id="q1">1 · The claw becomes the sign-in's logo</h2>
+    <p>Today, the big claw fades out where it is while the sign-in fades in, so for a moment you see two logos. In the suggestion, the claw slides up and shrinks into the sign-in's logo and becomes it. Any claw not yet drawn finishes on the way up. It takes the same 0.2 s, so it adds no time.</p>
+    <div class="pair">
+      <div class="col"><span class="tag today">Today</span><div class="frame" id="p-today"></div></div>
+      <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="p-new"></div></div>
+    </div>
+    <details>
+      <summary style="cursor:pointer;color:var(--dim)">On a desktop</summary>
+      <div class="pair" style="margin-top:10px">
+        <div class="col"><span class="tag today">Today</span><div class="frame" id="d-today"></div></div>
+        <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="d-new"></div></div>
+      </div>
+    </details>
+  </section>
+
+  <section aria-labelledby="q2">
+    <h2 id="q2">2 · No dark gap between loops</h2>
+    <p>Today, each loop ends with the claw faded out and the next one starting from nothing, so the screen is dark for about 0.3 s every 1.77 s. In the suggestion, the next scratch starts drawing while the last one is still fading, so part of the claw is always on screen. A new scratch still starts every 1.77 s, and each claw draws at the same speed.</p>
+    <div class="pair big">
+      <div class="col"><span class="tag today">Today</span><div class="frame" id="g-today"></div><div class="strip today" title="black: the dark moment in each loop"></div><span class="note">Black on the bar: the dark moment in each loop</span></div>
+      <div class="col"><span class="tag new">Suggestion</span><div class="frame" id="g-new"></div><div class="strip new"></div><span class="note">No dark moment</span></div>
+    </div>
+  </section>
+
+  <p class="answer">To answer, reply for example <b>“1 yes, 2 yes”</b>. These would be a small follow-up after today's work. They aren't needed for today's merge.</p>
+</div>
+
+<template id="claw">
+  <div class="mk" aria-hidden="true"><div class="cs">
+    <div class="w w0"><svg viewBox="0 -2 60 64"><path class="c" d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z"/></svg></div>
+    <div class="w w1"><svg viewBox="0 -2 60 64"><path class="c" d="M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z"/></svg></div>
+    <div class="w w2"><svg viewBox="0 -2 60 64"><path class="c" d="M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z"/></svg></div>
+  </div></div>
+</template>
+
+<script>
+(() => {
+  // the real sign-in's measures (scripts/handpass/talon-claw-handover-mock.mjs, measures.json)
+  const SIZES = {
+    phone:   { w: 402,  h: 874, logo: { x: 110.27, y: 44,     s: 32 }, img: 'signin-phone.png',   imgNo: 'signin-phone-nologo.png',   show: 260 },
+    desktop: { w: 1536, h: 864, logo: { x: 659.47, y: 238.42, s: 42 }, img: 'signin-desktop.png', imgNo: 'signin-desktop-nologo.png', show: 520 },
+  }
+  // each claw's window and the claw inside it, drawn whole (index.html's end states)
+  const WHOLE = [['rotate(-21.25deg) translateY(0px)', 'translateY(0px) rotate(21.25deg)'],
+                 ['rotate(-23.43deg) translateY(0px)', 'translateY(0px) rotate(23.43deg)'],
+                 ['rotate(-34.02deg) translateY(0px)', 'translateY(0px) rotate(34.02deg)']]
+  let rate = 1, gen = 0
+  const tpl = document.getElementById('claw')
+  const newClaw = () => tpl.content.firstElementChild.cloneNode(true)
+  const later = (ms, g) => new Promise(r => setTimeout(() => r(g === gen), ms / rate))
+  // two screens side by side at every width: each takes half of the room inside a question's box
+  const half = max => Math.max(120, Math.min(max, Math.floor((Math.min(1100, document.documentElement.clientWidth - 32) - 32 - 18) / 2)))
+  const setRates = root => { for (const a of root.getAnimations({ subtree: true })) a.playbackRate = rate }
+
+  function screen(host, size) {
+    const S = SIZES[size], show = half(S.show), k = show / S.w
+    host.style.width = show + 'px'; host.style.height = Math.round(S.h * k) + 'px'
+    host.style.maxWidth = '100%'
+    const sc = document.createElement('div'); sc.className = 'screen'
+    sc.style.width = S.w + 'px'; sc.style.height = S.h + 'px'; sc.style.transform = `scale(${k})`
+    host.appendChild(sc)
+    return { sc, S }
+  }
+
+  async function handover(host, size, suggested, g) {
+    host.textContent = ''
+    const { sc, S } = screen(host, size)
+    const img = document.createElement('img'); img.alt = 'The sign-in page'; img.src = suggested ? S.imgNo : S.img
+    sc.appendChild(img)
+    const boot = document.createElement('div'); boot.className = 'boot cl'
+    const shade = document.createElement('div'); shade.className = 'shade'
+    const mk = newClaw(); boot.append(shade, mk); sc.appendChild(boot)
+    setRates(boot)
+    if (!await later(2100, g)) return
+    const ease = 'cubic-bezier(.2,.7,.2,1)'
+    if (!suggested) {
+      // today: the whole claw screen fades out where it is (index.html: opacity .2s ease-out), the claw still moving
+      boot.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 200, easing: 'ease-out', fill: 'forwards' }).playbackRate = rate
+    } else {
+      // the suggestion: the dark fades; the claw finishes drawing and glides and shrinks onto the logo's place
+      const parts = [mk.querySelector('.cs'), ...mk.querySelectorAll('.w'), ...mk.querySelectorAll('.w svg')]
+      const now = parts.map(el => { const c = getComputedStyle(el); return { t: c.transform, o: c.opacity } })
+      parts.forEach((el, i) => { el.style.animation = 'none'; el.style.transform = now[i].t === 'none' ? '' : now[i].t; el.style.opacity = now[i].o })
+      const wins = mk.querySelectorAll('.w'), svgs = mk.querySelectorAll('.w svg')
+      const anims = []
+      anims.push(parts[0].animate([{ opacity: now[0].o }, { opacity: 1 }], { duration: 220, easing: ease, fill: 'forwards' }))
+      wins.forEach((w, i) => anims.push(w.animate([{ transform: getComputedStyle(w).transform }, { transform: WHOLE[i][0] }], { duration: 220, easing: ease, fill: 'forwards' })))
+      svgs.forEach((s, i) => anims.push(s.animate([{ transform: getComputedStyle(s).transform }, { transform: WHOLE[i][1] }], { duration: 220, easing: ease, fill: 'forwards' })))
+      const from = { x: S.w / 2, y: S.h / 2 }, to = { x: S.logo.x + S.logo.s / 2, y: S.logo.y + S.logo.s / 2 }
+      anims.push(mk.animate([{ transform: 'none' }, { transform: `translate(${to.x - from.x}px, ${to.y - from.y}px) scale(${S.logo.s / 72})` }], { duration: 220, easing: ease, fill: 'forwards' }))
+      anims.push(shade.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 220, easing: 'ease-out', fill: 'forwards' }))
+      anims.forEach(a => { a.playbackRate = rate })
+      if (!await later(220, g)) return
+      img.src = S.img; boot.remove()   // landed: the sign-in's own logo takes over
+    }
+    if (!await later(1900, g)) return
+    handover(host, size, suggested, g)
+  }
+
+  function gap(host, suggested) {
+    host.textContent = ''
+    const k = half(200)
+    host.style.width = k + 'px'; host.style.height = k + 'px'
+    const boot = document.createElement('div'); boot.className = 'boot cl' + (suggested ? ' cl2' : '')
+    boot.style.transform = `scale(${1.6 * k / 200})`
+    const mk = newClaw()
+    if (suggested) { const b = mk.querySelector('.cs').cloneNode(true); b.classList.add('b'); mk.appendChild(b) }
+    boot.appendChild(mk); host.appendChild(boot)
+    setRates(boot)
+  }
+
+  function start() {
+    const g = ++gen
+    handover(document.getElementById('p-today'), 'phone', false, g)
+    handover(document.getElementById('p-new'), 'phone', true, g)
+    handover(document.getElementById('d-today'), 'desktop', false, g)
+    handover(document.getElementById('d-new'), 'desktop', true, g)
+    gap(document.getElementById('g-today'), false)
+    gap(document.getElementById('g-new'), true)
+  }
+  const speed = r => {
+    rate = r
+    document.getElementById('spd1').setAttribute('aria-pressed', String(r === 1))
+    document.getElementById('spd5').setAttribute('aria-pressed', String(r !== 1))
+    start()
+  }
+  document.getElementById('spd1').addEventListener('click', () => speed(1))
+  document.getElementById('spd5').addEventListener('click', () => speed(0.2))
+  document.getElementById('replay').addEventListener('click', start)
+  let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(start, 250) })
+  start()
+})()
+</script>

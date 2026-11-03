@@ -91,7 +91,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Leave War**
 - [TALON-CLAW-BG] — every page's background the claw's plain dark, the one-frame raise out (D1614); the start-up claw on every start, no wait (D1615): BUILT and walked on pull request 628 (27/27 and 75/75); his iPhone look, then "merge live".
 - [TALON-CLAW-HANDOVER] — as the start-up claw fades, the sign-in's small logo and the big claw show at once, in two places and sizes — a design question for him, with its picture.
-- [TALON-CLAW-ROUND-GAP] — every round of the claw ends in about 0.3 s of plain dark before the next draw shows — a design question for him, with its pictures.
+- [TALON-CLAW-ROUND-GAP] — every round of the claw ends in about 0.3 s of plain dark before the next draw shows — a design question for him; in the same moving mock-up (question 2).
 - [TALON-CLAW-SPOKEN] — the page claw says nothing to a screen reader; "Loading Leave War" / "Loading Tracker" as quiet status words — a small fix with the next claw change.
 - [LAZY-PAGE-LOAD-FAIL] — if the Leave War's or the Tracker's download fails (a weak signal, a tab open across an update) nothing catches it — worked out from the code, not seen; a message with Retry.
 - [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
