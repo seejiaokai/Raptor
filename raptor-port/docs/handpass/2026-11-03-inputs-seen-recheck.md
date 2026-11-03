@@ -13,7 +13,7 @@ side (844 × 390) and a small phone (320 × 568). Two Sonnet walkers (D588); the
 | Page | Find | Seen 3 Nov 26 | Picture |
 |---|---|---|---|
 | Q1 | Escape while a bar is carried on the Inputs calendar | Escape cancels nothing: Grit's ATT C carried a day on, Escape, let go — 13–17 Jul became 14–18 Jul (new; the October walker saw only the copy left following the pointer) | B/B2b2-desktop-after-escape-release-move-away |
-| Q2 | A weekend no Leave War period covers | The Inputs page asks the OIL question on Sat 10 Mar 29 and saves a Yes; nothing names the missing period (the schedule's `OIL_NO_PERIOD` does — D19) | A/A4-* |
+| Q2 | A weekend no Leave War period covers | The Inputs page asks the OIL question on Sat 10 Mar 29 and saves a Yes; nothing names the missing period (the schedule's `OIL_NO_PERIOD` does — D19). **Answered D1578 (3 Nov 26):** keep asking and saving the answer, never create a period from an input; the OIL counts once a period exists — the batch walks a period created after the day was published | A/A4-* |
 | Q3 | Undo's words | "Undo — a personal input" / "Undid: a personal input" for any one input (`undo/describe.ts`) | A/A6-*, A/A1-desktop-after-one-undo |
 | Q4a | Sideways phone: windows over the bar | Undo and Redo now clear; the month's ‹ › and the gear still covered | B/B1a-* |
 | Q4b | Sideways phone: SANS Highlight list | runs past the screen's foot as opened; reachable by scrolling | B/B1b-* |

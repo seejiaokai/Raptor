@@ -10492,6 +10492,12 @@ period for bidding is his own act and is never done behind him from a schedule s
 member sees the reason and is offered nothing. A year another war already reaches is
 refused with a line saying so, rather than made twice.
 
+**On the Inputs page (owner D1578, 3 Nov 26).** An input filed for a weekend no period covers is asked its OIL
+question as on any other day, and the answer is kept on the input. The input never creates a period and never
+offers to: a period is the Leave War's own record (above), made from the schedule's check or on the Leave War. The OIL the
+input earns shows on the Leave War, in his OIL count and as OIL earned, once a period holding its date exists, by the
+same pass that credits every other day.
+
 ### The mode is read-only, and where that stops (fix 5, 22 Sep 26)
 
 The board's own schedule boxes were shut when OIL Earn came in; the two crew

@@ -3217,3 +3217,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, add: "A question about feel — a swipe, a scroll, an animation — is answered by a page the owner operates on his own device: real pictures of each part at the device's size, the container built to the app's own measured scroll rules, the proposed behaviour scripted, a switch per open choice; checked by a real finger in a visible browser before it is sent."
 
 **Principle:** When the question is how an interaction feels, the mock-up must be operable on the target device; build it from real captures inside a container that reproduces the real scroll physics, so what is judged is the behaviour, not a drawing of it.
+
+### Observation 774: The handoff's "Next, in order" section had become history, so a fresh chat read the order from the backlog
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** a fresh chat told to "start the next job from ## Next, in order" — HANDOFF.md's section opened with "RIGHT NOW" lines dated 13–21 Oct 26, every step done; the live order was the backlog's priority list (his D994: small fixes by area).
+**Skill:** session-handoff
+**Type:** internal
+**Phase/Area:** Writing the handoff — the project-order section
+
+**Issue:** Each handoff rewrites only its own `## Now` block; nobody rewrites the shared "Next, in order" section, so its "RIGHT NOW" lines pile up and go stale while the owner's opening line still points a new chat at it. The chat had to notice the dates, discard the section and find the real order in OUTSTANDING.md's priority list. A less careful chat would start a long-finished job or ask him a settled question.
+
+**Suggested improvement:** In the session-handoff skill, add a step: before committing, read the top of "Next, in order"; if its first "RIGHT NOW" line names work that is merged, replace the stale lines with one line pointing at the backlog's priority list ("His order, as it stands"), moving the old lines whole to the archive. Or retire the section's "RIGHT NOW" lines for good, since the backlog already carries the order.
+
+**Principle:** A shared section that no writer owns goes stale; give it an owner at the moment every chat already touches the file, or point it at the one place that is kept current.
+
+### Observation 775: A backlog of small "seen" finds goes stale as later batches fix them — re-walk before planning
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** planning the next Inputs small-fixes batch from [TITLE-CHECK-SEEN], [ALLAVAIL-CHECK-SEEN] and [CAL-CHECK-SEEN], filed 8–10 Oct 26.
+**Skill:** New skill candidate: batch-planning (or the bug-check order's sizing step)
+**Type:** internal
+**Phase/Area:** Planning a small-fixes batch from old filed finds
+
+**Issue:** Of 31 open finds, 15 were already gone — fixed in passing by later batches whose code comments even cite the item, but nobody updated the item. A batch planned from the text alone would have built fixes for faults that no longer exist, or asked him settled questions. Two Sonnet walkers re-checking every find on the built app (about 35 minutes, host opening the deciding pictures) sorted them reliably, and found one new, worse fault in passing.
+
+**Suggested improvement:** (1) Before planning a batch from filed small finds older than a week or two, re-walk each on today's build and sort it still there / gone / can't reproduce, pictures kept. (2) When a fix lands for a find that lives inside a multi-find backlog item, the same change marks that find fixed in the item (a grep of the item id in the diff's comments makes this checkable).
+
+**Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
