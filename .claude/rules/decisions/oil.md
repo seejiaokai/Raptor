@@ -42,6 +42,7 @@ work, already loaded: **D54** (an issued weekend carrying a placeholder raises t
 
 | # | Date | The rule |
 |---|---|---|
+| D1579 | 3 Nov 26 | At the database step earned OIL is stored in a table of its own, one row a person and a date, not tied to a Leave War period; the Leave War, the OIL tracker and every other screen read it from there. Until then D1578 stands. |
 | D1094 | 20 Oct 26 | The OIL batch's new words stand as built — the Unpublish warning, done note and armed button's title when an amendment is withdrawn, and the same-time line's "earns nobody any OIL" sentence — and the batch goes live on this "merge live". |
 | D1008 | 18 Oct 26 | Every member may see every man's OIL tracker entries, figures and grants, with their reasons — as the app shows today — and the database's access table is widened to say so (it said a member reads only his own). |
 | D978 | 17 Oct 26 | On a phone up to 400 wide the OIL question's "Only some days…" calendar is drawn with no box of its own, and its count line reads "No days selected — tap a day to credit it"; both as built, and [OIL-CONFIRM-DAYGRID] goes live on this "merge live". |

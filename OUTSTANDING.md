@@ -164,6 +164,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [DATA-ONE-MASTER-CHECK] — what in the app keeps a copy of a saved fact, or a stored result worked out from one, instead of reading the one table (D1580, 3 Nov 26): the check under way, a report for him.
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -206,6 +207,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-OIL-OWN-TABLE] — at the database step earned OIL gets its own table by person and date, not tied to a Leave War period, read by every screen (D1579, 3 Nov 26).
 - [DB-WEEK-AHEAD] — at the database step, the weeks on either side are fetched ahead and kept on the phone, so a cross never waits on the network (his question, 3 Nov 26).
 - [ONE-LIVE-WEEK-WEIGH] — whether the app should hold several weeks at once instead of one live week — weighed at the database step, not before (his question, 3 Nov 26).
 - [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
@@ -674,6 +676,12 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
   War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
+
+### [DB-OIL-OWN-TABLE] Earned OIL in a table of its own, by person and date (3 Nov 26, his "file it" — D1579)
+**What:** at the database step, a credit the published schedule earns stops being a record of a Leave War period (`raptor-port/docs/data-model.md` §LeaveBid, `warId` required) and becomes a row of its own — person, date, amount, the work it came from — read by the Leave War grid, the OIL tracker, Balances and anything else. **Why (his question):** *"Shouldnt OIL be stored on a table in the database. And anything can call that data?"* — earned OIL is a fact about a man and a day, not about whether a period exists; tied to a period, a weekend in a year with no period has nowhere to go (D19's advisory, D1578's waiting case). A hand-given award is already its own `LeaveLedger` row. **What it changes then:** the OIL pass writes this table; D19's "no OIL can be earned" advisory is no longer needed for OIL (the period offer may stay for the Leave War's own sake — his to rule then); the OIL tracker's derivation reads the new rows. **Place:** the Database step (D473), with [DB-STEP].
+
+### [DATA-ONE-MASTER-CHECK] What does not read the one table — a check for him (3 Nov 26, D1580)
+**His words:** *"shouldnt the whole app be designed such that it relies to store data on the tables? And that is the master for all to call data from it? … Can u check what else in the app doesnt follow this?"* **What:** a read-only check of every place the app keeps a second copy of a saved fact, stores a result worked out from one, or keeps saved data outside the tables (one browser only, memory only) — each with what it is on screen, why it is so, whether it is right to stay so (named with its reason) or should move at the database step, and its risk. His examples: the Leave War, the pucks on a day, SANS inputs. A report put to him, nothing built (D473). **Started:** 3 Nov 26 on `claude/inputs-small-fixes-2`.
 
 ### [DB-WEEK-AHEAD] Fetch the neighbouring weeks ahead, so a cross never waits on the network (3 Nov 26, his question)
 **His question (3 Nov 26):** *"so with the database, the scroll between every day including next week will have no delay? Just
