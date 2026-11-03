@@ -3247,3 +3247,19 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** (1) Before planning a batch from filed small finds older than a week or two, re-walk each on today's build and sort it still there / gone / can't reproduce, pictures kept. (2) When a fix lands for a find that lives inside a multi-find backlog item, the same change marks that find fixed in the item (a grep of the item id in the diff's comments makes this checkable).
 
 **Principle:** A list of observed faults describes the app on the day it was written; re-observe before acting on it, and close a finding where it is fixed, not later.
+
+### Observation 786: A motion mock-up checked on the iPhone's engine without a phone, by pausing its animations at fixed moments
+
+**Status:** OPEN
+**Date:** 3 Nov 26
+**Session context:** [TALON-LOADING-CLAW] — a loading animation (three claws drawn in turn) put to the owner as a page he plays on his iPhone.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** Judging the Proposal — a question about feel (observation 773)
+**Number range:** this chat holds 786–795 (the Inputs batch chat holds 776–785).
+
+**Issue:** The animation used SVG masks animated by CSS — a technique Safari has historically repainted badly — and the owner judges it on an iPhone. A screen recording of a headless browser is unreliable for timing. What worked: open the page in Playwright's WebKit as well as Chromium, call `document.getAnimations()`, pause each and set `currentTime` to a list of fixed moments, screenshot the element at each, and lay the frames out as one strip per engine (`raptor-port/scripts/handpass/talon-claw-frames.mjs`). Both strips matched frame for frame, so the order and direction of the drawing were proved on the phone's engine before the link was sent.
+
+**Suggested improvement:** In `mockups-on-the-real-app.md` §Judging the Proposal, beside observation 773's line on feel: "An animation is checked frame by frame before it is sent: in WebKit (the iPhone's engine) as well as Chromium, every animation paused at fixed moments (`document.getAnimations()`, `currentTime`), one strip of frames per engine and per option, read by eye for order and direction."
+
+**Principle:** Motion is verified by sampling it at known times on the target device's engine, not by watching it play: a paused frame at a fixed moment is a fact, a recording is an impression.
