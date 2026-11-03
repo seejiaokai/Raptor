@@ -65,7 +65,7 @@ Success is a week planned, checked and published with less effort and nothing mi
 - **The login page stays simple.**
 - **The app is TALON — Training, Availability, Leave & Ops Nexus** (D1590, 3 Nov 26; built as listed on its page, D1606): the name everywhere the app names
   itself to a person; the talon logo stays; the code and the project keep "Raptor" inside.
-- **While it loads, the talon claws scratch in** (D1591; its timing and look, D1605; and while any page that loads slowly opens, D1607 — one overlay over the page area under the top bar, the bar staying, D1610, replacing D1609's whole screen): the left claw, then the middle, then the right, each top to
+- **While it loads, the talon claws scratch in** (D1591; its timing and look, D1605; and while any page that loads slowly opens, D1607 — one overlay over the page area under the top bar, the bar staying, D1610, replacing D1609's whole screen; from the tap, on the Leave War and the Tracker, D1611): the left claw, then the middle, then the right, each top to
   bottom, repeating — drawn by the browser alone, adding nothing to the load time.
 - A working screen stays dense: "sleek" here is fewer words and fewer boxes, never more empty space.
 

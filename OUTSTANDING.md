@@ -158,7 +158,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
 - [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
-- [TALON-CLAW-PAGES] — the loading claw while any slow page opens, the Leave War and the Tracker among them (D1607): one overlay over the page area under the top bar, tried first on the Leave War as a test (D1610) — in hand.
+- [TALON-CLAW-PAGES] — the loading claw while any slow page opens, the Leave War and the Tracker among them (D1607): one overlay over the page area under the top bar, from the tap, on the Leave War and the Tracker (D1610, D1611) — being built.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
