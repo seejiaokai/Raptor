@@ -987,6 +987,15 @@ the reader's instructions or model change, it is run on every case and a change 
    fix is guessed; and every gesture's evidence sheet names what only his phone can show (`src/ui/swdebug.ts`;
    `src/ui/swipeweeks.test.tsx` "a swipe Safari gave the page no touch for"; its evidence
    `docs/handpass/2026-11-03-week-swipe-keys.md` §11).
+22. **A thing judged "shown" by being there, not by what it draws (his iPhone recording, the loading claw on the Leave War,
+   3 Nov 26, 20:46).** The walk passed "0.12 s after the tap the claw already shows": the claw's element was on the page and
+   fully opaque. On his phone the tap was followed by a dark page for 0.1–0.2 s, then the claw: its scratch starts from
+   nothing, easing in, so its first 0.1 s drew 0% to 12% of the first claw — present, opaque and invisible. No check read
+   the pixels.
+   **Lesson:** whatever a person is meant to SEE — a mark, a loading sign, an animation's first moments — is checked by what
+   is drawn on the screen (the screen's own frames, its pixels counted in the thing's box), not by the element being there or
+   its opacity; and an animation's first frames are checked as well as its middle (`scripts/handpass/talon-page-claw-walk.mjs`
+   case V; its evidence `docs/handpass/2026-11-03-talon-pages.md` §His find).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

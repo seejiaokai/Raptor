@@ -6858,7 +6858,8 @@ view and in reach (D1610, his "A").
   (never for the desktop's hidden pre-warm). Every other page is drawn at the tap and is never blank (the old screen
   held at most 0.28 s slowed), so none raises it. A second open in the same visit shows the page at once, no claw.
 - **From the tap, no 0.3 s wait (D1611):** with the wait it was on his phone one to three frames, a flicker. The
-  start-up claw keeps its wait.
+  start-up claw keeps its wait. **And 0.2 s into its round** (his recording, 3 Nov 26): from the very start its left claw
+  drew almost nothing for 0.1 s, a dark page; now two-thirds of it shows in the first frame (walk case V reads the pixels).
 - **Gone as the page is drawn:** a 0.2 s fade from the frame the page arrives, never waiting for its round. The Tracker
   draws its chart just after its page appears, so its claw waits for the chart, or its "no course yet" (`until`),
   noticed the moment it is added, at most 3 s. Up under 0.2 s, or he left for another page first, or less motion asked

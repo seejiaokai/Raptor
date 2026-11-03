@@ -36,7 +36,9 @@ describe('the page claw is the start-up claw', () => {
     expect(rule).not.toContain('bc-wait')
     expect(rule).toContain('transition:opacity .2s ease-out')
     // the shared rules start each animation 0.3 s in (the start-up claw's wait); the page claw's own rule, after them, starts at once
-    const delay = css.indexOf('.pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:0s}')
+    // …and 0.2 s into its round, so the left claw is already 66% drawn in the first frame (his iPhone recording, 3 Nov 26:
+    // from the very start it drew almost nothing for 0.1 s, a dark page)
+    const delay = css.indexOf('.pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:-.2s}')
     expect(delay).toBeGreaterThan(css.lastIndexOf('.pgclaw .pw2 svg{'))
     expect(delay).toBeLessThan(css.indexOf('@media (prefers-reduced-motion'))
     expect(css).not.toContain('pgclaw.now')

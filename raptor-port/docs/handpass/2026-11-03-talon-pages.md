@@ -96,3 +96,23 @@ The claw taken out of both placeholders, rebuilt, the two slow opens walked (`ON
 - His own iPhone: WebKit on Windows stands in for its drawing, not for its speed or its touch (the order's §7.11, 6 and
   21) — his look on the preview is the proof there.
 - A real slow network: the downloads were held back by the script, not slowed; the 4G figures above are the measure.
+
+## His find — a dark page before the claw (3 Nov 26, 20:46, after the merge)
+
+His iPhone recording of the live app (`docs/img/handpass/2026-11-03-talon-pages/his-recording/`, frames every 0.05 s;
+`strip-after-each-tap.png`): after the tap on the Leave War, two frames of the old page dimmed (the page switching), then
+0.1 s of dark page with only a speck of claw, then the claw; on the Tracker the same 0.1 s of speck. The claw's scratch
+starts from nothing and eases in: its left claw is 2% drawn at 0.05 s and 12% at 0.1 s. The walk's check ("0.12 s after
+the tap the claw already shows") read the element's presence and opacity, never its pixels — the order's §7.11, lesson 22.
+
+- **Red first:** walk case V (`talon-page-claw-walk.mjs`, `ONLY_V=1`), the screen's own frames read for the claw's drawn
+  pixels in its first 0.1 s, against the whole claw's: on the live build 0% in all six frames, both pages — FAIL
+  (`visible-before/`).
+- **Fixed** on `claude/talon-claw-visible`: the page claw starts its round 0.2 s in (`index.html`,
+  `.pgclaw … {animation-delay:-.2s}`) — two-thirds of the left claw in the first frame, the scratch running on from there;
+  the start-up claw untouched. Case V green: 20%, 23%, 24%, 26%, 27%, 30% of the whole claw over the first six frames
+  (`walk-visible/`; `first-frame-before-after.png`).
+- **Re-walk:** the whole walk again on the fixed build — 63 of 63 (`walk-visible/`); unit checks 17 of 17.
+- **Not changed:** the two frames of the old page at the switch on the Leave War (the page switching, before the claw can
+  be drawn — measured for every page in §Which pages go blank); the start-up claw before the sign-in shows only on a load
+  slower than 0.3 s (D1605) — put to him.

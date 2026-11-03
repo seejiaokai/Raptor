@@ -82,7 +82,9 @@
       #bc-w2 svg,.pgclaw .pw2 svg{left:-27.13px;top:1px;transform-origin:37.13px 0px;transform:rotate(34.02deg);animation:bc-i2 1.77s linear .3s infinite backwards}
       @keyframes bc-w2{0%,18.079%{transform:rotate(-34.02deg) translateY(-56.29px);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:rotate(-34.02deg) translateY(0)}}
       @keyframes bc-i2{0%,18.079%{transform:translateY(56.29px) rotate(34.02deg);animation-timing-function:cubic-bezier(.5,0,.25,1)}41.808%,100%{transform:translateY(0) rotate(34.02deg)}}
-      .pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:0s}
+      /* the page claw starts its scratch 0.2 s in (his iPhone recording, 3 Nov 26): from the very start its left claw is
+         only 2% drawn at 0.05 s and 12% at 0.1 s, so the tap showed a dark page first; 0.2 s in, 66% shows in the first frame */
+      .pgclaw .cs,.pgclaw .w,.pgclaw .w svg{animation-delay:-.2s}
       @keyframes bc-fade{0%,72.881%{opacity:1;animation-timing-function:ease-in}88.701%,100%{opacity:0}}
       @media (prefers-reduced-motion:reduce){
         #bootclaw,.pgclaw{transition:none}
