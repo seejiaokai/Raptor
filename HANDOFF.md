@@ -27,7 +27,7 @@ the later merge keeps both (D78).
 - **Unfinished:** none of the job. Filed: [WEEK-CROSS-END-CARDS] (Fable's smoother cross — a preview card at each end of the strip, his to place, picture in the item), [WEEK-GLIDE-TWO-PAGES] (low), [BOARD-KEYS-LEFT], [DOCTOR-INPUTS-RIDE], [LW-ZOOM-TEST-SLOW]; [VEILED-WINDOWS-BAR]'s bar part stays open; [PDF-PRINT-TWICE] as it was.
 - **Branch:** `claude/week-swipe-pdf-print`; pull request 621; merged — the next chat starts a new job on its own fresh branch, level with `origin/main`, and never switches to this one.
 - **Gates:** GitHub's run of the pull request is the full check (D1086) — green on every code commit since `f5c1b0046`; the closing records' run read before the merge.
-- **Also open, waiting for his merge live:** pull request 578 (`claude/handoff-1027-review` — notes), 541 commits behind `main`.
+- **Open pull requests:** none. Pull request 621 merged live on his word; 578 (`claude/handoff-1027-review`) closed unmerged on his word, 3 Nov 26 — everything it recorded was already on `main`, its handoff block stale and its size line below main's.
 - **Running when written:** the walk's preview on port 4173 (this chat's — stopped at the end); nothing else.
 - **Pick up here:** a new job from `## Next, in order` — or [WEEK-CROSS-END-CARDS] if he places it.
 <!-- /now -->
