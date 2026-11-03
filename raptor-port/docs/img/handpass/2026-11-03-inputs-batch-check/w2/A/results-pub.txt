@@ -1,0 +1,36 @@
+NOTE S03 — published: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+PASS S03 premise: ORIG, nothing pending, signed — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S03 — before: header/button/tooltip {"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}
+NOTE S03 — toast after Make public: "Note now shows on the view-only schedule"; notes seen: ["Wednesday published and approved","Note now shows on the view-only schedule"]
+NOTE S03 — after: {"head":"Public notesOn view-only ✓","btn":"On view-only ✓","title":"Showing on the view-only schedule — tap to keep it scheduler-only","on":true,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}
+NOTE S03 — face after: {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+PASS S03 EXPECTED day reads 1 pending and sign-offs fall (Not yet signed) — saw {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+PASS S03 EXPECTED view-only still shows NO note before the AL — saw {"notes":[],"heads":[]}
+NOTE S03 — To go out: "Waiting to go out as AL1 · 1 change Programme notes Saber 3/11 17:43 Brief 0700 main room → Brief 0700 main room · public Tap a change to go to it."
+PASS S03 EXPECTED To go out lists the note — saw "Waiting to go out as AL1 · 1 change Programme notes Saber 3/11 17:43 Brief 0700 main room → Brief 0700 main room · public Tap a change to go to it."
+NOTE S03 — RECORD (EXPECTED says label/toast/tooltip must not claim it is on view-only already): toast="Note now shows on the view-only schedule" label="On view-only ✓" tooltip="Showing on the view-only schedule — tap to keep it scheduler-only"
+NOTE S03 — Board toggle state: {"head":"Public notesOn view-only ✓","btn":"On view-only ✓","title":"Showing on the view-only schedule — tap to keep it scheduler-only","on":true}
+NOTE S03 — AL published: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish AL1"},"kind":"AL"}
+PASS S03 EXPECTED after AL: 0 pending — saw {"tag":"AL1","pend":[],"nys":""}
+PASS S03 EXPECTED view-only shows "Notes · Brief 0700" — saw {"notes":["Brief 0700 main room"],"heads":["Notes"]}
+PASS S05 premise: ORIG nothing pending signed — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S05 — sims note header before: {"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"sub plist sec sec-sim"}; day note keys ["notes=[{\"t\":\"EXAM PERIOD RESTRICTIONS / 21 JUL 0700H - 24 JUL 1800H\",\"rid\":\"rs13072026"]
+NOTE S05 — toast: "Note now shows on the view-only schedule"; npub ["sn"]
+NOTE S05 — face after: {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S05 — To go out: "Waiting to go out as AL1 · 1 change Sim notes earlier public Tap a change to go to it."
+NOTE S05 — face after tapping back: {"tag":"ORIG","pend":[],"nys":""} (sign-offs restored? nys="")
+NOTE S05 — note header after back: {"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"sub plist sec sec-sim"}
+PASS S06 premise: ORIG nothing pending signed — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S06 — note box/class scheduler-only: {"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}
+PASS S06 (1) Make public -> 1 pending, sign-offs fall — saw {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S06 — note box when public+pending: {"head":"Public notesOn view-only ✓","btn":"On view-only ✓","title":"Showing on the view-only schedule — tap to keep it scheduler-only","on":true,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}
+PASS S06 (2) tap again -> 0 pending, sign-offs back — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S06 — (2) To go out: "(no pending button)"
+PASS S06 (2) note pending colour gone: box class same as before (scheduler-only) — saw {"before":{"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"},"after":{"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}}
+NOTE S06 — (3) re-public face: {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+PASS S06 (3) Undo -> 0 pending, sign-offs back, npub gone — saw {"f3":{"tag":"ORIG","pend":[],"nys":""},"npub":null,"notes":["Wednesday published and approved","Note now shows on the view-only schedule","Published AL1 · 1 item on Wed only · approved by Anvil","Thursday published and approved","Note now shows on the view-only schedule","Note is scheduler-only again","Friday published and approved","Note now shows on the view-only schedule","Note is scheduler-only again","Note now shows on the view-only schedule","Undid: making a note public"]}
+NOTE S06 — (3) note box after Undo: {"head":"Scheduler notesMake public","btn":"Make public","title":"Show this note on the view-only schedule","on":false,"boxCls":"blknote ed","boxParentCls":"allhands sec sec-prog"}
+PASS S06 (4) reload: still 1 pending and public in working copy — saw {"f4":{"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"},"npub":["pn"]}
+NOTE S06 — (5) after text edit face: {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S06 — (5) To go out: "Waiting to go out as AL1 · 1 change Programme notes Saber 3/11 17:44 Fri brief 0800 → Fri brief 0800 extra · public Tap a change to go to it." lines []
+PASS S06 (5) publish -> view-only shows new text — saw {"notes":["Fri brief 0800 extra"],"heads":["Notes"]}

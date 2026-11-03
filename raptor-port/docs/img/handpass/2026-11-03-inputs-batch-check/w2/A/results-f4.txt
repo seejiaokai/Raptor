@@ -1,0 +1,15 @@
+NOTE S11a — premise: {"acc":"r","title":"Sports day","s":360,"e":1080} face {"tag":"ORIG","pend":[],"nys":""}
+NOTE S11a — after retitle (still off): {"acc":"r","title":"Games afternoon","s":360,"e":1080} face {"tag":"ORIG","pend":[],"nys":""}; To go out: (no pending button)
+NOTE S11 — put-back control pressed: → Ground|Accept into the ground programme
+NOTE S11a — after put back: {"acc":"g","title":"Games afternoon","s":360,"e":1080} face {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S11a — EXPECTED "<new title> · … → on the programme" | SAW: pending ["1 pending"] nys "Not yet signed" | To go out: "Waiting to go out as AL1 · 1 change Saber · Games afternoon Saber 3/11 17:58 taken off → on the programme Tap a change to go to it." | record {"acc":"g","title":"Games afternoon","s":360,"e":1080}
+NOTE S11a — Undo 1: ["Undid: a change to the schedule"]; To go out: "(no pending button)"
+NOTE S11a — Undo 2: ["Undid: Saber’s Games afternoon"]; To go out: "(no pending button)"
+NOTE S11a — Undo 3: ["Undid: publishing a day"]; To go out: "(no pending button)"
+NOTE S11 — put-back control pressed: → Ground|Accept into the ground programme
+NOTE S11b — EXPECTED same as a | SAW: pending ["1 pending"] nys "Not yet signed" | To go out: "Waiting to go out as AL1 · 1 change Saber · Games afternoon Saber 3/11 17:59 taken off → on the programme Tap a change to go to it." | record {"acc":"g","title":"Games afternoon","s":360,"e":1080}
+NOTE S11c — EXPECTED nothing listed (RECORD) | SAW: pending [] nys "" | To go out: "(no pending button)" | record {"acc":"r","title":"Games afternoon","s":360,"e":1080}
+NOTE S11 — put-back control pressed: → Ground|Accept into the ground programme
+NOTE S11e — EXPECTED a change of title "Sports day → Games afternoon" | SAW: pending ["1 pending"] nys "Not yet signed" | To go out: "Waiting to go out as AL1 · 1 change Saber · Games afternoon Saber 3/11 17:59 Sports day → Games afternoon Tap a change to go to it." | record {"acc":"g","title":"Games afternoon","s":360,"e":1080}
+NOTE S11 — put-back control pressed: → Ground|Accept into the ground programme
+NOTE S11g — EXPECTED "on the programme", no "→" detail | SAW: pending ["1 pending"] nys "Not yet signed" | To go out: "Waiting to go out as AL1 · 1 change Saber · Games afternoon Saber 3/11 18:00 taken off → on the programme Tap a change to go to it." | record {"acc":"g","title":"Games afternoon","s":540,"e":660}

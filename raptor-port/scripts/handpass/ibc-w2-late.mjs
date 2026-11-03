@@ -1,0 +1,93 @@
+// W2: S04, S04b, S15 — the LATE chip on a published day, delete order, shared inputs. Desktop 1440.
+import { L, pubDay, face, editWeek, showDay, closeBoard, toGoOut, closeChg, sleep, undoTitle, signIn } from './ibc-w2-lib.mjs'
+const { check, note, shot } = L
+console.log('ibc-w2-late v1')
+const DI = 1
+async function openBoard(page, di) { await closeBoard(page); await L.go(page, 'editsched'); await page.locator(`#eWeek [data-sbday="${di}"]:visible`).first().click(); await page.waitForSelector('#schedBoard'); await sleep(700) }
+const chips = page => page.evaluate(() => [...document.querySelectorAll('#schedBoard .latechip')].filter(e => e.getBoundingClientRect().height > 0).map(e => ({ id: e.getAttribute('data-lateoff'), off: e.classList.contains('off'), row: (e.closest('[class*=sb]') || e.parentElement).textContent.replace(/\s+/g, ' ').trim().slice(0, 50) })))
+const lateOffOf = (page, id) => page.evaluate(id => { const r = window.INPUTS.find(x => String(x.iid) === String(id)); return r ? !!r.lateOff : 'gone' }, id)
+const tagsOn = (page, s, di) => page.evaluate(([s, i]) => { const d = document.querySelector(`${s} .day[data-day="${i}"]`); return d ? [...d.querySelectorAll('.latetag')].filter(e => e.getBoundingClientRect().height > 0).length : null }, [s, di])
+const weekTags = async (page, pg, di) => { await closeBoard(page); await L.go(page, pg); const s = pg === 'editsched' ? '#eWeek' : '#vWeek'; await showDay(page, di, s); return tagsOn(page, s, di) }
+const bell = page => page.evaluate(() => { const b = document.querySelector('.bellbtn'); return b ? (b.textContent || '').replace(/\s+/g, ' ').trim() + ' | ' + (b.getAttribute('aria-label') || b.title || '') : null })
+async function deleteInput(page, iid) {
+  await L.toInputsCal(page, false); await L.incalMonth(page, false, 2026, 7); await L.openDay(page, '2026-07-14')
+  await page.locator(`[data-testid="idy-row-${iid}"] .icard-open`).first().click(); await page.locator('#inpEditPop #inpEditDel').waitFor(); await sleep(300)
+  await page.locator('#inpEditPop #inpEditDel').click(); await sleep(700)
+  if (await L.tid(page, 'win-inputsday-x').count()) await page.locator('[data-testid="win-inputsday-x"]').click().catch(() => {})
+  await sleep(300)
+}
+const salsaId = page => page.evaluate(() => { const r = window.INPUTS.find(x => x.type === 'LL' && x.date === 'Jul 14'); return r && r.iid })
+
+/* ---------- S04 / S04b: published Tue, drop after publish, then delete ---------- */
+{
+  const { page } = await L.session('desktop')
+  const id = await salsaId(page)
+  note('S04', `input used: the late LL leave on Tue 14 Jul (Unavailable row) ${id} (demo late record on the Unavailable list; the Appointment on the Ground Programme shows no chip in this world)`)
+  const p = await pubDay(page, false, DI)
+  const f0 = await face(page, DI)
+  check('S04', 'premise: ORIG nothing pending', f0 && f0.tag === 'ORIG' && !f0.pend.length && !/Not yet/.test(f0.nys), f0)
+  const v0 = await weekTags(page, 'viewsched', DI)
+  note('S04', `View-only LATE badges on Tue before the drop: ${v0}`)
+  await openBoard(page, DI)
+  const c0 = await chips(page)
+  note('S04', `board chips: ${JSON.stringify(c0)}`)
+  await shot(page, 'S04', 'desktop', 'board-before')
+  await page.locator(`#schedBoard .latechip[data-lateoff="${id}"]`).first().click(); await sleep(600)
+  note('S04', `toast: ${JSON.stringify(await L.toastText(page))}`)
+  await shot(page, 'S04', 'desktop', 'board-after-drop')
+  const f1 = await face(page, DI)
+  note('S04', `after drop face: ${JSON.stringify(f1)}`)
+  check('S04', 'EXPECTED pending stays 0, sign-offs stay', !f1.pend.length && !/Not yet/.test(f1.nys), f1)
+  const v1 = await weekTags(page, 'viewsched', DI)
+  check('S04', 'EXPECTED issued face (View-only) loses LATE at once (builder call, RECORD)', v1 === v0 - 1, { before: v0, after: v1 })
+  await shot(page, 'S04', 'desktop', 'view-after-drop')
+  /* member */
+  await signIn(page, 'us')
+  const mv = await weekTags(page, 'viewsched', DI)
+  const mb = await bell(page)
+  check('S04', 'EXPECTED member: View-only shows no LATE for the dropped row', mv === v1, { member: mv, admin: v1 })
+  note('S04', `member bell: ${mb}`)
+  await page.locator('.bellbtn').first().click().catch(() => {}); await sleep(400)
+  note('S04', `member bell list text: ${JSON.stringify(await page.evaluate(() => { const l = document.querySelector('.bell-list'); return l ? l.textContent.replace(/\s+/g, ' ').trim().slice(0, 300) : null }))}`)
+  await shot(page, 'S04', 'desktop', 'member-bell')
+  await page.keyboard.press('Escape')
+  await signIn(page, 'ad')
+  /* S04b: delete the input on the Inputs page */
+  await deleteInput(page, id)
+  note('S04b', `input after delete: ${JSON.stringify(await lateOffOf(page, id))}`)
+  const f2 = await face(page, DI)
+  note('S04b', `face after delete: ${JSON.stringify(f2)}`)
+  const v2 = await weekTags(page, 'viewsched', DI)
+  note('S04b', `RECORD View-only LATE count after the delete (before ${v0}, dropped ${v1}): ${v2}`)
+  await shot(page, 'S04b', 'desktop', 'view-after-delete')
+  await editWeek(page); await page.locator('#undoBtn').click(); await sleep(700)
+  note('S04b', `Undo toast ${JSON.stringify(await L.toastText(page))}; input back: ${JSON.stringify(await lateOffOf(page, id))}`)
+  const v3 = await weekTags(page, 'viewsched', DI)
+  note('S04b', `RECORD View-only LATE count after Undo of the delete: ${v3}; face ${JSON.stringify(await face(page, DI))}`)
+  await page.context().close()
+}
+/* reverse order: drop BEFORE publishing, publish, bring back after, delete */
+{
+  const { page } = await L.session('desktop')
+  const id = await salsaId(page)
+  await openBoard(page, DI)
+  await page.locator(`#schedBoard .latechip[data-lateoff="${id}"]`).first().click(); await sleep(500)
+  check('S04b', 'rev: premise: dropped before publishing', (await lateOffOf(page, id)) === true, await lateOffOf(page, id))
+  await closeBoard(page)
+  await pubDay(page, false, DI)
+  const f0 = await face(page, DI)
+  check('S04b', 'rev: premise ORIG', f0.tag === 'ORIG' && !f0.pend.length, f0)
+  const v0 = await weekTags(page, 'viewsched', DI)
+  note('S04b', `rev: View-only LATE count after publish with the mark dropped: ${v0}`)
+  await openBoard(page, DI)
+  await page.locator(`#schedBoard .latechip[data-lateoff="${id}"]`).first().click(); await sleep(500)
+  check('S04b', 'rev: premise: brought back after publishing', (await lateOffOf(page, id)) === false, await lateOffOf(page, id))
+  const v1 = await weekTags(page, 'viewsched', DI)
+  note('S04b', `rev: View-only LATE count after bringing it back: ${v1} (was ${v0}); pending ${JSON.stringify((await face(page, DI)).pend)}`)
+  await deleteInput(page, id)
+  const v2 = await weekTags(page, 'viewsched', DI)
+  note('S04b', `rev: View-only LATE count after the delete: ${v2}; face ${JSON.stringify(await face(page, DI))}`)
+  await shot(page, 'S04b', 'desktop', 'rev-view-after-delete')
+  await page.context().close()
+}
+await L.finish('late')

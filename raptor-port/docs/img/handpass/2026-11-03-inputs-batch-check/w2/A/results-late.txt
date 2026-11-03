@@ -1,0 +1,22 @@
+NOTE S04 — input used: the late LL leave on Tue 14 Jul (Unavailable row) imw0icg6kqos0dr (demo late record on the Unavailable list; the Appointment on the Ground Programme shows no chip in this world)
+PASS S04 premise: ORIG nothing pending — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S04 — View-only LATE badges on Tue before the drop: 3
+NOTE S04 — board chips: [{"id":"imw0icg6kqos0dr","off":false,"row":"⠿LLLATEQuillIWLocal leavetill 14 Jul"},{"id":"imw0icg6kuwn1xk","off":false,"row":"⠿OILLATEWispCOIL — CO approved, post-detachmenttil"}]
+NOTE S04 — toast: "LATE mark hidden. The Inputs page still shows it."
+NOTE S04 — after drop face: {"tag":"ORIG","pend":[],"nys":""}
+PASS S04 EXPECTED pending stays 0, sign-offs stay — saw {"tag":"ORIG","pend":[],"nys":""}
+PASS S04 EXPECTED issued face (View-only) loses LATE at once (builder call, RECORD) — saw {"before":3,"after":2}
+PASS S04 EXPECTED member: View-only shows no LATE for the dropped row — saw {"member":2,"admin":2}
+NOTE S04 — member bell:  | Notifications
+NOTE S04 — member bell list text: "Nothing new"
+NOTE S04b — input after delete: "gone"
+NOTE S04b — face after delete: {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}
+NOTE S04b — RECORD View-only LATE count after the delete (before 3, dropped 2): 3
+NOTE S04b — Undo toast "Undid: Quill’s LL"; input back: true
+NOTE S04b — RECORD View-only LATE count after Undo of the delete: 2; face {"tag":"ORIG","pend":[],"nys":""}
+PASS S04b rev: premise: dropped before publishing — saw true
+PASS S04b rev: premise ORIG — saw {"tag":"ORIG","pend":[],"nys":""}
+NOTE S04b — rev: View-only LATE count after publish with the mark dropped: 2
+PASS S04b rev: premise: brought back after publishing — saw false
+NOTE S04b — rev: View-only LATE count after bringing it back: 3 (was 2); pending []
+NOTE S04b — rev: View-only LATE count after the delete: 2; face {"tag":"ORIG","pend":["1 pending"],"nys":"Not yet signed"}

@@ -4,9 +4,10 @@ import { chromium } from '@playwright/test'
 import { existsSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { serveFrozen } from './isr-serve.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-export const OUT = join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/A')
+export const OUT = process.env.ISR_OUT ? join(process.env.ISR_OUT, 'A') : join(HERE, '../../docs/img/handpass/2026-11-03-inputs-seen-recheck/A')
 export const URL = process.env.LOOK_URL || 'http://localhost:4241/'
 export const clean = () => { rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true }) }
 if (!existsSync(OUT)) mkdirSync(OUT, { recursive: true })
@@ -23,6 +24,7 @@ export const notWalked = (id, why) => say(`NOT WALKED ${id} — ${why}`)
 export async function session(size, user = 'ad', dsf = 2) {
   const [opts] = SIZES[size]
   const ctx = await browser.newContext({ ...opts, deviceScaleFactor: dsf })
+  await serveFrozen(ctx, URL)
   const page = await ctx.newPage()
   page.on('pageerror', e => errs.push(`page error ${e.message}`))
   page.on('console', m => { if (m.type() === 'error') errs.push(`console ${m.text()}`) })
