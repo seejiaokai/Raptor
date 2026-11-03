@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1613 | 3 Nov 26 | When he offers a different solution, or a new idea for the thing being built, while the agent is building, the agent stops at once and answers it — what it would do, its cost, a recommendation — before building any further; it never carries on with the earlier plan past his newer idea. |
 | D1587 | 3 Nov 26 | The check's places that do not read the one table are filed as one item for the database step: Quals ticks homed in QualMark alone, holidays a table of their own by date, a posted-out man and a Tracker student read from the person, medical documents shared, and the four smaller ones; nothing of it is built before then (D473). |
 | D1580 | 3 Nov 26 | The database tables are the one master of the app's saved data: every screen and area reads from them and writes to them, so everything stays in step; only what makes no sense in a table stays out, each named with its reason. The agent checks the app for what does not follow this and reports it to him. |
 | D1572 | 2 Nov 26 | Before the next full React Doctor run, the 31 errors it still finds — all in old walk scripts, none in the app — are fixed as a job of their own; the app's remaining warnings keep riding with each area's next batch (D1534, D490); the full run is made after. |

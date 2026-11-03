@@ -21,13 +21,13 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/talon-claw-visible -->
-### `claude/talon-claw-visible` — the loading claw seen from its first frame (his find after pull request 627 merged) — written 3 Nov 26 — verify before use
-- **Where it started:** [TALON-CLAW-PAGES] went live 3 Nov 26 (pull request 627, D1607, D1610, D1611; archived). His iPhone recording at 20:46: "I still see abit of the blank black background then the claw load then the leave war. But the tracker I see the claw directly it's ok. Also when I enter the app prior to the login page I see no claw".
-- **Found and fixed:** the page claw's scratch starts from nothing, so its first 0.1 s drew almost nothing — a dark page. It now starts 0.2 s into its round (`raptor-port/index.html`). Red first, walk case V (the claw's pixels in the screen's frames), then green; the whole walk 63/63. Lesson 22 in `raptor-port/docs/bug-check-order.md` §7.11; evidence `raptor-port/docs/handpass/2026-11-03-talon-pages.md` §His find.
-- **Put to him:** the start-up claw before the sign-in shows only on a load slower than 0.3 s (D1605) — on his phone the app is usually up sooner, so he sees none; keep it (recommended) or show it always.
-- **Unfinished:** this branch's pull request — GitHub's run, his look, his "merge live". The worktree `C:/Users/User/projects/Raptor-talon` of pull request 626 (merged) is still on disk: its `node_modules` is a link to the main folder's — remove the link first (`cmd /c rmdir`), never the packages, then `git worktree remove`; only once the "Talon name loading" chat that used it is closed.
-- **Numbers held:** rulings D1605–D1619 (D1605–D1611 used), observations 786–795 (786–788 used), design lessons 81–84 (81 used).
-- **Pick up here:** read this branch's pull request run; on his "merge live" follow `shipping.md` (D1088); then the next job in a fresh chat.
+### `claude/talon-claw-visible` — the loading claw's first moment on the slow pages, pull request 628 — WAITING ON HIM — written 3 Nov 26 — verify before use
+- **Built and green on GitHub (pull request 628, not merged):** the page claw starts 0.2 s into its round (his first recording: 0.1 s of dark before it); the claw goes up at the tap and the page switches one frame later (D1612, his "Do it" — about 0.016 s added). Walk 75/75 (`raptor-port/scripts/handpass/talon-page-claw-walk.mjs`, cases V and W), evidence `raptor-port/docs/handpass/2026-11-03-talon-pages.md`; lesson 22 in the bug-check order.
+- **His newer idea, put to him and NOT built (D1613 — stop and answer first):** no time added — the claw's background made the same as the page's own background, so the one frame Safari shows before the claw (the page's dark with its faint blue wash) and the claw's background match, and the claw just appears on it. Recommended way: the claw's background see-through (the page's own background, D887's wash kept); the other way, the page's base made the claw's plain dark, removes the wash from every page. If he takes it, D1612's one-frame delay is taken out again.
+- **Also waiting on him:** the start-up claw before the sign-in — "keep" (shows only on a start slower than 0.3 s, D1605; recommended) or "always".
+- **Unfinished:** the worktree `C:/Users/User/projects/Raptor-talon` of pull request 626 (merged): remove its `node_modules` link first (`cmd /c rmdir`), never the packages, then `git worktree remove`; only once the "Talon name loading" chat is closed.
+- **Numbers held:** rulings D1605–D1619 (D1605–D1613 used), observations 786–795 (786–788 used), design lessons 81–84 (81 used).
+- **Pick up here:** his answer to the claw's background (and keep/always); build it on this branch, walk (cases V and W, his iPhone the proof), then his "merge live" (D1088).
 <!-- /now -->
 <!-- now:claude/inputs-small-fixes-2 -->
 ### `claude/inputs-small-fixes-2` — the flaky Leave War test, the Inputs finds re-checked, the one-master check, TALON asked — written 3 Nov 26 — verify before use
