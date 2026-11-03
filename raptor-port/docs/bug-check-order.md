@@ -225,7 +225,10 @@ after). His answer is a new ruling on whether Sol keeps the seat.
 **Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
 fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
-**Who reads the finished code now — D790 (owner, 13 Oct 26: "Yes option 2").** While the ChatGPT readers are out (D761):
+**Who reads the finished code now — D1593 (owner, 3 Nov 26: "Go").** The ChatGPT readers are back: for work Opus wrote, Astra
+designs the scenarios and reads the code, Sol 6.1 reads second and blind where two are required (D590); Fable reads nothing
+unless he calls for it (D903). The paragraph below is the arrangement that held while they were out (13 Oct – 3 Nov 26),
+kept as written. **D790 (owner, 13 Oct 26: "Yes option 2").** While the ChatGPT readers are out (D761):
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
