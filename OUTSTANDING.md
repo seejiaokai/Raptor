@@ -206,6 +206,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-WEEK-AHEAD] — at the database step, the weeks on either side are fetched ahead and kept on the phone, so a cross never waits on the network (his question, 3 Nov 26).
 - [ONE-LIVE-WEEK-WEIGH] — whether the app should hold several weeks at once instead of one live week — weighed at the database step, not before (his question, 3 Nov 26).
 - [SERVER-SIDE-PASSES] — every pass the app runs under its own name (the posting pass, the war's sync, the inputs' sync) runs on the server at the database step, never under a credential a browser holds, limited to the rows it owns.
 - [SYSTEM-ACTOR-ONE-TEST] — "the app itself" is decided two ways (the posting pass's wait by a command's origin, the commit gate by its actor); make them one before any seed or remote commit exists.
@@ -673,6 +674,18 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
   War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
+
+### [DB-WEEK-AHEAD] Fetch the neighbouring weeks ahead, so a cross never waits on the network (3 Nov 26, his question)
+**His question (3 Nov 26):** *"so with the database, the scroll between every day including next week will have no delay? Just
+like limit of how fast the data is being called up?"* — answered: not by itself. Today every week is already on the phone, so a
+cross costs only the app's own preparation of the week (measured 3 Nov 26: about 84 ms on his PC to the next paint, ~470 ms with
+the processor slowed 4×). With the database a week the phone has not fetched must first come over the network (a Dataverse read
+— typically a fraction of a second, longer on poor signal), and that wait would come on top. Scrolling inside a loaded week
+stays the phone's own scroll, no fetch. **To do at the database step:** when a week opens, fetch the week before and after in
+the background and keep them on the phone (one read of a week's day rows each — well inside the 40,000 requests a day each
+person has, D1570), refreshed when another scheduler changes them (the sharing design, [DB-SYNC-MODEL]); the end cards
+([WEEK-CROSS-END-CARDS], D1574) then hide the app's own preparation, so a cross feels instant. A week fetched for the first
+time with no signal shows a plain "loading" state, never another week's data. **Place:** with [DB-STEP].
 
 ### [ONE-LIVE-WEEK-WEIGH] One live week at a time — weigh at the database step whether to change it (3 Nov 26, his question)
 **His question (3 Nov 26, after the [WEEK-CROSS-END-CARDS] plan's fresh read):** *"Does that mean that the way the app is designed now
