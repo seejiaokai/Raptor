@@ -224,13 +224,46 @@ note on View-only). What it met is §13 (Q2, Q3 and three not new).
 
 ## 8. Orders walked, and cases carried by a test
 
+Walked in the running app: the LATE drop then Undo, Redo, a reload, a week away, a sign-out, the member's look, back
+(`ibc-late.mjs`); Make public then Undo, Redo, a reload, publishing, the amendment, taken back before it (`ibc-pub.mjs`);
+the member's change after a scheduler's drop, a scheduler's change between (C1), the drop again then his own OML over
+the leave (C2), the delete question with the settings window raised then Escape twice (C4), Make public pressed twice on
+a published day (C5) (`ibc-cr.mjs`). Carried by a test (unit, the real save and commit gate): the same-day change, a
+person he adds, a filer's hand-over, leaving alone never clearing the drop, a drop borrowed onto a new filing, the
+asked-about input taken by Undo and brought back by Redo, the LATE chip refused on a locked week — `latemark.test.tsx`,
+`latedrop-later.test.ts`, `inputskeys.test.tsx` S01b–S01d and S07b, `notepub.test.tsx`, `savenothing.test.tsx`,
+`quarantine-funnel.test.ts`, `perms.test.ts`.
+
 ## 9. Break tests
+
+Every fix of §13 was written as a failing test first and seen red on the code before it (K1–K12 on `8b09ddfcf`; the code
+read's on `1c81e6d82`; the fix rounds' on `249d0e83d` and `81787b4ad`) — the red runs named in the commits.
 
 ## 10. Errors seen
 
+No browser error, console error or failed request in any walk of this check (the walks' own counts, every script).
+
 ## 11. What was NOT walked, and why
 
+- The LATE chip on a locked week: a week is locked only when an older version of the app published it — stored data of
+  the past (D56); carried by `quarantine-funnel.test.ts`.
+- A hand-made member command (a drop borrowed onto a new filing, a cleared drop with no new change): no screen can make one;
+  carried by the gate's tests, and the residue filed for the security review (§13 CR-B3).
+- T1-picker (the old "+ people" door): its step found no picker to open, as in the first walk; the redone T1-picker2
+  (S22b) walked it — PASS.
+- S22d: no tick box on the Inputs calendar page behind to hold the keys (the walk's premise).
+
 ## 12. The code read (fresh, blind Opus)
+
+Three rounds, each a fresh Opus reader that wrote none of it, blind to the others (D790, D1594 — the ChatGPT readers are
+out; the job is on [NO-ASTRA-LIST]). Brief: `docs/superpowers/briefs/2026-11-03-inputs-batch-code-read.md` (the finder
+wording, the D56 exclusion).
+1. **The batch** (`origin/main...1c81e6d82`): Reader A, the whole batch — 4 faults proved by a failing test (CR-A1–A4), and
+   small ones (CR-A5); Reader B, D1411's security read of the member gate — 3 (CR-B1–B3). Neither saw the other's report.
+2. **The fix commit `249d0e83d`** (§5 "a fix is new code"): 4 points — the same-day change (CR-R1), a person's date matched
+   by place (CR-R2), a lineage read from two fields (CR-B3's residue), the question back after Undo and Redo (CR-R4).
+3. **The fix commit `81787b4ad`**: 1 — the "leaving" test refused a filer's own hand-over (CR-R5), fixed by a one-line
+   narrowing in `bdd056c11`; no fourth read (the fix is one guard, §5).
 
 ## 13. Findings and their dispositions
 
@@ -263,7 +296,36 @@ Each fixed with a test that failed on `8b09ddfcf` and passes after (the red run 
 | — | W3 step 3 (phone) | an opened day covers the top bar's Undo / Redo on a phone | NOT NEW — the day opens nearly full screen on a phone (D683, D909); Undo is there once it is closed |
 | — | W2 S15; W3 step 7 | no LATE chip on the board for a member's input that landed on the Ground Programme ("1 input · 1 on programme") | NOT NEW — the chip rides the live Personal Inputs and Unavailable rows (21 Aug 26 entry); an input on the Ground Programme is reached through Personal Inputs opened (`latemark.test.tsx` opens it); the same on `main` |
 | — | W2 S15 | no LATE chip on a Ground Programme row of an Event or Appointment | NOT NEW — the chip rides the live Personal Inputs and Unavailable rows (the settled 21 Aug 26 entry); the walker did not open the folded Personal Inputs |
+| CR-B1 | Reader B (security) | a member's own medical over his leave whose LATE mark a scheduler dropped was refused ("That couldn't be completed"): a new record took the scheduler's marks of ANY record of his the command changed | FIXED — a new record takes marks only from the record it was cut from (same filer and filing time) — `state/perms.ts inputBreach`; `latemark.test.tsx` (red); walked C2 (OML) — PASS |
+| CR-B2 | Reader B | a brand-new filing could borrow another input's LATE drop or cancel by a hand-made command | FIXED by CR-B1's rule; `latemark.test.tsx` (red) |
+| CR-B3 | Reader B; round 2 | the permission list named the schedule's table for the LATE drop, which writes the input; and a piece is still known only by its filer and filing time, which a hand-made command can copy | FIXED — `inputs.lateOff` names the Input table, never a member's (`perms.test.ts`, red); the lineage FILED for the security review before the database step ([REVIEW-LAYERS]) |
+| CR-A1 | Reader A | "Delete this input?" answered Escape whoever was in front (K9's twin), and stayed armed after its row went | FIXED — only while the day is in front and the question on screen (`ui/InputsCal.tsx`); `inputskeys.test.tsx` S01b, S01c (red); walked C4 — PASS |
+| CR-A2 | Reader A | Make public pressed twice, or on an empty note, on a published day left "Edited — goes out as AL1" with nothing waiting | FIXED — the press runs the sweep every edit runs (`ui/interactions.ts`, `reconcileIssuedMarks`); `notepub.test.tsx` (red); walked C5 — PASS |
+| CR-A3 | Reader A | Save with nothing changed on an input of several said "Input updated" and lit its card (F1 held for one person only) | FIXED — `ui/InputWindow.tsx saveNow`; `savenothing.test.tsx` (red); walked C3 — PASS |
+| CR-A4 | Reader A | the unsaved question stayed up across a swap: the input opened next, nothing typed, asked about changes | FIXED — reset with the record (`ui/InputWindow.tsx`); `inputskeys.test.tsx` S07b (red) |
+| CR-A5 | Reader A (small) | the LATE chip's write skipped the input funnel (a locked week, the absence rules) and said "hidden" when refused; two stale comments | FIXED — `state/store.ts writeInputsAs`, the note only on success; `quarantine-funnel.test.ts` (red); comments put right |
+| CR-R1 | round 2 | D1620 built as "a new change date": a member's second change the same day kept the drop — his words say "changes his input again" | FIXED — his own save of his input takes it off whatever the day; the gate checks the save's change time too; `latedrop-later.test.ts`, `latemark.test.tsx` (red); the reading in D1620's row corrected; walked C1 — PASS |
+| CR-R2 | round 2 | the gate matched a person's own date by place in the list, so leaving a shared input could clear the drop for the others | FIXED — matched by the person; a save that is nothing but his own leaving never clears it; `latemark.test.tsx` (red) |
+| CR-R4 | round 2 | "Delete this input?" came back unasked after Undo then Redo | FIXED — put away when its row goes (`ui/InputsCal.tsx`); `inputskeys.test.tsx` S01d (red) |
+| CR-R5 | round 3 | the "leaving" test refused a filer's own hand-over, or a change made as he leaves — both his to make (D660) | FIXED — `bdd056c11`; `latedrop-later.test.ts` (red) |
+| — | the agent's call | a medical that cuts a member's leave keeps a dropped LATE mark on what is left of the leave | the cut is the medical's, never late (medicals are exempt); named to him |
+| — | the re-walk (S21.1 at 1536) | the Calendar window, opened from a SANS day at 1536 wide, tucks 12px under the day's left edge | NOT A FAULT — K12's rule as built: where the left lacks room, as far left as goes with both crosses clear; the picture shows both crosses and the day's figures clear |
+| — | the re-walk (W2 S03) | To go out's line no longer carries the word "public" | NOT A FAULT — K2 changed it to "scheduler-only → shown on view-only"; the note is listed |
 
 ## 14. The gates
 
+GitHub's run of the pull request (the full check while the repo is public, D1086): `1c81e6d82` all green (its first run,
+on `308b0130d`, red only on the code check, which could not read one walk script's Windows-encoded dash — fixed);
+`249d0e83d` red on one phone Tab test of the Scheduler Board (a caret after a changed box) — passed 5 of 5 on his PC and
+green on the next push, so a flaky test, not the change; `81787b4ad` all green; `bdd056c11` — read before his look. On his
+PC: the touched tests and their neighbours, 30 files, 875 tests, green; the type check clean; `lint:changed` "no new
+finding"; `docsize` OK.
+
 ## 15. His look — the card
+
+Preview: the pull request's Vercel link. Pictures: `rewalk/cr/A/`, `rewalk/host/A/`, `w2/A/S04-*`, `w1/B/S07-*`,
+`w1/B/S02-*`. **His questions:** Q1 a LATE mark dropped on a published day leaves the issued face at once (as built) — or
+waits for the amendment, as a hidden warning does (D471)? Q2 should the input window's ✕ and Cancel ask before closing
+with typed words, as Escape does? Q3 the Calendar window stays up across a page change — leave it (the agent's reading)?
+**Named to him:** the sentence "Note made public. It goes out with the next amendment."; an unsaved settings figure goes
+with its window on a page change (F8); a medical that cuts his leave keeps a dropped LATE mark; D1620 as built.

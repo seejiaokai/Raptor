@@ -97,7 +97,7 @@ export async function fileOn(page, tap, iso, spec, keepDay = false) {
     for (const id of spec.people) if ((await page.locator(`#inpEditPop [data-pp="${id}"]`).getAttribute('aria-pressed')) !== 'true') await press(page, tap, `#inpEditPop [data-pp="${id}"]`)
     const lit = await page.evaluate(() => [...document.querySelectorAll('#inpEditPop [data-pp][aria-pressed="true"]')].map(b => b.getAttribute('data-pp')))
     for (const id of lit) if (!spec.people.includes(id)) await press(page, tap, `#inpEditPop [data-pp="${id}"]`)
-  } else await page.selectOption('#inpEditPop #inpEditPerson', spec.people[0])
+  } else if (await page.locator('#inpEditPop #inpEditPerson').count()) await page.selectOption('#inpEditPop #inpEditPerson', spec.people[0])   // a member files for himself: no picker
   if (spec.end) { await winMonth(page, tap, spec.end); await press(page, tap, `#inpEdCal [data-iso="${spec.end}"]`) }
   const ad = page.locator('#inpEditPop #inpEditAllday')
   if (spec.from) { if (await ad.count() && await ad.isChecked()) await ad.click(); await page.fill('#inpEditPop #inpEditStart', spec.from); await page.fill('#inpEditPop #inpEditEnd', spec.to) }

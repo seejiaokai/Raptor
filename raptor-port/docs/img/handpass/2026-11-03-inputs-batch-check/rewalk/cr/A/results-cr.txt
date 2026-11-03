@@ -1,0 +1,25 @@
+NOTE C0 — Ranger free on 2026-07-14 and 2026-07-15 (day 1 of the week): true
+PASS C1 premise: his leave is filed, and late (filed long after its cut-off) — saw {"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":false,"late":true,"mod":"2026-11-03","modAt":1793705800472,"remarks":"family"}
+PASS C1 premise: the board shows its LATE chip, solid — saw {"off":false}
+PASS C1 the scheduler drops it — saw {"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":true,"late":true,"mod":"2026-11-03","modAt":1793705800472,"remarks":"family"}
+PASS C1 a scheduler's own change keeps the drop — saw {"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":true,"late":true,"mod":"2026-11-03","modAt":1793705808771,"remarks":"family — seen by the scheduler"}
+PASS C1 his save goes through (not refused) — saw {"r1":{"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":false,"late":true,"mod":"2026-11-03","modAt":1793705814255,"remarks":"family — flights changed"},"notes":["LATE mark hidden. The Inputs page still shows it."]}
+PASS C1 his change takes the drop off — saw {"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":false,"late":true,"mod":"2026-11-03","modAt":1793705814255,"remarks":"family — flights changed"}
+PASS C1 the scheduler sees LATE again on the board (the chip solid) — saw {"off":false}
+PASS C2 premise: the scheduler drops it again — saw {"type":"LL","date":"Jul 14","endDate":"Jul 15","lateOff":true,"late":true,"mod":"2026-11-03","modAt":1793705814255,"remarks":"family — flights changed"}
+PASS C2 his OML over the second day of that leave is filed — saw {"mc":"imw0m4w24bhnb57","mcRec":{"type":"OML","date":"Jul 15","lateOff":false,"late":false,"mod":"2026-11-03","modAt":1793705824588,"remarks":""},"notes":["LATE mark hidden. The Inputs page still shows it.","Ranger's LL on 15 Jul is cut for the OML — that leave goes back to the balance · Input added"]}
+PASS C2 his leave is cut back to the day before — saw {"type":"LL","date":"Jul 14","lateOff":true,"late":true,"mod":"2026-11-03","modAt":1793705824588,"remarks":"family — flights changed"}
+NOTE C2 — the cut leave keeps the drop (the medical's cut, never late — the agent's call): lateOff true
+PASS C3 premise: an input of two people — saw {"grp":"imw0m51w9hn1zs7","men":["slipway","nact"]}
+PASS C3 the window closes — saw null
+PASS C3 nothing is said ("Input updated" is not) — saw ["Ranger's LL on 15 Jul is cut for the OML — that leave goes back to the balance · Input added"]
+PASS C3 nothing is stamped — saw {"before":{"type":"Meeting","date":"Jul 15","lateOff":false,"late":true,"mod":"2026-11-03","modAt":1793705832153,"remarks":""},"after":{"type":"Meeting","date":"Jul 15","lateOff":false,"late":true,"mod":"2026-11-03","modAt":1793705832153,"remarks":""}}
+PASS C3 no just-changed ring on its card — saw false
+PASS C4 premise: the question is up — saw null
+PASS C4 premise: the Inputs settings window is open — saw null
+PASS C4 Escape closes the settings window in front; the question and the day stay; nothing deleted — saw {"settings":0,"ask":1,"day":1,"still":true}
+PASS C4 the next Escape is Keep: the question goes, the day stays, nothing deleted — saw null
+NOTE C5 — the programme note of Tue 14 Jul has words: false
+NOTE C5 — published: {"sg":{"cur":"Ace","sked":"Anvil","plan":"Anvil","appr":"Anvil"},"r":{"pressed":true,"label":"Publish day"},"kind":"ORIG"}
+NOTE C5 — after one press: {"alp":null,"title":null,"btnTitle":"Showing on the view-only schedule — tap to keep it scheduler-only"}; pending null
+PASS C5 pressed twice (as it went out): no pending mark, no "goes out" words — saw {"m2":{"alp":null,"title":null,"btnTitle":"Show this note on the view-only schedule"},"pending":null}
