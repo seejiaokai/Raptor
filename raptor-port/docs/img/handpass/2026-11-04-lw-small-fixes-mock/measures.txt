@@ -1,0 +1,31 @@
+side today: pad head {"head":[520,102],"navLeft":503}; the Required cell {"iso":"2026-02-25","cellTop":64,"cellBottom":86,"padTop":69,"coveredByPad":true}
+picture p1-side-today
+side A: {"head":[520,102],"navLeft":503,"cellBox":{"border":"2px rgb(59, 198, 232)","radius":"2px","bg":"rgb(10, 14, 19)","color":"rgb(255, 255, 255)"}}
+picture p1-side-A
+side B: {"head":[520,102],"navLeft":503,"cellBox":{"border":"2px rgb(59, 198, 232)","radius":"2px","bg":"rgb(10, 14, 19)","color":"rgb(255, 255, 255)"}}
+picture p1-side-B
+side A empty: {"head":[520,102],"navLeft":503,"cellBox":{"border":"2px rgb(59, 198, 232)","radius":"2px","bg":"rgb(10, 14, 19)","color":"rgb(255, 255, 255)"}}
+picture p1-side-A-empty
+picture p1-side-A-wide
+phone today: pad head {"head":[402,102],"navLeft":223}; the Required cell {"iso":"2026-02-25","cellTop":379,"cellBottom":397,"padTop":553,"coveredByPad":false}
+picture p1-phone-today
+phone A: {"head":[402,102],"navLeft":223,"cellBox":{"border":"2px rgb(59, 198, 232)","radius":"2px","bg":"rgb(10, 14, 19)","color":"rgb(255, 255, 255)"}}
+picture p1-phone-A
+phone B: {"head":[402,102],"navLeft":223,"cellBox":{"border":"2px rgb(59, 198, 232)","radius":"2px","bg":"rgb(10, 14, 19)","color":"rgb(255, 255, 255)"}}
+picture p1-phone-B
+picture p2-phone-before-tap
+picture p2-phone-today-failed-1s
+phone, the Leave War refused at the tap, after 5 s: {"rootKids":0,"topbar":false,"claw":false,"body":""} page errors: ["Failed to fetch dynamically imported module: http://localhost:4173/assets/LeaveWarPage-Bcv5S5B9.js"]
+picture p2-phone-today-failed-5s
+picture p2-desk-signed-in
+desktop, the Leave War refused, 6 s after sign-in with no tap: {"rootKids":0,"topbar":false,"week":false,"body":""} page errors: ["Failed to fetch dynamically imported module: http://localhost:4173/assets/LeaveWarPage-Bcv5S5B9.js"]
+picture p2-desk-today-6s-no-tap
+phone, the Tracker refused at the tap, after 5 s: {"rootKids":0,"topbar":false,"body":""}
+picture p2-phone-tracker-today-failed-5s
+phone the "No course yet" card's look, read: {"card":{"width":"370px","max-width":"420px","padding":"20px 18px","border-top":"1px solid rgb(42, 49, 58)","border-radius":"14px","background-color":"rgb(26, 31, 38)","color":"rgb(138, 150, 163)","text-align":"center","margin-top":"48px"},"h2":{"font-size":"16px","font-weight":"600","color":"rgb(241, 244, 247)","margin":"0px 0px 8px","line-height":"23.2px"},"p":{"font-size":"13px","font-weight":"400","color":"rgb(138, 150, 163)","margin":"0px 0px 14px","line-height":"18.85px"},"btn":{"font-size":"13px","font-weight":"400","color":"rgb(241, 244, 247)","background-color":"rgba(59, 198, 232, 0.16)","border-top":"1px solid rgb(59, 198, 232)","border-radius":"7px","padding":"8px 14px","height":"40px","min-height":"40px"},"acts":{"display":"flex","gap":"10px","justify-content":"center"}}
+picture p2-phone-proposal-failed
+picture p2-phone-proposal-still-loading
+picture p2-phone-proposal-failed-tracker
+desktop the "No course yet" card's look, read: {"card":{"width":"420px","max-width":"420px","padding":"20px 18px","border-top":"1px solid rgb(42, 49, 58)","border-radius":"14px","background-color":"rgb(26, 31, 38)","color":"rgb(138, 150, 163)","text-align":"center","margin-top":"48px"},"h2":{"font-size":"16px","font-weight":"600","color":"rgb(241, 244, 247)","margin":"0px 0px 8px","line-height":"23.2px"},"p":{"font-size":"13px","font-weight":"400","color":"rgb(138, 150, 163)","margin":"0px 0px 14px","line-height":"18.85px"},"btn":{"font-size":"13px","font-weight":"400","color":"rgb(241, 244, 247)","background-color":"rgba(59, 198, 232, 0.16)","border-top":"1px solid rgb(59, 198, 232)","border-radius":"7px","padding":"8px 14px","height":"40px","min-height":"40px"},"acts":{"display":"flex","gap":"10px","justify-content":"center"}}
+picture p2-desktop-proposal-failed
+picture p2-desktop-proposal-still-loading

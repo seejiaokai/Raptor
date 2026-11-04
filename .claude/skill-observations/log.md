@@ -3426,3 +3426,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In walk-scripts.md (or the bug-check order's roll-call rows): a surface drawn into ANOTHER surface gets one walk row per handler of each kind on BOTH surfaces — press-to-front, Escape, outside-press, focus trap — each pressed on the real browser at a phone's size, with the answer button pressed (not only seen) and Escape typed with the keyboard both on the card and elsewhere.
 
 **Principle:** Where something is drawn and who owns it can differ; list the handlers of both, and press, not just look, on the real browser — the test harness's direct event dispatch hides every one of these.
+
+### Observation 798: A fault "worked out from the code, not seen" was smaller on paper than on screen
+
+**Status:** OPEN
+**Date:** 4 Nov 26
+**Session context:** The Leave War small fixes — drawing the mock-up for [LAZY-PAGE-LOAD-FAIL], a failed download of a page's separate file
+**Skill:** brainstorming (`mockups-on-the-real-app.md` §The Method, step 1) / the bug-check order's sizing step
+**Type:** open-source
+**Phase/Area:** the "today" picture of a fault filed from reading code
+
+**Issue:** The backlog item, filed from reading code, said a failed download left that page with "nothing to show in its place". Reproducing it for the mock-up's "today" picture (the download refused in the test browser) showed the whole app going black, top bar included — and on a desktop with no tap at all, because a background pre-fetch of the same file fails the same way. The proposal's scope (catch it at the page, keep the bar, never surface a failed background fetch) came from the reproduction, not from the item.
+
+**Suggested improvement:** In step 1 of the method, where the "today" state is a fault filed from code and not seen, reproduce the fault itself for the today picture (refuse the request, cut the signal, feed the bad value) before drawing the proposal, and widen the proposal to what the reproduction shows.
+
+**Principle:** A fault worked out from reading code is sized by reading too; reproduce it before drawing its fix, because what the screen does at the failure is often larger than what the code seemed to say.
