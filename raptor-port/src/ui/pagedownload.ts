@@ -64,19 +64,25 @@ export const RETRY_MIN_MS = 1300
    only, just before it reloads; the sign-in reads it once and throws it away (Login.tsx). Only the two pages that download
    apart are ever named; a browser that refuses storage simply opens the first page, as before. */
 export const REOPEN_KEY = 'talon:reopen-page'
-/* how long after asking for the reload the page may still be standing before Retry takes it as held back — the browser's
-   "Leave site?" answered Stay: then the note is thrown away and the card comes back (the fresh code read, 4 Nov 26) */
-export const RELOAD_HELD_MS = 1500
+/* how long after asking for the reload the page may still be standing before Retry takes it as held back (a "Leave
+   site?" answered Stay — the Tracker's own, for an unsaved chart edit) and brings the card back. Long, because on the weak
+   signal Retry is for a reload can take seconds to replace the page; 1.5 s first, which fired on a merely slow reload and
+   threw the note away (the narrow read, 4 Nov 26). The note is never thrown away here: its own age bounds it. */
+export const RELOAD_HELD_MS = 10_000
+/* a note older than this is not used: one left by a held-back reload must not fire at a later, unrelated sign-in */
+export const REOPEN_MAX_AGE_MS = 60_000
 const REOPENABLE = new Set(['leavewar', 'tracker'])
 export function noteReopen(page: string): void {
-  try { sessionStorage.setItem(REOPEN_KEY, page) } catch { /* storage refused: the first page opens, as before */ }
+  try { sessionStorage.setItem(REOPEN_KEY, JSON.stringify({ page, at: Date.now() })) } catch { /* storage refused: the first page opens, as before */ }
 }
-/** The page Retry asked to reopen, once: read and thrown away. */
+/** The page Retry asked to reopen, once, within a minute of asking: read and thrown away. */
 export function takeReopen(): string | null {
   try {
-    const p = sessionStorage.getItem(REOPEN_KEY)
+    const raw = sessionStorage.getItem(REOPEN_KEY)
     sessionStorage.removeItem(REOPEN_KEY)
-    return p && REOPENABLE.has(p) ? p : null
+    const n = raw ? JSON.parse(raw) as { page?: unknown; at?: unknown } : null
+    if (!n || typeof n.page !== 'string' || typeof n.at !== 'number') return null
+    return REOPENABLE.has(n.page) && Date.now() - n.at < REOPEN_MAX_AGE_MS ? n.page : null
   } catch { return null }
 }
 

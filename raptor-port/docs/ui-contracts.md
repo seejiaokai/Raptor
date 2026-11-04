@@ -6897,7 +6897,8 @@ view and in reach (D1610, his "A").
   reloads; if they do not, the card comes back, still signed in. Nor does it reload (the card comes back) while a save
   still waits (a reload would ask "Leave site?", or on an iPhone lose it unasked — `storage/savewait.ts`), or once he has
   gone to another page or signed out meanwhile; a file counts as come only once its whole body has arrived; and a reload
-  the browser held back ("Leave site?" answered Stay) brings the card back and drops the note (the fresh code read,
+  the browser held back ("Leave site?" answered Stay) brings the card back after 10 s, the note kept but used only within a
+  minute of Retry, so a merely slow reload on a weak signal still reopens the page (the code reads,
   4 Nov 26 evening). **D1635 (built 4 Nov 26):** after the reload, once signed in,
   the app reopens the page that failed by itself — a note of it kept in that tab only until the reopen, never in the
   address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring

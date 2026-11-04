@@ -24,7 +24,7 @@
    Only a failed DOWNLOAD is caught here: a fault inside the page itself is passed on to what catches it today. */
 import { Component, Suspense, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { PageClaw } from './pageclaw'
-import { freshPageFiles, isDownloadFailure, noteReopen, RELOAD_HELD_MS, RETRY_MIN_MS, takeReopen, type PageDownload } from './pagedownload'
+import { freshPageFiles, isDownloadFailure, noteReopen, RELOAD_HELD_MS, RETRY_MIN_MS, type PageDownload } from './pagedownload'
 import { saveWaiting } from '../storage/savewait'
 import { SESSION } from '../state/auth'
 import { CURPAGE } from '../state/view'
@@ -97,8 +97,9 @@ export function DownloadedPage({ page, name, download: { Page, src }, active, un
       }
       noteReopen(page)
       window.location.reload()
-      /* still here after that: the browser held the reload back ("Leave site?" answered Stay) — the note goes, the card comes back */
-      window.setTimeout(() => { takeReopen(); cardBack() }, RELOAD_HELD_MS)
+      /* still here long after that: the reload was held back ("Leave site?" answered Stay) — the card comes back; the note
+         stays, bounded by its own age (pagedownload.ts), since a merely slow reload must still reopen the page */
+      window.setTimeout(cardBack, RELOAD_HELD_MS)
     })
   }
   return (

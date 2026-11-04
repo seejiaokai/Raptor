@@ -10,7 +10,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { Login } from './Login'
 import { initStore, resetSession } from '../state/store'
 import { CURPAGE } from '../state/view'
-import { REOPEN_KEY, takeReopen } from './pagedownload'
+import { noteReopen, REOPEN_KEY, takeReopen } from './pagedownload'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -40,13 +40,13 @@ async function signInAs(u: string, p: string) {
 
 describe('the page reopened after Retry reloaded the app (D1635)', () => {
   it('a note of the Leave War: signed in, the Leave War opens, and the note is gone', async () => {
-    sessionStorage.setItem(REOPEN_KEY, 'leavewar')
+    noteReopen('leavewar')
     await signInAs('ad', 'a')
     expect(CURPAGE).toBe('leavewar')
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
   })
   it('the same for the Tracker, for a member', async () => {
-    sessionStorage.setItem(REOPEN_KEY, 'tracker')
+    noteReopen('tracker')
     await signInAs('us', 'us')
     expect(CURPAGE).toBe('tracker')
   })
@@ -55,14 +55,14 @@ describe('the page reopened after Retry reloaded the app (D1635)', () => {
     expect(CURPAGE).toBe('viewsched')
   })
   it('a wrong password keeps the note for the right one', async () => {
-    sessionStorage.setItem(REOPEN_KEY, 'leavewar')
+    noteReopen('leavewar')
     await signInAs('ad', 'x')
-    expect(sessionStorage.getItem(REOPEN_KEY)).toBe('leavewar')
+    expect(JSON.parse(sessionStorage.getItem(REOPEN_KEY)!).page).toBe('leavewar')
     await signInAs('ad', 'a')
     expect(CURPAGE).toBe('leavewar')
   })
   it('someone with no access yet (asking for it): no page opened, and the note thrown away', async () => {
-    sessionStorage.setItem(REOPEN_KEY, 'leavewar')
+    noteReopen('leavewar')
     await signInAs('nobody-yet', 'x')
     expect(CURPAGE).not.toBe('leavewar')
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
@@ -71,12 +71,20 @@ describe('the page reopened after Retry reloaded the app (D1635)', () => {
 
 describe('the note itself', () => {
   it('is read once', () => {
-    sessionStorage.setItem(REOPEN_KEY, 'tracker')
+    noteReopen('tracker')
     expect(takeReopen()).toBe('tracker')
     expect(takeReopen()).toBeNull()
   })
+  /* the narrow read of 4 Nov 26: a note left by a reload the browser held back must not fire at a much later sign-in */
+  it('is used only within a minute of being written; an older one is thrown away', () => {
+    sessionStorage.setItem(REOPEN_KEY, JSON.stringify({ page: 'leavewar', at: Date.now() - 61_000 }))
+    expect(takeReopen()).toBeNull()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    noteReopen('leavewar')
+    expect(takeReopen()).toBe('leavewar')
+  })
   it('names only the two pages that download apart; anything else is thrown away', () => {
-    sessionStorage.setItem(REOPEN_KEY, 'admin')
+    noteReopen('admin')
     expect(takeReopen()).toBeNull()
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
   })

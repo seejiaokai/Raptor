@@ -178,7 +178,7 @@ describe('Retry (D1633)', () => {
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
     await press()
     expect(reload).toHaveBeenCalledTimes(1)
-    expect(sessionStorage.getItem(REOPEN_KEY)).toBe('leavewar')
+    expect(JSON.parse(sessionStorage.getItem(REOPEN_KEY)!)).toMatchObject({ page: 'leavewar', at: expect.any(Number) })
     sessionStorage.clear()
   })
   it('a Retry that did not bring the page: no note, the keyboard back on Retry (D1636)', async () => {
@@ -211,16 +211,36 @@ describe('Retry (D1633)', () => {
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
     expect(q('page-load-fail')).not.toBeNull()
   })
-  it('a reload the browser held back (he chose to stay): the note goes and the card comes back', async () => {
-    const reload = stubReload()            // a reload that does nothing: the page lives on, as after "Stay"
+  /* the narrow read of 4 Nov 26: on a weak signal a reload can take seconds to replace the page — a short timer threw the
+     note away and flashed the card. The note now stays (it carries its own age); only a reload still not done after
+     RELOAD_HELD_MS brings the card back */
+  it('a reload slow to happen keeps the note; one still not done after the hold brings the card back', async () => {
+    const reload = stubReload()            // a reload that does nothing: the page lives on, as when held back
     server()
     await failedOn()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      await press()
+      expect(reload).toHaveBeenCalledTimes(1)
+      await act(async () => { vi.advanceTimersByTime(2000) }); await flush()
+      expect(sessionStorage.getItem(REOPEN_KEY)).not.toBeNull()
+      expect(q('page-load-fail')).toBeNull()
+      await act(async () => { vi.advanceTimersByTime(RELOAD_HELD_MS) }); await flush()
+      expect(q('page-load-fail')).not.toBeNull()
+      expect(document.activeElement).toBe(q('page-load-retry'))
+      expect(sessionStorage.getItem(REOPEN_KEY)).not.toBeNull()
+    } finally { vi.useRealTimers() }
+  })
+  it('a save that failed blocks the reload too; a save already on its way does not', async () => {
+    const reload = stubReload()
+    server()
+    watchSaves(saves('failed'))
+    await failedOn()
+    await press(); await pastMin()
+    expect(reload).not.toHaveBeenCalled()
+    watchSaves(saves('saving'))
     await press()
     expect(reload).toHaveBeenCalledTimes(1)
-    await act(async () => { await new Promise(r => setTimeout(r, RELOAD_HELD_MS + 80)) }); await flush()
-    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
-    expect(q('page-load-fail')).not.toBeNull()
-    expect(document.activeElement).toBe(q('page-load-retry'))
   })
   /* finding 3: he left the page while the files were coming — the reload would throw away what he was doing there */
   it('he left the page before the files came: no reload, the card waiting for his return', async () => {
