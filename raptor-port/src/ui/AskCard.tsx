@@ -7,33 +7,11 @@ import { createPortal } from 'react-dom'
    the window or sheet the control sits in. It is drawn inside that window or sheet (so a press on it is a press inside,
    and a sheet that closes on a press outside stays up); `portal` draws it in the control's own window or page instead, for
    a question whose control lies outside the window that asks (the input window's "Open the other input and lose them?" —
-   the press landed on the page behind it, or on a card of the opened day). Position: fixed, recomputed on every scroll and resize while it is up; a sheet that is itself
-   moved by a transform is the card's frame of reference, so the offset is measured, never assumed. */
+   the press landed on the page behind it, or on a card of the opened day — ui/lastpress.ts names it). Position: fixed,
+   recomputed on every scroll and resize while it is up; a sheet that is itself moved by a transform is the card's frame of reference, so the offset is measured, never assumed. */
 
-/* WHAT WAS PRESSED LAST — the control a question raised by a press elsewhere hangs from (the swap question: the other
-   input's bar or card). One listener for the app, taking the press as it lands, before any handler runs. */
-let lastPress: HTMLElement | null = null
-const PRESSABLE = 'button, [role="button"], a[href], [tabindex]:not([tabindex="-1"]), input, select, textarea'
-function notePress(e: Event) {
-  const t = e.target as HTMLElement | null
-  if (!t || typeof t.closest !== 'function') return
-  lastPress = (t.closest(PRESSABLE) as HTMLElement | null) || t
-}
-function noteKey(e: KeyboardEvent) {
-  if (e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Delete' && e.key !== 'Backspace') return
-  const a = document.activeElement as HTMLElement | null
-  if (a && a !== document.body) lastPress = a
-}
-if (typeof document !== 'undefined') {
-  document.addEventListener('pointerdown', notePress, true)
-  document.addEventListener('keydown', noteKey, true)
-}
-/** the control pressed last, while it is still on the page */
-export function lastPressed(): HTMLElement | null {
-  return lastPress && lastPress.isConnected ? lastPress : null
-}
-
-const GAP = 9          // from the control's edge to the card's, the pointer in between
+const stopHere = (e: React.SyntheticEvent) => e.stopPropagation()
+const GAP = 9         // from the control's edge to the card's, the pointer in between
 const EDGE = 8         // the card never comes nearer the screen's edge than this
 const FRAME = '.floatwin, .bidsheet, [role="dialog"], dialog'
 
@@ -111,8 +89,12 @@ export function AskCard({ at, portal, testid, label, question, sub, children, on
 
   const node = (
     /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question hanging from a control inside a window or sheet: it leaves the page behind working (D641) and moves with its control; a <dialog> would open in the top layer, cut from the control it points at */
-    <div ref={card} className={`askcard ${pos ? 'ac-' + pos.side : 'ac-measure'}${portal ? ' ac-over' : ''}`} data-testid={testid}
-      role="alertdialog" aria-label={label} onKeyDown={onKeyDown} onFocus={() => { hadFocus.current = true }}
+    <div ref={card} role="alertdialog" aria-label={label} className={`askcard ${pos ? 'ac-' + pos.side : 'ac-measure'}${portal ? ' ac-over' : ''}`} data-testid={testid}
+      onKeyDown={onKeyDown} onFocus={() => { hadFocus.current = true }}
+      /* drawn in another window (portal), a press on it still travels React's tree to the window that ASKED, which comes to
+         the front on any press — over the card, so the tap's click landed on that window and "Keep editing" did nothing
+         (the walk of 4 Nov 26, S3 on a phone). Stopped at the card: the window it is drawn in still hears the press. */
+      {...(portal ? { onPointerDown: stopHere, onMouseDown: stopHere, onTouchStart: stopHere, onClick: stopHere } : {})}
       style={pos ? { left: pos.left, top: pos.top, ['--ac-px' as any]: pos.px + 'px' } : undefined}>
       <span className="askcard-q">{question}</span>
       {sub && <span className="askcard-sub">{sub}</span>}
