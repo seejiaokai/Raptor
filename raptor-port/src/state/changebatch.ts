@@ -73,13 +73,26 @@ function sealer(group: readonly WbChange[]): WbChange[] | null {
   return out
 }
 
+/* WHO A BATCH NAMES — an account's id (an opaque `ac…`, never his sign-in name), or the app itself; for someone with no
+   account — a person waiting for access, a guest, an account switched off — only his ROLE. Every member and guest reads
+   every batch (data-model §11, ChangeBatch: member C R, guest R), and such a session's id is `principal:<sign-in name>`,
+   his defence mail at the database step, which §11 shows the admins alone (AccessRequest). Named, a waiting person's one
+   access request told every member who was asking (the member / guest check's security read, F1, 5 Nov 26); the request
+   row itself still names him, for the admins. Pinned: changebatch-rollcall.test.ts "a waiting person's batch names his
+   role". */
+const NO_ACCOUNT = new Set(['pending', 'guest', 'off'])
+function batchActor(a: TxnInfo['actor'] | undefined): string {
+  if (a && NO_ACCOUNT.has(String(a.role))) return String(a.role)
+  return String(a?.id ?? 'system')
+}
+
 /* the command layer's transaction door, wrapped: the OUTERMOST dispatch says who opened the group (a nested one joins
    the group already open and says nothing) */
 function wrapperFor(wb: Whiteboard): TxnWrapper {
   return {
     transaction(info?: TxnInfo) {
       if (!wb.inTransaction()) {
-        OPENED = info ? { type: info.type, actorId: String(info.actor?.id ?? 'system') } : null
+        OPENED = info ? { type: info.type, actorId: batchActor(info.actor) } : null
         SEQS = []
       }
       return wb.transaction()
