@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Keyboard and windows</title>
+<style>
+:root{--bg:#0b0f14;--panel:#141a21;--edge:#26303b;--ink:#e8edf2;--ink-2:#b7c2cc;--ink-3:#7f8c98;--accent:#3bc6e8;--warn:#e5c24a}
+@media (prefers-color-scheme: light){:root:not([data-theme="dark"]){--bg:#f4f6f8;--panel:#fff;--edge:#d6dde3;--ink:#121820;--ink-2:#36424e;--ink-3:#5d6a76;--accent:#0b8fb3;--warn:#9a7400}}
+:root[data-theme="dark"]{--bg:#0b0f14;--panel:#141a21;--edge:#26303b;--ink:#e8edf2;--ink-2:#b7c2cc;--ink-3:#7f8c98;--accent:#3bc6e8;--warn:#e5c24a}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+main{max-width:1000px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:22px;margin:4px 0 4px}
+.sub{color:var(--ink-3);margin:0 0 18px;font-size:13px}
+.now{background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin-bottom:28px}
+.now h2{font-size:15px;margin:0 0 8px;color:var(--accent)}
+.now ol{margin:0;padding-left:20px}
+.now li{margin:6px 0}
+.now a{color:var(--accent)}
+section{border-top:1px solid var(--edge);padding-top:18px;margin-top:26px}
+section h2{font-size:18px;margin:0 0 6px}
+.rec{background:color-mix(in srgb,var(--accent) 10%,var(--panel));border-left:3px solid var(--accent);padding:8px 12px;border-radius:6px;margin:10px 0}
+.why{color:var(--ink-2);font-size:14px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.pair.phone{grid-template-columns:repeat(2,minmax(0,300px))}
+figure{margin:0;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:8px}
+figure img{width:100%;height:auto;display:block;border-radius:6px;cursor:zoom-in}
+figcaption{font-size:13px;color:var(--ink-2);margin-top:6px}
+figcaption b{color:var(--ink)}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;padding:1px 7px;border-radius:9px;margin-right:6px;border:1px solid var(--edge);color:var(--ink-3)}
+.tag.new{border-color:var(--accent);color:var(--accent)}
+ul.plain{margin:8px 0;padding-left:20px}
+ul.plain li{margin:4px 0}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:none;align-items:center;justify-content:center;padding:12px;z-index:9;cursor:zoom-out;overflow:auto}
+.zoom.on{display:flex}
+.zoom img{max-width:none;width:auto;max-height:none}
+@media (max-width:700px){.pair,.pair.phone{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+<h1>Keyboard and windows — mock-ups</h1>
+<p class="sub">5 Nov 26 · the three backlog items on one branch · drawn on the real app, nothing built yet. Tap a picture to see it full size.</p>
+
+<div class="now">
+<h2>To answer now — reply "all as recommended", or by number</h2>
+<ol>
+<li><b>Top bar free over three windows</b> — Undo and Redo stay pressable over "Jump to a date", the day-details window and the document viewer. <b>Recommend: yes.</b> <a href="#q1">Pictures</a></li>
+<li><b>The keyboard's ring on the Scheduler Board</b> — menus, day chips and the day name reachable by the keys, wearing the app's cyan ring. <b>Recommend: yes.</b> <a href="#q2">Pictures</a></li>
+<li><b>Traffic on View-only Sched</b> — an admin sees the plain list there, as a member does; editing stays on Edit Schedule and the board. <b>Recommend: yes.</b> <a href="#q3">Pictures</a></li>
+<li><b>A clock the app can't read is said once</b>, not once for every line of the wave. <b>Recommend: yes.</b> <a href="#q4">Pictures</a></li>
+</ol>
+</div>
+
+<section id="q1">
+<h2>1 · Top bar free over three windows</h2>
+<p class="why">Today these windows grey out the whole screen, the top bar too, so Undo and Redo can't be pressed while one is open. The Traffic window already works the new way (since 30 Oct 26): the grey starts under the bar. Undo and Redo work with the window open; any other bar button (a page name, the bell, ✓ Done) closes the window first, then does its job.</p>
+<div class="rec"><b>Recommend:</b> do it for "Jump to a date", the day-details window (the ⓘ) and the document viewer. <b>Keep the bar covered</b> for an input's own window — it holds typing you haven't saved, and an Undo behind it would change the schedule under an open form — and for the question boxes (the OIL question and the others), which exist to stop changes until they're answered.</p>
+<div class="pair">
+<figure><img src="img/1c-desktop-daydetails-today.png" alt="Day details on the board today, the board's bar greyed"><figcaption><span class="tag">TODAY</span>Day details over the Scheduler Board: the board's bar is greyed, its Undo and Redo can't be pressed.</figcaption></figure>
+<figure><img src="img/1d-desktop-daydetails-drawn.png" alt="Day details with the bar left bright"><figcaption><span class="tag new">DRAWN</span>The grey starts under the bar; Undo, Redo and the rest of the bar stay bright and pressable.</figcaption></figure>
+</div>
+<div class="pair phone">
+<figure><img src="img/1a-phone-jump-today.png" alt="Jump to a date on a phone today, top bar greyed"><figcaption><span class="tag">TODAY</span>iPhone · Jump to a date: the top bar is greyed.</figcaption></figure>
+<figure><img src="img/1b-phone-jump-drawn.png" alt="Jump to a date with the top bar bright"><figcaption><span class="tag new">DRAWN</span>The top bar stays bright; the window sits just under it.</figcaption></figure>
+</div>
+<div class="pair phone">
+<figure><img src="img/1c-phone-daydetails-today.png" alt="Day details on a phone today"><figcaption><span class="tag">TODAY</span>iPhone · Day details over the board.</figcaption></figure>
+<figure><img src="img/1d-phone-daydetails-drawn.png" alt="Day details on a phone, bar bright"><figcaption><span class="tag new">DRAWN</span>The board's bar stays bright.</figcaption></figure>
+</div>
+<p class="why">The document viewer would look the same as these. On a desktop, "Jump to a date" barely greys the page, so the picture changes little there — what changes is that the bar can be pressed.</p>
+</section>
+
+<section id="q2">
+<h2>2 · The keyboard's ring on the Scheduler Board</h2>
+<p class="why">On a desktop with a keyboard, some board controls can only be used with the mouse. The ring is the one the app already uses for the keyboard (the cyan outline); it shows only when the keys are used, never after a click.</p>
+<div class="rec"><b>Recommend:</b> a board menu (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) opened by Enter or ↓ puts the keys on its first item, ↑ ↓ move through it; the board's day and week chips and the edit week's day name (which picks that day's crew) are reached by Tab and pressed by Enter.</p>
+<div class="pair">
+<figure><img src="img/2a-desktop-blockmenu-today.png" alt="+ Block menu opened by Enter, keys still on the button"><figcaption><span class="tag">TODAY</span>Enter on + Block opens its menu, but the keys stay on the button — the menu can't be reached.</figcaption></figure>
+<figure><img src="img/2b-desktop-blockmenu-drawn.png" alt="The first item ringed"><figcaption><span class="tag new">DRAWN</span>The keys land on the first item, ringed; ↓ moves to the next, Enter picks it, Escape closes it back to + Block.</figcaption></figure>
+</div>
+<figure style="margin:12px 0"><img src="img/2c-desktop-daychip-drawn.png" alt="A day chip ringed on the board's bar"><figcaption><span class="tag new">DRAWN</span>The board's day chips (Mon 13 ringed) and the ‹ › week chips: today Tab skips them.</figcaption></figure>
+<figure style="margin:12px 0;max-width:560px"><img src="img/2d-desktop-dayname-drawn.png" alt="The day name ringed on Edit Schedule"><figcaption><span class="tag new">DRAWN</span>Edit Schedule's day name (it shows that day's crew in the aircrew panel): today mouse only.</figcaption></figure>
+</section>
+
+<section id="q3">
+<h2>3 · Traffic on View-only Sched</h2>
+<p class="why">View-only Sched changes nothing, and has no Undo. But an admin's Traffic window there today has typing boxes, ✕, Add row and Done — a change made there can't be undone from that page.</p>
+<div class="rec"><b>Recommend:</b> on View-only Sched everyone sees the plain list, as a member does today. Admins edit traffic on Edit Schedule and the board, as now.</p>
+<div class="pair">
+<figure><img src="img/3a-desktop-traffic-view-today.png" alt="Traffic window with boxes on View-only Sched"><figcaption><span class="tag">TODAY</span>Admin on View-only Sched: the editing window.</figcaption></figure>
+<figure><img src="img/3b-desktop-traffic-view-drawn.png" alt="Traffic as a plain list"><figcaption><span class="tag new">DRAWN</span>The member's plain list — the window a member already sees there.</figcaption></figure>
+</div>
+<div class="pair phone">
+<figure><img src="img/3a-phone-traffic-view-today.png" alt="Traffic on a phone today"><figcaption><span class="tag">TODAY</span>iPhone.</figcaption></figure>
+<figure><img src="img/3b-phone-traffic-view-drawn.png" alt="Traffic plain list on a phone"><figcaption><span class="tag new">DRAWN</span>iPhone.</figcaption></figure>
+</div>
+</section>
+
+<section id="q4">
+<h2>4 · A clock the app can't read is said once</h2>
+<p class="why">A wave with three lines and no take-off times yet, and an in-time line typed as "25:90". The red note under it says the same sentence three times — once for each line of the wave.</p>
+<div class="rec"><b>Recommend:</b> say it once. The day's issues list is unchanged.</p>
+<figure style="margin:12px 0"><img src="img/4a-desktop-unreadable-today.png" alt="The same sentence three times"><figcaption><span class="tag">TODAY</span>"WAVE 3: reporting line 1 has no recognised clock. Check the time." — three times.</figcaption></figure>
+<figure style="margin:12px 0"><img src="img/4b-desktop-unreadable-drawn.png" alt="The sentence once"><figcaption><span class="tag new">DRAWN</span>Once.</figcaption></figure>
+</section>
+
+<section>
+<h2>Also in the batch — nothing new to see</h2>
+<ul class="plain">
+<li>While the Scheduler Board is open, Tab stays inside it instead of walking into the week behind.</li>
+<li>Escape closes the Sort all box (today only Cancel, ✕ or a click outside do).</li>
+<li>After the OIL question is answered, the keyboard goes back to the box you were typing in, so Tab carries on from there.</li>
+<li>A test for the red note under a wave's in-time lines being kept up to date.</li>
+<li>With the bar free (1), Escape still closes the window after you've pressed Undo.</li>
+</ul>
+</section>
+</main>
+<div class="zoom" id="zoom"></div>
+<script>
+const z=document.getElementById('zoom'),zi=document.createElement('img');z.append(zi);
+document.querySelectorAll('figure img').forEach(i=>i.addEventListener('click',()=>{zi.src=i.src;zi.alt=i.alt;z.classList.add('on')}));
+z.addEventListener('click',()=>z.classList.remove('on'));
+document.addEventListener('keydown',e=>{if(e.key==='Escape')z.classList.remove('on')});
+</script>
+</body>
+</html>

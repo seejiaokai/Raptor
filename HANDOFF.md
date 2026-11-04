@@ -20,14 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/topbar-names-build -->
-### `claude/topbar-names-build` — the page names beside TALON, ☰ where they do not fit (D1641–D1643) — written 4 Nov 26 (night) — verify before use
-- **His answers 4 Nov 26 ("both yes"):** D1642 (build as the mock-up draws it) and D1643 (a phone held sideways always ☰ and one row, for everyone — narrows D1641). The notes branch before this (`claude/topbar-tabs-beside-talon`, pull request 633) MERGED: the Leave War block removed, D1641 recorded, the mock-up https://claude.ai/artifact/Mxpwt7Qc27zRHWhxtj3pTY.
-- **Built:** `src/ui/navfold.ts` (measures the names against the room beside TALON; a phone held sideways always folds), `Shell.tsx` (`nav-fold`), `02-shell.css` (above 821: names never wrap; folded = laid out unseen out of flow, ☰ shown), `Drawer.tsx` (Escape closes the menu, newest first, keyboard back on ☰; opened by keys, the keyboard on the page you are on). Tests: `navfold.test.tsx` 6/6, `drawer-keys.test.tsx` 2/2 (red without the change), `e2e/topbar-names.spec.ts` 12/12 under the lock; code check clean.
-- **Bug check (WALK tier — no code read at this tier):** walk 138 / 138 on the frozen build (`scripts/handpass/topbar-names-walk.mjs`; three first-run FAILs were the script's own, fixed), two break tests red, evidence `raptor-port/docs/handpass/2026-11-04-topbar-names.md`, the ledger's row added. GitHub's full run green on `2057ee465`. **MERGING on his "merge live" (4 Nov 26) — his look done (D1640);** [TOPBAR-NAMES-BESIDE-TALON] and [SHELL-SIDEWAYS-BAR] archived. If this block is still here, check the merge and Vercel's Production deploy went through, then remove it. MERGED and LIVE 4 Nov 26 (main's run green). The PDF work is held on his word (D1644).
+<!-- now:claude/keyboard-windows-batch-5eff45 -->
+### `claude/keyboard-windows-batch-5eff45` — the keyboard and windows batch: [BOARD-KEYS-LEFT], [VEILED-WINDOWS-BAR], [WINDOWS-KEEP-KEYS] — written 5 Nov 26 — verify before use
+- **His word, 5 Nov 26:** the three items on one branch with one bug check; a mock-up of anything he will see before it is built (D1625); the PDF work stays held (D1644). The `claude/topbar-names-build` block removed — pull requests 634 and 635 LIVE.
+- **State:** looking at the three in the app and drawing the mock-ups; nothing built yet.
 - **Numbers:** rulings next free D1645; observations next free 801.
 <!-- /now -->
 ## Next, in order
+
+**RIGHT NOW (5 Nov 26):** pull requests 634 and 635 LIVE → his pick, the keyboard and windows batch on `claude/keyboard-windows-batch-5eff45` (this chat's block): mock-ups first.
+
 
 **RIGHT NOW (4 Nov 26, night):** the Leave War small fixes LIVE (pull request 632) → his request, the page names beside TALON (D1641): the mock-up answered "both yes" (D1642, D1643) → BUILT and checked on `claude/topbar-names-build` (pull request 634), LIVE 4 Nov 26 → **the PDF export work ([PDF-PRINT-TWICE], [FLAG-EXPORT]) HELD until he says so (D1644)** → his next pick from the backlog.
 
