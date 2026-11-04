@@ -69,20 +69,30 @@ export const REOPEN_KEY = 'talon:reopen-page'
    signal Retry is for a reload can take seconds to replace the page; 1.5 s first, which fired on a merely slow reload and
    threw the note away (the narrow read, 4 Nov 26). The note is never thrown away here: its own age bounds it. */
 export const RELOAD_HELD_MS = 10_000
-/* a note older than this is not used: one left by a held-back reload must not fire at a later, unrelated sign-in */
-export const REOPEN_MAX_AGE_MS = 60_000
+/* a note older than this is not used. Long, because the age runs from Retry to the press of Sign in: a slow reload on a
+   weak signal, then a password typed on a phone (1 min first, too short — the third code read, 4 Nov 26) */
+export const REOPEN_MAX_AGE_MS = 10 * 60_000
 const REOPENABLE = new Set(['leavewar', 'tracker'])
+/* set when THIS page wrote the note: its reload was held back, so it was never replaced — the note is not for a sign-in
+   here (a later sign-out and sign-in on the same page would open the page for whoever signs in); only the fresh page
+   after a real reload, which starts with this false, may use it (the third code read, 4 Nov 26) */
+let wroteHere = false
 export function noteReopen(page: string): void {
+  wroteHere = true
   try { sessionStorage.setItem(REOPEN_KEY, JSON.stringify({ page, at: Date.now() })) } catch { /* storage refused: the first page opens, as before */ }
 }
-/** The page Retry asked to reopen, once, within a minute of asking: read and thrown away. */
+/** The page Retry asked to reopen, once, within ten minutes, on the page after the reload: read and thrown away. */
 export function takeReopen(): string | null {
+  const here = wroteHere
+  wroteHere = false
   try {
     const raw = sessionStorage.getItem(REOPEN_KEY)
     sessionStorage.removeItem(REOPEN_KEY)
-    const n = raw ? JSON.parse(raw) as { page?: unknown; at?: unknown } : null
+    if (here || !raw) return null
+    const n = JSON.parse(raw) as { page?: unknown; at?: unknown }
     if (!n || typeof n.page !== 'string' || typeof n.at !== 'number') return null
-    return REOPENABLE.has(n.page) && Date.now() - n.at < REOPEN_MAX_AGE_MS ? n.page : null
+    const age = Date.now() - n.at
+    return REOPENABLE.has(n.page) && age >= 0 && age < REOPEN_MAX_AGE_MS ? n.page : null
   } catch { return null }
 }
 

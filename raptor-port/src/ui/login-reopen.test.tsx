@@ -13,6 +13,8 @@ import { CURPAGE } from '../state/view'
 import { noteReopen, REOPEN_KEY, takeReopen } from './pagedownload'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
+/* the note as the page after Retry's reload finds it: written by the page before, ago ms back */
+const left = (page: string, ago = 0) => sessionStorage.setItem(REOPEN_KEY, JSON.stringify({ page, at: Date.now() - ago }))
 
 let host: HTMLDivElement, root: Root
 beforeEach(async () => {
@@ -40,13 +42,13 @@ async function signInAs(u: string, p: string) {
 
 describe('the page reopened after Retry reloaded the app (D1635)', () => {
   it('a note of the Leave War: signed in, the Leave War opens, and the note is gone', async () => {
-    noteReopen('leavewar')
+    left('leavewar')
     await signInAs('ad', 'a')
     expect(CURPAGE).toBe('leavewar')
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
   })
   it('the same for the Tracker, for a member', async () => {
-    noteReopen('tracker')
+    left('tracker')
     await signInAs('us', 'us')
     expect(CURPAGE).toBe('tracker')
   })
@@ -55,14 +57,14 @@ describe('the page reopened after Retry reloaded the app (D1635)', () => {
     expect(CURPAGE).toBe('viewsched')
   })
   it('a wrong password keeps the note for the right one', async () => {
-    noteReopen('leavewar')
+    left('leavewar')
     await signInAs('ad', 'x')
     expect(JSON.parse(sessionStorage.getItem(REOPEN_KEY)!).page).toBe('leavewar')
     await signInAs('ad', 'a')
     expect(CURPAGE).toBe('leavewar')
   })
   it('someone with no access yet (asking for it): no page opened, and the note thrown away', async () => {
-    noteReopen('leavewar')
+    left('leavewar')
     await signInAs('nobody-yet', 'x')
     expect(CURPAGE).not.toBe('leavewar')
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
@@ -71,20 +73,32 @@ describe('the page reopened after Retry reloaded the app (D1635)', () => {
 
 describe('the note itself', () => {
   it('is read once', () => {
-    noteReopen('tracker')
+    left('tracker')
     expect(takeReopen()).toBe('tracker')
     expect(takeReopen()).toBeNull()
   })
-  /* the narrow read of 4 Nov 26: a note left by a reload the browser held back must not fire at a much later sign-in */
-  it('is used only within a minute of being written; an older one is thrown away', () => {
-    sessionStorage.setItem(REOPEN_KEY, JSON.stringify({ page: 'leavewar', at: Date.now() - 61_000 }))
+  /* the code reads of 4 Nov 26: a slow reload on a weak signal, then a password typed on a phone, can take minutes — the
+     note holds 10; older, or dated in the future (a clock set back), it is thrown away */
+  it('is used within ten minutes of being written; an older one, or one dated ahead, is thrown away', () => {
+    left('leavewar', 9 * 60_000)
+    expect(takeReopen()).toBe('leavewar')
+    left('leavewar', 11 * 60_000)
     expect(takeReopen()).toBeNull()
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    left('leavewar', -60_000)
+    expect(takeReopen()).toBeNull()
+  })
+  /* the third read: a reload held back ("Leave site?" Stay) leaves its note on a page never replaced — a later sign-out and
+     sign-in there must not open the page for whoever signs in */
+  it('a note this very page wrote (its reload never happened) is not used, and is thrown away', () => {
     noteReopen('leavewar')
-    expect(takeReopen()).toBe('leavewar')
+    expect(takeReopen()).toBeNull()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    left('tracker')
+    expect(takeReopen()).toBe('tracker')        // once thrown away, a note from a real reload is read again
   })
   it('names only the two pages that download apart; anything else is thrown away', () => {
-    noteReopen('admin')
+    left('admin')
     expect(takeReopen()).toBeNull()
     expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
   })
