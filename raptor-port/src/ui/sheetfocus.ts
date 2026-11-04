@@ -100,10 +100,19 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
   /* a control on the Scheduler Board is looked for again on the board: the week behind it draws the same buttons with the
      same marks (a wave's Traffic, a day's ⓘ), and the keys must not land on the week's copy, hidden under the board */
   const within: ParentNode = el.closest('#schedBoard') || document
+  /* …and a control of a week's day on THAT day (the fresh read's F4, 5 Nov 26): an input covering Monday to Friday draws the
+     same name button on each day, and the first one on the page was found — Monday's, perhaps scrolled out of sight — for a
+     press made on Thursday's. The day is looked up afresh: the redraw may have replaced the day itself. */
+  const dayEl = el.closest('.day[data-day]')
+  const day = dayEl?.getAttribute('data-day') ?? null
+  const weekId = (dayEl?.parentElement as HTMLElement | null)?.id || ''
   return () => {
     if (el.isConnected) return el
     if (!sel) return null
-    const all = [...within.querySelectorAll<HTMLElement>(sel)]
+    const weekBox: ParentNode | null = weekId ? document.getElementById(weekId) : within
+    const dayBox = day != null && weekBox ? weekBox.querySelector<HTMLElement>(`.day[data-day="${q(day)}"]`) : null
+    if (day != null && !dayBox) return null
+    const all = [...(dayBox || within).querySelectorAll<HTMLElement>(sel)]
     return all.find(n => n.getClientRects().length > 0) || all[0] || null
   }
 }
@@ -227,7 +236,25 @@ const menuItems = (box: HTMLElement) =>
   [...box.querySelectorAll<HTMLElement>('button')].filter(b => !(b as HTMLButtonElement).disabled && !b.closest('[hidden]'))
 /** `box` hangs from `anchor`: the arrows move through its buttons, and opened by the keys the keys land on its first pick */
 export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
+  const back = locate(anchor)
   box.addEventListener('keydown', e => {
+    /* TAB OUT OF ITS END LEAVES THE MENU AS ESCAPE DOES (the fresh read's F3, 5 Nov 26): the menu stands at the page's end, so a
+       Tab past its last item walked out of the page and then onto the top bar hidden under the Scheduler Board. Inside it Tab
+       goes on as the browser's own (the stores menu's pencil turns it into a little form of names and buttons); past its last
+       stop, or Shift+Tab before its first, it closes the menu, unhooking its outside-click listener as every other way out
+       does, and the keys go back to its button — the next Tab is the board's. */
+    if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      const at = document.activeElement as HTMLElement | null
+      if (!at || !box.contains(at)) return
+      const stops = [...box.querySelectorAll<HTMLElement>(STOPS)].filter(n => !(n as HTMLButtonElement).disabled && !n.closest('[hidden]'))
+      if (stops.length && at !== (e.shiftKey ? stops[0] : stops[stops.length - 1])) return
+      e.preventDefault()
+      const out = (box as any)._offClick
+      if (out) document.removeEventListener('click', out)
+      box.remove()
+      keysBack(back)
+      return
+    }
     if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return
     const at = document.activeElement as HTMLElement | null
     if (!at || at.tagName !== 'BUTTON' || !box.contains(at)) return

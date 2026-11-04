@@ -212,6 +212,65 @@ test.describe('[D1646] the Scheduler Board by the keys, at his PC', () => {
   })
 })
 
+/* THE FRESH READ'S F1 AND F2 (5 Nov 26, docs/handpass/parts/kw1105/read-opus.md) — what only a real browser shows: Chromium
+   gives a pressed button the keys, and the board's redraw comes a moment after a click */
+test.describe('[D1646] the read\'s findings, at his PC', () => {
+  test.use({ viewport: { width: 1536, height: 864 } })
+
+  test('F1: a duty role picked from its list by the mouse: the role box shows the role picked', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.locator('#eWeek .day[data-day="2"] .dt.sb-open').click()
+    if (!(await page.locator('#sbBoard [data-rolepick]:visible').count())) {
+      await page.locator('#sbBoard [data-dwadd]').first().click()
+      await page.locator('.wavemenu [data-blktpl=""]').click()
+    }
+    const box = page.locator('#sbBoard [data-rolepick]:visible').first()
+    const addr = await box.getAttribute('data-rolepick')
+    await box.click()
+    await expect(page.locator('.wavemenu')).toHaveCount(1)
+    const item = page.locator('.wavemenu [data-rolev]').last()
+    const role = await item.getAttribute('data-rolev')
+    await item.click()
+    await expect(page.locator('.wavemenu')).toHaveCount(0)
+    await expect.poll(() => page.locator(`#sbBoard [data-rolepick="${addr}"]`).first().inputValue(), { message: 'the role box shows the pick' }).toBe(role)
+    await page.waitForTimeout(300)
+    expect(await page.locator(`#sbBoard [data-rolepick="${addr}"]`).first().inputValue(), 'and still does a moment later').toBe(role)
+  })
+
+  test('F1: a duty role picked from its list by the keys (↓, then Enter): the role box, the keys back in it, shows the pick', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.locator('#eWeek .day[data-day="3"] .dt.sb-open').click()
+    if (!(await page.locator('#sbBoard [data-rolepick]:visible').count())) {
+      await page.locator('#sbBoard [data-dwadd]').first().click()
+      await page.locator('.wavemenu [data-blktpl=""]').click()
+    }
+    const box = page.locator('#sbBoard [data-rolepick]:visible').first()
+    const addr = await box.getAttribute('data-rolepick')
+    await box.focus()
+    await page.keyboard.press('ArrowDown')
+    await expect(page.locator('.wavemenu')).toHaveCount(1)
+    await page.keyboard.press('ArrowDown')
+    const role = await page.evaluate(() => (document.activeElement as HTMLElement)?.dataset.rolev)
+    await page.keyboard.press('Enter')
+    await expect(page.locator('.wavemenu')).toHaveCount(0)
+    await expect.poll(() => page.evaluate(() => (document.activeElement as HTMLElement)?.dataset.rolepick), { message: 'the keys back in the role box' }).toBe(addr)
+    await page.waitForTimeout(300)
+    expect(await page.evaluate(() => (document.activeElement as HTMLInputElement).value), 'it shows the pick').toBe(role)
+  })
+
+  test('F2: Enter on a day chip with the Traffic window over the board: the window closes, the day changes', async ({ page }) => {
+    await login(page); await go(page, 'editsched')
+    await page.locator('#eWeek .day[data-day="2"] .dt.sb-open').click()
+    await page.locator('#sbBoard [data-air]').first().click()
+    await expect(page.locator('#airpop:not([hidden])')).toBeVisible()
+    await page.locator('#sbDays [data-sbtab="4"]').focus()
+    await page.keyboard.press('Enter')
+    await expect(page.locator('#airpop:not([hidden])'), 'the Traffic window closed first').toHaveCount(0)
+    await expect(page.locator('#sbDays [data-sbtab="4"].on')).toHaveCount(1)
+    expect((await focusAt(page))?.data.sbtab, 'the keys on the chip pressed').toBe('4')
+  })
+})
+
 test.describe('[D1647] Traffic on View-only Sched, an admin', () => {
   test.use({ viewport: DESK })
   test('the read list: no box, no Add row', async ({ page }) => {

@@ -541,7 +541,10 @@ export function SchedBoard() {
               desktop and dots on a phone, so there is one list, one click
               handler, and a tap on a dot still jumps straight to that day */}
           {/* THE CHIPS TAKE THE KEYS (owner D1646, 5 Nov 26 — the mock-up's picture 2c): each is a Tab stop with role="button"
-              (board.ts dayTabsHTML), and Enter or Space here presses the one the keys are on, as a click does; the keys then stay
+              (board.ts dayTabsHTML), and Enter or Space here presses the one the keys are on BY ITS CLICK (the fresh read's F2,
+              5 Nov 26): stepping the day straight from here skipped the document's click listeners, so a window over the board
+              (Traffic, the day details — barfree.ts) and a board menu stayed up over the new day, a line typed there going to the
+              old day's wave. The click closes them first, then the strip's own onClick steps the day or week; the keys then stay
               on that chip once the strip is drawn again (chipKeys, above). A held key's repeats press nothing. */}
           {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- a box that hands a press, by the mouse or the keys, to the day and week chips drawn inside it by the board's builder (board.ts): the chips themselves are the controls, each role="button" with tabindex 0; drawn as spans, not buttons, because a button would take a button's own look and box in a bar whose rows are measured */}
           <div className="sb-days" id="sbDays" ref={daysRef}
@@ -551,8 +554,8 @@ export function SchedBoard() {
               const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null
               if (!t) return
               e.preventDefault()
-              if (t.dataset.sbweek != null) { chipKeys.current = `[data-sbweek="${t.dataset.sbweek}"]`; boardWeekStep(+t.dataset.sbweek) }
-              else { chipKeys.current = `[data-sbtab="${t.dataset.sbtab}"]`; boardTab(+t.dataset.sbtab!) }
+              chipKeys.current = t.dataset.sbweek != null ? `[data-sbweek="${t.dataset.sbweek}"]` : `[data-sbtab="${t.dataset.sbtab}"]`
+              t.click()
             }} />
           {/* SEARCH + HIGHLIGHT in the freed middle of the day row (owner, 23
               Aug 26 — the phone dots left it empty between the arrows). On

@@ -89,6 +89,33 @@ function Harness() {
     {open && <div ref={box} tabIndex={-1} id="sheet"><button id="answer">Answer</button></div>}
   </div>
 }
+/* the fresh read's F4 (5 Nov 26): a control drawn on several days with the same mark (an input covering Mon–Fri) — its twin
+   is looked for on the day it stood in, never the first day that draws one */
+function TwoDays() {
+  const [open, setOpen] = useState(false)
+  const box = useRef<HTMLDivElement>(null)
+  useSheetFocus(box, open)
+  ;(globalThis as any).__sheet2 = setOpen
+  return <div>
+    <div id="eWeek"><section className="day" data-day="0" /><section className="day" data-day="3" /></div>
+    {open && <div ref={box} tabIndex={-1}><button>Answer</button></div>}
+  </div>
+}
+describe('the read\'s F4 — the twin is found on the day the control stood in', () => {
+  it('the same button drawn on Monday and Thursday, Thursday\'s pressed: the keys come back to Thursday\'s', async () => {
+    host = document.createElement('div'); document.body.append(host); root = createRoot(host)
+    await act(async () => { root.render(<TwoDays />) })
+    const draw = () => document.querySelectorAll('#eWeek .day').forEach(d => { d.innerHTML = '<button data-inpedit="i42">Leave</button>' })
+    draw()
+    ;($('#eWeek .day[data-day="3"] button') as HTMLElement).focus()
+    await act(async () => { (globalThis as any).__sheet2(true) })
+    draw()                                                        // the save's redraw
+    await act(async () => { (globalThis as any).__sheet2(false) })
+    expect((document.activeElement as HTMLElement).closest('.day')?.getAttribute('data-day'), 'Thursday\'s copy').toBe('3')
+    await act(async () => { root.unmount() }); host.remove()
+  })
+})
+
 describe('a sheet gives the keys back to the control they were on, found again after a redraw', () => {
   it('the control replaced by its twin while the sheet was up: the keys go to the twin', async () => {
     host = document.createElement('div'); document.body.append(host); root = createRoot(host)

@@ -227,6 +227,87 @@ describe('[D1646] Tab stays on the board while it is open', () => {
   })
 })
 
+/* THE FRESH READ'S FINDINGS (5 Nov 26, `docs/handpass/parts/kw1105/read-opus.md`), each red on the code it read */
+describe('the read\'s F1 — a role picked from its list: the role box shows the pick, the caret back in it', () => {
+  it('↓ into the list, Enter on a role: the box, with the keys in it again, reads the role picked', async () => {
+    await click(date(2))
+    if (!$('#sbBoard [data-rolepick]')) { await click($('#sbBoard [data-dwadd]')); await click($('.wavemenu [data-blktpl=""]')) }
+    const box = $('#sbBoard [data-rolepick]') as HTMLInputElement
+    const addr = box.dataset.rolepick!
+    box.focus()
+    await key('ArrowDown')
+    expect(menu(), 'the role list is up').toBeTruthy()
+    const role = at().dataset.rolev!
+    await pressByKeys(at())
+    await act(async () => { await new Promise(r => setTimeout(r, 20)) })
+    const now = at() as HTMLInputElement
+    expect(now.dataset.rolepick, 'the keys are back in the role box').toBe(addr)
+    expect(now.value, 'and it reads the role picked, not the words it had').toBe(role)
+  })
+  it('a pick by the mouse in Chromium (the item holds the keys as its click runs): the box reads the role picked', async () => {
+    await click(date(3))
+    if (!$('#sbBoard [data-rolepick]')) { await click($('#sbBoard [data-dwadd]')); await click($('.wavemenu [data-blktpl=""]')) }
+    const box = $('#sbBoard [data-rolepick]') as HTMLInputElement
+    box.focus()
+    await click(box)
+    const item = [...menu().querySelectorAll<HTMLElement>('[data-rolev]')].reverse()[0]!
+    const role = item.dataset.rolev!
+    item.focus()                                        // Chromium's mousedown on a button
+    await click(item)
+    await act(async () => { await new Promise(r => setTimeout(r, 20)) })
+    const shown = [...document.querySelectorAll<HTMLInputElement>(`#sbBoard [data-rolepick="${box.dataset.rolepick}"]`)][0]!
+    expect(shown.value, 'the role box shows the pick').toBe(role)
+  })
+})
+
+describe('the read\'s F2 — a chip pressed by the keys closes what stands over the board first', () => {
+  it('the Traffic window over Wednesday: Enter on Friday\'s chip closes it, then opens Friday', async () => {
+    const pops = await import('./pops')
+    await click(date(2))
+    await click($('#sbBoard [data-air]'))
+    expect(pops.AIRKEY, 'the Traffic window is up').not.toBe(null)
+    $('#sbDays [data-sbtab="4"]').focus()
+    await key('Enter')
+    expect(view.SBDAY).toBe(4)
+    expect(pops.AIRKEY, 'the window closed first').toBe(null)
+  })
+  it('a menu opened by the mouse over Wednesday: Enter on a chip takes it away', async () => {
+    await click(date(2))
+    await click($('#sbBoard [data-dwadd]'))
+    expect(menu()).toBeTruthy()
+    $('#sbDays [data-sbtab="5"]').focus()
+    await key(' ')
+    expect(view.SBDAY).toBe(5)
+    expect(menu(), 'the menu went').toBeNull()
+  })
+})
+
+describe('the read\'s F3 — Tab out of a menu\'s end closes it, the keys back on its button', () => {
+  it('+ Block by Enter, Tab past its last item: the menu goes, the keys on + Block; Shift+Tab before its first the same', async () => {
+    await click(date(2))
+    const b = $('#sbBoard [data-dwadd]')
+    await pressByKeys(b)
+    expect(menu().contains(at())).toBe(true)
+    const list = items()
+    list[list.length - 1]!.focus()
+    await key('Tab')
+    expect(menu(), 'the menu went').toBeNull()
+    expect(keysOn(b), 'the keys on its button, on the board').toBe(true)
+    await pressByKeys($('#sbBoard [data-dwadd]'))
+    items()[0]!.focus()
+    await key('Tab', { shiftKey: true })
+    expect(menu(), 'Shift+Tab before its first: the menu went').toBeNull()
+  })
+  it('inside the menu Tab is the browser\'s own (the stores menu\'s editor is a little form): the menu stays', async () => {
+    await click(date(2))
+    await pressByKeys($('#sbBoard [data-dwadd]'))
+    const ev = await key('Tab')
+    expect(ev.defaultPrevented, 'not taken').toBe(false)
+    expect(menu(), 'the menu stays').toBeTruthy()
+    await key('Escape')
+  })
+})
+
 describe('[D1646] Escape closes the Sort all box', () => {
   it('the box closes, the board stays, nothing sorted', async () => {
     await click(date(2))

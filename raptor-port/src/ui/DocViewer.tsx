@@ -39,9 +39,12 @@ export function DocViewer() {
      be the input — its remarks, its days, its files as they now are. The live record is shown; an input the undo took
      away closes the viewer (below). A read-only page is not an input of the list (a Leave War request's papers, a file
      just added to a window not yet saved), and is shown as it was given. */
-  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) || row : row)
-  const gone = !!(v && !v.readOnly && v.row && v.row.iid != null && !inpById(v.row.iid))
-  const list = v ? (v.rows && v.rows.length ? v.rows.map((e: any) => ({ ...e, row: live(e.row) })) : (v.row ? [{ row: live(v.row), up: v.up }] : [])) : []
+  /* …and an episode of several entries loses the page of each one an undo took away (the fresh read's F5, 5 Nov 26: its
+     page stayed, with "Edit input" on a record no longer there); none left, the viewer closes */
+  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) : row)
+  const list = v ? (v.rows && v.rows.length ? v.rows.map((e: any) => ({ ...e, row: live(e.row) })).filter((e: any) => !!e.row)
+    : (v.row && live(v.row) ? [{ row: live(v.row), up: v.up }] : [])) : []
+  const gone = !!v && !v.readOnly && !list.length
   const els = list.flatMap((e: any) => {
     const ids = rowDocIds(e.row)
     return ids.length ? ids.map((id: string) => ({ ...e, docId: id })) : [e]

@@ -1634,12 +1634,17 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   /* A PICK MADE BY THE KEYS GIVES THEM BACK TO THE MENU'S BUTTON (owner D1646 — the menu takes the keys when opened by
      them, sheetfocus.ts menuKeys): the item they were on goes with the menu, and what the pick changes redraws the board
      from strings a moment later, so the button is found again then (locate) — unless what the pick opened (a window) has
-     taken them meanwhile (keysBack leaves them there). A pick made by a press of the mouse moves nothing, as before. */
+     taken them meanwhile (keysBack leaves them there). A press of the mouse in Chromium gives the item the keys too, so a
+     mouse pick there comes back to the button as well; on a phone, and in Safari, a tap gives an item no keys and nothing moves.
+     ONLY ONCE THE REDRAW HAS RUN (the fresh read's F1, 5 Nov 26): put back at once, the keys landed in the OLD button — for the
+     duty role's list that is its text box, and with the caret in it the board withholds that panel's redraw, so the box went on
+     showing the words it had before the pick; typed over, those words were saved over the pick. A moment later the panel has
+     been drawn with the pick and the keys go to the new box. */
   const back = locate(anchor)
   box.addEventListener('click', (e: any) => onPick(e, () => {
     const had = box.contains(document.activeElement)
     box.remove()
-    if (had) { keysBack(back); setTimeout(() => keysBack(back), 0) }
+    if (had) setTimeout(() => keysBack(back), 0)
   }))
   /* deferred by a tick, or the very click that OPENED this box closes it */
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
