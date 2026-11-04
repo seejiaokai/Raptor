@@ -102,7 +102,7 @@ export function AskCard({ at, portal, testid, label, question, sub, children, on
     const was = before instanceof HTMLElement && before.isConnected && (before === at || at.contains(before)) ? before : null
     const back = was || (at.matches(FOCUSABLE) ? at : at.querySelector<HTMLElement>(FOCUSABLE))
     if (back && (!a || a === document.body || (n && n.contains(a)))) back.focus({ preventScroll: true })
-  }, [at])
+  }, [at, before])
 
   const node = (
     /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question hanging from a control inside a window or sheet: it leaves the page behind working (D641) and moves with its control; a <dialog> would open in the top layer, cut from the control it points at */

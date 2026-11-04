@@ -21,11 +21,11 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/ask-at-the-control -->
-### `claude/ask-at-the-control` — [ASK-AT-THE-CONTROL]: every question raised by a press, drawn as a card hanging from its button — DRAWN, nothing built; waiting on his five answers — written 4 Nov 26 — verify before use
-- **Done:** the roll-call (71 questions, numbered as on the page) and every press-raised one drawn on the real app, today beside the card, at his iPhone's size and a desktop's; the look page https://claude.ai/artifact/1kU5EHYgJUVQCPejKhzuRi, its top the five things he decides (each with its recommendation). Detail, and the three side-finds: `OUTSTANDING.md` [ASK-AT-THE-CONTROL].
-- **How it was drawn:** the kit `raptor-port/scripts/handpass/ask-at-lib.mjs`; one script per area (`ask-at-<area>.mjs`, run from `raptor-port/` with `WALK_DIR` a frozen build and `ISR_OUT` the area's picture folder); `ask-at-page.mjs <folder>` builds the page (light JPEG copies; the PNGs in the project are the record). No app code changed; no check run beyond the drawing scripts' own (0 browser errors).
-- **Next, in order:** (1) his answers, recorded as rulings in `design.md` (and the four Leave War rulings his answer 3 touches, if he changes them); (2) the build area by area (D490), each with its walk; the input window first.
-- **Numbers held:** rulings D1627–D1636 (none used); observations 796–805 (796 used); design lessons 85–88 (none used).
+### `claude/ask-at-the-control` — [ASK-AT-THE-CONTROL]: eight questions hang from the control pressed (D1627, D1628) — BUILT and WALKED, waiting on his look and "merge live" — written 4 Nov 26 — verify before use
+- **Done:** his answer recorded (D1627 "Just change these" — 2, 3, 4, 47, 48; D1628 — 45, 46, 5 too). Built: one card, `raptor-port/src/ui/AskCard.tsx` (with `27-ask-card.css` and `lastpress.ts`), used by the input window (swap, Delete for all, Take me out), the opened day's Delete key, and the Leave War posting's second ask (Post out in two sheets, the Delete chip, the PO from date) in place of "Tap again to delete". Also `ui/FloatWindow.tsx` (a window comes forward only for a press inside it) and `leavewar/ui/Sheet.tsx` (a sheet leaves Escape to a card in it).
+- **Checked:** WALK tier — `raptor-port/docs/handpass/2026-11-04-ask-at-the-control.md`: six faults found and fixed, final walk 234 PASS / 0 FAIL / 1 not walked; unit tests of the touched files green; GitHub's run of pull request 630 is the gate set. His look page: https://claude.ai/artifact/NxHCM6u6fnpCbCURYi1qPN (his drawing beside the build).
+- **Next, in order:** (1) his look on his iPhone (the preview link); (2) on his "merge live": push the closing records, wait for that run, merge, confirm the live app (D1088).
+- **Numbers held:** rulings D1627–D1636 (D1627, D1628 used); observations 796–805 (796, 797 used); design lessons 85–88 (none used).
 - **Opening line (to continue):** Switch this chat to the branch `claude/ask-at-the-control`: `git fetch origin`, `git switch claude/ask-at-the-control`, `git pull --ff-only`. Read `HANDOFF.md` — its block under `## Now` — then carry on from "Next, in order".
 <!-- /now -->
 <!-- now:claude/talon-claw-visible -->
