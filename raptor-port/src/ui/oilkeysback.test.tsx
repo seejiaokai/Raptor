@@ -133,6 +133,25 @@ describe('the narrow read\'s G2 — a control moved to another day of the week i
   })
 })
 
+/* the round-2 read's H1: a button whose first mark names only its KIND (an input's "→ Ground": data-acc="g") is told apart by
+   the input it belongs to (data-acck) — never another input's button of the same kind, on that day or another */
+describe('the round-2 read\'s H1 — another input\'s button of the same kind is never the twin', () => {
+  it('Thursday\'s "→ Ground" pressed, which turns into "Reject": the keys go nowhere, not to Monday\'s "→ Ground" or a neighbour\'s', async () => {
+    host = document.createElement('div'); document.body.append(host); root = createRoot(host)
+    await act(async () => { root.render(<TwoDays />) })
+    const mon = $('#eWeek .day[data-day="0"]'), thu = $('#eWeek .day[data-day="3"]')
+    mon.innerHTML = '<button data-acc="g" data-accd="0" data-acck="mon-input">→ Ground</button>'
+    thu.innerHTML = '<button data-acc="g" data-accd="3" data-acck="other">→ Ground</button><button data-acc="g" data-accd="3" data-acck="mine">→ Ground</button>'
+    ;(thu.querySelector('[data-acck="mine"]') as HTMLElement).focus()
+    await act(async () => { (globalThis as any).__sheet2(true) })
+    thu.innerHTML = '<button data-acc="g" data-accd="3" data-acck="other">→ Ground</button><button data-acc="x" data-accd="3" data-acck="mine">Reject</button>'
+    await act(async () => { (globalThis as any).__sheet2(false) })
+    const a = document.activeElement as HTMLElement
+    expect(a.dataset.acck === 'mon-input' || a.dataset.acck === 'other', `the keys on another input's button (${a.dataset.acck})`).toBe(false)
+    await act(async () => { root.unmount() }); host.remove()
+  })
+})
+
 describe('a sheet gives the keys back to the control they were on, found again after a redraw', () => {
   it('the control replaced by its twin while the sheet was up: the keys go to the twin', async () => {
     host = document.createElement('div'); document.body.append(host); root = createRoot(host)

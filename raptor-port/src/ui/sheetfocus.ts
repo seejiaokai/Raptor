@@ -96,7 +96,13 @@ export function noteOpener(el: HTMLElement | null): void {
 export function locate(el: HTMLElement): () => HTMLElement | null {
   const q = (v: string) => v.replace(/["\\]/g, '\\$&')
   const da = [...el.attributes].find(x => x.name.startsWith('data-'))
-  const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]` : ''
+  /* …and, where its first mark names only a KIND (an input's "→ Ground" / "→ Unavail" / "Reject" — `data-acc` is g, u or x),
+     by the mark that names WHICH ITEM it is too (`data-acck`, the input's key): another input's button of the same kind is
+     never its twin (the round-2 read's H1, 5 Nov 26 — the keys landed on another input's "→ Ground", one Enter from putting
+     it on the programme unseen). A control whose own kind changed (→ Ground become Reject) then has no twin: nowhere is
+     better than the wrong one. */
+  const own = el.getAttribute('data-acck')
+  const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]${own != null && da.name !== 'data-acck' ? `[data-acck="${q(own)}"]` : ''}` : ''
   /* a control on the Scheduler Board is looked for again on the board: the week behind it draws the same buttons with the
      same marks (a wave's Traffic, a day's ⓘ), and the keys must not land on the week's copy, hidden under the board */
   const within: ParentNode = el.closest('#schedBoard') || document

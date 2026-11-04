@@ -74,7 +74,14 @@ export function DocViewer() {
   else if (shown && els.length) {
     const at = els.findIndex((e: any) => pageKey(e) === shown)
     if (at >= 0 && at !== i) setI(at)
-    else if (at < 0) setShown(pageKey(els[Math.min(i, els.length - 1)]))
+    /* the page shown itself gone (an undo took that file away — the round-2 read's H2): the same entry's other page first, only
+       then the neighbour */
+    else if (at < 0) {
+      const ent = shown.slice(0, shown.lastIndexOf('#'))
+      const same = ent ? els.findIndex((e: any) => pageKey(e).startsWith(ent + '#')) : -1
+      if (same >= 0) { setI(same); setShown(pageKey(els[same])) }
+      else setShown(pageKey(els[Math.min(i, els.length - 1)]))
+    }
   }
   const turn = (n: number) => { setI(n); setShown(pageKey(els[n])) }
   const idx = els.length ? Math.min(i, els.length - 1) : 0

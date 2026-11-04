@@ -196,6 +196,19 @@ describe('[D1645] the document viewer', () => {
     expect($('#docViewTitle').textContent).toBe(said)
     await act(async () => { setDocView(null); notify() })
   })
+  /* the round-2 read's H2: the page shown is itself gone (an undo took that FILE away) — the same entry's other page is shown,
+     not the next entry's */
+  it('on the second file of an entry with two, that file taken away: its first file is shown, not the next entry', async () => {
+    const all = INPUTS.filter((r: any) => r.iid != null && !(r.docIds && r.docIds.length) && !r.docId)
+    const [a, b, c]: any[] = all
+    const ib = INPUTS.indexOf(b)
+    await act(async () => { INPUTS[ib] = { ...b, docIds: ['kw-f1', 'kw-f2'] }; notify() })
+    await act(async () => { setDocView({ row: INPUTS[ib], docId: 'kw-f2', rows: [{ row: a }, { row: INPUTS[ib] }, { row: c }], idx: 1 }); notify() })
+    expect($('#docViewPop .docview-count')?.textContent, 'b\'s second file').toBe('3 of 4')
+    await act(async () => { INPUTS[ib] = { ...b, docIds: ['kw-f1'] }; notify() })
+    expect($('#docViewPop .docview-count')?.textContent, 'b\'s first file, not c').toBe('2 of 3')
+    await act(async () => { INPUTS[ib] = b; setDocView(null); notify() })
+  })
   it('a read-only page (a Leave War request\'s papers) is shown as given, never closed for want of an input', async () => {
     await act(async () => { setDocView({ row: { iid: 'not-an-input', person: 'bane', type: 'LL', date: 'Jul 13', yr: 2026, remarks: 'as given' }, readOnly: true }); notify() })
     expect(shown('docViewPop')).toBe(true)
