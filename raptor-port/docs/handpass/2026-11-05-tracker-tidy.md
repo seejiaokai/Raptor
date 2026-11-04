@@ -26,23 +26,23 @@ Results are filled from the walk (§6).
 
 | Ruling | What it says (short) | How checked | Result |
 |---|---|---|---|
-| D1538 | The Tracker lives in Raptor for good; no standalone export | the change itself; the code kept for a standalone Tracker gone or re-grounded | — |
+| D1538 | The Tracker lives in Raptor for good; no standalone export | the change itself; the code kept for a standalone Tracker gone or re-grounded; the read found nothing left | PASS |
 | D1534 | An area's React Doctor warnings ride with its next batch; kept ones with a reason | `npm run lint` before 583 / after 572, the Tracker 11 → 0; `lint:changed` no new finding | PASS |
-| D347 | Every Undo / Redo pair sits in the top bar, Edit Schedule's place and look | S11, S12, route R1 | — |
-| D348 | On a phone: Undo · Redo · sync dot · bell | S11 (P) | — |
-| D349 | The Tracker's own Undo / Redo moved to the top bar | S11, S12, S14 | — |
-| D372 | A pace, end date or lull change is an undo step, ↶ / Ctrl+Z, ↷ / Ctrl+Y | S11, S12, S19 | — |
-| D129 | Logout with unsaved chart edits asks Save / Discard / Stay | S16 | — |
-| D376 | Each person reopens on their own course, chart and student | S1, S17, S19 | — |
-| D463 | A shared store starts the Tracker with no course | carried by `trk-nocourse.test.tsx` (boot policy through the page seam; unchanged code path, now with the target the real boot plugs) | — |
-| D464 | His charts and typed details are kept | S9, S10 | — |
-| D120 / D122 / D132 | Import: the charts' route; never wipes typed details; never deletes marks | S9, S10 | — |
-| D126 | Event details belong to their chart | `eventDetails.test.tsx` (now through the app's own door); S9 | — |
-| D121 / D1014 | Same access for everyone, the flex settings an admin's alone | S11 (M), S12(d) | — |
-| D191 / D1003 / D1018 | + Add: the roster picker, the typed name, the course start box | S19; the no-roster prompt by `tracker.test.tsx` | — |
-| D1625 | Nothing new a person sees without a mock-up | the walk: no new mark, box or button anywhere | — |
-| D1132 / D1135 / D1170 | The Tracker bar's icons and heights | S11, S12 pictures (the bar unchanged — the removed pair was never drawn in the app) | — |
-| D56 | Data-only harm with correct code is not a finding | in every brief | — |
+| D347 | Every Undo / Redo pair sits in the top bar, Edit Schedule's place and look | S11, S12, route R1 | PASS — one pair, top bar only, Edit Schedule's size and look |
+| D348 | On a phone: Undo · Redo · sync dot · bell | S11 (P) | PASS |
+| D349 | The Tracker's own Undo / Redo moved to the top bar | S11, S12, S14 | PASS |
+| D372 | A pace, end date or lull change is an undo step, ↶ / Ctrl+Z, ↷ / Ctrl+Y | S11, S12, S19 | PASS — ↶ / Ctrl+Z, ↷ / Ctrl+Y on the Tracker's steps |
+| D129 | Logout with unsaved chart edits asks Save / Discard / Stay | S16 | PASS (desktop, from three pages; phone not walked — §6) |
+| D376 | Each person reopens on their own course, chart and student | S1, S17, S19 | PASS |
+| D463 | A shared store starts the Tracker with no course | carried by `trk-nocourse.test.tsx` (boot policy through the page seam; unchanged code path, now with the target the real boot plugs) | PASS (the unit suite) |
+| D464 | His charts and typed details are kept | S9, S10 | PASS |
+| D120 / D122 / D132 | Import: the charts' route; never wipes typed details; never deletes marks | S9, S10 | PASS |
+| D126 | Event details belong to their chart | `eventDetails.test.tsx` (now through the app's own door); S9 | PASS |
+| D121 / D1014 | Same access for everyone, the flex settings an admin's alone | S11 (M), S12(d) | PASS — the member has the pair; the flex settings read-only for him |
+| D191 / D1003 / D1018 | + Add: the roster picker, the typed name, the course start box | S19; the no-roster prompt by `tracker.test.tsx` | PASS |
+| D1625 | Nothing new a person sees without a mock-up | the walk: no new mark, box or button anywhere | PASS |
+| D1132 / D1135 / D1170 | The Tracker bar's icons and heights | S11, S12 pictures (the bar unchanged — the removed pair was never drawn in the app) | PASS |
+| D56 | Data-only harm with correct code is not a finding | in every brief | — (no finding set aside under it) |
 
 ## 3. The roll-call (§6)
 
@@ -63,6 +63,8 @@ running app, and whether the whiteboard is plugged in before it is reached.
 | `?fresh=1`, a browser whose storage cannot be touched (memory backend) | YES — the same `bootApp` with a memory backend | S3, S4 |
 | The page-download Retry (D1633) | YES — Retry reloads the whole app, which boots again | S18 |
 | A failed boot / a newer-version card | must not reach it, because no app is drawn | set aside (scenario designer) |
+| The boot's one-time Tracker conversion (`tracker/fold.ts`) — added on the read | must not reach it: it cannot — it goes through `app/rows.js` on the backend's entries, never the doorway | the unit suite (`trk-rows.test.ts`) |
+| The desktop pre-warm of the Tracker's page (`Shell.tsx` effect) — added on the read | YES — an effect of the app drawn after the boot | S15, route R1 |
 | Unplugging (`setStorageImpl(null)`) | must not happen in the app — only tests call it (searched: `src/`, no caller outside `*.test.*`) | — |
 | The browser backend's one-time import of old `ocu:` keys | not the doorway — `storage/browser.ts`, unchanged | S5 (an old key is never read by the Tracker) |
 
@@ -196,6 +198,55 @@ The walk (S6–S8) proved the corner's wiring on screen; B5 shows nothing else d
 
 ## 8. The read
 
+One fresh, blind Opus reader (D790, D1594), handed the diff (c7ddf441b..29d3044a3), the rulings swept, the roll-call, the
+sizing and the walk; brief `parts/trk1105/reader-brief.md`; its report `parts/trk1105/read-opus.md`. 238,174 tokens.
+
+**Verdict: no route in the running app reaches the doorway with no target plugged in, or after an unplug** — one entry
+and one boot, the plug unconditional on every backend, the boot's Tracker conversion going through its own row door and
+not the doorway, `core.js` loaded only in the lazy page chunk after the boot (the desktop pre-warm included), nothing
+unplugging it. The rename is the same function handed the same saver at the same moment; nothing reads the removed
+names in `src`, `scripts`, `e2e` or `probes`; no test weakened (the memory fallback behaves as the whiteboard: the
+value as written, `null` when missing, keys in insertion order, each test file its own).
+
+| # | Grade | Finding | Disposition |
+|---|---|---|---|
+| L1 | LOW | `docs/feature-impact.md` still named `useSaveHealth` | fixed (the name) |
+| L2 | LOW | the leftovers kept on purpose (the Tracker's own glyph and pencil drawings, its colour copies) live only in `known-gaps.md`; once [TRK-STANDALONE-LEFTOVERS] is archived they have no backlog item | for the coordinator to file in `OUTSTANDING.md` before the item is archived (this chat may not edit it) |
+
+**Roll-call:** nothing missing that changes the result; two safe rows it would add to §3 A — the boot's Tracker
+conversion (`tracker/fold.ts`, through `app/rows.js`, never the doorway) and the desktop pre-warm of the Tracker's page
+(a `Shell.tsx` effect, after the boot). Added here, both "must not reach it before the plug: it cannot — YES, because …".
+
+**The tidiness note (filed, not fixed — D489):** the "nobody signed in" phrase repeated in four `core.js` comments, two
+of them with a dash never closed (the two broken sentences were put right — comment punctuation only; the repetition
+stays); `storage.js` says the boot plugs the door "before anything else" — other boot steps run first, nothing reaches
+the door before it; `core.js`'s "local only" save word was for a browser with no storage, now reached only by a target
+whose save fails; two kinds of test read source as text (the pair over `Shell.tsx`; `main.tsx` / `boot.ts`) and a
+harmless reformat would turn them red; a thought: the memory fallback could warn the first time it is written outside a
+test.
+
 ## 9. Fixes and the re-walk
 
+- **B5's missing test** — added red-first (§7). Test only; nothing on screen.
+- **L1** — the stale name in `feature-impact.md`. Words only.
+- **Two comment sentences in `core.js`** (the tidiness note's unclosed dash). Comment punctuation only.
+
+No fix touched logic or anything a person sees, so no narrow read (the order's §5 "a fix is new code" asks one only for a
+fix that rewrites logic) and no re-walk: the walk's build (58f66b7b1) and the final code differ by one test, one document
+line and four comment lines (`git diff 58f66b7b1..HEAD -- raptor-port/src`).
+
 ## 10. Gates, documents, and what was not walked
+
+- **GitHub's run of 58f66b7b1** (the walked build): Deploy (the full gate set), Docs guard and Secrets scan all
+  success. The run of the last pushed commit: the closing report says.
+- **On his PC** (phase A, the code as walked): the Tracker's and the seams' unit tests 824 / 824; `npm run build` PASS;
+  `npm run smoke:tracker` 453 / 0; `npm run lint:changed` no new finding; React Doctor 583 → 572, the Tracker's 11 → 0.
+  After the fixes: `storage.test.ts` and `trk-legend.test.tsx` 15 / 15; `lint:changed` no new finding.
+- **What was not walked:** §6 — S10's empty screen (no control reaches it), S16 on a phone, S19's person window, and the
+  smaller gaps named there; each with its reason. Carried by tests instead: the no-target memory path, the no-roster +
+  Add prompt, D463.
+- `Docs: OUTSTANDING 148 items (+0 −0) · DECISIONS D1–D1644 · homes OK`
+- `docsize: OVER by 158, deferred (D29)` — `.claude/rules/decisions/tracker.md` is 158 bytes over its tripwire after
+  the coordinator's correction of its §Architecture; a code change is never the place to trim (D29).
+
+**Walk: docs/handpass/2026-11-05-tracker-tidy.md · 211 pictures · 9 surfaces · 19 orders · MISSING: 1 fixed (B5's wire, a test red first), 0 ruled, 1 filed (L2, by the coordinator)**

@@ -2017,7 +2017,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* each person's OWN chart on this course comes first (D376, reading 5 — Fable's final read
      F2): the roster is per chart, so the shared chart below opened the next person on the
      last person's chart and, their own student not on it, on the last person's student.
-     Signed-in people only; with nobody signed in as a person — a guest, a pending account, or a test with nothing wired, the shared answer, as before. */
+     Signed-in people only; with nobody signed in as a person (a guest, a pending account, or a test with nothing wired), the shared answer, as before. */
   /* and on EVERY load, not only the first ([DB-READINESS] group A, phase 5b): his chart is no longer written into the
      course's shared plan (below), so a reload of the course — an import, discarded chart edits, a chart switch — reads
      his pick from his own place */
@@ -2039,7 +2039,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
      but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
      else's chart. A signed-in person's chart is his own place (D376 reading 5, the line above) and every load reads it
-     from there. With nobody signed in as a person — a guest, a pending account, or a test with nothing wired, the one shared answer is kept, as before. */
+     from there. With nobody signed in as a person (a guest, a pending account, or a test with nothing wired), the one shared answer is kept, as before. */
   if (!whoamiId() && plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
@@ -2116,7 +2116,7 @@ async function saveRoster() { if (rosterHeld) return; await sSet(kRosterFor(cour
 async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
 /* THE CHART A SIGNED-IN PERSON HAS OPEN ON A COURSE — his own place (owner D376 reading 5, confirmed D377), kept on his
    own browser under his own id, never in the course's shared plan ([DB-READINESS] group A, phase 5b). Null with
-   nobody signed in as a person — a guest, a pending account, or a test with nothing wired, when he has none yet, or when his chart has since gone. */
+   nobody signed in as a person (a guest, a pending account, or a test with nothing wired), when he has none yet, or when his chart has since gone. */
 function mySylOn(c) {
   if (!whoamiId() || c == null) return null;
   const s = prefGet(pickKey('lastSyl:' + c));
