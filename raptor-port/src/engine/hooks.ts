@@ -141,7 +141,7 @@ export const HOOKS = {
      confirm) lives in ui/board.ts as module `let`s, not here — but
      state/view.ts's closeBoardState() needs to clear them the moment the
      board closes, and state/ does not import ui/ (the layering this repo's
-     file map describes: engine -> state -> ui, HOOKS is the one doorway
+     file map, docs/file-map.md, describes: engine -> state -> ui, HOOKS is the one doorway
      back out, same reason it exists for the engine at all). Defaults to a
      no-op headless; SchedBoard.tsx wires the real implementation once, on
      mount, the same way store.ts's wireStore() wires editMode/render*. */

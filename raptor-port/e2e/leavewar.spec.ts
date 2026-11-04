@@ -2650,7 +2650,7 @@ test('the person window blocks nothing: no scrim, the page scrolls behind it, it
    that cell — no sheet up — opens its sheet as ever. What it cannot: the COAST
    after the lift — this container's headless Chromium flings no native
    scroller from synthetic touches at all (probed on a bare scroller, 6 Sep
-   26), so the deceleration is the device's to show (BUG-TESTING.md #371).
+   26), so the deceleration is the device's to show (docs/archive/BUG-TESTING.md #371).
    Phone project only: the one with a touch screen. */
 test('a finger behind an open sheet scrolls the grid itself; a tap on a cell closes the sheet and opens nothing', async ({ page }) => {
   test.skip(!isPhone(), 'a touch-screen creature')

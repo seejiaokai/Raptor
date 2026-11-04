@@ -1475,7 +1475,7 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
    instead — the clickable control that is always present so the dropped state
    stays reachable. The Inputs page keeps its own mark — see lateShown in
    state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
-   answering, and the mark was never a rule (§Stable decisions). */
+   answering, and the mark was never a rule (.claude/rules/decisions/scheduler.md §Settled before this list, The late-input mark). */
 /* THE MARK OF A SHARED INPUT IS ITS ONE ROW'S (`[GROUP-INPUT-ONE-ROW]`; owner D661 — the plan
    2026-10-10-group-input-one-row-plan.md §4.5: "the LATE chip on the one row or the one line is shown when any of its
    records reads late, and a tap drops or restores it for all of them"). A shared input is drawn as ONE row on the

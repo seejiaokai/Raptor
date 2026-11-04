@@ -290,7 +290,7 @@ export function AdminPage() {
                     resurrection) are designed out by not dropping stashes at all.
                   - Everything in this prototype is session-only (reload forgets;
                     nothing leaves this browser). The shared live database is the
-                    stated end-state (HANDOFF.md), this panel is where its real
+                    stated end-state (docs/architecture-direction.md §Parked direction), this panel is where its real
                     controls land, and this wipe becomes a DB delete behind the
                     same button. */}
               <hr className="adm-sep" />
