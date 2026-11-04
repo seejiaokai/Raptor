@@ -215,6 +215,13 @@ list of the marks that say which item a control belongs to, instead of its first
 same-entry-first search, each with its red test, carried by those tests and the touched suites (515 passed), not read a third
 time.
 
+**GitHub's run of `077e5a49b` (red, one job):** `placedshown.test.tsx` "it shows the stamp of the input whose document is
+showing…" — the viewer handed an episode of two entries that were never inputs of the list (pages made up by the test) closed,
+because F5's change dropped every row whose id the list does not hold. A caller that hands a row of its own is a real case for the
+viewer (a page made for it). **Fixed** (`DocViewer.tsx`): "gone" now means an input that WAS on the list when the viewer opened and
+is not now; a row that never was is shown as given. Red first: that test on `077e5a49b` (GitHub), green now with the 14 test files
+that touch the viewer (212 passed).
+
 **The tidiness note** (the first read's — filed, not fixed): the opener noted three times for "Jump to a date" (its own ref,
 `useEscWindow`, `useBarFree`) and twice for Traffic and the day details; `DocViewer`'s `gone` effect repeats `close`;
 `boardescape.ts`'s list of stops copies `sheetfocus.ts`'s. Its two comment findings (`popMenu`'s "a mouse pick moves nothing",

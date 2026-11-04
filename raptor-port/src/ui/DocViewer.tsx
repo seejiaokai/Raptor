@@ -9,7 +9,7 @@
    always. The object URL is minted here on open and revoked on close — the
    store (state/docs) never holds one, so nothing leaks per stored file. */
 import { placedLine } from './placedline'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { PEOPLE } from '../engine/people'
 import { inpMeta, baseYear, leadOf, remarksTyped, inpById } from '../engine/inputs'
 import { fmt } from './inputedit'
@@ -41,7 +41,11 @@ export function DocViewer() {
      just added to a window not yet saved), and is shown as it was given. */
   /* …and an episode of several entries loses the page of each one an undo took away (the fresh read's F5, 5 Nov 26: its
      page stayed, with "Edit input" on a record no longer there); none left, the viewer closes */
-  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) : row)
+  /* "gone" means an input that WAS on the list when the viewer opened and is not now — a row the caller handed that was never
+     an input of the list (a page made up for the viewer) is shown as given (GitHub's run of 5 Nov 26: placedshown.test.tsx) */
+  const known = useMemo(() => new Set(v && !v.readOnly ? [v.row, ...((v.rows || []).map((e: any) => e && e.row))]
+    .filter((r: any) => r && r.iid != null && inpById(r.iid)).map((r: any) => r.iid) : []), [v])
+  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) || (known.has(row.iid) ? null : row) : row)
   const list = v ? (v.rows && v.rows.length ? v.rows.map((e: any) => ({ ...e, row: live(e.row) })).filter((e: any) => !!e.row)
     : (v.row && live(v.row) ? [{ row: live(v.row), up: v.up }] : [])) : []
   const gone = !!v && !v.readOnly && !list.length
