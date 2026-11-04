@@ -52,6 +52,7 @@ import { initCalPick, SWIPE_MIN } from './calpick'
 import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
 import { placedLineOf } from './placedline'
 import { InputCard } from './InputCard'
+import { AskCard } from './AskCard'
 import { cardOf, cardWhen, cxSays, lateNoteOf } from './inputcard-model'
 import { cutParts, dayWord, lateWord } from './sanscal-model'
 import { FloatWin } from './FloatWindow'
@@ -192,6 +193,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
   const wantFocus = useRef<string | null>(null)
   /* which input of the opened day Delete has asked about (its entry's key) */
   const [delAsk, setDelAsk] = useState<string | null>(null)
+  /* the card the Delete key acted on: its question hangs from it (owner D1628) */
+  const delAt = useRef<HTMLElement | null>(null)
   /* ESCAPE ON "DELETE THIS INPUT?" IS KEEP, WHEREVER THE KEYS ARE (F6 of the 3 Nov 26 re-check): the question answered
      Escape only while the keyboard was on it — after a press on the page behind, Escape reached the month, which closed
      the day and the question with it. While it is up it hears Escape first (the window, capture), puts the question
@@ -952,6 +955,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     const onLineKey = (it: BarItem) => (e: ReactKeyboardEvent) => {
       if (e.key !== 'Delete' && e.key !== 'Backspace') return
       e.preventDefault()
+      const ct = e.currentTarget as HTMLElement
+      delAt.current = (ct.closest('.icard') as HTMLElement | null) || ct
       const r = it.rows[0]
       /* AN INPUT OF SEVERAL PEOPLE (the plan §3.13; on the one record — owner D756, D755 (3): a person in it "may always
          withdraw himself" — the one-rule plan §4.9): whoever may delete it for everyone (its filer, an admin —
@@ -1183,13 +1188,15 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                     <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
                       late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}
                       onDoc={() => { setDocView({ row: r }); notify() }}>
+                      {/* HANGS FROM THE CARD THE DELETE KEY ACTED ON (owner D1628, 4 Nov 26): the input window's Delete question
+                          and this one are one question, so they look the same — a card at the control (ui/AskCard.tsx) */}
                       {delAsk === it.key && (
-                        <span className="idy-ask" data-testid="idy-ask" role="alertdialog" aria-label="Delete this input?"
-                          onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}>
-                          <span className="idy-ask-q">{!team ? 'Delete this input?' : forAll ? `Delete this input for ${it.ph ? '' : 'all '}${everyoneIn(it)}?` : 'Take yourself out of this input?'}</span>
-                          <button type="button" className="abtn danger" data-testid="idy-del-yes" autoFocus onClick={() => doDelete(it)}>{team && !forAll ? 'Take me out' : 'Delete'}</button>
-                          <button type="button" className="abtn ghost" data-testid="idy-del-no" onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
-                        </span>
+                        <AskCard at={delAt.current} testid="idy-ask" label="Delete this input?"
+                          onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelAsk(null) } }}
+                          question={!team ? 'Delete this input?' : forAll ? `Delete this input for ${it.ph ? '' : 'all '}${everyoneIn(it)}?` : 'Take yourself out of this input?'}>
+                          <button type="button" className="abtn danger" data-testid="idy-del-yes" onClick={() => doDelete(it)}>{team && !forAll ? 'Take me out' : 'Delete'}</button>
+                          <button type="button" className="abtn primary" data-testid="idy-del-no" autoFocus onClick={() => setDelAsk(null)}>{team && !forAll ? 'Stay in' : 'Keep'}</button>
+                        </AskCard>
                       )}
                     </InputCard>
                   )

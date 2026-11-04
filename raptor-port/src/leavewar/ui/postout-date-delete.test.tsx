@@ -61,13 +61,15 @@ const openSheet = () => {
 }
 
 describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks twice (D1102)', () => {
-  it('the first tap on today asks — "Tap again to delete Hex" — and saves nothing; the second deletes him', () => {
+  /* the second ask is a card hanging from the date box since D1627 (4 Nov 26): "Delete Hex now?", Delete · Cancel */
+  it('the first tap on today asks — "Delete Hex now?" — and saves nothing; its Delete deletes him', () => {
     openSheet()
     pickDate(screen.getByTestId('postout-date'), TODAY)
     expect(P('rocky').deleted, 'not deleted at one tap').toBeFalsy()
     expect(war('rocky')!.to, 'the date is not saved yet').toBe('2026-07-19')
     const go = screen.getByTestId('postout-delete-go')
-    expect(go.textContent).toBe('Tap again to delete Hex')
+    expect(go.textContent).toBe('Delete')
+    expect(screen.getByTestId('postout-delete-ask').textContent).toContain('Delete Hex now?')
     expect(boxValue(screen.getByTestId('postout-date')), 'the box shows the date he is asked about').toBe(TODAY)
     expect(screen.getByTestId('postout-line').textContent).toMatch(/15 Jul/)
     fireEvent.click(go)
@@ -78,7 +80,16 @@ describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks
     openSheet()
     pickDate(screen.getByTestId('postout-date'), '2026-07-10')
     expect(P('rocky').deleted).toBeFalsy()
-    expect(screen.getByTestId('postout-delete-go').textContent).toBe('Tap again to delete Hex')
+    expect(screen.getByTestId('postout-delete-ask').textContent).toContain('Delete Hex now?')
+  })
+  it('its Cancel puts the date back and deletes no one', () => {
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), TODAY)
+    fireEvent.click(screen.getByTestId('postout-delete-cancel'))
+    expect(screen.queryByTestId('postout-delete-ask')).toBeNull()
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe(LATER)
+    expect(war('rocky')!.to).toBe('2026-07-19')
+    expect(P('rocky').deleted).toBeFalsy()
   })
   it('a date still to come is saved at once, with no ask', () => {
     openSheet()
@@ -167,10 +178,10 @@ describe('an armed "Tap again to delete" on the other posting doors is taken bac
     fireEvent.click(screen.getByTestId('bid-postout'))
     fireEvent.click(screen.getByTestId('po-delete'))
     fireEvent.click(screen.getByTestId('po-confirm'))
-    expect(screen.getByTestId('po-confirm').textContent).toBe('Tap again to delete Hex')
+    expect(screen.getByTestId('po-delete-ask').textContent).toContain('Delete Hex?')
     act(() => setLwOnScreen(false))
     act(() => setLwOnScreen(true))
-    expect(screen.getByTestId('po-confirm').textContent).toBe('Post out')
+    expect(screen.queryByTestId('po-delete-ask')).toBeNull()
     expect(P('rocky').deleted).toBeFalsy()
   })
   it('the drag selection PO', () => {
@@ -182,10 +193,27 @@ describe('an armed "Tap again to delete" on the other posting doors is taken bac
     fireEvent.click(screen.getByTestId('sel-postout'))
     fireEvent.click(screen.getByTestId('sel-po-delete'))
     fireEvent.click(screen.getByTestId('sel-po-confirm'))
-    expect(screen.getByTestId('sel-po-confirm').textContent).toBe('Tap again to delete Hex')
+    expect(screen.getByTestId('sel-po-delete-ask').textContent).toContain('Delete Hex?')
     act(() => setLwOnScreen(false))
     act(() => setLwOnScreen(true))
-    expect(screen.getByTestId('sel-po-confirm').textContent).toBe('Post out')
+    expect(screen.queryByTestId('sel-po-delete-ask')).toBeNull()
     expect(posted).toEqual([])
+  })
+  it('the drag selection PO: the card\'s Delete posts the delete, its Cancel nothing', () => {
+    const posted: string[] = []
+    const sel = { people: ['rocky'], from: STRUCK, to: STRUCK, cells: [{ personId: 'rocky', date: STRUCK }] }
+    render(<SelectSheet sel={sel} people={() => 'Hex'} role="admin" canDecide={true} onDone={() => {}} onMove={() => {}}
+      onPostOut={(_id, d, o) => { posted.push(`${d}:${o}`) }} onClose={() => {}} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
+    fireEvent.click(screen.getByTestId('sel-postout'))
+    fireEvent.click(screen.getByTestId('sel-po-delete'))
+    fireEvent.click(screen.getByTestId('sel-po-confirm'))
+    fireEvent.click(screen.getByTestId('sel-po-delete-cancel'))
+    expect(screen.queryByTestId('sel-po-delete-ask')).toBeNull()
+    expect(posted).toEqual([])
+    fireEvent.click(screen.getByTestId('sel-po-confirm'))
+    fireEvent.click(screen.getByTestId('sel-po-delete-go'))
+    expect(posted.length).toBe(1)
+    expect(posted[0]).toMatch(/:delete$/)
   })
 })

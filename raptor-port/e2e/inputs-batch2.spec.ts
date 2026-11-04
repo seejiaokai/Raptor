@@ -307,7 +307,9 @@ test('A1 — a tall phone: another card tapped over unsaved changes — the ques
     await page.touchscreen.tap(pt!.x, pt!.y)
     const q = page.locator('[data-testid="inped-swap"]')
     await expect(q).toHaveCount(1)
-    await expect(page.locator('[data-testid="win-inputedit"]')).toHaveClass(/\bfront\b/)
+    /* the question hangs from the card tapped, drawn in the opened day, which keeps the front (D1627, as drawn for him) */
+    await expect(page.locator('[data-testid="win-inputsday"]')).toHaveClass(/\bfront\b/)
+    await expect(page.locator('[data-testid="win-inputsday"] [data-testid="inped-swap"]'), 'the card stands in the opened day').toHaveCount(1)
     const keep = await box(page, '[data-testid="inped-swap-stay"]')
     expect(keep!.reached, '"Keep editing" is what a finger on it reaches — nothing lies over the question').toBe(true)
     expect(keep!.bottom, '"Keep editing" is on the screen').toBeLessThanOrEqual(await page.evaluate(() => innerHeight))

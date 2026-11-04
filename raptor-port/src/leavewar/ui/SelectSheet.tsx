@@ -42,6 +42,7 @@ import { skipWhy } from './bidskip'
 import { belowZeroAsk, goesBelow, type BalanceAfter, type BelowZero } from './belowzero'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
+import { AskCard } from '../../ui/AskCard'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { useCloseOnCellClick } from './gridclick'
 import type { Selection } from './select'
@@ -150,6 +151,17 @@ export function SelectSheet({
   /* [POST-OUT-OUTCOMES]: which posting it is (D229) — Overseas Sqn by default; a Delete asks twice (D287 (3)) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* the Post out button: a Delete posting's question hangs from it (owner D1628) */
+  const poBtn = useRef<HTMLButtonElement>(null)
+  /* the posting itself — from Post out, or from the Delete of its question */
+  const postNow = (o: PostOutcome) => {
+    /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
+    keepWords()   // the typed words go with the press (D1339; the code read's F2)
+    const why = onPostOut ? onPostOut(sel.people[0], poDate, o) : undefined
+    setDelArmed(false)
+    if (why) { setNoteAt('end'); setNote(why); return }
+    onDone(true)
+  }
   /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
      this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
      reason D1102's date ask is taken back there too) */
@@ -538,19 +550,23 @@ export function SelectSheet({
             <div className="bidsheet-row postout"><span className="note warn" data-testid="sel-po-blocked">{postingBlocked(sel.people[0], poOutcome)}</span></div>
           )}
           <div className="bidsheet-row postout">
-            <button className={`dchip po${delArmed ? ' del-armed' : ''}`} data-testid="sel-po-confirm"
+            {/* a Delete asks twice (D287 (3)), its second ask a card hanging from this button (owner D1628) */}
+            <button ref={poBtn} className="dchip po" data-testid="sel-po-confirm" aria-expanded={delArmed || undefined}
               onClick={() => {
-                if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
-                /* a refused posting keeps the sheet and says why (AB5) — it used to report done whatever the store said */
-                keepWords()   // the typed words go with the press (D1339; the code read's F2)
-                const why = onPostOut(sel.people[0], poDate, poOutcome)
-                setDelArmed(false)
-                if (why) { setNoteAt('end'); setNote(why); return }
-                onDone(true)
+                if (poOutcome === 'delete') { setDelArmed(true); return }
+                postNow(poOutcome)
               }}>
-              {delArmed ? `Tap again to delete ${who}` : 'Post out'}
+              Post out
             </button>
           </div>
+          {delArmed && (
+            <AskCard at={poBtn.current} testid="sel-po-delete-ask" label={`Delete ${who}?`} question={`Delete ${who}?`}
+              sub={outcomeLine('delete', poDate, !!(hasAccount && hasAccount(sel.people[0])))}
+              onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelArmed(false) } }}>
+              <button type="button" className="abtn danger" data-testid="sel-po-delete-go" onClick={() => postNow('delete')}>Delete</button>
+              <button type="button" className="abtn primary" data-testid="sel-po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
+            </AskCard>
+          )}
         </>
       )}
 

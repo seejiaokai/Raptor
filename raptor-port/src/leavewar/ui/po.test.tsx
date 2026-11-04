@@ -207,6 +207,8 @@ describe('the four posting chips', () => {
     fireEvent.click(screen.getByTestId('po-confirm'))
     expect(getState().people.find(x => x.id === id)!.poOutcome).toBe('sans')
   })
+  /* the second ask is a card hanging from Post out since D1628 (4 Nov 26) — "Delete <name>?", Delete · Cancel — in place of
+     the button's own "Tap again to delete <name>" */
   it('the bid sheet: Delete asks twice — the first tap names him and writes nothing', () => {
     const id = anId()
     const cs = getState().people.find(x => x.id === id)!.callsign
@@ -216,9 +218,12 @@ describe('the four posting chips', () => {
     fireEvent.click(screen.getByTestId('po-delete'))
     expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun the app deletes him automatically. Days he flew keep his puck.')
     fireEvent.click(screen.getByTestId('po-confirm'))
-    expect(screen.getByTestId('po-confirm').textContent).toBe(`Tap again to delete ${cs}`)
+    expect(screen.getByTestId('po-delete-ask').textContent).toContain(`Delete ${cs}?`)
+    expect(screen.getByTestId('po-confirm').textContent, 'the button keeps its word').toBe('Post out')
     expect(getState().people.find(x => x.id === id)!.to).toBeNull()
     fireEvent.click(screen.getByTestId('po-confirm'))
+    expect(getState().people.find(x => x.id === id)!.to, 'Post out pressed again leaves the question up').toBeNull()
+    fireEvent.click(screen.getByTestId('po-delete-go'))
     const p = getState().people.find(x => x.id === id)!
     expect(p.to).toBe('2026-06-14')
     expect(p.poOutcome).toBe('delete')

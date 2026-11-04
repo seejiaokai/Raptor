@@ -329,6 +329,33 @@ describe('who may change it', () => {
     expect(inIt(g.iid)).toEqual([a, b])
     expect(win()).toBeNull()
   })
+  /* D1627 (4 Nov 26): the two questions of the window's foot hang from their buttons as cards — the button stays in sight,
+     the keyboard starts on the SAFE answer (the design guide's "a dangerous question"), and Escape is that answer, the
+     window staying */
+  it('the foot\'s questions as cards: Take me out stays in sight while asked; Escape is Stay in / Keep; the keyboard starts on the safe answer', async () => {
+    const esc = async () => act(async () => { document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    const [a, b] = others()
+    const g = await shared([a, member, b])
+    await as('member')
+    await openOn(g)
+    await click(tid('inped-takeout'))
+    expect(tid('inped-takeout'), 'the button it hangs from stays').toBeTruthy()
+    expect(tid('inped-takeout')!.getAttribute('aria-expanded')).toBe('true')
+    expect(document.activeElement, 'the keyboard on Stay in').toBe(tid('inped-takeout-no'))
+    await esc()
+    expect(tid('inped-takeout-ask'), 'Escape is Stay in').toBeNull()
+    expect(win(), 'the window stays').toBeTruthy()
+    expect(inIt(g.iid)).toEqual([a, member, b])
+    await as('admin')
+    const g2 = await shared(others().slice(0, 3))
+    await openOn(g2)
+    await click($('#inpEditDel'))
+    expect(document.activeElement, 'the keyboard on Keep').toBe(tid('inped-delall-no'))
+    await esc()
+    expect(tid('inped-delall'), 'Escape is Keep').toBeNull()
+    expect(win(), 'the window stays').toBeTruthy()
+    expect(inIt(g2.iid)).toHaveLength(3)
+  })
   /* D762, D763: nobody IN an input he did not file changes anything of it but his own being in it — no OIL answer of
      his own, nobody added. So "its people" left the sentence ("Only its people, Saber — who filed it — or an admin can
      change this."): it is the one sentence every door says now (ui/inputedit.tsx sharedRefusal; the plan §4.9). */
