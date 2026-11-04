@@ -3411,3 +3411,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In §Traps: a function given to the page is self-contained — every helper it calls is declared inside it (or passed as text); a shared kit is tried once on one real case at both sizes before it is handed to parallel helpers. And a card or pop-up placed "by the side the control is on" measures that side within the control's own window or sheet, not the screen.
 
 **Principle:** Code sent into a page runs without its module: make it self-contained, and try a shared kit once before several helpers rely on it; place anything anchored to a control relative to the control's own container.
+
+### Observation 797: A part drawn into another window is still its owner's child to React — presses, focus and Escape go to the owner
+
+**Status:** OPEN
+**Date:** 2026-11-04
+**Session context:** [ASK-AT-THE-CONTROL] build — a question card drawn (React portal) inside the opened day, owned by the input window behind it
+**Skill:** New skill candidate: walking floating surfaces (walk-scripts guide, raptor-port/docs/walk-scripts.md)
+**Type:** internal
+**Phase/Area:** the walk's design of scenarios for a surface drawn into another surface
+
+**Issue:** Four of the walk's six finds came from one cause: the card was drawn in one window's box but belonged to another component. A press on it reached the owner's "come forward on press" handler (capture phase, so the card could not stop it), the owner jumped over the card and the tap's click hit the owner; the owner's Escape guard asked "am I in front?" and let the other window's Escape close the day under the card; the card measured hidden could not take focus; a Leave War sheet's capture-phase Escape closed the sheet over the card. Unit tests in jsdom passed all four (no layout, focus on hidden nodes allowed, synthetic events dispatched directly).
+
+**Suggested improvement:** In walk-scripts.md (or the bug-check order's roll-call rows): a surface drawn into ANOTHER surface gets one walk row per handler of each kind on BOTH surfaces — press-to-front, Escape, outside-press, focus trap — each pressed on the real browser at a phone's size, with the answer button pressed (not only seen) and Escape typed with the keyboard both on the card and elsewhere.
+
+**Principle:** Where something is drawn and who owns it can differ; list the handlers of both, and press, not just look, on the real browser — the test harness's direct event dispatch hides every one of these.

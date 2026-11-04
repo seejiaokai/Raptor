@@ -562,7 +562,7 @@ export function SelectSheet({
           {delArmed && (
             <AskCard at={poBtn.current} testid="sel-po-delete-ask" label={`Delete ${who}?`} question={`Delete ${who}?`}
               sub={outcomeLine('delete', poDate, !!(hasAccount && hasAccount(sel.people[0])))}
-              onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelArmed(false) } }}>
+              onEscape={() => setDelArmed(false)}>
               <button type="button" className="abtn danger" data-testid="sel-po-delete-go" onClick={() => postNow('delete')}>Delete</button>
               <button type="button" className="abtn primary" data-testid="sel-po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
             </AskCard>

@@ -277,7 +277,9 @@ export function InputEditor() {
     const hadPpl = new Set(basePpl.current)
     const pplTouched = ppl.length !== hadPpl.size || ppl.some(id => !hadPpl.has(id))
     if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
-      swapAt.current = lastPressed(); setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
+      /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
+      { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
+      setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
       /* ...AND IT ASKS FROM THE FRONT (`[TITLE-CHECK-SEEN]` 4, 10 Oct 26). The press that asked for the other input landed
          on another window first — a card of the opened day — and that window took the front, as any pressed window
          does: this one put its question up BEHIND it. On a phone the day's window is nearly the whole screen, so

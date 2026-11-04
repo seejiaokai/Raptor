@@ -219,7 +219,7 @@ async function dragSel(page, tap, pid, from, to) {
 const SHEET = '.bidsheet[role="dialog"]', SEL = '[data-testid="select-sheet"]', PO = '[data-testid="postout-sheet"]'
 const lwP = (page, pid) => page.evaluate(pid => { const s = window.__lw && window.__lw.getState ? window.__lw.getState() : null; const p = s && s.people.find(x => x.id === pid); return p ? { to: p.to, poOutcome: p.poOutcome } : null }, pid)
 const person = (page, pid) => page.evaluate(pid => { const p = window.PEOPLE[pid]; return p ? { cs: p.cs, deleted: !!p.deleted, deletedFrom: p.deletedFrom || null } : null }, pid)
-const usersRow = (page, cs) => page.evaluate(cs => { const r = [...document.querySelectorAll('#page-admin *')].find(e => e.children.length < 6 && (e.textContent || '').includes(cs) && /posting out|auto delete|posted out/i.test(e.textContent || '')); return r ? r.textContent.replace(/\s+/g, ' ').trim().slice(0, 160) : null }, cs)
+const usersRow = (page, cs) => page.evaluate(cs => { const all = [...document.querySelectorAll('#page-admin *')].filter(e => (e.textContent || '').includes(cs) && /posting out|auto delete|posted out/i.test(e.textContent || '')); all.sort((a, b) => a.textContent.length - b.textContent.length); const r = all[0]; return r ? r.textContent.replace(/\s+/g, ' ').trim().slice(0, 160) : null }, cs)
 
 /* ============================================================ S5 — #45 the one-day sheet's Post out, Delete chosen */
 if (want('S5')) for (const size of ['desktop', 'phone']) {
@@ -415,15 +415,18 @@ if (want('B3')) for (const size of ['desktop', 'phone']) {
   const a = await L.fileOn(page, tap, '2026-07-15', { type: 'Meeting', people: [men[0]], from: '09:00', to: '10:00', title: 'Ops brief', remarks: 'as filed' }, true)
   await L.press(page, tap, `[data-testid="idy-row-${a}"] [data-testid="idy-open"]`); await tid(page, 'win-inputedit').waitFor()
   await setVal(page, '#inpEditPop #inpEditRmk', 'typed, not saved')
-  const ADD = `${DAYWIN} [data-testid="idy-add"], ${DAYWIN} #idyAdd, ${DAYWIN} button.idy-add`
+  const ADD = `${DAYWIN} #icPopAdd`
   const has = await page.locator(ADD).count()
   if (!has) { L.notWalked(id, `${size}: no + Input found in the opened day by its usual names`); await page.context().close(); continue }
-  if (tap) { const bar = await page.evaluate(sel => { const e = document.querySelector(sel); const r = e.getBoundingClientRect(); return { x: r.left + 70, y: r.top + 12 } }, `${DAYWIN} .win-bar`); await page.touchscreen.tap(bar.x, bar.y); await sleep(300) }
+  /* the day's + Input lies under the input's window: the day brought forward by a press on its bar's free part, as a person would; on a phone where its bar is covered too, the input's window is pulled down first */
+  { const hitBar = () => page.evaluate(sel => { const e = document.querySelector(sel); const r = e.getBoundingClientRect(); for (const x of [r.left + 70, r.left + 120, r.left + 40]) { const y = r.top + r.height / 2, h = document.elementFromPoint(x, y); if (h && e.contains(h) && !h.closest('.win-x, .win-tools, button')) return { x, y } } return null }, `${DAYWIN} .win-bar`)
+    let bar = await hitBar()
+    if (!bar && tap) { const g = await page.evaluate(() => { const r = document.querySelector('[data-testid="win-inputedit"] .win-bar').getBoundingClientRect(); return { x: r.left + 60, y: r.top + r.height / 2 } }); const cdp = await page.context().newCDPSession(page); await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: g.x, y: g.y, id: 3 }] }); for (let i = 1; i <= 10; i++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: g.x, y: Math.round(g.y + 52 * i), id: 3 }] }); await sleep(25) } await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await sleep(400); bar = await hitBar() }
+    if (!bar && !tap) { const g = await page.evaluate(() => { const r = document.querySelector('[data-testid="win-inputedit"] .win-ttl, [data-testid="win-inputedit"] .win-bar').getBoundingClientRect(); return { x: r.left + 40, y: r.top + r.height / 2 } }); await page.mouse.move(g.x, g.y); await page.mouse.down(); await page.mouse.move(g.x - 520, g.y + 40, { steps: 10 }); await page.mouse.up(); await sleep(300); bar = await hitBar() }
+    if (bar) { if (tap) await page.touchscreen.tap(bar.x, bar.y); else await page.mouse.click(bar.x, bar.y); await sleep(350) }
+    note(id, size + ': the day brought forward by its bar: ' + !!bar) }
   await L.press(page, tap, page.locator(ADD).first()); await sleep(350)
-  const g = await geo(page, '[data-testid="inped-swap"]', ADD.split(', ')[0])
-  const g2 = g.tipInCtl ? g : await geo(page, '[data-testid="inped-swap"]', ADD.split(', ')[1])
-  const g3 = g2.tipInCtl ? g2 : await geo(page, '[data-testid="inped-swap"]', ADD.split(', ')[2])
-  judge(id, size, g3, 'Keep editing', /Open a new input and lose them\?/)
+  judge(id, size, await geo(page, '[data-testid="inped-swap"]', ADD), 'Keep editing', /Open a new input and lose them\?/)
   await pic(page, id, size, 'card-from-add')
   await page.context().close()
 }

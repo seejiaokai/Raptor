@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 
 /* A QUESTION HANGS FROM THE CONTROL PRESSED (owner D1626, 3 Nov 26 — "if u want to close, you position your hand to reach
@@ -13,6 +13,7 @@ import { createPortal } from 'react-dom'
 const GAP = 9         // from the control's edge to the card's, the pointer in between
 const EDGE = 8         // the card never comes nearer the screen's edge than this
 const FRAME = '.floatwin, .bidsheet, [role="dialog"], dialog'
+const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
 
 export interface AskCardProps {
   /** the control pressed — the card hangs from it */
@@ -27,9 +28,20 @@ export interface AskCardProps {
   /** the answers, right-aligned: the safe one last, filled, holding the keyboard */
   children: ReactNode
   onKeyDown?: (e: React.KeyboardEvent) => void
+  /** Escape anywhere on the page answers the card so (its safe answer), wherever the keyboard is — for a card in a sheet
+   *  that leaves Escape to it (the Leave War's Sheet does while a card stands in it) */
+  onEscape?: () => void
 }
 
-export function AskCard({ at, portal, testid, label, question, sub, children, onKeyDown }: AskCardProps) {
+export function AskCard({ at, portal, testid, label, question, sub, children, onKeyDown, onEscape }: AskCardProps) {
+  const escRef = useRef(onEscape)
+  useLayoutEffect(() => { escRef.current = onEscape })
+  useEffect(() => {
+    if (!onEscape) return
+    const k = (e: KeyboardEvent) => { if (e.key !== 'Escape' || e.defaultPrevented) return; e.preventDefault(); escRef.current?.() }
+    document.addEventListener('keydown', k)
+    return () => document.removeEventListener('keydown', k)
+  }, [!onEscape])  // eslint-disable-line react-hooks/exhaustive-deps -- armed once while a handler is given; the latest is read through escRef
   const card = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ left: number; top: number; px: number; side: 'below' | 'above' } | null>(null)
 
@@ -79,11 +91,17 @@ export function AskCard({ at, portal, testid, label, question, sub, children, on
   /* the keyboard goes back to the control the question hung from, once it is answered (the design guide §3) — only when
      the keyboard was in the card, and nothing else has taken it since */
   const hadFocus = useRef(false)
+  /* what held the keyboard as the question came up (read while rendering, before the card's safe answer takes it) */
+  const [before] = useState<Element | null>(() => (typeof document !== 'undefined' ? document.activeElement : null))
   useLayoutEffect(() => () => {
     if (!hadFocus.current || !at || !at.isConnected) return
     const n = card.current
     const a = document.activeElement
-    if (!a || a === document.body || (n && n.contains(a))) at.focus?.({ preventScroll: true })
+    /* what held the keyboard when it was asked, where that is the control or inside it (the card's own open control, after
+       the Delete key); else the control itself, or the first thing in it that takes the keyboard */
+    const was = before instanceof HTMLElement && before.isConnected && (before === at || at.contains(before)) ? before : null
+    const back = was || (at.matches(FOCUSABLE) ? at : at.querySelector<HTMLElement>(FOCUSABLE))
+    if (back && (!a || a === document.body || (n && n.contains(a)))) back.focus({ preventScroll: true })
   }, [at])
 
   const node = (

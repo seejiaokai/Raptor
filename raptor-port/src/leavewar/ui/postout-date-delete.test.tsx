@@ -82,6 +82,18 @@ describe('[PO-MOVE-DATE-DELETE-ASK] a Delete posting\'s date moved to today asks
     expect(P('rocky').deleted).toBeFalsy()
     expect(screen.getByTestId('postout-delete-ask').textContent).toContain('Delete Hex now?')
   })
+  /* the walk of 4 Nov 26, S5: the sheet's Escape closed the whole sheet over the card — the card opened last, and Escape
+     is its Cancel (the design guide §3), wherever the keyboard is */
+  it('Escape is its Cancel: the card goes, the sheet stays, the date goes back', () => {
+    openSheet()
+    pickDate(screen.getByTestId('postout-date'), TODAY)
+    expect(screen.getByTestId('postout-delete-ask')).toBeTruthy()
+    act(() => { document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(screen.queryByTestId('postout-delete-ask')).toBeNull()
+    expect(screen.getByTestId('postout-sheet'), 'the sheet stays').toBeTruthy()
+    expect(boxValue(screen.getByTestId('postout-date'))).toBe(LATER)
+    expect(P('rocky').deleted).toBeFalsy()
+  })
   it('its Cancel puts the date back and deletes no one', () => {
     openSheet()
     pickDate(screen.getByTestId('postout-date'), TODAY)

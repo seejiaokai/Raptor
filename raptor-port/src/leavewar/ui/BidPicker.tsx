@@ -1100,7 +1100,7 @@ export function BidPicker({
           {delArmed && (
             <AskCard at={poBtn.current} testid="po-delete-ask" label={`Delete ${callsign}?`} question={`Delete ${callsign}?`}
               sub={outcomeLine('delete', poDate, !!hasAccount)}
-              onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelArmed(false) } }}>
+              onEscape={() => setDelArmed(false)}>
               <button type="button" className="abtn danger" data-testid="po-delete-go"
                 onClick={() => { flushWords(); const why = onPostOut(poDate, 'delete'); setPostErr(why || ''); setDelArmed(false) }}>Delete</button>
               <button type="button" className="abtn primary" data-testid="po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
@@ -1482,7 +1482,7 @@ export function PostOutSheet({
           label={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
           question={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
           sub={outcomeLine('delete', shownFrom, !!hasAccount)}
-          onKeyDown={e => { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); setDelArm(false); setAskDate(null) } }}>
+          onEscape={() => { setDelArm(false); setAskDate(null) }}>
           <button type="button" className="abtn danger" data-testid="postout-delete-go"
             onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>Delete</button>
           <button type="button" className="abtn primary" data-testid="postout-delete-cancel" autoFocus
