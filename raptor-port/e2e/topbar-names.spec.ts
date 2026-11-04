@@ -113,12 +113,15 @@ test.describe('a phone held sideways is always ☰ and one row, for everyone (D1
       await page.locator('#burger').tap()
       await expect(page.locator('#drawer')).toHaveClass(/open/)
       const panel = page.locator('#drawer .drawer-panel')
-      expect(await panel.evaluate(el => el.scrollHeight > el.clientHeight), 'the menu is taller than the sideways screen').toBe(true)
-      /* a real turn of the wheel over the menu scrolls the menu, not the page behind it, down to Logout */
-      const box = (await panel.boundingBox())!
-      await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
-      for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 200)
-      await expect.poll(() => panel.evaluate(el => Math.round(el.scrollTop))).toBeGreaterThan(0)
+      /* where the menu is taller than the sideways screen (the admin's, with its role switch, on this PC's letters), a real
+         turn of the wheel over it scrolls the menu, not the page behind it, down to Logout; a member's shorter menu may fit
+         as it stands (GitHub's Linux letters) — either way Logout ends on the screen */
+      if (await panel.evaluate(el => el.scrollHeight > el.clientHeight + 1)) {
+        const box = (await panel.boundingBox())!
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+        for (let i = 0; i < 6; i++) await page.mouse.wheel(0, 200)
+        await expect.poll(() => panel.evaluate(el => Math.round(el.scrollTop))).toBeGreaterThan(0)
+      }
       const out = page.locator('#drawerLogout')
       const r = (await out.boundingBox())!
       expect(r.y + r.height, 'Logout scrolled into the sideways screen').toBeLessThanOrEqual(402)
