@@ -4,6 +4,7 @@
    surface by surface. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { wireTopbarVar } from './topbarvar'
+import { wireNavFold } from './navfold'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
@@ -134,6 +135,10 @@ export function Shell() {
   /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
   const topbarRef = useRef<HTMLDivElement>(null)
   useEffect(() => wireTopbarVar(topbarRef.current), [])
+  /* the page names beside TALON where they all fit, else folded into the ☰ side menu (D1641–D1643 — ui/navfold.ts);
+     a layout effect, so the first frame already shows the bar as it stays */
+  const [navFold, setNavFold] = useState(false)
+  useLayoutEffect(() => wireNavFold(topbarRef.current, setNavFold), [])
   /* EACH PAGE OPENS AT ITS OWN PLACE ([LW-LEAVE-SCROLL-CARRY], found 28 Oct 26). The window's scroll is every page's, so a
      page that keeps no place of its own came up wherever the page before it was left — Edit Schedule 547px down after a
      scrolled Leave War, and a page after Edit Schedule at the very bottom, because the browser moved the window to keep
@@ -362,7 +367,7 @@ export function Shell() {
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
          at a glance — both widths; View-only keeps the neutral dark. */
-      <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '')}>
+      <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '') + (navFold ? ' nav-fold' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
@@ -501,7 +506,7 @@ export function Shell() {
      29 Sep 26: "Mark all as seen" used to be an Undo step, and the undo version's bump was what repainted this bar — once
      a seen mark stopped being a step, the clock kept its stale number) */
   // eslint-disable-next-line react-hooks/exhaustive-deps -- eng is a new object every render, so its four drawn fields stand for it (its undo and redo call the live history); fastOn, bellOn and bugOn are read by the children they redraw
-  ), [page, admin, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop])
+  ), [page, admin, mine, mineCs, canSwitch, waiting, fastOn, uv, tuv, pairOn, eng.canUndo, eng.canRedo, eng.undoTitle, eng.redoTitle, bellOn, bugOn, oilPend, accAlert, clockNew, chgOpen, saveFailed, oilTop, navFold])
 
   const viewPage = useMemo(() => (
       <section className={'page' + (page === 'viewsched' ? ' on' : '')} id="page-viewsched">

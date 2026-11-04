@@ -35,6 +35,16 @@
 .nav a:hover{background:var(--raised);color:var(--ink)}
 .nav a.on{background:rgba(59,198,232,.12);color:var(--accent);border-color:rgba(59,198,232,.5);font-weight:600}
 .nav a[hidden]{display:none}
+/* THE PAGE NAMES BESIDE TALON, OR THE SIDE MENU (owner D1641–D1643, ui/navfold.ts). Above the phone layout the names
+   never wrap inside themselves: they stand on the bar's first row beside TALON, or — where they do not all fit, and on
+   a phone held sideways — they fold into ☰. Folded, they stay laid out at their full width out of the bar's flow,
+   unseen and out of the keyboard's way (visibility, not display), so they can still be measured to come back. */
+@media (min-width:821px){
+  /* by id: the Leave War's chrome and the guest bar wear .topbar too */
+  .topbar #topnav{flex-wrap:nowrap;flex:0 0 auto}
+  .topbar.nav-fold #topnav{position:absolute;left:0;top:0;width:max-content;visibility:hidden;pointer-events:none}
+  .topbar.nav-fold #burger{display:flex}
+}
 .spring{margin-left:auto;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .acct{display:flex;align-items:center;gap:8px}
 .acct .sel{display:flex;align-items:center;gap:6px;background:var(--panel-2);border:1px solid var(--edge);border-radius:10px;padding:4px 6px 4px 10px}

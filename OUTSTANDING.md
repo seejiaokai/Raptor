@@ -150,8 +150,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
-- [TOPBAR-NAMES-BESIDE-TALON] — the page names on the top bar's first row beside TALON, the side menu wherever they cannot all fit (D1641, 4 Nov 26) — the mock-up to him first.
-- [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -240,9 +238,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
-
-### [TOPBAR-NAMES-BESIDE-TALON] The page names beside TALON on the top bar; the side menu where they cannot fit (his D1641, 4 Nov 26)
-**His words:** *"there's a lot of empty space on the right of talon. Could u move the titles up there? If all the titles can't fit any type of screen out there including phone or desktop. Then u can make it the same as a side menu"* — his picture: the Leave War at a tablet's width, TALON alone on the first row, the page names on a second, the buttons on a third. **To do:** the mock-up on the real app at a wide desktop, his PC's 1536, a tablet's width and his iPhone, admin and member, today beside proposed (D1625, the design skill leading — D819); on his answer the build, its bug check (every page's top bar and the side menu in the roll-call), and his "merge live". [SHELL-SIDEWAYS-BAR] rides with it. **Mock-up put to him 4 Nov 26:** https://claude.ai/artifact/Mxpwt7Qc27zRHWhxtj3pTY (`raptor-port/docs/mock/2026-11-04-topbar-names/index.html`) — Q1 build as drawn, Q2 a sideways phone always one row (both recommended yes); on this PC the names already fit at every desktop size, only his iPhone's wider letters wrap them, so the build measures the bar. **Place:** now — his request of 4 Nov 26; build on his answers.
 
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
@@ -1015,14 +1010,6 @@ THREE halves now (owner, 15–17 Sep 26):
   - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
-
-### [SHELL-SIDEWAYS-BAR] Raptor's own top bar is 149px tall on a sideways phone (filed 28 Sep 26)
-**Place:** low — with the next change to Raptor's top bar (the parallel chat's D347 move of the Tracker's ↶ ↷ into it
-measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
-biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
-Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
-*(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
-sideways phone, until the save lands.)*
 
 ### [GUEST-SAVE-WARNING] Does a guest's own page ever need the failed-save warning? — a check (filed 5 Oct 26)
 **Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`

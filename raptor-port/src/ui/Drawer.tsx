@@ -59,6 +59,28 @@ export function Drawer() {
       if (CURPAGE === on) { el.scrollTop = y; el.scrollLeft = x }
     }
   }, [drawerOpen])
+  /* THE MENU BY KEYBOARD (D1641–D1643): ☰ now shows on a desktop too, wherever the page names do not fit beside TALON,
+     so the menu answers the keyboard as every window does — opened from ☰ by the keyboard, the keyboard goes to the
+     page you are on; Escape closes it, newest first (capture, so nothing under it closes too), and the keyboard goes back
+     to ☰. A tap on a phone moves no focus, as before. */
+  useEffect(() => {
+    if (!drawerOpen) return
+    const opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    let byKeys = false
+    try { byKeys = !!opener && opener.matches(':focus-visible') } catch { /* a browser without :focus-visible */ }
+    if (byKeys) {
+      const nav = document.getElementById('drawerNav')
+      ;(nav?.querySelector<HTMLElement>('a.on') || nav?.querySelector<HTMLElement>('a'))?.focus({ preventScroll: true })
+    }
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.preventDefault(); e.stopPropagation()
+      setDrawer(false); notify()
+      if (opener && opener.isConnected) opener.focus({ preventScroll: true })
+    }
+    document.addEventListener('keydown', onKey, true)
+    return () => document.removeEventListener('keydown', onKey, true)
+  }, [drawerOpen])
   return (
     <div className={'drawer' + (DRAWER ? ' open' : '')} id="drawer"
       onClick={e => { if (clickedOutside(e, 'drawer')) close() }}>

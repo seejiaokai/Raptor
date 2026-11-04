@@ -7673,3 +7673,20 @@ On a phone held sideways the pad covers the Required cell being typed, so the fi
 ### [LW-ZOOM-E2E-SLOW-RUNNER] The Leave War's Ctrl+scroll zoom test runs out of time on a slow GitHub machine (found 3 Nov 26, pull request 627)
 **What:** `raptor-port/e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back, within its limits", in the `lw-desktop` group, takes 12–23 s on main's runs and fails at its 30 s on a machine about twice as slow (`mouse.wheel` waits for each zoom step's redraw of the grid; some twenty steps). On pull request 627 it failed on two of three runs, both attempts each, the group's other tests about twice main's times on those runs; re-run once on a fresh machine (D84) it passed in 12.1 s. Measured on his PC 3 Nov 26: with and without 627's loading claw, at 2x slower, three runs each all pass, the same time; at 4x both fail the same way — not that change. **To do:** make it wait on what it needs (D87) — fewer or bigger zoom steps, or a time budget that names why — and check its phone twin. **Place:** a small fix of the Leave War's next batch, or alone if it blocks a merge again.
 
+
+*Moved here 2026-11-04 by backlog-archive.mjs ([TOPBAR-NAMES-BESIDE-TALON]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TOPBAR-NAMES-BESIDE-TALON] The page names beside TALON on the top bar; the side menu where they cannot fit (his D1641, 4 Nov 26)
+**His words:** *"there's a lot of empty space on the right of talon. Could u move the titles up there? If all the titles can't fit any type of screen out there including phone or desktop. Then u can make it the same as a side menu"* — his picture: the Leave War at a tablet's width, TALON alone on the first row, the page names on a second, the buttons on a third. **To do:** the mock-up on the real app at a wide desktop, his PC's 1536, a tablet's width and his iPhone, admin and member, today beside proposed (D1625, the design skill leading — D819); on his answer the build, its bug check (every page's top bar and the side menu in the roll-call), and his "merge live". [SHELL-SIDEWAYS-BAR] rides with it. **Mock-up put to him 4 Nov 26:** https://claude.ai/artifact/Mxpwt7Qc27zRHWhxtj3pTY (`raptor-port/docs/mock/2026-11-04-topbar-names/index.html`) — Q1 build as drawn, Q2 a sideways phone always one row (both recommended yes); on this PC the names already fit at every desktop size, only his iPhone's wider letters wrap them, so the build measures the bar. **Place:** now — his request of 4 Nov 26; build on his answers.
+
+
+*Moved here 2026-11-04 by backlog-archive.mjs ([SHELL-SIDEWAYS-BAR]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [SHELL-SIDEWAYS-BAR] Raptor's own top bar is 149px tall on a sideways phone (filed 28 Sep 26)
+**Place:** low — with the next change to Raptor's top bar (the parallel chat's D347 move of the Tracker's ↶ ↷ into it
+measured it at 149px before and after). At 844×390 the desktop menu wraps into two rows and takes 149 of 390px — the
+biggest single piece of a sideways phone's screen (the Tracker walk's w3 O4, moved here from `[TRK-RETEST-NOTES]` when the
+Tracker's own fold, D373, was built). A shell layout question, and a visual one: a picture first.
+*(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
+sideways phone, until the save lands.)*
+
