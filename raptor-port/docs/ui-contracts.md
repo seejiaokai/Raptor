@@ -6891,6 +6891,14 @@ view and in reach (D1610, his "A").
   D1631): a browser keeps a failed page file failed until a reload (the walk, 4 Nov 26, Chromium and WebKit) —
   everything saved kept, the sign-in asked again, the Undo list afresh. Before the fix a failed
   download blanked the whole app (reproduced 4 Nov 26, `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`).
+  **How Retry reloads (built 4 Nov 26):** the claw stands where the card was while the page's files are fetched afresh,
+  skipping the cache, their names from the build's own list `page-files.json` (WebKit keeps a failed file failed even
+  across a reload until then — the re-walk, `docs/handpass/parts/lwsf-rewalk-1.txt`); once they have all come, the app
+  reloads; if they do not, the card comes back, still signed in. **(To build — D1635:)** after the reload, once signed in,
+  the app reopens the page that failed by itself — a note of it kept in that tab only until the reopen, never in the
+  address (the SWiFT kit: a code app's address never changes). **(To build — D1636:)** after a Retry that did not bring
+  the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
+  round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry."
 - *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)

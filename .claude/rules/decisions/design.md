@@ -27,6 +27,9 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1637 | 4 Nov 26 | The failed-download card keeps his words, "It didn't download. Check your signal, then retry.", though an app update since the tab opened is the other cause: Retry cures that case too. |
+| D1636 | 4 Nov 26 | After a Retry that did not bring the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; and the claw stands at least one full round of its three claws, about 1.3 s, so the press reads as tried. |
+| D1635 | 4 Nov 26 | After Retry reloads the app, the app reopens the page that failed — the Leave War or the Tracker — by itself, once signed in, instead of its first page. |
 | D1633 | 4 Nov 26 | Retry on the "Couldn't open the Leave War" (or the Tracker) card reloads the app: everything saved is kept, he signs in again (the sign-in lives in the open page until the database step), and the Undo list starts empty; the card and its words stay as approved; a failed background fetch shows the card when the page is opened. |
 | D1632 | 4 Nov 26 | While the Leave War or the Tracker is still downloading after 8 seconds, a quiet grey line "Still loading…" shows under the loading claw, going with the claw when the page arrives, so a long wait on a slow signal does not look stuck. |
 | D1631 | 4 Nov 26 | When the Leave War's or the Tracker's own download fails, only that page shows a card, "Couldn't open the Leave War" (or the Tracker), "It didn't download. Check your signal, then retry." and Retry, the top bar staying; a failed background fetch on a desktop shows nothing until the page is opened; the whole app never goes blank. — changed by D1633 |
