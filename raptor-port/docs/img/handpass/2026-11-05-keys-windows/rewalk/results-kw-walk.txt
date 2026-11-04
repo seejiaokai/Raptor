@@ -1,0 +1,65 @@
+[kw-walk v6]
+PASS S3.med.1 the viewer opens from a medical card — saw true
+PASS S3.med.2 the viewer over the Medical page: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S3.med.3 the viewer over the Medical page: the box sits below the bar and on the screen — saw {"boxTop":142,"boxFoot":779,"barFoot":57,"vh":864}
+PASS S3.close Close Close closes the viewer — saw false
+PASS S3.close ✕ ✕ closes the viewer — saw false
+PASS S3.close Escape Escape closes the viewer — saw false
+PASS S3.close the bell the bell closes the viewer — saw false
+PASS S3.undo Undo with the viewer open: it stays, and shows the remarks as Undo left them — saw {"before":"ordinary medical leave — Medically down","saved":"ordinary medical leave — KW WALK REMARK","afterUndo":"ordinary medical leave — Medically down"}
+NOT WALKED S3.list — no paperclip on the Inputs list
+PASS S3.inpwin.1 the schedule's input window keeps the bar covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"inpEditPop"}
+PASS S3.inpwin.2 the viewer opened over it keeps its whole veil: the bar still covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"docViewPop"}
+PASS S3.inpwin.3 the viewer's Close closes it alone: the input window is still there — saw {"viewer":false,"win":true}
+PASS S5.+ Block.1 + Block opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Block.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"sc"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Block.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.+ Block.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.+ Block.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.1 Templates opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm-edit","data":{"daytpledit":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"sbTpl","label":null,"cls":"abtn sb-daybtn","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.Templates.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"sbTpl","label":null,"cls":"abtn sb-daybtn","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.Templates.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.1 the plans selector opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"plangolive":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"plandup":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"planselbtn","data":{"planmenu":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.the plans selector.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"planselbtn","data":{"planmenu":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.the plans selector.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"plangolive":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.1 a jet's stores opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tpod"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tk2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"stcfg","data":{"stcfg":"2.0.0.0"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.a jet's stores.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"stcfg","data":{"stcfg":"2.0.0.0"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.a jet's stores.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tpod"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.1 + Wave opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"wmkind":""},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"wmkind":"sc"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"wvadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.+ Wave.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"wvadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.+ Wave.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"wmkind":""},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.pick.1 Empty block picked by the keys: a block added, the keys back on + Block — saw {"blocks0":1,"blocks1":2,"fb":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}}
+PASS S5.pick.2 keys then mouse: the plans menu opened by Enter, its first pick clicked — the menu closes, no error — saw false
+PASS S5.chips.1 Tab from the board's calendar reaches the day chips — saw {"tag":"SPAN","id":"","label":"Previous week","cls":"sbday sbweek","data":{"sbweek":"-1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.chips.2 Enter on Saturday's chip opens Saturday; the keys stay on its chip, the cyan ring — saw {"tag":"SPAN","id":"","label":null,"cls":"sbday on","data":{"sbtab":"5","fit":"Sat 30"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.chips.3 Space on › moves a week, the same day, the keys on › — saw {"wk":"20/07/2026","fw":{"tag":"SPAN","id":"","label":"Next week","cls":"sbday sbweek","data":{"sbweek":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}}
+PASS S5.chips.4 Enter on ‹ comes back — saw "13/07/2026"
+PASS S5.F2 Enter on Friday's chip with the Traffic window up: the window closes first, Friday opens — saw {"airUp":true,"air":false,"day":4}
+PASS S5.F3 Tab past + Block's last item: the menu closes, the keys on + Block, on the board — saw {"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"4"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.tab.1 Tab from the board's last stop goes to its first — saw {"stops":249,"at":{"tag":"BUTTON","id":"sbCal","label":"Jump to a date","cls":"abtn sb-calbtn","data":{"kwEnd":"first"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}}
+PASS S5.tab.2 Shift+Tab from its first goes to its last — saw {"tag":"SPAN","id":"","label":null,"cls":"puck pers sm","data":{"person":"gizmo","kwEnd":"last"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.tab.3 with the keys nowhere, Tab lands on the board, never the week behind it — saw {"tag":"BUTTON","id":"sbCal","label":"Jump to a date","cls":"abtn sb-calbtn","data":{"kwEnd":"first"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.sortall Sort all opened by the keys; Escape closes it, the board stays — saw {"opened":true,"stays":true}
+PASS S5.dayname.1 Shift+Tab from the date reaches the day name — saw {"tag":"SPAN","id":"","label":null,"cls":"dow crewday","data":{"crewday":"4"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":false}
+PASS S5.dayname.2 Enter on Friday's name shows Friday's crew, the cyan ring on the name — saw {"crewHead":"Aircrew · ‹Friday›","dnAfter":{"tag":"SPAN","id":"","label":null,"cls":"dow crewday","data":{"crewday":"4"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":false}}
+PASS S3.med.1 the viewer opens from a medical card — saw true
+PASS S3.med.2 the viewer over the Medical page: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S3.med.3 the viewer over the Medical page: the box sits below the bar and on the screen — saw {"boxTop":262,"boxFoot":661,"barFoot":49,"vh":874}
+PASS S3.close Close Close closes the viewer — saw false
+PASS S3.close ✕ ✕ closes the viewer — saw false
+NOTE S3.close Escape — no keyboard on the phone
+PASS S3.close the bell the bell closes the viewer — saw false
+PASS S3.undo Undo with the viewer open: it stays, and shows the remarks as Undo left them — saw {"before":"ordinary medical leave — Medically down","saved":"ordinary medical leave — KW WALK REMARK","afterUndo":"ordinary medical leave — Medically down"}
+NOT WALKED S3.list — no paperclip on the Inputs list
+PASS S3.inpwin.1 the schedule's input window keeps the bar covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"inpEditPop"}
+PASS S3.inpwin.2 the viewer opened over it keeps its whole veil: the bar still covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"docViewPop"}
+PASS S3.inpwin.3 the viewer's Close closes it alone: the input window is still there — saw {"viewer":false,"win":true}
+NOTE S5 — the board by the keys is walked at a desktop: a phone has no keyboard (its chips are not drawn there)
