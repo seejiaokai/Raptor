@@ -125,9 +125,12 @@ bodies are verbatim ports like `src/engine/` *[no longer since D1534 and D1538, 
 for good and its code is ordinary app code, cleaned to the code check's rules]*). Its state is module `let`s in
 `tracker/app/core.js` with its own subscribe/notify; its storage goes through
 ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
-under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
-no-target fallback, and legacy `ocu:` keys are imported once — corrected
-17 Sep 26, see `docs/data-schema.md` §World 3 — the
+under `raptor:tracker/…`; legacy `ocu:` keys are imported once by the browser
+backend (`src/storage/browser.ts`) — corrected 17 Sep 26, see `docs/data-schema.md`
+§World 3. *[5 Nov 26, [TRK-STANDALONE-LEFTOVERS] under D1538: the doorway's bare `ocu:` localStorage path is gone — with
+no storage target plugged in (only a unit test that never boots the app) it keeps records in memory; the Tracker bar's
+own Undo / Redo pair and its `hosted` flag, never drawn inside Raptor, are gone too (D347: the top bar's pair is the
+one).]* — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
 database replaces this file when it arrives). *[Since 30 Sep 26 (`[DB-READINESS]` group A phase 5b, D462, D464) the
 course list, each course and chart's student list and the chart records (definitions, names, order, hidden, deleted, and
