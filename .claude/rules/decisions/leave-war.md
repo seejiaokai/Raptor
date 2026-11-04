@@ -56,7 +56,8 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
-| D1629 | 4 Nov 26 | The Leave War number pad's top line shows the figure being typed in a small box drawn like the Required cell's own editing box, its dark fill and cyan edge, after the day (option B of 4 Nov 26), in place of the words "· 7" of D1584's example. |
+| D1630 | 4 Nov 26 | The number pad's figure box shows it is being typed in, as a phone's text box does: when the pad opens the figure is highlighted (the next key replaces it), and once a key is pressed a cyan typing line follows the figure, blinking, still for less motion; with nothing typed the line stands alone; the grid's cell shows the highlight only. |
+| D1629 | 4 Nov 26 | The Leave War number pad's top line shows the figure being typed in a small box drawn like the Required cell's own editing box, its dark fill and cyan edge, after the day (option B of 4 Nov 26), in place of the words "· 7" of D1584's example. — changed by D1630 |
 | D1584 | 3 Nov 26 | On a phone the Leave War's number pad shows the figure as it is typed in its top line, after the row and the day — in a small box like the cell's editing box (D1629) — so a Required cell the pad covers on a phone held sideways is never typed blind; built with the next Leave War batch. — changed by D1629 |
 | D1569 | 2 Nov 26 | On his own Leave War row the day or days a window acts on wear the selection’s own stronger look — the brighter cyan fill and the 2px cyan ring a drag wears while it grabs — drawn over the row’s own lines, as design A of 2 Nov 26; every other row keeps the mark as built. |
 | D1568 | 2 Nov 26 | On the Leave War the day or days a window acts on stand out on the viewer’s own row as plainly as on any other row: the cyan selection mark never disappears into his own row’s cyan; how it is drawn is put to him with pictures first (D853). — changed by D1569 |

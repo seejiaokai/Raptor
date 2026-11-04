@@ -27,6 +27,8 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1632 | 4 Nov 26 | While the Leave War or the Tracker is still downloading after 8 seconds, a quiet grey line "Still loading…" shows under the loading claw, going with the claw when the page arrives, so a long wait on a slow signal does not look stuck. |
+| D1631 | 4 Nov 26 | When the Leave War's or the Tracker's own download fails, only that page shows a card, "Couldn't open the Leave War" (or the Tracker), "It didn't download. Check your signal, then retry." and Retry, the top bar staying; a failed background fetch on a desktop shows nothing until the page is opened; the whole app never goes blank. |
 | D1628 | 4 Nov 26 | The Leave War posting's delete from the Post out button, in the one-day sheet and the drag sheet, and the Delete key's "Delete this input for all N people?" on an input's card in the opened day become cards too, so each of these questions looks the same wherever it is raised. |
 | D1627 | 4 Nov 26 | Of the questions drawn for D1626, only five become a card hanging from the control pressed: the input window's "Open the other input and lose them?", "Delete this input for all N people?" and "Take yourself out of this input?", and the Leave War posting's delete at its Delete chip and at its PO from date; every other question stays as today. — changed by D1628 |
 | D1626 | 3 Nov 26 | A question raised by pressing a control appears right at that control, a small card hanging from it, because the hand is already there, never at the window's foot; the input window's "Close it and lose them?" (✕ and Escape) is built so, and every similar question in the app follows it. — changed by D1627 |

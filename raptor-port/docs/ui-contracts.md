@@ -6884,6 +6884,13 @@ view and in reach (D1610, his "A").
 - **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
   frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
 - Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
+- *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
+  caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
+  (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
+  pre-warm that fails shows nothing until the page is opened. Retry downloads again; where that cannot work (the app
+  updated since the page opened) it reloads the app — everything saved kept, the Undo list afresh. Before the fix a failed
+  download blanked the whole app (reproduced 4 Nov 26, `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`).
+- *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
@@ -7531,9 +7538,11 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   - **Touch — the app's own number pad, NEVER an input:** an 11px input in a grid cell makes iOS zoom the page on
     focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
     what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
-    then the keys. The first key replaces the figure that was there. *(To build — D1584, D1629, [LW-PAD-SHOWS-FIGURE]: after the
-    day, the top line shows the figure being typed in a small box drawn like the cell's own editing box — dark fill, cyan
-    edge — following every key; a faint dash with nothing typed; ‹ › Done unmoved. Pictures:
+    then the keys. The first key replaces the figure that was there. *(To build — D1584, D1629, D1630, [LW-PAD-SHOWS-FIGURE]: after
+    the day, the top line shows the figure being typed in a small box drawn like the cell's own editing box — dark fill,
+    cyan edge — following every key; as the pad opens the figure is highlighted (the next key replaces it), once a key is
+    pressed a blinking cyan typing line follows it (still for less motion), with nothing typed the line alone; the cell
+    over the grid shows the highlight only; ‹ › Done unmoved. Pictures:
     `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`.)* The page behind stays live: a tap on another
     Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
