@@ -45,8 +45,9 @@ function barCovered(bar: Element): boolean {
 export function useBarFree(pop: RefObject<HTMLElement | null>, open: boolean, close: () => void): void {
   /* the control that opened the window, read as it opens (before any window has moved the keys into itself) */
   const opener = useRef<(() => HTMLElement | null) | null>(null)
+  /* the window's own close, the latest one, for the bar's listener below (armed once per opening) */
   const closeRef = useRef(close)
-  closeRef.current = close
+  useLayoutEffect(() => { closeRef.current = close })
   /* a passive effect, never a layout one: React puts the focus back where it was before a commit once the commit's DOM
      work is done, so keys moved by a layout effect's cleanup are moved straight back onto Undo */
   useEffect(() => {
