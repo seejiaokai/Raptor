@@ -181,6 +181,10 @@ None in the walk (0 browser errors), none in the LW walk.
 GitHub's run of `0418133b2` (pull request 636): the gate set green (both workflows — see the closing report for the last pushed
 commit). On his PC: the full unit suite 13737 passed, 1 failed then fixed (`inputs-readers.test.ts`, the viewer on the records
 list); `npm run build` PASS; `npm run lint:changed` no new finding; the batch's e2e 12/12 and its neighbours 137 passed.
+**The last pushed code commit, `6f093f95d`:** GitHub's run green in every workflow — the gate set ("Deploy to GitHub
+Pages"), the Docs guard, the Secrets scan (read by the night's chat, 5 Nov 26). The run before it, of `077e5a49b`, was red on
+one unit test (`placedshown.test.tsx`: F5's close took a viewer of rows a caller made up as gone) — fixed red-first in
+`6f093f95d`; the builder's closing report is `parts/kw1105/check-report.md`.
 
 ## 9. What the walk and the read found, and each disposition
 

@@ -149,6 +149,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [WINDOWS-KEEP-KEYS] — his answer D1648 (5 Nov 26), building the night of 5 Nov 26 — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
+- [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
 - [BOARD-KEYS-LEFT] — his answer D1646 (5 Nov 26), building the night of 5 Nov 26 — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
@@ -2107,6 +2108,17 @@ armFreshTime). **Place:** low — with the next iPhone look at the board.
 
 ### [LOOK-COUNT-BOARD-ASK] The Scheduler Board's look at a version shows no "N pending"; the week's look shows one (found 2 Nov 26 by the schedule leftovers' walk — a question kept for him)
 **A question for him, not put until he says (D994).** Opened from the plans selector on a published day with changes waiting, the week's 👁 look at an issued version shows the day's "N pending" (since 2 Nov 26 the working copy's own count — `[LOOK-PENDING-COUNT]`, `html.ts` PVPC), while the Scheduler Board's look shows none: its strip under a look carries only who signed the version and the plans selector (`board.ts boardSignBody`, its `pv` branch). View-only Sched's issued face shows none either (AM24). Pictures: `raptor-port/docs/img/handpass/2026-11-02-schedule-leftovers/walk/D8-2-look-at-original-count.png` (the week) beside `D8-4-board-look-count.png` (the board). **To ask:** should a look at an issued version show the day's waiting count — on both, on neither? Recommended when put: on both, since the look's bar offers "Load onto working copy", and what it would throw away is the point. **Place:** with the next change to the version look or the board's sign strip.
+
+### [LOCATE-ITEM-MARKS] Finding a redrawn button again by its first mark (filed 5 Nov 26 — the keyboard and windows batch's second narrow read)
+**What:** `raptor-port/src/ui/sheetfocus.ts locate()` finds a control again after a string redraw by its id, else by its FIRST
+`data-` attribute. Where a button's first mark names an action shared by many items (an input's "→ Ground"), the search can
+land on another item's button — the read's H1, where the keys' "twin" could have been another input's "→ Ground", one Enter
+from putting that input on the programme unseen. H1 itself is fixed in that batch (the twin must carry the same `data-acck`).
+**The reader's question:** should `locate()` know a short list of the marks that name the item a button belongs to (an
+input's, a row's, a wave's), and match on them before the first mark? **To do:** list the controls `locate()` is used for,
+which carry such a mark, and either teach it the list with a test per kind or close this with the reason. Nothing a person
+sees changes. **Place:** low, the agent's — with the next keyboard or windows job. Evidence:
+`raptor-port/docs/handpass/parts/kw1105/read-fixes2-opus.md`.
 
 ### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
 **His answer, 5 Nov 26 ("Go" — the mock-up page's question 2): D1646** — the board's small menus, its day and week chips and Edit Schedule's day name reached and pressed by the keyboard, the app's cyan ring; (2) and (5) ride with it. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
