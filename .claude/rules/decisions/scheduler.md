@@ -54,6 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1648 | 5 Nov 26 | An in-time line whose clock the app cannot read is explained once in the red note under the wave's lines, not once for every line of the wave; the day's issues list is unchanged. |
+| D1647 | 5 Nov 26 | On View-only Sched the Traffic window is the plain read-only list for everyone, an admin included, as a member sees it there today; traffic is edited on Edit Schedule and the Scheduler Board only. |
 | D1644 | 4 Nov 26 | The PDF export work is not started until he says so: [PDF-PRINT-TWICE] (his iPhone printing the working copy) and [FLAG-EXPORT] (the published day only, the nicer report) wait for his word. |
 | D1621 | 3 Nov 26 | A LATE mark a scheduler drops on a day already published leaves the issued schedule at once, as built: nothing reads pending and the four sign-offs stay; it does not wait for the next amendment, as a hidden warning does (D471). |
 | D1620 | 3 Nov 26 | When a member changes his input again after a scheduler dropped its LATE mark, the drop goes: if that new change is itself late, LATE shows again for everyone until a scheduler drops it again; a scheduler's own change keeps the drop. |

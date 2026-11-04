@@ -21,10 +21,18 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/keyboard-windows-batch-5eff45 -->
-### `claude/keyboard-windows-batch-5eff45` — the keyboard and windows batch: [BOARD-KEYS-LEFT], [VEILED-WINDOWS-BAR], [WINDOWS-KEEP-KEYS] — written 5 Nov 26 — verify before use
-- **His word, 5 Nov 26:** the three items on one branch with one bug check; a mock-up of anything he will see before it is built (D1625); the PDF work stays held (D1644). The `claude/topbar-names-build` block removed — pull requests 634 and 635 LIVE.
-- **State:** looking at the three in the app and drawing the mock-ups; nothing built yet.
-- **Numbers:** rulings next free D1645; observations next free 801.
+### THE NIGHT OF 5 NOV 26 — `claude/keyboard-windows-batch-5eff45` (this chat) — written 5 Nov 26 — verify before use
+- **After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.**
+- **His word, 5 Nov 26:** "/Overnight 12", then "Go" — the recommended jobs 1 to 3 and the recommended answers; **Low** (one helper at a time). Earlier the same day: the keyboard and windows batch on one branch with one bug check, a mock-up first (D1625); the PDF work stays held (D1644). The `claude/topbar-names-build` block removed — pull requests 634 and 635 LIVE.
+- **His answers (the mock-up page https://claude.ai/artifact/48TUndWdEeeTernd7isq8f, pictures `raptor-port/docs/mock/2026-11-05-keys-windows/`, script `raptor-port/scripts/handpass/kw-mock.mjs`):** D1645 the bar free over Jump to a date, day details and the document viewer; D1646 the board's menus, chips and day name by the keys; D1647 Traffic read-only on View-only Sched; D1648 an unreadable clock said once.
+- **Job 1 — the keyboard and windows batch** ([BOARD-KEYS-LEFT], [VEILED-WINDOWS-BAR], [WINDOWS-KEEP-KEYS]; with [DOC-POINTERS-CODE]'s pointer edits, which ride a code change) on this branch. WALK (questions 4 and 5 yes; 7 no — nobody gains or loses the right to change traffic, only the page it is changed on). A fresh, blind Opus read. About 5 h. Seen while drawing: "Jump to a date" hears Escape only with the keys inside it — with the bar free (D1645) the keys can leave it for Undo, so its Escape must be heard as the Traffic window's is (`ui/sheetfocus.ts useEscWindow`).
+- **Job 2 — the Tracker tidy** ([TRK-STANDALONE-LEFTOVERS] with the Tracker's remaining React Doctor warnings) on `claude/tracker-standalone-tidy`, cut from `main`. FULL (question 3: the Tracker's storage path). A fresh, blind Opus read. About 4 h (a guess).
+- **Job 3 — two permission checks** ([MEMBER-EDITPAGE-CHECK], [GUEST-SAVE-WARNING]) on `claude/member-guest-checks`, cut from `main`. FULL (question 7), plus a security read (D1411). About 2½ h (a guess).
+- **All three on [NO-ASTRA-LIST]** (D761, D1594). Nothing merges; no `main`.
+- **State:** the night starting; job 1 first.
+- **Questions waiting for him:** none yet.
+- **Allowance at the start:** weekly 9%, 5-hour 2% (resets about 21:50 UTC); this chat 45% full.
+- **Numbers:** rulings next free D1649; observations next free 801.
 <!-- /now -->
 ## Next, in order
 
