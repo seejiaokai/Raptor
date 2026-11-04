@@ -1,0 +1,221 @@
+lwsf-walk v1 — 2026-11-04T09:22:01.698Z — build served at http://localhost:4173/
+--- PAD, phone held sideways 844x390 ---
+PASS stage[side]: 25 Feb Req P read '7' after tap cell, 7, Done
+PASS stage26[side]: 26 Feb Req P read '4' after open 25, ›, 4, Done
+  picture S1-side-100ms.png (screenshot began the moment the tap returned, took 151 ms)
+  picture S1-side-settled.png
+PASS S1[side]: box '7' in .flysel='7', caret=false; cell text '7', class selected=true, cell .flysel=true; at ~151ms picture the box read '7' (sel=true, caret=false)
+PASS S1b[side] cell caret hidden while highlighted: cell ::after {"content":"\"\"","display":"none","opacity":"1","visibility":"visible"}
+  picture S2-side-typed9.png
+PASS S2a[side] tap 9: box '9', caret=true (width 2), sel=false; cell '9', selected=false; caret animation 'flyedit-caret'; cell ::after {"content":"\"\"","display":"block","opacity":"0","visibility":"visible"}
+INFO S2a[side]: cell's thin caret while not highlighted: NOT drawn ({"content":"\"\"","display":"block","opacity":"0","visibility":"visible"})
+  picture S2-side-typed92.png
+PASS S2b[side] tap 2: box '92', caret=true; cell '92'
+PASS S2c[side] Done keeps 92: grid cell read '92'
+PASS S2d[side] reopen highlighted: box '92' sel='92', cell selected=true
+  picture S2-side-quick123.png
+PASS S2e[side] 1,2,3 within one second: three taps took 357 ms; box '123', cell '123', caret=true
+  picture S3-side-empty.png
+PASS S3a[side] emptied: box text '', caret=true (width 2), sel=false; cell ''
+  picture S3-side-after-done.png
+PASS S3b[side] Done on empty: grid cell read '–' (before '123')
+  picture S3-side-after-undo.png
+PASS S3c[side] Undo puts the figure back: Undo enabled=true; grid cell read '123', expected '123'
+  picture S4-side-next.png
+PASS S4a[side] › shows the next day's own figure highlighted: day 'Wed 25 Feb' -> 'Thu 26 Feb'; box '4' sel=true; the day's grid cell reads '4'; cell selected=true
+  picture S4-side-prev.png
+PASS S4b[side] ‹ back: day 'Wed 25 Feb', box '123' sel=true (was '123')
+  picture S5-side-after-box-tap.png
+PASS S5[side] a tap on the box changes nothing: the tap point (332,100) landed on the box: true; before '123'/sel true/caret false, after '123'/sel true/caret false; pad still up=true; day 'Wed 25 Feb'
+  picture S6-side-cell-covered.png
+NOT WALKED S6[side]: the Req W cell could not be reached with the pad up: the point (422,379) is covered by 'mx-hbar' in every scroll position tried
+PASS S7a[side] Done's left edge across 7 states: min 603.31, max 603.31, spread 0.00 px (open,typed9,typed92,typed123,empty,next,prev)
+PASS S7b[side] box wholly inside pad and screen: all states inside
+PASS S7c[side] box middle within 2 px of the day text's: largest difference 0.00 px
+PASS S7d[side] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 0 state(s)
+--- PAD, phone upright 402x874 ---
+PASS stage[up402]: 25 Feb Req P read '7' after tap cell, 7, Done
+PASS stage26[up402]: 26 Feb Req P read '4' after open 25, ›, 4, Done
+  picture S1-up402-100ms.png (screenshot began the moment the tap returned, took 149 ms)
+  picture S1-up402-settled.png
+PASS S1[up402]: box '7' in .flysel='7', caret=false; cell text '7', class selected=true, cell .flysel=true; at ~149ms picture the box read '7' (sel=true, caret=false)
+PASS S1b[up402] cell caret hidden while highlighted: cell ::after {"content":"\"\"","display":"none","opacity":"1","visibility":"visible"}
+  picture S2-up402-typed9.png
+PASS S2a[up402] tap 9: box '9', caret=true (width 2), sel=false; cell '9', selected=false; caret animation 'flyedit-caret'; cell ::after {"content":"\"\"","display":"block","opacity":"0","visibility":"visible"}
+INFO S2a[up402]: cell's thin caret while not highlighted: NOT drawn ({"content":"\"\"","display":"block","opacity":"0","visibility":"visible"})
+  picture S2-up402-typed92.png
+PASS S2b[up402] tap 2: box '92', caret=true; cell '92'
+PASS S2c[up402] Done keeps 92: grid cell read '92'
+PASS S2d[up402] reopen highlighted: box '92' sel='92', cell selected=true
+  picture S2-up402-quick123.png
+PASS S2e[up402] 1,2,3 within one second: three taps took 247 ms; box '123', cell '123', caret=true
+  picture S3-up402-empty.png
+PASS S3a[up402] emptied: box text '', caret=true (width 2), sel=false; cell ''
+  picture S3-up402-after-done.png
+PASS S3b[up402] Done on empty: grid cell read '–' (before '123')
+  picture S3-up402-after-undo.png
+PASS S3c[up402] Undo puts the figure back: Undo enabled=true; grid cell read '123', expected '123'
+  picture S4-up402-next.png
+PASS S4a[up402] › shows the next day's own figure highlighted: day 'Wed 25 Feb' -> 'Thu 26 Feb'; box '4' sel=true; the day's grid cell reads '4'; cell selected=true
+  picture S4-up402-prev.png
+PASS S4b[up402] ‹ back: day 'Wed 25 Feb', box '123' sel=true (was '123')
+  picture S5-up402-after-box-tap.png
+PASS S5[up402] a tap on the box changes nothing: the tap point (170,584) landed on the box: true; before '123'/sel true/caret false, after '123'/sel true/caret false; pad still up=true; day 'Wed 25 Feb'
+  picture S6-up402-on-reqW.png
+PASS S6[up402] the pad moves to Req W and the first figure is saved: strip 'Req W', day 'Wed 25 Feb', box ''; before the tap the box read '5'; Req P cell now reads '5'
+PASS S7a[up402] Done's left edge across 7 states: min 323.31, max 323.31, spread 0.00 px (open,typed9,typed92,typed123,empty,next,prev)
+PASS S7b[up402] box wholly inside pad and screen: all states inside
+PASS S7c[up402] box middle within 2 px of the day text's: largest difference 0.00 px
+PASS S7d[up402] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 0 state(s)
+--- S7 at 402 wide ---
+  picture S7-w402-open.png
+  picture S7-w402-typed123.png
+  picture S7-w402-empty.png
+PASS S7a[w402] Done's left edge across 3 states: min 323.31, max 323.31, spread 0.00 px (open,typed123,empty)
+PASS S7b[w402] box wholly inside pad and screen: all states inside
+PASS S7c[w402] box middle within 2 px of the day text's: largest difference 0.00 px
+PASS S7d[w402] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 0 state(s)
+INFO S7[w402]: open state: pad width 402, box {"l":145.52,"t":495,"r":189.52,"b":525,"w":44,"h":30}, day {"l":58.86,"t":500.5,"r":135.52,"b":519.5,"w":76.66,"h":19}, box dropped under the day: false; ‹ {"l":223.31,"t":488,"r":267.31,"b":532,"w":44,"h":44}, Done {"l":323.31,"t":488,"r":392,"b":532,"w":68.69,"h":44}
+--- S7 at 375 wide ---
+  picture S7-w375-open.png
+  picture S7-w375-typed123.png
+  picture S7-w375-empty.png
+PASS S7a[w375] Done's left edge across 3 states: min 296.31, max 296.31, spread 0.00 px (open,typed123,empty)
+PASS S7b[w375] box wholly inside pad and screen: all states inside
+FAIL S7c[w375] box middle within 2 px of the day text's: largest difference 28.50 px
+PASS S7d[w375] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 3 state(s)
+INFO S7[w375]: open state: pad width 375, box {"l":58.86,"t":502,"r":102.86,"b":532,"w":44,"h":30}, day {"l":58.86,"t":479,"r":135.52,"b":498,"w":76.66,"h":19}, box dropped under the day: true; ‹ {"l":196.31,"t":483.5,"r":240.31,"b":527.5,"w":44,"h":44}, Done {"l":296.31,"t":483.5,"r":365,"b":527.5,"w":68.69,"h":44}
+--- S7 at 320 wide ---
+  picture S7-w320-open.png
+  picture S7-w320-typed123.png
+  picture S7-w320-empty.png
+PASS S7a[w320] Done's left edge across 3 states: min 241.31, max 241.31, spread 0.00 px (open,typed123,empty)
+PASS S7b[w320] box wholly inside pad and screen: all states inside
+FAIL S7c[w320] box middle within 2 px of the day text's: largest difference 38.00 px
+PASS S7d[w320] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 3 state(s)
+INFO S7[w320]: open state: pad width 320, box {"l":58.86,"t":342,"r":102.86,"b":372,"w":44,"h":30}, day {"l":58.86,"t":300,"r":133.31,"b":338,"w":74.45,"h":38}, box dropped under the day: true; ‹ {"l":141.31,"t":314,"r":185.31,"b":358,"w":44,"h":44}, Done {"l":241.31,"t":314,"r":310,"b":358,"w":68.69,"h":44}
+--- S7 at 375 wide with letters 0.07em wider ---
+  picture S7-w375ls-open.png
+  picture S7-w375ls-typed123.png
+  picture S7-w375ls-empty.png
+PASS S7a[w375ls] Done's left edge across 3 states: min 292.11, max 292.11, spread 0.00 px (open,typed123,empty)
+PASS S7b[w375ls] box wholly inside pad and screen: all states inside
+FAIL S7c[w375ls] box middle within 2 px of the day text's: largest difference 28.50 px
+PASS S7d[w375ls] nothing overlaps ‹ › Done or the day: 0 state(s) overlap; the box dropped under the day in 3 state(s)
+INFO S7[w375ls]: open state: pad width 375, box {"l":62.36,"t":502,"r":106.36,"b":532,"w":44,"h":30}, day {"l":62.36,"t":479,"r":149.47,"b":498,"w":87.11,"h":19}, box dropped under the day: true; ‹ {"l":192.11,"t":483.5,"r":236.11,"b":527.5,"w":44,"h":44}, Done {"l":292.11,"t":483.5,"r":365,"b":527.5,"w":72.89,"h":44}
+--- S8 reduced motion ---
+  picture S8-reduce.png
+  picture S8-no-preference.png
+PASS S8 reduce: caret does not animate: with reduced motion .flycaret animation-name 'none'
+PASS S8 control: caret animates normally: without the setting animation-name 'flyedit-caret'
+--- S9 desktop 1440x900 ---
+  picture S9-desktop-click.png
+PASS S9 desktop click gives the input and no pad: input boxes 1 (visible true), fly-pad-fig 0, fly-pad 0
+--- S10 WebKit, iPhone 13 ---
+PASS stage[webkit]: 25 Feb Req P read '7' after tap cell, 7, Done
+PASS stage26[webkit]: 26 Feb Req P read '4' after open 25, ›, 4, Done
+  picture S1-webkit-100ms.png (screenshot began the moment the tap returned, took 240 ms)
+  picture S1-webkit-settled.png
+PASS S1[webkit]: box '7' in .flysel='7', caret=false; cell text '7', class selected=true, cell .flysel=true; at ~240ms picture the box read '7' (sel=true, caret=false)
+PASS S1b[webkit] cell caret hidden while highlighted: cell ::after {"content":"\"\"","display":"none","opacity":"0","visibility":"visible"}
+  picture S2-webkit-typed9.png
+PASS S2a[webkit] tap 9: box '9', caret=true (width 2), sel=false; cell '9', selected=false; caret animation 'flyedit-caret'; cell ::after {"content":"\"\"","display":"block","opacity":"0","visibility":"visible"}
+INFO S2a[webkit]: cell's thin caret while not highlighted: NOT drawn ({"content":"\"\"","display":"block","opacity":"0","visibility":"visible"})
+  picture S2-webkit-typed92.png
+PASS S2b[webkit] tap 2: box '92', caret=true; cell '92'
+PASS S2c[webkit] Done keeps 92: grid cell read '92'
+PASS S2d[webkit] reopen highlighted: box '92' sel='92', cell selected=true
+  picture S2-webkit-quick123.png
+PASS S2e[webkit] 1,2,3 within one second: three taps took 818 ms; box '123', cell '123', caret=true
+--- F1/F2 phone 402x874, the Leave War refused ---
+  picture F1-card.png
+PASS F1a card words: parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], role 'alert'
+PASS F1b top bar visible: top bar {"vis":true,"top":0,"bottom":49}; card box [16,97,370,144]; Retry [59,40] px
+INFO F1: app not blank: {"rootKids":13,"topbar":true}
+  picture F1-inputs.png
+PASS F1c ☰ → Inputs shows the Inputs page: {"vis":true,"cards":0}
+  picture F1-card-again.png
+PASS F1d ☰ → Leave War shows the card again: parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], cards 1
+  picture F2-still-refused.png
+PASS F2a Retry while refused: the card stays: card shown, parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"]; Leave War file requests 1 -> 1 (Retry tried the download again: false)
+  picture F2-retry-allowed-early.png
+  picture F2-grid.png
+INFO F2: diagnostic: the page's own import() of the same file http://localhost:4173/assets/LeaveWarPage-BHcZmFMw.js once allowed answers 'Failed to fetch dynamically imported module: http://localhost:4173/assets/LeaveWarPage-BHcZmFMw.js', file requests 1 -> 1
+FAIL F2b Retry once allowed: the grid, no card: grid false, card still shown; file requests 1 -> 1; claw raised 1 time(s) (right after the press: {"claw":true,"seen":1})
+--- F3 desktop, refused before sign-in ---
+  picture F3-after-6s.png
+PASS F3a pre-warm fails silent: {"topbar":true,"week":true,"card":0,"claw":0,"rootKids":13}; the hidden download was tried and refused 1 time(s) (file requests 1)
+  picture F3-grid.png
+FAIL F3b allowed later, tab click shows the grid, no card: grid false, card shown; file requests 1 -> 1 (opening tried again: false)
+--- F4 desktop, refused, tab clicked while refused ---
+  picture F4-card.png
+PASS F4 tab click while refused shows the card: parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], top bar {"vis":true,"top":0,"bottom":57}; card box [510,105,420,144]; file requests 1 -> 1
+--- F5 phone, the Tracker refused ---
+  picture F5-card.png
+PASS F5a Tracker card words: parts ["Couldn't open the Tracker","It didn't download. Check your signal, then retry.","Retry"], top bar {"vis":true,"top":0,"bottom":49}
+  picture F5-tracker.png
+FAIL F5b Retry allowed: the Tracker chart, no card: chart {"board":0,"nocourse":0}, card shown; file requests 1 -> 1
+--- F6 an updated app: Retry reloads ---
+  picture F6-card-before.png
+INFO F6: real entry './assets/index-DGgixrYO.js'; the faked index names 'index-ZZUPDATED.js': true
+  picture F6-after-retry.png
+PASS F6 Retry on an updated app reloads the page: card was up true; fetch of the index sent 1 time(s); page load event after the press: true; marker set before the press now null; the screen after: {"login":true,"week":false,"card":0,"claw":0,"body":"TALON\nTRAINING · AVAILABILITY\nLEAVE & OPS NEXUS\nUSERNAME\nPASSWORD\nSign in\nbuild "}
+--- F7 desktop keyboard ---
+  picture F7-focus-full.png
+  picture F7-focus-crop.png
+PASS F7a Tab reaches Retry, with a visible focus ring: after 9 Tab presses focus is on 'page-load-retry'; {"fv":true,"outline":"auto 1px rgb(16, 16, 16) off 0px","shadow":"none","box":{"x":690.28125,"y":187.84375,"w":59.421875,"h":40}}
+  picture F7-grid.png
+FAIL F7b Enter on Retry: the grid appears: grid false, card shown
+--- F8 phone, the Leave War slowed 10 s ---
+  picture F8-at-4s.png
+PASS F8a at ~4 s: claw, no "Still loading…": 4010 ms after the tap: {"claw":true,"role":"status","say":"Loading Leave War","still":0,"stillText":null,"busy":"true","card":0}
+  picture F8-at-9s.png
+PASS F8b at ~9 s: "Still loading…" under the claw, role status, spoken words, aria-busy: 9014 ms after the tap: {"claw":true,"role":"status","say":"Loading Leave War","still":1,"stillText":"Still loading…","busy":"true","card":0}
+  picture F8-arrived.png
+PASS F8c after the page arrives: no claw, no line, no aria-busy: grid up true (10055 ms after the tap): {"claw":false,"role":null,"say":null,"still":0,"stillText":null,"busy":null,"card":0}
+--- F9 member us/us on a phone, refused ---
+  picture F9-card-member.png
+PASS F9 member sees the same card: parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], top bar {"vis":true,"top":0,"bottom":49}
+--- F2w WebKit iPhone 13, the Leave War refused, then allowed, Retry ---
+  picture F2w-card.png
+PASS F2w-a card words (WebKit): parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], top bar {"vis":true,"top":0,"bottom":49}
+  picture F2w-after-retry.png
+FAIL F2w-b Retry once allowed (WebKit): the grid, no card: grid false, card still shown; file requests 1 -> 1
+--- U1 phone, nothing refused ---
+  picture U1-grid.png
+PASS U1a ☰ → Leave War: claw then grid: grid true; claw raised 1 time(s) (a fast local load may raise none); after: {"claw":0,"card":0,"busy":null}
+  picture U1-window-open.png
+PASS U1b day window opens and ✕ closes it: opened true, closed by ✕ true
+PASS U1c window closes by Escape: opened true, closed by Escape true
+  picture U1-after-outside-tap.png
+PASS U1d window closes by a tap outside: opened true; tapped (201,298) with the window at {"top":595,"bottom":860}; closed true
+  picture U1-tracker.png
+PASS U1e ☰ → Tracker: its chart: {"board":1,"nocourse":0}, card none
+  picture U1-leavewar-again.png
+PASS U1f ☰ → Leave War again: at once, no claw: 250 ms after the tap: {"grid":true,"claw":0,"claws":0}
+--- U2 desktop, 3 s then the Leave War tab ---
+  picture U2-grid.png
+PASS U2 desktop: the grid at once, no card, no claw: 300 ms after the click: {"grid":true,"claw":0,"claws":0,"card":0}; grid up true
+--- page errors, console errors, 4xx/5xx per scenario (the refused files listed apart) ---
+clean  pad-side: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  pad-up402: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  pad-w402: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  pad-w375: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  pad-w320: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  pad-w375ls: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  S8-reduce: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  S8-no-preference: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  S9: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  S10-webkit: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  F1F2: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 4, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F3: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 3, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F4: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 3, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F5: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 3, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F6: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F7: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 4, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F8: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  F9: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  F2w-webkit: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "TypeError: Importing a module script failed."
+clean  U1: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  U2: page errors []; console errors []; 4xx/5xx []; failed requests []
+DONE
