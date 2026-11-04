@@ -63,7 +63,7 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   carry it the whole way without checking in: merge when the PR's checks are green → `main`'s own run goes green
   (on GitHub's machines while the repo is public, on his PC once it is private) → Vercel reports the live app READY (the Production deployment for that `main` commit —
   `gh api repos/<owner>/<repo>/deployments?environment=Production`, then its statuses) → ONE notification, with
-  the link. **His look on his phone replaces the live-page look** the agent used to do on GitHub Pages (gone
+  the link. **His "merge live" (or "merge now") means his own look is done — never ask him about it again (D1640, 4 Nov 26).** **His look on his phone replaces the live-page look** the agent used to do on GitHub Pages (gone
   since D59; D343): the live app sits behind his sign-in, and the agent is never given a login to it (D143).
 - **During an unattended run (D596, 5 Oct 26)** a question is not a reason to stop or to notify: park it in the run's
   one list and carry on with everything else; preview links and questions go in the closing report; ONE notification,

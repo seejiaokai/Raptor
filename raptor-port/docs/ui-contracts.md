@@ -6884,6 +6884,28 @@ view and in reach (D1610, his "A").
 - **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
   frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
 - Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
+- *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
+  caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
+  (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
+  pre-warm that fails shows nothing until the page is opened, then the card. Retry reloads the app (D1633, narrowing
+  D1631): a browser keeps a failed page file failed until a reload (the walk, 4 Nov 26, Chromium and WebKit) —
+  everything saved kept, the sign-in asked again, the Undo list afresh. Before the fix a failed
+  download blanked the whole app (reproduced 4 Nov 26, `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`).
+  **How Retry reloads (built 4 Nov 26):** the claw stands where the card was while the page's files are fetched afresh,
+  skipping the cache, their names from the build's own list `page-files.json` (WebKit keeps a failed file failed even
+  across a reload until then — the re-walk, `docs/handpass/parts/lwsf-rewalk-1.txt`); once they have all come, the app
+  reloads; if they do not, the card comes back, still signed in. Nor does it reload (the card comes back) while a save
+  still waits (a reload would ask "Leave site?", or on an iPhone lose it unasked — `storage/savewait.ts`), or once he has
+  gone to another page or signed out meanwhile; a file counts as come only once its whole body has arrived; and a reload
+  the browser held back ("Leave site?" answered Stay) brings the card back after 10 s, the note kept but used only within ten
+  minutes of Retry and never on the page that wrote it (its reload never happened), so a merely slow reload on a weak
+  signal still reopens the page (the code reads,
+  4 Nov 26 evening). **D1635 (built 4 Nov 26):** after the reload, once signed in,
+  the app reopens the page that failed by itself — a note of it kept in that tab only until the reopen, never in the
+  address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring
+  the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
+  round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry." **D1638:** with no signal, a file cut off or a save waiting, Retry does not reload — the card comes back, still signed in (narrowing D1633).
+- *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 
@@ -7531,7 +7553,13 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   - **Touch — the app's own number pad, NEVER an input:** an 11px input in a grid cell makes iOS zoom the page on
     focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
     what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
-    then the keys. The first key replaces the figure that was there. The page behind stays live: a tap on another
+    then the keys. The first key replaces the figure that was there. *(To build — D1584, D1629, D1630, [LW-PAD-SHOWS-FIGURE]: after
+    the day, the top line shows the figure being typed in a small box drawn like the cell's own editing box — dark fill,
+    cyan edge — following every key; as the pad opens the figure is highlighted (the next key replaces it), once a key is
+    pressed a blinking cyan typing line follows it (still for less motion), with nothing typed the line alone; the cell
+    over the grid shows the highlight only; ‹ › Done unmoved; under ~400 wide the box sits under the date, the line one
+    row taller (D1634); the date stays as built, the drawing check's 2.5px being how it measured the date (D1639). Pictures:
+    `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`.)* The page behind stays live: a tap on another
     Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
     (`FlyRows` keeps the last press's kind): a touch-screen laptop gets the pad for a finger, the input for its mouse.

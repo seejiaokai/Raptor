@@ -7,6 +7,7 @@ import { toast, toastBatch } from './ui/toast'
 import { App } from './ui/App'
 import { installProbeBridge, isLocalHost } from './probe-bridge'
 import { chooseBackend, guardUnload } from './storage/boot'
+import { watchSaves } from './storage/savewait'
 import { StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
 import { useSaveHealth as trackerSaveHealth } from './tracker/storage.js'
@@ -36,6 +37,8 @@ async function boot(): Promise<void> {
   /* the indicator and the unload guard hang off the postman */
   setSaveStatusSource(postman)
   guardUnload(postman)
+  /* and Retry on a failed page download asks it whether a save still waits, before it reloads (storage/savewait.ts) */
+  watchSaves(postman)
   /* the Tracker's "saved" corner follows the same saver ([TRK-SAVE-FAIL-SAYS-SAVED]) — through its storage doorway, the
      door boot.ts already plugged the whiteboard into */
   trackerSaveHealth(postman)

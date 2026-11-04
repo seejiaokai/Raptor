@@ -322,6 +322,57 @@ describe('on a touch screen, the app’s own number pad', () => {
     expect(getFlyPlan().runs[TUE]).toEqual({ p: 16 })
     expect(cell('req-p', FRI).textContent).toBe('16')
   })
+  /* THE FIGURE IN THE PAD'S TOP LINE (D1584, D1629, D1630, 4 Nov 26): on a phone held sideways the pad covers the cell,
+     so the figure being typed shows in the pad's own top line, in a box drawn like the cell's. As the pad opens the
+     figure is highlighted — the next key replaces it, which is what the pad does — and once a key is pressed a typing
+     line follows it; with nothing typed the line stands alone. The cell over the grid shows the highlight only. */
+  const fig = () => screen.getByTestId('fly-pad-fig')
+  const selIn = (el: Element) => el.querySelector('.flysel')?.textContent ?? null
+  const caretIn = (el: Element) => el.querySelector('.flycaret') !== null
+  it('the pad\'s top line shows the day\'s figure in its box, highlighted, as the pad opens — in the cell too', () => {
+    setFlyDays([{ iso: THU, p: 16 }])
+    render(<Matrix />)
+    tap(cell('req-p', THU))
+    expect(fig().textContent).toBe('16')
+    expect(selIn(fig())).toBe('16'); expect(caretIn(fig())).toBe(false)
+    expect(screen.getByTestId('fly-edit-strip').contains(fig())).toBe(true)
+    const onCell = screen.getByTestId('fly-edit-touch')
+    expect(selIn(onCell)).toBe('16'); expect(caretIn(onCell)).toBe(false)
+    expect(onCell.classList.contains('selected'), 'its own thin caret steps aside while the figure is highlighted').toBe(true)
+  })
+  it('a key replaces the highlighted figure; the box then shows what is typed with a typing line after it — the cell without one', () => {
+    setFlyDays([{ iso: THU, p: 16 }])
+    render(<Matrix />)
+    tap(cell('req-p', THU))
+    pad('9')
+    expect(fig().textContent).toBe('9'); expect(selIn(fig())).toBeNull(); expect(caretIn(fig())).toBe(true)
+    pad('2'); expect(fig().textContent).toBe('92')
+    const onCell = screen.getByTestId('fly-edit-touch')
+    expect(onCell.textContent).toBe('92'); expect(selIn(onCell)).toBeNull(); expect(caretIn(onCell)).toBe(false)
+    expect(onCell.classList.contains('selected'), 'its own thin caret is back once a key is pressed').toBe(false)
+  })
+  it('with nothing typed the typing line stands alone — ⌫ down to nothing, or a day with no figure', () => {
+    setFlyDays([{ iso: THU, p: 16 }])
+    render(<Matrix />)
+    tap(cell('req-p', THU)); pad('back')
+    expect(fig().textContent).toBe(''); expect(caretIn(fig())).toBe(true); expect(selIn(fig())).toBeNull()
+    pad('done')
+    tap(cell('req-p', TUE))
+    expect(fig().textContent).toBe(''); expect(caretIn(fig())).toBe(true); expect(selIn(fig())).toBeNull()
+  })
+  it('› opens the next flying day with ITS figure highlighted again', () => {
+    setFlyDays([{ iso: THU, p: 16 }, { iso: FRI, p: 12 }])
+    render(<Matrix />)
+    tap(cell('req-p', THU)); pad('9'); pad('next')
+    expect(strip()).toContain('Fri 9 Jan')
+    expect(selIn(fig())).toBe('12'); expect(caretIn(fig())).toBe(false)
+  })
+  it('a desktop\'s box has no pad and no figure box of its own — the input itself is typed in', () => {
+    setFlyDays([{ iso: THU, p: 16 }])
+    render(<Matrix />)
+    open('req-p', THU)
+    expect(screen.queryByTestId('fly-pad-fig')).toBeNull()
+  })
   it('a mouse click after a tap is a desktop click again: the box, no pad', () => {
     render(<Matrix />)
     tap(cell('req-p', THU)); pad('done')

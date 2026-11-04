@@ -1,0 +1,6 @@
+WebKit iPhone 13, the server hangs up: refused {"grid":false,"card":1} -> Retry, signed in again: GRID {"grid":true,"card":0}; the server saw: hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up L
+  lever fetch(cache: reload): status 200
+WebKit iPhone 13, the server hangs up, lever 'fetch' then Retry: refused {"grid":false,"card":1} -> Retry, signed in again: GRID {"grid":true,"card":0}; the server saw: hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPag
+  lever import under ?r=1: loaded
+WebKit iPhone 13, the server hangs up, lever 'busted' then Retry: refused {"grid":false,"card":1} -> Retry, signed in again: GRID {"grid":true,"card":0}; the server saw: hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPa
+Chromium phone, the server hangs up: refused {"grid":false,"card":1} -> Retry, signed in again: GRID {"grid":true,"card":0}; the server saw: hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up LeaveWarPage-Bgg3sfxO.js · hung up Lea

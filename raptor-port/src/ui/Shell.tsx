@@ -2,7 +2,7 @@
    reference (#shell, .topbar, .page sections). Only the view-only schedule
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
-import { Suspense, lazy, useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { wireTopbarVar } from './topbarvar'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -57,17 +57,19 @@ import { ALPanel } from './ALPanel'
    sync directly, so the crew projection, leave cells and OIL plan reconcile
    exactly as before — deferring the grid cannot reach any of it. Pinned by the
    "not downloaded until its tab is opened" e2e. */
-const LeaveWarPage = lazy(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
+/* each made through ui/pageload.tsx so a failed download is caught on its own page, with Retry, which fetches its files afresh and reloads the app (D1631, D1633); the second argument is the page's name in the build's list of files (vite.config.ts page-files.json) */
+const LeaveWarPage = pageDownload(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })), 'src/leavewar/LeaveWarPage.tsx')
 /* The Tracker (7 Sep 26) is the second such separate download, for the same
    reason: a 200-event flow chart plus its editor is nothing a Raptor visit
    needs until the tab is clicked. Nothing of it boots in main.tsx — it has no
    sync wires; core.init() runs on the first mount. */
-const TrackerPage = lazy(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })))
+const TrackerPage = pageDownload(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })), 'src/tracker/TrackerPage.tsx')
 import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
-import { PageClaw } from './pageclaw'
+import { DownloadedPage } from './pageload'
+import { pageDownload } from './pagedownload'
 import { SaveStatus, useSaveFailed } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
@@ -683,14 +685,14 @@ export function Shell() {
       <section className={'page' + (page === 'leavewar' ? ' on' : (lwEver || prewarmed) ? ' doze' : '')} id="page-leavewar">
         {/* while its separate download arrives and its first drawing runs, the loading claw stands over the page area — only
             while the page is on screen, never for the hidden pre-warm (D1610, D1611, ui/pageclaw.ts) */}
-        {(page === 'leavewar' || lwEver || prewarmed) && <Suspense fallback={page === 'leavewar' ? <PageClaw page="leavewar" /> : null}><LeaveWarPage active={page === 'leavewar'} /></Suspense>}
+        {(page === 'leavewar' || lwEver || prewarmed) && <DownloadedPage page="leavewar" name="the Leave War" download={LeaveWarPage} active={page === 'leavewar'} />}
       </section>
       {/* once visited the Tracker dozes too (content-visibility, same as Leave
           War above) — its whole reason is in TrackerPage.tsx */}
       <section className={'page' + (page === 'tracker' ? ' on' : trEver ? ' doze' : '')} id="page-tracker">
         {/* the same claw while the Tracker's download arrives and its chart is first drawn — its engine draws the chart
             just after the page appears, so the claw waits for the chart, or the page's "no course yet" (D1611, ui/pageclaw.ts) */}
-        {(page === 'tracker' || trEver) && <Suspense fallback={page === 'tracker' ? <PageClaw page="tracker" until="#page-tracker #board *, #trk-nocourse" /> : null}><TrackerPage active={page === 'tracker'} /></Suspense>}
+        {(page === 'tracker' || trEver) && <DownloadedPage page="tracker" name="the Tracker" download={TrackerPage} active={page === 'tracker'} until="#page-tracker #board *, #trk-nocourse" />}
       </section>
       <section className={'page' + (page === 'help' ? ' on' : '')} id="page-help">
         {page === 'help' && <HelpPage />}

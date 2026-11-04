@@ -1647,6 +1647,38 @@ touch-action: pan-x pan-y;
   background: #171B21;
   font-size: 14px;
 }
+/* THE FIGURE BEING TYPED, in the top line after the day (D1584, D1629, D1630): a box drawn like the cell's own editing box
+   (.flyedit.touch — its dark fill, its 2px cyan edge), so a cell the pad covers on a phone held sideways is never typed
+   blind. The day and the box share the line's stretching middle column, so ‹ › Done never move; where a narrow phone has
+   no room for both on one line the box drops under the day rather than squeezing the buttons. */
+.flypad-mid { display: inline-flex; align-items: center; flex-wrap: wrap; column-gap: 10px; row-gap: 4px; min-width: 0; }
+.flypad-fig {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  /* as wide as three digits and the typing line from the start, so a third digit never widens it, wraps it under the day
+     and moves the keys under the finger (the fresh code read) */
+  min-width: 52px;
+  height: 30px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  color: #fff;
+  background: #0A0E13;
+  border: 2px solid var(--accent);
+  border-radius: 2px;
+  font-size: 18px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+/* the figure as the pad opens: highlighted, as a phone draws a selected value — the next key replaces it (D1630) */
+.flysel { background: color-mix(in srgb, var(--accent) 38%, transparent); border-radius: 2px; padding: 0 1px; }
+/* the typing line once a key is pressed, or alone with nothing typed: it blinks in step with the cell's own caret
+   (.flyedit.touch::after, the same flyedit-caret, defined at the file's top level) and stands still for a reader who asked
+   for less motion */
+.flycaret { display: inline-block; width: 2px; height: 20px; margin-left: 1px; background: var(--accent); animation: flyedit-caret 1s steps(1) infinite; }
+@media (prefers-reduced-motion: reduce) { .flycaret { animation: none; } }
+/* while the figure is highlighted the cell's own caret steps aside, as a phone's does over a selected value (D1630) */
+.flyedit.touch.selected::after { display: none; }
 .flypad-nav { display: inline-flex; gap: 6px; }
 .flypad-nav button {
   font: inherit;

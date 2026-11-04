@@ -9,7 +9,7 @@ import { act } from 'react'
 import { createRoot } from 'react-dom/client'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { BOOTCLAW_FADE_MS } from './bootclaw'
-import { PAGECLAW_PATHS, PAGECLAW_QUICK_MS, PAGECLAW_WAIT_MAX_MS, PageClaw, dismissPageClaw, dismissWhenDrawn, raisePageClaw } from './pageclaw'
+import { PAGECLAW_PATHS, PAGECLAW_QUICK_MS, PAGECLAW_STILL_MS, PAGECLAW_WAIT_MAX_MS, PageClaw, dismissPageClaw, dismissWhenDrawn, raisePageClaw } from './pageclaw'
 import { setPage } from '../state/view'
 
 const page = readFileSync(join(__dirname, '../../index.html'), 'utf8')
@@ -48,8 +48,61 @@ describe('the page claw is the start-up claw', () => {
     const el = raisePageClaw('leavewar')
     expect(el.querySelectorAll('.w')).toHaveLength(3)
     expect([0, 1, 2].map(i => el.querySelector(`.pw${i} path`)!.getAttribute('d'))).toEqual(PAGECLAW_PATHS)
-    expect(el.getAttribute('aria-label')).toBe('TALON is loading')
     el.remove()
+  })
+})
+
+/* [TALON-CLAW-SPOKEN] and D1632 (4 Nov 26): a screen reader hears which page is loading, the page area is marked busy
+   while the claw is up, and a wait past 8 s says "Still loading…" under the claw — shown and spoken. */
+describe('what the page claw says', () => {
+  afterEach(() => { document.body.innerHTML = ''; vi.useRealTimers(); setPage('viewsched') })
+  const section = (id: string) => { const s = document.createElement('section'); s.id = id; document.body.appendChild(s); return s }
+  it('is a quiet status naming the page — "Loading Leave War", "Loading Tracker" — its picture hidden from a screen reader', () => {
+    vi.useFakeTimers()
+    const lw = raisePageClaw('leavewar'), tr = raisePageClaw('tracker')
+    /* a screen reader reads what CHANGES in a status, not what it held as it appeared: the words go in a moment after
+       (the fresh read's finding 5) */
+    expect(lw.querySelector('.pgclaw-say')!.textContent).toBe('')
+    vi.advanceTimersByTime(150)
+    for (const el of [lw, tr]) {
+      expect(el.getAttribute('role')).toBe('status')
+      expect(el.getAttribute('aria-live')).toBe('polite')
+      expect(el.querySelector('.mk')!.getAttribute('aria-hidden')).toBe('true')
+    }
+    expect(lw.querySelector('.pgclaw-say')!.textContent).toBe('Loading Leave War')
+    expect(tr.querySelector('.pgclaw-say')!.textContent).toBe('Loading Tracker')
+  })
+  it('marks its page busy while it is up, and not once it has gone — faded or at once', () => {
+    vi.useFakeTimers()
+    const pg = section('page-leavewar')
+    const a = raisePageClaw('leavewar')
+    expect(pg.getAttribute('aria-busy')).toBe('true')
+    dismissPageClaw(a, false)
+    expect(pg.hasAttribute('aria-busy')).toBe(false)
+    const b = raisePageClaw('leavewar')
+    vi.advanceTimersByTime(PAGECLAW_QUICK_MS + 50)
+    dismissPageClaw(b, true)
+    expect(pg.hasAttribute('aria-busy')).toBe(false)
+  })
+  it('after 8 s says "Still loading…" under the claw — shown and spoken; a claw gone sooner never does', () => {
+    vi.useFakeTimers()
+    expect(PAGECLAW_STILL_MS).toBe(8000)
+    const slow = raisePageClaw('leavewar')
+    vi.advanceTimersByTime(PAGECLAW_STILL_MS - 100)
+    expect(slow.querySelector('.pgclaw-still')).toBeNull()
+    vi.advanceTimersByTime(100)
+    const line = slow.querySelector('.pgclaw-still')!
+    expect(line.textContent).toBe('Still loading…')
+    expect(line.closest('[aria-hidden="true"]')).toBeNull()
+    const quick = raisePageClaw('tracker')
+    vi.advanceTimersByTime(PAGECLAW_QUICK_MS + 50)
+    dismissPageClaw(quick, true)
+    vi.advanceTimersByTime(PAGECLAW_STILL_MS)
+    expect(quick.querySelector('.pgclaw-still')).toBeNull()
+  })
+  it("the line and the spoken words are drawn by index.html's own rules, beside the claw's", () => {
+    expect(css).toMatch(/\.pgclaw-still\{[^}]*position:absolute/)
+    expect(css).toMatch(/\.pgclaw-say\{[^}]*clip/)
   })
 })
 

@@ -10,6 +10,8 @@
 import { useState } from 'react'
 import { signIn, sessionFor } from '../state/accounts'
 import { resetSession, notify } from '../state/store'
+import { setPage } from '../state/view'
+import { takeReopen } from './pagedownload'
 
 export function Login() {
   const [user, setUser] = useState('')
@@ -25,6 +27,10 @@ export function Login() {
        the incoming session on a clean view, not whatever page/selection/preview
        the PREVIOUS session (on a shared browser) left behind. */
     resetSession(sessionFor(r))
+    /* after Retry on a failed page download reloaded the app, its page reopens by itself (D1635): read once, thrown away;
+       only someone let into the app goes there — the access screens and a guest keep their own first screen */
+    const back = takeReopen()
+    if (back && r.kind === 'ok') setPage(back)
     notify()
   }
 

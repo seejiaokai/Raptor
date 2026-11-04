@@ -689,6 +689,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 **Met again 24 Oct 26:** building [LW-ROUND3-BUILD] (round 3 of the Leave War's bid windows) — twice more, a Python here-document of test edits holding apostrophes; redone through the file tool each time. Still the conditional habit; the unconditional default proposed above stands.
 
+**Met again 4 Nov 26 (`claude/leave-war-small-fixes`, D1633):** twice in one job — a stray `cat > "$TMP/x"` at the head of a command waited on stdin until stopped (2 min), and a `node -e` edit of a probe script lost its escapes so nothing was written (found only because the next step's count read 0). Both redone with the Write and Edit tools. Still the conditional habit; the unconditional default proposed above would have stopped both.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
@@ -3426,3 +3428,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In walk-scripts.md (or the bug-check order's roll-call rows): a surface drawn into ANOTHER surface gets one walk row per handler of each kind on BOTH surfaces — press-to-front, Escape, outside-press, focus trap — each pressed on the real browser at a phone's size, with the answer button pressed (not only seen) and Escape typed with the keyboard both on the card and elsewhere.
 
 **Principle:** Where something is drawn and who owns it can differ; list the handlers of both, and press, not just look, on the real browser — the test harness's direct event dispatch hides every one of these.
+
+### Observation 798: A fault "worked out from the code, not seen" was smaller on paper than on screen
+
+**Status:** OPEN
+**Date:** 4 Nov 26
+**Session context:** The Leave War small fixes — drawing the mock-up for [LAZY-PAGE-LOAD-FAIL], a failed download of a page's separate file
+**Skill:** brainstorming (`mockups-on-the-real-app.md` §The Method, step 1) / the bug-check order's sizing step
+**Type:** open-source
+**Phase/Area:** the "today" picture of a fault filed from reading code
+
+**Issue:** The backlog item, filed from reading code, said a failed download left that page with "nothing to show in its place". Reproducing it for the mock-up's "today" picture (the download refused in the test browser) showed the whole app going black, top bar included — and on a desktop with no tap at all, because a background pre-fetch of the same file fails the same way. The proposal's scope (catch it at the page, keep the bar, never surface a failed background fetch) came from the reproduction, not from the item.
+
+**Suggested improvement:** In step 1 of the method, where the "today" state is a fault filed from code and not seen, reproduce the fault itself for the today picture (refuse the request, cut the signal, feed the bad value) before drawing the proposal, and widen the proposal to what the reproduction shows.
+
+**Principle:** A fault worked out from reading code is sized by reading too; reproduce it before drawing its fix, because what the screen does at the failure is often larger than what the code seemed to say.
+
+### Observation 799: A fixed output name in the shared temp folder returned another session's run
+
+**Status:** OPEN
+**Date:** 2026-11-04
+**Session context:** the re-walk of D1633 on `claude/leave-war-small-fixes` — a probe's output sent to `$TEMP/probe2.txt`
+**Skill:** New skill candidate: none — the working practice of every walk and probe (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** collecting a script's output to read back
+
+**Issue:** A probe's output was redirected to `$TEMP/probe2.txt`. My own run had not written it (its command had hung earlier), and the file read back was a run of a different probe from another worktree's session that had used the same name in the same system temp folder. It read as plausible results until its first line named the other worktree. Had it been a run of the same probe, it would have been taken for this one's.
+
+**Suggested improvement:** In walk-scripts.md's rules for output: every run's output goes to this session's scratchpad (or the repo's own `docs/handpass/parts/`), never a fixed name in the shared system temp folder; and a read-back checks a line the run itself prints first (its own tag or start time) before any result is believed.
+
+**Principle:** A shared scratch location is a shared writer: a fixed file name there can hold another process's output, and reading it back proves nothing about your own run unless the file carries your run's own mark.

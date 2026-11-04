@@ -170,14 +170,21 @@ async function lwPinch(page: Page, cx: number, cy: number, d0: number, d1: numbe
   await touch('touchEnd', []); await page.waitForTimeout(600)
   await cdp.detach()
 }
-/** Ctrl+scroll over a point (a desktop's zoom, D1228): `dy` wheel pixels, in notches of 100 */
+/** Ctrl+scroll over a point (a desktop's zoom, D1228): `dy` wheel pixels, sent as ONE wheel step.
+ *  WAITS ON WHAT IT NEEDS (D87, [LW-ZOOM-E2E-SLOW-RUNNER], 4 Nov 26): each wheel step waits for the grid to stretch, so the
+ *  zoom test's ~47 single notches ran 12–23 s on GitHub and past its 30 s on a machine twice as slow (and on his PC
+ *  slowed 4x; so did steps of four notches). One step of several notches zooms by the same amount as those notches one by
+ *  one — as a trackpad or a fast-spun wheel sends them (the zoom multiplies per pixel, ui/pinchzoom.ts
+ *  WHEEL_RATE), so the limits tested are the same. The burst ends by the app's own clock, 180 ms after the last step
+ *  (WHEEL_IDLE_MS): the half second kept from before covers it on the OIL tab, which wears no mark while it zooms, and on
+ *  the grid the wait also holds until its "pinching" mark has gone and the zoom is laid out. */
 async function lwCtrlScroll(page: Page, x: number, y: number, dy: number) {
   await page.mouse.move(x, y)
   await page.keyboard.down('Control')
-  for (let left = dy; Math.abs(left) > 0.5; left -= Math.sign(left) * Math.min(100, Math.abs(left))) {
-    await page.mouse.wheel(0, Math.sign(left) * Math.min(100, Math.abs(left))); await page.waitForTimeout(30)
-  }
+  if (Math.abs(dy) > 0.5) await page.mouse.wheel(0, dy)
   await page.keyboard.up('Control'); await page.waitForTimeout(500)
+  await page.waitForFunction(() => !document.querySelector('#page-leavewar .lw-pinching'), undefined, { timeout: 10000 })
+  await page.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r))))
 }
 /** The frozen date row against the grid: every date he can see beside the frozen names whose frozen copy is off its
  *  column or not its width (more than a pixel), as "date dx dw" — empty when it lines up, or when nothing is frozen. */
@@ -3721,9 +3728,19 @@ test('a Required figure is typed straight into its cell: one box on a desktop, t
       expect(kb.w, `key ${k} is too narrow for a thumb`).toBeGreaterThanOrEqual(44)
       expect(kb.r, `key ${k} runs off the screen`).toBeLessThanOrEqual(vp.width + 0.5)
     }
+    const doneAt = (await rect(page.locator('[data-testid="fly-pad-done"]'))).x
     await page.locator('[data-testid="fly-pad-1"]').tap()
     await page.locator('[data-testid="fly-pad-8"]').tap()
     await expect(page.locator('[data-testid="fly-edit-touch"]')).toHaveText('18')
+    /* the figure typed shows in the pad's own top line (D1584, D1629, D1630) — on the screen, inside the pad, with its
+       typing line — and ‹ › Done have not moved for it */
+    const figBox = page.locator('[data-testid="fly-pad-fig"]')
+    await expect(figBox).toHaveText('18')
+    await expect(figBox.locator('.flycaret')).toHaveCount(1)
+    const fb = await rect(figBox)
+    expect(fb.y, 'the figure box is inside the pad').toBeGreaterThanOrEqual(p.y - 0.5)
+    expect(fb.r, 'the figure box runs off the screen').toBeLessThanOrEqual(vp.width + 0.5)
+    expect(Math.abs((await rect(page.locator('[data-testid="fly-pad-done"]'))).x - doneAt), 'Done moved').toBeLessThan(0.5)
     /* › saves and steps to the next flying day, the box following its cell */
     await page.locator('[data-testid="fly-pad-next"]').tap()
     await expect(cell('req-p', '2026-01-08')).toHaveText('18')
