@@ -1,0 +1,82 @@
+lwsf-walk v1 — 2026-11-04T12:24:37.191Z — build served at http://localhost:4173/
+--- R0 the served build carries its list of files, naming both pages ---
+PASS R0 page-files.json names the Leave War and the Tracker, and the app's start: status 200; Leave War assets/LeaveWarPage-Bgg3sfxO.js, Tracker assets/TrackerPage-DLiLDH55.js, start assets/index-Draob1RF.js
+--- R1 phone 402x874, the Leave War refused: Retry while refused, then Retry once allowed ---
+  picture R1-card.png
+PASS R1a the card, the top bar kept: parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"], top bar {"vis":true,"top":0,"bottom":49}
+  picture R1-retry-claw.png
+  picture R1-card-back.png
+PASS R1b Retry while still refused: the claw, then the card back — no reload, still signed in: {"during":{"claw":true,"card":0},"back":true,"clawMs":1532,"reloaded":false,"focus":"page-load-retry","mk":"kept","claws":1,"clawLeft":0,"topbar":true,"signedIn":true}
+  picture R1-allowed-signin.png
+PASS R1e Retry once allowed: the files fetched afresh, then the app reloads (the sign-in form): {"reloaded":true,"fresh":true,"form":true}
+PASS R1c everything saved kept across the reload: saved keys before 332, after the reload 332; lost []; changed by the fresh start 0
+FAIL R1: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- R2 desktop, the pre-warm refused; opened later shows the card; Retry reloads ---
+  picture R2-after-6s.png
+PASS R2a the pre-warm fails silent: {"topbar":true,"week":true,"card":0,"claw":0}; the hidden download refused 1 time(s)
+  picture R2-card-on-open.png
+PASS R2b the tab opened later shows the card, no second try in place (D1633): parts ["Couldn't open the Leave War","It didn't download. Check your signal, then retry.","Retry"]; file requests 1 -> 1
+PASS R2c Retry reloads the app: {"reloaded":true,"fresh":true,"form":true}
+FAIL R2: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- R3 phone, the Tracker refused, Retry reloads ---
+  picture R3-tracker-card.png
+PASS R3a the Tracker card, the top bar kept: parts ["Couldn't open the Tracker","It didn't download. Check your signal, then retry.","Retry"]; Retry's look {"bg":"rgba(59, 198, 232, 0.16)","color":"rgb(241, 244, 247)","border":"1px solid rgb(59, 198, 232)","radius":"7px","font":"13px 400","h":40}
+PASS R3b Retry reloads the app: {"reloaded":true,"fresh":true,"form":true}
+FAIL R3: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- R4 desktop keyboard: Tab to Retry, Enter reloads ---
+  picture R4-focus-crop.png
+PASS R4a Tab reaches Retry, with a visible focus ring: after 9 Tab presses on 'page-load-retry'; {"fv":true,"outline":"solid 2px rgb(59, 198, 232)","shadow":"none","box":{"x":690.28125,"y":187.84375,"w":59.421875,"h":40}}
+  picture R4-after-enter.png
+PASS R4b Enter on Retry reloads the app: {"reloaded":true,"fresh":true,"form":true}
+FAIL R4: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- R5 WebKit iPhone 13, the Leave War refused, then allowed, Retry reloads ---
+  picture R5-card.png
+PASS R5a the card (WebKit): card true
+  picture R5-retry-claw.png
+  picture R5-card-back.png
+PASS R5x Retry while still refused (WebKit): the claw, then the card back — no reload, still signed in: {"during":{"claw":true,"card":0},"back":true,"clawMs":1537,"reloaded":false,"focus":"page-load-retry","mk":"kept","claws":1,"clawLeft":0,"topbar":true,"signedIn":true}
+  picture R5-after-retry.png
+PASS R5b Retry reloads the app (WebKit): {"reloaded":true,"fresh":true,"form":true}
+FAIL R5: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- R6 member us/us on a phone, refused, Retry reloads ---
+  picture R6-card-member.png
+FAIL R6: the script stopped — page.waitForSelector: Timeout 30000ms exceeded.
+--- S7 at 375 wide, three digits (D1634) ---
+  picture S7-w375-open.png
+  picture S7-w375-typed123.png
+  picture S7-w375-typed123-crop.png
+PASS S7-D1634[w375] three digits: the box under the date, whole, ‹ › Done unmoved: figure '123'; box {"l":58.86,"t":502,"r":110.86,"b":532,"w":52,"h":30} day {"l":58.86,"t":479,"r":135.52,"b":498,"w":76.66,"h":19}; under the date true; overlaps none true; Done's left edge spread 0.00 px
+--- F8 phone, the Leave War slowed 10 s ---
+  picture F8-at-4s.png
+PASS F8a at ~4 s: claw, no "Still loading…": 4014 ms after the tap: {"claw":true,"role":"status","say":"Loading Leave War","still":0,"stillText":null,"busy":"true","card":0}
+  picture F8-at-9s.png
+PASS F8b at ~9 s: "Still loading…" under the claw, role status, spoken words, aria-busy: 9015 ms after the tap: {"claw":true,"role":"status","say":"Loading Leave War","still":1,"stillText":"Still loading…","busy":"true","card":0}
+  picture F8-arrived.png
+PASS F8c after the page arrives: no claw, no line, no aria-busy: grid up true (9958 ms after the tap): {"claw":false,"role":null,"say":null,"still":0,"stillText":null,"busy":null,"card":0}
+--- U1 phone, nothing refused ---
+  picture U1-grid.png
+PASS U1a ☰ → Leave War: claw then grid: grid true; claw raised 1 time(s) (a fast local load may raise none); after: {"claw":0,"card":0,"busy":null}
+  picture U1-window-open.png
+PASS U1b day window opens and ✕ closes it: opened true, closed by ✕ true
+PASS U1c window closes by Escape: opened true, closed by Escape true
+  picture U1-after-outside-tap.png
+PASS U1d window closes by a tap outside: opened true; tapped (201,298) with the window at {"top":595,"bottom":860}; closed true
+  picture U1-tracker.png
+PASS U1e ☰ → Tracker: its chart: {"board":1,"nocourse":0}, card none
+  picture U1-leavewar-again.png
+PASS U1f ☰ → Leave War again: at once, no claw: 250 ms after the tap: {"grid":true,"claw":0,"claws":0}
+--- U2 desktop, 3 s then the Leave War tab ---
+  picture U2-grid.png
+PASS U2 desktop: the grid at once, no card, no claw: 300 ms after the click: {"grid":true,"claw":0,"claws":0,"card":0}; grid up true
+--- page errors, console errors, 4xx/5xx per scenario (the refused files listed apart) ---
+clean  R1: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 3, http 0, failed 2 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  R2: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  R3: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  R4: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  R5-webkit: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 1, http 0, failed 2 e.g. "TypeError: Importing a module script failed."
+clean  R6: page errors []; console errors []; 4xx/5xx []; failed requests []; EXPECTED (the refused file) page errors 0, console 2, http 0, failed 1 e.g. "Failed to load resource: net::ERR_INTERNET_DISCONNECTED"
+clean  pad-w375: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  F8: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  U1: page errors []; console errors []; 4xx/5xx []; failed requests []
+clean  U2: page errors []; console errors []; 4xx/5xx []; failed requests []
+DONE

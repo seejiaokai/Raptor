@@ -13,8 +13,8 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-const OUT = join(HERE, '../../docs/img/handpass/2026-11-04-lw-small-fixes-rewalk-2')
-const RES = join(HERE, '../../docs/handpass/parts/lwsf-rewalk-2.txt')
+const OUT = join(HERE, '../../docs/img/handpass/2026-11-04-lw-small-fixes-rewalk-4')
+const RES = join(HERE, '../../docs/handpass/parts/lwsf-rewalk-4.txt')
 const URL = 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true }); mkdirSync(dirname(RES), { recursive: true })
@@ -185,14 +185,22 @@ async function retryStillRefused(w, tag) {
   await shot(p, `${tag}-retry-claw`)
   const back = await cardUp(p, 25000); const clawMs = Date.now() - t0; await sleep(1200)
   p.off('load', onLoad)
-  const after = await p.evaluate(() => ({ mk: window.__mk || null, claws: (window.__claws || []).length, clawLeft: document.querySelectorAll('.pgclaw:not(.gone)').length, topbar: !!document.querySelector('.topbar'), signedIn: !!document.querySelector('#vWeek .day') || !!document.querySelector('.topbar') }))
+  const after = await p.evaluate(() => ({ focus: document.activeElement ? (document.activeElement.getAttribute('data-testid') || document.activeElement.tagName) : null, mk: window.__mk || null, claws: (window.__claws || []).length, clawLeft: document.querySelectorAll('.pgclaw:not(.gone)').length, topbar: !!document.querySelector('.topbar'), signedIn: !!document.querySelector('#vWeek .day') || !!document.querySelector('.topbar') }))
   await shot(p, `${tag}-card-back`)
   return { during, back, clawMs, reloaded, ...after }
+}
+/* D1635: after Retry's reload and the sign-in, the page that failed is open by itself — no menu pressed */
+const opensItself = async (w, page, id) => {
+  const on = await w.page.evaluate(pg => { const s = document.getElementById('page-' + pg); return !!s && s.getBoundingClientRect().height > 0 && getComputedStyle(s).display !== 'none' }, page)
+  await shot(w.page, id + '-opened-itself')
+  check(id + ' D1635 signed in again: the ' + page + ' page open by itself, no menu pressed', on, 'page-' + page + ' on screen: ' + on)
 }
 const signInHere = async (p, u = 'ad', pw = 'a') => {
   await p.fill('#luser', u); await p.fill('#lpass', pw)
   await p.click('#loginForm button[type=submit]')
-  await p.waitForSelector('#vWeek .day', { state: 'attached' })
+  /* since D1635 the page that failed opens by itself after the sign-in, not the week: wait for the app's top bar */
+  await p.waitForSelector('.topbar', { state: 'visible', timeout: 20000 })
+  await sleep(1500)
   await sleep(400)
 }
 
@@ -216,7 +224,7 @@ await scenario('R1', async () => {
   await shot(p, 'R1-card')
   check('R1a the card, the top bar kept', up && ci && same(ci.parts, WORDS('the Leave War')) && ci.role === 'alert' && !!ci.topbar?.vis, `parts ${J(ci?.parts)}, top bar ${J(ci?.topbar)}`)
   const sr = await retryStillRefused(w, 'R1')
-  check('R1b Retry while still refused: the claw, then the card back — no reload, still signed in', sr.during.claw && sr.during.card === 0 && sr.back && sr.clawMs >= 650 && !sr.reloaded && sr.mk === 'kept' && sr.clawLeft === 0, J(sr))
+  check('R1b Retry while still refused: the claw, then the card back — no reload, still signed in', sr.during.claw && sr.during.card === 0 && sr.back && sr.clawMs >= 1250 && !sr.reloaded && sr.mk === 'kept' && sr.clawLeft === 0 && sr.focus === 'page-load-retry', J(sr))
   w.G.lw = false
   const s0 = await storeSnap(p)
   const r2 = await retryReloads(w)
@@ -226,7 +234,7 @@ await scenario('R1', async () => {
   keptAll('R1c everything saved kept across the reload', s0, s1)
   await signInHere(p)
   const lw0 = w.T.lw
-  await nav(w, 'leavewar')
+  await opensItself(w, 'leavewar', 'R1g')
   const ok = await gridUp(p)
   await sleep(1000)
   const left = await cardInfo(p)
@@ -257,7 +265,7 @@ await scenario('R2', async () => {
   check('R2c Retry reloads the app', r.reloaded && r.fresh && r.form, J(r))
   await signInHere(p)
   await sleep(3000)
-  await nav(w, 'leavewar')
+  await opensItself(w, 'leavewar', 'R2e')
   const ok = await gridUp(p)
   await sleep(800)
   const left = await cardInfo(p)
@@ -282,7 +290,7 @@ await scenario('R3', async () => {
   const r = await retryReloads(w)
   check('R3b Retry reloads the app', r.reloaded && r.fresh && r.form, J(r))
   await signInHere(p)
-  await nav(w, 'tracker')
+  await opensItself(w, 'tracker', 'R3d')
   let chart = null
   for (let i = 0; i < 40; i++) { chart = await p.evaluate(() => ({ board: document.querySelectorAll('#page-tracker #board > *').length, nocourse: document.querySelectorAll('#page-tracker #trk-nocourse').length })); if (chart.board || chart.nocourse) break; await sleep(500) }
   await sleep(1500)
@@ -316,7 +324,7 @@ await scenario('R4', async () => {
   await shot(p, 'R4-after-enter')
   check('R4b Enter on Retry reloads the app', r.reloaded && r.fresh && r.form, J(r))
   await signInHere(p)
-  await nav(w, 'leavewar')
+  await opensItself(w, 'leavewar', 'R4d')
   const ok = await gridUp(p)
   await sleep(600)
   check('R4c signed in again: the Leave War grid', ok && !(await cardInfo(p)), `grid ${ok}`)
@@ -336,13 +344,13 @@ await scenario('R5', async () => {
   await shot(p, 'R5-card')
   check('R5a the card (WebKit)', up && same((await cardInfo(p))?.parts || [], WORDS('the Leave War')), `card ${up}`)
   const sr = await retryStillRefused(w, 'R5')
-  check('R5x Retry while still refused (WebKit): the claw, then the card back — no reload, still signed in', sr.during.claw && sr.back && sr.clawMs >= 650 && !sr.reloaded && sr.mk === 'kept', J(sr))
+  check('R5x Retry while still refused (WebKit): the claw, then the card back — no reload, still signed in', sr.during.claw && sr.back && sr.clawMs >= 1250 && !sr.reloaded && sr.mk === 'kept', J(sr))
   w.G.lw = false
   const r = await retryReloads(w)
   await shot(p, 'R5-after-retry')
   check('R5b Retry reloads the app (WebKit)', r.reloaded && r.fresh && r.form, J(r))
   await signInHere(p)
-  await nav(w, 'leavewar')
+  await opensItself(w, 'leavewar', 'R5d')
   const ok = await gridUp(p, 15000)
   await sleep(1000)
   const left = await cardInfo(p)
@@ -363,7 +371,7 @@ await scenario('R6', async () => {
   w.G.lw = false
   const r = await retryReloads(w)
   await signInHere(p, 'us', 'us')
-  await nav(w, 'leavewar')
+  await opensItself(w, 'leavewar', 'R6b')
   const ok = await gridUp(p)
   await sleep(600)
   await shot(p, 'R6-member-grid')
@@ -394,6 +402,27 @@ async function s7under(width) {
   await w.ctx.close()
 }
 await scenario('S7 375', async () => { L('--- S7 at 375 wide, three digits (D1634) ---'); await s7under(375) })
+
+await scenario('R7', async () => {
+  L('--- R7 phone: Retry on a slow signal, then Inputs before the files come — no reload under him ---')
+  const w = await mk(browser, PH_UP, 'R7', true)
+  w.G.lw = true
+  const p = w.page
+  await login(p)
+  await nav(w, 'leavewar')
+  await cardUp(p); await sleep(400)
+  w.G.lw = false; w.G.slowLw = 6000
+  await p.evaluate(() => { window.__mk = 'kept' })
+  let reloaded = false
+  p.on('load', () => { reloaded = true })
+  await tapS(w, '[data-testid="page-load-retry"]', 300)
+  await nav(w, 'inputs')
+  await sleep(9000)
+  const st = await p.evaluate(() => { const e = document.getElementById('page-inputs'); return { mk: window.__mk || null, inputs: !!e && e.getBoundingClientRect().height > 0 } })
+  await shot(p, 'R7-inputs-after-files')
+  check('R7 Retry, then Inputs before the files came: no reload, still on Inputs, still signed in', !reloaded && st.mk === 'kept' && st.inputs, JSON.stringify({ reloaded, ...st }))
+  await w.ctx.close()
+})
 
 /* ---- the first walk's F8, unchanged ---- */
 await scenario('F8', async () => {
