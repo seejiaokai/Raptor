@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/leave-war-small-fixes -->
+### `claude/leave-war-small-fixes` — the Leave War small fixes (pull request 632, draft) — written 4 Nov 26 — verify before use
+- **Built** (D1584, D1629–D1632 recorded; mock-ups approved, https://claude.ai/artifact/Q4rDCbkPAhoSwPuohXhDR6): the pad's figure box with its highlight and typing line (`FlyEdit.tsx`, `matrix.css`); a failed download of the Leave War or the Tracker caught on its own page with Retry (`ui/pageload.tsx`, `ui/pagedownload.ts`, `Shell.tsx`, `02-shell.css`) — before, the whole app went blank; "Still loading…" after 8 s and the claw spoken (`pageclaw.ts`, `index.html`); the zoom browser test one wheel step a move (`e2e/leavewar.spec.ts`). Filed [PAGE-FAULT-BLANKS-APP]. Code check: no new finding; the Leave War's own warnings were already 0.
+- **Checked so far:** the touched unit files green (flytype 35, pageload 8, pageclaw 14, 13 app-frame files 292); the zoom and pad browser tests on phone and desktop 23 / 0, and slowed 4x 4 / 0 (the old zoom test timed out there). Auto-fix switched off on 632 (D1090).
+- **In hand:** the WALK-tier bug check — evidence sheet `raptor-port/docs/handpass/2026-11-04-lw-small-fixes.md` (tier, roll-call, sizing written); a Sonnet walker (`scripts/handpass/lwsf-walk.mjs`, pictures `docs/img/handpass/2026-11-04-lw-small-fixes-walk/`), a fresh Opus code read and the drawing check (`scripts/drawcheck/specs/lwsf.mjs`) running.
+- **Named to him with the walk's pictures:** the cell keeps its own thin caret (since D636) while typing, hidden while highlighted — the drawing had laid a thicker line over it.
+- **Next:** fix what the walk, the read and the drawing check find; re-walk that; finish the sheet with its `Walk:` line and the walk ledger's row; GitHub's run green; his look on his iPhone (the caret's blink, iPhone letters); his "merge live". Remove the `claude/tidy-4-nov` block below (merged).
+- **Numbers:** rulings next free D1633; observations next free 799.
+<!-- /now -->
 <!-- now:claude/tidy-4-nov -->
 ### `claude/tidy-4-nov` — the records' tidy-up after three jobs went live — notes only, merges by itself once green (D1407) — written 4 Nov 26 — verify before use
 - **Done:** the three finished blocks removed — `claude/ask-at-the-control` (pull request 630, live 4 Nov 26), `claude/talon-claw-visible` (628) and `claude/input-win-x-asks` (629), all merged; their open residue already filed ([TALON-CLAW-SPOKEN], [LAZY-PAGE-LOAD-FAIL]); the TALON worktree it named is already gone. [ASK-AT-THE-CONTROL] archived.
