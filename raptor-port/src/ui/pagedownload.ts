@@ -55,8 +55,27 @@ export function pageFiles(list: PageFileList, src: string): string[] {
 /* how long Retry waits for the files, all told, before the card comes back */
 export const FRESH_FILES_MAX_MS = 20000
 /* the least time the claw stands after Retry before the card comes back: with no signal at all the fetch fails at once,
-   and the claw flashed and the card snapped back, so the press read as doing nothing (the re-walk, 4 Nov 26) */
-export const RETRY_MIN_MS = 700
+   and the claw flashed and the card snapped back, so the press read as doing nothing (the re-walk, 4 Nov 26). One full
+   round of the claw (D1636): three claws 0.42 s each, 0.16 s apart, held whole 0.55 s (D1605) — 0.32 + 0.42 + 0.55. */
+export const RETRY_MIN_MS = 1300
+
+/* THE PAGE TO REOPEN AFTER RETRY'S RELOAD (D1635, 4 Nov 26). A reload starts the app on its first page, and the address
+   cannot carry the page (a code app's address never changes — the SWiFT kit), so Retry leaves a note of it in this tab
+   only, just before it reloads; the sign-in reads it once and throws it away (Login.tsx). Only the two pages that download
+   apart are ever named; a browser that refuses storage simply opens the first page, as before. */
+export const REOPEN_KEY = 'talon:reopen-page'
+const REOPENABLE = new Set(['leavewar', 'tracker'])
+export function noteReopen(page: string): void {
+  try { sessionStorage.setItem(REOPEN_KEY, page) } catch { /* storage refused: the first page opens, as before */ }
+}
+/** The page Retry asked to reopen, once: read and thrown away. */
+export function takeReopen(): string | null {
+  try {
+    const p = sessionStorage.getItem(REOPEN_KEY)
+    sessionStorage.removeItem(REOPEN_KEY)
+    return p && REOPENABLE.has(p) ? p : null
+  } catch { return null }
+}
 
 /** Fetch a page's files afresh, skipping the browser's cache: true once every one has come. The re-walk of 4 Nov 26 found
  *  WebKit keeps a failed page file failed even across a reload, until the file is fetched again like this; Chromium needs

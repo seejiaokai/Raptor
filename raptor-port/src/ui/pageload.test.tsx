@@ -11,7 +11,7 @@ import { setPage } from '../state/view'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DownloadedPage } from './pageload'
-import { isDownloadFailure, pageDownload, pageFiles, RETRY_MIN_MS } from './pagedownload'
+import { isDownloadFailure, pageDownload, pageFiles, REOPEN_KEY, RETRY_MIN_MS, takeReopen } from './pagedownload'
 
 const FAIL = () => new Error('Failed to fetch dynamically imported module: http://x/assets/LeaveWarPage-abc.js')
 const Page = ({ active }: { active: boolean }) => <div data-testid="the-page">{active ? 'on' : 'dozing'}</div>
@@ -31,7 +31,7 @@ beforeEach(() => {
 })
 afterEach(async () => {
   await act(async () => { root.unmount() })
-  document.body.innerHTML = ''; document.head.innerHTML = ''
+  document.body.innerHTML = ''; document.head.innerHTML = ''; sessionStorage.clear()
   vi.restoreAllMocks(); vi.unstubAllGlobals()
 })
 const flush = async () => { for (let i = 0; i < 6; i++) await act(async () => { await Promise.resolve() }) }
@@ -162,6 +162,33 @@ describe('Retry (D1633)', () => {
     await pastMin()
     expect(reload).not.toHaveBeenCalled()
     expect(q('page-load-fail')).not.toBeNull()
+  })
+  it('notes the page to reopen just before it reloads (D1635), and only then', async () => {
+    const reload = stubReload()
+    server()
+    await failedOn()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    await press()
+    expect(reload).toHaveBeenCalledTimes(1)
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBe('leavewar')
+    sessionStorage.clear()
+  })
+  it('a Retry that did not bring the page: no note, the keyboard back on Retry (D1636)', async () => {
+    stubReload()
+    server(['list'])
+    await failedOn()
+    await press()
+    await pastMin()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    expect(document.activeElement).toBe(q('page-load-retry'))
+  })
+  it('the claw stands one full round of its three claws, about 1.3 s (D1636)', () => {
+    /* three claws 0.42 s each, 0.16 s apart, held whole 0.55 s (D1605): 0.32 + 0.42 + 0.55 */
+    expect(RETRY_MIN_MS).toBeGreaterThanOrEqual(1290)
+  })
+  it("Retry wears the app's own cyan focus ring, as the top bar's buttons do (D1636)", () => {
+    const css = readFileSync(join(__dirname, 'scheduler/02-shell.css'), 'utf8')
+    expect(css).toContain(':is(#page-leavewar,#page-tracker) .pgfail-retry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}')
   })
   it('the Tracker fetches its own files', async () => {
     const reload = stubReload()

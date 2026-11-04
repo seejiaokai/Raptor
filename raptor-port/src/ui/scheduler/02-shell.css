@@ -175,6 +175,7 @@
 :is(#page-leavewar,#page-tracker) .pgfail p{margin:0 0 14px;font-size:13px;line-height:1.45}
 :is(#page-leavewar,#page-tracker) .pgfail-acts{display:flex;justify-content:center}
 :is(#page-leavewar,#page-tracker) .pgfail-retry{min-height:40px;padding:8px 14px;font:inherit;font-size:13px;color:var(--ink);background:rgba(59,198,232,.16);border:1px solid var(--accent);border-radius:7px;cursor:pointer}
+:is(#page-leavewar,#page-tracker) .pgfail-retry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* THE EDIT PAGE IS PARKED, NOT display:none, WHILE ANOTHER PAGE IS ON (the
    slow-computer cut, 3 Sep 26). EditWeek.tsx warms the edit week and palette
    in idle time after an admin login, but a display:none subtree has no
