@@ -376,7 +376,10 @@ const RULING_BYTES = [
   /* leave-war 124000 -> 128000 (31 Oct 26, [LW-HELD-DAY-ADD]'s branch): 124,705 bytes on main with D1541-D1550 (the Leave
      War's small fixes of 31 Oct), merged over the marker; every line a live ruling (D136), not trimmed without his word
      (D1262). Room for this job's answers; the split or archive is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
-  ['.claude/rules/decisions/leave-war.md', 2, 128000],
+  /* leave-war 128000 -> 132000 (4 Nov 26, claude/leave-war-small-fixes): 128,233 bytes with D1629 (the number pad's figure
+     in a box, his answer to the batch's mock-up); every line a live ruling (D136), not trimmed without his word (D1262).
+     Room for this batch's other answers; the split or archive is still [RULINGS-SPENT-PASS]'s. Room, not a target. */
+  ['.claude/rules/decisions/leave-war.md', 2, 132000],
   /* tracker 19000 -> 20500 (15 Oct 26, night): 19,067 bytes with D899 (the Tracker chart's drags pan at its edge, fixed
      that night - his answer on /overnight); none is trimmed (D136). Room for the next rulings, not a target. */
   /* tracker 20500 -> 23500 (17 Oct 26): 21,868 bytes with D979-D985 (the Tracker batch's answers, the landing, the glide);

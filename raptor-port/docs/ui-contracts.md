@@ -7531,7 +7531,10 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
   - **Touch — the app's own number pad, NEVER an input:** an 11px input in a grid cell makes iOS zoom the page on
     focus, and a bar above the phone's own keyboard is unreliable. The box over the cell is a plain element showing
     what the pad typed; the pad (`.flypad`) is docked at the foot — row and day, ‹ › (previous / next flying day), Done,
-    then the keys. The first key replaces the figure that was there. The page behind stays live: a tap on another
+    then the keys. The first key replaces the figure that was there. *(To build — D1584, D1629, [LW-PAD-SHOWS-FIGURE]: after the
+    day, the top line shows the figure being typed in a small box drawn like the cell's own editing box — dark fill, cyan
+    edge — following every key; a faint dash with nothing typed; ‹ › Done unmoved. Pictures:
+    `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`.)* The page behind stays live: a tap on another
     Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
     (`FlyRows` keeps the last press's kind): a touch-screen laptop gets the pad for a finger, the input for its mouse.
