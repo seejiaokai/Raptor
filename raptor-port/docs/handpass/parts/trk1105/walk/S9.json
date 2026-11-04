@@ -1,0 +1,88 @@
+{
+  "rows": [
+    {
+      "scn": "S9",
+      "step": "Export file parses and names charts and students",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "top format,version,savedAt,contains,charts,students; contains {\"charts\":true,\"students\":true,\"links\":false}; students courses [\"26ABSG\"]; alert \"Exported as “OCU-syllabus-WITH-STUDENTS-2026-11-04.json”.  It CONTAINS student names and m\"",
+      "pics": ""
+    },
+    {
+      "scn": "S9",
+      "step": "ACG-03 position before / after the drag",
+      "note": "{\"p0\":{\"x\":348,\"y\":799},\"p1\":{\"x\":417,\"y\":794}}"
+    },
+    {
+      "scn": "S9",
+      "step": "Save changes button present",
+      "note": "1"
+    },
+    {
+      "scn": "S9",
+      "step": "Done-editing dialog",
+      "note": "[]"
+    },
+    {
+      "scn": "S9",
+      "step": "the changes reached the export (charts differ from the first file)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "chart json 194857→194899; has WALKCREW1105 true",
+      "pics": ""
+    },
+    {
+      "scn": "S9",
+      "step": "Import dialogs",
+      "note": "[{\"text\":\"“2024” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“Tx 2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace i"
+    },
+    {
+      "scn": "S9",
+      "step": "Import: every changed key is under raptor:tracker/; none under ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 8 ocuLocal 0 appOwn 5 other 0",
+      "pics": "S9-3-after-import.png"
+    },
+    {
+      "scn": "S9",
+      "step": "after Import the ball is back where the FILE had it (layout equals the first file, not the changed one)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "layouts equal file true; ACG-03 x file/changed/after = 360,430,360",
+      "pics": ""
+    },
+    {
+      "scn": "S9",
+      "step": "a detail typed after the file was made is NOT wiped by Import (D122); every other chart part equals the file",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "WALKCREW kept: true",
+      "pics": ""
+    },
+    {
+      "scn": "S9",
+      "step": "student marks after import (file had none; the import rule: marks follow the file)",
+      "note": "[\"dco\",\"dco\"]"
+    },
+    {
+      "scn": "S9",
+      "step": "reload: the imported state stands (same as straight after Import)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "charts equal to post-import true; grades dco,dco",
+      "pics": "S9-4-reloaded.png"
+    },
+    {
+      "scn": "S9",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

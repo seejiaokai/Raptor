@@ -1,0 +1,31 @@
+{
+  "rows": [
+    {
+      "scn": "S11b",
+      "step": "top bar: pair draws only its arrow glyphs (no words); page names not drawn in the bar; burger present; one row",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"undoWords\":[\"↶\"],\"redoWords\":[\"↷\"],\"undoSvg\":false,\"topnavBox\":[0,0],\"topnavDrawnLinks\":0,\"barH\":49,\"burger\":true}",
+      "pics": "S11-P-admin-open.png"
+    },
+    {
+      "scn": "S11b",
+      "step": "top bar: pair draws only its arrow glyphs (no words); page names not drawn in the bar; burger present; one row",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "{\"undoWords\":[\"↶\"],\"redoWords\":[\"↷\"],\"undoSvg\":false,\"topnavBox\":[0,0],\"topnavDrawnLinks\":0,\"barH\":49,\"burger\":true}",
+      "pics": "S11-P-member-open.png"
+    },
+    {
+      "scn": "S11b",
+      "step": "top bar: pair draws only its arrow glyphs (no words); page names not drawn in the bar; burger present; one row",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "{\"undoWords\":[\"↶\"],\"redoWords\":[\"↷\"],\"undoSvg\":false,\"topnavBox\":[524,30],\"topnavDrawnLinks\":0,\"barH\":59,\"burger\":true}",
+      "pics": "S11-L-member-open.png"
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "rows": [
+    {
+      "step": "R1 desk: one Undo / Redo pair, in the top bar, none in the Tracker, greyed",
+      "pass": true,
+      "said": "{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"title\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "R2 desk: DCO on ST-02 lights the top bar's ↶",
+      "pass": true,
+      "said": "{\"g1\":\"dco\",\"p1\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":false,\"title\":\"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"}}"
+    },
+    {
+      "step": "R3 desk: the mark changed keys under raptor:tracker/ only (ocuLocal: and the app's own bookkeeping aside); no ocu: key",
+      "pass": true,
+      "said": "{\"changed\":[\"raptor:tracker/v3:cmw2kjgtuab0jbk:lastStudent\",\"raptor:tracker/v3:cmw2kjgtuab0jbk:last:smw2kjgtx7s0hcs\",\"raptor:tracker/v3:cmw2kjgtuab0jbk:sb2026:m:smw2kjgtx7s0hcs\",\"raptor:changes/cmw2kjg03ko2o4x-1\"],\"ocu\":[]}"
+    },
+    {
+      "step": "R4 desk: the top bar's ↶ takes the mark back",
+      "pass": true,
+      "said": "0"
+    },
+    {
+      "step": "desk errors",
+      "note": "none"
+    },
+    {
+      "step": "R1 phone: one Undo / Redo pair, in the top bar, none in the Tracker, greyed",
+      "pass": true,
+      "said": "{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"title\":\"Nothing to undo\"}"
+    },
+    {
+      "step": "R2 phone: DCO on ST-02 lights the top bar's ↶",
+      "pass": true,
+      "said": "{\"g1\":\"dco\",\"p1\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":false,\"title\":\"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"}}"
+    },
+    {
+      "step": "R3 phone: the mark changed keys under raptor:tracker/ only (ocuLocal: and the app's own bookkeeping aside); no ocu: key",
+      "pass": true,
+      "said": "{\"changed\":[\"raptor:changes/cmw2kjju73gr0r9-1\",\"raptor:tracker/v3:cmw2kjkwz6ufonm:last:smw2kjkx2ftl84w\",\"raptor:tracker/v3:cmw2kjkwz6ufonm:sb2026:m:smw2kjkx2ftl84w\",\"raptor:tracker/v3:cmw2kjkwz6ufonm:lastStudent\"],\"ocu\":[]}"
+    },
+    {
+      "step": "R4 phone: the top bar's ↶ takes the mark back",
+      "pass": true,
+      "said": "0"
+    },
+    {
+      "step": "phone errors",
+      "note": "none"
+    }
+  ]
+}

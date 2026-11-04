@@ -1,0 +1,123 @@
+{
+  "rows": [
+    {
+      "scn": "S4",
+      "step": "premise: reading localStorage throws",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "throws SecurityError",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "app boots, Tracker opens with its chart",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "balls 210",
+      "pics": "S4-D-opened.png"
+    },
+    {
+      "scn": "S4",
+      "step": "mark shows",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade dco; corner \"● saved\"; band \"\"",
+      "pics": "S4-D-marked.png"
+    },
+    {
+      "scn": "S4",
+      "step": "corner shows no error",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"● saved\" band \"\"",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "mark undoes from the top bar",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade 0",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "Show All state",
+      "note": "a Show All-like element true"
+    },
+    {
+      "scn": "S4",
+      "step": "Export produces a file",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "saved; alert \"Exported as “OCU-syllabus-WITH-STUDENTS-2026-11-04.json”.  It CONTAINS student n\"",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S4",
+      "step": "premise: reading localStorage throws",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "throws SecurityError",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "app boots, Tracker opens with its chart",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "balls 210",
+      "pics": "S4-P-opened.png"
+    },
+    {
+      "scn": "S4",
+      "step": "mark shows",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "grade dco; corner \"● saved\"; band \"\"",
+      "pics": "S4-P-marked.png"
+    },
+    {
+      "scn": "S4",
+      "step": "corner shows no error",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "corner \"● saved\" band \"\"",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "mark undoes from the top bar",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "grade 0",
+      "pics": ""
+    },
+    {
+      "scn": "S4",
+      "step": "Show All state",
+      "note": "a Show All-like element true"
+    },
+    {
+      "scn": "S4",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

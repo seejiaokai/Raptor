@@ -1,0 +1,122 @@
+{
+  "rows": [
+    {
+      "scn": "S8",
+      "step": "start: corner has its words",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"● saved\"",
+      "pics": ""
+    },
+    {
+      "scn": "S8",
+      "step": "on the other page, band shows (the Tracker is hidden)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S8-D-1-other-page-failed.png"
+    },
+    {
+      "scn": "S8",
+      "step": "back on the Tracker: corner draws nothing (element + pixels), no saved seen on any poll; chart drawn untouched",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"\" greenPx 0 violations 0 balls 210 band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S8-D-2-back-first-frame.png,S8-D-3-back-settled.png"
+    },
+    {
+      "scn": "S8",
+      "step": "block lifted, Retry from the Tracker: band goes, words back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"\" corner \"● saved\"",
+      "pics": "S8-D-5-recovered.png"
+    },
+    {
+      "scn": "S8",
+      "step": "reverse: fail on the Tracker — band, corner silent",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" corner \"\"",
+      "pics": "S8-D-6-reverse-failed.png"
+    },
+    {
+      "scn": "S8",
+      "step": "reverse: Retry on the other page, back on the Tracker: corner words are back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "other-page band after retry \"\"; back: band \"\" corner \"● saved\"",
+      "pics": "S8-D-8-reverse-back.png"
+    },
+    {
+      "scn": "S8",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S8",
+      "step": "start: corner has its words",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"● saved\"",
+      "pics": ""
+    },
+    {
+      "scn": "S8",
+      "step": "on the other page, band shows (the Tracker is hidden)",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S8-P-1-other-page-failed.png"
+    },
+    {
+      "scn": "S8",
+      "step": "back on the Tracker: corner draws nothing (element + pixels), no saved seen on any poll; chart drawn untouched",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"\" greenPx 0 violations 0 balls 210 band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S8-P-2-back-first-frame.png,S8-P-3-back-settled.png"
+    },
+    {
+      "scn": "S8",
+      "step": "block lifted, Retry from the Tracker: band goes, words back",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"\" corner \"● saved\"",
+      "pics": "S8-P-5-recovered.png"
+    },
+    {
+      "scn": "S8",
+      "step": "reverse: fail on the Tracker — band, corner silent",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" corner \"\"",
+      "pics": "S8-P-6-reverse-failed.png"
+    },
+    {
+      "scn": "S8",
+      "step": "reverse: Retry on the other page, back on the Tracker: corner words are back",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "other-page band after retry \"\"; back: band \"\" corner \"● saved\"",
+      "pics": "S8-P-8-reverse-back.png"
+    },
+    {
+      "scn": "S8",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

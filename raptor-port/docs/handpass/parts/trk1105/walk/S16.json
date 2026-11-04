@@ -1,0 +1,77 @@
+{
+  "rows": [
+    {
+      "scn": "S16",
+      "step": "Edit chart layout still on, edit made and not saved",
+      "note": "arrange on 1"
+    },
+    {
+      "scn": "S16",
+      "step": "Logout from Edit Schedule: the Tracker comes to the front with Save / Discard / Stay",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "page tracker; dialog \"You have unsaved chart edits on “2026”. / Save them before logging out? / Stay / Discard them / Save them\" buttons [\"Stay\",\"Discard them\",\"Save them\"]",
+      "pics": "S16-D-1-question.png"
+    },
+    {
+      "scn": "S16",
+      "step": "Stay: still signed in, the edit is still there to save",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "signed in true",
+      "pics": "S16-D-2-stay.png"
+    },
+    {
+      "scn": "S16",
+      "step": "Logout (started from Inputs) then Save: saved under raptor:tracker/ only; the sign-in card shows",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "buttons [\"Stay\",\"Discard them\",\"Save them\"]; tracker keys changed 2; ocu 0",
+      "pics": "S16-D-3-after-save-logout.png"
+    },
+    {
+      "scn": "S16",
+      "step": "signed in as the member: the saved edit shows (Show All); the top bar undo is greyed; no stale words in the corner",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "S16NAME shown true; undo greyed \"Nothing to undo\"; corner \"\"",
+      "pics": "S16-D-4-member.png"
+    },
+    {
+      "scn": "S16",
+      "step": "Logout from the Leave War: the Tracker comes to the front with the question",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "page tracker; buttons [\"Stay\",\"Discard them\",\"Save them\"]",
+      "pics": "S16-D-5-question-from-leavewar.png"
+    },
+    {
+      "scn": "S16",
+      "step": "Discard: the discarded edit is gone, also after a reload; the earlier saved one stays",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "discarded shown after discard false, after reload false; saved S16NAME still shown true",
+      "pics": "S16-D-6-after-discard.png"
+    },
+    {
+      "scn": "S16",
+      "step": "D errors",
+      "note": "none"
+    },
+    {
+      "scn": "S16",
+      "step": "P: the ball editor on a phone (double-tap / Text tool) in WebKit and in Chromium touch",
+      "size": "P",
+      "role": "admin",
+      "pass": null,
+      "said": "NOT WALKED: after 4 attempts (two taps, the Text tool then a tap, a mouse double-click, in WebKit and in Chromium touch) the ball editor never opened on the phone-size screen, so no unsaved chart edit could be made there; the question itself is covered at D",
+      "pics": ""
+    }
+  ]
+}

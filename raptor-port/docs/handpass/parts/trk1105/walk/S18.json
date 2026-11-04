@@ -1,0 +1,114 @@
+{
+  "rows": [
+    {
+      "scn": "S18",
+      "step": "Tracker download blocked: \"Couldn't open the Tracker\" card with Retry (top bar still there)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "blocked requests 2; card \"Couldn't open the Tracker / It didn't download. Check your signal, then retry. / Retry\"; retry true",
+      "pics": "S18-D-1-card.png"
+    },
+    {
+      "scn": "S18",
+      "step": "Retry with the download still blocked AND a save failing: the card comes back, still signed in",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "card \"Couldn't open the Tracker / It didn't download. Check your signal, then retry. / Retry\"; band \"\"",
+      "pics": "S18-D-2-retry-both-failing.png"
+    },
+    {
+      "scn": "S18",
+      "step": "after Retry (unblocked)",
+      "note": "the app reloaded; the sign-in card shows"
+    },
+    {
+      "scn": "S18",
+      "step": "after Retry the app reloads, the sign-in reopens the Tracker (D1635) and it draws",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "page tracker; balls 210",
+      "pics": "S18-D-3-after-retry.png"
+    },
+    {
+      "scn": "S18",
+      "step": "mark an event: stored under raptor:tracker/ (none ocu:); the top bar pair works",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker keys changed 18; ocu 0; undo \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S18-D-4-marked.png"
+    },
+    {
+      "scn": "S18",
+      "step": "the earlier Edit Schedule change is still there after the reload",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "note text found on Edit Schedule: true",
+      "pics": ""
+    },
+    {
+      "scn": "S18",
+      "step": "D errors (the blocked files and the forced quota produce their own)",
+      "note": "console: Failed to load resource: net::ERR_FAILED | console: Failed to load resource: net::ERR_FAILED | console: Error: Unable to preload CSS for http://127.0.0.1:4180/assets/TrackerPage-DYvnKXmo.css\n    at HTMLLinkElement.<anonymous> (http://127.0.0.1:4180/assets/index-DTX1F34K.js:68:119405) | console: Failed to load resource: net::ERR_FAILED | console: Failed to load resource: net::ERR_FAILED"
+    },
+    {
+      "scn": "S18",
+      "step": "Tracker download blocked: \"Couldn't open the Tracker\" card with Retry (top bar still there)",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "blocked requests 2; card \"Couldn't open the Tracker / It didn't download. Check your signal, then retry. / Retry\"; retry true",
+      "pics": "S18-P-1-card.png"
+    },
+    {
+      "scn": "S18",
+      "step": "Retry with the download still blocked AND a save failing: the card comes back, still signed in",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "card \"Couldn't open the Tracker / It didn't download. Check your signal, then retry. / Retry\"; band \"\"",
+      "pics": "S18-P-2-retry-both-failing.png"
+    },
+    {
+      "scn": "S18",
+      "step": "after Retry (unblocked)",
+      "note": "the app reloaded; the sign-in card shows"
+    },
+    {
+      "scn": "S18",
+      "step": "after Retry the app reloads, the sign-in reopens the Tracker (D1635) and it draws",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "page tracker; balls 210",
+      "pics": "S18-P-3-after-retry.png"
+    },
+    {
+      "scn": "S18",
+      "step": "mark an event: stored under raptor:tracker/ (none ocu:); the top bar pair works",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker keys changed 18; ocu 0; undo \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S18-P-4-marked.png"
+    },
+    {
+      "scn": "S18",
+      "step": "the earlier Edit Schedule change is still there after the reload",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "note text found on Edit Schedule: true",
+      "pics": ""
+    },
+    {
+      "scn": "S18",
+      "step": "P errors (the blocked files and the forced quota produce their own)",
+      "note": "console: Failed to load resource: net::ERR_FAILED | console: Failed to load resource: net::ERR_FAILED | console: Error: Unable to preload CSS for http://127.0.0.1:4180/assets/TrackerPage-DYvnKXmo.css\n    at HTMLLinkElement.<anonymous> (http://127.0.0.1:4180/assets/index-DTX1F34K.js:68:119405) | console: Failed to load resource: net::ERR_FAILED | console: Failed to load resource: net::ERR_FAILED"
+    }
+  ]
+}

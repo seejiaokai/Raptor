@@ -71,4 +71,17 @@ describe('the app’s boot plugs the doorway in before the Tracker can be drawn'
     const body = boot.slice(boot.indexOf('function bootBody('))
     expect(body, 'the door is plugged in the boot body, which every backend runs').toMatch(/^function bootBody\([^)]*\): void \{\s*(?:\/\*[\s\S]*?\*\/\s*)?storeBackend\.impl = settingsAdapter\(wb\)\s*setStorageImpl\(trackerTarget\(wb\)\)/)
   })
+  /* THE SAVE CORNER'S WIRE ([TRK-SAVE-FAIL-SAYS-SAVED]; the setter renamed setSaveHealth by this job). The Tracker's
+     "● saved" corner hears Raptor's saver only because main.tsx hands the postman over after the boot; without it the
+     corner says "saved" beside the top bar's "Not saved". main.tsx runs the whole app as it loads, so it cannot be
+     imported here: this reads its source, as the test above does. (The bug check's break test B5, 5 Nov 26: taking the
+     line out turned no test red — this one was added for it, red with the line out.) */
+  it('main.tsx hands the saver (the postman the boot returned) to the Tracker’s doorway', () => {
+    const main = readFileSync(join(__dirname, '../main.tsx'), 'utf8')
+    const imp = main.match(/import \{ setSaveHealth as (\w+) \} from '\.\/tracker\/storage\.js'/)
+    expect(imp, 'main.tsx imports the doorway’s setter').not.toBeNull()
+    const call = main.indexOf(imp![1] + '(postman)'), booted = main.indexOf('const { postman } = await bootApp(')
+    expect(booted, 'the postman is the one the boot returned').toBeGreaterThan(-1)
+    expect(call, 'and is handed to the doorway after the boot').toBeGreaterThan(booted)
+  })
 })

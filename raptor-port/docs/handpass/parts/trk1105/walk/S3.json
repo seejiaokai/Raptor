@@ -1,0 +1,78 @@
+{
+  "rows": [
+    {
+      "scn": "S3",
+      "step": "fresh session: the two marks show and a student was added",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grades dco,dco, added Recon\nPilot · OCU, corner \"● saved\"",
+      "pics": "S3-fresh-session.png"
+    },
+    {
+      "scn": "S3",
+      "step": "fresh session: the top bar ↶ is lit (undo works in this mode)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":false,\"redoOff\":true,\"title\":\"Undo the mark on ST-03 for STUDENT A (Ctrl+Z)\",\"rtitle\":\"Nothing to redo\",\"rect\":[1071,14,34,29]}",
+      "pics": ""
+    },
+    {
+      "scn": "S3",
+      "step": "fresh session: ↶ takes the last mark (ST-03) back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ST-03 grade after ↶: 0; student list STUDENT A/STUDENT B/RECON",
+      "pics": ""
+    },
+    {
+      "scn": "S3",
+      "step": "fresh session: Export file parses",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "top keys format,version,savedAt,contains,charts,students",
+      "pics": ""
+    },
+    {
+      "scn": "S3",
+      "step": "fresh session: no raptor:tracker/ key changed, no ocu: key, vs the stored world",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "changes since fresh-open: {\"tracker\":[],\"ocuLocal\":[\"ocuLocal:who:stiff:lastCrew:cmw2l3crihudp33\"],\"appOwn\":[],\"other\":[],\"ocu\":[]}",
+      "pics": ""
+    },
+    {
+      "scn": "S3",
+      "step": "storage vs the stored world before the fresh session (all keys)",
+      "note": "{\"tracker\":[],\"ocuLocal\":[\"ocuLocal:who:stiff:lastCourse\",\"ocuLocal:who:stiff:lastCrew:cmw2l3crihudp33\",\"ocuLocal:who:stiff:lastSyl:cmw2l3crihudp33\"],\"appOwn\":[],\"other\":[],\"ocu\":[]}"
+    },
+    {
+      "scn": "S3",
+      "step": "ocuLocal moved in fresh session?",
+      "note": "yes: ocuLocal:who:stiff:lastCrew:cmw2l3crihudp33"
+    },
+    {
+      "scn": "S3",
+      "step": "fresh errors",
+      "note": "none"
+    },
+    {
+      "scn": "S3",
+      "step": "normal open after: the stored mark (ST-02) is back and the fresh marks are not",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grades ST-02,ST-01,ST-03 = dco,0,0; students STUDENT A/STUDENT B",
+      "pics": "S3-normal-after.png"
+    },
+    {
+      "scn": "S3",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

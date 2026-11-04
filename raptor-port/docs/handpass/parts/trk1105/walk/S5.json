@@ -1,0 +1,50 @@
+{
+  "rows": [
+    {
+      "scn": "S5",
+      "step": "course-related keys in storage",
+      "note": "raptor:tracker/v3:master:course:cmw2l7ep2zuc2fs"
+    },
+    {
+      "scn": "S5",
+      "step": "ZZ-OCU-PROBE appears nowhere (course pick, File menu, Show All)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "courses 26ABSG",
+      "pics": "S5-showall-after-plant.png"
+    },
+    {
+      "scn": "S5",
+      "step": "planted key still there, unchanged, after a mark and a reload",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "[{\"id\":\"czzprobe\",\"name\":\"ZZ-OCU-PROBE\"}]",
+      "pics": ""
+    },
+    {
+      "scn": "S5",
+      "step": "no other ocu: key appeared",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ocu:v3:courses",
+      "pics": ""
+    },
+    {
+      "scn": "S5",
+      "step": "still no probe course after the second reload",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "26ABSG",
+      "pics": ""
+    },
+    {
+      "scn": "S5",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

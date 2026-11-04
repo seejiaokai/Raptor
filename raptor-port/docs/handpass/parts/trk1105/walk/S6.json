@@ -1,0 +1,158 @@
+{
+  "rows": [
+    {
+      "scn": "S6",
+      "step": "mark ST-02 saved: corner shows words, no band",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"● saved\" band \"\" greenPx 104",
+      "pics": "S6-D-1-saved.png"
+    },
+    {
+      "scn": "S6",
+      "step": "failed: Raptor band \"Not saved — keep this page open\" with Retry",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" retry true",
+      "pics": "S6-D-2-failed.png"
+    },
+    {
+      "scn": "S6",
+      "step": "failed: corner draws nothing (element) ",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "corner \"\"",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "failed: corner area holds no saved-green pixels (pixels judged)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "greenPx 0 (was 104) clip {\"x\":1459,\"y\":100,\"width\":65,\"height\":36}",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "no \"saved\" anywhere on the bar",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "Retry while still failing: band stays, corner silent",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" corner \"\" greenPx 0",
+      "pics": "S6-D-4-retry-failed.png"
+    },
+    {
+      "scn": "S6",
+      "step": "block lifted + Retry: band goes, corner words come back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"\" corner \"● saved\"",
+      "pics": "S6-D-6-recovered.png"
+    },
+    {
+      "scn": "S6",
+      "step": "reload: both marks and the typed day are there",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grades dco,dco; currency Mon 2 Nov 26",
+      "pics": "S6-D-7-reload.png"
+    },
+    {
+      "scn": "S6",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S6",
+      "step": "mark ST-02 saved: corner shows words, no band",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "corner \"● saved\" band \"\" greenPx 598",
+      "pics": "S6-P-1-saved.png"
+    },
+    {
+      "scn": "S6",
+      "step": "failed: Raptor band \"Not saved — keep this page open\" with Retry",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" retry true",
+      "pics": "S6-P-2-failed.png"
+    },
+    {
+      "scn": "S6",
+      "step": "failed: corner draws nothing (element) ",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "corner \"\"",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "failed: corner area holds no saved-green pixels (pixels judged)",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "greenPx 0 (was 598) clip {\"x\":336,\"y\":82,\"width\":62,\"height\":35}",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "no \"saved\" anywhere on the bar",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S6",
+      "step": "Retry while still failing: band stays, corner silent",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\" corner \"\" greenPx 0",
+      "pics": "S6-P-4-retry-failed.png"
+    },
+    {
+      "scn": "S6",
+      "step": "block lifted + Retry: band goes, corner words come back",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "band \"\" corner \"● saved\"",
+      "pics": "S6-P-6-recovered.png"
+    },
+    {
+      "scn": "S6",
+      "step": "reload: both marks and the typed day are there",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "grades dco,dco; currency Mon 2 Nov 26",
+      "pics": "S6-P-7-reload.png"
+    },
+    {
+      "scn": "S6",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

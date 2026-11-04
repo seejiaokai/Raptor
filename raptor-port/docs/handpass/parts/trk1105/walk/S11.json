@@ -1,0 +1,341 @@
+{
+  "rows": [
+    {
+      "scn": "S11",
+      "step": "exactly one #trUndoBtn and one #trRedoBtn, both inside the top bar, none in the Tracker",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"pr\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"redoOff\":true,\"title\":\"Nothing to undo\",\"rtitle\":\"Nothing to redo\",\"rect\":[1071,14,34,29]},\"extra\":{\"inBar\":false,\"inMenus\":false,\"arrIn\":false,\"anyTrackerUndo\":0}}",
+      "pics": "S11-D-admin-open.png"
+    },
+    {
+      "scn": "S11",
+      "step": "both greyed, tooltip \"Nothing to undo\"",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Nothing to undo\" / \"Nothing to redo\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "same look as Edit Schedule's pair (size, background, border, radius, font) — crops beside each other",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"trk\":{\"w\":34,\"h\":29,\"top\":14,\"left\":1071,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"12px\",\"txt\":\"↶ Undo\",\"op\":\"0.35\"},\"es\":{\"w\":34,\"h\":29,\"top\":14,\"left\":1023,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"12px\",\"txt\":\"↶ Undo\",\"op\":\"0.35\"}}",
+      "pics": "S11-D-admin-bar-tracker.png,S11-D-admin-bar-editsched.png"
+    },
+    {
+      "scn": "S11",
+      "step": "mark ST-02 lights ↶ with tooltip \"Undo the mark on ST-02 for STUDENT A\"",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S11-D-admin-marked.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↶ takes the mark back and lights ↷",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade 0; redo title \"Redo the mark on ST-02 for STUDENT A (Ctrl+Y)\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "↷ puts it back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade dco",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "keyboard: Ctrl+Z undoes, Ctrl+Y redoes, Ctrl+Shift+Z redoes",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "after Ctrl+Z 0; Ctrl+Y dco; Ctrl+Z 0; Ctrl+Shift+Z dco",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S11",
+      "step": "exactly one #trUndoBtn and one #trRedoBtn, both inside the top bar, none in the Tracker",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "{\"pr\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"redoOff\":true,\"title\":\"Nothing to undo\",\"rtitle\":\"Nothing to redo\",\"rect\":[1056,14,34,29]},\"extra\":{\"inBar\":false,\"inMenus\":false,\"arrIn\":false,\"anyTrackerUndo\":0}}",
+      "pics": "S11-D-member-open.png"
+    },
+    {
+      "scn": "S11",
+      "step": "both greyed, tooltip \"Nothing to undo\"",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Nothing to undo\" / \"Nothing to redo\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "member: no Edit Schedule tab, so no pair of Edit Schedule to put it beside",
+      "note": "the member Tracker bar is cropped in S11-D-member-bar-tracker.png"
+    },
+    {
+      "scn": "S11",
+      "step": "mark ST-02 lights ↶ with tooltip \"Undo the mark on ST-02 for STUDENT A\"",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S11-D-member-marked.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↶ takes the mark back and lights ↷",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "grade 0; redo title \"Redo the mark on ST-02 for STUDENT A (Ctrl+Y)\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "↷ puts it back",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "grade dco",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "keyboard: Ctrl+Z undoes, Ctrl+Y redoes, Ctrl+Shift+Z redoes",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "after Ctrl+Z 0; Ctrl+Y dco; Ctrl+Z 0; Ctrl+Shift+Z dco",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S11",
+      "step": "exactly one #trUndoBtn and one #trRedoBtn, both inside the top bar, none in the Tracker",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"pr\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"redoOff\":true,\"title\":\"Nothing to undo\",\"rtitle\":\"Nothing to redo\",\"rect\":[249,9,30,30]},\"extra\":{\"inBar\":false,\"inMenus\":false,\"arrIn\":false,\"anyTrackerUndo\":0}}",
+      "pics": "S11-P-admin-open.png"
+    },
+    {
+      "scn": "S11",
+      "step": "both greyed, tooltip \"Nothing to undo\"",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Nothing to undo\" / \"Nothing to redo\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "phone: icon-only, order Undo · Redo · sync dot · bell, inside the screen, not over the Tracker tabs",
+      "size": "P",
+      "role": "admin",
+      "pass": false,
+      "said": "{\"ord\":true,\"undoText\":\"↶ Undo\",\"lefts\":[249,285,322,354],\"topbarBottom\":49,\"tabsTop\":126.5,\"topbarRows\":{\"top\":0,\"bottom\":49,\"right\":402}}",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "same look as Edit Schedule's pair (size, background, border, radius, font) — crops beside each other",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"trk\":{\"w\":30,\"h\":30,\"top\":9,\"left\":249,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"11px\",\"txt\":\"↶ Undo\",\"op\":\"0.35\"},\"es\":{\"w\":30,\"h\":30,\"top\":9,\"left\":213,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"11px\",\"txt\":\"↶ Undo\",\"op\":\"0.35\"}}",
+      "pics": "S11-P-admin-bar-tracker.png,S11-P-admin-bar-editsched.png"
+    },
+    {
+      "scn": "S11",
+      "step": "mark ST-02 lights ↶ with tooltip \"Undo the mark on ST-02 for STUDENT A\"",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S11-P-admin-marked.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↶ takes the mark back and lights ↷",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "grade 0; redo title \"Redo the mark on ST-02 for STUDENT A (Ctrl+Y)\"",
+      "pics": "S11-P-admin-undo-now.png,S11-P-admin-undo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↷ puts it back",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S11-P-admin-redo-now.png,S11-P-admin-redo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S11",
+      "step": "exactly one #trUndoBtn and one #trRedoBtn, both inside the top bar, none in the Tracker",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "{\"pr\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"redoOff\":true,\"title\":\"Nothing to undo\",\"rtitle\":\"Nothing to redo\",\"rect\":[249,9,30,30]},\"extra\":{\"inBar\":false,\"inMenus\":false,\"arrIn\":false,\"anyTrackerUndo\":0}}",
+      "pics": "S11-P-member-open.png"
+    },
+    {
+      "scn": "S11",
+      "step": "both greyed, tooltip \"Nothing to undo\"",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Nothing to undo\" / \"Nothing to redo\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "phone: icon-only, order Undo · Redo · sync dot · bell, inside the screen, not over the Tracker tabs",
+      "size": "P",
+      "role": "member",
+      "pass": false,
+      "said": "{\"ord\":true,\"undoText\":\"↶ Undo\",\"lefts\":[249,285,322,354],\"topbarBottom\":49,\"tabsTop\":126.5,\"topbarRows\":{\"top\":0,\"bottom\":49,\"right\":402}}",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "member: no Edit Schedule tab, so no pair of Edit Schedule to put it beside",
+      "note": "the member Tracker bar is cropped in S11-P-member-bar-tracker.png"
+    },
+    {
+      "scn": "S11",
+      "step": "mark ST-02 lights ↶ with tooltip \"Undo the mark on ST-02 for STUDENT A\"",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S11-P-member-marked.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↶ takes the mark back and lights ↷",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "grade 0; redo title \"Redo the mark on ST-02 for STUDENT A (Ctrl+Y)\"",
+      "pics": "S11-P-member-undo-now.png,S11-P-member-undo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↷ puts it back",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S11-P-member-redo-now.png,S11-P-member-redo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S11",
+      "step": "exactly one #trUndoBtn and one #trRedoBtn, both inside the top bar, none in the Tracker",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "{\"pr\":{\"undo\":1,\"redo\":1,\"inTop\":true,\"inTracker\":false,\"undoOff\":true,\"redoOff\":true,\"title\":\"Nothing to undo\",\"rtitle\":\"Nothing to redo\",\"rect\":[384,14,34,30]},\"extra\":{\"inBar\":false,\"inMenus\":false,\"arrIn\":false,\"anyTrackerUndo\":0}}",
+      "pics": "S11-L-member-open.png"
+    },
+    {
+      "scn": "S11",
+      "step": "both greyed, tooltip \"Nothing to undo\"",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Nothing to undo\" / \"Nothing to redo\"",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "phone: icon-only, order Undo · Redo · sync dot · bell, inside the screen, not over the Tracker tabs",
+      "size": "L",
+      "role": "member",
+      "pass": false,
+      "said": "{\"ord\":true,\"undoText\":\"↶ Undo\",\"lefts\":[384,424,466,505],\"topbarBottom\":59,\"tabsTop\":104.5,\"topbarRows\":{\"top\":0,\"bottom\":59,\"right\":874}}",
+      "pics": ""
+    },
+    {
+      "scn": "S11",
+      "step": "sideways phone: top bar is one row, page names in the side menu, pair inside the screen",
+      "size": "L",
+      "role": "member",
+      "pass": false,
+      "said": "{\"nav\":{\"topnavVisible\":7,\"burger\":true,\"barH\":59},\"u\":{\"w\":34,\"h\":30,\"top\":14,\"left\":384,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"12px\",\"txt\":\"↶ Undo\",\"op\":\"0.35\"},\"bell\":{\"w\":34,\"h\":32,\"top\":13,\"left\":505,\"bg\":\"rgb(26, 31, 38)\",\"bd\":\"rgb(42, 49, 58) 1px\",\"rad\":\"9px\",\"fs\":\"13px\",\"txt\":\"\",\"op\":\"1\"}}",
+      "pics": "S11-L-member-bar.png"
+    },
+    {
+      "scn": "S11",
+      "step": "member: no Edit Schedule tab, so no pair of Edit Schedule to put it beside",
+      "note": "the member Tracker bar is cropped in S11-L-member-bar-tracker.png"
+    },
+    {
+      "scn": "S11",
+      "step": "mark ST-02 lights ↶ with tooltip \"Undo the mark on ST-02 for STUDENT A\"",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S11-L-member-marked.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↶ takes the mark back and lights ↷",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "grade 0; redo title \"Redo the mark on ST-02 for STUDENT A (Ctrl+Y)\"",
+      "pics": "S11-L-member-undo-now.png,S11-L-member-undo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "↷ puts it back",
+      "size": "L",
+      "role": "member",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S11-L-member-redo-now.png,S11-L-member-redo-set.png"
+    },
+    {
+      "scn": "S11",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}
