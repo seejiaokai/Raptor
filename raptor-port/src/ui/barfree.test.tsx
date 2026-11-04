@@ -180,6 +180,22 @@ describe('[D1645] the document viewer', () => {
     expect(DOCVIEW, 'none left: closed').toBe(null)
     await act(async () => { INPUTS.splice(Math.min(ia, ib), 0, ...(ia < ib ? [a, b] : [b, a])); notify() })
   })
+  /* the narrow read of those fixes, G1: an entry IN FRONT of the page shown goes — the page shown stays the same entry */
+  it('an episode of three, the second shown: an undo that takes the first away leaves the second on screen ("1 of 2")', async () => {
+    const all = INPUTS.filter((r: any) => r.iid != null && !(r.docIds && r.docIds.length) && !r.docId)
+    const [a, b, c]: any[] = all
+    await act(async () => { setDocView({ row: b, rows: [{ row: a }, { row: b }, { row: c }], idx: 1 }); notify() })
+    expect($('#docViewPop .docview-count')?.textContent).toBe('2 of 3')
+    const said = $('#docViewTitle').textContent
+    const ia = INPUTS.indexOf(a)
+    await act(async () => { INPUTS.splice(ia, 1); notify() })
+    expect($('#docViewPop .docview-count')?.textContent, 'the same entry, now the first of two').toBe('1 of 2')
+    expect($('#docViewTitle').textContent, 'still the entry he was reading').toBe(said)
+    await act(async () => { INPUTS.splice(ia, 0, a); notify() })
+    expect($('#docViewPop .docview-count')?.textContent, 'a Redo brings the first back: still the same entry').toBe('2 of 3')
+    expect($('#docViewTitle').textContent).toBe(said)
+    await act(async () => { setDocView(null); notify() })
+  })
   it('a read-only page (a Leave War request\'s papers) is shown as given, never closed for want of an input', async () => {
     await act(async () => { setDocView({ row: { iid: 'not-an-input', person: 'bane', type: 'LL', date: 'Jul 13', yr: 2026, remarks: 'as given' }, readOnly: true }); notify() })
     expect(shown('docViewPop')).toBe(true)

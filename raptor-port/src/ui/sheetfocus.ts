@@ -111,8 +111,14 @@ export function locate(el: HTMLElement): () => HTMLElement | null {
     if (!sel) return null
     const weekBox: ParentNode | null = weekId ? document.getElementById(weekId) : within
     const dayBox = day != null && weekBox ? weekBox.querySelector<HTMLElement>(`.day[data-day="${q(day)}"]`) : null
-    if (day != null && !dayBox) return null
-    const all = [...(dayBox || within).querySelectorAll<HTMLElement>(sel)]
+    /* …and where the day no longer draws it (the input moved to another day by its own window — the narrow read's G2), on the
+       day it now stands on, in the same week; neither, nothing */
+    const pick = (root: ParentNode | null) => {
+      const all = root ? [...root.querySelectorAll<HTMLElement>(sel)] : []
+      return all.find(n => n.getClientRects().length > 0) || all[0] || null
+    }
+    if (day != null) return pick(dayBox) || pick(weekBox)
+    const all = [...within.querySelectorAll<HTMLElement>(sel)]
     return all.find(n => n.getClientRects().length > 0) || all[0] || null
   }
 }

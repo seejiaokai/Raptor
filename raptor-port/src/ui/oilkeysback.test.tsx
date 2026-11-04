@@ -116,6 +116,23 @@ describe('the read\'s F4 — the twin is found on the day the control stood in',
   })
 })
 
+/* the narrow read of the fixes, G2: the input moved to another day by its own window — its button is no longer drawn on the
+   day pressed; the keys go to it on the day it now stands on, in the same week */
+describe('the narrow read\'s G2 — a control moved to another day of the week is found there', () => {
+  it('Monday\'s button pressed, the redraw draws it on Thursday only: the keys go to Thursday\'s', async () => {
+    host = document.createElement('div'); document.body.append(host); root = createRoot(host)
+    await act(async () => { root.render(<TwoDays />) })
+    const mon = $('#eWeek .day[data-day="0"]'), thu = $('#eWeek .day[data-day="3"]')
+    mon.innerHTML = '<button data-inpedit="i43">Leave</button>'; thu.innerHTML = ''
+    ;(mon.firstElementChild as HTMLElement).focus()
+    await act(async () => { (globalThis as any).__sheet2(true) })
+    mon.innerHTML = ''; thu.innerHTML = '<button data-inpedit="i43">Leave</button>'
+    await act(async () => { (globalThis as any).__sheet2(false) })
+    expect((document.activeElement as HTMLElement).closest('.day')?.getAttribute('data-day'), 'Thursday\'s button').toBe('3')
+    await act(async () => { root.unmount() }); host.remove()
+  })
+})
+
 describe('a sheet gives the keys back to the control they were on, found again after a redraw', () => {
   it('the control replaced by its twin while the sheet was up: the keys go to the twin', async () => {
     host = document.createElement('div'); document.body.append(host); root = createRoot(host)

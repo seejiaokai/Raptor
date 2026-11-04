@@ -9,7 +9,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serveFrozen } from './isr-serve.mjs'
 
-const VERSION = 'kw-walk v5'
+const VERSION = 'kw-walk v6'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.env.KW_OUT || join(HERE, '../../docs/img/handpass/2026-11-05-keys-windows/walk')
 const URL = 'http://localhost:4393/'
@@ -383,8 +383,11 @@ async function s5(w) {
   await P.locator('#sbDays [data-sbweek="-1"]').focus(); await P.keyboard.press('Enter'); await P.waitForTimeout(500)
   check('S5.chips.4', 'Enter on ‹ comes back', (await P.evaluate(() => window.CURWEEK)) === wk0, await P.evaluate(() => window.CURWEEK))
   /* the read's F2 (5 Nov 26): a chip pressed by the keys closes what stands over the board first — the Traffic window */
+  /* (on Wednesday: Saturday, where the chips step above left the board, has standby waves only — no Traffic button) */
+  await press(w, '#sbDays [data-sbtab="2"]')
   await press(w, '#sbBoard [data-air]')
   const airUp = await up(w, '#airpop')
+  if (!airUp) notWalked('S5.F2', 'the Traffic window would not open on Wednesday')
   await P.locator('#sbDays [data-sbtab="4"]').focus(); await P.keyboard.press('Enter'); await P.waitForTimeout(350)
   await shot(w, 's5-chip-over-traffic')
   check('S5.F2', 'Enter on Friday\'s chip with the Traffic window up: the window closes first, Friday opens', airUp && !(await up(w, '#airpop')) && (await P.evaluate(() => window.SBDAY)) === 4, { airUp, air: await up(w, '#airpop'), day: await P.evaluate(() => window.SBDAY) })

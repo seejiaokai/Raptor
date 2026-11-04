@@ -64,7 +64,19 @@ export function DocViewer() {
     if (x && x.docId) { const at = els.findIndex((e: any) => e.docId === x.docId); if (at >= 0) return at }
     return x && x.idx ? seatOf(x.idx) : 0
   }
-  if (v !== seenV) { setSeenV(v); setI(seatAt(v)) }
+  /* THE PAGE SHOWN STAYS THE SAME ENTRY (the narrow read of the fixes, G1, 5 Nov 26): the page is a number, and an undo that
+     takes away an entry in FRONT of it (or a redo that brings one back) moved every later page by one — the viewer slid to the
+     next entry, its paper, its title and its "Edit input", with no press on the pager. The page shown is kept by what it is
+     (its entry and its file) and found again when the list changes; only a page that is itself gone falls to its neighbour. */
+  const pageKey = (e: any) => (e ? `${e.row && e.row.iid != null ? e.row.iid : ''}#${e.docId || ''}` : '')
+  const [shown, setShown] = useState('')
+  if (v !== seenV) { const s0 = seatAt(v); setSeenV(v); setI(s0); setShown(pageKey(els[s0])) }
+  else if (shown && els.length) {
+    const at = els.findIndex((e: any) => pageKey(e) === shown)
+    if (at >= 0 && at !== i) setI(at)
+    else if (at < 0) setShown(pageKey(els[Math.min(i, els.length - 1)]))
+  }
+  const turn = (n: number) => { setI(n); setShown(pageKey(els[n])) }
   const idx = els.length ? Math.min(i, els.length - 1) : 0
   const cur = els.length ? els[idx] : null
   const r = cur && cur.row
@@ -141,10 +153,10 @@ export function DocViewer() {
               nav bar, so the single-doc view is unchanged */}
           {els.length > 1 && <div className="docview-nav">
             <button type="button" className="abtn" id="docViewPrev" aria-label="Previous document"
-              disabled={idx === 0} onClick={() => setI(idx - 1)}>‹</button>
+              disabled={idx === 0} onClick={() => turn(idx - 1)}>‹</button>
             <span className="docview-count">{idx + 1} of {els.length}</span>
             <button type="button" className="abtn" id="docViewNext" aria-label="Next document"
-              disabled={idx === els.length - 1} onClick={() => setI(idx + 1)}>›</button>
+              disabled={idx === els.length - 1} onClick={() => turn(idx + 1)}>›</button>
           </div>}
           {doc && url
             ? (doc.mime === 'application/pdf'
