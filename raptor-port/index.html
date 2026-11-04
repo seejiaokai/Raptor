@@ -66,6 +66,10 @@
       .pgclaw{position:fixed;left:0;right:0;bottom:0;top:var(--topbar-h,58px);z-index:50;display:grid;place-items:center;
         background:#0B0D10;transition:opacity .2s ease-out}
       #bootclaw.gone,.pgclaw.gone{opacity:0;pointer-events:none}
+      /* under the claw after 8 s on a slow signal (D1632): the claw's 72px mark is centred, so 18px under its foot */
+      .pgclaw-still{position:absolute;left:0;right:0;top:calc(50% + 54px);text-align:center;font-size:13px;line-height:1.4;color:#8A96A3}
+      /* the page's name for a screen reader only ([TALON-CLAW-SPOKEN]) */
+      .pgclaw-say{position:absolute;width:1px;height:1px;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
       #bootclaw .mk,.pgclaw .mk{position:relative;width:72px;height:72px;filter:drop-shadow(0 0 26px rgba(59,198,232,.55))}
       #bootclaw .cs,.pgclaw .cs{position:absolute;inset:0;animation:bc-fade 1.77s linear -.2s infinite backwards}
       #bootclaw .w,.pgclaw .w{position:absolute;width:13px;overflow:hidden;transform-origin:10px 1px}

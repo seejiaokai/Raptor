@@ -92,8 +92,9 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
   const [first] = useState(shown)
   const opened = useRef(first)
   const [text, setText] = useState(first)
-  /* on the pad, the first digit REPLACES the figure that was there (what select-all does for the input) */
-  const fresh = useRef(true)
+  /* on the pad, the first digit REPLACES the figure that was there (what select-all does for the input) — and the figure is
+     DRAWN selected until then (D1630), so the look says what the next key will do */
+  const [fresh, setFresh] = useState(true)
   const [mode, setMode] = useState<'day' | 'run'>('day')
   const [err, setErr] = useState('')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -210,8 +211,8 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
   }
   const press = (k: string) => {
     setErr('')
-    const base = fresh.current ? '' : text
-    fresh.current = false
+    const base = fresh ? '' : text
+    setFresh(false)
     setText(k === 'back' ? base.slice(0, -1) : digits(base + k))
   }
   /* the choice keeps the typing: a button that took the focus would close the input's caret under him */
@@ -229,12 +230,24 @@ export function FlyEditor({ at, dates, onMove, onClose }: {
   const label = `${reqName(at.row)}, ${dayLabel(at.iso)}`
 
   if (at.touch) {
+    /* WHAT THE KEYS ARE TYPING, SAID WITHOUT WORDS (D1629, D1630 — his "make it intuitive such that the user knows that they
+       don't need to tap"): as the pad opens the figure is highlighted, the way a phone draws a selected value, because the
+       next key replaces it; once a key is pressed a typing line follows what is typed, and with nothing typed the line
+       stands alone. In the pad's top line, in a box drawn like the cell's own; the cell over the grid (about 20 wide on a
+       phone) takes the highlight but not this line, which crowded its figure in the drawing — it keeps the thin caret it
+       has drawn since D636 (matrix.css .flyedit.touch::after), hidden while the figure is highlighted. */
+    const selected = fresh && text !== ''
     return (
       <>
-        <div className="flyedit touch" ref={el => { boxRef.current = el }} data-testid="fly-edit-touch" aria-label={label}>{text}</div>
+        <div className={selected ? 'flyedit touch selected' : 'flyedit touch'} ref={el => { boxRef.current = el }} data-testid="fly-edit-touch" aria-label={label}>{selected ? <span className="flysel">{text}</span> : text}</div>
         <div className="flypad" ref={padRef} data-testid="fly-pad" role="group" aria-label={`Number pad — ${label}`}>
           <div className="flypad-hd flyedit-strip" data-testid="fly-edit-strip">
-            <b>{reqShort(at.row)}</b><span className="flypad-day">{dayLabel(at.iso)}</span>
+            <b>{reqShort(at.row)}</b>
+            <span className="flypad-mid">
+              <span className="flypad-day">{dayLabel(at.iso)}</span>
+              {/* read out as it changes, for a screen reader: the figure is otherwise only seen */}
+              <span className="flypad-fig" data-testid="fly-pad-fig" aria-live="polite">{selected ? <span className="flysel">{text}</span> : <>{text}<span className="flycaret" aria-hidden="true" /></>}</span>
+            </span>
             <span className="flypad-nav">
               <button type="button" data-testid="fly-pad-prev" aria-label="Previous flying day" onClick={() => step(-1)}>‹</button>
               <button type="button" data-testid="fly-pad-next" aria-label="Next flying day" onClick={() => step(1)}>›</button>

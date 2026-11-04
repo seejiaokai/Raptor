@@ -21,18 +21,39 @@ export const PAGECLAW_PATHS = [
   'M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z',
 ]
 
+/* WHAT IT SAYS ([TALON-CLAW-SPOKEN], 4 Nov 26): the claw is a quiet status naming the page, so a VoiceOver user who taps
+   the Leave War hears "Loading Leave War" rather than nothing until the page appears; the picture itself is hidden from a
+   screen reader, and the page area is marked busy while the claw is up. The start-up claw keeps its own label. */
+const PAGE_NAMES: Record<string, string> = { leavewar: 'Leave War', tracker: 'Tracker' }
+/* A WAIT THAT DOES NOT LOOK STUCK (D1632): still up after this long — a very slow signal — a grey "Still loading…" stands
+   under the claw, shown and spoken, and goes with it. Most opens take well under a second and never show it. */
+export const PAGECLAW_STILL_MS = 8000
+const busy = (page: string | undefined, on: boolean) => {
+  const sec = page ? document.getElementById(`page-${page}`) : null
+  if (!sec) return
+  if (on) sec.setAttribute('aria-busy', 'true'); else sec.removeAttribute('aria-busy')
+}
+
 /** Lay the claw over the page area; returns the element. */
 export function raisePageClaw(page: string): HTMLElement {
   const el = document.createElement('div')
   el.className = 'pgclaw'
   el.dataset.up = String(Date.now())
-  el.setAttribute('role', 'img')
-  el.setAttribute('aria-label', 'TALON is loading')
+  el.setAttribute('role', 'status')
+  el.setAttribute('aria-live', 'polite')
   el.dataset.page = page
   el.innerHTML = '<div class="mk" aria-hidden="true"><div class="cs">'
     + PAGECLAW_PATHS.map((d, i) => `<div class="w pw${i}"><svg viewBox="0 -2 60 64"><path class="c" d="${d}"/></svg></div>`).join('')
-    + '</div></div>'
+    + `</div></div><span class="pgclaw-say">Loading ${PAGE_NAMES[page] ?? 'the page'}</span>`
   document.body.appendChild(el)
+  busy(page, true)
+  window.setTimeout(() => {
+    if (!el.isConnected || el.classList.contains('gone')) return
+    const still = document.createElement('div')
+    still.className = 'pgclaw-still'
+    still.textContent = 'Still loading…'
+    el.appendChild(still)
+  }, PAGECLAW_STILL_MS)
   return el
 }
 
@@ -43,6 +64,7 @@ export const PAGECLAW_QUICK_MS = 200
 /** Take the claw away. `arrived`: its page has just been drawn (fade over it), else he left first (go at once). */
 export function dismissPageClaw(el: HTMLElement, arrived: boolean): void {
   if (!el.isConnected || el.classList.contains('gone')) return
+  busy(el.dataset.page, false)
   const still = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
   const quick = Date.now() - Number(el.dataset.up || 0) < PAGECLAW_QUICK_MS
   if (!arrived || still || quick) { el.remove(); return }

@@ -92,6 +92,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LAZY-PAGE-LOAD-FAIL] — if the Leave War's or the Tracker's download fails (a weak signal, a tab open across an update) nothing catches it — worked out from the code, not seen; a message with Retry.
 - [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
 - [LW-PAD-SHOWS-FIGURE] — the Leave War's number pad shows the figure as it is typed in its top line (D1584, 3 Nov 26) — with the next Leave War batch.
+- [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
@@ -243,6 +244,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
+**What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
 ### [TALON-CLAW-SPOKEN] The page claw says nothing to a screen reader (found 3 Nov 26, the design look of the claw)
 **What:** the page claw (`ui/pageclaw.ts raisePageClaw`) is put on the page as a picture labelled "TALON is loading", with no status words: a VoiceOver user who taps the Leave War hears nothing until the page appears. **To do:** quiet status words naming the page ("Loading Leave War", "Loading Tracker") and the page area marked busy while it is up; the start-up claw's label may stay. **Place:** a small fix with the next claw change (with [TALON-CLAW-HANDOVER]), red-first in `ui/pageclaw.test.tsx`.
