@@ -62,3 +62,86 @@ box's and the day's middles measured, not looked at.
 ## Scenarios (the walk's own list)
 
 Written for the walker's brief; results under §Walk below.
+
+- **The pad (S1–S10):** opened on a figure, typed, emptied, moved by › and reopened; three keys inside a second; a tap on
+  another Required cell with the pad up; held sideways (844 × 390), upright at 402, 375, 320 and 375 with letters a seventh
+  wider; less motion; a desktop click (no pad); WebKit at the iPhone's size.
+- **The failed download (F1–F9):** the card on a refused Leave War download at a phone, the top bar working past it, every
+  other page one tap away; Retry still refused, then allowed; the desktop pre-warm refused (silent), then opened; the
+  Tracker; an updated app; the keyboard; a slowed download ("Still loading…" at 8 s); a member; WebKit.
+- **The plain-user round (U1, U2):** both pages opened normally on a phone and a desktop, the day window opened and closed
+  three ways, back to a page already drawn.
+- **Re-walk only (R0–R7):** the build's file list; Retry still refused (the claw, then the card, no reload, still signed
+  in, the keyboard back on Retry); Retry allowed (the files fetched afresh, the reload, everything saved kept, the page
+  open by itself after the sign-in — D1635); the desktop's card on open; the Tracker; Enter on Retry; WebKit both ways;
+  a member; Retry on a slow signal then Inputs before the files came (no reload under him).
+
+## Walk
+
+**The first walk** (`scripts/handpass/lwsf-walk.mjs` → `parts/lwsf-walk.txt`, 72 pictures `docs/img/handpass/2026-11-04-lw-small-fixes-walk/`):
+86 pass, 8 fail. The 8: S7c at 375, 320 and 375-wide-letters — the box drops under the date on a phone under ~400 wide
+(not a fault: put to him, D1634 "as built"); F2b, F3b, F5b, F7b, F2w-b — **Retry never downloads again in place**
+(Chromium and WebKit keep a failed module file failed): put to him, D1633 "Retry reloads the app".
+
+**Re-walk 1** (plain reload, `parts/lwsf-rewalk-1.txt`, pictures `…-rewalk-1/`): 30 pass, 1 fail — **R5c: in WebKit the
+reload never fetched the failed file again**; probes `scripts/handpass/lwsf-webkit-reload-probe.mjs` (the test browser's
+own refusal, every way of reloading — only a new tab cleared it) and `lwsf-socket-probe.mjs` (a server of its own hanging
+up: 0 requests after the reload; one fetch with the cache skipped first cleared it) → `parts/lwsf-socket-probe.txt`.
+Fixed: Retry fetches the page's files afresh from the build's own list (`page-files.json`), then reloads; the card back
+if they do not come.
+**Re-walk 2** (`parts/lwsf-rewalk-2.txt`): 30 pass, 2 fail — with no signal the claw flashed and the card snapped back
+(the press read as nothing). Fixed: the claw held (0.7 s, then a full round, D1636). Re-run: 32 / 0.
+**Re-walk 3** (after D1635–D1636, `parts/lwsf-rewalk-3.txt`): 26 pass, 6 stopped — every Retry scenario's sign-in step
+waited for the week, which the fix no longer opens (the premise consumed, §5); the script now waits for the top bar.
+**Re-walk 4** (`parts/lwsf-rewalk-4.txt`, `…-rewalk-4/`): 39 pass, 0 fail, R7 added. **Re-walk 5** (after the second read's
+fixes): 39 / 0. **Re-walk 6** (the final build 85752d7b0, `parts/lwsf-rewalk-6.txt`, 38 pictures `…-rewalk-6/`): **39 pass,
+0 fail** — the page open by itself after Retry's reload in every case (Chromium, WebKit, admin, member, the Tracker,
+keyboard), no reload once he left the page, everything saved kept.
+
+Walk: docs/handpass/2026-11-04-lw-small-fixes.md · 272 pictures · 5 surfaces (the pad, the card on both pages, the claw and
+"Still loading…", the sign-in's reopen, Inputs mid-Retry) · 5 orders (Retry refused then allowed; allowed at once; hidden
+then opened; left mid-fetch; by keyboard) · MISSING: none built-side — 2 points his (open 1, 2 below)
+
+## The code reads (D790, D1594 — fresh, blind Opus readers, never the writer)
+
+1. The first read of the batch (before the walk): six findings, fixed red-first in 3c774c1e0; its narrow read: none.
+2. The read of Retry (ec86f6b36, 5315f75b1, 4169fa990): **four** — a "Leave site?" answered Stay left the claw stuck and
+   the note behind (and iPhone Safari never asks); a file counted as come when its answer only started; the reload fired
+   after he had left the page or signed out; two missing tests. All fixed red-first in 4ef914283.
+3. The narrow read of 4ef914283: **one** — the 1.5 s "held back" timer fired on a merely slow reload and threw the note
+   away. Fixed in a08956e3b (10 s, the note never thrown away by it, its age bounding it).
+4. The third and last round (a08956e3b): **two** — a minute too short (it also covers typing the password), and a note
+   left by a reload that never happened could open the page at a later sign-in on the same page. Fixed in 85752d7b0
+   (ten minutes; never used on the page that wrote it; a date ahead refused). The cap of three rounds is reached: the
+   unit tests (58) and re-walk 6 carry what is left.
+
+## The drawing check (D1495) — `docs/img/handpass/2026-11-04-drawcheck-lwsf-rerun/report.md`
+
+The card: 0 differences at the phone, the desktop and the Tracker. 16 kept by his rulings (the box 52 wide and what sits in
+it, D1634; the claw's place over "Still loading…", shown on the page v3 and not taken back). **4 open: the pad's day words
+2.5px lower than drawn** — to put to him with a picture (D1426).
+
+## The design critique (`/impeccable critique`, `parts/2026-11-04-retry-critique.md`)
+
+23/32. His answers, D1635–D1637, "as recommended": the page reopens after the reload; the keyboard back on Retry with the
+app's ring and the claw a full round; his card words kept. All built and walked.
+
+## Findings and dispositions
+
+| Find | Where found | Disposition |
+|---|---|---|
+| Retry never downloads in place | walk F2b… | D1633: Retry reloads |
+| WebKit keeps the file failed across a reload | re-walk 1 R5c, probes | fixed: the files fetched afresh first |
+| A reload with no signal would leave "no connection" | the probes' reasoning | fixed: the card back, still signed in (put to him — open 1) |
+| The claw flashed, the card snapped back | re-walk 2 R1b, R5x | fixed: the hold, D1636 |
+| After the reload he lands on the first page | the critique | D1635, built |
+| Focus lost after a failed Retry; the browser's ring | the critique (detector's measures) | D1636, built |
+| Stuck claw on Stay; headers-only; left the page; tests | code read 2 | fixed, 4ef914283 |
+| Slow reload threw the note away | code read 3 | fixed, a08956e3b |
+| A minute too short; a note on a page never replaced | code read 4 | fixed, 85752d7b0 |
+| The pad's day words 2.5px lower | drawing check | open 2 — to him |
+
+**Open for him:** (1) Retry with no signal keeps the card instead of reloading — it narrows D1633's "Retry reloads",
+recommended as built; (2) the day's words 2.5px lower — recommended keep. **His iPhone look:** airplane mode on, tap
+Leave War (the card), airplane mode off, Retry — the claw, the sign-in, the Leave War opens by itself; VoiceOver reads
+"Loading Leave War"; three digits in the pad in Apple's font.

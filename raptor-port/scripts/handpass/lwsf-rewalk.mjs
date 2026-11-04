@@ -13,8 +13,8 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
-const OUT = join(HERE, '../../docs/img/handpass/2026-11-04-lw-small-fixes-rewalk-4')
-const RES = join(HERE, '../../docs/handpass/parts/lwsf-rewalk-4.txt')
+const OUT = join(HERE, '../../docs/img/handpass/2026-11-04-lw-small-fixes-rewalk-6')
+const RES = join(HERE, '../../docs/handpass/parts/lwsf-rewalk-6.txt')
 const URL = 'http://localhost:4173/'
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 rmSync(OUT, { recursive: true, force: true }); mkdirSync(OUT, { recursive: true }); mkdirSync(dirname(RES), { recursive: true })
