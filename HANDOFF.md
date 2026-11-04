@@ -20,33 +20,16 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/ask-at-the-control -->
-### `claude/ask-at-the-control` — [ASK-AT-THE-CONTROL]: eight questions hang from the control pressed (D1627, D1628) — BUILT and WALKED; his "merge live" given 4 Nov 26, merging — written 4 Nov 26 — verify before use
-- **Done:** his answer recorded (D1627 "Just change these" — 2, 3, 4, 47, 48; D1628 — 45, 46, 5 too). Built: one card, `raptor-port/src/ui/AskCard.tsx` (with `27-ask-card.css` and `lastpress.ts`), used by the input window (swap, Delete for all, Take me out), the opened day's Delete key, and the Leave War posting's second ask (Post out in two sheets, the Delete chip, the PO from date) in place of "Tap again to delete". Also `ui/FloatWindow.tsx` (a window comes forward only for a press inside it) and `leavewar/ui/Sheet.tsx` (a sheet leaves Escape to a card in it).
-- **Checked:** WALK tier — `raptor-port/docs/handpass/2026-11-04-ask-at-the-control.md`: six faults found and fixed, final walk 234 PASS / 0 FAIL / 1 not walked; unit tests of the touched files green; GitHub's run of pull request 630 is the gate set. His look page: https://claude.ai/artifact/NxHCM6u6fnpCbCURYi1qPN (his drawing beside the build).
-- **Next, in order:** his "merge live" came 4 Nov 26 (after the chat compacted once, the same afternoon): push these records, wait for that run, merge, confirm the live app (D1088). Once live, this block is removed at the next handoff.
-- **Numbers held:** rulings D1627–D1636 (D1627, D1628 used); observations 796–805 (796, 797 used); design lessons 85–88 (none used).
-- **Opening line (to continue):** Switch this chat to the branch `claude/ask-at-the-control`: `git fetch origin`, `git switch claude/ask-at-the-control`, `git pull --ff-only`. Read `HANDOFF.md` — its block under `## Now` — then carry on from "Next, in order".
-<!-- /now -->
-<!-- now:claude/talon-claw-visible -->
-### `claude/talon-claw-visible` — the loading claw's plain dark and its first moment, pull request 628 — MERGING on his "merge live" (4 Nov 26); once live this block goes at the next handoff — written 4 Nov 26 — verify before use
-- **What goes live:** [TALON-CLAW-BG] — every page's background the claw's plain dark, the faint wash gone (D1614); D1612's one-frame raise taken out; the start-up claw on every start from its first frame (D1615). Walks: start-up 27/27, page claw 75/75; load 1.65 s. Evidence `raptor-port/docs/handpass/2026-11-03-talon-pages.md`. [TALON-CLAW-BG] archived. `main` merged in (the input window's ✕ question, D1624–D1626) — record files clashed, both sides kept.
-- **The design look's questions, all answered:** the round stays (D1617); the hand-over stays a plain fade (D1618, replacing his earlier yes, D1616). Still open, filed: [TALON-CLAW-SPOKEN], [LAZY-PAGE-LOAD-FAIL].
-- **Unfinished:** the worktree `C:/Users/User/projects/Raptor-talon` of pull request 626 (merged): remove its `node_modules` link first (`cmd /c rmdir`), never the packages, then `git worktree remove`; only once the "Talon name loading" chat is closed. `.impeccable/config.json` carries an older uncommitted rewording of two reasons — not this chat's; left alone.
-- **Numbers held:** rulings D1605–D1619 (D1605–D1618 used, D1619 free again); observations 786–795 (786–790 used); design lessons 81–84 (81 used).
-- **Pick up here:** confirm the live app on Vercel; nothing else in hand.
-<!-- /now -->
-<!-- now:claude/input-win-x-asks -->
-### `claude/input-win-x-asks` — [INPUT-WIN-X-ASKS] + [INPUT-ASK-LOOK]: the input window's ✕ asks (D1622), and its question is a card hanging from the ✕ (D1626, design C) — BUILT and walked, MERGING on his "merge live" (3 Nov 26, night) — once live this block goes at the next handoff; the next job is [ASK-AT-THE-CONTROL] — written 3 Nov 26 (night) — verify before use
-- **Before it:** the Inputs batch (pull request 625) went live 3 Nov 26 on his "merge live"; its block removed. His answers D1621–D1623 recorded there.
-- **Built:** `raptor-port/src/ui/InputWindow.tsx` — `askClose` on the window's ✕ (typed words: the question; nothing typed: closes; Cancel never asks); the close question drawn as a card hanging from the ✕ (`.inped-xask`, `25-inputs-calendar.css`), his pick of three designs drawn on the real app (D1624 "it’s ugly", D1626 "C for all similar cases").
-- **His correction (D1625):** the box had reached him with no mock-up — anything new he will see is a mock-up first, a fix included; written into the bug-check order §5; observation 780. **D1626** is in the design guide as lesson 77 and in `raptor-port/docs/PRODUCT.md` principle 7, read by one fresh reader (one overreach — "or another edge" — taken out).
-- **The check:** WALK — `raptor-port/docs/handpass/2026-11-03-input-win-x-asks.md`; `ixa-walk.mjs` 20/20 and `xask-walk.mjs` 12/12 (pointer under the ✕ to the pixel, the form not moved, a scrolled form), 0 browser errors; touched tests green, lint and docsize clean.
-- **Next, in order:** (1) his "merge live" given 3 Nov 26: [INPUT-WIN-X-ASKS] and [INPUT-ASK-LOOK] archived, these records pushed — if the merge is not confirmed live in this chat, check Vercel's Production for main's merge commit; (2) [ASK-AT-THE-CONTROL] — the roll-call of every other question raised by a press (the input window's swap, take-yourself-out and delete-for-everyone questions; the opened day's "Delete this input?"; the document, upchit and medical-clash sheets raised by Save), each drawn for him before it changes (D1625, D1626).
-- **Numbers:** rulings D1624–D1626 used (next free D1627); observations 776–785 reserved (776–780 used); design lessons 77–80 reserved (77 used).
-- **Opening line (to continue):** Switch this chat to the branch `claude/input-win-x-asks`: `git fetch origin`, `git switch claude/input-win-x-asks`, `git pull --ff-only`. Read `HANDOFF.md` — its block under `## Now` — then carry on from "Next, in order".
+<!-- now:claude/tidy-4-nov -->
+### `claude/tidy-4-nov` — the records' tidy-up after three jobs went live — notes only, merges by itself once green (D1407) — written 4 Nov 26 — verify before use
+- **Done:** the three finished blocks removed — `claude/ask-at-the-control` (pull request 630, live 4 Nov 26), `claude/talon-claw-visible` (628) and `claude/input-win-x-asks` (629), all merged; their open residue already filed ([TALON-CLAW-SPOKEN], [LAZY-PAGE-LOAD-FAIL]); the TALON worktree it named is already gone. [ASK-AT-THE-CONTROL] archived.
+- **Left on his PC, not this chat's:** `.impeccable/config.json` carries an older uncommitted rewording of two reasons — left alone.
+- **Next:** his pick of the next job (recommended: the Leave War small fixes — the number pad's figure, a failed page load's Retry, the claw's spoken words, the slow zoom test — with the Leave War's React Doctor warnings, D1534; items 1 and 2 drawn for him first, D1625).
+- **Numbers:** rulings next free D1629; observations next free 798.
 <!-- /now -->
 ## Next, in order
+
+**RIGHT NOW (4 Nov 26):** the questions at the button (pull request 630), the loading claw (628) and the input window's ✕ (629) LIVE; no pull request open → his next pick from the backlog (D994), the Leave War small fixes recommended.
 
 **RIGHT NOW (21 Oct 26):** pull request 553 LIVE (the Inputs batch, D994 — its block removed) → his pick, the Insights and Logic small fixes (D994), on `claude/insights-logic-fixes-3416c8` (pull request 554, this chat's block) → his "merge live" GIVEN → his next pick from the backlog.
 
