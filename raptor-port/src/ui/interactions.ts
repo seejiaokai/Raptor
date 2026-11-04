@@ -29,7 +29,7 @@ import { STORE_CFG, addStore, delStore, renameStore, moveStore, storesSave, stor
 import { logAction } from '../engine/editlog'
 import { esc } from '../state/view'
 import { setDayPop, setAirKey, setDrawer, setInpEdit } from './pops'
-import { menuEscape } from './sheetfocus'
+import { menuEscape, menuKeys, menuFirst } from './sheetfocus'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { iuParts } from '../engine/keys'
 import { howMany, reassignInput, rosterOptions, firstPersonalType, firstUnavailType, firstSansType, unfmt, commitInputEdit, draftOf, dryRun, oilGate, saveBatchX, inputWho, markMoved } from './inputedit'
@@ -439,7 +439,11 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
        re-run place() for it. Call it directly, right here, rather than
        through queueHold: queueHold only drains off the week's own repaint
        (EditWeek's effect, on a version bump), and this branch causes none. */
-    if (T.closest('.st-pen')) { pen = !pen; paint(); place(); return }
+    /* THE KEYS STAY ON WHAT THEY PRESSED (owner D1646 — sheetfocus.ts menuKeys): every press here draws the box's
+       buttons again (paint), which took the button the keys were on away with it; they go to its new twin */
+    const kept = box.contains(document.activeElement) ? document.activeElement as HTMLElement : null
+    const keepOn = (sel: string) => { if (kept && !kept.isConnected) (box.querySelector(sel) as HTMLElement | null)?.focus({ preventScroll: true }) }
+    if (T.closest('.st-pen')) { pen = !pen; paint(); place(); keepOn('.st-pen'); return }
 
     if (pen) {
       const row = T.closest('.st-erow') as HTMLElement | null
@@ -457,7 +461,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
       }
       if (k && (T.closest('.st-up') || T.closest('.st-dn'))) {
         const i = STORE_CFG.findIndex(([x]) => x === k)
-        if (moveStore(i, i + (T.closest('.st-up') ? -1 : 1))) { storesSave(); paint(); queueHold(place); notify() }
+        if (moveStore(i, i + (T.closest('.st-up') ? -1 : 1))) { storesSave(); paint(); keepOn(`.st-erow[data-k="${k}"] ${T.closest('.st-up') ? '.st-up' : '.st-dn'}`); queueHold(place); notify() }
         return
       }
       if (T.closest('.st-add')) {
@@ -487,6 +491,7 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
       markEdit(`st:${di}.${gi}.${li}.${ai}`, stWas, storesText(a.opts))
     })
     paint()
+    keepOn(`[data-cfg="${key2}"]`)
     /* queueHold, not setTimeout: the week repaints via EditWeek's effect,
        which calls refreshHighlights() once the DOM swap is done — draining
        the held callback right there, in the same task as the swap, exactly
@@ -605,6 +610,8 @@ function openStoresMenu(anchor: HTMLElement, key: string) {
   setTimeout(() => document.addEventListener('click', off), 0)
   /* Escape takes it away too, unhooking `off`, the board under it staying; the keys back on the C ([VEILED-WINDOWS-BAR]) */
   menuEscape(box, anchor)
+  /* …and opened by the keys, they land on its first store; the arrows move through it (owner D1646) */
+  menuKeys(box, anchor)
 }
 
 /* ONE TAP PLACES A SUGGESTED TIME IN ITS EMPTY BOX (owner D1030) — the board's <input> (its placeholder is the
@@ -920,10 +927,38 @@ export function routeOpenKey(e: KeyboardEvent) {
   if (e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
   const t = e.target as HTMLElement | null
   if (!t || typeof t.closest !== 'function') return
+  /* EDIT SCHEDULE'S DAY NAME, THE SAME WAY (owner D1646, 5 Nov 26 — the mock-up's picture 2d): a stop for the keys
+     (html.ts — role="button", tabindex 0, as the date beside it), whose Enter or Space shows that day's crew in the aircrew
+     panel, as a press on it does (routeClick, below). The same edit-page gate. */
+  const cd = t.closest('#eWeek .crewday[data-crewday]') as HTMLElement | null
+  if (cd) {
+    if (!canEditSched() || view.CURPAGE !== 'editsched') return
+    e.preventDefault()
+    pickRosDay(+cd.dataset.crewday!)
+    return
+  }
   const sbo = t.closest('#eWeek .sb-open[data-sbday]') as HTMLElement | null
   if (!sbo || !canEditSched() || view.CURPAGE !== 'editsched') return
   e.preventDefault()
   openSchedulerByKeys(+sbo.dataset.sbday!)
+}
+
+/* ↓ ON A BOARD MENU'S BUTTON OPENS ITS MENU ON ITS FIRST ITEM (owner D1646, 5 Nov 26 — the design guide §2: Enter or ↓ opens a
+   menu on its first item). The buttons of + Block, Templates (the board's and the week's), the plans selector, a jet's
+   stores (C) and + Wave, and the duty role's box, whose pick-list opens on a press: ↓ presses it, and the menu, told the
+   keys opened it (sheetfocus.ts menuKeys), takes them onto its first item. With that menu already up (opened by the
+   mouse), ↓ goes into it. Nothing else of ↓ is taken — a box's own caret, the page's scroll. */
+const MENU_BTN = '[data-dwadd], [data-daytplopen], #sbTpl, [data-planmenu], [data-stcfg], [data-wvadd], [data-rolepick]'
+export function routeMenuKey(e: KeyboardEvent) {
+  if (e.key !== 'ArrowDown' || e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+  const t = e.target as HTMLElement | null
+  if (!t || typeof t.closest !== 'function') return
+  const b = t.closest(MENU_BTN) as HTMLElement | null
+  if (!b || view.CURPAGE !== 'editsched' || !canEditSched()) return
+  const up = document.querySelector('.wavemenu') as HTMLElement | null
+  e.preventDefault()
+  if (up) { menuFirst(up)?.focus({ preventScroll: true }); return }
+  b.click()
 }
 
 export function routeClick(e: MouseEvent) {

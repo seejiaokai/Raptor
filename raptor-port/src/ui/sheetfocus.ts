@@ -201,6 +201,47 @@ export function menuEscape(box: HTMLElement, anchor: HTMLElement): void {
   }, anchor)
 }
 
+/* A SMALL MENU OPENED BY THE KEYS PUTS THEM ON ITS FIRST ITEM, AND THE ARROWS MOVE THROUGH IT (owner D1646, 5 Nov 26 —
+   "Go" on the mock-up page's question 2, docs/mock/2026-11-05-keys-windows/img/2b-desktop-blockmenu-drawn.png;
+   [BOARD-KEYS-LEFT]). The board's small menus — + Block, Templates, the plans selector, a jet's stores, + Wave, the duty
+   role list (board.ts popMenu, interactions.ts openStoresMenu) — were added at the page's end with the keys left on their
+   button: Enter opened one and nothing in it could be reached. Opened by Enter, Space or ↓ on its button (↓ in the duty
+   role's box), the keys go onto its first item — the first of its picks (`.wm`), not the pencil in its corner; ↑ and ↓ move
+   through every button in it, round from the last to the first; Enter (or Space) is the button's own press, its pick;
+   Escape was already its own (menuEscape). The ring is the app's keyboard ring, for the keys only (:focus-visible,
+   10-board-history.css) — a menu opened by a press of the mouse or a finger opens exactly as before, the keys where they
+   were and no ring.
+   HOW "BY THE KEYS" IS KNOWN: the last key pressed (Enter, Space or ↓) was pressed on the menu's button — the keydown that
+   becomes the button's click — and no pointer was pressed since. Read and forgotten as a menu opens. */
+let keyOn: EventTarget | null = null
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', e => { keyOn = e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' ? e.target : null }, true)
+  document.addEventListener('pointerdown', () => { keyOn = null }, true)
+  document.addEventListener('mousedown', () => { keyOn = null }, true)
+}
+const menuItems = (box: HTMLElement) =>
+  [...box.querySelectorAll<HTMLElement>('button')].filter(b => !(b as HTMLButtonElement).disabled && !b.closest('[hidden]'))
+/** `box` hangs from `anchor`: the arrows move through its buttons, and opened by the keys the keys land on its first pick */
+export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
+  box.addEventListener('keydown', e => {
+    if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return
+    const at = document.activeElement as HTMLElement | null
+    if (!at || at.tagName !== 'BUTTON' || !box.contains(at)) return
+    const list = menuItems(box), i = list.indexOf(at)
+    if (i < 0) return
+    e.preventDefault()
+    list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length]!.focus({ preventScroll: true })
+  })
+  const by = !!keyOn && (keyOn === anchor || (keyOn instanceof Node && anchor.contains(keyOn)))
+  keyOn = null
+  if (by) menuFirst(box)?.focus({ preventScroll: true })
+}
+/** the item a menu opened by the keys puts them on: its first pick, else its first button */
+export function menuFirst(box: HTMLElement): HTMLElement | null {
+  const list = menuItems(box)
+  return list.find(b => b.classList.contains('wm')) || list[0] || null
+}
+
 /* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */
 export function topSheet(): HTMLElement | null {
   const el = sheets[sheets.length - 1]

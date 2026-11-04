@@ -50,6 +50,36 @@ export function boardEscapeWants(target: EventTarget | null): Want {
   return 'close'
 }
 
+/* TAB STAYS ON THE BOARD WHILE IT IS OPEN (owner D1646, 5 Nov 26 — [BOARD-KEYS-LEFT] (2), the [WINDOWS-KEEP-KEYS] kind;
+   the pattern is sheetfocus.ts keepKeys). The board lies over the whole page, the top bar too, and Tab walked on past its
+   last control into the week hidden behind it — the keys out of sight, a box behind it typed in unseen. While it is open:
+   Tab from its last stop goes round to its first, Shift+Tab from its first to its last, and a Tab pressed with the keys
+   nowhere or on the page behind it comes back onto it. Every other Tab is the browser's own, or the schedule's own Tab
+   route through the board's boxes (schedule-tab.ts), as before. What lies OVER the board keeps its own keys: a question
+   sheet holding them (topSheet) answers first, and with the keys in a menu, a movable window, the bell's list, a date
+   box's calendar or a veiled window, this stands aside. A stop is a control the keys can land on and the eye can see
+   (in a browser test — jsdom draws nothing, and there every stop counts). */
+const STOPS = 'button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"]),[contenteditable="true"],[contenteditable=""]'
+const LAYERS = '.wavemenu, #sbMoreMenu, .bell-list, .dcal-layer, .floatwin, .airpop, .modal'
+export function keepTabOnBoard(e: KeyboardEvent): void {
+  if (e.key !== 'Tab' || e.defaultPrevented || e.ctrlKey || e.altKey || e.metaKey || e.isComposing) return
+  if (SBDAY == null || CURPAGE !== 'editsched' || topSheet()) return
+  const board = document.getElementById('schedBoard')
+  if (!board || board.hidden) return
+  const at = document.activeElement as HTMLElement | null
+  const inBoard = !!at && board.contains(at)
+  if (!inBoard && at && at !== document.body && typeof at.closest === 'function' && at.closest(LAYERS)) return
+  const drawn = board.getClientRects().length > 0
+  const stops = [...board.querySelectorAll<HTMLElement>(STOPS)].filter(n => n.tabIndex >= 0 && !(n as HTMLButtonElement).disabled
+    && !n.closest('[hidden], [inert]') && (!drawn || n.getClientRects().length > 0))
+  const first = stops[0], last = stops[stops.length - 1]
+  if (!first || !last) return
+  const go = (n: HTMLElement) => { e.preventDefault(); n.focus({ preventScroll: false }) }
+  if (!inBoard) { go(e.shiftKey ? last : first); return }
+  if (!e.shiftKey && at === last) { go(first); return }
+  if (e.shiftKey && at === first) go(last)
+}
+
 export function wireBoardEscape(): () => void {
   let want: Want = ''
   const down = (e: KeyboardEvent) => { want = e.key === 'Escape' && !e.repeat && !e.isComposing ? boardEscapeWants(e.target) : '' }
@@ -62,5 +92,7 @@ export function wireBoardEscape(): () => void {
   }
   window.addEventListener('keydown', down, true)
   window.addEventListener('keydown', up)
-  return () => { window.removeEventListener('keydown', down, true); window.removeEventListener('keydown', up) }
+  /* …and, while the board is open, Tab kept on it (keepTabOnBoard, above) */
+  document.addEventListener('keydown', keepTabOnBoard, true)
+  return () => { window.removeEventListener('keydown', down, true); window.removeEventListener('keydown', up); document.removeEventListener('keydown', keepTabOnBoard, true) }
 }

@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus, locate } from './sheetfocus'
+import { useSheetFocus, useEscClose, locate } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -52,6 +52,8 @@ export function SchedBoard() {
   const signRef = useRef<HTMLDivElement>(null)
   const rosterRef = useRef<HTMLDivElement>(null)
   const daysRef = useRef<HTMLDivElement>(null)
+  /* the chip a key pressed — found again once the strip is drawn again (below) */
+  const chipKeys = useRef<string | null>(null)
   const warnRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLDivElement>(null)
@@ -399,6 +401,13 @@ export function SchedBoard() {
     /* with a caret, the writes above it must not move the box he is typing in */
     const set = (el: HTMLElement, key: string, html: string) => { if (caret && caret.isConnected) holdingPlace(caret, () => put(el, key, html)); else put(el, key, html) }
     set(daysRef.current!, 'days', dayTabsHTML(di))
+    /* THE KEYS STAY ON THE CHIP THEY PRESSED (owner D1646): the strip is drawn again from its string when the day or the week
+       changes, which took the chip the keys were on away with it */
+    if (chipKeys.current) {
+      const c = daysRef.current!.querySelector<HTMLElement>(chipKeys.current)
+      chipKeys.current = null
+      if (c && document.activeElement !== c) c.focus({ preventScroll: true })
+    }
     /* same lazy orphan prune as the edit week */
     if (DPREV.has(di) && !daySnapOf(di, DPREV.get(di))) DPREV.delete(di)
     if (DPREV.has(di)) {
@@ -531,9 +540,20 @@ export function SchedBoard() {
           {/* the same seven buttons on both surfaces — CSS makes them chips on a
               desktop and dots on a phone, so there is one list, one click
               handler, and a tap on a dot still jumps straight to that day */}
-          {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a box that hands a press to the day and week chips drawn inside it by the board's builder (board.ts); the chips are drawn as chips on a desktop and dots on a phone in a bar whose rows are measured, so made buttons they would take a button's own look and box — a change he would see; a keyboard route to them is a design of its own, named with the board's keyboard leftovers */}
+          {/* THE CHIPS TAKE THE KEYS (owner D1646, 5 Nov 26 — the mock-up's picture 2c): each is a Tab stop with role="button"
+              (board.ts dayTabsHTML), and Enter or Space here presses the one the keys are on, as a click does; the keys then stay
+              on that chip once the strip is drawn again (chipKeys, above). A held key's repeats press nothing. */}
+          {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- a box that hands a press, by the mouse or the keys, to the day and week chips drawn inside it by the board's builder (board.ts): the chips themselves are the controls, each role="button" with tabindex 0; drawn as spans, not buttons, because a button would take a button's own look and box in a bar whose rows are measured */}
           <div className="sb-days" id="sbDays" ref={daysRef}
-            onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null; if (!t) return; if (t.dataset.sbweek != null) boardWeekStep(+t.dataset.sbweek); else boardTab(+t.dataset.sbtab!) }} />
+            onClick={e => { const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null; if (!t) return; if (t.dataset.sbweek != null) boardWeekStep(+t.dataset.sbweek); else boardTab(+t.dataset.sbtab!) }}
+            onKeyDown={e => {
+              if ((e.key !== 'Enter' && e.key !== ' ') || e.repeat || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
+              const t = (e.target as HTMLElement).closest('[data-sbtab],[data-sbweek]') as HTMLElement | null
+              if (!t) return
+              e.preventDefault()
+              if (t.dataset.sbweek != null) { chipKeys.current = `[data-sbweek="${t.dataset.sbweek}"]`; boardWeekStep(+t.dataset.sbweek) }
+              else { chipKeys.current = `[data-sbtab="${t.dataset.sbtab}"]`; boardTab(+t.dataset.sbtab!) }
+            }} />
           {/* SEARCH + HIGHLIGHT in the freed middle of the day row (owner, 23
               Aug 26 — the phone dots left it empty between the arrows). On
               desktop .sb-nav is display:contents, so these flow into the
@@ -876,9 +896,12 @@ export function SortAllDialog() {
   const open = di != null
   const d = open ? DAYS[di] : null
   const close = () => cancelSortAll()
-  /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) */
+  /* the dialog takes the keyboard when it opens and keeps it (RF2 — ui/sheetfocus.ts) — and Escape closes it, as Cancel, ✕
+     and a press outside do (owner D1646, 5 Nov 26 — [BOARD-KEYS-LEFT] (5); heard before the board's own Escape, which waits
+     for it — boardescape.ts) */
   const sortBox = useRef<HTMLDivElement>(null)
   useSheetFocus(sortBox, open)
+  useEscClose(sortBox, open, close)
   return (
     /* the shade behind the box, as the cancel dialog's above (role="presentation") */
     <div className="airpop" id="sortAllPop" role="presentation" hidden={!open}

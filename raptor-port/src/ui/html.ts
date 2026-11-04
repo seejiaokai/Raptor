@@ -1789,10 +1789,13 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        the board at all. role="button" + tabindex="0" make it one Tab stop that a screen reader names as a button; Enter and
        Space open it (interactions.ts routeOpenKey), the ring is keyboard-only (11-drag.css). Not a text box, so the
        schedule's own Tab route (schedule-tab.ts, D551–D555) never visits it. EDIT week only: the view week's date keeps the
-       reference's markup byte for byte (the parity gate, html.test.ts normDt). */
+       reference's markup byte for byte (the parity gate, html.test.ts normDt).
+       THE DAY NAME BESIDE IT TOO (owner D1646, 5 Nov 26 — the mock-up's picture 2d): it shows that day's crew in the aircrew
+       panel on a press, and took no key — the same two marks make it a stop, Enter and Space press it (routeOpenKey), the
+       ring the same (11-drag.css); lifted off the parity compare by normDow, as normDt lifts the date's. */
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
-        ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
+        ? `<span class="dow crewday" data-crewday="${di}" role="button" tabindex="0" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : isGuest()   /* a guest's tree has no day panel (GuestApp) — plain text, never a dead door */
         ? `<span class="dow">${d.dow}</span><span class="dt">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${shortYear(d.dt)}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>
