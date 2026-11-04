@@ -1,8 +1,8 @@
 # Drawing check — Leave War small fixes — the pad's figure box, a failed download, "Still loading…" (D1629–D1632)
 
-Build: `C:\Users\User\projects\Raptor\raptor-port\dist` · run 4 Nov 2026, 19:42 · tolerance 2px
+Build: `C:\Users\User\projects\Raptor\raptor-port\dist` · run 4 Nov 2026, 21:24 · tolerance 2px
 
-**RED** — 4 difference(s) unexplained, 16 kept as built by his ruling, 0 screen(s) not checked.
+**GREEN** — 0 difference(s) unexplained, 20 kept as built by his ruling, 0 screen(s) not checked.
 
 ## The number pad, phone held sideways — just opened on 7, the figure highlighted (`pad-side-open`, 844 × 390 at 2)
 
@@ -12,7 +12,7 @@ Drawing: `scripts/handpass/lwsf-mock-caret.mjs` → `p1c-side-open.png` (the rep
 |---|---|---|---|---|
 | the pad's top line | matches | | | |
 | its "Req P" | matches | | | |
-| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | **unexplained** · [picture](pad-side-open--day.png) |
+| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | kept as built: D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place · [picture](pad-side-open--day.png) |
 | ‹ › Done, together | matches | | | |
 | Done | matches | | | |
 | the figure's box | its width — 8px more | 44 | 52 | kept as built: D1634: three digits wide from the start, the keys never move · [picture](pad-side-open--box.png) |
@@ -28,7 +28,7 @@ Drawing: `scripts/handpass/lwsf-mock-caret.mjs` → `p1c-side-typed.png` (the re
 |---|---|---|---|---|
 | the pad's top line | matches | | | |
 | its "Req P" | matches | | | |
-| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | **unexplained** · [picture](pad-side-typed--day.png) |
+| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | kept as built: D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place · [picture](pad-side-typed--day.png) |
 | ‹ › Done, together | matches | | | |
 | Done | matches | | | |
 | the figure's box | its width — 8px more | 44 | 52 | kept as built: D1634: three digits wide from the start, the keys never move · [picture](pad-side-typed--box.png) |
@@ -60,7 +60,7 @@ Drawing: `scripts/handpass/lwsf-mock-caret.mjs` → `p1c-phone-open.png` (the re
 |---|---|---|---|---|
 | the pad's top line | matches | | | |
 | its "Req P" | matches | | | |
-| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | **unexplained** · [picture](pad-phone-open--day.png) |
+| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | kept as built: D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place · [picture](pad-phone-open--day.png) |
 | ‹ › Done, together | matches | | | |
 | Done | matches | | | |
 | the figure's box | its width — 8px more | 44 | 52 | kept as built: D1634: three digits wide from the start, the keys never move · [picture](pad-phone-open--box.png) |
@@ -76,7 +76,7 @@ Drawing: `scripts/handpass/lwsf-mock-caret.mjs` → `p1c-phone-typed.png` (the r
 |---|---|---|---|---|
 | the pad's top line | matches | | | |
 | its "Req P" | matches | | | |
-| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | **unexplained** · [picture](pad-phone-typed--day.png) |
+| its day, "Wed 25 Feb" | the height of its words (from head) — 2.5px lower | 18 | 20.5 | kept as built: D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place · [picture](pad-phone-typed--day.png) |
 | ‹ › Done, together | matches | | | |
 | Done | matches | | | |
 | the figure's box | its width — 8px more | 44 | 52 | kept as built: D1634: three digits wide from the start, the keys never move · [picture](pad-phone-typed--box.png) |
@@ -148,4 +148,4 @@ Drawing: `scripts/handpass/lwsf-mock.mjs` → `p2-desktop-proposal-still-loading
 - fail-desk: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED
 - fail-desk: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/LeaveWarPage-Bgg3sfxO.js
 - fail-phone-tracker: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED
-- fail-phone-tracker: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/TrackerPage-msHHDUjQ.js
+- fail-phone-tracker: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/TrackerPage-D9XUy4I2.js

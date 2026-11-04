@@ -132,6 +132,7 @@ export default {
     ...['pad-side-open', 'pad-side-typed', 'pad-side-empty', 'pad-phone-open', 'pad-phone-typed'].map(state => ({ state, part: 'box', check: 'width', build: 52, why: 'D1634: three digits wide from the start, the keys never move' })),
     ...[['pad-side-open', 'figure', 'words-place', 20.6], ['pad-side-open', 'highlight', 'place', 19.6], ['pad-side-typed', 'figure', 'words-place', 19.1], ['pad-side-typed', 'line', 'place', 30.9], ['pad-side-empty', 'line', 'place', 25.5], ['pad-phone-open', 'figure', 'words-place', 20.6], ['pad-phone-open', 'highlight', 'place', 19.6], ['pad-phone-typed', 'figure', 'words-place', 19.1], ['pad-phone-typed', 'line', 'place', 30.9]]
       .map(([state, part, check, build]) => ({ state, part, check, build, why: 'D1634: the box 8px wider, what sits in it 4px further right with it' })),
+    ...['pad-side-open', 'pad-side-typed', 'pad-phone-open', 'pad-phone-typed'].map(state => ({ state, part: 'day', check: 'words-place', build: 20.5, why: 'D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place' })),
     ...[['still-phone', 425.5], ['still-desk', 442.5]].map(([state, build]) => ({ state, part: 'mark', check: 'place', build, why: 'the 4 Nov 26 page v3: the claw keeps its place, the line hangs under it; shown, not taken back' })),
   ],
 }

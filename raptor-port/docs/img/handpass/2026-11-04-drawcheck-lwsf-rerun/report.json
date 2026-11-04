@@ -206,8 +206,8 @@
        "drawing": "18",
        "build": "20.5",
        "by": "2.5px lower",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place",
+       "counts": false
       }
      ],
      "picture": "pad-side-open--day.png",
@@ -1071,8 +1071,8 @@
        "drawing": "18",
        "build": "20.5",
        "by": "2.5px lower",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place",
+       "counts": false
       }
      ],
      "picture": "pad-side-typed--day.png",
@@ -2732,8 +2732,8 @@
        "drawing": "18",
        "build": "20.5",
        "by": "2.5px lower",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place",
+       "counts": false
       }
      ],
      "picture": "pad-phone-open--day.png",
@@ -3597,8 +3597,8 @@
        "drawing": "18",
        "build": "20.5",
        "by": "2.5px lower",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1639: the date as built — the drawing marked the whole line, the build the words; laid over, they sit in the same place",
+       "counts": false
       }
      ],
      "picture": "pad-phone-typed--day.png",
@@ -6311,6 +6311,6 @@
   "fail-desk: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
   "fail-desk: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/LeaveWarPage-Bgg3sfxO.js",
   "fail-phone-tracker: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
-  "fail-phone-tracker: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/TrackerPage-msHHDUjQ.js"
+  "fail-phone-tracker: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/TrackerPage-D9XUy4I2.js"
  ]
 }

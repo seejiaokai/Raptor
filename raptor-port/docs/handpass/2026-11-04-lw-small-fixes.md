@@ -141,7 +141,7 @@ app's ring and the claw a full round; his card words kept. All built and walked.
 | A minute too short; a note on a page never replaced | code read 4 | fixed, 85752d7b0 |
 | The pad's day words 2.5px lower | drawing check | open 2 — to him |
 
-**Open for him:** (1) Retry with no signal keeps the card instead of reloading — it narrows D1633's "Retry reloads",
-recommended as built; (2) the day's words 2.5px lower — recommended keep. **His iPhone look:** airplane mode on, tap
+**His answers (4 Nov 26, "both as recommended"):** D1638 — Retry with no signal keeps the card (narrowing D1633); D1639 —
+the pad's date as built (the drawing check re-run GREEN: 20 kept, 0 unexplained). **His iPhone look:** airplane mode on, tap
 Leave War (the card), airplane mode off, Retry — the claw, the sign-in, the Leave War opens by itself; VoiceOver reads
 "Loading Leave War"; three digits in the pad in Apple's font.

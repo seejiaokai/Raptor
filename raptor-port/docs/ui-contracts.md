@@ -6904,7 +6904,7 @@ view and in reach (D1610, his "A").
   the app reopens the page that failed by itself — a note of it kept in that tab only until the reopen, never in the
   address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring
   the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
-  round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry."
+  round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry." **D1638:** with no signal, a file cut off or a save waiting, Retry does not reload — the card comes back, still signed in (narrowing D1633).
 - *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
@@ -7558,7 +7558,7 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     cyan edge — following every key; as the pad opens the figure is highlighted (the next key replaces it), once a key is
     pressed a blinking cyan typing line follows it (still for less motion), with nothing typed the line alone; the cell
     over the grid shows the highlight only; ‹ › Done unmoved; under ~400 wide the box sits under the date, the line one
-    row taller (D1634). Pictures:
+    row taller (D1634); the date stays as built, the drawing check's 2.5px being how it measured the date (D1639). Pictures:
     `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`.)* The page behind stays live: a tap on another
     Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
