@@ -22,9 +22,12 @@
        (D1636). After the reload the page reopens by itself once signed in (D1635: pagedownload.ts noteReopen, read by
        Login.tsx). The move plan's platform flag covers how Power Apps hosts a reload.
    Only a failed DOWNLOAD is caught here: a fault inside the page itself is passed on to what catches it today. */
-import { Component, Suspense, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { Component, Suspense, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { PageClaw } from './pageclaw'
-import { freshPageFiles, isDownloadFailure, noteReopen, RETRY_MIN_MS, type PageDownload } from './pagedownload'
+import { freshPageFiles, isDownloadFailure, noteReopen, RELOAD_HELD_MS, RETRY_MIN_MS, takeReopen, type PageDownload } from './pagedownload'
+import { saveWaiting } from '../storage/savewait'
+import { SESSION } from '../state/auth'
+import { CURPAGE } from '../state/view'
 
 /* The card, in the page's own area under the top bar. Read out the moment it shows. */
 function PageLoadFail({ name, onRetry, refocus }: { name: string; onRetry: () => void; refocus: boolean }) {
@@ -76,12 +79,26 @@ export function DownloadedPage({ page, name, download: { Page, src }, active, un
   /* after a Retry that did not bring the page, the keyboard goes back to Retry (D1636): the button was taken away while
      the claw stood, so the keyboard had fallen to the page */
   const [refocus, setRefocus] = useState(false)
+  const alive = useRef(true)
+  useEffect(() => { alive.current = true; return () => { alive.current = false } }, [])
+  const cardBack = () => { if (alive.current) { setRefocus(true); setTrying(false) } }
   const retry = () => {
     setTrying(true)
     const t0 = Date.now()
+    const who = SESSION?.user
     void freshPageFiles(src).then(came => {
-      if (came) { noteReopen(page); window.location.reload() }
-      else window.setTimeout(() => { setRefocus(true); setTrying(false) }, Math.max(0, RETRY_MIN_MS - (Date.now() - t0)))
+      if (!alive.current) return
+      /* the reload only while it can do no harm (the fresh code read of 4 Nov 26): every file came; no save is waiting,
+         which a reload would ask about ("Leave site?") or, on an iPhone, lose unasked; and he is still on this page in the
+         same sign-in — had he gone to another page or signed out meanwhile, a reload would throw away what he is doing */
+      if (!came || saveWaiting() || CURPAGE !== page || SESSION?.user !== who) {
+        window.setTimeout(cardBack, Math.max(0, RETRY_MIN_MS - (Date.now() - t0)))
+        return
+      }
+      noteReopen(page)
+      window.location.reload()
+      /* still here after that: the browser held the reload back ("Leave site?" answered Stay) — the note goes, the card comes back */
+      window.setTimeout(() => { takeReopen(); cardBack() }, RELOAD_HELD_MS)
     })
   }
   return (

@@ -4,14 +4,15 @@
    blank, top bar and all — on a desktop with no tap, through the hidden pre-warm (reproduced 4 Nov 26). Now only that
    page fails: its area shows "Couldn't open …" with Retry while it is on screen, and nothing while it is hidden. Retry
    reloads the app (D1633). How it looks in a real browser, with the download refused, is the walk's. */
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { act, Component, type ReactNode } from 'react'
 import { setPage } from '../state/view'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DownloadedPage } from './pageload'
-import { isDownloadFailure, pageDownload, pageFiles, REOPEN_KEY, RETRY_MIN_MS, takeReopen } from './pagedownload'
+import { isDownloadFailure, pageDownload, pageFiles, RELOAD_HELD_MS, REOPEN_KEY, RETRY_MIN_MS, takeReopen } from './pagedownload'
+import { watchSaves } from '../storage/savewait'
 
 const FAIL = () => new Error('Failed to fetch dynamically imported module: http://x/assets/LeaveWarPage-abc.js')
 const Page = ({ active }: { active: boolean }) => <div data-testid="the-page">{active ? 'on' : 'dozing'}</div>
@@ -33,7 +34,11 @@ afterEach(async () => {
   await act(async () => { root.unmount() })
   document.body.innerHTML = ''; document.head.innerHTML = ''; sessionStorage.clear()
   vi.restoreAllMocks(); vi.unstubAllGlobals()
+  setPage('viewsched')
+  watchSaves(null)
 })
+/* the save indicator's source, as the app's postman would give it */
+const saves = (status: 'saved' | 'saving' | 'unsaved' | 'failed') => ({ status })
 const flush = async () => { for (let i = 0; i < 6; i++) await act(async () => { await Promise.resolve() }) }
 /* the frame around it: a top bar that must survive whatever the page does */
 const frame = (body: ReactNode) => <><div data-testid="topbar">142 TALON</div>{body}</>
@@ -92,7 +97,7 @@ const LIST = {
 }
 /* the server: the build's list, then each file — `down` names what does not come (a URL ending, or 'list'), `hang` holds
    every answer until released */
-function server(down: string[] = []) {
+function server(down: string[] = [], cut: string[] = []) {
   const calls: { url: string; cache?: RequestCache }[] = []
   let release: () => void = () => {}
   const held = new Promise<void>(r => { release = r })
@@ -103,6 +108,8 @@ function server(down: string[] = []) {
     if (hang) await held
     if (down.some(d => (d === 'list' ? u.endsWith('page-files.json') : u.endsWith(d)))) throw new TypeError('Failed to fetch')
     if (u.endsWith('page-files.json')) return new Response(JSON.stringify(LIST), { headers: { 'content-type': 'application/json' } })
+    /* a file whose answer starts and then dies part-way (a weak signal) */
+    if (cut.some(d => u.endsWith(d))) return new Response(new ReadableStream({ start(c) { c.enqueue(new TextEncoder().encode('x')); c.error(new TypeError('network error')) } }))
     return new Response('x')
   })
   vi.stubGlobal('fetch', fetchMock)
@@ -113,6 +120,7 @@ describe('Retry (D1633)', () => {
   const failedOn = async (page: 'leavewar' | 'tracker' = 'leavewar') => {
     const { load } = loader(1)
     const src = page === 'leavewar' ? LW_SRC : 'src/tracker/TrackerPage.tsx'
+    setPage(page)
     await act(async () => { root.render(frame(<DownloadedPage page={page} name={page === 'leavewar' ? 'the Leave War' : 'the Tracker'} download={pageDownload(load, src)} active />)) })
     await flush()
     return load
@@ -190,6 +198,56 @@ describe('Retry (D1633)', () => {
     const css = readFileSync(join(__dirname, 'scheduler/02-shell.css'), 'utf8')
     expect(css).toContain(':is(#page-leavewar,#page-tracker) .pgfail-retry:focus-visible{outline:2px solid var(--accent);outline-offset:2px}')
   })
+  /* the fresh code read of 4 Nov 26 (evening), finding 1: a reload with a save still waiting would ask "Leave site?" (or,
+     on an iPhone, lose it unasked) — Retry never reloads then; the save band already says why */
+  it('a save still waiting: no reload, no note, the card back', async () => {
+    const reload = stubReload()
+    server()
+    watchSaves(saves('unsaved'))
+    await failedOn()
+    await press()
+    await pastMin()
+    expect(reload).not.toHaveBeenCalled()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    expect(q('page-load-fail')).not.toBeNull()
+  })
+  it('a reload the browser held back (he chose to stay): the note goes and the card comes back', async () => {
+    const reload = stubReload()            // a reload that does nothing: the page lives on, as after "Stay"
+    server()
+    await failedOn()
+    await press()
+    expect(reload).toHaveBeenCalledTimes(1)
+    await act(async () => { await new Promise(r => setTimeout(r, RELOAD_HELD_MS + 80)) }); await flush()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+    expect(q('page-load-fail')).not.toBeNull()
+    expect(document.activeElement).toBe(q('page-load-retry'))
+  })
+  /* finding 3: he left the page while the files were coming — the reload would throw away what he was doing there */
+  it('he left the page before the files came: no reload, the card waiting for his return', async () => {
+    const reload = stubReload()
+    const srv = server()
+    srv.holdAll()
+    await failedOn()
+    await press()
+    setPage('inputs')
+    srv.release(); await flush(); await pastMin()
+    expect(reload).not.toHaveBeenCalled()
+    expect(sessionStorage.getItem(REOPEN_KEY)).toBeNull()
+  })
+  /* finding 2: an answer that starts is not a file that came — on a weak signal it can die part-way */
+  it('a file cut off part-way: no reload, the card back', async () => {
+    const reload = stubReload()
+    server([], ['assets/LeaveWarPage-NEW.js'])
+    await failedOn()
+    await press()
+    await pastMin()
+    expect(reload).not.toHaveBeenCalled()
+    expect(q('page-load-fail')).not.toBeNull()
+  })
+  it('the first card does not take the keyboard', async () => {
+    await failedOn()
+    expect(document.activeElement).not.toBe(q('page-load-retry'))
+  })
   it('the Tracker fetches its own files', async () => {
     const reload = stubReload()
     const srv = server()
@@ -203,6 +261,7 @@ describe('Retry (D1633)', () => {
     const reload = stubReload()
     server()
     const d = pageDownload(load, LW_SRC)
+    setPage('leavewar')
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active={false} />)) })
     await flush()
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active />)) })
@@ -215,6 +274,14 @@ describe('Retry (D1633)', () => {
 describe("the page's files, read from the build's list", () => {
   it("its own file, its stylesheets and the shared files only the slow pages use, each once, never what the app's start loaded", () => {
     expect(pageFiles(LIST, LW_SRC).sort()).toEqual(['assets/LeaveWarPage-NEW.css', 'assets/LeaveWarPage-NEW.js', 'assets/grid-2.css', 'assets/grid-2.js'])
+  })
+  /* the fresh read's finding 4: the list names each page by its source path; a page file moved or renamed would leave
+     Retry fetching nothing, every time, with no other test going red */
+  it("Shell.tsx names each page by a source file that exists, as the build's list keys it", () => {
+    const shell = readFileSync(join(__dirname, 'Shell.tsx'), 'utf8')
+    const srcs = [...shell.matchAll(/pageDownload\([^\n]*?,\s*'([^']+)'\)/g)].map(m => m[1]!)
+    expect(srcs.sort()).toEqual(['src/leavewar/LeaveWarPage.tsx', 'src/tracker/TrackerPage.tsx'])
+    for (const s of srcs) expect(existsSync(join(__dirname, '../..', s)), s).toBe(true)
   })
   it('a page the list does not name gives nothing', () => {
     expect(pageFiles(LIST, 'src/nowhere.tsx')).toEqual([])

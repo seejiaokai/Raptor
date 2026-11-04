@@ -64,6 +64,9 @@ export const RETRY_MIN_MS = 1300
    only, just before it reloads; the sign-in reads it once and throws it away (Login.tsx). Only the two pages that download
    apart are ever named; a browser that refuses storage simply opens the first page, as before. */
 export const REOPEN_KEY = 'talon:reopen-page'
+/* how long after asking for the reload the page may still be standing before Retry takes it as held back — the browser's
+   "Leave site?" answered Stay: then the note is thrown away and the card comes back (the fresh code read, 4 Nov 26) */
+export const RELOAD_HELD_MS = 1500
 const REOPENABLE = new Set(['leavewar', 'tracker'])
 export function noteReopen(page: string): void {
   try { sessionStorage.setItem(REOPEN_KEY, page) } catch { /* storage refused: the first page opens, as before */ }
@@ -90,7 +93,10 @@ export async function freshPageFiles(src: string): Promise<boolean> {
     if (!res.ok) return false
     const files = pageFiles(await res.json() as PageFileList, src)
     if (!files.length) return false
-    const came = await Promise.all(files.map(f => fetch(at(f), { cache: 'reload', signal: stop?.signal }).then(r => r.ok, () => false)))
+    /* a file has come once its whole body has arrived, not when its answer starts: on a weak signal an answer can die
+       part-way, and a reload then would land on the browser's own "no connection" page (the fresh code read, 4 Nov 26) */
+    const came = await Promise.all(files.map(f => fetch(at(f), { cache: 'reload', signal: stop?.signal })
+      .then(r => (r.ok ? r.arrayBuffer().then(() => true, () => false) : false), () => false)))
     return came.every(Boolean)
   } catch {
     return false
