@@ -1,0 +1,830 @@
+[
+ {
+  "id": "S1-1600-viewsched",
+  "what": "admin, viewsched, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-editsched",
+  "what": "admin, editsched, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":58,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-inputs",
+  "what": "admin, inputs, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-quals",
+  "what": "admin, quals, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-logic",
+  "what": "admin, logic, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-leavewar",
+  "what": "admin, leavewar, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-tracker",
+  "what": "admin, tracker, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-help",
+  "what": "admin, help, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1600-admin",
+  "what": "admin, admin, 1600 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-viewsched",
+  "what": "admin, viewsched, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-editsched",
+  "what": "admin, editsched, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":58,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-inputs",
+  "what": "admin, inputs, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-quals",
+  "what": "admin, quals, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-logic",
+  "what": "admin, logic, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-leavewar",
+  "what": "admin, leavewar, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-tracker",
+  "what": "admin, tracker, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-help",
+  "what": "admin, help, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1536-admin",
+  "what": "admin, admin, 1536 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-viewsched",
+  "what": "admin, viewsched, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-editsched",
+  "what": "admin, editsched, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":104,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-inputs",
+  "what": "admin, inputs, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-quals",
+  "what": "admin, quals, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-logic",
+  "what": "admin, logic, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-leavewar",
+  "what": "admin, leavewar, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-tracker",
+  "what": "admin, tracker, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-help",
+  "what": "admin, help, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1280-admin",
+  "what": "admin, admin, 1280 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-viewsched",
+  "what": "admin, viewsched, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-editsched",
+  "what": "admin, editsched, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":104,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-inputs",
+  "what": "admin, inputs, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-quals",
+  "what": "admin, quals, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-logic",
+  "what": "admin, logic, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-leavewar",
+  "what": "admin, leavewar, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-tracker",
+  "what": "admin, tracker, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-help",
+  "what": "admin, help, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-1024-admin",
+  "what": "admin, admin, 1024 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-viewsched",
+  "what": "admin, viewsched, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-editsched",
+  "what": "admin, editsched, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":104,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-inputs",
+  "what": "admin, inputs, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-quals",
+  "what": "admin, quals, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-logic",
+  "what": "admin, logic, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-leavewar",
+  "what": "admin, leavewar, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-tracker",
+  "what": "admin, tracker, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-help",
+  "what": "admin, help, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-900-admin",
+  "what": "admin, admin, 900 wide — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-viewsched",
+  "what": "admin, viewsched, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-editsched",
+  "what": "admin, editsched, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-inputs",
+  "what": "admin, inputs, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-quals",
+  "what": "admin, quals, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-logic",
+  "what": "admin, logic, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-leavewar",
+  "what": "admin, leavewar, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-tracker",
+  "what": "admin, tracker, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-help",
+  "what": "admin, help, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-830-admin",
+  "what": "admin, admin, 830 wide — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S1-err",
+  "what": "no error in the browser",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-chromium-viewsched",
+  "what": "sideways phone (chromium), viewsched — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-viewsched-row",
+  "what": "sideways phone (chromium), viewsched: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-editsched",
+  "what": "sideways phone (chromium), editsched — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-editsched-row",
+  "what": "sideways phone (chromium), editsched: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-inputs",
+  "what": "sideways phone (chromium), inputs — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-inputs-row",
+  "what": "sideways phone (chromium), inputs: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-quals",
+  "what": "sideways phone (chromium), quals — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-quals-row",
+  "what": "sideways phone (chromium), quals: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-logic",
+  "what": "sideways phone (chromium), logic — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-logic-row",
+  "what": "sideways phone (chromium), logic: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-leavewar",
+  "what": "sideways phone (chromium), leavewar — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-leavewar-row",
+  "what": "sideways phone (chromium), leavewar: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-tracker",
+  "what": "sideways phone (chromium), tracker — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-tracker-row",
+  "what": "sideways phone (chromium), tracker: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-help",
+  "what": "sideways phone (chromium), help — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-help-row",
+  "what": "sideways phone (chromium), help: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-admin",
+  "what": "sideways phone (chromium), admin — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-chromium-admin-row",
+  "what": "sideways phone (chromium), admin: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-chromium-open",
+  "what": "sideways (chromium): ☰ tapped opens the menu",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-chromium-logout",
+  "what": "sideways (chromium): the menu reaches Logout",
+  "ok": true,
+  "detail": "{\"x\":16,\"y\":358,\"width\":66.65625,\"height\":28}"
+ },
+ {
+  "id": "S8-chromium-leavewar",
+  "what": "sideways (chromium): leavewar picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-chromium-tracker",
+  "what": "sideways (chromium): tracker picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-chromium-admin",
+  "what": "sideways (chromium): admin picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-chromium-outside",
+  "what": "sideways (chromium): a tap beside the menu closes it, still on Admin",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-chromium-logout",
+  "what": "sideways (chromium): Logout from ☰ signs out",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-chromium-err",
+  "what": "sideways (chromium): no error in the browser",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-webkit-viewsched",
+  "what": "sideways phone (webkit), viewsched — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":699,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-viewsched-row",
+  "what": "sideways phone (webkit), viewsched: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-editsched",
+  "what": "sideways phone (webkit), editsched — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":699,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-editsched-row",
+  "what": "sideways phone (webkit), editsched: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-inputs",
+  "what": "sideways phone (webkit), inputs — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":697,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-inputs-row",
+  "what": "sideways phone (webkit), inputs: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-quals",
+  "what": "sideways phone (webkit), quals — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-quals-row",
+  "what": "sideways phone (webkit), quals: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-logic",
+  "what": "sideways phone (webkit), logic — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":697,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-logic-row",
+  "what": "sideways phone (webkit), logic: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-leavewar",
+  "what": "sideways phone (webkit), leavewar — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-leavewar-row",
+  "what": "sideways phone (webkit), leavewar: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-tracker",
+  "what": "sideways phone (webkit), tracker — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":696,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-tracker-row",
+  "what": "sideways phone (webkit), tracker: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-help",
+  "what": "sideways phone (webkit), help — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-help-row",
+  "what": "sideways phone (webkit), help: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-admin",
+  "what": "sideways phone (webkit), admin — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":697,\"wide\":true}"
+ },
+ {
+  "id": "S2-webkit-admin-row",
+  "what": "sideways phone (webkit), admin: folded, one row",
+  "ok": true,
+  "detail": "height 59"
+ },
+ {
+  "id": "S2-webkit-open",
+  "what": "sideways (webkit): ☰ tapped opens the menu",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-webkit-logout",
+  "what": "sideways (webkit): the menu reaches Logout",
+  "ok": true,
+  "detail": "{\"x\":16,\"y\":358,\"width\":66.65625,\"height\":28}"
+ },
+ {
+  "id": "S8-webkit-leavewar",
+  "what": "sideways (webkit): leavewar picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-webkit-tracker",
+  "what": "sideways (webkit): tracker picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-webkit-admin",
+  "what": "sideways (webkit): admin picked from ☰, the menu closed, the bar still one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-webkit-outside",
+  "what": "sideways (webkit): a tap beside the menu closes it, still on Admin",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S8-webkit-logout",
+  "what": "sideways (webkit): Logout from ☰ signs out",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S2-webkit-err",
+  "what": "sideways (webkit): no error in the browser",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S3",
+  "what": "upright phone: ☰ as before, the names unseen",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":false,\"oneRow\":true,\"height\":49,\"need\":0,\"wide\":true}"
+ },
+ {
+  "id": "S4-viewsched",
+  "what": "iPad 1024 × 768, viewsched — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S4-viewsched-measured",
+  "what": "iPad, viewsched: not forced to fold (the names fit this PC's letters)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S4-leavewar",
+  "what": "iPad 1024 × 768, leavewar — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S4-leavewar-measured",
+  "what": "iPad, leavewar: not forced to fold (the names fit this PC's letters)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S5-830-folded",
+  "what": "830: folded, one row",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S5-830-lw",
+  "what": "830, the Leave War scrolled: the frozen dates right under the bar",
+  "ok": true,
+  "detail": "{\"barFoot\":59,\"top\":59,\"scrollY\":1334}"
+ },
+ {
+  "id": "S5-830-quals",
+  "what": "830, Quals scrolled: its pinned row right under the bar",
+  "ok": true,
+  "detail": "{\"barFoot\":59,\"top\":59,\"scrollY\":480}"
+ },
+ {
+  "id": "S5-1024-aircrew",
+  "what": "1024, Edit Schedule scrolled: the AIRCREW heading under the bar (D1116)",
+  "ok": true,
+  "detail": "{\"barFoot\":104,\"top\":121,\"scrollY\":1500}"
+ },
+ {
+  "id": "S5-side-lw",
+  "what": "sideways phone, the Leave War scrolled: the frozen dates right under the one-row bar",
+  "ok": true,
+  "detail": "{\"barFoot\":59,\"top\":59,\"scrollY\":1500}"
+ },
+ {
+  "id": "S6-admin",
+  "what": "830, the admin — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S6-member",
+  "what": "830, switched to the member view (two names fewer) — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":522,\"wide\":true}"
+ },
+ {
+  "id": "S6-member-fits",
+  "what": "830, member view: seven names fit beside TALON",
+  "ok": true,
+  "detail": "admin need 695, member need 522"
+ },
+ {
+  "id": "S6-back",
+  "what": "830, back to the admin view — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S6-back-folded",
+  "what": "830, back to the admin: folded again",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S7-tab",
+  "what": "830: Shift+Tab from TALON lands on ☰ (the folded names are out of the keys' way)",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S7-open",
+  "what": "Enter opens the menu, the keys on the page you are on",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S7-pick",
+  "what": "Tab then Enter opens the next page (Quals) and closes the menu",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S7-esc",
+  "what": "Escape closes the menu and the keys are back on ☰",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S7-outside",
+  "what": "a click beside the menu closes it",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S9-1600",
+  "what": "resized live to 1600 — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-830",
+  "what": "resized live to 830 — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-1280",
+  "what": "resized live to 1280 — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-830",
+  "what": "resized live to 830 — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-1600",
+  "what": "resized live to 1600 — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-900",
+  "what": "resized live to 900 — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-1536",
+  "what": "resized live to 1536 — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":57,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S9-err",
+  "what": "no resize loop or other error reported",
+  "ok": true,
+  "detail": ""
+ },
+ {
+  "id": "S10-plain",
+  "what": "874 desktop, this PC's letters — names beside TALON",
+  "ok": true,
+  "detail": "{\"folded\":false,\"burger\":false,\"names\":true,\"oneLine\":true,\"beside\":true,\"oneRow\":false,\"height\":103,\"need\":695,\"wide\":true}"
+ },
+ {
+  "id": "S10-wide",
+  "what": "874 desktop, wider letters — folded into ☰",
+  "ok": true,
+  "detail": "{\"folded\":true,\"burger\":true,\"names\":false,\"oneLine\":true,\"beside\":true,\"oneRow\":true,\"height\":59,\"need\":748,\"wide\":true}"
+ },
+ {
+  "id": "S10-calibrated",
+  "what": "the stand-in reproduces his wrap condition: this PC's letters fit at 874, wider ones do not",
+  "ok": true,
+  "detail": "need 695 → 748"
+ }
+]
