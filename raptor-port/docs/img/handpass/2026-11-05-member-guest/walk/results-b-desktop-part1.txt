@@ -1,0 +1,16 @@
+NOTE Bd1-weeks — {"w0":"13/07/2026","w1":"20/07/2026","w2":"13/07/2026","page":"viewsched"}
+NOTE Bd1-info — {"openedCount":1,"afterEscape":0,"afterOutside":0,"afterX":0}
+NOTE Bd2-add-after-nodoc — {"writes":["set raptor:__txn","set raptor:inputs/imw2qgu6hfur9ao","set raptor:settings/elog:mw2qgk5vzwi1.000001","set raptor:changes/cmw2qgk7ykcizeb-1","remove raptor:__txn"]}
+NOTE Bd2-range — ["inRangeDef|Next 2 weeks","inRangeAll|All dates"]
+NOTE Bd2-add — {"writes":[],"windowStillOpen":false,"said":[],"undo":"on|Undo — Ranger’s OL"}
+NOTE Bd2-rows — ["TR.in-red innew|data-iid=imw2qgu6hfur9ao,data-fresh=imw2qgu6hfur9ao|Ranger22 JulOLLATEtill 22 JulnowNo document"]
+NOTE BdB2-inputs-list — {"rows":1,"text":"Ranger\t22 Jul\t\tOL\tLATEtill 22 Jul\tnow\tNo document"}
+NOTE BdB2-sched-wed — {"hasRanger":true,"ctx":"Ranger","head":"Wedne day\nJul 22\nDRAFT\n2 X 2\n1 change\ni\n⚠ 1 i ue\n▼\nCOMMON PROGRAMME\nORDERS: FLYING ORDERS SECTION 2\nNAME\nSTART\nEND\nPEOPL"}
+NOTE BdB2-bell — ["bell-list|Nothing new"]
+NOTE BdB2-bell-close — {"openAfterEsc":0,"openAfterOutside":0}
+NOTE Bd3-buttons — ["|✕","inTypeHelp|?","|All day","|AM","|PM","|Custom","|Document","|July 2026›","|13","|‹","|›","|1","|2","|3","|4","|5","|6","|7","|8","|9","|10","|11","|12","|13","|14","|15","|16","|17","|18","|19","|20","|21","|22","|23","|24","|25","|26","|27","|28","|29","|30","|31","inpEditDel|Delete","inpEditCancel|Cancel","inpEditSave|Save"]
+NOTE Bd3-save — {"writes":["set raptor:__txn","set raptor:inputs/imw2qgu6hfur9ao","set raptor:settings/elog:mw2qgk5vzwi1.000002","set raptor:changes/cmw2qgk7ykcizeb-2","remove raptor:__txn"],"said":[],"rowText":"Ranger\t22 Jul\t\tOL\tLATEwalk remark till 22 Jul\tnow\tNo document","winOpen":false}
+NOTE Bd3-delete-btn — 1
+NOTE Bd3-delete — {"writes":["set raptor:__txn","remove raptor:inputs/imw2qgu6hfur9ao","set raptor:settings/elog:mw2qgk5vzwi1.000003","set raptor:changes/cmw2qgk7ykcizeb-3","remove raptor:__txn"],"said":["Input deleted"],"rows":0,"undo":"on|Undo — Ranger’s OL"}
+NOTE Bd3-undo — {"writes":["set raptor:__txn","set raptor:settings/elog:mw2qgk5vzwi1.000004","set raptor:inputs/imw2qgu6hfur9ao","set raptor:changes/cmw2qgk7ykcizeb-4","remove raptor:__txn"],"said":["Undid: Ranger’s OL"],"rows":1,"undo":"on|Undo — Ranger’s OL","redo":"on|Redo — Ranger’s OL"}
+NOTE Bd3-redo — {"writes":["set raptor:__txn","set raptor:settings/elog:mw2qgk5vzwi1.000005","remove raptor:inputs/imw2qgu6hfur9ao","set raptor:changes/cmw2qgk7ykcizeb-5","remove raptor:__txn"],"said":["Redid: Ranger’s OL"],"rows":0,"undo":"on|Undo — Ranger’s OL","redo":"off|Redo"}

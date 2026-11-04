@@ -1,0 +1,14 @@
+PASS Cd0 admin switches the guest view on — saw true
+NOTE Cd0-signin — {"ids":["accessRequest"],"band":[],"words":"TALON Request access Signed in as walker-guest You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… Request ac"}
+NOTE Cd1-empty-refusal — {"where":{"ids":["accessRequest"],"band":[],"words":"TALON Request access Signed in as walker-guest You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL Pick… Pilot WSO Personnel (ground crew) CAT Pick… Type the c"},"said":[],"writes":[]}
+PASS CdC1 request sent: waiting screen, one save (an accessreq key) — saw {"where":{"ids":["accessWaiting"],"band":[],"words":"TALON Your request is with the admins Signed in as walker-guest You asked for access as Walker (WK · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it. Meanwhile you can look at the schedule, read only. View the schedule Sign out"},"writes":["set raptor:__txn","set raptor:settings/accessreq:rqmw2qtfbm04sh","set raptor:changes/cmw2qtapdqy5ruq-2","remove raptor:__txn"]}
+NOTE Cd2-in-guest — true
+NOTE Cd2-controls — ["BUTTON#guestOut.abtn ghost|Sign out","BUTTON#.wk|Jul 06","BUTTON#.wk on todaywk|Jul 13","BUTTON#.wk|Jul 20","BUTTON#.wk|Jul 27"]
+NOTE Cd2-weeks — 4
+NOTE Cd2-scroller — {"x":0,"y":102,"w":1536,"h":184.390625,"left0":0,"cls":"week"}
+NOTE Cd2-swipe — {"how":"synthetic touch events | then pointer drag","left0":0,"afterSynthetic":0,"afterScrollBy":300}
+NOTE Cd2-puck — no .puck in #guestApp
+NOTE Cd2-daytitle — []
+PASS CdC2 whole guest part: 0 storage writes (except reopen-page key, recorded) — saw []
+NOTE Cd2-signin-again — {"again":{"ids":["guestApp"],"band":[],"words":"142 TALON Waiting for access — view only Sign out Aug 03 Aug 10 Aug 17 Aug 24 Monday Aug 10 DRAFT 0 X 0 X 0 No flying — ground day. UNAVAILABLE Nil Tuesday Aug 11 DRAFT 0 X 0 X 0 No flying — ground day. UNAVAILABLE Nil Wednesday Aug 12 DRAFT 0 X 0 X 0 No flyin"},"writes":["remove talon:reopen-page"]}
+NOTE Cd3-requests — {"walkerMentions":1,"reqEl":["acc-row req: walker-guest asked as Walker · WK · Pilot · CAT OCU · 5/11 07:23 Give access Refuse"]}
