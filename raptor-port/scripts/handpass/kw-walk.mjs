@@ -9,7 +9,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serveFrozen } from './isr-serve.mjs'
 
-const VERSION = 'kw-walk v4'
+const VERSION = 'kw-walk v5'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.env.KW_OUT || join(HERE, '../../docs/img/handpass/2026-11-05-keys-windows/walk')
 const URL = 'http://localhost:4393/'
@@ -382,6 +382,19 @@ async function s5(w) {
   check('S5.chips.3', 'Space on › moves a week, the same day, the keys on ›', (await P.evaluate(() => window.CURWEEK)) !== wk0 && (await P.evaluate(() => window.SBDAY)) === 5 && fw?.data?.sbweek === '1', { wk: await P.evaluate(() => window.CURWEEK), fw })
   await P.locator('#sbDays [data-sbweek="-1"]').focus(); await P.keyboard.press('Enter'); await P.waitForTimeout(500)
   check('S5.chips.4', 'Enter on ‹ comes back', (await P.evaluate(() => window.CURWEEK)) === wk0, await P.evaluate(() => window.CURWEEK))
+  /* the read's F2 (5 Nov 26): a chip pressed by the keys closes what stands over the board first — the Traffic window */
+  await press(w, '#sbBoard [data-air]')
+  const airUp = await up(w, '#airpop')
+  await P.locator('#sbDays [data-sbtab="4"]').focus(); await P.keyboard.press('Enter'); await P.waitForTimeout(350)
+  await shot(w, 's5-chip-over-traffic')
+  check('S5.F2', 'Enter on Friday\'s chip with the Traffic window up: the window closes first, Friday opens', airUp && !(await up(w, '#airpop')) && (await P.evaluate(() => window.SBDAY)) === 4, { airUp, air: await up(w, '#airpop'), day: await P.evaluate(() => window.SBDAY) })
+  /* the read's F3: Tab past a menu's last item closes it, the keys back on its button */
+  const blk2 = P.locator('#sbBoard [data-dwadd]').filter({ visible: true }).first()
+  await blk2.focus(); await P.keyboard.press('Enter'); await P.waitForTimeout(200)
+  await P.evaluate(() => { const b = [...document.querySelectorAll('.wavemenu button')].filter(x => !x.disabled); b[b.length - 1].focus() })
+  await P.keyboard.press('Tab'); await P.waitForTimeout(200)
+  const ft = await focusAt(w)
+  check('S5.F3', 'Tab past + Block\'s last item: the menu closes, the keys on + Block, on the board', !(await up(w, '.wavemenu')) && ft?.data?.dwadd != null && ft.inBoard, ft)
   /* Tab stays on the board: from its last stop to its first; with the keys nowhere, Tab lands on the board */
   const ends = await P.evaluate(() => {
     const b = document.getElementById('schedBoard')
