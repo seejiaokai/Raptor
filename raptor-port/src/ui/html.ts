@@ -1243,6 +1243,16 @@ export function waveHeadTail(w:any):string{
    under it print the clock alone. Drawn by the board's builder (board.ts) and kept true by the refresh below. */
 export const SB_PREVDAY='<span class="sb-prevday">(prev day)</span>';
 export function sbPrevDay(w:any):boolean{if(!w||isStandalone(w))return false; const r=waveInTime(w); return r!=null&&r<0;}
+/* THE RED NOTE UNDER A WAVE'S IN-TIME LINES — ONE BODY FOR EVERY WRITER (owner D1648, 5 Nov 26 — "Go" on the mock-up page's
+   question 4): the builder below (intimesInner), the refresh above it, and the two in ui/textedit.ts (a line being typed, a
+   line committed) each joined the wave's issues one message per formation, so a wave of several unnamed lines (each named
+   for the wave) and an unreadable whole-wave clock said the same sentence once a line — "WAVE 3: reporting line 1 has no
+   recognised clock. Check the time." three times. Each distinct sentence is said once now, in the order first met; the
+   day's issues list (engine/reporting.ts reportingIssuesForDay, read by validate) is unchanged. A fault the formation's
+   own R box causes is the box's to explain, never the lines' (D509 — the box carries it), as before. */
+export function reportNote(w:any,gi=0):string{
+  return [...new Set(reportingIssuesForWave(w,gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg))].join(' ');
+}
 export function refreshWaveReports(root:ParentNode|null|undefined):void{
   if(!root)return;
   /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
@@ -1253,7 +1263,7 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
     const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     const note=blk.querySelector('[data-reporting-feedback]');
     if(!w||!note)return;
-    const want=reportingIssuesForWave(w,gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ');
+    const want=reportNote(w,gi);
     if(note.textContent!==want)note.textContent=want;
   });
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
@@ -1296,7 +1306,7 @@ export function intimesInner(w:any,ek?:any,grip?:boolean){
       +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
     return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
   }).join('')
-    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' '))}</span>`:'');}
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportNote(w))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
