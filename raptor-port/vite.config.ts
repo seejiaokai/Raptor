@@ -9,6 +9,11 @@ export default defineConfig({
      serves project sites at /<repo>/) */
   base: './',
   plugins: [react()],
+  /* THE BUILD'S LIST OF ITS FILES, page-files.json beside index.html (D1633, 4 Nov 26). Retry on a page whose download
+     failed fetches that page's files afresh before it reloads the app — WebKit keeps a failed file failed even across a
+     reload until then (the re-walk, 4 Nov 26) — and reads their names here: each page under its source path
+     (src/leavewar/LeaveWarPage.tsx, src/tracker/TrackerPage.tsx — ui/Shell.tsx names them; pagedownload.ts reads it). */
+  build: { manifest: 'page-files.json' },
   test: {
     /* GitHub's unit legs (`--shard=k/n`, .github/workflows/deploy.yml) split the files by their measured time, not
        vitest's equal-count hash split, which put the heavy files on one machine ([CI-UNIT-SHARE-2-6], 21 Oct 26);

@@ -11,7 +11,7 @@ import { setPage } from '../state/view'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { DownloadedPage } from './pageload'
-import { isDownloadFailure, pageDownload } from './pagedownload'
+import { isDownloadFailure, pageDownload, pageFiles, RETRY_MIN_MS } from './pagedownload'
 
 const FAIL = () => new Error('Failed to fetch dynamically imported module: http://x/assets/LeaveWarPage-abc.js')
 const Page = ({ active }: { active: boolean }) => <div data-testid="the-page">{active ? 'on' : 'dozing'}</div>
@@ -42,7 +42,7 @@ const q = (t: string) => document.querySelector(`[data-testid="${t}"]`)
 describe('a failed download of a page', () => {
   it('shows the card on that page only, the top bar staying — never a blank app', async () => {
     const { load } = loader(1)
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
+    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load, 'src/leavewar/LeaveWarPage.tsx')} active />)) })
     await flush()
     expect(q('topbar')).not.toBeNull()
     const card = q('page-load-fail')!
@@ -54,13 +54,13 @@ describe('a failed download of a page', () => {
   })
   it('names the Tracker for the Tracker', async () => {
     const { load } = loader(1)
-    await act(async () => { root.render(frame(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load)} active />)) })
+    await act(async () => { root.render(frame(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load, 'src/tracker/TrackerPage.tsx')} active />)) })
     await flush()
     expect(q('page-load-fail')!.querySelector('h2')!.textContent).toBe("Couldn't open the Tracker")
   })
   it('a failed HIDDEN download (the desktop pre-warm) shows nothing — then opening the page shows the card, not another try (D1633)', async () => {
     const { load } = loader(1)
-    const d = pageDownload(load)
+    const d = pageDownload(load, 'src/leavewar/LeaveWarPage.tsx')
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active={false} />)) })
     await flush()
     expect(q('topbar')).not.toBeNull()
@@ -75,55 +75,122 @@ describe('a failed download of a page', () => {
 })
 
 /* D1633 (4 Nov 26): Retry reloads the app. The walk of 4 Nov 26 showed Chromium and WebKit keep a failed page file failed
-   until a reload, so a download tried again in place never reached the server. A reload asks for every file afresh, its
-   stylesheets too; everything saved is kept, the sign-in is asked again and the Undo list starts afresh. The browser's own
-   "are you sure?" still guards a save that has not gone (storage/boot.ts guardUnload). */
+   until a reload, so a download tried again in place never reached the server. And the re-walk showed WebKit keeps it
+   failed ACROSS a reload too (a server that hung up on the file: no request at all after the reload), unless the file is
+   first fetched afresh, skipping the cache. So Retry first fetches the page's files afresh — their names from the build's
+   own list of them, fetched fresh, so an update since the tab opened is covered — with the claw up; once they have all
+   come it reloads (everything saved kept, the sign-in asked again, the Undo list afresh; an unsent save still gets the
+   browser's own "are you sure?", storage/boot.ts guardUnload). If they do not come the card comes back, still signed in:
+   a reload with no signal would have left the browser's own "no connection" page. */
+const LW_SRC = 'src/leavewar/LeaveWarPage.tsx'
+const LIST = {
+  'index.html': { file: 'assets/index-NEW.js', isEntry: true, imports: ['_store-1.js'] },
+  'src/leavewar/LeaveWarPage.tsx': { file: 'assets/LeaveWarPage-NEW.js', isDynamicEntry: true, imports: ['_store-1.js', '_grid-2.js'], css: ['assets/LeaveWarPage-NEW.css'] },
+  'src/tracker/TrackerPage.tsx': { file: 'assets/TrackerPage-NEW.js', isDynamicEntry: true, imports: ['_store-1.js', '_grid-2.js'] },
+  '_store-1.js': { file: 'assets/store-1.js' },
+  '_grid-2.js': { file: 'assets/grid-2.js', imports: ['_store-1.js'], css: ['assets/grid-2.css'] },
+}
+/* the server: the build's list, then each file — `down` names what does not come (a URL ending, or 'list'), `hang` holds
+   every answer until released */
+function server(down: string[] = []) {
+  const calls: { url: string; cache?: RequestCache }[] = []
+  let release: () => void = () => {}
+  const held = new Promise<void>(r => { release = r })
+  let hang = false
+  const fetchMock = vi.fn(async (url: string | URL, init?: RequestInit) => {
+    const u = String(url)
+    calls.push({ url: u, cache: init?.cache })
+    if (hang) await held
+    if (down.some(d => (d === 'list' ? u.endsWith('page-files.json') : u.endsWith(d)))) throw new TypeError('Failed to fetch')
+    if (u.endsWith('page-files.json')) return new Response(JSON.stringify(LIST), { headers: { 'content-type': 'application/json' } })
+    return new Response('x')
+  })
+  vi.stubGlobal('fetch', fetchMock)
+  return { calls, fetchMock, holdAll: () => { hang = true }, release: () => release() }
+}
 describe('Retry (D1633)', () => {
   const stubReload = () => { const reload = vi.fn(); vi.stubGlobal('location', { ...window.location, href: 'http://localhost/', reload }); return reload }
-  it('reloads the app, and never tries the download again in place or asks the server first', async () => {
+  const failedOn = async (page: 'leavewar' | 'tracker' = 'leavewar') => {
     const { load } = loader(1)
+    const src = page === 'leavewar' ? LW_SRC : 'src/tracker/TrackerPage.tsx'
+    await act(async () => { root.render(frame(<DownloadedPage page={page} name={page === 'leavewar' ? 'the Leave War' : 'the Tracker'} download={pageDownload(load, src)} active />)) })
+    await flush()
+    return load
+  }
+  const press = async () => { await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() }); await flush() }
+  it("fetches the page's files afresh from the build's own list, then reloads the app; never the download again in place", async () => {
     const reload = stubReload()
-    const fetchMock = vi.fn(async () => new Response(''))
-    vi.stubGlobal('fetch', fetchMock)
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
-    await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
+    const srv = server()
+    const load = await failedOn()
+    await press()
+    expect(srv.calls[0]).toEqual({ url: 'http://localhost/page-files.json', cache: 'no-store' })
+    const files = srv.calls.slice(1)
+    expect(files.map(c => c.url).sort()).toEqual(['assets/LeaveWarPage-NEW.css', 'assets/LeaveWarPage-NEW.js', 'assets/grid-2.css', 'assets/grid-2.js'].map(f => 'http://localhost/' + f))
+    expect(files.every(c => c.cache === 'reload')).toBe(true)
     expect(reload).toHaveBeenCalledTimes(1)
     expect(load).toHaveBeenCalledTimes(1)
-    expect(fetchMock).not.toHaveBeenCalled()
   })
-  it('reloads for the Tracker the same', async () => {
-    const { load } = loader(1)
-    const reload = stubReload()
-    await act(async () => { root.render(frame(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load)} active />)) })
-    await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
-    expect(reload).toHaveBeenCalledTimes(1)
+  it('shows the claw while the files come, never the card or a second Retry', async () => {
+    stubReload()
+    const srv = server()
+    srv.holdAll()
+    const sec = document.createElement('section'); sec.id = 'page-leavewar'; document.body.appendChild(sec)
+    await failedOn()
+    await press()
+    expect(q('page-load-fail')).toBeNull()
+    expect(document.querySelector('.pgclaw')).not.toBeNull()
+    srv.release(); await flush()
   })
-  it('a page whose stylesheet did not come shows the card, and Retry reloads', async () => {
-    const load = vi.fn(async (): Promise<{ default: typeof Page }> => { throw new Error('Unable to preload CSS for http://localhost/assets/LeaveWarPage-abc.css') })
+  /* with no signal at all the fetch fails at once: the claw is held a moment, so the press reads as tried rather than as
+     nothing (the re-walk, 4 Nov 26: it flashed and the card snapped back) */
+  const pastMin = async () => { await act(async () => { await new Promise(r => setTimeout(r, RETRY_MIN_MS + 60)) }); await flush() }
+  it('the list does not come (no signal): the claw held a moment, then the card back — no reload, still signed in', async () => {
     const reload = stubReload()
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
-    await flush()
+    server(['list'])
+    await failedOn()
+    await press()
+    expect(q('page-load-fail')).toBeNull()
+    await pastMin()
+    expect(reload).not.toHaveBeenCalled()
+    expect(q('page-load-fail')!.querySelector('h2')!.textContent).toBe("Couldn't open the Leave War")
+  })
+  it('one of its files does not come: no reload, the card back', async () => {
+    const reload = stubReload()
+    server(['assets/grid-2.css'])
+    await failedOn()
+    await press()
+    await pastMin()
+    expect(reload).not.toHaveBeenCalled()
     expect(q('page-load-fail')).not.toBeNull()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
-    expect(reload).toHaveBeenCalledTimes(1)
-    expect(load).toHaveBeenCalledTimes(1)
   })
-  it('the card that came from a hidden failure reloads too', async () => {
+  it('the Tracker fetches its own files', async () => {
+    const reload = stubReload()
+    const srv = server()
+    await failedOn('tracker')
+    await press()
+    expect(srv.calls.slice(1).map(c => c.url).sort()).toEqual(['assets/TrackerPage-NEW.js', 'assets/grid-2.css', 'assets/grid-2.js'].map(f => 'http://localhost/' + f))
+    expect(reload).toHaveBeenCalledTimes(1)
+  })
+  it('the card that came from a hidden failure does the same', async () => {
     const { load } = loader(1)
     const reload = stubReload()
-    const d = pageDownload(load)
+    server()
+    const d = pageDownload(load, LW_SRC)
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active={false} />)) })
     await flush()
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active />)) })
     await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
+    await press()
     expect(reload).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe("the page's files, read from the build's list", () => {
+  it("its own file, its stylesheets and the shared files only the slow pages use, each once, never what the app's start loaded", () => {
+    expect(pageFiles(LIST, LW_SRC).sort()).toEqual(['assets/LeaveWarPage-NEW.css', 'assets/LeaveWarPage-NEW.js', 'assets/grid-2.css', 'assets/grid-2.js'])
+  })
+  it('a page the list does not name gives nothing', () => {
+    expect(pageFiles(LIST, 'src/nowhere.tsx')).toEqual([])
   })
 })
 
@@ -136,7 +203,7 @@ describe('the claw over a failed page', () => {
     const root2 = createRoot(host2)
     const { load } = loader(1)
     setPage('tracker')
-    await act(async () => { root2.render(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load)} active until="#page-tracker #board *, #trk-nocourse" />) })
+    await act(async () => { root2.render(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load, 'src/tracker/TrackerPage.tsx')} active until="#page-tracker #board *, #trk-nocourse" />) })
     await flush()
     expect(q('page-load-fail')).not.toBeNull()
     const claw = document.querySelector('.pgclaw')
@@ -171,7 +238,7 @@ describe('what is a failed download', () => {
       render() { return this.state.e ? <div data-testid="outer-caught" /> : this.props.children }
     }
     const Broken = (): ReactNode => { throw new TypeError('a fault in the page') }
-    const d = pageDownload(async () => ({ default: Broken as unknown as typeof Page }))
+    const d = pageDownload(async () => ({ default: Broken as unknown as typeof Page }), 'src/leavewar/LeaveWarPage.tsx')
     await act(async () => { root.render(<Outer><DownloadedPage page="leavewar" name="the Leave War" download={d} active /></Outer>) })
     await flush()
     expect(q('page-load-fail')).toBeNull()

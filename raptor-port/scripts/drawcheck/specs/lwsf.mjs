@@ -124,6 +124,14 @@ export default {
     { id: 'still-phone', title: '"Still loading…" under the claw, iPhone', phone: true, drawing: { script: M, shot: 'p2-phone-proposal-still-loading' }, reach: still, parts: stillParts },
     { id: 'still-desk', title: '"Still loading…" under the claw, desktop', drawing: { script: M, shot: 'p2-desktop-proposal-still-loading' }, reach: still, parts: stillParts },
   ],
-  // the differences he has ruled to keep as built — none yet
-  accepted: [],
+  // the differences he has ruled to keep as built. The box is three digits wide from the start so the keys never move
+  // (D1634, 4 Nov 26 — "Both as recommended", the page's question 2): 52 wide, not the drawing's 44, and what sits in it
+  // starts 4px further right with it. The claw keeps its place over "Still loading…" (the same page, version 3: shown
+  // to him as a departure with "say if you want either back as drawn"; he took neither back).
+  accepted: [
+    ...['pad-side-open', 'pad-side-typed', 'pad-side-empty', 'pad-phone-open', 'pad-phone-typed'].map(state => ({ state, part: 'box', check: 'width', build: 52, why: 'D1634: three digits wide from the start, the keys never move' })),
+    ...[['pad-side-open', 'figure', 'words-place', 20.6], ['pad-side-open', 'highlight', 'place', 19.6], ['pad-side-typed', 'figure', 'words-place', 19.1], ['pad-side-typed', 'line', 'place', 30.9], ['pad-side-empty', 'line', 'place', 25.5], ['pad-phone-open', 'figure', 'words-place', 20.6], ['pad-phone-open', 'highlight', 'place', 19.6], ['pad-phone-typed', 'figure', 'words-place', 19.1], ['pad-phone-typed', 'line', 'place', 30.9]]
+      .map(([state, part, check, build]) => ({ state, part, check, build, why: 'D1634: the box 8px wider, what sits in it 4px further right with it' })),
+    ...[['still-phone', 425.5], ['still-desk', 442.5]].map(([state, build]) => ({ state, part: 'mark', check: 'place', build, why: 'the 4 Nov 26 page v3: the claw keeps its place, the line hangs under it; shown, not taken back' })),
+  ],
 }

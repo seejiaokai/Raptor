@@ -1,0 +1,6316 @@
+{
+ "spec": "Leave War small fixes — the pad's figure box, a failed download, \"Still loading…\" (D1629–D1632)",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "pad-side-open",
+   "title": "The number pad, phone held sideways — just opened on 7, the figure highlighted",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock-caret.mjs",
+    "shot": "p1c-side-open"
+   },
+   "approved": {
+    "picture": "p1c-side-open.png",
+    "identical": true
+   },
+   "size": "844 × 390 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the pad's top line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 7 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 7 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      }
+     }
+    },
+    {
+     "part": "req",
+     "label": "its \"Req P\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "day",
+     "label": "its day, \"Wed 25 Feb\"",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "the height of its words (from head)",
+       "drawing": "18",
+       "build": "20.5",
+       "by": "2.5px lower",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pad-side-open--day.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 85,
+        "w": 274.5,
+        "h": 30
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 88,
+        "w": 114,
+        "h": 24
+       },
+       "text": "Wed 25 Feb 7",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      }
+     }
+    },
+    {
+     "part": "nav",
+     "label": "‹ › Done, together",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      }
+     }
+    },
+    {
+     "part": "done",
+     "label": "Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      }
+     }
+    },
+    {
+     "part": "box",
+     "label": "the figure's box",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "44",
+       "build": "52",
+       "by": "8px more",
+       "accepted": "D1634: three digits wide from the start, the keys never move",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-open--box.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 324.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 328.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "box-to-done",
+     "label": "the figure's box, measured from Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 324.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 328.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "figure",
+     "label": "the figure's words in the box",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "where its words start (from box)",
+       "drawing": "16.6",
+       "build": "20.6",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-open--figure.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 324.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 328.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "highlight",
+     "label": "the highlight behind the figure (the pad just opened)",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "15.6",
+       "build": "19.6",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-open--highlight.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 323.1,
+        "y": 88,
+        "w": 12.7,
+        "h": 24
+       },
+       "ink": {
+        "x": 324.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 327.1,
+        "y": 88,
+        "w": 12.7,
+        "h": 24
+       },
+       "ink": {
+        "x": 328.1,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flysel"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "pad-side-typed",
+   "title": "The number pad, phone held sideways — 9 typed, the typing line after it",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock-caret.mjs",
+    "shot": "p1c-side-typed"
+   },
+   "approved": {
+    "picture": "p1c-side-typed.png",
+    "identical": true
+   },
+   "size": "844 × 390 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the pad's top line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 9 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 9 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      }
+     }
+    },
+    {
+     "part": "req",
+     "label": "its \"Req P\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "day",
+     "label": "its day, \"Wed 25 Feb\"",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "the height of its words (from head)",
+       "drawing": "18",
+       "build": "20.5",
+       "by": "2.5px lower",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pad-side-typed--day.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 85,
+        "w": 274.5,
+        "h": 30
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 88,
+        "w": 112.5,
+        "h": 24
+       },
+       "text": "Wed 25 Feb 9",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      }
+     }
+    },
+    {
+     "part": "nav",
+     "label": "‹ › Done, together",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      }
+     }
+    },
+    {
+     "part": "done",
+     "label": "Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      }
+     }
+    },
+    {
+     "part": "box",
+     "label": "the figure's box",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "44",
+       "build": "52",
+       "by": "8px more",
+       "accepted": "D1634: three digits wide from the start, the keys never move",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-typed--box.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 322.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 326.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "box-to-done",
+     "label": "the figure's box, measured from Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 322.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 326.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "figure",
+     "label": "the figure's words in the box",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "where its words start (from box)",
+       "drawing": "15.1",
+       "build": "19.1",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-typed--figure.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 322.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 326.6,
+        "y": 88,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "the typing line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "26.9",
+       "build": "30.9",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-typed--line.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 334.4,
+        "y": 90,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 338.4,
+        "y": 90,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flycaret"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "pad-side-empty",
+   "title": "The number pad, phone held sideways — nothing typed, the typing line alone",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock-caret.mjs",
+    "shot": "p1c-side-empty"
+   },
+   "approved": {
+    "picture": "p1c-side-empty.png",
+    "identical": true
+   },
+   "size": "844 × 390 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the pad's top line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 162,
+        "y": 70,
+        "w": 520,
+        "h": 102
+       },
+       "ink": {
+        "x": 172,
+        "y": 88,
+        "w": 485,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      }
+     }
+    },
+    {
+     "part": "req",
+     "label": "its \"Req P\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 172,
+        "y": 90.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "day",
+     "label": "its day, \"Wed 25 Feb\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 85,
+        "w": 274.5,
+        "h": 30
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "ink": {
+        "x": 220.9,
+        "y": 90.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      }
+     }
+    },
+    {
+     "part": "nav",
+     "label": "‹ › Done, together",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 503.3,
+        "y": 78,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 522,
+        "y": 88,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      }
+     }
+    },
+    {
+     "part": "done",
+     "label": "Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 603.3,
+        "y": 78,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 618.3,
+        "y": 90,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      }
+     }
+    },
+    {
+     "part": "box",
+     "label": "the figure's box",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "44",
+       "build": "52",
+       "by": "8px more",
+       "accepted": "D1634: three digits wide from the start, the keys never move",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-empty--box.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "box-to-done",
+     "label": "the figure's box, measured from Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "figure",
+     "label": "the figure's words in the box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 44,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 307.5,
+        "y": 85,
+        "w": 52,
+        "h": 30
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "the typing line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "21.5",
+       "build": "25.5",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-side-empty--line.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 329,
+        "y": 90,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 333,
+        "y": 90,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flycaret"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "pad-phone-open",
+   "title": "The number pad, iPhone upright — just opened on 7, the figure highlighted",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock-caret.mjs",
+    "shot": "p1c-phone-open"
+   },
+   "approved": {
+    "picture": "p1c-phone-open.png",
+    "identical": false,
+    "differs": "32 pixels in [410,768,411,783]"
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the pad's top line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 554,
+        "w": 402,
+        "h": 102
+       },
+       "ink": {
+        "x": 10,
+        "y": 572,
+        "w": 367,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 7 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 554,
+        "w": 402,
+        "h": 102
+       },
+       "ink": {
+        "x": 10,
+        "y": 572,
+        "w": 367,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 7 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      }
+     }
+    },
+    {
+     "part": "req",
+     "label": "its \"Req P\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "day",
+     "label": "its day, \"Wed 25 Feb\"",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "the height of its words (from head)",
+       "drawing": "18",
+       "build": "20.5",
+       "by": "2.5px lower",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pad-phone-open--day.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 58.9,
+        "y": 569,
+        "w": 156.5,
+        "h": 30
+       },
+       "ink": {
+        "x": 58.9,
+        "y": 572,
+        "w": 114,
+        "h": 24
+       },
+       "text": "Wed 25 Feb 7",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 58.9,
+        "y": 574.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "ink": {
+        "x": 58.9,
+        "y": 574.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      }
+     }
+    },
+    {
+     "part": "nav",
+     "label": "‹ › Done, together",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 223.3,
+        "y": 562,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 242,
+        "y": 572,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 223.3,
+        "y": 562,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 242,
+        "y": 572,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      }
+     }
+    },
+    {
+     "part": "done",
+     "label": "Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 323.3,
+        "y": 562,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 338.3,
+        "y": 574,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 323.3,
+        "y": 562,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 338.3,
+        "y": 574,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      }
+     }
+    },
+    {
+     "part": "box",
+     "label": "the figure's box",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "44",
+       "build": "52",
+       "by": "8px more",
+       "accepted": "D1634: three digits wide from the start, the keys never move",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-open--box.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 162.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 166.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "box-to-done",
+     "label": "the figure's box, measured from Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 162.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 166.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "figure",
+     "label": "the figure's words in the box",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "where its words start (from box)",
+       "drawing": "16.6",
+       "build": "20.6",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-open--figure.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 162.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 166.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "highlight",
+     "label": "the highlight behind the figure (the pad just opened)",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "15.6",
+       "build": "19.6",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-open--highlight.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 161.1,
+        "y": 572,
+        "w": 12.7,
+        "h": 24
+       },
+       "ink": {
+        "x": 162.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 165.1,
+        "y": 572,
+        "w": 12.7,
+        "h": 24
+       },
+       "ink": {
+        "x": 166.1,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "7",
+       "typed": false,
+       "look": {
+        "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flysel"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "pad-phone-typed",
+   "title": "The number pad, iPhone upright — 9 typed, the typing line after it",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock-caret.mjs",
+    "shot": "p1c-phone-typed"
+   },
+   "approved": {
+    "picture": "p1c-phone-typed.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "head",
+     "label": "the pad's top line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 554,
+        "w": 402,
+        "h": 102
+       },
+       "ink": {
+        "x": 10,
+        "y": 572,
+        "w": 367,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 9 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 554,
+        "w": 402,
+        "h": 102
+       },
+       "ink": {
+        "x": 10,
+        "y": 572,
+        "w": 367,
+        "h": 66.5
+       },
+       "text": "Req P Wed 25 Feb 9 ‹ › Done This day From 25 Feb on",
+       "typed": false,
+       "look": {
+        "fill": "rgb(23, 27, 33)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.flypad-hd.flyedit-strip"
+      }
+     }
+    },
+    {
+     "part": "req",
+     "label": "its \"Req P\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "ink": {
+        "x": 10,
+        "y": 574.5,
+        "w": 40.9,
+        "h": 19
+       },
+       "text": "Req P",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 14px",
+        "spacing": "0.28px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "day",
+     "label": "its day, \"Wed 25 Feb\"",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "the height of its words (from head)",
+       "drawing": "18",
+       "build": "20.5",
+       "by": "2.5px lower",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pad-phone-typed--day.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 58.9,
+        "y": 569,
+        "w": 156.5,
+        "h": 30
+       },
+       "ink": {
+        "x": 58.9,
+        "y": 572,
+        "w": 112.5,
+        "h": 24
+       },
+       "text": "Wed 25 Feb 9",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 58.9,
+        "y": 574.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "ink": {
+        "x": 58.9,
+        "y": 574.5,
+        "w": 76.7,
+        "h": 19
+       },
+       "text": "Wed 25 Feb",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-day"
+      }
+     }
+    },
+    {
+     "part": "nav",
+     "label": "‹ › Done, together",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 223.3,
+        "y": 562,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 242,
+        "y": 572,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 223.3,
+        "y": 562,
+        "w": 168.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 242,
+        "y": 572,
+        "w": 135,
+        "h": 24
+       },
+       "text": "‹ › Done",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 14px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-nav"
+      }
+     }
+    },
+    {
+     "part": "done",
+     "label": "Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 323.3,
+        "y": 562,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 338.3,
+        "y": 574,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 323.3,
+        "y": 562,
+        "w": 68.7,
+        "h": 44
+       },
+       "ink": {
+        "x": 338.3,
+        "y": 574,
+        "w": 38.7,
+        "h": 20
+       },
+       "text": "Done",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(6, 34, 43)",
+        "align": "center",
+        "justify": "normal",
+        "font": "800 15px",
+        "spacing": "normal"
+       },
+       "tag": "button.done"
+      }
+     }
+    },
+    {
+     "part": "box",
+     "label": "the figure's box",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "44",
+       "build": "52",
+       "by": "8px more",
+       "accepted": "D1634: three digits wide from the start, the keys never move",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-typed--box.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 160.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 164.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "box-to-done",
+     "label": "the figure's box, measured from Done",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 160.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 164.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "figure",
+     "label": "the figure's words in the box",
+     "diffs": [
+      {
+       "check": "words-place",
+       "what": "where its words start (from box)",
+       "drawing": "15.1",
+       "build": "19.1",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-typed--figure.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 44,
+        "h": 30
+       },
+       "ink": {
+        "x": 160.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 145.5,
+        "y": 569,
+        "w": 52,
+        "h": 30
+       },
+       "ink": {
+        "x": 164.6,
+        "y": 572,
+        "w": 10.7,
+        "h": 24
+       },
+       "text": "9",
+       "typed": false,
+       "look": {
+        "fill": "rgb(10, 14, 19)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "2px",
+         "2px",
+         "2px",
+         "2px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "center",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flypad-fig"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "the typing line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "26.9",
+       "build": "30.9",
+       "by": "4px further right",
+       "accepted": "D1634: the box 8px wider, what sits in it 4px further right with it",
+       "counts": false
+      }
+     ],
+     "picture": "pad-phone-typed--line.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 172.4,
+        "y": 574,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 176.4,
+        "y": 574,
+        "w": 2,
+        "h": 20
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)",
+         "0px none rgb(255, 255, 255)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 18px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.flycaret"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "fail-phone",
+   "title": "The Leave War failed to download, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock.mjs",
+    "shot": "p2-phone-proposal-failed"
+   },
+   "approved": {
+    "picture": "p2-phone-proposal-failed.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "topbar",
+     "label": "the top bar, kept",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 49
+       },
+       "ink": {
+        "x": 86,
+        "y": 8.8,
+        "w": 218.6,
+        "h": 30.5
+       },
+       "text": "142 TALON ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 49
+       },
+       "ink": {
+        "x": 86,
+        "y": 8.8,
+        "w": 218.6,
+        "h": 30.5
+       },
+       "text": "142 TALON ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      }
+     }
+    },
+    {
+     "part": "card",
+     "label": "the card",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16,
+        "y": 97,
+        "w": 370,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 118,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Leave War It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16,
+        "y": 97,
+        "w": 370,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 118,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Leave War It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pgfail"
+      }
+     }
+    },
+    {
+     "part": "heading",
+     "label": "its heading \"Couldn't open …\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 118,
+        "w": 332,
+        "h": 21
+       },
+       "ink": {
+        "x": 97.1,
+        "y": 118,
+        "w": 207.8,
+        "h": 21
+       },
+       "text": "Couldn't open the Leave War",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 118,
+        "w": 332,
+        "h": 21
+       },
+       "ink": {
+        "x": 97.1,
+        "y": 118,
+        "w": 207.8,
+        "h": 21
+       },
+       "text": "Couldn't open the Leave War",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "its line \"It didn't download. Check your signal, then retry.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 147,
+        "w": 332,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 147,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 147,
+        "w": 332,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 147,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      }
+     }
+    },
+    {
+     "part": "retry",
+     "label": "Retry",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    },
+    {
+     "part": "retry-words",
+     "label": "Retry's word, inside it",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "fail-desk",
+   "title": "The Leave War failed to download, desktop",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock.mjs",
+    "shot": "p2-desktop-proposal-failed"
+   },
+   "approved": {
+    "picture": "p2-desktop-proposal-failed.png",
+    "identical": true
+   },
+   "size": "1440 × 900 at 2",
+   "parts": [
+    {
+     "part": "topbar",
+     "label": "the top bar, kept",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 57
+       },
+       "ink": {
+        "x": 50,
+        "y": 10,
+        "w": 1357,
+        "h": 37
+       },
+       "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 1440,
+        "h": 57
+       },
+       "ink": {
+        "x": 50,
+        "y": 10,
+        "w": 1357,
+        "h": 37
+       },
+       "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout Saber · Admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      }
+     }
+    },
+    {
+     "part": "card",
+     "label": "the card",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 510,
+        "y": 105,
+        "w": 420,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 582.7,
+        "y": 126,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Leave War It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 510,
+        "y": 105,
+        "w": 420,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 582.7,
+        "y": 126,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Leave War It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pgfail"
+      }
+     }
+    },
+    {
+     "part": "heading",
+     "label": "its heading \"Couldn't open …\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 529,
+        "y": 126,
+        "w": 382,
+        "h": 21
+       },
+       "ink": {
+        "x": 616.1,
+        "y": 126,
+        "w": 207.8,
+        "h": 21
+       },
+       "text": "Couldn't open the Leave War",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 529,
+        "y": 126,
+        "w": 382,
+        "h": 21
+       },
+       "ink": {
+        "x": 616.1,
+        "y": 126,
+        "w": 207.8,
+        "h": 21
+       },
+       "text": "Couldn't open the Leave War",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "its line \"It didn't download. Check your signal, then retry.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 529,
+        "y": 155,
+        "w": 382,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 582.7,
+        "y": 155,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 529,
+        "y": 155,
+        "w": 382,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 582.7,
+        "y": 155,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      }
+     }
+    },
+    {
+     "part": "retry",
+     "label": "Retry",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.3,
+        "y": 187.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 705.3,
+        "y": 199.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.3,
+        "y": 187.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 705.3,
+        "y": 199.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    },
+    {
+     "part": "retry-words",
+     "label": "Retry's word, inside it",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.3,
+        "y": 187.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 705.3,
+        "y": 199.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 690.3,
+        "y": 187.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 705.3,
+        "y": 199.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "fail-phone-tracker",
+   "title": "The Tracker failed to download, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock.mjs",
+    "shot": "p2-phone-proposal-failed-tracker"
+   },
+   "approved": {
+    "picture": "p2-phone-proposal-failed-tracker.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "topbar",
+     "label": "the top bar, kept",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 2,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 49
+       },
+       "ink": {
+        "x": 86,
+        "y": 8.8,
+        "w": 218.6,
+        "h": 30.5
+       },
+       "text": "142 TALON ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 0,
+        "w": 402,
+        "h": 49
+       },
+       "ink": {
+        "x": 86,
+        "y": 8.8,
+        "w": 218.6,
+        "h": 30.5
+       },
+       "text": "142 TALON ↶ ↷",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.topbar.has-undo"
+      }
+     }
+    },
+    {
+     "part": "card",
+     "label": "the card",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16,
+        "y": 97,
+        "w": 370,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 118,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Tracker It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16,
+        "y": 97,
+        "w": 370,
+        "h": 143.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 118,
+        "w": 274.6,
+        "h": 90.3
+       },
+       "text": "Couldn't open the Tracker It didn't download. Check your signal, then retry. Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "14px",
+         "14px",
+         "14px",
+         "14px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pgfail"
+      }
+     }
+    },
+    {
+     "part": "heading",
+     "label": "its heading \"Couldn't open …\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 118,
+        "w": 332,
+        "h": 21
+       },
+       "ink": {
+        "x": 108.5,
+        "y": 118,
+        "w": 185.1,
+        "h": 21
+       },
+       "text": "Couldn't open the Tracker",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 118,
+        "w": 332,
+        "h": 21
+       },
+       "ink": {
+        "x": 108.5,
+        "y": 118,
+        "w": 185.1,
+        "h": 21
+       },
+       "text": "Couldn't open the Tracker",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "-0.065px"
+       },
+       "tag": "h2"
+      }
+     }
+    },
+    {
+     "part": "line",
+     "label": "its line \"It didn't download. Check your signal, then retry.\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 147,
+        "w": 332,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 147,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 35,
+        "y": 147,
+        "w": 332,
+        "h": 18.8
+       },
+       "ink": {
+        "x": 63.7,
+        "y": 147,
+        "w": 274.6,
+        "h": 17
+       },
+       "text": "It didn't download. Check your signal, then retry.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p"
+      }
+     }
+    },
+    {
+     "part": "retry",
+     "label": "Retry",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    },
+    {
+     "part": "retry-words",
+     "label": "Retry's word, inside it",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 171.3,
+        "y": 179.8,
+        "w": 59.4,
+        "h": 40
+       },
+       "ink": {
+        "x": 186.3,
+        "y": 191.3,
+        "w": 29.4,
+        "h": 17
+       },
+       "text": "Retry",
+       "typed": false,
+       "look": {
+        "fill": "rgba(59, 198, 232, 0.16)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.pgfail-retry"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "still-phone",
+   "title": "\"Still loading…\" under the claw, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock.mjs",
+    "shot": "p2-phone-proposal-still-loading"
+   },
+   "approved": {
+    "picture": "p2-phone-proposal-still-loading.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "mark",
+     "label": "the claw's mark",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "408",
+       "build": "425.5",
+       "by": "17.5px lower",
+       "accepted": "the 4 Nov 26 page v3: the claw keeps its place, the line hangs under it; shown, not taken back",
+       "counts": false
+      }
+     ],
+     "picture": "still-phone--mark.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 165,
+        "y": 408,
+        "w": 72,
+        "h": 72
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.mk"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 165,
+        "y": 425.5,
+        "w": 72,
+        "h": 72
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.mk"
+      }
+     }
+    },
+    {
+     "part": "still",
+     "label": "\"Still loading…\", under the mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 163.1,
+        "y": 498,
+        "w": 75.7,
+        "h": 17
+       },
+       "ink": {
+        "x": 163.1,
+        "y": 498,
+        "w": 75.7,
+        "h": 17
+       },
+       "text": "Still loading…",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(139, 149, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.lwsf-still"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 515.5,
+        "w": 402,
+        "h": 18.2
+       },
+       "ink": {
+        "x": 163.1,
+        "y": 515.5,
+        "w": 75.7,
+        "h": 17
+       },
+       "text": "Still loading…",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pgclaw-still"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "still-desk",
+   "title": "\"Still loading…\" under the claw, desktop",
+   "drawing": {
+    "script": "scripts/handpass/lwsf-mock.mjs",
+    "shot": "p2-desktop-proposal-still-loading"
+   },
+   "approved": {
+    "picture": "p2-desktop-proposal-still-loading.png",
+    "identical": true
+   },
+   "size": "1440 × 900 at 2",
+   "parts": [
+    {
+     "part": "mark",
+     "label": "the claw's mark",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "425",
+       "build": "442.5",
+       "by": "17.5px lower",
+       "accepted": "the 4 Nov 26 page v3: the claw keeps its place, the line hangs under it; shown, not taken back",
+       "counts": false
+      }
+     ],
+     "picture": "still-desk--mark.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 684,
+        "y": 425,
+        "w": 72,
+        "h": 72
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.mk"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 684,
+        "y": 442.5,
+        "w": 72,
+        "h": 72
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.mk"
+      }
+     }
+    },
+    {
+     "part": "still",
+     "label": "\"Still loading…\", under the mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 682.1,
+        "y": 515,
+        "w": 75.7,
+        "h": 17
+       },
+       "ink": {
+        "x": 682.1,
+        "y": 515,
+        "w": 75.7,
+        "h": 17
+       },
+       "text": "Still loading…",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)",
+         "0px none rgb(139, 149, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(139, 149, 163)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.lwsf-still"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 0,
+        "y": 532.5,
+        "w": 1440,
+        "h": 18.2
+       },
+       "ink": {
+        "x": 682.1,
+        "y": 532.5,
+        "w": 75.7,
+        "h": 17
+       },
+       "text": "Still loading…",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pgclaw-still"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": [
+  "fail-phone: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "fail-phone: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/LeaveWarPage-Bgg3sfxO.js",
+  "fail-desk: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "fail-desk: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/LeaveWarPage-Bgg3sfxO.js",
+  "fail-phone-tracker: console: Failed to load resource: net::ERR_INTERNET_DISCONNECTED",
+  "fail-phone-tracker: console: TypeError: Failed to fetch dynamically imported module: http://localhost:4311/assets/TrackerPage-msHHDUjQ.js"
+ ]
+}

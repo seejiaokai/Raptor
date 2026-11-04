@@ -57,13 +57,13 @@ import { ALPanel } from './ALPanel'
    sync directly, so the crew projection, leave cells and OIL plan reconcile
    exactly as before — deferring the grid cannot reach any of it. Pinned by the
    "not downloaded until its tab is opened" e2e. */
-/* each made through ui/pageload.tsx so a failed download is caught on its own page, with Retry, which reloads the app (D1631, D1633) */
-const LeaveWarPage = pageDownload(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
+/* each made through ui/pageload.tsx so a failed download is caught on its own page, with Retry, which fetches its files afresh and reloads the app (D1631, D1633); the second argument is the page's name in the build's list of files (vite.config.ts page-files.json) */
+const LeaveWarPage = pageDownload(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })), 'src/leavewar/LeaveWarPage.tsx')
 /* The Tracker (7 Sep 26) is the second such separate download, for the same
    reason: a 200-event flow chart plus its editor is nothing a Raptor visit
    needs until the tab is clicked. Nothing of it boots in main.tsx — it has no
    sync wires; core.init() runs on the first mount. */
-const TrackerPage = pageDownload(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })))
+const TrackerPage = pageDownload(() => import('../tracker/TrackerPage').then(m => ({ default: m.TrackerPage })), 'src/tracker/TrackerPage.tsx')
 import { installIdleTracking, msSinceInput } from '../state/idle'
 import { oilPendingFor } from '../leavewar/sync'
 import { AdminPage } from './AdminPage'
