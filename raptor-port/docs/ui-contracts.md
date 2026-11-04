@@ -168,7 +168,7 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   first landed in the WRONG media block and no jsdom test can see a media
   query.
 
-## The app's top bar — the page names beside TALON (owner D1641, 4 Nov 26 — to build, mock-up first)
+## The app's top bar — the page names beside TALON (owner D1641, D1642, D1643, 4 Nov 26 — being built)
 
 **D1641:** the page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they
 cannot all fit there — a phone or a narrow desktop — they go into the side menu (the ☰ drawer, `ui/Drawer.tsx`) as on a
@@ -176,6 +176,12 @@ phone today. Not built yet: the mock-up comes first (D1625), and the build is fi
 the backlog. **Today (`ui/Shell.tsx`, `ui/scheduler/02-shell.css`, `09-week-responsive.css`):** the side menu takes over
 only below 821 wide; above it the bar wraps, the names on a row of their own under TALON and the buttons on a third
 row at a tablet's width (his picture, 4 Nov 26).
+
+**D1642 — built as the mock-up draws it** (`docs/mock/2026-11-04-topbar-names/index.html`): where the names all fit beside
+TALON they stand there, the buttons after them or on a row of their own to the right; where they do not, ☰ and one row.
+Whether they fit is MEASURED on the screen in use, never set at a width: an iPhone's letters are wider than a PC's (at 874
+wide the PC measured 695 needed of 706, and his iPhone wrapped). **D1643 — a phone held sideways is always ☰ and one row,**
+for everyone, even where a member's names would fit; an iPad keeps the measure. The side menu scrolls to its Account part.
 
 ## The day carries across a page switch (owner, 9 Aug 26)
 
