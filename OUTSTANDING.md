@@ -122,7 +122,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-ROUND-SEEN] — two phone covers the plain-user round saw (the marking pop-up and Find over the tabs); the dropdown words closed by his iPhone look (D1564).
-- [TRK-STANDALONE-LEFTOVERS] — the code kept only for a standalone Tracker, unneeded since D1538; with the Tracker's next batch.
+- [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
+- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
+- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; new words, so a mock-up first (D1625).
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -251,7 +253,27 @@ tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
 
+### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
+**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
+merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
+(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
+with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
+app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
+should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
+`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
+
+### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
+**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
+top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
+the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
+app's failed-save band, D587). New words on screen, so a mock-up first (D1625); his to place. Evidence:
+`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+
 ### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
+**Built and checked 5 Nov 26** on `claude/tracker-standalone-tidy` (pull request 637): the bare `ocu:` path and the bar's own
+Undo / Redo pair with its `hosted` flag removed; the roster prompt and `role.js`/`people.js`'s shape kept with their reasons;
+FULL check — 206 PASS, 0 FAIL, a fresh Opus read 0 high. Evidence `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+What it kept on purpose: [TRK-KEPT-COPIES]. Archive once live.
 **What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
 Tracker is no longer needed: `+ Add` falling back to the bare "Student callsign:" prompt when no roster is handed over
 (`components/Modals.jsx`, the one `people.length` branch), the bare `ocu:` localStorage path in `src/tracker/storage.js` used when no
