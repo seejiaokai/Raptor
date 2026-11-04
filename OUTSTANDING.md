@@ -70,8 +70,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
 - [HIST-JUMP-SEEN] — five small leftovers of tapping a change in the changes window — his to place.
 - [PLAN-BANNER-DOOR] — the preview banner's "Switch to this plan" has no route a person can reach — retire it or give it one: his question.
-- [PDF-PRINT-TWICE] — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes; set for the night of 3 Nov 26, then skipped on his word that night ("Skip the pdf") — waits for a later batch.
-- [FLAG-EXPORT] — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
+- [PDF-PRINT-TWICE] — **HELD on his word (D1644, 4 Nov 26: "skip the pdf until i say so")** — on his iPhone "Export as PDF" prints the app screen (the working copy), not the published report (his picture, 1 Nov 26); his "Later" — the next batch of small fixes; set for the night of 3 Nov 26, then skipped on his word that night ("Skip the pdf") — waits for a later batch.
+- [FLAG-EXPORT] — **HELD on his word (D1644)** — the PDF prints the published version but still the whole week, not the day — sample PDFs for his look.
 - [ROW-NO-TIME-MARK] — a "?" on a row with no timing or no end time (D361) — scoped with him first.
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.

@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1644 | 4 Nov 26 | The PDF export work is not started until he says so: [PDF-PRINT-TWICE] (his iPhone printing the working copy) and [FLAG-EXPORT] (the published day only, the nicer report) wait for his word. |
 | D1621 | 3 Nov 26 | A LATE mark a scheduler drops on a day already published leaves the issued schedule at once, as built: nothing reads pending and the four sign-offs stay; it does not wait for the next amendment, as a hidden warning does (D471). |
 | D1620 | 3 Nov 26 | When a member changes his input again after a scheduler dropped its LATE mark, the drop goes: if that new change is itself late, LATE shows again for everyone until a scheduler drops it again; a scheduler's own change keeps the drop. |
 | D1592 | 3 Nov 26 | On a day already published, making a scheduler note public, or scheduler-only again, waits for the next amendment like any other change there: until that amendment is published the view-only schedule shows the note as the day went out. |
