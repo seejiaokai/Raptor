@@ -1,0 +1,102 @@
+{
+ "state": "still-desk",
+ "drawing": {
+  "script": "scripts/handpass/lwsf-mock.mjs",
+  "shot": "p2-desktop-proposal-still-loading"
+ },
+ "recorded": "2026-11-04T09:09:01.967Z",
+ "drawnOn": "origin/main at 14aaffa8",
+ "checkout": "ac18a1a34",
+ "viewport": {
+  "w": 1440,
+  "h": 900
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 684,
+    "y": 425,
+    "w": 72,
+    "h": 72
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.mk"
+  },
+  "still": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 682.1,
+    "y": 515,
+    "w": 75.7,
+    "h": 17
+   },
+   "ink": {
+    "x": 682.1,
+    "y": 515,
+    "w": 75.7,
+    "h": 17
+   },
+   "text": "Still loading…",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(139, 149, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.lwsf-still"
+  }
+ },
+ "approved": {
+  "picture": "p2-desktop-proposal-still-loading.png",
+  "identical": true
+ }
+}

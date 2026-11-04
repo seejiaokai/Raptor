@@ -1,0 +1,395 @@
+{
+ "state": "pad-phone-open",
+ "drawing": {
+  "script": "scripts/handpass/lwsf-mock-caret.mjs",
+  "shot": "p1c-phone-open"
+ },
+ "recorded": "2026-11-04T09:09:26.947Z",
+ "drawnOn": "origin/main at 14aaffa8",
+ "checkout": "ac18a1a34",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "head": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 554,
+    "w": 402,
+    "h": 102
+   },
+   "ink": {
+    "x": 10,
+    "y": 572,
+    "w": 367,
+    "h": 66.5
+   },
+   "text": "Req P Wed 25 Feb 7 ‹ › Done This day From 25 Feb on",
+   "typed": false,
+   "look": {
+    "fill": "rgb(23, 27, 33)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.flypad-hd.flyedit-strip"
+  },
+  "req": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 10,
+    "y": 574.5,
+    "w": 40.9,
+    "h": 19
+   },
+   "ink": {
+    "x": 10,
+    "y": 574.5,
+    "w": 40.9,
+    "h": 19
+   },
+   "text": "Req P",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 14px",
+    "spacing": "0.28px"
+   },
+   "tag": "b"
+  },
+  "day": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 58.9,
+    "y": 569,
+    "w": 156.5,
+    "h": 30
+   },
+   "ink": {
+    "x": 58.9,
+    "y": 572,
+    "w": 114,
+    "h": 24
+   },
+   "text": "Wed 25 Feb 7",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 14px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.flypad-day"
+  },
+  "nav": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 223.3,
+    "y": 562,
+    "w": 168.7,
+    "h": 44
+   },
+   "ink": {
+    "x": 242,
+    "y": 572,
+    "w": 135,
+    "h": 24
+   },
+   "text": "‹ › Done",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 14px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.flypad-nav"
+  },
+  "done": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 323.3,
+    "y": 562,
+    "w": 68.7,
+    "h": 44
+   },
+   "ink": {
+    "x": 338.3,
+    "y": 574,
+    "w": 38.7,
+    "h": 20
+   },
+   "text": "Done",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(6, 34, 43)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 15px",
+    "spacing": "normal"
+   },
+   "tag": "button.done"
+  },
+  "box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 145.5,
+    "y": 569,
+    "w": 44,
+    "h": 30
+   },
+   "ink": {
+    "x": 162.1,
+    "y": 572,
+    "w": 10.7,
+    "h": 24
+   },
+   "text": "7",
+   "typed": false,
+   "look": {
+    "fill": "rgb(10, 14, 19)",
+    "image": "",
+    "edge": [
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "2px",
+     "2px",
+     "2px",
+     "2px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 18px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span"
+  },
+  "box-to-done": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 145.5,
+    "y": 569,
+    "w": 44,
+    "h": 30
+   },
+   "ink": {
+    "x": 162.1,
+    "y": 572,
+    "w": 10.7,
+    "h": 24
+   },
+   "text": "7",
+   "typed": false,
+   "look": {
+    "fill": "rgb(10, 14, 19)",
+    "image": "",
+    "edge": [
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "2px",
+     "2px",
+     "2px",
+     "2px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 18px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span"
+  },
+  "figure": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 145.5,
+    "y": 569,
+    "w": 44,
+    "h": 30
+   },
+   "ink": {
+    "x": 162.1,
+    "y": 572,
+    "w": 10.7,
+    "h": 24
+   },
+   "text": "7",
+   "typed": false,
+   "look": {
+    "fill": "rgb(10, 14, 19)",
+    "image": "",
+    "edge": [
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "2px",
+     "2px",
+     "2px",
+     "2px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 18px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span"
+  },
+  "highlight": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 161.1,
+    "y": 572,
+    "w": 12.7,
+    "h": 24
+   },
+   "ink": {
+    "x": 162.1,
+    "y": 572,
+    "w": 10.7,
+    "h": 24
+   },
+   "text": "7",
+   "typed": false,
+   "look": {
+    "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(255, 255, 255)",
+     "0px none rgb(255, 255, 255)",
+     "0px none rgb(255, 255, 255)",
+     "0px none rgb(255, 255, 255)"
+    ],
+    "corners": [
+     "2px",
+     "2px",
+     "2px",
+     "2px"
+    ],
+    "shadow": "none",
+    "color": "rgb(255, 255, 255)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 18px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span"
+  }
+ },
+ "approved": {
+  "picture": "p1c-phone-open.png",
+  "identical": false,
+  "differs": "32 pixels in [410,768,411,783]"
+ }
+}

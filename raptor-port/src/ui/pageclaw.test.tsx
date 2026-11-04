@@ -58,7 +58,12 @@ describe('what the page claw says', () => {
   afterEach(() => { document.body.innerHTML = ''; vi.useRealTimers(); setPage('viewsched') })
   const section = (id: string) => { const s = document.createElement('section'); s.id = id; document.body.appendChild(s); return s }
   it('is a quiet status naming the page — "Loading Leave War", "Loading Tracker" — its picture hidden from a screen reader', () => {
+    vi.useFakeTimers()
     const lw = raisePageClaw('leavewar'), tr = raisePageClaw('tracker')
+    /* a screen reader reads what CHANGES in a status, not what it held as it appeared: the words go in a moment after
+       (the fresh read's finding 5) */
+    expect(lw.querySelector('.pgclaw-say')!.textContent).toBe('')
+    vi.advanceTimersByTime(150)
     for (const el of [lw, tr]) {
       expect(el.getAttribute('role')).toBe('status')
       expect(el.getAttribute('aria-live')).toBe('polite')

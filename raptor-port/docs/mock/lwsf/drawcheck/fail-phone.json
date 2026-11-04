@@ -1,0 +1,271 @@
+{
+ "state": "fail-phone",
+ "drawing": {
+  "script": "scripts/handpass/lwsf-mock.mjs",
+  "shot": "p2-phone-proposal-failed"
+ },
+ "recorded": "2026-11-04T09:08:55.977Z",
+ "drawnOn": "origin/main at 14aaffa8",
+ "checkout": "ac18a1a34",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "topbar": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 49
+   },
+   "ink": {
+    "x": 86,
+    "y": 8.8,
+    "w": 218.6,
+    "h": 30.5
+   },
+   "text": "142 TALON ↶ ↷",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14))",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.topbar.has-undo"
+  },
+  "card": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 16,
+    "y": 97,
+    "w": 370,
+    "h": 143.8
+   },
+   "ink": {
+    "x": 63.7,
+    "y": 118,
+    "w": 274.6,
+    "h": 90.3
+   },
+   "text": "Couldn't open the Leave War It didn't download. Check your signal, then retry. Retry",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "14px",
+     "14px",
+     "14px",
+     "14px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div"
+  },
+  "heading": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 35,
+    "y": 118,
+    "w": 332,
+    "h": 21
+   },
+   "ink": {
+    "x": 97.1,
+    "y": 118,
+    "w": 207.8,
+    "h": 21
+   },
+   "text": "Couldn't open the Leave War",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 16px",
+    "spacing": "-0.065px"
+   },
+   "tag": "h2"
+  },
+  "line": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 35,
+    "y": 147,
+    "w": 332,
+    "h": 18.8
+   },
+   "ink": {
+    "x": 63.7,
+    "y": 147,
+    "w": 274.6,
+    "h": 17
+   },
+   "text": "It didn't download. Check your signal, then retry.",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "p"
+  },
+  "retry": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 171.3,
+    "y": 179.8,
+    "w": 59.4,
+    "h": 40
+   },
+   "ink": {
+    "x": 186.3,
+    "y": 191.3,
+    "w": 29.4,
+    "h": 17
+   },
+   "text": "Retry",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.16)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button"
+  },
+  "retry-words": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 171.3,
+    "y": 179.8,
+    "w": 59.4,
+    "h": 40
+   },
+   "ink": {
+    "x": 186.3,
+    "y": 191.3,
+    "w": 29.4,
+    "h": 17
+   },
+   "text": "Retry",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.16)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button"
+  }
+ },
+ "approved": {
+  "picture": "p2-phone-proposal-failed.png",
+  "identical": true
+ }
+}

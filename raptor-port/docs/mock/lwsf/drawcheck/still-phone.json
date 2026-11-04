@@ -1,0 +1,102 @@
+{
+ "state": "still-phone",
+ "drawing": {
+  "script": "scripts/handpass/lwsf-mock.mjs",
+  "shot": "p2-phone-proposal-still-loading"
+ },
+ "recorded": "2026-11-04T09:08:56.215Z",
+ "drawnOn": "origin/main at 14aaffa8",
+ "checkout": "ac18a1a34",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 165,
+    "y": 408,
+    "w": 72,
+    "h": 72
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.mk"
+  },
+  "still": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 163.1,
+    "y": 498,
+    "w": 75.7,
+    "h": 17
+   },
+   "ink": {
+    "x": 163.1,
+    "y": 498,
+    "w": 75.7,
+    "h": 17
+   },
+   "text": "Still loading…",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)",
+     "0px none rgb(139, 149, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(139, 149, 163)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.lwsf-still"
+  }
+ },
+ "approved": {
+  "picture": "p2-phone-proposal-still-loading.png",
+  "identical": true
+ }
+}

@@ -1656,7 +1656,9 @@ touch-action: pan-x pan-y;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 44px;
+  /* as wide as three digits and the typing line from the start, so a third digit never widens it, wraps it under the day
+     and moves the keys under the finger (the fresh code read) */
+  min-width: 52px;
   height: 30px;
   padding: 0 6px;
   box-sizing: border-box;

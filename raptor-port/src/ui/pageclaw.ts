@@ -44,9 +44,15 @@ export function raisePageClaw(page: string): HTMLElement {
   el.dataset.page = page
   el.innerHTML = '<div class="mk" aria-hidden="true"><div class="cs">'
     + PAGECLAW_PATHS.map((d, i) => `<div class="w pw${i}"><svg viewBox="0 -2 60 64"><path class="c" d="${d}"/></svg></div>`).join('')
-    + `</div></div><span class="pgclaw-say">Loading ${PAGE_NAMES[page] ?? 'the page'}</span>`
+    + '</div></div><span class="pgclaw-say"></span>'
   document.body.appendChild(el)
   busy(page, true)
+  /* a screen reader reads what CHANGES in a status, not what it held as it appeared (the fresh code read's finding 5):
+     the page's name goes in a moment after the claw */
+  window.setTimeout(() => {
+    const say = el.querySelector('.pgclaw-say')
+    if (say && el.isConnected && !el.classList.contains('gone')) say.textContent = `Loading ${PAGE_NAMES[page] ?? 'the page'}`
+  }, 100)
   window.setTimeout(() => {
     if (!el.isConnected || el.classList.contains('gone')) return
     const still = document.createElement('div')

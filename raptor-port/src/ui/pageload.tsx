@@ -11,12 +11,14 @@
        download. Check your signal, then retry.", Retry — and the top bar stays, every other page one tap away;
      · hidden (the pre-warm), it shows nothing; opening the page later tries the download again by itself, with the
        claw, and shows the card only if that fails too;
-     · Retry downloads again — unless the app has been UPDATED since this tab opened, when the old file is gone and no
-       retry can work: then it reloads the app, which keeps everything saved and starts the Undo list afresh (put to him
-       on the drawing). Whether the app was updated is asked of the server: the app's own first file, named in a fresh
-       index.html, differs from the one this tab runs. No answer (no signal) is not an update — the card stays.
+     · Retry downloads again AT ONCE, the claw showing (never first waiting on a check a weak signal can stall — the
+       fresh code read's finding 4); a stylesheet that did not come is asked for afresh first (pagedownload.ts). Only when
+       a retry fails too is the server asked whether the app has been UPDATED since this tab opened, when the old file is
+       gone and no retry can work: then the app reloads, which keeps everything saved and starts the Undo list afresh
+       (put to him on the drawing). Updated means the app's own first file, named in a fresh index.html, differs from
+       the one this tab runs. No answer within 4 s, or no signal, is not an update: the card stays.
    Only a failed DOWNLOAD is caught here: a fault inside the page itself is passed on to what catches it today. */
-import { Component, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
+import { Component, Suspense, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
 import { PageClaw } from './pageclaw'
 import { isDownloadFailure, type PageDownload } from './pagedownload'
 
@@ -24,14 +26,18 @@ import { isDownloadFailure, type PageDownload } from './pagedownload'
 const entryFiles = (root: ParentNode) =>
   [...root.querySelectorAll<HTMLScriptElement>('script[type="module"][src]')].map(s => s.getAttribute('src')!.replace(/^\.?\//, ''))
 async function appUpdated(): Promise<boolean> {
+  const stop = typeof AbortController === 'function' ? new AbortController() : null
+  const timer = window.setTimeout(() => stop?.abort(), 4000)
   try {
-    const res = await fetch(new URL('./', window.location.href).href, { cache: 'no-store' })
+    const res = await fetch(new URL('./', window.location.href).href, { cache: 'no-store', signal: stop?.signal })
     if (!res.ok) return false
     const now = entryFiles(new DOMParser().parseFromString(await res.text(), 'text/html'))
     const mine = new Set(entryFiles(document))
     return now.length > 0 && mine.size > 0 && now.some(f => !mine.has(f))
   } catch {
     return false
+  } finally {
+    window.clearTimeout(timer)
   }
 }
 
@@ -49,10 +55,10 @@ function PageLoadFail({ name, onRetry }: { name: string; onRetry: () => void }) 
 }
 
 /* An error boundary has to be a class: React has no hook for catching a child's render. */
-class PageCatch extends Component<{ active: boolean; name: string; onRetry: () => void; onFail: () => void; children: ReactNode }, { error: unknown }> {
+class PageCatch extends Component<{ active: boolean; name: string; onRetry: () => void; onFail: (e: unknown) => void; children: ReactNode }, { error: unknown }> {
   state = { error: null as unknown }
   static getDerivedStateFromError(error: unknown) { return { error } }
-  componentDidCatch(error: unknown) { if (isDownloadFailure(error)) this.props.onFail() }
+  componentDidCatch(error: unknown) { if (isDownloadFailure(error)) this.props.onFail(error) }
   render() {
     const { error } = this.state
     if (error === null) return this.props.children
@@ -76,25 +82,31 @@ export function DownloadedPage({ page, name, download, active, until }: {
 }) {
   const [attempt, setAttempt] = useState(0)
   const failedHidden = useRef(false)
+  /* the try now running came from Retry (or the page's opening after a hidden failure): if it fails too, ask whether the
+     app was updated */
+  const retried = useRef(false)
   const checking = useRef(false)
-  const again = () => { download.renew(); setAttempt(a => a + 1) }
-  const retry = async () => {
-    if (checking.current) return
+  const again = () => { retried.current = true; download.renew(); setAttempt(a => a + 1) }
+  const onFail = (e: unknown) => {
+    download.noteFailure(e)
+    if (!active) failedHidden.current = true
+    if (!retried.current || checking.current) return
     checking.current = true
-    try {
-      if (await appUpdated()) { window.location.reload(); return }
-      again()
-    } finally { checking.current = false }
+    void appUpdated().then(updated => { checking.current = false; if (updated) window.location.reload() })
   }
-  /* a download that failed while the page was hidden is tried again, by itself, when the page is opened */
-  useEffect(() => {
+  /* a download that failed while the page was hidden is tried again, by itself, when the page is opened — before the
+     screen is painted, so its card never shows for a frame first */
+  useLayoutEffect(() => {
     if (active && failedHidden.current) { failedHidden.current = false; again() }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only the page coming on screen asks again
   }, [active])
   const Page = download.current
+  /* where the claw waits for the page's own drawing (the Tracker's chart), the card is that page's drawing too: the claw
+     goes as it shows, not at its 3 s cap (the fresh code read's finding 3) */
+  const waitFor = until ? `${until}, #page-${page} [data-testid="page-load-fail"]` : undefined
   return (
-    <PageCatch key={attempt} active={active} name={name} onRetry={() => { void retry() }} onFail={() => { if (!active) failedHidden.current = true }}>
-      <Suspense fallback={active ? <PageClaw page={page} until={until} /> : null}><Page active={active} /></Suspense>
+    <PageCatch key={attempt} active={active} name={name} onRetry={again} onFail={onFail}>
+      <Suspense fallback={active ? <PageClaw page={page} until={waitFor} /> : null}><Page active={active} /></Suspense>
     </PageCatch>
   )
 }
