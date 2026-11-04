@@ -9,67 +9,48 @@
      · on screen, its area shows a card copied from the Tracker's "No course yet" card (its size, edge, fill, heading,
        line and button, read from the real one for the drawing he approved) — "Couldn't open the Leave War", "It didn't
        download. Check your signal, then retry.", Retry — and the top bar stays, every other page one tap away;
-     · hidden (the pre-warm), it shows nothing; opening the page later tries the download again by itself, with the
-       claw, and shows the card only if that fails too;
-     · Retry downloads again AT ONCE, the claw showing (never first waiting on a check a weak signal can stall — the
-       fresh code read's finding 4); a stylesheet that did not come is asked for afresh first (pagedownload.ts). Only when
-       a retry fails too is the server asked whether the app has been UPDATED since this tab opened, when the old file is
-       gone and no retry can work: then the app reloads, which keeps everything saved and starts the Undo list afresh
-       (put to him on the drawing). Updated means the app's own first file, named in a fresh index.html, differs from
-       the one this tab runs. No answer within 4 s, or no signal, is not an update: the card stays.
+     · hidden (the pre-warm), it shows nothing; opening the page later shows the card (D1633);
+     · Retry RELOADS THE APP (owner D1633, 4 Nov 26, narrowing D1631's "downloads again"). The walk of 4 Nov 26 showed
+       Chromium and WebKit keep a failed page file failed until a reload: a download asked for again in place never
+       reached the server. A reload asks for every file afresh, the page's stylesheet too, and cures a tab left open
+       across an update the same way. Everything saved is kept; the sign-in is asked again (it lives in the open page
+       until the database step) and the Undo list starts afresh. A save still unsent gets the browser's own "are you
+       sure?" first (storage/boot.ts guardUnload). The move plan's platform flag covers how Power Apps hosts a reload.
    Only a failed DOWNLOAD is caught here: a fault inside the page itself is passed on to what catches it today. */
-import { Component, Suspense, useLayoutEffect, useRef, useState, type ReactNode } from 'react'
+import { Component, Suspense, type ReactNode } from 'react'
 import { PageClaw } from './pageclaw'
 import { isDownloadFailure, type PageDownload } from './pagedownload'
 
-/* the app's own first file, as this tab runs it and as the server names it now */
-const entryFiles = (root: ParentNode) =>
-  [...root.querySelectorAll<HTMLScriptElement>('script[type="module"][src]')].map(s => s.getAttribute('src')!.replace(/^\.?\//, ''))
-async function appUpdated(): Promise<boolean> {
-  const stop = typeof AbortController === 'function' ? new AbortController() : null
-  const timer = window.setTimeout(() => stop?.abort(), 4000)
-  try {
-    const res = await fetch(new URL('./', window.location.href).href, { cache: 'no-store', signal: stop?.signal })
-    if (!res.ok) return false
-    const now = entryFiles(new DOMParser().parseFromString(await res.text(), 'text/html'))
-    const mine = new Set(entryFiles(document))
-    return now.length > 0 && mine.size > 0 && now.some(f => !mine.has(f))
-  } catch {
-    return false
-  } finally {
-    window.clearTimeout(timer)
-  }
-}
+const reloadApp = () => { window.location.reload() }
 
 /* The card, in the page's own area under the top bar. Read out the moment it shows. */
-function PageLoadFail({ name, onRetry }: { name: string; onRetry: () => void }) {
+function PageLoadFail({ name }: { name: string }) {
   return (
     <div className="pgfail" role="alert" data-testid="page-load-fail">
       <h2>Couldn't open {name}</h2>
       <p>It didn't download. Check your signal, then retry.</p>
       <div className="pgfail-acts">
-        <button type="button" className="pgfail-retry" data-testid="page-load-retry" onClick={onRetry}>Retry</button>
+        <button type="button" className="pgfail-retry" data-testid="page-load-retry" onClick={reloadApp}>Retry</button>
       </div>
     </div>
   )
 }
 
 /* An error boundary has to be a class: React has no hook for catching a child's render. */
-class PageCatch extends Component<{ active: boolean; name: string; onRetry: () => void; onFail: (e: unknown) => void; children: ReactNode }, { error: unknown }> {
+class PageCatch extends Component<{ active: boolean; name: string; children: ReactNode }, { error: unknown }> {
   state = { error: null as unknown }
   static getDerivedStateFromError(error: unknown) { return { error } }
-  componentDidCatch(error: unknown) { if (isDownloadFailure(error)) this.props.onFail(error) }
   render() {
     const { error } = this.state
     if (error === null) return this.props.children
     /* a fault in the page itself is not a failed download: passed on, as before this catch existed */
     if (!isDownloadFailure(error)) throw error
-    return this.props.active ? <PageLoadFail name={this.props.name} onRetry={this.props.onRetry} /> : null
+    return this.props.active ? <PageLoadFail name={this.props.name} /> : null
   }
 }
 
 /** A separately downloaded page: the claw while it downloads (only while it is on screen), the card if it fails. */
-export function DownloadedPage({ page, name, download, active, until }: {
+export function DownloadedPage({ page, name, download: Page, active, until }: {
   /** the page's own name in the app (CURPAGE), for the claw */
   page: string
   /** how the card names it: "the Leave War", "the Tracker" */
@@ -80,32 +61,11 @@ export function DownloadedPage({ page, name, download, active, until }: {
   /** what the claw waits for once the page's code has arrived (PageClaw) */
   until?: string
 }) {
-  const [attempt, setAttempt] = useState(0)
-  const failedHidden = useRef(false)
-  /* the try now running came from Retry (or the page's opening after a hidden failure): if it fails too, ask whether the
-     app was updated */
-  const retried = useRef(false)
-  const checking = useRef(false)
-  const again = () => { retried.current = true; download.renew(); setAttempt(a => a + 1) }
-  const onFail = (e: unknown) => {
-    download.noteFailure(e)
-    if (!active) failedHidden.current = true
-    if (!retried.current || checking.current) return
-    checking.current = true
-    void appUpdated().then(updated => { checking.current = false; if (updated) window.location.reload() })
-  }
-  /* a download that failed while the page was hidden is tried again, by itself, when the page is opened — before the
-     screen is painted, so its card never shows for a frame first */
-  useLayoutEffect(() => {
-    if (active && failedHidden.current) { failedHidden.current = false; again() }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only the page coming on screen asks again
-  }, [active])
-  const Page = download.current
   /* where the claw waits for the page's own drawing (the Tracker's chart), the card is that page's drawing too: the claw
      goes as it shows, not at its 3 s cap (the fresh code read's finding 3) */
   const waitFor = until ? `${until}, #page-${page} [data-testid="page-load-fail"]` : undefined
   return (
-    <PageCatch key={attempt} active={active} name={name} onRetry={again} onFail={onFail}>
+    <PageCatch active={active} name={name}>
       <Suspense fallback={active ? <PageClaw page={page} until={waitFor} /> : null}><Page active={active} /></Suspense>
     </PageCatch>
   )

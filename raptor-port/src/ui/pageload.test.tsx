@@ -3,8 +3,7 @@
    Tracker are each a separate download. Before this, a failed download was caught by nothing, and the whole app went
    blank, top bar and all — on a desktop with no tap, through the hidden pre-warm (reproduced 4 Nov 26). Now only that
    page fails: its area shows "Couldn't open …" with Retry while it is on screen, and nothing while it is hidden. Retry
-   downloads again, or reloads the app when the app was updated since it opened (the old file is gone). How it looks in
-   a real browser, with the download refused, is the walk's. */
+   reloads the app (D1633). How it looks in a real browser, with the download refused, is the walk's. */
 import { readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { act, Component, type ReactNode } from 'react'
@@ -22,8 +21,6 @@ function loader(failures: number) {
   const load = vi.fn(async () => { calls.n++; if (calls.n <= failures) throw FAIL(); return { default: Page } })
   return { load, calls }
 }
-/* the index.html the server answers now: the same entry file as the page (no update), or another (an update) */
-const indexWith = (entry: string) => `<!doctype html><html><head><script type="module" crossorigin src="./assets/${entry}"></script></head><body></body></html>`
 
 let host: HTMLDivElement, root: Root
 beforeEach(() => {
@@ -61,7 +58,7 @@ describe('a failed download of a page', () => {
     await flush()
     expect(q('page-load-fail')!.querySelector('h2')!.textContent).toBe("Couldn't open the Tracker")
   })
-  it('a failed HIDDEN download (the desktop pre-warm) shows nothing — then opening the page tries again by itself', async () => {
+  it('a failed HIDDEN download (the desktop pre-warm) shows nothing — then opening the page shows the card, not another try (D1633)', async () => {
     const { load } = loader(1)
     const d = pageDownload(load)
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active={false} />)) })
@@ -71,98 +68,62 @@ describe('a failed download of a page', () => {
     expect(load).toHaveBeenCalledTimes(1)
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active />)) })
     await flush()
-    expect(load).toHaveBeenCalledTimes(2)
-    expect(q('page-load-fail')).toBeNull()
-    expect(q('the-page')!.textContent).toBe('on')
+    /* a browser keeps a failed page file failed until a reload (the walk, 4 Nov 26): a second try in place cannot work */
+    expect(load).toHaveBeenCalledTimes(1)
+    expect(q('page-load-fail')!.querySelector('h2')!.textContent).toBe("Couldn't open the Leave War")
   })
-  it('Retry downloads again, and the page appears', async () => {
+})
+
+/* D1633 (4 Nov 26): Retry reloads the app. The walk of 4 Nov 26 showed Chromium and WebKit keep a failed page file failed
+   until a reload, so a download tried again in place never reached the server. A reload asks for every file afresh, its
+   stylesheets too; everything saved is kept, the sign-in is asked again and the Undo list starts afresh. The browser's own
+   "are you sure?" still guards a save that has not gone (storage/boot.ts guardUnload). */
+describe('Retry (D1633)', () => {
+  const stubReload = () => { const reload = vi.fn(); vi.stubGlobal('location', { ...window.location, href: 'http://localhost/', reload }); return reload }
+  it('reloads the app, and never tries the download again in place or asks the server first', async () => {
     const { load } = loader(1)
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(indexWith('index-OLD.js'))))
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
-    await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
-    expect(load).toHaveBeenCalledTimes(2)
-    expect(q('page-load-fail')).toBeNull()
-    expect(q('the-page')!.textContent).toBe('on')
-  })
-  it('Retry that fails again keeps the card; no signal at all to ask whether the app changed is not an update', async () => {
-    const { load } = loader(5)
-    vi.stubGlobal('fetch', vi.fn(async () => { throw new TypeError('Failed to fetch') }))
-    const reload = vi.fn()
-    vi.stubGlobal('location', { ...window.location, href: 'http://localhost/', reload })
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
-    await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
-    expect(load).toHaveBeenCalledTimes(2)
-    expect(reload).not.toHaveBeenCalled()
-    expect(q('page-load-fail')).not.toBeNull()
-  })
-  it('Retry after the app was updated (the server names another entry file): the retry fails too, and the app reloads', async () => {
-    const { load } = loader(5)
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(indexWith('index-NEW.js'))))
-    const reload = vi.fn()
-    vi.stubGlobal('location', { ...window.location, href: 'http://localhost/', reload })
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
-    await flush()
-    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
-    await flush()
-    expect(load).toHaveBeenCalledTimes(2)
-    expect(reload).toHaveBeenCalledTimes(1)
-  })
-  /* the fresh read's finding 4: the update check is a fetch that a weak signal can stall for tens of seconds. Retry never
-     waits on it: it downloads again at once (the claw shows), and asks only when that fails too. */
-  it('Retry downloads again AT ONCE, never waiting on the check for an update', async () => {
-    const { load } = loader(1)
-    const fetchMock = vi.fn(() => new Promise<Response>(() => {}))   // a request that never answers
+    const reload = stubReload()
+    const fetchMock = vi.fn(async () => new Response(''))
     vi.stubGlobal('fetch', fetchMock)
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
     await flush()
     await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
     await flush()
-    expect(load).toHaveBeenCalledTimes(2)
+    expect(reload).toHaveBeenCalledTimes(1)
+    expect(load).toHaveBeenCalledTimes(1)
     expect(fetchMock).not.toHaveBeenCalled()
-    expect(q('the-page')!.textContent).toBe('on')
   })
-})
-
-/* the fresh read's finding 1: the page's code arrives but its stylesheet does not. The build's own loader remembers the
-   stylesheet as asked for and never asks again, so a retry would draw the page with no look at all. Retry asks for the
-   stylesheet afresh first, and opens the page only once it has come. */
-describe('a page whose stylesheet failed to download', () => {
-  const CSS = 'http://localhost/assets/LeaveWarPage-abc.css'
-  const cssLoader = () => { let n = 0; return vi.fn(async () => { if (n++ === 0) throw new Error(`Unable to preload CSS for ${CSS}`); return { default: Page } }) }
-  it('Retry puts a fresh request for the stylesheet in, and the page opens once it has come', async () => {
-    const old = document.createElement('link'); old.rel = 'stylesheet'; old.href = CSS; document.head.appendChild(old)
-    const load = cssLoader()
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(indexWith('index-OLD.js'))))
+  it('reloads for the Tracker the same', async () => {
+    const { load } = loader(1)
+    const reload = stubReload()
+    await act(async () => { root.render(frame(<DownloadedPage page="tracker" name="the Tracker" download={pageDownload(load)} active />)) })
+    await flush()
+    await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
+    await flush()
+    expect(reload).toHaveBeenCalledTimes(1)
+  })
+  it('a page whose stylesheet did not come shows the card, and Retry reloads', async () => {
+    const load = vi.fn(async (): Promise<{ default: typeof Page }> => { throw new Error('Unable to preload CSS for http://localhost/assets/LeaveWarPage-abc.css') })
+    const reload = stubReload()
     await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
     await flush()
     expect(q('page-load-fail')).not.toBeNull()
     await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
     await flush()
-    const links = [...document.head.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].filter(l => l.href === CSS)
-    expect(links).toHaveLength(1)
-    expect(links[0]).not.toBe(old)
-    expect(q('the-page')).toBeNull()                      // not before the stylesheet has come
-    await act(async () => { links[0]!.dispatchEvent(new Event('load')) })
-    await flush()
-    expect(q('the-page')!.textContent).toBe('on')
-    expect(q('page-load-fail')).toBeNull()
+    expect(reload).toHaveBeenCalledTimes(1)
+    expect(load).toHaveBeenCalledTimes(1)
   })
-  it('a stylesheet that fails again keeps the card', async () => {
-    const load = cssLoader()
-    vi.stubGlobal('fetch', vi.fn(async () => new Response(indexWith('index-OLD.js'))))
-    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={pageDownload(load)} active />)) })
+  it('the card that came from a hidden failure reloads too', async () => {
+    const { load } = loader(1)
+    const reload = stubReload()
+    const d = pageDownload(load)
+    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active={false} />)) })
+    await flush()
+    await act(async () => { root.render(frame(<DownloadedPage page="leavewar" name="the Leave War" download={d} active />)) })
     await flush()
     await act(async () => { (q('page-load-retry') as HTMLButtonElement).click() })
     await flush()
-    const fresh = [...document.head.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')].find(l => l.href === CSS)!
-    await act(async () => { fresh.dispatchEvent(new Event('error')) })
-    await flush()
-    expect(q('page-load-fail')).not.toBeNull()
-    expect(q('the-page')).toBeNull()
+    expect(reload).toHaveBeenCalledTimes(1)
   })
 })
 

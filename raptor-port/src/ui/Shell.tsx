@@ -57,7 +57,7 @@ import { ALPanel } from './ALPanel'
    sync directly, so the crew projection, leave cells and OIL plan reconcile
    exactly as before — deferring the grid cannot reach any of it. Pinned by the
    "not downloaded until its tab is opened" e2e. */
-/* each made through ui/pageload.tsx so a failed download is caught on its own page, with Retry (D1631) */
+/* each made through ui/pageload.tsx so a failed download is caught on its own page, with Retry, which reloads the app (D1631, D1633) */
 const LeaveWarPage = pageDownload(() => import('../leavewar/LeaveWarPage').then(m => ({ default: m.LeaveWarPage })))
 /* The Tracker (7 Sep 26) is the second such separate download, for the same
    reason: a 200-event flow chart plus its editor is nothing a Raptor visit
