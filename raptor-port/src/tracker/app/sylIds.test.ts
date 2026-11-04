@@ -92,7 +92,7 @@ describe('upgradeSyllabi (v1/v2 name-keyed charts → id-keyed + sylcat)', () =>
     expect(t).toEqual({ id: map['Training'], name: 'Training' })   // custom: no base
   })
   it('does not mutate its input', () => {
-    const src = v2(); const copy = JSON.parse(JSON.stringify(src))
+    const src = v2(); const copy = structuredClone(src)
     upgradeSyllabi(src); expect(src).toEqual(copy)
   })
 })

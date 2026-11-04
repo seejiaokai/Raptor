@@ -258,6 +258,7 @@ describe('D462 / D120 — kept: one stored row, read at boot, carried by a whole
     expect(charts.flex, 'a whole backup carries it').toEqual(mine)
     if (ids.length > 1) expect((await C.collectCharts(ids.slice(0, 1), { deleted: false })).flex, 'a handover does not').toBeUndefined()
     const file = FMT.buildFile({ savedAt: '2026-10-18T00:00:00Z', charts })
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the round trip IS the test: the export file as it is written to disk and read back, which is JSON — a structuredClone would skip the very step being checked
     expect(FMT.readFile(JSON.parse(JSON.stringify(file))).charts!.flex).toEqual(mine)
     await backToDefaults()
     let closing = ''

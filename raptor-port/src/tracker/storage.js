@@ -65,7 +65,7 @@ export const storage = {
    own: it is the same storage, read for its outcome. */
 let health = null   // { status, onStatus(fn) } — Raptor's postman
 const healthSubs = new Set()
-export function useSaveHealth(h) {
+export function setSaveHealth(h) {
   health = h && typeof h === 'object' ? h : null
   if (health && typeof health.onStatus === 'function') health.onStatus(() => { for (const f of [...healthSubs]) { try { f() } catch (_) {} } })
   for (const f of [...healthSubs]) { try { f() } catch (_) {} }

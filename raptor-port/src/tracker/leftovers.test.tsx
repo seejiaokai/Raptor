@@ -855,7 +855,7 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
     expect(r2.out.SYLLABI['MY DRAFT'], 'not baked').toBeUndefined()
 
     /* an event with no position refuses the whole bake */
-    const broken = JSON.parse(JSON.stringify(charts)); delete broken.layouts[tx][firstTx]
+    const broken = structuredClone(charts); delete broken.layouts[tx][firstTx]
     expect(() => bakeCharts(FMT.buildFile({ savedAt: '2026-09-28T00:00:00Z', charts: broken }), data)).toThrow(/no position/)
 
     /* a file older than the current format is refused with what to do */
@@ -876,7 +876,7 @@ describe('[TRK-BAKE-STALE] baking an exported chart file into the shipped charts
     const onChart = charts.syllabi[tx][1].id
     /* the shipped data as an earlier bake left it: a detail on a ball still drawn, and one on a
        ball since deleted from the chart */
-    const byName = JSON.parse(JSON.stringify(DATA.EVENT_INFO_BY_SYL))
+    const byName = structuredClone(DATA.EVENT_INFO_BY_SYL)
     byName['Tx 2026'] = { ...(byName['Tx 2026'] || {}), [onChart]: { hrs: '7.7 Hrs' }, 'ZZ-GONE': { hrs: '1.1 Hrs' } }
     const data = { SYLLABI: DATA.SYLLABI, DEFAULT_LAYOUTS: DATA.DEFAULT_LAYOUTS, EVENT_INFO: DATA.EVENT_INFO, EVENT_INFO_BY_SYL: byName, DEFAULT_SYL_ORDER: DATA.DEFAULT_SYL_ORDER }
     /* the file carries only differences from the shipped wording — so the kept detail is not in it */

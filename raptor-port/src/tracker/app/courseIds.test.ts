@@ -58,7 +58,7 @@ describe('upgradeCourses (v1 name-keyed → v2 id-keyed)', () => {
     expect(() => upgradeCourses({ courses: [{ id: 'c1', name: 'A' }, { id: 'c1', name: 'B' }], byCourse: {} }, null)).toThrow(/twice/)
   })
   it('does not mutate its input', () => {
-    const src = v1(); const copy = JSON.parse(JSON.stringify(src))
+    const src = v1(); const copy = structuredClone(src)
     upgradeCourses(src, null); expect(src).toEqual(copy)
   })
 })
