@@ -248,15 +248,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
-### [TALON-CLAW-SPOKEN] The page claw says nothing to a screen reader (found 3 Nov 26, the design look of the claw)
-**What:** the page claw (`ui/pageclaw.ts raisePageClaw`) is put on the page as a picture labelled "TALON is loading", with no status words: a VoiceOver user who taps the Leave War hears nothing until the page appears. **To do:** quiet status words naming the page ("Loading Leave War", "Loading Tracker") and the page area marked busy while it is up; the start-up claw's label may stay. **Place:** a small fix with the next claw change (with [TALON-CLAW-HANDOVER]), red-first in `ui/pageclaw.test.tsx`.
-
-### [LAZY-PAGE-LOAD-FAIL] A failed download of the Leave War or the Tracker is caught by nothing (found 3 Nov 26, the design look of the claw — worked out from the code, not seen)
-**What:** the two slow pages are separate downloads (`ui/Shell.tsx`, `lazy(() => import(...))`) with no catch for a download that fails — a weak signal, or a tab left open across an update, when the old file names no longer exist. React then has nothing to show in its place; the claw's 3 s limit starts only once the page's code has arrived. **To do:** first reproduce it in the walk (the page's download refused), then a catch that shows one plain line with a Retry ("Couldn't open the Leave War" — the design guide: an error says how to put it right), and a quiet "Still loading" line after about 8 s on a slow signal; both wording his to see first. **Place:** with the next claw change or the Leave War's next batch; its words put to him with a picture.
-
-### [LW-ZOOM-E2E-SLOW-RUNNER] The Leave War's Ctrl+scroll zoom test runs out of time on a slow GitHub machine (found 3 Nov 26, pull request 627)
-**What:** `raptor-port/e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back, within its limits", in the `lw-desktop` group, takes 12–23 s on main's runs and fails at its 30 s on a machine about twice as slow (`mouse.wheel` waits for each zoom step's redraw of the grid; some twenty steps). On pull request 627 it failed on two of three runs, both attempts each, the group's other tests about twice main's times on those runs; re-run once on a fresh machine (D84) it passed in 12.1 s. Measured on his PC 3 Nov 26: with and without 627's loading claw, at 2x slower, three runs each all pass, the same time; at 4x both fail the same way — not that change. **To do:** make it wait on what it needs (D87) — fewer or bigger zoom steps, or a time budget that names why — and check its phone twin. **Place:** a small fix of the Leave War's next batch, or alone if it blocks a merge again.
-
 ### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
 From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
 test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
@@ -691,9 +682,6 @@ left." Replaces the current Quals ✕ / "Restore exactly" behaviour (see [SYNC-I
   War's architecture say it persists.
 - **Context:** the sync spec §Parked; memories `multi-squadron-and-person-transfer`,
   `future-undo-semantics-multiuser`.
-
-### [LW-PAD-SHOWS-FIGURE] The Leave War's number pad shows the figure typed (3 Nov 26, D1584)
-On a phone held sideways the pad covers the Required cell being typed, so the figure is unseen until Done (the re-check's B1c, `raptor-port/docs/handpass/2026-11-03-inputs-seen-recheck.md`). His answer: the pad's top line shows it as it is typed, "Req P · Wed 25 Feb · 7". **Place:** the next Leave War batch.
 
 ### [PRINT-FLYING-ONLY-ASK] The print and the schedule's spreadsheet carry flying lines only (filed 9 Oct 26 in [ALLAVAIL-CHECK-SEEN]; its own item 3 Nov 26)
 Seen by the ALL AVAIL / Event check (`raptor-port/docs/handpass/2026-10-09-all-avail-event-check.md` §5.3): the printed page and the schedule's CSV carry flying lines only — no Ground Programme row of any kind. Whether they should is his question, put to him with pictures when he raises print or export (D994); `[FLAG-EXPORT]` and `[PDF-PRINT-TWICE]` touch the same pages.
