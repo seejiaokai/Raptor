@@ -1,0 +1,113 @@
+<title>TALON Top Bar Names</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column of numbered frames, today beside proposed, questions first. Dark, as the app is. */
+:root{
+  --bg:#0b0f14; --panel:#121820; --edge:#243040; --ink:#e8edf2; --ink2:#9fb0c2; --accent:#3bc6e8; --mark:#ffb020; --ok:#5fd08a;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color-scheme:dark;
+}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);margin:0}
+.wrap{max-width:1100px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:.02em;text-wrap:balance}
+.sub{color:var(--ink2);margin:0 0 18px}
+.ask{background:var(--panel);border:1px solid var(--accent);border-radius:12px;padding:14px 16px;margin:0 0 28px}
+.ask h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px}
+.ask ol{margin:0;padding-left:22px;display:grid;gap:10px}
+.rec{color:var(--ok);font-weight:600}
+section{margin:0 0 30px}
+section h3{font-size:17px;margin:0 0 4px}
+section p{margin:0 0 10px;color:var(--ink2);max-width:68ch}
+.pair{display:grid;grid-template-columns:1fr;gap:12px}
+figure{margin:0;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:10px;min-width:0}
+figcaption{font-size:13px;color:var(--ink2);margin:0 0 8px}
+figcaption b{color:var(--ink)}
+figure img{display:block;width:100%;height:auto;border-radius:6px;cursor:zoom-in}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.08em;padding:1px 7px;border-radius:6px;margin-right:6px;border:1px solid var(--edge)}
+.tag.now{color:var(--ink2)}
+.tag.new{color:var(--mark);border-color:var(--mark)}
+.tag.same{color:var(--ok);border-color:var(--ok)}
+.phone-shot{max-width:360px}
+.note{font-size:13px;color:var(--ink2);border-left:3px solid var(--edge);padding-left:10px;max-width:72ch}
+dialog{background:#000;border:0;padding:0;max-width:96vw;max-height:94vh}
+dialog img{display:block;max-width:96vw;max-height:94vh}
+dialog::backdrop{background:rgba(0,0,0,.85)}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+</style>
+
+<div class="wrap">
+  <h1>The page names beside TALON</h1>
+  <p class="sub">Your ask of 4 Nov 26: move the page names up beside TALON; where they can't all fit, use the side menu. The <span style="color:var(--mark)">dashed amber line</span> marks the part that changes. Tap any picture to enlarge it.</p>
+
+  <div class="ask" id="ask">
+    <h2>What I need from you, 2 answers</h2>
+    <ol>
+      <li><b>Build it as drawn?</b> Wherever all the page names fit beside TALON, they stand there. Where they don't fit, they go into the ☰ side menu, the same one your phone uses today, and the top bar becomes one row. <span class="rec">Recommended: yes.</span></li>
+      <li><b>On a phone held sideways, keep the top bar to one row every time?</b> A member has two pages fewer (no Edit Schedule, no Admin), so their names would fit beside TALON. But Undo, the bell and Logout would then need a second row (picture 5). Sideways, the screen is only about 330 points tall under Safari's own bars. <span class="rec">Recommended: yes. On a phone held sideways, everyone gets ☰ and a one-row bar.</span> Saying no keeps your rule exactly as you gave it.</li>
+    </ol>
+  </div>
+
+  <section>
+    <h3>1 · Your iPhone held sideways, the Leave War</h3>
+    <p>Today the bar wraps onto three rows: TALON, then the page names, then the buttons. As proposed it is one row, with ☰ at the left.</p>
+    <div class="pair">
+      <figure><figcaption><span class="tag now">TODAY</span><b>Your picture</b>, three rows</figcaption>
+        <img src="owner/2026-11-04-iphone-side-leavewar.png" alt="Today on his sideways iPhone: TALON alone on row one, the page names on row two, the buttons on row three"></figure>
+      <figure><figcaption><span class="tag new">PROPOSED</span>One row: ☰ · TALON · the buttons</figcaption>
+        <img src="topbar/a-iphone-side-leavewar-proposed.png" alt="Proposed: one row with the menu button, TALON and the buttons"></figure>
+    </div>
+  </section>
+
+  <section>
+    <h3>2 · The ☰ menu, opened</h3>
+    <p>This is the same side menu as on your phone held upright. Nothing in it changes.</p>
+    <div class="pair">
+      <figure><figcaption><span class="tag now">TODAY</span><b>Your picture</b>, phone held upright</figcaption>
+        <img class="phone-shot" src="owner/2026-11-04-iphone-menu.png" alt="Today's side menu on his iPhone held upright"></figure>
+      <figure><figcaption><span class="tag new">PROPOSED</span>The same menu, phone held sideways</figcaption>
+        <img src="topbar/a-iphone-side-leavewar-menu.png" alt="The side menu open on the sideways phone"></figure>
+    </div>
+  </section>
+
+  <section>
+    <h3>3 · Edit Schedule, phone held sideways</h3>
+    <p>Edit Schedule's top bar also has the changes clock. It still fits on one row.</p>
+    <figure><figcaption><span class="tag new">PROPOSED</span>One row on Edit Schedule</figcaption>
+      <img src="topbar/a-iphone-side-editsched-proposed.png" alt="Proposed Edit Schedule bar on the sideways phone, one row"></figure>
+  </section>
+
+  <section>
+    <h3>4 · Where nothing changes</h3>
+    <p>On a desktop or an iPad, the names already sit beside TALON. Where the buttons don't fit too, they take a second row on the right, as they do today. Your phone held upright keeps its ☰ as it is.</p>
+    <div class="pair">
+      <figure><figcaption><span class="tag same">SAME</span>Your PC (1536 wide), Edit Schedule: one row</figcaption>
+        <img src="topbar/a-pc1536-editsched-proposed.png" alt="PC at 1536 wide, one row, unchanged"></figure>
+      <figure><figcaption><span class="tag same">SAME</span>A laptop (1280 wide): names beside TALON, buttons below</figcaption>
+        <img src="topbar/a-laptop1280-leavewar-proposed.png" alt="Laptop at 1280 wide, unchanged"></figure>
+      <figure><figcaption><span class="tag same">SAME</span>An iPad's width (1024): names beside TALON, buttons below</figcaption>
+        <img src="topbar/a-tablet1024-leavewar-proposed.png" alt="iPad width 1024, unchanged"></figure>
+    </div>
+  </section>
+
+  <section>
+    <h3>5 · A member's phone held sideways (question 2)</h3>
+    <p>Seven names fit beside TALON, so your rule as given keeps them there, with the buttons on a second row. If you answer yes to question 2, this becomes the one-row bar of picture 1.</p>
+    <figure><figcaption><span class="tag same">YOUR RULE AS GIVEN</span>Ranger: the names fit, so the bar takes two rows</figcaption>
+      <img src="topbar/m-iphone-side-leavewar-proposed.png" alt="Member on a sideways phone: names beside TALON, buttons on a second row"></figure>
+  </section>
+
+  <p class="note">How it decides: the app measures the bar on the screen in use. It doesn't switch at a fixed width, because an iPhone's letters are wider than a PC's. The same width can fit the names on a PC and not on your phone, which is why your picture wraps where this PC's would not. Every picture here is the real app on this PC. In the sideways-iPhone pictures the fold is switched on the way your phone would measure it. Nothing about this needs anything the M365 move can't do.</p>
+</div>
+
+<dialog id="zoom" aria-label="Enlarged picture"></dialog>
+<script>
+const dlg = document.getElementById('zoom'), zi = document.createElement('img'); dlg.appendChild(zi)
+document.querySelectorAll('figure img').forEach(img => {
+  img.tabIndex = 0
+  const open = () => { zi.src = img.src; zi.alt = img.alt; try { dlg.showModal() } catch (e) {} }
+  img.addEventListener('click', open)
+  img.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open() } })
+})
+dlg.addEventListener('click', () => dlg.close())
+</script>

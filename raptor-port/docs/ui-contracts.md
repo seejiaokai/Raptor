@@ -168,6 +168,15 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
   first landed in the WRONG media block and no jsdom test can see a media
   query.
 
+## The app's top bar — the page names beside TALON (owner D1641, 4 Nov 26 — to build, mock-up first)
+
+**D1641:** the page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they
+cannot all fit there — a phone or a narrow desktop — they go into the side menu (the ☰ drawer, `ui/Drawer.tsx`) as on a
+phone today. Not built yet: the mock-up comes first (D1625), and the build is filed as `[TOPBAR-NAMES-BESIDE-TALON]` in
+the backlog. **Today (`ui/Shell.tsx`, `ui/scheduler/02-shell.css`, `09-week-responsive.css`):** the side menu takes over
+only below 821 wide; above it the bar wraps, the names on a row of their own under TALON and the buttons on a third
+row at a tablet's width (his picture, 4 Nov 26).
+
 ## The day carries across a page switch (owner, 9 Aug 26)
 
 View-only Sched and Edit Schedule are **two separate horizontal scrollers** —

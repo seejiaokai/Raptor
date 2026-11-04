@@ -3458,3 +3458,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In walk-scripts.md's rules for output: every run's output goes to this session's scratchpad (or the repo's own `docs/handpass/parts/`), never a fixed name in the shared system temp folder; and a read-back checks a line the run itself prints first (its own tag or start time) before any result is believed.
 
 **Principle:** A shared scratch location is a shared writer: a fixed file name there can hold another process's output, and reading it back proves nothing about your own run unless the file carries your run's own mark.
+
+### Observation 800: His picture shows a layout the PC cannot reproduce — the fonts, not the code
+
+**Status:** OPEN
+**Date:** 2026-11-04
+**Session context:** mock-up of the page names beside TALON (D1641), drawn on the real app at six widths
+**Skill:** impeccable (the mock-up method, `.claude/skills/brainstorming/mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 (picture the "today" state)
+
+**Issue:** His screenshot (iPhone held sideways) showed the top bar wrapped onto three rows. The same width on the PC's Chromium drew it on two: the page names measured 695 against 706 of room, because the iPhone's system letters are wider. The first round of pictures showed "no change" everywhere and would have misled him had they been sent.
+
+**Suggested improvement:** In the mock-up method, step 1: when his own picture shows a state the PC's render does not, compare the two before drawing anything; where the difference is letter width, use his picture as the "today" frame and draw the proposed frame as his device measures it (forced, and said so on the page), and make the build measure on the device rather than at a fixed width.
+
+**Principle:** A user's own screenshot outranks a re-render on a different device; when the two disagree, find which input differs (fonts, zoom, text scaling) before trusting either picture.

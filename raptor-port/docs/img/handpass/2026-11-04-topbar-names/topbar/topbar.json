@@ -1,0 +1,203 @@
+{
+ "a-wide-leavewar-today": {
+  "height": 57,
+  "rows": 4
+ },
+ "a-wide-leavewar-fit": {
+  "need": 695,
+  "avail": 1752,
+  "fold": false,
+  "forced": false
+ },
+ "a-wide-leavewar-proposed": {
+  "height": 57,
+  "rows": 4
+ },
+ "a-wide-editsched-today": {
+  "height": 58,
+  "rows": 5
+ },
+ "a-wide-editsched-fit": {
+  "need": 695,
+  "avail": 1752,
+  "fold": false,
+  "forced": false
+ },
+ "a-wide-editsched-proposed": {
+  "height": 58,
+  "rows": 5
+ },
+ "a-pc1536-leavewar-today": {
+  "height": 57,
+  "rows": 4
+ },
+ "a-pc1536-leavewar-fit": {
+  "need": 695,
+  "avail": 1368,
+  "fold": false,
+  "forced": false
+ },
+ "a-pc1536-leavewar-proposed": {
+  "height": 57,
+  "rows": 4
+ },
+ "a-pc1536-editsched-today": {
+  "height": 58,
+  "rows": 5
+ },
+ "a-pc1536-editsched-fit": {
+  "need": 695,
+  "avail": 1368,
+  "fold": false,
+  "forced": false
+ },
+ "a-pc1536-editsched-proposed": {
+  "height": 58,
+  "rows": 5
+ },
+ "a-laptop1280-leavewar-today": {
+  "height": 103,
+  "rows": 5
+ },
+ "a-laptop1280-leavewar-fit": {
+  "need": 695,
+  "avail": 1112,
+  "fold": false,
+  "forced": false
+ },
+ "a-laptop1280-leavewar-proposed": {
+  "height": 103,
+  "rows": 5
+ },
+ "a-laptop1280-editsched-today": {
+  "height": 104,
+  "rows": 5
+ },
+ "a-laptop1280-editsched-fit": {
+  "need": 695,
+  "avail": 1112,
+  "fold": false,
+  "forced": false
+ },
+ "a-laptop1280-editsched-proposed": {
+  "height": 104,
+  "rows": 5
+ },
+ "a-tablet1024-leavewar-today": {
+  "height": 103,
+  "rows": 5
+ },
+ "a-tablet1024-leavewar-fit": {
+  "need": 695,
+  "avail": 856,
+  "fold": false,
+  "forced": false
+ },
+ "a-tablet1024-leavewar-proposed": {
+  "height": 103,
+  "rows": 5
+ },
+ "a-tablet1024-editsched-today": {
+  "height": 104,
+  "rows": 5
+ },
+ "a-tablet1024-editsched-fit": {
+  "need": 695,
+  "avail": 856,
+  "fold": false,
+  "forced": false
+ },
+ "a-tablet1024-editsched-proposed": {
+  "height": 104,
+  "rows": 5
+ },
+ "a-iphone-side-leavewar-today": {
+  "height": 103,
+  "rows": 4
+ },
+ "a-iphone-side-leavewar-fit": {
+  "need": 695,
+  "avail": 706,
+  "fold": false,
+  "forced": true
+ },
+ "a-iphone-side-leavewar-proposed": {
+  "height": 59,
+  "rows": 4
+ },
+ "a-iphone-side-leavewar-menu": "shot",
+ "a-iphone-side-editsched-today": {
+  "height": 104,
+  "rows": 4
+ },
+ "a-iphone-side-editsched-fit": {
+  "need": 695,
+  "avail": 706,
+  "fold": false,
+  "forced": true
+ },
+ "a-iphone-side-editsched-proposed": {
+  "height": 59,
+  "rows": 4
+ },
+ "a-iphone-leavewar-today": {
+  "height": 49,
+  "rows": 4
+ },
+ "a-iphone-leavewar-fit": "phone",
+ "a-iphone-leavewar-proposed": {
+  "height": 49,
+  "rows": 4
+ },
+ "a-iphone-editsched-today": {
+  "height": 49,
+  "rows": 4
+ },
+ "a-iphone-editsched-fit": "phone",
+ "a-iphone-editsched-proposed": {
+  "height": 49,
+  "rows": 4
+ },
+ "m-pc1536-leavewar-today": {
+  "height": 57,
+  "rows": 4
+ },
+ "m-pc1536-leavewar-fit": {
+  "need": 522,
+  "avail": 1368,
+  "fold": false,
+  "forced": false
+ },
+ "m-pc1536-leavewar-proposed": {
+  "height": 57,
+  "rows": 4
+ },
+ "m-tablet1024-leavewar-today": {
+  "height": 103,
+  "rows": 5
+ },
+ "m-tablet1024-leavewar-fit": {
+  "need": 522,
+  "avail": 856,
+  "fold": false,
+  "forced": false
+ },
+ "m-tablet1024-leavewar-proposed": {
+  "height": 103,
+  "rows": 5
+ },
+ "m-iphone-side-leavewar-today": {
+  "height": 103,
+  "rows": 5
+ },
+ "m-iphone-side-leavewar-fit": {
+  "need": 522,
+  "avail": 706,
+  "fold": false,
+  "forced": false
+ },
+ "m-iphone-side-leavewar-proposed": {
+  "height": 103,
+  "rows": 5
+ }
+}
