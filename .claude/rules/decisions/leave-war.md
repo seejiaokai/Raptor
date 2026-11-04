@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1634 | 4 Nov 26 | On a phone narrower than about 400 wide the number pad's figure box sits under the date, the pad's top line one row taller, as built; on his iPhone (402) it stays beside the date; the weekday is kept. |
 | D1630 | 4 Nov 26 | The number pad's figure box shows it is being typed in, as a phone's text box does: when the pad opens the figure is highlighted (the next key replaces it), and once a key is pressed a cyan typing line follows the figure, blinking, still for less motion; with nothing typed the line stands alone; the grid's cell shows the highlight only. |
 | D1629 | 4 Nov 26 | The Leave War number pad's top line shows the figure being typed in a small box drawn like the Required cell's own editing box, its dark fill and cyan edge, after the day (option B of 4 Nov 26), in place of the words "· 7" of D1584's example. — changed by D1630 |
 | D1584 | 3 Nov 26 | On a phone the Leave War's number pad shows the figure as it is typed in its top line, after the row and the day — in a small box like the cell's editing box (D1629) — so a Required cell the pad covers on a phone held sideways is never typed blind; built with the next Leave War batch. — changed by D1629 |

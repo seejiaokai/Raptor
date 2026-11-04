@@ -6887,8 +6887,9 @@ view and in reach (D1610, his "A").
 - *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
   caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
   (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
-  pre-warm that fails shows nothing until the page is opened. Retry downloads again; where that cannot work (the app
-  updated since the page opened) it reloads the app — everything saved kept, the Undo list afresh. Before the fix a failed
+  pre-warm that fails shows nothing until the page is opened, then the card. Retry reloads the app (D1633, narrowing
+  D1631): a browser keeps a failed page file failed until a reload (the walk, 4 Nov 26, Chromium and WebKit) —
+  everything saved kept, the sign-in asked again, the Undo list afresh. Before the fix a failed
   download blanked the whole app (reproduced 4 Nov 26, `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`).
 - *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
@@ -7542,7 +7543,8 @@ The Inputs / SANS redesign, plan §3.3. `leavewar/ui/FlyRows.tsx`.
     the day, the top line shows the figure being typed in a small box drawn like the cell's own editing box — dark fill,
     cyan edge — following every key; as the pad opens the figure is highlighted (the next key replaces it), once a key is
     pressed a blinking cyan typing line follows it (still for less motion), with nothing typed the line alone; the cell
-    over the grid shows the highlight only; ‹ › Done unmoved. Pictures:
+    over the grid shows the highlight only; ‹ › Done unmoved; under ~400 wide the box sits under the date, the line one
+    row taller (D1634). Pictures:
     `docs/img/handpass/2026-11-04-lw-small-fixes-mock/`.)* The page behind stays live: a tap on another
     Required cell saves and moves the pad there. With the pad up the page scrolls all four rows above it (a Required
     figure is typed against the Available one two rows down). Which form a press gets follows the POINTER that made it
