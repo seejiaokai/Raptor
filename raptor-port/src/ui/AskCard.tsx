@@ -10,7 +10,6 @@ import { createPortal } from 'react-dom'
    the press landed on the page behind it, or on a card of the opened day — ui/lastpress.ts names it). Position: fixed,
    recomputed on every scroll and resize while it is up; a sheet that is itself moved by a transform is the card's frame of reference, so the offset is measured, never assumed. */
 
-const stopHere = (e: React.SyntheticEvent) => e.stopPropagation()
 const GAP = 9         // from the control's edge to the card's, the pointer in between
 const EDGE = 8         // the card never comes nearer the screen's edge than this
 const FRAME = '.floatwin, .bidsheet, [role="dialog"], dialog'
@@ -91,10 +90,6 @@ export function AskCard({ at, portal, testid, label, question, sub, children, on
     /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question hanging from a control inside a window or sheet: it leaves the page behind working (D641) and moves with its control; a <dialog> would open in the top layer, cut from the control it points at */
     <div ref={card} role="alertdialog" aria-label={label} className={`askcard ${pos ? 'ac-' + pos.side : 'ac-measure'}${portal ? ' ac-over' : ''}`} data-testid={testid}
       onKeyDown={onKeyDown} onFocus={() => { hadFocus.current = true }}
-      /* drawn in another window (portal), a press on it still travels React's tree to the window that ASKED, which comes to
-         the front on any press — over the card, so the tap's click landed on that window and "Keep editing" did nothing
-         (the walk of 4 Nov 26, S3 on a phone). Stopped at the card: the window it is drawn in still hears the press. */
-      {...(portal ? { onPointerDown: stopHere, onMouseDown: stopHere, onTouchStart: stopHere, onClick: stopHere } : {})}
       style={pos ? { left: pos.left, top: pos.top, ['--ac-px' as any]: pos.px + 'px' } : undefined}>
       <span className="askcard-q">{question}</span>
       {sub && <span className="askcard-sub">{sub}</span>}

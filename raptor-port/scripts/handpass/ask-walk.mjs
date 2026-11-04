@@ -119,7 +119,10 @@ if (want('S3')) for (const size of ['desktop', 'phone']) {
   await L.press(page, tap, '[data-testid="win-inputsday-x"]').catch(() => {})
   const b = await L.fileOn(page, tap, '2026-07-15', { type: 'Meeting', people: [men[1]], from: '11:00', to: '12:00', title: 'Sim brief', remarks: 'second card' }, true)
   const raise = async () => {
-    await L.press(page, tap, `[data-testid="idy-row-${a}"] [data-testid="idy-open"]`).catch(() => {}); await tid(page, 'win-inputedit').waitFor()
+    /* each try starts as the first did: an input's window left open (and perhaps pulled down) is closed by its Cancel */
+    if (await page.locator('#inpEditCancel').count()) { await page.locator('#inpEditCancel').evaluate(b => b.click()); await sleep(300) }
+    /* (the set-up, not the control walked: the first input opened by its card's own click wherever the day has scrolled it) */
+    await page.locator(`[data-testid="idy-row-${a}"] [data-testid="idy-open"]`).first().evaluate(b => b.click()); await tid(page, 'win-inputedit').waitFor()
     await setVal(page, '#inpEditPop #inpEditRmk', 'typed, not saved')
     let ctl
     if (!tap) { ctl = `#inpCal [data-iid="${b}"]`; await page.locator(ctl).first().click() }
@@ -153,7 +156,7 @@ if (want('S3')) for (const size of ['desktop', 'phone']) {
   await L.press(page, tap, '[data-testid="inped-swap-stay"]')
   check(id, `${size}: Keep editing keeps what was typed, the card gone`, (await page.inputValue('#inpEditPop #inpEditRmk')) === 'typed, not saved' && !(await page.locator('[data-testid="inped-swap"]').count()), { v: await page.inputValue('#inpEditPop #inpEditRmk'), n: await page.locator('[data-testid="inped-swap"]').count(), front: await page.evaluate(() => [...document.querySelectorAll('.floatwin.front')].map(w => w.dataset.testid)) })
   await raise(); await sleep(350); await esc(page)
-  check(id, `${size}: Escape is Keep editing`, !(await page.locator('[data-testid="inped-swap"]').count()) && (await page.inputValue('#inpEditPop #inpEditRmk')) === 'typed, not saved', null)
+  check(id, `${size}: Escape is Keep editing — the opened day stays open`, !(await page.locator('[data-testid="inped-swap"]').count()) && (await page.inputValue('#inpEditPop #inpEditRmk')) === 'typed, not saved' && (await page.locator(DAYWIN).count()) === 1, await page.evaluate(() => ({ day: !!document.querySelector('[data-testid="win-inputsday"]'), front: [...document.querySelectorAll('.floatwin.front')].map(w => w.dataset.testid) })))
   await raise(); await sleep(350)
   await L.press(page, tap, '[data-testid="inped-swap-go"]'); await sleep(350)
   check(id, `${size}: Discard and open shows the other input, the typing thrown away`, (await page.inputValue('#inpEditPop #inpEditRmk')) === 'second card', await page.inputValue('#inpEditPop #inpEditRmk'))

@@ -400,7 +400,9 @@ export function InputEditor() {
          window, one Escape closed the viewer AND this window behind it — this handler runs before the viewer's, on the
          same document. With none of its own questions up, it leaves Escape alone while the topmost keyboard-holding sheet
          is not this window (ui/sheetfocus.ts topSheet); the next Escape is its own. */
-      if (!docConf && !upConf && !medConf && !oilConf && !escAsk) {
+      /* the swap's question hangs from the card pressed, drawn in THAT window and in front with it (D1627): Escape is its
+         answer, whichever window holds the front (the walk of 4 Nov 26, S3 on a phone: it closed the opened day instead) */
+      if (!docConf && !upConf && !medConf && !oilConf && !escAsk && !swap) {
         const top = topSheet()
         const own = box.current && (box.current.closest('.floatwin') || box.current)
         if (top && own && !own.contains(top)) return
@@ -420,7 +422,7 @@ export function InputEditor() {
         /* The unsaved-work question is NOT one of those: it sits in this window and blocks nothing behind it, so with
            another window brought in front of it, that one is Escape's (the bug check of 3 Nov 26, walker W1 S08 — the
            question answered "Keep editing" and the settings window in front stayed up). */
-        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
+        if (!docConf && !upConf && !medConf && !oilConf && !swap && frontWin() !== 'inputedit') return
       }
       e.preventDefault()
       e.stopPropagation()
@@ -1245,6 +1247,9 @@ export function InputEditor() {
   const cxMark = cxRec && cxOf(cxRec)
     ? <span className="inped-cx" data-testid="inped-cx" title={cxSays(cxRec)}><span className="icx">CX</span>{cxWhy(cxRec) && <span className="icx-why">{cxWhy(cxRec)}</span>}</span>
     : null
+  /* the control the swap's question hangs from gone with its window (the opened day closed under it): the question goes
+     too — never left standing where nobody can see it, to take the next Escape ("adjust state while rendering") */
+  if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
   if (win) return (<>
     <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>

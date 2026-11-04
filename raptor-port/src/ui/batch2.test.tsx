@@ -161,6 +161,21 @@ describe('A1 — the "Unsaved changes" question is asked by the window in front'
     expect(tid('inped-swap'), 'the question is up').toBeTruthy()
     expect(tid('win-inputsday')!.contains(tid('inped-swap')), 'drawn in the day’s window, at the card pressed').toBe(true)
     expect(frontWin(), 'and the window it stands in is in front').toBe('inputsday')
+    /* its answer pressed: the window that ASKED does not jump over the card (React hands it the press — the walk of 4 Nov
+       26, S3 on a phone: "Keep editing" then landed on the input's window and did nothing) */
+    const stay = tid('inped-swap-stay')!
+    await act(async () => { stay.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    expect(frontWin(), 'a press on the card keeps the day in front').toBe('inputsday')
+    await click(stay)
+    expect(tid('inped-swap'), 'Keep editing answered').toBeNull()
+    /* asked again, Escape is Keep editing — the day it hangs in stays open, though it holds the front (the walk of 4 Nov
+       26, S3 on a phone: Escape closed the opened day and left the question standing where nobody saw it) */
+    await act(async () => { other.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    await click(other)
+    expect(tid('inped-swap'), 'asked again').toBeTruthy()
+    await act(async () => { document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(tid('inped-swap'), 'Escape answers it').toBeNull()
+    expect(tid('win-inputsday'), 'the opened day stays').toBeTruthy()
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'nothing he typed is lost').toBe('typed, not saved')
   })
   it('THE CONTROL — with nothing unsaved the other input simply opens, and no question is asked', async () => {

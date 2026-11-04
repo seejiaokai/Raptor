@@ -252,7 +252,10 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
       tabIndex={-1}
       data-testid={testid}
       data-winid={id}
-      onPointerDownCapture={() => { if (forward(id)) notify() }}
+      /* a press ON this window brings it forward — not one on something it draws inside ANOTHER window (a question hanging
+         from a card of the opened day, ui/AskCard.tsx portal): React hands that press to this window too, and it jumped
+         over the very card the question hangs from (the walk of 4 Nov 26, S3 on a phone) */
+      onPointerDownCapture={e => { if (!(e.currentTarget as HTMLElement).contains(e.target as Node)) return; if (forward(id)) notify() }}
     >
       <div className={'win-bar' + (mark ? ' has-mark' : '')} {...bar}>
         {/* the app's own six-dot grip, "drag me" (D40) */}
