@@ -5,7 +5,7 @@
    · an unchanged list is a no-op — Raptor notifies on every keystroke, and the
      Tracker must not repaint its side panel for each one;
    · whoami() never throws and answers '' when nobody has told it who — a mark
-     made before Raptor wired the bridge, or in the standalone app, still lands;
+     made before Raptor wired the bridge, or in a test that never wires it, still lands;
    · the module imports nothing, for the same reason role.js imports nothing:
      Raptor calls it before (and whether or not) the chart engine ever loads. */
 import { describe, expect, it } from 'vitest'

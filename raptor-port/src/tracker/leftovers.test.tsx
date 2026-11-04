@@ -649,7 +649,7 @@ describe('[TRK-SESSION-PICK] D376 — each person reopens the Tracker on their o
     expect(C.curSylId(), 'and his').toBe(A)
   })
 
-  it('the standalone Tracker (nobody wired) keeps the browser’s one place, as before', async () => {
+  it('nobody signed in as a person (nothing wired) keeps the browser’s one place, as before', async () => {
     bridge.setWhoamiId(null)
     try {
       await C.switchCourse(C.COURSES[0].id); await C.whenLoaded()

@@ -722,10 +722,13 @@ row for the whole Tracker, `v3:master:flex` = `{ on: boolean, from: number[6] }`
 defaults; written only by an admin, as its own command `trk.flex` (a `Setting` in `data-model.md` §11); a backup of every
 chart carries it as `charts.flex`. **The chart a signed-in person has open is his own place** (D376),
 kept on his browser under `ocuLocal:who:<id>:lastSyl:<course>` — never written into the course's shared `v3:<course>:plan`,
-whose `sylId` names the course's own chart (the standalone Tracker, nobody signed in, keeps the one shared answer).
+whose `sylId` names the course's own chart (with nobody signed in as a person, the one shared answer is kept).
 Since the seam the Tracker's data flows through the
 whiteboard and lands under `raptor:tracker/<key>` (e.g. `raptor:tracker/v3:master:syls`);
-the legacy `ocu:*` keys are imported once. `ocuLocal:*` holds this browser's
+the legacy `ocu:*` keys are imported once, by the browser backend (`src/storage/browser.ts`) — the Tracker's own
+doorway has no path to them, nor to the browser's storage at all, since [TRK-STANDALONE-LEFTOVERS] (5 Nov 26): with
+nothing plugged in, only in a unit test that never runs the boot, it keeps its records in memory. Nothing stored changes
+or is read differently: the running app always had the whiteboard plugged in (`src/boot.ts`, before the app is drawn). `ocuLocal:*` holds this browser's
 last course and crew member — a view preference, written straight to
 localStorage (NOT through the whiteboard), kept outside the shared prefix by design.
 

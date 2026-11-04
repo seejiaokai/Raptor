@@ -84,7 +84,17 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
   }
   beforeEach(() => { document.body.innerHTML = '' })
 
-  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'saveStat']
+  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'saveStat']
+
+  /* [UNDO-TOPBAR] (D347, D349 (2)): the Tracker's ↶ ↷ are the app's top bar's (ui/Shell.tsx UndoPair, through
+     undo-bridge.js), never its own bar's. The bar used to draw its own pair whenever nothing had told it the app hosts it
+     — the standalone Tracker's way, retired with [TRK-STANDALONE-LEFTOVERS] (D1538, 5 Nov 26) — so a bar drawn on its
+     own, as here, now draws none */
+  it('the bar draws no Undo / Redo pair of its own — the top bar carries it', async () => {
+    resetSession({ user: 'ad', role: 'admin' })
+    await render()
+    expect($('#trUndoBtn')).toBeNull(); expect($('#trRedoBtn')).toBeNull()
+  })
 
   it('admin: every control including the File menu', async () => {
     resetSession({ user: 'ad', role: 'admin' })
@@ -568,13 +578,13 @@ describe('the seam stays light', () => {
     expect(role).not.toMatch(/^\s*import /m)
   })
 
-  it('the two undo ids Raptor already owns were renamed — and the pair lives on the bar now', () => {
+  it('the two undo ids Raptor already owns were renamed — and the pair lives on the app\'s top bar now', () => {
     const tools = readFileSync(join(__dirname, 'components/ArrangeTools.jsx'), 'utf8')
     const hdr = readFileSync(join(__dirname, 'components/Header.jsx'), 'utf8')
     expect(tools).not.toMatch(/id="(undoBtn|redoBtn|trUndoBtn|trRedoBtn)"/)
-    expect(hdr).not.toMatch(/id="(undoBtn|redoBtn)"/)
-    expect(hdr).toMatch(/id="trUndoBtn"/)
-    expect(hdr).toMatch(/id="trRedoBtn"/)
+    expect(hdr).not.toMatch(/id="(undoBtn|redoBtn|trUndoBtn|trRedoBtn)"/)
+    const shell = readFileSync(join(__dirname, '../ui/Shell.tsx'), 'utf8')
+    expect(shell).toMatch(/page === 'tracker' \? \['trUndoBtn', 'trRedoBtn'\]/)
   })
 })
 
@@ -759,12 +769,15 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     } finally { HOOKS.whoami = real }
   })
 
-  it('with no roster handed over — the standalone app — + Add is the old "Student callsign:" prompt, byte for byte', async () => {
-    /* owner, 9 Sep 26: the Tracker goes back out to its standalone repo, where
-       a student is created by typing a name and nothing feeds people.js. An
-       empty list must not draw an empty roster section, a search box or a
-       "nobody matches" line over the text box — the dialog is the old prompt */
-    setPeople([])
+  it('with nobody on the roster to offer, + Add is the old "Student callsign:" prompt, byte for byte', async () => {
+    /* Kept inside Raptor ([TRK-STANDALONE-LEFTOVERS], 5 Nov 26), though it was first kept for the standalone app (owner,
+       9 Sep 26), which D1538 retired: Raptor itself can hand over an EMPTY roster — the roster offers aircrew only
+       (peoplewire.ts projectForTracker), so a new shared store whose one person is its first admin, ground crew, offers
+       nobody. An empty list must not draw an empty roster section, a search box or a "nobody matches" line over the
+       text box — the dialog is the old prompt */
+    const groundOnly = projectForTracker({ boss: { cs: 'Boss', seat: 'GND', pers: true, q: '' } })
+    expect(groundOnly, 'the premise: Raptor can hand over nobody').toEqual([])
+    setPeople(groundOnly)
     const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
     const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
     const root = createRoot(host)

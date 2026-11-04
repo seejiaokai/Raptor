@@ -6,9 +6,12 @@
    projection here on every notify (peoplewire.ts, wired by TrackerPage.tsx);
    core.js reads it when a dialog opens and subscribes to repaint the roster
    chips. Importing core.js from Raptor's side would put ~280 KB of syllabus
-   data into every Raptor visit, and importing the engine from core.js would
-   stop the Tracker being a lazy chunk — so the list crosses through these few
-   lines with no imports at all.
+   data into every Raptor visit, and the Tracker reads nothing of Raptor's store
+   (its §Architecture: three seams, and only three) — so the list crosses
+   through these few lines with no imports at all, and peoplewire.ts is the one
+   file that knows both sides. That is why the shape stays now that the
+   Tracker is never exported again (D1538, [TRK-STANDALONE-LEFTOVERS] 5 Nov 26):
+   it was also kept so the Tracker could leave without Raptor, a reason gone.
 
    THE SIGNATURE GUARD: Raptor notifies on every keystroke of a schedule edit,
    and the projection is rebuilt each time. An unchanged list is a no-op here —
@@ -19,16 +22,17 @@
    whoami is the editor's display name for the `by` stamp on marks and dates.
    It is a function, not a value, because the session can change under an
    open tab (logout, view-as); it never throws and answers '' when nobody has
-   wired it — the standalone app, or a mark made before Raptor's wire ran —
-   and core.js omits the field rather than writing an empty name. */
+   wired it — a unit test that never loads the page, or a mark made before
+   Raptor's wire ran — and core.js omits the field rather than writing an
+   empty name. */
 let list = []            /* [{ id, cs, seat: 'FCP'|'RCP', q, sxo }] */
 let sig = ''
 let who = () => ''
 /* WHO, as a person id (28 Sep 26 — D376, "own place"): the course and student a
    person reopens the Tracker on are remembered per PERSON, so the next person on a
    shared browser never lands on someone else's pick. The id, not the name — a
-   callsign rename keeps his place. '' when nobody is signed in or nothing is wired
-   (the standalone Tracker keeps the browser's one place, as it always did). */
+   callsign rename keeps his place. '' when nobody is signed in as a person or nothing
+   is wired: then the browser keeps its one place, as it always did. */
 let whoId = () => ''
 const subs = new Set()
 
@@ -49,7 +53,7 @@ export function onPeople(f) { subs.add(f); return () => subs.delete(f) }
    the Tracker). A man deleted through Post out is kept underneath as a hidden "deleted" mark (D290), so Raptor knows
    his id; the list above leaves him out like anyone archived, which cannot tell the two apart. So his id crosses here
    too, on the same bridge and with the same guard: the Tracker takes him off every course still running for him
-   (core.js leaveRunningCourses). Empty in the standalone Tracker. */
+   (core.js leaveRunningCourses). Empty until Raptor's wire runs. */
 let gone = []
 let goneSig = ''
 const goneSubs = new Set()
@@ -67,7 +71,7 @@ export function onGonePeople(f) { goneSubs.add(f); return () => goneSubs.delete(
    days (peoplewire.ts medForTracker — the row's own year resolved there), keyed by person id, so the Tracker never
    reads Raptor's store or its date labels. One row: { iid, type, startIso, endIso, half: 'am'|'pm'|'', firstEnd?,
    cutOn? } — `firstEnd` and `cutOn` only where an upchit cut the input and it keeps the end it was filed with (D999).
-   Empty in the standalone Tracker, where every student reads "—". */
+   Empty until Raptor's wire runs, when every student reads "—". */
 let med = {}
 let medSig = ''
 const medSubs = new Set()

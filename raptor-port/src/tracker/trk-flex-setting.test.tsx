@@ -77,7 +77,7 @@ describe('D1018 — the defaults and the ⚙ in the bar', () => {
     expect($('#flexBtn'), 'a member has it too').toBeTruthy()
     await asAdmin()
   })
-  it('nobody wired is the standalone Tracker — everyone; wired, the answer is Raptor\'s', async () => {
+  it('nobody wired (only a test that never loads the page) — everyone; wired, the answer is Raptor\'s', async () => {
     setTrackerAdmin(null)
     expect(trackerIsAdmin()).toBe(true)
     setTrackerAdmin(trackerAdminForTracker)

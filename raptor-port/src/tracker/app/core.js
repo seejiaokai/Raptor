@@ -17,7 +17,7 @@ import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
 import { findEvents } from './eventOrder.js';
 import { onTrackerSessionEnd, onBeforeTrackerLogout, trackerIsAdmin } from '../role.js';
-/* Raptor's one edge feel (D899) — a standalone export carries this file with it: docs/tracker/known-gaps.md */
+/* Raptor's one edge feel (D899) */
 import { edgePan } from '../../ui/edgescroll';
 import { getPeople, onPeople, whoami, whoamiId, getGonePeople, onGonePeople, getMedInputs, onMedInputs } from '../people.js';
 import { setTrackerUndo, pingTrackerUndo } from '../undo-bridge.js';
@@ -306,8 +306,8 @@ function memGet(k) {
    were each ONE stored record, so two people saving two different things overwrote each other. Every caller here still
    reads and writes them whole, under their old names; underneath, each is stored as one row per enrolment, course, chart
    and ball:
-   - a READ returns the old whole record while one is still stored (a browser the fold has not reached — the standalone
-     Tracker — or a list from before the ids, which is not split), else the record rebuilt from its rows;
+   - a READ returns the old whole record while one is still stored (a store the fold has not converted — a unit test that
+     never runs the boot — or a list from before the ids, which is not split), else the record rebuilt from its rows;
    - a WRITE stores only the rows it CHANGES, compared with the rows THIS copy of the Tracker last read (`mem`): a row it
      never read — another person's, saved meanwhile — is never removed, and a row it did not change is never written.
      The rows of one write are ONE command (one saved group, one change-log batch), named as the whole-record write was;
@@ -789,7 +789,7 @@ function prefSet(k, v) { try { localStorage.setItem(PP + k, v); } catch (e) {} }
    person to sign in opened on the last one's course and student. Every read and
    write of the two pick keys (`lastCourse`, `lastCrew:<course>`) goes through here:
    under the signed-in person's id when there is one, else the browser's own key
-   (the standalone Tracker, nobody signed in — as before). The boot converters that
+   (nobody signed in as a person — a guest, a pending account, or a test with nothing wired — as before). The boot converters that
    rewrite OLD unprefixed keys are left as they are (D120). */
 export function pickKey(k) { const w = whoamiId(); return w ? 'who:' + w + ':' + k : k; }
 
@@ -816,7 +816,7 @@ const DEFAULT_COURSE_NAME = '26ABSG';
 /* THE BOOT POLICY ([DB-READINESS] group A, phase 5 — owner D463, 30 Sep 26: an empty real database starts the Tracker
    with NO course; the demo course 26ABSG and its demo pair never reach a shared store). Told by the page seam
    (TrackerPage.tsx) before the first mount, from the policy Raptor booted with (src/bootpolicy.ts); true — the demo, as
-   always — unless told otherwise, and in the standalone Tracker. Off: a store with no course list starts with none
+   always — unless told otherwise, and in a unit test that never loads the page. Off: a store with no course list starts with none
    (loadCourses, migrateCourseIds), nothing is loaded for a course that does not exist (loadCourseNow), and the screen
    says so with the two ways in (App.jsx). The built-in charts are shipped content and stay (D62). */
 let SEED_DEMO = true;
@@ -2017,7 +2017,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
   /* each person's OWN chart on this course comes first (D376, reading 5 — Fable's final read
      F2): the roster is per chart, so the shared chart below opened the next person on the
      last person's chart and, their own student not on it, on the last person's student.
-     Signed-in people only; the standalone Tracker keeps the shared answer, as before. */
+     Signed-in people only; with nobody signed in as a person — a guest, a pending account, or a test with nothing wired, the shared answer, as before. */
   /* and on EVERY load, not only the first ([DB-READINESS] group A, phase 5b): his chart is no longer written into the
      course's shared plan (below), so a reload of the course — an import, discarded chart edits, a chart switch — reads
      his pick from his own place */
@@ -2039,7 +2039,7 @@ async function loadCourseNow(c, restoreLastSyllabus) {
      in phase 4). This used to save the chart on screen as the course's chart too, so that a later reload read it back;
      but the plan is one record for the whole course, so on a shared store whoever opened the course last moved everyone
      else's chart. A signed-in person's chart is his own place (D376 reading 5, the line above) and every load reads it
-     from there. The standalone Tracker, with nobody signed in, keeps the one shared answer, as before. */
+     from there. With nobody signed in as a person — a guest, a pending account, or a test with nothing wired, the one shared answer is kept, as before. */
   if (!whoamiId() && plan.sylId !== __storedSyl) await savePlan();
   /* With no charts shipped in the code and none opened yet, DEFAULT_SYLLABUS is
      undefined and JSON.parse(JSON.stringify(undefined)) throws, which aborted
@@ -2115,15 +2115,15 @@ const HELD_MSG = 'The crew list for this course is still being moved to the new 
 async function saveRoster() { if (rosterHeld) return; await sSet(kRosterFor(course, curSylId()), JSON.stringify(roster)); }
 async function savePlan() { await sSet(kPlan(course), JSON.stringify(plan)); }
 /* THE CHART A SIGNED-IN PERSON HAS OPEN ON A COURSE — his own place (owner D376 reading 5, confirmed D377), kept on his
-   own browser under his own id, never in the course's shared plan ([DB-READINESS] group A, phase 5b). Null when nobody
-   is signed in (the standalone Tracker), when he has none yet, or when his chart has since gone. */
+   own browser under his own id, never in the course's shared plan ([DB-READINESS] group A, phase 5b). Null with
+   nobody signed in as a person — a guest, a pending account, or a test with nothing wired, when he has none yet, or when his chart has since gone. */
 function mySylOn(c) {
   if (!whoamiId() || c == null) return null;
   const s = prefGet(pickKey('lastSyl:' + c));
   return (s && sylSource(s)) ? s : null;
 }
-/* Open another chart on the course on screen: a signed-in person's own place; with nobody signed in, the course's plan,
-   as the standalone Tracker always kept it. Runs on the chain, with the load that follows. */
+/* Open another chart on the course on screen: a signed-in person's own place; with nobody signed in as a person, the
+   course's plan, as it was always kept. Runs on the chain, with the load that follows. */
 async function openSylHere(id) {
   plan.sylId = id;
   if (whoamiId()) prefSet(pickKey('lastSyl:' + course), id);
@@ -3165,7 +3165,7 @@ function step(from, to, dir) {
       ok = !(r && r.ok === false);
     } finally { TRK_IN_RESTORE = false; }
   } else {
-    /* before init has turned the command routing on (and the standalone app): the old raw path — each save helper
+    /* before init has turned the command routing on: the old raw path — each save helper
        writes its record as it always did */
     trkRestoring(apply);
   }
@@ -5306,13 +5306,15 @@ export function closeShowAll() { showAllOpen = false; notify(); }
    unlinked student exactly as before (a visitor from another unit, or the
    smoke suite's #dlgInput flow). Somebody already on the roster is not added
    twice (the silent dedupe of old) but the link is recorded for them.
-   NO ROSTER = THE OLD PROMPT, byte for byte. The owner will export this app
-   back out to its standalone repo, where students are created by typing a
-   name and nothing feeds the people bridge (owner, 9 Sep 26: "it's just going
-   to be the same old way of typing and creating a student by text"). An empty
-   list must not draw an empty roster section, a search box or a "nobody
-   matches" line — so the picker only exists when Raptor has handed people
-   over. Everything Raptor-specific about + Add lives in this one branch. */
+   NO ROSTER = THE OLD PROMPT, byte for byte. Kept first for the standalone
+   app (owner, 9 Sep 26), which D1538 retired (31 Oct 26 — the Tracker is never
+   exported again); it stays because Raptor itself can hand over nobody: the
+   roster offers aircrew only (peoplewire.ts projectForTracker), so a new
+   shared store whose one person is ground crew, or a roster whose aircrew are
+   all archived, offers an empty list ([TRK-STANDALONE-LEFTOVERS], 5 Nov 26 —
+   pinned in tracker.test.tsx). An empty list must not draw an empty roster
+   section, a search box or a "nobody matches" line — so the picker only
+   exists when there is somebody to offer. */
 /* The enrolment belongs to the COURSE, not the chart: pace and lull periods
    are filed under it, so the same person added to a second chart of the
    course must land under the SAME id. Looked up across every roster of the
@@ -5341,7 +5343,7 @@ export async function addStudent() {
      meanwhile shows at once ([TRK-RETEST-NOTES] C11 — it kept the list it opened with) */
   const people = () => getPeople().map(p => ({ key: p.id, label: p.cs, sub: seatWord(p.seat) + (p.q ? ' · ' + p.q : '') }));
   /* THE COURSE START IS SET HERE (owner D1003, D1018 — 18 Oct 26): a date box above the list, today by default — above
-     it because a tap on a name adds him at once. The typed-name box (no roster: the standalone Tracker) carries it too. */
+     it because a tap on a name adds him at once. The typed-name box (nobody on the roster to offer) carries it too. */
   const start = { label: 'Course start', value: isoToday() };
   let r;
   if (people().length) r = await uiPick('Add a crew member', people, { input: true, placeholder: 'Or type a callsign', listTitle: 'From the squadron roster', date: start });
