@@ -8,7 +8,8 @@
 import { act, Component, type ReactNode } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { DownloadedPage, isDownloadFailure, pageDownload } from './pageload'
+import { DownloadedPage } from './pageload'
+import { isDownloadFailure, pageDownload } from './pagedownload'
 
 const FAIL = () => new Error('Failed to fetch dynamically imported module: http://x/assets/LeaveWarPage-abc.js')
 const Page = ({ active }: { active: boolean }) => <div data-testid="the-page">{active ? 'on' : 'dozing'}</div>

@@ -16,26 +16,9 @@
        on the drawing). Whether the app was updated is asked of the server: the app's own first file, named in a fresh
        index.html, differs from the one this tab runs. No answer (no signal) is not an update — the card stays.
    Only a failed DOWNLOAD is caught here: a fault inside the page itself is passed on to what catches it today. */
-import { Component, Suspense, lazy, useEffect, useRef, useState, type ComponentType, type LazyExoticComponent, type ReactNode } from 'react'
+import { Component, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { PageClaw } from './pageclaw'
-
-type PageComp = ComponentType<{ active: boolean }>
-type Loader = () => Promise<{ default: PageComp }>
-
-/** A page's download that can be asked for again: React keeps a failed `lazy` failed, so a retry is a new one. Made once,
- *  at module level (Shell.tsx), never inside a render. */
-export interface PageDownload { current: LazyExoticComponent<PageComp>; renew: () => void }
-export function pageDownload(load: Loader): PageDownload {
-  const d: PageDownload = { current: lazy(load), renew: () => { d.current = lazy(load) } }
-  return d
-}
-
-/** The words each browser gives a module that did not come — Chrome and Edge, Safari, Firefox — and the build's own for
- *  a page's stylesheet that did not (Vite's preload helper). */
-export function isDownloadFailure(e: unknown): boolean {
-  const m = e instanceof Error ? e.message : String(e)
-  return /dynamically imported module|importing a module script failed|unable to preload css/i.test(m)
-}
+import { isDownloadFailure, type PageDownload } from './pagedownload'
 
 /* the app's own first file, as this tab runs it and as the server names it now */
 const entryFiles = (root: ParentNode) =>
@@ -45,8 +28,8 @@ async function appUpdated(): Promise<boolean> {
     const res = await fetch(new URL('./', window.location.href).href, { cache: 'no-store' })
     if (!res.ok) return false
     const now = entryFiles(new DOMParser().parseFromString(await res.text(), 'text/html'))
-    const mine = entryFiles(document)
-    return now.length > 0 && mine.length > 0 && now.some(f => !mine.includes(f))
+    const mine = new Set(entryFiles(document))
+    return now.length > 0 && mine.size > 0 && now.some(f => !mine.has(f))
   } catch {
     return false
   }
