@@ -492,6 +492,9 @@ export function Sheet({
       /* Escape on a sheet's own part drawn on the page (`.sheet-part` — the Events list's note) closes that part only: it
          opened last (the design guide §3); the part answers it itself (the Events fix's narrow read, 29 Oct 26) */
       if ((e.target as Element | null)?.closest?.('.sheet-part')) return
+      /* …and a question hanging from one of its buttons (owner D1628 — the posting's "Delete Hex?", ui/AskCard.tsx) opened
+         last too: it answers Escape itself, with its safe answer, and the sheet stays (the walk of 4 Nov 26, S5) */
+      if (panelRef.current?.querySelector('.askcard')) return
       e.stopPropagation()
       closeRef.current()
     }

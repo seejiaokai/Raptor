@@ -34,6 +34,8 @@ import { DateBox } from './DateBox'
 import { TypeLegend } from './TypeLegend'
 import { clickedOutside } from './outside'
 import { useSheetFocus, topSheet } from './sheetfocus'
+import { AskCard } from './AskCard'
+import { lastPressed } from './lastpress'
 import { rosterOptions, archivedOptions, fmt, fmtDay, unfmt, hasHalf, spanOf, spanFields, SPANS, SANS_ROWS, sansRefusal, isoOrd, ordISO, applyMedPlan, medKeptSegments, mintMedSegments, typeOptions, draftOf, normalizeInputDraft, docGate, oilGate, oilAnswered, oilUnansweredDay, oilSummary, oilDayLabel, TYPE_ALLOW, protectedInput, medPlanProtected, medicalLocked, medSegmentsProtected, placeholderRefused, placeholderWhy, commitNewInput, commitInputEdit, medAskFor, saveBatchX, saveBatch, giveBackCuts, askOilIfPending, removeInput, upchitDeleteAsk, sharedRefusal, inputWho, howMany, commitInput, WIN_FIELDS, fieldSame, fieldPart, fieldSay, progOf } from './inputedit'
 import type { Span } from './inputedit'
 
@@ -204,13 +206,15 @@ export function InputEditor() {
   const basePpl = useRef<string[]>([])
   const entryIds = useRef<string[]>([])
   const [delAll, setDelAll] = useState(false)
-  /* THE "DELETE FOR ALL?" QUESTION IS SHOWN WHOLE WHEN IT OPENS (`[GROUP-INPUT-ONE-ROW]`, the job's bug check — walker W2,
-     scenario 5, 11 Oct 26). The schedule's dialog on a shared input carries the people picker since D748, so on a phone
-     it is taller than the screen and scrolls: the question opened at its foot with only the red "Delete" in sight,
-     and "Keep" below the edge until a finger found the scroll — a question showing only its destructive answer. It
-     is brought into view as it opens, both answers with it. */
-  const delAsk = useRef<HTMLDivElement>(null)
-  useEffect(() => { const el = delAsk.current; if (delAll && el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ block: 'end' }) }, [delAll])
+  /* THE QUESTIONS HANG FROM THE BUTTON PRESSED (owner D1626, D1627, 4 Nov 26): "Delete this input for all N people?" from
+     Delete, "Take yourself out?" from Take me out, "Open the other input and lose them?" from the other input pressed on
+     the page behind — each a card at the hand (ui/AskCard.tsx), never in the form's flow. (The old flow question opened at
+     the form's foot and had to be scrolled into view, both answers with it — [GROUP-INPUT-ONE-ROW]'s walker W2; a card at
+     its button stands in view with its button.) */
+  const delBtn = useRef<HTMLButtonElement>(null)
+  const outBtn = useRef<HTMLButtonElement>(null)
+  /* the control that asked for the other input — its bar on the calendar, its card in the opened day, + Input */
+  const swapAt = useRef<HTMLElement | null>(null)
   const [takeOut, setTakeOut] = useState(false)
   /* a saved shared input's dates, being re-picked in the window (D681): true between the tap for the new start and the
      tap for the new end — see `datesHere`, below */
@@ -273,12 +277,16 @@ export function InputEditor() {
     const hadPpl = new Set(basePpl.current)
     const pplTouched = ppl.length !== hadPpl.size || ppl.some(id => !hadPpl.has(id))
     if (win && other && !swapOk.current && draft && base.current && (pplTouched || WIN_FIELDS.some(f => !fieldSame(f, draft, base.current)))) {
+      /* hung from the other input as a whole — its bar, its list row — where the press landed inside one */
+      { const p = lastPressed(); swapAt.current = (p?.closest('[data-iid]') as HTMLElement | null) || p }
       setSwap(r); keepDraft.current = true; setInpEdit(prev); notify()
       /* ...AND IT ASKS FROM THE FRONT (`[TITLE-CHECK-SEEN]` 4, 10 Oct 26). The press that asked for the other input landed
          on another window first — a card of the opened day — and that window took the front, as any pressed window
          does: this one put its question up BEHIND it. On a phone the day's window is nearly the whole screen, so
          nobody saw a question at all until the day was closed. The window that asks comes forward. */
-      bringForward('inputedit')
+      /* …unless the press was in another window (a card of the opened day): the question now hangs from that card, drawn
+         in that window (D1627), so that window keeps the front and the card stays in view, as drawn for him */
+      if (!swapAt.current?.closest('.floatwin')) bringForward('inputedit')
       return
     }
     swapOk.current = false
@@ -394,7 +402,9 @@ export function InputEditor() {
          window, one Escape closed the viewer AND this window behind it — this handler runs before the viewer's, on the
          same document. With none of its own questions up, it leaves Escape alone while the topmost keyboard-holding sheet
          is not this window (ui/sheetfocus.ts topSheet); the next Escape is its own. */
-      if (!docConf && !upConf && !medConf && !oilConf && !escAsk) {
+      /* the swap's question hangs from the card pressed, drawn in THAT window and in front with it (D1627): Escape is its
+         answer, whichever window holds the front (the walk of 4 Nov 26, S3 on a phone: it closed the opened day instead) */
+      if (!docConf && !upConf && !medConf && !oilConf && !escAsk && !swap) {
         const top = topSheet()
         const own = box.current && (box.current.closest('.floatwin') || box.current)
         if (top && own && !own.contains(top)) return
@@ -414,7 +424,7 @@ export function InputEditor() {
         /* The unsaved-work question is NOT one of those: it sits in this window and blocks nothing behind it, so with
            another window brought in front of it, that one is Escape's (the bug check of 3 Nov 26, walker W1 S08 — the
            question answered "Keep editing" and the settings window in front stayed up). */
-        if (!docConf && !upConf && !medConf && !oilConf && frontWin() !== 'inputedit') return
+        if (!docConf && !upConf && !medConf && !oilConf && !swap && frontWin() !== 'inputedit') return
       }
       e.preventDefault()
       e.stopPropagation()
@@ -426,6 +436,9 @@ export function InputEditor() {
          check of 3 Nov 26, walker W1 S07 — Escape did nothing there) */
       else if (swap) setSwap(null)
       else if (escAsk) setEscAsk(false)
+      /* the foot's questions hang from their buttons now (D1627): Escape is their safe answer, Keep or Stay in */
+      else if (delAll) setDelAll(false)
+      else if (takeOut) setTakeOut(false)
       /* A WINDOW HOLDING TYPED WORDS ASKS FIRST (F2 of the 3 Nov 26 re-check): one Escape threw away what was typed, with
          no word. With anything of his not saved — a field, or who it is for — it asks; nothing typed, it closes. */
       /* (the Inputs page's window; the schedule's pop-up closes on a tap outside it as well, and keeps that way) */
@@ -435,7 +448,7 @@ export function InputEditor() {
     document.addEventListener('keydown', esc, true)
     return () => document.removeEventListener('keydown', esc, true)
   // eslint-disable-next-line react-hooks/exhaustive-deps -- unsavedNow reads the draft and the people, which re-render this effect's owner; the listed deps re-arm it on every question that changes what Escape peels
-  }, [open, win, upConf, medConf, oilConf, docConf, escAsk, swap, draft, ppl])
+  }, [open, win, upConf, medConf, oilConf, docConf, escAsk, swap, delAll, takeOut, draft, ppl])
 
   const close = () => { setEscAsk(false); setInpEdit(null); notify() }
   /* anything of his not saved: a field of the window, or who it is for (the swap's own test, above) */
@@ -1140,28 +1153,27 @@ export function InputEditor() {
         {mineRow && draft && (
           <div className="inped-own">
             {takeOut && (
-              /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
-              <div className="inped-ask" data-testid="inped-takeout-ask" role="alertdialog" aria-label="Take yourself out?">
-                <span className="inped-ask-q">Take yourself out of this input? It stays for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl.filter(p => !isMe(p))) : `the other ${recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}`}.</span>
-                <button type="button" className="abtn danger" data-testid="inped-takeout-yes" autoFocus onClick={takeMeOut}>Take me out</button>
-                <button type="button" className="abtn ghost" data-testid="inped-takeout-no" onClick={() => setTakeOut(false)}>Stay in</button>
-              </div>
+              <AskCard at={outBtn.current} testid="inped-takeout-ask" label="Take yourself out?"
+                question={<>Take yourself out of this input? It stays for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl.filter(p => !isMe(p))) : `the other ${recPpl.length - 1 === 1 ? 'person' : `${recPpl.length - 1} people`}`}.</>}>
+                <button type="button" className="abtn danger" data-testid="inped-takeout-yes" onClick={takeMeOut}>Take me out</button>
+                <button type="button" className="abtn primary" data-testid="inped-takeout-no" autoFocus onClick={() => setTakeOut(false)}>Stay in</button>
+              </AskCard>
             )}
           </div>
         )}
         {delAll && (
-          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
-          <div className="inped-ask" data-testid="inped-delall" role="alertdialog" aria-label="Delete for everyone?" ref={delAsk}>
-            <span className="inped-ask-q">Delete this input for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl) : `all ${recPpl.length} people`}?</span>
-            <button type="button" className="abtn danger" data-testid="inped-delall-yes" autoFocus onClick={delEntry}>Delete</button>
-            <button type="button" className="abtn ghost" data-testid="inped-delall-no" onClick={() => setDelAll(false)}>Keep</button>
-          </div>
+          <AskCard at={delBtn.current} testid="inped-delall" label="Delete for everyone?"
+            question={<>Delete this input for {recPpl.some(p => isSpecial(p)) ? howMany(recPpl) : `all ${recPpl.length} people`}?</>}>
+            <button type="button" className="abtn danger" data-testid="inped-delall-yes" onClick={delEntry}>Delete</button>
+            <button type="button" className="abtn primary" data-testid="inped-delall-no" autoFocus onClick={() => setDelAll(false)}>Keep</button>
+          </AskCard>
         )}
         <div className="airpop-foot">
           {/* nothing to delete on a row that does not exist yet (the board's
               + Add) — the button is simply absent in that mode */}
-          {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" onClick={del}>Delete</button>}
-          {mineRow && !takeOut && <button className="abtn" data-testid="inped-takeout" onClick={() => setTakeOut(true)}>Take me out</button>}
+          {!isNew && !readOnly && <button className="abtn danger" id="inpEditDel" ref={delBtn} aria-expanded={delAll || undefined} onClick={del}>Delete</button>}
+          {/* it stays in sight while its question hangs from it (D1627); pressed again, the question stays */}
+          {mineRow && <button className="abtn" data-testid="inped-takeout" ref={outBtn} aria-expanded={takeOut || undefined} onClick={() => setTakeOut(true)}>Take me out</button>}
           {/* ITS DOCUMENT, OPENED FROM HERE ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26 — Astra's scenario 60). The paperclip of the
               List's row is how a medical input's paperwork is read — by EVERY account (owner, 27 Aug 26) — and a phone's
               card carries no paperclip (D723): the form above names a document and cannot open it, and for a reader who
@@ -1237,19 +1249,23 @@ export function InputEditor() {
   const cxMark = cxRec && cxOf(cxRec)
     ? <span className="inped-cx" data-testid="inped-cx" title={cxSays(cxRec)}><span className="icx">CX</span>{cxWhy(cxRec) && <span className="icx-why">{cxWhy(cxRec)}</span>}</span>
     : null
+  /* the control the swap's question hangs from gone with its window (the opened day closed under it): the question goes
+     too — never left standing where nobody can see it, to take the next Escape ("adjust state while rendering") */
+  if (swap && swapAt.current && !swapAt.current.isConnected) setSwap(null)
   if (win) return (<>
     <FloatWin id="inputedit" title={(isNew ? 'New input' : who) + (when ? ' · ' + when : '')} testid="win-inputedit" className="inpedwin" onClose={askClose}
       mark={cxMark || undefined}>
       <div id="inpEditPop" className="inpedbox inped-win" ref={box}>
         {/* ONE EDITOR AT A TIME: another input was asked for while this one holds unsaved changes */}
         {swap && (
-          /* eslint-disable-next-line react-doctor/prefer-html-dialog -- a question inside this window, in its flow: it leaves the page behind working (D641) and stands under the window's own bar; a <dialog> would open in the top layer over every window; moved whole from inputedit.tsx on 3 Nov 26 with this finding already on it (D1534: the area's findings ride with its batch) */
-          <div className="inped-ask" data-testid="inped-swap" role="alertdialog" aria-label="Unsaved changes">
-            <span className="inped-ask-q">This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</span>
+          /* it hangs from what was pressed on the page behind, over every window (portal): on a phone the opened day stands
+             in front of this window, and the card must show at the card tapped there (D1627) */
+          <AskCard at={swapAt.current} portal testid="inped-swap" label="Unsaved changes"
+            question={<>This input has unsaved changes. Open {swap._new ? 'a new input' : `${inputWho(swap) || 'the other'}’s input`} and lose them?</>}>
             <button type="button" className="abtn danger" data-testid="inped-swap-go"
               onClick={() => { const to = swap._new ? swap : (INPUTS.find((x: any) => x.iid === swap.iid) || null); swapOk.current = true; setSwap(null); setInpEdit(to); notify() }}>Discard and open</button>
-            <button type="button" className="abtn ghost" data-testid="inped-swap-stay" onClick={() => setSwap(null)}>Keep editing</button>
-          </div>
+            <button type="button" className="abtn primary" data-testid="inped-swap-stay" autoFocus onClick={() => setSwap(null)}>Keep editing</button>
+          </AskCard>
         )}
         {/* ESCAPE OR ✕ OVER UNSAVED WORK (F2 of the 3 Nov 26 re-check; ✕ since D1622). A SMALL CARD HANGING FROM THE ✕
             (owner D1626, 3 Nov 26, design C — "if u want to close, you position your hand to reach it"): the question

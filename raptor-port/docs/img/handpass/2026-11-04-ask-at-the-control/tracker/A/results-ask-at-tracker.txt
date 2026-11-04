@@ -1,0 +1,64 @@
+PASS 58 desktop: the question is up and reads as expected — saw "You have unsaved chart edits on “2026”.\n\nSave them before logging out?"
+PASS 58 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":925,"t":52,"w":360,"h":137},"ctl":{"l":1218,"t":14,"w":67,"h":28},"onScreen":true}
+PASS 58 phone: the question is up and reads as expected — saw "You have unsaved chart edits on “2026”.\n\nSave them before logging out?"
+PASS 58 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":14,"t":49,"w":360,"h":137},"ctl":{"l":14,"t":9,"w":32,"h":30},"onScreen":true}
+PASS 59 desktop: the question is up and reads as expected — saw "Remove link ACG-02 → ACG-03 ?"
+PASS 59 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":376,"t":519,"w":360,"h":98},"ctl":{"l":376,"t":477,"w":140,"h":32},"onScreen":true}
+PASS 59 phone: the question is up and reads as expected — saw "Remove link ACG-03 → ACG-08 ?"
+PASS 59 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":528,"w":360,"h":98},"ctl":{"l":166,"t":466,"w":58,"h":52},"onScreen":true}
+PASS 60 desktop: the question is up and reads as expected — saw "Remove STUDENT A’s lull period 01/11/26 → 30/11/26?"
+PASS 60 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"above","scrolls":true,"card":{"l":891,"t":654,"w":360,"h":117},"ctl":{"l":1243,"t":781,"w":8,"h":17},"onScreen":true}
+PASS 60 phone: the question is up and reads as expected — saw "Remove STUDENT A’s lull period 01/11/26 → 30/11/26?"
+PASS 60 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"above","scrolls":true,"card":{"l":34,"t":610,"w":360,"h":117},"ctl":{"l":107,"t":737,"w":6,"h":13},"onScreen":true}
+PASS 61 desktop: the question is up and reads as expected — saw "Remove STUDENT A from 2026?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted."
+PASS 61 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":871,"t":195,"w":360,"h":156},"ctl":{"l":1220,"t":168,"w":11,"h":17},"onScreen":true}
+PASS 61 phone: the question is up and reads as expected — saw "Remove STUDENT A from 2026?\n\nTheir marks, dates, pace and lull periods on this syllabus are deleted."
+PASS 61 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":225,"w":360,"h":156},"ctl":{"l":288,"t":202,"w":9,"h":13},"onScreen":true}
+PASS 62a desktop: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and switch to “2024”?"
+PASS 62a desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":416,"t":107,"w":360,"h":117},"ctl":{"l":416,"t":67,"w":125,"h":30},"onScreen":true}
+PASS 62a phone: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and switch to “2024”?"
+PASS 62a phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":90,"w":360,"h":117},"ctl":{"l":239,"t":54,"w":88,"h":26},"onScreen":true}
+PASS 62b desktop: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and switch to course “26ABSG”?"
+PASS 62b desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":147,"t":107,"w":360,"h":117},"ctl":{"l":147,"t":67,"w":89,"h":30},"onScreen":true}
+PASS 62b phone: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and switch to course “26ABSG”?"
+PASS 62b phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":90,"w":360,"h":117},"ctl":{"l":48,"t":54,"w":81,"h":26},"onScreen":true}
+PASS 62c desktop: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and add a course?"
+PASS 62c desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":315,"t":107,"w":360,"h":117},"ctl":{"l":315,"t":67,"w":33,"h":30},"onScreen":true}
+PASS 62c phone: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\nDiscard them and add a course?"
+PASS 62c phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":90,"w":360,"h":117},"ctl":{"l":204,"t":54,"w":29,"h":26},"onScreen":true}
+PASS 63 desktop: the question is up and reads as expected — saw "Delete course OTHER?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser."
+PASS 63 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":244,"t":107,"w":360,"h":156},"ctl":{"l":244,"t":67,"w":33,"h":30},"onScreen":true}
+PASS 63 phone: the question is up and reads as expected — saw "Delete course OTHER?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser."
+PASS 63 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":90,"w":360,"h":156},"ctl":{"l":135,"t":54,"w":29,"h":26},"onScreen":true}
+PASS 64 desktop: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\n\nKeep the edits on “2026” too"
+PASS 64 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":549,"t":107,"w":360,"h":170},"ctl":{"l":549,"t":67,"w":33,"h":30},"onScreen":true}
+PASS 64 phone: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen.\n\nKeep the edits on “2026” too"
+PASS 64 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":90,"w":360,"h":170},"ctl":{"l":333,"t":54,"w":29,"h":26},"onScreen":true}
+PASS 65 desktop: the question is up and reads as expected — saw "“2026” is a built-in syllabus that has saved edits.\n\nDelete it outright, or just throw away your edits and keep the ship"
+PASS 65 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":549,"t":107,"w":360,"h":156},"ctl":{"l":549,"t":67,"w":33,"h":30},"onScreen":true}
+PASS 65 phone: the question is up and reads as expected — saw "“2026” is a built-in syllabus that has saved edits.\n\nDelete it outright, or just throw away your edits and keep the ship"
+PASS 65 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":90,"w":360,"h":156},"ctl":{"l":333,"t":54,"w":29,"h":26},"onScreen":true}
+PASS 66 desktop: the question is up and reads as expected — saw "Delete syllabus “2026”?\n\nThis removes its flow, its layout and every student’s marks on it, in every course.\n\nIt is a bu"
+PASS 66 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":549,"t":107,"w":360,"h":215},"ctl":{"l":549,"t":67,"w":33,"h":30},"onScreen":true}
+PASS 66 phone: the question is up and reads as expected — saw "Delete syllabus “2026”?\n\nThis removes its flow, its layout and every student’s marks on it, in every course.\n\nIt is a bu"
+PASS 66 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":8,"t":90,"w":360,"h":215},"ctl":{"l":333,"t":54,"w":29,"h":26},"onScreen":true}
+PASS 67 desktop: the question is up and reads as expected — saw "Reset this syllabus back to the course-map layout?\n\nThis puts every box back where the map has it AND deletes all 82 lin"
+PASS 67 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":635,"t":193,"w":360,"h":156},"ctl":{"l":635,"t":154,"w":103,"h":29},"onScreen":true}
+PASS 67 phone: the question is up and reads as expected — saw "Reset this syllabus back to the course-map layout?\n\nThis puts every box back where the map has it AND deletes all 82 lin"
+PASS 67 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":308,"w":360,"h":156},"ctl":{"l":90,"t":269,"w":103,"h":29},"onScreen":true}
+PASS 68 desktop: the question is up and reads as expected — saw "Delete ST-01 from this syllabus?\n\nEvery student’s marks on it are removed when you press ✓ Save changes."
+PASS 68 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":509,"t":618,"w":360,"h":156},"ctl":{"l":509,"t":580,"w":79,"h":28},"onScreen":true}
+PASS 68 phone: the question is up and reads as expected — saw "Delete ST-01 from this syllabus?\n\nEvery student’s marks on it are removed when you press ✓ Save changes."
+PASS 68 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":605,"w":360,"h":156},"ctl":{"l":35,"t":567,"w":79,"h":28},"onScreen":true}
+PASS 69 desktop: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\n\nSave them first, so the exported file includes them?"
+PASS 69 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":482,"t":107,"w":360,"h":151},"ctl":{"l":777,"t":67,"w":65,"h":30},"onScreen":true}
+PASS 69 phone: the question is up and reads as expected — saw "You have unsaved flow edits on “2026”.\n\nSave them first, so the exported file includes them?"
+PASS 69 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":122,"w":360,"h":151},"ctl":{"l":100,"t":86,"w":63,"h":26},"onScreen":true}
+PASS 70 desktop: the question is up and reads as expected — saw "“HANDOVER CHART” already exists.\n\nReplace it, or add the incoming one under a new name?"
+PASS 70 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":531,"t":107,"w":360,"h":156},"ctl":{"l":826,"t":67,"w":65,"h":30},"onScreen":true}
+PASS 70 phone: the question is up and reads as expected — saw "“HANDOVER CHART” already exists.\n\nReplace it, or add the incoming one under a new name?"
+PASS 70 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":122,"w":360,"h":156},"ctl":{"l":100,"t":86,"w":63,"h":26},"onScreen":true}
+PASS 71 desktop: the question is up and reads as expected — saw "This file also contains students and marks.\n\nBring them in too? A student already here who is ALSO in the file will have"
+PASS 71 desktop: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":531,"t":107,"w":360,"h":195},"ctl":{"l":826,"t":67,"w":65,"h":30},"onScreen":true}
+PASS 71 phone: the question is up and reads as expected — saw "This file also contains students and marks.\n\nBring them in too? A student already here who is ALSO in the file will have"
+PASS 71 phone: the card is on the screen and leaves the control pressed uncovered — saw {"side":"below","scrolls":false,"card":{"l":34,"t":122,"w":360,"h":195},"ctl":{"l":100,"t":86,"w":63,"h":26},"onScreen":true}

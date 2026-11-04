@@ -1,0 +1,20 @@
+/* A QUESTION HANGING FROM THE CONTROL PRESSED (owner D1626, D1627, D1628 — ui/AskCard.tsx). The input window's ✕ card
+   (25-inputs-calendar.css .inped-xask) as one look for every such question: the same surface, edge, shadow, words and
+   buttons; its pointer sits on the edge facing the control, at the control's middle (--ac-px, set by AskCard). Fixed,
+   placed by AskCard; first drawn see-through for one measure (.ac-measure — never hidden: a hidden card cannot take
+   the keyboard its safe answer asks for), then where it belongs, before the screen is painted. Global, not scoped: it
+   hangs from the Leave War's sheets as from the scheduler's windows. */
+.askcard{position:fixed;z-index:30;box-sizing:border-box;width:min(300px,calc(100vw - 16px));display:flex;flex-direction:column;gap:10px;
+  padding:12px;border:1px solid color-mix(in srgb,var(--ink,#e8edf2) 22%,var(--panel,#151b22));border-radius:12px;
+  background:color-mix(in srgb,var(--ink,#e8edf2) 8%,var(--panel,#151b22));box-shadow:0 10px 28px rgba(0,0,0,.55);
+  text-align:left;font-family:inherit;letter-spacing:normal;text-transform:none}
+.askcard.ac-measure{opacity:0;pointer-events:none;left:0;top:0}
+.askcard.ac-over{z-index:415}
+.askcard::before{content:'';position:absolute;left:calc(var(--ac-px,22px) - 5px);width:10px;height:10px;transform:rotate(45deg);background:inherit}
+.askcard.ac-below::before{top:-6px;border-left:1px solid color-mix(in srgb,var(--ink,#e8edf2) 22%,var(--panel,#151b22));border-top:1px solid color-mix(in srgb,var(--ink,#e8edf2) 22%,var(--panel,#151b22))}
+.askcard.ac-above::before{bottom:-6px;border-right:1px solid color-mix(in srgb,var(--ink,#e8edf2) 22%,var(--panel,#151b22));border-bottom:1px solid color-mix(in srgb,var(--ink,#e8edf2) 22%,var(--panel,#151b22))}
+.askcard-q{font-size:12.5px;font-weight:700;line-height:1.35;color:var(--ink,#e8edf2)}
+.askcard-sub{font-size:11.5px;font-weight:500;line-height:1.35;color:var(--ink-2,#aab4c0);margin-top:-4px}
+.askcard-btns{display:flex;gap:8px;justify-content:flex-end}
+.askcard-btns .abtn{min-height:36px;padding:6px 12px;font-size:12px;white-space:nowrap}
+@media (max-width:620px){.askcard-btns .abtn{min-height:44px}}

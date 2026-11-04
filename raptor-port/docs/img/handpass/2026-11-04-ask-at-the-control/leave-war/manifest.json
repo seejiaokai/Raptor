@@ -1,0 +1,1783 @@
+[
+ {
+  "n": 41,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the one-day sheet of a day holding an OIL award (Drifter, Sat 14 Mar, FO)",
+  "control": "the sheet's Delete chip",
+  "answers": "Delete (pressed again) — no other answer; the ✕ or a tap outside drops it",
+  "today": "a red note under the chips, and the chip itself reads \"Delete — / sure?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/41-desktop-today.png",
+    "phone": "A/41-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/41-desktop-card.png",
+    "phone": "A/41-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 454,
+     "t": 558,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 453,
+     "t": 515,
+     "w": 129,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 26,
+     "t": 532,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 25,
+     "t": 489,
+     "w": 84,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "the card drops \"— tap Delete again to go ahead\"",
+   "Cancel (the safe answer; today the arm has none — a tap elsewhere or the ✕ drops it)"
+  ],
+  "notes": "",
+  "question": "Delete also takes Drifter’s OIL award (2 days) — tap Delete again to go ahead.",
+  "cardWords": "Delete also takes Drifter’s OIL award (2 days)."
+ },
+ {
+  "n": 42,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the drag-selection sheet over Blade's 2–3 Feb (LL, LL)",
+  "control": "the sheet's Delete chip",
+  "answers": "Delete (pressed again) — no other answer",
+  "today": "a red note under the chips, and the chip reads \"Delete — / sure?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/42-desktop-today.png",
+    "phone": "A/42-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/42-desktop-card.png",
+    "phone": "A/42-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 688,
+     "t": 704,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 858,
+     "t": 661,
+     "w": 129,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 78,
+     "t": 678,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 294,
+     "t": 635,
+     "w": 84,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "the card drops \"Tap Delete again.\"",
+   "Cancel (the safe answer; today the arm has none)"
+  ],
+  "notes": "",
+  "question": "Delete 2 days for Blade? Tap Delete again.",
+  "cardWords": "Delete 2 days for Blade?"
+ },
+ {
+  "n": 43,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the one-day sheet (Ranger, Wed 4 Feb; his CL at −1)",
+  "control": "the CL leave chip",
+  "answers": "the same leave chip pressed again — no other answer",
+  "today": "a red note at the foot of the leave chips",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/43-desktop-today.png",
+    "phone": "A/43-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/43-desktop-card.png",
+    "phone": "A/43-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 688,
+     "t": 709,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 858,
+     "t": 807,
+     "w": 129,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Take CL",
+      "w": 72,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "above",
+    "card": {
+     "l": 78,
+     "t": 675,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 294,
+     "t": 781,
+     "w": 84,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Take CL",
+      "w": 72,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Take CL: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Take CL: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "the card drops \"Tap the same leave again to go ahead.\"",
+   "\"Take CL\" — the go-ahead (today: the same leave chip pressed again); plain, not red: nothing is lost",
+   "Cancel (the safe answer)"
+  ],
+  "notes": "",
+  "question": "That takes Ranger to −1 CL. Tap the same leave again to go ahead.",
+  "cardWords": "That takes Ranger to −1 CL."
+ },
+ {
+  "n": 44,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the drag-selection sheet over Drifter's 6–8 Jan (his FCL at 0)",
+  "control": "the FCL leave chip",
+  "answers": "the same leave chip pressed again — no other answer",
+  "today": "a red note beside the leave chips",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/44-desktop-today.png",
+    "phone": "A/44-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/44-desktop-card.png",
+    "phone": "A/44-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 454,
+     "t": 709,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 453,
+     "t": 807,
+     "w": 129,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Take FCL",
+      "w": 79,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "above",
+    "card": {
+     "l": 26,
+     "t": 675,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 25,
+     "t": 781,
+     "w": 84,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Take FCL",
+      "w": 79,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Take FCL: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Take FCL: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "the card drops \"Tap the same leave again to go ahead.\"",
+   "\"Take FCL\" — the go-ahead",
+   "Cancel"
+  ],
+  "notes": "",
+  "question": "That takes Drifter to −3 FCL. Tap the same leave again to go ahead.",
+  "cardWords": "That takes Drifter to −3 FCL."
+ },
+ {
+  "n": 45,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the one-day sheet → ⋯ → Post out (Static, from Fri 20 Nov)",
+  "control": "the Post out button, with the Delete outcome chosen",
+  "answers": "the same button pressed again — no other answer",
+  "today": "the button itself turns red: \"Tap again to delete Static\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/45-desktop-today.png",
+    "phone": "A/45-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/45-desktop-card.png",
+    "phone": "A/45-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 454,
+     "t": 701,
+     "w": 300,
+     "h": 131
+    },
+    "ctl": {
+     "l": 453,
+     "t": 841,
+     "w": 87,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "above",
+    "card": {
+     "l": 26,
+     "t": 667,
+     "w": 300,
+     "h": 139
+    },
+    "ctl": {
+     "l": 25,
+     "t": 815,
+     "w": 87,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Static?\" — the card's question (today only the button's \"Tap again to delete Static\")",
+   "Delete and Cancel — the answers (today the same button pressed again; no Cancel)",
+   "the line under the question is today's outcome line, moved"
+  ],
+  "notes": "",
+  "question": "Tap again to delete Static (the button); the line above it: On 20 Nov the app deletes him automatically. Days he flew keep his puck.",
+  "cardWords": "Delete Static? / On 20 Nov the app deletes him automatically. Days he flew keep his puck."
+ },
+ {
+  "n": 46,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the drag-selection sheet over one man's empty days → ⋯ → Post out",
+  "control": "the Post out button, with the Delete outcome chosen",
+  "answers": "the same button pressed again",
+  "today": "the button turns red: \"Tap again to delete …\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/46-desktop-today.png",
+    "phone": "A/46-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/46-desktop-card.png",
+    "phone": "A/46-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 454,
+     "t": 701,
+     "w": 300,
+     "h": 131
+    },
+    "ctl": {
+     "l": 453,
+     "t": 841,
+     "w": 87,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "above",
+    "card": {
+     "l": 26,
+     "t": 667,
+     "w": 300,
+     "h": 139
+    },
+    "ctl": {
+     "l": 25,
+     "t": 815,
+     "w": 87,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Scope?\"",
+   "Delete and Cancel"
+  ],
+  "notes": "",
+  "question": "Tap again to delete Scope (the button); the line above it: On 18 Nov the app deletes him automatically. Days he flew keep his puck.",
+  "cardWords": "Delete Scope? / On 18 Nov the app deletes him automatically. Days he flew keep his puck."
+ },
+ {
+  "n": 47,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the Posted out sheet (a man posted out Overseas, his posted-out day tapped)",
+  "control": "the Delete outcome chip",
+  "answers": "a new row button \"Tap again to delete …\"; the Delete chip tapped again backs out",
+  "today": "the Delete chip lights, the line says what a Delete does, and a red row button appears below",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/47-desktop-today.png",
+    "phone": "A/47-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/47-desktop-card.png",
+    "phone": "A/47-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 643,
+     "t": 622,
+     "w": 300,
+     "h": 131
+    },
+    "ctl": {
+     "l": 642,
+     "t": 762,
+     "w": 59,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 17,
+     "t": 703,
+     "w": 300,
+     "h": 139
+    },
+    "ctl": {
+     "l": 212,
+     "t": 662,
+     "w": 59,
+     "h": 30
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Relay?\"",
+   "Delete and Cancel (today: the row button \"Tap again to delete Relay\", and the Delete chip tapped again backs out)"
+  ],
+  "notes": "BUILD NOTE: hung above the chip the card rises over the sheet top edge, which clips it — it must be drawn outside the sheet (the drawing moves it out to the page, same place on screen). Today the Delete CHIP lights and the line changes to what a Delete does; the go-ahead is a separate row button below — the card replaces that row",
+  "question": "Tap again to delete Relay (a new row under the chips); the line: On 20 Nov the app deletes him automatically. Days he flew keep his puck.",
+  "cardWords": "Delete Relay? / On 20 Nov the app deletes him automatically. Days he flew keep his puck."
+ },
+ {
+  "n": 48,
+  "area": "Leave War",
+  "screen": "Leave War — Grid, the Posted out sheet of a Delete posting",
+  "control": "the PO from date box (a day of today picked in its calendar)",
+  "answers": "the row button \"Tap again to delete …\"; a chip tapped puts the date back",
+  "today": "a red row button appears below the chips",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/48-desktop-today.png",
+    "phone": "A/48-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/48-desktop-card.png",
+    "phone": "A/48-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 540,
+     "t": 711,
+     "w": 300,
+     "h": 131
+    },
+    "ctl": {
+     "l": 539,
+     "t": 664,
+     "w": 117,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 87,
+     "t": 595,
+     "w": 300,
+     "h": 139
+    },
+    "ctl": {
+     "l": 109,
+     "t": 548,
+     "w": 117,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete Static now?\"",
+   "Delete and Cancel (today: the row button; Cancel = a chip tapped, which puts the date back)"
+  ],
+  "notes": "raised by picking 2026-11-04 (today) in the date box's calendar — the card hangs from the date box; the hidden row is today's \"Tap again\" button",
+  "question": "Tap again to delete Static (a row button); the line: On 4 Nov the app deletes him automatically. Days he flew keep his puck.",
+  "cardWords": "Delete Static now? / On 4 Nov the app deletes him automatically. Days he flew keep his puck."
+ },
+ {
+  "n": 49,
+  "area": "Leave War",
+  "screen": "Leave War — Approvals",
+  "control": "Approve all N, at the right of the filter row",
+  "answers": "the same button pressed again",
+  "today": "the button turns amber: \"Approve N — tap again\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/49-desktop-today.png",
+    "phone": "A/49-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/49-desktop-card.png",
+    "phone": "A/49-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 979,
+     "t": 238,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 1144,
+     "t": 192,
+     "w": 135,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Approve",
+      "w": 75,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 81,
+     "t": 283,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 246,
+     "t": 237,
+     "w": 135,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Approve",
+      "w": 75,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Approve: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Approve: rgb(26, 31, 38) / rgb(241, 244, 247) / rgb(42, 49, 58) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Approve all 11 requests?\"",
+   "Approve (plain, not red: nothing is lost) and Cancel"
+  ],
+  "notes": "D1431 rules the armed button stays amber, \"so it is plain that the next tap decides many requests at once\" — a card replaces that armed state; the button itself would stay \"Approve all N\".",
+  "question": "Approve 11 — tap again",
+  "cardWords": "Approve all 11 requests?"
+ },
+ {
+  "n": 50,
+  "area": "Leave War",
+  "screen": "Leave War — Grid on a phone, a drag-selection being moved",
+  "control": "the landing day tapped",
+  "answers": "Confirm / Cancel",
+  "today": "a slim bar (the move banner) asks \"Move N entries here?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "phone": "A/50-phone-today.png"
+   },
+   "card": {
+    "phone": "A/50-phone-card.png"
+   }
+  },
+  "measures": {
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 94,
+     "t": 457,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 176,
+     "t": 428,
+     "w": 21,
+     "h": 19
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Confirm",
+      "w": 70,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Confirm: rgb(107, 107, 107) / rgb(255, 255, 255) / rgb(255, 255, 255) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [],
+  "notes": "the card takes the slim bar's question and its Confirm / Cancel, moved; the bar is hidden in the drawing — before the tap it reads \"Tap a day to move N entries\", which would stay a bar (it asks nothing)",
+  "question": "Move 2 entries here?",
+  "cardWords": "Move 2 entries here?"
+ },
+ {
+  "n": 51,
+  "area": "Leave War",
+  "screen": "Leave War — Grid on a phone, an event being moved (the public holiday of 17–18 Feb, Move…)",
+  "control": "the landing day tapped on the Event row",
+  "answers": "Confirm / Cancel",
+  "today": "the slim bar asks \"Move this event here?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "phone": "A/51-phone-today.png"
+   },
+   "card": {
+    "phone": "A/51-phone-card.png"
+   }
+  },
+  "measures": {
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 94,
+     "t": 301,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 190,
+     "t": 274,
+     "w": 21,
+     "h": 18
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Confirm",
+      "w": 70,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Confirm: rgb(107, 107, 107) / rgb(255, 255, 255) / rgb(255, 255, 255) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [],
+  "notes": "as #50: the bar's question and buttons moved into the card; before the tap the bar still says \"Tap a day to move this event\"",
+  "question": "Move this event here?",
+  "cardWords": "Move this event here?"
+ },
+ {
+  "n": 52,
+  "area": "Leave War",
+  "screen": "Leave War — ⚙ Settings → Events…, the list of events",
+  "control": "the ✕ at a line's end",
+  "answers": "the ✕ pressed again",
+  "today": "the line's kind column reads \"Delete — sure?\" and the ✕ turns red; the full question is read aloud only",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/52-desktop-today.png",
+    "phone": "A/52-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/52-desktop-card.png",
+    "phone": "A/52-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 954,
+     "t": 743,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 1231,
+     "t": 710,
+     "w": 22,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 76,
+     "t": 256,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 354,
+     "t": 224,
+     "w": 22,
+     "h": 22
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "the card's question is today's spoken-only sentence, shown, without \"Press again to delete.\"",
+   "Delete and Cancel"
+  ],
+  "notes": "D1516 rules \"the ✕ asks once — its first press arms it, a second deletes\" (and D1515 the in-place \"Delete — sure?\") — the card replaces a ruled design: his to confirm",
+  "question": "the line's kind column: \"Delete — sure?\"; read aloud only (screen reader): \"Delete PH, Thu 1 Jan? Press again to delete.\"",
+  "cardWords": "Delete PH, Thu 1 Jan?"
+ },
+ {
+  "n": 53,
+  "area": "Leave War",
+  "screen": "Leave War — a Manning row's name → its sheet → Edit counter…, the counter's own window",
+  "control": "Delete counter",
+  "answers": "the same button pressed again",
+  "today": "the button reads \"Really delete?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/53-desktop-today.png",
+    "phone": "A/53-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/53-desktop-card.png",
+    "phone": "A/53-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "above",
+    "card": {
+     "l": 653,
+     "t": 735,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 652,
+     "t": 833,
+     "w": 112,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "above",
+    "card": {
+     "l": 37,
+     "t": 701,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 224,
+     "t": 807,
+     "w": 112,
+     "h": 36
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete the IP counter?\"",
+   "Delete and Cancel"
+  ],
+  "notes": "D677 (8 Oct 26): \"Delete counter\" in the counter's own window still asks \"Really delete?\" — left as ruled, never a finding (design guide). Drawn because the roll-call lists it; whether D1626 reaches it is his to say.",
+  "question": "Really delete?",
+  "cardWords": "Delete the IP counter?"
+ },
+ {
+  "n": 54,
+  "area": "Leave War",
+  "screen": "Leave War — ⚙ Settings, the Order line (after a hand-arranged order)",
+  "control": "↺ Reset order",
+  "answers": "the same button pressed again",
+  "today": "the button reads \"Really reset?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/54-desktop-today.png",
+    "phone": "A/54-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/54-desktop-card.png",
+    "phone": "A/54-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 483,
+     "t": 367,
+     "w": 300,
+     "h": 147
+    },
+    "ctl": {
+     "l": 684,
+     "t": 330,
+     "w": 98,
+     "h": 26
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Reset",
+      "w": 59,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 53,
+     "t": 306,
+     "w": 300,
+     "h": 155
+    },
+    "ctl": {
+     "l": 254,
+     "t": 269,
+     "w": 98,
+     "h": 26
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Reset",
+      "w": 59,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Reset: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Reset: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Reset the order?\"",
+   "the line under it is the button's own hover text (today seen only on a desktop's hover), \"Put\" made \"Puts\"",
+   "Reset and Cancel"
+  ],
+  "notes": "D274 approved Reset order as built (27 Sep 26)",
+  "question": "Really reset?",
+  "cardWords": "Reset the order? / Put every row back in the default order — each group as listed below, pilots above WSOs, then by CAT and callsign"
+ },
+ {
+  "n": 55,
+  "area": "Leave War",
+  "screen": "Leave War — Balances → Grades…",
+  "control": "the ✕ at the end of a grade people hold",
+  "answers": "Delete / Keep",
+  "today": "a row opens under the grade, inside the list: \"n people hold X: they become No grade\" Delete · Keep",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/55-desktop-today.png",
+    "phone": "A/55-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/55-desktop-card.png",
+    "phone": "A/55-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 888,
+     "t": 310,
+     "w": 300,
+     "h": 106
+    },
+    "ctl": {
+     "l": 1169,
+     "t": 280,
+     "w": 18,
+     "h": 19
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 64,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 76,
+     "t": 365,
+     "w": 300,
+     "h": 114
+    },
+    "ctl": {
+     "l": 357,
+     "t": 335,
+     "w": 18,
+     "h": 19
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 64,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Keep",
+      "w": 55,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgba(0, 0, 0, 0) / rgb(255, 122, 132) / rgb(255, 122, 132) / 13px",
+     "Keep: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgba(0, 0, 0, 0) / rgb(255, 122, 132) / rgb(255, 122, 132) / 13px",
+     "Keep: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [],
+  "notes": "today the question is a row inside the list under the grade, already beside its ✕ — the card moves it to hang from the ✕ itself; Delete keeps its own red look (gw-yes), Keep takes the blue",
+  "question": "16 people hold Senior pilot: they become No grade",
+  "cardWords": "16 people hold Senior pilot: they become No grade"
+ },
+ {
+  "n": 56,
+  "area": "Leave War",
+  "screen": "Leave War — the OIL tab, a granted award opened for editing",
+  "control": "the edit row's Delete",
+  "answers": "the same button pressed again",
+  "today": "the button reads \"Really delete?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/56-desktop-today.png",
+    "phone": "A/56-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/56-desktop-card.png",
+    "phone": "A/56-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 476,
+     "t": 556,
+     "w": 300,
+     "h": 89
+    },
+    "ctl": {
+     "l": 476,
+     "t": 514,
+     "w": 59,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 8,
+     "t": 509,
+     "w": 300,
+     "h": 97
+    },
+    "ctl": {
+     "l": 261,
+     "t": 472,
+     "w": 48,
+     "h": 27
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete this OIL award (Weekend recovery)?\"",
+   "Delete and Cancel (the row's own Cancel, which closes the edit, stays beside them)"
+  ],
+  "notes": "",
+  "question": "Really delete?",
+  "cardWords": "Delete this OIL award (Weekend recovery)?"
+ },
+ {
+  "n": 57,
+  "area": "Leave War",
+  "screen": "Leave War — the OIL tab, a correction opened for editing",
+  "control": "the edit row's Delete",
+  "answers": "the same button pressed again",
+  "today": "the button reads \"Really delete?\"",
+  "proposal": "card",
+  "pics": {
+   "today": {
+    "desktop": "A/57-desktop-today.png",
+    "phone": "A/57-phone-today.png"
+   },
+   "card": {
+    "desktop": "A/57-desktop-card.png",
+    "phone": "A/57-phone-card.png"
+   }
+  },
+  "measures": {
+   "desktop": {
+    "side": "below",
+    "card": {
+     "l": 626,
+     "t": 529,
+     "w": 300,
+     "h": 106
+    },
+    "ctl": {
+     "l": 626,
+     "t": 487,
+     "w": 59,
+     "h": 32
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 36,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 36,
+      "fits": true
+     }
+    ]
+   },
+   "phone": {
+    "side": "below",
+    "card": {
+     "l": 8,
+     "t": 533,
+     "w": 300,
+     "h": 114
+    },
+    "ctl": {
+     "l": 260,
+     "t": 496,
+     "w": 48,
+     "h": 27
+    },
+    "onScreen": true,
+    "btns": [
+     {
+      "t": "Delete",
+      "w": 62,
+      "h": 44,
+      "fits": true
+     },
+     {
+      "t": "Cancel",
+      "w": 65,
+      "h": 44,
+      "fits": true
+     }
+    ]
+   }
+  },
+  "look": {
+   "desktop": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   },
+   "phone": {
+    "bg": "color(srgb 0.147765 0.163137 0.182118)",
+    "border": "color(srgb 0.269098 0.283922 0.301804)",
+    "ink": "rgb(241, 244, 247)",
+    "inPage": true,
+    "btns": [
+     "Delete: rgb(26, 31, 38) / rgb(251, 180, 185) / rgba(240, 85, 95, 0.5) / 12px",
+     "Cancel: rgb(59, 198, 232) / rgb(5, 42, 52) / rgb(59, 198, 232) / 12px"
+    ]
+   }
+  },
+  "newWords": [
+   "\"Delete this correction (Correction: double credit)?\"",
+   "Delete and Cancel (the row's own Cancel, which closes the edit, stays beside them)"
+  ],
+  "notes": "",
+  "question": "Really delete?",
+  "cardWords": "Delete this correction (Correction: double credit)?"
+ }
+]

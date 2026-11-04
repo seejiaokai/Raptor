@@ -142,9 +142,11 @@ afterEach(async () => {
 /* A1 — `[TITLE-CHECK-SEEN]` 4. A window does not block the page (D641), so a card of the opened day can be pressed while
    an input's window holds unsaved work. The press brings the DAY's window to the front; the input's window then asks
    "lose them?" — and asked it from behind. On a phone the day's window is nearly the whole screen: nobody saw the
-   question until the day was closed. */
+   question until the day was closed.
+   D1627 (4 Nov 26): the question now HANGS FROM THE CARD PRESSED, drawn in the day's window — so the day keeps the front
+   and the question is in front with it, at the card (ui/AskCard.tsx); the input's window no longer jumps over the card. */
 describe('A1 — the "Unsaved changes" question is asked by the window in front', () => {
-  it('a card pressed in the opened day, over an input with unsaved remarks: the input’s window comes to the front with its question', async () => {
+  it('a card pressed in the opened day, over an input with unsaved remarks: the question hangs from that card, in the day’s window, which keeps the front', async () => {
     const a = await single({ date: 'Oct 20', remarks: 'first' }), b = await single({ person: others()[1], date: 'Oct 20', remarks: 'second' })
     await openDay('2026-10-20')
     await click(tid('idy-row-' + a.iid)!.querySelector('[data-testid="idy-open"]'))
@@ -153,10 +155,27 @@ describe('A1 — the "Unsaved changes" question is asked by the window in front'
     /* the press that reaches the other card lands on the day's window first — which takes the front, as any window does */
     await act(async () => { tid('win-inputsday')!.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
     expect(frontWin(), 'the day’s window is in front after a press on it').toBe('inputsday')
-    await click(tid('idy-row-' + b.iid)!.querySelector('[data-testid="idy-open"]'))
+    const other = tid('idy-row-' + b.iid)!.querySelector('[data-testid="idy-open"]') as HTMLElement
+    await act(async () => { other.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    await click(other)
     expect(tid('inped-swap'), 'the question is up').toBeTruthy()
-    expect(frontWin(), 'and the window that asks it is in front').toBe('inputedit')
-    expect(tid('win-inputedit')!.className).toMatch(/\bfront\b/)
+    expect(tid('win-inputsday')!.contains(tid('inped-swap')), 'drawn in the day’s window, at the card pressed').toBe(true)
+    expect(frontWin(), 'and the window it stands in is in front').toBe('inputsday')
+    /* its answer pressed: the window that ASKED does not jump over the card (React hands it the press — the walk of 4 Nov
+       26, S3 on a phone: "Keep editing" then landed on the input's window and did nothing) */
+    const stay = tid('inped-swap-stay')!
+    await act(async () => { stay.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    expect(frontWin(), 'a press on the card keeps the day in front').toBe('inputsday')
+    await click(stay)
+    expect(tid('inped-swap'), 'Keep editing answered').toBeNull()
+    /* asked again, Escape is Keep editing — the day it hangs in stays open, though it holds the front (the walk of 4 Nov
+       26, S3 on a phone: Escape closed the opened day and left the question standing where nobody saw it) */
+    await act(async () => { other.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })) })
+    await click(other)
+    expect(tid('inped-swap'), 'asked again').toBeTruthy()
+    await act(async () => { document.activeElement!.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true, cancelable: true })) })
+    expect(tid('inped-swap'), 'Escape answers it').toBeNull()
+    expect(tid('win-inputsday'), 'the opened day stays').toBeTruthy()
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'nothing he typed is lost').toBe('typed, not saved')
   })
   it('THE CONTROL — with nothing unsaved the other input simply opens, and no question is asked', async () => {

@@ -1,0 +1,985 @@
+[
+  {
+    "n": "58",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Logout (top bar)",
+    "question": "You have unsaved chart edits on “2026”. Save them before logging out?",
+    "answers": [
+      "Stay",
+      "Discard them",
+      "Save them"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/58-desktop-today.png",
+        "phone": "A/58-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/58-desktop-card.png",
+        "phone": "A/58-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 925,
+          "t": 52,
+          "w": 360,
+          "h": 137
+        },
+        "ctl": {
+          "l": 1218,
+          "t": 14,
+          "w": 67,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 14,
+          "t": 49,
+          "w": 360,
+          "h": 137
+        },
+        "ctl": {
+          "l": 14,
+          "t": 9,
+          "w": 32,
+          "h": 30
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "phone: Logout in the ☰ menu (the menu closes on the press — the card hangs from ☰)"
+    ]
+  },
+  {
+    "n": "59",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "the arrow tapped with the 🗑 Delete tool",
+    "question": "Remove link ACG-03 → ACG-08 ?",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/59-desktop-today.png",
+        "phone": "A/59-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/59-desktop-card.png",
+        "phone": "A/59-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 376,
+          "t": 519,
+          "w": 360,
+          "h": 98
+        },
+        "ctl": {
+          "l": 376,
+          "t": 477,
+          "w": 140,
+          "h": 32
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 528,
+          "w": 360,
+          "h": 98
+        },
+        "ctl": {
+          "l": 166,
+          "t": 466,
+          "w": 58,
+          "h": 52
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "60",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "the × on the lull chip",
+    "question": "Remove STUDENT A’s lull period 01/11/26 → 30/11/26?",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/60-desktop-today.png",
+        "phone": "A/60-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/60-desktop-card.png",
+        "phone": "A/60-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 891,
+          "t": 654,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 1243,
+          "t": 781,
+          "w": 8,
+          "h": 17
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 34,
+          "t": 610,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 107,
+          "t": 737,
+          "w": 6,
+          "h": 13
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "61",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "the ✕ on a student chip",
+    "question": "Remove STUDENT A from 2026? Their marks, dates, pace and lull periods on this syllabus are deleted.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/61-desktop-today.png",
+        "phone": "A/61-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/61-desktop-card.png",
+        "phone": "A/61-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 871,
+          "t": 195,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 1220,
+          "t": 168,
+          "w": 11,
+          "h": 17
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 225,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 288,
+          "t": 202,
+          "w": 9,
+          "h": 13
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "62a",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "the Syllabus dropdown",
+    "question": "You have unsaved flow edits on “2026”. Discard them and switch to “2024”?",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/62a-desktop-today.png",
+        "phone": "A/62a-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/62a-desktop-card.png",
+        "phone": "A/62a-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 416,
+          "t": 107,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 416,
+          "t": 67,
+          "w": 125,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 90,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 239,
+          "t": 54,
+          "w": 88,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "62b",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "the Course dropdown",
+    "question": "You have unsaved flow edits on “2026”. Discard them and switch to course “26ABSG”?",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/62b-desktop-today.png",
+        "phone": "A/62b-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/62b-desktop-card.png",
+        "phone": "A/62b-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 147,
+          "t": 107,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 147,
+          "t": 67,
+          "w": 89,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 90,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 48,
+          "t": 54,
+          "w": 81,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "62c",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "+ Add course in the course ✎ menu (the menu closes on the press)",
+    "question": "You have unsaved flow edits on “2026”. Discard them and add a course?",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/62c-desktop-today.png",
+        "phone": "A/62c-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/62c-desktop-card.png",
+        "phone": "A/62c-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 315,
+          "t": 107,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 315,
+          "t": 67,
+          "w": 33,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 90,
+          "w": 360,
+          "h": 117
+        },
+        "ctl": {
+          "l": 204,
+          "t": 54,
+          "w": 29,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "63",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Delete course in the course ✎ menu",
+    "question": "Delete course OTHER? Its students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/63-desktop-today.png",
+        "phone": "A/63-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/63-desktop-card.png",
+        "phone": "A/63-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 244,
+          "t": 107,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 244,
+          "t": 67,
+          "w": 33,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 90,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 135,
+          "t": 54,
+          "w": 29,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "64",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Duplicate syllabus in the syllabus ✎ menu",
+    "question": "You have unsaved flow edits on “2026”. The copy is made from the chart as it is on screen. Keep the edits on “2026” too?",
+    "answers": [
+      "Cancel",
+      "No — only in the copy",
+      "Yes — save them on both"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/64-desktop-today.png",
+        "phone": "A/64-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/64-desktop-card.png",
+        "phone": "A/64-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 549,
+          "t": 107,
+          "w": 360,
+          "h": 170
+        },
+        "ctl": {
+          "l": 549,
+          "t": 67,
+          "w": 33,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 90,
+          "w": 360,
+          "h": 170
+        },
+        "ctl": {
+          "l": 333,
+          "t": 54,
+          "w": 29,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "65",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Delete syllabus in the syllabus ✎ menu",
+    "question": "“2026” is a built-in syllabus that has saved edits. Delete it outright, or just throw away your edits and keep the shipped version?",
+    "answers": [
+      "Cancel",
+      "Revert edits only",
+      "Delete it"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/65-desktop-today.png",
+        "phone": "A/65-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/65-desktop-card.png",
+        "phone": "A/65-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 549,
+          "t": 107,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 549,
+          "t": 67,
+          "w": 33,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 90,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 333,
+          "t": 54,
+          "w": 29,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "66",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Delete syllabus in the syllabus ✎ menu",
+    "question": "Delete syllabus “2026”? This removes its flow, its layout and every student’s marks on it, in every course. It is a built-in — you can bring it back later from ⇅ Reorder.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/66-desktop-today.png",
+        "phone": "A/66-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/66-desktop-card.png",
+        "phone": "A/66-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 549,
+          "t": 107,
+          "w": 360,
+          "h": 215
+        },
+        "ctl": {
+          "l": 549,
+          "t": 67,
+          "w": 33,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 8,
+          "t": 90,
+          "w": 360,
+          "h": 215
+        },
+        "ctl": {
+          "l": 333,
+          "t": 54,
+          "w": 29,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "67",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "↺ Reset layout",
+    "question": "Reset this syllabus back to the course-map layout? This puts every box back where the map has it AND deletes all 82 lines drawn on this chart.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/67-desktop-today.png",
+        "phone": "A/67-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/67-desktop-card.png",
+        "phone": "A/67-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 635,
+          "t": 193,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 635,
+          "t": 154,
+          "w": 103,
+          "h": 29
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 308,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 90,
+          "t": 269,
+          "w": 103,
+          "h": 29
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "68",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Delete ball in the event editor",
+    "question": "Delete ST-01 from this syllabus? Every student’s marks on it are removed when you press ✓ Save changes.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/68-desktop-today.png",
+        "phone": "A/68-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/68-desktop-card.png",
+        "phone": "A/68-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 509,
+          "t": 618,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 509,
+          "t": 580,
+          "w": 79,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 605,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 35,
+          "t": 567,
+          "w": 79,
+          "h": 28
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "69",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Export… in the File menu",
+    "question": "You have unsaved flow edits on “2026”. Save them first, so the exported file includes them?",
+    "answers": [
+      "Cancel",
+      "Export without them",
+      "Save, then export"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/69-desktop-today.png",
+        "phone": "A/69-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/69-desktop-card.png",
+        "phone": "A/69-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 482,
+          "t": 107,
+          "w": 360,
+          "h": 151
+        },
+        "ctl": {
+          "l": 777,
+          "t": 67,
+          "w": 65,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 122,
+          "w": 360,
+          "h": 151
+        },
+        "ctl": {
+          "l": 100,
+          "t": 86,
+          "w": 63,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "70",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Import… in the File menu, then the file picked",
+    "question": "“HANDOVER CHART” already exists. Replace it, or add the incoming one under a new name?",
+    "answers": [
+      "Skip this one",
+      "Add as new",
+      "Replace it"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/70-desktop-today.png",
+        "phone": "A/70-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/70-desktop-card.png",
+        "phone": "A/70-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 531,
+          "t": 107,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 826,
+          "t": 67,
+          "w": 65,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 122,
+          "w": 360,
+          "h": 156
+        },
+        "ctl": {
+          "l": 100,
+          "t": 86,
+          "w": 63,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  },
+  {
+    "n": "71",
+    "area": "Tracker",
+    "screen": "the Tracker tab",
+    "control": "Import… in the File menu (after \"Replace it\")",
+    "question": "This file also contains students and marks. Bring them in too? A student already here who is ALSO in the file will have their marks replaced by the file’s. Anyone the file does not name keeps theirs, untouched.",
+    "answers": [
+      "Cancel",
+      "OK"
+    ],
+    "today": "the Tracker's one dialog, centred on the screen over a dark shade (#dlgModal)",
+    "proposal": "sheet",
+    "pics": {
+      "today": {
+        "desktop": "A/71-desktop-today.png",
+        "phone": "A/71-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/71-desktop-card.png",
+        "phone": "A/71-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 531,
+          "t": 107,
+          "w": 360,
+          "h": 195
+        },
+        "ctl": {
+          "l": 826,
+          "t": 67,
+          "w": 65,
+          "h": 30
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 34,
+          "t": 122,
+          "w": 360,
+          "h": 195
+        },
+        "ctl": {
+          "l": 100,
+          "t": 86,
+          "w": 63,
+          "h": 26
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": []
+  }
+]

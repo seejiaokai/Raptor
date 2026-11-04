@@ -7705,7 +7705,7 @@ async function postOutThenPlace(page: Page, outcome: 'delete' | 'overseas', poDa
   if ((await chip.getAttribute('aria-pressed')) !== 'true') await chip.click()
   await expect(chip).toHaveAttribute('aria-pressed', 'true')
   await page.locator('[data-testid="po-confirm"]').click()
-  if (outcome === 'delete') await page.locator('[data-testid="po-confirm"]').click()   // a Delete asks twice (D287)
+  if (outcome === 'delete') await page.locator('[data-testid="po-delete-go"]').click()   // a Delete asks twice (D287) — its card's Delete (D1628)
   await expect(page.locator(`[data-testid="cell-slipway-${poDate}"]`)).toHaveClass(/gone/)
   const next = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10) + 1)
   const day = `${next.getFullYear()}-${String(next.getMonth() + 1).padStart(2, '0')}-${String(next.getDate()).padStart(2, '0')}`

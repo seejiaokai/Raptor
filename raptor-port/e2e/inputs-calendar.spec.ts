@@ -539,17 +539,19 @@ test('the keyboard: arrows move the date, Shift + arrows pick a run, Enter files
   expect(await page.evaluate(() => !!document.activeElement?.closest('[data-testid="win-inputsday"]')), 'the keyboard is in the window').toBe(true)
   await page.keyboard.press('Escape'); await expect(dayWin(page)).toHaveCount(0)
   await expect.poll(on, { message: 'the keyboard is back on the date that opened it' }).toBe('2026-10-20')
-  /* Delete on a line asks first; the question's own "Delete" has the keyboard, so Enter answers it */
+  /* Delete on a line asks first — a card hanging from the line (D1628); the keyboard starts on its SAFE answer, Keep (the
+     design guide's "a dangerous question"); Shift+Tab reaches its Delete */
   await page.keyboard.press('Enter'); await expect(dayWin(page)).toBeVisible()
   await page.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`).focus()
   await page.keyboard.press('Delete')
   await expect(page.locator('[data-testid="idy-ask"]')).toContainText('Delete this input?')
   expect(await recDates(page, iid), 'nothing is removed until he says').not.toBeNull()
-  await expect.poll(on).toBe('idy-del-yes')
+  await expect.poll(on).toBe('idy-del-no')
   await page.keyboard.press('Escape')
   await expect(page.locator('[data-testid="idy-ask"]')).toHaveCount(0); await expect(dayWin(page), 'Escape put the question away, not the day').toBeVisible()
   await page.locator(`[data-testid="idy-row-${iid}"] [data-testid="idy-open"]`).focus()
-  await page.keyboard.press('Delete'); await expect.poll(on).toBe('idy-del-yes'); await page.keyboard.press('Enter')
+  await page.keyboard.press('Delete'); await expect.poll(on).toBe('idy-del-no'); await page.keyboard.press('Shift+Tab')
+  await expect.poll(on).toBe('idy-del-yes'); await page.keyboard.press('Enter')
   await expect.poll(() => recDates(page, iid)).toBeNull()
   await page.click('#undoBtn'); await expect.poll(() => recDates(page, iid)).toEqual(['Oct 20', ''])
 })

@@ -1,0 +1,626 @@
+[
+  {
+    "n": 7,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/07-desktop-today.png",
+        "phone": "A/07-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/07-desktop-card.png",
+        "phone": "A/07-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "card": {
+          "l": 1108,
+          "t": 670,
+          "w": 300,
+          "h": 157
+        },
+        "ctl": {
+          "l": 1359,
+          "t": 837,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "No document",
+            "w": 103,
+            "h": 36,
+            "fits": true
+          },
+          {
+            "t": "Upload",
+            "w": 67,
+            "h": 36,
+            "fits": true
+          }
+        ]
+      },
+      "phone": {
+        "side": "above",
+        "card": {
+          "l": 74,
+          "t": 645,
+          "w": 300,
+          "h": 165
+        },
+        "ctl": {
+          "l": 325,
+          "t": 820,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true,
+        "btns": [
+          {
+            "t": "No document",
+            "w": 103,
+            "h": 44,
+            "fits": true
+          },
+          {
+            "t": "Upload",
+            "w": 67,
+            "h": 44,
+            "fits": true
+          }
+        ]
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: drawn as the small card (hangInPage), the sheet’s head ✕ dropped — today ✕ and a press outside both mean Upload; Upload keeps its blue (it is today’s default), so no safe answer was restyled"
+    ],
+    "screen": "Inputs — a new medical input’s window",
+    "control": "Save, the window’s foot (right)",
+    "question": "No medical document — Ranger, ATT C / This ATT C has no certificate attached. / Attach one now, or file it without — for when the record genuinely isn’t available yet.",
+    "answers": [
+      "No document",
+      "Upload"
+    ],
+    "today": "a sheet centred over the screen, a dark backdrop over everything (DocConfirm)",
+    "proposal": "card"
+  },
+  {
+    "n": 8,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/08-desktop-today.png",
+        "phone": "A/08-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/08-desktop-card.png",
+        "phone": "A/08-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 1028,
+          "t": 522,
+          "w": 380,
+          "h": 289
+        },
+        "ctl": {
+          "l": 1359,
+          "t": 821,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 16,
+          "t": 487,
+          "w": 360,
+          "h": 289
+        },
+        "ctl": {
+          "l": 325,
+          "t": 786,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "busy state: a later HL (22–23 Jul) of his on file, so the per-entry Keep/Remove part shows; the document question comes first and was answered No document; Save upchit is dimmed until Keep/Remove is chosen — as today"
+    ],
+    "screen": "Inputs — a new upchit’s window",
+    "control": "Save, the window’s foot (right)",
+    "question": "Upchit — Grit, Jul 15 ✕ SAVING THIS UPCHIT WILL ATT C Jul 13 – Jul 17 → now ends Jul 14 Fit for full duty from Jul 15. STILL ON FILE AFTER IT — CHOOSE FOR EACH HL Jul 22 – Jul 23 Keep Remove Cancel Save upchit",
+    "answers": [
+      "Keep / Remove (each later entry)",
+      "Cancel",
+      "Save upchit"
+    ],
+    "today": "a sheet centred over the screen, a dark backdrop (UpchitConfirm); the document question comes first and is answered \"No document\"",
+    "proposal": "sheet"
+  },
+  {
+    "n": 9,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/09-desktop-today.png",
+        "phone": "A/09-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/09-desktop-card.png",
+        "phone": "A/09-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 1010,
+          "t": 635,
+          "w": 380,
+          "h": 192
+        },
+        "ctl": {
+          "l": 1010,
+          "t": 837,
+          "w": 62,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 26,
+          "t": 581,
+          "w": 360,
+          "h": 208
+        },
+        "ctl": {
+          "l": 28,
+          "t": 799,
+          "w": 62,
+          "h": 28
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "the upchit of #8 saved (Keep), reopened, Delete pressed"
+    ],
+    "screen": "Inputs — an upchit’s window",
+    "control": "Delete, the window’s foot (left)",
+    "question": "Upchit — Grit, Jul 15 ✕ DELETING THIS UPCHIT WILL ATT C Jul 13 – Jul 14 → now ends Jul 17, its days given back Cancel Delete upchit",
+    "answers": [
+      "Cancel",
+      "Delete upchit"
+    ],
+    "today": "the same centred sheet as #8, its Save red \"Delete upchit\"",
+    "proposal": "sheet"
+  },
+  {
+    "n": 10,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/10-desktop-today.png",
+        "phone": "A/10-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/10-desktop-card.png",
+        "phone": "A/10-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 1028,
+          "t": 595,
+          "w": 380,
+          "h": 232
+        },
+        "ctl": {
+          "l": 1359,
+          "t": 837,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 16,
+          "t": 578,
+          "w": 360,
+          "h": 232
+        },
+        "ctl": {
+          "l": 325,
+          "t": 820,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "HL 16–19 Jul over his seeded ATT C 13–17 Jul; the document question comes first"
+    ],
+    "screen": "Inputs — a new medical input’s window",
+    "control": "Save, the window’s foot (right)",
+    "question": "HL — Grit, 16 Jul – 19 Jul ✕ A DAY HOLDS ONE STATUS: CHOOSE WHO HOLDS THESE DAYS ATT C 13 Jul – 17 Jul · both cover 16 Jul – 17 Jul HL replaces Keep ATT C till 17 Jul Cancel Save",
+    "answers": [
+      "(per clash) ATT C replaces / Keep …",
+      "Cancel",
+      "Save"
+    ],
+    "today": "a sheet centred over the screen, a dark backdrop (MedClashConfirm); the document question comes first",
+    "proposal": "sheet"
+  },
+  {
+    "n": 11,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/11-desktop-today.png",
+        "phone": "A/11-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "his ATT C 13–17 Jul dragged by its 13th to the 20th, over an HL 22–23 Jul"
+    ],
+    "screen": "Inputs — the calendar",
+    "control": "none: a medical’s bar dropped over another medical of his",
+    "question": "ATT C — Grit, 20 Jul – 24 Jul ✕ A DAY HOLDS ONE STATUS: CHOOSE WHO HOLDS THESE DAYS HL 22 Jul – 23 Jul · both cover 22 Jul – 23 Jul ATT C replaces Keep HL till 23 Jul Cancel Save",
+    "today": "a sheet centred over the screen (MedMoveConfirm)",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 12,
+    "area": "inputs-b",
+    "pics": {
+      "today": {},
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "not pictured: it needs a medical's Unavailable row armed on Edit Schedule and a drop of another man — a drop, outside the ruling; the sheet it raises is #10's, pictured there"
+    ],
+    "screen": "Edit Schedule / the Scheduler Board — a medical’s Unavailable row",
+    "control": "none: a puck dropped on the row’s person (reassign)",
+    "today": "the same centred medical sheet as #10/#11 (MedMoveConfirm)",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 13,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/13-desktop-today.png",
+        "phone": "A/13-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [],
+    "screen": "Inputs — a day opened on the calendar",
+    "control": "none: the Delete key on the upchit’s line",
+    "question": "Upchit — Grit, Jul 15 ✕ DELETING THIS UPCHIT WILL ATT C Jul 13 – Jul 14 → now ends Jul 17, its days given back Cancel Delete upchit",
+    "answers": [
+      "Cancel",
+      "Delete upchit"
+    ],
+    "today": "the same centred sheet (MedMoveConfirm)",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 14,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/14-desktop-today.png",
+        "phone": "A/14-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/14-desktop-card.png",
+        "phone": "A/14-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 1028,
+          "t": 589,
+          "w": 380,
+          "h": 238
+        },
+        "ctl": {
+          "l": 1359,
+          "t": 837,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 16,
+          "t": 575,
+          "w": 360,
+          "h": 238
+        },
+        "ctl": {
+          "l": 325,
+          "t": 823,
+          "w": 49,
+          "h": 28
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "a two-day duty (Sat–Sun 18–19 Jul) so the sheet shows All days / Only some days… / No OIL"
+    ],
+    "screen": "Inputs — a new duty’s window",
+    "control": "Save, the window’s foot (right)",
+    "question": "OIL: Ranger, Duty ✕ THIS INPUT COVERS 2 NON-WORKING DAYS (WEEKEND / PH) Each confirmed day earns FO — a full day of OIL. Which days does it deserve? All days Only some days… No OIL Back Add",
+    "answers": [
+      "All days",
+      "Only some days…",
+      "No OIL",
+      "Back",
+      "Save"
+    ],
+    "today": "a sheet centred over the screen, a dark backdrop (OilConfirm)",
+    "proposal": "sheet"
+  },
+  {
+    "n": 15,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/15-desktop-today.png",
+        "phone": "A/15-phone-today.png"
+      },
+      "card": {
+        "desktop": "A/15-desktop-card.png",
+        "phone": "A/15-phone-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 998,
+          "t": 555,
+          "w": 380,
+          "h": 199
+        },
+        "ctl": {
+          "l": 1187,
+          "t": 764,
+          "w": 78,
+          "h": 24
+        },
+        "onScreen": true
+      },
+      "phone": {
+        "side": "above",
+        "scrolls": true,
+        "card": {
+          "l": 16,
+          "t": 541,
+          "w": 360,
+          "h": 199
+        },
+        "ctl": {
+          "l": 205,
+          "t": 750,
+          "w": 78,
+          "h": 24
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "a saved Sat 18 Jul duty answered Yes; its OIL line reads Change…; the card covers the OIL line’s label (its heading) while up"
+    ],
+    "screen": "Inputs — a saved weekend duty’s window",
+    "control": "Change… on the window’s OIL line",
+    "question": "OIL: Ranger, Gate duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Save",
+    "answers": [
+      "Yes: credit FO|HO",
+      "No OIL",
+      "Back",
+      "Save"
+    ],
+    "today": "the same centred sheet as #14",
+    "proposal": "sheet"
+  },
+  {
+    "n": 16,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/16-desktop-today.png"
+      },
+      "card": {
+        "desktop": "A/16-desktop-card.png"
+      }
+    },
+    "measures": {
+      "desktop": {
+        "side": "below",
+        "scrolls": false,
+        "card": {
+          "l": 992,
+          "t": 263,
+          "w": 380,
+          "h": 199
+        },
+        "ctl": {
+          "l": 1335,
+          "t": 223,
+          "w": 37,
+          "h": 30
+        },
+        "onScreen": true
+      }
+    },
+    "newWords": [],
+    "notes": [
+      "phone: the List shows no OIL chip at this size — not pictured",
+      "phone: the List shows no OIL chip at this size — not pictured",
+      "design call: the sheet itself moved whole to hang from the control (rehomeInPage) — its head, ✕, lists, per-entry choices and foot unchanged; its own Cancel/Back keep their look (not restyled blue); 380 wide on a desktop, 360 on a phone so it stays inside the input window; in this script the sheet keeps its own padding (an override, not in the shared kit), and its overflow is visible so the pointer shows",
+      "desktop only: the phone List draws cards with no OIL chip"
+    ],
+    "screen": "Inputs — the List",
+    "control": "the row’s OIL chip (OIL, or OIL? where nobody has answered)",
+    "answers": [
+      "as #14/#15",
+      "Back",
+      "Save"
+    ],
+    "today": "the same centred sheet as #14",
+    "proposal": "sheet",
+    "question": "OIL: Ranger, Gate duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Save"
+  },
+  {
+    "n": 17,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/17-desktop-today.png",
+        "phone": "A/17-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "the line was “National Day — 2 inputs need an OIL answer”: its tap opens #20’s window, not a question"
+    ],
+    "screen": "the bell’s list (top bar)",
+    "control": "a line of the bell",
+    "question": "National DayFri 17 Jul 2 inputs need an OIL answer · Saber now",
+    "today": "a tap on the line opens a WINDOW — the day’s OIL list (#20) for a holiday line, or the input’s own window, whose OIL line’s Answer… then raises the question (#15); the line itself raises no question",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 18,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/18-desktop-today.png",
+        "phone": "A/18-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "a Wed 22 Jul duty dragged to Sat 25 Jul"
+    ],
+    "screen": "Inputs — the calendar",
+    "control": "none: an earning input’s bar dropped on a weekend",
+    "question": "OIL: Ranger, Gate duty ✕ Moving Gate duty to 25 Jul This input falls on Sat 25 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Don’t move Move",
+    "answers": [
+      "Don’t move",
+      "Move"
+    ],
+    "today": "a sheet centred over the screen (OilWaitSheet → OilConfirm)",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 19,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/19-desktop-today.png",
+        "phone": "A/19-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "a status band after #18’s Don’t move — Answer OIL / OK; not a question at a press"
+    ],
+    "screen": "every page — a band under the top bar",
+    "control": "raised by pressing “Don’t move” (or ✕, Escape) on #18",
+    "question": "Not moved — OIL not answered Answer OIL OK",
+    "answers": [
+      "Answer OIL",
+      "OK"
+    ],
+    "today": "a band along the bottom of the top bar (.oilband)",
+    "proposal": "none — not a press"
+  },
+  {
+    "n": 20,
+    "area": "inputs-b",
+    "pics": {
+      "today": {
+        "desktop": "A/20-desktop-today.png",
+        "phone": "A/20-phone-today.png"
+      },
+      "card": {}
+    },
+    "measures": {},
+    "newWords": [],
+    "notes": [
+      "raised by the Calendar window’s holiday Save — a WINDOW of many answers, also reached from the bell; not drawn as a card (judgement: it is a work list, not a question at the press). On a phone it opens over the Inputs settings and Calendar windows, three stacked"
+    ],
+    "screen": "Inputs — the Calendar window’s Holidays, then a window of its own",
+    "control": "raised by the holiday’s Save (the window “OIL — …” opens by itself)",
+    "question": "⠿ OIL — Fri 17 Jul Public holiday · National Day ✕ National Day is now a public holiday. 2 TO ANSWER Yes to all No to all All day NomadOD Overseas duty — exercise, off island Yes · FO No 09:00–12:00 Drifter, RangerTRAINING Range brief By Saber Yes · HO No What is left goes to the schedulers’ bells L",
+    "answers": [
+      "Yes to all",
+      "No to all",
+      "per input Yes · FO / No",
+      "Later",
+      "Save"
+    ],
+    "today": "a floating window of its own (OilDayList)",
+    "proposal": "none — not a press"
+  }
+]

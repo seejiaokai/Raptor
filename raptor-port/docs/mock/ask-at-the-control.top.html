@@ -1,0 +1,79 @@
+<meta charset="utf-8">
+<title>Questions at the Button</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one column — what he decides first, a phone / desktop switch, then each area's questions, each with today
+   beside the card. The app's own world (single dark look, D765): tokens copied from
+   src/ui/scheduler/00-foundation-login.css; the app loads no fonts, so neither does this page. */
+:root{
+  --bg:#0B0D10; --panel:#14181D; --panel-2:#1A1F26; --raised:#20262E;
+  --edge:#2A313A; --edge-2:#39424D; --ink:#F1F4F7; --ink-2:#B6C0CB; --ink-3:#8A96A3;
+  --accent:#3BC6E8; --accent-ink:#052A34; --mark:#ff3b6b; --amber:#E0A93B;
+  --ui:-apple-system,system-ui,'Segoe UI',sans-serif;
+  color-scheme:dark;
+}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--ui);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+main{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font-size:20px;font-weight:800;margin:0;text-wrap:balance}
+h2{font-size:16px;font-weight:800;margin:0 0 12px;text-wrap:balance;padding-top:8px;border-top:1px solid var(--edge)}
+p{margin:0}
+.muted{color:var(--ink-3)}
+.lead{color:var(--ink-2);max-width:68ch}
+.now{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.now h2{border:0;padding:0;margin:0}
+.now ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px}
+.rec{color:var(--accent);font-weight:700}
+.size{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:8px;align-items:center;background:var(--bg);padding-block:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.size button{font:600 13px var(--ui);color:var(--ink);background:var(--panel-2);border:1px solid var(--edge);border-radius:9px;padding:8px 14px;min-height:36px;cursor:pointer}
+.size button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.size button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.area{display:flex;flex-direction:column;gap:18px}
+.q{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.q header{display:flex;gap:12px;align-items:flex-start;min-width:0}
+.q .n{flex:0 0 auto;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink-3);min-width:2ch}
+.q .hd{display:flex;flex-direction:column;gap:4px;min-width:0}
+.qq{font-weight:700}
+.meta{font-size:13px;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+.ans{color:var(--ink-2)}
+.say{font-size:13px;color:var(--amber)}
+.tag{font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 9px;border:1px solid var(--edge-2)}
+.tag.card{color:var(--accent-ink);background:var(--accent);border-color:var(--accent)}
+.tag.at{color:var(--ink-2)}
+.tag.none{color:var(--ink-3)}
+.pair{display:none;gap:12px;grid-template-columns:repeat(2,minmax(0,1fr))}
+body[data-size="phone"] .pair.phone,body[data-size="desktop"] .pair.desktop{display:grid}
+.pair.phone{max-width:640px}
+.pair:has(figure:only-child){grid-template-columns:minmax(0,1fr)}
+.pair.phone:has(figure:only-child){max-width:320px}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figcaption{font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em}
+figure.new figcaption{color:var(--accent)}
+figure img{width:100%;height:auto;border-radius:10px;border:1px solid var(--edge);cursor:zoom-in;background:var(--panel-2)}
+@media (max-width:700px){.pair.desktop{grid-template-columns:minmax(0,1fr)}}
+#lb{position:fixed;inset:0;z-index:20;background:rgba(0,0,0,.92);display:flex;align-items:center;justify-content:center;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) 12px calc(env(safe-area-inset-bottom,0px) + 12px);cursor:zoom-out;overflow:auto}
+#lb[hidden]{display:none}
+#lb img{max-width:none;width:auto;max-height:none;height:auto}
+@media (max-width:900px){#lb{align-items:flex-start}#lb img{width:100%}}
+</style>
+<main>
+<header style="display:flex;flex-direction:column;gap:6px">
+<h1>Every question the app asks after a button is pressed</h1>
+<p class="lead">Your ruling (D1626, 3 Nov): a question raised by a press appears at the button pressed, as a small card hanging from it, like the input window's ✕ question. Each one below is drawn on the real app: <b>today</b> beside <b>as a card</b>. The button pressed is ringed in red. Tap a picture to see it full size.</p>
+<p class="muted">{{COUNTS}}</p>
+</header>
+<section class="now">
+<h2>What to look at now</h2>
+<ol>
+<li><b>Questions drawn away from the button</b> (tagged <i>Hangs from the button</i>): the input window's Delete, Take me out and "open the other input", Sort all, the OIL question after Accept or → Unavail, the Leave War's grade delete. Each becomes a card hanging from the button pressed. <span class="rec">Recommended: yes, built area by area.</span></li>
+<li><b>The big sheets</b> (tagged <i>The whole sheet hangs from the button</i>): the document question, the upchit and medical-clash sheets, the OIL question, and the Tracker's question box. Each keeps everything inside it as today. Only where it opens changes: from the Save, Add or other button pressed. <span class="rec">Recommended: yes.</span></li>
+<li><b>"Press again" buttons</b> (tagged <i>Already at the button</i>): the button changes its own words and a second press goes ahead. Examples: the Leave War's "Delete — sure?", "Approve all — tap again", Admin's "Tap again to delete", "Load onto working copy", Unpublish. The second press lands where the first did, which is the point of your ruling, and several are designs you chose recently: the Events ✕ that arms in place (D1516), Approve all staying amber (D1431), the counter's "Really delete?" (D677). Cards are drawn for them too, so you can compare. <span class="rec">Recommended: keep them as they are.</span></li>
+<li><b>Questions no button raises</b> (tagged <i>Not raised by a button</i>): these come from a drag or a drop, signing in, picking a file, or a change made elsewhere. <span class="rec">Recommended: leave them as they are.</span></li>
+<li><b>Three small calls inside the drawings, yours to confirm:</b> (a) question 2 on a phone: the opened day stays in front while the question is up, so the card you tapped stays in view; today the input window jumps over it. (b) Question 4: the Take me out button stays on screen while its question is up; today it disappears. (c) Question 7: the document card has no ✕ of its own; today ✕ and a tap outside both mean Upload. <span class="rec">Recommended: all three as drawn.</span></li>
+</ol>
+<p class="muted">Nothing is built until you answer. Answer by number, for example "1 yes, 3 keep".</p>
+</section>
+<div class="size" role="group" aria-label="Picture size"><button type="button" data-s="phone">iPhone</button><button type="button" data-s="desktop">Desktop</button></div>

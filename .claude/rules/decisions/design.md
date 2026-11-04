@@ -27,7 +27,9 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
-| D1626 | 3 Nov 26 | A question raised by pressing a control appears right at that control, a small card hanging from it, because the hand is already there, never at the window's foot; the input window's "Close it and lose them?" (✕ and Escape) is built so, and every similar question in the app follows it. |
+| D1628 | 4 Nov 26 | The Leave War posting's delete from the Post out button, in the one-day sheet and the drag sheet, and the Delete key's "Delete this input for all N people?" on an input's card in the opened day become cards too, so each of these questions looks the same wherever it is raised. |
+| D1627 | 4 Nov 26 | Of the questions drawn for D1626, only five become a card hanging from the control pressed: the input window's "Open the other input and lose them?", "Delete this input for all N people?" and "Take yourself out of this input?", and the Leave War posting's delete at its Delete chip and at its PO from date; every other question stays as today. — changed by D1628 |
+| D1626 | 3 Nov 26 | A question raised by pressing a control appears right at that control, a small card hanging from it, because the hand is already there, never at the window's foot; the input window's "Close it and lose them?" (✕ and Escape) is built so, and every similar question in the app follows it. — changed by D1627 |
 | D1618 | 4 Nov 26 | The start-up claw does not glide onto the logo: it keeps today's plain 0.2 s fade where it stands while the first screen appears, both logos briefly on screen; the hand-over of D1616 is not built. |
 | D1617 | 4 Nov 26 | The claw's round stays as it is — its three claws drawn, held, faded, and drawn again from nothing, with its short dark moment between rounds; the overlapping next round is not built. |
 | D1615 | 3 Nov 26 | The start-up claw shows on every start of the app, from its first moment, with no 0.3 s wait, even when the app is up a moment later; it still goes the moment the app has drawn itself, never adding to the load. |

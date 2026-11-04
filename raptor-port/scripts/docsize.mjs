@@ -402,7 +402,9 @@ const RULING_BYTES = [
   /* design 9000 -> 11500 (3 Nov 26, claude/talon-claw-pages): 9,012 bytes on main with D1605-D1608 (the loading claw, the
      name, the sign-in mark), 10,506 with D1610 (the claw on slow pages); live rulings, never trimmed (D136). Room, not a
      target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 11500],
+  /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
+     their button); live rulings, never trimmed (D136). Room, not a target (D141). */
+  ['.claude/rules/decisions/design.md',  2, 14000],
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

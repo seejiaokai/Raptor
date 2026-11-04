@@ -31,6 +31,7 @@ import { DeleteChip, MoveChip } from './SheetActions'
 import { RangePicker, type Range } from './RangePicker'
 import { Sheet } from './Sheet'
 import { DateBox } from '../../ui/DateBox'
+import { AskCard } from '../../ui/AskCard'
 import { isLwOnScreen, subLwScreen } from '../state/screen'
 import { dayLabel, shortDate, shortSpan } from './dates'
 import { awardDays, awardsClause, halfWord } from './awardwords'
@@ -311,6 +312,8 @@ export function BidPicker({
      tap arms it (D287 (3): it asks twice) */
   const [poOutcome, setPoOutcome] = useState<PostOutcome>('overseas')
   const [delArmed, setDelArmed] = useState(false)
+  /* the Post out button: a Delete posting's question hangs from it (owner D1628) */
+  const poBtn = useRef<HTMLButtonElement>(null)
   /* a "Tap again to delete" left armed is taken back when the Leave War leaves the screen — the page is kept mounted, so
      this sheet can wait open across a page switch for a tap from someone who no longer knows it was the second (the
      reason D1102's date ask is taken back there too) */
@@ -1078,18 +1081,31 @@ export function BidPicker({
             <div className="bidsheet-row postout"><span className="note warn" data-testid="po-blocked">{blockedFor(poOutcome)}</span></div>
           )}
           <div className="bidsheet-row postout">
+            {/* A DELETE ASKS TWICE (D287 (3)) — its second ask a card hanging from this button (owner D1628, 4 Nov 26), in
+                place of the button's own "Tap again to delete"; pressed again while it is up, the question stays */}
             <button
-              className={`dchip po${delArmed ? ' del-armed' : ''}`}
+              ref={poBtn}
+              className="dchip po"
               data-testid="po-confirm"
               disabled={!poDate}
+              aria-expanded={delArmed || undefined}
               onClick={() => {
-                if (poOutcome === 'delete' && !delArmed) { setDelArmed(true); return }
+                if (poOutcome === 'delete') { setDelArmed(true); return }
                 flushWords(); const why = onPostOut(poDate, poOutcome); setPostErr(why || ''); setDelArmed(false)
               }}
             >
-              {delArmed ? `Tap again to delete ${callsign}` : 'Post out'}
+              Post out
             </button>
           </div>
+          {delArmed && (
+            <AskCard at={poBtn.current} testid="po-delete-ask" label={`Delete ${callsign}?`} question={`Delete ${callsign}?`}
+              sub={outcomeLine('delete', poDate, !!hasAccount)}
+              onEscape={() => setDelArmed(false)}>
+              <button type="button" className="abtn danger" data-testid="po-delete-go"
+                onClick={() => { flushWords(); const why = onPostOut(poDate, 'delete'); setPostErr(why || ''); setDelArmed(false) }}>Delete</button>
+              <button type="button" className="abtn primary" data-testid="po-delete-cancel" autoFocus onClick={() => setDelArmed(false)}>Cancel</button>
+            </AskCard>
+          )}
           {postErr && <div className="bidsheet-row postout"><span className="note warn" data-testid="post-err">{postErr}</span></div>}
         </>
       )}
@@ -1457,13 +1473,21 @@ export function PostOutSheet({
       {!locked && blockedFor && blockedFor(delArm ? 'delete' : outcome) && (
         <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-blocked">{blockedFor(delArm ? 'delete' : outcome)}</span></div>
       )}
+      {/* THE SECOND ASK, A CARD AT THE HAND (owner D1627, 4 Nov 26): from the Delete chip "Delete Hex?", from a date that
+          deletes him at once "Delete Hex now?" — Delete deletes, Cancel puts the chip or the date back as it was (a chip
+          tapped still does too). In place of the row button "Tap again to delete Hex". */}
       {armed && (
-        <div className="bidsheet-row postout">
-          <button className="dchip po del-armed" data-testid="postout-delete-go"
-            onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>
-            Tap again to delete {callsign}
-          </button>
-        </div>
+        <AskCard testid="postout-delete-ask"
+          at={document.querySelector<HTMLElement>(askDate !== null ? '[data-testid="postout-date"]' : '[data-testid="postout-delete"]')}
+          label={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
+          question={askDate !== null ? `Delete ${callsign} now?` : `Delete ${callsign}?`}
+          sub={outcomeLine('delete', shownFrom, !!hasAccount)}
+          onEscape={() => { setDelArm(false); setAskDate(null) }}>
+          <button type="button" className="abtn danger" data-testid="postout-delete-go"
+            onClick={() => { const at = shownFrom; setDelArm(false); setAskDate(null); setErr(onChange(at, 'delete') || '') }}>Delete</button>
+          <button type="button" className="abtn primary" data-testid="postout-delete-cancel" autoFocus
+            onClick={() => { setDelArm(false); setAskDate(null) }}>Cancel</button>
+        </AskCard>
       )}
       {/* drawn only with something to say — an empty row left a blank band on the sheet (W3's re-walk, N4) */}
       {err && <div className="bidsheet-row postout">
