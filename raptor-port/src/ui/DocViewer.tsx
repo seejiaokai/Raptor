@@ -11,7 +11,7 @@
 import { placedLine } from './placedline'
 import { useEffect, useRef, useState } from 'react'
 import { PEOPLE } from '../engine/people'
-import { inpMeta, baseYear, leadOf, remarksTyped } from '../engine/inputs'
+import { inpMeta, baseYear, leadOf, remarksTyped, inpById } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
@@ -22,6 +22,7 @@ import { DOCVIEW, setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus } from './sheetfocus'
+import { useBarFree } from './barfree'
 
 export function DocViewer() {
   useVersion()
@@ -33,7 +34,14 @@ export function DocViewer() {
      one page per attached file (owner, 1 Sep 26 — several files on one
      entry), so the pager walks documents, not entries. A row with no file
      keeps its one page (the "no document on file" statement). */
-  const list = v ? (v.rows && v.rows.length ? v.rows : (v.row ? [{ row: v.row, up: v.up }] : [])) : []
+  /* EACH ROW READ AGAIN FROM THE INPUTS, BY ITS ID (owner D1645, 5 Nov 26 — the bar's Undo and Redo work with the viewer
+     open, ui/barfree.ts): an undo puts the inputs back as new records, so the record the viewer was opened on may no longer
+     be the input — its remarks, its days, its files as they now are. The live record is shown; an input the undo took
+     away closes the viewer (below). A read-only page is not an input of the list (a Leave War request's papers, a file
+     just added to a window not yet saved), and is shown as it was given. */
+  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) || row : row)
+  const gone = !!(v && !v.readOnly && v.row && v.row.iid != null && !inpById(v.row.iid))
+  const list = v ? (v.rows && v.rows.length ? v.rows.map((e: any) => ({ ...e, row: live(e.row) })) : (v.row ? [{ row: live(v.row), up: v.up }] : [])) : []
   const els = list.flatMap((e: any) => {
     const ids = rowDocIds(e.row)
     return ids.length ? ids.map((id: string) => ({ ...e, docId: id })) : [e]
@@ -74,6 +82,13 @@ export function DocViewer() {
   }, [r])
 
   const close = () => { setDocView(null); notify() }
+  /* the input an undo took away: the viewer goes with it, never showing a record that no longer stands */
+  useEffect(() => { if (gone) { setDocView(null); notify() } }, [gone])
+  /* the bar over it stays pressable — Undo and Redo work with it open, any other bar control closes it first; over a
+     window that keeps the bar covered (an input's own window) it keeps its whole veil (owner D1645 — ui/barfree.ts). A page
+     change closes it (pops.ts DOCVIEW_NAV). */
+  const popRef = useRef<HTMLDivElement>(null)
+  useBarFree(popRef, !!r, close)
   /* it takes and keeps the keyboard while it is up ([WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); its own Escape is above */
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef, !!r)
@@ -103,7 +118,7 @@ export function DocViewer() {
   const m = r ? inpMeta(r.type) : null
 
   return (
-    <div className="airpop" id="docViewPop" hidden={!r}
+    <div className="airpop" id="docViewPop" hidden={!r} ref={popRef}
       onClick={e => { if (clickedOutside(e, 'docViewPop')) close() }}>
       <div className="airpop-box docviewbox" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">

@@ -217,6 +217,14 @@ VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(fa
    (Modals.tsx), an undo can land on another page or week — and a nav tab pressed by the keys changes page — and the
    window's 'di|gi' would then name a wave of a week or page nobody is looking at. */
 VIEW_RESET.push({ name: 'AIRKEY_NAV', scopes: ['week', 'page'], reset: () => setAirKey(null) })
+/* …AND SO DO THE THREE WINDOWS THAT TOOK ITS WAY (owner D1645, 5 Nov 26 — ui/barfree.ts): with the bar's Undo and Redo free
+   over them, an undo can land on another page or week, as a page name pressed by the keys does. The day-details window
+   names a day by its place in the week on screen, so a week change closes it too; "Jump to a date" and the document viewer
+   belong to the page they were opened on (the calendar to the schedule's week, the viewer to its input's row), so a page
+   change closes them — a week change is the calendar's own job, and an input is no week's. */
+VIEW_RESET.push({ name: 'DAYPOP_NAV', scopes: ['week', 'page'], reset: () => setDayPop(null) })
+VIEW_RESET.push({ name: 'WEEKCAL_NAV', scopes: ['page'], reset: () => setWeekCal(false) })
+VIEW_RESET.push({ name: 'DOCVIEW_NAV', scopes: ['page'], reset: () => setDocView(null) })
 /* THE INPUTS AND SANS SETTINGS CLOSE ON A PAGE CHANGE (F8 of the 3 Nov 26 re-check — the Inputs batch): opened from their
    calendar's gear (or Logic's rows), they stayed up over Edit Schedule, a window about a page nobody is on. A week change
    leaves them: their settings are the squadron's, not the week's. */
