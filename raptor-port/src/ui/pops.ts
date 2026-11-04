@@ -1,4 +1,4 @@
-import { VIEW_RESET } from '../state/view'
+import { VIEW_RESET, OILWAIT } from '../state/view'
 import { DAYS } from '../engine/data'
 /* Which pop-ups are open — module state so the delegated click routing can
    open them; the components read it and re-render via the store version. */
@@ -204,7 +204,10 @@ export function resetPopsForSession(): void { for (const p of POPS_RESET) p.rese
    asks this straight after the save it causes, so it never puts the caret in a box behind a window that save opened
    (a weekend duty request's time → the OIL question), and never walks the schedule while one is up. */
 export function windowOverSchedule(): boolean {
-  if (INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null) return true
+  /* …and the OIL question put before a change (state/view.ts OILWAIT, ui/OilWaitSheet.tsx — [WINDOWS-KEEP-KEYS]'s leftover,
+     5 Nov 26): a name typed in an input's row and left by Tab can raise it, and the route then put the caret in the next box
+     behind it — the question's keys given back there, not to the box he was typing in */
+  if (INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null || OILWAIT) return true
   /* the Scheduler Board's cancel-reason and Sort all dialogs (RF2, 6 Oct 26 — Sol's read): their state lives in
      ui/board.ts, which imports this file, so they are asked of the page — both are always mounted and shown by
      dropping `hidden` */

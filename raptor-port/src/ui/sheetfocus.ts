@@ -57,6 +57,10 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
     const el = box.current
     if (!open || !el) return
     const before = document.activeElement as HTMLElement | null
+    /* where the keys were, found again by its marks once a string redraw has replaced it ([WINDOWS-KEEP-KEYS]'s leftover,
+       5 Nov 26): the answer to a question redraws the schedule behind it — the box or button the keys were on is a new
+       one by the time the sheet closes, and they were given back to nothing */
+    const was = before && before !== document.body && !el.contains(before) ? locate(before) : null
     const back = opener; opener = null
     if (!el.contains(before)) ((first && first(el)) || el).focus({ preventScroll: true })
     if (!sheets.length) document.addEventListener('keydown', keepKeys, true)
@@ -67,7 +71,7 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
       if (!sheets.length) document.removeEventListener('keydown', keepKeys, true)
       const now = document.activeElement
       /* where it came from — or, when that was a menu item the menu took away with it, the button that opened the menu */
-      const to = before && before !== document.body && before.isConnected && !el.contains(before) ? before : back ? back() : null
+      const to = (was && was()) || (back ? back() : null)
       if (!to) return
       if (now === document.body || now == null || el.contains(now)) to.focus({ preventScroll: true })
     }
