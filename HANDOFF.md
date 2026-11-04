@@ -29,7 +29,7 @@ the later merge keeps both (D78).
 - **Job 2 — the Tracker tidy** ([TRK-STANDALONE-LEFTOVERS] with the Tracker's remaining React Doctor warnings) on `claude/tracker-standalone-tidy`, cut from `main`. FULL (question 3: the Tracker's storage path). A fresh, blind Opus read. About 4 h (a guess).
 - **Job 3 — two permission checks** ([MEMBER-EDITPAGE-CHECK], [GUEST-SAVE-WARNING]) on `claude/member-guest-checks`, cut from `main`. FULL (question 7), plus a security read (D1411). About 2½ h (a guess).
 - **All three on [NO-ASTRA-LIST]** (D761, D1594). Nothing merges; no `main`.
-- **State:** the night starting; job 1 first.
+- **State:** job 1 BUILT (phase A, `373af8bbc`; the builder's report `raptor-port/docs/handpass/parts/kw1105/build-report.md`) — its pull request into `main` to be opened now, then the walk, the fresh Opus read, fixes and re-walk (phase B, the same helper). Jobs 2 and 3 not started.
 - **Questions waiting for him:** none yet.
 - **Allowance at the start:** weekly 9%, 5-hour 2% (resets about 21:50 UTC); this chat 45% full.
 - **Numbers:** rulings next free D1649; observations next free 801.
