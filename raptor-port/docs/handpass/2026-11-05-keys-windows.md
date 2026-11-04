@@ -184,9 +184,55 @@ list); `npm run build` PASS; `npm run lint:changed` no new finding; the batch's 
 
 ## 9. What the walk and the read found, and each disposition
 
-(filled as they arrive — §10 of this sheet)
+**The walk (152 PASS · 0 FAIL):** no fault in the change. The walker's four flags were read by the host on their pictures
+(§4): none a fault of this change. The re-walk's one FAIL (S5.F2, run 1) was the step's own: its Traffic window was asked for on
+Saturday, which has standby waves only and so no Traffic button — the step now opens it on Wednesday (v6), and the re-walk is
+60 PASS · 0 FAIL.
 
-## 10. Findings
+**The fresh Opus read** (`parts/kw1105/read-opus.md` — 2 MEDIUM, 3 LOW, all in the change):
+
+| # | What | Disposition |
+|---|---|---|
+| F1 MEDIUM | a role picked from its list: the keys back in the old role box before the redraw, the box showing the old words | **not reproduced** in Chromium — a real mouse pick and a pick by the keys on the build before the fix both showed the pick (`e2e/keys-windows.spec.ts` "F1", run on that build: green). The keys now go back only after the redraw (`board.ts popMenu`), as the reader advised ("right either way"); pinned by two unit tests and two browser steps that pass either way |
+| F2 MEDIUM | Enter/Space on a board chip skipped the document's click listeners: the Traffic window, the day details or a board menu stayed over the new day | **fixed** — the chip's key sends its click (`SchedBoard.tsx`); red first: `boardmenukeys.test.tsx` "F2" (2), and in the browser on the build before (`keys-windows.spec.ts` "F2": red there, green now); walk step S5.F2 |
+| F3 LOW | Tab from a menu opened by the keys walked out of the page onto the top bar hidden under the board | **fixed** — Tab past a menu's last stop (Shift+Tab before its first) closes it, the keys on its button; inside it Tab is the browser's own (the stores menu's editor is a small form) (`sheetfocus.ts menuKeys`); red first `boardmenukeys.test.tsx` "F3"; walk step S5.F3 |
+| F4 LOW | the keys' way back found another day's copy of the control (an input drawn Mon–Fri) | **fixed** — `locate` looks on the day the control stood in (`sheetfocus.ts`); red first `oilkeysback.test.tsx` "F4" |
+| F5 LOW | an episode of several entries kept the page of an entry an undo took away | **fixed** — gone entries' pages dropped, none left closes the viewer (`DocViewer.tsx`); red first `barfree.test.tsx` "an episode of two" |
+
+**The narrow read of those fixes** (`parts/kw1105/read-fixes-opus.md` — 2 LOW): **G1** the viewer slid to the next entry when a
+page in front of it went → **fixed**, the page kept by what it shows (`DocViewer.tsx`), red first `barfree.test.tsx` "an episode of
+three"; **G2** a control moved to another day (its input's date changed) was no longer found → **fixed**, the same week searched
+after the day (`sheetfocus.ts locate`), red first `oilkeysback.test.tsx` "G2".
+
+**The round-2 narrow read** (`parts/kw1105/read-fixes2-opus.md` — 1 MEDIUM, 1 LOW): **H1 MEDIUM** a button whose first mark names
+only its kind (an input's "→ Ground": `data-acc="g"`) had another input's button of the same kind as its "twin" — the keys one
+Enter from putting another input on the programme unseen (older in form within one day since F4; widened by G2) → **fixed**, the
+twin must carry the same `data-acck` (`sheetfocus.ts locate`), red first `oilkeysback.test.tsx` "H1"; **H2 LOW** the shown file
+itself gone: the next entry shown though the same entry had another file → **fixed**, the same entry's other page first
+(`DocViewer.tsx`), red first `barfree.test.tsx` "on the second file". The reader's question — whether `locate` should know a short
+list of the marks that say which item a control belongs to, instead of its first mark — is the coordinator's to file.
+**Rounds:** the fixes were read twice (round 1 G1–G2, round 2 H1–H2); round 2's two fixes are a one-attribute selector and a
+same-entry-first search, each with its red test, carried by those tests and the touched suites (515 passed), not read a third
+time.
+
+**The tidiness note** (the first read's — filed, not fixed): the opener noted three times for "Jump to a date" (its own ref,
+`useEscWindow`, `useBarFree`) and twice for Traffic and the day details; `DocViewer`'s `gone` effect repeats `close`;
+`boardescape.ts`'s list of stops copies `sheetfocus.ts`'s. Its two comment findings (`popMenu`'s "a mouse pick moves nothing",
+the chips' "as a click does") were corrected with F1 and F2.
+
+**Roll-call gaps the read named, and their rows now:** the viewer from the Inputs calendar's day cards (`InputsCal` — the same
+component and hook as the Medical card's; carried by S3.med and the LW walk's R8, not walked); a pick from the role list (F1's
+rows); a chip pressed by the keys with a window up (F2 — walked S5.F2); Tab inside a menu (F3 — walked S5.F3); a control drawn on
+several days (F4, G2, H1 — unit); an undo removing one of several viewer pages (F5, G1, H2 — unit).
+
+## 10. The re-walk
+
+`WALK_DIR=<the fixed build> KW_OUT=docs/img/handpass/2026-11-05-keys-windows/rewalk ONLY=s3,s5 node scripts/handpass/kw-walk.mjs`
+(v6), on the build of `18af1a235` (F1–F5, G1–G2): **60 PASS · 0 FAIL · 2 NOT WALKED** (the Inputs list's paperclip) · 0 browser
+errors. H1–H2 (`5ce6db299`) touch no surface the walk can reach in the demo world (a control drawn on several days that turns into
+another; a file taken from an entry by an undo) — carried by their unit tests, and the browser specs `keys-windows`,
+`board-escape-traffic` and `medical` re-run on that commit's build: 43 passed.
 
 ## Walk line
 
+Walk: docs/handpass/2026-11-05-keys-windows.md · 233 pictures (115 walk, 41 re-walk, 77 the Leave War viewer walk) · 24 surfaces · 152 checks walked (+ 29 Leave War rows, 60 re-walk) · MISSING: 0 (2 rows NOT WALKED and 1 by code, each with its carrier named)
