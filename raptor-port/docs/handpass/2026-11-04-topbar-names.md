@@ -98,7 +98,7 @@ None — the browser's error list was empty through every step (S1-err, S2-err f
 
 ## 9. Gates
 
-GitHub's full run of the pull request is the gate set while the repo is public (D1086) — its result is in the closing report.
+GitHub's full run of the pull request is the gate set while the repo is public (D1086): **red once** on the first push — one case of the new browser test, which assumed a member's side menu must scroll on a sideways phone; on GitHub's Linux letters it fits as it stands (the test's premise, not the app) — the test now scrolls only where the menu is taller; **green on the fix commit** (`2057ee465`: the full set, the secrets scan, the documents guard).
 On his PC: the new unit files and the five around the top bar 52 / 52, the new browser file 12 / 12 under the lock, the code
 check "no new finding".
 
