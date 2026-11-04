@@ -88,10 +88,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 
 **Leave War**
-- [TALON-CLAW-SPOKEN] — the page claw says nothing to a screen reader; "Loading Leave War" / "Loading Tracker" as quiet status words — a small fix with the next claw change.
-- [LAZY-PAGE-LOAD-FAIL] — if the Leave War's or the Tracker's download fails (a weak signal, a tab open across an update) nothing catches it — worked out from the code, not seen; a message with Retry.
-- [LW-ZOOM-E2E-SLOW-RUNNER] — the Leave War desktop browser test of Ctrl+scroll zoom runs past its 30 s on a slow GitHub machine; made to wait on what it needs (D87), as a small fix of its own.
-- [LW-PAD-SHOWS-FIGURE] — the Leave War's number pad shows the figure as it is typed in its top line (D1584, 3 Nov 26) — with the next Leave War batch.
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
 - [KBS-LW-SHEETS] — the Leave War's sheets and bid windows place themselves the moment the phone pans for the keys; by the keyboard job's reading the same jump-then-slide class D1412 forbids; drawn for him if he sees it there (named under D852, 27 Oct 26).
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
@@ -154,13 +150,13 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
+- [TOPBAR-NAMES-BESIDE-TALON] — the page names on the top bar's first row beside TALON, the side menu wherever they cannot all fit (D1641, 4 Nov 26) — the mock-up to him first.
 - [SHELL-SIDEWAYS-BAR] — the top bar takes 149 of 390 px on a sideways phone — his look.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
 - [APP-FONTS-NOT-LOADED] — the app names fonts it never loads, so each device draws its own — his call.
 - [ONE-RULE-SMALL-WORDS] — ten small sentences and marks that read oddly — for the words pass; two wordings his.
-- [TALON-CLAW-PAGES] — the loading claw while any slow page opens, the Leave War and the Tracker among them (D1607): one overlay over the page area under the top bar, from the tap, on the Leave War and the Tracker (D1610, D1611) — being built.
 - [UI-SLEEK-PASS] — the sleeker interface (D765): the first word rounds are live; the rest page by page, on his word.
 - [PERF-RESIDUALS] — measured speed wins held back; two change wording or feel — his call.
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
@@ -244,6 +240,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [TOPBAR-NAMES-BESIDE-TALON] The page names beside TALON on the top bar; the side menu where they cannot fit (his D1641, 4 Nov 26)
+**His words:** *"there's a lot of empty space on the right of talon. Could u move the titles up there? If all the titles can't fit any type of screen out there including phone or desktop. Then u can make it the same as a side menu"* — his picture: the Leave War at a tablet's width, TALON alone on the first row, the page names on a second, the buttons on a third. **To do:** the mock-up on the real app at a wide desktop, his PC's 1536, a tablet's width and his iPhone, admin and member, today beside proposed (D1625, the design skill leading — D819); on his answer the build, its bug check (every page's top bar and the side menu in the roll-call), and his "merge live". [SHELL-SIDEWAYS-BAR] rides with it. **Place:** now — his request of 4 Nov 26.
 
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.

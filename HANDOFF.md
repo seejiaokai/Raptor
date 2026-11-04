@@ -20,16 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/leave-war-small-fixes -->
-### `claude/leave-war-small-fixes` — the Leave War small fixes (pull request 632, draft) — written 4 Nov 26 (night) — verify before use
-- **Built and checked, ready for his look:** the pad's figure box (D1584, D1629, D1630, D1634); a failed download of the Leave War or the Tracker caught on its page (D1631, D1632). **Retry** (D1633, D1635–D1637): the claw stands where the card was while the page's own files are fetched afresh (`cache: 'reload'`, names from the build's `page-files.json` — `vite.config.ts build.manifest`, `src/ui/pagedownload.ts`); once every file's body has come, and no save waits (`src/storage/savewait.ts`, fed by `main.tsx`), and he is still on the page in the same sign-in, it notes the page (sessionStorage, `{page, at}`, ten minutes, never used on the page that wrote it) and reloads; the sign-in reopens it (`src/ui/Login.tsx`). Otherwise the claw holds a full round (1.3 s) and the card comes back, the keyboard on Retry with the app's cyan ring. Why the fetch first: WebKit keeps a failed file failed across a reload until it is fetched with the cache skipped (probes `scripts/handpass/lwsf-webkit-reload-probe.mjs`, `lwsf-socket-probe.mjs`).
-- **Checked:** unit 58 green (`pageload`, `login-reopen`, `pageclaw`, `app`); code check clean; build clean; GitHub's full run green on 5315f75b1 (later commits pushed with this block — read its run); walk 86/8 then six re-walks, the final one **39 / 0** on 85752d7b0 (`docs/handpass/parts/lwsf-rewalk-6.txt`); three fresh Opus code reads (4, 1, 2 findings, all fixed red-first — the three-round cap reached); the drawing check re-run (the card 0 differences; 16 kept by his rulings; 4 open — the pad's day words 2.5px lower); the design critique 23/32 (`docs/handpass/parts/2026-11-04-retry-critique.md`), his answers D1635–D1637 built. Evidence sheet `raptor-port/docs/handpass/2026-11-04-lw-small-fixes.md` finished, its `Walk:` line written; the walk ledger's row added.
-- **His two answers, 4 Nov 26 ("both as recommended"):** D1638 (with no signal Retry keeps the card, narrowing D1633) and D1639 (the pad's date as built — the drawing check now GREEN, 20 kept, 0 unexplained). **MERGING on his "merge live" (4 Nov 26) — his look done (D1640);** the four backlog items archived. If this block is still here, check the merge and Vercel's Production deploy went through, then remove it. (Kept for the record —) his iPhone look: airplane mode on, tap Leave War (the card), airplane mode off, Retry → the claw, the sign-in, the Leave War opens by itself; VoiceOver "Loading Leave War"; three digits in the pad. Then his "merge live".
-- **Not this chat's:** `.impeccable/config.json` carries an older uncommitted rewording of two reasons (it was there before this chat) — left alone.
-- **Owed (residue for the next chat):** D1635–D1640's short lines — one fresh reader to check each against its full row (the rulings script's UNREAD list; each is its row's own first sentence, word for word).
-- **Numbers:** rulings next free D1641; observations next free 800.
+<!-- now:claude/topbar-tabs-beside-talon -->
+### `claude/topbar-tabs-beside-talon` — the page names beside TALON (D1641) — written 4 Nov 26 (night) — verify before use
+- **Done here:** the Leave War small fixes' block removed (pull request 632 merged 4 Nov 26 and live on Vercel); its residue — D1635–D1640's short lines — read by one fresh Opus reader against their full rows: 6 of 6 word for word. One note kept for him: D1640's full row says a gate the agent's own work owes (a red check, a conflict, an unfinished record) still stops the merge; its short line does not say so (other loaded rules cover it).
+- **In hand:** his request D1641 (the page names beside TALON, the side menu where they cannot fit) — the mock-up first (D1625), the design skill leading; filed as [TOPBAR-NAMES-BESIDE-TALON].
+- **Numbers:** rulings next free D1642; observations next free 800.
 <!-- /now -->
 ## Next, in order
+
+**RIGHT NOW (4 Nov 26, night):** the Leave War small fixes LIVE (pull request 632) → his request, the page names beside TALON (D1641): the mock-up to him first → the build on his answer.
 
 **RIGHT NOW (4 Nov 26):** the questions at the button (pull request 630), the loading claw (628) and the input window's ✕ (629) LIVE; no pull request open → his next pick from the backlog (D994), the Leave War small fixes recommended.
 

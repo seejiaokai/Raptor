@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1641 | 4 Nov 26 | The page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they cannot all fit there, a phone or a narrow desktop, they go into the side menu as on a phone today. |
 | D1638 | 4 Nov 26 | When Retry cannot fetch the page's files — no signal, a file cut off, or a save still waiting — it does not reload: the claw holds a full round and the card comes back, still signed in, the keyboard on Retry. |
 | D1637 | 4 Nov 26 | The failed-download card keeps his words, "It didn't download. Check your signal, then retry.", though an app update since the tab opened is the other cause: Retry cures that case too. |
 | D1636 | 4 Nov 26 | After a Retry that did not bring the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; and the claw stands at least one full round of its three claws, about 1.3 s, so the press reads as tried. |
