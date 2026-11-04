@@ -88,6 +88,8 @@ Success is a week planned, checked and published with less effort and nothing mi
 6. **Nothing is paid for with speed.**
 7. **A question asked of a press appears where the press was** (D1626) — a confirmation or a choice put up because a control
    was pressed hangs from that control, where the hand already is; never at the window's foot.
+   Narrowed by D1627 (4 Nov 26): beyond the ✕ question, only the input window's swap, Delete and Take me out questions and
+   the Leave War posting's delete (Delete chip, PO from date) are built so; the app's other questions stay as they are.
 
 ## Accessibility & Inclusion
 
