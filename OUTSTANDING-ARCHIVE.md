@@ -7740,3 +7740,14 @@ reads only, as Management does, refused at the Quals write and the commit gate (
 security read (D1411). **His answer, 5 Nov 26 (D1651): yes.** Pictures `raptor-port/docs/mock/2026-11-05-member-guest/img/Q2-quals-today-desk.png`, `Q2-quals-proposed-desk.png`,
 `Q2-quals-proposed-phone.png`. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`. **Built 5 Nov 26** (`claude/member-guest-checks`, `af8be973e`): `perms.ts mayTickScheduler`, refused at the Quals screen ("Only an admin can appoint a scheduler" — the mock-up's words), the Quals write and the commit gate; red first; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
 
+
+*Moved here 2026-11-05 by backlog-archive.mjs ([LW-AUTOAPPROVE-LETTERS]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-AUTOAPPROVE-LETTERS] The Leave War's Auto-approve letters (found 5 Nov 26, [CSS-FONT-INHERIT]'s roll-call)
+The admin's Auto-approve switch at the top of the Leave War's bid windows (BidPicker, SelectSheet) is drawn with the Inputs
+window's "Several people" style (`.pp-sw`, its own `.bidsheet-hd .bp-sw` beside it). Written out, that style's letters would
+have made Auto-approve the app's letters at 600 (today a fallback face, 400; 97 → 101 wide). Not on his drawing, so it is held
+as it was in `raptor-port/src/leavewar/ui/bidpicker.css` (D1625). **Question to him:** match the title's letters (semi-bold,
+as the bid window's date beside it) or keep. Pictures: `raptor-port/docs/img/handpass/2026-11-05-font-inherit/` (the walk's
+`*-leavewar-switch.png` is today's look). **Place:** with the next Leave War batch (D490).
+

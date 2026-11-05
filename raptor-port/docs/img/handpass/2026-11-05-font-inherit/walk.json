@@ -102,10 +102,10 @@
   {
    "dev": "pc1536",
    "scene": "leavewar-switch",
-   "place": "Auto-approve (held)",
+   "place": "Auto-approve (D1681)",
    "n": 1,
-   "want": "Inter Tight, sans-serif 11px 400 (as before)",
-   "got": "\"Inter Tight\", sans-serif 11px 400",
+   "want": "the app letters 11px 600",
+   "got": "\"Inter Tight\", system-ui, sans-serif 11px 600",
    "ok": true
   },
   {
@@ -210,10 +210,10 @@
   {
    "dev": "iphone",
    "scene": "leavewar-switch",
-   "place": "Auto-approve (held)",
+   "place": "Auto-approve (D1681)",
    "n": 1,
-   "want": "Inter Tight, sans-serif 11px 400 (as before)",
-   "got": "Inter Tight, sans-serif 11px 400",
+   "want": "the app letters 11px 600",
+   "got": "Inter Tight, system-ui, sans-serif 11px 600",
    "ok": true
   }
  ],

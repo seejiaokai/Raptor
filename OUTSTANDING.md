@@ -100,7 +100,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-READS-OWED-1024] — left: design lessons 49, 50 and 52 reworded to what he said (the fix worded in the reader's file), and D1297's sweep of earlier evidence sheets with its fresh reader.
 - [CSS-FONT-INHERIT] — BUILT 5 Nov 26 as drawn (D1680) on `claude/css-font-inherit-look`: the nine font lines written out, a test that refuses the form; walked at both sizes; waiting on his look and "merge live", then archive.
-- [LW-AUTOAPPROVE-LETTERS] — the Leave War bid windows' Auto-approve shares the "Several people" look; [CSS-FONT-INHERIT] would have made its words the app's letters, semi-bold — held as it was until he picks (pictured, a question to him).
 - [CSS-WRAPPER-GUARD] — the other half of [CSS-FONT-INHERIT]'s guard: a check that no rule is lost after a page's wrapper closes; the bid sheet's stylesheet has about 200 unscoped rules after its wrapper, apparently on purpose, so the check needs its rule worked out first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-CARD-COLUMNS] — on the Inputs list's cards LATE, "No document" and the hours in three columns, card to card (his D1305, pick A — D1310): to build with the next Inputs batch.
@@ -2225,18 +2224,10 @@ typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src
 the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
 next Inputs or schedule batch (D490).
 **Drawn 5 Nov 26** (nine lines: eight places on screen and one dead rule, `.ic-pop input`): `raptor-port/docs/mock/2026-11-05-font-inherit/`, put to him on https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1 — waiting on his answer.
-**Built 5 Nov 26** on `claude/css-font-inherit-look` (his D1680, "build it as drawn"): the nine lines written out; the font half of the guard is `raptor-port/src/ui/font-inherit-css.test.ts` (red on `main`, green on the fix); the wrapper half is filed apart, [CSS-WRAPPER-GUARD]; the Leave War's Auto-approve, which shares `.pp-sw`, held as it was ([LW-AUTOAPPROVE-LETTERS]). Walk: `raptor-port/docs/handpass/2026-11-05-font-inherit.md`, 24/24.
+**Built 5 Nov 26** on `claude/css-font-inherit-look` (his D1680, "build it as drawn"): the nine lines written out; the font half of the guard is `raptor-port/src/ui/font-inherit-css.test.ts` (red on `main`, green on the fix); the wrapper half is filed apart, [CSS-WRAPPER-GUARD]; the Leave War's Auto-approve, which shares `.pp-sw`, held, then matched on his "as recommended" (D1681, [LW-AUTOAPPROVE-LETTERS] closed). Walk: `raptor-port/docs/handpass/2026-11-05-font-inherit.md`, 24/24.
 **A guard with it (691, 704):** a structural test over the stylesheets — no rule after a scoping wrapper's close in a
 file that wraps itself (`#page-leavewar { … }`; a block appended after it lost silently, twice, 24 and 25 Oct 26), and no
 `font:` shorthand naming `inherit`. A rule that only a comment states is broken again.
-### [LW-AUTOAPPROVE-LETTERS] The Leave War's Auto-approve letters (found 5 Nov 26, [CSS-FONT-INHERIT]'s roll-call)
-The admin's Auto-approve switch at the top of the Leave War's bid windows (BidPicker, SelectSheet) is drawn with the Inputs
-window's "Several people" style (`.pp-sw`, its own `.bidsheet-hd .bp-sw` beside it). Written out, that style's letters would
-have made Auto-approve the app's letters at 600 (today a fallback face, 400; 97 → 101 wide). Not on his drawing, so it is held
-as it was in `raptor-port/src/leavewar/ui/bidpicker.css` (D1625). **Question to him:** match the title's letters (semi-bold,
-as the bid window's date beside it) or keep. Pictures: `raptor-port/docs/img/handpass/2026-11-05-font-inherit/` (the walk's
-`*-leavewar-switch.png` is today's look). **Place:** with the next Leave War batch (D490).
-
 ### [CSS-WRAPPER-GUARD] A rule lost after a page wrapper's close (filed 5 Nov 26 from [CSS-FONT-INHERIT]'s guard)
 The guard [CSS-FONT-INHERIT] named had two halves; the font half is built. The other: in a stylesheet that wraps itself in its
 page (`#page-leavewar { … }`), a block appended after the wrapper's close lands unscoped and was lost twice (24 and 25 Oct 26).

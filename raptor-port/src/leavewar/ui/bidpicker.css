@@ -1909,9 +1909,7 @@
 /* "APPROVE WHAT I ENTER" AS THE APP'S SWITCH (change 8, D1302): the Inputs window's "Several people" switch, sized to the
    title bar's small words, standing before ✕ */
 .bidsheet-hd .bp-sw { margin-left: auto; min-height: 0; border: 0; background: none; padding: 0; gap: 5px; font-size: 11px; color: var(--ink-2); align-self: center; }
-/* held as it looked before [CSS-FONT-INHERIT] (D1680): `.pp-sw` now sets the app's letters at 600, which this switch
-   shares; that change to the Leave War's Auto-approve was not on his drawing, so its look is put to him first (D1625). */
-.bidsheet-hd .bp-sw { font-family: 'Inter Tight', sans-serif; font-weight: 400; }
+/* its letters are `.pp-sw`'s, the app's at 600, as the title beside it (owner D1681, 5 Nov 26); only the size is its own */
 .bidsheet-hd .bp-sw + .x { margin-left: 4px; }
 .bidsheet-hd .bp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
 

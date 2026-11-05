@@ -3,7 +3,7 @@
    the RIGHT look (a PASS means correct): each marked box or button wears the app's letters at the size and weight its
    line meant. Beside the drawing's five windows it walks the doors the drawing did not: the input window opened from
    Edit Schedule's week, the plain-user round (a line cancelled with a reason, then read on the week; a note given people),
-   and the Leave War's Auto-approve switch, which shares the "Several people" look and is HELD as it was (D1625).
+   and the Leave War's Auto-approve switch, which shares the "Several people" look and takes its letters (D1681).
    Run: HP_URL=http://localhost:<port> node scripts/handpass/font-inherit-walk.mjs → docs/img/handpass/2026-11-05-font-inherit/ (evidence: docs/handpass/2026-11-05-font-inherit.md) */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { chromium, webkit, devices } from '@playwright/test'
@@ -125,15 +125,15 @@ for (const [dev, type, opts] of DEVICES) {
       await check(page, dev, 'schedule-input', ['.inped-body select, .inped-body input:not([type=checkbox])'], '#inpEditPop > *') }
     else { rows.push({ dev, scene: 'schedule-input', place: 'an input on the week', n: 0, want: 'one to tap', got: 'none in view', ok: false }); fails++ }
     await ctx.close() }
-  /* E — the Leave War's Auto-approve switch: held as it was (regular weight), not changed with "Several people" */
+  /* E — the Leave War's Auto-approve switch: the app's letters at 600 as "Several people", its own 11px kept (D1681) */
   { const { ctx, page } = await fresh('a')
     await go(page, 'leavewar'); await sleep(2000)
     const cell = await page.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="cell-"]')].find(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.left > 120 && r.top > 300 && r.bottom < innerHeight - 40 && !e.textContent.trim() }); return c && c.getAttribute('data-testid') })
     await page.click(`[data-testid="${cell}"]`); await sleep(900)
     const g = await page.evaluate(() => [...document.querySelectorAll('.bidsheet-hd .bp-sw')].filter(e => e.getBoundingClientRect().width).map(e => { const c = getComputedStyle(e); return `${c.fontFamily} ${c.fontSize} ${c.fontWeight}` }))
-    const ok = g.length > 0 && g.every(s => /^"?Inter Tight"?, sans-serif 11px 400$/.test(s))
+    const ok = g.length > 0 && g.every(s => /^"?Inter Tight"?, system-ui, sans-serif 11px 600$/.test(s))
     if (!ok) fails++
-    rows.push({ dev, scene: 'leavewar-switch', place: 'Auto-approve (held)', n: g.length, want: 'Inter Tight, sans-serif 11px 400 (as before)', got: g.join(' / '), ok })
+    rows.push({ dev, scene: 'leavewar-switch', place: 'Auto-approve (D1681)', n: g.length, want: 'the app letters 11px 600', got: g.join(' / '), ok })
     const clip = await page.evaluate(() => { const r = document.querySelector('.bidsheet-hd').getBoundingClientRect(); return { x: Math.max(0, r.x - 6), y: Math.max(0, r.y - 6), width: Math.min(innerWidth, r.width + 12), height: r.height + 12 } })
     await page.screenshot({ path: `${OUT}/${dev}-leavewar-switch.png`, clip })
     await ctx.close() }

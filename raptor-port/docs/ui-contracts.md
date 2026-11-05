@@ -34,8 +34,8 @@ weight beside it (and its line height where it had one). The nine places that ha
 and its reasons list, an input's own window (its boxes and selects, a member's fixed name, Several people, the groups'
 All), the opened day's note + and + people, and the old day pop-up's boxes, drawn nowhere now — were fixed as drawn
 (`docs/mock/2026-11-05-font-inherit/`), and a stylesheet test refuses the shorthand form from now on (`src/ui/font-inherit-css.test.ts`). The Leave War's
-bid windows' Auto-approve switch shares the "Several people" look and is held at its old letters until he rules on it
-(`leavewar/ui/bidpicker.css`, `.bidsheet-hd .bp-sw`).
+bid windows' Auto-approve switch shares the "Several people" look and takes the same letters (owner D1681, 5 Nov 26 —
+"as recommended"; its own 11px kept, `leavewar/ui/bidpicker.css`).
 
 ## Rendering
 

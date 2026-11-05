@@ -20,7 +20,7 @@ Edit Schedule's week, the board). Questions 5, 6: no new control or surface.
 | `.cxedit-name` | the CX box's Edit list | yes, both sizes |
 | `.inped-body select, input` | the input window from every door — the Inputs calendar, Edit Schedule's week (time boxes included) | yes: Inputs, member, schedule; both sizes |
 | `.inped-v` | a member's fixed name (and the SANS panel's fixed kind, the same rule) | yes: member, both sizes |
-| `.pp-sw` | "Several people"; **also the Leave War bid windows' Auto-approve** (`.bp-sw`, BidPicker and SelectSheet) | Inputs: yes. Leave War: **must not change, because** it was not on his drawing (D1625) — held at its old look by `.bidsheet-hd .bp-sw` in `leavewar/ui/bidpicker.css`, checked unchanged; put to him as its own question |
+| `.pp-sw` | "Several people"; **also the Leave War bid windows' Auto-approve** (`.bp-sw`, BidPicker and SelectSheet) | Inputs: yes. Leave War: first HELD (not on his drawing, D1625) and put to him with pictures; his "as recommended" (D1681) — it matches; walked, both sizes |
 | `.pp-all` | the groups' All in Several people | yes, both sizes |
 | `.inputsday .ic-note .ic-pkadd` | the + on a note with people | yes, both sizes |
 | `.inputsday .ic-newnote-ppl` | + people on a new note | yes, both sizes |
@@ -41,6 +41,8 @@ after each tap (D1281 — for the dense screens' pinned cells, none here).
 - The Inputs page: open a day, add a note with people — the "+" and "+ people" in bold.
 - An input's window: the boxes and "Several people" in the app's letters.
 - The Scheduler Board: CX on a line — the reason box, and Edit's list.
+
+**After D1681** the hold is taken out and the switch re-walked: 11px 600 in the app's letters at both sizes, one line on the phone.
 
 Walk: 24/24 PASS (2 sizes × 12), the walk script in place of a walker; 2 walk-script faults of its own fixed (the
 schedule's window frame name; a reason set without typing did not reach the save).
