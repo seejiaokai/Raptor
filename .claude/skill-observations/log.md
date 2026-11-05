@@ -3547,3 +3547,17 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** Add to the guide's traps: "To take away a part the app draws, hide it (`style.display='none'`), never remove it — a removed node crashes the app's next redraw of it, and every later step reads a blank screen. Print the page's errors to the run's log as they happen, not only at the end."
 
 **Principle:** In a page a framework owns, a drawing may hide or add, never delete what the framework made; and a script's first move on a strange failure is to read the page's own error.
+
+### Observation 823: A walk helper that reaches a control by one route blames the app when the state changes the route
+**Status:** OPEN
+**Date:** 5 Nov 26
+**Session context:** the take-back walk (claude/postout-bell-look); the posting sheet's Undo after the posting's date was moved
+**Skill:** New skill candidate: walk-script helpers (docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** walk-scripts §4 — pressing the control the app routes
+
+**Issue:** The helper opened the posting sheet by tapping the posting date's day. Once the date was moved later, that day became an ordinary day and opened another sheet, so the walk reported the Undo button MISSING and the scenario FAILED, as if the app had lost a door. Two more first-run FAILs had the same shape (a deleted man's row is kept; a page tab hid the grid).
+
+**Suggested improvement:** walk-scripts §4: a helper that reaches a control lists every route a person has to it (the day itself, a day inside the state, a menu), tries each in turn, logs which one worked, and pictures each failed try, so a FAIL means "no route found", never "my one route changed".
+
+**Principle:** A door check proves absence only when it has tried every door the state can offer; one remembered route is evidence about the script, not the app.
