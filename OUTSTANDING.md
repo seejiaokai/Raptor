@@ -153,10 +153,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
-- [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small).
+- [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small). **BUILT the night of 6 Nov 26** (`claude/people-quals-1106`, his look and "merge live"; evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`) — close once live.
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
-- [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
-- [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
+- [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26). **BUILT the night of 6 Nov 26** (`claude/people-quals-1106`, his look and "merge live"; evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`) — close once live.
+- [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix. **BUILT the night of 6 Nov 26** (`claude/people-quals-1106`, his look and "merge live"; evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`) — close once live.
+- [QUALS-PINNED-HEAD-NO-DRAG] — in Edit quals, scrolled down, a heading in the pinned row under the top bar cannot start a column drag; the table's own heading row can (older; low, with the next Quals job).
+- [QUALS-OUTLINE-RESCROLL] — Quals' outline after "Check his quals" or an Undo is never cleared, so a later change with that row off screen may scroll the page back to it (found by a code read 6 Nov 26, not walked; low, with the next Quals job).
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [NOTSAVED-REFUSAL-LOOK] — the app's other "not saved" refusal messages get one matching look of their own, apart from the band — pictured today and drawn for him first (D1665).
@@ -266,6 +268,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [QUALS-PINNED-HEAD-NO-DRAG] A heading in Quals' pinned row cannot start a column drag (the night of 6 Nov 26)
+In Edit quals with the page scrolled down, a heading in the pinned row under the top bar cannot be pressed to start a column drag: the press listener is on the table alone. Scrolling up to the table's own heading row works. Older than the night's job (`raptor-port/docs/handpass/2026-11-06-people-quals.md`). **Place:** small, with the next Quals job.
+
+### [QUALS-OUTLINE-RESCROLL] Quals' outline can pull the page back to its row (the night of 6 Nov 26, the code read)
+Quals' outline after "Check his quals" or an Undo is never cleared, and runs after every repaint: a later change (ticking another man's box) with that row off screen may scroll the page back to it. Found by reading (`raptor-port/docs/handpass/parts/pq1106/read-opus.md`), not walked — one walk step would confirm it. **Place:** small, with the next Quals job.
 
 ### [INP-HEAD-SORT-READER] The Inputs List's headings sort from the keys but a screen reader is not told (the night of 6 Nov 26, read R3)
 Since `claude/inputs-batch-1106` the desktop List's column headings sort from the keyboard (Tab, then Enter or Space) with the app's cyan ring; a screen reader is still not told a heading can be pressed. The proper fix is a button inside each heading, which changes how it is drawn — a picture first (D1625). **Place:** with the keyboard sweep (D807).
