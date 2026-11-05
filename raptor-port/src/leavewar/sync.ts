@@ -2713,11 +2713,12 @@ function postingLinesOf(id: string): Notice[] {
 /* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
    code read's 2, 5 Nov 26), or a posting set again for the same date, whose worked-out line keeps its id, came back to him
    already read. A "taken back" line goes only to a man still an admin (the security read's S1, 5 Nov 26): a posting's
-   lines are a scheduler's, and one who is a member since is not sent one (his old line still goes). */
+   lines are a scheduler's, and one who is a member since is not sent one (his old line still goes); an admin whose sign-in is
+   suspended is still one, and is (the fixes' read 1 — by role, never by `schedulerIds`, which wants the sign-in on). */
 function retractPostingLines(lines: readonly Notice[]): string[] {
   const by = me() != null ? String(me()) : null
   const at = Date.now()
-  const admins = new Set(schedulerIds())
+  const admins = new Set(ACCOUNTS_LIST.filter(a => isAdminAccount(a) && !!a.pid).map(a => String(a.pid)))
   const forget: string[] = []
   for (const n of lines) {
     const ix = NOTICES.findIndex(x => x.id === n.id)
@@ -2738,7 +2739,7 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
   const body = rosterBody(id)
   let ok = false
   let forget: string[] = []
-  cmdCommit({
+  const r = cmdCommit({
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
       const lines = undo ? postingLinesOf(id) : []
@@ -2757,9 +2758,12 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       if (lines.length) schedApplyEnd()
     },
   })
-  if (ok && forget.length) forgetRead(forget)
-  if (ok) raptorNotify()
-  return ok
+  /* the command LANDED — never only its body run: a commit refused after the body put every store back, his read record
+     included (the fixes' read 2, as restoreBody already asks) */
+  const landed = ok && !(r && 'ok' in r && r.ok === false)
+  if (landed && forget.length) forgetRead(forget)
+  if (landed) raptorNotify()
+  return landed
 }
 
 /**

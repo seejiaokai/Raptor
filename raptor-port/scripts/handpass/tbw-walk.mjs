@@ -13,7 +13,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serveFrozen } from './isr-serve.mjs'
 
-console.log('[tbw-walk v2 — after the reads' fixes and D1709]')
+console.log('[tbw-walk v2 — after the reads fixes and D1709]')
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.env.TBW_OUT || join(HERE, '../../docs/img/handpass/2026-11-05-taken-back-sans')
 mkdirSync(OUT, { recursive: true })

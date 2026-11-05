@@ -70,6 +70,8 @@ pressed twice quickly on the phone → one line (S10) · undone, posted again (i
 (S13) · the outcome changed after the run, then Undo (S14) · undone 16 days after its date (S15, recorded) · Restore keeps the line
 (S16) · two tabs (S17) · the changes window (S18) · every kind of SANS man (S19) · the chip under the line (S20).
 
+**The re-walk** (the same script, the fixed build at b54345ecd, its own folder `rewalk/`, run whole because the fixes sit in the one Undo command every scenario goes through): 97 checks passed, 0 failed, 17 recorded, no page or console error — with S12b (the presser sees a re-set line lit), S19k (no SANS chip for ground crew, both sizes) and S19b-sr (the screen-reader word, kept off the screen) added. The drawing check after the fixes: GREEN, the same two kept states (`docs/img/handpass/2026-11-05-drawcheck-taken-back-sans/after-fixes/`). The later fixes of the fixes' read (an admin whose sign-in is suspended; the command landed) change no screen route — carried by `postout-takeback.test.ts`. Seen, not a fault: the test WebKit on Windows draws the Balances page's `system-ui` names in a serif face (it has no system font; his iPhone has).
+
 ## 5. Carried by a test
 `src/leavewar/postout-takeback.test.ts` (11): read → struck line; unread → gone; the presser never told; derived "off the manpower"
 read → struck; Restore keeps it; an earlier stint's line kept; the scenario designer's 12 and 13 (red before aeedfbd77) ·
@@ -77,8 +79,7 @@ read → struck; Restore keeps it; an earlier stint's line kept; the scenario de
 a SANS man and a man posted out as SANS, none for others · `perms.test.ts`, `perms-scan.test.ts`: the §11 table.
 
 ## 6. Break tests
-To run after the reads' fixes (§8 of the order): the `san` term in `NamePuck`; `poback` in `postOf`, `noticeLive`, `WAR_LINE_KINDS`;
-`retractPostingLines`' read check and its presser check; `postingLinesOf`' floor; the strike in `BellList`.
+17 breaks, each line restored byte for byte after its run: 14 RED at once. The three that stayed green, read (walk-scripts §9): the member view's hiding of a taken-back line — no test (1): written (`postout-takeback.test.ts`, the member view), now RED; the presser's own read line — a second layer holds it (4): `noticePostingBack` never sends a line to the man who pressed Undo; the gate's war-line list for `poback` — a second layer behind the gate's own "not his own change's notice" refusal, which the forged-member test pins (4). And one left green on purpose: lines taken back when a posting is only moved — that is his Q4. The drag window's missing SANS chip: RED with the fix removed (`po.test.tsx`).
 
 ## 7. The drawing check (§7.10) — `scripts/drawcheck/specs/taken-back-sans.mjs`
 Records replay identical; the build GREEN (`docs/img/handpass/2026-11-05-drawcheck-taken-back-sans/`); the bell's own "Mark all
@@ -97,6 +98,9 @@ read" foot kept as a drawing state.
 | 8 | code read 2 (low, new) | the admin who pressed Undo, having read the worked-out line, saw a posting set again for the same date already read | fixed red-first: his own read record forgets the lines his Undo took (`noticeseen.ts forgetRead`, his own `notices.seen` command); walked S12b |
 | 9 | code read 3 (low, new) | a screen reader no longer heard "SANS" with the name (the line is drawing only) | fixed red-first: " SANS" kept for a screen reader, off the screen (`NamePuck.tsx`, `matrix.css .lw-sr`); walked S19b-sr |
 | 10 | code read 4 (older) | the Undo pressed in a tab opened before the posting ran leaves its line (the tab's old copy) | **filed** with the two-tabs item [LW-NIGHT1025-OLDER] (b), the database step |
+| 11 | the fixes' read 1 (low) | an admin whose sign-in is suspended was skipped (the admin set read sign-ins switched on) | fixed red-first: by role |
+| 12 | the fixes' read 2 (low) | `takeBack` forgot the presser's lines without asking whether the command landed | fixed: only once it landed, as `restoreBody` |
+| 13 | the fixes' read, info 3 | no test for the drag window's chips | written; RED with the fix removed |
 | — | walk, first runs | the script's own: a page tab order, a loose name match, a 4px width read at the phone's zoom, the hidden copy measured, the moved posting's sheet reached by the wrong day, a deleted man's row (kept, D299) | the script corrected; none in the app |
 
 ## 9. For his look
@@ -116,8 +120,13 @@ and touches no pinned bar, fill or zoom code — zoom carried by S19g/h); the Re
 row by the same `NamePuck` — carried by S19b's frozen copy); a member's own taken-back war line in one browser (S21 — tests).
 
 ## 12. Gates
-On his PC: the build; `postout-takeback.test.ts` 11/11, the posting and guard files 39/39; the code check no new finding. The full
-set: GitHub's run on 3a181dbd8 — green.
+On his PC after the last fix: the build; the Leave War project 235 files, 4182 passed; the bell and permission files 174/174; the code check no new finding; docsize OK. The full set: GitHub's run of the pull request on the last pushed commit (D1086).
 
 ## 13. The reads
 A fresh blind Opus code read (`parts/tb1105/read-code.md`): 1 medium, 3 low — dispositions 7–10 in §8; its explicit negatives cover every other path that changes or reads a posting's line. A fresh security read (D1411, `parts/tb1105/read-security.md`): 1 low (§8 #6); only an admin can run `lw.postout` (page, write path and gate agree); Notice delete on `lw.postout` gives an admin no power he did not hold; a member can neither write nor read a `poback` line. Lesson 89 read by a fresh reader against his words: one phrase went past them ("never a faded line") — corrected. The fixes' own narrow read: §14.
+
+## 14. The fixes' narrow read — `parts/tb1105/read-fixes.md`
+A fresh Opus reader handed only the fix commit (b54345ecd) and the findings it answers: all four fixes right, their twin paths covered; 2 low and 1 info — §8 #11–13, all fixed. This round's own fixes are a few lines each (an admin set by role, a landed check), each with a test that was red; no further read.
+
+## 15. The walk line
+Walk: docs/handpass/2026-11-05-taken-back-sans.md · 78 + 80 pictures (walk, re-walk) + 14 for his look · 13 surfaces · 21 orders · MISSING: 1 ruled (D1709, built)

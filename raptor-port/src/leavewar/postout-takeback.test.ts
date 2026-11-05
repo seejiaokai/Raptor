@@ -14,7 +14,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { storeBackend, HOOKS } from '../engine/hooks'
 import { PEOPLE, indexCallsigns } from '../engine/people'
 import { INPUTS } from '../engine/inputs'
-import { initStore as raptorInitStore, notify as raptorNotify, resetSession } from '../state/store'
+import { initStore as raptorInitStore, notify as raptorNotify, resetSession, switchRoleView } from '../state/store'
 import { accountsLoad, signIn, sessionFor, updateAccount, accountOfPid, ACCOUNTS_LIST, isAdminAccount } from '../state/accounts'
 import { installGlobalUndo } from '../state/undo-wire'
 import { globalUndo } from '../undo'
@@ -215,12 +215,22 @@ describe('the reads’ findings', () => {
     expect(poLines('rocky'), 'his posting line went').toEqual([])
     expect(backLines('rocky'), 'no line to a man who is no longer an admin').toEqual([])
   })
+  it('the fixes read 1: an admin whose sign-in is suspended is still an admin — he gets his "taken back" line', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(updateAccount('achex', { on: false })).toBeNull()
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky')).toEqual([])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+  })
   it('code read 2: the admin who pressed Undo, having read the worked-out line, sees it UNREAD when the posting is set again', () => {
     const id = noSignIn()
     expect(postOut(id, PO, false)).toBe(true)
     reach()
     expect(markAllNoticesRead(), 'Saber reads his own "off the manpower" line').toBe(true)
     expect(undoPostOut(id)).toBe(true)
+    expect(backLines('stiff'), 'he pressed it, his line read: still told nothing (D1693)').toEqual([])
     signInAs('hex')
     expect(postOut(id, PO, false)).toBe(true)                    // Hex sets it again, the same date
     signInAs('ad', 'a')
@@ -237,5 +247,22 @@ describe('no SANS for ground crew (his D1709, 5 Nov 26)', () => {
     expect(postOut(g, PO, 'sans'), 'refused').toBe(false)
     expect(getState().postOuts[g]?.to ?? null, 'nothing written').toBeNull()
     expect(postOut(g, PO, 'overseas'), 'Overseas Sqn still his').toBe(true)
+  })
+})
+
+describe('the member view (D292) and a taken-back line', () => {
+  it('an admin in his member view: the taken-back line is neither listed nor counted; back as admin it is there, unread', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(undoPostOut('bane')).toBe(true)
+    signInAs('hex')
+    expect(backLines('rocky')).toHaveLength(1)
+    switchRoleView()
+    expect(noticesFor('rocky').filter(n => (n.what || [])[0]?.k === 'poback'), 'not listed').toEqual([])
+    expect(unreadFor('rocky'), 'not counted').toBe(0)
+    switchRoleView()
+    expect(noticesFor('rocky').filter(n => (n.what || [])[0]?.k === 'poback')).toHaveLength(1)
+    expect(unreadFor('rocky')).toBe(1)
   })
 })

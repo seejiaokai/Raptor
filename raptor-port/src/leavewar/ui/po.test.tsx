@@ -17,6 +17,7 @@ import { getState, initStore, setAccountLookup, setPostingBlockLookup, setPostOu
 import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { SelectSheet } from './SelectSheet'
 import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 beforeEach(() => {
@@ -313,5 +314,21 @@ describe('no SANS for ground crew (D1709)', () => {
     expect(screen.getByTestId('postout-undo')).toBeTruthy()
     expect(screen.queryByTestId('postout-sans')).toBeNull()
     expect(screen.getByTestId('postout-overseas')).toBeTruthy()
+  })
+})
+
+describe('no SANS for ground crew — the drag window (D1709; the fixes read, info 3)', () => {
+  it('a drag over his days alone: the drag window Post out offers no SANS chip', () => {
+    const st = getState() as any
+    st.people.push({ ...st.people[0], id: 'gnd_d', callsign: 'SPANNER', pers: true, seat: 'gnd', sxo: false, scd: false, scn: false, xq: [] })
+    setRole('admin')
+    const sel = { people: ['gnd_d'], from: '2026-06-15', to: '2026-06-17', cells: ['2026-06-15', '2026-06-16', '2026-06-17'].map(date => ({ personId: 'gnd_d', date })) }
+    render(<SelectSheet sel={sel as any} people={() => 'SPANNER'} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} onPostIn={() => undefined} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
+    const po = screen.queryByTestId('sel-postout')
+    expect(po, 'the drag window has its Post out').toBeTruthy()
+    fireEvent.click(po!)
+    expect(screen.queryByTestId('sel-po-sans')).toBeNull()
+    expect(screen.getByTestId('sel-po-overseas')).toBeTruthy()
   })
 })
