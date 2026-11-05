@@ -340,23 +340,7 @@ body.in-cal{padding-bottom:0}
 .icard{border:1px solid var(--edge);border-radius:8px;padding:5px 9px;margin-bottom:4px;background:var(--panel-2);min-width:0;cursor:pointer;text-align:left}
 .icard:hover{border-color:var(--edge-2)}
 .icard-top{display:flow-root;font-size:13px;line-height:1.5;padding:1px 0;overflow-wrap:break-word}
-/* THE CORNER IS THREE COLUMNS (owner D1305, D1310, 24 Oct 26 — "q5 A"; the drawing of record
-   docs/img/handpass/2026-10-24-inp-card-columns/a.png, a-wide.png): LATE (or OIL?) · the document · the hours, each mark
-   in the same place on every card and an empty column keeping its room, so a list of cards reads as columns. The
-   drawing's tracks are 3.7em · 7.4em · 5.6em with .6em between; the gap is folded into the track AFTER it (8em, 6.2em),
-   every mark set at its track's right end, so each right edge stands where the drawing's does — and so a fourth track
-   can hold LATE where OIL? stands beside it (both at once: LATE, then OIL?, as before — the markup is unchanged).
-   The tracks are em of the card's own 13px, so the marks keep their room as the letters grow (his iPhone's are wider).
-   The hours' track grows past its 6.2em only for a value that would not fit — a timed input running on past the day,
-   "10:00–11:00 · till 17 Jul" — and that card alone; the corner still floats, so the names wrap under it (D721) and
-   no card grows taller. */
-.icard-corner{float:right;display:inline-grid;grid-template-columns:auto 3.7em 8em minmax(6.2em,max-content);align-items:center;
-  margin-left:10px;min-height:20px}
-.icard-corner > *{grid-row:1;justify-self:end}
-.icard-corner > .sd-late, .icard-corner > .oiltag{grid-column:2}
-.icard-corner > .sd-late:has(+ .oiltag){grid-column:1;margin-right:8px}
-.icard-corner > .icard-nodoc, .icard-corner > .icard-doc{grid-column:3}
-.icard-corner > .icard-hrs{grid-column:4}
+.icard-corner{float:right;display:inline-flex;align-items:center;gap:8px;margin-left:10px;min-height:20px}
 .icard-sq{display:inline-block;width:9px;height:9px;border-radius:2px;background:var(--adv);margin-right:7px}
 .icard.red .icard-sq{background:var(--hard)}
 .icard-open{margin-right:7px;border-radius:4px;cursor:pointer}
