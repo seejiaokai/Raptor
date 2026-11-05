@@ -179,8 +179,41 @@ test.describe('the board\'s desktop layout on a phone pinches (D1109)', () => {
 
 test.describe('Quals on a phone pinches (D1110)', () => {
   /* a pinch whose first finger lands on a heading in Edit quals lets the heading go (the code read, finding 3 —
-     QualsPage cancelColDrag): not pinned here, because a finger over CDP never picks a heading up in this browser (its
-     press is held by the heading's words; OUTSTANDING [QUALS-HEAD-FINGER-CAPTURE]) — the board's twin is pinned above */
+     QualsPage cancelColDrag): the board's twin is pinned above; the finger's drag itself is pinned just below */
+
+  /* [QUALS-HEAD-FINGER-CAPTURE] (found 21 Oct 26, fixed the night of 6 Nov 26): a finger pressed on a heading's WORDS and
+     slid onto the next heading but one moved no column — the press is held by the words, and the drag let go only of the
+     heading's hold, so every move named the first heading. Driven clear of the edge scroll, whose own re-read hid it. */
+  test('in Edit quals a heading pressed on its words by a finger and slid along the row moves its column', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.locator('#qEdit').tap(); await page.locator('#qEditQuals').tap(); await sleep(300)
+    await page.evaluate(() => {
+      const w = document.querySelector('#page-quals .qwrap') as HTMLElement, ths = [...document.querySelectorAll('#qtbl thead th[data-col]')]
+      const name = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect()
+      w.scrollLeft += ths[1].getBoundingClientRect().left - name.right - 8
+    }); await sleep(300)
+    const cols = () => page.evaluate(() => [...document.querySelectorAll<HTMLElement>('#qtbl thead th[data-col]')].map(t => t.dataset.col))
+    const before = await cols()
+    const at = await page.evaluate(() => {
+      const ths = [...document.querySelectorAll('#qtbl thead th[data-col]')]
+      const l = ths[1].querySelector('.qlbl')!.getBoundingClientRect(), t = ths[2].getBoundingClientRect()
+      const x = l.left + l.width / 2, y = l.top + l.height / 2, hit = document.elementFromPoint(x, y)
+      return { x, y, tx: t.left + t.width / 2, onWords: !!hit?.closest('.qlbl'), clear: t.left + t.width / 2 < innerWidth - 48 }
+    })
+    expect(at.onWords, 'the finger lands on the heading\'s words').toBe(true)
+    expect(at.clear, 'the heading it is slid onto stands clear of the edge scroll\'s band').toBe(true)
+    await touch(cdp, 'touchStart', [[at.x, at.y]]); await sleep(60)
+    for (let i = 1; i <= 12; i++) { await touch(cdp, 'touchMove', [[at.x + (at.tx - at.x) * i / 12, at.y]]); await sleep(24) }
+    await sleep(90)
+    expect(await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('#qtbl thead th.qdrop')].map(t => t.dataset.col)),
+      'mid-drag, the heading under the finger is lit as the landing').toEqual([before[2]])
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    const after = await cols()
+    expect(after.slice(0, 4), 'the column moved under the finger').toEqual([before[0], before[2], before[1], before[3]])
+    expect(errs).toEqual([])
+    await context.close()
+  })
   test('the table zooms, the buttons stay; the pinned heading row lines up; a second finger off the table still pinches', async ({ browser, baseURL }) => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await sleep(400)

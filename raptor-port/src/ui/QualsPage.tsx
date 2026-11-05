@@ -566,7 +566,15 @@ export function QualsPage() {
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
       if (!th || (e.target as HTMLElement).closest('[data-del]')) return
       from = th.dataset.col!
+      /* A FINGER'S HOLD IS ON THE ELEMENT IT LANDED ON ([QUALS-HEAD-FINGER-CAPTURE], the night of 6 Nov 26 — found 21 Oct
+         26): a press on the heading's words is held by the words (`.qlbl`), not by the heading, so letting go of the
+         heading's hold alone left every move reported on the words the press began on and the column never found a new
+         home (a finger slid onto the next heading moved nothing; only the edge scroll's re-read ever did). Both holds are
+         let go — and the move below reads the heading under the finger itself, so an engine that keeps a hold anyway
+         still lands it. Pinned by e2e/pinchzoom.spec.ts "in Edit quals a heading pressed on its words by a finger…". */
       try { th.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
+      const pressed = e.target as Element
+      if (pressed !== th) try { pressed.releasePointerCapture?.(e.pointerId) } catch { /* nothing held there */ }
       th.classList.add('qdragging')
       /* the frame goes up in the same tick as the pointerdown — ONE measurement
          here and one at the landing, nothing per pointermove. It is placed in
@@ -586,7 +594,11 @@ export function QualsPage() {
       if (!from) return
       lx = e.clientX; ly = e.clientY
       auto?.point(lx, ly)
-      const th = (e.target as HTMLElement).closest?.('th[data-col]') as HTMLElement | null
+      /* the heading under the pointer, read from where it is — never from the event's target alone, which a hold kept on
+         the element pressed would leave naming the first heading (above); the target only where nothing can be read from
+         the point (a test page with no layout) */
+      const hit = document.elementFromPoint?.(lx, ly) as HTMLElement | null | undefined
+      const th = (hit?.closest?.('th[data-col]') ?? (e.target as HTMLElement).closest?.('th[data-col]')) as HTMLElement | null
       if (!th || th.dataset.col === from) return
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
