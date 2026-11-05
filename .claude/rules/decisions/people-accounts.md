@@ -68,7 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
-| D1696 | 5 Nov 26 | *"Keep"* — to question 1 of the posting-out bell line, put again in plain words with its picture (the "off the manpower" line) | **The bell's "off the manpower" line is worked out from the posting as it stands, as built: it moves with the posting's date, goes with an undone posting (a read one taken back, D1693), and goes if the man is archived or deleted by hand later; it is not saved as the other three lines are.** | `raptor-port/docs/notifications-register.md` B12 (D1696); `raptor-port/docs/data-schema.md` §The bell's notices |
+| D1696 | 5 Nov 26 | The bell's "off the manpower" line is worked out from the posting as it stands, as built: it moves with the posting's date, goes with an undone posting (a read one taken back, D1693), and goes if the man is archived or deleted by hand later; it is not saved as the other three lines are. |
 | D1695 | 5 Nov 26 | His direction: one app and one database for many squadrons — each person's squadron set when his account is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in one squadron and half in another. |
 | D1694 | 5 Nov 26 | On Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row on each side, clear of his name, as built — not on the row's edge, as drawn. |
 | D1691 | 5 Nov 26 | When a posting out deletes a man on its date, his line in the admins' bells opens nothing when tapped — he has no row left on Admin → Users — and the line stays in the bell as the record, as the bell's "Deleted" line for an input does. |
