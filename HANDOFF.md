@@ -21,20 +21,17 @@ the later merge keeps both (D78).
 
 ## Now
 <!-- now:claude/overnight-1106 -->
-### `claude/overnight-1106` — THE NIGHT OF 6 NOV 26 (his "/overnight 12", then "Low go")
-- After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
-- **His selection, in order (Low — one helper at a time, D1104):**
-  1. **Leave War faults** — branch `claude/lw-faults-1106` from `main`: [LW-NIGHT1025-OLDER] (a) first (the words for a new afternoon bid landing on the morning bid), then (c), (d), (f), (g); [CSS-WRAPPER-GUARD]. Check FULL (bids are saved data); one fresh, blind Opus read (D790); about 3½ h.
-  2. **Inputs** — branch `claude/inputs-batch-1106` from `main`: [INP-CARD-COLUMNS] (his pick A, D1310), [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor's findings on the Inputs pages. Check WALK; one fresh, blind Opus read; about 3 h.
-  3. **People and Quals** — branch `claude/people-quals-1106` from `main`: [QUALS-HEAD-FINGER-CAPTURE], [QUALS-PINCH-NOSDA-HEAD], [QUALS-ZOOM-EDGE-SLIVER], React Doctor's findings in the People, Quals, Holidays and sign-in files — the Admin page left out (pull request 636 changes it). Check WALK; one fresh, blind Opus read, and a security read if sign-in is touched (D1411); about 3 h.
-- **Not tonight:** the board-by-keys job and React Doctor on the shell and windows — they share files with pull request 636, waiting for his look.
-- **His answers:** none asked. The rules diet stays "wait for Fable 5.5" (D1718 — he did not write "trial").
-- **This branch** carries the night's records: D1718, [RULES-DIET] and its brief, this block, the reads owed on [NO-ASTRA-LIST].
-- **Job 1 DONE** — `claude/lw-faults-1106`, its pull request to be opened: (d) and (f) built red-first, [CSS-WRAPPER-GUARD] built; (a) and (g) were already fixed on `main` (a stale line in the sizing plan); (c) not a fault — Q1. FULL walk, two Opus reads, evidence `raptor-port/docs/handpass/2026-11-06-lw-faults.md`. Filed: [LW-PO-DAYS-DRAWING], [LW-DOUBLETAP-OTHER-WINDOWS], [LW-ROLLBACK-FOCUS], [LW-BIDPICKER-CSS-INSIDE].
-- **Job 2 DONE** — `claude/inputs-batch-1106`, its pull request to be opened: React Doctor on the Inputs pages 22 → 0 (4 fixed, 18 kept with reasons), the List's headings sort from the keys; the card columns built as drawn and taken back (Q2). [BATCH-14OCT-LEFTOVERS] was already done (a stale line). WALK, one Opus read, evidence `raptor-port/docs/handpass/2026-11-06-inputs-batch.md`. Filed: [INP-HEAD-SORT-READER], [QUALS-HEAD-SORT-KEYS], [WALK-SCRIPT-UTF8]. Left outside the repo: temporary build folders `C:dw1106`, `C:db1106`, `C:da1106`.
-- **Job 3 DONE** — `claude/people-quals-1106`, its pull request to be opened: the three Quals faults real and fixed red-first; React Doctor on People and Quals 36 → 0 (16 fixed, 20 kept with reasons); sign-in touched (labels only), a security read found no hole. WALK, an Opus read, evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`. Filed: [QUALS-PINNED-HEAD-NO-DRAG], [QUALS-OUTLINE-RESCROLL].
-- **Questions waiting for him:** Q2 — [INP-CARD-COLUMNS]: A as drawn (6 of 46 cards taller on his iPhone) or R (1 of 46), R recommended. Q3 — the Inputs List's headings now sort from the keys with the cyan ring, new for keyboard users (D1625): keep, recommended. Q1 — [LW-PO-DAYS-DRAWING] (an OD over a posted-out man's gone days shows a bare "PO"; recommended: draw what is filed there as leave is, a drawing first).
-- **Pull requests:** each job's opened when its check closes, cut from `main`; unwatched at once.
+### `claude/overnight-1106` — the night of 6 Nov 26 DONE: three pull requests waiting for his look; this branch the night's records
+- **Ready for his look and "merge live"** (each its own branch from `main`, unwatched, Auto-fix switched off — D1090):
+  - Pull request 646 `claude/lw-faults-1106` — the Leave War: a fast second tap no longer opens something behind a closed bid window; a refused change keeps the role and viewer; the wrapper guard. FULL, evidence `raptor-port/docs/handpass/2026-11-06-lw-faults.md`. His phone look: tap a leave twice fast — nothing opens behind.
+  - Pull request 647 `claude/inputs-batch-1106` — the Inputs pages' code check (22 → 0) and the List's headings sorted from the keys. WALK, `raptor-port/docs/handpass/2026-11-06-inputs-batch.md`.
+  - Pull request 648 `claude/people-quals-1106` — Quals: a finger's heading drag, the pinch edges; People and Quals' code check (36 → 0). WALK with a security read, `raptor-port/docs/handpass/2026-11-06-people-quals.md`.
+- **Questions waiting for him (each filed):** Q1 [LW-PO-DAYS-DRAWING] — an OD over a posted-out man's gone days shows a bare "PO"; recommended: draw what is filed there as leave is (a drawing first). Q2 [INP-CARD-COLUMNS] — the drawn columns make 6 of 46 cards taller on his iPhone; A as drawn or R (1 of 46), R recommended. Q3 — the Inputs List's headings sort from the keys with the cyan ring, new for keyboard users: keep, recommended.
+- **Stale lines found:** [LW-NIGHT1025-OLDER] (a), (g) and all of [BATCH-14OCT-LEFTOVERS] were already done on `main` (the latter ready to archive whole).
+- **This branch** (notes only): D1718 (the rules diet waits for Fable 5.5 — [RULES-DIET], its brief `raptor-port/docs/superpowers/plans/2026-11-06-rules-diet.md`), the night's filing, the reads owed on [NO-ASTRA-LIST]. Its pull request to be opened in the morning; a notes-only change merges by itself once green (D1407).
+- **Left on the PC:** temporary build folders `C:dw1106`, `C:db1106` (each with a link into the app's packages — delete the link before the folder) and `C:da1106`, outside the repo.
+- **Numbers:** rulings next free after D1718; the walk ledger has the night's three rows.
+- **Opening line for the next job:** none set — his answers to Q1–Q3, or the next night from the sized plan (`raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`, night 2's job 6 and night 1's jobs 2–3 once pull request 636 is live).
 <!-- /now -->
 <!-- now:claude/postout-bell-look -->
 ### `claude/postout-bell-look` — LIVE on his "merge live" of 5 Nov 26 (pull request 641); this block goes at the next handoff
