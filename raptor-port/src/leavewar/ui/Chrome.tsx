@@ -18,6 +18,7 @@ import { askApprRing, askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, se
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
 import { clashWhat } from './clashwhat'
+import { GearIcon, TicketIcon } from '../../ui/icons'
 import './chrome.css'
 
 /** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
@@ -72,21 +73,10 @@ function GridGlyph() {
     </svg>
   )
 }
-function ClockGlyph() {
-  return (
-    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />
-    </svg>
-  )
-}
-function GearGlyph() {
-  return (
-    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
-    </svg>
-  )
-}
+/* OIL's mark is OIL's own, a ticket — a day off held (owner D1704, 5 Nov 26, answering his D1700: "Isint the oil earned
+   symbol the same as history?"): the plain clock it wore here is History's, so a clock means History only; the board's OIL
+   Earn wears the same ticket. And the gear is the app's one gear (D1509), shared from ui/icons.tsx — this row's own drawing
+   until round 4 moved it there for every settings button; here it keeps `.btnglyph`'s grey, as today (D1707). */
 
 /* Approvals' mark — a list with a tick, as drawn (`full/r19-nav-*`, `r22-1-desk`) */
 function ApprGlyph() {
@@ -196,7 +186,7 @@ export function Topbar() {
           onClick={go}
           onKeyDown={e => tabKey(e, i)}
         >
-          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : t === 'balances' ? <BalGlyph /> : <ClockGlyph />}
+          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : t === 'balances' ? <BalGlyph /> : <TicketIcon />}
           <span className="intab-t">{label}</span>
           {t === 'approvals' && waiting > 0 && <span className="appr-tabn" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
         </button>
@@ -212,7 +202,7 @@ export function Topbar() {
       aria-label="Settings"
       onClick={() => askLw({ kind: 'settings' })}
     >
-      <GearGlyph />
+      <GearIcon />
     </button>
   )
   const view = (

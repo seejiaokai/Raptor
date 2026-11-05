@@ -55,6 +55,7 @@ import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, typ
 import { rowInWindow } from './rowinwindow'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
+import { ReorderIcon } from '../../ui/icons'
 import './matrix.css'
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
@@ -3615,7 +3616,8 @@ export function Matrix() {
                   >
                     {/* "Done" in words at every width (D1275 — on a phone too, narrowing D1019's short words for this one
                         button): its own class, never the droppable `.rtlbl` the phone hides */}
-                    ⇅<span className="rtword"> Done</span>
+                    {/* the typed ⇅ is the app's drawn Reorder mark (owner D1703, 5 Nov 26) */}
+                    <ReorderIcon /><span className="rtword"> Done</span>
                   </button>
                 )}
                 {/* No − / + here any more: the grid is pinched (a desktop: Ctrl+scroll), owner D1276 / D1228 — they went

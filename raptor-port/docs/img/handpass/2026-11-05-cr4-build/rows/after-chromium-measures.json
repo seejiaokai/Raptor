@@ -1,0 +1,256 @@
+{
+ "rows": {
+  "375": {
+   "inputs": {
+    "rowH": 85,
+    "gearTop": 49,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 32,
+    "viewsTop": 49,
+    "searchW": null,
+    "filtersTop": 49,
+    "fieldsTop": null,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 36,
+    "gearTop": 0,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 42
+   }
+  },
+  "402": {
+   "inputs": {
+    "rowH": 85,
+    "gearTop": 49,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 38,
+    "viewsTop": 49,
+    "searchW": null,
+    "filtersTop": 49,
+    "fieldsTop": null,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 36,
+    "gearTop": 0,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 42
+   }
+  },
+  "821": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 52,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 86,
+    "gearTop": 50,
+    "gearRight": 651,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "900": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1100": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1280": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1300": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1340": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 145,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lines": 3
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1366": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 145,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1440": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1536": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1920": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  }
+ }
+}

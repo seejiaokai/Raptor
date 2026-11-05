@@ -2924,7 +2924,9 @@ test('while rearranging, the bar reads "⇅ Done" in words (D1275)', async ({ pa
   for (const width of isPhone() ? [390, 360] : [1440]) {
     await page.setViewportSize({ width, height: isPhone() ? 664 : 900 })
     await page.waitForTimeout(200)
-    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('⇅ Done')
+    /* its ⇅ is the app's drawn Reorder mark since D1703 */
+    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('Done')
+    await expect(done.locator('svg.btnglyph'), `${width}: the Reorder mark beside it`).toHaveCount(1)
     if (isPhone()) await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
   }
   await done.click()
@@ -5257,7 +5259,7 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     await expect(gone).toHaveCount(0)
     const lbl = toggle.locator('.rtlbl')
     await expect(lbl).toBeHidden()
-    expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
+    await expect(toggle.locator('svg.btnglyph'), 'the drawn Reorder mark (D1703 — the typed ⇅ before)').toHaveCount(1)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
     await toggle.click()
     await expect(toggle).toHaveCount(0)

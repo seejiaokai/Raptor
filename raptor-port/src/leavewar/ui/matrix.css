@@ -1815,6 +1815,10 @@ touch-action: pan-x pan-y;
   cursor: pointer;
   white-space: nowrap;
 }
+/* A DRAWN MARK IN ITS LINE (owner D1703, 5 Nov 26 — round 4 of the consistency look): the typed ⇅ and ↺ (Rearrange the grid,
+   Reset order, the bar's Done) are the app's drawn marks, standing in the words' line as the typed ones did, a space after,
+   in the button's own colour, at the drawing's 14px (`scripts/handpass/cr4-look.mjs` q4). */
+.rtbtn > .btnglyph { display: inline-block; width: 14px; height: 14px; vertical-align: -0.15em; color: currentColor; }
 /* HOVER IS A MOUSE'S, and only a mouse's (owner, 6 Sep 26 — "a second click
    when it's turned off shouldn't glow"). A touch screen has no hover to
    leave: iOS applies `:hover` to the last element TAPPED and leaves it stuck
