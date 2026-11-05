@@ -142,7 +142,7 @@ the Leave War hashed, and the next sign-in checked; F8 the hash week-independent
 request); F7 (documents) not reachable here — §8. Its observation on AdA4: the picked name stays in the hidden select, while
 the pill shows the saved name (`walk/AdA4-pill-after-repaint.png`: "CUR CK Ace") — on the developer route only; in Q3.
 
-**Round 2 (`probe2/probe2.log`).** The positive control first: as the admin, 14 editing presses (text cells typed, the
+**Round 2 (`probe2/results-probe2.txt`).** The positive control first: as the admin, 14 editing presses (text cells typed, the
 search, the in-time lines) — 11 SAVED and showed on the week (P1 PASS): the probe sees an edit when there is one. Then the
 member on Edit Schedule: 102 kinds listed as the worklist grew (28 pressed, 2 disabled, 71 gone before their turn — a
 window's own control that closed with it — and 1 NOT PRESSED: the crew panel's "Next day", covered; a view control); the
