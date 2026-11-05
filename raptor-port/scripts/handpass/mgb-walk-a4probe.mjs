@@ -1,0 +1,12 @@
+// Walker A: probe of the Users page (not a walk result)
+import { L, VER, shot } from './mgb-walk-a-lib.mjs'
+console.log(VER, 'a4probe v4')
+const { page, ctx } = await L.open('desktop')
+await L.signIn(page, 'ad', 'a')
+await page.evaluate(() => window.go('admin')); await page.waitForTimeout(500)
+await page.locator('.adm-cat').filter({ hasText: 'Users' }).first().click(); await page.waitForTimeout(500)
+await page.getByPlaceholder(/Find a callsign/).fill('Ranger'); await page.waitForTimeout(600)
+await page.locator('.acc-tap').first().click(); await page.waitForTimeout(800)
+console.log(await page.evaluate(() => [...document.querySelectorAll('button,input,select')].filter(b => b.getBoundingClientRect().width > 0 && b.closest('#page-admin, .modal, .win, [role=dialog]')).map(b => (b.id || b.className) + '|' + (b.textContent || b.value || '').trim().slice(0, 30)).join('\n')))
+await shot(page, 'probe-users-open')
+await ctx.close(); await L.finish('mgb-walk-a4probe').catch(() => {}); process.exit(0)

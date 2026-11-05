@@ -54,6 +54,23 @@ export async function bootStorage(backend: Backend): Promise<{ wb: Whiteboard; p
   return { wb, postman }
 }
 
+/* the store as it is for reading, with every write refused as a full store refuses it (D1666 — ?savefail) — but only
+   once the app has started (`armSaveFail`, called by main.tsx after the boot): the boot itself writes (the schema's
+   stamp, a journal), and a refusal there would stop the app before its sign-in */
+let saveFailArmed = false
+export function armSaveFail(): void { saveFailArmed = true }
+function refusingWrites(store: Storage): Storage {
+  const no = (write: () => void) => { if (saveFailArmed) throw new DOMException('Not saved: the ?savefail test switch is on', 'QuotaExceededError'); write() }
+  return {
+    get length() { return store.length },
+    key: (i: number) => store.key(i),
+    getItem: (k: string) => store.getItem(k),
+    setItem: (k: string, v: string) => no(() => store.setItem(k, v)),
+    removeItem: (k: string) => no(() => store.removeItem(k)),
+    clear: () => no(() => store.clear()),
+  } as Storage
+}
+
 /* Which backend (spec §Backend choice): ?fresh=1 → Memory; tests or
    VITE_STORAGE=memory → Memory; `vite` dev → Memory unless
    VITE_STORAGE=browser; a built site → Browser, or Memory when browser
@@ -69,6 +86,11 @@ export function chooseBackend(
   try {
     const store = ls ?? localStorage
     void store.length
+    /* THE TEST SWITCH `?savefail` (owner D1666, 5 Nov 26 — "Ok test switch"): a tab opened with it refuses every save, as a
+       full or locked browser storage does, so the "Not saved" band, its Retry and the pass's "Not sent yet" (D1655, D1657,
+       D1664) can be seen on a real phone. Reading still works, so the app opens on what is saved; Retry is refused again
+       while the switch is on; the link without it ends the test. Like ?swdebug and ?kbdebug, nobody without it is touched. */
+    if (/[?&]savefail(=[^&]*)?(&|$)/.test(search)) return new BrowserBackend(refusingWrites(store))
     return new BrowserBackend(store)
   } catch (e) {
     return new MemoryBackend()

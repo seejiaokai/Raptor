@@ -1,0 +1,41 @@
+PASS G0 the admin turns the guest view on (Admin → Users) — saw true
+PASS G1 an unknown sign-in name lands on Request access — saw true
+PASS G2 pressing Request access saves the request (one write through the saver) and shows the waiting screen — saw {"waiting":true,"reqWrites":["set raptor:__txn","set raptor:settings/accessreq:rqmw2puaad80ba","set raptor:changes/cmw2pu6nfgk9ipv-2","remove raptor:__txn"]}
+PASS G3 View the schedule opens the guest view — saw true
+NOTE G4-controls — button:Sign out · button:Jul 20 · button:Jul 27 · button:Aug 03 · button:Aug 10
+PASS G4 everything a guest does — weeks, arrows, every control, a 6 s wait — saves nothing — saw []
+NOTE G5-again — {"back":{"guest":true,"waiting":false,"form":false},"writes":["remove talon:reopen-page"]}
+PASS G5 as the admin, Admin → Users shows the stranger's request — saw 1
+PASS GF0 the admin turns the guest view on (Admin → Users) — saw true
+PASS GF1 an unknown sign-in name lands on Request access — saw true
+NOTE GF2-refused — {"waiting":true,"band":false,"reqWrites":["set raptor:__txn (REFUSED)"],"said":"TALON\nYour request is with the admins\n\nSigned in as stranger\n\nYou asked for access as Stranger (ST · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it.\n\nMeanwhile you can look at the schedule, read only.\n\nView the schedule\nSign out"}
+FAIL GF2 with storage refusing, the person who asked is TOLD his request is not saved (a "Not saved" warning on the access screen) — saw {"waiting":true,"band":false}
+PASS GF3 View the schedule opens the guest view — saw true
+NOTE GF3-band — {"band":false,"pending":2}
+NOTE GF4-controls — button:Sign out · button:Jul 20 · button:Jul 27 · button:Aug 03 · button:Aug 10
+PASS GF4 everything a guest does — weeks, arrows, every control, a 6 s wait — saves nothing — saw ["set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)"]
+NOTE GF4-writes — ["set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)"]
+NOTE GF5-again — {"back":{"guest":true,"waiting":false,"form":false},"writes":["set raptor:__txn (REFUSED)","remove talon:reopen-page (REFUSED)"]}
+NOTE GF6-storage-still-refusing — {"writes":["set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","remove talon:reopen-page (REFUSED)"],"ask":["guestApp"]}
+NOTE GF7-leave-asked — 1
+NOTE GF7-after-reload — ["accessRequest"]
+PASS GR0 the admin turns the guest view on (Admin → Users) — saw true
+PASS GR1 an unknown sign-in name lands on Request access — saw true
+NOTE GR2-refused — {"waiting":true,"band":false,"reqWrites":["set raptor:__txn (REFUSED)"],"said":"TALON\nYour request is with the admins\n\nSigned in as stranger\n\nYou asked for access as Stranger (ST · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it.\n\nMeanwhile you can look at the schedule, read only.\n\nView the schedule\nSign out"}
+FAIL GR2 with storage refusing, the person who asked is TOLD his request is not saved (a "Not saved" warning on the access screen) — saw {"waiting":true,"band":false}
+PASS GR3 View the schedule opens the guest view — saw true
+NOTE GR3-band — {"band":false,"pending":2}
+NOTE GR4-controls — button:Sign out · button:Jul 20 · button:Jul 27 · button:Aug 03 · button:Aug 10
+PASS GR4 everything a guest does — weeks, arrows, every control, a 6 s wait — saves nothing — saw ["set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)"]
+NOTE GR4-writes — ["set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)","set raptor:__txn (REFUSED)"]
+NOTE GR5-again — {"back":{"guest":true,"waiting":false,"form":false},"writes":["set raptor:__txn (REFUSED)","remove talon:reopen-page (REFUSED)"]}
+NOTE GR6-after-storage-works — {"writes":["set raptor:__txn (REFUSED)","remove talon:reopen-page (REFUSED)","set raptor:__txn","set raptor:settings/accessreq:rqmw2pvamom22r","set raptor:changes/cmw2pv6zie7u7do-2","remove raptor:__txn"],"ask":["guestApp"]}
+NOTE GR7-leave-asked — 0
+NOTE GR7-after-reload — ["guestApp"]
+NOTE X1-admin-step — on|Undo — the guest switch
+NOTE X2-undo-click — page.click: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#un
+FAIL X2 in his member view the admin's own setting step is not undone: nothing saved, the page stays, he is told why — saw {"asMember":"Saber · Member","undo":null,"said":[],"writes":[],"page":"viewsched→viewsched"}
+NOTE X3 — {"bandAdmin":true,"bandLogin":false,"bandAccess":false,"refusedWrites":3}
+NOTE X4-admin-back — {"writes":354,"model":"28532:1373450409","elog":0,"undo":null,"redo":null,"page":"viewsched","failedBand":false,"notes":2}

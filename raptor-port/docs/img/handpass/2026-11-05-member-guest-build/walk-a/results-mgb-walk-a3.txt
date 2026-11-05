@@ -1,0 +1,42 @@
+NOTE A-phone — {"topBand":1,"signinBand":1}
+PASS S3-phone-band sign-in carries the band after a failed save — saw {"topBand":1,"signinBand":1}
+NOTE S3-phone-geo — {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,"#luser":{"top":227,"bottom":267},"#lpass":{"top":296,"bottom":336},".lb-mark":{"top":80,"bottom":112}}
+PASS S3-phone-luser box focused, clear of the band and inside the visible screen — saw {"bandBottom":36,"boxTop":227,"boxBottom":267,"vvH":874,"vvTop":0,"vh":874,"focused":"luser"}
+PASS S3-phone-lpass box focused, clear of the band and inside the visible screen — saw {"bandBottom":36,"boxTop":296,"boxBottom":336,"vvH":874,"vvTop":0,"vh":874,"focused":"lpass"}
+PASS S7-signin-phone-stay Retry still refused: band stays, screen stays under it — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1}
+PASS S7-signin-phone-gone Retry allowed: band and .band-up gone — saw {"band":null,"login":"login","bands":0}
+PASS S6-phone-signin-band chain: sign-in has the band — saw {"topBand":1,"signinBand":1}
+PASS S6-phone-form-band chain: Request access form shows the band, screen moved down — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,".lb-mark":{"top":80,"bottom":112}}
+PASS S7-form-phone-stay request form: Retry refused, band stays — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1}
+PASS S7-form-phone-gone request form: Retry allowed, band and .band-up gone — saw {"band":null,"login":"login","bands":0}
+PASS S6-phone-pass-band chain: the pass has the band, logo below it — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,".lb-mark":{"top":80,"bottom":112}}
+NOTE S8-phone — {"bar":{"top":0,"bottom":80,"left":0,"right":402},"band":{"top":43,"bottom":79,"left":0,"right":402},"cls":"topbar guestbar save-failed","page":{"top":80,"bottom":2499,"left":0,"right":402},"strip":{"cls":"page on","top":80,"bottom":2499},"notes":["savestat failed:Not saved — keep this page ope"],"vw":402}
+PASS S8-phone-band guest page: band is the bar's last line (inside the bar, page below it) — saw {"bar":{"top":0,"bottom":80,"left":0,"right":402},"band":{"top":43,"bottom":79,"left":0,"right":402},"cls":"topbar guestbar save-failed","page":{"top":80,"bottom":2499,"left":0,"right":402},"strip":{"cls":"page on","top":80,"bottom":2499},"notes":["savestat failed:Not saved — keep this page ope"],"vw":402}
+NOTE S8-phone-scrollers — [{"cls":"week","sw":2742,"cw":402,"st":12}]
+NOTE S8-phone-swipe — {"before":12,"after":402}
+NOTE S8-phone-scrolled — {"bandTop":43,"barTop":0,"barBottom":80,"scrollY":400}
+PASS S7-guest-phone-stay guest bar: Retry refused, band stays — saw 1
+PASS S7-guest-phone-gone guest bar: Retry allowed, band gone — saw {"gone":0,"cls":"topbar guestbar"}
+FAIL S6-phone-pass-again chain: signing in again shows the pass again (request kept) — saw 0
+NOTE A-desk — {"topBand":1,"signinBand":1}
+PASS S3-desk-band sign-in carries the band after a failed save — saw {"topBand":1,"signinBand":1}
+NOTE S3-desk-geo — {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,"#luser":{"top":414,"bottom":454},"#lpass":{"top":484,"bottom":524},".lb-mark":{"top":256,"bottom":298}}
+PASS S3-desk-luser box focused, clear of the band and inside the visible screen — saw {"bandBottom":36,"boxTop":414,"boxBottom":454,"vvH":864,"vvTop":0,"vh":864,"focused":"luser"}
+PASS S3-desk-lpass box focused, clear of the band and inside the visible screen — saw {"bandBottom":36,"boxTop":484,"boxBottom":524,"vvH":864,"vvTop":0,"vh":864,"focused":"lpass"}
+NOTE S13a-desk — {"found":true,"seq":[{"id":"","tag":"BUTTON","txt":"Retry","inBand":true}],"ring":{"onRetry":true,"outline":"solid 2px rgb(59, 198, 232)","boxShadow":"none","focusVisible":true,"bg":"rgb(229, 194, 74)"}}
+PASS S13a-desk Tab reaches Retry on the sign-in with the band up; a keyboard ring is visible — saw {"found":true,"ring":{"onRetry":true,"outline":"solid 2px rgb(59, 198, 232)","boxShadow":"none","focusVisible":true,"bg":"rgb(229, 194, 74)"}}
+PASS S7-signin-desk-stay Retry still refused: band stays, screen stays under it — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1}
+PASS S7-signin-desk-gone Retry allowed: band and .band-up gone — saw {"band":null,"login":"login","bands":0}
+PASS S6-desk-signin-band chain: sign-in has the band — saw {"topBand":1,"signinBand":1}
+PASS S6-desk-form-band chain: Request access form shows the band, screen moved down — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,".lb-mark":{"top":152,"bottom":194}}
+PASS S7-form-desk-stay request form: Retry refused, band stays — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1}
+PASS S7-form-desk-gone request form: Retry allowed, band and .band-up gone — saw {"band":null,"login":"login","bands":0}
+PASS S6-desk-pass-band chain: the pass has the band, logo below it — saw {"band":{"top":0,"bottom":36},"login":"login band-up","bands":1,".lb-mark":{"top":200,"bottom":242}}
+NOTE S8-desk — {"bar":{"top":0,"bottom":93,"left":0,"right":1536},"band":{"top":56,"bottom":92,"left":0,"right":1536},"cls":"topbar guestbar save-failed","page":{"top":93,"bottom":2481,"left":0,"right":1536},"strip":{"cls":"page on","top":93,"bottom":2481},"notes":["savestat failed:Not saved — keep this page ope"],"vw":1536}
+PASS S8-desk-band guest page: band is the bar's last line (inside the bar, page below it) — saw {"bar":{"top":0,"bottom":93,"left":0,"right":1536},"band":{"top":56,"bottom":92,"left":0,"right":1536},"cls":"topbar guestbar save-failed","page":{"top":93,"bottom":2481,"left":0,"right":1536},"strip":{"cls":"page on","top":93,"bottom":2481},"notes":["savestat failed:Not saved — keep this page ope"],"vw":1536}
+NOTE S8-desk-scrollers — [{"cls":"week","sw":7936,"cw":1536,"st":0}]
+NOTE S8-desk-swipe — {"before":0,"after":300}
+NOTE S8-desk-scrolled — {"bandTop":56,"barTop":0,"barBottom":93,"scrollY":400}
+PASS S7-guest-desk-stay guest bar: Retry refused, band stays — saw 1
+PASS S7-guest-desk-gone guest bar: Retry allowed, band gone — saw {"gone":0,"cls":"topbar guestbar"}
+FAIL S6-desk-pass-again chain: signing in again shows the pass again (request kept) — saw 0

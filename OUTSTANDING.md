@@ -130,10 +130,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
 - [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix.
-- [MEMBER-EDITPAGE-CHECK] — a check: a member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons.
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
-- [GUEST-SAVE-WARNING] — a check: does anything a guest does get saved through the app's saver? If not, close it with the reason.
+- [NOTSAVED-REFUSAL-LOOK] — the app's other "not saved" refusal messages get one matching look of their own, apart from the band — pictured today and drawn for him first (D1665).
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
 - [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
@@ -202,6 +201,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-WAITING-CREATEDBY] — the database's own "created by" on a waiting person's change-log row would name him; write such rows through a service account.
 - [DB-ONE-MASTER-FIXES] — the check's places that do not read the one table, for the database step (D1587, D1589): Quals ticks, holidays, a posted-out man, a Tracker student, medical documents, four smaller, history names.
 - [DB-OIL-OWN-TABLE] — at the database step earned OIL gets its own table by person and date, not tied to a Leave War period, read by every screen (D1579, 3 Nov 26).
 - [DB-WEEK-AHEAD] — at the database step, the weeks on either side are fetched ahead and kept on the phone, so a cross never waits on the network (his question, 3 Nov 26).
@@ -1011,13 +1011,21 @@ THREE halves now (owner, 15–17 Sep 26):
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
 
-### [GUEST-SAVE-WARNING] Does a guest's own page ever need the failed-save warning? — a check (filed 5 Oct 26)
-**Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`
-noted that someone signed in without access gets a separate, read-only set of pages (`raptor-port/src/ui/GuestApp.tsx`)
-that has never drawn the save warning, before or after that fix. **To check:** does anything a guest does get saved
-through the app's saver (an access request, for one)? If it does and that save can fail, the guest is told nothing —
-give that page the same warning (`SaveBand`, `raptor-port/src/ui/SaveStatus.tsx`). If nothing of a guest's is saved
-that way, close this with the reason. Not walked; nothing on screen is known to be wrong.
+### [NOTSAVED-REFUSAL-LOOK] The app's other "not saved" messages, one look of their own (filed 5 Nov 26 — his D1663, D1665)
+**What:** besides the failed-save band (one design everywhere since D1655), the app says "not saved" in its own way where ONE
+change is refused: a Leave War figure box (`raptor-port/src/leavewar/ui/balancefigs.ts`, `BalancesPage.tsx`'s note), the
+grades window's name and days boxes (`GradesSheet.tsx`), the schedule's refused change (`raptor-port/src/ui/inputedit.tsx
+NOT_SAVED`, its passing note) and a document too big to store (`raptor-port/src/boot.ts`). **His answer (D1665):** they take one
+matching look of their own, kept apart from the band's, so a refusal never reads as a storage failure. **To do:** picture each
+today, reached through the app's own doors; draw the common look on the real app; put it to him (D1625) before any build.
+**Place:** after the member / guest batch merges, as its own small job.
+
+### [DB-WAITING-CREATEDBY] The database's own "created by" on a waiting person's change-log row (filed 5 Nov 26)
+**What:** since the member / guest check (`claude/member-guest-checks`), the change-log batch saved with a waiting person's
+access request names his role ("pending"), not his sign-in name (`raptor-port/src/state/changebatch.ts batchActor`), because every
+member and guest reads the change log (data-model §11). Dataverse stamps every row with its own "created by", which would name
+him again. **To do at the database step:** write such rows through a service account, or keep that column from members and
+guests. Evidence `raptor-port/docs/handpass/parts/mg1105/read-opus.md`. **Place:** the Database step (D473), with [DB-STEP].
 
 ### [WALK-COST] Make a walk cost fewer tokens — measure where a walker's tokens go, then cut the avoidable part (his question, 7 Oct 26; a proposal, not ruled)
 His words: *"how can we make walks less token intensive? Or it's inevitable."* Told to him: not inevitable — a walker's half
@@ -2019,6 +2027,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The night of 30 Oct 26, job 2 (`claude/lw-small-fixes-1030`): `[LW-DELETED-NO-ROW-APPROVE]`, `[LW-HALF-DAY-WORDS-LEFT]`, `[LW-M1-READ-LEFTOVERS]` (2), `[LW-MONTH-MEMO-UNPINNED]` — an approval that writes an input (saved data) | one fresh, blind Opus reader of the finished code (D790, D903) | Astra's and Sol 6.1's two independent reads (D590) |
 | The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The night of 3 Nov 26 and the morning after (`claude/week-swipe-pdf-print` — the morning: the swipe Safari gives no touch for, the week stilled under the slide; four fresh Opus reads in all): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks), the keyboard leftovers (`[BOARD-OPEN-BY-KEYS]`, `[VEILED-WINDOWS-BAR]`'s Escape part) and the schedule's React Doctor warnings — WALK for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The member / guest build of his morning answers (`claude/member-guest-checks`, pull request 638): [ACCESS-WAIT-LOOK], [SAVEBAND-LOOK], [GUEST-SAVE-WARNING], [MEMBER-SCHED-TICK] — who may tick Scheduler (roles) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.
@@ -2162,13 +2171,6 @@ The mode's general behaviour, older than phase 7. D31 says a seat with nothing t
 mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
 puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
 a question for him first.
-
-### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
-Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
-developer bridge on this PC, the page drew the Amendments panel with "Discard marks" and "Publish AL1" looking live. Nothing
-was pressed. The rule is that the page, the write path and the command gate all ask `raptor-port/src/state/perms.ts`.
-**To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
-thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.
 
 ### [COUNT-CHIP-PHONE-TAP] A finger tap on an ALL AVAIL count on the phone's week — FIXED for Chromium 1 Oct 26; his iPhone look left
 Found by walker C of the `[DB-READINESS]` phase 7 walk (F1), pressed by Astra's final read (1), reproduced by the host on that

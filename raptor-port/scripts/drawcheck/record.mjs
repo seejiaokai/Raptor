@@ -12,7 +12,7 @@ import { mkdirSync, writeFileSync, readFileSync, existsSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { execSync } from 'node:child_process'
-import { chromium, serveDist, measureParts, pictureDiff } from './lib.mjs'
+import { chromium, webkit, serveDist, measureParts, pictureDiff } from './lib.mjs'
 
 console.log('[drawcheck record v1]')
 const SPEC_PATH = process.env.DRAWCHECK_SPEC
@@ -77,8 +77,10 @@ function patchPage(page) {
     return orig.call(this, opts)
   }
 }
-const launch = chromium.launch.bind(chromium)
-chromium.launch = async (...a) => {
+// both engines: a drawing script may draw his iPhone's size in WebKit (the state then says engine: 'webkit')
+for (const engine of [chromium, webkit]) {
+const launch = engine.launch.bind(engine)
+engine.launch = async (...a) => {
   const browser = await launch(...a)
   const newContext = browser.newContext.bind(browser)
   browser.newContext = async (...b) => {
@@ -89,6 +91,7 @@ chromium.launch = async (...a) => {
     return ctx
   }
   return browser
+}
 }
 process.on('exit', () => {
   const wanted = mine.filter(s => !done.has(s.id) && (!process.env.DRAWCHECK_STATES || process.env.DRAWCHECK_STATES.split(',').includes(s.id)))

@@ -6945,10 +6945,18 @@ required — D225), "Pilot, WSO or personnel" `#accSeat` ("Pick…", Pilot, WSO,
 `#accCat` ("Pick…" then the seat's CATs; absent for personnel; back to Pick… when the seat changes to one that cannot hold
 it); the two selects wear the boxes' look (`.login select`); "Request access" `#accSend`, errors in `#accErr` — never
 whether a callsign is taken (a person not yet let in may not read the roster). *(Was, 26 Sep 26 `[ACCOUNTS]`: Callsign
-`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — what he
-asked, one line `#accAsked`: "You asked for access as **Viper** (JKB · Pilot · CAT C).", "an admin will answer it"; with
-the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
-**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
+`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — since D1650 / D1656,
+5 Nov 26, a PASS, `.acc-pass`: the claws and a "Waiting for an admin" mark, his callsign large `#accAsked` (set smaller, never
+below 16px, until it fits one line — `AccessScreen.tsx PassCallsign`), his initials, seat and CAT (`.pass-fields` — one he did
+not give is left out), a dashed tear line, then the three steps (Request sent · An admin approves · You're on the schedule,
+the middle one where he is), with the guest switch ON "Meanwhile you can look at the schedule, read only." and "View the
+schedule" `#accGuest` (straight into the guest view, D221), Sign out, and "Signed in as …" `#accName` small at the foot; the
+blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one line `#accAsked`, "You asked for access as
+**Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
+**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
+failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
+Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
+every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). With the admin's guest switch ON a
 person waiting instead gets the guest view (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
 view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
 member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not
@@ -11692,7 +11700,24 @@ a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes a
 
 **The line under it is amber (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
 
-**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+**Its look — the strip (owner D1655, 5 Nov 26; the drawing `docs/mock/2026-11-05-save-band/img/look1-*.png`):** read from
+the left — a drawn warning sign, **Not saved** in bold amber, "keep this page open" quieter — and **Retry** a solid amber
+button at the right; the amber wash fades across the band from the words. The words are the same; the dash between them is
+kept in the text (a screen reader hears one sentence) but not drawn. Height, place and the amber line under it unchanged
+(D587, D841); no glow (D887). The bar that waits on an OIL answer takes the same look (D1655 — "restyled alike"): its sign,
+what did not happen in bold ("Not swapped"), why quieter, then **Answer OIL** solid amber (the agent's reading of "alike";
+it was the app's cyan under D840's drawing) and **OK** quiet — still one line (D840). One body for both: `SaveStatus.tsx
+SplitWords`.
+**One design across the whole app (his direction D1663, 5 Nov 26):** the band wears the strip wherever it is drawn — the places below. The app's other "not saved" words (refusals of one change, not a failed save: a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) take one matching look of their own, apart from the band's — pictured and drawn for him first (D1665, filed as [NOTSAVED-REFUSAL-LOOK]).
+**Seen on purpose: `?savefail` (his D1666, 5 Nov 26):** a tab opened with `?savefail` on the address refuses every save (`storage/boot.ts chooseBackend` — reading still works), so the band, its Retry and the pass's "Not sent yet" can be looked at on a real phone; without it nothing changes. Pinned by `storage/boot.test.ts`.
+**Under a failed save the pass says it is not sent (D1664, 5 Nov 26):** on the screen after asking for access, while the band is up, the "Waiting for an admin" mark and the first step read "Not sent yet" in the band's amber; once the save lands the pass's approved look is back by itself.
+**Also where there is no top bar (owner D1657, 5 Nov 26 — `[GUEST-SAVE-WARNING]`):** the sign-in screen and the access
+screens (asking for access, waiting, suspended) carry the band across the top of the screen (`SaveBand screen`,
+`.saveband.is-screen`), the screen moved down under it (`.login.band-up`) so nothing is covered — so a stranger whose
+request was not saved is never told it was sent; the guest page carries it as its bar's last line, exactly as every page's
+top bar does (`GuestApp.tsx` mounts `SaveStatus` in its `.topbar.guestbar`). Pinned by `ui/accounts-ui.test.tsx` (D1657).
+
+**The rule (D587):** when a save has failed, the warning — "Not saved — keep this page open" and **Retry** — fills a
 line of its own along the bottom of the top bar, edge to edge. The top bar is one line (36px, `--save-band`) taller
 while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
 save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { bootStorage, chooseBackend, guardUnload } from './boot'
+import { armSaveFail, bootStorage, chooseBackend, guardUnload } from './boot'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
 import { SCHEMA_VERSION } from './reset'
@@ -179,5 +179,27 @@ describe('chooseBackend', () => {
     expect(chooseBackend({ MODE: 'production', DEV: false }, '', fake)).toBeInstanceOf(BrowserBackend)
     const broken = { get length() { throw new Error('denied') } } as unknown as Storage
     expect(chooseBackend({ MODE: 'production', DEV: false }, '', broken)).toBeInstanceOf(MemoryBackend)
+  })
+  /* D1666 (5 Nov 26, "Ok test switch"): ?savefail makes this tab refuse every save, so the "Not saved" band can be seen on
+     a real phone; reading still works, and without the switch nothing changes */
+  it('?savefail: every save refused, reading untouched; without it the same store saves', async () => {
+    const mem: Record<string, string> = { 'raptor:people/all': '[1]' }
+    const store = { get length() { return Object.keys(mem).length }, key: (i: number) => Object.keys(mem)[i] ?? null,
+      getItem: (k: string) => (k in mem ? mem[k] : null), setItem: (k: string, v: string) => { mem[k] = v },
+      removeItem: (k: string) => { delete mem[k] }, clear() {} } as unknown as Storage
+    /* before the app has started (the boot's own writes) a save goes through; from then on, refused */
+    const early = chooseBackend({ MODE: 'production', DEV: false }, '?savefail', store)
+    await early.put('settings' as any, 'boot', '"stamp"')
+    expect(Object.keys(mem).length, 'the boot writes').toBe(2)
+    delete mem['raptor:settings/boot']
+    armSaveFail()
+    for (const q of ['?savefail', '?savefail=1', '?x=1&savefail']) {
+      const be = chooseBackend({ MODE: 'production', DEV: false }, q, store)
+      await expect(be.put('inputs' as any, 'a', '"x"'), q).rejects.toThrow()
+      expect(Object.keys(mem), `${q}: nothing written`).toEqual(['raptor:people/all'])
+    }
+    const off = chooseBackend({ MODE: 'production', DEV: false }, '?savefailing', store)
+    await off.put('inputs' as any, 'a', '"x"')
+    expect(Object.keys(mem).length, 'another word is not the switch').toBe(2)
   })
 })

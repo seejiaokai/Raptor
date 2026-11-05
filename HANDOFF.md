@@ -20,14 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/topbar-names-build -->
-### `claude/topbar-names-build` — the page names beside TALON, ☰ where they do not fit (D1641–D1643) — written 4 Nov 26 (night) — verify before use
-- **His answers 4 Nov 26 ("both yes"):** D1642 (build as the mock-up draws it) and D1643 (a phone held sideways always ☰ and one row, for everyone — narrows D1641). The notes branch before this (`claude/topbar-tabs-beside-talon`, pull request 633) MERGED: the Leave War block removed, D1641 recorded, the mock-up https://claude.ai/artifact/Mxpwt7Qc27zRHWhxtj3pTY.
-- **Built:** `src/ui/navfold.ts` (measures the names against the room beside TALON; a phone held sideways always folds), `Shell.tsx` (`nav-fold`), `02-shell.css` (above 821: names never wrap; folded = laid out unseen out of flow, ☰ shown), `Drawer.tsx` (Escape closes the menu, newest first, keyboard back on ☰; opened by keys, the keyboard on the page you are on). Tests: `navfold.test.tsx` 6/6, `drawer-keys.test.tsx` 2/2 (red without the change), `e2e/topbar-names.spec.ts` 12/12 under the lock; code check clean.
-- **Bug check (WALK tier — no code read at this tier):** walk 138 / 138 on the frozen build (`scripts/handpass/topbar-names-walk.mjs`; three first-run FAILs were the script's own, fixed), two break tests red, evidence `raptor-port/docs/handpass/2026-11-04-topbar-names.md`, the ledger's row added. GitHub's full run green on `2057ee465`. **MERGING on his "merge live" (4 Nov 26) — his look done (D1640);** [TOPBAR-NAMES-BESIDE-TALON] and [SHELL-SIDEWAYS-BAR] archived. If this block is still here, check the merge and Vercel's Production deploy went through, then remove it. MERGED and LIVE 4 Nov 26 (main's run green). The PDF work is held on his word (D1644).
-- **Numbers:** rulings next free D1645; observations next free 801.
+<!-- now:claude/member-guest-checks -->
+### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
+- **Shipped:** the member / guest check of the night and the build of his morning answers — the pass after asking for access (D1650, D1654, D1656), "Not sent yet" while its save has failed (D1664), the "Not saved" strip everywhere with the OIL bar alike (D1655), the band on the sign-in, access screens and guest page (D1657), a member's own Scheduler tick read only (D1651), the `?savefail` test switch (D1666); three walk faults fixed red first. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`; his look on his iPhone done, "Ok looks good merge live".
+- **Left open, filed:** [NOTSAVED-REFUSAL-LOOK] (D1665 — the other "not saved" refusal messages get one look of their own, pictured and drawn for him first) — the next job, in a fresh chat from `main`.
+- **For whoever merges pull request 636 (`claude/keyboard-windows-batch-5eff45`) next:** it carries rulings D1645–D1662 and the drawings and drawing scripts this build used, and marks D1651 "not yet built" in `raptor-port/docs/data-model.md` §11 (Person, QualMark, the Management paragraph) and `raptor-port/docs/engine-rules.md`'s Quals row — bring `main` in first and keep `main`'s BUILT wording; its [SAVEBAND-LOOK] and [ACCESS-WAIT-LOOK] are built and live — archive them; the drawing scripts `aw1105-*`, `sb1105-mock.mjs` it adds are what `scripts/drawcheck/specs/access-wait.mjs` and `save-band.mjs` replay.
+- **Numbers:** rulings next free D1667; design lessons next free 83; observations next free 802.
+- **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
 <!-- /now -->
 ## Next, in order
+
+**RIGHT NOW (5 Nov 26, morning):** pull requests 634 and 635 LIVE (the `claude/topbar-names-build` block removed); the night's three jobs CHECKED — 636, 637, 638, waiting for his look and "merge live" → the build of his morning answers (D1651, D1655–D1657) on this branch (its block).
 
 **RIGHT NOW (4 Nov 26, night):** the Leave War small fixes LIVE (pull request 632) → his request, the page names beside TALON (D1641): the mock-up answered "both yes" (D1642, D1643) → BUILT and checked on `claude/topbar-names-build` (pull request 634), LIVE 4 Nov 26 → **the PDF export work ([PDF-PRINT-TWICE], [FLAG-EXPORT]) HELD until he says so (D1644)** → his next pick from the backlog.
 

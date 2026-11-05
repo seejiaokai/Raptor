@@ -27,6 +27,10 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1666 | 5 Nov 26 | The app's address takes a test switch, `?savefail`: in the one tab opened with it every save is refused, so the "Not saved" band, its Retry and the pass's "Not sent yet" can be seen on his own iPhone; without it the app saves as always, and nobody else is touched. |
+| D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). |
+| D1664 | 5 Nov 26 | While a save has failed, the pass after asking for access reads "Not sent yet" in the band's amber — its mark and its first step — and its approved look comes back by itself once the save lands. |
+| D1663 | 5 Nov 26 | His direction: the "Not saved" design is one design across the whole app. — changed by D1665 |
 | D1643 | 4 Nov 26 | On a phone held sideways the page names always go into the side menu and the top bar is one row, for everyone, even where a member's fewer names would fit beside TALON. |
 | D1642 | 4 Nov 26 | The page names beside TALON are built as the mock-up of 4 Nov 26 draws them: where they all fit beside TALON they stand there, the buttons after them or on a row of their own to the right; where they do not, they go into the side menu, unchanged, and the bar is one row. |
 | D1641 | 4 Nov 26 | The page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they cannot all fit there, a phone or a narrow desktop, they go into the side menu as on a phone today; on a phone held sideways they always do (D1643). — changed by D1643 |

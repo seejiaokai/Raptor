@@ -39,10 +39,13 @@ export type QualCol = {
    `setQualCols` / `qualColsLoad` below put it back where a list leaves it out. */
 export const MGMT_KEY = 'mgmt'
 export const MGMT_COL: QualCol = { k: MGMT_KEY, h: 'Management', lav: true }
+/* SCHEDULER (owner D1651, 5 Nov 26): the tick that decides who may sign SKED CK, PLANNED BY and APPROVED BY
+   (engine/people.ts isScheduler) — an admin's to tick, as Management is (state/perms.ts mayTickScheduler) */
+export const SCHED_KEY = 'sched'
 
 export const DEFAULT_QUAL_COLS: readonly QualCol[] = [
   { k: 'san', h: 'SANS', lav: true }, { k: 'sxo', h: 'SXO', lav: true }, MGMT_COL,
-  { k: 'sched', h: 'Scheduler', apt: true },
+  { k: SCHED_KEY, h: 'Scheduler', apt: true },
   { k: 'scDay', h: 'SC DAY', scq: true }, { k: 'scNight', h: 'SC NIGHT', scq: true },
   { k: 'daar', h: 'DAAR', aar: true, fcpOnly: true }, { k: 'naar', h: 'NAAR', aar: true, fcpOnly: true },
   { k: 'nvg', h: 'NVG', lav: true }, { k: 'imc', h: 'IMC', lav: true },

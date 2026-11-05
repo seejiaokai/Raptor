@@ -3473,3 +3473,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In the mock-up method, step 1: when his own picture shows a state the PC's render does not, compare the two before drawing anything; where the difference is letter width, use his picture as the "today" frame and draw the proposed frame as his device measures it (forced, and said so on the page), and make the build measure on the device rather than at a fixed width.
 
 **Principle:** A user's own screenshot outranks a re-render on a different device; when the two disagree, find which input differs (fonts, zoom, text scaling) before trusting either picture.
+
+### Observation 801: The here-document trap (Observation 601) met again — a script truncated silently, not refused
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** building the member / guest batch ([ACCESS-WAIT-LOOK] and three more) on `claude/member-guest-checks`
+**Skill:** New skill candidate: none — the working practice behind every build (Observation 601, ACTIONED 2026-10-27 as a filed guard)
+**Type:** internal
+**Phase/Area:** edit scripts passed to Python through a bash here-document
+
+**Issue:** Met again 5 Nov 26: an edit script written through `cat > file <<'PY'` whose body held JSX with apostrophes ("You're on the schedule") was cut off at the shell's "here-document delimited by end-of-file" warning — the file was written, 126 of its lines, ending mid-statement, and Python was never run; the step was saved by trimming and re-running. Twice more the same session, a test name holding an escaped apostrophe (`\'`) inside a Python string came out as a bare apostrophe and broke the TypeScript parse. Smaller here-documents in the same session worked, so the habit held.
+
+**Suggested improvement:** The guard filed by Observation 601 (an unconditional default: any multi-line script goes to a scratchpad file through the file tool) is still not built; count this as a further met-again for it. Until it is, apostrophes in test names are best avoided in generated edits (a double-quoted string or a reworded name).
+
+**Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.

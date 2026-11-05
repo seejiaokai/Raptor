@@ -9,17 +9,17 @@ import { rowOnScreen } from './onscreen'
 import { PEOPLE, QORDER, QCHIP, QCOLOR, LEVELNAME } from '../engine/people'
 import { validate } from '../engine/validate'
 import { HOOKS } from '../engine/hooks'
-import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign, mayTickManagement } from '../state/perms'
+import { isAdmin, mayEditQualsOf, mayManageRoster, mayRenameCallsign, mayTickManagement, mayTickScheduler } from '../state/perms'
 import { catsFor, CALLSIGN_LABEL } from '../state/roster-add'
 import './postout.css'
 import { openAdminUsers } from './adminopen'
-import { updatePersonField, MGMT_ADMIN_ONLY } from '../state/quals-write'
+import { updatePersonField, MGMT_ADMIN_ONLY, SCHED_ADMIN_ONLY } from '../state/quals-write'
 import { esc, BACKPROMPT, clearBack, QUALSFOCUS, focusQualsRow } from '../state/view'
 import { notify } from '../state/store'
 /* [ARCH-STACK] phase 3: the command-routed persistPeople (a roster write now
    emits a people/<personId> change). Same behaviour + the change stream. */
 import { persistPeople } from '../state/people-settings-commit'
-import { DEFAULT_QUAL_COLS, MGMT_KEY, qualCols, setQualCols } from '../engine/qualcols'
+import { DEFAULT_QUAL_COLS, MGMT_KEY, SCHED_KEY, qualCols, setQualCols } from '../engine/qualcols'
 import { useVersion } from './useStore'
 /* ONE LIFT, EVERY DRAG (owner, 6 Sep 26) — the shared drag decoration every
    surface in the app wears. A column is a COMPOSITE thing (a heading and a
@@ -203,6 +203,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
   const ids = qualsIds(qSeatView, qSort, qSearch)
   const canRename = mayRenameCallsign()
   const canMgmt = mayTickManagement()
+  const canSched = mayTickScheduler()
   const rows = ids.map(id => {
     const p = PEOPLE[id]
     /* D149 ([ACCOUNTS]): with editing on, a member's OWN row is editable, every column;
@@ -246,10 +247,10 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
       const held = p.quals[c.k]
       const inst = held === 'I'
       const glyph = held ? `<span class="qchk${inst ? ' qi' : ''}"${inst ? ` title="${esc(p.cs)} is cleared to instruct ${esc(c.h)} from the back seat"` : ''}>${inst ? 'I' : '✓'}</span>` : ''
-      /* the Management tick is the admin's (D1510): on a member's own row it reads only, as his callsign does, and a
-         stray press is refused with its reason by state/quals-write.ts */
-      const mgmtRo = rowEd && c.k === MGMT_KEY && !canMgmt
-      return `<td class="qcell${(c.k === 'sched' && held) ? ' apt-on' : ''}${(c.scq && held) ? ' scq-on' : ''}${(c.aar && held) ? ' aar-on' : ''}${mgmtRo ? ' qro' : ''}"${mgmtRo ? ` title="${MGMT_ADMIN_ONLY}"` : ''} data-q="${id}|${c.k}">${glyph}</td>`
+      /* the Management tick is the admin's (D1510), and the Scheduler tick too (D1651): on a member's own row each reads
+         only, as his callsign does, and a stray press is refused with its reason by state/quals-write.ts */
+      const adminOnly = !rowEd ? null : c.k === MGMT_KEY && !canMgmt ? MGMT_ADMIN_ONLY : c.k === SCHED_KEY && !canSched ? SCHED_ADMIN_ONLY : null
+      return `<td class="qcell${(c.k === SCHED_KEY && held) ? ' apt-on' : ''}${(c.scq && held) ? ' scq-on' : ''}${(c.aar && held) ? ' aar-on' : ''}${adminOnly ? ' qro' : ''}"${adminOnly ? ` title="${adminOnly}"` : ''} data-q="${id}|${c.k}">${glyph}</td>`
     }).join('')
     /* editable in edit mode, so the initials of the people already on the
        roster can be filled in without re-adding them. It commits on CHANGE

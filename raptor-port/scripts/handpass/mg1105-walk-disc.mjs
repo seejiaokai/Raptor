@@ -1,0 +1,17 @@
+import { L, press } from './mg1105-walk-common.mjs'
+const h = await L.open('phone'); const { page } = h
+await L.signIn(page, 'us', 'us')
+await page.evaluate(() => window.go('viewsched')); await page.waitForTimeout(800)
+console.log(await page.evaluate(() => window.CURPAGE))
+console.log(JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('button, select')].filter(b => { const r = b.getBoundingClientRect(); return r.width > 2 && r.y < 200 }).map(b => `${b.id}.${String(b.className).slice(0, 20)}|${(b.getAttribute('aria-label') || b.title || b.textContent).trim().slice(0, 30)}`))))
+const cal = page.locator('.wk-cal, [aria-label*="Jump to a date"]').first()
+console.log('cal', await cal.count())
+await press(h, cal); await page.waitForTimeout(700)
+await L.shot(page, 'Bx', 'phone-jump')
+console.log(JSON.stringify(await page.evaluate(() => [...document.querySelectorAll('button')].filter(b => b.getBoundingClientRect().width > 2 && /20|Jul/.test((b.getAttribute('aria-label') || b.textContent))).slice(0, 15).map(b => `${b.id}.${String(b.className).slice(0, 20)}|${(b.getAttribute('aria-label') || b.textContent).trim().slice(0, 30)}`))))
+await page.keyboard.press('Escape')
+await page.evaluate(() => window.go('inputs')); await page.waitForTimeout(800)
+await press(h, page.locator('#inListBtn')); await page.waitForTimeout(500)
+await L.shot(page, 'Bx', 'phone-inputs-list')
+console.log(await page.evaluate(() => document.querySelector('#page-inputs').innerHTML.replace(/\s+/g, ' ').slice(2500, 5000)))
+await L.finish('disc')

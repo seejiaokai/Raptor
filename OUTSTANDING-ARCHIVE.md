@@ -7690,3 +7690,53 @@ Tracker's own fold, D373, was built). A shell layout question, and a visual one:
 *(5 Oct 26, `[SAVE-NOTE-COVERS]`: while a save has failed the warning's band adds 36px to it — 185 of 390px on a
 sideways phone, until the save lands.)*
 
+
+*Moved here 2026-11-05 by backlog-archive.mjs ([MEMBER-EDITPAGE-CHECK]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [MEMBER-EDITPAGE-CHECK] A member sent to Edit Schedule by the developer bridge sees live-looking Amendments buttons — a check (walk note, 1 Oct 26)
+**Checked and closed 5 Nov 26** (`claude/member-guest-checks`, evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md` §10):
+the page gate is not the only guard — every write on Edit Schedule and the board is a command, and the command gate refuses a
+member every schedule command and any schedule record his command would change, rolled back; pressed as a member by mouse
+and keyboard, every control of the page and the board: 0 writes. No route outside this PC reaches the page. "Discard marks"
+is already gone (D488). The live-looking Publish AL1 (it does nothing and says nothing) is left — recommended, pictures
+`raptor-port/docs/mock/2026-11-05-member-guest/img/Q3-*.png`; his "as recommended", 5 Nov 26 (D1658). Archive once live.
+Walker A's O5 (picture `…/2026-10-01-dbr-phase7/a/R4-4.png`). No control leads a member to Edit Schedule; reached through the
+developer bridge on this PC, the page drew the Amendments panel with "Discard marks" and "Publish AL1" looking live. Nothing
+was pressed. The rule is that the page, the write path and the command gate all ask `raptor-port/src/state/perms.ts`.
+**To do:** press each as a member in a walk and confirm the write path refuses with its reason; if the page gate is the only
+thing between a member and those buttons, gate the panel too. **Place:** low — a check to run with the next roles work.
+
+
+*Moved here 2026-11-05 by backlog-archive.mjs ([GUEST-SAVE-WARNING]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [GUEST-SAVE-WARNING] Does a guest's own page ever need the failed-save warning? — a check (filed 5 Oct 26)
+**Checked 5 Nov 26** (`claude/member-guest-checks`, evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`): the guest
+page itself saves nothing (every control, every week, sign out and in: 0 writes). **But the same person's access request**
+goes through the app's saver: when the browser refuses to save, the screen still says "Your request is with the admins",
+with no warning on it or on the guest page; closing the tab loses the request (a desktop asks "Leave site?" once, an iPhone
+never asks); left open, the saver's retry lands it later. The same gap hides an admin's failed save after sign-out (the
+sign-in and access screens draw no band). **The case to put to him:** Kite, a new pilot with no account, presses Request
+access on his iPhone while the browser refuses to save — he is told it is with the admins, and it is lost when he closes the
+tab. **Recommended:** the app's own "Not saved — keep this page open · Retry" band across the top of the waiting screen, under
+the guest bar, and on the sign-in screen while an earlier save still waits. Pictures
+`raptor-port/docs/mock/2026-11-05-member-guest/img/Q1-*.png` (today and proposed, desktop and phone). **His answer, 5 Nov 26 (D1657): yes** — built with the screen after asking for access ([ACCESS-WAIT-LOOK], D1656), in the band's new look (D1655). **Built 5 Nov 26** (`claude/member-guest-checks`, `6dd252ef3`): across the top of the sign-in and access screens, the screen moved down under it; the guest bar's last line on the guest page; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
+**Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`
+noted that someone signed in without access gets a separate, read-only set of pages (`raptor-port/src/ui/GuestApp.tsx`)
+that has never drawn the save warning, before or after that fix. **To check:** does anything a guest does get saved
+through the app's saver (an access request, for one)? If it does and that save can fail, the guest is told nothing —
+give that page the same warning (`SaveBand`, `raptor-port/src/ui/SaveStatus.tsx`). If nothing of a guest's is saved
+that way, close this with the reason. Not walked; nothing on screen is known to be wrong.
+
+
+*Moved here 2026-11-05 by backlog-archive.mjs ([MEMBER-SCHED-TICK]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [MEMBER-SCHED-TICK] A member's own Scheduler tick on Quals (filed 5 Nov 26 — the member / guest check's walk)
+**What:** a member can tick or untick his own "Scheduler" appointment on Quals; it saves, and Undo reads "Ranger's quals".
+D1510 lets him change every column of his own row but Management. The Scheduler tick decides who may sign SKED CK / PLANNED
+BY / APPROVED BY (`raptor-port/src/state/publish.ts signRoleOk`), and D785 says a scheduler is always an admin; unticking it
+blanks his signatures, so the next amendment cannot go out until someone re-signs. **The case to put to him:** Ranger, a
+member, unticks his own Scheduler on Quals — the days he signed lose that sign-off. **Recommended:** his Scheduler cell
+reads only, as Management does, refused at the Quals write and the commit gate (narrows D1510); a small build with a
+security read (D1411). **His answer, 5 Nov 26 (D1651): yes.** Pictures `raptor-port/docs/mock/2026-11-05-member-guest/img/Q2-quals-today-desk.png`, `Q2-quals-proposed-desk.png`,
+`Q2-quals-proposed-phone.png`. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`. **Built 5 Nov 26** (`claude/member-guest-checks`, `af8be973e`): `perms.ts mayTickScheduler`, refused at the Quals screen ("Only an admin can appoint a scheduler" — the mock-up's words), the Quals write and the commit gate; red first; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
+

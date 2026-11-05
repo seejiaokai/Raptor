@@ -40,7 +40,8 @@ const subscribeCover = (fn: () => void) => { coverSubs.add(fn); return () => { c
 const readCover = (): boolean => covering > 0
 const cover = (d: 1 | -1) => { covering += d; for (const f of [...coverSubs]) f() }
 
-/** Has a save failed (and not yet landed)? Shell asks, to make room for the warning's band in the top bar. */
+/** Has a save failed (and not yet landed)? Shell and the guest page ask, to make room for the band in their bar; the sign-in
+    and the access screens, to move the screen down under it (D1657). */
 export function useSaveFailed(): boolean {
   return useSyncExternalStore(subscribe, readFailed, readFailed)
 }
@@ -78,11 +79,19 @@ function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
   }, [el, s])
 }
 
-/* the warning's words and its one button — the same in the top bar and under a full-screen surface's bar */
+/* the warning's words and its one button — the same in the top bar and under a full-screen surface's bar.
+   THE STRIP (owner D1655, 5 Nov 26 — "the rest as recommended", look 1 of his questions page; the drawing
+   docs/mock/2026-11-05-save-band/img/look1-*.png): a drawn warning sign, "Not saved" in bold and "keep this page open"
+   quieter, read from the left; Retry a solid amber button at the right. The words are the same; the dash between them is
+   not drawn (the space and the change of weight part them) but stays in the text, so a screen reader still hears one
+   sentence. Its height, place and amber line are as before (D587, D841), and nothing glows (D887). */
+export function SplitWords({ lead, rest }: { lead: string, rest: string }) {
+  return <><span className="sv-sign" aria-hidden="true" /><b>{lead}</b><span className="sv-sep"> — </span><span className="sv-rest">{rest}</span></>
+}
 function Warning() {
   return (
     <>
-      <span className="sv-msg"><span className="sv-ico" aria-hidden="true">⚠</span>Not saved — keep this page open</span>
+      <span className="sv-msg"><SplitWords lead="Not saved" rest="keep this page open" /></span>
       <button type="button" onClick={() => { void source?.flush() }}>Retry</button>
     </>
   )
@@ -99,8 +108,11 @@ export function SaveStatus() {
 }
 
 /** The same warning, IN THE FLOW of a full-screen surface, under that surface's own bar (D587). Nothing while saves work.
-    `active` is false while its surface is closed but still drawn (the board stays in the page, hidden). */
-export function SaveBand({ active = true }: { active?: boolean }) {
+    `active` is false while its surface is closed but still drawn (the board stays in the page, hidden).
+    `screen`: ACROSS THE TOP OF A SCREEN WITH NO TOP BAR — the sign-in and the access screens (owner D1657, 5 Nov 26 —
+    [GUEST-SAVE-WARNING]: a stranger whose request was not saved was told it was "with the admins"). The screen moves down
+    under it (`.login.band-up`, set by the screen from `useSaveFailed`), so nothing is covered. */
+export function SaveBand({ active = true, screen = false }: { active?: boolean, screen?: boolean }) {
   const failed = useSaveFailed()
   useEffect(() => {
     if (!failed || !active) return
@@ -108,5 +120,5 @@ export function SaveBand({ active = true }: { active?: boolean }) {
     return () => cover(-1)
   }, [failed, active])
   if (!failed) return null
-  return <div className="saveband" role="status"><Warning /></div>
+  return <div className={'saveband' + (screen ? ' is-screen' : '')} role="status"><Warning /></div>
 }
