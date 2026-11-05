@@ -105,6 +105,10 @@
    see-through below the shrunken row, so the rows show under it rather than a strip of the box and its shadow. Only while
    the fingers are down. */
 .qfixed.q-pinching{overflow-x:clip;overflow-y:visible;background:transparent;box-shadow:none}
+/* …and the moving row's own name heading hides, the still copy over the left (`.qfixed-frozen`, held there by the pinch)
+   standing for it — in both paths, the browser's follow or not ([QUALS-PINCH-NOSDA-HEAD], the night of 6 Nov 26; the
+   Leave War's answer, D1287): stretched with the row it was carried left of the table's edge until the lift */
+.qfixed.q-pinching .qfixed-scroll thead th[data-sort="cs"]{visibility:hidden}
 @keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
 /* the mirror table drops the grid's own left margin/min-width — it is sized to
    the measured widths (table-layout:fixed) and positioned by the fixed wrapper */

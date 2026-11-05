@@ -1064,22 +1064,26 @@ export function QualsPage() {
                    it scrolls away with its rows and the mirror is header-only. */
                 + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
           </div>
-          {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT (the browser's follow only, D993). A table moved by a transform
+          {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT. With the browser's follow (D993) a table moved by a transform
               cannot keep its heading's sticky-left, so a copy of the row, clipped to the callsign column's width, stands
               still over the left while the moving row passes under it — the Leave War's frozen copy (`.mxfixed-frozen`).
-              A press on it sorts, as on the moving row (the bar's own click handler). */}
-          {sdaActive && (
-            /* one pixel past the column: the line between it and the next heading is drawn across their boundary, and
-               cut at it the still copy kept only its left half (the code read's F3) — the pixel past is the next
-               heading's own edge, on the same background */
-            <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
-              <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
-                style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
-                dangerouslySetInnerHTML={{ __html:
-                  `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
-                  + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
-            </div>
-          )}
+              A press on it sorts, as on the moving row (the bar's own click handler).
+              AND WITHOUT IT TOO ([QUALS-PINCH-NOSDA-HEAD], the night of 6 Nov 26 — the Leave War's answer, D1287): there
+              the moving row's own sticky name heading stood still at rest, but mid-pinch in it was stretched with the row
+              and carried left of the table's edge until the lift — on any phone whose browser has no scroll-driven
+              animations (an iPhone before iOS 26). The copy is drawn in both paths, held at the left while the fingers
+              move (the pinch's `alsoTL`), and the row's own name heading hides while pinching (05-quals.css
+              `.qfixed.q-pinching`); at rest it covers that heading where it already stands. */}
+          {/* one pixel past the column: the line between it and the next heading is drawn across their boundary, and
+              cut at it the still copy kept only its left half (the code read's F3) — the pixel past is the next
+              heading's own edge, on the same background */}
+          <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
+            <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
+              style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
+              dangerouslySetInnerHTML={{ __html:
+                `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
+                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
+          </div>
         </div>
       )}
       {/* The Archived section, its Restore, "Restore as" and the archived man's rename moved to Admin → Users

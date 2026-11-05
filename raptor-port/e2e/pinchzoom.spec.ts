@@ -342,6 +342,47 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     expect(errs).toEqual([])
     await context.close()
   })
+  /* [QUALS-PINCH-NOSDA-HEAD] (filed 31 Oct 26, fixed the night of 6 Nov 26): in a browser with no scroll-driven animations
+     (an iPhone before iOS 26 — Playwright's WebKit and Chromium both have them, so they are reported missing here, the
+     Leave War test's way) the pinned row had no still copy of its name heading, and mid-pinch in its own was stretched
+     with the row and carried left of the table's edge (measured -159 for an edge at 20). Every name heading a person
+     can see in the pinned row stands at the edge, mid-pinch and after the lift. */
+  test('without scroll-driven animations, part-way down, a pinch in keeps the pinned row\'s name heading at the left edge ([QUALS-PINCH-NOSDA-HEAD], D1287)', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport: PHONE, isMobile: true, hasTouch: true })
+    await context.addInitScript(() => {
+      const real = CSS.supports.bind(CSS)
+      CSS.supports = ((...a: any[]) => (/scroll-timeline|timeline-scope|animation-timeline/.test(a.join(' ')) ? false : (real as any)(...a))) as any
+    })
+    const page = await context.newPage()
+    const errs: string[] = []
+    page.on('pageerror', e => errs.push(String(e)))
+    await login(page)
+    await page.addStyleTag({ content: '#toastEl{visibility:hidden!important}' })
+    const cdp = await context.newCDPSession(page)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    expect(await page.locator('#page-quals .qwrap.q-sda').count(), 'the page took the path without the browser\'s follow').toBe(0)
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    const seen = () => page.evaluate(() => {
+      const wrapL = document.querySelector('#page-quals .qwrap')!.getBoundingClientRect().left
+      const m = document.querySelector('[data-testid="qsticky-head"]')!
+      const shown = (e: Element | null) => { if (!e) return false; const r = e.getBoundingClientRect(); return r.width > 0 && getComputedStyle(e).visibility !== 'hidden' }
+      const heads = [m.querySelector('.qfixed-frozen th[data-sort="cs"]'), m.querySelector('.qfixed-scroll th[data-sort="cs"]')]
+        .filter(shown).map(e => Math.round(e!.getBoundingClientRect().left * 10) / 10)
+      return { wrapL, heads, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+    })
+    const rest = await seen()
+    expect(rest.heads.length, 'at rest a name heading is drawn in the pinned row').toBeGreaterThan(0)
+    const mid = await midPinch(cdp, 200, 450, 90, 250, seen)
+    expect(mid.transformed, 'read mid-pinch').toBe(true)
+    expect(mid.heads.length, `mid-pinch in, a name heading is drawn in the pinned row (${JSON.stringify(mid)})`).toBeGreaterThan(0)
+    expect(mid.heads.filter(l => Math.abs(l - mid.wrapL) > 1.5), `mid-pinch in, every name heading seen stands at the table's left edge (${JSON.stringify(mid)})`).toEqual([])
+    const after = await seen()
+    expect(after.heads.filter(l => Math.abs(l - after.wrapL) > 1.5), `after the lift too (${JSON.stringify(after)})`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
   /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the pinch
      (D1288's `scrollPage`), which unpins the heading row frozen under the top bar; the fingers turning back to a pinch in
      scroll the page down again, and the row was pinned anew mid-gesture — drawn at rest over the stretched table (not one of
