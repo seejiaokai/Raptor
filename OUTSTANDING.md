@@ -124,7 +124,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [TRK-ROUND-SEEN] — two phone covers the plain-user round saw (the marking pop-up and Find over the tabs); the dropdown words closed by his iPhone look (D1564).
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
 - [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; new words, so a mock-up first (D1625).
+- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -266,7 +266,7 @@ should change. **Place:** low, the agent's — with the Tracker's next batch (D4
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
 top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
 the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625); his to place. Evidence:
+app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.** Evidence:
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
 ### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
