@@ -3532,3 +3532,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
 
 **Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.
+
+### Observation 822: A drawing that removes a node the app draws blanks the app on its next redraw
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** drawing [PO-SANS-PUCK-EDGE] on the real app (claude/postout-bell-look; numbers 820–829 held by this branch)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page
+
+**Issue:** The drawing took the "SANS" tag out with `remove()` to picture the proposal. Two steps later the app redrew that row (a setting changed, a posting was undone) and the whole screen went blank: React threw "removeChild: the node to be removed is not a child", because the node it owned was gone. Three runs were spent on the wrong cause (a button not found, a sheet in the way) before the page's own error was printed.
+
+**Suggested improvement:** Add to the guide's traps: "To take away a part the app draws, hide it (`style.display='none'`), never remove it — a removed node crashes the app's next redraw of it, and every later step reads a blank screen. Print the page's errors to the run's log as they happen, not only at the end."
+
+**Principle:** In a page a framework owns, a drawing may hide or add, never delete what the framework made; and a script's first move on a strange failure is to read the page's own error.
