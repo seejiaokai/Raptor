@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/ui-consistency-round4 -->
+### `claude/ui-consistency-round4` — [UI-CONSISTENCY-LOOK] round 4 PUT TO HIM, waiting for his answers (5 Nov 26)
+- **Done:** round 4 pictured on the real app (`main` at `f197e586f`, his PC's 1536 and his iPhone's 402; finding 15 at 1366 and 1300) and put to him — https://claude.ai/artifact/Eg1hSt3b17u2oVL2owKLux; its file, pictures and measures in `raptor-port/docs/img/handpass/2026-11-05-consistency-round4/`, drawn by `raptor-port/scripts/handpass/cr4-look.mjs`. Four questions (legends; the Inputs calendar at 1366; the board's and Leave War's typed marks; the Tracker's typed marks) and D1509's gear and D1508's calendar drawn as ruled. Finding 10 overtaken (the Leave War's gear is drawn grey, not cyan). The backlog item carries every detail, the build's phone trap included. Nothing in `raptor-port/src` changed.
+- **Folder:** this branch lives in its own folder, `C:\Users\User\projects\Raptor-ui4` (the main folder held the bell-line chat's unsaved work); its local build was served on port 4241.
+- **Next:** record his answers (rulings from D1700, in `design.md`), then build them on this branch with D1509 and D1508, then the bug-check order (read it first); round 5 (the 👁 line, the Inputs ⤢) after.
+- **Numbers held:** rulings D1700–D1709 (none used), design lessons 92–94, observations 830–839 (830, 831 used). D1667–D1699 are the not-saved and bell-line chats'.
+- **Opening line if handed off:** Continue `claude/ui-consistency-round4`: `git fetch origin`; if `git status` in your folder shows changes you did not make, run `git worktree add ../Raptor-ui4b origin/claude/ui-consistency-round4` and work there; otherwise `git switch claude/ui-consistency-round4` and `git pull --ff-only`. Read `HANDOFF.md` (this block) and [UI-CONSISTENCY-LOOK] in `OUTSTANDING.md`, record his answers to round 4, then build them.
+<!-- /now -->
 <!-- now:claude/member-guest-checks -->
 ### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
 - **Shipped:** the member / guest check of the night and the build of his morning answers — the pass after asking for access (D1650, D1654, D1656), "Not sent yet" while its save has failed (D1664), the "Not saved" strip everywhere with the OIL bar alike (D1655), the band on the sign-in, access screens and guest page (D1657), a member's own Scheduler tick read only (D1651), the `?savefail` test switch (D1666); three walk faults fixed red first. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`; his look on his iPhone done, "Ok looks good merge live".

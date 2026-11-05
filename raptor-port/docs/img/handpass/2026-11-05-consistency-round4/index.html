@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Matching Looks Round 4</title>
+<style>
+/* The same page as rounds 1–3, so the four read as one series: numbered questions, each a short statement, its pictures
+   (today, then the drawn proposal), then the recommendation. */
+:root{
+  --bg:#f3f5f7; --panel:#ffffff; --ink:#14181d; --ink-2:#4a5560; --edge:#d6dce2; --accent:#0e7fa3; --ring:#c77700; --tag:#e9eef2;
+  --f-body:"Inter Tight","Segoe UI",system-ui,-apple-system,sans-serif; --f-head:"Barlow Condensed","Arial Narrow","Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0d1014;--panel:#161b21;--ink:#e8edf2;--ink-2:#9aa7b3;--edge:#2a323b;--accent:#4cc3e6;--ring:#ffb020;--tag:#1f262e;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0d1014;--panel:#161b21;--ink:#e8edf2;--ink-2:#9aa7b3;--edge:#2a323b;--accent:#4cc3e6;--ring:#ffb020;--tag:#1f262e;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font:15px/1.55 var(--f-body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px;margin:0}
+main{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1{font:700 30px/1.1 var(--f-head);letter-spacing:.02em;text-transform:uppercase;margin:0;text-wrap:balance}
+h2{font:700 22px/1.2 var(--f-head);letter-spacing:.02em;margin:0;text-wrap:balance;display:flex;gap:10px;align-items:baseline}
+h2 .n{background:var(--ring);color:#000;border-radius:7px;padding:0 9px;font-size:18px}
+h3{font:700 15px/1.3 var(--f-body);margin:6px 0 0}
+p{margin:0;max-width:68ch}
+.lead{color:var(--ink-2)}
+section{background:var(--panel);border:1px solid var(--edge);border-radius:14px;padding:18px max(16px,2vw);display:flex;flex-direction:column;gap:14px;min-width:0}
+figure{margin:0;display:flex;flex-direction:column;gap:6px;min-width:0}
+figure img{width:100%;height:auto;border-radius:8px;border:1px solid var(--edge);cursor:zoom-in;display:block}
+figure.sm img{width:auto;max-width:100%}
+figcaption{font-size:13px;color:var(--ink-2)}
+.tag{display:inline-block;font:600 11px/1.6 var(--f-body);letter-spacing:.06em;text-transform:uppercase;background:var(--tag);border-radius:5px;padding:0 6px;margin-right:6px;color:var(--ink)}
+.tag.drawn{background:var(--accent);color:var(--bg)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;align-items:start}
+.phones{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));gap:12px;align-items:start}
+.rec{background:var(--tag);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.rec b{color:var(--accent)}
+ul,ol{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:4px}
+.top{border:2px solid var(--ring)}
+.top a{color:var(--accent)}
+.zoom{position:fixed;inset:0;background:rgba(0,0,0,.88);display:flex;align-items:center;justify-content:center;z-index:20;padding:env(safe-area-inset-top,0px) max(8px,env(safe-area-inset-right,0px)) env(safe-area-inset-bottom,0px) max(8px,env(safe-area-inset-left,0px));overflow:auto;cursor:zoom-out}
+.zoom img{max-width:none;width:min(1600px,200vw);height:auto}
+@media (max-width:600px){.zoom img{width:220vw}}
+</style>
+</head>
+<body>
+<main>
+  <header style="display:flex;flex-direction:column;gap:10px">
+    <h1>Matching looks — round 4</h1>
+    <p class="lead">The last of the places where the app draws the same kind of thing two ways, and the icons. Nothing is changed yet: each waits for your answer.</p>
+    <p class="lead">In every picture the amber ring marks the place. <span class="tag">Today</span> is the app as it is. <span class="tag drawn">Drawn</span> is the change drawn on the real app. Tap any picture to enlarge it. The pictures come from a test browser, which draws ⚙ 📅 📱 🖥 ✋ 🗑 📋 as plain marks; your iPhone draws them in colour, as this line may show you.</p>
+  </header>
+
+  <section class="top">
+    <h2>Your four questions</h2>
+    <ol>
+      <li><a href="#q1">Legends</a> — four ways today. <b>Recommended: leave all four.</b></li>
+      <li><a href="#q2">Inputs calendar on a laptop-sized screen</a> — the gear drops alone onto a second line. <b>Recommended: keep it with the filters, and the search box a little narrower.</b></li>
+      <li><a href="#q3">Typed marks on the Scheduler Board and the Leave War</a>. <b>Recommended: the app's line icons.</b></li>
+      <li><a href="#q4">Typed marks on the Tracker</a>. <b>Recommended: the app's line icons.</b></li>
+    </ol>
+    <p>"All as recommended" answers all four. Below them: the gear and the calendar, which you have already ruled, drawn so you can see them before they are built.</p>
+  </section>
+
+  <section id="q1">
+    <h2><span class="n">1</span>The legends</h2>
+    <p>Four pages have a legend, shown four ways:</p>
+    <ul>
+      <li><b>Edit Schedule</b> — "Legend — colours &amp; flags" unfolds in place, two rows of flags on your PC, a long block on a phone. You ruled it stays a fold on its own row (D926).</li>
+      <li><b>Leave War</b> and <b>Tracker</b> — a "Legend" button opens the same panel, "What the grid (chart) is telling you". These two already match.</li>
+      <li><b>Inputs</b> and <b>SANS</b> calendars — two or three colours, always in view at the right of the row.</li>
+    </ul>
+    <div class="pair">
+      <figure><img src="q2-pc-sched.png" alt="Edit Schedule's legend fold"><figcaption><span class="tag">Today</span>Edit Schedule, closed</figcaption></figure>
+      <figure><img src="q2-pc-sched-open.png" alt="Edit Schedule's legend open"><figcaption><span class="tag">Today</span>Edit Schedule, open: 93 tall on your PC (303 on a phone)</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-pc-lw.png" alt="The Leave War's Legend button"><figcaption><span class="tag">Today</span>Leave War: the Legend button</figcaption></figure>
+      <figure><img src="q2-pc-trk.png" alt="The Tracker's Legend button"><figcaption><span class="tag">Today</span>Tracker: the Legend button</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-pc-lw-open.png" alt="The Leave War's legend panel open"><figcaption><span class="tag">Today</span>Leave War, open</figcaption></figure>
+      <figure><img src="q2-pc-trk-open.png" alt="The Tracker's legend panel open"><figcaption><span class="tag">Today</span>Tracker, open — the same panel</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q2-pc-inputs.png" alt="The Inputs calendar's colour key"><figcaption><span class="tag">Today</span>Inputs calendar: absence, duty</figcaption></figure>
+      <figure><img src="q2-pc-sans.png" alt="The SANS calendar's colour key"><figcaption><span class="tag">Today</span>SANS calendar: pilots · WSOs still needed</figcaption></figure>
+    </div>
+    <div class="phones">
+      <figure><img src="q2-ph-sched.png" alt="Phone: Edit Schedule's legend fold"><figcaption><span class="tag">Today</span>Phone: Edit Schedule</figcaption></figure>
+      <figure><img src="q2-ph-lw.png" alt="Phone: the Leave War's Legend"><figcaption><span class="tag">Today</span>Phone: Leave War</figcaption></figure>
+      <figure><img src="q2-ph-trk.png" alt="Phone: the Tracker's Legend"><figcaption><span class="tag">Today</span>Phone: Tracker</figcaption></figure>
+      <figure><img src="q2-ph-inputs.png" alt="Phone: the Inputs key"><figcaption><span class="tag">Today</span>Phone: Inputs</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Recommended: leave all four as they are.</b> They follow one rule already: a long legend sits behind a "Legend" button (or Edit Schedule's fold, as you ruled), and a short key of two or three colours stays in view, where hiding it would only add a tap.</p>
+      <p>The other way: Edit Schedule's legend also becomes a "Legend" button with the same panel as the Leave War's. The schedule gains back the fold's row, but its flags move a tap away, and it changes your D926. If you want it, I will draw it first.</p>
+    </div>
+  </section>
+
+  <section id="q2">
+    <h2><span class="n">2</span>The Inputs calendar on a laptop-sized screen</h2>
+    <p>At 1366 wide (a common laptop) the gear does not fit on the top row, so it drops alone to the far left of a second line, and the calendar loses a whole row. At 1300 the filters and the gear move down together, which is tidy. On your PC (1536) everything fits.</p>
+    <div class="pair">
+      <figure><img src="q3-1366.png" alt="1366 wide today: the gear alone on a second line"><figcaption><span class="tag">Today</span>1366 wide: the gear alone on a second line — the row 88 tall</figcaption></figure>
+      <figure><img src="q3-1366-new.png" alt="1366 wide drawn: one line"><figcaption><span class="tag drawn">Drawn</span>1366 wide: one line — the row 44 tall</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q3-1300.png" alt="1300 wide today"><figcaption><span class="tag">Today</span>1300 wide: filters and gear on the second line</figcaption></figure>
+      <figure><img src="q3-1300-new.png" alt="1300 wide drawn"><figcaption><span class="tag drawn">Drawn</span>1300 wide: the same, the gear still with its filters</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Recommended, two small changes:</b> the filters and the gear always move together, so the gear never stands alone; and below 1440 wide the search box is a little narrower (135 → 102), its words "Search inputs" still whole, so 1366 stays on one line.</p>
+      <p>Unchanged: your PC, and the phone. An open input's window covers the right end of the row at every width, as it does on your PC today.</p>
+    </div>
+  </section>
+
+  <section id="q3">
+    <h2><span class="n">3</span>Typed marks on the Scheduler Board and the Leave War</h2>
+    <p>Most buttons in the app carry a drawn line icon (Edit Schedule's calendar, the Leave War's tabs, the Tracker's Reorder). These still carry a typed symbol: ⇅ Sort all, ▤ Templates, ◧ OIL Earn and ⇅ Auto sort on the board; 📱 / 🖥 in the board's phone menu (coloured pictures on your iPhone); ⇅ Rearrange the grid, ↺ Reset order and ⇅ Done on the Leave War.</p>
+    <div class="pair">
+      <figure><img src="q4-pc-board.png" alt="The board's bar today"><figcaption><span class="tag">Today</span>Board: Templates, Sort all</figcaption></figure>
+      <figure><img src="q4-pc-board-new.png" alt="The board's bar drawn"><figcaption><span class="tag drawn">Drawn</span>Board: line icons</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q4-pc-oilearn.png" alt="OIL Earn today"><figcaption><span class="tag">Today</span>Board on a Saturday: OIL Earn</figcaption></figure>
+      <figure><img src="q4-pc-oilearn-new.png" alt="OIL Earn drawn"><figcaption><span class="tag drawn">Drawn</span>OIL Earn takes the Leave War's OIL clock</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q4-pc-autosort.png" alt="Auto sort today"><figcaption><span class="tag">Today</span>A section's Auto sort</figcaption></figure>
+      <figure><img src="q4-pc-autosort-new.png" alt="Auto sort drawn"><figcaption><span class="tag drawn">Drawn</span>Auto sort</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q4-pc-lwset.png" alt="Leave War Settings today"><figcaption><span class="tag">Today</span>Leave War ⚙ Settings</figcaption></figure>
+      <figure><img src="q4-pc-lwset-new.png" alt="Leave War Settings drawn"><figcaption><span class="tag drawn">Drawn</span>Leave War ⚙ Settings</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q4-pc-lwdone.png" alt="Rearranging: Done today"><figcaption><span class="tag">Today</span>Rearranging the grid: Done</figcaption></figure>
+      <figure><img src="q4-pc-lwdone-new.png" alt="Rearranging: Done drawn"><figcaption><span class="tag drawn">Drawn</span>Done</figcaption></figure>
+    </div>
+    <div class="phones">
+      <figure><img src="q4-ph-more.png" alt="Phone: the board's menu today"><figcaption><span class="tag">Today</span>Phone: the board's ⋯ menu</figcaption></figure>
+      <figure><img src="q4-ph-more-new.png" alt="Phone: the board's menu drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: the board's ⋯ menu</figcaption></figure>
+      <figure><img src="q4-ph-lwset-new.png" alt="Phone: Leave War Settings drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: Leave War Settings</figcaption></figure>
+      <figure><img src="q4-ph-lwdone-new.png" alt="Phone: Done drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: Done</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Recommended: the app's line icons.</b> Every ⇅ takes the Tracker's Reorder mark; OIL Earn takes the Leave War's OIL clock, so OIL looks the same wherever it is a button. Three marks are new, drawn in the same style: Templates (a page of blocks), Reset order (an arrow turning back), and a phone and a screen for the layout switch.</p>
+    </div>
+  </section>
+
+  <section id="q4">
+    <h2><span class="n">4</span>Typed marks on the Tracker</h2>
+    <p>Edit chart layout's tools (✋ Move, ▣ Select, → Connect, 🗑 Delete, ╱ Line, ❐ Edit lines, ➤ Arrow, ✕ Merge, ⌢ Unmerge, ▣ Select all, ⤢ Fit, ↺ Reset layout, 📋 Edit events) and the lull periods' ⧉ Copy to… still carry typed symbols — ✋, 🗑 and 📋 are coloured pictures on your iPhone. Its Text tool already has your drawn pencil.</p>
+    <figure><img src="q5-pc-tools.png" alt="Edit chart layout's tools today"><figcaption><span class="tag">Today</span>Edit chart layout, your PC</figcaption></figure>
+    <figure><img src="q5-pc-tools-new.png" alt="Edit chart layout's tools drawn"><figcaption><span class="tag drawn">Drawn</span>Edit chart layout, line icons</figcaption></figure>
+    <div class="pair">
+      <figure><img src="q5-ph-tools.png" alt="Phone: the tools today"><figcaption><span class="tag">Today</span>Phone: the tools</figcaption></figure>
+      <figure><img src="q5-ph-tools-new.png" alt="Phone: the tools drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: the tools</figcaption></figure>
+    </div>
+    <div class="pair">
+      <figure><img src="q5-pc-lull.png" alt="Lull periods today"><figcaption><span class="tag">Today</span>Lull periods: Copy to…</figcaption></figure>
+      <figure><img src="q5-pc-lull-new.png" alt="Lull periods drawn"><figcaption><span class="tag drawn">Drawn</span>Copy to… with the Tracker's copy mark</figcaption></figure>
+    </div>
+    <div class="rec">
+      <p><b>Recommended: the app's line icons.</b> Copy, Delete and Edit events take the Tracker's own copy, bin and list marks; the rest are new marks in the same style (a hand, a dashed box, a line, a curve between two points, two lines joining, a line hopping another, two arrows, Fit's four corners, an arrow turning back).</p>
+      <p>A lull period's × takes the drawn ✕ the Students card uses. The demo has no lull period, so it is not pictured.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Already ruled — drawn before it is built</h2>
+    <p><b>One gear (D1509).</b> Five places still show the typed ⚙: the Inputs calendar, the SANS calendar, the OIL tracker, the Tracker's flex settings and the board's flying waves. Each takes the Leave War's drawn gear, at its own button's size. The list said the Leave War's gear is cyan; on screen it is drawn grey, like every drawn icon in the app, so the five take that grey. The SANS calendar's gear was not in your ruling's list; it is included, as the ruling covers "wherever it stands".</p>
+    <figure class="sm"><img src="q1-pc-lw.png" alt="The Leave War's gear, kept as it is"><figcaption><span class="tag">Today</span>The Leave War's gear — the one every gear copies</figcaption></figure>
+    <div class="pair">
+      <figure><img src="q1-pc-inputs.png" alt="Inputs calendar gear today"><figcaption><span class="tag">Today</span>Inputs calendar</figcaption></figure>
+      <figure><img src="q1-pc-inputs-new.png" alt="Inputs calendar gear drawn"><figcaption><span class="tag drawn">Drawn</span>Inputs calendar</figcaption></figure>
+      <figure><img src="q1-pc-sans.png" alt="SANS calendar gear today"><figcaption><span class="tag">Today</span>SANS calendar</figcaption></figure>
+      <figure><img src="q1-pc-sans-new.png" alt="SANS calendar gear drawn"><figcaption><span class="tag drawn">Drawn</span>SANS calendar</figcaption></figure>
+      <figure><img src="q1-pc-oilgear.png" alt="OIL tracker gear today"><figcaption><span class="tag">Today</span>OIL tracker</figcaption></figure>
+      <figure><img src="q1-pc-oilgear-new.png" alt="OIL tracker gear drawn"><figcaption><span class="tag drawn">Drawn</span>OIL tracker</figcaption></figure>
+      <figure><img src="q1-pc-tracker.png" alt="Tracker flex settings gear today"><figcaption><span class="tag">Today</span>Tracker's flex settings</figcaption></figure>
+      <figure><img src="q1-pc-tracker-new.png" alt="Tracker flex settings gear drawn"><figcaption><span class="tag drawn">Drawn</span>Tracker's flex settings</figcaption></figure>
+      <figure><img src="q1-pc-waves.png" alt="Board flying waves gear today"><figcaption><span class="tag">Today</span>Board: + Wave's menu</figcaption></figure>
+      <figure><img src="q1-pc-waves-new.png" alt="Board flying waves gear drawn"><figcaption><span class="tag drawn">Drawn</span>Board: + Wave's menu</figcaption></figure>
+    </div>
+    <div class="phones">
+      <figure><img src="q1-ph-inputs-new.png" alt="Phone: Inputs gear drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: Inputs</figcaption></figure>
+      <figure><img src="q1-ph-oilgear-new.png" alt="Phone: OIL tracker gear drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: OIL tracker</figcaption></figure>
+      <figure><img src="q1-ph-tracker-new.png" alt="Phone: Tracker gear drawn"><figcaption><span class="tag drawn">Drawn</span>Phone: Tracker</figcaption></figure>
+    </div>
+    <p><b>One calendar (D1508).</b> The OIL tracker's RANGE button is the last 📅 in the app; it takes Edit Schedule's calendar.</p>
+    <div class="pair">
+      <figure><img src="q1-pc-oilrange.png" alt="OIL tracker RANGE today"><figcaption><span class="tag">Today</span>OIL tracker: RANGE</figcaption></figure>
+      <figure><img src="q1-pc-oilrange-new.png" alt="OIL tracker RANGE drawn"><figcaption><span class="tag drawn">Drawn</span>OIL tracker: RANGE</figcaption></figure>
+      <figure><img src="q1-pc-escal.png" alt="Edit Schedule's calendar button"><figcaption><span class="tag">Today</span>Edit Schedule's calendar, the one it copies</figcaption></figure>
+    </div>
+    <p>If any of these looks wrong, say so; otherwise they are built as drawn, with your answers to 1–4.</p>
+  </section>
+
+  <section>
+    <h2>Looked at and left</h2>
+    <ul>
+      <li>Undo ↶ and Redo ↷: the top bar's own arrows, the same on every page (your D347, D1126).</li>
+      <li>"⇄ Move" in the Leave War's sheets: drawn so on purpose, its arrow in the move colour (your D334).</li>
+      <li>The date picker's "today" button, a calendar showing today's number: your own request, and a different job from opening a calendar.</li>
+      <li>The ✕ that closes a window, the ▸ on a fold, ⚠ before an issue count, ⓘ marking an info-only item, the number pad's ⌫, Quals' drag grip ⋮⋮: each one look wherever it appears.</li>
+      <li>For the next round: the 👁 before "Viewing plan" (a coloured picture on your iPhone) and the Inputs calendar's ⤢ "Show every input" button.</li>
+    </ul>
+  </section>
+</main>
+<script>
+document.addEventListener('click', e => {
+  const z = document.querySelector('.zoom')
+  if (z) { z.remove(); return }
+  const img = e.target.closest('figure img'); if (!img) return
+  const d = document.createElement('div'); d.className = 'zoom'
+  const big = document.createElement('img'); big.src = img.src; big.alt = img.alt
+  d.appendChild(big); document.body.appendChild(d)
+})
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelector('.zoom')?.remove() })
+</script>
+</body>
+</html>

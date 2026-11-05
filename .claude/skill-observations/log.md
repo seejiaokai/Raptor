@@ -3503,3 +3503,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
 
 **Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.
+
+### Observation 830: A finding about a drawn icon's colour was read from its button, not the icon
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — picturing the settings gears (numbers 830–839 held by this branch; 820–829 by `claude/postout-bell-look`)
+**Skill:** brainstorming (mockups-on-the-real-app.md, "Judging the Proposal")
+**Type:** open-source
+**Phase/Area:** measuring an existing component before a finding is filed
+
+**Issue:** A consistency sweep filed "the Leave War's gear is cyan, the others white" from the button's computed `color`. The button's colour was indeed the accent, but the svg inside it carries its own class whose rule sets a grey, so on screen the gear was grey like every other drawn icon. The finding sat in the backlog for two weeks as a question for the owner; picturing it at 2x showed the grey, and measuring the svg's own computed colour confirmed it.
+
+**Suggested improvement:** In "An existing component shown inside a mock is measured, not styled", add: measure the colour of the drawn part itself (the svg, the glyph's element), not its container — an icon's class may override the colour it would inherit; and look at the picture before filing a colour finding.
+
+**Principle:** A colour finding is measured on the pixels' own element; a container's colour is a guess about its children.
+
+### Observation 831: An opening line that switches branches in the main folder can land on another chat's unsaved work
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** start of [UI-CONSISTENCY-LOOK] round 4; the opening line said `git switch --detach origin/main` in the main folder, which held another live chat's branch and ten uncommitted source files
+**Skill:** session-handoff (the opening line it writes)
+**Type:** internal
+**Phase/Area:** the ready-to-paste opening line for a new job
+
+**Issue:** The opening line for a new job tells the new chat to detach and branch in the folder it starts in. With parallel chats, that folder is often another chat's working copy with uncommitted work: switching would carry those edits onto the new branch or disturb the other chat (the 3 Nov 26 note in memory records a commit landing on the wrong branch this way). This chat checked `git status` first and made its own short-path folder (`git worktree add ../Raptor-<name>`), as the memory note says, but the opening line itself did not.
+
+**Suggested improvement:** The session-handoff skill's opening-line template for a new job gains one clause: "if `git status` shows changes you did not make, or another chat is on this folder's branch, run `git worktree add --detach ../Raptor-<short> origin/main` and work there instead."
+
+**Principle:** An instruction to switch branches must first check whose folder it is; the guard belongs in the instruction, not in the reader's memory.
