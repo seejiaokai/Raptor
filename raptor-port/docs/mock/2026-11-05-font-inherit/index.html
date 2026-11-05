@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Box Letters Fix</title>
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#14181d;--ink2:#56606b;--edge:#dde1e6;--accent:#0b8fb3;--mark:#e09400}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1014;--panel:#161a20;--ink:#e8edf2;--ink2:#9aa5b1;--edge:#2a3038;--accent:#3cc6e6;--mark:#ffb020}}
+:root[data-theme="dark"]{--bg:#0d1014;--panel:#161a20;--ink:#e8edf2;--ink2:#9aa5b1;--edge:#2a3038;--accent:#3cc6e6;--mark:#ffb020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:24px;margin:0 0 6px}
+h2{font-size:19px;margin:34px 0 4px}
+p{margin:6px 0}
+.ask{background:var(--panel);border:2px solid var(--accent);border-radius:12px;padding:14px 16px;margin:14px 0 8px}
+.ask b.q{font-size:18px;display:block;margin-bottom:4px}
+.note{color:var(--ink2);font-size:14px}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.pair.ph{grid-template-columns:repeat(2,minmax(0,300px))}
+figure{margin:0;background:var(--panel);border:1px solid var(--edge);border-radius:10px;padding:8px}
+figcaption{font-size:13px;font-weight:700;color:var(--ink2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em}
+figcaption.fix{color:var(--accent)}
+img{display:block;width:100%;height:auto;border-radius:6px}
+.lbl{font-size:14px;font-weight:600;margin-top:14px}
+.chg{font-size:15px}
+.chg em{font-style:normal;font-weight:700}
+ul{margin:6px 0;padding-left:20px}
+@media (max-width:640px){.pair,.pair.ph{grid-template-columns:1fr 1fr;gap:8px}}
+</style>
+</head>
+<body>
+<main>
+<h1>Letters in eight boxes and buttons</h1>
+<p class="note">5 Nov 26 · drawn on the real app, today beside the fix</p>
+
+<div class="ask">
+<b class="q">Build it as drawn?</b>
+<p>Eight boxes and buttons on the Scheduler Board and the Inputs page show the browser's own letters instead of the app's, because the line that sets their letters is written in a way the browser throws away. The fix writes each line out properly, so each one shows the app's letters, at the size and boldness it was always meant to have.</p>
+<p><b>My recommendation: yes, all of them.</b> They then match every other box and button in the app. The change is small: the words get a little bolder, and some boxes change height by 1 to 4 pixels. Nothing else moves, and the buttons keep their size.</p>
+<p>A check goes in with the fix, so a line written this way can't come back unnoticed.</p>
+</div>
+
+<p class="note">The amber outline marks each place. It is only drawn on these pictures, not part of the design. Both sides of each pair are the same screen. "Fix" is the app's own stylesheet with only these lines corrected.</p>
+<p class="note"><b>About the phone pictures:</b> they come from the iPhone's browser engine running on a PC. On this PC, today's boxes show a Windows typeface (the old-style "OL" and "Dentist 0900"). On your iPhone, today's boxes already use Apple's own letters, so there you'll mostly see the words get a little bigger and bolder. Your phone is the final check.</p>
+
+<h2>1 · The cancel box on the Scheduler Board</h2>
+<p class="chg">Opened from CX on a line. Today: the browser's letters, regular. Fix: the app's letters, <em>14, semi-bold</em>. On a desktop the box is 4px taller.</p>
+<p class="lbl">Desktop (1536 wide)</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/pc1536-cancel-today.png" alt="Cancel box today"></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/pc1536-cancel-fix.png" alt="Cancel box fixed"></figure></div>
+<p class="lbl">iPhone (402 wide)</p>
+<div class="pair ph"><figure><figcaption>Today</figcaption><img src="img/iphone-cancel-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/iphone-cancel-fix.png" alt=""></figure></div>
+
+<h2>2 · The cancel reasons list</h2>
+<p class="chg">The same box after you press Edit. Each reason's box changes to the app's letters, <em>12, semi-bold</em>. On a phone each box is 2px shorter, and on a desktop 1px taller.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/pc1536-cancel-reasons-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/pc1536-cancel-reasons-fix.png" alt=""></figure></div>
+<div class="pair ph"><figure><figcaption>Today</figcaption><img src="img/iphone-cancel-reasons-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/iphone-cancel-reasons-fix.png" alt=""></figure></div>
+
+<h2>3 · An input's own window: its boxes, and the person's name</h2>
+<p class="chg">Shown as a member filing his own input. The Type list, the Remarks box and the other boxes change to the app's letters, <em>13, semi-bold</em>. On a desktop each box is 2px taller. The person's name ("Ranger") already uses the app's letters, so it only gets bolder. The tick box beside "till 5 Nov" doesn't change.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/pc1536-member-input-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/pc1536-member-input-fix.png" alt=""></figure></div>
+<div class="pair ph"><figure><figcaption>Today</figcaption><img src="img/iphone-member-input-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/iphone-member-input-fix.png" alt=""></figure></div>
+
+<h2>4 · "Several people" and the "All" buttons</h2>
+<p class="chg">In a new input's window. "Several people" changes to <em>12, semi-bold</em>, and its button gets a little narrower (144 → 135 on a desktop). Each group's "All" changes to <em>11, semi-bold</em>. Both buttons keep their height.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/pc1536-input-window-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/pc1536-input-window-fix.png" alt=""></figure></div>
+<div class="pair ph"><figure><figcaption>Today</figcaption><img src="img/iphone-input-window-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/iphone-input-window-fix.png" alt=""></figure></div>
+
+<h2>5 · The "+" on a note, and "+ people" on a new note</h2>
+<p class="chg">In a day opened on the Inputs calendar. The "+" on a note that has people changes to <em>14, bold</em>, and "+ people" changes to <em>12, bold</em>. Both keep their size.</p>
+<div class="pair"><figure><figcaption>Today</figcaption><img src="img/pc1536-day-notes-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/pc1536-day-notes-fix.png" alt=""></figure></div>
+<div class="pair ph"><figure><figcaption>Today</figcaption><img src="img/iphone-day-notes-today.png" alt=""></figure><figure><figcaption class="fix">Fix</figcaption><img src="img/iphone-day-notes-fix.png" alt=""></figure></div>
+
+<h2>And one that isn't on screen</h2>
+<p>A ninth line of this kind sets the letters for the boxes of the Inputs calendar's old day pop-up. That pop-up has since been replaced by the day window shown in 5, so nothing on screen uses this line. I checked every screen on this page. It gets the same correction with the rest. It changes nothing you can see, and it lets the new check pass.</p>
+</main>
+</body>
+</html>

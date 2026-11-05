@@ -3488,3 +3488,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** The guard filed by Observation 601 (an unconditional default: any multi-line script goes to a scratchpad file through the file tool) is still not built; count this as a further met-again for it. Until it is, apostrophes in test names are best avoided in generated edits (a double-quoted string or a reworded name).
 
 **Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.
+
+### Observation 810: A CSS fix drawn by editing the app's own rule in place
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [CSS-FONT-INHERIT] — drawing nine dropped `font:` lines today beside the fix (branch claude/css-font-inherit-look)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page / the transform
+
+**Issue:** The fix was a stylesheet correction. An injected sheet would sit at a different place in the cascade and could beat (or lose to) rules the real fix would not. Writing the corrected declarations into the page's own CSSOM rule (`rule.style.setProperty`), found by its exact selector text, gave an exact "after", reversible with `removeProperty`; the script refused unless each rule was found once. A second trap: the crop picked the first visible `.floatwin` in document order — a day window behind the input window.
+
+**Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
+
+**Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.

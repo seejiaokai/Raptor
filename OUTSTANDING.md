@@ -2222,6 +2222,7 @@ typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src
 (491, 504, 572, 592). Each written out as `font-family: inherit` plus its size and weight would show the app's letters at
 the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
 next Inputs or schedule batch (D490).
+**Drawn 5 Nov 26** (nine lines: eight places on screen and one dead rule, `.ic-pop input`): `raptor-port/docs/mock/2026-11-05-font-inherit/`, put to him on https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1 — waiting on his answer.
 **A guard with it (691, 704):** a structural test over the stylesheets — no rule after a scoping wrapper's close in a
 file that wraps itself (`#page-leavewar { … }`; a block appended after it lost silently, twice, 24 and 25 Oct 26), and no
 `font:` shorthand naming `inherit`. A rule that only a comment states is broken again.

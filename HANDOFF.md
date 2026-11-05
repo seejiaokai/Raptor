@@ -28,6 +28,13 @@ the later merge keeps both (D78).
 - **Numbers:** rulings next free D1667; design lessons next free 83; observations next free 802.
 - **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
 <!-- /now -->
+<!-- now:claude/css-font-inherit-look -->
+### `claude/css-font-inherit-look` — the drawing for [CSS-FONT-INHERIT], waiting on his answer (5 Nov 26)
+- **Drawn, not built:** the font lines the browser drops are nine, not eight: eight places on screen (the Scheduler Board's cancel box and its reasons list; an input's own window — its boxes, a member's fixed name, "Several people", the groups' "All"; the opened day's note "+" and "+ people") and one dead rule (`07-inputs-calendar.css` `.ic-pop input`, whose pop-up is gone — 0 on every screen walked). Each drawn today beside the fix at 1536 (Chromium) and 402×874 (WebKit), the fix written into the app's OWN rule in place (CSSOM, so cascade and strength are exact; the script refuses unless all nine rules are found once each). Script, pictures and measures: `raptor-port/docs/mock/2026-11-05-font-inherit/` (`draw.mjs`, `measures.json`). Page: https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1 — one question, "Build it as drawn?", recommended yes, with the stylesheet guard the item names.
+- **For the build:** write each line as `font-family:inherit;font-size:<n>px;font-weight:<w>` (+ `line-height:1` on the two `/1` lines in `25-inputs-calendar.css`); measured shifts: cancel box +4px tall on a desktop, the input window's boxes +2px, the cancel reasons 1px taller on a desktop and 2px shorter on the phone, "Several people" 144→135 wide; WebKit-on-Windows shows a Windows serif as the browser's own box face, which his iPhone does not (Apple's letters there) — his phone is the proof. `src` untouched.
+- **Numbers:** no ruling, lesson or observation taken (ranges held: D1680–D1689, lessons 86–88, observations 810–819).
+- **Next:** his answer → record it (D1680) → build on a branch from `main` with the guard test, walk the eight places.
+<!-- /now -->
 ## Next, in order
 
 **RIGHT NOW (5 Nov 26, morning):** pull requests 634 and 635 LIVE (the `claude/topbar-names-build` block removed); the night's three jobs CHECKED — 636, 637, 638, waiting for his look and "merge live" → the build of his morning answers (D1651, D1655–D1657) on this branch (its block).
