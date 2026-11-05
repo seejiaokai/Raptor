@@ -266,3 +266,70 @@ describe('the member view (D292) and a taken-back line', () => {
     expect(unreadFor('rocky')).toBe(1)
   })
 })
+
+/* [PO-CHANGE-RETRACT] — A POSTING THAT RAN, THEN CHANGED ON ITS POST OUT SHEET (his D1710, 5 Nov 26 — "As recommended" to
+   the take-back look page's Q4; found by the take-back code read, docs/handpass/parts/tb1105/read-code.md 1). Its date moved
+   or another outcome chosen, it no longer stands as it ran: its bell lines are taken back as the sheet's Undo takes them —
+   a read line struck through and "taken back · Saber", unread; an unread one simply goes; Saber, who changed it, is told
+   nothing — and the changed posting tells again when it runs. */
+describe('a posting that ran, then changed on its Post out sheet (his D1710)', () => {
+  const plain = (pid: string) => allNoticesFor(pid).filter(n => (n.what || [])[0]?.k === 'po')
+  it('its date moved to a day still to come: the line is taken back, and it tells again on the new date', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(postOut('bane', '2026-07-25', 'sans')).toBe(true)
+    expect(P('bane').san, 'no longer SANS today').toBeFalsy()
+    expect(poLines('rocky'), 'no "Posted out" line left standing').toEqual([])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+    expect(unreadFor('rocky')).toBe(1)
+    expect(poLines('stiff'), 'Saber changed it: his line goes').toEqual([])
+    expect(backLines('stiff'), '…and he is told nothing').toEqual([])
+    reach(25); runPoOutcomes()
+    expect(poLines('rocky').map(words), 'the changed posting tells again when it runs').toEqual(['Ranger · Sat 25 Jul / Posted out · now SANS'])
+    expect(isUnread(poLines('rocky')[0]!, 'rocky')).toBe(true)
+  })
+  it('another outcome on the same date (SANS → none): an unread line simply goes; the "off the manpower" line comes, unread', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(postOut('bane', PO, 'none')).toBe(true)
+    expect(poLines('rocky'), 'the "now SANS" line went').toEqual([])
+    expect(backLines('rocky'), 'he had not read it: no "taken back" line').toEqual([])
+    expect(plain('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · off the manpower'])
+    expect(isUnread(plain('rocky')[0]!, 'rocky')).toBe(true)
+  })
+  it('another outcome on the same date (Overseas Sqn → SANS), read: taken back; the new outcome runs and tells, unread', () => {
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    runPoOutcomes()
+    expect(P('bane').archived, 'the archive lifted').toBeFalsy()
+    expect(P('bane').san, 'made SANS on his date').toBe(true)
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · archived, account suspended~~ · taken back · Saber'])
+    expect(poLines('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · now SANS'])
+    expect(unreadFor('rocky'), 'both lines unread').toBe(2)
+  })
+  it('off the manpower, read, its date moved: the worked-out line is taken back', () => {
+    const id = noSignIn()
+    expect(postOut(id, PO, false)).toBe(true)
+    reach(23)
+    hexReads()
+    expect(postOut(id, '2026-07-27', false)).toBe(true)
+    expect(plain('rocky'), 'no line until the new date').toEqual([])
+    expect(backLines('rocky').map(drawn)).toEqual([`${P(id).cs} · Mon 20 Jul / ~~Posted out · off the manpower~~ · taken back · Saber`])
+  })
+  it('saved again unchanged, or a posting that has not run moved: no bell is touched', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    expect(poLines('rocky')).toHaveLength(1)
+    expect(backLines('rocky')).toEqual([])
+    const id = noSignIn()                                          // a posting still to come, moved: it made no line
+    expect(postOut(id, '2026-07-30', 'overseas')).toBe(true)
+    expect(postOut(id, '2026-07-31', 'sans')).toBe(true)
+    expect(backLines('rocky')).toEqual([])
+    expect(backLines('stiff')).toEqual([])
+  })
+})

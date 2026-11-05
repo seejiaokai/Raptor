@@ -2696,7 +2696,9 @@ export function undoPostOut(id: string): boolean {
    never tells their maker). The "off the manpower" line is no stored line — each admin's bell works it out from the posting
    (postedLines, D1696) — so it goes by itself with the posting; read, it gets its "taken back" line all the same.
    `postingLinesOf` is read BEFORE the write clears the posting (the derived line is gone after it). A posting whose date
-   has not come made no line, and its Undo touches no bell. */
+   has not come made no line, and its Undo touches no bell.
+   A posting that ran and is then CHANGED on its Post out sheet — its date moved, or another outcome — takes its lines back
+   the same way (his D1710, [PO-CHANGE-RETRACT]): `postOut` below. */
 function postingLinesOf(id: string): Notice[] {
   const rec = getState().postOuts[id]
   if (!rec || !rec.to) return []
@@ -2733,16 +2735,17 @@ function retractPostingLines(lines: readonly Notice[]): string[] {
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
-   "he's back": no prompt (the plan's Round 2, Fable 5). `undo` — the posting sheet's "Undo post out": its bell lines are
-   taken back too (above), the scheduler store joining the command only then. */
-function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}, undo = false): boolean {
+   "he's back": no prompt (the plan's Round 2, Fable 5). `retract` — the posting sheet's "Undo post out", or a change that
+   leaves a posting no longer as it ran (D1710): its bell lines are taken back too (above), the scheduler store joining the
+   command only then. */
+function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}, retract = false): boolean {
   const body = rosterBody(id)
   let ok = false
   let forget: string[] = []
   const r = cmdCommit({
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
-      const lines = undo ? postingLinesOf(id) : []
+      const lines = retract ? postingLinesOf(id) : []
       /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
          notes there): only this command's own lines are its change */
       if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
@@ -2805,7 +2808,15 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
      first posting and a change with nothing to take back included: a bare war write was routed as a generic `lw.edit`,
      a member's own-bid row (Astra's code read 4, 27 Sep 26). The command's gate decides who may; the take-back inside it
      touches only what the posting made. */
-  return takeBack(id, () => setPostOut(id, from, outcome), keep)
+  /* A POSTING THAT RAN, THEN CHANGED, TAKES BACK ITS BELL LINES (his D1710, 5 Nov 26 — [PO-CHANGE-RETRACT], the take-back
+     code read's 1). Its date moved — later, or earlier — or another outcome: what the bells say it did is no longer what it
+     does (the SANS tick lifted above, the archive back), and the store clears its "has run" mark so it runs, and tells,
+     again on its own date. So its lines go as the sheet's Undo takes them (a read one struck through, "taken back · Saber";
+     an unread one simply goes; the admin who changed it told nothing). The same test as the store's own "has run" mark
+     (store.ts setPostOut `same`). Saved unchanged, nothing is taken back; a posting not yet run has no line to take. */
+  const w = getState().postOuts[id]
+  const changed = !!w && !!w.to && !(addDays(w.to, 1) === from && outcomeOf(w) === outcome)
+  return takeBack(id, () => setPostOut(id, from, outcome), keep, changed)
 }
 
 /* ---- wiring -------------------------------------------------------------- */
