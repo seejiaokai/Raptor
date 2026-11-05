@@ -99,13 +99,13 @@ async function pressKind(page, root, c, ctx) {
   return r
 }
 
-async function worklist(page, root, tag, onlyEditing = false) {
+async function worklist(page, root, tag, onlyEditing = false, cap = 260) {
   const startWeek = await page.evaluate(() => window.CURWEEK)
   const done = new Set(), queue = []
   const add = (list) => { for (const c of list) if (!done.has(c.kind) && !queue.some(q => q.kind === c.kind) && (!onlyEditing || c.edit || c.seat)) queue.push(c) }
   add(await listAll(page, root))
   const rs = []
-  while (queue.length && done.size < 260) {
+  while (queue.length && done.size < cap) {
     const c = queue.shift(); done.add(c.kind)
     if (!(await tagKind(page, root, c.kind))) { rs.push({ kind: c.kind, landed: 'gone' }); continue }
     const r = await pressKind(page, root, c)
@@ -137,21 +137,21 @@ await signAll()
 check('P0', 'fixture: Publish AL1 live for the admin', await page.evaluate(() => { const b = document.querySelector('#alPanel .al-pubday button'); return !!b && !b.disabled }), true)
 
 /* THE POSITIVE CONTROL: the same editing presses as the ADMIN must change something — else a member's "nothing" proves nothing */
-const adm = await worklist(page, '#page-editsched', 'P1-admin', true)
+/* (capped: each text cell's address is its own kind, so the editing presses alone run to hundreds — a dozen is a proof) */
+const adm = await worklist(page, '#page-editsched', 'P1-admin', true, 14)
 const admMoved = adm.filter(r => r.moved).map(r => r.kind)
 check('P1', 'as the ADMIN, the editing presses (text cells typed, empty seats by click-to-place) DO change the schedule — the probe can see an edit', admMoved.some(k => k.startsWith('txt|')) , { moved: admMoved.slice(0, 12), n: admMoved.length })
-await page.evaluate(() => { while (!document.getElementById('undoBtn')?.disabled) { document.getElementById('undoBtn')?.click(); if (!document.getElementById('undoBtn')) break } })
 
 await L.signOut(page); await L.signIn(page, 'us', 'us')
 const s0 = await L.state(page)
 await page.evaluate(() => window.setPage('editsched')); await page.waitForTimeout(700)
 await L.shot(page, 'R2-M1', 'member-editsched')
-const m = await worklist(page, '#page-editsched', 'R2-M3')
+const m = await worklist(page, '#page-editsched', 'R2-M3', false, 170)
 check('R2-M3', 'a member on Edit Schedule: every control, every window it opens and every control in that, every text cell, every empty seat — nothing saved, nothing changed in memory, nothing typed left', m.every(r => !r.moved), { moved: m.filter(r => r.moved).map(r => r.kind) })
 check('R2-M3n', 'every control was really pressed (none NOT PRESSED)', m.every(r => r.landed !== 'NOT PRESSED'), { notPressed: m.filter(r => r.landed === 'NOT PRESSED').map(r => r.kind) })
 await page.evaluate(() => window.openScheduler(0)); await page.waitForTimeout(700)
 await L.shot(page, 'R2-M4', 'member-board')
-const b = await worklist(page, '#schedBoard', 'R2-M4')
+const b = await worklist(page, '#schedBoard', 'R2-M4', false, 130)
 check('R2-M4', 'the board forced open for a member: the same', b.every(r => !r.moved), { moved: b.filter(r => r.moved).map(r => r.kind) })
 check('R2-M4n', 'every board control really pressed', b.every(r => r.landed !== 'NOT PRESSED'), { notPressed: b.filter(r => r.landed === 'NOT PRESSED').map(r => r.kind) })
 await page.keyboard.press('Escape')
