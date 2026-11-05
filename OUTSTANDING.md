@@ -53,7 +53,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **His order, as it stands:**
 - **Now (D994, 18 Oct 26):** the small fixes that need no answer or look from him, batched by area with one check each.
   The scheduling pages on a phone are done (pull request 533); the next area is next. The questions the backlog keeps
-  for him wait until he says so.
+  for him wait until he says so. **Sized 5 Nov 26 (his "size it"):** nine jobs in about three nights, React Doctor's 183
+  in the app riding with them, one pictures round for him — `raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`.
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
