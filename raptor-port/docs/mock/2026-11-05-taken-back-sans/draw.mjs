@@ -294,6 +294,22 @@ for (const size of (process.env.ONLY ? [process.env.ONLY] : ['desk', 'phone'])) 
   await neutral(page, tap)
   await shot(page, `7-hex-bell-proposed-${size}`)
   await bellClose(page, `7-hex-bell-proposed-${size}-close`)
+  /* B — HIS IDEA (5 Nov 26, after seeing picture 7): the posting's own line kept, its words struck through, "taken back ·
+     Saber" after them, unread again so the bell lights. Struck the way the app already strikes a cancelled input's title
+     (line-through, D767); nothing else about the line changes */
+  await page.evaluate(was => {
+    for (const n of document.querySelectorAll('.bl-line.tb-new')) {
+      const w = n.querySelector('.bl-what')
+      w.textContent = ''
+      const s = document.createElement('s'); s.textContent = was; s.style.textDecorationThickness = '1.5px'
+      w.append(s, document.createTextNode(' · taken back · Saber'))
+      n.dataset.tb = 'NEW · B'
+    }
+  }, 'Posted out · now SANS')
+  const fitB = await page.evaluate(() => [...document.querySelectorAll('.bl-line.tb-new')].map(n => ({ h: Math.round(n.getBoundingClientRect().height), whatCut: n.querySelector('.bl-what').scrollWidth > n.querySelector('.bl-what').clientWidth + 1 })))
+  say(`[${size}] B (struck through): height and fit ${JSON.stringify(fitB)}`)
+  await neutral(page, tap)
+  await bellClose(page, `8-hex-bell-struck-${size}-close`)
   report[size] = { sans: P[sansId].cs, none: P[noneId].cs, hexBefore, hexRead, today, proposed, group, saberToday, hexToday, drawn, fit }
   await b.close()
 }
