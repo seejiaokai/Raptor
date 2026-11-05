@@ -3503,3 +3503,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In step 3, add: a mark's class never sets `position` (or display, size, overflow-hiding) on the element it marks; a fixed, absolute or sticky element already gives its tag a box, and a static one gets the tag as a child instead. Have the drawing script assert the marked element's box is unchanged (same rect before and after the class is added).
 
 **Principle:** A mark drawn on an element must not change that element's layout; check the element's box before and after adding the mark, because a broken frame passes silently.
+
+### Observation 821: A drawn mock-up of an event's result never asked whether the event happens in every case drawn
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** building the posting-out bell line ([POSTOUT-RUN-NOTICE]) from its approved drawing and the handoff's build notes
+**Skill:** mockups-on-the-real-app (brainstorming) and session-handoff
+**Type:** open-source
+**Phase/Area:** the drawing step; the handoff's "what the build carries"
+
+**Issue:** The drawing showed four bell lines, one per outcome of a posting, as if each were written when "the posting runs on its date". In the app one of the four outcomes ("off the manpower") never runs anything on its date — so there was no moment to write its line, and the build needed a different mechanism (a line each bell works out from stored data). The drawing script had moved the clock and seen the other three run, but cloned all four lines by hand, so the gap never showed. Separately, the handoff said the line was written "inside the command, so an Undo takes it back" — but an earlier ruling says the top-bar Undo never takes a posting back; the build had to find that out from a failing test.
+
+**Suggested improvement:** In the mock-up guide: when a drawing shows what an event produces (a notification, a mark, a line), the drawing script asserts for EVERY drawn case that the event actually fires in the running app (a hook, a log, a state change), and lists any case where it does not as a design question. In the handoff skill: a build note that claims a behaviour of an existing mechanism (Undo, a save, a permission) names the ruling or test that shows it, or says it is unchecked.
+
+**Principle:** A picture of a result is not evidence that its cause happens; and a claim about how an existing mechanism behaves is a guess until a ruling or a test is named for it.

@@ -113,6 +113,14 @@ describe('each outcome that runs: one line in every admin\'s bell, in his words 
     expect(before).toBeGreaterThan(0)
     expect(noticesFor('stiff')[0]!.id).toBe(poLines('stiff')[0]!.id)
   })
+  it('several postings in one run: their lines read in the postings’ own order, first posted on top (as drawn)', () => {
+    const id = noSignIn()
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    expect(postOut(id, PO, 'delete')).toBe(true)
+    expect(postOut('rocky', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(noticesFor('stiff').filter(n => (n.what || [])[0]?.k === 'po').map(n => (n.what[0] as any).who)).toEqual(['bane', id, 'rocky'])
+  })
   it('the pass runs again: nobody is told twice', () => {
     expect(postOut('bane', PO, 'overseas')).toBe(true)
     reach(); runPoOutcomes(); runPoOutcomes(); raptorNotify(); runPoOutcomes()

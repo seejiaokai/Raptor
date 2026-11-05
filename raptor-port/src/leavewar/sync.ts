@@ -2379,7 +2379,9 @@ export function runPoOutcomes(): void {
              every admin's bell — "Ranger · Mon 16 Nov / Posted out · archived, account suspended". Written here, inside the
              pass's own command, so a refused pass tells nobody and a posting made today (run inside the admin's own Post out)
              goes with its Undo. The admins are read AFTER the outcomes: a posted-out admin is told nothing about himself */
-          if (ran.length) { const to = schedulerIds(); for (const r of ran) noticePosting(to, r.id, r.outcome, r.poDate, r.acct) }
+          /* (each a millisecond earlier than the one before: the bell lists the newest first, so a run's lines read in the
+             postings' own order, as drawn) */
+          if (ran.length) { const to = schedulerIds(), now = Date.now(); ran.forEach((r, i) => noticePosting(to, r.id, r.outcome, r.poDate, r.acct, now - i)) }
           validate()
           finishPeopleWrite()
           /* the schedule's own save step — the bell's lines; for a delete the loaded week filed too (person-delete.ts deletePerson) */
