@@ -26,7 +26,7 @@ import { NOTICES, noticesFor, noticeWords, noticeLive, allNoticesFor, type Notic
 import { unreadFor, markAllNoticesRead, isUnread } from '../state/noticeseen'
 import { CURPAGE, ADMINOPEN, clearAdminOpen } from '../state/view'
 import { openNotice } from '../ui/topstate'
-import { getState, initStore as lwInitStore, lwHistInit, setPeople, setShowSans } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, setPeople, setShowSans, setPostIn, postingProblem } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { postOut, runPoOutcomes, undoPostOut, restoreArchivedPerson, wireLeaveWarSync } from './sync'
@@ -401,5 +401,36 @@ describe('the fix’s own read (his D1710)', () => {
     const line = allNoticesFor('stiff').find(n => (n.what || [])[0]?.k === 'po')!
     expect(words(line)).toBe('Ranger · Mon 20 Jul / Posted out · off the manpower')
     expect(isUnread(line, 'stiff')).toBe(true)
+  })
+})
+
+/* THE FIX ROUND'S NARROW READ (5 Nov 26 — docs/handpass/parts/tb1105/read-pcr-fixes.md 1, 2) */
+describe('the fix round’s narrow read', () => {
+  it('1: restored on its own day, then posted again for the same date and outcome: Undo takes back only the second run’s lines', () => {
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(restoreArchivedPerson('bane', PO)).toBe(true)
+    vi.setSystemTime(new Date(2026, 6, 21, 9, 5, 0))            // a later moment: the second run is its own
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    runPoOutcomes()
+    hexReads()
+    expect(poLines('rocky'), 'two runs, two lines').toHaveLength(2)
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky').map(words), 'the first posting’s line stays as its record').toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
+    expect(backLines('rocky')).toHaveLength(1)
+  })
+  it('2: "+ SANS" on, a post-in on a man whose SANS posting ran keeps the posting; a post-in after it is refused, and the sheet says why', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(setShowSans(true)).toBe(true)
+    expect(postingProblem('bane', 'in', '2026-08-01'), 'the sheet’s sentence and the writer agree').toMatch(/post-in has to be before/)
+    expect(setPostIn('bane', '2026-08-01'), 'after his posting: refused').toBe(false)
+    expect(setPostIn('bane', '2026-01-05')).toBe(true)
+    expect(getState().postOuts['bane']?.to, 'the ran posting kept').toBe('2026-07-19')
+    expect(getState().postOuts['bane']?.poDone).toBe('2026-07-20')
+    expect(getState().postOuts['bane']?.from).toBe('2026-01-05')
+    expect(undoPostOut('bane'), 'still undoable').toBe(true)
+    expect(P('bane').san, 'and its SANS tick taken back').toBeFalsy()
   })
 })

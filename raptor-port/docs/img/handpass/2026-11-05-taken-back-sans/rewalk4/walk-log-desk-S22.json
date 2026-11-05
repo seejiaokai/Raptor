@@ -1,0 +1,31 @@
+{
+  "results": [
+    {
+      "size": "desk",
+      "step": "F0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "desk",
+      "step": "S22",
+      "ok": true,
+      "what": "\"+ SANS\" on, post-in set on Ranger after his SANS posting ran: Admin → Users still reads his posting, and with \"+ SANS\" off again Undo post out still takes it back ({\"canAdd\":1,\"pi\":true,\"after\":\"Rangerus · Member · Pilot · CAT IPposted out 16 Nov · SANSMember\",\"canOff\":1,\"door\":true,\"back\":{\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}})"
+    }
+  ],
+  "errs": [],
+  "log": [
+    "PASS [desk] F0 — Hex made an admin on Admin → Users",
+    "[desk] the men: Ranger (bane), Cinch (snap), taipan",
+    "[desk] S22 Admin → Users before: \"Rangerus · Member · Pilot · CAT IPposted out 16 Nov · SANSMember\" · after: \"Rangerus · Member · Pilot · CAT IPposted out 16 Nov · SANSMember\"",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S22 — \"+ SANS\" on, post-in set on Ranger after his SANS posting ran: Admin → Users still reads his posting, and with \"+ SANS\" off again Undo post out still takes it back ({\"canAdd\":1,\"pi\":true,\"after\":\"Rangerus · Member · Pilot · CAT IPposted out 16 Nov · SANSMember\",\"canOff\":1,\"door\":true,\"back\":{\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}})"
+  ],
+  "report": {
+    "desk": {
+      "X": "snap",
+      "Y": "taipan",
+      "csX": "Cinch"
+    }
+  }
+}

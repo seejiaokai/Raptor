@@ -2139,8 +2139,13 @@ export function forgetPersonFrom(id: string, iso: string, frozen: Person | null 
 export function setPostIn(id: string, date: string | null): boolean {
   if (state.role !== 'admin') return false
   if (date !== null && !/^\d{4}-\d{2}-\d{2}$/.test(date)) return false
-  const person = state.people.find(p => p.id === id)
-  if (!person) return false
+  /* judged and written from the SAVED posting (`dated`), never the man as the grid shows him: with "+ SANS" on a ran SANS
+     posting is drawn with no end date (windowFor), and a post-in written from that row wiped the posting from the record —
+     Admin → Users' "posted out" gone, its SANS tick and bell line never to be taken back (the [PO-CHANGE-RETRACT] fix
+     round's narrow read, 2, 5 Nov 26; the same as setPostOut's `same`) */
+  const shown = state.people.find(p => p.id === id)
+  if (!shown) return false
+  const person = dated(shown)
   if (person.gone) return false                   // a deleted man's posting is final (Fable F3)
   if (postingLocked(id)) return false             // archived on Admin → Users — Restore there ([ONE-DOOR])
   if (date !== null && person.to !== null && date > person.to) return false
@@ -2152,10 +2157,10 @@ export function setPostIn(id: string, date: string | null): boolean {
      never left (the final code read, Fable F3; the same join Restore makes, `openStint`, Fable F5) */
   const joins = !!lastPast && date === addDays(lastPast.to, 1)
   const rest = joins ? person.past!.slice(0, -1) : person.past
-  const people = state.people.map(p => (p.id === id
-    ? (joins ? { ...p, from: lastPast!.from, past: rest && rest.length ? rest : undefined } : { ...p, from: date })
-    : p))
-  state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
+  const next: Person = joins ? { ...person, from: lastPast!.from, past: rest && rest.length ? rest : undefined } : { ...person, from: date }
+  /* the record from the saved posting; the roster's row drawn from it as setPeople draws every row */
+  const people = state.people.map(p => (p.id === id ? { ...next, ...windowFor(next, state.showSans) } : p))
+  state = withCurrent({ ...state, people, postOuts: windowRecord(state.people.map(p => (p.id === id ? next : p)), id) })
   persistNotify()
   return true
 }
@@ -2167,7 +2172,9 @@ export function setPostIn(id: string, date: string | null): boolean {
  *  refused value is put back AND the person is told. The same tests as the two writers, so the words and the refusal
  *  cannot disagree; null when the date would be taken. Dates in the sheets' own voice (they print 2026-06-15). */
 export function postingProblem(id: string, kind: 'in' | 'out' | 'restore', date: string, identity?: Person): string | null {
-  const person = state.people.find(p => p.id === id) || identity
+  /* the writers' own reading — the saved posting, never the "+ SANS" display (setPostIn above) */
+  const shown = state.people.find(p => p.id === id)
+  const person = shown ? dated(shown) : identity
   if (!person) return null
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) return 'Pick a whole date first.'
   if (kind !== 'restore') { const locked = postingLocked(id); if (locked) return locked }

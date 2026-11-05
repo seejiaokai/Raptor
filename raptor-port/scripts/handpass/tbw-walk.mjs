@@ -662,6 +662,50 @@ for (const size of (process.env.ONLY ? [process.env.ONLY] : ['desk', 'phone'])) 
     await b.close()
   }
 
+  /* ===== S22 (desk): the [PO-CHANGE-RETRACT] fix round's narrow read, 2 — "+ SANS" on, a post-in set on a man whose SANS
+     posting has run (his cell's ⋯ → Post in) keeps the posting: Admin → Users still reads it, and Undo post out still takes it
+     back ===== */
+  if (want('S22') && desk) {
+    let { b, ctx, page, tap } = await open(size, later(10), posted)
+    await lwOpen(page)
+    const tagOf = () => page.evaluate(() => [...document.querySelectorAll('#page-admin .acc-row[data-person="bane"]')].map(r => r.textContent).join(' '))
+    await go(page, 'admin'); const before = await tagOf()
+    await go(page, 'leavewar'); await lwOpen(page)
+    await press(page, tap, '[data-testid="settings-open"]')
+    const add = page.locator('[data-testid="gadd-SANS"]').filter({ visible: true })
+    const canAdd = await add.count()
+    if (canAdd) { await add.first().click(); await sleep(500) }
+    await page.keyboard.press('Escape').catch(() => {}); await closeSheets(page)
+    await lwOpen(page)
+    let pi = false
+    try {
+      await tapCell(page, tap, 'bane', EARLY)
+      await press(page, tap, `${sheet} [data-testid="bid-more"]`)
+      await press(page, tap, '[data-testid="bid-postin"]')
+      await press(page, tap, `${sheet} [data-testid="pi-confirm"]`)
+      pi = true
+    } catch (e) { say(`[${size}] S22 could not set the post-in: ${e.message}`) }
+    await sleep(600); await neutral(page, tap); await shot(page, size, 's22a-after-post-in'); await closeSheets(page)
+    await go(page, 'admin'); const after = await tagOf()
+    await page.evaluate(() => [...document.querySelectorAll('#page-admin .acc-row[data-person="bane"]')].find(r => r.getBoundingClientRect().height > 0)?.scrollIntoView({ block: 'center' })); await sleep(300)
+    await shot(page, size, 's22b-admin-users')
+    say(`[${size}] S22 Admin → Users before: ${JSON.stringify(before)} · after: ${JSON.stringify(after)}`)
+    const kept = /posted out/i.test(after) && /16 Nov/.test(after)
+    await go(page, 'leavewar'); await lwOpen(page)
+    /* with "+ SANS" on a ran SANS posting is drawn with no posting day (D283), so its sheet's Undo is reached with it off —
+       the SANS row's ✕ in the settings, as an admin would */
+    await press(page, tap, '[data-testid="settings-open"]')
+    const off = page.locator(`[data-testid="gdrop-SANS"]`).filter({ visible: true })
+    const canOff = await off.count()
+    if (canOff) { await off.first().click(); await sleep(500) }
+    await page.keyboard.press('Escape').catch(() => {}); await closeSheets(page)
+    await lwOpen(page)
+    const door = await undoPosting(page, tap, 'bane')
+    const back = await person(page, 'bane')
+    check(size, 'S22', canAdd && pi && /posted out/i.test(before) && kept && canOff && door && !back.san, `"+ SANS" on, post-in set on Ranger after his SANS posting ran: Admin → Users still reads his posting, and with "+ SANS" off again Undo post out still takes it back (${JSON.stringify({ canAdd, pi, after, canOff, door, back })})`)
+    await b.close()
+  }
+
   /* ===== S15 (desk): off the manpower undone more than 14 days after its date ===== */
   if (want('S15') && desk) {
     const st0 = await saberPosts(size, base, [[X, 'none']])

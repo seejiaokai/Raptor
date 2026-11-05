@@ -2709,9 +2709,15 @@ function postingLinesOf(id: string): Notice[] {
      after it ran has no older line left to find: the change itself took them back (D1710, `postOut`). */
   const poDate = addDays(rec.to, 1)
   const o = outcomeOf(rec)
-  const stored = rec.poDone === poDate
+  const mine = rec.poDone === poDate
     ? NOTICES.filter(n => { const p = (n.what || [])[0]; return p?.k === 'po' && p.who === id && n.day === poDate && p.o === o })
     : []
+  /* …and of its own RUN: restored on the posting's own day, then posted again for the same date and outcome, he has two runs'
+     lines no date or outcome tells apart (the fix round's narrow read, 1). One run writes every admin's line with one
+     moment (runPoOutcomes → noticePosting), and a man's posting runs once in a pass — so the newest moment is this run's.
+     Never "the newest line per admin": an admin at the first run and not the second would lose the first's record. */
+  const last = mine.reduce((m, n) => Math.max(m, n.at), -Infinity)
+  const stored = mine.filter(n => n.at === last)
   const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
