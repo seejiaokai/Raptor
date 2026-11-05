@@ -184,6 +184,9 @@ function ArrangeDefaults() {
   )
 }
 
+/* how long a row a bell's posting line lands on stays ringed — the app's one just-added mark's six seconds (state/view.ts
+   FRESH_MS; 06-inputs.css inflash) */
+const RING_MS = 6000
 export function AdminPage() {
   useVersion()
   /* which category the pane shows; `drilled` only matters on a phone, where the
@@ -193,6 +196,9 @@ export function AdminPage() {
      drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
   const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
   const [openNew, setOpenNew] = useState(0)
+  /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap (the Users
+     list is drawn afresh for each — its `key`), `on` while his row wears the just-added mark — its six seconds */
+  const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
@@ -204,7 +210,12 @@ export function AdminPage() {
     if (!it) return
     setCat('users'); setDrilled(true)
     setOpenNew(it.newPerson ? it.seq : 0)
+    const seq = it.seq, person = it.person
+    setRing(person ? { seq, pid: person, on: true } : null)
     clearAdminOpen()
+    if (!person) return
+    const t = setTimeout(() => setRing(r => (r && r.seq === seq ? { ...r, on: false } : r)), RING_MS)
+    return () => clearTimeout(t)
   }, [intentSeq])
   const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
@@ -247,7 +258,7 @@ export function AdminPage() {
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
-              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} />
+              <UsersPanel key={ring ? ring.seq : 0} shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

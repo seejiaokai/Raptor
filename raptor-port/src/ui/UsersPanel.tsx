@@ -254,7 +254,7 @@ const DELETE_GOES = 'Goes: his account, his Quals row, every day still to come. 
 
 /* ONE ROW PER PERSON ON THE ROSTER (D309, D310). Tap it for his sign-in, his role and his state's buttons — never your
    own row (another admin changes it). A row with an account keeps `data-acct` (the account's id) beside `data-person`. */
-function PersonRow(p: { pid: string; open: boolean; onToggle: () => void; onClose: () => void }) {
+function PersonRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
   const own = (a && isOwnAccount(a)) || (me() != null && p.pid === me())
@@ -284,7 +284,7 @@ function PersonRow(p: { pid: string; open: boolean; onToggle: () => void; onClos
     if (done(deletePerson(p.pid), `${callsign} deleted`)) p.onClose()
   }
   return (
-    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
+    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} {...(a ? { 'data-acct': a.id } : {})}>
       <button className="acc-main acc-tap" disabled={!!own} onClick={p.onToggle}
         title={own ? 'Your own account — another admin can change it' : `Change ${callsign}`}>
         <span className="acc-name">{callsign}</span>
@@ -341,7 +341,7 @@ function PersonRow(p: { pid: string; open: boolean; onToggle: () => void; onClos
    callsign box (rename; and when a man ON the roster holds his callsign, it opens on the next free one — D286 (1)), the
    post-in date (D308, opening on today), Restore (or "Restore as <typed>"), Save name (a rename alone — D295), Delete
    (two taps). Restore brings his sign-in back with him (D322) and opens a new stint on the war (D320). */
-function ArchivedRow(p: { pid: string; open: boolean; onToggle: () => void; onClose: () => void }) {
+function ArchivedRow(p: { pid: string; open: boolean; ringed?: boolean; onToggle: () => void; onClose: () => void }) {
   const person = P(p.pid)
   const a = accountOfPid(p.pid)
   const callsign = cs(p.pid)
@@ -367,7 +367,7 @@ function ArchivedRow(p: { pid: string; open: boolean; onToggle: () => void; onCl
     HOOKS.toast(`Renamed ${want}`); notify()
   }
   return (
-    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '')} data-person={p.pid} data-archived="1" {...(a ? { 'data-acct': a.id } : {})}>
+    <div className={'acc-row od-row' + (p.open ? ' od-row-on' : '') + (p.ringed ? ' acc-ring' : '')} data-person={p.pid} data-archived="1" {...(a ? { 'data-acct': a.id } : {})}>
       <button className="acc-main acc-tap" onClick={p.onToggle} title={`Restore or delete ${callsign}`}>
         <span className="acc-name">{callsign}</span>
         <span className="acc-sub">{a ? <b>{a.name}</b> : 'no sign-in'}{' · '}{seatText(person)}</span>
@@ -409,13 +409,15 @@ const Cols = () => (
 
 /* `shown` — this list is on the admin's screen (the Admin page decides: Users chosen, and on a phone drilled in);
    `openNew` — a non-zero, changing value brings the add form into view with its callsign box ready (Quals'
-   "+ Add person", through the Admin page — state/view.ts ADMINOPEN) */
-export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
+   "+ Add person", through the Admin page — state/view.ts ADMINOPEN);
+   `ring` — a man to bring into view, ringed while `on` (a bell's posting line — [POSTOUT-RUN-NOTICE]) */
+export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: { pid: string; on: boolean } | null } = {}) {
   const [editing, setEditing] = useState<string | null>(null)
   const [find, setFind] = useState('')
   /* the Archived group's fold: his own tap, or — while he has not tapped since the search changed — open exactly when
      the search matches someone archived (the walk's design, Fable R7: the tap used to do nothing while a search matched) */
-  const [archOpen, setArchOpen] = useState<boolean | null>(false)
+  /* (open from the first draw for an archived man a bell's posting line lands on — the list is drawn afresh for that tap) */
+  const [archOpen, setArchOpen] = useState<boolean | null>(() => !!(p.ring && P(p.ring.pid) && P(p.ring.pid).archived))
   const [name, setName] = useState('')
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
@@ -439,6 +441,18 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
     addRef.current?.scrollIntoView?.({ block: 'center' })
     if (!HOOKS.isPhone()) csRef.current.focus()
   })
+
+  /* A BELL'S POSTING LINE LANDS HERE ([POSTOUT-RUN-NOTICE] — D1547: "a tap opening his row on Admin → Users"; the drawing
+     of record docs/mock/2026-11-05-postout-bell/, pictures 3): the Admin page draws this list afresh for each tap (its
+     `key`), so no search hides him and no editor is open; the Archived fold starts open for an archived man; and once his
+     row is drawn it is brought into view, wearing the app's one just-added mark (the board's plain blue ring, no glow —
+     D860, D876) while the Admin page holds `ring.on` — its six seconds. View state only. */
+  const ringPid = p.ring && p.ring.on ? p.ring.pid : null
+  useEffect(() => {
+    if (!ringPid) return
+    const row = Array.from(document.querySelectorAll<HTMLElement>(`#page-admin .acc-row[data-person="${ringPid}"]`)).find(x => x.getBoundingClientRect().height > 0)
+    row?.scrollIntoView?.({ block: 'center' })
+  }, [ringPid])
 
   const hasName = !!name.trim()
   const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
@@ -476,7 +490,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
       </div>
       <div className="acc-list od-list" id="accList">
         <Cols />
-        {rosterShown.map(pid => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
+        {rosterShown.map(pid => <PersonRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
           onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />)}
         {!rosterShown.length && <p className="adm-note" id="accNoMatch">Nobody matches.</p>}
       </div>
@@ -488,7 +502,7 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number } = {}) {
           {archOpenNow && (
             <div className="acc-list od-list" id="accArchList">
               <Cols />
-              {archShown.map(pid => <ArchivedRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid}
+              {archShown.map(pid => <ArchivedRow key={pid + (editing === pid ? ':e' : '')} pid={pid} open={editing === pid} ringed={ringPid === pid}
                 onToggle={() => toggle(pid)} onClose={() => setEditing(null)} />)}
             </div>
           )}

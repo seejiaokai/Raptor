@@ -571,9 +571,11 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
-  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
-  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D']]),
+  /* …and each admin's bell line saying it ran ([POSTOUT-RUN-NOTICE], D1547 — a Notice created; so too a posting made today,
+     run inside `lw.postout` above) */
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -786,8 +788,9 @@ function onlyChangesWords(before: unknown, after: unknown): boolean {
 const STAMP_SKEW_MS = 5 * 60_000
 const STAMP_AHEAD_MS = 5_000
 /* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
-   `lwback`) — a member's notice carries none (the notices case below) */
-const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol'])
+   `lwback`) — a member's notice carries none (the notices case below); nor a posting's line (`po`, [POSTOUT-RUN-NOTICE] —
+   written only by the posting pass, the app's own act) */
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po'])
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
 /* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
    without reaching into the war's engine) */
@@ -1080,6 +1083,16 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
       accounts.set(rowId, b)
     }
+  }
+  /* THE PASS'S BELL LINES ([POSTOUT-RUN-NOTICE] — D1547): only new lines, the app's own (nobody named as their maker) — the
+     admins told that a posting ran, each about a man this very pass posts out, and the lines a Delete's inputs owe the others
+     in them (state/sched-commit.ts tellPass — the app's act, with no name, R12); never a line rewritten or taken away */
+  for (const c of env.changes) {
+    if (c.collection !== 'notices') continue
+    const n: any = c.op === 'delete' ? null : c.after
+    if (c.before != null || !n || n.by != null) return refuse(c)
+    const first: any = Array.isArray(n.what) ? n.what[0] : null
+    if (first && first.k === 'po' && (!posted.has(String(first.who)) || n.what.length !== 1)) return refuse(c)
   }
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's
      row, both removed; nothing else */

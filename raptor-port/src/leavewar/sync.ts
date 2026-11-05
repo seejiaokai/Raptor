@@ -146,7 +146,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead } from '../state/noticeseen'
@@ -301,7 +301,8 @@ export function installAbsenceDoor(): void {
   setHolidayTell(tellHoliday)
   /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
   setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
-  setDerivedNotices(endedLines)
+  /* (and the admins' line for a posting with nothing to run — postedLines, [POSTOUT-RUN-NOTICE]) */
+  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid)])
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -1399,6 +1400,30 @@ function endedLines(pid: string): Notice[] {
   return out
 }
 
+/* A POSTING WITH NOTHING TO RUN — "off the manpower" ([POSTOUT-RUN-NOTICE], D1690). Its date is the whole of it: no pass
+   runs and nothing is written (poDueNow skips it — postingPendingTag's "nothing to run"), so, as with a stretch that ends,
+   each admin's bell works the line out from the stored posting once its date has come — a steady id, read like any other
+   line, dated the posting's own midnight. Old news is not listed: a posting whose date passed more than fourteen days ago
+   (ENDED_DAYS, the ended stretch's rule), so the postings of months gone do not arrive as a pile of new lines. At the
+   database step a scheduled flow may write it instead, beside the pass (noted for the IT side). */
+function postedLines(pid: string): Notice[] {
+  if (!schedulerIds().includes(pid)) return []
+  const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
+  const out: Notice[] = []
+  for (const [id, rec] of Object.entries(getState().postOuts)) {
+    if (!rec || !rec.to || rec.gone) continue
+    const o = outcomeOf(rec)
+    if (o && o !== 'none') continue
+    const poDate = addDays(rec.to, 1)
+    if (poDate > today || poDate < since) continue
+    const body = rosterBody(id)
+    if (!body || body.special || body.deleted) continue
+    const at = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10)).getTime()
+    out.push({ id: `po:${id}:${poDate}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
+  }
+  return out
+}
+
 /** A TAP ON THE BELL'S LEAVE WAR LINE (M4 9.6): the Leave War, the war holding the date, the grid at that day and his cell
  *  ringed (ui/cellring.ts — the just-added mark). The page's first-visit landing takes the ask instead of its own
  *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
@@ -2315,8 +2340,13 @@ export function runPoOutcomes(): void {
           if (own) revertUnsavedPeople()   // before the enlist: the roster as saved, so nothing else rides in (above)
           if (needsDays) resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
-          if (needsDays) txn.enlist(schedStore)   // no saved week is written for a delete ([DB-READINESS] group A, phase 6 (d))
+          /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
+             delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
+          txn.enlist(schedStore)
           const told: Array<[string, string]> = []
+          /* each posting that RAN, for the admins' bells: a held one changed nothing and tells nothing new (D306's note
+             already speaks); `acct` — an archived man held a sign-in, read before it is suspended */
+          const ran: Array<{ id: string; poDate: string; outcome: PoOutcome; acct: boolean }> = []
           for (const d0 of due) {
             const d = poDueNow(d0.id, effectiveToday())
             if (!d || d.key !== d0.key) continue
@@ -2324,6 +2354,7 @@ export function runPoOutcomes(): void {
             const held = poHeldReason(d.id, d.outcome, d.poDate)
             if (held) { told.push([d.key, held]); continue }
             const body = rosterBody(d.id)!   // (poDueNow just found his body)
+            ran.push({ id: d.id, poDate: d.poDate, outcome: d.outcome as PoOutcome, acct: !!accountOfPid(d.id) })
             if (d.outcome === 'overseas') {
               if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
               suspendForPosting(d.id)
@@ -2344,10 +2375,16 @@ export function runPoOutcomes(): void {
             }
             markPostingDone(d.id, d.poDate)
           }
+          /* NOBODY IS GONE SILENTLY ([POSTOUT-RUN-NOTICE] — owner D1546, D1547 A, D1690): each posting that ran is one line in
+             every admin's bell — "Ranger · Mon 16 Nov / Posted out · archived, account suspended". Written here, inside the
+             pass's own command, so a refused pass tells nobody and a posting made today (run inside the admin's own Post out)
+             goes with its Undo. The admins are read AFTER the outcomes: a posted-out admin is told nothing about himself */
+          if (ran.length) { const to = schedulerIds(); for (const r of ran) noticePosting(to, r.id, r.outcome, r.poDate, r.acct) }
           validate()
           finishPeopleWrite()
-          /* a delete also takes the schedule's own save step (the loaded week filed — person-delete.ts deletePerson) */
-          if (needsDays) { schedApplyEnd(); cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() }) }
+          /* the schedule's own save step — the bell's lines; for a delete the loaded week filed too (person-delete.ts deletePerson) */
+          schedApplyEnd()
+          if (needsDays) cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
           /* said once the command has landed (a refused one says nothing) */
           if (told.length) { const say = () => told.forEach(([k, t]) => tellOnce(k, t)); if (!cmdDeferEffect(say)) say() }
         } finally {
