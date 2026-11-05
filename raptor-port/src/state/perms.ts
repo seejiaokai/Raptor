@@ -571,7 +571,9 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
-  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C']]),
+  /* …and its Undo takes back the posting's bell lines ([NOTICE-UNDO-RETRACT], D1693, D1699): each admin's line removed (D), and
+     one he had read replaced by its "taken back" line (C) */
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
   /* …and each admin's bell line saying it ran ([POSTOUT-RUN-NOTICE], D1547 — a Notice created; so too a posting made today,
      run inside `lw.postout` above) */
@@ -790,7 +792,7 @@ const STAMP_AHEAD_MS = 5_000
 /* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
    `lwback`) — a member's notice carries none (the notices case below); nor a posting's line (`po`, [POSTOUT-RUN-NOTICE] —
    written only by the posting pass, the app's own act) */
-const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po'])
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback'])
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
 /* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
    without reaching into the war's engine) */

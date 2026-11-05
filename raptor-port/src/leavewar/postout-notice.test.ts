@@ -174,7 +174,9 @@ describe('a posting made today runs at once, inside the admin’s Post out — t
   /* the top bar's Undo does not take a posting back (D350 — "use … the posting sheet's own Undo"), so the line it wrote
      stays with it; the posting sheet's own Undo is a command of its own, and the line stays as the record that the posting
      ran (the agent's reading, put to him with the build — as a deleted man's line stays, D1691) */
-  it('the top bar’s Undo refuses (D350) and the line stands; the posting sheet’s Undo puts him back and the line stays', () => {
+  /* (since his D1693, 5 Nov 26 the posting sheet's Undo takes the line back: unread it simply goes, read it becomes "taken
+     back" — postout-takeback.test.ts; the top bar's Undo still never takes a posting back, D350) */
+  it('the top bar’s Undo refuses (D350) and the line stands; the posting sheet’s Undo puts him back and takes the unread lines with it (D1693)', () => {
     expect(postOut('bane', '2026-07-15', 'sans')).toBe(true)
     raptorNotify()
     expect(globalUndo().ok).toBe(false)
@@ -182,7 +184,8 @@ describe('a posting made today runs at once, inside the admin’s Post out — t
     expect(undoPostOut('bane')).toBe(true)
     raptorNotify()
     expect(P('bane').sanBy).toBeFalsy()
-    expect(poLines('stiff')).toHaveLength(1)
+    expect(poLines('stiff'), 'his own: he pressed it').toEqual([])
+    expect(poLines('rocky'), 'Hex had not read his: it simply goes').toEqual([])
   })
 })
 

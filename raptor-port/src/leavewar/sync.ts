@@ -146,7 +146,7 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, noticePosting, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
 import { hasRead } from '../state/noticeseen'
@@ -1471,7 +1471,8 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
       const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
-      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
+      /* (where a move took it, too: the taken-back line says the line it replaces word for word, struck — D1699) */
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}), ...(p.k === 'lw' && p.to ? { to: p.to, ...(p.tb ? { tb: p.tb } : {}) } : {}) }] })
     } else {
       if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
@@ -2514,6 +2515,10 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
        The change history says each as what it is (Astra's read of the [DRAFT-PENDING] fixes, 02) */
     type: postIn === undefined ? 'lw.postout' : 'person.restore', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
+      /* the posting sheet's Undo takes back the posting's bell lines with it ([NOTICE-UNDO-RETRACT], D1693 — takeBack's
+         notes); Restore on Admin → Users is "he's back", not the posting undone: its lines stay */
+      const lines = postIn === undefined ? postingLinesOf(id) : []
+      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
@@ -2529,8 +2534,10 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         enableForRestore(id)
         body.back = true
       }
+      if (lines.length) retractPostingLines(lines)
       validate()
       finishPeopleWrite()
+      if (lines.length) schedApplyEnd()
     },
   })
   if (!ok || (r && 'ok' in r && r.ok === false)) return false
@@ -2672,25 +2679,60 @@ export function undoPostOut(id: string): boolean {
   /* …and otherwise the date alone — always as the posting command (`lw.postout`, never a bare war write routed as a
      generic `lw.edit` — Astra's code read 4, 27 Sep 26), taking back what else the posting made (the SANS tick it put on;
      an account it suspended is only ever suspended with its archive, so Restore above enables it) */
-  return takeBack(id, () => setPostOut(id, null))
+  return takeBack(id, () => setPostOut(id, null), {}, true)
+}
+/* THE POSTING'S BELL LINES, TAKEN BACK WITH IT ([NOTICE-UNDO-RETRACT] step 1 — owner D1693, D1699, 5 Nov 26). The posting
+   sheet's "Undo post out" is a command of its own, never an Undo step (D350), so it takes back the lines its posting made
+   itself, inside its own command: each admin's line about this posting goes; one he had READ (his read record — state/
+   noticeseen.ts hasRead) is replaced by "~~Posted out · now SANS~~ · taken back · Saber", unread; one he had not read simply
+   goes; the admin who pressed Undo gets nothing, read or not — he did it (as the war's own "taken back" lines: noticeWar
+   never tells their maker). The "off the manpower" line is no stored line — each admin's bell works it out from the posting
+   (postedLines, D1696) — so it goes by itself with the posting; read, it gets its "taken back" line all the same.
+   `postingLinesOf` is read BEFORE the write clears the posting (the derived line is gone after it). A posting whose date
+   has not come made no line, and its Undo touches no bell. */
+function postingLinesOf(id: string): Notice[] {
+  const rec = getState().postOuts[id]
+  if (!rec || !rec.to) return []
+  const poDate = addDays(rec.to, 1)
+  const stored = NOTICES.filter(n => { const p: any = (n.what || [])[0]; return p && p.k === 'po' && String(p.who) === id && n.day === poDate })
+  const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => String((n.what[0] as any).who) === id)
+  return [...stored, ...derived]
+}
+function retractPostingLines(lines: readonly Notice[]): void {
+  const by = me() != null ? String(me()) : null
+  const at = Date.now()
+  for (const n of lines) {
+    const ix = NOTICES.findIndex(x => x.id === n.id)
+    if (ix >= 0) NOTICES.splice(ix, 1)
+    if (n.to === by || !hasRead(n.to, n)) continue
+    const p: any = n.what[0]
+    noticePostingBack(n.to, by, String(p.who), p.o as PoOutcome, n.day, !!p.acct, at)
+  }
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
-   "he's back": no prompt (the plan's Round 2, Fable 5). */
-function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}): boolean {
+   "he's back": no prompt (the plan's Round 2, Fable 5). `undo` — the posting sheet's "Undo post out": its bell lines are
+   taken back too (above), the scheduler store joining the command only then. */
+function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}, undo = false): boolean {
   const body = rosterBody(id)
   let ok = false
   cmdCommit({
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
+      const lines = undo ? postingLinesOf(id) : []
+      /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
+         notes there): only this command's own lines are its change */
+      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      if (lines.length) retractPostingLines(lines)
       validate()
       finishPeopleWrite()
+      if (lines.length) schedApplyEnd()
     },
   })
   if (ok) raptorNotify()

@@ -111,7 +111,8 @@ export function BellList() {
             <span className="bl-dot" aria-hidden="true" />
             <span className="bl-main">
               <span className="bl-t"><b className="bl-name">{w.name}</b><i className="bl-day">{w.day}</i></span>
-              <span className="bl-what">{w.what}{w.who ? ` · ${w.who}` : ''}</span>
+              {/* a taken-back line: what it took back, struck through, then "taken back · Saber" (his D1699) */}
+              <span className="bl-what">{w.struck ? <><s className="bl-struck">{w.struck}</s>{' · '}</> : null}{w.what}{w.who ? ` · ${w.who}` : ''}</span>
             </span>
             <span className="bl-ago">{noticeAge(n, now)}</span>
           </button>
