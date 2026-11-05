@@ -61,7 +61,11 @@ Unavailable row) · [READONLY-WEEK-WORDS] (new words) · [TRK-ROUND-SEEN] (2), (
 on a phone) · [LOGIC-WORDS-WORKHOURS] · [OIL-EARN-DAY-SWITCH-WORDS] · [OIL-INERT-TAP-SILENT] · [INP-ADD-RIGHT] · [LW-MORE-BELOW-CUE] ·
 [LW-FROZEN-BAR-GAP] · round 5 of [UI-CONSISTENCY-LOOK] (the typed marks the round-4 read saw).
 
-## 4. His questions in this plan
+## 4. His questions in this plan — ANSWERED 5 Nov 26
+
+**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round.
+
+As they were put:
 
 1. **React Doctor outside the app** (tests 133, mock-up pages 119, scripts 32): leave them (recommended — none is shipped or
    seen, and the app's own count is what the M365 scan will judge), or one more night to clean the tests and scripts too, and

@@ -70,8 +70,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [BOARD-NARROW-DESKTOP-REMARKS], [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
     (2), (3), [LOGIC-WORDS-WORKHOURS], [OIL-EARN-DAY-SWITCH-WORDS], [OIL-INERT-TAP-SILENT], [INP-ADD-RIGHT], [LW-MORE-BELOW-CUE],
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
-  - **His two questions in the plan (open):** React Doctor's 284 findings outside the app (tests, mock-up pages, scripts) —
-    left (recommended) or one night more; the order — nights 1–3 first (recommended) or the pictures round first.
+  - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
+    notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -2157,7 +2157,7 @@ unreachable; with the next change to the slide.
 re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
 others), so a hang waits for GitHub's default of 6 hours. **To do:** a `timeout-minutes` on each test job, set from its measured
 length on GitHub's machines with room to spare (the smoke halves about 3–4 min — measure first); if the smoke hangs again,
-find where (its own log), as D87 says. **Also here:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
+find where (its own log), as D87 says. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
 (a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
 `.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
 
