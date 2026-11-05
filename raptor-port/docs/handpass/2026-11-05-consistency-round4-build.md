@@ -151,12 +151,44 @@ its picture `drawcheck-cr4-r2/more-ph--sort.png`.
 
 ## 6. The code read
 
-Not yet run. Its brief, written before the walk: `docs/superpowers/briefs/2026-11-05-cr4-code-read.md` — hand it to ONE fresh Opus reader with the final commit, after his answer is built.
+ONE fresh, blind Opus reader (D790), on 298d6f9bd with the brief `docs/superpowers/briefs/2026-11-05-cr4-code-read.md`
+(D1708 added to it). Four findings, each reproduced on the real build before it was fixed (the before sizes measured by
+`cr4-walk.mjs` `CR4W_TAG=before` on the branch's base, 5fcef0e1e, built apart; the after on the fixed build, `cr4-build/r3/`):
+
+| # | Finding | Reproduced | Fix | Proved by |
+|---|---|---|---|---|
+| R1 | The Tracker's File and pencil menus never shade a row under the mouse or the keyboard — the shade rule less specific than the resting rule's `background:none` (D1706: the board's look) | YES — rest, hover and focus all transparent | `tracker.css`: the shade written as `.menupanel.on>button.sm:focus-visible` and, for a mouse only, `:hover` | hover and focus `rgb(32, 38, 46)` on the build; `trk-palette.test.ts` "the Tracker's menus shade a row…" — red on the old rule, green |
+| R2 | Three gears grew past their buttons' size (D1707 "each gear keeps its button's size"): the OIL tracker's 31.8 → 36 (phone 25.7 → 32), the + Wave menu's 21.3 × 17 → 26 × 20, the Tracker's flex 29.8 → 34 (phone 25.8 → 30) — the drawing drew the same growth, its words win | YES (before / after) | the padding trimmed, the drawn marks' sizes kept: `oiltracker.css` 9 → 7 (phone 7 → 4), `18-oil-board.css` `.wm-pen.wm-mng`, `tracker.css` `#flexBtn` | 32 / 26, 21 × 17, 30 / 26 measured; the drawing check keeps each value under D1707 |
+| R3 | Every section's Auto sort 17.5 → 21.1 tall, and + Item / + Line beside it with it (D487) — the 13px mark in a 9.5px line | YES | `18-oil-board.css`: the button a centred row, the mark taking no line of its own | 17.5 and 17.5 measured (`pc-autosort-vs-neighbour`) |
+| R4 | The browser test of the Inputs gear's size read a letter size that no longer sizes it | read | `e2e/inputs-calendar.spec.ts` D910: the drawn gear's box, 18 × 18 | 71 / 71 |
+
+**Found beside it, by the host:** the OIL tracker's Range 32 → 35 tall (phone 36 → 37) — the 15px calendar in a 12px line
+(D487); fixed in `oiltracker.css` (the mark takes the line's 12), 32 / 36 measured. Other buttons that carry a new mark
+are 3–5px wider (Templates, Sort all, OIL Earn, Rearrange, Reset order, Done, Auto sort), the drawn mark wider than the
+letter it replaced, as drawn and approved; Templates, Sort all and OIL Earn 29 → 28 tall (§4) — named to him.
+**Seen, not ruled — filed for round 5** (`OUTSTANDING.md` [UI-CONSISTENCY-LOOK], round 4's paragraph): the Tracker's
+"↺ Restore", the warning lines' "✕ / ↺", the Inputs "⤢ / ⤡", the phone day bar's words-only Templates and OIL Earn.
+Its explicit negatives (every gear site converted, no covered typed mark left, colours and sizes won by their own rules,
+the Inputs group's phone row, keyboard order and List unchanged, the Leave War menu's look kept to its menu, the Tracker's
+copies of the drawings the same) are in the reader's report, kept in this chat's record.
+
+**After the fixes:** the re-walk `cr4-build/r3/` 86 / 86; the drawing check `2026-11-05-drawcheck-cr4-r3/report.md` GREEN —
+0 unexplained, 21 kept (the 20 differences of the sizes put back, each under D1707 or D487 with the value seen, and (C));
+unit files 388 / 388 and 43 / 43; the Inputs browser tests 71 / 71. One narrow read of the fixes is not needed: each is a
+padding or a selector, no logic (§5 "a fix is new code" — more than a one-line guard rewrites logic; none does).
 
 ## 7. The gates
 
-*(GitHub's run of pull request 643)*
+GitHub's run of pull request 643 on 298d6f9bd (D1708 built): GREEN — the full set, the Docs guard, the secrets scan. The
+run of the read's fixes: in the closing report.
 
 ## 8. Not proved here, and seen in passing
 
-*(filled at the close)*
+- **His iPhone** — the marks are drawings, so a phone's fonts no longer change them (§7.11 lesson 6), but the rows' and
+  menus' words are still Apple's letters: his look on his iPhone is the step that proves it.
+- **WebKit after the read's fixes** — the phone pass ran in WebKit on 06fde6c82 (§4); the read's fixes (paddings, a menu's
+  hover for a mouse only) were re-walked in Chromium at 402 by touch, not in WebKit again.
+- **1366 with GitHub's letters** — imitated by widening the letters 0.9px on his PC's build (§4a); GitHub's own run of the
+  1366 test is the real one, green on 298d6f9bd.
+- **Seen in passing:** `bidpicker.css` keeps the Grant OIL menu row's green rules, unused since Grant OIL became its own
+  button — harmless, left.

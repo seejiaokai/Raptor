@@ -260,5 +260,28 @@ export default {
        D1706 rules every menu of actions plain rows, no fill at rest, as the build draws it; named to him in the closing
        report of 5 Nov 26 with its picture (drawcheck-cr4-r2/more-ph--sort.png). */
     { state: 'more-ph', part: 'sort', check: 'fill', why: 'D1706 — a menu of actions is plain rows, no fill at rest; the drawing\'s shade is the touch its tap left' },
+    /* THE BUTTONS' SIZES (the round-4 code read, 5 Nov 26, confirmed on the build before and after): the drawing drew the
+       16px and 14px gears into their buttons' old padding, and the 13px and 15px marks into lines set at 9.5px and 12px,
+       so three gears grew wider (the + Wave gear taller too), and Auto sort with every section header and the OIL tracker's
+       Range grew taller. His words win over the drawing's pixels: D1707 "each gear keeps its button's size", D487 no
+       button bigger without his word. The build trims the padding and lets the mark take no line of its own, so each
+       button is its size before round 4 (measured within half a pixel); a narrower button sits a little further right and
+       its mark nearer its edge. Named to him in the closing report of 5 Nov 26 with the pictures. Each keeps the value seen. */
+    ...[['tracker-gear-pc', 30], ['tracker-gear-ph', 26]].map(([state, build]) => ({ state, part: 'gear', check: 'width', build, why: 'D1707 — each gear keeps its button\'s size (30 before round 4; 26 on a phone)' })),
+    ...[['waves-gear-pc', 1447], ['waves-gear-ph', 363]].flatMap(([state, x]) => [
+      { state, part: 'gear', check: 'place', build: x, why: 'D1707 — the gear\'s button keeps its 21 wide, so it stands at its old place' },
+      { state, part: 'gear', check: 'width', build: 21, why: 'D1707 — each gear keeps its button\'s size (21 × 17 before round 4)' },
+      { state, part: 'gear', check: 'height', build: 17, why: 'D1707 — each gear keeps its button\'s size (21 × 17 before round 4)' },
+      { state, part: 'gear-mark', check: 'place', build: 3.5, why: 'D1707 — the button\'s padding trimmed so it keeps its size; the mark nearer its edge' },
+    ]),
+    { state: 'oil-gear-pc', part: 'gear', check: 'place', build: 1485, why: 'D1707 — the gear\'s button keeps its 32 wide, so it stands at its old place' },
+    { state: 'oil-gear-pc', part: 'gear', check: 'width', build: 32, why: 'D1707 — each gear keeps its button\'s size (31.8 before round 4)' },
+    { state: 'oil-gear-ph', part: 'gear', check: 'place', build: 368, why: 'D1707 — the gear\'s button keeps its 26 wide on a phone, so it stands at its old place' },
+    { state: 'oil-gear-ph', part: 'gear', check: 'width', build: 26, why: 'D1707 — each gear keeps its button\'s size (25.7 on a phone before round 4)' },
+    { state: 'oil-gear-ph', part: 'gear-mark', check: 'place', build: 5, why: 'D1707 — the button\'s padding trimmed so it keeps its size; the mark nearer its edge' },
+    { state: 'oil-range-pc', part: 'range', check: 'height', build: 32, why: 'D487 — Range keeps its 32 tall; the drawn calendar takes the 12px line the 📅 stood in' },
+    ...['oil-range-pc', 'oil-range-ph'].map(state => ({ state, part: 'ci', check: 'height', build: 12, why: 'D487 — the drawn calendar takes no more line than the 📅 did, so Range keeps its height' })),
+    { state: 'autosort-pc', part: 'autosort', check: 'height', build: 17.5, why: 'D487 — Auto sort and the section header beside it keep their 17.5 tall' },
+    { state: 'autosort-pc', part: 'autosort', check: 'words-x', build: 23, why: 'D487 — the mark centred beside the words with a gap of its own, so the button keeps its height' },
   ],
 }

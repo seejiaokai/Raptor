@@ -35,9 +35,13 @@
   /* the calendar and the gear are drawn (owner D1508, D1509, D1707, 5 Nov 26 — Edit Schedule's line calendar for the 📅,
      the app's one gear for the ⚙), in the chip's own colour, at the drawing's sizes */
   .oil-tools .oil-cal .ci .btnglyph { width: 15px; height: 15px; color: currentColor; }
+  /* the chip stays its 32 tall (D487): the 15px mark stood where a 12px line did — it takes the line's 12 */
+  .oil-tools .oil-cal .ci .btnglyph { margin: -1.5px 0; }
   .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
   /* The settings gear is icon-only now — keep it a comfortable tap target. */
-  .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
+  /* its side padding 9 → 7 so the button keeps its 32 wide with the drawn 16px gear in place of the narrower ⚙ (D1707 —
+     each gear keeps its button's size; the code read found it 36) */
+  .oil-tools .oil-gear { padding: 6px 7px; font-size: 14px; }
   /* in the line, as the typed ⚙ stood and as drawn: the chip keeps its 33 (D1707 — each gear keeps its button's size; the
      drawing check found it 30 as a block) */
   .oil-tools .oil-gear .btnglyph { display: inline-block; width: 16px; height: 16px; vertical-align: -0.15em; color: currentColor; }
@@ -460,7 +464,7 @@
        side padding tightens 9→7, the gear 9→7, and the SHOW caption loses its tracking — measured one line at 375px;
        under 370px (a 360 Android) the caption goes too. */
     .oil-tools .lab { letter-spacing: .06em; }
-    .oil-tools .oil-gear { padding: 6px 7px; }
+    .oil-tools .oil-gear { padding: 6px 4px; } /* 7 → 4 with the drawn gear: the button keeps its 26 (D1707) */
     .oil-tools .oil-window { flex-basis: 100%; }
     .oil-bar .oil-text.given { flex: 1 1 140px; }
   }

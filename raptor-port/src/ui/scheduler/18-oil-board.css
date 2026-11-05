@@ -126,8 +126,14 @@
 .sb-actions :is(#sbTpl,#sbOil,#sbSortAll) .btnglyph{width:14px;height:14px}
 /* a section's Auto sort (board-html.ts sbSortBtn — D1703): the drawn Reorder mark in the words' line, a space after, at the
    drawing's 13px */
-.mbtn[data-sortsec]>.btnglyph{display:inline-block;width:13px;height:13px;vertical-align:-0.15em;color:currentColor}
-/* the flying-waves menu's gear (board.ts — D1509, D1707): the one drawn gear in the button's own colour, 14px as drawn */
+/* — and the button stays its 17.5 tall (D487): the 13px mark in a line set at 9.5px grew it, and every section's header
+   with it (the round-4 code read, 5 Nov 26), so the mark is centred and takes no line height of its own */
+.mbtn[data-sortsec]{display:inline-flex;align-items:center;gap:4px}
+.mbtn[data-sortsec]>.btnglyph{width:13px;height:13px;margin:-2px 0;color:currentColor}
+/* the flying-waves menu's gear (board.ts — D1509, D1707): the one drawn gear in the button's own colour, 14px as drawn;
+   its padding trimmed so the button keeps its 21 × 17 ("each gear keeps its button's size", D1707 — the code read found it
+   26 × 20) */
+.wm-pen.wm-mng{padding:.5px 2.5px}
 .wm-pen.wm-mng>.btnglyph{display:block;width:14px;height:14px;color:currentColor}
 .sb-moreitem:hover,.sb-moreitem:focus-visible{background:var(--raised)}
 .sb-moreitem:disabled{opacity:.45;cursor:default}

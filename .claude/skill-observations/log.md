@@ -691,7 +691,7 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 **Met again 4 Nov 26 (`claude/leave-war-small-fixes`, D1633):** twice in one job — a stray `cat > "$TMP/x"` at the head of a command waited on stdin until stopped (2 min), and a `node -e` edit of a probe script lost its escapes so nothing was written (found only because the next step's count read 0). Both redone with the Write and Edit tools. Still the conditional habit; the unconditional default proposed above would have stopped both.
 
-**Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Same lesson: test code goes in with the Edit tool.
+**Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Met a second time the same job: a regex appended by a quoted heredoc reached the test file with its backslashes gone, and the new test failed on the fixed code too; put right with the Edit tool and `String.raw`. Same lesson: code goes in with the Edit tool.
 
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 

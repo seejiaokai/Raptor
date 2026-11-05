@@ -1396,7 +1396,8 @@ test('a phone: the List opens on its cards under ONE "+ Input"; the "?" card ope
 })
 
 /* D910 — THE LIST'S TWO BUTTONS IN THE TOP ROW NEVER COST THE ROW ITS OTHER BUTTONS (the blind read of 15 Oct 26). The row's
-   rules once outweighed the gear's own and shrank its ⚙ from 17 to 12 points, on the List AND the Calendar, a desktop too;
+   rules once outweighed the gear's own and shrank its ⚙ from 17 to 12 points (since round 4 a drawn gear, 18px — D1707: it is
+   the drawing's box that is measured, as a letter size no longer sizes it), on the List AND the Calendar, a desktop too;
    and a dates label that prints a year must not push the gear onto a line of its own (D687, D693). */
 for (const [w, h] of [[390, 844], [375, 667]] as const) {
   test(`D910 — a phone ${w} wide: the gear keeps its glyph, and a window into next year leaves the switch, the filter and the gear on the row`, async ({ browser, baseURL }) => {
@@ -1404,9 +1405,10 @@ for (const [w, h] of [[390, 844], [375, 667]] as const) {
     try {
       await page.locator('#inListBtn').tap()
       const row = () => page.evaluate(() => { const t = (id: string) => Math.round(document.getElementById(id)!.getBoundingClientRect().top), l = (id: string) => Math.round(document.getElementById(id)!.getBoundingClientRect().left)
-        return { gearFont: getComputedStyle(document.getElementById('inGear')!).fontSize, tops: ['inNew', 'inRangeBtn', 'inListBtn', 'inFiltersBtn', 'inGear'].map(t), lefts: ['inListBtn', 'inFiltersBtn', 'inGear'].map(l), wide: document.documentElement.scrollWidth } })
+        const gm = document.querySelector('#inGear svg')!.getBoundingClientRect()
+        return { gearMark: `${Math.round(gm.width)}x${Math.round(gm.height)}`, tops: ['inNew', 'inRangeBtn', 'inListBtn', 'inFiltersBtn', 'inGear'].map(t), lefts: ['inListBtn', 'inFiltersBtn', 'inGear'].map(l), wide: document.documentElement.scrollWidth } })
       const r0 = await row()
-      expect(r0.gearFont, 'the gear’s ⚙ at its own size').toBe('17px')
+      expect(r0.gearMark, 'the drawn gear at its own size').toBe('18x18')
       /* the dates button keeps the row's finger-sized press area: a finger just above its edge still meets it (D698) */
       const edge = await page.evaluate(() => { const b = document.getElementById('inRangeBtn')!, r = b.getBoundingClientRect(), h = document.elementFromPoint(r.left + r.width / 2, r.top - 3); return !!h && (h === b || b.contains(h)) })
       expect(edge, 'a finger 3px above the dates button meets it').toBe(true)
@@ -1436,7 +1438,7 @@ for (const [w, h] of [[390, 844], [375, 667]] as const) {
       expect(new Set(r1.tops).size, 'all five on ONE line').toBe(1)
       expect(r1.lefts, 'the switch, the filter and the gear where they were').toEqual(r0.lefts)
       expect(r1.wide, 'nothing runs off sideways').toBeLessThanOrEqual(w)
-      expect(r1.gearFont).toBe('17px')
+      expect(r1.gearMark).toBe('18x18')
     } finally { await context.close() }
   })
 }
