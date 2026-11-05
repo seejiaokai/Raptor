@@ -141,7 +141,17 @@ The host opened the pictures behind every FAIL and RECORDED row (S2, S4, S11 rep
 
 ## 7. The reads
 
-*(to fill)*
+Two fresh, blind Opus readers of `2fb6d6c54` (D790; Codex out, D1594 — the job is on `[NO-ASTRA-LIST]`), each handed the
+evidence sheet and the scenario design, neither shown the other's report.
+
+| Reader | Report | Found | Disposition |
+|---|---|---|---|
+| The code read (the finder's brief, absences first) | `parts/mgb1105/read-opus.md` | F1 the access screens' contract still described the old waiting screen; F2 the pass under a failed save (= §8 #5); F3 the callsign re-fitted only on a window resize (a card narrowed by a scroll bar, under about 400 wide on a desktop); a gap: the band at 320 unmeasured; tidiness: three comments no longer true, "GND → Personnel" and the claws' path written twice | F1 **FIXED** (`ui-contracts.md`, D201); F2 the question in §11; F3 **FIXED** (the fit watches the card's width too); 320 **measured** — fits with about 24px to spare in both engines (`look/B3-band-320-*.png`; a wider-letters stand-in did not take, so his iPhone's letters at 320 are unproven — his phone is 402 wide); the comments **made true**; the two repeats **filed, not fixed** (D489) |
+| The security read (holes only, D1411) | `parts/mgb1105/read-security.md` | none — the Scheduler tick holds at the screen, the write and the commit gate; no other door, actor, replay, recompute, import or member-view route reaches it; Retry flushes only saves already queued under their own authors; the waiting screen's text is drawn as text | O1 (a test tying the gate's admin-only list to §11) — carried by `quals-write.test.ts`'s gate cases for Management and Scheduler; O2 (queued saves carry no author — on `main` already; the database step's design waits for unsent changes at sign-out, `data-model.md`) — nothing to build now |
+
+The fixes (§8 #1–#4) rewrite a little logic (the callsign's fit) and a layout rule each; each is pinned by its own red-first
+browser test and re-walked (§6, `rewalk/`); no narrow read of the fix round — the agent's judgement: no refusal turned into a
+skip, no write path changed.
 
 ## 8. What the check found, and each disposition
 
@@ -159,12 +169,32 @@ The host opened the pictures behind every FAIL and RECORDED row (S2, S4, S11 rep
 
 ## 9. Gates
 
-*(to fill)*
+While the repo is public GitHub's run of the pull request is the full gate set (D1086): green on `6dd252ef3` (the build) and
+`2fb6d6c54`; the last pushed commit's run is in the closing report. On his PC: the touched unit files (quals-write 67, quals,
+SaveStatus, accounts-ui, accounts-newperson, perms, oilwait, oilconfirm-look — all green), the browser files
+`save-note`, `oilwait`, `oil-uncancel-load` (72 passed after the last fix) and the new `geometry` tests; `lint:changed` —
+no new finding; `docsize` OK.
 
 ## 10. What was NOT walked, and why
 
-*(to fill)*
+- **S9, the band at a cold start** with a save group left unfinished — the forced refusal does not survive a reload; the
+  start-up path is the saver's own and unchanged (`storage/boot.ts`).
+- **His iPhone's real keyboard over the sign-in boxes with the band up** (S3) and **his iPhone's letters at 320 wide** — only
+  his phone draws them: on his look card.
+- **The drawing check's blind spots** (§5): the tear's notches, the steps' joining lines, the claws' inside — seen by eye.
+
+**Walk:** `docs/handpass/2026-11-05-member-guest-build.md` · 220 pictures · 12 surfaces (the top bar, the board's bar, the
+OIL tracker's grid and settings, the sign-in, Request access, the waiting screen, the suspended screen, the guest page, Quals,
+Edit Schedule's sign-off lists, the board's Desktop layout) · 20 scenarios and the plain-user rounds of a stranger and a member ·
+MISSING: 4 fixed red first, 1 put to him, 0 filed.
 
 ## 11. Questions for him
 
-*(to fill)*
+1. **The pass under a failed save** (§8 #5): it still ticks "Request sent" and reads "Waiting for an admin" under the "Not saved"
+   band. Recommended: until the save lands, the mark and step 1 read "Not sent yet" in the band's amber, and the approved look
+   comes back by itself when Retry succeeds. Pictures `docs/mock/2026-11-05-member-guest-build/img/Q1-pass-today-*.png`,
+   `Q1-pass-proposed-*.png`.
+2. **"Not saved" one design across the whole app** (his D1663, said during the check): the band already wears the strip in all six
+   kinds of place (`docs/mock/2026-11-05-member-guest-build/img/D1663-band-everywhere-phone.png`); the other "not saved" words are
+   refusals of one change (a Leave War figure box, the grades sheet, the schedule's refused change, a document too big to store) —
+   whether they take a common look of their own is put to him.
