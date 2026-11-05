@@ -2763,7 +2763,40 @@ const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESS
    roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */
 const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && rosterBody(m) ? rosterBody(m)!.cs : null) }
 
+/* THE POSTINGS' MIDNIGHT ([POSTOUT-RUN-NOTICE] — owner D1546: "so it is not like gone silently"; the walk's C5, 5 Nov 26).
+   The posting pass runs on every change the app makes (raptorSubscribe, below) — and on nothing else: with the app left
+   open and untouched across midnight, a posting dated that day did not run, and no admin's bell was told, until someone
+   next changed a page. So the app wakes itself just after each local midnight, and whenever the page is shown again after
+   the day has turned (a phone asleep through midnight runs no timer): one notify, and the pass — with the OIL pass beside
+   it, as on any change — runs as it would at the next tap. The Leave War page's own day clock (ui/dayclock.ts, D1266)
+   still redraws what that page reads of today; this one wakes the passes on every page. One clock, re-armed if wired again. */
+let POSTCLOCK: (() => void) | null = null
+function installPostingClock(): void {
+  if (POSTCLOCK) POSTCLOCK()
+  if (typeof window === 'undefined' || typeof document === 'undefined') { POSTCLOCK = null; return }
+  let seen = effectiveToday()
+  let timer: ReturnType<typeof setTimeout> | null = null
+  const check = () => { const now = effectiveToday(); if (now !== seen) { seen = now; raptorNotify() } }
+  const arm = () => {
+    if (timer) clearTimeout(timer)
+    const d = new Date(), next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 1)
+    timer = setTimeout(() => { check(); arm() }, Math.max(1000, next.getTime() - d.getTime()))
+  }
+  const onShow = () => { if (document.visibilityState !== 'hidden') { check(); arm() } }
+  arm()
+  document.addEventListener('visibilitychange', onShow)
+  window.addEventListener('pageshow', onShow)
+  window.addEventListener('focus', onShow)
+  POSTCLOCK = () => {
+    if (timer) clearTimeout(timer)
+    document.removeEventListener('visibilitychange', onShow)
+    window.removeEventListener('pageshow', onShow)
+    window.removeEventListener('focus', onShow)
+  }
+}
+
 export function wireLeaveWarSync(): void {
+  installPostingClock()
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at
      the seam (the war never reads Raptor's accounts itself) */
   setAccountLookup(id => !!accountOfPid(id))

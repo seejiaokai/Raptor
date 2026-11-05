@@ -16,7 +16,9 @@
 // Check a build:  node scripts/drawcheck/check.mjs scripts/drawcheck/specs/postout-bell.mjs --dist dist --out <folder>
 import { fileURLToPath } from 'node:url'
 
-const QUIET = '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important;animation:none !important}'
+/* (transitions held still, never animations: the landing's ring IS an animation held for six seconds — 06-inputs.css inflash —
+   and with animations off the build drew no ring at all) */
+const QUIET = '*{scroll-behavior:auto !important} *,*::before,*::after{transition:none !important}'
 const ISO = '2026-11-16'
 const RUN_AT = new Date('2026-11-16T08:00:00')
 const sleep = ms => new Promise(r => setTimeout(r, ms))
@@ -135,5 +137,16 @@ export default {
     { id: 'land-sans-desk', title: "Cinch's line tapped: his roster row ringed, desktop", drawing: { script: 'docs/mock/2026-11-05-postout-bell/draw.mjs', shot: '3-land-sans-desk' }, reach: reachLanding('sans'), parts: landParts('snap', '#page-admin .acc-row.pb-land', '#page-admin .acc-row.acc-ring') },
     { id: 'land-sans-phone', title: "Cinch's line tapped, iPhone (WebKit)", phone: true, engine: 'webkit', drawing: { script: 'docs/mock/2026-11-05-postout-bell/draw.mjs', shot: '3-land-sans-phone' }, reach: reachLanding('sans'), parts: landParts('snap', '#page-admin .acc-row.pb-land', '#page-admin .acc-row.acc-ring') },
   ],
-  accepted: [],
+  accepted: [
+    /* the drawing cloned four UNREAD lines into a list that held none, so the list's own foot — "Mark all read", drawn
+       whenever a line is unread (ui/topbits.tsx BellList, as built since the one-rule build) — was not drawn under them;
+       the build draws it. A state of the drawing, not a difference of design */
+    { state: 'list-desk', part: 'list', check: 'height', why: 'the drawing state: its cloned unread lines never raised the list’s own "Mark all read" foot, which the built list draws under unread lines' },
+    { state: 'list-phone', part: 'list', check: 'height', why: 'the drawing state: its cloned unread lines never raised the list’s own "Mark all read" foot, which the built list draws under unread lines' },
+    /* the phone drawing was taken with the finger's last point resting over the row's name (the drawing's tap on the
+       Archived fold or the row): its cyan is the row's hover look, which the build no longer draws on a touch screen
+       (15-admin-help.css — the walk's b3 phone picture) */
+    { state: 'land-overseas-phone', part: 'name', check: 'colour', why: 'the drawing state: the name under the resting finger (its hover look), which a touch screen no longer shows' },
+    { state: 'land-sans-phone', part: 'name', check: 'colour', why: 'the drawing state: the name under the resting finger (its hover look), which a touch screen no longer shows' },
+  ],
 }

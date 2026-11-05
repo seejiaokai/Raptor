@@ -186,6 +186,23 @@ describe('a posting made today runs at once, inside the admin’s Post out — t
   })
 })
 
+describe('midnight with the app left open and untouched (the walk’s C5 — D1546 "not gone silently")', () => {
+  it('the posting runs and the bell is told just after midnight, with no change made in the app', () => {
+    vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] })
+    try {
+      vi.setSystemTime(new Date(2026, 6, 19, 23, 59, 0))
+      wireLeaveWarSync()                                  // the clock armed for this midnight
+      expect(postOut('bane', PO, 'sans')).toBe(true)
+      expect(P('bane').sanBy, 'not before its date').toBeFalsy()
+      vi.advanceTimersByTime(30_000)
+      expect(poLines('stiff'), 'still before midnight').toEqual([])
+      vi.advanceTimersByTime(60_000)                      // past 00:00:01 on Mon 20 Jul
+      expect(P('bane').sanBy, 'run by itself').toBe('po')
+      expect(poLines('stiff')).toHaveLength(1)
+    } finally { vi.useFakeTimers({ toFake: ['Date'] }) }
+  })
+})
+
 describe('"off the manpower" — nothing runs, so each admin\'s bell works the line out (D1690)', () => {
   const lineFor = (pid: string) => allNoticesFor(pid).filter(n => (n.what || [])[0]?.k === 'po')
   it('before its date nothing; from its date one line an admin, never stored; fourteen days later, gone', () => {
