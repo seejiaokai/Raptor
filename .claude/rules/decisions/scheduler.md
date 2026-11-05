@@ -54,7 +54,8 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
-| D1693 | 5 Nov 26 | Every bell line is retracted by the undo of what made it: a line its reader has not read simply goes, and one he has read is replaced by a line saying it was taken back and by whom — the posting out's line by its posting sheet's Undo post out, and every other line by the Undo of its change. |
+| D1699 | 5 Nov 26 | A bell line taken back by an undo keeps what it said, struck through, then "taken back · <who>" — "~~Posted out · now SANS~~ · taken back · Saber" — unread, so the bell lights; the Leave War's taken-back lines take the same look in the same build ("~~LL approved~~ · taken back · Saber"), so every taken-back line looks alike. |
+| D1693 | 5 Nov 26 | Every bell line is retracted by the undo of what made it: a line its reader has not read simply goes, and one he has read is replaced by a line saying it was taken back and by whom — the posting out's line by its posting sheet's Undo post out, and every other line by the Undo of its change. — changed by D1699 |
 | D1644 | 4 Nov 26 | The PDF export work is not started until he says so: [PDF-PRINT-TWICE] (his iPhone printing the working copy) and [FLAG-EXPORT] (the published day only, the nicer report) wait for his word. |
 | D1621 | 3 Nov 26 | A LATE mark a scheduler drops on a day already published leaves the issued schedule at once, as built: nothing reads pending and the four sign-offs stay; it does not wait for the next amendment, as a hidden warning does (D471). |
 | D1620 | 3 Nov 26 | When a member changes his input again after a scheduler dropped its LATE mark, the drop goes: if that new change is itself late, LATE shows again for everyone until a scheduler drops it again; a scheduler's own change keeps the drop. |

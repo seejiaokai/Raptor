@@ -16,7 +16,7 @@ the right; a tap goes to it. A notice is written inside the change it reports, s
 never rewritten once made. The words follow the writing guide (`design-practices.md` §1b); new words are read cold before
 they are built.
 
-**Undo retracts every line (his D1693, 5 Nov 26 — to build, [NOTICE-UNDO-RETRACT]):** the undo of what made a line takes it back — unread, it simply goes; read, it is replaced by "… taken back · <who>" (the Leave War's way since D1216, now every line's: the posting line by its sheet's Undo post out, the input lines, the holiday's OIL line).
+**Undo retracts every line (his D1693, 5 Nov 26 — to build, [NOTICE-UNDO-RETRACT]):** the undo of what made a line takes it back — unread, it simply goes; read, it is replaced by its own words struck through, then "taken back · <who>" — "~~Posted out · now SANS~~ · taken back · Saber", unread (D1699, his idea; the Leave War's taken-back lines the same look, "~~LL approved~~ · taken back · Saber"; the drawing `docs/mock/2026-11-05-taken-back-sans/` picture 8) (the Leave War's way since D1216, now every line's: the posting line by its sheet's Undo post out, the input lines, the holiday's OIL line).
 
 ## Built — the bell's notices today
 
