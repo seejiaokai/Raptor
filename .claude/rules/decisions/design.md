@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1680 | 5 Nov 26 | The boxes and buttons whose font line the browser dropped show the app's letters at the size and weight each line meant, as drawn. |
 | D1666 | 5 Nov 26 | The app's address takes a test switch, `?savefail`: in the one tab opened with it every save is refused, so the "Not saved" band, its Retry and the pass's "Not sent yet" can be seen on his own iPhone; without it the app saves as always, and nobody else is touched. |
 | D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). |
 | D1664 | 5 Nov 26 | While a save has failed, the pass after asking for access reads "Not sent yet" in the band's amber — its mark and its first step — and its approved look comes back by itself once the save lands. |
