@@ -256,3 +256,21 @@ export function dayTag(a: DayAnswer, short: string): { text: string; kind: 'ph' 
   if (a.kind) return { text: short || (a.kind === 'ph' ? 'PH' : 'OFF'), kind: a.kind }
   return a.cls === 'nf' ? { text: 'NF', kind: 'nf' } : null
 }
+
+/* The grid for one month, Monday-first (m is 1-12, calendar convention, the
+   same as CALMONTH). Pure and exported so a test can assert the shape
+   directly rather than parsing rendered DOM for it. The Inputs, SANS and Medical
+   calendars draw their months from it; it moved here from ui/InputsCal.tsx (6 Nov 26 —
+   React Doctor's only-export-components: a component file exports components only). */
+export function monthCells(y: number, m: number): (string | null)[] {
+  const first = new Date(Date.UTC(y, m - 1, 1))
+  /* JS getUTCDay() is Sunday-first; this rotates it Mon=0…Sun=6, the same
+     rotation RangeCal.tsx uses for its own grid. */
+  const lead = (first.getUTCDay() + 6) % 7
+  const days = new Date(Date.UTC(y, m, 0)).getUTCDate()
+  const cells: (string | null)[] = []
+  for (let i = 0; i < lead; i++) cells.push(null)
+  for (let d = 1; d <= days; d++) cells.push(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`)
+  while (cells.length % 7) cells.push(null)
+  return cells
+}
