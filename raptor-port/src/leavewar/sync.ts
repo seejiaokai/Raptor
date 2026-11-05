@@ -2392,7 +2392,7 @@ export function runPoOutcomes(): void {
              The postings keep no order of when they were made — the walk's B2b; one first opening may run two dates) */
           if (ran.length) {
             const to = schedulerIds(), now = Date.now(), rank: Record<string, number> = { overseas: 0, delete: 1, sans: 2 }
-            const cs = (id: string) => String((PEOPLE as any)[id]?.cs ?? id)
+            const cs = (id: string) => String(rosterBody(id)?.cs ?? id)
             ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
               .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i))
           }
