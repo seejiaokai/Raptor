@@ -180,6 +180,24 @@ const BAND = () => {
   document.body.appendChild(b)
   document.querySelector('#accessWaiting').style.top = '40px'
 }
+/* his question of 5 Nov 26: "is it weird that the fade is abruptly stopped at the top half" — two ways out, phone only.
+   smooth: one card surface, the blue tint fading to nothing before the tear line, the tear the only divider;
+   solid: the pass a plain lighter surface with no tint, the foot the card's own, a clean break at the tear. */
+const SMOOTH = `#accessWaiting .login-card.awb{background:linear-gradient(180deg,rgba(59,198,232,.10) 0,rgba(59,198,232,.04) 26%,rgba(59,198,232,0) 44%),var(--panel)}
+#accessWaiting .awb-top{background:transparent}`
+const SOLID = `#accessWaiting .awb-top{background:var(--panel-2)}`
+if (process.env.ONLY === 'CV') {
+  for (const [name, css, tag] of [['C-smooth', SMOOTH, 'C — the tint fades out before the tear'], ['C-solid', SOLID, 'C — no tint: two plain surfaces']]) {
+    const page = await reachWaiting('phone')
+    await page.evaluate(s => { window.__awSteps = s }, steps)
+    await page.evaluate(lookC)
+    await page.addStyleTag({ content: css })
+    await shot(page, 'phone', name, tag)
+    await page.context().close()
+  }
+  console.log('done CV', L.errs.length ? L.errs : 'no browser errors')
+  process.exit(0)
+}
 if (process.env.ONLY === 'C') {
   for (const size of ['phone', 'desktop']) {
     const page = await reachWaiting(size)
