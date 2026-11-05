@@ -3533,3 +3533,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** The session-handoff skill's opening-line template for a new job gains one clause: "if `git status` shows changes you did not make, or another chat is on this folder's branch, run `git worktree add --detach ../Raptor-<short> origin/main` and work there instead."
 
 **Principle:** An instruction to switch branches must first check whose folder it is; the guard belongs in the instruction, not in the reader's memory.
+
+### Observation 832: A design reader passed a new icon that the owner saw at once looked like its neighbour
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — the drawn OIL Earn mark (a clock) beside the board's History button (a clock with an arrow)
+**Skill:** impeccable (critique, Assessment A's brief) and brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** checking newly drawn icons before they are put to the owner
+
+**Issue:** The drawing borrowed an existing mark (a plain clock) for a button whose bar already carried a clock-shaped mark meaning something else. The owner saw it at once; a fresh, blind design reader asked to judge whether the new icons "read clearly, match each other and the app's line icons, and are ambiguous" called the borrowing "a good link" — it compared each new mark with its source and with the other new marks, never with the marks already standing beside it.
+
+**Suggested improvement:** In the mock-up method and in the critique reader's brief, add one step for any new or borrowed mark: lay it beside every mark already on its bar and its page (an inventory taken from the running page, not the source) and name any pair a person could mistake.
+
+**Principle:** A borrowed icon carries its old meaning into a new neighbourhood; check it against its neighbours, not only against where it came from.

@@ -58,7 +58,14 @@ const ICON = {
   unmerge: '<path d="M3 15h5.5a3.5 3.5 0 0 1 7 0H21"/><path d="M12 4v7M12 18v3"/>',
   arrowr: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
   head: '<path d="M5 19 19 5"/><path d="M10 5h9v9"/>',
-  fit: '<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>',
+  fit: '<path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/>',
+  /* after his D1700 (OIL Earn's clock is History's): an OIL mark of its own — a ticket, a day off held — for OIL Earn and
+     the Leave War's OIL tab alike, so a clock means History only */
+  ticket: '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/>',
+  /* the fresh reader's look-alikes: Connect two points joined (not an arrow beside Arrow); Select all the dashed box
+     with a tick (not Select's box again) */
+  connect: '<circle cx="5" cy="12" r="2.5"/><circle cx="19" cy="12" r="2.5"/><path d="M7.5 12h9"/>',
+  selectall: '<path d="M5 3a2 2 0 0 0-2 2M19 3a2 2 0 0 1 2 2M21 19a2 2 0 0 1-2 2M5 21a2 2 0 0 1-2-2M9 3h1M9 21h1M14 3h1M14 21h1M3 9v1M21 9v1M3 14v1M21 14v1"/><path d="m8 12 3 3 5-6"/>',
 }
 
 async function world(vp, touch) {
@@ -127,6 +134,11 @@ const swapMark = (page, sel, sym, inner, size, grey = false) => page.evaluate(([
   }
   return n
 }, [sel, sym, svg(inner, size, grey)])
+const dropMark = (page, sel, sym) => page.evaluate(([sel, sym]) => {
+  let n = 0
+  for (const e of document.querySelectorAll(sel)) { const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT); const hits = []; while (w.nextNode()) if (w.currentNode.nodeValue.includes(sym)) hits.push(w.currentNode); for (const t of hits) { t.nodeValue = t.nodeValue.replace(sym + ' ', '').replace(sym, ''); n++ } }
+  return n
+}, [sel, sym])
 async function mustSwap(page, sel, sym, inner, size) {
   const n = await swapMark(page, sel, sym, inner, size)
   if (!n) throw new Error(`swap: no ${sym} in ${sel}`)
@@ -135,7 +147,7 @@ async function mustSwap(page, sel, sym, inner, size) {
 /* the one gear, drawn, in the ordinary buttons' white (the colour every other gear has today) */
 async function gearize(page) {
   let n = 0
-  for (const [sel, size] of [['#inGear', 18], ['.sc-gear', 18], ['.oil-gear', 16], ['#flexBtn', 16], ['.wm-mng', 14]]) n += await swapMark(page, sel, '⚙', ICON.gear, size, true)
+  for (const [sel, size] of [['#inGear', 18], ['.sc-gear', 18], ['.oil-gear', 16], ['#flexBtn', 16], ['.wm-mng', 14]]) n += await swapMark(page, sel, '⚙', ICON.gear, size)
   return n
 }
 
@@ -231,9 +243,9 @@ async function q2(tag, vp, touch) {
 }
 
 /* ================= Q3 — the Inputs calendar's top row at a narrow desktop ================= */
-const Q3_CSS = '@media (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}}'
+const Q3_CSS = '@media (min-width:1340px) and (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}} .inputs-top .inputs-filterfields{margin-left:auto}'
 async function q3() {
-  for (const w of [1366, 1300]) {
+  for (const w of [1366, 1300, 1280]) {
     for (const drawn of [false, true]) {
       const vp = { width: w, height: 768 }
       const { ctx, page } = await world(vp, false)
@@ -245,7 +257,8 @@ async function q3() {
         await sleep(300)
       }
       // first with no window open, so nothing covers the row (his question, 5 Nov 26: "2 what's the difference")
-      await settle(page); await ring(page, ['#inGear']); await strip(page, `q3-${w}-closed${drawn ? '-new' : ''}`, 56, 220, vp); await unring(page)
+      await settle(page); await ring(page, ['#inGear']); await strip(page, `q3-${w}-closed${drawn ? '-new' : ''}`, 56, 220, vp)
+      await strip(page, `q3-${w}-zoom${drawn ? '-new' : ''}`, 56, 150, vp, w - 560, 560); await unring(page)
       await page.getByText('Quill · OML').first().click(); await sleep(700); await settle(page)
       const m = await page.evaluate(() => {
         const q = s => document.querySelector(s)?.getBoundingClientRect()
@@ -284,9 +297,16 @@ async function q4(tag, vp, touch) {
       } else console.log('q4: no Auto sort button in view')
       await board(page, 5); await sleep(700)
       if (await visAll(page, '#sbOil')) {
-        await settle(page); await ring(page, ['#sbOil']); await around(page, 'q4-pc-oilearn', '#sbOil', vp, { pad: 12, padX: 120 })
-        await unring(page); await mustSwap(page, '#sbOil', '◧', ICON.clock, 14)
-        await settle(page); await ring(page, ['#sbOil']); await around(page, 'q4-pc-oilearn-new', '#sbOil', vp, { pad: 12, padX: 120 }); await unring(page)
+        await page.evaluate(() => { for (const b of document.querySelectorAll('#schedBoard .abtn:has(.bi)')) if (b.getBoundingClientRect().width && /Templates|OIL Earn|Sort all|History/.test(b.textContent)) b.classList.add('zz-bar') })
+        const frame = { pad: 12, padX: 24 }
+        await settle(page); await ring(page, ['#sbOil', '.zz-bar:has(.bl)']).catch(() => {}); await unring(page)
+        await ring(page, ['#sbOil']); await around(page, 'q4-pc-oilbar', '.zz-bar', vp, frame); await unring(page)
+        await swapMark(page, '.zz-bar', '⇅', ICON.reorder, 14); await swapMark(page, '.zz-bar', '▤', ICON.tpl, 14)
+        await page.evaluate(() => { const b = document.querySelector('#sbOil .bi'); b.dataset.keep = b.innerHTML; b.style.display = 'none' })
+        await settle(page); await ring(page, ['#sbOil']); await around(page, 'q4-pc-oilbar-a', '.zz-bar', vp, frame); await unring(page)
+        await page.evaluate(() => { const b = document.querySelector('#sbOil .bi'); b.style.display = '' })
+        await mustSwap(page, '#sbOil', '◧', ICON.ticket, 14)
+        await settle(page); await ring(page, ['#sbOil']); await around(page, 'q4-pc-oilbar-b', '.zz-bar', vp, frame); await unring(page)
       } else console.log('q4: no OIL Earn on Saturday either')
     } else {
       // the phone's ⋯ menu: Sort all and the Phone / Desktop layout
@@ -309,6 +329,12 @@ async function q4(tag, vp, touch) {
     await unring(page)
     await mustSwap(page, '[data-testid=settings-rearrange]', '⇅', ICON.reorder, 14); await mustSwap(page, '[data-testid=roster-reset-order]', '↺', ICON.reset, 14)
     await settle(page); await ring(page, [sel]); await around(page, `q4-${tag}-lwset-new`, sel, vp, { pad: 16, padX: 30 }); await unring(page)
+    // the Leave War's OIL tab — today's plain clock, and the ticket of the OIL Earn drawing (B)
+    await page.keyboard.press('Escape'); await sleep(300)
+    await page.evaluate(() => { const t = [...document.querySelectorAll('[role=tab]')].find(e => /^OIL/.test(e.textContent.trim()) && e.getBoundingClientRect().width); t.classList.add('zz-oiltab'); t.closest('[role=tablist]').classList.add('zz-tabs') })
+    await settle(page); await ring(page, ['.zz-oiltab']); await around(page, `q4-${tag}-lwoil`, '.zz-tabs', vp, { pad: 10, padX: 10 }); await unring(page)
+    await page.evaluate(svgHtml => { const v = document.querySelector('.zz-oiltab svg'); const t = document.createElement('template'); t.innerHTML = svgHtml; const n = t.content.firstChild; n.setAttribute('class', v.getAttribute('class') || ''); v.replaceWith(n) }, svg(ICON.ticket, 16))
+    await settle(page); await ring(page, ['.zz-oiltab']); await around(page, `q4-${tag}-lwoil-b`, '.zz-tabs', vp, { pad: 10, padX: 10 }); await unring(page)
     // into Rearrange: the grid's ⇅ Done
     await page.reload(); await login(page, 'a').catch(() => {}); await go(page, 'leavewar'); await sleep(700)
     await press(page, '.lw-gear', touch); await sleep(500)
@@ -344,7 +370,10 @@ async function q5(tag, vp, touch) {
     if (!marks.length) throw new Error('no chart-layout tools in view')
     await settle(page); await ring(page, ['.zz-tool']); await around(page, `q5-${tag}-tools`, '.arrwrap', vp, { pad: 8, wide: true })
     await unring(page)
-    for (const [sym, k] of TRK) await swapMark(page, '.zz-tool', sym, ICON[k], 13)
+    await page.evaluate(() => { for (const b of document.querySelectorAll('.zz-tool')) if (/Select all/.test(b.textContent)) b.classList.add('zz-selall') })
+    await swapMark(page, '.zz-selall', '▣', ICON.selectall, 13)
+    await dropMark(page, '.zz-tool', '✕'); await dropMark(page, '.zz-tool', '⌢')
+    for (const [sym, k] of TRK) await swapMark(page, '.zz-tool', sym, ICON[k === 'arrowr' ? 'connect' : k], 13)
     await settle(page); await ring(page, ['.zz-tool']); await around(page, `q5-${tag}-tools-new`, '.arrwrap', vp, { pad: 8, wide: true }); await unring(page)
   })
   await ctx.close()

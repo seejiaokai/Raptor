@@ -407,7 +407,7 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 15500],   // raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 17000],   // raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
