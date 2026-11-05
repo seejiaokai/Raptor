@@ -198,3 +198,7 @@ MISSING: 4 fixed red first, 1 put to him, 0 filed.
    kinds of place (`docs/mock/2026-11-05-member-guest-build/img/D1663-band-everywhere-phone.png`); the other "not saved" words are
    refusals of one change (a Leave War figure box, the grades sheet, the schedule's refused change, a document too big to store) —
    whether they take a common look of their own is put to him.
+
+## 12. His look
+
+Done on his iPhone with the `?savefail` test switch (D1666), 5 Nov 26: *"Ok looks good merge live"*.
