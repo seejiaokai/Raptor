@@ -33,11 +33,13 @@
 .inputs-top .inputs-gear{order:5}
 /* THE FILTERS AND THE GEAR, ONE GROUP AT THE ROW'S RIGHT END (owner D1702, 5 Nov 26 — round 4 of the consistency look, "all
    as recommended"; drawn by scripts/handpass/cr4-look.mjs q3): measured on `main`, at 1366 the gear stood alone on a second
-   line. In one box the two wrap together, and the box's own left margin keeps it at the right end of whichever line it is
-   on, so the gear keeps its corner. On one line the spring before the switch still takes the room, so nothing moves there.
+   line. In one box the two wrap together. On one line the spring before the switch takes the room, so the box stands at the
+   row's right end. WHERE THE ROW WRAPS the box starts the second line at its LEFT (owner D1708, 5 Nov 26 — his "A", drawn by
+   cr4-look.mjs d1708 and approved "Yes"): with a left margin of its own it stood at that line's right end, under an open
+   input window at 1280, its gear unpressable. No margin, so no width to pick: it follows wherever the letters wrap the row.
    On a phone the box is not drawn (`display:contents`, the 820px block below): its three are the row's own again, D693's
    row untouched. */
-.inputs-top .inputs-filtergroup{order:4;display:flex;align-items:center;gap:8px;margin-left:auto;min-width:0;flex:0 1 auto}
+.inputs-top .inputs-filtergroup{order:4;display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
 /* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
    "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
    Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */

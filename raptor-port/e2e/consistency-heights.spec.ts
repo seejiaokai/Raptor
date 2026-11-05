@@ -104,6 +104,10 @@ const rowAt = (page: Page) => page.evaluate(() => {
   return {
     oneLine: Math.round(g.top) === Math.round(v.top), gearTop: Math.round(g.top), fieldsTop: Math.round(r('#inFilters').top),
     gearRight: Math.round(top.right - g.right), groupLeft: Math.round(grp.left - top.left),
+    /* where the gear's line starts: at 821, or with letters wide enough, Calendar · List wraps too and leads that line */
+    lineLeft: Math.round(Math.min(...[...document.querySelectorAll('.inputs-top > *, .inputs-top .inputs-filtergroup > *')]
+      .filter(e => { const b = e.getBoundingClientRect(), c = getComputedStyle(e); return b.width && b.height && c.display !== 'contents' && c.visibility !== 'hidden' && Math.abs(b.top - g.top) <= 6 })
+      .map(e => e.getBoundingClientRect().left)) - top.left),
     search: Math.round(r('label.inputs-search').width),
     searchBasis: getComputedStyle(document.querySelector('label.inputs-search')!).flexBasis,
   }
@@ -126,7 +130,7 @@ test('desktop 1366: one line where the letters allow — the narrower search box
   expect(m.search, '"Search inputs" still whole').toBeGreaterThanOrEqual(96)
   expect(m.gearTop, "the gear on the fields' line — never alone").toBe(m.fieldsTop)
   if (m.oneLine) expect(m.gearRight, "one line: the gear at the row's right end").toBeLessThanOrEqual(1)
-  else expect(m.groupLeft, 'wider letters wrapped it: the group starts the second line at its left (D1708)').toBeLessThanOrEqual(1)
+  else expect(m.lineLeft, 'wider letters wrapped it: the filters and gear start the second line at its left (D1708)').toBeLessThanOrEqual(1)
 })
 for (const w of [1340, 1300, 1280]) {
   test(`desktop ${w}: the filters and the gear wrap together, at the second line's LEFT — the gear never alone (D1702, D1708)`, async ({ page }) => {
@@ -136,6 +140,6 @@ for (const w of [1340, 1300, 1280]) {
     const m = await rowAt(page)
     expect(m.oneLine, 'the row wraps at this width').toBe(false)
     expect(m.gearTop, "the gear on the fields' line").toBe(m.fieldsTop)
-    expect(m.groupLeft, 'the group starts the line at its left (D1708)').toBeLessThanOrEqual(1)
+    expect(m.lineLeft, "the gear's line starts at the row's left (D1708)").toBeLessThanOrEqual(1)
   })
 }

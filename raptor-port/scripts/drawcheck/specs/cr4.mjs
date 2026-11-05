@@ -221,11 +221,16 @@ export default {
       ...button('range', 'Range', '.zz-range', '[data-testid=oil-range-pick]', { words: true }),
       P('ci', 'its mark’s slot', '.zz-range .ci', '[data-testid=oil-range-pick] .ci', ['place', 'size'], { rel: 'range' }),
     ]),
-    // q3 — the Inputs row at a narrow desktop: closed, and with a window open
-    ...[1366, 1300, 1280].flatMap(w => [
+    // q3 — the Inputs row at a narrow desktop: closed, and with a window open. At 1300 and 1280 the row wraps, and his D1708
+    // ("A", 5 Nov 26) moved the wrapped group to the second line's LEFT: q3's pictures there (the right end) are replaced by
+    // the D1708 drawing he approved ("Yes"), recorded on the build it was drawn on (round 4's, 7554a3ac2) — 1366 holds one
+    // line and is unchanged, so its q3 records stand.
+    ...[1366].flatMap(w => [
       { id: `q3-${w}-closed`, title: `The Inputs top row at ${w}, nothing open`, drawing: { script: D, shot: `q3-${w}-closed-new` }, reach: reach.q3(w, false), parts: q3Parts },
       { id: `q3-${w}-open`, title: `The Inputs top row at ${w}, an input's window open`, drawing: { script: D, shot: `q3-${w}-new` }, reach: reach.q3(w, true), parts: q3Parts },
     ]),
+    // D1708 — the wrapped row, an input's window open: the filters and gear at the second line's left, the gear clear
+    ...[1340, 1300, 1280].map(w => ({ id: `d1708-${w}-open`, title: `The Inputs top row at ${w}, wrapped, an input's window open (D1708)`, drawing: { script: D, shot: `d1708-${w}-new` }, reach: reach.q3(w, true), parts: q3Parts })),
     // q4 — the board, the phone's ⋯ menu, the Leave War
     { id: 'board-pc', title: "The Scheduler Board's Templates and Sort all, Monday, desktop", drawing: { script: D, shot: 'q4-pc-board-new' }, reach: reach.boardMon,
       parts: [...boardBtn('sbTpl', 'Templates'), ...boardBtn('sbSortAll', 'Sort all'), P('sbHist', 'History (unchanged, for its place)', '#sbHist', '#sbHist', ['place', 'size'])] },
@@ -248,6 +253,12 @@ export default {
     ...both('lwmenu', "The Leave War window's ⋯ menu", 'q6-#-lwmenu-new', reach.lwmenu, menuParts('[data-testid=bid-more-menu]', '[data-testid=bid-more-menu] button', 4)),
     ...both('trkmenu', "The Tracker's File menu", 'q6-#-trkmenu-new', reach.trkmenu, menuParts('#fileMenuPanel.on', '#fileMenuPanel.on > button', 2)),
   ],
-  // the differences he has ruled to keep as built — none yet
-  accepted: [],
+  // the differences his rulings keep as built
+  accepted: [
+    /* the phone ⋯ menu's Sort all: the drawing shows it shaded, the only shaded row of its menu — the touch the drawing's own
+       tap left on the row under it, not a design (both drawing-check runs of 5 Nov 26 found it; the first report's (C)).
+       D1706 rules every menu of actions plain rows, no fill at rest, as the build draws it; named to him in the closing
+       report of 5 Nov 26 with its picture (drawcheck-cr4-r2/more-ph--sort.png). */
+    { state: 'more-ph', part: 'sort', check: 'fill', why: 'D1706 — a menu of actions is plain rows, no fill at rest; the drawing\'s shade is the touch its tap left' },
+  ],
 }

@@ -103,17 +103,38 @@ all 28.
 1. **The narrower search box (1340–1439) never applied** — its rule stood above the rule it narrows and lost to it, so
    1366 stayed two lines. Fixed (moved below); red-first browser test `e2e/consistency-heights.spec.ts` (D1702 tests:
    red at 1366 without the fix, 10 / 10 green with it). 1340 wraps by design (the ruling holds one line at 1366).
-2. **OPEN — for him:** at 1280 × 720 (the raptor browser tests' size) with an input window open, the gear — now at the
+2. **SETTLED — his "A" (D1708), drawn, approved ("Yes") and built (§4a):** at 1280 × 720 (the raptor browser tests' size) with an input window open, the gear — now at the
    right end of the second line, as ruled and as DRAWN (the approved `q3-1280-new.png` shows the ringed gear under the
    window's corner) — is under the window and cannot be pressed (`e2e/inputs-calendar.spec.ts` "Escape closes the window in
    FRONT" times out). Before the change it sat alone at the left of the line, uncovered. Recommended: where the row wraps
    (below 1340) the filters and gear start the second line at its LEFT, together — never alone, never under a window.
    Not built: it reverses part of D1702, so it is his (picture to draw for him first, D1625).
-3. Seen in passing, older: the SANS row at 821 wide wraps Highlight and the gear to the LEFT of a second line, together
+3. Seen in passing, older (now matched by D1708): the SANS row at 821 wide wraps Highlight and the gear to the LEFT of a second line, together
    (`rows/after-row-sans-821.png`) — the same before. Not a lone gear; filed with 2.
 
 Not faults: the script's own (a dialog closed by Escape that has none yet on this build, a heading read in capitals, a
 picture of a button below the fold, the phone Info panel's own zoom, a question the ✕ asks first).
+
+## 4a. D1708 built, and the re-walk (round 2, on the D1708 build)
+
+- **Drawn first (D1625):** `cr4-look.mjs` step `d1708` — the built row at 1366 / 1340 / 1300 / 1280 with an input window
+  open, and the same with the group's own left margin dropped (pictures `docs/img/handpass/2026-11-05-cr4-d1708/`, page
+  https://claude.ai/artifact/4384HywiC1SR3q9mUtw4eT). Measured: 1366 one line, nothing moves; at 1340, 1300 and 1280 the gear
+  under the window and unpressable as built, pressable as drawn. His "Yes", 5 Nov 26.
+- **Built at every width, not "below 1340":** on one line the spring before the switch keeps the group at the right end, so
+  only a row that really wraps changes, whatever the letters. Checked at 1366 with letters 0.9px wider (as GitHub's Linux
+  machines draw them): the row wraps, the filters and gear lead the second line from the left, the gear pressable with a
+  window open (`built-1366-letters-wider.png`); with his PC's letters one line (`built-1366-letters-his-pc.png`).
+- **At 821** the switch wraps too: the second line reads Calendar · List, the filters, the gear, from the left
+  (`cr4-build/d1708-rows/after-row-inputs-821.png`) — D1708's "start the second line at its left", as the SANS row at 821.
+- **The walk's rows (`d1708-rows/`): 35 / 35** — the twelve widths, the List's row added (the gear's other place on that
+  row, roll-call §2). A first run failed 821 on the script's own reading (it took "the gear on the switch's line" for one
+  line); now one line is judged by the row's height and "at the left" by the second line's first item.
+- **The desktop and phone passes re-walked (`r2/`): 86 / 86**, no page errors.
+- **Tests:** `e2e/consistency-heights.spec.ts` 10 / 10 (1340 / 1300 / 1280 red before the change, on "the group starts the
+  line at its left"); `e2e/inputs-calendar.spec.ts` with it, 71 / 71 — "Escape closes the window in FRONT" green;
+  `inputstabs` and `sanscal` unit files 64 / 64. The 1366 test follows D1702's reading: the narrower search box applied
+  (read off its style), the gear never alone, the right end on one line or the left of the second.
 
 ## 5. The drawing check (`scripts/drawcheck/specs/cr4.mjs`, 35 states; records `docs/mock/consistency-round4/drawcheck/`)
 
@@ -122,8 +143,11 @@ to its approved picture; RED with five causes — (A) the Inputs row at 1366 (fa
 gear and ? chips 33 → 30 tall (the gear as a block, not in the line as drawn) — fixed (`oiltracker.css`, in the line, as
 drawn); (C) the phone ⋯ menu's Sort all shade — the drawing's own left-behind hover, an artefact; (D) the Leave War ⋯ menu
 176 wide where the approved picture is 150 — put back to 150; (E) the Tracker's menus on a phone kept the bar's 3px 6px
-padding (a phone rule outweighed) — fixed (`.menupanel.on>button.sm`). **Not yet re-run on the fixed build** — the next
-step.
+padding (a phone rule outweighed) — fixed (`.menupanel.on>button.sm`). **Re-run on the D1708 build (`docs/img/handpass/2026-11-05-drawcheck-cr4-r2/report.md`): GREEN** —
+0 unexplained, 1 kept. The q3 states at 1300 and 1280 (the right end) are replaced by D1708's drawing at 1340 / 1300 / 1280,
+recorded on the build it was drawn on (every replay identical to his approved picture); q3 at 1366 stands. (C), the phone
+⋯ menu's Sort all shaded only in the drawing, is kept as built under D1706 (plain rows, no fill at rest) — named to him with
+its picture `drawcheck-cr4-r2/more-ph--sort.png`.
 
 ## 6. The code read
 

@@ -293,9 +293,22 @@ async function rows() {
       return { rowH: Math.round(top.height), gearTop: Math.round(g.top - top.top), gearRight: Math.round(top.right - g.right), gearH: Math.round(g.height), gearW: Math.round(g.width),
         viewsTop: Math.round(views.top - top.top), searchW: (() => { const e = document.querySelector('#inFSearch'); const l = e && e.closest('label'); const r = l && l.getBoundingClientRect(); return r && r.width ? Math.round(r.width) : null })(), filtersTop: f ? Math.round(f.top - top.top) : null,
         fieldsTop: (() => { const e = document.querySelector('#inFilters'); const r = e && e.getBoundingClientRect(); return r && r.width ? Math.round(r.top - top.top) : null })(),
+        lineLeft: (() => { const t = document.querySelector('.inputs-top').getBoundingClientRect(), gt = Math.round(document.querySelector('#inGear').getBoundingClientRect().top); const xs = [...document.querySelectorAll('.inputs-top > *, .inputs-top .inputs-filtergroup > *')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height && getComputedStyle(e).display !== 'contents' && getComputedStyle(e).visibility !== 'hidden' && Math.abs(Math.round(r.top) - gt) <= 6 }).map(e => e.getBoundingClientRect().left); return Math.round(Math.min(...xs) - t.left) })(),
+        groupLeft: (() => { const e = document.querySelector('.inputs-top .inputs-filtergroup'); const r = e && getComputedStyle(e).display !== 'contents' && e.getBoundingClientRect(); return r && r.width ? Math.round(r.left - top.left) : null })(),
         lines: new Set([...document.querySelectorAll('.inputs-top > *, .inputs-top .inputs-filtergroup > *')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height && getComputedStyle(e).display !== 'contents' }).map(e => Math.round(e.getBoundingClientRect().top / 20))).size }
     })
     await page.screenshot({ path: `${SHOTS}/${TAG}-row-inputs-${W.w}.png`, clip: { x: 0, y: 40, width: W.w, height: Math.min(260, W.h - 40) } })
+    /* the List: the same row, the same gear (D1708 — at the right end on one line, at the second line's left where it wraps) */
+    if (!W.touch) {
+      await page.locator('#inListBtn').filter({ visible: true }).first().click(); await sleep(600)
+      m.list = await page.evaluate(() => {
+        const r = s => document.querySelector(s).getBoundingClientRect()
+        const top = r('.inputs-top'), g = r('#inGear'), v = r('.inputs-views'), grp = r('.inputs-top .inputs-filtergroup')
+        return { lineLeft: (() => { const t = document.querySelector('.inputs-top').getBoundingClientRect(), gt = Math.round(document.querySelector('#inGear').getBoundingClientRect().top); const xs = [...document.querySelectorAll('.inputs-top > *, .inputs-top .inputs-filtergroup > *')].filter(e => { const r = e.getBoundingClientRect(); return r.width && r.height && getComputedStyle(e).display !== 'contents' && getComputedStyle(e).visibility !== 'hidden' && Math.abs(Math.round(r.top) - gt) <= 6 }).map(e => e.getBoundingClientRect().left); return Math.round(Math.min(...xs) - t.left) })(), rowH: Math.round(top.height), gearOnFields: Math.round(g.top) === Math.round(r('#inFilters').top), gearRight: Math.round(top.right - g.right), groupLeft: Math.round(grp.left - top.left) }
+      })
+      await page.screenshot({ path: `${SHOTS}/${TAG}-row-inputs-list-${W.w}.png`, clip: { x: 0, y: 40, width: W.w, height: Math.min(260, W.h - 40) } })
+      await page.locator('#inCalBtn').filter({ visible: true }).first().click(); await sleep(600)
+    }
     await page.locator('#inSansMode').filter({ visible: true }).first().click(); await sleep(600)
     const sm = await page.evaluate(() => {
       const q = s => { const e = [...document.querySelectorAll(s)].find(x => x.getBoundingClientRect().width > 0); return e && e.getBoundingClientRect() }
@@ -310,7 +323,12 @@ async function rows() {
   measures.rows = out
   if (AFTER) for (const [w, r] of Object.entries(out)) {
     const desk = +w >= 821
-    if (desk) res(`row ${w}: the Inputs gear at the row's right end and never alone on a line of its own`, r.inputs.gearRight <= 2 && (r.inputs.gearTop <= 4 || r.inputs.fieldsTop === r.inputs.gearTop || r.inputs.searchW === null), JSON.stringify(r.inputs))
+    /* D1702 narrowed by D1708 (his "A", 5 Nov 26): one line — the gear at the row's right end; wrapped — the gear on the
+       fields' line, the group at the second line's LEFT, so an open input window never covers it */
+    const oneLine = r.inputs.rowH <= 50
+    if (desk) res(`row ${w}: the Inputs gear never alone — ${oneLine ? "one line, at the row's right end" : "wrapped, the filters and gear at the second line's left (D1708)"}`,
+      oneLine ? r.inputs.gearRight <= 2 : (r.inputs.fieldsTop === r.inputs.gearTop && r.inputs.lineLeft <= 2), JSON.stringify(r.inputs))
+    if (desk && r.inputs.list) res(`row ${w}: the List's row the same (D1708)`, r.inputs.list.gearOnFields && (r.inputs.list.rowH <= 50 ? r.inputs.list.gearRight <= 2 : r.inputs.list.lineLeft <= 2), JSON.stringify(r.inputs.list))
     if (+w >= 1366 && +w <= 1919) res(`row ${w}: the Inputs row is one line`, r.inputs.gearTop <= 4, JSON.stringify(r.inputs))
     res(`row ${w}: the SANS gear never alone on a line (Highlight beside it)`, r.sans.gearTop <= 6 || r.sans.headH > 60, JSON.stringify(r.sans))
   }

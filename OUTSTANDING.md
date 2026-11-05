@@ -79,7 +79,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Inputs and calendars**
 - [PRINT-FLYING-ONLY-ASK] — the printed page and the schedule's spreadsheet carry flying lines only, no Ground Programme row — his question, kept from [ALLAVAIL-CHECK-SEEN] (not walked again 3 Nov 26).
-- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT on `claude/ui-consistency-round4` (pull request 643), its bug check part-way; his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), TO DRAW AND BUILD; round 5 (the 👁 line, the Inputs ⤢) after.
+- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT on `claude/ui-consistency-round4` (pull request 643), its bug check part-way; his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), drawn and approved ("Yes", 5 Nov 26), BUILT; round 5 (the 👁 line, the Inputs ⤢) after.
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 

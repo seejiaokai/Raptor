@@ -1,0 +1,180 @@
+{
+ "results": [
+  {
+   "id": "row 375: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":36,\"gearTop\":0,\"gearRight\":0,\"gearH\":36,\"gearW\":42}"
+  },
+  {
+   "id": "row 402: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":36,\"gearTop\":0,\"gearRight\":0,\"gearH\":36,\"gearW\":42}"
+  },
+  {
+   "id": "row 821: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":153,\"gearH\":36,\"gearW\":40,\"viewsTop\":52,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":166,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":153,\"groupLeft\":166}}"
+  },
+  {
+   "id": "row 821: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":153,\"groupLeft\":166}"
+  },
+  {
+   "id": "row 821: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":86,\"gearTop\":50,\"gearRight\":651,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 900: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":398,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":0,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":398,\"groupLeft\":0}}"
+  },
+  {
+   "id": "row 900: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":398,\"groupLeft\":0}"
+  },
+  {
+   "id": "row 900: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1100: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":598,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":0,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":598,\"groupLeft\":0}}"
+  },
+  {
+   "id": "row 1100: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":598,\"groupLeft\":0}"
+  },
+  {
+   "id": "row 1100: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1280: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":778,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":0,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":778,\"groupLeft\":0}}"
+  },
+  {
+   "id": "row 1280: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":778,\"groupLeft\":0}"
+  },
+  {
+   "id": "row 1280: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1300: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":798,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":0,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":798,\"groupLeft\":0}}"
+  },
+  {
+   "id": "row 1300: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":798,\"groupLeft\":0}"
+  },
+  {
+   "id": "row 1300: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1340: the Inputs gear never alone — wrapped, the filters and gear at the second line's left (D1708)",
+   "pass": "PASS",
+   "note": "{\"rowH\":88,\"gearTop\":52,\"gearRight\":858,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":145,\"filtersTop\":null,\"fieldsTop\":52,\"lineLeft\":0,\"groupLeft\":0,\"lines\":3,\"list\":{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":858,\"groupLeft\":0}}"
+  },
+  {
+   "id": "row 1340: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":88,\"gearOnFields\":true,\"gearRight\":858,\"groupLeft\":0}"
+  },
+  {
+   "id": "row 1340: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1366: the Inputs gear never alone — one line, at the row's right end",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":145,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":884,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":884}}"
+  },
+  {
+   "id": "row 1366: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":884}"
+  },
+  {
+   "id": "row 1366: the Inputs row is one line",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":145,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":884,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":884}}"
+  },
+  {
+   "id": "row 1366: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1440: the Inputs gear never alone — one line, at the row's right end",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":938,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":938}}"
+  },
+  {
+   "id": "row 1440: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":938}"
+  },
+  {
+   "id": "row 1440: the Inputs row is one line",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":938,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":938}}"
+  },
+  {
+   "id": "row 1440: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1536: the Inputs gear never alone — one line, at the row's right end",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":1034,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":1034}}"
+  },
+  {
+   "id": "row 1536: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":1034}"
+  },
+  {
+   "id": "row 1536: the Inputs row is one line",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":1034,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":1034}}"
+  },
+  {
+   "id": "row 1536: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  },
+  {
+   "id": "row 1920: the Inputs gear never alone — one line, at the row's right end",
+   "pass": "PASS",
+   "note": "{\"rowH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40,\"viewsTop\":4,\"searchW\":178,\"filtersTop\":null,\"fieldsTop\":4,\"lineLeft\":0,\"groupLeft\":1418,\"lines\":2,\"list\":{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":1418}}"
+  },
+  {
+   "id": "row 1920: the List's row the same (D1708)",
+   "pass": "PASS",
+   "note": "{\"lineLeft\":0,\"rowH\":44,\"gearOnFields\":true,\"gearRight\":0,\"groupLeft\":1418}"
+  },
+  {
+   "id": "row 1920: the SANS gear never alone on a line (Highlight beside it)",
+   "pass": "PASS",
+   "note": "{\"headH\":44,\"gearTop\":4,\"gearRight\":0,\"gearH\":36,\"gearW\":40}"
+  }
+ ],
+ "errors": []
+}
