@@ -8,7 +8,7 @@ import { beforeEach, afterEach, describe, expect, it } from 'vitest'
 import { PEOPLE, ID_BY_CS } from '../engine/people'
 import { setSession, setMe } from './auth'
 import { initStore, resetSession } from './store'
-import { updatePersonField, OWN_ROW_ONLY, RENAME_ADMIN_ONLY, MGMT_ADMIN_ONLY, type QualsOp } from './quals-write'
+import { updatePersonField, OWN_ROW_ONLY, RENAME_ADMIN_ONLY, MGMT_ADMIN_ONLY, SCHED_ADMIN_ONLY, type QualsOp } from './quals-write'
 import { commitPeopleEdit } from './people-settings-commit'
 import { defineInvariant } from '../command'
 import { HOOKS } from '../engine/hooks'
@@ -31,13 +31,13 @@ const asAdmin = () => resetSession({ user: 'acad', role: 'admin', pid: 'stiff', 
 const COLUMNS: [string, (id: string) => QualsOp, (id: string) => any][] = [
   ['a qualification tick (IMC)', () => ({ tick: 'imc' }), id => PEOPLE[id].quals.imc],
   ['SXO', () => ({ tick: 'sxo' }), id => PEOPLE[id].sxo],
-  ['SCHEDULER', () => ({ tick: 'sched' }), id => PEOPLE[id].quals.sched],
   ['SANS', () => ({ tick: 'san' }), id => PEOPLE[id].san],
   ['CAT', () => ({ cat: 'A' }), id => PEOPLE[id].q],
   ['initials', () => ({ initials: 'zz' }), id => PEOPLE[id].initials],
   ['flight', () => ({ flight: 'q' }), id => PEOPLE[id].flight],
 ]
-/* the callsign is the admin's to change (D218, narrowing D149) — its own tests below */
+/* the callsign is the admin's to change (D218, narrowing D149), and the Management and Scheduler ticks the admin's to tick
+   (D1510, D1651) — each its own tests below */
 const CALLSIGN: [string, (id: string) => QualsOp, (id: string) => any] = ['the callsign', () => ({ callsign: 'Zulu9' }), id => PEOPLE[id].cs]
 
 describe('D149 — a member edits his own Quals row, every column; never another\'s', () => {
@@ -138,6 +138,56 @@ describe('D1510 — on Quals only an admin ticks Management; a member keeps ever
   })
 })
 
+/* D1651 (5 Nov 26, his "3 ok" — narrowing D1510 and D149): on Quals only an admin ticks the Scheduler column too. The tick
+   decides who may sign SKED CK, PLANNED BY and APPROVED BY, and a scheduler is always an admin (D785): a member unticking
+   his own blanked his signatures. Refused at the screen, this write and the commit gate alike, as Management is. */
+describe('D1651 — on Quals only an admin ticks Scheduler; a member keeps every other column of his row', () => {
+  const sched = (id: string) => !!(PEOPLE as any)[id].quals.sched
+  it('a member on his own row — refused, with its reason; nothing changes', () => {
+    asMember('bane')
+    const said: string[] = []; const t = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      const before = sched('bane')
+      expect(updatePersonField('bane', { tick: 'sched' })).toBe(SCHED_ADMIN_ONLY)
+      expect(sched('bane')).toBe(before)
+      expect(said).toContain(SCHED_ADMIN_ONLY)
+    } finally { HOOKS.toast = t }
+  })
+  it('a member the admin ticked cannot untick himself (the case that blanked his signatures)', () => {
+    asAdmin()
+    if (!sched('bane')) expect(updatePersonField('bane', { tick: 'sched' })).toBe(null)
+    expect(sched('bane')).toBe(true)
+    asMember('bane')
+    expect(updatePersonField('bane', { tick: 'sched' })).toBe(SCHED_ADMIN_ONLY)
+    expect(sched('bane')).toBe(true)
+  })
+  it('an admin, on any row — ticked and unticked', () => {
+    asAdmin()
+    const before = sched('bane')
+    expect(updatePersonField('bane', { tick: 'sched' })).toBe(null)
+    expect(sched('bane')).toBe(!before)
+    expect(updatePersonField('bane', { tick: 'sched' })).toBe(null)
+    expect(sched('bane')).toBe(before)
+  })
+  it("a member on ANOTHER's row, a guest, a pending person — refused, nothing changes", () => {
+    asMember('bane')
+    const before = sched('stiff')
+    expect(updatePersonField('stiff', { tick: 'sched' })).toBe(OWN_ROW_ONLY)
+    expect(sched('stiff')).toBe(before)
+    for (const role of ['guest', 'pending']) {
+      resetSession({ user: 'principal:x', role, pid: null, name: 'x@mail' })
+      expect(updatePersonField('bane', { tick: 'sched' })).toBe(OWN_ROW_ONLY)
+    }
+  })
+  it('the member still ticks the columns beside it (SXO, SC DAY, a qualification)', () => {
+    asMember('bane')
+    expect(updatePersonField('bane', { tick: 'sxo' })).toBe(null)
+    expect(updatePersonField('bane', { tick: 'scDay' })).toBe(null)
+    expect(updatePersonField('bane', { tick: 'imc' })).toBe(null)
+  })
+})
+
 /* the commit gate is the last lock (perms.ts ownershipViolation, the database step's rule): a member's own-row command
    that changes what his row's admin owns — Management (D1510), the callsign (D218), the archive mark and the placeholder
    mark (data-model.md §11) — rolls back whole, even when it skips the Quals write */
@@ -145,6 +195,8 @@ describe('D1510 / D218 — the commit gate refuses a member\'s own-row change of
   /* [what, the write, what proves it, the gate's own words — so the test proves THIS rule refused (the code read)] */
   const cases: [string, () => void, () => any, string][] = [
     ['Management', () => { (PEOPLE as any).bane.quals.mgmt = !(PEOPLE as any).bane.quals.mgmt }, () => !!(PEOPLE as any).bane.quals.mgmt, 'his Management tick'],
+    /* D1651 (5 Nov 26): the Scheduler tick is the admin's too */
+    ['Scheduler', () => { (PEOPLE as any).bane.quals.sched = !(PEOPLE as any).bane.quals.sched }, () => !!(PEOPLE as any).bane.quals.sched, 'his Scheduler tick'],
     ['the callsign', () => { (PEOPLE as any).bane.cs = 'Zulu9' }, () => (PEOPLE as any).bane.cs, 'his callsign'],
     ['the archive mark', () => { (PEOPLE as any).bane.archived = true }, () => !!(PEOPLE as any).bane.archived, 'his archive mark'],
     ['the placeholder mark', () => { (PEOPLE as any).bane.special = true }, () => !!(PEOPLE as any).bane.special, 'his placeholder mark'],

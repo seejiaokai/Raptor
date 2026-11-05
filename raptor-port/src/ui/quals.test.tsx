@@ -367,6 +367,37 @@ describe('the Quals page (tfin)', () => {
     } finally { HOOKS.toast = t }
   })
 
+  /* D1651 (5 Nov 26, his "3 ok"): the Scheduler tick is the admin's too — a member's own Scheduler cell reads only, as his
+     Management cell does; SC DAY beside it is still his. Ticked first by the admin, so the case that blanked his
+     signatures (unticking himself) is the one pressed. */
+  it('D1651: a member\'s own Scheduler cell reads only; a press is refused with its reason', async () => {
+    resyncPeopleBaseline()
+    const said: string[] = []; const t = HOOKS.toast
+    HOOKS.toast = (m: any) => { said.push(String(m)) }
+    try {
+      PEOPLE.bane.quals.sched = true
+      await act(async () => { setSession({ user: 'acus', role: 'main', pid: 'bane', name: 'us' }); setMe('bane'); notify() })
+      await click($('#qEdit'))
+      const cell = $('#qtbl td[data-q="bane|sched"]')
+      expect(cell, 'his Scheduler cell is drawn').toBeTruthy()
+      expect(cell.classList.contains('qro'), 'and reads only').toBe(true)
+      expect(cell.getAttribute('title'), 'saying whose it is').toBe('Only an admin can tick Scheduler')
+      await click(cell)
+      expect(!!PEOPLE.bane.quals.sched, 'a press changes nothing').toBe(true)
+      expect(said).toContain('Only an admin can tick Scheduler')
+      expect($('#qtbl td[data-q="bane|scDay"]').classList.contains('qro'), 'SC DAY stays his').toBe(false)
+      await click($('#qSave'))
+      await act(async () => { setSession({ user: 'a', role: 'admin' }); notify() })
+      await click($('#qEdit'))
+      expect($('#qtbl td[data-q="bane|sched"]').classList.contains('qro'), 'an admin ticks it').toBe(false)
+      await click($('#qtbl td[data-q="bane|sched"]'))
+      expect(!!PEOPLE.bane.quals.sched, 'and the tick lands').toBe(false)
+      await click($('#qtbl td[data-q="bane|sched"]'))
+      expect(!!PEOPLE.bane.quals.sched).toBe(true)
+      await click($('#qSave'))
+    } finally { HOOKS.toast = t }
+  })
+
   /* [ONE-DOOR] (owner D310, 27 Sep 26 — "one door as proposed, Quals loses archive") REPLACED "an admin in editing mode
      gets the archive ✕, and it archives": archive, restore and the archived man's rename live on Admin → Users now
      (ui/onedoor-users.test.tsx, leavewar/onedoor.test.ts); Quals keeps quals, CAT, flight and initials */
