@@ -30,10 +30,10 @@ const RULES = [
 ]
 /* on: write the fix into the app's own rule; off: take it back out. Returns how many rules matched each selector. */
 const FIX = ([rules, on]) => {
-  const found = {}
+  const found = {}, bySel = new Map(rules.map(x => [x.sel, x]))
   const walk = list => { for (const r of list) {
     if (r.cssRules && !r.selectorText) { walk(r.cssRules); continue }
-    const R = rules.find(x => x.sel === r.selectorText); if (!R) continue
+    const R = bySel.get(r.selectorText); if (!R) continue
     found[R.n] = (found[R.n] || 0) + 1
     if (on) { r.style.setProperty('font-family', 'inherit'); r.style.setProperty('font-size', R.size); r.style.setProperty('font-weight', R.weight); if (R.lh) r.style.setProperty('line-height', R.lh) }
     else { for (const p of ['font-family', 'font-size', 'font-weight', 'line-height']) r.style.removeProperty(p) }
