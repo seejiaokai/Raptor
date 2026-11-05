@@ -1,0 +1,9 @@
+bar Not swapped — OIL not answered
+remark-ish fields ["pn:5","dr:5.0.0.role","dr:5.0.0.str","dr:5.0.0.end","dr:5.0.0.rmks","dtn:5","gr:5.0.rmks","gr:5.1.rmks"]
+typing remark on dr:5.0.0.rmks
+bar after remark 1
+UNDO #sbUndo
+after undo: remark  bar still 1 ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+question again 1 Swapping Tally and Ranger | toast Undid: a change to the schedule
+after swap ["RANGE BRIEF: Tally","Hangar open day: Ranger"] toast Tally and Ranger swapped oil {"oil":{"2026-07-18":0.5},"grp":null}
+errors []

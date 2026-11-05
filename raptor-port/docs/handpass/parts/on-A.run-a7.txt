@@ -1,0 +1,7 @@
+filed imqoidhxrwp686c asked 1 oil {"oil":{"2026-07-18":0},"grp":null}
+fill g:5.0.+ row Ranger
+tally box {"x":1176,"y":827,"width":74,"height":15}
+question 0 bar 0
+toast Tally added to Range brief — not counted for OIL | toasts ["Input added","Tally added to Range brief — not counted for OIL"]
+row after Ranger + Tally oil {"oil":{"2026-07-18":0},"grp":null} undo changed false
+errors []

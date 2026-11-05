@@ -1,0 +1,6 @@
+before {"st":"[\"RANGE BRIEF: Ranger\",\"Hangar open day: Tally\"]","undo":"on|Undo — a change to the schedule","oil":"{\"2026-07-18\":0.5}"}
+tapped Ranger {"selected":["RangerIP"],"oktake":2}
+picture B3a-1-ranger-selected.png
+picture B3a-2-question.png
+RESULT B3a-question {"up":0,"lead":"","cancel":"","save":"","saveDisabled":null,"box":null,"saveBox":null,"nothing":true,"undoSame":true}
+ERRORS []

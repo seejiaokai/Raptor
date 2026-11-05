@@ -1,0 +1,27 @@
+D6 Warden at start: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"}]}
+D6 state after own-window answer: Range brief:{"2026-07-17":0.5} ; Gate duty:null ; Safety board:null
+D6 undo: {"undo":"on|Undo — a personal input","redo":"off|Redo"}
+D6 Saber: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 3 inputs need an OIL answer · Saber now"}]}
+D6 Warden: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 3 inputs need an OIL answer · Saber now"}]}
+D6 undo after switching person: {"undo":"on|Undo — a personal input","redo":"off|Redo"}
+D6 Fri cell (holiday on): {"cls":"ib-day k-ph","txt":"","badge":false,"bg":"rgb(18, 48, 31)"}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D6-holiday-on.png
+D6 undo presses: ["on|Undo — a personal input","on|Undo — a public holiday on 17 Jul","-> pressed holiday undo"]
+D6 state after undo of holiday: Range brief:null ; Gate duty:null ; Safety board:null
+D6 Fri cell (undone): {"cls":"ib-day","txt":"","badge":false,"bg":"rgb(20, 24, 29)"}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D6-holiday-undone.png
+D6 Saber: {"lit":false,"L":[]}
+D6 Warden: {"lit":false,"L":[]}
+D6 undo/redo after switching: {"undo":"on|Undo — a personal input","redo":"on|Redo — a public holiday on 17 Jul"}
+D6 Holidays list: Thu 1 Jan PH PH Tue 17 – Wed 18 Feb PH PH Sun 9 Aug PH PH Fri 25 Dec PH PH
+D6 after Redo #1: {"redo":["on|Redo — a public holiday on 17 Jul"],"state":"Range brief:null ; Gate duty:null ; Safety board:null","cell":{"cls":"ib-day k-ph","txt":"","badge":false,"bg":"rgb(18, 48, 31)"},"info":{"undo":"on|Undo — a public holiday on 17 Jul","redo":"on|Redo — a personal input"}}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D6-holiday-redone.png
+D6 list open?: 0
+D6 Saber: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"}]}
+D6 Warden: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"}]}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D6-warden-after-redo1.png
+D6 undo/redo after switching: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"on|Redo — a personal input"}
+D6 after Redo #2: {"state":"Range brief:{\"2026-07-17\":0.5} ; Gate duty:null ; Safety board:null","cell":{"cls":"ib-day k-ph","txt":"","badge":false,"bg":"rgb(18, 48, 31)"},"info":{"undo":"on|Undo — a personal input","redo":"off|Redo"}}
+D6 Saber: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 3 inputs need an OIL answer · Saber now"}]}
+D6 Warden: {"lit":true,"L":[{"unread":true,"text":"National DayFri 17 Jul 3 inputs need an OIL answer · Saber now"}]}
+D6 errors: []

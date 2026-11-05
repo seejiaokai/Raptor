@@ -1,0 +1,20 @@
+SBDAY null CURPAGE editsched
+board visible? false week visible true
+Q 1 Swapping Tally and Ranger | Don’t swap | Swap saveDisabled true
+ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] undoSame true input window open 0
+measure q {"x":500,"y":286,"w":440,"h":328,"inside":true,"onTop":true,"vw":1440,"vh":900}
+flash [true,true]
+bar Not swapped — OIL not answered | Answer OIL | OK
+measure bar {"x":527,"y":832,"w":387,"h":50,"inside":true,"onTop":true,"vw":1440,"vh":900}
+ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] oil same true undoSame true bells {"n":1,"ok":0,"id":"notifyBell","on":[false]} lines []
+toasts ["Input added","Schedule updated"]
+question back 0 1 Swapping Tally and Ranger swapDisabled true
+flash after swap [true,false]
+toast Tally and Ranger swapped
+ground ["RANGE BRIEF: Tally","Hangar open day: Ranger"] oil {"oil":{"2026-07-18":0.5},"grp":null}
+UNDO pressed
+after undo ["RANGE BRIEF: Ranger","Hangar open day: Tally"] back true true Undid: a personal input
+REDO pressed
+after redo ["RANGE BRIEF: Tally","Hangar open day: Ranger"]
+after reload ["RANGE BRIEF: Tally","Hangar open day: Ranger"] {"oil":{"2026-07-18":0.5},"grp":null}
+errors []

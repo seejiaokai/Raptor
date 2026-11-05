@@ -14,7 +14,7 @@ import { resyncSchedBaseline } from './state/sched-commit'
 import { storeBackend, HOOKS } from './engine/hooks'
 import { initStore as lwInitStore, lwHistInit } from './leavewar/state/store'
 import { installDemoWorld } from './leavewar/state/demoworld'
-import { wireLeaveWarSync } from './leavewar/sync'
+import { wireLeaveWarSync, installPostingClock } from './leavewar/sync'
 import { validate } from './engine/validate'
 import { bootStorage } from './storage/boot'
 import { BrowserBackend } from './storage/browser'
@@ -114,6 +114,8 @@ function bootBody(wb: Whiteboard, policy: BootPolicy): void {
   /* same order as before the seam: the boot sync's writes are the world the
      session STARTS in, and both history baselines are taken after it */
   wireLeaveWarSync()
+  /* the postings' midnight — the app wakes the posting pass just after each local midnight ([POSTOUT-RUN-NOTICE]) */
+  installPostingClock()
   /* AND AGAIN, BECAUSE THE WIRE IS WHAT TELLS THE ENGINE WHICH DAYS CAN EARN
      (owner, 22 Sep 26 — "could it be a real problem", of the speed check). It
      was, and it was not a speed problem. `wireLeaveWarSync` → `installAbsenceDoor`

@@ -1,0 +1,339 @@
+{
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "signBefore": {
+  "boxes": [
+   {
+    "key": "cur",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "sked",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "plan",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "appr",
+    "value": "",
+    "text": "— name —"
+   }
+  ],
+  "head": {
+   "ver": "ORIG",
+   "pend": "6 changes",
+   "signedLine": "SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch",
+   "toSign": "4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"
+  }
+ },
+ "c0": {
+  "a": "6 changes  [dstat: 6 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "b": "6 changes",
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "takeToast": "Drifter taken out of Range brief",
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Drifter · Range brief Saber 22/6 09:00 taken out"
+  ],
+  "b": "1 pending",
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "backToast": "Drifter added to Range brief",
+ "c2": {
+  "a": "8 changes  [dstat: 8 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "b": "8 changes",
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "signAfter": {
+  "boxes": [
+   {
+    "key": "cur",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "sked",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "plan",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "appr",
+    "value": "",
+    "text": "— name —"
+   }
+  ],
+  "head": {
+   "ver": "ORIG",
+   "pend": "8 changes",
+   "signedLine": "SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch",
+   "toSign": "4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"
+  }
+ },
+ "inputsA": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 600,
+  "people": [
+   "Hunter",
+   "Ranger",
+   "Drifter"
+  ],
+  "by": "stiff"
+ },
+ "signedAgain": true,
+ "inputsReload": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 600,
+  "people": [
+   "Hunter",
+   "Ranger",
+   "Drifter"
+  ],
+  "by": "stiff"
+ },
+ "c3": {
+  "a": "8 changes  [dstat: 8 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "b": "8 changes",
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "signReload": {
+  "boxes": [
+   {
+    "key": "cur",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "sked",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "plan",
+    "value": "",
+    "text": "— name —"
+   },
+   {
+    "key": "appr",
+    "value": "",
+    "text": "— name —"
+   }
+  ],
+  "head": {
+   "ver": "ORIG",
+   "pend": "8 changes",
+   "signedLine": "SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch",
+   "toSign": "4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"
+  }
+ },
+ "r2": {
+  "addTally": "Tally added to Range brief",
+  "tallyIn_pucks": [
+   {
+    "who": "Drifter",
+    "cls": "puck sm",
+    "tag": "",
+    "html": "<span class=\"nm\">Drifter</span><span class=\"role q-a\">A</span>"
+   },
+   {
+    "who": "Hunter",
+    "cls": "puck sm",
+    "tag": "",
+    "html": "<span class=\"nm\">Hunter</span><span class=\"role q-ins\">IP</span>"
+   },
+   {
+    "who": "Ranger",
+    "cls": "puck sm",
+    "tag": "",
+    "html": "<span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span>"
+   },
+   {
+    "who": "Tally",
+    "cls": "puck r sm san",
+    "tag": "",
+    "html": "<span class=\"nm\">Tally</span><span class=\"role q-ocu\">O</span>"
+   }
+  ],
+  "c1": {
+   "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "e": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Tally · Range brief Saber 22/6 09:00 added"
+   ],
+   "b": "1 pending",
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true
+  },
+  "tallyOff": "Tally taken out of Range brief",
+  "c2": {
+   "a": "10 changes  [dstat: 10 changes i Unpublish]",
+   "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+   "tabLabel": "To go out · AL1 0",
+   "e": "Waiting to go out as AL1 · 0 changes",
+   "lines": [],
+   "b": "10 changes",
+   "n": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "agree": true
+  },
+  "hunterOff": "Hunter taken out of Range brief",
+  "c3": {
+   "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+   "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+   "tabLabel": "To go out · AL1 1",
+   "e": "Waiting to go out as AL1 · 1 change",
+   "lines": [
+    "Hunter · Range brief Saber 22/6 09:00 taken out"
+   ],
+   "b": "1 pending",
+   "n": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "agree": true
+  },
+  "hunterBack": "Hunter added to Range brief",
+  "c4": {
+   "a": "12 changes  [dstat: 12 changes i Unpublish]",
+   "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+   "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+   "tabLabel": "To go out · AL1 0",
+   "e": "Waiting to go out as AL1 · 0 changes",
+   "lines": [],
+   "b": "12 changes",
+   "n": [
+    0,
+    0,
+    0,
+    0,
+    0
+   ],
+   "agree": true
+  }
+ },
+ "inputsEnd": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 600,
+  "people": [
+   "Ranger",
+   "Drifter",
+   "Hunter"
+  ],
+  "by": "stiff"
+ }
+}

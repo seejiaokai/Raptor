@@ -1,0 +1,3 @@
+adds [{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl "},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl "},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl "},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl "},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"},{"tag":"SPAN","cls":"addz","txt":"+ add","p":"ppl one"}]
+sections ["4.prog","4.waves","4.duty","4.sims","4.ground","4.inputs","4.avail","4.unav"]
+ERRORS []

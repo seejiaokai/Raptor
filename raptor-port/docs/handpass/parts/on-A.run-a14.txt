@@ -1,0 +1,12 @@
+bar up 1
+bar alone {"oilbar-answer":{"box":[752,843,93,28],"hitSelf":true,"hit":"secdef-btn yes|oilbar-answer","zIndex":"440"},"oilbar-ok":{"box":[854,843,44,28],"hitSelf":true,"hit":"secdef-btn|oilbar-ok","zIndex":"440"},"oilbar":{"box":[527,832,387,50],"hitSelf":true,"hit":"secdef-msg|oilbar-text","zIndex":"440"}}
+topbar buttons ["undoBtn|Undo — a change to the schedule|↶ Undo","redoBtn|Redo|↷ Redo","histBtn|Changes — every change this week, and who made it|","fastSync|Toggle 1-second sync (for publishing / meetings)|Sync · slow","notifyBell|Notifications|","insightBtn|Week insights|Insights","logout||Logout","roleBadge|Switch to the member view|Saber · Admi","||+ New"]
+clock found 1
+windows ["lw-viewing 271,3325,149,28 z=auto","bid-window 519,3376,139,28 z=auto"]
+with changes window {"oilbar-answer":{"box":[752,843,93,28],"hitSelf":true,"hit":"secdef-btn yes|oilbar-answer","zIndex":"440"},"oilbar-ok":{"box":[854,843,44,28],"hitSelf":true,"hit":"secdef-btn|oilbar-ok","zIndex":"440"},"oilbar":{"box":[527,832,387,50],"hitSelf":true,"hit":"secdef-msg|oilbar-text","zIndex":"440"}}
+bar {"x":526.609375,"y":832,"width":386.78125,"height":50}
+overlap {"oilbar-answer":{"box":[752,843,93,28],"hitSelf":true,"hit":"secdef-btn yes|oilbar-answer","zIndex":"440"},"oilbar-ok":{"box":[854,843,44,28],"hitSelf":true,"hit":"secdef-btn|oilbar-ok","zIndex":"440"},"oilbar":{"box":[527,832,387,50],"hitSelf":true,"hit":"secdef-msg|oilbar-text","zIndex":"440"}}
+after Answer OIL press: question 1 bar 0
+after OK press: bar 0
+input window opened 0 []
+errors []

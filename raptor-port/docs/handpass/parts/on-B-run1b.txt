@@ -1,0 +1,11 @@
+before ["RANGE BRIEF: Ranger","Hangar open day: Tally"] {"2026-07-18":0.5} on|Undo — a change to the schedule
+from/to {"x":65,"y":419.78125} {"x":65,"y":330.28125}
+picture B1-1-question-568.png
+RESULT B1-question {"up":1,"lead":"Swapping Tally and Ranger","cancel":"Don’t swap","save":"Swap","saveDisabled":true,"nothingMoved":true,"undoSame":true,"inputWin":0,"box":{"x":0,"y":0,"w":390,"h":568,"right":390,"bottom":568,"inside":true,"onTop":true},"boxSave":{"x":295,"y":409,"w":57,"h":28,"right":352,"bottom":437,"inside":true,"onTop":true},"boxCancel":{"x":197,"y":409,"w":90,"h":28,"right":287,"bottom":437,"inside":true,"onTop":true},"scrollable":{"sh":568,"ch":568}}
+picture B1-2-bar-568.png
+RESULT B1-bar {"lit":[true,true],"text":"Not swapped — OIL not answered","answer":"Answer OIL","ok":"OK","box":{"x":98,"y":456,"w":195,"h":94,"right":293,"bottom":550,"inside":true,"onTop":true},"boxAnswer":{"x":122,"y":511,"w":93,"h":28,"right":214,"bottom":539,"inside":true,"onTop":true},"boxOk":{"x":224,"y":511,"w":44,"h":28,"right":268,"bottom":539,"inside":true,"onTop":true},"sideBySide":{"ay":511,"oy":511,"ax":122,"ox":224},"nothingMoved":true,"oilSame":true,"undoSame":true}
+picture B1-3-yes-568.png
+picture B1-4-after-568.png
+RESULT B1-answer {"question":1,"bar":0,"lead":"Swapping Tally and Ranger","saveLive":true,"boxSave":{"x":295,"y":409,"w":57,"h":28,"right":352,"bottom":437,"inside":true,"onTop":true},"after":["RANGE BRIEF: Tally","Hangar open day: Ranger"],"oil":"{\"2026-07-18\":0.5}","toast":"Tally and Ranger swapped","leftover":[0,0]}
+RESULT B1-undo {"ground":["RANGE BRIEF: Ranger","Hangar open day: Tally"],"oil":"{\"2026-07-18\":0.5}","same":true}
+ERRORS []

@@ -1,0 +1,26 @@
+D8 list: 1
+D8 count: 4 TO ANSWER
+D8 input window open: 1
+D8 list still there behind: 1
+D8 pop title: Gate duty
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D8-input-window-over-list.png
+D8 oilconf: 1
+D8 state: Range brief:null ; Gate duty:{"2026-07-17":1} ; Safety board:null
+D8 list: 1
+D8 count: 3 TO ANSWER
+D8 cards: ["All day NomadOD Overseas duty — exercise","09:00–12:00 Ranger, TallyTRAINING Range ","14:00–15:00 SidewinderMEETING Safety boa"]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D8-list-three.png
+D8 count: 1 OF 3 ANSWERED
+D8 state after Save: Range brief:null ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0.5}
+D8 Saber: {"lit":true,"L":["[unread] National DayFri 17 Jul 2 inputs need an OIL answer · Saber now"]}
+D8 Warden: {"lit":true,"L":["[unread] National DayFri 17 Jul 2 inputs need an OIL answer · Saber now"]}
+D8 errors: []
+D9 count with pick: 1 OF 4 ANSWERED
+D9 input window open: 1
+D9 pop buttons: ["pp-several:Several people","inTypeHelp:?",":‹",":›",":13",":1",":2",":3",":4",":5",":6",":7",":8",":9",":10",":11",":12",":13",":14",":15",":16",":17",":18",":19",":20",":21",":22",":23",":24",":25",":26",":27",":28",":29",":30",":31","oil-answer:Answer…","inpEditDel:Delete","inpEditCancel:Cancel","inpEditSave:Save"]
+D9 delete found: 0
+D9 toast: Input added
+D9 pop still: 1
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D9-after-delete-prompt.png
+D9 state: Range brief:null ; Gate duty:null ; Safety board:null
+D9 errors so far: []

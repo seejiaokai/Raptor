@@ -1,0 +1,10 @@
+Warden admin sign-in 1
+list up 1
+picture B5-1-list-saber.png
+picture B5-2-warden-bell-lit.png
+picture B5-3-bell-open.png
+picture B5-4-list-over-page.png
+picture B5-5-yes-picked.png
+picture B5-6-bell-after.png
+RESULT B5 {"listCount":"4 TO ANSWER","laterWritten":[null,null,null],"saberBellLit":1,"wardenBellLit":1,"bellBtn":{"x":342,"y":8,"w":34,"h":32,"right":376,"bottom":40,"inside":true,"onTop":true},"listUp":1,"line":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now","lineCount":1,"lineBox":{"x":13,"y":51,"w":364,"h":52,"right":377,"bottom":103,"inside":true,"onTop":true},"bellBox":{"x":8,"y":46,"w":374,"h":98,"right":382,"bottom":144,"inside":true,"onTop":true},"listOpen":1,"bellClosed":true,"leadAbsent":true,"winBox":{"x":12,"y":419,"w":366,"h":413,"right":378,"bottom":832,"inside":true,"onTop":true},"count0":"4 TO ANSWER","title":"OIL — Fri 17 Jul Public holiday · National Day","count1":"1 OF 4 ANSWERED","saveLive":true,"closed":true,"written":[{"2026-07-17":0.5},null,null],"bellLitAfter":0,"line2":"National DayFri 17 Jul 3 inputs need an OIL answer · Saber now","undo":"on|Undo — a personal input"}
+ERRORS []

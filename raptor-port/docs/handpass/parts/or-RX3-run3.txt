@@ -1,0 +1,24 @@
+filed {"iid":"imqoidgg0obydjc","type":"Training","title":"Range drill","date":"Jul 15","s":1020,"e":1080,"people":["Ranger"]}
+PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+COUNTS 0 chip: 6 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+Wed flying seats with a man: [{"slot":"2.0.0.0.p","who":"Trident"},{"slot":"2.0.0.0.w","who":"Relay"},{"slot":"2.0.0.1.p","who":"Gambit"},{"slot":"2.0.0.1.w","who":"Hex"},{"slot":"2.0.1.0.p","who":"Torch"},{"slot":"2.0.1.0.w","who":"Cutter"},{"slot":"2.0.1.1.p","who":"Kraken"},{"slot":"2.0.1.1.w","who":"Otter"},{"slot":"2.1.0.0.p","who":"Trident"},{"slot":"2.1.0.0.w","who":"Relay"},{"slot":"2.1.0.1.p","who":"Bolt"},{"slot":"2.1.0.1.w","who":"Wisp"},{"slot":"2.1.1.0.p","who":"Zenith"},{"slot":"2.1.1.0.w","who":"Fable"},{"slot":"2.1.1.1.p","who":"Nomad"},{"slot":"2.1.1.1.w","who":"Pixel"}]
+try seat 2.0.0.0.p Trident src y 768 tgt y 2021
+  toasts: Relay — 1 person is double turning: Relay | input now: ["Trident"]
+SWAP RESULT {"seat":{"slot":"2.0.0.0.p","who":"Trident"},"toast":"Relay — 1 person is double turning: Relay","now":["Trident"]} | input: {"type":"Training","title":"Range drill","date":"Jul 15","to":null,"s":1020,"e":1080,"people":["Trident"],"by":"stiff"}
+saved rx3-3-1-week-after-swap
+COUNTS after swap chip: 2 pending | board: 2 pending | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 2 changes · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 2 changes [tab: To go out · AL1 2] | lines: ["Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP","Trident · Range drill Saber 22/6 09:00 Ranger → Trident"] => [2,2,2,2,2] AGREE
+saved rx3-3-2-to-go-out
+saved rx3-3-3-tap-line0
+TAP line 0 "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP" -> toast="" flash=[{"cls":"seat chgflash","puck":"","text":"Ranger IP","row":"","fill":null}] lit=[]
+saved rx3-3-3-tap-line1
+TAP line 1 "Trident · Range drill Saber 22/6 09:00 Ranger → Trident" -> toast="That seat is empty now" flash=[{"cls":"ppl one chgflash","puck":"","text":"Trident IP + ADD","row":"RANGE DRILL TRAINING 17:00 18:00 Trident IP + ADD till 15 Ju","fill":"g:2.2.+"}] lit=[]
+Ranger now in flying seat(s): ["2.0.0.0.p"] | training: {"type":"Training","title":"Range drill","date":"Jul 15","to":null,"s":1020,"e":1080,"people":["Trident"],"by":"stiff"}
+PUBLISH AMENDMENT {"ok":true,"label":"Publish AL1","version":"AL1","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+COUNTS after amendment chip: 13 changes | board: undefined | Amendments box: AMENDMENTS No pending changes AL1 Wed · 2 items · 1 input change · appr Cinch | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL2 · 0 changes [tab: To go out · AL2 0] | lines: [] => [0,0,0,0,0] AGREE
+VIEW-ONLY SCHED Wed: {"ranger":["TAMS CS MSN B TO LD FCP / RCP RMKS VL ACM 08:15 10:35 12:00 Ranger IP TT Relay IW 1B: ACM-4 TPOD 2 TKS C Gambit C Hex C 2A: AC"],"training":"E RMKS MAINT CONF @ ENG WING 14:00 16:30 Ace A NAV-SYS TRIAL PREP 14:00 Vapor D RANGE DRILL TRAINING 17:00 18:00 Trident IP till 15 Jul UNAVAILABLE NAME START END PEOPLE RMKS OL all day Cobra IP Overseas leave —"}
+saved rx3-3-4-view-only-top
+VIEW ground rows: ["MAINT CONF @ ENG WING 14:00 16:30 Ace A","NAV-SYS TRIAL PREP 14:00 Vapor D","RANGE DRILL TRAINING 17:00 18:00 Trident IP till 15 Jul"]
+VIEW Ranger places: [" "]
+saved rx3-3-5-view-only-ranger
+saved rx3-3-5b-view-only-training
+ERRORS none

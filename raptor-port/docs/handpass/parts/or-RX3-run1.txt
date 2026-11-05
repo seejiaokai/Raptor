@@ -1,0 +1,48 @@
+filed {"iid":"imqoidgg0adx6nd","type":"Meeting","title":"Range brief","date":"Jul 15","s":540,"e":600,"people":["Drifter","Hunter","Ranger"]}
+PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+saved rx3-1-0-board-after-publish
+SIGN-OFFS after publish {"boxes":[{"key":"cur","value":"","text":"— name —"},{"key":"sked","value":"","text":"— name —"},{"key":"plan","value":"","text":"— name —"},{"key":"appr","value":"","text":"— name —"}],"head":{"ver":"ORIG","pend":"6 changes","signedLine":"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch","toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"}}
+COUNTS 0 (published, nothing changed) chip: 6 changes | board: 6 changes | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-1-1-published-row
+Drifter off toast: Drifter taken out of Range brief | people: ["Hunter","Ranger"]
+COUNTS 1 (Drifter off) chip: 1 pending | board: 1 pending | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Drifter · Range brief Saber 22/6 09:00 taken out"] => [1,1,1,1,1] AGREE
+saved rx3-1-2-drifter-off-togoout
+saved rx3-1-2b-row-drifter-off
+   (drag attempt 1 gave no note - retrying like a person would)
+   (drag attempt 2 gave no note - retrying like a person would)
+Drifter back toast: Drifter added to Range brief | people: ["Hunter","Ranger","Drifter"]
+COUNTS 2 (Drifter back) chip: 8 changes | board: 8 changes | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-1-3-drifter-back-window
+saved rx3-1-3b-row-drifter-back
+saved rx3-1-3c-week-head
+saved rx3-1-3d-week-top
+saved rx3-1-4-board-sign-offs-after
+SIGN-OFFS after back {"boxes":[{"key":"cur","value":"","text":"— name —"},{"key":"sked","value":"","text":"— name —"},{"key":"plan","value":"","text":"— name —"},{"key":"appr","value":"","text":"— name —"}],"head":{"ver":"ORIG","pend":"8 changes","signedLine":"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch","toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"}}
+INPUTS {"type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":540,"e":600,"people":["Hunter","Ranger","Drifter"],"by":"stiff"}
+RELOADED, signed in again: true
+COUNTS 3 (after reload) chip: 8 changes | board: 8 changes | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-1-5-after-reload
+saved rx3-1-5b-week-after-reload
+saved rx3-1-6-board-sign-offs-after-reload
+SIGN-OFFS after reload {"boxes":[{"key":"cur","value":"","text":"— name —"},{"key":"sked","value":"","text":"— name —"},{"key":"plan","value":"","text":"— name —"},{"key":"appr","value":"","text":"— name —"}],"head":{"ver":"ORIG","pend":"8 changes","signedLine":"SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch","toSign":"4 to sign · CUR CK, SKED CK, PLANNED BY, APPROVED BY"}}
+RX3-2 Tally added toast: Tally added to Range brief | people: ["Hunter","Ranger","Drifter","Tally"]
+  pucks tallyIn [{"who":"Drifter","cls":"puck sm","tag":"","html":"<span class=\"nm\">Drifter</span><span class=\"role q-a\">A</span>"},{"who":"Hunter","cls":"puck sm","tag":"","html":"<span class=\"nm\">Hunter</span><span class=\"role q-ins\">IP</span>"},{"who":"Ranger","cls":"puck sm","tag":"","html":"<span class=\"nm\">Ranger</span><span class=\"role q-ins\">IP</span>"},{"who":"Tally","cls":"puck r sm san","tag":"","html":"<span class=\"nm\">Tally</span><span class=\"role q-ocu\">O</span>"}]
+saved rx3-2-1-tally-added-row
+COUNTS tally in chip: 1 pending | board: 1 pending | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Tally · Range brief Saber 22/6 09:00 added"] => [1,1,1,1,1] AGREE
+saved rx3-2-1b-tally-added-window
+Tally off toast: Tally taken out of Range brief | people: ["Hunter","Ranger","Drifter"]
+COUNTS tally out chip: 10 changes | board: 10 changes | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-2-2-tally-off-window
+saved rx3-2-2b-tally-off-row
+Hunter off toast: Hunter taken out of Range brief | people: ["Ranger","Drifter"]
+COUNTS hunter out chip: 1 pending | board: 1 pending | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Hunter · Range brief Saber 22/6 09:00 taken out"] => [1,1,1,1,1] AGREE
+saved rx3-2-3-hunter-off-window
+saved rx3-2-3b-hunter-off-row
+   (drag attempt 1 gave no note - retrying like a person would)
+   (drag attempt 2 gave no note - retrying like a person would)
+Hunter back toast: Hunter added to Range brief | people: ["Ranger","Drifter","Hunter"]
+COUNTS hunter back chip: 12 changes | board: 12 changes | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-2-4-hunter-back-window
+saved rx3-2-4b-hunter-back-row
+INPUTS end {"type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":540,"e":600,"people":["Ranger","Drifter","Hunter"],"by":"stiff"}
+ERRORS none

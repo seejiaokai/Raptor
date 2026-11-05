@@ -1,0 +1,7 @@
+bar up 1
+show toggle 1
+personal inputs section ["SPAN.secgrip:⠿","SPAN.pl-hint:times and remarks type in plac","DIV.pl-inpnote:A removed input flags nothing ","SPAN.h-nm:Name","SPAN.h-st:Start","SPAN.h-en:End","SPAN.h-pp:People","SPAN.h-rk:Rmks","BUTTON.ntx inpedit:Range brief","SPAN.nm-kind:Training","SPAN.t t-s txed inpt:09:00","SPAN.t t-e txed inpt:12:00","SPAN.nm:Ranger","SPAN.role q-ins:IP","BUTTON.accb undo:Undo"]
+line count 1
+input window 1 bar 1
+bar vs window {"oilbar-answer":{"box":[752,843],"hitSelf":false},"oilbar-ok":{"box":[854,843],"hitSelf":false},"pop":[0,0,1440,900]}
+errors []

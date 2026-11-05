@@ -1,0 +1,13 @@
+pub [{"who":"Drifter","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2.x0 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x1 | data-drag=1","cls":"seat","tagEls":""}]
+Drifter taken out of Range brief
+drifterOff [{"who":"Hunter","attrs":"data-slot=g:2.2 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""}]
+Drifter added to Range brief
+drifterBack [{"who":"Drifter","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2.x0 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x1 | data-drag=1","cls":"seat","tagEls":""}]
+Tally added to Range brief
+tallyIn-noReload [{"who":"Drifter","attrs":"data-slot=g:2.2.x1 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Tally","attrs":"data-slot=g:2.2.x2 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""}]
+Tally taken out of Range brief
+tallyOut [{"who":"Drifter","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2.x0 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x1 | data-drag=1","cls":"seat","tagEls":""}]
+afterReload [{"who":"Drifter","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2.x0 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x1 | data-drag=1","cls":"seat","tagEls":""}]
+Tally added to Range brief
+tallyIn-afterReload [{"who":"Drifter","attrs":"data-slot=g:2.2.x1 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Hunter","attrs":"data-slot=g:2.2 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Ranger","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""},{"who":"Tally","attrs":"data-slot=g:2.2.x2 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","tagEls":""}]
+ERRORS none

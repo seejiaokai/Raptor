@@ -1,0 +1,30 @@
+D2 D1: {"list":1,"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"4 TO ANSWER","saveDisabled":true,"m":{"x":984,"y":96,"w":440,"h":443,"inside":true,"onTop":true}}
+D2 card ids: ["imqoidgiugohifj","imqoidjgo1jk75o","imqoidi37kbfubj","imqoidksbaai1d7"]
+D2 fri ids: []
+D2 OD id: null
+D2 after picks: {"cnt":"3 OF 4 ANSWERED","noStyle":{"cls":"upconf-seg odl-no","color":"rgb(241, 244, 247)","bg":"rgb(57, 66, 77)","pressed":"true"},"yesStyle":{"cls":"upconf-seg on-keep","color":"rgb(5, 42, 52)","bg":"rgb(59, 198, 232)","pressed":"true"},"noOther":{"cls":"upconf-seg","color":"rgb(182, 192, 203)","bg":"rgb(11, 13, 16)"},"saveDisabled":false}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-picked.png
+D2 oil before save: Range brief:null ; Gate duty:null ; Safety board:null ; null:GONE
+D2 undo before save: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"off|Redo"}
+D2 list after save: 0
+D2 oil after save: Range brief:{"2026-07-17":0.5} ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0} ; null:GONE
+D2 undo after save: {"undo":"on|Undo — 3 inputs","redo":"off|Redo"}
+D2 Saber bell lines: [{"unread":true,"text":"National DayFri 17 Jul 1 input needs an OIL answer · Saber now"}]
+D2 Saber bell lit: true
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-saber-bell.png
+D2 Fri cards: [{"t":"All day GritATT C Medically down till 17 Jul","oiltag":false},{"t":"OIL? All day NomadOD Overseas duty — exercise, off island","oiltag":true},{"t":"All day TridentDUTY Gate duty By Saber","oiltag":false},{"t":"09:00–12:00 Ranger, TallyTRAINING Range brief By Saber","oiltag":false},{"t":"14:00–15:00 SidewinderMEETING Safety board By Saber","oiltag":false}]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-fri-cards.png
+D2 OIL button: 1
+D2 OIL Earn pucks: [{"who":"Bolt","item":"r:rs130720264x6","on":true,"t":"Bolt FO"},{"who":"Ridge","item":"r:rs130720264x7","on":true,"t":"Ridge FO"},{"who":"Wildcard","item":"r:rs130720264x4","on":true,"t":"Wildcard HO"},{"who":"Anvil","item":"r:rs130720264x4","on":true,"t":"Anvil HO"},{"who":"Saber","item":"r:rs130720264x8","on":true,"t":"Saber HO"},{"who":"Ranger","item":"i:imqoidi37kbfubj","on":true,"t":"Ranger HO"},{"who":"Tally","item":"i:imqoidi37kbfubj","on":true,"t":"Tally HO"},{"who":"Sidewinder","item":"i:imqoidksbaai1d7","on":false,"t":"Sidewinder —"},{"who":"Trident","item":"i:imqoidjgo1jk75o","on":true,"t":"Trident FO"},{"who":"Sidewinder","item":"i:imqoidksbaai1d7","on":false,"t":"Sidewinder —"},{"who":"Trident","item":"i:imqoidjgo1jk75o","on":true,"t":"Trident FO"},{"who":"Ranger","item":"i:imqoidi37kbfubj","on":true,"t":"Ranger HO"},{"who":"Tally","item":"i:imqoidi37kbfubj","on":true,"t":"Tally HO"},{"who":"Nomad","item":"i:imqoidgiugohifj","on":false,"t":"Nomad —"}]
+D2 OIL Earn items: ["SODB","SQN PT","SDO","Bolt FO","SXO","Ridge FO","SIMS (EXT SQN)","EP-6","Wildcard HO","Anvil HO","GROUND SCHOOL - EW","Saber HO","Ranger HO","Tally HO","AIRCREW ADMIN","Sidewinder —","Trident FO","Sidewinder —","Trident FO","Ranger HO","Tally HO","Nomad —"]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-oil-earn-fri.png
+D2 after Undo: Range brief:null ; Gate duty:null ; Safety board:null ; null:GONE
+D2 list after Undo: 0
+D2 undo info: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"on|Redo — 3 inputs"}
+D2 holidays: null
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-after-undo.png
+D2 after Redo: Range brief:{"2026-07-17":0.5} ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0} ; null:GONE
+D2 undo info: {"undo":"on|Undo — 3 inputs","redo":"off|Redo"}
+D2 list after Redo: 0
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D2-after-redo.png
+D2 errors: []

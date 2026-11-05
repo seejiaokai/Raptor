@@ -1,0 +1,204 @@
+{
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "inputDesk": {
+  "type": "Training",
+  "title": "Range drill",
+  "date": "Jul 15",
+  "to": null,
+  "s": 1020,
+  "e": 1080,
+  "people": [
+   "Trident"
+  ],
+  "by": "stiff"
+ },
+ "cDesk": {
+  "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 2",
+  "e": "Waiting to go out as AL1 · 2 changes",
+  "lines": [
+   "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "Trident · Range drill Saber 22/6 09:00 Ranger → Trident"
+  ],
+  "n": [
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "agree": true
+ },
+ "chips": [
+  {
+   "i": 0,
+   "head": "Monday Jul 13 · Today Templates Live wor",
+   "chip": "",
+   "vis": false
+  },
+  {
+   "i": 1,
+   "head": "Tuesday Jul 14 Templates Live working co",
+   "chip": "",
+   "vis": false
+  },
+  {
+   "i": 2,
+   "head": "Wednesday Jul 15 Templates Live working ",
+   "chip": "2 pending",
+   "vis": true
+  },
+  {
+   "i": 3,
+   "head": "Thursday Jul 16 Templates Live working c",
+   "chip": "",
+   "vis": false
+  },
+  {
+   "i": 4,
+   "head": "Friday Jul 17 Templates Live working cop",
+   "chip": "",
+   "vis": false
+  },
+  {
+   "i": 5,
+   "head": "Saturday Jul 18 Templates Live working c",
+   "chip": "",
+   "vis": false
+  },
+  {
+   "i": 6,
+   "head": "Sunday Jul 19 Templates Live working cop",
+   "chip": "",
+   "vis": false
+  }
+ ],
+ "chipText": "2 pending",
+ "win": {
+  "title": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabs": [
+   "New to you 0",
+   "All changes 8",
+   "To go out · AL1 2 [on]"
+  ],
+  "lines": [
+   "pl-item :: Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "pl-item :: Trident · Range drill Saber 22/6 09:00 Ranger → Trident"
+  ]
+ },
+ "togo": {
+  "head": "Waiting to go out as AL1 · 2 changes",
+  "lines": [
+   "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "Trident · Range drill Saber 22/6 09:00 Ranger → Trident"
+  ]
+ },
+ "boxes": {
+  "viewport": {
+   "vw": 390,
+   "vh": 844
+  },
+  "window": {
+   "x": 12,
+   "y": 309,
+   "w": 366,
+   "h": 523,
+   "right": 378,
+   "bottom": 832
+  },
+  "items": [
+   {
+    "text": "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+    "box": {
+     "x": 21,
+     "y": 492,
+     "w": 348,
+     "h": 47,
+     "right": 369,
+     "bottom": 539
+    },
+    "scrollW": 348,
+    "clientW": 348,
+    "inside": true,
+    "textCut": false
+   },
+   {
+    "text": "Trident · Range drill Saber 22/6 09:00 Ranger → Trident",
+    "box": {
+     "x": 21,
+     "y": 539,
+     "w": 348,
+     "h": 48,
+     "right": 369,
+     "bottom": 587
+    },
+    "scrollW": 348,
+    "clientW": 348,
+    "inside": true,
+    "textCut": false
+   }
+  ],
+  "clippedChildren": [],
+  "pageScrollW": 390
+ },
+ "taps": [
+  {
+   "txt": "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "toast": "",
+   "toastNow": "",
+   "flash": [
+    {
+     "cls": "seat chgflash",
+     "puck": "",
+     "text": "Ranger IP",
+     "row": "",
+     "fill": null
+    }
+   ]
+  },
+  {
+   "txt": "Trident · Range drill Saber 22/6 09:00 Ranger → Trident",
+   "toast": "That seat is empty now",
+   "toastNow": "That seat is empty now",
+   "flash": [
+    {
+     "cls": "ppl one chgflash",
+     "puck": "",
+     "text": "Trident IP + ADD",
+     "row": "RANGE DRILL TRAINING 17:00 18:00 Trident IP + ADD till 15 Ju",
+     "fill": "g:2.2.+"
+    }
+   ]
+  }
+ ],
+ "showBar": []
+}

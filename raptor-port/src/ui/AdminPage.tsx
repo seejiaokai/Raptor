@@ -220,7 +220,9 @@ export function AdminPage() {
   const ringingSeq = ring && ring.on ? ring.seq : 0
   useEffect(() => {
     if (!ringingSeq) return
-    const t = setTimeout(() => setRing(r => (r && r.seq === ringingSeq ? { ...r, on: false } : r)), RING_MS)
+    /* (cleared whole, not left switched off: a Users list drawn again under this page — the member view switched and back —
+       would take a kept tap as new and open the fold again; the fix round's read, 5) */
+    const t = setTimeout(() => setRing(r => (r && r.seq === ringingSeq ? null : r)), RING_MS)
     return () => clearTimeout(t)
   }, [ringingSeq])
   const waiting = admin ? waitingCount() : 0

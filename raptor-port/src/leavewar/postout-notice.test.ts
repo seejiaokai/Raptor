@@ -30,7 +30,7 @@ import { openNotice } from '../ui/topstate'
 import { getState, initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
-import { postOut, runPoOutcomes, undoPostOut, wireLeaveWarSync } from './sync'
+import { postOut, runPoOutcomes, undoPostOut, wireLeaveWarSync, installPostingClock } from './sync'
 
 const mem: Record<string, string> = {}
 let PEOPLE0 = ''
@@ -191,7 +191,7 @@ describe('midnight with the app left open and untouched (the walk’s C5 — D15
     vi.useFakeTimers({ toFake: ['Date', 'setTimeout', 'clearTimeout'] })
     try {
       vi.setSystemTime(new Date(2026, 6, 19, 23, 59, 0))
-      wireLeaveWarSync()                                  // the clock armed for this midnight
+      const off = installPostingClock()                   // the clock armed for this midnight (the app's boot starts it)
       expect(postOut('bane', PO, 'sans')).toBe(true)
       expect(P('bane').sanBy, 'not before its date').toBeFalsy()
       vi.advanceTimersByTime(30_000)
@@ -199,6 +199,7 @@ describe('midnight with the app left open and untouched (the walk’s C5 — D15
       vi.advanceTimersByTime(60_000)                      // past 00:00:01 on Mon 20 Jul
       expect(P('bane').sanBy, 'run by itself').toBe('po')
       expect(poLines('stiff')).toHaveLength(1)
+      off()
     } finally { vi.useFakeTimers({ toFake: ['Date'] }) }
   })
 })

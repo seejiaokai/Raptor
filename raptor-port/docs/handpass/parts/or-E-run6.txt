@@ -1,0 +1,51 @@
+E8 Saber (no notices) bell {"id":"notifyBell","lit":false,"open":"false"}
+saved e8-01-nothing-new-full
+saved e8-01-nothing-new
+E8 Saber tap {"box":{"x":8,"y":46,"w":374,"h":62},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-empty","scrolls":false,"markAll":null,"empty":"Nothing new","n":0,"lines":[]} toast: 
+saved e8-02-ranger-nothing-new-full
+saved e8-02-ranger-nothing-new
+E8 Ranger tap (no notices, no question) {"box":{"x":8,"y":46,"w":374,"h":62},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-empty","scrolls":false,"markAll":null,"empty":"Nothing new","n":0,"lines":[]} oil sheet: 0
+filed Wed brief [] Input added
+E9 Wed brief {"iid":"imqoie8havrtew1","date":"Jul 15","s":600,"e":660,"type":"Training","people":["Ranger"],"cx":false,"cxr":"","by":"bane","ttl":"Wed brief","rmk":""}
+E9 re-time 1 ["11:00","12:00"] [660,720]
+E9 re-time 2 ["12:00","13:00"] [720,780]
+E9 re-time 3 ["13:00","14:00"] [780,840]
+E9 re-time 4 ["14:00","15:00"] [840,900]
+E9 re-time 5 ["15:00","16:00"] [900,960]
+E9 re-time 6 ["16:00","17:00"] [960,1020]
+E9 re-time 7 ["08:00","09:00"] [480,540]
+E9 re-time 8 ["07:00","08:00"] [420,480]
+E9 re-time 9 ["06:00","07:00"] [360,420]
+E9 notices stored for Ranger 9 | Saber bell {"id":"notifyBell","lit":false,"open":"false"}
+E9 Ranger bell {"id":"notifyBell","lit":true,"open":"false"}
+saved e9-01-390x844-full
+saved e9-01-390x844
+E9 list 390x844 {"box":{"x":8,"y":46,"w":374,"h":512},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-line unread","scrolls":false,"markAll":{"x":283,"y":528,"bottom":550,"visible":true},"empty":null,"n":9,"lines":["[unread] Wed brief | Wed 15 Jul | Now 06:00–07:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 07:00–08:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 08:00–09:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 16:00–17:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 15:00–16:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 14:00–15:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 13:00–14:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 12:00–13:00 · Saber | now | bold 600 h52 op 1","[unread] Wed brief | Wed 15 Jul | Now 11:00–12:00 · Saber | now | bold 600 h52 op 1"]}
+E9 390x844 {"vw":390,"vh":844,"box":{"x":8,"y":46,"w":374,"h":512},"bottomEdge":558,"inView":true,"topClearOfBar":true,"bell":{"bellBottom":40,"bellTop":8},"lines":9,"scroll":{"scroller":null,"sh":null,"ch":null,"listOverflowY":"auto","listSH":510,"listCH":510},"page":{"y":0,"docH":844,"vh":844},"markAll":{"top":528,"bottom":550,"left":283,"right":370,"inScreen":true,"hit":true},"cut":0,"outside":0}
+E9 viewport now 390 568 bell state {"id":"notifyBell","lit":true,"open":"false"}
+E9 e9-02-390x568 {"vw":390,"vh":568,"box":{"x":8,"y":46,"w":374,"h":398},"bottomEdge":444,"inView":true,"topClearOfBar":true,"bell":{"bellBottom":40,"bellTop":8},"lines":9,"scroll":{"scroller":"bell-list wide","sh":510,"ch":396,"listOverflowY":"auto","listSH":510,"listCH":396},"page":{"y":0,"docH":696,"vh":568},"markAll":{"top":528,"bottom":550,"left":283,"right":370,"inScreen":true,"hit":false},"cut":0,"outside":0}
+saved e9-02-390x568-full
+E9 e9-02-390x568 after scrolling the list to its end {"scroller":"bell-list wide","scrolledTo":114,"lastLineBottom":403,"vh":568,"markVisible":true}
+saved e9-02-390x568-scrolled-end
+E9 viewport now 844 390 bell state {"id":"notifyBell","lit":true,"open":"false"}
+E9 e9-03-844x390 {"vw":844,"vh":390,"box":{"x":171,"y":96,"w":348,"h":273},"bottomEdge":369,"inView":true,"topClearOfBar":true,"bell":{"bellBottom":90,"bellTop":58},"lines":9,"scroll":{"scroller":"bell-list","sh":510,"ch":271,"listOverflowY":"auto","listSH":510,"listCH":271},"page":{"y":0,"docH":867,"vh":390},"markAll":{"top":578,"bottom":600,"left":420,"right":507,"inScreen":false,"hit":false},"cut":0,"outside":0}
+saved e9-03-844x390-full
+E9 e9-03-844x390 after scrolling the list to its end {"scroller":"bell-list","scrolledTo":239,"lastLineBottom":328,"vh":390,"markVisible":true}
+saved e9-03-844x390-scrolled-end
+filed Sat X ["oil question shown"] Input added
+E8b Sat X filed {"iid":"imqoievu9jz3b5c","date":"Jul 18","s":540,"e":600,"type":"Training","people":["Ranger"],"cx":false,"cxr":"","by":"stiff","ttl":"Sat X","rmk":""}
+E8b drag from {"x":146,"y":709,"width":74,"height":15} to {"x":48,"y":247.28125}
+E8b after the drop: toast Tally is on Sat X instead of Ranger | record {"iid":"imqoievu9jz3b5c","date":"Jul 18","s":540,"e":600,"type":"Training","people":["Tally"],"cx":false,"cxr":"","by":"stiff","ttl":"Sat X","rmk":""} | oil sheet {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Tally, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and mo"}
+saved e8-03-after-replace-drop
+E8b closed the question unanswered: true | sheet now 0 | record {"iid":"imqoievu9jz3b5c","date":"Jul 18","s":540,"e":600,"type":"Training","people":["Tally"],"cx":false,"cxr":"","by":"stiff","ttl":"Sat X","rmk":""} by/oil: {"by":"stiff","acc":"g"}
+saved e8-04-after-close
+E8b Saber bell now (unanswered question, no notice yet) {"id":"notifyBell","lit":false,"open":"false"}
+E8b Tally window controls ["pp-several","inTypeHelp","inpEditOwnTitle","inpEditAllday","inpEditStart","inpEditEnd","inpEditRmk","oil-answer","inpEditDel","inpEditCancel","inpEditSave"]
+E8b Tally saved: oil sheet {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Tally, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and mo"} | record s/e [540,600] Schedule updated
+E8b Tally closed the question: true
+E8b notices for Saber []
+E8b Saber bell: question + notice {"id":"notifyBell","lit":false,"open":"false"}
+saved e8-05-saber-bell
+E8b first tap: OIL question? null | list open: 1
+saved e8-06-first-tap
+errors []

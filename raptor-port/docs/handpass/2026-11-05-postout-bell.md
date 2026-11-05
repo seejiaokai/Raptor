@@ -109,5 +109,10 @@ until the database step).
 On his PC: the build; the touched tests (32 files, 727, and 7 files, 211 after merging `main`); the code check clean; docsize OK.
 The full set: GitHub's run of pull request 641 (D1086).
 
-## 12. The fix round's narrow read
-`docs/handpass/parts/pb1105/read-fixes.md` — see the closing report.
+## 12. The fix round's narrow read — `docs/handpass/parts/pb1105/read-fixes.md`
+None of the fixes refuses a legitimate pass or breaks its twin (each question checked). Its notes: the midnight clock armed by
+every Leave War test — fixed (started by the app's boot only); a kept tap re-applied when the Users list is drawn again under the
+page — fixed (the ring cleared whole); the database document's sentence on reading admins after the changeset — added; the gate's
+allow-list for the pass's schedule, input and planning rows, and putting a stray schedule change back rather than taking it in —
+**filed** for the full security review before the database step (`OUTSTANDING.md` [REVIEW-LAYERS]: a stricter rule here risks
+refusing a real posting; the browser route is already closed). This round's own fixes are one-line or moved code; no further read.

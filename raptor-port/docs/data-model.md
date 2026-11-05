@@ -1602,7 +1602,8 @@ admins' `Notice` rows (5 Nov 26, `[POSTOUT-RUN-NOTICE]` — D1547):** one new ro
 ran, no maker, about a posted man of this changeset with its own outcome and date, never to the man himself; and, for a Delete,
 the rows its inputs owe the others in them (the delete's own `Input` and schedule rows with them). The pass first brings the
 schedule's starting point up to what is in memory, so nothing outside its own change rides in (the build's security read). The
-app's commit gate holds it (`src/state/perms.ts`
+admins it may tell are read from the `User` table AFTER the changeset (a posted admin suspended or deleted by it is no longer
+one). The app's commit gate holds it (`src/state/perms.ts`
 `postingPassViolation`; the pass itself first puts the roster in memory back to what is saved — `src/leavewar/sync.ts`
 `runPoOutcomes`), pinned by `src/leavewar/postout-roster.test.ts`. **At the database step the pass runs on the server**, never
 under a credential a browser holds (`[SERVER-SIDE-PASSES]`, with the war's and the inputs' own passes).

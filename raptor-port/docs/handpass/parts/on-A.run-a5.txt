@@ -1,0 +1,20 @@
+A filed imqoidhl3nx27yn asked at save 0
+B filed imqoidj2cc3yr6a asked at save 0 [{"iid":"imqoidj2cc3yr6a","date":"Jul 16","end":"Jul 17","keys":"people,type,allday,s,e,date,yr,remarks,mod,title,endDate,iid,by,modBy,at,modAt,ord,acc"}]
+holiday {"opened":true,"cards":3}
+oil A {"oil":null,"grp":null} oil B {"oil":null,"grp":null}
+fills g:4.2.+ g:3.3.+
+P1 Q 1 Adding ALL AVAIL to Range brief | Don’t add | Add saveDisabled true
+P1 row before answer Ranger undoSame true
+P1 toast ALL AVAIL added to Range brief
+P1 row after Ranger + ALL AVAIL oil A {"oil":{"2026-07-17":0.5},"grp":null} bar 0
+allavail box {"x":1176,"y":-22,"width":230,"height":15}
+P2 toast before 0
+AA reachable {"y":64,"hit":true,"what":"rpuck|ALL AVAIL"}
+AA reachable after reframe {"y":64,"hit":true,"what":"rpuck|ALL AVAIL"}
+P2 toast at 250ms 1|ALL AVAIL is for one day
+P2 new text lines ["ALL AVAIL is for one day"]
+P2 toast opacity 1|1|ALL AVAIL is for one day
+P2 question present? 0 lead NO bar 0
+P2 toast ALL AVAIL is for one day | toasts ["Input added","ALL AVAIL added to Range brief","ALL AVAIL is for one day"]
+P2 row B Tally undoSame true oil B {"oil":null,"grp":null}
+errors []
