@@ -1,0 +1,463 @@
+{
+ "pc-inputs-gear": {
+  "w": 40,
+  "h": 36,
+  "x": 1484,
+  "y": 73,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": 0
+  }
+ },
+ "pc-inputs-list-gear": {
+  "w": 40,
+  "h": 36,
+  "x": 1484,
+  "y": 73,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": 0
+  }
+ },
+ "pc-sans-gear": {
+  "w": 40,
+  "h": 36,
+  "x": 1484,
+  "y": 73,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": 0
+  }
+ },
+ "pc-lw-gear": {
+  "w": 44,
+  "h": 44,
+  "x": 1472,
+  "y": 67,
+  "color": "rgb(59, 198, 232)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(182, 192, 203)",
+   "dx": 13,
+   "dy": 0
+  }
+ },
+ "pc-lw-oiltab": {
+  "w": 70.6,
+  "h": 36,
+  "x": 353,
+  "y": 71,
+  "color": "rgb(182, 192, 203)",
+  "text": "OIL",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(182, 192, 203)",
+   "dx": 15,
+   "dy": 0
+  }
+ },
+ "pc-oil-gear": {
+  "w": 36,
+  "h": 30,
+  "x": 1481,
+  "y": 71,
+  "color": "rgb(182, 192, 203)",
+  "text": "",
+  "mark": {
+   "w": 16,
+   "h": 16,
+   "color": "rgb(182, 192, 203)",
+   "dx": 10,
+   "dy": 0
+  }
+ },
+ "pc-oil-range": {
+  "w": 57.1,
+  "h": 35,
+  "x": 177,
+  "y": 68,
+  "color": "rgb(182, 192, 203)",
+  "text": "Range",
+  "mark": {
+   "w": 15,
+   "h": 15,
+   "color": "rgb(182, 192, 203)",
+   "dx": 21,
+   "dy": -6
+  }
+ },
+ "pc-lw-rearrange": {
+  "w": 141.5,
+  "h": 26.3,
+  "x": 589,
+  "y": 294,
+  "color": "rgb(241, 244, 247)",
+  "text": "Rearrange the grid",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "pc-lw-resetorder": {
+  "w": 103.1,
+  "h": 26.3,
+  "x": 736,
+  "y": 294,
+  "color": "rgb(241, 244, 247)",
+  "text": "Reset order",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "pc-lw-done": {
+  "w": 68,
+  "h": 26.3,
+  "x": 1358,
+  "y": 149,
+  "color": "rgb(59, 198, 232)",
+  "text": "Done",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(59, 198, 232)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "pc-lw-menu": {
+  "panel": {
+   "w": 176,
+   "h": 162,
+   "x": 859,
+   "y": 639,
+   "color": "rgb(241, 244, 247)",
+   "text": "AttachOtherPost outPost in",
+   "mark": null
+  },
+  "items": [
+   {
+    "t": "Attach",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Other",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Post out",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Post in",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   }
+  ]
+ },
+ "pc-board-templates": {
+  "w": 104.5,
+  "h": 28,
+  "x": 963,
+  "y": 66,
+  "color": "rgb(241, 244, 247)",
+  "text": "Templates",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 13,
+   "dy": 0
+  }
+ },
+ "pc-board-sortall": {
+  "w": 86.7,
+  "h": 28,
+  "x": 1074,
+  "y": 66,
+  "color": "rgb(241, 244, 247)",
+  "text": "Sort all",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 13,
+   "dy": 0
+  }
+ },
+ "pc-board-history": {
+  "w": 34,
+  "h": 30,
+  "x": 1250,
+  "y": 65,
+  "color": "rgb(241, 244, 247)",
+  "text": "History",
+  "mark": {
+   "w": 16,
+   "h": 16,
+   "color": "rgb(241, 244, 247)",
+   "dx": 9,
+   "dy": 0
+  }
+ },
+ "pc-trk-flex": {
+  "w": 34,
+  "h": 30,
+  "x": 1042,
+  "y": 67,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 16,
+   "h": 16,
+   "color": "rgb(241, 244, 247)",
+   "dx": 9,
+   "dy": 0
+  }
+ },
+ "pc-trk-info": {
+  "w": 33,
+  "h": 30,
+  "x": 590,
+  "y": 67,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 15,
+   "h": 15,
+   "color": "rgb(241, 244, 247)",
+   "dx": 9,
+   "dy": 0
+  }
+ },
+ "pc-trk-menu#fileMenuPanel": [
+  {
+   "t": "Import…",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Export…",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "pc-trk-menu#courseMenuPanel": [
+  {
+   "t": "+ Add course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Rename course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Reorder courses",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Delete course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "pc-trk-menu#sylMenuPanel": [
+  {
+   "t": "Edit chart layout",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Duplicate syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "+ Add syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Rename syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Reorder syllabi",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Delete syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "pc-trk-tools": [
+  {
+   "t": "Move",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Select",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Connect",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Delete",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "+ Flight",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Acad",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Test",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Sim",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ CFT/IAT/EPT",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Text",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Line",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Edit lines",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Arrow",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Merge",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Unmerge",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Select all",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Fit",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Reset layout",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Edit events",
+   "h": 28,
+   "mark": 13
+  }
+ ]
+}

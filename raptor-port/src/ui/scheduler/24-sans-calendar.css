@@ -218,8 +218,10 @@
   .sanscal .sc-how::after{content:'';position:absolute;inset:-2px 0 -16px}
 }
 /* ---- THE GEAR AND ITS WINDOW (ui/SansSettings.tsx — D618, D635, D639). The gear is the app's own cog, the glyph the
-   Leave War's settings button carries; its box is fixed so the glyph's own font cannot change the row's height. ---- */
+   Leave War's settings button carries; its box is fixed so the glyph's own font cannot change the row's height. Drawn
+   since D1509, 18px as the typed one stood, in the button's own white (D1707 — "the SANS calendar's gear included"). ---- */
 .sanscal .sc-gear{width:40px;min-width:40px;padding:0;font-size:17px;line-height:1}
+.sanscal .sc-head .abtn.sc-gear .btnglyph{width:18px;height:18px;color:currentColor;flex-shrink:0}
 .floatwin.sanswin{width:min(400px,calc(100vw - 24px))}
 .sset{display:flex;flex-direction:column;gap:8px}
 .sset-sec{margin-top:8px;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}

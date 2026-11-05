@@ -1,0 +1,333 @@
+{
+ "state": "q3-1366-open",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q3-1366-new"
+ },
+ "recorded": "2026-11-05T11:35:38.664Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 1366,
+  "h": 768
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 69,
+    "w": 1342,
+    "h": 44
+   },
+   "ink": {
+    "x": 51,
+    "y": 80,
+    "w": 1290.2,
+    "h": 22
+   },
+   "text": "Inputs SANS Medical 2 1 ‹ July 2026 › Today Calendar List ⚙",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.ic-head.inputs-top"
+  },
+  "gear": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1314,
+    "y": 73,
+    "w": 40,
+    "h": 36
+   },
+   "ink": {
+    "x": 1326.8,
+    "y": 81.5,
+    "w": 14.3,
+    "h": 19
+   },
+   "text": "⚙",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "center",
+    "font": "600 17px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn.inputs-gear.zz-ring"
+  },
+  "search": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1160.9,
+    "y": 73,
+    "w": 145.1,
+    "h": 36
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "label.inputs-search.searchbox"
+  },
+  "search-input": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1192.9,
+    "y": 82.5,
+    "w": 102.1,
+    "h": 17
+   },
+   "ink": null,
+   "text": " ",
+   "typed": true,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "input"
+  },
+  "filter1": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 895.5,
+    "y": 73,
+    "w": 124.7,
+    "h": 36
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "label"
+  },
+  "filter2": {
+   "found": true,
+   "count": 3,
+   "box": {
+    "x": 1028.2,
+    "y": 73,
+    "w": 124.7,
+    "h": 36
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "-0.065px"
+   },
+   "tag": "label"
+  },
+  "views": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 729.8,
+    "y": 73,
+    "w": 157.7,
+    "h": 36
+   },
+   "ink": {
+    "x": 761.8,
+    "y": 84,
+    "w": 114.7,
+    "h": 14
+   },
+   "text": "Calendar List",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.inputs-views"
+  },
+  "nav": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 348.9,
+    "y": 73,
+    "w": 350.3,
+    "h": 36
+   },
+   "ink": {
+    "x": 365.5,
+    "y": 80,
+    "w": 322.7,
+    "h": 22
+   },
+   "text": "‹ July 2026 › Today",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.ic-nav"
+  }
+ },
+ "approved": {
+  "picture": "q3-1366-new.png",
+  "identical": true
+ }
+}

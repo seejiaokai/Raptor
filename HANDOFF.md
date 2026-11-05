@@ -20,6 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/ui-consistency-round4 -->
+### `claude/ui-consistency-round4` — round 4 BUILT, BUG-CHECKED and merged on his "merge live" (5 Nov 26); this block goes at the next handoff — verify before use
+- **Shipped (on the branch, pull request 643, not live):** D1702–D1707 built as drawn; D1708 (his "A": where the Inputs row wraps, the filters and gear start the second line at its LEFT) drawn (https://claude.ai/artifact/4384HywiC1SR3q9mUtw4eT), his "Yes", built at every width (the group's own left margin gone — not "below 1340", the record corrected); the code read's four fixes (the Tracker menus' shade, three gears and Auto sort / OIL Range back to their old sizes — D1707, D487) and its test fix.
+- **Checks:** the bug check (WALK) complete — evidence `raptor-port/docs/handpass/2026-11-05-consistency-round4-build.md` (§4a D1708, §6 the code read); walk rows 35 / 35, re-walk 86 / 86; the drawing check GREEN (`docs/img/handpass/2026-11-05-drawcheck-cr4-r3/`: 0 unexplained, 21 kept by ruling); unit 388 / 388 + 43 / 43; Inputs browser tests 71 / 71; GitHub's run of 298d6f9bd green; the run of the read's fixes — see the closing report / the PR.
+- **His test change:** `e2e/consistency-heights.spec.ts` 1366 asks D1702's reading (one line where the letters allow — GitHub's Linux letters wrap it), the narrower box applied, the gear never alone.
+- **Unfinished:** nothing of round 4 — his "merge live" given 5 Nov 26 (his look done, D1640). Open for round 5 (filed in [UI-CONSISTENCY-LOOK]): the unruled typed marks the code read saw (↺ Restore, the warning lines' ✕ / ↺, the Inputs ⤢ / ⤡, the phone day bar's words-only buttons).
+- **Branch:** `claude/ui-consistency-round4`, pushed, tracking itself; pull request 643 (draft, auto-fix off); worktree `C:\Users\User\projects\Raptor-ui4b`. (The throwaway checkout of the base made for the before-sizes is removed.)
+- **Numbers:** rulings D1700–D1709 held (D1700–D1708 used); lessons 92–94 (92 used); observations 830–839 (830–833 used).
+- **Also open (not this block's):** 641 `claude/postout-bell-look` (a new chat, raptor-05, works it in `C:\Users\User\projects\Raptor`), 639, 637, 636 (`SchedBoard.tsx` / `board.ts` other lines — whichever merges second brings `main` in, D302).
+- **Opening line:** Continue the branch `claude/ui-consistency-round4` in `C:\Users\User\projects\Raptor-ui4b` (`git -C ../Raptor-ui4b switch claude/ui-consistency-round4`, `git pull --ff-only`). Read `HANDOFF.md` — its block — and the evidence sheet's §4a and §6; the bug check is done: read GitHub's run of the last commit, and on his "merge live" carry the merge through (D1088, D1640).
+<!-- /now -->
 <!-- now:claude/member-guest-checks -->
 ### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
 - **Shipped:** the member / guest check of the night and the build of his morning answers — the pass after asking for access (D1650, D1654, D1656), "Not sent yet" while its save has failed (D1664), the "Not saved" strip everywhere with the OIL bar alike (D1655), the band on the sign-in, access screens and guest page (D1657), a member's own Scheduler tick read only (D1651), the `?savefail` test switch (D1666); three walk faults fixed red first. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`; his look on his iPhone done, "Ok looks good merge live".
@@ -27,12 +38,6 @@ the later merge keeps both (D78).
 - **For whoever merges pull request 636 (`claude/keyboard-windows-batch-5eff45`) next:** it carries rulings D1645–D1662 and the drawings and drawing scripts this build used, and marks D1651 "not yet built" in `raptor-port/docs/data-model.md` §11 (Person, QualMark, the Management paragraph) and `raptor-port/docs/engine-rules.md`'s Quals row — bring `main` in first and keep `main`'s BUILT wording; its [SAVEBAND-LOOK] and [ACCESS-WAIT-LOOK] are built and live — archive them; the drawing scripts `aw1105-*`, `sb1105-mock.mjs` it adds are what `scripts/drawcheck/specs/access-wait.mjs` and `save-band.mjs` replay.
 - **Numbers:** rulings next free D1667; design lessons next free 83; observations next free 802.
 - **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
-<!-- /now -->
-<!-- now:claude/css-font-inherit-look -->
-### `claude/css-font-inherit-look` — [CSS-FONT-INHERIT] LIVE on his "merge live" of 5 Nov 26 (pull request 640); this block goes at the next handoff
-- **Shipped:** the nine dropped font lines written out as drawn (D1680) and the Leave War's Auto-approve matched (D1681); the guard `raptor-port/src/ui/font-inherit-css.test.ts`. Evidence `raptor-port/docs/handpass/2026-11-05-font-inherit.md` (24/24 at both sizes); drawing `raptor-port/docs/mock/2026-11-05-font-inherit/`.
-- **Left open, filed:** [CSS-WRAPPER-GUARD] (the wrapper half of the guard; ~200 deliberate-looking rules after `bidpicker.css`'s wrapper need its rule worked out first).
-- **Numbers:** D1680, D1681 taken; no lessons; observation 810.
 <!-- /now -->
 ## Next, in order
 

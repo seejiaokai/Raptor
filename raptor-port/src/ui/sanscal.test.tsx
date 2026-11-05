@@ -28,6 +28,8 @@ import { flyAnswer, holidayAdd } from '../leavewar/sync'
 import { INPEDIT, SANSSET, setDaysWin, setInpEdit, setSansSet } from './pops'
 import { _resetFloatWins } from './winorder'
 import { SansCal } from './SansCal'
+import { GEAR_INNER } from './glyphs'
+import { drawnAs } from '../testing/drawn'
 
 const mem = new Map<string, string>()
 let sansP: string[] = [], sansW: string[] = [], member = ''
@@ -172,12 +174,14 @@ describe('the line that says what the colours mean', () => {
   })
 })
 
-describe('the gear (D618, D635)', () => {
-  it('an admin has it, and it asks for the settings window; it is the app’s own cog, not a drawing', () => {
+describe('the gear (D618, D635; drawn — D1509, D1707)', () => {
+  /* WAS "the app's own cog, not a drawing" — the typed ⚙. CHANGED by D1509 and D1707 (5 Nov 26, "the SANS calendar's gear
+     included"): the Leave War's drawn line gear, in its button's colour — still never a drawing with rays (D618). */
+  it('an admin has it, and it asks for the settings window; it is the app’s one drawn gear, no typed ⚙', () => {
     show()
     expect(t('sc-gear').getAttribute('aria-label')).toBe('SANS calendar settings')
-    expect(t('sc-gear').textContent).toBe('⚙')                      // the glyph the Leave War's settings button carries
-    expect(t('sc-gear').querySelector('svg')).toBeNull()
+    expect(t('sc-gear').textContent).toBe('')
+    expect(drawnAs(t('sc-gear').querySelector('svg'), GEAR_INNER), 'the Leave War’s gear').toBe(true)
     expect(SANSSET).toBe(false)
     fireEvent.click(t('sc-gear'))
     expect(SANSSET).toBe(true)

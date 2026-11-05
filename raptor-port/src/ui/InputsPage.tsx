@@ -24,7 +24,7 @@ import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
 import { setDocView, setInpSet, setInpEdit } from './pops'
-import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
+import { CalIcon, ClipIcon, FilterIcon, GearIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
@@ -612,6 +612,11 @@ export function InputsPage() {
     <span className="inputs-spring" />
     {/* the switch after the spring in the page as well as on screen, so the keyboard meets it where it is drawn (D1125) */}
     {views}
+    {/* THE FILTERS AND THE GEAR ARE ONE GROUP (owner D1702, 5 Nov 26 — round 4 of the consistency look, "all as
+        recommended"): at a narrow desktop (1366) the gear alone dropped to a second line; in one group they wrap together, at
+        the row's right end, so the gear keeps its corner at every desktop width. On a phone the group is not drawn as a box
+        (`display:contents`, 25-inputs-calendar.css), so the phone's row of D693 is untouched. */}
+    <div className="inputs-filtergroup">
     <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>{ if (phone) setCalOpen(false); setFiltersOpen(o=>!o) }}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     {/* NO WORDS OVER THE THREE BOXES (D729 — V5; D726): "Person", "Type" and "Search" stood over them on a phone, where
         the boxes already read "Everyone", "All types" and "Search inputs". Each keeps its name for a screen reader. */}
@@ -628,13 +633,15 @@ export function InputsPage() {
       </select></label>
       <label className="inputs-search searchbox"><SrchIcon /><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
     </div>
-    {/* THE GEAR (D635, D639): the app's own cog — the Leave War's settings button — never a drawing with rays. Admins
-        only. It opens the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the
-        door to "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
+    {/* THE GEAR (D635, D639): the app's one gear — the Leave War's drawn line gear since D1509, in its button's own white
+        (D1707) — never a drawing with rays, which on this calendar would read as the day-flying sun. Admins only. It opens
+        the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the door to
+        "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
     {isAdmin() && (
       <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
-        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
+        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}><GearIcon /></button>
     )}
+    </div>
   </>)
   /* the filters put back to none — the summary line's "Clear filters", and the same words in a day opened on the calendar
      whose inputs they all hide (D731 (2); ui/InputsCal.tsx) */

@@ -1,0 +1,553 @@
+{
+ "ph-inputs-gear": {
+  "w": 38,
+  "h": 36,
+  "x": 356,
+  "y": 102,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 10,
+   "dy": 0
+  }
+ },
+ "ph-inputs-list-gear": {
+  "w": 38,
+  "h": 36,
+  "x": 356,
+  "y": 102,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 10,
+   "dy": 0
+  }
+ },
+ "ph-inputs-phone-filters": {
+  "g0": {
+   "w": 38,
+   "h": 36,
+   "x": 356,
+   "y": 102,
+   "color": "rgb(241, 244, 247)",
+   "text": "",
+   "mark": {
+    "w": 18,
+    "h": 18,
+    "color": "rgb(241, 244, 247)",
+    "dx": 10,
+    "dy": 0
+   }
+  },
+  "g1": {
+   "w": 38,
+   "h": 36,
+   "x": 356,
+   "y": 102,
+   "color": "rgb(241, 244, 247)",
+   "text": "",
+   "mark": {
+    "w": 18,
+    "h": 18,
+    "color": "rgb(241, 244, 247)",
+    "dx": 10,
+    "dy": 0
+   }
+  },
+  "f0": {
+   "w": 34,
+   "h": 36,
+   "x": 318,
+   "y": 102,
+   "color": "rgb(241, 244, 247)",
+   "text": "Filters",
+   "mark": {
+    "w": 15,
+    "h": 15,
+    "color": "rgb(241, 244, 247)",
+    "dx": 9.5,
+    "dy": 0
+   }
+  },
+  "f1": {
+   "w": 34,
+   "h": 36,
+   "x": 318,
+   "y": 102,
+   "color": "rgb(241, 244, 247)",
+   "text": "Filters",
+   "mark": {
+    "w": 15,
+    "h": 15,
+    "color": "rgb(241, 244, 247)",
+    "dx": 9.5,
+    "dy": 0
+   }
+  }
+ },
+ "ph-sans-gear": {
+  "w": 42,
+  "h": 36,
+  "x": 352,
+  "y": 103,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(241, 244, 247)",
+   "dx": 12,
+   "dy": 0
+  }
+ },
+ "ph-lw-gear": {
+  "w": 44,
+  "h": 44,
+  "x": 346,
+  "y": 53,
+  "color": "rgb(59, 198, 232)",
+  "text": "",
+  "mark": {
+   "w": 18,
+   "h": 18,
+   "color": "rgb(182, 192, 203)",
+   "dx": 13,
+   "dy": 0
+  }
+ },
+ "ph-lw-oiltab": {
+  "w": 50,
+  "h": 36,
+  "x": 284,
+  "y": 57,
+  "color": "rgb(182, 192, 203)",
+  "text": "OIL",
+  "mark": {
+   "w": 13,
+   "h": 13,
+   "color": "rgb(182, 192, 203)",
+   "dx": 6.1,
+   "dy": 0
+  }
+ },
+ "ph-oil-gear": {
+  "w": 32,
+  "h": 36,
+  "x": 362,
+  "y": 56,
+  "color": "rgb(182, 192, 203)",
+  "text": "",
+  "mark": {
+   "w": 16,
+   "h": 16,
+   "color": "rgb(182, 192, 203)",
+   "dx": 8,
+   "dy": 0
+  }
+ },
+ "ph-oil-range": {
+  "w": 52.1,
+  "h": 37,
+  "x": 151,
+  "y": 55,
+  "color": "rgb(182, 192, 203)",
+  "text": "Range",
+  "mark": {
+   "w": 15,
+   "h": 15,
+   "color": "rgb(182, 192, 203)",
+   "dx": 18.5,
+   "dy": -6
+  }
+ },
+ "ph-lw-rearrange": {
+  "w": 141.5,
+  "h": 26.3,
+  "x": 111,
+  "y": 262,
+  "color": "rgb(241, 244, 247)",
+  "text": "Rearrange the grid",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "ph-lw-resetorder": {
+  "w": 103.1,
+  "h": 26.3,
+  "x": 258,
+  "y": 262,
+  "color": "rgb(241, 244, 247)",
+  "text": "Reset order",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(241, 244, 247)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "ph-lw-done": {
+  "w": 68,
+  "h": 26.3,
+  "x": 252,
+  "y": 161,
+  "color": "rgb(59, 198, 232)",
+  "text": "Done",
+  "mark": {
+   "w": 14,
+   "h": 14,
+   "color": "rgb(59, 198, 232)",
+   "dx": 11,
+   "dy": -0.1
+  }
+ },
+ "ph-lw-menu": {
+  "panel": {
+   "w": 176,
+   "h": 162,
+   "x": 201,
+   "y": 651,
+   "color": "rgb(241, 244, 247)",
+   "text": "AttachOtherPost outPost in",
+   "mark": null
+  },
+  "items": [
+   {
+    "t": "Attach",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Other",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Post out",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   },
+   {
+    "t": "Post in",
+    "h": 38,
+    "w": 166,
+    "bg": "rgba(0, 0, 0, 0)",
+    "border": "0px",
+    "size": "13px",
+    "weight": "500"
+   }
+  ]
+ },
+ "ph-board-more": [
+  {
+   "t": "Insights",
+   "h": 38,
+   "mark": null,
+   "color": "rgb(241, 244, 247)"
+  },
+  {
+   "t": "Sort all",
+   "h": 38,
+   "mark": {
+    "w": 15,
+    "color": "rgb(241, 244, 247)",
+    "centred": true
+   },
+   "color": "rgb(241, 244, 247)"
+  },
+  {
+   "t": "Desktop layout",
+   "h": 38,
+   "mark": {
+    "w": 15,
+    "color": "rgb(241, 244, 247)",
+    "centred": true
+   },
+   "color": "rgb(241, 244, 247)"
+  }
+ ],
+ "ph-board-more-wide-after": {
+  "w": 166,
+  "h": 38,
+  "x": 95,
+  "y": 155,
+  "color": "rgb(241, 244, 247)",
+  "text": "Phone layout",
+  "mark": {
+   "w": 15,
+   "h": 15,
+   "color": "rgb(241, 244, 247)",
+   "dx": 12.5,
+   "dy": 0
+  }
+ },
+ "ph-trk-flex": {
+  "w": 30,
+  "h": 26,
+  "x": 204,
+  "y": 86,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 16,
+   "h": 16,
+   "color": "rgb(241, 244, 247)",
+   "dx": 7,
+   "dy": 0
+  }
+ },
+ "ph-trk-info": {
+  "w": 29,
+  "h": 26,
+  "x": 8,
+  "y": 86,
+  "color": "rgb(241, 244, 247)",
+  "text": "",
+  "mark": {
+   "w": 15,
+   "h": 15,
+   "color": "rgb(241, 244, 247)",
+   "dx": 7,
+   "dy": 0
+  }
+ },
+ "ph-trk-menu#fileMenuPanel": [
+  {
+   "t": "Import…",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Export…",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "ph-trk-menu#courseMenuPanel": [
+  {
+   "t": "+ Add course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Rename course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Reorder courses",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Delete course",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "ph-trk-menu#sylMenuPanel": [
+  {
+   "t": "Edit chart layout",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Duplicate syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "+ Add syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Rename syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Reorder syllabi",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  },
+  {
+   "t": "Delete syllabus",
+   "h": 38,
+   "bg": "rgba(0, 0, 0, 0)",
+   "border": "0px",
+   "size": "13px"
+  }
+ ],
+ "ph-trk-tools": [
+  {
+   "t": "Move",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Select",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Connect",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Delete",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "+ Flight",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Acad",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Test",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ Sim",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "+ CFT/IAT/EPT",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Text",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Line",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Edit lines",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Arrow",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Merge",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Unmerge",
+   "h": 28,
+   "mark": 0
+  },
+  {
+   "t": "Select all",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Fit",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Reset layout",
+   "h": 28,
+   "mark": 13
+  },
+  {
+   "t": "Edit events",
+   "h": 28,
+   "mark": 13
+  }
+ ],
+ "ph-trk-copy": {
+  "w": 65.9,
+  "h": 16.6,
+  "x": 92,
+  "y": 756,
+  "color": "rgb(241, 244, 247)",
+  "text": "Copy to…",
+  "mark": {
+   "w": 10.4,
+   "h": 10.4,
+   "color": "rgb(241, 244, 247)",
+   "dx": 6.1,
+   "dy": -0.2
+  }
+ },
+ "ph-trk-lull-x": {
+  "w": 8.8,
+  "h": 13,
+  "x": 112,
+  "y": 738,
+  "color": "rgb(138, 150, 163)",
+  "text": "",
+  "mark": {
+   "w": 8.8,
+   "h": 8.8,
+   "color": "rgb(138, 150, 163)",
+   "dx": 0,
+   "dy": 0.4
+  }
+ }
+}

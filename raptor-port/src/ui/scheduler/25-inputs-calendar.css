@@ -31,6 +31,15 @@
 .inputs-top .inputs-views{order:3}
 .inputs-top #inFiltersBtn,.inputs-top .inputs-filterfields{order:4}
 .inputs-top .inputs-gear{order:5}
+/* THE FILTERS AND THE GEAR, ONE GROUP AT THE ROW'S RIGHT END (owner D1702, 5 Nov 26 — round 4 of the consistency look, "all
+   as recommended"; drawn by scripts/handpass/cr4-look.mjs q3): measured on `main`, at 1366 the gear stood alone on a second
+   line. In one box the two wrap together. On one line the spring before the switch takes the room, so the box stands at the
+   row's right end. WHERE THE ROW WRAPS the box starts the second line at its LEFT (owner D1708, 5 Nov 26 — his "A", drawn by
+   cr4-look.mjs d1708 and approved "Yes"): with a left margin of its own it stood at that line's right end, under an open
+   input window at 1280, its gear unpressable. No margin, so no width to pick: it follows wherever the letters wrap the row.
+   On a phone the box is not drawn (`display:contents`, the 820px block below): its three are the row's own again, D693's
+   row untouched. */
+.inputs-top .inputs-filtergroup{order:4;display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
 /* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
    "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
    Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */
@@ -70,6 +79,9 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
+/* BETWEEN 1340 and 1439 wide the search box a little narrower, so 1366 holds one line (D1702 — after the rule above, which it narrows: written before it, it lost to it, found by the walk; its box 135 → 102 wide
+   measured, "Search inputs" still whole, a callsign or "Appointment" fitting as typed) */
+@media (min-width:1340px) and (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}}
 /* the search is the app's one search box (owner D1127): the line magnifier inside, the box as tall as the two selects
    beside it (44 on a phone, 36 on a desktop — the D1125 block); the input inside carries no box of its own */
 .inputs-filterfields label.searchbox{flex-direction:row;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:0 10px}
@@ -175,6 +187,8 @@
     background:var(--accent);color:#04222b;font-size:10px;font-weight:800;line-height:16px;text-align:center}
   .inputs-top .inputs-filterfields.open label{flex:1 1 calc(50% - 8px)}
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
+  /* the desktop's group of the filters and the gear (D1702) is not drawn here: its three stand in this row as before */
+  .inputs-top .inputs-filtergroup{display:contents}
 }
 /* AND ON A DESKTOP (the calendar job's bug check, 8 Oct 26 - seen by three of its walkers and in D624's pairs): the tabs,
    the tools and both months ran to the very edge of the screen - the gear and the colour key's last word flush against
@@ -415,8 +429,10 @@ body.in-cal{padding-bottom:0}
 
 /* ---- THE GEAR and the settings window's switch (ui/InputsSettings.tsx; the window's own look is the SANS settings
    window's — `.floatwin.sanswin`, `.sset-…`, 24-sans-calendar.css). The gear is the Leave War's own glyph in a fixed
-   box, as on the SANS calendar (D635). ---- */
+   box, as on the SANS calendar (D635) — drawn since D1509, 18px as the typed one stood, in the button's own white like every
+   drawn mark in a button (D1707: `.btnglyph`'s grey is for a bare icon button). ---- */
 .inputs-top .inputs-gear{width:44px;min-width:44px;padding:0;font-size:17px;line-height:1}
+.inputs-top .abtn.inputs-gear .btnglyph{width:18px;height:18px;color:currentColor;flex-shrink:0}
 .sset-check{display:flex;align-items:flex-start;gap:10px;min-height:40px;padding:4px 0;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
 .sset-check input{flex:0 0 auto;width:18px;height:18px;margin:1px 0 0;accent-color:var(--accent)}
 /* the Logic page's door to a calendar's settings window (D639) */

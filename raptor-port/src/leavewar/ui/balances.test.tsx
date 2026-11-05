@@ -27,6 +27,8 @@ import { deleteAsk } from './gradeswords'
 import { Topbar } from './Chrome'
 import { lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
 import { readFileSync } from 'node:fs'
+import { GEAR_INNER, TICKET_INNER } from '../../ui/glyphs'
+import { drawnAs } from '../../testing/drawn'
 
 /* the pinch's set-up, read by the heading tests (D1504): the real helper otherwise */
 let lastPinch: any = null
@@ -80,6 +82,10 @@ describe('the tab row (D1254, D1483)', () => {
     expect(tabs()).toEqual(['Grid', 'Approvals', 'Balances', 'OIL'])
     const row = container.querySelector('.topbar')!
     expect(row.lastElementChild!.getAttribute('data-testid')).toBe('settings-open')
+    /* the OIL tab wears OIL's own mark, the ticket, so a clock means History only (owner D1700, D1704, 5 Nov 26); the gear
+       is the app's one gear, the same drawing as everywhere (D1509) */
+    expect(drawnAs(screen.getByTestId('oil-tracker').querySelector('svg'), TICKET_INNER), 'OIL’s ticket').toBe(true)
+    expect(drawnAs(screen.getByTestId('settings-open').querySelector('svg'), GEAR_INNER), 'the one gear').toBe(true)
   })
   it('a member: Grid · Balances · OIL — Balances stays for him (D1242)', () => {
     ranger()

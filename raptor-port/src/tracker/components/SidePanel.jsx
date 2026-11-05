@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { PenGlyph, ReorderGlyph, XGlyph } from './Glyphs.jsx';
+import { CopyGlyph, PenGlyph, ReorderGlyph, XGlyph } from './Glyphs.jsx';
 import * as core from '../app/core.js';
 import { DateBox } from './DateBox.jsx';
 
@@ -481,7 +481,7 @@ function LullCard({ s }) {
                 <b>{core.fmt(core.parseD(l.start))}</b>→<b>{core.fmt(core.parseD(l.end))}</b>
               </button>
               <button type="button" className="x trbtn" data-lull={i} aria-label="Remove this lull period"
-                onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}>×</button>
+                onClick={e => { e.stopPropagation(); core.removeLull(s, i); }}><XGlyph /></button>
             </span>
           ))
           : <span className="mini">none</span>}
@@ -489,7 +489,7 @@ function LullCard({ s }) {
       <div className="lullbtns">
         <button className="sm" id="setLullBtn" onClick={() => core.openLullPicker(s, null)}>+ Set lull period</button>
         <button className="sm" id="copyLullBtn" disabled={core.roster.length < 2}
-          title="Copy these periods onto other students" onClick={() => core.openLullCopy(s)}>⧉ Copy to…</button>
+          title="Copy these periods onto other students" onClick={() => core.openLullCopy(s)}><CopyGlyph /> Copy to…</button>
       </div>
     </div>
   );

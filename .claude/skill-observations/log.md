@@ -691,6 +691,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 **Met again 4 Nov 26 (`claude/leave-war-small-fixes`, D1633):** twice in one job — a stray `cat > "$TMP/x"` at the head of a command waited on stdin until stopped (2 min), and a `node -e` edit of a probe script lost its escapes so nothing was written (found only because the next step's count read 0). Both redone with the Write and Edit tools. Still the conditional habit; the unconditional default proposed above would have stopped both.
 
+**Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Met a second time the same job: a regex appended by a quoted heredoc reached the test file with its backslashes gone, and the new test failed on the fixed code too; put right with the Edit tool and `String.raw`. Same lesson: code goes in with the Edit tool.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
@@ -3503,3 +3505,63 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
 
 **Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.
+
+### Observation 830: A finding about a drawn icon's colour was read from its button, not the icon
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — picturing the settings gears (numbers 830–839 held by this branch; 820–829 by `claude/postout-bell-look`)
+**Skill:** brainstorming (mockups-on-the-real-app.md, "Judging the Proposal")
+**Type:** open-source
+**Phase/Area:** measuring an existing component before a finding is filed
+
+**Issue:** A consistency sweep filed "the Leave War's gear is cyan, the others white" from the button's computed `color`. The button's colour was indeed the accent, but the svg inside it carries its own class whose rule sets a grey, so on screen the gear was grey like every other drawn icon. The finding sat in the backlog for two weeks as a question for the owner; picturing it at 2x showed the grey, and measuring the svg's own computed colour confirmed it.
+
+**Suggested improvement:** In "An existing component shown inside a mock is measured, not styled", add: measure the colour of the drawn part itself (the svg, the glyph's element), not its container — an icon's class may override the colour it would inherit; and look at the picture before filing a colour finding.
+
+**Principle:** A colour finding is measured on the pixels' own element; a container's colour is a guess about its children.
+
+### Observation 831: An opening line that switches branches in the main folder can land on another chat's unsaved work
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** start of [UI-CONSISTENCY-LOOK] round 4; the opening line said `git switch --detach origin/main` in the main folder, which held another live chat's branch and ten uncommitted source files
+**Skill:** session-handoff (the opening line it writes)
+**Type:** internal
+**Phase/Area:** the ready-to-paste opening line for a new job
+
+**Issue:** The opening line for a new job tells the new chat to detach and branch in the folder it starts in. With parallel chats, that folder is often another chat's working copy with uncommitted work: switching would carry those edits onto the new branch or disturb the other chat (the 3 Nov 26 note in memory records a commit landing on the wrong branch this way). This chat checked `git status` first and made its own short-path folder (`git worktree add ../Raptor-<name>`), as the memory note says, but the opening line itself did not.
+
+**Suggested improvement:** The session-handoff skill's opening-line template for a new job gains one clause: "if `git status` shows changes you did not make, or another chat is on this folder's branch, run `git worktree add --detach ../Raptor-<short> origin/main` and work there instead."
+
+**Principle:** An instruction to switch branches must first check whose folder it is; the guard belongs in the instruction, not in the reader's memory.
+
+### Observation 832: A design reader passed a new icon that the owner saw at once looked like its neighbour
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — the drawn OIL Earn mark (a clock) beside the board's History button (a clock with an arrow)
+**Skill:** impeccable (critique, Assessment A's brief) and brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** checking newly drawn icons before they are put to the owner
+
+**Issue:** The drawing borrowed an existing mark (a plain clock) for a button whose bar already carried a clock-shaped mark meaning something else. The owner saw it at once; a fresh, blind design reader asked to judge whether the new icons "read clearly, match each other and the app's line icons, and are ambiguous" called the borrowing "a good link" — it compared each new mark with its source and with the other new marks, never with the marks already standing beside it.
+
+**Suggested improvement:** In the mock-up method and in the critique reader's brief, add one step for any new or borrowed mark: lay it beside every mark already on its bar and its page (an inventory taken from the running page, not the source) and name any pair a person could mistake.
+
+**Principle:** A borrowed icon carries its old meaning into a new neighbourhood; check it against its neighbours, not only against where it came from.
+
+### Observation 833: A search for tests that read an old mark, filtered to "assertion-looking" lines, missed the browser tests
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** Raptor, building round 4 of the consistency look (typed marks → drawn icons)
+**Skill:** New skill candidate: replacing a visible string/glyph across an app
+**Type:** open-source
+**Phase/Area:** finding every test that pins the old text before changing it
+
+**Issue:** Before swapping typed marks for drawings, the agent grepped tests for the marks but piped through a filter of assertion keywords and a comment filter; the e2e specs and a smoke script that clicked `has-text("╱ Line")` or asserted `toBe('⇅ Done')` slipped through, and only the CI run (minutes later, on another machine) found five of them. Separately, the approved drawing itself showed a control covered by a window — a pixel-faithful build reproduced the defect, and only a test that PRESSES the control in that state found it.
+
+**Suggested improvement:** When replacing a visible string, list FILES (not lines) containing the old string across every test kind — unit, browser, smoke scripts — with no filter, then read each hit. And for any layout move, press each moved control in the states the drawing shows (a window open), not only measure it.
+
+**Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.

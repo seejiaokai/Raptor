@@ -1,0 +1,350 @@
+{
+ "rows": {
+  "375": {
+   "inputs": {
+    "rowH": 85,
+    "gearTop": 49,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 32,
+    "viewsTop": 49,
+    "searchW": null,
+    "filtersTop": 49,
+    "fieldsTop": null,
+    "lineLeft": 0,
+    "groupLeft": null,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 36,
+    "gearTop": 0,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 42
+   }
+  },
+  "402": {
+   "inputs": {
+    "rowH": 85,
+    "gearTop": 49,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 38,
+    "viewsTop": 49,
+    "searchW": null,
+    "filtersTop": 49,
+    "fieldsTop": null,
+    "lineLeft": 0,
+    "groupLeft": null,
+    "lines": 2
+   },
+   "sans": {
+    "headH": 36,
+    "gearTop": 0,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 42
+   }
+  },
+  "821": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 153,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 52,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 166,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 153,
+     "groupLeft": 166
+    }
+   },
+   "sans": {
+    "headH": 86,
+    "gearTop": 50,
+    "gearRight": 651,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "900": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 398,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 0,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 398,
+     "groupLeft": 0
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1100": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 598,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 0,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 598,
+     "groupLeft": 0
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1280": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 778,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 0,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 778,
+     "groupLeft": 0
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1300": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 798,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 0,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 798,
+     "groupLeft": 0
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1340": {
+   "inputs": {
+    "rowH": 88,
+    "gearTop": 52,
+    "gearRight": 858,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 145,
+    "filtersTop": null,
+    "fieldsTop": 52,
+    "lineLeft": 0,
+    "groupLeft": 0,
+    "lines": 3,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 88,
+     "gearOnFields": true,
+     "gearRight": 858,
+     "groupLeft": 0
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1366": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 145,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lineLeft": 0,
+    "groupLeft": 884,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 44,
+     "gearOnFields": true,
+     "gearRight": 0,
+     "groupLeft": 884
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1440": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lineLeft": 0,
+    "groupLeft": 938,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 44,
+     "gearOnFields": true,
+     "gearRight": 0,
+     "groupLeft": 938
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1536": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lineLeft": 0,
+    "groupLeft": 1034,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 44,
+     "gearOnFields": true,
+     "gearRight": 0,
+     "groupLeft": 1034
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  },
+  "1920": {
+   "inputs": {
+    "rowH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40,
+    "viewsTop": 4,
+    "searchW": 178,
+    "filtersTop": null,
+    "fieldsTop": 4,
+    "lineLeft": 0,
+    "groupLeft": 1418,
+    "lines": 2,
+    "list": {
+     "lineLeft": 0,
+     "rowH": 44,
+     "gearOnFields": true,
+     "gearRight": 0,
+     "groupLeft": 1418
+    }
+   },
+   "sans": {
+    "headH": 44,
+    "gearTop": 4,
+    "gearRight": 0,
+    "gearH": 36,
+    "gearW": 40
+   }
+  }
+ }
+}
