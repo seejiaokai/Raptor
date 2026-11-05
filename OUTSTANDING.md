@@ -72,6 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
+  - **Waiting on Fable 5.5 (D1718, 6 Nov 26):** [RULES-DIET] — the rules diet, started only once it is out.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -258,6 +259,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [RULES-DIET] Cut what a chat must read before it touches code (D1718, 6 Nov 26)
+**What:** chats fill up and hallucinate; measured 6 Nov 26, a job reads about 250,000 tokens of rules, notes and records before any code, with 1,302 live ruling lines. Each area's rulings become a short page of how it works now, the old rows archived but searched; the working rules and the bug-check order become one-page checklists; rules become automatic checks where they can. **Waits for Fable 5.5.** Needs his word on the rulings that keep every live ruling in the list and set no size targets. The brief, with the measurements: `raptor-port/docs/superpowers/plans/2026-11-06-rules-diet.md`. **Place:** when Fable 5.5 is out — plan first, put to him, then build.
 
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
@@ -2055,6 +2059,9 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The night of 3 Nov 26 and the morning after (`claude/week-swipe-pdf-print` — the morning: the swipe Safari gives no touch for, the week stilled under the slide; four fresh Opus reads in all): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks), the keyboard leftovers (`[BOARD-OPEN-BY-KEYS]`, `[VEILED-WINDOWS-BAR]`'s Escape part) and the schedule's React Doctor warnings — WALK for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The member / guest build of his morning answers (`claude/member-guest-checks`, pull request 638): [ACCESS-WAIT-LOOK], [SAVEBAND-LOOK], [GUEST-SAVE-WARNING], [MEMBER-SCHED-TICK] — who may tick Scheduler (roles) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
+| The night of 6 Nov 26, job 1 (`claude/lw-faults-1106`): [LW-NIGHT1025-OLDER] (a), (c), (d), (f), (g), [CSS-WRAPPER-GUARD] — bids are saved data | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The night of 6 Nov 26, job 2 (`claude/inputs-batch-1106`): [INP-CARD-COLUMNS], [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor on the Inputs pages | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The night of 6 Nov 26, job 3 (`claude/people-quals-1106`): the three Quals touch faults, React Doctor on People, Quals, Holidays and sign-in | a fresh, blind Opus read; a security read if sign-in is touched (D790, D1411) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

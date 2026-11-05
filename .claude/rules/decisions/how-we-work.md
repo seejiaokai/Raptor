@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1718 | 6 Nov 26 | The rules diet — each area's rulings rewritten as a short page of how it works now, the old rows archived but searched, the working rules and the bug-check order cut to one-page checklists — waits until Anthropic releases Fable 5.5; no chat starts it before then. |
 | D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. |
 | D1716 | 5 Nov 26 | React Doctor stops counting the mock-up pages and the original app, which are records nobody edits; the tests' and scripts' notes of copying data the old way are left as they are; the app's own findings are still fixed with each area's batch (D1534). |
 | D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |

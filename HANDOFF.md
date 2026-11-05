@@ -20,6 +20,19 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/overnight-1106 -->
+### `claude/overnight-1106` — THE NIGHT OF 6 NOV 26 (his "/overnight 12", then "Low go")
+- After a compaction: re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
+- **His selection, in order (Low — one helper at a time, D1104):**
+  1. **Leave War faults** — branch `claude/lw-faults-1106` from `main`: [LW-NIGHT1025-OLDER] (a) first (the words for a new afternoon bid landing on the morning bid), then (c), (d), (f), (g); [CSS-WRAPPER-GUARD]. Check FULL (bids are saved data); one fresh, blind Opus read (D790); about 3½ h.
+  2. **Inputs** — branch `claude/inputs-batch-1106` from `main`: [INP-CARD-COLUMNS] (his pick A, D1310), [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor's findings on the Inputs pages. Check WALK; one fresh, blind Opus read; about 3 h.
+  3. **People and Quals** — branch `claude/people-quals-1106` from `main`: [QUALS-HEAD-FINGER-CAPTURE], [QUALS-PINCH-NOSDA-HEAD], [QUALS-ZOOM-EDGE-SLIVER], React Doctor's findings in the People, Quals, Holidays and sign-in files — the Admin page left out (pull request 636 changes it). Check WALK; one fresh, blind Opus read, and a security read if sign-in is touched (D1411); about 3 h.
+- **Not tonight:** the board-by-keys job and React Doctor on the shell and windows — they share files with pull request 636, waiting for his look.
+- **His answers:** none asked. The rules diet stays "wait for Fable 5.5" (D1718 — he did not write "trial").
+- **This branch** carries the night's records: D1718, [RULES-DIET] and its brief, this block, the reads owed on [NO-ASTRA-LIST].
+- **Questions waiting for him:** none yet.
+- **Pull requests:** each job's opened when its check closes, cut from `main`; unwatched at once.
+<!-- /now -->
 <!-- now:claude/postout-bell-look -->
 ### `claude/postout-bell-look` — LIVE on his "merge live" of 5 Nov 26 (pull request 641); this block goes at the next handoff
 - **Shipped:** the posting-out bell line ([POSTOUT-RUN-NOTICE] — D1546, D1547, D1690, D1691, D1694, D1696); "Undo post out" takes it back, struck through ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699); the SANS purple line on a posted-out SANS man's puck ([PO-SANS-PUCK-EDGE] — D1692, D1697, D1698); no SANS for ground crew ([PO-SANS-GROUND-CREW] — D1709); a posting changed after it ran takes back its lines ([PO-CHANGE-RETRACT] — D1710), with three older posting faults its reads found (an earlier posting's line taken by a later one's Undo after a Restore on its own day; "+ SANS" on: a re-save told twice, a post-in wiped the posting). Evidence `raptor-port/docs/handpass/2026-11-05-postout-bell.md`, `raptor-port/docs/handpass/2026-11-05-taken-back-sans.md` (§16 the last part).
