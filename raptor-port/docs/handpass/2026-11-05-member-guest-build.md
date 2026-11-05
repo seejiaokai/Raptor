@@ -67,7 +67,9 @@ the band up; Sign out.
 | Door | A member on his own row | An admin | Proved by |
 |---|---|---|---|
 | Quals, the Scheduler cell (press, both sizes) | reads only, refused with "Only an admin can appoint a scheduler" | ticks any row | `quals.test.tsx` D1651; the walk |
-| Quals, a keyboard press on the cell | refused | | the walk |
+| Quals, a keyboard press on the cell | no keyboard door — the cells take no tab stop and no key (unchanged; the scenario designer's row 5) | | — |
+| The admin in member view (D292), his own row | reads only, as Management | editable again back in the admin view | walk B S16 |
+| Who READS the tick — SKED CK / PLANNED BY / APPROVED BY (`engine/publish.ts`) | — | follows an admin's untick (17 names to 16) and re-tick | walk B S15 |
 | The Quals write (`quals-write.ts updatePersonField`) | refused | | `quals-write.test.ts` D1651 |
 | The commit gate (`perms.ts ownershipViolation`) — any command of his that changes it | rolled back | stands | `quals-write.test.ts` "Scheduler: rolled back" |
 | His own CAT change (recalculates his quals) | done, the tick kept | | `quals-write.test.ts` (the CAT case) |
@@ -105,11 +107,37 @@ the band up; Sign out.
 
 ## 5. The drawing check (D1495)
 
-*(to fill)*
+Part lists `scripts/drawcheck/specs/access-wait.mjs` (22 parts) and `save-band.mjs` (6 parts); the four drawings recorded
+on a build of `42df6337b` (the files these screens are drawn from are the same on `main` and the drawing branch), each
+replay identical to the approved picture; WebKit states measured in WebKit (the tool gained it — its self-test 12/12 and
+M5a's report reproduced exactly). Records `docs/mock/2026-11-05-access-wait/drawcheck/`, `docs/mock/2026-11-05-save-band/drawcheck/`.
+
+| Run | Pass phone | Pass desktop | Band phone | Band desktop |
+|---|---|---|---|---|
+| 1 — the frozen build of `6dd252ef3` (`drawcheck-access-wait/`, `drawcheck-save-band/`) | the fields' space under them 13px tighter than drawn, all below 13px higher | the same, plus the three below | 0 | 0 |
+| 2 — after the fix (`drawcheck-access-wait-2/`, `drawcheck-save-band-2/`) | 0 | 3 parts, all kept with their reasons | 0 | 0 |
+
+**Put back to the drawing (D1424, while built):** the space under Initials / Seat / CAT, 13px as drawn (`.pass-fields`).
+**Kept, with reasons (the spec's `accepted`):** the card's and the pass top's fill on the desktop — `C-desk.png` was drawn
+before his fade was settled; D1654 / D1656 put the fade over the whole card (`C-diag-phone.png`, which the phone matches with
+no difference); Sign out's edge and word colour on the desktop — the drawing was taken with the pointer resting on it (its
+hover look), not a design difference. **Not checked:** the tear's notches and the steps' joining lines (drawn by the stylesheet
+round the parts; seen matching by eye), the inside of the claws, the band across the top of the access screens (no drawing in
+the strip look — the walk carries it), hover / pressed / focus looks, the sideways phone (no drawing).
 
 ## 6. The walk
 
-*(to fill)*
+The scenario design (a fresh, blind Opus reader): `parts/mgb1105/scenario-design.md` — 10 roll-call rows added (taken into §2
+where they are rows), 20 scenarios, the §7.11 mapping. Two Sonnet walkers on the frozen build of `6dd252ef3`, phone WebKit
+402 × 874 by touch, desktop Chromium 1536, and the sideways phone, 320 and 375 where named. Reports `parts/mgb1105/walk-a.md`,
+`walk-b.md`; pictures `walk-a/`, `walk-b/`. No browser error in either.
+
+| Walker | Scenarios | PASS | FAIL | RECORDED | NOT WALKED |
+|---|---|---|---|---|---|
+| A — the access screens, the band where there is no top bar, the guest page | S1–S9, S13 (sign-in), S18, S19 | 7 | 1 (S2) | 4 (S1, S4, S6, S8) | 1 (S9) |
+| B — the band in the app, the OIL bar, Quals | S10–S17, S20 | 8 | 0 | 1 (S11) | 0 |
+
+The host opened the pictures behind every FAIL and RECORDED row (S2, S4, S11 reproduced — §8).
 
 ## 7. The reads
 
@@ -117,12 +145,26 @@ the band up; Sign out.
 
 ## 8. What the check found, and each disposition
 
-*(to fill)*
+| # | Found by | What | Disposition |
+|---|---|---|---|
+| 1 | walk A, S2 | a phone on its side: the request form's and the pass's TALON logo cannot be scrolled to (the column centred, taller than the screen) | **FIXED** red first (`e2e/geometry.spec.ts` "a phone on its side…", red at −97) — centred by auto margins above the phone width; the request form's half an older fault this build made likelier (the pass is taller) |
+| 2 | walk A, S4 | a 14-letter callsign breaks mid-name on the pass | **FIXED** red first (`e2e/geometry.spec.ts` "the pass sets a 14-letter callsign…") — an outright fault (D1426): the name steps down to fit its line, never below 16px |
+| 3 | walk B, S11 | the board's Desktop layout on a sideways phone: the OIL bar's Answer OIL off the screen at the far pan | **FIXED** red first (`e2e/oilwait.spec.ts` phone on its side) — older: the walker's script shows the same on the build before this one (`42df6337b`); rides this batch (D490) |
+| 4 | the drawing check | the pass's space under its fields 13px tighter than drawn | **FIXED** — put back to the drawing (D1424) |
+| 5 | walk A, S1; the scenario designer's row 1 | under a failed save the pass still ticks "Request sent" and reads "Waiting for an admin", the "Not saved" band above it | **A question for him** (D1625 — anything new he would see is drawn first): §11 |
+| 6 | walk A, S6 | a stranger signing in again with the guest switch on lands on the guest page, not the pass | not a fault — as built and pinned (D204, D221; `accounts-ui.test.tsx` "a fresh sign-in with the switch on is already the guest view") |
+| 7 | walk A, S8 | the guest page may now show the passing "Saving…" note under its bar (it mounts the bar's own `SaveStatus`) | not a fault — the same note every page's bar shows, letting presses through; none appeared in the walk |
+| 8 | walk B, S12 | in the Leave War's OIL tracker the strip is inset by the sheet's padding | not a fault — as before (the band is a line of that sheet's column, D587), the look only changed |
+| 9 | walk A, S9 | the band at a cold start with a save group unfinished | NOT WALKED — the forced refusal does not survive a reload; the start-up path is the saver's own, unchanged (`storage/boot.ts`) |
 
 ## 9. Gates
 
 *(to fill)*
 
 ## 10. What was NOT walked, and why
+
+*(to fill)*
+
+## 11. Questions for him
 
 *(to fill)*
