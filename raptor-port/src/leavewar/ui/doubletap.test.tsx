@@ -120,11 +120,37 @@ describe('a double tap on a leave button ((d))', () => {
     expect(reached, 'the month button’s own click ran').toBe(1)
   })
 
-  it('a finger’s second tap 0.3 s after the close, at the same place, is still the double tap', async () => {
+  it('a finger’s second tap 0.5 s after the close, at the same place, is still the double tap', async () => {
     render(<Matrix />)
     placeByTap()
-    await act(async () => { await new Promise(r => setTimeout(r, 300)) })
+    await act(async () => { await new Promise(r => setTimeout(r, 500)) })
     tap(screen.getByTestId('cell-asics-2026-01-29'))
     expect(picker()).toBeNull()
+  })
+
+  /* the fix's narrow read, N1: a window closed by a tap on the grid behind it (its shield) is no press inside the window —
+     the same day tapped again at once opens it */
+  it('a window closed by a tap on the grid: the same day tapped again at once opens', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${DAY}`))
+    expect(picker()).toBeTruthy()
+    const shield = screen.queryByTestId('sheet-scrim')
+    const target = shield ?? screen.getByTestId('cell-asics-2026-01-29')
+    tap(target, 200, 300)
+    if (picker()) fireEvent.click(screen.getByTestId('bid-cancel'))   // a window that leaves the page working: closed by its ✕ from afar
+    expect(picker()).toBeNull()
+    tap(screen.getByTestId('cell-asics-2026-01-29'), 200, 300)
+    expect(picker(), 'the re-tap he meant').toBeTruthy()
+  })
+
+  /* N2: a window closed by Escape leaves no press to guard */
+  it('a window closed by Escape: a finger’s tap at once where an old press was opens', () => {
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId(`cell-dusk-${DAY}`))
+    tap(screen.getByTestId('portion-am'))   // a press inside the window, at the old spot
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(picker()).toBeNull()
+    tap(screen.getByTestId('cell-asics-2026-01-29'))
+    expect(picker()).toBeTruthy()
   })
 })

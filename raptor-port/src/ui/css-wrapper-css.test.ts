@@ -12,10 +12,12 @@
      1. named with its page — every selector carries `#page-<name>` outside any brackets (matrix.css's joined bar since
         75bc67be2; `:not(#page-x)` names nothing); or
      2. an at-rule that cannot sit inside a page — `@keyframes`, `@font-face`, `@property`, `@counter-style`,
-        `@font-feature-values`: their names are the whole document's, not a page's; or
+        `@font-feature-values`, `@font-palette-values`, `@page`, `@view-transition`, `@position-try`: their names are the
+        whole document's, not a page's; or
      3. on purpose outside the page — every selector starts at a STATE of `body` or `html` (`body.lw-bal-on`,
         `body:has(.bidsheet.raised) .airpop`, a pop-up the app draws on <body>); a bare `body .a` is the mistake again, one
-        more step weaker than the wrapped rule (the code read of 6 Nov 26, F2); or
+        more step weaker than the wrapped rule (the code read of 6 Nov 26, F2). A state passes by this convention — a rule
+        that reaches beyond the page is written so on purpose — not because it outweighs the wrapped rules; or
      4. an `@media` / `@supports` / `@container` / `@layer` block whose own rules each pass 1–3; or
      5. ONE OF THE RULES ALREADY THERE (`css-wrapper-outside.json`, taken 6 Nov 26). bidpicker.css's counter form and
         everything after it (since 19 Aug 26, 9a68c23b4), and a few blocks later, sit outside its wrapper — not on purpose:
@@ -108,7 +110,7 @@ function strays(css: string): Array<{ key: string; line: number }> {
   const outside = (sel: string) => /^(body|html)[.:[#]/.test(sel)
   const out: Array<{ key: string; line: number }> = []
   const judge = (b: Block, within: string) => {
-    if (/^@(-webkit-)?keyframes\b|^@(font-face|property|counter-style|font-feature-values)\b/.test(b.prelude)) return
+    if (/^@(-webkit-)?keyframes\b|^@(font-face|property|counter-style|font-feature-values|font-palette-values|page|view-transition|position-try)\b/.test(b.prelude)) return
     if (/^@(media|supports|container|layer)\b/.test(b.prelude)) {
       for (const inner of topBlocks(b.body, b.line)) judge(inner, b.prelude)
       return
@@ -188,7 +190,7 @@ describe('no rule lost after a page wrapper\'s close ([CSS-WRAPPER-GUARD])', () 
 
   it('the list of rules already there only shrinks: each line still stands outside its wrapper, and it holds no more than before', () => {
     const kept = OUTSIDE
-    expect(Object.values(kept).reduce((n, v) => n + v.length, 0)).toBeLessThanOrEqual(KEPT_MAX)
+    expect(Object.values(kept).reduce((n, v) => n + v.length, 0)).toBe(KEPT_MAX)
     const stale: string[] = []
     for (const [name, keys] of Object.entries(kept)) {
       const f = FILES.find(x => x.name === name)

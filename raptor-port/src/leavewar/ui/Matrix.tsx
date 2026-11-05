@@ -1523,7 +1523,10 @@ export function Matrix() {
   const guardGrid = (second: boolean) => {
     unswallowRef.current?.()
     const from = second ? lastPressRef.current : null
-    if (second && !from) return
+    /* only a window closed by a press INSIDE it (a leave, its ✕, a Delete) is guarded: a tap on the grid that closed it is
+       the grid's own, and the same day tapped again at once is a press he meant (the fix's narrow read, N1); a window closed
+       by a key leaves no press (N2) */
+    if (second && !from?.inWin) return
     const swallow = (e: Event) => {
       if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
       if (from) {
@@ -1540,11 +1543,16 @@ export function Matrix() {
   }
   /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
      once the guard was armed could miss a second press that came first) */
-  const lastPressRef = useRef<{ x: number; y: number; finger: boolean } | null>(null)
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean } | null>(null)
   useEffect(() => {
-    const down = (e: PointerEvent) => { lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen' } }
+    const down = (e: PointerEvent) => {
+      const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet')
+      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin }
+    }
+    const key = () => { lastPressRef.current = null }
     document.addEventListener('pointerdown', down, true)
-    return () => document.removeEventListener('pointerdown', down, true)
+    document.addEventListener('keydown', key, true)
+    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
   }, [])
   /* the guard ends with the grid, never outliving it */
   const unswallowRef = useRef<(() => void) | null>(null)
