@@ -282,6 +282,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the table, its frozen heading row, the pinch and the column drag share one set of refs and the order their effects run in (the pinned row measured after the pinch lets go, the landing flash after the reorder); split, that order would move on a page tuned frame by frame on his iPhone
 export function QualsPage() {
   const ver = useVersion()
   const [qSeatView, setSeat] = useState('FCP')
@@ -309,12 +310,14 @@ export function QualsPage() {
      man's rename went to Admin → Users ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state). */
   /* D284: "Check his quals" — his row, outlined in his seat view (an archived man is never prompted: Enable is refused
      on him, D322, and Restore lifts the archive first) */
-  const [backHl, setBackHl] = useState<string | null>(null)
+  /* a ref, not state (React Doctor rerender-state-only-in-handlers, 6 Nov 26): nothing draws it — the effect below reads it
+     after every paint, and the press that sets it repaints the page already (notify, and the seat view) */
+  const backHl = useRef<string | null>(null)
   const checkBack = (id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
     setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
-    setBackHl(id); notify()
+    backHl.current = id; notify()
   }
   /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
   /* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26), as the Inputs page does (InputsPage.tsx): the app keeps the window's
@@ -329,8 +332,8 @@ export function QualsPage() {
     if (PEOPLE[id]) checkBack(id)
   })
   useEffect(() => {
-    if (!backHl) return
-    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
+    if (!backHl.current) return
+    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl.current}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
     /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
@@ -975,14 +978,16 @@ export function QualsPage() {
         {/* Enable editing and Export stay up here (owner, 15 Aug 26); the View
             switch moved down to sit directly above the table it filters. */}
         <div className="grow"></div>
-        <div className="searchbox"><SrchIcon /><input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
+        {/* eslint-disable-next-line react-doctor/no-placeholder-only-field -- every search box in the app is drawn as the week's, its words inside the box beside the magnifier (owner D1127, 21 Oct 26); a screen reader reads its name from aria-label */}
+        <div className="searchbox"><SrchIcon /><input id="qFilter" aria-label="Filter people" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
       {/* only while the mode is on: adding a qualification, and the sentence
           that says what the headings do while it is on. Both live here rather
           than in the qbar so the toolbar does not change width every time the
           mode is toggled. */}
       {canEditQuals() && <div className="qadd" id="qQualBar">
-        <span className="lab">Add qualification</span>
+        {/* the words name the box (React Doctor no-placeholder-only-field, 6 Nov 26): a label tied to it, drawn as the span was */}
+        <label className="lab" htmlFor="qNewQual">Add qualification</label>
         <input id="qNewQual" placeholder="e.g. LOW LEVEL" maxLength={14} style={{ width: 150 }}
           value={newQual} onChange={e => setNewQual(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') addQual() }} />
@@ -1045,6 +1050,7 @@ export function QualsPage() {
           under it stays the single accessible/interactive copy — except that a
           click on a heading still sorts, so the frozen bar is usable while scrolled. */}
       {stuck && (
+        // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a picture of the heading row, hidden from a screen reader (aria-hidden on its tables): the keyboard sorts from the table's own headings under it, which stay the one interactive copy; a press here is the finger's shortcut while the table is scrolled
         <div className="qfixed" data-testid="qsticky-head"
           style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
           onClick={e => {
