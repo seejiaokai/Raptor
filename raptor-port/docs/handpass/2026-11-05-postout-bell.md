@@ -116,3 +116,10 @@ page — fixed (the ring cleared whole); the database document's sentence on rea
 allow-list for the pass's schedule, input and planning rows, and putting a stray schedule change back rather than taking it in —
 **filed** for the full security review before the database step (`OUTSTANDING.md` [REVIEW-LAYERS]: a stricter rule here risks
 refusing a real posting; the browser route is already closed). This round's own fixes are one-line or moved code; no further read.
+
+## 13. His find on his iPhone, the same day — Admin → Users' side-by-side fields (LOOK)
+"Add a person": "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood 11px below CAT's; a text box stood 33px
+beside a pick-list's 43 or a date box's 36 — against his lesson 43. Older than this build; the walk's own phone pictures showed
+it and nobody looked (lesson 23 of §7.11). Measured by `scripts/handpass/adm-pairs-measure.mjs`: before 4 of 12 pairs level
+(`docs/img/handpass/2026-11-05-adm-pairs/before/`), after 12 of 12 at 402, 375 and 1536 (`…/after/`). Fix: the pair's fields
+sit on their foot and every box in a pair is 40px (`15-admin-help.css`).

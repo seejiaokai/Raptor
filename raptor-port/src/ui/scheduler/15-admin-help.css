@@ -50,7 +50,12 @@
    shares one row (each date field halves, matching the single-field width) */
 #page-admin .adm-sub,#page-help .adm-sub{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);font-weight:800;margin:0 0 10px}
 #page-admin .adm-sep{border:none;border-top:1px solid var(--edge);margin:18px 0 14px}
-#page-admin .adm-2col{display:flex;gap:10px}
+/* TWO FIELDS SIDE BY SIDE ARE ONE LINE AND ONE HEIGHT (his lesson 43, D1279 — his iPhone find, 5 Nov 26: "Add a person"'s
+   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood 11px lower than CAT's; a text box stood 33px beside a
+   pick-list's 43 or a date box's 36). The fields sit on their foot, so a label that wraps takes its room above; and every
+   box in a pair is 40px tall (scripts/handpass/adm-pairs-measure.mjs measures each pair at 402, 375 and 1536). */
+#page-admin .adm-2col{display:flex;gap:10px;align-items:flex-end}
+#page-admin .adm-2col .mfield>input,#page-admin .adm-2col .mfield>select,#page-admin .adm-2col .mfield>.datebox{height:40px;min-height:40px;box-sizing:border-box}
 #page-admin .adm-2col .mfield{flex:1 1 0;min-width:0}
 #page-admin .adm-2col input[type=date]{width:100%;box-sizing:border-box}
 #page-admin #admConfig .abtn{display:block;width:100%;text-align:left;margin-top:2px}
