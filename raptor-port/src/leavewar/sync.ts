@@ -1424,7 +1424,7 @@ function postedLines(pid: string): Notice[] {
        ([NOTICE-UNDO-RETRACT], D1693), the same posting set again is NEWS: the id carries how many such "taken back" lines
        he holds for this man and date, so it comes back unread (the scenario designer's 12, 5 Nov 26). An admin never told
        (he had not read it, or pressed the Undo himself) keeps the plain id — unread, or his own act */
-    const backs = NOTICES.filter(n => n.to === pid && n.day === poDate && (n.what || [])[0]?.k === 'poback' && String(((n.what || [])[0] as any).who) === id).length
+    const backs = NOTICES.filter(n => { const q = (n.what || [])[0]; return n.to === pid && n.day === poDate && q?.k === 'poback' && q.who === id }).length
     out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
   }
   return out
@@ -2704,8 +2704,8 @@ function postingLinesOf(id: string): Notice[] {
      after that stint's last, which no line of this stint can be. */
   const prior = (rec.past || []).reduce((m, s) => (s.to && s.to > m ? s.to : m), '')
   const floor = prior ? addDays(prior, 1) : ''
-  const stored = NOTICES.filter(n => { const p: any = (n.what || [])[0]; return p && p.k === 'po' && String(p.who) === id && n.day > floor })
-  const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => String((n.what[0] as any).who) === id)
+  const stored = NOTICES.filter(n => { const p = (n.what || [])[0]; return p?.k === 'po' && p.who === id && n.day > floor })
+  const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
 function retractPostingLines(lines: readonly Notice[]): void {
@@ -2715,8 +2715,9 @@ function retractPostingLines(lines: readonly Notice[]): void {
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
     if (n.to === by || !hasRead(n.to, n)) continue
-    const p: any = n.what[0]
-    noticePostingBack(n.to, by, String(p.who), p.o as PoOutcome, n.day, !!p.acct, at)
+    const p = n.what[0]
+    if (p?.k !== 'po') continue
+    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at)
   }
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
