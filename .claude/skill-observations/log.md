@@ -3488,3 +3488,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** The guard filed by Observation 601 (an unconditional default: any multi-line script goes to a scratchpad file through the file tool) is still not built; count this as a further met-again for it. Until it is, apostrophes in test names are best avoided in generated edits (a double-quoted string or a reworded name).
 
 **Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.
+
+### Observation 820: A mark's own style moved the floating panel it marked
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** drawing the posting-out bell line on the real app ([POSTOUT-RUN-NOTICE]); numbered in this chat's range 820–829 (a parallel chat holds 802–819)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 3 — the mark drawn on the element
+
+**Issue:** The "today" mark (a dashed outline and a tag in `::after`) carried `position:relative` so the tag had a box to sit against. On the bell's list, which is `position:fixed`, that rule pulled the list out of its place into the page's flow: the "today" picture showed no list at all, and the script passed with no error. Found only by looking at the picture.
+
+**Suggested improvement:** In step 3, add: a mark's class never sets `position` (or display, size, overflow-hiding) on the element it marks; a fixed, absolute or sticky element already gives its tag a box, and a static one gets the tag as a child instead. Have the drawing script assert the marked element's box is unchanged (same rect before and after the class is added).
+
+**Principle:** A mark drawn on an element must not change that element's layout; check the element's box before and after adding the mark, because a broken frame passes silently.
