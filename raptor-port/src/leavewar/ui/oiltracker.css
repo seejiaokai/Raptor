@@ -32,9 +32,13 @@
     padding: 3px 11px;
   }
   .oil-tools .oil-cal .ci { font-size: 12px; line-height: 1; }
+  /* the calendar and the gear are drawn (owner D1508, D1509, D1707, 5 Nov 26 — Edit Schedule's line calendar for the 📅,
+     the app's one gear for the ⚙), in the chip's own colour, at the drawing's sizes */
+  .oil-tools .oil-cal .ci .btnglyph { width: 15px; height: 15px; color: currentColor; }
   .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
   /* The settings gear is icon-only now — keep it a comfortable tap target. */
   .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
+  .oil-tools .oil-gear .btnglyph { width: 16px; height: 16px; color: currentColor; }
   /* The − / + zoom pair beside RANGE went with the grid's (owner D1285, D1276, 23 Oct 26): the table is pinched. */
   .oil-pickrow {
     flex-direction: column;

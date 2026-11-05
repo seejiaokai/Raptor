@@ -52,6 +52,7 @@ import {
 import { subLwScreen, isLwOnScreen } from '../state/screen'
 import { Sheet } from './Sheet'
 import { PALETTE, groupColorOf, isColourable } from './groupColor'
+import { ReorderIcon, ResetIcon } from '../../ui/icons'
 import './bidpicker.css'
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the settings window's groups, who-wins list, colours and event rows share the grid's one drag machine (Matrix hands it in) and one set of state; split, the drag's rows and their state would live apart
@@ -289,8 +290,9 @@ export function SettingsSheet({
         <div className="bidsheet-row">
           <span className="lab">Order</span>
           {onRearrange && (
+            /* the typed ⇅ and ↺ are the app's drawn marks (owner D1703, 5 Nov 26): Reorder, and an arrow turning back */
             <button className="rtbtn" data-testid="settings-rearrange" title="Drag people and category blocks on the grid" onClick={onRearrange}>
-              ⇅ Rearrange the grid
+              <ReorderIcon /> Rearrange the grid
             </button>
           )}
           <button
@@ -303,7 +305,7 @@ export function SettingsSheet({
               setArmOrder(false)
               resetRosterOrder()
             }}
-          >{armOrder ? 'Really reset?' : '↺ Reset order'}</button>
+          >{armOrder ? 'Really reset?' : <><ResetIcon /> Reset order</>}</button>
         </div>
       </div>
 
