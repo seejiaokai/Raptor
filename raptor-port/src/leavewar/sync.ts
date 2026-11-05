@@ -1420,7 +1420,12 @@ function postedLines(pid: string): Notice[] {
     const body = rosterBody(id)
     if (!body || body.special || body.deleted) continue
     const at = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10)).getTime()
-    out.push({ id: `po:${id}:${poDate}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
+    /* the line's id is steady, so his read record holds it — but once "Undo post out" has told this admin it was taken back
+       ([NOTICE-UNDO-RETRACT], D1693), the same posting set again is NEWS: the id carries how many such "taken back" lines
+       he holds for this man and date, so it comes back unread (the scenario designer's 12, 5 Nov 26). An admin never told
+       (he had not read it, or pressed the Undo himself) keeps the plain id — unread, or his own act */
+    const backs = NOTICES.filter(n => n.to === pid && n.day === poDate && (n.what || [])[0]?.k === 'poback' && String(((n.what || [])[0] as any).who) === id).length
+    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
   }
   return out
 }
@@ -2693,8 +2698,13 @@ export function undoPostOut(id: string): boolean {
 function postingLinesOf(id: string): Notice[] {
   const rec = getState().postOuts[id]
   if (!rec || !rec.to) return []
-  const poDate = addDays(rec.to, 1)
-  const stored = NOTICES.filter(n => { const p: any = (n.what || [])[0]; return p && p.k === 'po' && String(p.who) === id && n.day === poDate })
+  /* every stored line of his CURRENT stint, whatever its date — a posting whose date was moved after it ran left its line
+     on the day it ran, and the Undo takes the posting back whole (the scenario designer's 13, 5 Nov 26). A line of an
+     EARLIER stint is another posting that ran — he was restored since (D320) — and stays as its record: its day is the day
+     after that stint's last, which no line of this stint can be. */
+  const prior = (rec.past || []).reduce((m, s) => (s.to && s.to > m ? s.to : m), '')
+  const floor = prior ? addDays(prior, 1) : ''
+  const stored = NOTICES.filter(n => { const p: any = (n.what || [])[0]; return p && p.k === 'po' && String(p.who) === id && n.day > floor })
   const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => String((n.what[0] as any).who) === id)
   return [...stored, ...derived]
 }

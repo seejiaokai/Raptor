@@ -23,7 +23,7 @@ import { commandStream } from '../command'
 import type { CommitEnvelope } from '../command'
 import { ownershipViolation } from '../state/perms'
 import { NOTICES, noticesFor, noticeWords, noticeLive, allNoticesFor, type Notice } from '../state/notices'
-import { unreadFor, markAllNoticesRead } from '../state/noticeseen'
+import { unreadFor, markAllNoticesRead, isUnread } from '../state/noticeseen'
 import { CURPAGE, ADMINOPEN, clearAdminOpen } from '../state/view'
 import { openNotice } from '../ui/topstate'
 import { getState, initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
@@ -165,5 +165,41 @@ describe('Undo post out after the posting ran (D1693, D1699)', () => {
     expect(CURPAGE).toBe('admin')
     expect(ADMINOPEN && ADMINOPEN.person).toBe('bane')
     expect(unreadFor('rocky')).toBe(0)
+  })
+})
+
+describe('the scenario designer’s two suspected faults (5 Nov 26 — his scenarios 12 and 13)', () => {
+  it('13: a posting whose date was moved after it ran, then undone — the line about the day it ran is taken back too', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(postOut('bane', '2026-07-25', 'sans')).toBe(true)      // the sheet's date moved to a day still to come
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky'), 'no "Posted out" line left standing').toEqual([])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+  })
+  it('12: off the manpower undone, then set again for the same date — the line comes back UNREAD for the admin told it was taken back', () => {
+    const id = noSignIn()
+    expect(postOut(id, PO, false)).toBe(true)
+    reach()
+    hexReads()
+    expect(undoPostOut(id)).toBe(true)
+    expect(postOut(id, PO, false)).toBe(true)
+    signInAs('hex')
+    const line = allNoticesFor('rocky').find(n => (n.what || [])[0]?.k === 'po')!
+    expect(line, 'the posting’s line is back').toBeTruthy()
+    expect(isUnread(line, 'rocky'), 'unread: the new posting lights his bell').toBe(true)
+  })
+  it('an older posting from an earlier stint keeps its line when the new one is undone', () => {
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(restoreArchivedPerson('bane', '2026-07-22')).toBe(true)   // back on Admin → Users: a new stint
+    reach(23)
+    expect(postOut('bane', '2026-07-23', 'sans')).toBe(true)
+    runPoOutcomes()
+    signInAs('ad', 'a')
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky').map(words), 'the first posting ran: its record stays').toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
   })
 })
