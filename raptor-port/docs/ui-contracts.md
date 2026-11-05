@@ -12306,7 +12306,8 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
 The page and its pictures: `raptor-port/docs/img/handpass/2026-11-05-consistency-round4/` (drawn by `raptor-port/scripts/handpass/cr4-look.mjs`, every new mark's path in its `ICON`).
 
 - **D1701 — the legends stay as they are:** Edit Schedule's fold (D926), the Leave War's and the Tracker's Legend buttons opening the same panel, the Inputs and SANS colour keys in view.
-- **D1702 — the Inputs calendar's top row:** the filters and the gear one group at the row's right end at every desktop width; the search box's basis 170 (box 102) only between 1340 and 1439 wide, so 1366 holds one line; a wrapper round Filters, the fields and the gear, `display:contents` at a phone's width (D693's phone row untouched).
+- **D1708 — where the Inputs row wraps (narrower than about 1340):** the filters and the gear start the second line at its LEFT, together — the right end put the gear under an open input window at 1280 (found by the build's walk); one line keeps them at the right end. Narrows D1702.
+- **D1702 — the Inputs calendar's top row:** the filters and the gear one group at the row's right end where the row holds one line (D1708 for the wrapped row); the search box's basis 170 (box 102) only between 1340 and 1439 wide, so 1366 holds one line; a wrapper round Filters, the fields and the gear, `display:contents` at a phone's width (D693's phone row untouched).
 - **D1703 — the board's and the Leave War's typed marks** become line icons: ⇅ the Tracker's Reorder mark (Sort all, Auto sort, Rearrange the grid, Done); Templates a page of blocks; Reset order an arrow turning back; the phone menu's layout switch a phone and a screen.
 - **D1704 — OIL's own mark, a ticket,** on the board's OIL Earn and the Leave War's OIL tab; a clock means only History (D1700).
 - **D1705 — the Tracker's typed marks** become line icons, as drawn (Merge and Unmerge in words).
