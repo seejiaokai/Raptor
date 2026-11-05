@@ -213,3 +213,26 @@ if (what === 'edge') {
   }
   console.log('pictured')
 }
+
+if (what === 'undojump') {
+  // the code read's finding 1: on Quals' All view, a tick on a WSO, the page scrolled back to its top, Undo — the page's
+  // scroll position recorded every frame until it settles: the row is brought into view in ONE move, never two
+  const { br, p } = await open('chromium', { viewport: { width: 1536, height: 700 }, deviceScaleFactor: 1, isMobile: false, hasTouch: false })
+  await p.click('#qViewA'); await sleep(300); await p.click('#qEdit'); await sleep(300)
+  const cell = await p.evaluate(() => {
+    const rows = [...document.querySelectorAll('#qtbl tbody tr')].filter(r => r.querySelector('td.qname'))
+    const r = rows[rows.length - 3], c = r.querySelector('[data-q]'); c.scrollIntoView({ block: 'center' })
+    const q = c.getBoundingClientRect(); return { x: q.left + q.width / 2, y: q.top + q.height / 2, who: r.querySelector('td.qname').textContent }
+  })
+  await sleep(200); await p.mouse.click(cell.x, cell.y); await sleep(400)
+  await p.click('#qSave'); await sleep(300)
+  await p.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+  await p.evaluate(() => { window.__ys = []; const t0 = performance.now(); const f = () => { window.__ys.push([Math.round(performance.now() - t0), Math.round(scrollY)]); if (performance.now() - t0 < 1500) requestAnimationFrame(f) }; requestAnimationFrame(f) })
+  await p.click('button[aria-label="Undo"]'); await sleep(1700)
+  const ys = await p.evaluate(() => window.__ys)
+  const view = await p.evaluate(() => document.querySelector('.segview .on')?.textContent)
+  const stops = []; for (const [, y] of ys) if (stops[stops.length - 1] !== y) stops.push(y)
+  console.log(`row ${cell.who}; the view after Undo: ${view}; scroll positions taken: ${JSON.stringify(stops)}`)
+  console.log(stops.length <= 2 ? 'PASS one move' : `FAIL the page moved ${stops.length - 1} times`)
+  await br.close()
+}
