@@ -1,0 +1,6 @@
+PASS RW-desktop-1 the stranger's request is saved and names him (for the admins) — saw "{\"id\":\"rqmw2s3g78y8e4\",\"name\":\"kite@mail\",\"cs\":\"Kite\",\"ini\":\"KT\",\"seat\":\"FCP\",\"cat\":\"OCU\",\"at\":1793836767428}"
+PASS RW-desktop-2 its change-log batch names the role "pending", never his sign-in name — saw [{"type":"access.request","seqs":[2],"actorId":"pending","at":"2026-11-04T23:59:27.429Z","items":[{"table":"AccessRequest","key":"settings/accessreq:rqmw2s3g78y8e4","op":"put"}]}]
+PASS RW-desktop-3 View the schedule still opens the guest page — saw true
+PASS RW-phone-1 the stranger's request is saved and names him (for the admins) — saw "{\"id\":\"rqmw2s3muz0wxu\",\"name\":\"kite@mail\",\"cs\":\"Kite\",\"ini\":\"KT\",\"seat\":\"FCP\",\"cat\":\"OCU\",\"at\":1793836776059}"
+PASS RW-phone-2 its change-log batch names the role "pending", never his sign-in name — saw [{"type":"access.request","seqs":[2],"actorId":"pending","at":"2026-11-04T23:59:36.060Z","items":[{"table":"AccessRequest","key":"settings/accessreq:rqmw2s3muz0wxu","op":"put"}]}]
+PASS RW-phone-3 View the schedule still opens the guest page — saw true

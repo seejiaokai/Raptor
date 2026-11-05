@@ -73,8 +73,8 @@ function sealer(group: readonly WbChange[]): WbChange[] | null {
   return out
 }
 
-/* WHO A BATCH NAMES — an account's id (an opaque `ac…`, never his sign-in name), or the app itself; for someone with no
-   account — a person waiting for access, a guest, an account switched off — only his ROLE. Every member and guest reads
+/* WHO A BATCH NAMES — an account's id (an opaque `ac…`, never his sign-in name), or the app itself; for a session that
+   carries no account id — a person waiting for access, a guest, an account switched off — only its ROLE. Every member and guest reads
    every batch (data-model §11, ChangeBatch: member C R, guest R), and such a session's id is `principal:<sign-in name>`,
    his defence mail at the database step, which §11 shows the admins alone (AccessRequest). Named, a waiting person's one
    access request told every member who was asking (the member / guest check's security read, F1, 5 Nov 26); the request
