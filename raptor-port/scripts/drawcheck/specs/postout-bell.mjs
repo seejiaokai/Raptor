@@ -138,6 +138,14 @@ export default {
     { id: 'land-sans-phone', title: "Cinch's line tapped, iPhone (WebKit)", phone: true, engine: 'webkit', drawing: { script: 'docs/mock/2026-11-05-postout-bell/draw.mjs', shot: '3-land-sans-phone' }, reach: reachLanding('sans'), parts: landParts('snap', '#page-admin .acc-row.pb-land', '#page-admin .acc-row.acc-ring') },
   ],
   accepted: [
+    { state: 'land-overseas-desk', part: 'row', check: 'place', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 599 },
+    { state: 'land-overseas-desk', part: 'row', check: 'width', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 600 },
+    { state: 'land-overseas-phone', part: 'row', check: 'place', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 29 },
+    { state: 'land-overseas-phone', part: 'row', check: 'width', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 344 },
+    { state: 'land-sans-desk', part: 'row', check: 'place', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 599 },
+    { state: 'land-sans-desk', part: 'row', check: 'width', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 600 },
+    { state: 'land-sans-phone', part: 'row', check: 'place', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 29 },
+    { state: 'land-sans-phone', part: 'row', check: 'width', why: 'D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name', build: 344 },
     /* the drawing cloned four UNREAD lines into a list that held none, so the list's own foot — "Mark all read", drawn
        whenever a line is unread (ui/topbits.tsx BellList, as built since the one-rule build) — was not drawn under them;
        the build draws it. A state of the drawing, not a difference of design */

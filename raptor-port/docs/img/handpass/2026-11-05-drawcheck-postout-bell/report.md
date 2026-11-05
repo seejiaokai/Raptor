@@ -1,8 +1,8 @@
 # Drawing check — The posting-out bell line and its landing
 
-Build: `claude/postout-bell-look at 141a762a0` · run 5 Nov 2026, 17:23 · tolerance 2px
+Build: `claude/postout-bell-look at 4e1f020f6` · run 5 Nov 2026, 18:20 · tolerance 2px
 
-**RED** — 8 difference(s) unexplained, 4 kept as built by his ruling, 0 screen(s) not checked.
+**GREEN** — 0 difference(s) unexplained, 12 kept as built by his ruling, 0 screen(s) not checked.
 
 ## The admin's bell list on Mon 16 Nov, desktop (`list-desk`, 1536 × 864 at 2)
 
@@ -66,8 +66,8 @@ Drawing: `docs/mock/2026-11-05-postout-bell/draw.mjs` → `3-land-overseas-desk.
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| his row, ringed | where it sits (from the left) — 8px further left | 607 | 599 | **unexplained** · [picture](land-overseas-desk--row.png) |
-| his row, ringed | its width — 16px more | 584 | 600 | **unexplained** · [picture](land-overseas-desk--row.png) |
+| his row, ringed | where it sits (from the left) — 8px further left | 607 | 599 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-overseas-desk--row.png) |
+| his row, ringed | its width — 16px more | 584 | 600 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-overseas-desk--row.png) |
 | his name | matches | | | |
 
 ## Ranger's line tapped, iPhone (WebKit) (`land-overseas-phone`, 402 × 874 at 2)
@@ -76,8 +76,8 @@ Drawing: `docs/mock/2026-11-05-postout-bell/draw.mjs` → `3-land-overseas-phone
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| his row, ringed | where it sits (from the left) — 8px further left | 37 | 29 | **unexplained** · [picture](land-overseas-phone--row.png) |
-| his row, ringed | its width — 16px more | 328 | 344 | **unexplained** · [picture](land-overseas-phone--row.png) |
+| his row, ringed | where it sits (from the left) — 8px further left | 37 | 29 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-overseas-phone--row.png) |
+| his row, ringed | its width — 16px more | 328 | 344 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-overseas-phone--row.png) |
 | his name | its words' colour | rgb(59, 198, 232) | rgb(241, 244, 247) | kept as built: the drawing state: the name under the resting finger (its hover look), which a touch screen no longer shows · [picture](land-overseas-phone--name.png) |
 
 ## Cinch's line tapped: his roster row ringed, desktop (`land-sans-desk`, 1536 × 864 at 2)
@@ -86,8 +86,8 @@ Drawing: `docs/mock/2026-11-05-postout-bell/draw.mjs` → `3-land-sans-desk.png`
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| his row, ringed | where it sits (from the left) — 8px further left | 607 | 599 | **unexplained** · [picture](land-sans-desk--row.png) |
-| his row, ringed | its width — 16px more | 584 | 600 | **unexplained** · [picture](land-sans-desk--row.png) |
+| his row, ringed | where it sits (from the left) — 8px further left | 607 | 599 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-sans-desk--row.png) |
+| his row, ringed | its width — 16px more | 584 | 600 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-sans-desk--row.png) |
 | his name | matches | | | |
 
 ## Cinch's line tapped, iPhone (WebKit) (`land-sans-phone`, 402 × 874 at 2)
@@ -96,7 +96,7 @@ Drawing: `docs/mock/2026-11-05-postout-bell/draw.mjs` → `3-land-sans-phone.png
 
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
-| his row, ringed | where it sits (from the left) — 8px further left | 37 | 29 | **unexplained** · [picture](land-sans-phone--row.png) |
-| his row, ringed | its width — 16px more | 328 | 344 | **unexplained** · [picture](land-sans-phone--row.png) |
+| his row, ringed | where it sits (from the left) — 8px further left | 37 | 29 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-sans-phone--row.png) |
+| his row, ringed | its width — 16px more | 328 | 344 | kept as built: D1694 ("Q3 keep") - the ring stands 8px outside the row, clear of his name · [picture](land-sans-phone--row.png) |
 | his name | its words' colour | rgb(59, 198, 232) | rgb(241, 244, 247) | kept as built: the drawing state: the name under the resting finger (its hover look), which a touch screen no longer shows · [picture](land-sans-phone--name.png) |
 

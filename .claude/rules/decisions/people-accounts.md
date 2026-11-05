@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1694 | 5 Nov 26 | On Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row on each side, clear of his name, as built — not on the row's edge, as drawn. |
 | D1691 | 5 Nov 26 | When a posting out deletes a man on its date, his line in the admins' bells opens nothing when tapped — he has no row left on Admin → Users — and the line stays in the bell as the record, as the bell's "Deleted" line for an input does. |
 | D1690 | 5 Nov 26 | The admins' bell line for a posting out that ran on its date leads with the man in bold and the date, then "Posted out" and what the outcome did — "Ranger · Mon 16 Nov / Posted out · archived, account suspended" — option B as drawn, not "Posting out" first. |
 | D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Ranger · Mon 16 Nov / Posted out · archived, account suspended", D1690) — a tap opening his row on Admin → Users, a deleted man's opening nothing (D1691); it does not wait for anyone to accept it. — changed by D1691, D1690 |
@@ -116,7 +117,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D286 | 26 Sep 26 | An archived man's callsign may be given to a new person. If the archived man is later restored while his callsign is in use, one of the two must be renamed first. |
 | D285 | 26 Sep 26 | The account buttons read "Suspend" / "Enable" and "Delete account". |
 | D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |
-| D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. |
+| D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. — changed by D1692 |
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
 | D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's; one app may serve every squadron and type, a man lent to another (D1100). — changed by D1100, D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |

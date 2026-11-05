@@ -3776,8 +3776,8 @@
        "drawing": "607",
        "build": "599",
        "by": "8px further left",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       },
       {
        "check": "width",
@@ -3785,8 +3785,8 @@
        "drawing": "584",
        "build": "600",
        "by": "16px more",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       }
      ],
      "picture": "land-overseas-desk--row.png",
@@ -3990,8 +3990,8 @@
        "drawing": "37",
        "build": "29",
        "by": "8px further left",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       },
       {
        "check": "width",
@@ -3999,8 +3999,8 @@
        "drawing": "328",
        "build": "344",
        "by": "16px more",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       }
      ],
      "picture": "land-overseas-phone--row.png",
@@ -4214,8 +4214,8 @@
        "drawing": "607",
        "build": "599",
        "by": "8px further left",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       },
       {
        "check": "width",
@@ -4223,8 +4223,8 @@
        "drawing": "584",
        "build": "600",
        "by": "16px more",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       }
      ],
      "picture": "land-sans-desk--row.png",
@@ -4428,8 +4428,8 @@
        "drawing": "37",
        "build": "29",
        "by": "8px further left",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       },
       {
        "check": "width",
@@ -4437,8 +4437,8 @@
        "drawing": "328",
        "build": "344",
        "by": "16px more",
-       "accepted": null,
-       "counts": true
+       "accepted": "D1694 (\"Q3 keep\") - the ring stands 8px outside the row, clear of his name",
+       "counts": false
       }
      ],
      "picture": "land-sans-phone--row.png",
