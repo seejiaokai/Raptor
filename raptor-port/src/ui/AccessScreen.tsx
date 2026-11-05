@@ -20,7 +20,7 @@
    - role 'off'                      → SWITCHED OFF: "Ask an admin".
    Every one has Sign out, through the ONE logout (ui/logout.ts). The words read as
    the database-era app will (25 Aug 26: production copy, no demo caveats). */
-import { useEffect, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { SESSION } from '../state/auth'
 import { roleOf } from '../state/perms'
 import { requestAccess, requestByName, guestEntry, sessionFor } from '../state/accounts'
@@ -39,6 +39,31 @@ function Mark() {
       <span className="lb-word">TALON</span>
     </div>
   )
+}
+
+/* HIS CALLSIGN, LARGE, ON ONE LINE (the member / guest build's walk, 5 Nov 26 - walker A's S4): a callsign may be 14
+   letters (D226), and at the pass's 30px a long one broke in the middle of the name - a name breaking is an outright
+   fault (D1426). So the name is set smaller, a pixel at a time, until it fits its line, never below 16px; a name that
+   still does not fit there (the widest letters, the narrowest phone) breaks rather than run out of the card. Measured
+   again when the screen's width changes. Pinned by e2e/geometry.spec.ts "the pass sets a 14-letter callsign…". */
+const CS_MAX = 30, CS_MIN = 16
+function PassCallsign({ cs }: { cs: string }) {
+  const el = useRef<HTMLHeadingElement>(null)
+  useLayoutEffect(() => {
+    const n = el.current
+    if (!n) return
+    const fit = () => {
+      n.classList.remove('pass-cs-wrap')
+      let size = CS_MAX
+      n.style.fontSize = `${size}px`
+      while (n.scrollWidth > n.clientWidth + 0.5 && size > CS_MIN) { size -= 1; n.style.fontSize = `${size}px` }
+      if (n.scrollWidth > n.clientWidth + 0.5) n.classList.add('pass-cs-wrap')
+    }
+    fit()
+    window.addEventListener('resize', fit)
+    return () => window.removeEventListener('resize', fit)
+  }, [cs])
+  return <h2 className="pass-cs" id="accAsked" ref={el}>{cs}</h2>
 }
 
 export function AccessScreen() {
@@ -93,7 +118,7 @@ export function AccessScreen() {
             <svg className="pass-claws" viewBox="0 -2 60 64" aria-hidden="true"><path d={CLAWS} /></svg>
             <span className="pass-state"><i aria-hidden="true" />Waiting for an admin</span>
           </div>
-          <h2 className="pass-cs" id="accAsked">{req.cs}</h2>
+          <PassCallsign cs={req.cs} />
           {fields.length > 0 && <dl className="pass-fields">{fields.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}
         </div>
         <div className="pass-tear" aria-hidden="true" />

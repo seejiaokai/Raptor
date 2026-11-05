@@ -1,0 +1,266 @@
+{
+ "state": "strip-phone",
+ "drawing": {
+  "script": "scripts/handpass/sb1105-mock.mjs",
+  "shot": "look1-phone"
+ },
+ "recorded": "2026-11-05T05:07:33.087Z",
+ "drawnOn": "main at 42df6337b (the save-status files as on the drawing branch claude/keyboard-windows-batch-5eff45)",
+ "checkout": "9b21816e6",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 85
+   },
+   "ink": {
+    "x": 39,
+    "y": 10,
+    "w": 334,
+    "h": 63.5
+   },
+   "text": "142 TALON Not saved keep this page open Retry ↶ ↷",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.topbar.editing.has-undo.save-failed"
+  },
+  "band": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 48,
+    "w": 402,
+    "h": 36
+   },
+   "ink": {
+    "x": 39,
+    "y": 59.5,
+    "w": 334,
+    "h": 14
+   },
+   "text": "Not saved keep this page open Retry",
+   "typed": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+    "edge": [
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "space-between",
+    "font": "600 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.savestat.failed"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 58.5,
+    "w": 16,
+    "h": 16
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-sign"
+  },
+  "not-saved": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 39,
+    "y": 59.5,
+    "w": 59.2,
+    "h": 14
+   },
+   "ink": {
+    "x": 39,
+    "y": 59.5,
+    "w": 59.2,
+    "h": 14
+   },
+   "text": "Not saved",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 212, 107)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  },
+  "keep-open": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 107.2,
+    "y": 59.5,
+    "w": 111.4,
+    "h": 14
+   },
+   "ink": {
+    "x": 107.2,
+    "y": 59.5,
+    "w": 111.4,
+    "h": 14
+   },
+   "text": "keep this page open",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span"
+  },
+  "retry": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 326,
+    "y": 54.5,
+    "w": 62,
+    "h": 24
+   },
+   "ink": {
+    "x": 341,
+    "y": 59.5,
+    "w": 32,
+    "h": 14
+   },
+   "text": "Retry",
+   "typed": false,
+   "look": {
+    "fill": "rgb(229, 194, 74)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(229, 194, 74)",
+     "1px solid rgb(229, 194, 74)",
+     "1px solid rgb(229, 194, 74)",
+     "1px solid rgb(229, 194, 74)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(31, 24, 3)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button"
+  }
+ },
+ "approved": {
+  "picture": "look1-phone.png",
+  "identical": true
+ }
+}

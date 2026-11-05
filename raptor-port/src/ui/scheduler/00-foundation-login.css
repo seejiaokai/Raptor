@@ -141,6 +141,15 @@ img,a{-webkit-user-drag:none;user-drag:none}
     var(--bg)}
 .login[hidden]{display:none}
 .login-wrap{width:100%;max-width:352px;display:flex;flex-direction:column;align-items:stretch}
+/* CENTRED ONLY WHILE IT FITS (the member / guest build's walk, 5 Nov 26 - walker A's S2): a column taller than the screen,
+   centred, puts its top above where a scroll can reach - on a phone held sideways (874 x 402) the request form's and the
+   pass's TALON logo stood out of reach. Auto margins centre it where there is room and fall to nothing where there is
+   not, so it starts at the top and every part can be scrolled to. Above the phone width only (a phone upright starts at
+   the top already). Pinned by e2e/geometry.spec.ts "a phone on its side: the request form and the pass scroll up…". */
+@media (min-width:481px){
+  .login{align-items:flex-start}
+  .login-wrap{margin-block:auto}
+}
 
 /* ---- the mark ---- */
 /* the squadron, once, quietly */
@@ -235,8 +244,10 @@ img,a{-webkit-user-drag:none;user-drag:none}
   border:1px solid rgba(59,198,232,.45);border-radius:999px;padding:4px 10px 4px 8px;white-space:nowrap}
 .pass-state i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
 .pass-cs{margin:0 -.12em 0 0;font-size:30px;font-weight:800;letter-spacing:.12em;color:var(--ink);line-height:1.05;
-  text-transform:uppercase;overflow-wrap:anywhere}
-.pass-fields{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:28px;margin:14px 0 0}
+  text-transform:uppercase;white-space:nowrap}
+/* a name too long for its line at any size the fit allows (AccessScreen.tsx PassCallsign) breaks rather than run out of the card */
+.pass-cs.pass-cs-wrap{white-space:normal;overflow-wrap:anywhere}
+.pass-fields{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:28px;margin:14px 0 13px}   /* 13px under, as drawn (the drawing check, 5 Nov 26) */
 .pass-fields dt{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
 .pass-fields dd{margin:0;font-size:15px;font-weight:700;color:var(--ink)}
 .pass-tear{position:relative;height:0;border-top:2px dashed var(--edge-2);margin:0 16px}

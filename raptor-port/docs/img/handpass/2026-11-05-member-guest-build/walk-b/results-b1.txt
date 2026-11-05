@@ -1,0 +1,37 @@
+PASS S10-375 the OIL bar is up and nothing moved — saw {"up":true}
+NOTE S10-375 — {"cls":"oilband","h":36,"l":0,"r":375,"top":76,"vw":375,"scrollW":375,"pastRight":false,"msgCut":false,"msgH":16,"msgText":"Not swapped — OIL not answered","oneLine":true,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":211,"t":87,"h":16,"cut":false},{"tag":"BUTTON.yes","l":222,"r":311,"t":83,"h":23,"cut":false},{"tag":"BUTTON.","l":319,"r":361,"t":83,"h":23,"cut":false}],"sign":{"w":16,"h":16,"l":14,"r":30},"active":"oilbar-answer","parent":"sb-top"}
+PASS S10-375-h bar height 36 — saw 36
+PASS S10-375-fit one line, nothing past the right edge, words not cut — saw {"oneLine":true,"pastRight":false,"msgCut":false,"scrollW":375,"vw":375}
+PASS S10-375-ok OK button on screen — saw {"tag":"BUTTON.","l":319,"r":361,"t":83,"h":23,"cut":false}
+PASS S10-375-sign sign drawn amber (pixels) and 16px — saw {"am":{"amber":242,"total":1024},"sign":{"w":16,"h":16,"l":14,"r":30}}
+NOTE S10-375 — msg html: <span class="sv-sign" aria-hidden="true"></span><b>Not swapped</b><span class="sv-sep"> — </span><span class="sv-rest">OIL not answered</span>
+PASS S10-375-long STAND-IN longest wording (letters replaced in the page): one line, not past right edge, not cut, h 36 — saw {"h":36,"oneLine":true,"pastRight":false,"msgCut":false,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":219,"t":87,"h":16,"cut":false},{"tag":"BUTTON.yes","l":230,"r":314,"t":84,"h":22,"cut":false},{"tag":"BUTTON.","l":321,"r":361,"t":84,"h":22,"cut":false}],"msgW":{"tag":"SPAN.oil-msg","l":14,"r":219,"t":87,"h":16,"cut":false}}
+PASS S10-375-band the OIL bar is up and nothing moved — saw {"up":true}
+NOTE S10-375-band — {"cls":"oilband","h":36,"l":0,"r":375,"top":112,"vw":375,"scrollW":375,"pastRight":false,"msgCut":false,"msgH":16,"msgText":"Not swapped — OIL not answered","oneLine":true,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":211,"t":123,"h":16,"cut":false},{"tag":"BUTTON.yes","l":222,"r":311,"t":119,"h":23,"cut":false},{"tag":"BUTTON.","l":319,"r":361,"t":119,"h":23,"cut":false}],"sign":{"w":16,"h":16,"l":14,"r":30},"active":"oilbar-answer","parent":"sb-top"}
+PASS S10-375-band-h bar height 36 — saw 36
+PASS S10-375-band-fit one line, nothing past the right edge, words not cut — saw {"oneLine":true,"pastRight":false,"msgCut":false,"scrollW":375,"vw":375}
+PASS S10-375-band-ok OK button on screen — saw {"tag":"BUTTON.","l":319,"r":361,"t":119,"h":23,"cut":false}
+PASS S10-375-band-sign sign drawn amber (pixels) and 16px — saw {"am":{"amber":242,"total":1024},"sign":{"w":16,"h":16,"l":14,"r":30}}
+NOTE S10-375-band — msg html: <span class="sv-sign" aria-hidden="true"></span><b>Not swapped</b><span class="sv-sep"> — </span><span class="sv-rest">OIL not answered</span>
+PASS S10-375-band-long STAND-IN longest wording (letters replaced in the page): one line, not past right edge, not cut, h 36 — saw {"h":36,"oneLine":true,"pastRight":false,"msgCut":false,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":219,"t":123,"h":16,"cut":false},{"tag":"BUTTON.yes","l":230,"r":314,"t":120,"h":22,"cut":false},{"tag":"BUTTON.","l":321,"r":361,"t":120,"h":22,"cut":false}],"msgW":{"tag":"SPAN.oil-msg","l":14,"r":219,"t":123,"h":16,"cut":false}}
+PASS S10-320 the OIL bar is up and nothing moved — saw {"up":true}
+NOTE S10-320 — {"cls":"oilband","h":36,"l":0,"r":320,"top":76,"vw":320,"scrollW":320,"pastRight":false,"msgCut":false,"msgH":16,"msgText":"Not swapped — OIL not answered","oneLine":true,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":182,"t":87,"h":16,"cut":false},{"tag":"BUTTON.yes","l":188,"r":264,"t":84,"h":21,"cut":false},{"tag":"BUTTON.","l":270,"r":306,"t":84,"h":21,"cut":false}],"sign":{"w":16,"h":16,"l":14,"r":30},"active":"oilbar-answer","parent":"sb-top"}
+PASS S10-320-h bar height 36 — saw 36
+PASS S10-320-fit one line, nothing past the right edge, words not cut — saw {"oneLine":true,"pastRight":false,"msgCut":false,"scrollW":320,"vw":320}
+PASS S10-320-ok OK button on screen — saw {"tag":"BUTTON.","l":270,"r":306,"t":84,"h":21,"cut":false}
+PASS S10-320-sign sign drawn amber (pixels) and 16px — saw {"am":{"amber":242,"total":1024},"sign":{"w":16,"h":16,"l":14,"r":30}}
+NOTE S10-320 — msg html: <span class="sv-sign" aria-hidden="true"></span><b>Not swapped</b><span class="sv-sep"> — </span><span class="sv-rest">OIL not answered</span>
+PASS S10-320-long STAND-IN longest wording (letters replaced in the page): one line, not past right edge, not cut, h 36 — saw {"h":36,"oneLine":true,"pastRight":false,"msgCut":false,"kids":[{"tag":"SPAN.oil-msg","l":8,"r":193,"t":87,"h":16,"cut":false},{"tag":"BUTTON.yes","l":210,"r":279,"t":84,"h":21,"cut":false},{"tag":"BUTTON.","l":283,"r":312,"t":84,"h":21,"cut":false}],"msgW":{"tag":"SPAN.oil-msg","l":8,"r":193,"t":87,"h":16,"cut":false}}
+PASS S10-320-band the OIL bar is up and nothing moved — saw {"up":true}
+NOTE S10-320-band — {"cls":"oilband","h":36,"l":0,"r":320,"top":112,"vw":320,"scrollW":320,"pastRight":false,"msgCut":false,"msgH":16,"msgText":"Not swapped — OIL not answered","oneLine":true,"kids":[{"tag":"SPAN.oil-msg","l":14,"r":182,"t":123,"h":16,"cut":false},{"tag":"BUTTON.yes","l":188,"r":264,"t":120,"h":21,"cut":false},{"tag":"BUTTON.","l":270,"r":306,"t":120,"h":21,"cut":false}],"sign":{"w":16,"h":16,"l":14,"r":30},"active":"oilbar-answer","parent":"sb-top"}
+PASS S10-320-band-h bar height 36 — saw 36
+PASS S10-320-band-fit one line, nothing past the right edge, words not cut — saw {"oneLine":true,"pastRight":false,"msgCut":false,"scrollW":320,"vw":320}
+PASS S10-320-band-ok OK button on screen — saw {"tag":"BUTTON.","l":270,"r":306,"t":120,"h":21,"cut":false}
+PASS S10-320-band-sign sign drawn amber (pixels) and 16px — saw {"am":{"amber":242,"total":1024},"sign":{"w":16,"h":16,"l":14,"r":30}}
+NOTE S10-320-band — msg html: <span class="sv-sign" aria-hidden="true"></span><b>Not swapped</b><span class="sv-sep"> — </span><span class="sv-rest">OIL not answered</span>
+PASS S10-320-band-long STAND-IN longest wording (letters replaced in the page): one line, not past right edge, not cut, h 36 — saw {"h":36,"oneLine":true,"pastRight":false,"msgCut":false,"kids":[{"tag":"SPAN.oil-msg","l":8,"r":193,"t":123,"h":16,"cut":false},{"tag":"BUTTON.yes","l":210,"r":279,"t":120,"h":21,"cut":false},{"tag":"BUTTON.","l":283,"r":312,"t":120,"h":21,"cut":false}],"msgW":{"tag":"SPAN.oil-msg","l":8,"r":193,"t":123,"h":16,"cut":false}}
+PASS S13b-desk-up the OIL bar is up — saw true
+PASS S13b-desk-focus Answer OIL has the keys when the bar comes up — saw {"active":"oilbar-answer","focusVisible":false,"outline":"none 3px rgb(31, 24, 3) off 0px"}
+FAIL S13b-desk-ring its ring is visible (focus-visible, outline width > 0) — saw {"active":"oilbar-answer","focusVisible":false,"outline":"none 3px rgb(31, 24, 3) off 0px"}
+PASS S13b-desk-esc Escape closes the bar — saw {"barCount":0}
+NOTE S13b-desk — after Escape: {"confirm":false,"board":true}

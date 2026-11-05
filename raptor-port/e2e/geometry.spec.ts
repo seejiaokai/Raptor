@@ -5967,3 +5967,66 @@ test('the crew panel hidden and shown again: no browser sideways scroll bar, and
   const back = await check('crew panel shown again')
   expect(Math.abs(back.weekW - open.weekW), 'back to its first width').toBeLessThanOrEqual(2)
 })
+
+/* THE ACCESS SCREENS ON A SHORT SCREEN, AND A LONG CALLSIGN ON THE PASS (the member / guest build's walk, 5 Nov 26 —
+   walker A's S2 and S4). On a phone held sideways (874 x 402) the request form and the waiting screen's pass are taller
+   than the screen: the screen centred its column, so its top - the TALON logo - was pushed above where a scroll can
+   reach (at the very top the logo stood at -93 on the request form, -44 on the pass, -26 under the failed-save band).
+   And a 14-letter callsign, set large on the pass (D1650), broke in the middle of the name onto a second line - a name
+   breaking is an outright fault (D1426): it is set smaller until it fits its one line. */
+const askAs = async (page: Page, user: string, cs: string, refuse = false) => {
+  await page.goto('/'); await page.waitForSelector('#luser')
+  /* the forced failure is set after the page loads: a reload starts the page afresh */
+  if (refuse) await page.evaluate(() => { (window as any).__lsRefuse = true })
+  await page.fill('#luser', user); await page.fill('#lpass', 'x')
+  await page.click('#loginForm button[type=submit]'); await page.waitForSelector('#accessRequest')
+  await page.fill('#accCs', cs); await page.fill('#accIni', 'ST')
+  await page.selectOption('#accSeat', 'FCP'); await page.selectOption('#accCat', 'C')
+}
+const topReach = (page: Page, screen: string) => page.evaluate((sel) => {
+  const s = document.querySelector(sel) as HTMLElement
+  s.scrollTop = 0
+  const logo = s.querySelector('.lb-mark')!.getBoundingClientRect()
+  const band = document.querySelector('.saveband.is-screen')
+  return { logoTop: Math.round(logo.top), bandBottom: band ? Math.round(band.getBoundingClientRect().bottom) : 0 }
+}, screen)
+test('a phone on its side: the request form and the pass scroll up to their logo, with and without the failed-save band', async ({ page }) => {
+  await page.setViewportSize({ width: 874, height: 402 })
+  await page.addInitScript(() => {
+    const w = window as any
+    if (w.__lsWrap) return
+    w.__lsWrap = true
+    const set = Storage.prototype.setItem
+    Storage.prototype.setItem = function (k: string, v: string) {
+      if (w.__lsRefuse) throw new DOMException('The quota has been exceeded (test: forced)', 'QuotaExceededError')
+      return set.call(this, k, v)
+    }
+  })
+  await askAs(page, 'side1@mail', 'Sideways')
+  const form = await topReach(page, '#accessRequest')
+  expect(form.logoTop, 'the request form: its logo can be scrolled into sight').toBeGreaterThanOrEqual(0)
+  await page.click('#accSend'); await page.waitForSelector('#accessWaiting')
+  const pass = await topReach(page, '#accessWaiting')
+  expect(pass.logoTop, 'the pass: its logo can be scrolled into sight').toBeGreaterThanOrEqual(0)
+  /* a failed save: the band across the top, the screen moved down under it - the logo below the band */
+  await page.click('#accOut'); await page.waitForSelector('#luser')
+  await askAs(page, 'side2@mail', 'Sideways2', true)
+  await page.click('#accSend'); await page.waitForSelector('#accessWaiting')
+  await page.waitForSelector('.saveband.is-screen')
+  const banded = await topReach(page, '#accessWaiting')
+  expect(banded.logoTop, 'under the band: the logo below it').toBeGreaterThanOrEqual(banded.bandBottom)
+})
+test('the pass sets a 14-letter callsign on one line, at a phone\'s width and a desktop\'s', async ({ page }) => {
+  for (const size of [{ width: 402, height: 874 }, { width: 1536, height: 864 }]) {
+    await page.setViewportSize(size)
+    await askAs(page, `long${size.width}@mail`, 'WWWWWWWWWWWWWW')
+    await page.click('#accSend'); await page.waitForSelector('#accessWaiting')
+    const cs = await page.locator('.pass-cs').evaluate((e: HTMLElement) => {
+      const lh = parseFloat(getComputedStyle(e).lineHeight)
+      return { lines: Math.round(e.getBoundingClientRect().height / lh), cut: e.scrollWidth > e.clientWidth + 1, text: e.textContent, size: parseFloat(getComputedStyle(e).fontSize) }
+    })
+    expect(cs, `${size.width}: one line, nothing cut`).toMatchObject({ lines: 1, cut: false, text: 'WWWWWWWWWWWWWW' })
+    expect(cs.size, `${size.width}: still large`).toBeGreaterThanOrEqual(16)
+    await page.click('#accOut'); await page.waitForSelector('#luser')
+  }
+})

@@ -1,0 +1,11 @@
+PASS S13b-desk-keys-up the OIL bar is up — saw true
+PASS S13b-desk-keys-focus Answer OIL has the keys when the bar comes up — saw {"active":"oilbar-answer","focusVisible":true,"outline":"solid 2px rgb(59, 198, 232) off 2px"}
+PASS S13b-desk-keys-ring its ring is visible (focus-visible, solid 2px outline) — saw {"active":"oilbar-answer","focusVisible":true,"outline":"solid 2px rgb(59, 198, 232) off 2px"}
+PASS S13b-desk-keys-esc Escape closes the bar — saw {"barCount":0}
+NOTE S13b-desk-keys — after Escape: {"confirm":false,"board":true}
+PASS S13b-desk-mouse-up the OIL bar is up — saw true
+PASS S13b-desk-mouse-focus Answer OIL has the keys when the bar comes up — saw {"active":"oilbar-answer","focusVisible":false,"outline":"none 3px rgb(31, 24, 3) off 0px"}
+NOTE S13b-desk-mouse-ring — RECORDED, left by a mouse press: {"active":"oilbar-answer","focusVisible":false,"outline":"none 3px rgb(31, 24, 3) off 0px"} (the browser shows no ring for a script focus after a mouse press)
+NOTE S13b-desk-mouse-ring2 — after Shift+Tab, Tab (keys now): {"active":"oilbar-answer","fv":true,"outline":"solid 2px rgb(59, 198, 232)"}
+PASS S13b-desk-mouse-esc Escape closes the bar — saw {"barCount":0}
+NOTE S13b-desk-mouse — after Escape: {"confirm":false,"board":true}
