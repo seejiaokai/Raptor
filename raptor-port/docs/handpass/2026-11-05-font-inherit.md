@@ -46,3 +46,5 @@ after each tap (D1281 — for the dense screens' pinned cells, none here).
 
 Walk: 24/24 PASS (2 sizes × 12), the walk script in place of a walker; 2 walk-script faults of its own fixed (the
 schedule's window frame name; a reason set without typing did not reach the save).
+
+**His look and merge (5 Nov 26):** "merge live", which stands as his look (D1640); the closing records went with it.

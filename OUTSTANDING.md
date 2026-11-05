@@ -99,7 +99,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-PICK-HELD-MARK] — the tapped day's cyan mark (D1289) BUILT 28 Oct 26 with [LW-WHOLE-LEAVE-WINDOW], and the phone's scroll (D1290) built in M3; left: whether the one-day window can be shorter — pictures to him first.
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-READS-OWED-1024] — left: design lessons 49, 50 and 52 reworded to what he said (the fix worded in the reader's file), and D1297's sweep of earlier evidence sheets with its fresh reader.
-- [CSS-FONT-INHERIT] — BUILT 5 Nov 26 as drawn (D1680) on `claude/css-font-inherit-look`: the nine font lines written out, a test that refuses the form; walked at both sizes; waiting on his look and "merge live", then archive.
 - [CSS-WRAPPER-GUARD] — the other half of [CSS-FONT-INHERIT]'s guard: a check that no rule is lost after a page's wrapper closes; the bid sheet's stylesheet has about 200 unscoped rules after its wrapper, apparently on purpose, so the check needs its rule worked out first.
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
 - [INP-CARD-COLUMNS] — on the Inputs list's cards LATE, "No document" and the hours in three columns, card to card (his D1305, pick A — D1310): to build with the next Inputs batch.
@@ -2215,19 +2214,6 @@ recommended red when any row turns red, a row a line, before → after. Not answ
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
 
-### [CSS-FONT-INHERIT] Font lines the browser drops (found 24 Oct 26, round 3's check)
-`font: 600 13px inherit` is not a font (a family cannot be "inherit" inside the shorthand), so the browser drops the whole
-line and the element keeps its own default letters, size and weight. Round 3's Remarks box had it (a textarea's default is a
-typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src/ui/scheduler/07-inputs-calendar.css` (line
-298), `12-schedule-editing.css` (173, 196), `14-input-editors.css` (277 — the Inputs window's boxes, 349), `25-inputs-calendar.css`
-(491, 504, 572, 592). Each written out as `font-family: inherit` plus its size and weight would show the app's letters at
-the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
-next Inputs or schedule batch (D490).
-**Drawn 5 Nov 26** (nine lines: eight places on screen and one dead rule, `.ic-pop input`): `raptor-port/docs/mock/2026-11-05-font-inherit/`, put to him on https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1 — waiting on his answer.
-**Built 5 Nov 26** on `claude/css-font-inherit-look` (his D1680, "build it as drawn"): the nine lines written out; the font half of the guard is `raptor-port/src/ui/font-inherit-css.test.ts` (red on `main`, green on the fix); the wrapper half is filed apart, [CSS-WRAPPER-GUARD]; the Leave War's Auto-approve, which shares `.pp-sw`, held, then matched on his "as recommended" (D1681, [LW-AUTOAPPROVE-LETTERS] closed). Walk: `raptor-port/docs/handpass/2026-11-05-font-inherit.md`, 24/24.
-**A guard with it (691, 704):** a structural test over the stylesheets — no rule after a scoping wrapper's close in a
-file that wraps itself (`#page-leavewar { … }`; a block appended after it lost silently, twice, 24 and 25 Oct 26), and no
-`font:` shorthand naming `inherit`. A rule that only a comment states is broken again.
 ### [CSS-WRAPPER-GUARD] A rule lost after a page wrapper's close (filed 5 Nov 26 from [CSS-FONT-INHERIT]'s guard)
 The guard [CSS-FONT-INHERIT] named had two halves; the font half is built. The other: in a stylesheet that wraps itself in its
 page (`#page-leavewar { … }`), a block appended after the wrapper's close lands unscoped and was lost twice (24 and 25 Oct 26).

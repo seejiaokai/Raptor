@@ -7751,3 +7751,19 @@ as it was in `raptor-port/src/leavewar/ui/bidpicker.css` (D1625). **Question to 
 as the bid window's date beside it) or keep. Pictures: `raptor-port/docs/img/handpass/2026-11-05-font-inherit/` (the walk's
 `*-leavewar-switch.png` is today's look). **Place:** with the next Leave War batch (D490).
 
+
+*Moved here 2026-11-05 by backlog-archive.mjs ([CSS-FONT-INHERIT]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [CSS-FONT-INHERIT] Font lines the browser drops (found 24 Oct 26, round 3's check)
+`font: 600 13px inherit` is not a font (a family cannot be "inherit" inside the shorthand), so the browser drops the whole
+line and the element keeps its own default letters, size and weight. Round 3's Remarks box had it (a textarea's default is a
+typewriter face — fixed there, 0cca37160). Eight more, older: `raptor-port/src/ui/scheduler/07-inputs-calendar.css` (line
+298), `12-schedule-editing.css` (173, 196), `14-input-editors.css` (277 — the Inputs window's boxes, 349), `25-inputs-calendar.css`
+(491, 504, 572, 592). Each written out as `font-family: inherit` plus its size and weight would show the app's letters at
+the weight meant — a look change on screens he uses daily, so a before / after picture first (D541). **Place:** with the
+next Inputs or schedule batch (D490).
+**Drawn 5 Nov 26** (nine lines: eight places on screen and one dead rule, `.ic-pop input`): `raptor-port/docs/mock/2026-11-05-font-inherit/`, put to him on https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1 — waiting on his answer.
+**Built 5 Nov 26** on `claude/css-font-inherit-look` (his D1680, "build it as drawn"): the nine lines written out; the font half of the guard is `raptor-port/src/ui/font-inherit-css.test.ts` (red on `main`, green on the fix); the wrapper half is filed apart, [CSS-WRAPPER-GUARD]; the Leave War's Auto-approve, which shares `.pp-sw`, held, then matched on his "as recommended" (D1681, [LW-AUTOAPPROVE-LETTERS] closed). Walk: `raptor-port/docs/handpass/2026-11-05-font-inherit.md`, 24/24.
+**A guard with it (691, 704):** a structural test over the stylesheets — no rule after a scoping wrapper's close in a
+file that wraps itself (`#page-leavewar { … }`; a block appended after it lost silently, twice, 24 and 25 Oct 26), and no
+`font:` shorthand naming `inherit`. A rule that only a comment states is broken again.

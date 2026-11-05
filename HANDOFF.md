@@ -29,12 +29,10 @@ the later merge keeps both (D78).
 - **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
 <!-- /now -->
 <!-- now:claude/css-font-inherit-look -->
-### `claude/css-font-inherit-look` — [CSS-FONT-INHERIT] BUILT on his "build it as drawn" (D1680, 5 Nov 26); waiting on his look and "merge live"
-- **Built:** the nine dropped font lines written out (`ui/scheduler/07-…`, `12-…`, `14-…`, `25-…css`); the font half of the item's guard, `src/ui/font-inherit-css.test.ts` (red on `main`, all nine named; green now). Drawing `raptor-port/docs/mock/2026-11-05-font-inherit/`, page https://claude.ai/artifact/LJLWFHi7gUBJ24mmmWBCS1.
-- **Found by the roll-call:** the Leave War bid windows' Auto-approve shares `.pp-sw`; not on his drawing, so held and put to him; his "as recommended" (D1681) — it matches, re-walked ([LW-AUTOAPPROVE-LETTERS] archived). The wrapper half of the guard flags ~200 deliberate-looking rules after `bidpicker.css`'s wrapper — filed apart, [CSS-WRAPPER-GUARD].
-- **Checked:** WALK tier; `scripts/handpass/font-inherit-walk.mjs` 24/24 at 1536 Chromium and 402×874 WebKit, no page errors (evidence `raptor-port/docs/handpass/2026-11-05-font-inherit.md`, walk-ledger row); code check clean; doc check OK; GitHub's run of the pull request is the full gate set (D1086).
-- **Numbers:** D1680, D1681 taken (next free in this range D1682); no lessons; observation 810.
-- **Next:** his look → "merge live" → closing records (archive [CSS-FONT-INHERIT]); nothing else open here.
+### `claude/css-font-inherit-look` — [CSS-FONT-INHERIT] LIVE on his "merge live" of 5 Nov 26 (pull request 640); this block goes at the next handoff
+- **Shipped:** the nine dropped font lines written out as drawn (D1680) and the Leave War's Auto-approve matched (D1681); the guard `raptor-port/src/ui/font-inherit-css.test.ts`. Evidence `raptor-port/docs/handpass/2026-11-05-font-inherit.md` (24/24 at both sizes); drawing `raptor-port/docs/mock/2026-11-05-font-inherit/`.
+- **Left open, filed:** [CSS-WRAPPER-GUARD] (the wrapper half of the guard; ~200 deliberate-looking rules after `bidpicker.css`'s wrapper need its rule worked out first).
+- **Numbers:** D1680, D1681 taken; no lessons; observation 810.
 <!-- /now -->
 ## Next, in order
 
