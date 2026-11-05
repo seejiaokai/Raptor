@@ -74,6 +74,47 @@ function PassCallsign({ cs }: { cs: string }) {
   return <h2 className="pass-cs" id="accAsked" ref={el}>{cs}</h2>
 }
 
+/* the pass itself (D1650, D1656, D1664) — its own piece, so the screen's choice of card stays simple */
+function WaitingPass({ req, failed, name, signOut }: { req: any, failed: boolean, name: string, signOut: React.ReactNode }) {
+  const fields: [string, string][] = ([['Initials', req.ini], ['Seat', req.seat === 'GND' ? 'Personnel' : seatLabel(req.seat)], ['CAT', req.cat]] as [string, any][])
+    .filter(([, v]) => !!String(v || '').trim()).map(([k, v]) => [k, String(v)])
+  return (
+    <div className="login-card acc-card acc-pass">
+      <div className="pass-top">
+        <div className="pass-row">
+          <svg className="pass-claws" viewBox="0 -2 60 64" aria-hidden="true"><path d={CLAWS} /></svg>
+          {/* NOT SENT YET WHILE IT IS NOT SAVED (owner D1664, 5 Nov 26 - "As recommended"; drawn
+              docs/mock/2026-11-05-member-guest-build/img/Q1-pass-proposed-*.png): with the failed-save band up, his request
+              may be the very thing not saved, so the pass never says it went (D1657) - the mark and the first step read
+              "Not sent yet" in the band's amber, the second step not yet his; once the save lands the look is back by itself */}
+          <span className={'pass-state' + (failed ? ' unsent' : '')}><i aria-hidden="true" />{failed ? 'Not sent yet' : 'Waiting for an admin'}</span>
+        </div>
+        <PassCallsign cs={req.cs} />
+        {fields.length > 0 && <dl className="pass-fields">{fields.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}
+      </div>
+      <div className="pass-tear" aria-hidden="true" />
+      <div className="pass-foot">
+        <ol className="pass-steps">
+          {failed
+            ? <li className="unsent"><span className="pass-dot" aria-hidden="true">!</span>Not sent yet</li>
+            : <li className="done"><span className="pass-dot"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.4l2.3 2.3 4.7-5" /></svg></span>Request sent</li>}
+          {failed
+            ? <li><span className="pass-dot" />An admin approves</li>
+            : <li className="now" aria-current="step"><span className="pass-dot" />An admin approves</li>}
+          <li><span className="pass-dot" />You're on the schedule</li>
+        </ol>
+        {/* D221 — with the admin's guest switch on, straight into the guest view */}
+        {guestEntry() && <>
+          <p className="acc-p">Meanwhile you can look at the schedule, read only.</p>
+          <button type="button" className="go" id="accGuest" onClick={() => { const g = guestEntry(); if (g) { resetSession(sessionFor(g)); notify() } }}>View the schedule</button>
+        </>}
+        {signOut}
+        <p className="pass-who">Signed in as <b id="accName">{name}</b></p>
+      </div>
+    </div>
+  )
+}
+
 export function AccessScreen() {
   useVersion()
   const [cs, setCs] = useState('')
@@ -116,36 +157,7 @@ export function AccessScreen() {
      the mark and the steps say the same. The blue fade from the top left lies over the whole card, one surface, thinning
      out across the tear (D1654, his lesson 82). What he did not give (initials are never required — D225; personnel hold
      no CAT) is left out of the pass rather than shown blank. Nothing glows (D887): the claws are the card's own small mark. */
-  if (req) {
-    const fields: [string, string][] = ([['Initials', req.ini], ['Seat', req.seat === 'GND' ? 'Personnel' : seatLabel(req.seat)], ['CAT', req.cat]] as [string, any][])
-      .filter(([, v]) => !!String(v || '').trim()).map(([k, v]) => [k, String(v)])
-    return screen('accessWaiting',
-      <div className="login-card acc-card acc-pass">
-        <div className="pass-top">
-          <div className="pass-row">
-            <svg className="pass-claws" viewBox="0 -2 60 64" aria-hidden="true"><path d={CLAWS} /></svg>
-            <span className="pass-state"><i aria-hidden="true" />Waiting for an admin</span>
-          </div>
-          <PassCallsign cs={req.cs} />
-          {fields.length > 0 && <dl className="pass-fields">{fields.map(([k, v]) => <div key={k}><dt>{k}</dt><dd>{v}</dd></div>)}</dl>}
-        </div>
-        <div className="pass-tear" aria-hidden="true" />
-        <div className="pass-foot">
-          <ol className="pass-steps">
-            <li className="done"><span className="pass-dot"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.4l2.3 2.3 4.7-5" /></svg></span>Request sent</li>
-            <li className="now" aria-current="step"><span className="pass-dot" />An admin approves</li>
-            <li><span className="pass-dot" />You're on the schedule</li>
-          </ol>
-          {/* D221 — with the admin's guest switch on, straight into the guest view */}
-          {guestEntry() && <>
-            <p className="acc-p">Meanwhile you can look at the schedule, read only.</p>
-            <button type="button" className="go" id="accGuest" onClick={() => { const g = guestEntry(); if (g) { resetSession(sessionFor(g)); notify() } }}>View the schedule</button>
-          </>}
-          {signOut}
-          <p className="pass-who">Signed in as <b id="accName">{name}</b></p>
-        </div>
-      </div>)
-  }
+  if (req) return screen('accessWaiting', <WaitingPass req={req} failed={failed} name={name} signOut={signOut} />)
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()

@@ -161,7 +161,7 @@ skip, no write path changed.
 | 2 | walk A, S4 | a 14-letter callsign breaks mid-name on the pass | **FIXED** red first (`e2e/geometry.spec.ts` "the pass sets a 14-letter callsign…") — an outright fault (D1426): the name steps down to fit its line, never below 16px |
 | 3 | walk B, S11 | the board's Desktop layout on a sideways phone: the OIL bar's Answer OIL off the screen at the far pan | **FIXED** red first (`e2e/oilwait.spec.ts` phone on its side) — older: the walker's script shows the same on the build before this one (`42df6337b`); rides this batch (D490) |
 | 4 | the drawing check | the pass's space under its fields 13px tighter than drawn | **FIXED** — put back to the drawing (D1424) |
-| 5 | walk A, S1; the scenario designer's row 1 | under a failed save the pass still ticks "Request sent" and reads "Waiting for an admin", the "Not saved" band above it | **A question for him** (D1625 — anything new he would see is drawn first): §11 |
+| 5 | walk A, S1; the scenario designer's row 1 | under a failed save the pass still ticks "Request sent" and reads "Waiting for an admin", the "Not saved" band above it | put to him (D1625), drawn; **his answer D1664 ("As recommended")** — BUILT red first (`ui/accounts-ui.test.tsx` D1657 block: the mark and step 1 read "Not sent yet" while the band is up, the approved look back after Retry); pictured beside the drawing `look-d1664/W1-waiting-band-*.png`; the drawing check of the pass still green (`drawcheck-access-wait-3/`); the pass moved into its own piece (`WaitingPass`) for the code check |
 | 6 | walk A, S6 | a stranger signing in again with the guest switch on lands on the guest page, not the pass | not a fault — as built and pinned (D204, D221; `accounts-ui.test.tsx` "a fresh sign-in with the switch on is already the guest view") |
 | 7 | walk A, S8 | the guest page may now show the passing "Saving…" note under its bar (it mounts the bar's own `SaveStatus`) | not a fault — the same note every page's bar shows, letting presses through; none appeared in the walk |
 | 8 | walk B, S12 | in the Leave War's OIL tracker the strip is inset by the sheet's padding | not a fault — as before (the band is a line of that sheet's column, D587), the look only changed |
@@ -188,7 +188,7 @@ OIL tracker's grid and settings, the sign-in, Request access, the waiting screen
 Edit Schedule's sign-off lists, the board's Desktop layout) · 20 scenarios and the plain-user rounds of a stranger and a member ·
 MISSING: 4 fixed red first, 1 put to him, 0 filed.
 
-## 11. Questions for him
+## 11. Questions for him — both answered 5 Nov 26: "As recommended" (D1664 built; D1665 filed as [NOTSAVED-REFUSAL-LOOK])
 
 1. **The pass under a failed save** (§8 #5): it still ticks "Request sent" and reads "Waiting for an admin" under the "Not saved"
    band. Recommended: until the save lands, the mark and step 1 read "Not sent yet" in the band's amber, and the approved look

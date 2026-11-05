@@ -319,8 +319,19 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
     expect($('#accessWaiting')).toBeTruthy()
     expect($('.saveband.is-screen'), 'the request was not saved: the waiting screen says so').toBeTruthy()
     expect($('#accessWaiting').classList.contains('band-up')).toBe(true)
+    /* D1664 (5 Nov 26, "As recommended"): while it is not saved the pass says so - its mark and its first step read
+       "Not sent yet" (the band's amber), the second step not yet his */
+    const steps = () => [...document.querySelectorAll('#accessWaiting .pass-steps li')].map(n => `${n.className}:${n.textContent}`)
+    expect($('#accessWaiting .pass-state').textContent, 'the mark').toBe('Not sent yet')
+    expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(true)
+    expect(steps(), 'the steps').toEqual(['unsent:!Not sent yet', ':An admin approves', ":You're on the schedule"])
+    expect(document.querySelector('#accessWaiting .pass-steps li[aria-current]'), 'no step is where he is yet').toBeNull()
     await retry($('.saveband.is-screen'))
     expect($('.saveband')).toBeFalsy()
+    /* saved: the approved look is back by itself */
+    expect($('#accessWaiting .pass-state').textContent).toBe('Waiting for an admin')
+    expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(false)
+    expect(steps()).toEqual(['done:Request sent', 'now:An admin approves', ":You're on the schedule"])
   })
   it('the guest page: the band is the guest bar last line, as on every other page', async () => {
     await signInAs('ad', 'a'); setGuestView(true)
