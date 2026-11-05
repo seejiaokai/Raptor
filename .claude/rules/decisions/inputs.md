@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1719 | 6 Nov 26 | On a desktop the Inputs List's column headings sort from the keyboard as built — Tab reaches each, Enter or Space sorts as a click does, and the heading the keys are on wears the app's cyan ring inside its cell; a mouse click draws no ring. |
 | D1708 | 5 Nov 26 | Where the Inputs calendar's top row is too narrow for one line, the filters and the gear start the second line at its left, together, so the gear is never alone and never under an open input window; where the row holds one line they stay at its right end (D1702). |
 | D1702 | 5 Nov 26 | On the Inputs calendar's top row the filters and the settings gear move as one group, so the gear never stands alone — at the row's right end where it holds one line, at the left of the second line where it wraps (D1708); between 1340 and 1439 wide the search box is a little narrower, so 1366 holds one line; a phone's row is unchanged. — changed by D1708 |
 | D1624 | 3 Nov 26 | The input window's unsaved-changes question, and the "open the other input and lose them?" question drawn the same way, is redesigned: design C is built for the close question, a small card hanging from the ✕ (D1626); nothing beyond it is built before he sees its picture. — changed by D1626 |

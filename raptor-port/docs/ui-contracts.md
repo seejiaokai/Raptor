@@ -11341,7 +11341,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The Inputs list has no edit in place (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
   live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
   order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
-  they were, without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
+  they were (its headings also sort from the keyboard — Tab, then Enter or Space, the cyan ring on the heading, D1719), without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
   the paperclip and the OIL / OIL? chips stay in its last column. Everything the pencil's row did is done in the window
   (`ui/inputedit.tsx`), which for that reason now carries (a) the two-tap calendar for EVERY saved input its reader may
   change, not only a shared one (D681's door widened — what D718 left behind of D681's reading 7), and (b) the OIL line
