@@ -38,6 +38,8 @@ export function NamePuck({ p, quals, testid, onChipEnter, onChipLeave, onChipCli
   return (
     <span className={cls}>
       <span className="nm">{p.callsign}</span>
+      {/* the line is drawing only: a screen reader hears "SANS" with the name, as it heard the old tag (the code read's 3) */}
+      {san && <span className="lw-sr"> SANS</span>}
       {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the chip sits inside the name's own button (the row's one Tab stop, which opens his person window), where a control of its own is not allowed; the qualifications it lists are read out as part of that button's name, from the chip's label */}
       <span
         className={`role lw-chip ${catClass(p)}${has ? ' has-quals' : ''}`}

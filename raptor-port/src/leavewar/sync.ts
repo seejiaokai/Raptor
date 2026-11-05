@@ -149,7 +149,7 @@ import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYP
 import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
-import { hasRead } from '../state/noticeseen'
+import { hasRead, forgetRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { ELOG } from '../engine/editlog'
 import { callsignProblem } from '../state/roster-add'
@@ -2515,6 +2515,7 @@ export function restoreProblem(id: string, postIn: string): string | null {
 function restoreBody(id: string, rename: string | null, postIn?: string): boolean {
   const body = rosterBody(id)!   // (both callers have found his body, archived)
   let ok = true
+  let forget: string[] = []
   const r = cmdCommit({
     /* UNDO is the posting's own decision taken back (the posting command, as `takeBack` is); RESTORE is Admin → Users'.
        The change history says each as what it is (Astra's read of the [DRAFT-PENDING] fixes, 02) */
@@ -2539,13 +2540,14 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         enableForRestore(id)
         body.back = true
       }
-      if (lines.length) retractPostingLines(lines)
+      if (lines.length) forget = retractPostingLines(lines)
       validate()
       finishPeopleWrite()
       if (lines.length) schedApplyEnd()
     },
   })
   if (!ok || (r && 'ok' in r && r.ok === false)) return false
+  if (forget.length) forgetRead(forget)
   markBack(id)
   raptorNotify()
   return true
@@ -2708,17 +2710,25 @@ function postingLinesOf(id: string): Notice[] {
   const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
-function retractPostingLines(lines: readonly Notice[]): void {
+/* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
+   code read's 2, 5 Nov 26), or a posting set again for the same date, whose worked-out line keeps its id, came back to him
+   already read. A "taken back" line goes only to a man still an admin (the security read's S1, 5 Nov 26): a posting's
+   lines are a scheduler's, and one who is a member since is not sent one (his old line still goes). */
+function retractPostingLines(lines: readonly Notice[]): string[] {
   const by = me() != null ? String(me()) : null
   const at = Date.now()
+  const admins = new Set(schedulerIds())
+  const forget: string[] = []
   for (const n of lines) {
     const ix = NOTICES.findIndex(x => x.id === n.id)
     if (ix >= 0) NOTICES.splice(ix, 1)
-    if (n.to === by || !hasRead(n.to, n)) continue
+    if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
+    if (!hasRead(n.to, n) || !admins.has(n.to)) continue
     const p = n.what[0]
     if (p?.k !== 'po') continue
     noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at)
   }
+  return forget
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
@@ -2727,6 +2737,7 @@ function retractPostingLines(lines: readonly Notice[]): void {
 function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}, undo = false): boolean {
   const body = rosterBody(id)
   let ok = false
+  let forget: string[] = []
   cmdCommit({
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
@@ -2740,12 +2751,13 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
-      if (lines.length) retractPostingLines(lines)
+      if (lines.length) forget = retractPostingLines(lines)
       validate()
       finishPeopleWrite()
       if (lines.length) schedApplyEnd()
     },
   })
+  if (ok && forget.length) forgetRead(forget)
   if (ok) raptorNotify()
   return ok
 }
@@ -2764,7 +2776,15 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
 export function postOutProblem(id: string, outcome: PostOutcome): string | null {
   const here = adminArchived(id)
   if (here) return here
+  /* NO SANS FOR GROUND CREW (his D1709, 5 Nov 26): SANS is an aircrew status — the chips offer him none (OutcomeChips), and
+     the writer refuses it whatever door asks */
+  if (outcome === 'sans' && isGroundCrew(id)) return "Ground crew can't be made SANS"
   return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
+}
+/** a ground-crew man (the war's `pers`, Raptor's GND seat) — offered no SANS posting (his D1709) */
+export function isGroundCrew(id: string): boolean {
+  const b = rosterBody(id)
+  return !!b && (!!b.pers || b.seat === 'GND')
 }
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
   const body = rosterBody(id)

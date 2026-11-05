@@ -111,4 +111,13 @@ describe('the SANS purple line on the Leave War names (D1697, D1698)', () => {
     expect(puckOf('po_o').classList.contains('san')).toBe(false)
     expect(puckOf('tata').classList.contains('san')).toBe(false)
   })
+  it('a screen reader still hears "SANS" with the name — the line is drawing only (the code read, 3 — 5 Nov 26)', () => {
+    render(<Matrix />)
+    for (const id of ['po_t', 'san_t']) {
+      const sr = puckOf(id).querySelector('.lw-sr')
+      expect(sr && sr.textContent, id).toBe(' SANS')
+    }
+    expect(puckOf('po_o').querySelector('.lw-sr'), 'none on a man who is not SANS').toBeNull()
+    expect(puckOf('po_t').querySelector('.nm')!.textContent, 'the name itself unchanged').toBe('SIDEWINDER')
+  })
 })

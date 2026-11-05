@@ -6754,7 +6754,7 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
 the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
-default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
+default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too), "Transfer to Sqn" (drawn, not pressable — "Comes with the
 shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
 suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete

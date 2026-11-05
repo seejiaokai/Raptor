@@ -203,3 +203,39 @@ describe('the scenario designer’s two suspected faults (5 Nov 26 — his scena
     expect(poLines('rocky').map(words), 'the first posting ran: its record stays').toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
   })
 })
+
+/* THE READS' FINDINGS (5 Nov 26 — docs/handpass/parts/tb1105/read-security.md S1, read-code.md 2) */
+describe('the reads’ findings', () => {
+  it('security S1: an admin who read his line and is a member since gets no "taken back" line — his line still goes', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(updateAccount('achex', { role: 'main' })).toBeNull()
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky'), 'his posting line went').toEqual([])
+    expect(backLines('rocky'), 'no line to a man who is no longer an admin').toEqual([])
+  })
+  it('code read 2: the admin who pressed Undo, having read the worked-out line, sees it UNREAD when the posting is set again', () => {
+    const id = noSignIn()
+    expect(postOut(id, PO, false)).toBe(true)
+    reach()
+    expect(markAllNoticesRead(), 'Saber reads his own "off the manpower" line').toBe(true)
+    expect(undoPostOut(id)).toBe(true)
+    signInAs('hex')
+    expect(postOut(id, PO, false)).toBe(true)                    // Hex sets it again, the same date
+    signInAs('ad', 'a')
+    const line = allNoticesFor('stiff').find(n => (n.what || [])[0]?.k === 'po')!
+    expect(line, 'the posting’s line is back in Saber’s bell').toBeTruthy()
+    expect(isUnread(line, 'stiff'), 'unread: it lights his bell again').toBe(true)
+  })
+})
+
+describe('no SANS for ground crew (his D1709, 5 Nov 26)', () => {
+  it('the posting writer refuses SANS for a ground-crew man; his other outcomes stand', () => {
+    const g = Object.keys(PEOPLE).find(id => (P(id).pers || P(id).seat === 'GND') && !P(id).archived && !P(id).special && getState().people.some(p => p.id === id))!
+    expect(g, 'a ground-crew man on the war').toBeTruthy()
+    expect(postOut(g, PO, 'sans'), 'refused').toBe(false)
+    expect(getState().postOuts[g]?.to ?? null, 'nothing written').toBeNull()
+    expect(postOut(g, PO, 'overseas'), 'Overseas Sqn still his').toBe(true)
+  })
+})

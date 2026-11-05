@@ -89,6 +89,19 @@ export function markNoticeRead(id: string): boolean {
   const live = new Set(allNoticesFor(pid).filter(x => x.at > cur.upto).map(x => x.id))
   return write(pid, { upto: cur.upto, ids: [...new Set([...cur.ids, id])].filter(x => live.has(x)).sort() })
 }
+/** IDS OF LINES HIS OWN ACT TOOK AWAY, dropped from the read record of the person signed in (the posting sheet's Undo post out
+ *  — leavewar/sync.ts retractPostingLines; the code read's 2, 5 Nov 26): a posting set again for the same date has a
+ *  worked-out line with the same id, which must come back to him unread. His own row, by his own `notices.seen` command;
+ *  false when nothing was dropped. */
+export function forgetRead(ids: readonly string[]): boolean {
+  const pid = me()
+  const cur = pid ? SEEN[pid] : null
+  if (!pid || !cur) return false
+  const drop = new Set(ids)
+  const next = cur.ids.filter(x => !drop.has(x))
+  if (next.length === cur.ids.length) return false
+  return write(pid, { upto: cur.upto, ids: next })
+}
 /** "Mark all read" — everything addressed to the person signed in, each by its id */
 export function markAllNoticesRead(): boolean {
   const pid = me()

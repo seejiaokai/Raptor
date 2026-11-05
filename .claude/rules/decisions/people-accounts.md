@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1709 | 5 Nov 26 | A ground-crew man cannot be posted out as SANS: the Post out choices offer him no SANS — on the one-day sheet, the posting sheet and the drag window — and the posting writer refuses it; SANS stays an aircrew status. |
 | D1696 | 5 Nov 26 | The bell's "off the manpower" line is worked out from the posting as it stands, as built: it moves with the posting's date, goes with an undone posting (a read one taken back, D1693), and goes if the man is archived or deleted by hand later; it is not saved as the other three lines are. |
 | D1695 | 5 Nov 26 | His direction: one app and one database for many squadrons — each person's squadron set when his account is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in one squadron and half in another. |
 | D1694 | 5 Nov 26 | On Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row on each side, clear of his name, as built — not on the row's edge, as drawn. |
@@ -109,7 +110,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |
 | D296 | 27 Sep 26 | A guest from another community is marked by an orange corner on his puck (option A). |
 | D295 | 27 Sep 26 | An archived man can be renamed directly — on Admin → Users' archived list since the one door (D310); when Restore meets a callsign a man on the roster holds, it offers the rename on the spot. — changed by D310 |
-| D294 | 27 Sep 26 | The post-out choices are four short chips — "Overseas Sqn", "Delete" (first "Fully delete", D298), "SANS", "Transfer to Sqn" — with one short line saying what the chosen one does on the date; the "he's back" line lines up with the page's left edge. — changed by D298 |
+| D294 | 27 Sep 26 | The post-out choices are four short chips — "Overseas Sqn", "Delete" (first "Fully delete", D298), "SANS", "Transfer to Sqn" — with one short line saying what the chosen one does on the date; the "he's back" line lines up with the page's left edge. — changed by D1709, D298 |
 | D293 | 27 Sep 26 | No "Sign up" button on the sign-in page. |
 | D292 | 27 Sep 26 | An admin can switch himself to the member view and back, by tapping his name badge. |
 | D290 | 27 Sep 26 | A man deleted for leaving flying for good (D287) is kept underneath as a hidden "deleted" mark — never erased. |
@@ -123,7 +124,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
 | D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's; one app may serve every squadron and type, a man lent to another (D1100). — changed by D1100, D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |
-| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
+| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D1709, D287, D283 |
 | D227 | 26 Sep 26 | Each admin's bell is his own (D216's "he" read per admin). |
 | D226 | 26 Sep 26 | The callsign/name stays at 14 letters, and the box says so — it never quietly cuts a name. |
 | D225 | 26 Sep 26 | Initials are asked but never required — on the sign-up and on Admin → Users' New person alike. |

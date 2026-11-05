@@ -2664,3 +2664,7 @@ touch-action: pan-x pan-y;
 #page-leavewar .mx td:not(.selcell) :is(.c.k-unav.s-a.jl, .c.k-unav.s-a.jr) { box-shadow: inset 0 1.5px 0 rgba(200, 212, 228, .78), inset 0 -1.5px 0 rgba(200, 212, 228, .78); }
 #page-leavewar .mx td:not(.selcell) .c.k-unav.s-a.jr:not(.jl) { box-shadow: inset 0 1.5px 0 rgba(200, 212, 228, .78), inset 0 -1.5px 0 rgba(200, 212, 228, .78), inset 1.5px 0 0 rgba(200, 212, 228, .78); }
 #page-leavewar .mx td:not(.selcell) .c.k-unav.s-a.jl:not(.jr) { box-shadow: inset 0 1.5px 0 rgba(200, 212, 228, .78), inset 0 -1.5px 0 rgba(200, 212, 228, .78), inset -1.5px 0 0 rgba(200, 212, 228, .78); }
+
+/* the word "SANS" a screen reader hears with a SANS man's name (NamePuck — the purple line is drawing only; the code read's 3,
+   5 Nov 26): kept off the screen */
+#page-leavewar .lw-sr{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
