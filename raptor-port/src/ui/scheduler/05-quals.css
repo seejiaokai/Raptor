@@ -68,6 +68,17 @@
 /* on a phone two fingers on the table zoom the table (owner D1110, 21 Oct 26 — QualsPage, ui/pinchzoom.ts): pan-x pan-y leaves
    one finger to scroll both ways and keeps the browser's own pinch off it, so the page around it never zooms */
 @media (max-width:820px){.qwrap{touch-action:pan-x pan-y} #qtbl,.qfixed .qtbl{zoom:var(--qz,1)}}
+/* NOTHING SHOWS AT THE NAME COLUMN'S LEFT EDGE AT A ZOOM BETWEEN WHOLE STEPS ([QUALS-ZOOM-EDGE-SLIVER], found 30 Oct 26,
+   fixed the night of 6 Nov 26 — D1518: nothing pinned leaks). Zoomed by a pinch to, say, 0.9 and scrolled sideways, the
+   layout puts the sticky name cell exactly at the table's edge, but Chromium and WebKit alike paint it up to one screen
+   pixel to the right of there, and that strip showed the cells scrolled under it (a CAT chip's colour, a white letter).
+   A strip inside the cell covers nothing (measured): the gap is left of the painted cell, so its own fill is carried a
+   few pixels further left, past the edge, where the table's scroll box clips it. A phone's only, where the zoom is; the
+   name heading the same. Pinned by e2e/pinchzoom.spec.ts "after a pinch to a zoom between whole steps…". */
+@media (max-width:820px){
+  .qtbl td.qname::before,.qtbl thead th[data-sort="cs"]::before{content:'';position:absolute;top:0;bottom:0;left:-3px;width:3px;
+    background:inherit;pointer-events:none}
+}
 .qwrap .lift-frame{z-index:2}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").

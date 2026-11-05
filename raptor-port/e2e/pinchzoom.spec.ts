@@ -383,6 +383,42 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     await context.close()
   })
 
+  /* [QUALS-ZOOM-EDGE-SLIVER] (found 30 Oct 26, the pinch walk; fixed the night of 6 Nov 26): after a pinch, at a zoom
+     between whole steps, the table scrolled sideways, a one-screen-pixel sliver of the cells scrolled under the name
+     column (a CAT chip's colour, a white letter) showed at the column's left edge — in Chromium and in WebKit alike. The
+     layout puts the name cell exactly at the edge; the browser paints the sticky cell up to a screen pixel to the right
+     of it, and the strip between the table's clip and the painted cell shows what is under it. Read in the screen's own
+     pixels (a reading of the boxes says it is covered), a strip two pixels wide from the edge, down every row in sight. */
+  test('after a pinch to a zoom between whole steps, nothing scrolled under the name column shows at its left edge ([QUALS-ZOOM-EDGE-SLIVER], D1518)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await pinch(cdp, 200, 500, 200, 180)
+    const z = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
+    expect(z, 'a zoom between whole steps').toBeGreaterThan(0.8)
+    expect(z).toBeLessThan(0.97)
+    const bright: string[] = []
+    for (let sl = 1; sl <= 400; sl += 13) {
+      const g = await page.evaluate(sl => {
+        const w = document.querySelector('#page-quals .qwrap') as HTMLElement; w.scrollLeft = sl
+        const r = w.getBoundingClientRect(), names = [...document.querySelectorAll('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(q => q.top > 140 && q.bottom < innerHeight - 10)
+        return { x: r.left, top: names[0].top, h: names[names.length - 1].bottom - names[0].top, sl: w.scrollLeft }
+      }, sl)
+      await sleep(30)
+      const png = await page.screenshot({ clip: { x: g.x, y: g.top, width: 2, height: g.h } })
+      const k = await page.evaluate(async b64 => {
+        const img = await new Promise<HTMLImageElement>(ok => { const i = new Image(); i.onload = () => ok(i); i.src = 'data:image/png;base64,' + b64 })
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d')!; x.drawImage(img, 0, 0)
+        const d = x.getImageData(0, 0, c.width, c.height).data; let n = 0
+        for (let i = 0; i < d.length; i += 4) if (Math.max(d[i], d[i + 1], d[i + 2]) > 100) n++
+        return n
+      }, png.toString('base64'))
+      if (k) bright.push(`scrolled ${Math.round(g.sl)}: ${k} bright pixels`)
+    }
+    expect(bright, `at zoom ${z.toFixed(3)}, the name column's left edge shows only its own fill`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
   /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the pinch
      (D1288's `scrollPage`), which unpins the heading row frozen under the top bar; the fingers turning back to a pinch in
      scroll the page down again, and the row was pinned anew mid-gesture — drawn at rest over the stretched table (not one of

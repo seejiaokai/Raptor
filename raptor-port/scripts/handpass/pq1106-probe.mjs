@@ -146,3 +146,55 @@ if (what === 'sliver') {
   console.log('zoom', z.toFixed(4), JSON.stringify(geo), '\nfirst device-pixel columns of the name column:', JSON.stringify(res))
   await br.close()
 }
+
+if (what === 'scan') {
+  // [QUALS-ZOOM-EDGE-SLIVER] swept: the table's zoom set as the pinch leaves it (its --qz), many sideways scrolls; for each,
+  // the screen's pixels in a strip 2 CSS px wide from the name column's left edge, counted where brighter than the
+  // column's own fill and its row lines (max channel > 100). A count is the sliver.
+  const { br, p } = await open(process.env.SCAN_ENGINE || 'chromium')
+  await p.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+  if (process.env.SCAN_CSS) await p.addStyleTag({ content: process.env.SCAN_CSS })
+  const zooms = (process.env.SCAN_Z || '0.978,0.9,0.85,0.95,0.97,0.99,0.75,0.6').split(',').map(Number)
+  let hits = 0, n = 0
+  for (const z of zooms) {
+    await p.evaluate(z => document.getElementById('qtbl').style.setProperty('--qz', String(z)), z); await sleep(150)
+    for (let sl = 1; sl <= 400; sl += 13) {
+      const g = await p.evaluate(sl => {
+        const w = document.querySelector('#page-quals .qwrap'); w.scrollLeft = sl
+        const r = w.getBoundingClientRect(), names = [...document.querySelectorAll('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(q => q.top > 140 && q.bottom < innerHeight - 10)
+        return { x: r.left, top: names[0].top, h: names.at(-1).bottom - names[0].top, sl: w.scrollLeft }
+      }, sl)
+      await sleep(30)
+      const buf = await p.screenshot({ clip: { x: g.x, y: g.top, width: 2, height: g.h } })
+      const c = await p.evaluate(async b64 => {
+        const img = await new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.src = 'data:image/png;base64,' + b64 })
+        const cv = document.createElement('canvas'); cv.width = img.width; cv.height = img.height; const ctx = cv.getContext('2d'); ctx.drawImage(img, 0, 0)
+        const d = ctx.getImageData(0, 0, cv.width, cv.height).data; let k = 0
+        for (let i = 0; i < d.length; i += 4) if (Math.max(d[i], d[i + 1], d[i + 2]) > 100) k++
+        return k
+      }, buf.toString('base64'))
+      n++
+      if (c) { hits++; if (hits <= 12) { console.log(`  sliver: zoom ${z} scrollLeft ${g.sl.toFixed(2)} — ${c} bright pixels`); await p.screenshot({ path: path.join(out, `scan-z${z}-sl${Math.round(g.sl)}.png`), clip: { x: Math.max(0, g.x - 10), y: g.top, width: 80, height: Math.min(300, g.h) } }) } }
+    }
+  }
+  console.log(`${hits} of ${n} readings show a sliver`)
+  await br.close()
+}
+
+if (what === 'why') {
+  // one failing reading looked at closely: where the name cell, the wrap and the cells under the edge stand, in CSS px
+  const { br, p } = await open('chromium')
+  await p.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+  const z = Number(process.env.WHY_Z || 0.978), sl = Number(process.env.WHY_SL || 287)
+  await p.evaluate(z => document.getElementById('qtbl').style.setProperty('--qz', String(z)), z); await sleep(200)
+  const r = await p.evaluate(sl => {
+    const w = document.querySelector('#page-quals .qwrap'); w.scrollLeft = sl
+    const wr = w.getBoundingClientRect(), td = document.querySelector('#qtbl tbody td.qname'), tr = td.closest('tr')
+    const cells = [...tr.children].map(c => { const q = c.getBoundingClientRect(); return { cls: c.className, l: +q.left.toFixed(3), r: +q.right.toFixed(3) } }).filter(c => c.r > wr.left - 5 && c.l < wr.left + 60)
+    const inner = [...tr.querySelectorAll('*')].map(e => { const q = e.getBoundingClientRect(); return { tag: e.tagName + '.' + e.className, l: +q.left.toFixed(3), r: +q.right.toFixed(3) } }).filter(c => c.r > wr.left - 2 && c.l < wr.left + 3 && !c.tag.includes('qname'))
+    const tdq = td.getBoundingClientRect(), cs = getComputedStyle(w)
+    return { sl: w.scrollLeft, wrap: [wr.left, wr.right], clientLeft: w.clientLeft, border: cs.borderLeftWidth, pad: cs.paddingLeft, name: [tdq.left, tdq.right], nameOff: td.offsetLeft, cells, inner, dpr: devicePixelRatio, zoom: getComputedStyle(document.getElementById('qtbl')).zoom }
+  }, sl)
+  console.log(JSON.stringify(r, null, 1))
+  await br.close()
+}
