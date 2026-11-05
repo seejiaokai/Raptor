@@ -9,18 +9,24 @@
 
    THE RULE, in every stylesheet that wraps itself in its page (a top-level `#page-<name>` block holding rules), for every
    top-level rule after the first wrapper's close (a later wrapper block is the page's own, and is not looked into):
-     1. named with its page — every selector carries `#page-<name>` (matrix.css's joined bar since 75bc67be2); or
-     2. `@keyframes` — an animation's name is the whole document's, not a page's; or
-     3. on purpose outside the page — every selector starts at `body` or `html`: a state of the whole page
-        (`body.lw-bal-on`) or a pop-up the app draws on <body> (`body:has(.bidsheet.raised) .airpop`); or
-     4. an `@media` / `@supports` / `@container` block whose own rules each pass 1–3; or
+     1. named with its page — every selector carries `#page-<name>` outside any brackets (matrix.css's joined bar since
+        75bc67be2; `:not(#page-x)` names nothing); or
+     2. an at-rule that cannot sit inside a page — `@keyframes`, `@font-face`, `@property`, `@counter-style`,
+        `@font-feature-values`: their names are the whole document's, not a page's; or
+     3. on purpose outside the page — every selector starts at a STATE of `body` or `html` (`body.lw-bal-on`,
+        `body:has(.bidsheet.raised) .airpop`, a pop-up the app draws on <body>); a bare `body .a` is the mistake again, one
+        more step weaker than the wrapped rule (the code read of 6 Nov 26, F2); or
+     4. an `@media` / `@supports` / `@container` / `@layer` block whose own rules each pass 1–3; or
      5. ONE OF THE RULES ALREADY THERE (`css-wrapper-outside.json`, taken 6 Nov 26). bidpicker.css's counter form and
         everything after it (since 19 Aug 26, 9a68c23b4), and a few blocks later, sit outside its wrapper — not on purpose:
         every one of the war's windows is drawn INSIDE the page (Sheet, FloatWin and the day panel render in place; the windows
         the top row opens are portalled onto `#page-leavewar` — Matrix.tsx `drawnOnPage`), so being outside buys them nothing.
         Their class names are the war's own and they have been walked as they stand, so they are kept as they are; moving
         them in changes which rule wins and is a walked job of its own. The list may only SHRINK: a rule moved inside (or
-        named with its page) is taken off it — a stale line fails too — and nothing is added to it.
+        named with its page) is taken off it — a stale line fails too — and its size is pinned (`KEPT_MAX`, lowered as lines
+        leave). (A declaration added INSIDE one of those blocks is not seen: the list keys a block by its selector.)
+   Rules BEFORE a file's first wrapper are its own head, written there on purpose (tracker.css's page state and pop-up), and
+   are not judged.
    A new rule after a close fails here with its file, line and selector; move it inside the wrapper (the file's head asks
    that), or name it with the page. Comments out; strings kept whole (a brace in a string is not a block). */
 import { readFileSync, readdirSync, statSync } from 'node:fs'
@@ -30,10 +36,27 @@ import { describe, expect, it } from 'vitest'
 
 type Block = { line: number; prelude: string; body: string }
 
+/** comments blanked (their line breaks kept), never inside a string — `content: "/*"` opens no comment (the code read, F7) */
+function blankComments(css: string): string {
+  let out = ''
+  for (let i = 0; i < css.length; i++) {
+    const c = css[i]!
+    if (c === '"' || c === "'") {
+      let j = i + 1
+      for (; j < css.length && css[j] !== c; j++) if (css[j] === '\\') j++
+      out += css.slice(i, j + 1); i = j
+    } else if (c === '/' && css[i + 1] === '*') {
+      const end = css.indexOf('*/', i + 2), stop = end < 0 ? css.length : end + 2
+      out += css.slice(i, stop).replace(/[^\n]/g, ' '); i = stop - 1
+    } else out += c
+  }
+  return out
+}
+
 /** the top-level blocks of a stylesheet (or of an at-rule's body): each block's opening line, its prelude (the selector or
  *  the at-rule, whitespace folded) and the text between its braces; comments blanked, strings stepped over */
 function topBlocks(cssIn: string, firstLine = 1): Block[] {
-  const css = cssIn.replace(/\/\*[\s\S]*?\*\//g, m => m.replace(/[^\n]/g, ' '))
+  const css = blankComments(cssIn)
   const out: Block[] = []
   let depth = 0, start = 0, line = firstLine, openAt = 0, openLine = 0
   for (let i = 0; i < css.length; i++) {
@@ -79,12 +102,14 @@ function strays(css: string): Array<{ key: string; line: number }> {
   const first = blocks.findIndex(b => wrapperPage(b))
   if (first < 0) return []
   const page = wrapperPage(blocks[first]!)!
-  const named = (sel: string) => sel.includes(page)
-  const outside = (sel: string) => /^(body|html)\b/.test(sel)
+  /* a selector with its bracketed parts taken out: the page must be named in the selector itself */
+  const bare = (sel: string) => { let s = sel, was = ''; while (s !== was) { was = s; s = s.replace(/\([^()]*\)/g, '') } return s }
+  const named = (sel: string) => bare(sel).includes(page)
+  const outside = (sel: string) => /^(body|html)[.:[#]/.test(sel)
   const out: Array<{ key: string; line: number }> = []
   const judge = (b: Block, within: string) => {
-    if (/^@keyframes\b/.test(b.prelude) || /^@-webkit-keyframes\b/.test(b.prelude)) return
-    if (/^@(media|supports|container)\b/.test(b.prelude)) {
+    if (/^@(-webkit-)?keyframes\b|^@(font-face|property|counter-style|font-feature-values)\b/.test(b.prelude)) return
+    if (/^@(media|supports|container|layer)\b/.test(b.prelude)) {
       for (const inner of topBlocks(b.body, b.line)) judge(inner, b.prelude)
       return
     }
@@ -98,6 +123,8 @@ function strays(css: string): Array<{ key: string; line: number }> {
 const SRC = fileURLToPath(new URL('..', import.meta.url))
 /* rule 5's list, read off disk (the project reads no JSON as a module) */
 const OUTSIDE: Record<string, string[]> = JSON.parse(readFileSync(join(SRC, 'ui', 'css-wrapper-outside.json'), 'utf8'))
+/* rule 5's list may only shrink: lower this as its lines leave, never raise it (the code read, F8) */
+const KEPT_MAX = 202
 const cssFiles = (dir: string): string[] => readdirSync(dir).flatMap(n => {
   const p = join(dir, n)
   return statSync(p).isDirectory() ? cssFiles(p) : n.endsWith('.css') ? [p] : []
@@ -122,10 +149,21 @@ describe('the checker itself (a broken example first — the order\'s §8.1)', (
       'body.lw-on { overflow: hidden }',
       'body:has(.s.raised) .airpop { z-index: 2 }',
       'html body #page-x .y { x: 1 }',
-      '@media (hover: hover) { #page-x .a:hover { x: 1 } body .p { x: 2 } }',
+      '@media (hover: hover) { #page-x .a:hover { x: 1 } body.on .p { x: 2 } }',
       '#page-x {\n.later { x: 1 }\n}',
+      '@font-face { font-family: x; src: url(x.woff2) }',
+      '@property --a { syntax: "<length>"; inherits: false; initial-value: 0px }',
+      '#page-x :is(.c.a, .c.b) { x: 1 }',
     ].join('\n')))).toEqual([])
     expect(strays('.a { x: 1 }\n#page-q{timeline-scope:--q}\n.b { x: 2 }'), 'no wrapper: not a wrapped stylesheet').toEqual([])
+  })
+  /* the code read of 6 Nov 26: F2 (a bare body / html passed), F7 (a page named only in brackets passed; a string's "/*" hid
+     the rules after it; an @layer was not looked into) */
+  it('a bare body / html, a page named only inside brackets, a rule after a string’s "/*", an @layer’s rule: caught', () => {
+    expect(strays(sheet('body .bidsheet-row { x: 1 }\nhtml .mx td .c { x: 2 }\n.a:not(#page-x) { x: 3 }')).map(s => s.key))
+      .toEqual(['body .bidsheet-row', 'html .mx td .c', '.a:not(#page-x)'])
+    expect(strays(sheet('.q { content: "/*"; }\n.stray { x: 1 }\n/* a comment */')).map(s => s.key)).toEqual(['.q', '.stray'])
+    expect(strays(sheet('@layer base { .a { x: 1 } #page-x .b { x: 2 } }')).map(s => s.key)).toEqual(['@layer base » .a'])
   })
 })
 
@@ -148,8 +186,9 @@ describe('no rule lost after a page wrapper\'s close ([CSS-WRAPPER-GUARD])', () 
     expect(fresh).toEqual([])
   })
 
-  it('the list of rules already there only shrinks: each line still stands outside its wrapper', () => {
+  it('the list of rules already there only shrinks: each line still stands outside its wrapper, and it holds no more than before', () => {
     const kept = OUTSIDE
+    expect(Object.values(kept).reduce((n, v) => n + v.length, 0)).toBeLessThanOrEqual(KEPT_MAX)
     const stale: string[] = []
     for (const [name, keys] of Object.entries(kept)) {
       const f = FILES.find(x => x.name === name)

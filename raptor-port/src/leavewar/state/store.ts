@@ -1563,10 +1563,11 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
 export const lwStore: CmdEnlistableStore = {
   key: 'leavewar',
   capture: () => LW_BASELINE,                                  // the immutable ref IS the snapshot
-  /* a rollback puts back the RECORDS only — the role and viewer are the session's (setRole at sign-in and the admin's member
-     view, D292; setViewer the "View as" mirror), never records, and neither moves the baseline: restoring them from the
-     snapshot put an admin's controls under a member badge after a refused change ([LW-NIGHT1025-OLDER] (f),
-     `rolerestore.test.ts`) */
+  /* a rollback keeps the ROLE AND VIEWER in force — they are the session's (setRole at sign-in and the admin's member view,
+     D292; setViewer the "View as" mirror), never records, and neither moves the baseline: restoring them from the snapshot
+     put an admin's controls under a member badge after a refused change ([LW-NIGHT1025-OLDER] (f), `rolerestore.test.ts`).
+     The jump-to-a-day fields (focusDate / focusSeq …) are still put back with the rest: a period switched to moves them
+     beside `currentId`, a record, so keeping them live could part the two — filed (the code read of 6 Nov 26, F5). */
   restore: (snap) => { const s = { ...(snap as State), role: state.role, viewer: state.viewer }; state = s; LW_BASELINE = s; LW_SIG++ },
   records: () => lwDecompose(LW_BASELINE),
   signature: () => String(LW_SIG),                             // [CMDL-FINISH] C9

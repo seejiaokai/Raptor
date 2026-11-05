@@ -1511,30 +1511,41 @@ export function Matrix() {
     guardGrid(false)
   }
   /* THE MOMENT AFTER A PRESS THAT TOOK SOMETHING OFF THE GRID: the clicks of the next moment on the grid are swallowed, the
-     press that did it being the one he meant. Only a pointer's click on the grid — a key's click (detail 0) and a click on
-     the top bar or a pop-up go through (the night's code read, R6). Armed by "Show ›" (F2), every pointer click, and by a
-     window over the grid closing (below, (d)) — `secondOnly`: then only a SECOND tap is swallowed, a finger's (touch or
-     pen, at a tap's speed) or a click the browser counts as a double (detail 2 and more); a mouse's single click goes
-     through at once, so a desktop's quick next click on another day after a window closes still opens it */
-  const guardGrid = (secondOnly: boolean) => {
+     press that did it being the one he meant. Only a pointer's click on the grid — a key's click (detail 0), a click on the
+     top bar or a pop-up, and the month buttons (`.mstripe`, drawn inside the grid's table — the walk's S4e, 6 Nov 26: a
+     month tapped just after a leave was placed did nothing) go through (the night's code read, R6). Armed by "Show ›" (F2:
+     every pointer click on the grid, 450 ms) and by a window over the grid closing (below, (d)) — `second`: then only a
+     SECOND press is swallowed: a finger's (touch or pen) or a click the browser counts as a double (detail 2 and more),
+     landing within 32 px of the press that closed the window, for 600 ms (the walk's S2 met Chromium's touch click about
+     440 ms after the close). A mouse's single click, and a finger's quick tap anywhere else, go through at once — as move
+     mode's own guard asks a place as well as a time (D262 — "a time alone also dropped a deliberate click made quickly on
+     another day"); the code read's F3. */
+  const guardGrid = (second: boolean) => {
     unswallowRef.current?.()
-    let finger = false
-    const down = (e: Event) => { finger = e instanceof PointerEvent && (e.pointerType === 'touch' || e.pointerType === 'pen') }
+    const from = second ? lastPressRef.current : null
+    if (second && !from) return
     const swallow = (e: Event) => {
-      if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx')) return
-      if (secondOnly && !finger && e.detail < 2) return
+      if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
+      if (from) {
+        const now = lastPressRef.current
+        if (!(now?.finger || e.detail >= 2)) return
+        const at = now && now !== from ? now : { x: e.clientX, y: e.clientY }
+        if (Math.hypot(at.x - from.x, at.y - from.y) > 32) return
+      }
       e.stopPropagation(); e.preventDefault()
     }
-    document.addEventListener('pointerdown', down, true)
     document.addEventListener('click', swallow, true)
-    const t = window.setTimeout(() => unswallowRef.current?.(), 450)
-    unswallowRef.current = () => {
-      window.clearTimeout(t)
-      document.removeEventListener('pointerdown', down, true)
-      document.removeEventListener('click', swallow, true)
-      unswallowRef.current = null
-    }
+    const t = window.setTimeout(() => unswallowRef.current?.(), second ? 600 : 450)
+    unswallowRef.current = () => { window.clearTimeout(t); document.removeEventListener('click', swallow, true); unswallowRef.current = null }
   }
+  /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
+     once the guard was armed could miss a second press that came first) */
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean } | null>(null)
+  useEffect(() => {
+    const down = (e: PointerEvent) => { lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen' } }
+    document.addEventListener('pointerdown', down, true)
+    return () => document.removeEventListener('pointerdown', down, true)
+  }, [])
   /* the guard ends with the grid, never outliving it */
   const unswallowRef = useRef<(() => void) | null>(null)
   useEffect(() => () => unswallowRef.current?.(), [])
