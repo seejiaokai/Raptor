@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1649 | 5 Nov 26 | The screen a newcomer sees after asking for access ("Your request is with the admins") is redesigned to look cooler and more welcoming, in the TALON look, and drawn for him as mock-ups to choose from before anything is built (D1625). |
 | D1646 | 5 Nov 26 | On the Scheduler Board its small menus, its day and week chips and Edit Schedule's day name are reached and pressed by the keyboard, with the app's cyan focus ring; a menu opened by Enter or the down arrow puts the keys on its first item, the arrows moving through it. |
 | D1645 | 5 Nov 26 | The top bar stays pressable over "Jump to a date", the day-details window and the document viewer, as over the Traffic window: the grey starts at the bar's foot, Undo and Redo work with the window open, any other bar button closes the window first; an input's own window and the question boxes keep the bar covered. |
 | D1643 | 4 Nov 26 | On a phone held sideways the page names always go into the side menu and the top bar is one row, for everyone, even where a member's fewer names would fit beside TALON. |

@@ -126,6 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
+- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649); mock-ups to him first.
 - [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
@@ -251,6 +252,13 @@ pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it st
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+
+### [ACCESS-WAIT-LOOK] The screen after asking for access, cooler and more welcoming (D1649, 5 Nov 26)
+**What:** his words of 5 Nov 26 on the picture of "Your request is with the admins" (the screen a newcomer sees once he has
+asked for access, `raptor-port/src/ui/AccessScreen.tsx`): *"this design is quite ugly. Can u make it more cool and
+welcoming"*. **To do:** mock-ups drawn on the real app, a phone and a desktop, a few directions with one recommended, the
+failed-save band of [GUEST-SAVE-WARNING] drawn on the chosen one; his pick; then the build with a walk. **Place:** now, his
+pick first.
 
 ### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
 **What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
