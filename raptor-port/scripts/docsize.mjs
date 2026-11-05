@@ -329,7 +329,7 @@ const RULING_BYTES = [
   /* inputs 42000 -> 46000 (26 Oct 26, pull request 560 on his D1402): 42,909 bytes on main with the Inputs pages' rulings
      of the Leave War's M3 (D1367-D1396 - Other's two sections, Attach, the calendar's colours, widths and expand), merged
      with code while the size check was deferred (D29); live, none trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/inputs.md', 2, 46000],
+  ['.claude/rules/decisions/inputs.md', 2, 50500],   // raised 5 Nov 26 from 46000: D1702 (round 4's Inputs top row) took it 230 over; never trimmed (D136), a tenth above
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
@@ -391,7 +391,7 @@ const RULING_BYTES = [
   /* tracker 27500 -> 29500 (22 Oct 26, the Leave War design's merge on his "merge live"): 28,018 bytes on `main` with
      D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
      every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
-  ['.claude/rules/decisions/tracker.md', 2, 29500],
+  ['.claude/rules/decisions/tracker.md', 2, 32500],   // raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
@@ -407,7 +407,7 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 17000],   // raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 19000],   // raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

@@ -92,6 +92,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1702 | 5 Nov 26 | On the Inputs calendar's top row the filters and the settings gear move as one group at the row's right end, so the gear never stands alone and keeps its corner at every desktop width; between 1340 and 1439 wide the search box is a little narrower, so 1366 holds one line; a phone's row is unchanged. |
 | D1624 | 3 Nov 26 | The input window's unsaved-changes question, and the "open the other input and lose them?" question drawn the same way, is redesigned: design C is built for the close question, a small card hanging from the ✕ (D1626); nothing beyond it is built before he sees its picture. — changed by D1626 |
 | D1623 | 3 Nov 26 | The Calendar window stays open when he changes page; it closes only with its own ✕ or Escape, because it is opened from several places (the Inputs and SANS settings, a SANS day) and belongs to no one page. |
 | D1622 | 3 Nov 26 | An input's window with anything typed and not saved asks before ✕ closes it, the same question Escape asks ("Close it and lose them?"); Cancel still closes at once, since it already means throw this away. |
