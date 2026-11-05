@@ -3548,3 +3548,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In the mock-up method and in the critique reader's brief, add one step for any new or borrowed mark: lay it beside every mark already on its bar and its page (an inventory taken from the running page, not the source) and name any pair a person could mistake.
 
 **Principle:** A borrowed icon carries its old meaning into a new neighbourhood; check it against its neighbours, not only against where it came from.
+
+### Observation 833: A search for tests that read an old mark, filtered to "assertion-looking" lines, missed the browser tests
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** Raptor, building round 4 of the consistency look (typed marks → drawn icons)
+**Skill:** New skill candidate: replacing a visible string/glyph across an app
+**Type:** open-source
+**Phase/Area:** finding every test that pins the old text before changing it
+
+**Issue:** Before swapping typed marks for drawings, the agent grepped tests for the marks but piped through a filter of assertion keywords and a comment filter; the e2e specs and a smoke script that clicked `has-text("╱ Line")` or asserted `toBe('⇅ Done')` slipped through, and only the CI run (minutes later, on another machine) found five of them. Separately, the approved drawing itself showed a control covered by a window — a pixel-faithful build reproduced the defect, and only a test that PRESSES the control in that state found it.
+
+**Suggested improvement:** When replacing a visible string, list FILES (not lines) containing the old string across every test kind — unit, browser, smoke scripts — with no filter, then read each hit. And for any layout move, press each moved control in the states the drawing shows (a window open), not only measure it.
+
+**Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.

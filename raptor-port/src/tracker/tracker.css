@@ -650,7 +650,7 @@ small.hint{color:var(--muted);font-size:11px}
    `.sb-moreitem`) — plain rows in one panel, 38 tall, no box round each item. Raptor's colours by name, each with its value
    beside it for the standalone Tracker, which has no Raptor sheet (the standalone rule, 9 Sep 26). */
 .menupanel{gap:0;padding:4px;background:var(--panel);border-color:var(--edge-2,#39424D)}
-.menupanel>button{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
+.menupanel>button,.menupanel.on>button.sm{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
   color:var(--ink);font-size:13px;font-weight:500;white-space:nowrap;box-shadow:none}
 .menupanel>button:hover,.menupanel>button:focus-visible{background:var(--raised,#20262E);border-color:transparent}
 .menupanel>button .trkglyph{margin-right:0}

@@ -1,0 +1,190 @@
+{
+ "results": [
+  {
+   "id": "pc-inputs-gear drawn, white, no ⚙",
+   "pass": "PASS",
+   "note": "{\"w\":18,\"h\":18,\"color\":\"rgb(241, 244, 247)\",\"dx\":11,\"dy\":0}"
+  },
+  {
+   "id": "pc-inputs-gear opens the Inputs calendar settings",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-inputs settings closes",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the List keeps the same gear in the same place",
+   "pass": "PASS",
+   "note": "calendar x 1484, list x 1484"
+  },
+  {
+   "id": "pc-SANS gear drawn, white, no ⚙",
+   "pass": "PASS",
+   "note": "{\"w\":18,\"h\":18,\"color\":\"rgb(241, 244, 247)\",\"dx\":11,\"dy\":0}"
+  },
+  {
+   "id": "pc-SANS gear opens the SANS settings",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the Leave War gear: the same drawing, grey as today (D1707)",
+   "pass": "PASS",
+   "note": "{\"w\":18,\"h\":18,\"color\":\"rgb(182, 192, 203)\",\"dx\":13,\"dy\":0}"
+  },
+  {
+   "id": "pc-the OIL tab wears the ticket in its colour",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(182, 192, 203)\",\"dx\":15,\"dy\":0}"
+  },
+  {
+   "id": "pc-the OIL tab opens the OIL tracker",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-OIL tracker gear drawn in its colour, no ⚙",
+   "pass": "PASS",
+   "note": "{\"w\":16,\"h\":16,\"color\":\"rgb(182, 192, 203)\",\"dx\":10,\"dy\":0}"
+  },
+  {
+   "id": "pc-Range: the line calendar in its colour, no 📅",
+   "pass": "PASS",
+   "note": "{\"w\":15,\"h\":15,\"color\":\"rgb(182, 192, 203)\",\"dx\":21,\"dy\":-6}"
+  },
+  {
+   "id": "pc-Range opens the date picker",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the OIL gear opens the OIL tracker settings",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the OIL tracker closes, the grid back",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-Rearrange the grid: the Reorder mark, no ⇅",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(241, 244, 247)\",\"dx\":11,\"dy\":-0.1}"
+  },
+  {
+   "id": "pc-Reset order: the arrow turning back, no ↺",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(241, 244, 247)\",\"dx\":11,\"dy\":-0.1}"
+  },
+  {
+   "id": "pc-Rearrange turns arranging on; Done wears the Reorder mark",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(59, 198, 232)\",\"dx\":11,\"dy\":-0.1}"
+  },
+  {
+   "id": "pc-Done ends arranging",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the ⋯ menu: plain rows 38 tall, 13px 500, no box (D1706)",
+   "pass": "PASS",
+   "note": "[{\"t\":\"Attach\",\"h\":38,\"w\":166,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\",\"weight\":\"500\"},{\"t\":\"Other\",\"h\":38,\"w\":166,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\",\"weight\":\"500\"},{\"t\":\"Post out\",\"h\":38,\"w\":166,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\",\"weight\":\"500\"},{\"t\":\"Post in\",\"h\":38,\"w\":166,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\",\"weight\":\"500\"}]"
+  },
+  {
+   "id": "pc-Escape closes the ⋯ menu, the window stays",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-Attach from the menu files it (ATCH on the grid or the day)",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the one Undo takes the Attach back",
+   "pass": "RECORDED",
+   "note": "ATCH on the page after Undo: false"
+  },
+  {
+   "id": "pc-Templates: page of blocks, 14, its colour; no ▤",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(241, 244, 247)\",\"dx\":13,\"dy\":0}"
+  },
+  {
+   "id": "pc-Sort all: Reorder mark, 14, its colour; no ⇅",
+   "pass": "PASS",
+   "note": "{\"w\":14,\"h\":14,\"color\":\"rgb(241, 244, 247)\",\"dx\":13,\"dy\":0}"
+  },
+  {
+   "id": "pc-the bar keeps one height: Templates, Sort all and History alike",
+   "pass": "FAIL",
+   "note": "28 / 28 / 30"
+  },
+  {
+   "id": "pc-Sort all opens its question",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-board",
+   "pass": "FAIL",
+   "note": "step broke: locator.click: Timeout 30000ms exceeded."
+  },
+  {
+   "id": "pc-the Tracker gear: drawn 16, its colour, no ⚙, as tall as ⓘ beside it",
+   "pass": "PASS",
+   "note": "{\"w\":16,\"h\":16,\"color\":\"rgb(241, 244, 247)\",\"dx\":9,\"dy\":0} h 30 / ⓘ 30"
+  },
+  {
+   "id": "pc-the gear opens Flex settings",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-Escape closes Flex settings",
+   "pass": "PASS",
+   "note": ""
+  },
+  {
+   "id": "pc-the #fileMenuBtn menu: plain rows 38 tall, 13px, no box (D1706)",
+   "pass": "PASS",
+   "note": "[{\"t\":\"Import…\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Export…\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"}]"
+  },
+  {
+   "id": "pc-the #courseMenuBtn menu: plain rows 38 tall, 13px, no box (D1706)",
+   "pass": "PASS",
+   "note": "[{\"t\":\"+ Add course\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Rename course\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Reorder courses\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Delete course\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"}]"
+  },
+  {
+   "id": "pc-the #sylMenuBtn menu: plain rows 38 tall, 13px, no box (D1706)",
+   "pass": "PASS",
+   "note": "[{\"t\":\"Edit chart layout\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Duplicate syllabus\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"+ Add syllabus\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Rename syllabus\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Reorder syllabi\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"},{\"t\":\"Delete syllabus\",\"h\":38,\"bg\":\"rgba(0, 0, 0, 0)\",\"border\":\"0px\",\"size\":\"13px\"}]"
+  },
+  {
+   "id": "pc-a menu row works: Reorder courses opens its window",
+   "pass": "FAIL",
+   "note": ""
+  },
+  {
+   "id": "pc-every chart tool drawn 13 (Merge, Unmerge, the adds words alone); no typed mark",
+   "pass": "PASS",
+   "note": "[{\"t\":\"Move\",\"h\":28,\"mark\":13},{\"t\":\"Select\",\"h\":28,\"mark\":13},{\"t\":\"Connect\",\"h\":28,\"mark\":13},{\"t\":\"Delete\",\"h\":28,\"mark\":13},{\"t\":\"+ Flight\",\"h\":28,\"mark\":0},{\"t\":\"+ Acad\",\"h\":28,\"mark\":0},{\"t\":\"+ Test\",\"h\":28,\"mark\":0},{\"t\":\"+ Sim\",\"h\":28,\"mark\":0},{\"t\":\"+ CFT/IAT/EPT\",\"h\":28,\"mark\":0},{\"t\":\"Text\",\"h\":28,\"mark\":13},{\"t\":\"Line\",\"h\":28,\"mark\":13},{\"t\":\"Edit lines\",\"h\":28,\"mark\":13},{\"t\":\"Arrow\",\"h\":28,\"mark\":13},{\"t\":\"Merge\",\"h\":28,\"mark\":0},{\"t\":\"Unmerge\",\"h\":28,\"mark\":0},{\"t\":\"Select all\",\"h\":28,\"mark\":13},{\"t\":\"Fit\",\"h\":28,\"mark\":13},{\"t\":\"Reset layout\",\"h\":28,\"mark\":13},{\"t\":\"Edit events\",\"h\":28,\"mark\":13}]"
+  },
+  {
+   "id": "pc-the tools are one height",
+   "pass": "PASS",
+   "note": "[28]"
+  },
+  {
+   "id": "pc-tracker",
+   "pass": "FAIL",
+   "note": "step broke: locator.click: Timeout 30000ms exceeded."
+  }
+ ],
+ "errors": []
+}

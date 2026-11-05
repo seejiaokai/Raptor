@@ -562,7 +562,8 @@ test('the gear: the Inputs cut-off and the members’ switch are saved from its 
   await page.setViewportSize({ width: 1440, height: 900 })
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   const gear = page.locator('[data-testid="in-gear"]'), win = page.locator('[data-testid="win-inputsset"]')
-  await expect(gear).toHaveText('⚙'); await expect(gear.locator('svg')).toHaveCount(0)
+  /* the app's one drawn gear since D1509 / D1707 (it was the typed ⚙ under D635) */
+  await expect(gear).toHaveText(''); await expect(gear.locator('svg.btnglyph')).toHaveCount(1)
   await gear.click(); await expect(win).toBeVisible()
   /* a window, not a wall: dragged aside by its bar, and a date behind it still opens */
   const bar = (await win.locator('.win-bar').boundingBox())!

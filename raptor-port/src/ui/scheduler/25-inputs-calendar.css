@@ -38,9 +38,6 @@
    On a phone the box is not drawn (`display:contents`, the 820px block below): its three are the row's own again, D693's
    row untouched. */
 .inputs-top .inputs-filtergroup{order:4;display:flex;align-items:center;gap:8px;margin-left:auto;min-width:0;flex:0 1 auto}
-/* ...and between 1340 and 1439 wide the search box a little narrower, so 1366 holds one line (D1702: its box 135 → 102 wide
-   measured, "Search inputs" still whole, a callsign or "Appointment" fitting as typed) */
-@media (min-width:1340px) and (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}}
 /* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
    "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
    Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */
@@ -80,6 +77,9 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
+/* BETWEEN 1340 and 1439 wide the search box a little narrower, so 1366 holds one line (D1702 — after the rule above, which it narrows: written before it, it lost to it, found by the walk; its box 135 → 102 wide
+   measured, "Search inputs" still whole, a callsign or "Appointment" fitting as typed) */
+@media (min-width:1340px) and (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}}
 /* the search is the app's one search box (owner D1127): the line magnifier inside, the box as tall as the two selects
    beside it (44 on a phone, 36 on a desktop — the D1125 block); the input inside carries no box of its own */
 .inputs-filterfields label.searchbox{flex-direction:row;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:0 10px}

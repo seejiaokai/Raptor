@@ -662,7 +662,7 @@
   .card-hd .rtlbl {
     display: none;
   }
-  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden); the − / +
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "Done" in words, after the drawn Reorder mark since D1703 (`.rtword`, never hidden); the − / +
      that stepped aside for it went with the pinch (D1276) */
 }
 

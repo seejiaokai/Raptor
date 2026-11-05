@@ -1,0 +1,261 @@
+{
+ "state": "more-ph",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q4-ph-more-new"
+ },
+ "recorded": "2026-11-05T11:34:03.509Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "panel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 90,
+    "y": 74,
+    "w": 176,
+    "h": 124
+   },
+   "ink": {
+    "x": 106,
+    "y": 89.5,
+    "w": 116.1,
+    "h": 93
+   },
+   "text": "Insights Sort all Desktop layout",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sb-moremenu"
+  },
+  "insights": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 95,
+    "y": 79,
+    "w": 166,
+    "h": 38
+   },
+   "ink": {
+    "x": 106,
+    "y": 89.5,
+    "w": 46.1,
+    "h": 17
+   },
+   "text": "Insights",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.sb-moreitem"
+  },
+  "sort": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 95,
+    "y": 117,
+    "w": 166,
+    "h": 38
+   },
+   "ink": {
+    "x": 133,
+    "y": 127.5,
+    "w": 41.9,
+    "h": 17
+   },
+   "text": "Sort all",
+   "typed": false,
+   "look": {
+    "fill": "rgb(32, 38, 46)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.sb-moreitem.zz-typed.zz-ring"
+  },
+  "sort-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 107.5,
+    "y": 128.4,
+    "w": 15,
+    "h": 15
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  },
+  "wide": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 95,
+    "y": 155,
+    "w": 166,
+    "h": 38
+   },
+   "ink": {
+    "x": 133,
+    "y": 165.5,
+    "w": 89.1,
+    "h": 17
+   },
+   "text": "Desktop layout",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.sb-moreitem.zz-typed.zz-ring"
+  },
+  "wide-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 107.5,
+    "y": 166.4,
+    "w": 15,
+    "h": 15
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q4-ph-more-new.png",
+  "identical": true
+ }
+}

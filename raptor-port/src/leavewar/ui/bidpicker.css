@@ -1928,7 +1928,7 @@
    — his "should I just follow this design", then "all as recommended"): the Scheduler Board's own small menu
    (18-oil-board.css `.sb-moremenu` / `.sb-moreitem`) — plain rows in one panel, 38 tall, no box round each — in place of a
    boxed button per item; what each item does is unchanged. */
-.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: flex; flex-direction: column; gap: 0; min-width: 176px; padding: 4px;
+.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: flex; flex-direction: column; gap: 0; min-width: 150px; padding: 4px;
   background: var(--panel); border: 1px solid var(--edge-2); border-radius: 10px; box-shadow: 0 10px 28px rgba(0, 0, 0, .5); }
 .bidsheet .bp-menu .bp-menu-item { display: flex; align-items: center; justify-content: flex-start; gap: 9px; min-height: 38px; padding: 8px 11px;
   text-align: left; white-space: nowrap; background: none; color: var(--ink); border: 0; border-radius: 7px; font-size: 13px; font-weight: 500;

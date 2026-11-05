@@ -1,0 +1,97 @@
+{
+ "state": "waves-gear-pc",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q1-pc-waves-new"
+ },
+ "recorded": "2026-11-05T11:32:03.778Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "gear": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1442,
+    "y": 510,
+    "w": 26,
+    "h": 20.4
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.wm-pen.wm-mng.zz-ring"
+  },
+  "gear-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1448,
+    "y": 513,
+    "w": 14,
+    "h": 14
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q1-pc-waves-new.png",
+  "identical": true
+ }
+}

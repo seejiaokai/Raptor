@@ -38,7 +38,9 @@
   .oil-tools .oil-cal .cl { font-size: 9px; letter-spacing: .08em; text-transform: uppercase; margin-top: 3px; }
   /* The settings gear is icon-only now — keep it a comfortable tap target. */
   .oil-tools .oil-gear { padding: 6px 9px; font-size: 14px; }
-  .oil-tools .oil-gear .btnglyph { width: 16px; height: 16px; color: currentColor; }
+  /* in the line, as the typed ⚙ stood and as drawn: the chip keeps its 33 (D1707 — each gear keeps its button's size; the
+     drawing check found it 30 as a block) */
+  .oil-tools .oil-gear .btnglyph { display: inline-block; width: 16px; height: 16px; vertical-align: -0.15em; color: currentColor; }
   /* The − / + zoom pair beside RANGE went with the grid's (owner D1285, D1276, 23 Oct 26): the table is pinched. */
   .oil-pickrow {
     flex-direction: column;

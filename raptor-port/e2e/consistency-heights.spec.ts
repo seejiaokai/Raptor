@@ -88,3 +88,36 @@ for (const [name, vp, h] of [['desktop', DESK, 30], ['phone', PHONE, 26]] as con
     expect(item, 'a menu item is not stretched to the bar').not.toBe(h)
   })
 }
+
+/* ROUND 4 (owner D1702, 5 Nov 26 — "all as recommended"): the Inputs calendar's filters and gear wrap as ONE group at the
+   row's right end, so the gear never stands alone on a line; and between 1340 and 1439 wide the search box is narrower, so
+   1366 holds one line. Found by the round's walk: the narrower box's rule was written above the rule it narrows and lost
+   to it — the row stayed two lines at 1366 (the group did wrap together; at 1340 it wraps by design — the ruling holds one line at 1366). */
+for (const w of [1440, 1366]) {
+  test(`desktop ${w}: the Inputs calendar's top row is one line, the gear at its right end (D1702)`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: 768 })
+    await login(page)
+    await go(page, 'inputs')
+    const m = await page.evaluate(() => {
+      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
+      const top = r('.inputs-top'), g = r('#inGear'), v = r('.inputs-views')
+      return { gearTop: Math.round(g.top), viewsTop: Math.round(v.top), gearRight: Math.round(top.right - g.right), search: Math.round(r('label.inputs-search').width) }
+    })
+    expect(m.gearTop, 'the gear on the switch\'s line').toBe(m.viewsTop)
+    expect(m.gearRight, 'at the row\'s right end').toBeLessThanOrEqual(1)
+    expect(m.search, '"Search inputs" still whole').toBeGreaterThanOrEqual(96)
+  })
+}
+for (const w of [1340, 1300, 1280]) {
+  test(`desktop ${w}: the filters and the gear wrap together — the gear never alone, at the row's right end (D1702)`, async ({ page }) => {
+    await page.setViewportSize({ width: w, height: 768 })
+    await login(page)
+    await go(page, 'inputs')
+    const m = await page.evaluate(() => {
+      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
+      return { gearTop: Math.round(r('#inGear').top), fieldsTop: Math.round(r('#inFilters').top), gearRight: Math.round(r('.inputs-top').right - r('#inGear').right) }
+    })
+    expect(m.gearTop, 'the gear on the fields\' line').toBe(m.fieldsTop)
+    expect(m.gearRight, 'at the row\'s right end').toBeLessThanOrEqual(1)
+  })
+}
