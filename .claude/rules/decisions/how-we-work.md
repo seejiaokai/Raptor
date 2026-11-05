@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |
 | D1640 | 4 Nov 26 | When he says "merge live" (or "merge now"), his own look is already done: the agent does not ask about it again, and carries the merge through once GitHub's run is green. |
 | D1625 | 3 Nov 26 | Anything new a person will see — a question box, a message, a mark, a button — is drawn and shown to him as a mock-up before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first. |
 | D1613 | 3 Nov 26 | When he offers a different solution, or a new idea for the thing being built, while the agent is building, the agent stops at once and answers it — what it would do, its cost, a recommendation — before building any further; it never carries on with the earlier plan past his newer idea. |

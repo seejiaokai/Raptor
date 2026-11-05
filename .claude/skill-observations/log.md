@@ -3518,3 +3518,17 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** In the mock-up guide: when a drawing shows what an event produces (a notification, a mark, a line), the drawing script asserts for EVERY drawn case that the event actually fires in the running app (a hook, a log, a state change), and lists any case where it does not as a design question. In the handoff skill: a build note that claims a behaviour of an existing mechanism (Undo, a save, a permission) names the ruling or test that shows it, or says it is unchecked.
 
 **Principle:** A picture of a result is not evidence that its cause happens; and a claim about how an existing mechanism behaves is a guess until a ruling or a test is named for it.
+### Observation 810: A CSS fix drawn by editing the app's own rule in place
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [CSS-FONT-INHERIT] — drawing nine dropped `font:` lines today beside the fix (branch claude/css-font-inherit-look)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page / the transform
+
+**Issue:** The fix was a stylesheet correction. An injected sheet would sit at a different place in the cascade and could beat (or lose to) rules the real fix would not. Writing the corrected declarations into the page's own CSSOM rule (`rule.style.setProperty`), found by its exact selector text, gave an exact "after", reversible with `removeProperty`; the script refused unless each rule was found once. A second trap: the crop picked the first visible `.floatwin` in document order — a day window behind the input window.
+
+**Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
+
+**Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.

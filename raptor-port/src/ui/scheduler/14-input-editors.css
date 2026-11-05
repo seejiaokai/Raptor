@@ -294,7 +294,7 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
   letter-spacing:.1em;font-size:10.5px;font-weight:800;color:var(--ink-3)}
 .inped-body select,.inped-body input[type=text],.inped-body input:not([type]){width:100%;box-sizing:border-box}
 .inped-body select,.inped-body input{background:var(--bg);border:1px solid var(--edge-2);border-radius:8px;
-  color:var(--ink);font:600 13px inherit;padding:8px 9px}
+  color:var(--ink);font-family:inherit;font-size:13px;font-weight:600;padding:8px 9px}
 .inped-body select:focus,.inped-body input:focus{outline:none;border-color:var(--accent)}
 /* THE REMARKS BOX AND ITS DATE ON ONE LINE (owner D948, 16 Oct 26 — as drawn on his page): the box holds only what is
    typed and takes the room; "till <date>" stands after it in grey, from the dates — never in the box, never a box. */
@@ -366,5 +366,5 @@ button.sbi-ty.inpedit:hover{text-decoration:none;filter:brightness(1.3)}
 .inped-dates{display:flex;flex-direction:column;gap:5px}
 /* a type that is not a choice (the SANS panel's add) reads as a plain value
    in the same register the select would have used */
-.inped-v{font:600 13px inherit;color:var(--ink);padding:2px 0}
+.inped-v{font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);padding:2px 0}
 

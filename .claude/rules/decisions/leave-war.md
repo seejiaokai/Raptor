@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1681 | 5 Nov 26 | The Leave War bid windows' Auto-approve switch takes the app's letters, semi-bold, as the window's title and the Inputs window's "Several people" do. |
 | D1639 | 4 Nov 26 | The number pad's date stays where it is built: the drawing check's 2.5px "lower" is how it measured the date (the drawing marked the whole line, the build the words), and laid over the drawing the words sit in the same place. |
 | D1634 | 4 Nov 26 | On a phone narrower than about 400 wide the number pad's figure box sits under the date, the pad's top line one row taller, as built; on his iPhone (402) it stays beside the date; the weekday is kept. |
 | D1630 | 4 Nov 26 | The number pad's figure box shows it is being typed in, as a phone's text box does: when the pad opens the figure is highlighted (the next key replaces it), and once a key is pressed a cyan typing line follows the figure, blinking, still for less motion; with nothing typed the line stands alone; the grid's cell shows the highlight only. |

@@ -37,6 +37,12 @@ the later merge keeps both (D78).
 - **Numbers:** rulings next free D1667; design lessons next free 83; observations next free 802.
 - **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
 <!-- /now -->
+<!-- now:claude/css-font-inherit-look -->
+### `claude/css-font-inherit-look` — [CSS-FONT-INHERIT] LIVE on his "merge live" of 5 Nov 26 (pull request 640); this block goes at the next handoff
+- **Shipped:** the nine dropped font lines written out as drawn (D1680) and the Leave War's Auto-approve matched (D1681); the guard `raptor-port/src/ui/font-inherit-css.test.ts`. Evidence `raptor-port/docs/handpass/2026-11-05-font-inherit.md` (24/24 at both sizes); drawing `raptor-port/docs/mock/2026-11-05-font-inherit/`.
+- **Left open, filed:** [CSS-WRAPPER-GUARD] (the wrapper half of the guard; ~200 deliberate-looking rules after `bidpicker.css`'s wrapper need its rule worked out first).
+- **Numbers:** D1680, D1681 taken; no lessons; observation 810.
+<!-- /now -->
 ## Next, in order
 
 **RIGHT NOW (5 Nov 26, morning):** pull requests 634 and 635 LIVE (the `claude/topbar-names-build` block removed); the night's three jobs CHECKED — 636, 637, 638, waiting for his look and "merge live" → the build of his morning answers (D1651, D1655–D1657) on this branch (its block).
