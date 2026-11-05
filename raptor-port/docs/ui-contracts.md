@@ -11708,7 +11708,8 @@ kept in the text (a screen reader hears one sentence) but not drawn. Height, pla
 what did not happen in bold ("Not swapped"), why quieter, then **Answer OIL** solid amber (the agent's reading of "alike";
 it was the app's cyan under D840's drawing) and **OK** quiet — still one line (D840). One body for both: `SaveStatus.tsx
 SplitWords`.
-**One design across the whole app (his direction D1663, 5 Nov 26):** the band wears the strip wherever it is drawn — the places below; the app's other "not saved" words (refusals of one change, not a failed save) are put to him.
+**One design across the whole app (his direction D1663, 5 Nov 26):** the band wears the strip wherever it is drawn — the places below. The app's other "not saved" words (refusals of one change, not a failed save: a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) take one matching look of their own, apart from the band's — pictured and drawn for him first (D1665, filed as [NOTSAVED-REFUSAL-LOOK]).
+**Under a failed save the pass says it is not sent (D1664, 5 Nov 26):** on the screen after asking for access, while the band is up, the "Waiting for an admin" mark and the first step read "Not sent yet" in the band's amber; once the save lands the pass's approved look is back by itself.
 **Also where there is no top bar (owner D1657, 5 Nov 26 — `[GUEST-SAVE-WARNING]`):** the sign-in screen and the access
 screens (asking for access, waiting, suspended) carry the band across the top of the screen (`SaveBand screen`,
 `.saveband.is-screen`), the screen moved down under it (`.login.band-up`) so nothing is covered — so a stranger whose

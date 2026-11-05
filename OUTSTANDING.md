@@ -135,6 +135,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [GUEST-SAVE-WARNING] — checked 5 Nov 26: a stranger's access request that could not be saved is told "with the admins"; the failed-save band drawn for the waiting screen, the guest page and the sign-in screen — his yes, 5 Nov 26 (D1657); BUILT 5 Nov 26 on `claude/member-guest-checks` with [ACCESS-WAIT-LOOK], in its FULL check.
 - [MEMBER-SCHED-TICK] — a member can tick or untick his own Scheduler on Quals, which decides who may sign the schedule; read-only like Management — his yes, 5 Nov 26 (D1651); BUILT red first 5 Nov 26 on `claude/member-guest-checks`, in its FULL check with a security read.
+- [NOTSAVED-REFUSAL-LOOK] — the app's other "not saved" refusal messages get one matching look of their own, apart from the band — pictured today and drawn for him first (D1665).
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
 - [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
@@ -1022,6 +1023,15 @@ member, unticks his own Scheduler on Quals — the days he signed lose that sign
 reads only, as Management does, refused at the Quals write and the commit gate (narrows D1510); a small build with a
 security read (D1411). **His answer, 5 Nov 26 (D1651): yes.** Pictures `raptor-port/docs/mock/2026-11-05-member-guest/img/Q2-quals-today-desk.png`, `Q2-quals-proposed-desk.png`,
 `Q2-quals-proposed-phone.png`. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`. **Built 5 Nov 26** (`claude/member-guest-checks`, `af8be973e`): `perms.ts mayTickScheduler`, refused at the Quals screen ("Only an admin can appoint a scheduler" — the mock-up's words), the Quals write and the commit gate; red first; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
+
+### [NOTSAVED-REFUSAL-LOOK] The app's other "not saved" messages, one look of their own (filed 5 Nov 26 — his D1663, D1665)
+**What:** besides the failed-save band (one design everywhere since D1655), the app says "not saved" in its own way where ONE
+change is refused: a Leave War figure box (`raptor-port/src/leavewar/ui/balancefigs.ts`, `BalancesPage.tsx`'s note), the
+grades window's name and days boxes (`GradesSheet.tsx`), the schedule's refused change (`raptor-port/src/ui/inputedit.tsx
+NOT_SAVED`, its passing note) and a document too big to store (`raptor-port/src/boot.ts`). **His answer (D1665):** they take one
+matching look of their own, kept apart from the band's, so a refusal never reads as a storage failure. **To do:** picture each
+today, reached through the app's own doors; draw the common look on the real app; put it to him (D1625) before any build.
+**Place:** after the member / guest batch merges, as its own small job.
 
 ### [DB-WAITING-CREATEDBY] The database's own "created by" on a waiting person's change-log row (filed 5 Nov 26)
 **What:** since the member / guest check (`claude/member-guest-checks`), the change-log batch saved with a waiting person's
