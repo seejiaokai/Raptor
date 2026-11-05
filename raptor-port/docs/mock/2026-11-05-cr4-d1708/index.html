@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Inputs row — your answer A, drawn</title>
+<style>
+body{margin:0;background:#0b0d10;color:#e8edf2;font:15px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:1100px;margin:0 auto;padding:18px 14px 40px}
+h1{font-size:19px;margin:0 0 10px}
+h2{font-size:15px;margin:26px 0 8px;color:#9fb3c8;text-transform:uppercase;letter-spacing:.06em}
+.now{border:1px solid #2b6cb0;background:#0f1a26;border-radius:10px;padding:12px 14px}
+.now p{margin:4px 0}
+figure{margin:10px 0 18px}
+figcaption{font-size:13px;color:#b7c3cf;margin:0 0 6px}
+img{width:100%;height:auto;border:1px solid #232a33;border-radius:8px;display:block;cursor:zoom-in}
+img.big{position:fixed;inset:0;width:auto;max-width:none;height:100vh;margin:auto;z-index:9;cursor:zoom-out;background:#000;object-fit:contain;width:100vw}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:6px;margin-right:6px}
+.old{background:#3a1d1d;color:#ffb3b3}.new{background:#163a24;color:#9ff0bb}.same{background:#22303d;color:#b9d4ee}
+</style></head><body><main>
+<h1>Inputs calendar's top row — your answer "A", drawn on the real app</h1>
+<div class="now">
+<p><b>Look at now:</b> is this what you meant by "A"? The orange ring is the filters and the gear.</p>
+<p>Where the row is too narrow for one line, the filters and the gear start the second line at its left, under the tabs — so an open input window no longer covers the gear. Where the row fits on one line (1366 and wider on your PC), nothing moves.</p>
+<p><b>Recommended: yes, build it.</b> Reply "yes" and I build it; otherwise say what to change.</p>
+</div>
+
+<h2>1280 wide, an input window open</h2>
+<figure><figcaption><span class="tag old">Built now</span>the filters and gear at the right end — under the window, the gear cannot be pressed</figcaption><img src="d1708-1280.png" alt="1280 as built: the gear under the window"></figure>
+<figure><figcaption><span class="tag new">Answer A</span>the filters and gear at the left of the second line — the gear clear</figcaption><img src="d1708-1280-new.png" alt="1280 drawn: the filters and gear at the left"></figure>
+
+<h2>1340 wide, an input window open</h2>
+<figure><figcaption><span class="tag old">Built now</span></figcaption><img src="d1708-1340.png" alt="1340 as built"></figure>
+<figure><figcaption><span class="tag new">Answer A</span></figcaption><img src="d1708-1340-new.png" alt="1340 drawn"></figure>
+
+<h2>1366 wide — one line, unchanged</h2>
+<figure><figcaption><span class="tag same">Same either way</span>the row holds one line, the gear stays at its right end (D1702)</figcaption><img src="d1708-1366-new.png" alt="1366: one line, unchanged"></figure>
+</main>
+<script>document.querySelectorAll('img').forEach(i=>i.addEventListener('click',()=>i.classList.toggle('big')))</script>
+</body></html>

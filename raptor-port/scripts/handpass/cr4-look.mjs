@@ -13,6 +13,8 @@
         ⇅ Auto sort, the phone menu's 📱 / 🖥) and the Leave War (⚙ Settings' ⇅ Rearrange the grid and ↺ Reset order, the
         grid's ⇅ Done); drawn: line icons — the Tracker's own reorder mark, the Leave War's OIL clock, and three new marks
         in the same line style (templates, reset, phone / desktop)
+     d1708 (his "A", 5 Nov 26) the built row at 1366 / 1340 / 1300 / 1280 with an input window open; drawn: where it
+        wraps, the filters and gear start the second line at its left
    Run: HP_URL=http://localhost:<port> HP_SHOTS=<folder> node scripts/handpass/cr4-look.mjs → <folder>/
         CR4_ONLY=q1,q3 redoes only those questions' pictures. */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
@@ -273,6 +275,32 @@ async function q3() {
   }
 }
 
+/* ================= D1708 — his "A": where the Inputs row wraps, the filters and gear start the second line at its LEFT =====
+   Drawn on the BUILT round 4 (the group at the right end, D1702), with an input window open as in the browser test that
+   found it. "-new" drops the group's own left margin: on one line the spring before the switch still pushes the group to
+   the right end, so only a wrapped row changes — at whatever width the letters make it wrap. */
+const D1708_CSS = '.inputs-top .inputs-filtergroup{margin-left:0}'
+async function d1708() {
+  for (const w of [1366, 1340, 1300, 1280]) {
+    for (const drawn of [false, true]) {
+      const vp = { width: w, height: 720 }
+      const { ctx, page } = await world(vp, false)
+      await go(page, 'inputs'); await sleep(600)
+      if (drawn) { await page.addStyleTag({ content: D1708_CSS }); await sleep(300) }
+      await page.getByText('Quill · OML').first().click(); await sleep(700); await settle(page)
+      measured[`d1708-${w}${drawn ? '-new' : ''}`] = await page.evaluate(() => {
+        const q = s => document.querySelector(s).getBoundingClientRect()
+        const g = q('#inGear'), v = q('.inputs-views'), t = q('.inputs-top')
+        const hit = document.elementFromPoint(g.left + g.width / 2, g.top + g.height / 2)
+        return { oneLine: Math.round(g.top) === Math.round(v.top), gearLeft: Math.round(g.left), gearRight: Math.round(t.right - g.right), pressable: !!hit && (hit.id === 'inGear' || !!hit.closest('#inGear')) }
+      })
+      await ring(page, ['#inGear', '.inputs-top .inputs-filtergroup'])
+      await strip(page, `d1708-${w}${drawn ? '-new' : ''}`, 56, 300, vp)
+      await ctx.close()
+    }
+  }
+}
+
 /* ================= Q4 — the typed marks on the Scheduler Board and the Leave War ================= */
 async function q4(tag, vp, touch) {
   const { ctx, page } = await world(vp, touch)
@@ -434,6 +462,7 @@ if (want('q6')) { await q6('pc', PC, false); await q6('ph', PHONE, true) }
 if (want('q1')) { await q1('pc', PC, false); await q1('ph', PHONE, true) }
 if (want('q2')) { await q2('pc', PC, false); await q2('ph', PHONE, true) }
 if (want('q3')) await q3()
+if (want('d1708')) await d1708()
 if (want('q4')) { await q4('pc', PC, false); await q4('ph', PHONE, true) }
 if (want('q5')) { await q5('pc', PC, false); await q5('ph', PHONE, true) }
 writeFileSync(`${OUT}/cr4-measured.json`, JSON.stringify({ made, measured }, null, 1))

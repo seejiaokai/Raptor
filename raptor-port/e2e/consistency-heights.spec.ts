@@ -89,35 +89,53 @@ for (const [name, vp, h] of [['desktop', DESK, 30], ['phone', PHONE, 26]] as con
   })
 }
 
-/* ROUND 4 (owner D1702, 5 Nov 26 — "all as recommended"): the Inputs calendar's filters and gear wrap as ONE group at the
-   row's right end, so the gear never stands alone on a line; and between 1340 and 1439 wide the search box is narrower, so
-   1366 holds one line. Found by the round's walk: the narrower box's rule was written above the rule it narrows and lost
-   to it — the row stayed two lines at 1366 (the group did wrap together; at 1340 it wraps by design — the ruling holds one line at 1366). */
-for (const w of [1440, 1366]) {
-  test(`desktop ${w}: the Inputs calendar's top row is one line, the gear at its right end (D1702)`, async ({ page }) => {
-    await page.setViewportSize({ width: w, height: 768 })
-    await login(page)
-    await go(page, 'inputs')
-    const m = await page.evaluate(() => {
-      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
-      const top = r('.inputs-top'), g = r('#inGear'), v = r('.inputs-views')
-      return { gearTop: Math.round(g.top), viewsTop: Math.round(v.top), gearRight: Math.round(top.right - g.right), search: Math.round(r('label.inputs-search').width) }
-    })
-    expect(m.gearTop, 'the gear on the switch\'s line').toBe(m.viewsTop)
-    expect(m.gearRight, 'at the row\'s right end').toBeLessThanOrEqual(1)
-    expect(m.search, '"Search inputs" still whole').toBeGreaterThanOrEqual(96)
-  })
-}
+/* ROUND 4 (owner D1702, 5 Nov 26 — "all as recommended"; narrowed by D1708, his "A" the same day): the Inputs calendar's
+   filters and gear are ONE group, so the gear never stands alone on a line; between 1340 and 1439 wide the search box is
+   narrower, so 1366 holds one line where the letters allow; where the row wraps, the group starts the second line at its
+   LEFT (D1708 — at the right end an open input window covered the gear at 1280). Found by the round's walk: the narrower
+   box's rule was written above the rule it narrows and lost to it, so 1366 stayed two lines.
+   One line at 1366 depends on the letters: D1702's own row says that with wider letters 1366 still wraps, the group
+   together — and GitHub's Linux machines draw wider letters than his PC (its run of 2afc75f80 wrapped 1366). So at 1366 the
+   test asks what the ruling asks: the narrower box applied (read off its style, whatever the letters), the gear never
+   alone, and the group at the right end on one line or at the left of the second. 1440 holds one line on both. */
+const rowAt = (page: Page) => page.evaluate(() => {
+  const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
+  const top = r('.inputs-top'), g = r('#inGear'), v = r('.inputs-views'), grp = r('.inputs-top .inputs-filtergroup')
+  return {
+    oneLine: Math.round(g.top) === Math.round(v.top), gearTop: Math.round(g.top), fieldsTop: Math.round(r('#inFilters').top),
+    gearRight: Math.round(top.right - g.right), groupLeft: Math.round(grp.left - top.left),
+    search: Math.round(r('label.inputs-search').width),
+    searchBasis: getComputedStyle(document.querySelector('label.inputs-search')!).flexBasis,
+  }
+})
+test("desktop 1440: the Inputs calendar's top row is one line, the gear at its right end (D1702)", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 768 })
+  await login(page)
+  await go(page, 'inputs')
+  const m = await rowAt(page)
+  expect(m.oneLine, "the gear on the switch's line").toBe(true)
+  expect(m.gearRight, "at the row's right end").toBeLessThanOrEqual(1)
+  expect(m.search, '"Search inputs" still whole').toBeGreaterThanOrEqual(96)
+})
+test('desktop 1366: one line where the letters allow — the narrower search box, the gear never alone (D1702, D1708)', async ({ page }) => {
+  await page.setViewportSize({ width: 1366, height: 768 })
+  await login(page)
+  await go(page, 'inputs')
+  const m = await rowAt(page)
+  expect(m.searchBasis, 'the narrower search box applies at 1366 (the rule the walk found losing)').toBe('170px')
+  expect(m.search, '"Search inputs" still whole').toBeGreaterThanOrEqual(96)
+  expect(m.gearTop, "the gear on the fields' line — never alone").toBe(m.fieldsTop)
+  if (m.oneLine) expect(m.gearRight, "one line: the gear at the row's right end").toBeLessThanOrEqual(1)
+  else expect(m.groupLeft, 'wider letters wrapped it: the group starts the second line at its left (D1708)').toBeLessThanOrEqual(1)
+})
 for (const w of [1340, 1300, 1280]) {
-  test(`desktop ${w}: the filters and the gear wrap together — the gear never alone, at the row's right end (D1702)`, async ({ page }) => {
+  test(`desktop ${w}: the filters and the gear wrap together, at the second line's LEFT — the gear never alone (D1702, D1708)`, async ({ page }) => {
     await page.setViewportSize({ width: w, height: 768 })
     await login(page)
     await go(page, 'inputs')
-    const m = await page.evaluate(() => {
-      const r = (s: string) => document.querySelector(s)!.getBoundingClientRect()
-      return { gearTop: Math.round(r('#inGear').top), fieldsTop: Math.round(r('#inFilters').top), gearRight: Math.round(r('.inputs-top').right - r('#inGear').right) }
-    })
-    expect(m.gearTop, 'the gear on the fields\' line').toBe(m.fieldsTop)
-    expect(m.gearRight, 'at the row\'s right end').toBeLessThanOrEqual(1)
+    const m = await rowAt(page)
+    expect(m.oneLine, 'the row wraps at this width').toBe(false)
+    expect(m.gearTop, "the gear on the fields' line").toBe(m.fieldsTop)
+    expect(m.groupLeft, 'the group starts the line at its left (D1708)').toBeLessThanOrEqual(1)
   })
 }
