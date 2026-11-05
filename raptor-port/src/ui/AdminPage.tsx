@@ -19,7 +19,7 @@
    the other. Every category panel stays mounted (only the active one shows), so
    the template openers and the user tools keep their stable ids wherever the
    rail happens to be pointing. */
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { canEditSched } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { waitingCount } from '../state/accounts'
@@ -199,6 +199,7 @@ export function AdminPage() {
   /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap (the Users
      list is drawn afresh for each — its `key`), `on` while his row wears the just-added mark — its six seconds */
   const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
+  const ringT = useRef<ReturnType<typeof setTimeout> | null>(null)
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
@@ -213,10 +214,12 @@ export function AdminPage() {
     const seq = it.seq, person = it.person
     setRing(person ? { seq, pid: person, on: true } : null)
     clearAdminOpen()
-    if (!person) return
-    const t = setTimeout(() => setRing(r => (r && r.seq === seq ? { ...r, on: false } : r)), RING_MS)
-    return () => clearTimeout(t)
+    /* (its end is held apart from this effect: the effect runs again the moment ADMINOPEN is cleared, and a timer it
+       cleaned up there would leave the ring on for good — the walk's B4) */
+    if (ringT.current) { clearTimeout(ringT.current); ringT.current = null }
+    if (person) ringT.current = setTimeout(() => { ringT.current = null; setRing(r => (r && r.seq === seq ? { ...r, on: false } : r)) }, RING_MS)
   }, [intentSeq])
+  useEffect(() => () => { if (ringT.current) clearTimeout(ringT.current) }, [])
   const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state

@@ -71,7 +71,10 @@
   background:none;border:none;padding:0;color:inherit;font:inherit}
 #page-admin .acc-tap{cursor:pointer}
 #page-admin .acc-tap:disabled{cursor:default}
-#page-admin .acc-tap:not(:disabled):hover .acc-name{color:var(--accent)}
+/* (only where a pointer truly hovers: on a touch screen the last tap's point keeps the hover, and a bell's posting line
+   that lands on Users — the page moving under the finger — lit another man's name beside the ringed row, the walk's
+   b3 phone picture, 5 Nov 26) */
+@media (hover:hover){#page-admin .acc-tap:not(:disabled):hover .acc-name{color:var(--accent)}}
 #page-admin .acc-name{font-size:13px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
 #page-admin .acc-sub{font-size:11.5px;color:var(--ink-3);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
 #page-admin .acc-sub b{color:var(--ink-2);font-weight:600}
