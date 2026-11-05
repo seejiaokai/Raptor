@@ -6945,10 +6945,18 @@ required — D225), "Pilot, WSO or personnel" `#accSeat` ("Pick…", Pilot, WSO,
 `#accCat` ("Pick…" then the seat's CATs; absent for personnel; back to Pick… when the seat changes to one that cannot hold
 it); the two selects wear the boxes' look (`.login select`); "Request access" `#accSend`, errors in `#accErr` — never
 whether a callsign is taken (a person not yet let in may not read the roster). *(Was, 26 Sep 26 `[ACCOUNTS]`: Callsign
-`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — what he
-asked, one line `#accAsked`: "You asked for access as **Viper** (JKB · Pilot · CAT C).", "an admin will answer it"; with
-the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
-**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
+`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — since D1650 / D1656,
+5 Nov 26, a PASS, `.acc-pass`: the claws and a "Waiting for an admin" mark, his callsign large `#accAsked` (set smaller, never
+below 16px, until it fits one line — `AccessScreen.tsx PassCallsign`), his initials, seat and CAT (`.pass-fields` — one he did
+not give is left out), a dashed tear line, then the three steps (Request sent · An admin approves · You're on the schedule,
+the middle one where he is), with the guest switch ON "Meanwhile you can look at the schedule, read only." and "View the
+schedule" `#accGuest` (straight into the guest view, D221), Sign out, and "Signed in as …" `#accName` small at the foot; the
+blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one line `#accAsked`, "You asked for access as
+**Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
+**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
+failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
+Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
+every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). With the admin's guest switch ON a
 person waiting instead gets the guest view (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
 view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
 member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not

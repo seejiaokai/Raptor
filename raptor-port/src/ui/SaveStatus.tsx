@@ -40,7 +40,8 @@ const subscribeCover = (fn: () => void) => { coverSubs.add(fn); return () => { c
 const readCover = (): boolean => covering > 0
 const cover = (d: 1 | -1) => { covering += d; for (const f of [...coverSubs]) f() }
 
-/** Has a save failed (and not yet landed)? Shell asks, to make room for the warning's band in the top bar. */
+/** Has a save failed (and not yet landed)? Shell and the guest page ask, to make room for the band in their bar; the sign-in
+    and the access screens, to move the screen down under it (D1657). */
 export function useSaveFailed(): boolean {
   return useSyncExternalStore(subscribe, readFailed, readFailed)
 }

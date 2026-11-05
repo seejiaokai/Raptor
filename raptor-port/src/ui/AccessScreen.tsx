@@ -60,8 +60,16 @@ function PassCallsign({ cs }: { cs: string }) {
       if (n.scrollWidth > n.clientWidth + 0.5) n.classList.add('pass-cs-wrap')
     }
     fit()
+    /* again whenever the card's width changes, not only the window's (the code read, 5 Nov 26: a scroll bar coming with
+       the band narrows the card with no resize); the fit is the same for the same width, so it settles at once */
+    let w = n.parentElement?.clientWidth ?? 0
+    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(() => {
+      const now = n.parentElement?.clientWidth ?? 0
+      if (now !== w) { w = now; fit() }
+    })
+    if (n.parentElement) ro?.observe(n.parentElement)
     window.addEventListener('resize', fit)
-    return () => window.removeEventListener('resize', fit)
+    return () => { window.removeEventListener('resize', fit); ro?.disconnect() }
   }, [cs])
   return <h2 className="pass-cs" id="accAsked" ref={el}>{cs}</h2>
 }

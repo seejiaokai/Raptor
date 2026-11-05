@@ -84,8 +84,9 @@
    ONE LINE ALWAYS (D840): the words never wrap and are never cut, and the two buttons never drop under them. Where the
    line is too narrow for the letters a phone draws, ui/OilWaitSheet.tsx steps `--oil-fit` down from 1 and every size
    here follows it — the letters, the gaps, the buttons' side room — then `is-tight` closes the buttons up.
-   Its words are the bar's bright ink and bold; "Answer OIL" keeps the app's accent, the one thing to press; "OK" is the
-   band's own quiet button, as Retry is. Both buttons are Retry's height. */
+   Its words are the strip's since D1655 (the sign, what did not happen bold, why quieter); "Answer OIL", the one thing to
+   press, is solid amber as Retry is (it was the app's cyan accent before D1655); "OK" is the band's quiet button. Both
+   buttons are Retry's height. */
 .topbar.oil-waiting{padding-bottom:calc(12px + var(--save-band))}
 .topbar.save-failed.oil-waiting{padding-bottom:calc(12px + 2 * var(--save-band))}
 .oilband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;justify-content:flex-start;
