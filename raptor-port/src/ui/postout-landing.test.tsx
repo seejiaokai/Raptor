@@ -4,7 +4,7 @@
 
    The landing's intent is the one "open Admin → Users" door (ui/adminopen.ts openAdminUsers({ person }) → state/view.ts
    ADMINOPEN → ui/AdminPage.tsx, its one consumer → ui/UsersPanel.tsx `ring`). Pinned: the list drawn afresh for the tap (no
-   search hides him), the Archived fold open for an archived man, his row wearing the just-added ring — and the ring gone
+   search hides him, nothing half-typed lost), the Archived fold open for an archived man, his row wearing the just-added ring — and the ring gone
    after its six seconds (the walk's B4, 5 Nov 26: the ring's end was a timer the Admin page's own effect cancelled the moment
    it ran again, so the ring stayed for good); a second tap, on the page already up, lands on the second man. */
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -73,7 +73,16 @@ describe('a posting line\'s tap lands on his row (D1547)', () => {
     await act(async () => { vi.advanceTimersByTime(6100) })
     expect(row('rocky')!.classList.contains('acc-ring')).toBe(false)
   })
-  it('a search typed earlier does not hide him: the list is drawn afresh for the tap', async () => {
+  it('what he has half-typed on Users is kept: a new person’s callsign and sign-in survive the tap (the build’s code read, 3)', async () => {
+    await act(async () => { setPage('admin'); notify() })
+    const set = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!
+    const typeIn = async (sel: string, v: string) => { const el = $(sel) as HTMLInputElement; expect(el, sel).toBeTruthy(); await act(async () => { set.call(el, v); el.dispatchEvent(new Event('input', { bubbles: true })) }) }
+    await typeIn('#accAddName', 'newman@mail')
+    await act(async () => { openAdminUsers({ person: 'bane' }) })
+    expect(row('bane')!.classList.contains('acc-ring')).toBe(true)
+    expect(($('#accAddName') as HTMLInputElement).value).toBe('newman@mail')
+  })
+  it('a search typed earlier does not hide him: the search is cleared for the tap', async () => {
     await act(async () => { setPage('admin'); notify() })
     const find = $('#accFind') as HTMLInputElement
     await act(async () => {

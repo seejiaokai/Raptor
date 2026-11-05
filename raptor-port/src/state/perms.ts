@@ -30,7 +30,7 @@ import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, lea
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isAdminAccount } from './accounts'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 
@@ -1026,13 +1026,14 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      set, from anything else, to the posting's own date (the day after his last day in, `to`), a date already come — or, for
      a Delete of a man who never arrived, his record removed (store.ts forgetPersonFrom) on a date already come */
   const posted = new Map<string, string>()
+  const postedOn = new Map<string, string>()   // each posted man's posting date (the bell lines' check, below)
   for (const c of env.changes) {
     if (c.collection !== 'lw.postouts') continue
     const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
     let date: string | null = null, outcome: string | undefined
     if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && (!b || b.poDone !== f.poDone)) { date = f.poDone; outcome = passOutcomeOf(f) }
     else if (!f && b && typeof b.to === 'string' && ISO_DAY.test(b.to) && passOutcomeOf(b) === 'delete') { date = isoAddDay(b.to); outcome = 'delete' }
-    if (date && date <= today && outcome) posted.set(String(c.id), outcome)
+    if (date && date <= today && outcome) { posted.set(String(c.id), outcome); postedOn.set(String(c.id), date) }
   }
   const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
   const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
@@ -1084,15 +1085,31 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       accounts.set(rowId, b)
     }
   }
-  /* THE PASS'S BELL LINES ([POSTOUT-RUN-NOTICE] — D1547): only new lines, the app's own (nobody named as their maker) — the
-     admins told that a posting ran, each about a man this very pass posts out, and the lines a Delete's inputs owe the others
-     in them (state/sched-commit.ts tellPass — the app's act, with no name, R12); never a line rewritten or taken away */
+  /* THE PASS'S BELL LINES ([POSTOUT-RUN-NOTICE] — D1547; tightened by the build's security read, 5 Nov 26): only NEW
+     lines, the app's own (nobody named as their maker), never one rewritten or taken away. A posting's line (`po`) is a
+     line of that one part, about a man this very pass posts out, saying the outcome that ran (`acct` only for an Overseas
+     Sqn), dated his posting date, about no input, addressed to an admin who can sign in and never to the man himself —
+     one an admin a man. Any other line the pass makes is a Delete's: the lines its inputs owe the others in them
+     (state/sched-commit.ts tellPass — the app's act, with no name, R12), each about an input this changeset changes and
+     none of the war's or a posting's kinds. At the database step the pass's service account writes exactly these. */
+  const admins = new Set(ACCOUNTS_LIST.filter(x => isAdminAccount(x) && x.on && x.pid != null).map(x => String(x.pid)))
+  const told = new Set<string>()
+  const deletes = [...posted.values()].includes('delete')
+  const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
   for (const c of env.changes) {
     if (c.collection !== 'notices') continue
     const n: any = c.op === 'delete' ? null : c.after
-    if (c.before != null || !n || n.by != null) return refuse(c)
-    const first: any = Array.isArray(n.what) ? n.what[0] : null
-    if (first && first.k === 'po' && (!posted.has(String(first.who)) || n.what.length !== 1)) return refuse(c)
+    if (c.before != null || !n || n.by != null || !Array.isArray(n.what) || !n.what.length) return refuse(c)
+    const parts: any[] = n.what
+    if (parts.some(p => p && p.k === 'po')) {
+      const p = parts[0], who = String(p.who)
+      const ok = parts.length === 1 && p.k === 'po' && posted.has(who) && p.o === posted.get(who)
+        && (p.acct === undefined || (p.acct === true && p.o === 'overseas'))
+        && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && admins.has(String(n.to))
+        && !told.has(`${n.to}|${who}`)
+      if (!ok) return refuse(c)
+      told.add(`${n.to}|${who}`)
+    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
   }
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's
      row, both removed; nothing else */

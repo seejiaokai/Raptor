@@ -1408,6 +1408,7 @@ function endedLines(pid: string): Notice[] {
    database step a scheduled flow may write it instead, beside the pass (noted for the IT side). */
 function postedLines(pid: string): Notice[] {
   if (!schedulerIds().includes(pid)) return []
+  /* (an admin is never told of his own posting — as the pass's lines, above) */
   const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
   const out: Notice[] = []
   for (const [id, rec] of Object.entries(getState().postOuts)) {
@@ -1415,7 +1416,7 @@ function postedLines(pid: string): Notice[] {
     const o = outcomeOf(rec)
     if (o && o !== 'none') continue
     const poDate = addDays(rec.to, 1)
-    if (poDate > today || poDate < since) continue
+    if (id === pid || poDate > today || poDate < since) continue
     const body = rosterBody(id)
     if (!body || body.special || body.deleted) continue
     const at = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10)).getTime()
@@ -2338,7 +2339,12 @@ export function runPoOutcomes(): void {
         SYNCING = true
         try {
           if (own) revertUnsavedPeople()   // before the enlist: the roster as saved, so nothing else rides in (above)
-          if (needsDays) resyncSchedBaseline()
+          /* the scheduler store's starting point brought up to what is in memory BEFORE it is enlisted — every time now that
+             every pass enlists it ([POSTOUT-RUN-NOTICE]'s two reads, 5 Nov 26): the store's changes are worked out against
+             that point, so a schedule or request change sitting in memory outside every command (a browser's console) would
+             otherwise be saved inside this pass as the app's own act. Taken in, it is never saved by anyone (the next command
+             starts from the same point), as commitInputsWith does for the same reason; it was always so for a delete */
+          resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
           /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
              delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
@@ -2377,16 +2383,18 @@ export function runPoOutcomes(): void {
           }
           /* NOBODY IS GONE SILENTLY ([POSTOUT-RUN-NOTICE] — owner D1546, D1547 A, D1690): each posting that ran is one line in
              every admin's bell — "Ranger · Mon 16 Nov / Posted out · archived, account suspended". Written here, inside the
-             pass's own command, so a refused pass tells nobody and a posting made today (run inside the admin's own Post out)
-             goes with its Undo. The admins are read AFTER the outcomes: a posted-out admin is told nothing about himself */
-          /* (in the Post out sheet's own order of outcomes — Overseas Sqn, Delete, SANS — then by callsign, as drawn: each a
-             millisecond earlier than the one before, since the bell lists the newest first. The postings themselves keep no
-             order of when they were made — the walk's B2b) */
+             pass's own command, so a refused pass tells nobody; the line then stays as the record that it ran (the top bar's
+             Undo never takes a posting back — D350 — and the posting sheet's own Undo is a command of its own). The admins
+             are read AFTER the outcomes, so an admin archived or deleted by his posting is not told; nor is an admin told
+             of his own posting (made SANS, he is still an admin) */
+          /* (the latest date first, then in the Post out sheet's own order of outcomes — Overseas Sqn, Delete, SANS — then
+             by callsign, as drawn: each a millisecond earlier than the one before, since the bell lists the newest first.
+             The postings keep no order of when they were made — the walk's B2b; one first opening may run two dates) */
           if (ran.length) {
             const to = schedulerIds(), now = Date.now(), rank: Record<string, number> = { overseas: 0, delete: 1, sans: 2 }
             const cs = (id: string) => String((PEOPLE as any)[id]?.cs ?? id)
-            ;[...ran].sort((a, b) => (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
-              .forEach((r, i) => noticePosting(to, r.id, r.outcome, r.poDate, r.acct, now - i))
+            ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
+              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i))
           }
           validate()
           finishPeopleWrite()

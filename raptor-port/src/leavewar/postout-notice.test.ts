@@ -214,27 +214,83 @@ describe('an admin\'s member view hides the line (D292 — it opens Admin → Us
   })
 })
 
-describe('the gate', () => {
-  const forged = (env: CommitEnvelope, who: string): CommitEnvelope => ({
-    ...env,
-    changes: [...env.changes, { collection: 'notices', id: 'nforged', op: 'put', before: null, after: { id: 'nforged', to: 'stiff', by: null, at: 1, iid: '', name: 'X', day: PO, what: [{ k: 'po', who, o: 'delete' }] } } as any],
+describe('the gate (tightened by the build’s security read, 5 Nov 26)', () => {
+  /* the pass's own envelope, with one more line put into it */
+  const withLine = (env: CommitEnvelope, after: any): CommitEnvelope => ({
+    ...env, changes: [...env.changes, { collection: 'notices', id: String(after.id), op: 'put', before: null, after } as any],
   })
-  it('the pass may not write a line about a man it does not post out', () => {
+  const runSans = () => {
     expect(postOut('bane', PO, 'sans')).toBe(true)
     reach()
     const n = commandStream().length
     runPoOutcomes()
-    const env = passEnvs(n)[0]!
-    expect(ownershipViolation(forged(env, 'bane'))).toBeNull()
-    expect(ownershipViolation(forged(env, 'casper'))).toMatch(/the posting pass may change only the men it posts out/)
+    return passEnvs(n)[0]!
+  }
+  const base = { id: 'nf', by: null, at: 1, iid: '', name: 'X', day: PO }
+  it('the pass’s own lines pass', () => { expect(ownershipViolation(runSans())).toBeNull() })
+  it('a forged posting line is refused: another man, the wrong outcome, a member, the man himself, the wrong date, a second part, a second line to one admin', () => {
+    const env = runSans()
+    const bad = (after: any) => expect(ownershipViolation(withLine(env, after)), JSON.stringify(after)).toMatch(/the posting pass may change only the men it posts out/)
+    bad({ ...base, to: 'stiff', what: [{ k: 'po', who: 'casper', o: 'sans' }] })            // a man it does not post out
+    bad({ ...base, to: 'stiff', what: [{ k: 'po', who: 'bane', o: 'delete' }] })            // not the outcome that ran
+    bad({ ...base, to: 'casper', what: [{ k: 'po', who: 'bane', o: 'sans' }] })             // a member
+    bad({ ...base, to: 'bane', what: [{ k: 'po', who: 'bane', o: 'sans' }] })               // the man himself
+    bad({ ...base, to: 'stiff', day: '2026-07-01', what: [{ k: 'po', who: 'bane', o: 'sans' }] })
+    bad({ ...base, to: 'stiff', what: [{ k: 'po', who: 'bane', o: 'sans' }, { k: 'del' }] })
+    bad({ ...base, to: 'stiff', what: [{ k: 'po', who: 'bane', o: 'sans', acct: true }] })  // a sign-in suspended, on a SANS posting
+    bad({ ...base, to: 'stiff', what: [{ k: 'po', who: 'bane', o: 'sans' }] })              // Saber told twice
   })
-  it('a member\'s command may never write a posting line', () => {
+  it('a line of any other kind, or with a maker, is refused in a pass that deletes nobody', () => {
+    const env = runSans()
+    const bad = (after: any) => expect(ownershipViolation(withLine(env, after)), JSON.stringify(after)).toMatch(/the posting pass may change only the men it posts out/)
+    bad({ ...base, to: 'casper', iid: 'x', what: [{ k: 'lw', c: 'LL', a: PO, b: PO, d: 'approved' }] })
+    bad({ ...base, to: 'casper', iid: String((INPUTS[0] as any).iid), what: [{ k: 'del' }] })
+    bad({ ...base, by: 'stiff', to: 'rocky', what: [{ k: 'po', who: 'bane', o: 'sans' }] })
+  })
+  it('a stray request change sitting in memory outside every command does not ride the pass', () => {
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach()
+    const r: any = INPUTS.find((x: any) => x && x.iid != null)
+    r.remarks = 'changed from a console'                    // no door, no command
+    const n = commandStream().length
+    runPoOutcomes()
+    const env = passEnvs(n)[0]!
+    expect(env.changes.filter(c => c.collection === 'inputs'), 'no request change in the pass').toEqual([])
+    expect(P('bane').archived, 'the posting still ran').toBe(true)
+  })
+  it('a member’s command may never write a posting line', () => {
     signInAs('us', 'us')
     const env: any = {
       type: 'inputs.write', origin: 'user', actor: { role: 'member', personId: 'bane', principal: 'us' }, scope: { module: 'inputs' },
       changes: [{ collection: 'notices', id: 'nm', op: 'put', before: null, after: { id: 'nm', to: 'stiff', by: 'bane', at: 1, iid: '', name: 'X', day: PO, what: [{ k: 'po', who: 'casper', o: 'delete' }] } }],
     }
     expect(ownershipViolation(env)).toMatch(/a notice that is not his own change's/)
+  })
+})
+
+describe('more than one posting date in one run, and an admin’s own posting', () => {
+  it('two dates come due at once: the later date’s lines first, each date’s in the sheet’s order', () => {
+    const id = noSignIn()
+    /* (the earlier date carries the outcome that sorts first, so only the date can put it last) */
+    expect(postOut('bane', '2026-07-18', 'overseas')).toBe(true)
+    expect(postOut(id, PO, 'delete')).toBe(true)
+    expect(postOut('casper', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(noticesFor('stiff').filter(n => (n.what || [])[0]?.k === 'po').map(n => `${(n.what[0] as any).who}@${n.day}`))
+      .toEqual([`${id}@${PO}`, `casper@${PO}`, 'bane@2026-07-18'])
+  })
+  it('an admin made SANS by his posting is not told of it; the other admin is', () => {
+    expect(postOut('rocky', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(P('rocky').sanBy).toBe('po')
+    expect(poLines('rocky')).toEqual([])
+    expect(poLines('stiff')).toHaveLength(1)
+  })
+  it('an admin posted off the manpower is not told of it either (the line his bell works out)', () => {
+    expect(postOut('rocky', PO, 'none')).toBe(true)
+    reach()
+    expect(allNoticesFor('rocky').filter(n => (n.what || [])[0]?.k === 'po')).toEqual([])
+    expect(allNoticesFor('stiff').filter(n => (n.what || [])[0]?.k === 'po')).toHaveLength(1)
   })
 })
 

@@ -19,7 +19,7 @@
    the other. Every category panel stays mounted (only the active one shows), so
    the template openers and the user tools keep their stable ids wherever the
    rail happens to be pointing. */
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { canEditSched } from '../state/auth'
 import { isAdmin } from '../state/perms'
 import { waitingCount } from '../state/accounts'
@@ -196,10 +196,9 @@ export function AdminPage() {
      drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
   const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
   const [openNew, setOpenNew] = useState(0)
-  /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap (the Users
-     list is drawn afresh for each — its `key`), `on` while his row wears the just-added mark — its six seconds */
+  /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap, `on` while his
+     row wears the just-added mark — its six seconds */
   const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
-  const ringT = useRef<ReturnType<typeof setTimeout> | null>(null)
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
@@ -214,12 +213,16 @@ export function AdminPage() {
     const seq = it.seq, person = it.person
     setRing(person ? { seq, pid: person, on: true } : null)
     clearAdminOpen()
-    /* (its end is held apart from this effect: the effect runs again the moment ADMINOPEN is cleared, and a timer it
-       cleaned up there would leave the ring on for good — the walk's B4) */
-    if (ringT.current) { clearTimeout(ringT.current); ringT.current = null }
-    if (person) ringT.current = setTimeout(() => { ringT.current = null; setRing(r => (r && r.seq === seq ? { ...r, on: false } : r)) }, RING_MS)
   }, [intentSeq])
-  useEffect(() => () => { if (ringT.current) clearTimeout(ringT.current) }, [])
+  /* THE RING'S SIX SECONDS, an effect of its own keyed on the tap: the intent's effect above runs again the moment ADMINOPEN
+     is cleared, and a timer it cleaned up there left the ring on for good (the walk's B4); keyed here, a second tap starts
+     its own six seconds and a page left takes its timer with it */
+  const ringingSeq = ring && ring.on ? ring.seq : 0
+  useEffect(() => {
+    if (!ringingSeq) return
+    const t = setTimeout(() => setRing(r => (r && r.seq === ringingSeq ? { ...r, on: false } : r)), RING_MS)
+    return () => clearTimeout(t)
+  }, [ringingSeq])
   const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
@@ -261,7 +264,7 @@ export function AdminPage() {
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
-              <UsersPanel key={ring ? ring.seq : 0} shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
+              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

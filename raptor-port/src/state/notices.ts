@@ -380,9 +380,9 @@ export function noticeWar(to: readonly string[], by: string | null, part: Notice
 }
 /* ---- a posting out that ran ([POSTOUT-RUN-NOTICE]) ---------------------------------------------------------- */
 /** THE POSTING'S LINES — one an admin, pushed INSIDE the posting pass's own command (leavewar/sync.ts runPoOutcomes, the
- *  scheduler store enlisted), so a refused pass tells nobody and a posting's own Undo (one made today runs inside the
- *  admin's `lw.postout`) takes the line with it. `to` — every admin who can sign in (D1547: "each admin's bell"); a man no
- *  longer here — the very man posted out among them — is told nothing. Answers how many were made. */
+ *  scheduler store enlisted), so a refused pass tells nobody; once made it stays as the record that the posting ran (the top
+ *  bar's Undo never takes a posting back — D350). `to` — every admin who can sign in (D1547: "each admin's bell"), the man
+ *  himself left out by the caller; a man no longer here is told nothing. Answers how many were made. */
 export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): number {
   const p: any = PEOPLE[who]
   const part: NoticePart = acct && o === 'overseas' ? { k: 'po', who, o, acct: true } : { k: 'po', who, o }

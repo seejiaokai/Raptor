@@ -407,17 +407,40 @@ const Cols = () => (
   <div className="od-cols" aria-hidden="true"><span className="od-grow" /><span className="od-c">Sign-in</span><span className="od-c">Roster</span><span className="od-rc" /></div>
 )
 
+/* A BELL'S POSTING LINE LANDS HERE ([POSTOUT-RUN-NOTICE] — D1547: "a tap opening his row on Admin → Users"; the drawing
+   of record docs/mock/2026-11-05-postout-bell/, pictures 3). Each new tap (its `seq`), worked out as the list draws — no
+   effect, no second draw: the search cleared so it cannot hide him, the Archived fold opened for an archived man; what he
+   has half-typed here (a new person, a row's change) is left as it is (the build's code read, 3 — the list was once drawn
+   afresh for each tap and lost it). Once his row is drawn it is brought into view, wearing the app's one just-added mark
+   (the board's plain blue ring, no glow — D860, D876) while the Admin page holds `ring.on`. Answers the man ringed now. */
+type Ring = { seq: number; pid: string; on: boolean } | null | undefined
+function useRingLanding(ring: Ring, setFind: (v: string) => void, setArchOpen: (v: boolean | null) => void): string | null {
+  const [ringSeen, setRingSeen] = useState(0)
+  if (ring && ring.seq !== ringSeen) {
+    setRingSeen(ring.seq)
+    setFind('')
+    setArchOpen(P(ring.pid) && P(ring.pid).archived ? true : null)
+  }
+  const ringPid = ring && ring.on ? ring.pid : null
+  const ringAt = ring && ring.on ? ring.seq : 0
+  useEffect(() => {
+    if (!ringPid) return
+    const row = Array.from(document.querySelectorAll<HTMLElement>(`#page-admin .acc-row[data-person="${CSS.escape(ringPid)}"]`)).find(x => x.getBoundingClientRect().height > 0)
+    row?.scrollIntoView?.({ block: 'center' })
+  }, [ringPid, ringAt])
+  return ringPid
+}
+
 /* `shown` — this list is on the admin's screen (the Admin page decides: Users chosen, and on a phone drilled in);
    `openNew` — a non-zero, changing value brings the add form into view with its callsign box ready (Quals'
    "+ Add person", through the Admin page — state/view.ts ADMINOPEN);
    `ring` — a man to bring into view, ringed while `on` (a bell's posting line — [POSTOUT-RUN-NOTICE]) */
-export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: { pid: string; on: boolean } | null } = {}) {
+export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: Ring } = {}) {
   const [editing, setEditing] = useState<string | null>(null)
   const [find, setFind] = useState('')
   /* the Archived group's fold: his own tap, or — while he has not tapped since the search changed — open exactly when
      the search matches someone archived (the walk's design, Fable R7: the tap used to do nothing while a search matched) */
-  /* (open from the first draw for an archived man a bell's posting line lands on — the list is drawn afresh for that tap) */
-  const [archOpen, setArchOpen] = useState<boolean | null>(() => !!(p.ring && P(p.ring.pid) && P(p.ring.pid).archived))
+  const [archOpen, setArchOpen] = useState<boolean | null>(false)
   const [name, setName] = useState('')
   const [np, setNp] = useState<NewPerson>(BLANK)
   const [role, setRole] = useState<AccountRole>('main')
@@ -442,17 +465,8 @@ export function UsersPanel(p: { shown?: boolean; openNew?: number; ring?: { pid:
     if (!HOOKS.isPhone()) csRef.current.focus()
   })
 
-  /* A BELL'S POSTING LINE LANDS HERE ([POSTOUT-RUN-NOTICE] — D1547: "a tap opening his row on Admin → Users"; the drawing
-     of record docs/mock/2026-11-05-postout-bell/, pictures 3): the Admin page draws this list afresh for each tap (its
-     `key`), so no search hides him and no editor is open; the Archived fold starts open for an archived man; and once his
-     row is drawn it is brought into view, wearing the app's one just-added mark (the board's plain blue ring, no glow —
-     D860, D876) while the Admin page holds `ring.on` — its six seconds. View state only. */
-  const ringPid = p.ring && p.ring.on ? p.ring.pid : null
-  useEffect(() => {
-    if (!ringPid) return
-    const row = Array.from(document.querySelectorAll<HTMLElement>(`#page-admin .acc-row[data-person="${ringPid}"]`)).find(x => x.getBoundingClientRect().height > 0)
-    row?.scrollIntoView?.({ block: 'center' })
-  }, [ringPid])
+  /* a bell's posting line landing here ([POSTOUT-RUN-NOTICE]) — useRingLanding, above */
+  const ringPid = useRingLanding(p.ring, setFind, setArchOpen)
 
   const hasName = !!name.trim()
   const resetAddForm = () => { setName(''); setNp(BLANK); setRole('main'); setPostIn(effectiveToday()) }
