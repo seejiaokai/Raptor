@@ -12028,6 +12028,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   source); the group's heading stays "OCU".
 - **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
   schedule's own ground-crew puck (no chip) is unchanged.
+- **A man posted out as SANS, shown in his old place (his D1692, 5 Nov 26 — to draw, then build, [PO-SANS-PUCK-EDGE]):** his puck wears the SANS purple line on its right beside the chip, as every SANS puck (D651) — the separate "SANS" tag (D283's picture 4a, `MatrixRows.tsx` `po-sans-tag`) goes; it squeezed his callsign to one letter on a phone.
 - **Built (28 Oct 26):** `leavewar/ui/NamePuck.tsx` draws it for the grid's row (`MatrixRows.tsx`) and the phone's frozen copy
   (`Matrix.tsx`) — the schedule's `.puck` / `.nm` / `.role` classes, so its look is the scheduler's stylesheet; the chip's text
   `chipText` (the schedule's `QCHIP` for OCU, "G" for ground personnel), its colour the war's `catClass`; `matrix.css` adds
