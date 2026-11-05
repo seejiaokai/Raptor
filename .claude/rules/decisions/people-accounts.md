@@ -68,7 +68,9 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
-| D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Posting out · Drifter · Mon 14 Nov · archived, account suspended") — a tap opening his row on Admin → Users; it does not wait for anyone to accept it. |
+| D1691 | 5 Nov 26 | When a posting out deletes a man on its date, his line in the admins' bells opens nothing when tapped — he has no row left on Admin → Users — and the line stays in the bell as the record, as the bell's "Deleted" line for an input does. |
+| D1690 | 5 Nov 26 | The admins' bell line for a posting out that ran on its date leads with the man in bold and the date, then "Posted out" and what the outcome did — "Ranger · Mon 16 Nov / Posted out · archived, account suspended" — option B as drawn, not "Posting out" first. |
+| D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Ranger · Mon 16 Nov / Posted out · archived, account suspended", D1690) — a tap opening his row on Admin → Users, a deleted man's opening nothing (D1691); it does not wait for anyone to accept it. — changed by D1691, D1690 |
 | D1546 | 31 Oct 26 | His direction: when a man's posting out runs on its date — archived, deleted, made SANS or transferred — the schedulers are told, so nobody is ever gone silently; it runs and tells them, never waiting for an Accept (D1547). — changed by D1547 |
 | D1510 | 29 Oct 26 | On Quals only an admin ticks the Management column: a member's own Management cell reads only, and a member's command that changes it is refused — he still ticks every other column of his own row. |
 | D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. — changed by D1110 |

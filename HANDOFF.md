@@ -23,8 +23,8 @@ the later merge keeps both (D78).
 <!-- now:claude/postout-bell-look -->
 ### `claude/postout-bell-look` — the posting-out bell line DRAWN for him, 5 Nov 26 (draft pull request, notes and pictures only)
 - **Done:** [POSTOUT-RUN-NOTICE] (D1546, D1547) drawn on the real app and put to him on https://claude.ai/artifact/9bBDLXc9WyLrrhsb3Jf36Z — four men posted out from Mon 16 Nov on the Leave War's sheet (one per outcome), the clock moved to that morning so each ran by itself, the bell today silent, the line cloned from the bell's own markup in two wordings, the tap landing on Admin → Users. Script, log and pictures: `raptor-port/docs/mock/2026-11-05-postout-bell/`. Nothing in `raptor-port/src` changed.
-- **Waiting on him:** Q2 wording A ("Posting out" bold) or B (the man bold — recommended); Q1 a deleted man's line opens nothing (recommended). Record each answer as a ruling in `people-accounts.md` (this chat's range D1690–D1699), then the build goes with the people-and-accounts batch (D490) — the item in `OUTSTANDING.md` lists what the build must carry.
-- **Numbers used:** rulings none; design lessons none; observations none (ranges D1690–D1699, lessons 89–91, observations 820–829).
+- **Answered 5 Nov 26, "ok as recommended":** D1690 (the man first in bold — option B) and D1691 (a deleted man's line opens nothing), both narrowing D1547. The build goes with the people-and-accounts batch (D490) — the item in `OUTSTANDING.md` lists what it must carry.
+- **Numbers used:** rulings D1690–D1691 (next free D1692); design lessons none; observation 820 (ranges D1690–D1699, lessons 89–91, observations 820–829).
 <!-- /now -->
 <!-- now:claude/member-guest-checks -->
 ### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
