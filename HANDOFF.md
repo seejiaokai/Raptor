@@ -30,7 +30,9 @@ the later merge keeps both (D78).
 - **Not tonight:** the board-by-keys job and React Doctor on the shell and windows — they share files with pull request 636, waiting for his look.
 - **His answers:** none asked. The rules diet stays "wait for Fable 5.5" (D1718 — he did not write "trial").
 - **This branch** carries the night's records: D1718, [RULES-DIET] and its brief, this block, the reads owed on [NO-ASTRA-LIST].
-- **Questions waiting for him:** none yet.
+- **Job 1 DONE** — `claude/lw-faults-1106`, its pull request to be opened: (d) and (f) built red-first, [CSS-WRAPPER-GUARD] built; (a) and (g) were already fixed on `main` (a stale line in the sizing plan); (c) not a fault — Q1. FULL walk, two Opus reads, evidence `raptor-port/docs/handpass/2026-11-06-lw-faults.md`. Filed: [LW-PO-DAYS-DRAWING], [LW-DOUBLETAP-OTHER-WINDOWS], [LW-ROLLBACK-FOCUS], [LW-BIDPICKER-CSS-INSIDE].
+- **Job 2 next** — Inputs, `claude/inputs-batch-1106`.
+- **Questions waiting for him:** Q1 — [LW-PO-DAYS-DRAWING] (an OD over a posted-out man's gone days shows a bare "PO"; recommended: draw what is filed there as leave is, a drawing first).
 - **Pull requests:** each job's opened when its check closes, cut from `main`; unwatched at once.
 <!-- /now -->
 <!-- now:claude/postout-bell-look -->
