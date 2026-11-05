@@ -269,6 +269,7 @@ to those groups from the app (a role-assigning permission granted once) or IT do
 that lets an account into the environment at all. **Then:** IT enters the roles (by hand or as one package, an hour or two);
 the kit's test with a second, member-only account (the move plan's point 35). The agent's reading of Dataverse, to check in
 the hosting trial ([M365-HOSTING-TRIAL]) and with the IT side. **Place:** the database step.
+**The day lock without a plug-in (the agent's reading, 5 Nov 26, to check in the hosting trial):** `data-model.md` §3 ScheduleDay's lock rests on ownership plus one plug-in and SYSTEM Custom APIs. Without them: ownership and the free team stay as designed (a non-holder's save refused by the database itself); schedulers get Assign at User depth only; every change of holder (take a free or idle day, a take-over asked or forced) goes through an instant Power Automate flow the app starts, run under a service account IT sets up, which checks the rules first — idle read from the row's own `modifiedon`, the server's clock — and then reassigns; a code app can call a flow directly (since about April 2026, a community source). Left soft, in the app only: one person's two tabs (the database cannot tell them apart). For IT: may a flow run as a service account and reassign rows; does it need a premium connector.
 
 ### [SAVEBAND-LOOK] The "Not saved" band, nicer (his idea, 5 Nov 26)
 **What:** his words: *"I'm thinking of making the not saved look nicer"*. The band is one design in one stylesheet
