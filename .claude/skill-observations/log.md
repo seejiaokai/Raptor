@@ -3564,6 +3564,8 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** A door check proves absence only when it has tried every door the state can offer; one remembered route is evidence about the script, not the app.
 
+- Met again 5 Nov 26 ([PO-CHANGE-RETRACT], walk S22): the step tried every route and still found no Undo — because with "+ SANS" on the app draws a ran SANS posting with no posting day (D283), so no route exists in that state. A door check must first ask whether the STATE offers the door at all (read the app's drawing rule), not only try every route; proposed guard: a walker's brief names, for each door it presses, the states in which the app draws it.
+
 ### Observation 830: A finding about a drawn icon's colour was read from its button, not the icon
 
 **Status:** OPEN

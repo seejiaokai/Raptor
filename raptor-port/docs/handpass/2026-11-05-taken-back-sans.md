@@ -156,7 +156,16 @@ what the reader saw hold: a change already due run in the same one command, the 
 35/35, S15 recorded as before (his Q3 note). Pictures opened by the host: Hex's bell after the move — only the struck "taken back ·
 Saber" line, unread; Saber's after the move — nothing; Saber's after SANS → Overseas — the new "archived, account suspended" line;
 S11's two runs undone — two struck lines.
-**Narrow read of the fix round (35bc38195):** NARROW_READ_RESULT
-**Gates on his PC:** the Leave War project 235 files / 4194 passed (after the read's fixes); the code check no new finding; the
-build. The full set: GitHub's run on the last pushed commit (D1086).
-**Walk (this part):** docs/handpass/2026-11-05-taken-back-sans.md §16 · 6 + 31 pictures (rewalk2, rewalk3) · 1 surface (the bell, through the Leave War's posting sheets) · 13 orders · MISSING: none
+**Narrow read of the fix round (35bc38195 — `parts/tb1105/read-pcr-fixes.md`):** 2 low, both older, fixed red-first:
+| # | What | Disposition |
+|---|---|---|
+| N1 (low, older) | restored on a posting's own day, then posted again for the SAME date and outcome: an Undo or change of the second took both runs' lines | fixed: `postingLinesOf` keeps the newest run's lines (one run stamps every admin's line with one moment); for the shared database, filed under [DB-STEP] |
+| N2 (low, older) | with "+ SANS" on, a post-in set on a man whose SANS posting has run wiped the posting from the record — Admin → Users lost "posted out 16 Nov · SANS", and it could never be undone (reproduced on screen on the old build, walk S22) | fixed: `store.ts setPostIn` and `postingProblem` read the saved posting; new walk stage S22 presses the door: FAILED on the old build, PASSES now |
+**The third read (c38a3d271 — `parts/tb1105/read-pcr-fixes2.md`): 0 findings** — the last round (the order's cap of about three).
+`rewalk4/` — the build with every fix: S2–S16 34/34 (S15 recorded) and S22; S22's first run on it expected Undo with "+ SANS" still
+on, where the app (D283) draws no posting day — the script's premise, corrected: "+ SANS" switched off by its ✕ first, as an
+admin would; then PASS. Pictures opened by the host: Ranger's Admin → Users row after the post-in, "POSTED OUT 16 NOV · SANS" kept.
+**Gates on his PC (first round):** the Leave War project 235 files / 4194 passed; the code check no new finding; the build.
+The full set: GitHub's run on the last pushed commit (D1086).
+**Gates on his PC, last:** after every fix the Leave War project 235 files / 4196 passed; the code check no new finding; the build after merging `main`.
+**Walk (this part):** docs/handpass/2026-11-05-taken-back-sans.md §16 · 6 + 31 + 33 pictures (rewalk2, rewalk3, rewalk4) · 3 surfaces (the bell, the Leave War's posting and post-in sheets, Admin → Users) · 14 orders · MISSING: none
