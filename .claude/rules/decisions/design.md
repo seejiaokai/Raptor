@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1663 | 5 Nov 26 | His direction: the "Not saved" design is one design across the whole app. |
 | D1643 | 4 Nov 26 | On a phone held sideways the page names always go into the side menu and the top bar is one row, for everyone, even where a member's fewer names would fit beside TALON. |
 | D1642 | 4 Nov 26 | The page names beside TALON are built as the mock-up of 4 Nov 26 draws them: where they all fit beside TALON they stand there, the buttons after them or on a row of their own to the right; where they do not, they go into the side menu, unchanged, and the bar is one row. |
 | D1641 | 4 Nov 26 | The page names, Edit Schedule to Admin, sit on the top bar's first row beside TALON; on any screen where they cannot all fit there, a phone or a narrow desktop, they go into the side menu as on a phone today; on a phone held sideways they always do (D1643). — changed by D1643 |
