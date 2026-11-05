@@ -379,6 +379,58 @@ async function q5(tag, vp, touch) {
   await ctx.close()
 }
 
+/* ================= Q6 — his question of 5 Nov 26 ("should I just follow this design"): the action menus ==========
+   Two looks today: plain rows in one panel (the board's ⋯, Edit Schedule's ⋯ — "the app's own small menu",
+   18-oil-board.css .sb-moremenu / .sb-moreitem) and a boxed button per item (the Leave War window's ⋯, the Tracker's File
+   and pencil menus). Drawn: the boxed two in the board's rows — the panel 4px in, rows 38 tall, 8px 11px, 13px weight 500,
+   no box, a hover shade; Grant OIL keeps its green (D1320) as a tinted row. */
+const ROWS_CSS = `
+.bidsheet .bp-menu{display:flex!important;flex-direction:column;gap:0!important;padding:4px!important;min-width:176px;border-radius:10px;box-shadow:0 10px 28px rgba(0,0,0,.5)!important}
+.bidsheet .bp-menu .bp-menu-item{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px!important;background:none!important;border:0!important;border-radius:7px!important;color:var(--ink)!important;font-size:13px!important;font-weight:500!important;letter-spacing:0!important;text-transform:none!important;box-shadow:none!important}
+.bidsheet .bp-menu .bp-menu-item.oil-give{background:rgba(70,196,108,.2)!important;color:#DDF8E6!important}
+.menupanel.zz-rows{gap:0!important;padding:4px!important;background:var(--panel,#161b21)!important;border-color:var(--edge-2,#2a323b)!important}
+.menupanel.zz-rows button{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px!important;background:none!important;border:0!important;border-radius:7px!important;font-size:13px!important;font-weight:500!important;box-shadow:none!important}
+`
+async function q6(tag, vp, touch) {
+  const { ctx, page } = await world(vp, touch)
+  // the model: the board's ⋯ (a phone) and Edit Schedule's ⋯
+  await tryQ(`q6 ${tag} schedule menu`, async () => {
+    await go(page, 'editsched'); await sleep(600)
+    if (await visAll(page, '.schedule-more')) {
+      await press(page, '.schedule-more', touch); await sleep(400); await settle(page)
+      await around(page, `q6-${tag}-schedmenu`, '.schedule-moremenu, .schedule-more', vp, { pad: 14, padX: 20 })
+      await page.keyboard.press('Escape'); await sleep(300)
+    } else console.log('q6: no Edit Schedule menu at', tag)
+  })
+  // the Leave War window's ⋯
+  await tryQ(`q6 ${tag} leave war menu`, async () => {
+    await go(page, 'leavewar'); await sleep(900)
+    const mon = page.locator('[data-testid="month-JUL"]'); if (await mon.count()) { await mon.first().click(); await sleep(900) }
+    await page.evaluate(() => { const c = [...document.querySelectorAll('[data-testid^="cell-"][data-testid$="-2026-07-20"]')].find(e => { const r = e.getBoundingClientRect(); return r.width && r.top > 0 && r.bottom < innerHeight }); if (!c) throw new Error('no cell in view'); c.classList.add('zz-cell') })
+    await press(page, '.zz-cell', touch); await sleep(700)
+    await press(page, '[data-testid=bid-more]', touch); await sleep(500); await settle(page)
+    measured[`q6-${tag}-lwitems`] = await page.evaluate(() => [...document.querySelectorAll('[data-testid=bid-more-menu] button')].map(b => b.textContent.trim()))
+    const fr = '[data-testid=bid-more-menu], [data-testid=bid-more]'
+    await around(page, `q6-${tag}-lwmenu`, fr, vp, { pad: 14, padX: 24 })
+    await page.addStyleTag({ content: ROWS_CSS }); await sleep(200); await settle(page)
+    await around(page, `q6-${tag}-lwmenu-new`, fr, vp, { pad: 14, padX: 24 })
+  })
+  // the Tracker's File menu
+  await tryQ(`q6 ${tag} tracker menu`, async () => {
+    await page.keyboard.press('Escape'); await sleep(300); await page.keyboard.press('Escape'); await sleep(300)
+    await go(page, 'tracker'); await sleep(900)
+    await press(page, '#fileMenuBtn', touch); await sleep(500); await settle(page)
+    await page.evaluate(() => { const m = [...document.querySelectorAll('#fileMenuPanel.on')].find(e => e.getBoundingClientRect().width); if (!m) throw new Error('no open menu'); m.classList.add('zz-menu') })
+    await around(page, `q6-${tag}-trkmenu`, '.zz-menu', vp, { pad: 14, padX: 24 })
+    await page.evaluate(() => document.querySelector('.zz-menu').classList.add('zz-rows'))
+    if (!(await page.evaluate(() => [...document.styleSheets].some(x => { try { return [...x.cssRules].some(r => r.cssText.includes('zz-rows')) } catch { return false } })))) await page.addStyleTag({ content: ROWS_CSS })
+    await sleep(200); await settle(page)
+    await around(page, `q6-${tag}-trkmenu-new`, '.zz-menu', vp, { pad: 14, padX: 24 })
+  })
+  await ctx.close()
+}
+
+if (want('q6')) { await q6('pc', PC, false); await q6('ph', PHONE, true) }
 if (want('q1')) { await q1('pc', PC, false); await q1('ph', PHONE, true) }
 if (want('q2')) { await q2('pc', PC, false); await q2('ph', PHONE, true) }
 if (want('q3')) await q3()

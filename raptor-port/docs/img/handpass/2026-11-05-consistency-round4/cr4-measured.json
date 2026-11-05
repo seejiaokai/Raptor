@@ -87,7 +87,16 @@
   "q5-pc-tools",
   "q5-pc-tools-new",
   "q5-ph-tools",
-  "q5-ph-tools-new"
+  "q5-ph-tools-new",
+  "q6-pc-lwmenu",
+  "q6-pc-lwmenu-new",
+  "q6-pc-trkmenu",
+  "q6-pc-trkmenu-new",
+  "q6-ph-schedmenu",
+  "q6-ph-lwmenu",
+  "q6-ph-lwmenu-new",
+  "q6-ph-trkmenu",
+  "q6-ph-trkmenu-new"
  ],
  "measured": {
   "q1-pc-lwgear": {
@@ -178,6 +187,18 @@
    "⤢ Fit",
    "↺ Reset layout",
    "📋 Edit events"
+  ],
+  "q6-pc-lwitems": [
+   "Attach",
+   "Other",
+   "Post out",
+   "Post in"
+  ],
+  "q6-ph-lwitems": [
+   "Attach",
+   "Other",
+   "Post out",
+   "Post in"
   ]
  }
 }
