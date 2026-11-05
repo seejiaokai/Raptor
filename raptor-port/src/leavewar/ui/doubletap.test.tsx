@@ -7,7 +7,7 @@
    "Show ›" pressed twice already is (F2, `nightwalk.test.tsx`); a key's click (detail 0), a mouse's single click, a finger's
    tap elsewhere (the code read's F3), a month button (the walk's S4e) and a tap after the moment go through. Red first. */
 import { act, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
 import { initStore, lwHistInit, setRole } from '../state/store'
 import { setLwOnScreen } from '../state/screen'
@@ -120,12 +120,20 @@ describe('a double tap on a leave button ((d))', () => {
     expect(reached, 'the month button’s own click ran').toBe(1)
   })
 
-  it('a finger’s second tap 0.5 s after the close, at the same place, is still the double tap', async () => {
+  /* on the guard's own clock (a fake one — a real wait flaked under a loaded run): 0.5 s after the close still the double
+     tap; past 0.6 s a tap there opens as ever */
+  it('a finger’s second tap 0.5 s after the close, at the same place, is still the double tap; past 0.6 s it opens', () => {
     render(<Matrix />)
-    placeByTap()
-    await act(async () => { await new Promise(r => setTimeout(r, 500)) })
-    tap(screen.getByTestId('cell-asics-2026-01-29'))
-    expect(picker()).toBeNull()
+    vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] })
+    try {
+      placeByTap()
+      act(() => { vi.advanceTimersByTime(500) })
+      tap(screen.getByTestId('cell-asics-2026-01-29'))
+      expect(picker()).toBeNull()
+      act(() => { vi.advanceTimersByTime(150) })
+      tap(screen.getByTestId('cell-asics-2026-01-29'))
+      expect(picker()).toBeTruthy()
+    } finally { vi.useRealTimers() }
   })
 
   /* the fix's narrow read, N1: a window closed by a tap on the grid behind it (its shield) is no press inside the window —
