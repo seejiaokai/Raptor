@@ -88,7 +88,7 @@ const undo = p.locator('button[aria-label*="Undo" i], button[title*="Undo" i], #
 log('S5 undo button:', await undo.evaluate(e => e.id + '|' + e.title + '|' + e.getAttribute('aria-label') + '|' + e.disabled).catch(() => 'none'))
 if (phone) { await sleep(2500); await click(p.locator('[data-testid=win-inputsday-x]'), 's5-day-closed-for-undo') }
 await click(undo, 's5-after-undo')
-if (phone) { log('S5 phone month bar back after undo:', await p.locator('[data-testid^=ib-bar-]', { hasText: 'Saber · OL' }).count()); await click(p.locator('#inpCal [data-icday="2026-07-22"]'), 's5-day-reopened') }
+if (phone) { log('S5 phone month bar back after undo:', await p.locator('[data-testid^=ib-bar-]', { hasText: 'Saber Â· OL' }).count()); await click(p.locator('#inpCal [data-icday="2026-07-22"]'), 's5-day-reopened') }
 log('S5 after Undo:', JSON.stringify(await state()), 'W2 anywhere:', await p.locator('text=W2 walk').count())
 
 // S6: View-only Sched, the week of July 2026
