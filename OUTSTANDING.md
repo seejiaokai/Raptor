@@ -133,8 +133,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MEMBER-EDITPAGE-CHECK] — checked 5 Nov 26 (pull request to be opened, `claude/member-guest-checks`): closed — every write refused for a member; archive once live.
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
-- [GUEST-SAVE-WARNING] — checked 5 Nov 26: a stranger's access request that could not be saved is told "with the admins"; the failed-save band drawn for the waiting screen, the guest page and the sign-in screen — his yes, 5 Nov 26 (D1657); built with [ACCESS-WAIT-LOOK].
-- [MEMBER-SCHED-TICK] — a member can tick or untick his own Scheduler on Quals, which decides who may sign the schedule; read-only like Management — his yes, 5 Nov 26 (D1651); to build red first with a security read.
+- [GUEST-SAVE-WARNING] — checked 5 Nov 26: a stranger's access request that could not be saved is told "with the admins"; the failed-save band drawn for the waiting screen, the guest page and the sign-in screen — his yes, 5 Nov 26 (D1657); BUILT 5 Nov 26 on `claude/member-guest-checks` with [ACCESS-WAIT-LOOK], in its FULL check.
+- [MEMBER-SCHED-TICK] — a member can tick or untick his own Scheduler on Quals, which decides who may sign the schedule; read-only like Management — his yes, 5 Nov 26 (D1651); BUILT red first 5 Nov 26 on `claude/member-guest-checks`, in its FULL check with a security read.
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
 - [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
@@ -1021,7 +1021,7 @@ blanks his signatures, so the next amendment cannot go out until someone re-sign
 member, unticks his own Scheduler on Quals — the days he signed lose that sign-off. **Recommended:** his Scheduler cell
 reads only, as Management does, refused at the Quals write and the commit gate (narrows D1510); a small build with a
 security read (D1411). **His answer, 5 Nov 26 (D1651): yes.** Pictures `raptor-port/docs/mock/2026-11-05-member-guest/img/Q2-quals-today-desk.png`, `Q2-quals-proposed-desk.png`,
-`Q2-quals-proposed-phone.png`. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`. **Place:** his answer first.
+`Q2-quals-proposed-phone.png`. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest.md`. **Built 5 Nov 26** (`claude/member-guest-checks`, `af8be973e`): `perms.ts mayTickScheduler`, refused at the Quals screen ("Only an admin can appoint a scheduler" — the mock-up's words), the Quals write and the commit gate; red first; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
 
 ### [DB-WAITING-CREATEDBY] The database's own "created by" on a waiting person's change-log row (filed 5 Nov 26)
 **What:** since the member / guest check (`claude/member-guest-checks`), the change-log batch saved with a waiting person's
@@ -1040,7 +1040,7 @@ sign-in and access screens draw no band). **The case to put to him:** Kite, a ne
 access on his iPhone while the browser refuses to save — he is told it is with the admins, and it is lost when he closes the
 tab. **Recommended:** the app's own "Not saved — keep this page open · Retry" band across the top of the waiting screen, under
 the guest bar, and on the sign-in screen while an earlier save still waits. Pictures
-`raptor-port/docs/mock/2026-11-05-member-guest/img/Q1-*.png` (today and proposed, desktop and phone). **His answer, 5 Nov 26 (D1657): yes** — built with the screen after asking for access ([ACCESS-WAIT-LOOK], D1656), in the band's new look (D1655). **Place:** that build.
+`raptor-port/docs/mock/2026-11-05-member-guest/img/Q1-*.png` (today and proposed, desktop and phone). **His answer, 5 Nov 26 (D1657): yes** — built with the screen after asking for access ([ACCESS-WAIT-LOOK], D1656), in the band's new look (D1655). **Built 5 Nov 26** (`claude/member-guest-checks`, `6dd252ef3`): across the top of the sign-in and access screens, the screen moved down under it; the guest bar's last line on the guest page; evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`. **Place:** that branch's merge.
 **Place:** low — check first, with the next change to the guest's pages. Astra's second read of `[SAVE-NOTE-COVERS]`
 noted that someone signed in without access gets a separate, read-only set of pages (`raptor-port/src/ui/GuestApp.tsx`)
 that has never drawn the save warning, before or after that fix. **To check:** does anything a guest does get saved
@@ -2048,6 +2048,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 | The night of 30 Oct 26, job 2 (`claude/lw-small-fixes-1030`): `[LW-DELETED-NO-ROW-APPROVE]`, `[LW-HALF-DAY-WORDS-LEFT]`, `[LW-M1-READ-LEFTOVERS]` (2), `[LW-MONTH-MEMO-UNPINNED]` — an approval that writes an input (saved data) | one fresh, blind Opus reader of the finished code (D790, D903) | Astra's and Sol 6.1's two independent reads (D590) |
 | The night of 1–2 Nov 26, job 1 (`claude/lw-next-batch-1101`): `[LW-HELDHALF-WORDS]`, `[E2E-POSTING-DATES-PIN]`, `[LW-DELETE-POSTING-RESTORE]`, `[LW-DELETED-REDO-NETSUM]` | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The night of 3 Nov 26 and the morning after (`claude/week-swipe-pdf-print` — the morning: the swipe Safari gives no touch for, the week stilled under the slide; four fresh Opus reads in all): `[WEEK-SWIPE-CROSS]` (the phone's swipe across weeks), the keyboard leftovers (`[BOARD-OPEN-BY-KEYS]`, `[VEILED-WINDOWS-BAR]`'s Escape part) and the schedule's React Doctor warnings — WALK for the batch | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
+| The member / guest build of his morning answers (`claude/member-guest-checks`, pull request 638): [ACCESS-WAIT-LOOK], [SAVEBAND-LOOK], [GUEST-SAVE-WARNING], [MEMBER-SCHED-TICK] — who may tick Scheduler (roles) | a fresh Opus scenario designer; a fresh, blind Opus code read and a security read (D790, D1411) | Astra and Sol 6.1 |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

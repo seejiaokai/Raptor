@@ -11692,7 +11692,21 @@ a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes a
 
 **The line under it is amber (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
 
-**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+**Its look — the strip (owner D1655, 5 Nov 26; the drawing `docs/mock/2026-11-05-save-band/img/look1-*.png`):** read from
+the left — a drawn warning sign, **Not saved** in bold amber, "keep this page open" quieter — and **Retry** a solid amber
+button at the right; the amber wash fades across the band from the words. The words are the same; the dash between them is
+kept in the text (a screen reader hears one sentence) but not drawn. Height, place and the amber line under it unchanged
+(D587, D841); no glow (D887). The bar that waits on an OIL answer takes the same look (D1655 — "restyled alike"): its sign,
+what did not happen in bold ("Not swapped"), why quieter, then **Answer OIL** solid amber (the agent's reading of "alike";
+it was the app's cyan under D840's drawing) and **OK** quiet — still one line (D840). One body for both: `SaveStatus.tsx
+SplitWords`.
+**Also where there is no top bar (owner D1657, 5 Nov 26 — `[GUEST-SAVE-WARNING]`):** the sign-in screen and the access
+screens (asking for access, waiting, suspended) carry the band across the top of the screen (`SaveBand screen`,
+`.saveband.is-screen`), the screen moved down under it (`.login.band-up`) so nothing is covered — so a stranger whose
+request was not saved is never told it was sent; the guest page carries it as its bar's last line, exactly as every page's
+top bar does (`GuestApp.tsx` mounts `SaveStatus` in its `.topbar.guestbar`). Pinned by `ui/accounts-ui.test.tsx` (D1657).
+
+**The rule (D587):** when a save has failed, the warning — "Not saved — keep this page open" and **Retry** — fills a
 line of its own along the bottom of the top bar, edge to edge. The top bar is one line (36px, `--save-band`) taller
 while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
 save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never

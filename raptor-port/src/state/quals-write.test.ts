@@ -180,6 +180,16 @@ describe('D1651 — on Quals only an admin ticks Scheduler; a member keeps every
       expect(updatePersonField('bane', { tick: 'sched' })).toBe(OWN_ROW_ONLY)
     }
   })
+  it('a member the admin appointed changes his own CAT, initials and flight: done, and his Scheduler tick stays (the CAT change recalculates his quals)', () => {
+    asAdmin()
+    if (!sched('bane')) expect(updatePersonField('bane', { tick: 'sched' })).toBe(null)
+    asMember('bane')
+    expect(updatePersonField('bane', { cat: 'A' })).toBe(null)
+    expect((PEOPLE as any).bane.q).toBe('A')
+    expect(updatePersonField('bane', { initials: 'qq' })).toBe(null)
+    expect(updatePersonField('bane', { flight: 'z' })).toBe(null)
+    expect(sched('bane'), 'still appointed').toBe(true)
+  })
   it('the member still ticks the columns beside it (SXO, SC DAY, a qualification)', () => {
     asMember('bane')
     expect(updatePersonField('bane', { tick: 'sxo' })).toBe(null)
