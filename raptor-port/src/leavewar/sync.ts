@@ -2702,13 +2702,16 @@ export function undoPostOut(id: string): boolean {
 function postingLinesOf(id: string): Notice[] {
   const rec = getState().postOuts[id]
   if (!rec || !rec.to) return []
-  /* every stored line of his CURRENT stint, whatever its date — a posting whose date was moved after it ran left its line
-     on the day it ran, and the Undo takes the posting back whole (the scenario designer's 13, 5 Nov 26). A line of an
-     EARLIER stint is another posting that ran — he was restored since (D320) — and stays as its record: its day is the day
-     after that stint's last, which no line of this stint can be. */
-  const prior = (rec.past || []).reduce((m, s) => (s.to && s.to > m ? s.to : m), '')
-  const floor = prior ? addDays(prior, 1) : ''
-  const stored = NOTICES.filter(n => { const p = (n.what || [])[0]; return p?.k === 'po' && p.who === id && n.day > floor })
+  /* the stored lines THIS posting wrote when it ran: only once it has run (`poDone` is its date), and only the lines of
+     its date and outcome. Any other posting line of his is another posting's record and stays — an earlier posting he was
+     restored from, even when the Restore reopened that same stint (post-in on the posting's own day: no boundary — the
+     fix's own read, 1 and 2, 5 Nov 26, which the old "every line of this stint" test took back). A posting moved or changed
+     after it ran has no older line left to find: the change itself took them back (D1710, `postOut`). */
+  const poDate = addDays(rec.to, 1)
+  const o = outcomeOf(rec)
+  const stored = rec.poDone === poDate
+    ? NOTICES.filter(n => { const p = (n.what || [])[0]; return p?.k === 'po' && p.who === id && n.day === poDate && p.o === o })
+    : []
   const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
   return [...stored, ...derived]
 }
@@ -2812,8 +2815,9 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
      code read's 1). Its date moved — later, or earlier — or another outcome: what the bells say it did is no longer what it
      does (the SANS tick lifted above, the archive back), and the store clears its "has run" mark so it runs, and tells,
      again on its own date. So its lines go as the sheet's Undo takes them (a read one struck through, "taken back · Saber";
-     an unread one simply goes; the admin who changed it told nothing). The same test as the store's own "has run" mark
-     (store.ts setPostOut `same`). Saved unchanged, nothing is taken back; a posting not yet run has no line to take. */
+     an unread one simply goes; the admin who changed it told nothing). "Changed" is the store's own test for clearing that
+     mark (store.ts setPostOut `same`, read from the saved posting); which lines are its own — none before it has run — is
+     `postingLinesOf`'s. Saved unchanged, nothing is taken back. */
   const w = getState().postOuts[id]
   const changed = !!w && !!w.to && !(addDays(w.to, 1) === from && outcomeOf(w) === outcome)
   return takeBack(id, () => setPostOut(id, from, outcome), keep, changed)

@@ -26,7 +26,7 @@ import { NOTICES, noticesFor, noticeWords, noticeLive, allNoticesFor, type Notic
 import { unreadFor, markAllNoticesRead, isUnread } from '../state/noticeseen'
 import { CURPAGE, ADMINOPEN, clearAdminOpen } from '../state/view'
 import { openNotice } from '../ui/topstate'
-import { getState, initStore as lwInitStore, lwHistInit, setPeople } from './state/store'
+import { getState, initStore as lwInitStore, lwHistInit, setPeople, setShowSans } from './state/store'
 import { memoryBackend } from './state/storage'
 import { projectPeople } from './state/raptorRoster'
 import { postOut, runPoOutcomes, undoPostOut, restoreArchivedPerson, wireLeaveWarSync } from './sync'
@@ -331,5 +331,75 @@ describe('a posting that ran, then changed on its Post out sheet (his D1710)', (
     expect(postOut(id, '2026-07-31', 'sans')).toBe(true)
     expect(backLines('rocky')).toEqual([])
     expect(backLines('stiff')).toEqual([])
+  })
+})
+
+/* THE FIX'S OWN READ (5 Nov 26 — docs/handpass/parts/tb1105/read-pcr.md): a posting's lines are the lines IT wrote when it
+   ran — never every line since his stint began, which a Restore on the posting's own date leaves open (the stint reopened,
+   no boundary) — and the store's "has run" test reads the saved posting, not how the grid shows him with "+ SANS" on. */
+describe('the fix’s own read (his D1710)', () => {
+  const restoredOnItsDay = () => {
+    expect(postOut('bane', PO, 'overseas')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(restoreArchivedPerson('bane', PO), 'restored on the day the posting ran: his stint reopened').toBe(true)
+  }
+  it('1: a posting not yet run, moved, takes back nothing — an earlier posting’s line stays as its record', () => {
+    restoredOnItsDay()
+    expect(postOut('bane', '2026-08-03', 'sans')).toBe(true)
+    expect(postOut('bane', '2026-08-10', 'sans')).toBe(true)
+    expect(backLines('rocky')).toEqual([])
+    expect(poLines('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
+  })
+  const secondRan = () => {
+    restoredOnItsDay()
+    reach(23)
+    expect(postOut('bane', '2026-07-23', 'sans')).toBe(true)
+    runPoOutcomes()
+    hexReads()
+  }
+  it('2: the next posting, run, then moved: only its own line is taken back', () => {
+    secondRan()
+    expect(postOut('bane', '2026-07-28', 'sans')).toBe(true)
+    expect(poLines('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Thu 23 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+  })
+  it('2: the next posting, run, then undone: only its own line is taken back', () => {
+    secondRan()
+    expect(undoPostOut('bane')).toBe(true)
+    expect(poLines('rocky').map(words)).toEqual(['Ranger · Mon 20 Jul / Posted out · archived, account suspended'])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Thu 23 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+  })
+  it('3: with "+ SANS" on, a ran SANS posting saved again unchanged runs and tells nothing again', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    hexReads()
+    expect(setShowSans(true)).toBe(true)
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    runPoOutcomes()
+    expect(poLines('rocky')).toHaveLength(1)
+    expect(backLines('rocky')).toEqual([])
+    expect(unreadFor('rocky')).toBe(0)
+  })
+  it('a ran posting moved to another day already come: one command — the old line taken back, the new one told, unread', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(23); runPoOutcomes()
+    hexReads()
+    const from = commandStream().length
+    expect(postOut('bane', '2026-07-22', 'sans')).toBe(true)
+    runPoOutcomes()
+    expect(commandStream().slice(from).map(e => e.type)).toEqual(['lw.postout'])
+    expect(backLines('rocky').map(drawn)).toEqual(['Ranger · Mon 20 Jul / ~~Posted out · now SANS~~ · taken back · Saber'])
+    expect(poLines('rocky').map(words)).toEqual(['Ranger · Wed 22 Jul / Posted out · now SANS'])
+    expect(unreadFor('rocky')).toBe(2)
+  })
+  it('the admin who changed it, having read its line: the "off the manpower" line it now makes comes to him unread', () => {
+    expect(postOut('bane', PO, 'sans')).toBe(true)
+    reach(); runPoOutcomes()
+    expect(markAllNoticesRead()).toBe(true)
+    expect(postOut('bane', PO, 'none')).toBe(true)
+    const line = allNoticesFor('stiff').find(n => (n.what || [])[0]?.k === 'po')!
+    expect(words(line)).toBe('Ranger · Mon 20 Jul / Posted out · off the manpower')
+    expect(isUnread(line, 'stiff')).toBe(true)
   })
 })

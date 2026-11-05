@@ -1973,13 +1973,17 @@ export function setPostOut(id: string, fromDate: string | null, archive: boolean
   if (to !== null && person.from !== null && to < person.from) return false
   /* `poDone` — the outcome has run for this date — survives only while the date AND the outcome are unchanged: a
      changed posting runs again on its own date (the plan's Round 2, Fable 5) */
-  const same = !!fromDate && person.to === to && outcomeOf(person) === outcome
+  /* …judged from the SAVED posting, never the man as the grid shows him: with "+ SANS" on a ran SANS posting is drawn with
+     no end date (windowFor), so a re-save of the same posting read as a change, ran again and told every admin twice (the
+     [PO-CHANGE-RETRACT] fix's own read, 3, 5 Nov 26) */
+  const rec = state.postOuts[id]
+  const same = !!fromDate && !!rec && rec.to === to && outcomeOf(rec) === outcome
   const people = state.people.map(p =>
     (p.id === id ? {
       ...p, to,
       poArchive: fromDate ? outcome === 'overseas' : undefined,
       poOutcome: fromDate ? outcome : undefined,
-      poDone: same ? p.poDone : undefined,
+      poDone: same ? rec!.poDone : undefined,
     } : p))
   state = withCurrent({ ...state, people, postOuts: windowRecord(people, id) })
   persistNotify()
