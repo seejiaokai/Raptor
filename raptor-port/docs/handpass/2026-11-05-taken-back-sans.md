@@ -94,7 +94,7 @@ read" foot kept as a drawing state.
 | 4 | walk S19f | ground crew posted out as SANS lose the line at their date (the war's copy of ground crew carries no SANS mark — older code this change made visible) | put to him; **his answer D1709, "No SANS for ground crew"** — built red-first: no SANS chip for him on any posting door, the writer refuses it; walked S19k |
 | 5 | walk S15 | off the manpower undone more than 14 days on: its line has already left the bell by itself (D1696), so nothing is taken back — the stored outcomes would get a taken-back line | consistent with D1696 — **put to him as a note (Q3)**, nothing to build |
 | 6 | security read S1 (low, new) | a "taken back" line stored for a man who read his line as an admin and is a member since (hidden by the bell, but a scheduler's line stored for a member) | fixed red-first: only to a man still an admin; his old line still goes (`postout-takeback.test.ts`) |
-| 7 | code read 1 (medium, older) | a posting that ran, then given a later date or another outcome on its Post out sheet, keeps its "Posted out" line (`postOut` → `takeBack` with no take-back of lines); seen by the walk too (S13's log) | **put to him — Q4** (recommended: take it back as Undo does, struck through) — it widens D1693 |
+| 7 | code read 1 (medium, older) | a posting that ran, then given a later date or another outcome on its Post out sheet, keeps its "Posted out" line (`postOut` → `takeBack` with no take-back of lines); seen by the walk too (S13's log) | **put to him — Q4**; his answer **D1710** ("As recommended") — BUILT red-first, §16 |
 | 8 | code read 2 (low, new) | the admin who pressed Undo, having read the worked-out line, saw a posting set again for the same date already read | fixed red-first: his own read record forgets the lines his Undo took (`noticeseen.ts forgetRead`, his own `notices.seen` command); walked S12b |
 | 9 | code read 3 (low, new) | a screen reader no longer heard "SANS" with the name (the line is drawing only) | fixed red-first: " SANS" kept for a screen reader, off the screen (`NamePuck.tsx`, `matrix.css .lw-sr`); walked S19b-sr |
 | 10 | code read 4 (older) | the Undo pressed in a tab opened before the posting ran leaves its line (the tab's old copy) | **filed** with the two-tabs item [LW-NIGHT1025-OLDER] (b), the database step |
@@ -130,3 +130,33 @@ A fresh Opus reader handed only the fix commit (b54345ecd) and the findings it a
 
 ## 15. The walk line
 Walk: docs/handpass/2026-11-05-taken-back-sans.md · 78 + 80 pictures (walk, re-walk) + 14 for his look · 13 surfaces · 21 orders · MISSING: 1 ruled (D1709, built)
+
+## 16. [PO-CHANGE-RETRACT] — his D1710 built (5 Nov 26, after his look page's answers)
+**What:** a posting out that has run and is then changed on its Post out sheet — another date, either way, or another outcome
+— takes back its bell lines inside the posting's own command, as the sheet's Undo does: a read line struck through, "taken back ·
+Saber", unread; an unread one goes; the admin who changed it told nothing; the changed posting runs, and tells, again on its date.
+A date moved EARLIER counts too (the agent's reading, agreed by the fresh reader: the store already clears the "has run" mark on
+any date change, so the bell would otherwise hold two lines for two dates). `leavewar/sync.ts postOut`.
+**Tier:** FULL (saved data — stored bell lines removed), sized small by Opus: the unit tests red-first, three break tests, a
+re-walk of the stages that change or undo a ran posting, a fresh read of the fix, a narrow read of the read's fixes.
+**Tests (`postout-takeback.test.ts`):** five cases for D1710 (date moved later; SANS → none, unread; Overseas → SANS, read, the new
+outcome running and telling; off the manpower moved; saved unchanged and a posting not yet run touch no bell) — four red before
+the fix. Breaks, each restored after its run: the take-back switched off (4 red); the outcome left out of "changed" (2 red);
+taken back on every save (1 red).
+**The fresh read (`parts/tb1105/read-pcr.md`):** 1 medium, 2 low — all fixed red-first (six more cases, four red, two pinning
+what the reader saw hold: a change already due run in the same one command, the new line unread; the changer's own
+"off the manpower" line unread):
+| # | What | Disposition |
+|---|---|---|
+| R1 (medium, new) | moving a posting not yet run took back an EARLIER posting's line when he was restored on that posting's own day (a Restore then reopens the same stint, with no boundary) | fixed: `postingLinesOf` takes only the lines THIS posting wrote when it ran — once it has run, of its date and outcome — instead of every line of the stint. The reader proposed a new saved list of run dates; not needed, nothing new is saved |
+| R2 (low, older — Undo had it) | the same reopened stint: an Undo or a change of the next posting took back the first one's line too | fixed by the same change |
+| R3 (low, older) | with "+ SANS" on, a ran SANS posting saved again unchanged ran again and told every admin twice (the store read "has it run" from the man as the grid shows him) | fixed: `store.ts setPostOut` reads it from the saved posting |
+**Re-walks (frozen builds, desk 1536):** `rewalk2/` — S13 and S14 with new checks right after the change (S13m, S14m): 5/5;
+`rewalk3/` — on the build with the read's fixes, every stage that changes or undoes a ran posting (S2–S6, S11, S12, S12b, S13–S16):
+35/35, S15 recorded as before (his Q3 note). Pictures opened by the host: Hex's bell after the move — only the struck "taken back ·
+Saber" line, unread; Saber's after the move — nothing; Saber's after SANS → Overseas — the new "archived, account suspended" line;
+S11's two runs undone — two struck lines.
+**Narrow read of the fix round (35bc38195):** NARROW_READ_RESULT
+**Gates on his PC:** the Leave War project 235 files / 4194 passed (after the read's fixes); the code check no new finding; the
+build. The full set: GitHub's run on the last pushed commit (D1086).
+**Walk (this part):** docs/handpass/2026-11-05-taken-back-sans.md §16 · 6 + 31 pictures (rewalk2, rewalk3) · 1 surface (the bell, through the Leave War's posting sheets) · 13 orders · MISSING: none
