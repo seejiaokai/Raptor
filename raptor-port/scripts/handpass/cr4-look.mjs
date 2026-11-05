@@ -244,6 +244,8 @@ async function q3() {
         await page.evaluate(() => { const g = document.querySelector('#inGear'), f = document.querySelector('.inputs-top .inputs-filterfields'); f.appendChild(g) })
         await sleep(300)
       }
+      // first with no window open, so nothing covers the row (his question, 5 Nov 26: "2 what's the difference")
+      await settle(page); await ring(page, ['#inGear']); await strip(page, `q3-${w}-closed${drawn ? '-new' : ''}`, 56, 220, vp); await unring(page)
       await page.getByText('Quill · OML').first().click(); await sleep(700); await settle(page)
       const m = await page.evaluate(() => {
         const q = s => document.querySelector(s)?.getBoundingClientRect()
