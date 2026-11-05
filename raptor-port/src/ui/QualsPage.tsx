@@ -310,14 +310,17 @@ export function QualsPage() {
      man's rename went to Admin → Users ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state). */
   /* D284: "Check his quals" — his row, outlined in his seat view (an archived man is never prompted: Enable is refused
      on him, D322, and Restore lifts the archive first) */
-  /* a ref, not state (React Doctor rerender-state-only-in-handlers, 6 Nov 26): nothing draws it — the effect below reads it
-     after every paint, and the press that sets it repaints the page already (notify, and the seat view) */
-  const backHl = useRef<string | null>(null)
+  /* STATE, NOT A REF, though nothing draws it (React Doctor rerender-state-only-in-handlers — kept; the code read of 6 Nov 26):
+     set with the seat view, in the same render, so the outline below first runs on the man's own view. As a ref it was seen
+     at once by the outline effect after an Undo (focusQualsRow → the effect above), on the old All table: the page jumped
+     to his row there, then again once the view changed. */
+  // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- its render is what lines the outline up with the seat view set beside it (above)
+  const [backHl, setBackHl] = useState<string | null>(null)
   const checkBack = (id: string) => {
     const p = PEOPLE[id]
     clearBack(id)
     setSeat(p.pers || p.seat === 'GND' ? 'GND' : p.seat === 'RCP' ? 'RCP' : 'FCP')
-    backHl.current = id; notify()
+    setBackHl(id); notify()
   }
   /* [ONE-DOOR] (D305): the man's own "Check my quals" — his row, opened and outlined, once */
   /* QUALS OPENS AT ITS TOP (owner D937, 16 Oct 26), as the Inputs page does (InputsPage.tsx): the app keeps the window's
@@ -332,8 +335,8 @@ export function QualsPage() {
     if (PEOPLE[id]) checkBack(id)
   })
   useEffect(() => {
-    if (!backHl.current) return
-    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl.current}"]`)?.closest('tr') as HTMLElement | null
+    if (!backHl) return
+    const el = document.querySelector(`#qtbl td.qname[data-person="${backHl}"]`)?.closest('tr') as HTMLElement | null
     if (!el) return
     el.classList.add('back-hl')
     /* ONLY WHEN HIS ROW IS NOT ALREADY ON SCREEN (owner, D672, 8 Oct 26 — "if it's already in view, undo/redo don't need
