@@ -1,0 +1,14 @@
+1 bar up 1
+week chips ["-1|‹","1|›"]
+a) after next week: bar 0 week title Saturday Jul 25 · scheduler board
+a) back: bar 0 day 5 ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+day now 5
+2 bar up 1
+b) on Inputs: bar 0 CURPAGE inputs
+b) back on editsched: bar 0 board open null
+3 bar up 1
+c) after logout: bar 0 login card true
+c) after sign in: bar 0 CURPAGE viewsched ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+4 bar up 1
+d) after 30 s idle: bar 1 text Not swapped — OIL not answered
+errors []

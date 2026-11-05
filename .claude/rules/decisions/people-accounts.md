@@ -68,7 +68,13 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
-| D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Posting out · Drifter · Mon 14 Nov · archived, account suspended") — a tap opening his row on Admin → Users; it does not wait for anyone to accept it. |
+| D1709 | 5 Nov 26 | A ground-crew man cannot be posted out as SANS: the Post out choices offer him no SANS — on the one-day sheet, the posting sheet and the drag window — and the posting writer refuses it; SANS stays an aircrew status. |
+| D1696 | 5 Nov 26 | The bell's "off the manpower" line is worked out from the posting as it stands, as built: it moves with the posting's date, goes with an undone posting (a read one taken back, D1693), and goes if the man is archived or deleted by hand later; it is not saved as the other three lines are. |
+| D1695 | 5 Nov 26 | His direction: one app and one database for many squadrons — each person's squadron set when his account is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in one squadron and half in another. |
+| D1694 | 5 Nov 26 | On Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row on each side, clear of his name, as built — not on the row's edge, as drawn. |
+| D1691 | 5 Nov 26 | When a posting out deletes a man on its date, his line in the admins' bells opens nothing when tapped — he has no row left on Admin → Users — and the line stays in the bell as the record, as the bell's "Deleted" line for an input does. |
+| D1690 | 5 Nov 26 | The admins' bell line for a posting out that ran on its date leads with the man in bold and the date, then "Posted out" and what the outcome did — "Ranger · Mon 16 Nov / Posted out · archived, account suspended" — option B as drawn, not "Posting out" first. |
+| D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Ranger · Mon 16 Nov / Posted out · archived, account suspended", D1690) — a tap opening his row on Admin → Users, a deleted man's opening nothing (D1691); it does not wait for anyone to accept it. — changed by D1691, D1690 |
 | D1546 | 31 Oct 26 | His direction: when a man's posting out runs on its date — archived, deleted, made SANS or transferred — the schedulers are told, so nobody is ever gone silently; it runs and tells them, never waiting for an Accept (D1547). — changed by D1547 |
 | D1510 | 29 Oct 26 | On Quals only an admin ticks the Management column: a member's own Management cell reads only, and a member's command that changes it is refused — he still ticks every other column of his own row. |
 | D1108 | 21 Oct 26 | On a phone, Quals can be pinched to zoom in and out, as the Scheduler Board's desktop layout can (D1107), so its wide table can be seen whole or read close. — changed by D1110 |
@@ -104,7 +110,7 @@ scrolls it sideways: `inputs.md` (D893).
 | D297 | 27 Sep 26 | A man deleted for leaving flying for good keeps his puck on every day he already flew — published or not — and is taken off every day still to come |
 | D296 | 27 Sep 26 | A guest from another community is marked by an orange corner on his puck (option A). |
 | D295 | 27 Sep 26 | An archived man can be renamed directly — on Admin → Users' archived list since the one door (D310); when Restore meets a callsign a man on the roster holds, it offers the rename on the spot. — changed by D310 |
-| D294 | 27 Sep 26 | The post-out choices are four short chips — "Overseas Sqn", "Delete" (first "Fully delete", D298), "SANS", "Transfer to Sqn" — with one short line saying what the chosen one does on the date; the "he's back" line lines up with the page's left edge. — changed by D298 |
+| D294 | 27 Sep 26 | The post-out choices are four short chips — "Overseas Sqn", "Delete" (first "Fully delete", D298), "SANS", "Transfer to Sqn" — with one short line saying what the chosen one does on the date; the "he's back" line lines up with the page's left edge. — changed by D1709, D298 |
 | D293 | 27 Sep 26 | No "Sign up" button on the sign-in page. |
 | D292 | 27 Sep 26 | An admin can switch himself to the member view and back, by tapping his name badge. |
 | D290 | 27 Sep 26 | A man deleted for leaving flying for good (D287) is kept underneath as a hidden "deleted" mark — never erased. |
@@ -114,11 +120,11 @@ scrolls it sideways: `inputs.md` (D893).
 | D286 | 26 Sep 26 | An archived man's callsign may be given to a new person. If the archived man is later restored while his callsign is in use, one of the two must be renamed first. |
 | D285 | 26 Sep 26 | The account buttons read "Suspend" / "Enable" and "Delete account". |
 | D284 | 26 Sep 26 | A man back from overseas returns as he was — his Quals kept — and the app prompts the admin to update them. |
-| D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. |
+| D283 | 26 Sep 26 | A man posted out as SANS: on the posting-out date he becomes SANS. With "Show SANS" off, the Leave War still shows him, marked posted out, and does not track his leave; with "Show SANS" on, he moves into the SANS group that day and his leave is tracked there. — changed by D1692 |
 | D282 | 26 Sep 26 | Neighbouring squadrons plan each other's people as a matter of course — not only while a man is being posted. |
 | D281 | 26 Sep 26 | A posting to another squadron will be a transfer — future, with the multi-squadron database; neighbouring squadrons may plan each other's people as a matter of course (D282), while his leave, quals and account stay his own squadron's; one app may serve every squadron and type, a man lent to another (D1100). — changed by D1100, D282 |
 | D280 | 26 Sep 26 | An account can be suspended and enabled again (a man away, then back) and deleted (a man who leaves flying for good) — a delete now takes the person too (D287). — changed by D287 |
-| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D287, D283 |
+| D229 | 26 Sep 26 | A posting out has four outcomes; the admin picks one and the app does it on the posting-out date: overseas to another squadron → archived, account suspended (D280); leaving flying for good → deleted, person and account (D287); another workplace but still flies → SANS (D283); transferred to another squadron → future (D281). — changed by D1709, D287, D283 |
 | D227 | 26 Sep 26 | Each admin's bell is his own (D216's "he" read per admin). |
 | D226 | 26 Sep 26 | The callsign/name stays at 14 letters, and the box says so — it never quietly cuts a name. |
 | D225 | 26 Sep 26 | Initials are asked but never required — on the sign-up and on Admin → Users' New person alike. |

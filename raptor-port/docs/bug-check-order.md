@@ -1036,6 +1036,14 @@ the reader's instructions or model change, it is run on every case and a change 
 
 ---
 
+23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
+   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
+   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
+   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
+   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
+   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
+   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
+
 ## 9. The evidence, and the owner's sixty-second check
 
 One file per build, mostly tables, plus a folder of pictures, written DURING the walk:

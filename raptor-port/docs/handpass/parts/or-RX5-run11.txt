@@ -1,0 +1,22 @@
+filed [{"iid":"imqoidgg0bsey5x","type":"Training","title":"OIL ask","date":"Jul 18","s":540,"e":720,"people":["Ranger"]}]
+Tally onto Ranger: toasts Tally is on OIL ask instead of Ranger | question: OIL — Tally, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save
+saved rx4-11-1-question-tally-replaces
+   question buttons: ["|Close|✕","oil-yes||Yes — credit HO","oil-no||No OIL","||Cancel","oilconf-save||Save"]
+Ranger onto +add: toasts Ranger added to OIL ask | question: OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save
+saved rx4-11-2-question-ranger-joins
+   question buttons: ["|Close|✕","oil-yes||Yes — credit HO","oil-no||No OIL","||Cancel","oilconf-save||Save"]
+INPUT now: {"type":"Training","title":"OIL ask","date":"Jul 18","to":null,"s":540,"e":720,"people":["Tally","Ranger"],"by":"stiff"}
+oil fields: {"oil":null,"people":[{"cs":"Tally","oil":null},{"cs":"Ranger","oil":null}]}
+DAY CARDS ["OIL? 09:00–12:00 Ranger, TallyTRAINING OIL ask · till 18 Jul By Saber"]
+saved rx4-11-3-day-card
+LIST ROW: Ranger, Tally 18 Jul 09:00–12:00 OIL ask TRAINING till 18 JulBy Saber now OIL? | buttons: ["OIL?"]
+saved rx4-11-4-list-row
+OIL? buttons on the row: 1
+AFTER PRESS: {"oilconf":true,"editWin":true}
+QUESTION text: OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save
+HEADING: {"firstEl":"DIV.airpop-head :: OIL — Ranger +1, OIL ask ✕","firstLines":["OIL — Ranger +1, OIL ask","✕","THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)","Does it deserve HO — half a day of OIL?","Yes — credit HO","No OIL"],"titleAttr":null}
+saved rx4-11-5-question-from-list
+question controls: ["|✕","oil-yes|Yes — credit HO","oil-no|No OIL","|Cancel","oilconf-save|Save"]
+INPUT WINDOW head: {"pressed":["Ranger","Tally"],"personSelect":[],"head":"⠿\nRanger +1 · 18 Jul\n✕"}
+saved rx4-11-6-input-window-head
+ERRORS none

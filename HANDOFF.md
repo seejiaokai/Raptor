@@ -20,16 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/ui-consistency-round4 -->
-### `claude/ui-consistency-round4` — round 4 BUILT, BUG-CHECKED and merged on his "merge live" (5 Nov 26); this block goes at the next handoff — verify before use
-- **Shipped (on the branch, pull request 643, not live):** D1702–D1707 built as drawn; D1708 (his "A": where the Inputs row wraps, the filters and gear start the second line at its LEFT) drawn (https://claude.ai/artifact/4384HywiC1SR3q9mUtw4eT), his "Yes", built at every width (the group's own left margin gone — not "below 1340", the record corrected); the code read's four fixes (the Tracker menus' shade, three gears and Auto sort / OIL Range back to their old sizes — D1707, D487) and its test fix.
-- **Checks:** the bug check (WALK) complete — evidence `raptor-port/docs/handpass/2026-11-05-consistency-round4-build.md` (§4a D1708, §6 the code read); walk rows 35 / 35, re-walk 86 / 86; the drawing check GREEN (`docs/img/handpass/2026-11-05-drawcheck-cr4-r3/`: 0 unexplained, 21 kept by ruling); unit 388 / 388 + 43 / 43; Inputs browser tests 71 / 71; GitHub's run of 298d6f9bd green; the run of the read's fixes — see the closing report / the PR.
-- **His test change:** `e2e/consistency-heights.spec.ts` 1366 asks D1702's reading (one line where the letters allow — GitHub's Linux letters wrap it), the narrower box applied, the gear never alone.
-- **Unfinished:** nothing of round 4 — his "merge live" given 5 Nov 26 (his look done, D1640). Open for round 5 (filed in [UI-CONSISTENCY-LOOK]): the unruled typed marks the code read saw (↺ Restore, the warning lines' ✕ / ↺, the Inputs ⤢ / ⤡, the phone day bar's words-only buttons).
-- **Branch:** `claude/ui-consistency-round4`, pushed, tracking itself; pull request 643 (draft, auto-fix off); worktree `C:\Users\User\projects\Raptor-ui4b`. (The throwaway checkout of the base made for the before-sizes is removed.)
-- **Numbers:** rulings D1700–D1709 held (D1700–D1708 used); lessons 92–94 (92 used); observations 830–839 (830–833 used).
-- **Also open (not this block's):** 641 `claude/postout-bell-look` (a new chat, raptor-05, works it in `C:\Users\User\projects\Raptor`), 639, 637, 636 (`SchedBoard.tsx` / `board.ts` other lines — whichever merges second brings `main` in, D302).
-- **Opening line:** Continue the branch `claude/ui-consistency-round4` in `C:\Users\User\projects\Raptor-ui4b` (`git -C ../Raptor-ui4b switch claude/ui-consistency-round4`, `git pull --ff-only`). Read `HANDOFF.md` — its block — and the evidence sheet's §4a and §6; the bug check is done: read GitHub's run of the last commit, and on his "merge live" carry the merge through (D1088, D1640).
+<!-- now:claude/postout-bell-look -->
+### `claude/postout-bell-look` — LIVE on his "merge live" of 5 Nov 26 (pull request 641); this block goes at the next handoff
+- **Shipped:** the posting-out bell line ([POSTOUT-RUN-NOTICE] — D1546, D1547, D1690, D1691, D1694, D1696); "Undo post out" takes it back, struck through ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699); the SANS purple line on a posted-out SANS man's puck ([PO-SANS-PUCK-EDGE] — D1692, D1697, D1698); no SANS for ground crew ([PO-SANS-GROUND-CREW] — D1709); a posting changed after it ran takes back its lines ([PO-CHANGE-RETRACT] — D1710), with three older posting faults its reads found (an earlier posting's line taken by a later one's Undo after a Restore on its own day; "+ SANS" on: a re-save told twice, a post-in wiped the posting). Evidence `raptor-port/docs/handpass/2026-11-05-postout-bell.md`, `raptor-port/docs/handpass/2026-11-05-taken-back-sans.md` (§16 the last part).
+- **Left open, filed:** [NOTICE-UNDO-RETRACT] step 2 (the input lines and the holiday's OIL line taken back the same way — his to place); for the database step, a posting's runs carried on its record (under [DB-STEP]).
+- **On this PC, not committed:** a stash, "noise left by the earlier drawing replay" (`.impeccable/config.json`, the drawing's `draw-log.json`) — not this job's; safe to drop (`git stash list`, then `git stash drop` on it).
+- **Numbers:** rulings — next free after D1711 (check the live files; D1712–D1715 were held by this branch, unused); design lessons next free 95; observations next free 834 (823 has a "met again" line).
+- **Opening line for the next job:** none set by this branch — take the next item from `## Next, in order` or the backlog's priority list.
 <!-- /now -->
 <!-- now:claude/member-guest-checks -->
 ### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff

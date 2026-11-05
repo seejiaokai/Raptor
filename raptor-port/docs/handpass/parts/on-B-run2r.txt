@@ -1,0 +1,12 @@
+addz {"x":636.625,"y":496.46875,"width":119.65625,"height":15}
+picture B2d-1-hover.png
+armed after click +add {"rosArm":true,"rosOpen":false}
+picture B2d-2-armed.png
+tally in crew list 1 {"x":1133,"y":1136.375,"width":74,"height":15}
+picture B2d-3-question.png
+RESULT B2d-question {"up":1,"lead":"Adding Tally to Fri brief","box":{"x":500,"y":286,"w":440,"h":328,"right":940,"bottom":614,"inside":true,"onTop":true}}
+picture B2d-4-after-escape.png
+RESULT B2d-escape {"q":0,"armed":{"rosArm":true,"rosOpen":false},"bar":"Not added — OIL not answered","st":"{\"people\":[\"Ranger\",\"Trident\"],\"oil\":null}","undoSame":true}
+picture B2d-5-after-no-add.png
+RESULT B2d-no-add {"toast":"Tally added to Fri brief — not counted for OIL","armed":{"rosArm":false,"rosOpen":false},"st":"{\"people\":[\"Ranger\",\"Trident\",\"Tally\"],\"oil\":{\"2026-07-17\":0}}","undo":"on|Undo — a personal input"}
+ERRORS []

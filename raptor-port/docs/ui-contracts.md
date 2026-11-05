@@ -6754,7 +6754,7 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
 the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
-default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
+default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too), "Transfer to Sqn" (drawn, not pressable — "Comes with the
 shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
 suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
@@ -12028,6 +12028,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   source); the group's heading stays "OCU".
 - **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
   schedule's own ground-crew puck (no chip) is unchanged.
+- **Every SANS man's name wears the SANS purple line (his D1692; drawn and answered 5 Nov 26 — D1697, D1698; [PO-SANS-PUCK-EDGE]):** the name puck takes the schedule's own SANS class (`.puck.san`, the purple line on the right over the chip's last points — D651) for every SANS man on the grid: the SANS group at the foot ("+ SANS" on — D1698) and a man posted out as SANS shown in his old place, from when the posting is set (D1697), on the row and the phone's frozen copy alike (`NamePuck.tsx`, the one drawer). The separate "SANS" tag (D283's picture 4a, `po-sans-tag`) is gone: it squeezed his callsign to one letter on a phone. The drawing of record: `docs/mock/2026-11-05-taken-back-sans/` pictures 1–4. Balances and Approvals draw the schedule's own puck (`sync.ts puckHtml`), so there the line shows only from his posting date, once he IS SANS — kept as built (his D1711, 5 Nov 26).
 - **Built (28 Oct 26):** `leavewar/ui/NamePuck.tsx` draws it for the grid's row (`MatrixRows.tsx`) and the phone's frozen copy
   (`Matrix.tsx`) — the schedule's `.puck` / `.nm` / `.role` classes, so its look is the scheduler's stylesheet; the chip's text
   `chipText` (the schedule's `QCHIP` for OCU, "G" for ground personnel), its colour the war's `catClass`; `matrix.css` adds

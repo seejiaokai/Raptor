@@ -1,0 +1,10 @@
+RX3-5 filed {"iid":"imqoidgg05mwc4j","type":"LL","date":"Jul 15","s":0,"e":1439,"people":["Drifter","Hex","Hunter"]}
+RX3-5 PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+Hex row before: LL C Hex C till 15 Jul
+saved rx3-5-1-row-before
+toast: Wednesday published — APPROVED
+LL inputs after typing 10:00: [{"iid":"mwc4j","type":"LL","title":"","date":"Jul 15","to":null,"s":0,"e":1439,"people":["Drifter","Hunter"],"by":"Saber"},{"iid":"8nl5h","type":"LL","title":"","date":"Jul 15","to":null,"s":600,"e":1439,"people":["Hex"],"by":"Saber"},{"iid":"021mn","type":"LL","title":"","date":"Jul 14","to":null,"people":[],"by":"Quill"},{"iid":"83ev6","type":"LL","title":"","date":"Jul 24","to":null,"people":[],"by":"Saber"},{"iid":"espjc","type":"LL","title":"","date":"Jan 8","to":null,"people":[]}]
+COUNTS own start typed chip: 1 pending | board: undefined | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Hex · LL Saber 22/6 09:00 his own now — 10:00–23:59"] => [1,1,1,1,1] AGREE
+saved rx3-5-2-togoout
+Wed unavailable rows: ["LL Drifter A till 15 Jul","LL Hunter IP till 15 Jul","LL 10:00 23:59 C Hex C till 15 Jul","OL Cobra IP Overseas leave — off island","ATT C Grit C Medically down till 17 Jul","OD C Nomad C Overseas duty — exercise, off island","OIL C Gambit C"]
+ERRORS none

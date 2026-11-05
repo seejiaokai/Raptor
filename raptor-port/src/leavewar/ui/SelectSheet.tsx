@@ -542,7 +542,7 @@ export function SelectSheet({
             <DateBox className="dateinput" testid="sel-po-date" label={`Post ${people(sel.people[0])} out from`} value={poDate} onChange={v => { setDelArmed(false); setPoDate(v) }} />
           </div>
           {/* the four chips and the one line, as on the bid sheet (D229, D294, D298, D300) */}
-          <OutcomeChips value={poOutcome} testid="sel-po" onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
+          <OutcomeChips value={poOutcome} testid="sel-po" noSans={!!getState().people.find(x => x.id === sel.people[0])?.pers} onChange={o => { setPoOutcome(o); setDelArmed(false) }} />
           {outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0]))) && (
             <div className="bidsheet-row postout"><span className="note" data-testid="sel-po-line">{outcomeLine(poOutcome, poDate, !!(hasAccount && hasAccount(sel.people[0])))}</span></div>
           )}

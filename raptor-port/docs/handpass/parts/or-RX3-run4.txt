@@ -1,0 +1,17 @@
+RX3-4 filed {"iid":"imqoidgg0sslw88","type":"LL","date":"Jul 15","s":0,"e":1439,"people":["Drifter","Hex","Hunter"]}
+RX3-4 PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+COUNTS 0 chip: 6 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx3-4-1-leave-window
+window pucks pressed: ["Drifter","Hunter","Hex"]
+after un-pressing Hex: ["Drifter","Hunter"]
+saved rx3-4-2-hex-unpicked
+save toasts: Input updated | sheets: []
+LL inputs after take-out: [{"iid":"slw88","type":"LL","title":"","date":"Jul 15","to":null,"s":0,"e":1439,"people":["Drifter","Hunter"],"by":"Saber"}]
+COUNTS taken out chip: 1 pending | board: undefined | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Hex · LL Saber 22/6 09:00 taken out"] => [1,1,1,1,1] AGREE
+saved rx3-4-3-togoout-taken-out
+new LL filed: [{"iid":"imqoidgg0cn7bus","type":"LL","date":"Jul 15","s":480,"e":720,"people":["Hex"]}]
+COUNTS new LL for Hex chip: 1 pending | board: undefined | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Hex · LL Saber 22/6 09:00 his own now — 08:00–12:00"] => [1,1,1,1,1] AGREE
+saved rx3-4-4-togoout-new-leave
+LL inputs end: [{"iid":"n7bus","type":"LL","title":"","date":"Jul 15","to":null,"s":480,"e":720,"people":["Hex"],"by":"Saber"},{"iid":"slw88","type":"LL","title":"","date":"Jul 15","to":null,"s":0,"e":1439,"people":["Drifter","Hunter"],"by":"Saber"},{"iid":"q7sxm","type":"LL","title":"","date":"Jul 14","to":null,"people":[],"by":"Quill"},{"iid":"akvuf","type":"LL","title":"","date":"Jul 24","to":null,"people":[],"by":"Saber"},{"iid":"m8p1b","type":"LL","title":"","date":"Jan 8","to":null,"people":[]}]
+Wed unavailable rows: ["LL 08:00 12:00 C Hex C till 15 Jul","LL Drifter A till 15 Jul","LL Hunter IP till 15 Jul","OL Cobra IP Overseas leave — off island","ATT C Grit C Medically down till 17 Jul","OD C Nomad C Overseas duty — exercise, off island","OIL C Gambit C"]
+ERRORS none

@@ -14,7 +14,6 @@ import { FigureCell } from './FigureCell'
 import { figWords } from './figwords'
 import { NamePuck } from './NamePuck'
 import { offWar, type Contrib, type DayView } from '../engine/dayview'
-import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
 import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
 
@@ -178,8 +177,6 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
               onChipLeave={() => api.current.chipLeave()}
               onChipClick={el => api.current.chipClick(p, el)}
             />
-            {/* D283 (the approved picture 4a): a SANS posting shown in his old place (Show SANS off) wears a SANS tag */}
-            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag" data-testid={`sans-tag-${p.id}`}>SANS</span>}
           </button>
           {/* The free-text role-label edit box is GONE (owner, 28 Aug 26 —
               "i can edit personnel, dont need to show that, just leave it as

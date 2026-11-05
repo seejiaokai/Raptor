@@ -505,9 +505,10 @@ export function clearBack(pid: string) { BACKPROMPT = BACKPROMPT.filter(x => x !
    welcome note, ui/WelcomeBack.tsx). Quals reads it once and clears it. Session state. */
 export let QUALSFOCUS: string | null = null
 export function focusQualsRow(pid: string | null) { QUALSFOCUS = pid }
-export let ADMINOPEN: { seq: number; newPerson: boolean } | null = null
+/* `person` — a man whose row should be brought into view and ringed (a bell's posting line, [POSTOUT-RUN-NOTICE]) */
+export let ADMINOPEN: { seq: number; newPerson: boolean; person?: string } | null = null
 let adminOpenSeq = 0
-export function requestAdminUsers(newPerson: boolean) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson } }
+export function requestAdminUsers(newPerson: boolean, person?: string) { ADMINOPEN = { seq: ++adminOpenSeq, newPerson: !!newPerson, ...(person ? { person } : {}) } }
 export function clearAdminOpen() { ADMINOPEN = null }
 export let AVAILWIN: AvailWin | null = null
 /* EVERY OPEN AND EVERY CLOSE GOES THROUGH HERE, so this is where a window

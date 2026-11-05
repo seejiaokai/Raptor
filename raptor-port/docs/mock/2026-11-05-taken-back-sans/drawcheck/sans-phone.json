@@ -1,0 +1,148 @@
+{
+ "state": "sans-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+  "shot": "2-sans-proposed-phone"
+ },
+ "recorded": "2026-11-05T11:43:54.383Z",
+ "drawnOn": "claude/postout-bell-look at e4779887e",
+ "checkout": "2ee227d0b",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 13
+ },
+ "parts": {
+  "puck": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 15.8,
+    "y": 430.5,
+    "w": 53.9,
+    "h": 12
+   },
+   "ink": {
+    "x": 19.5,
+    "y": 430,
+    "w": 48.1,
+    "h": 13
+   },
+   "text": "Sidewinder IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 11.25px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.san"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 16.3,
+    "y": 431,
+    "w": 39.8,
+    "h": 11
+   },
+   "ink": {
+    "x": 19.5,
+    "y": 431.2,
+    "w": 47.5,
+    "h": 10
+   },
+   "text": "Sidewinder",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 11.25px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.nm"
+  },
+  "chip": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 56.1,
+    "y": 431,
+    "w": 13.1,
+    "h": 11
+   },
+   "ink": {
+    "x": 57.7,
+    "y": 430,
+    "w": 9.9,
+    "h": 13
+   },
+   "text": "IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(232, 178, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 30, 2)",
+    "align": "left",
+    "justify": "center",
+    "font": "800 11.25px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.role.lw-chip.q-sxo.has-quals"
+  }
+ },
+ "approved": {
+  "picture": "2-sans-proposed-phone.png",
+  "identical": true
+ }
+}

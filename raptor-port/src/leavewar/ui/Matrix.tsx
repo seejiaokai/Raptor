@@ -4048,7 +4048,6 @@ export function Matrix() {
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => openWho(p.id)}>
                             {namePuck(p)}
-                            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
                           </button>
                         </div>
                       </td>
@@ -4279,6 +4278,7 @@ export function Matrix() {
           poFrom={addDays(openPerson!.to!, 1)}
           outcome={outcomeOf(openPerson) ?? 'none'}
           hasAccount={hasAccount(open.id)}
+          noSans={!!openPerson?.pers}
           blockedFor={o => postingBlocked(open.id, o)}
           /* [ONE-DOOR] (Fable F1 / Astra 2): archived on Admin → Users — Restore there is the one way back; the store's
              lock, installed by the sync, as the account and block lookups are (the war never reads Raptor's people) */

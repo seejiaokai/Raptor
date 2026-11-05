@@ -1,0 +1,13 @@
+LL filed imqoidhjgbcgr9p asked 0 {"people":[{"p":"rocky","by":"stiff","at":1782090001420}],"type":"LL","allday":true,"s":0,"e":1439,"date":"Jul 18","yr":2026,"remarks":"","mod":"2026-06-22","iid":"imqoidhjgbcgr9p","by":"stiff","modBy":"stiff","at":1782090001420,"modAt":1782090001420,"ord":0}
+duty slots ["d:5.0.0|seat|FableC"]
+roster Hex count 1 {"x":1284.5,"y":607.5,"width":143.5,"height":15} cls rpuck no|Hex — local leave (LL)
+P1 question 0 toast Hex — On leave but tasked — SDO duty all ["Input added","Hex — On leave but tasked — SDO duty"] bar 0
+P1 duties unchanged true undoSame false
+Fri filed imqoidl8k48j5br imqoidmk0ttxbg6 asked 0
+holiday {"opened":true,"cards":2}
+fill g:4.2.+
+Hex reachable {"y":340,"hit":true}
+Hex cls rpuck busy|Hex — already tasked today, but you can still plan him
+P2 question 1 lead Adding Hex to Range brief toast Input added all ["Input added","Hex — On leave but tasked — SDO duty","Input added"] bar 0
+P2 row Ranger undoSame true
+errors []

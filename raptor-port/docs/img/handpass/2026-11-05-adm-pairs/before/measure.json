@@ -1,0 +1,170 @@
+[
+  {
+    "size": "phone",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 482,
+      "h": 33
+    },
+    "b": {
+      "label": "Role",
+      "top": 482,
+      "h": 43
+    }
+  },
+  {
+    "size": "phone",
+    "ok": true,
+    "a": {
+      "label": "Callsign/Name",
+      "top": 2495,
+      "h": 33
+    },
+    "b": {
+      "label": "Initials",
+      "top": 2495,
+      "h": 33
+    }
+  },
+  {
+    "size": "phone",
+    "ok": false,
+    "a": {
+      "label": "Pilot, WSO or personnel",
+      "top": 2564,
+      "h": 43
+    },
+    "b": {
+      "label": "CAT",
+      "top": 2553,
+      "h": 43
+    }
+  },
+  {
+    "size": "phone",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 2632,
+      "h": 33
+    },
+    "b": {
+      "label": "Post in",
+      "top": 2632,
+      "h": 36
+    }
+  },
+  {
+    "size": "narrow",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 451,
+      "h": 33
+    },
+    "b": {
+      "label": "Role",
+      "top": 451,
+      "h": 43
+    }
+  },
+  {
+    "size": "narrow",
+    "ok": true,
+    "a": {
+      "label": "Callsign/Name",
+      "top": 2464,
+      "h": 33
+    },
+    "b": {
+      "label": "Initials",
+      "top": 2464,
+      "h": 33
+    }
+  },
+  {
+    "size": "narrow",
+    "ok": false,
+    "a": {
+      "label": "Pilot, WSO or personnel",
+      "top": 2533,
+      "h": 43
+    },
+    "b": {
+      "label": "CAT",
+      "top": 2522,
+      "h": 43
+    }
+  },
+  {
+    "size": "narrow",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 2601,
+      "h": 33
+    },
+    "b": {
+      "label": "Post in",
+      "top": 2601,
+      "h": 36
+    }
+  },
+  {
+    "size": "desk",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 482,
+      "h": 33
+    },
+    "b": {
+      "label": "Role",
+      "top": 482,
+      "h": 35
+    }
+  },
+  {
+    "size": "desk",
+    "ok": true,
+    "a": {
+      "label": "Callsign/Name",
+      "top": 2632,
+      "h": 33
+    },
+    "b": {
+      "label": "Initials",
+      "top": 2632,
+      "h": 33
+    }
+  },
+  {
+    "size": "desk",
+    "ok": true,
+    "a": {
+      "label": "Pilot, WSO or personnel",
+      "top": 2693,
+      "h": 35
+    },
+    "b": {
+      "label": "CAT",
+      "top": 2693,
+      "h": 35
+    }
+  },
+  {
+    "size": "desk",
+    "ok": false,
+    "a": {
+      "label": "Sign-in (defence mail)",
+      "top": 2756,
+      "h": 33
+    },
+    "b": {
+      "label": "Post in",
+      "top": 2756,
+      "h": 36
+    }
+  }
+]

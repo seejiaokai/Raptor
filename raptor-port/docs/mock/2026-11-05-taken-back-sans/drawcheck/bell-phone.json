@@ -1,0 +1,348 @@
+{
+ "state": "bell-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+  "shot": "8-hex-bell-struck-phone-close"
+ },
+ "recorded": "2026-11-05T11:44:13.593Z",
+ "drawnOn": "claude/postout-bell-look at e4779887e",
+ "checkout": "2ee227d0b",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 8,
+    "y": 46,
+    "w": 386,
+    "h": 113.5
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 338,
+    "h": 85.1
+   },
+   "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bell-list.wide"
+  },
+  "line-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 51,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.tb-new"
+  },
+  "name-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 59.9,
+    "w": 69.3,
+    "h": 15
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 69.3,
+    "h": 15
+   },
+   "text": "Sidewinder",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 116.3,
+    "y": 59.9,
+    "w": 70.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 116.3,
+    "y": 59.9,
+    "w": 70.1,
+    "h": 15
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 77.9,
+    "w": 307.9,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 40,
+    "y": 79.3,
+    "w": 247.3,
+    "h": 14
+   },
+   "text": "Posted out · now SANS · taken back · Saber",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "struck-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 79.3,
+    "w": 131.3,
+    "h": 14
+   },
+   "ink": {
+    "x": 40,
+    "y": 79.3,
+    "w": 131.3,
+    "h": 14
+   },
+   "text": "Posted out · now SANS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "s"
+  },
+  "dot-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 24,
+    "y": 64,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  },
+  "line-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 102.8,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 111.7,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line"
+  }
+ },
+ "approved": {
+  "picture": "8-hex-bell-struck-phone-close.png",
+  "identical": true
+ }
+}

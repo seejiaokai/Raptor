@@ -1,0 +1,787 @@
+{
+  "results": [
+    {
+      "size": "desk",
+      "step": "F0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "desk",
+      "step": "S1a",
+      "ok": true,
+      "what": "posted out as SANS from 16 Nov: his name wears the purple line from now, no \"SANS\" tag ([[\"row\",true,true,true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S1b-x",
+      "ok": true,
+      "what": "the posting sheet closed by x: gone, the grid and his posting as they were"
+    },
+    {
+      "size": "desk",
+      "step": "S1b-escape",
+      "ok": true,
+      "what": "the posting sheet closed by escape: gone, the grid and his posting as they were"
+    },
+    {
+      "size": "desk",
+      "step": "S1b-outside",
+      "ok": true,
+      "what": "the posting sheet closed by outside: gone, the grid and his posting as they were"
+    },
+    {
+      "size": "desk",
+      "step": "S1c",
+      "ok": true,
+      "what": "Undo post out before the date: his name loses the purple line (sheet left closed; his day now opens the bid sheet)"
+    },
+    {
+      "size": "desk",
+      "step": "S1d",
+      "ok": true,
+      "what": "a posting undone before its date told nobody: no line in Saber's bell (0)"
+    },
+    {
+      "size": "desk",
+      "step": "S1e-balances",
+      "ok": "RECORD",
+      "what": "before his date, his puck on balances: [{\"san\":false,\"where\":\"bal-name-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)"
+    },
+    {
+      "size": "desk",
+      "step": "S1e-approvals",
+      "ok": "RECORD",
+      "what": "before his date, his puck on approvals: [{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)"
+    },
+    {
+      "size": "desk",
+      "step": "S1f",
+      "ok": "RECORD",
+      "what": "Admin → Users: his row reads \"posting out 16 Nov · SANS\""
+    },
+    {
+      "size": "desk",
+      "step": "S1g",
+      "ok": true,
+      "what": "back on the Leave War by its tab after four pages: his line drawn at once"
+    },
+    {
+      "size": "desk",
+      "step": "S2a",
+      "ok": true,
+      "what": "on 16 Nov Hex's bell has Ranger's \"Posted out · now SANS\", unread ([\"Posted out · now SANS\"])"
+    },
+    {
+      "size": "desk",
+      "step": "S2b",
+      "ok": true,
+      "what": "after the run his name on the grid wears the purple line (pixels: 194 purple in its right 6px)"
+    },
+    {
+      "size": "desk",
+      "step": "S2c",
+      "ok": true,
+      "what": "Undo post out on his sheet: his SANS tick gone, no purple line (door found; {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})"
+    },
+    {
+      "size": "desk",
+      "step": "S2d",
+      "ok": true,
+      "what": "Saber pressed it: his own bell has neither line ([])"
+    },
+    {
+      "size": "desk",
+      "step": "S9-Undo",
+      "ok": "RECORD",
+      "what": "the top bar's Undo greyed: Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}"
+    },
+    {
+      "size": "desk",
+      "step": "S9-Redo",
+      "ok": "RECORD",
+      "what": "the top bar's Redo greyed: Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}"
+    },
+    {
+      "size": "desk",
+      "step": "S9a",
+      "ok": true,
+      "what": "the top bar's Undo / Redo bring no posting back"
+    },
+    {
+      "size": "desk",
+      "step": "S9b",
+      "ok": true,
+      "what": "a reload changes nothing ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})"
+    },
+    {
+      "size": "desk",
+      "step": "S18",
+      "ok": "RECORD",
+      "what": "the changes window after Undo post out: ⠿ Changes · week of 13/7 0 changes this week ✕ New to you 0 All changes 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen"
+    },
+    {
+      "size": "desk",
+      "step": "S2e",
+      "ok": true,
+      "what": "Hex's bell lit; one line about Ranger, unread, and no \"Posted out\" line left ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S2f",
+      "ok": true,
+      "what": "its words: \"Posted out · now SANS · taken back · Saber\", struck \"Posted out · now SANS\" (line-through), Mon 16 Nov"
+    },
+    {
+      "size": "desk",
+      "step": "S2g",
+      "ok": true,
+      "what": "the strike is DRAWN: the longest ink run across the struck words is 1 of their width; the calibration on unstruck words 0.17"
+    },
+    {
+      "size": "desk",
+      "step": "S2h",
+      "ok": true,
+      "what": "\"taken back · Saber\" never cut: the line wraps (height 52px)"
+    },
+    {
+      "size": "desk",
+      "step": "S7-leavewar",
+      "ok": true,
+      "what": "tapped from leavewar: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-leavewar:balances",
+      "ok": true,
+      "what": "tapped from leavewar:balances: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-leavewar:approvals",
+      "ok": true,
+      "what": "tapped from leavewar:approvals: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-editsched",
+      "ok": true,
+      "what": "tapped from editsched: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-inputs",
+      "ok": true,
+      "what": "tapped from inputs: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-admin",
+      "ok": true,
+      "what": "tapped from admin: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S7-back",
+      "ok": true,
+      "what": "back on the Leave War by its tab: his row drawn at once, without a touch"
+    },
+    {
+      "size": "desk",
+      "step": "S8",
+      "ok": true,
+      "what": "member view: no posting line (0); back as admin: 1 as left ([[true,false]])"
+    },
+    {
+      "size": "desk",
+      "step": "S3",
+      "ok": true,
+      "what": "never read: after the Undo Hex's bell has neither line ([])"
+    },
+    {
+      "size": "desk",
+      "step": "S4",
+      "ok": true,
+      "what": "read by Mark all read: one struck line, unread ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S5",
+      "ok": true,
+      "what": "Hex pressed it: Hex's bell nothing (0); Saber's \"Posted out · now SANS · taken back · Hex\""
+    },
+    {
+      "size": "desk",
+      "step": "S6a",
+      "ok": true,
+      "what": "Overseas Sqn ran (archived, suspended); its Undo post out found through his day before the date, and he is back ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})"
+    },
+    {
+      "size": "desk",
+      "step": "S6b",
+      "ok": true,
+      "what": "off the manpower: its Undo post out found (door found)"
+    },
+    {
+      "size": "desk",
+      "step": "S6c",
+      "ok": true,
+      "what": "Delete ran: his row kept for his months here (D299), and no Undo post out offered by any of its doors ({\"cs\":\"Cobra\",\"san\":false,\"sanBy\":null,\"archived\":true,\"deleted\":true})"
+    },
+    {
+      "size": "desk",
+      "step": "S6d",
+      "ok": true,
+      "what": "Ranger's: \"Posted out · archived, account suspended · taken back · Saber\""
+    },
+    {
+      "size": "desk",
+      "step": "S6e",
+      "ok": true,
+      "what": "Cinch's (worked out, not stored): \"Posted out · off the manpower · taken back · Saber\""
+    },
+    {
+      "size": "desk",
+      "step": "S6f",
+      "ok": true,
+      "what": "the deleted man's line stays as the record (1)"
+    },
+    {
+      "size": "desk",
+      "step": "S6g",
+      "ok": true,
+      "what": "after the Undo Ranger signs in again as us/us"
+    },
+    {
+      "size": "desk",
+      "step": "S11a",
+      "ok": true,
+      "what": "posted again: a new unread \"Posted out\" line beside the taken-back one ([[\"Posted out · now SANS\",true],[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S11b",
+      "ok": true,
+      "what": "undone again: two taken-back lines, the first still there ([[\"Posted out · now SANS · taken back · Saber\",true],[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S12",
+      "ok": true,
+      "what": "set again after its taken-back line: the line comes back UNREAD ([[\"Posted out · off the manpower · taken back · Saber\",true],[\"Posted out · off the manpower\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S13",
+      "ok": true,
+      "what": "date moved to 18 Nov after it ran, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",\"Mon 16 Nov\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S14",
+      "ok": true,
+      "what": "SANS → Overseas after the run, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S15",
+      "ok": "RECORD",
+      "what": "off the manpower read on 16 Nov, undone 2 Dec (16 days on; door found): Hex's lines about Cinch: [] — the stored outcomes would still get a taken-back line"
+    },
+    {
+      "size": "desk",
+      "step": "S16",
+      "ok": true,
+      "what": "Restored on Admin → Users: Hex's posting line stays as it was, no taken-back line ([[\"Posted out · archived, account suspended\",false]])"
+    },
+    {
+      "size": "desk",
+      "step": "S17",
+      "ok": true,
+      "what": "two tabs: tab A's LL survives (cell \"LL\", Ranger's bell 1 LL line), tab B's Undo took ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}), Hex's taken-back line [\"Posted out · now SANS · taken back · Saber\"]"
+    },
+    {
+      "size": "desk",
+      "step": "S19a",
+      "ok": true,
+      "what": "no \"SANS\" tag anywhere on the grid"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-bane",
+      "ok": true,
+      "what": "Ranger: the purple line on row (purple pixels 194; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-freak",
+      "ok": true,
+      "what": "Echo: the purple line on row (purple pixels 194; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-bapster",
+      "ok": true,
+      "what": "Wildcard: the purple line on row (purple pixels 197; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-slipway",
+      "ok": true,
+      "what": "Drifter: the purple line on row (purple pixels 194; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-mamba",
+      "ok": true,
+      "what": "Sidewinder: the purple line on row (purple pixels 194; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19b-torque",
+      "ok": true,
+      "what": "Ratchet: the purple line on row (purple pixels 195; name whole)"
+    },
+    {
+      "size": "desk",
+      "step": "S19c",
+      "ok": true,
+      "what": "posted out to Overseas Sqn: no line ([false])"
+    },
+    {
+      "size": "desk",
+      "step": "S19e",
+      "ok": true,
+      "what": "Ranger signed in: his own ringed row wears the line too"
+    },
+    {
+      "size": "desk",
+      "step": "S19f",
+      "ok": true,
+      "what": "\"+ SANS\" on, after the run: every SANS aircrew man on the grid wears the line (16: none without)"
+    },
+    {
+      "size": "desk",
+      "step": "S19f-gnd",
+      "ok": "RECORD",
+      "what": "ground crew posted out as SANS, after the run: [[\"Ratchet\",false]] — the war's copy of a ground-crew man carries no SANS mark (raptorRoster's ground-crew branch), so the line goes at his date; FILED as a question: should Post out offer SANS for ground crew at all?"
+    },
+    {
+      "size": "desk",
+      "step": "S19g",
+      "ok": true,
+      "what": "zoomed out at 1536: 96 SANS names drawn, each with its line"
+    },
+    {
+      "size": "desk",
+      "step": "S19h",
+      "ok": true,
+      "what": "at 2560 wide: 96 SANS names with the line"
+    },
+    {
+      "size": "desk",
+      "step": "S19i-balances",
+      "ok": "RECORD",
+      "what": "after the run, his puck on balances: [{\"san\":true,\"where\":\"bal-name-bane\"}]"
+    },
+    {
+      "size": "desk",
+      "step": "S19i-approvals",
+      "ok": "RECORD",
+      "what": "after the run, his puck on approvals: [{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"}]"
+    },
+    {
+      "size": "desk",
+      "step": "S19j",
+      "ok": "RECORD",
+      "what": "the OIL tracker's name list pictured: its own badge, by D1698's scope (the grid)"
+    },
+    {
+      "size": "phone",
+      "step": "F0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "phone",
+      "step": "S1a",
+      "ok": true,
+      "what": "posted out as SANS from 16 Nov: his name wears the purple line from now, no \"SANS\" tag ([[\"row\",true,true,true],[\"frozen\",true,true,true]])"
+    },
+    {
+      "size": "phone",
+      "step": "S1b-x",
+      "ok": true,
+      "what": "the posting sheet closed by x: gone, the grid and his posting as they were"
+    },
+    {
+      "size": "phone",
+      "step": "S1b-outside",
+      "ok": true,
+      "what": "the posting sheet closed by outside: gone, the grid and his posting as they were"
+    },
+    {
+      "size": "phone",
+      "step": "S1b-swipe",
+      "ok": "RECORD",
+      "what": "the phone has no swipe-down to close the posting sheet (a sheet, not a pull-up panel) — nothing to walk"
+    },
+    {
+      "size": "phone",
+      "step": "S1c",
+      "ok": true,
+      "what": "Undo post out before the date: his name loses the purple line (sheet left closed; his day now opens the bid sheet)"
+    },
+    {
+      "size": "phone",
+      "step": "S1d",
+      "ok": true,
+      "what": "a posting undone before its date told nobody: no line in Saber's bell (0)"
+    },
+    {
+      "size": "phone",
+      "step": "S1e-balances",
+      "ok": "RECORD",
+      "what": "before his date, his puck on balances: [{\"san\":false,\"where\":\"bal-name-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)"
+    },
+    {
+      "size": "phone",
+      "step": "S1e-approvals",
+      "ok": "RECORD",
+      "what": "before his date, his puck on approvals: [{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)"
+    },
+    {
+      "size": "phone",
+      "step": "S1f",
+      "ok": "RECORD",
+      "what": "Admin → Users: his row reads \"posting out 16 Nov · SANS\""
+    },
+    {
+      "size": "phone",
+      "step": "S1g",
+      "ok": true,
+      "what": "back on the Leave War by its tab after four pages: his line drawn at once"
+    },
+    {
+      "size": "phone",
+      "step": "S2a",
+      "ok": true,
+      "what": "on 16 Nov Hex's bell has Ranger's \"Posted out · now SANS\", unread ([\"Posted out · now SANS\"])"
+    },
+    {
+      "size": "phone",
+      "step": "S2b",
+      "ok": true,
+      "what": "after the run his name on the grid wears the purple line (pixels: 120 purple in its right 6px)"
+    },
+    {
+      "size": "phone",
+      "step": "S2c",
+      "ok": true,
+      "what": "Undo post out on his sheet: his SANS tick gone, no purple line (door found; {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})"
+    },
+    {
+      "size": "phone",
+      "step": "S2d",
+      "ok": true,
+      "what": "Saber pressed it: his own bell has neither line ([])"
+    },
+    {
+      "size": "phone",
+      "step": "S2e",
+      "ok": true,
+      "what": "Hex's bell lit; one line about Ranger, unread, and no \"Posted out\" line left ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "phone",
+      "step": "S2f",
+      "ok": true,
+      "what": "its words: \"Posted out · now SANS · taken back · Saber\", struck \"Posted out · now SANS\" (line-through), Mon 16 Nov"
+    },
+    {
+      "size": "phone",
+      "step": "S2g",
+      "ok": true,
+      "what": "the strike is DRAWN: the longest ink run across the struck words is 1 of their width; the calibration on unstruck words 0.17"
+    },
+    {
+      "size": "phone",
+      "step": "S2h",
+      "ok": true,
+      "what": "\"taken back · Saber\" never cut: the line wraps (height 52px)"
+    },
+    {
+      "size": "phone",
+      "step": "S7-leavewar",
+      "ok": true,
+      "what": "tapped from leavewar: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":414,\"bottom\":460,\"vh\":874,\"barBottom\":49,\"uncovered\":true})"
+    },
+    {
+      "size": "phone",
+      "step": "S7-inputs",
+      "ok": true,
+      "what": "tapped from inputs: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":414,\"bottom\":460,\"vh\":874,\"barBottom\":49,\"uncovered\":true})"
+    },
+    {
+      "size": "phone",
+      "step": "S7-back",
+      "ok": true,
+      "what": "back on the Leave War by its tab: his row drawn at once, without a touch"
+    },
+    {
+      "size": "phone",
+      "step": "S4",
+      "ok": true,
+      "what": "read by Mark all read: one struck line, unread ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    },
+    {
+      "size": "phone",
+      "step": "S10",
+      "ok": true,
+      "what": "Undo tapped twice quickly: one taken-back line ([\"Posted out · now SANS · taken back · Saber\"])"
+    },
+    {
+      "size": "phone",
+      "step": "S19a",
+      "ok": true,
+      "what": "no \"SANS\" tag anywhere on the grid"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-bane",
+      "ok": true,
+      "what": "Ranger: the purple line on row + frozen (purple pixels 120; name whole/whole)"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-freak",
+      "ok": true,
+      "what": "Echo: the purple line on row + frozen (purple pixels 120; name whole/whole)"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-bapster",
+      "ok": true,
+      "what": "Wildcard: the purple line on row + frozen (purple pixels 122; name faded/faded)"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-slipway",
+      "ok": true,
+      "what": "Drifter: the purple line on row + frozen (purple pixels 117; name whole/whole)"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-mamba",
+      "ok": true,
+      "what": "Sidewinder: the purple line on row + frozen (purple pixels 120; name faded/faded)"
+    },
+    {
+      "size": "phone",
+      "step": "S19b-torque",
+      "ok": true,
+      "what": "Ratchet: the purple line on row + frozen (purple pixels 117; name whole/whole)"
+    },
+    {
+      "size": "phone",
+      "step": "S19c",
+      "ok": true,
+      "what": "posted out to Overseas Sqn: no line ([false,false])"
+    },
+    {
+      "size": "phone",
+      "step": "S20",
+      "ok": true,
+      "what": "a tap on the chip's last 2px (under the purple line): the quals list opens, his window stays shut"
+    },
+    {
+      "size": "phone",
+      "step": "S19e",
+      "ok": true,
+      "what": "Ranger signed in: his own ringed row wears the line too"
+    },
+    {
+      "size": "phone",
+      "step": "S19f",
+      "ok": true,
+      "what": "\"+ SANS\" on, after the run: every SANS aircrew man on the grid wears the line (16: none without)"
+    },
+    {
+      "size": "phone",
+      "step": "S19f-gnd",
+      "ok": "RECORD",
+      "what": "ground crew posted out as SANS, after the run: [[\"Ratchet\",false]] — the war's copy of a ground-crew man carries no SANS mark (raptorRoster's ground-crew branch), so the line goes at his date; FILED as a question: should Post out offer SANS for ground crew at all?"
+    },
+    {
+      "size": "phone",
+      "step": "S19i-balances",
+      "ok": "RECORD",
+      "what": "after the run, his puck on balances: [{\"san\":true,\"where\":\"bal-name-bane\"}]"
+    },
+    {
+      "size": "phone",
+      "step": "S19i-approvals",
+      "ok": "RECORD",
+      "what": "after the run, his puck on approvals: [{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"}]"
+    },
+    {
+      "size": "phone",
+      "step": "S19j",
+      "ok": "RECORD",
+      "what": "the OIL tracker's name list pictured: its own badge, by D1698's scope (the grid)"
+    }
+  ],
+  "errs": [],
+  "log": [
+    "PASS [desk] F0 — Hex made an admin on Admin → Users",
+    "[desk] the men: Ranger (bane), Cinch (snap), taipan",
+    "PASS [desk] S1a — posted out as SANS from 16 Nov: his name wears the purple line from now, no \"SANS\" tag ([[\"row\",true,true,true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S1b-x — the posting sheet closed by x: gone, the grid and his posting as they were",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S1b-escape — the posting sheet closed by escape: gone, the grid and his posting as they were",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S1b-outside — the posting sheet closed by outside: gone, the grid and his posting as they were",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S1c — Undo post out before the date: his name loses the purple line (sheet left closed; his day now opens the bid sheet)",
+    "PASS [desk] S1d — a posting undone before its date told nobody: no line in Saber's bell (0)",
+    "RECORD [desk] S1e-balances — before his date, his puck on balances: [{\"san\":false,\"where\":\"bal-name-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)",
+    "RECORD [desk] S1e-approvals — before his date, his puck on approvals: [{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)",
+    "RECORD [desk] S1f — Admin → Users: his row reads \"posting out 16 Nov · SANS\"",
+    "PASS [desk] S1g — back on the Leave War by its tab after four pages: his line drawn at once",
+    "PASS [desk] S2a — on 16 Nov Hex's bell has Ranger's \"Posted out · now SANS\", unread ([\"Posted out · now SANS\"])",
+    "PASS [desk] S2b — after the run his name on the grid wears the purple line (pixels: 194 purple in its right 6px)",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S2c — Undo post out on his sheet: his SANS tick gone, no purple line (door found; {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})",
+    "PASS [desk] S2d — Saber pressed it: his own bell has neither line ([])",
+    "RECORD [desk] S9-Undo — the top bar's Undo greyed: Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}",
+    "RECORD [desk] S9-Redo — the top bar's Redo greyed: Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}",
+    "PASS [desk] S9a — the top bar's Undo / Redo bring no posting back",
+    "PASS [desk] S9b — a reload changes nothing ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})",
+    "RECORD [desk] S18 — the changes window after Undo post out: ⠿ Changes · week of 13/7 0 changes this week ✕ New to you 0 All changes 0 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen",
+    "PASS [desk] S2e — Hex's bell lit; one line about Ranger, unread, and no \"Posted out\" line left ([[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "PASS [desk] S2f — its words: \"Posted out · now SANS · taken back · Saber\", struck \"Posted out · now SANS\" (line-through), Mon 16 Nov",
+    "PASS [desk] S2g — the strike is DRAWN: the longest ink run across the struck words is 1 of their width; the calibration on unstruck words 0.17",
+    "PASS [desk] S2h — \"taken back · Saber\" never cut: the line wraps (height 52px)",
+    "PASS [desk] S7-leavewar — tapped from leavewar: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-leavewar:balances — tapped from leavewar:balances: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-leavewar:approvals — tapped from leavewar:approvals: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-editsched — tapped from editsched: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-inputs — tapped from inputs: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-admin — tapped from admin: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"uncovered\":true})",
+    "PASS [desk] S7-back — back on the Leave War by its tab: his row drawn at once, without a touch",
+    "PASS [desk] S8 — member view: no posting line (0); back as admin: 1 as left ([[true,false]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S3 — never read: after the Undo Hex's bell has neither line ([])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S4 — read by Mark all read: one struck line, unread ([[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S5 — Hex pressed it: Hex's bell nothing (0); Saber's \"Posted out · now SANS · taken back · Hex\"",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "[postingSheet] snap: reached by 2026-11-16",
+    "[postingSheet] taipan 2026-11-16 ⋯: premise: nothing to press — .bidsheet[role=\"dialog\"] [data-testid=\"bid-more\"]",
+    "[postingSheet] taipan 2026-11-13 ⋯: premise: nothing to press — [data-testid=\"bid-postout\"]",
+    "PASS [desk] S6a — Overseas Sqn ran (archived, suspended); its Undo post out found through his day before the date, and he is back ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})",
+    "PASS [desk] S6b — off the manpower: its Undo post out found (door found)",
+    "PASS [desk] S6c — Delete ran: his row kept for his months here (D299), and no Undo post out offered by any of its doors ({\"cs\":\"Cobra\",\"san\":false,\"sanBy\":null,\"archived\":true,\"deleted\":true})",
+    "PASS [desk] S6d — Ranger's: \"Posted out · archived, account suspended · taken back · Saber\"",
+    "PASS [desk] S6e — Cinch's (worked out, not stored): \"Posted out · off the manpower · taken back · Saber\"",
+    "PASS [desk] S6f — the deleted man's line stays as the record (1)",
+    "PASS [desk] S6g — after the Undo Ranger signs in again as us/us",
+    "PASS [desk] S11a — posted again: a new unread \"Posted out\" line beside the taken-back one ([[\"Posted out · now SANS\",true],[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S11b — undone again: two taken-back lines, the first still there ([[\"Posted out · now SANS · taken back · Saber\",true],[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "[postingSheet] snap: reached by 2026-11-16",
+    "PASS [desk] S12 — set again after its taken-back line: the line comes back UNREAD ([[\"Posted out · off the manpower · taken back · Saber\",true],[\"Posted out · off the manpower\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "[desk] S13 after the move: {\"line\":\"On 18 Nov: becomes SANS.\",\"box\":\"Wed 18 Nov 26▾\"}; Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}",
+    "[desk] S13 Saber's bell after the move: [[\"Posted out · now SANS\",\"Mon 16 Nov\"]]",
+    "[postingSheet] bane: reached by 2026-11-30",
+    "[desk] S13 Undo door found; PO boxes left on his row in Nov: 0",
+    "PASS [desk] S13 — date moved to 18 Nov after it ran, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",\"Mon 16 Nov\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S14 — SANS → Overseas after the run, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "[postingSheet] snap: reached by 2026-11-16",
+    "RECORD [desk] S15 — off the manpower read on 16 Nov, undone 2 Dec (16 days on; door found): Hex's lines about Cinch: [] — the stored outcomes would still get a taken-back line",
+    "PASS [desk] S16 — Restored on Admin → Users: Hex's posting line stays as it was, no taken-back line ([[\"Posted out · archived, account suspended\",false]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S17 — two tabs: tab A's LL survives (cell \"LL\", Ranger's bell 1 LL line), tab B's Undo took ({\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}), Hex's taken-back line [\"Posted out · now SANS · taken back · Saber\"]",
+    "[desk] S19 kinds: {\"wso\":\"freak\",\"ocu\":\"bapster\",\"quals\":\"slipway\",\"long\":\"mamba\",\"gnd\":\"torque\"}",
+    "PASS [desk] S19a — no \"SANS\" tag anywhere on the grid",
+    "PASS [desk] S19b-bane — Ranger: the purple line on row (purple pixels 194; name whole)",
+    "PASS [desk] S19b-freak — Echo: the purple line on row (purple pixels 194; name whole)",
+    "PASS [desk] S19b-bapster — Wildcard: the purple line on row (purple pixels 197; name whole)",
+    "PASS [desk] S19b-slipway — Drifter: the purple line on row (purple pixels 194; name whole)",
+    "PASS [desk] S19b-mamba — Sidewinder: the purple line on row (purple pixels 194; name whole)",
+    "PASS [desk] S19b-torque — Ratchet: the purple line on row (purple pixels 195; name whole)",
+    "PASS [desk] S19c — posted out to Overseas Sqn: no line ([false])",
+    "PASS [desk] S19e — Ranger signed in: his own ringed row wears the line too",
+    "PASS [desk] S19f — \"+ SANS\" on, after the run: every SANS aircrew man on the grid wears the line (16: none without)",
+    "RECORD [desk] S19f-gnd — ground crew posted out as SANS, after the run: [[\"Ratchet\",false]] — the war's copy of a ground-crew man carries no SANS mark (raptorRoster's ground-crew branch), so the line goes at his date; FILED as a question: should Post out offer SANS for ground crew at all?",
+    "PASS [desk] S19g — zoomed out at 1536: 96 SANS names drawn, each with its line",
+    "PASS [desk] S19h — at 2560 wide: 96 SANS names with the line",
+    "RECORD [desk] S19i-balances — after the run, his puck on balances: [{\"san\":true,\"where\":\"bal-name-bane\"}]",
+    "RECORD [desk] S19i-approvals — after the run, his puck on approvals: [{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"}]",
+    "RECORD [desk] S19j — the OIL tracker's name list pictured: its own badge, by D1698's scope (the grid)",
+    "PASS [phone] F0 — Hex made an admin on Admin → Users",
+    "[phone] the men: Ranger (bane), Cinch (snap), taipan",
+    "PASS [phone] S1a — posted out as SANS from 16 Nov: his name wears the purple line from now, no \"SANS\" tag ([[\"row\",true,true,true],[\"frozen\",true,true,true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S1b-x — the posting sheet closed by x: gone, the grid and his posting as they were",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S1b-outside — the posting sheet closed by outside: gone, the grid and his posting as they were",
+    "RECORD [phone] S1b-swipe — the phone has no swipe-down to close the posting sheet (a sheet, not a pull-up panel) — nothing to walk",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S1c — Undo post out before the date: his name loses the purple line (sheet left closed; his day now opens the bid sheet)",
+    "PASS [phone] S1d — a posting undone before its date told nobody: no line in Saber's bell (0)",
+    "RECORD [phone] S1e-balances — before his date, his puck on balances: [{\"san\":false,\"where\":\"bal-name-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)",
+    "RECORD [phone] S1e-approvals — before his date, his puck on approvals: [{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"},{\"san\":false,\"where\":\"appr-line-bane\"}] (the line only once he IS SANS — the designer's gap, shown to him side by side)",
+    "RECORD [phone] S1f — Admin → Users: his row reads \"posting out 16 Nov · SANS\"",
+    "PASS [phone] S1g — back on the Leave War by its tab after four pages: his line drawn at once",
+    "PASS [phone] S2a — on 16 Nov Hex's bell has Ranger's \"Posted out · now SANS\", unread ([\"Posted out · now SANS\"])",
+    "PASS [phone] S2b — after the run his name on the grid wears the purple line (pixels: 120 purple in its right 6px)",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S2c — Undo post out on his sheet: his SANS tick gone, no purple line (door found; {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false})",
+    "PASS [phone] S2d — Saber pressed it: his own bell has neither line ([])",
+    "PASS [phone] S2e — Hex's bell lit; one line about Ranger, unread, and no \"Posted out\" line left ([[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "PASS [phone] S2f — its words: \"Posted out · now SANS · taken back · Saber\", struck \"Posted out · now SANS\" (line-through), Mon 16 Nov",
+    "PASS [phone] S2g — the strike is DRAWN: the longest ink run across the struck words is 1 of their width; the calibration on unstruck words 0.17",
+    "PASS [phone] S2h — \"taken back · Saber\" never cut: the line wraps (height 52px)",
+    "PASS [phone] S7-leavewar — tapped from leavewar: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":414,\"bottom\":460,\"vh\":874,\"barBottom\":49,\"uncovered\":true})",
+    "PASS [phone] S7-inputs — tapped from inputs: Admin → Users at Ranger's row, ringed, in view and uncovered ({\"page\":\"admin\",\"ringed\":true,\"top\":414,\"bottom\":460,\"vh\":874,\"barBottom\":49,\"uncovered\":true})",
+    "PASS [phone] S7-back — back on the Leave War by its tab: his row drawn at once, without a touch",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S4 — read by Mark all read: one struck line, unread ([[\"Posted out · now SANS · taken back · Saber\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [phone] S10 — Undo tapped twice quickly: one taken-back line ([\"Posted out · now SANS · taken back · Saber\"])",
+    "[phone] S19 kinds: {\"wso\":\"freak\",\"ocu\":\"bapster\",\"quals\":\"slipway\",\"long\":\"mamba\",\"gnd\":\"torque\"}",
+    "PASS [phone] S19a — no \"SANS\" tag anywhere on the grid",
+    "PASS [phone] S19b-bane — Ranger: the purple line on row + frozen (purple pixels 120; name whole/whole)",
+    "PASS [phone] S19b-freak — Echo: the purple line on row + frozen (purple pixels 120; name whole/whole)",
+    "PASS [phone] S19b-bapster — Wildcard: the purple line on row + frozen (purple pixels 122; name faded/faded)",
+    "PASS [phone] S19b-slipway — Drifter: the purple line on row + frozen (purple pixels 117; name whole/whole)",
+    "PASS [phone] S19b-mamba — Sidewinder: the purple line on row + frozen (purple pixels 120; name faded/faded)",
+    "PASS [phone] S19b-torque — Ratchet: the purple line on row + frozen (purple pixels 117; name whole/whole)",
+    "PASS [phone] S19c — posted out to Overseas Sqn: no line ([false,false])",
+    "PASS [phone] S20 — a tap on the chip's last 2px (under the purple line): the quals list opens, his window stays shut",
+    "PASS [phone] S19e — Ranger signed in: his own ringed row wears the line too",
+    "PASS [phone] S19f — \"+ SANS\" on, after the run: every SANS aircrew man on the grid wears the line (16: none without)",
+    "RECORD [phone] S19f-gnd — ground crew posted out as SANS, after the run: [[\"Ratchet\",false]] — the war's copy of a ground-crew man carries no SANS mark (raptorRoster's ground-crew branch), so the line goes at his date; FILED as a question: should Post out offer SANS for ground crew at all?",
+    "RECORD [phone] S19i-balances — after the run, his puck on balances: [{\"san\":true,\"where\":\"bal-name-bane\"}]",
+    "RECORD [phone] S19i-approvals — after the run, his puck on approvals: [{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"},{\"san\":true,\"where\":\"appr-line-bane\"}]",
+    "RECORD [phone] S19j — the OIL tracker's name list pictured: its own badge, by D1698's scope (the grid)"
+  ],
+  "report": {
+    "desk": {
+      "X": "snap",
+      "Y": "taipan",
+      "csX": "Cinch"
+    },
+    "phone": {
+      "X": "snap",
+      "Y": "taipan",
+      "csX": "Cinch"
+    }
+  }
+}

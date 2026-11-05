@@ -1,0 +1,6 @@
+bar Not swapped — OIL not answered
+row buttons ["Cancel this item (CX)|CX|mbtn|","Info only — show this item on the programme, never check it against the rules, and never earn OIL from it|ⓘ|mbtn nfo|","Red box — flag for the next scheduler|■|mbtn red|","Remove this item|✕|mbtn del|"]
+after delete click: ground ["RANGE BRIEF: Ranger"] toast Ground item removed — Hangar open day, 13:00–15:00, Tally confirm? 4 bar still 1 question 0
+after Answer OIL: question 0 bar 0 bar text NO toast That row has changed — not swapped | toasts ["Input added","Ground item removed — Hangar open day, 13:00–15:00, Tally","That row has changed — not swapped"]
+ground ["RANGE BRIEF: Ranger"] same as after delete true oil true undoSame true
+errors []

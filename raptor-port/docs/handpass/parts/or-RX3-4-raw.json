@@ -1,0 +1,185 @@
+{
+ "pub4": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c0": {
+  "a": "6 changes  [dstat: 6 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "afterTakeOut": [
+  {
+   "iid": "slw88",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Hunter"
+   ],
+   "by": "Saber"
+  }
+ ],
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Hex · LL Saber 22/6 09:00 taken out"
+  ],
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "newLL": [
+  {
+   "iid": "imqoidgg0cn7bus",
+   "type": "LL",
+   "date": "Jul 15",
+   "s": 480,
+   "e": 720,
+   "people": [
+    "Hex"
+   ]
+  }
+ ],
+ "c2": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Hex · LL Saber 22/6 09:00 his own now — 08:00–12:00"
+  ],
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "winAll": {
+  "title": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabs": [
+   "New to you 0",
+   "All changes 8",
+   "To go out · AL1 1 [on]"
+  ],
+  "lines": [
+   "pl-item  :: Hex · LL Saber 22/6 09:00 his own now — 08:00–12:00"
+  ]
+ },
+ "inputsEnd": [
+  {
+   "iid": "n7bus",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 480,
+   "e": 720,
+   "people": [
+    "Hex"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "slw88",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Hunter"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "q7sxm",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 14",
+   "to": null,
+   "people": [],
+   "by": "Quill"
+  },
+  {
+   "iid": "akvuf",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 24",
+   "to": null,
+   "people": [],
+   "by": "Saber"
+  },
+  {
+   "iid": "m8p1b",
+   "type": "LL",
+   "title": "",
+   "date": "Jan 8",
+   "to": null,
+   "people": []
+  }
+ ],
+ "unav": [
+  "LL 08:00 12:00 C Hex C till 15 Jul",
+  "LL Drifter A till 15 Jul",
+  "LL Hunter IP till 15 Jul",
+  "OL Cobra IP Overseas leave — off island",
+  "ATT C Grit C Medically down till 17 Jul",
+  "OD C Nomad C Overseas duty — exercise, off island",
+  "OIL C Gambit C"
+ ]
+}

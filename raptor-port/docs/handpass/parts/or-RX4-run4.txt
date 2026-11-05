@@ -1,0 +1,37 @@
+fixture: {"filed":[{"iid":"imqoidgg0xkkdke","type":"Training","title":"OIL ask","date":"Jul 18","s":540,"e":720,"people":["Ranger"]}],"q1":"OIL — Tally, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save","q1toast":"Tally is on OIL ask instead of Ranger","cancel1":true,"after1":{"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally"],"by":"Saber","oil":null,"cx":null,"cxr":null},"q2":"OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save","q2toast":"Ranger added to OIL ask","after2":{"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally","Ranger"],"by":"Saber","oil":null,"cx":null,"cxr":null}}
+state0 {"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally","Ranger"],"by":"Saber","oil":null,"cx":null,"cxr":null}
+saved rx4-4-1-before-cx-card
+saved rx4-4-1-before-cx-card-crop
+saved rx4-4-1-before-cx-list-row
+saved rx4-4-1-before-cx-list-row-crop
+1-before-cx {"card":{"tagOilQ":true,"cx":false,"text":"OIL? 09:00–12:00 Ranger, TallyTRAINING OIL ask · till 18 Jul By Saber"},"row":{"text":"Ranger, Tally 18 Jul 09:00–12:00 OIL ask TRAINING till 18 JulBy Saber now OIL?","buttons":["OIL?"],"strike":false}}
+saved rx4-4-2-board-before-cx
+CX dialog: {"text":"Cancel line"}
+saved rx4-4-3-cx-dialog
+after CX toast: CX DUE WX
+saved rx4-4-4-board-after-cx
+state after CX {"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally","Ranger"],"by":"Saber","oil":null,"cx":true,"cxr":"WX"}
+saved rx4-4-5-after-cx-card
+saved rx4-4-5-after-cx-card-crop
+saved rx4-4-5-after-cx-list-row
+saved rx4-4-5-after-cx-list-row-crop
+5-after-cx {"card":{"tagOilQ":true,"cx":true,"text":"OIL? 09:00–12:00 Ranger, TallyTRAINING CXOIL askWX · till 18 Jul By Saber"},"row":{"text":"Ranger, Tally 18 Jul 09:00–12:00 CXOIL askWX TRAINING till 18 JulBy Saber now OIL?","buttons":["OIL?"],"strike":true}}
+OIL? button on the cancelled row: 1
+question: OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save
+saved rx4-4-6-question
+state after Yes {"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally","Ranger"],"by":"Saber","oil":{"2026-07-18":0.5},"cx":true,"cxr":"WX"}
+saved rx4-4-7-after-yes-card
+saved rx4-4-7-after-yes-card-crop
+saved rx4-4-7-after-yes-list-row
+saved rx4-4-7-after-yes-list-row-crop
+7-after-yes {"card":{"tagOilQ":false,"cx":true,"text":"09:00–12:00 Ranger, TallyTRAINING CXOIL askWX · till 18 Jul By Saber"},"row":{"text":"Ranger, Tally 18 Jul 09:00–12:00 CXOIL askWX TRAINING till 18 JulBy Saber now ","buttons":[],"strike":true}}
+8 OIL Earn row: [{"text":"OIL ASK TRAINING Ranger IP Tally O","cls":"sb-arow c6r cx gr-frominput","pucks":[{"who":"Ranger","cls":"puck sm","title":"Ranger · IP · instructor pilot · SXO","oilp":"","style":""},{"who":"Tally","cls":"puck r sm san","title":"Tally · OCU (ab-initio) · SANS","oilp":"","style":""}]}] | items: {"items":["r:rs130720265x1 :: ain oilitem on :: SDO","r:rs130720265x1 :: seat oilpk on :: Fable FO"],"banner":"◧ OIL Earn"}
+saved rx4-4-8-oil-earn-row
+saved rx4-4-8-oil-earn-hover
+saved rx4-4-8-oil-earn-after-tap
+9 OIL Earn row: [{"text":"OIL ASK TRAINING Ranger IP Tally O","cls":"sb-arow c6r cx gr-frominput","pucks":[{"who":"Ranger","cls":"puck sm sel","title":"Ranger · IP · instructor pilot · SXO","oilp":"","style":""},{"who":"Tally","cls":"puck r sm san dim","title":"Tally · OCU (ab-initio) · SANS","oilp":"","style":""}]}] | items: {"items":["r:rs130720265x1 :: ain oilitem on :: SDO","r:rs130720265x1 :: seat oilpk on :: Fable FO"],"banner":"◧ OIL Earn"}
+saved rx4-4-9-oil-earn-row
+saved rx4-4-9-oil-earn-hover
+saved rx4-4-9-oil-earn-after-tap
+end state {"type":"Training","title":"OIL ask","date":"Jul 18","t":"09:00-12:00","people":["Tally","Ranger"],"by":"Saber","oil":{"2026-07-18":0.5},"cx":true,"cxr":"WX"}
+ERRORS none

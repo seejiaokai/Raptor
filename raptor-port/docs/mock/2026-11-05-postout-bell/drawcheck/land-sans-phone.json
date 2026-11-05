@@ -1,0 +1,107 @@
+{
+ "state": "land-sans-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-postout-bell/draw.mjs",
+  "shot": "3-land-sans-phone"
+ },
+ "recorded": "2026-11-05T09:04:39.888Z",
+ "drawnOn": "claude/postout-bell-look at 890964ac7",
+ "checkout": "4ffc31e4e",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 125
+ },
+ "parts": {
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 37,
+    "y": 404.5,
+    "w": 328,
+    "h": 63
+   },
+   "ink": {
+    "x": 37,
+    "y": 412.5,
+    "w": 151.4,
+    "h": 45
+   },
+   "text": "Cinch no sign-in · Pilot · CAT IP posted out 16 Nov · SANS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgb(30, 134, 255) 0px 0px 0px 2px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.acc-row.od-row.pb-land"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 37,
+    "y": 412.5,
+    "w": 216,
+    "h": 15
+   },
+   "ink": {
+    "x": 37,
+    "y": 412.5,
+    "w": 36.1,
+    "h": 15
+   },
+   "text": "Cinch",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.acc-name"
+  }
+ },
+ "approved": {
+  "picture": "3-land-sans-phone.png",
+  "identical": true
+ }
+}

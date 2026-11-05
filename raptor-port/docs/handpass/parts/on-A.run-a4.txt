@@ -1,0 +1,26 @@
+week before ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs on Sat 1 Hex refs 0
+week roster puck visible 1 {"x":1257,"y":268,"width":74,"height":15}
+week Q 1 Putting Hex in place of Ranger | Don’t swap | Swap saveDisabled true
+week ground (should be unchanged) ["RANGE BRIEF: Ranger","Hangar open day: Tally"] undoSame true
+week flash on Ranger puck [true]
+week bar Not swapped — OIL not answered | Answer OIL | OK
+week cancelled ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs 1 Hex refs 0 oil same true undoSame true
+week question again Putting Hex in place of Ranger
+week toast Hex is on Range brief instead of Ranger
+week answered ground ["RANGE BRIEF: Hex","Hangar open day: Tally"] Ranger refs on Sat 0 Hex refs 1 oil {"oil":{"2026-07-18":0.5},"grp":null}
+week input person {"date":"Jul 18","title":"Range brief","oil":{"2026-07-18":0.5}}
+week after one Undo ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs 1 Hex refs 0 oil back true
+week errors []
+board before ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs on Sat 1 Hex refs 0
+board roster puck visible 1 {"x":1284.5,"y":427.5,"width":143.5,"height":15}
+board Q 1 Putting Hex in place of Ranger | Don’t swap | Swap saveDisabled true
+board ground (should be unchanged) ["RANGE BRIEF: Ranger","Hangar open day: Tally"] undoSame true
+board flash on Ranger puck [true]
+board bar Not swapped — OIL not answered | Answer OIL | OK
+board cancelled ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs 1 Hex refs 0 oil same true undoSame true
+board question again Putting Hex in place of Ranger
+board toast Hex is on Range brief instead of Ranger
+board answered ground ["RANGE BRIEF: Hex","Hangar open day: Tally"] Ranger refs on Sat 0 Hex refs 1 oil {"oil":{"2026-07-18":0.5},"grp":null}
+board input person {"date":"Jul 18","title":"Range brief","oil":{"2026-07-18":0.5}}
+board after one Undo ["RANGE BRIEF: Ranger","Hangar open day: Tally"] Ranger refs 1 Hex refs 0 oil back true
+board errors []

@@ -1,0 +1,10 @@
+before {"st":"[\"RANGE BRIEF: Ranger\",\"Hangar open day: Tally\"]","undo":"on|Undo — a change to the schedule","oil":"{\"2026-07-18\":0.5}"}
+literal 1: tapped Ranger puck {"selected":20,"oktake":256,"rosArm":false}
+RESULT B3-board-literal-order {"questionUp":0,"sel":{"selected":17,"oktake":169,"rosArm":false},"st":true}
+picture B3-1-board-literal-order.png
+picture B3-2-board-hex-selected.png
+picture B3-3-board-question.png
+RESULT B3-board-question {"up":0,"lead":"","cancel":"","save":"","saveDisabled":null,"box":null,"saveBox":null,"nothing":true,"undoSame":true}
+picture B3-4-board-cancelled.png
+RESULT B3-board-cancel {"q":0,"sel":{"selected":20,"oktake":256,"rosArm":false},"drawer":true,"bar":"","st":true,"undoSame":true,"oilSame":true,"barBox":null}
+question back via the bar false 

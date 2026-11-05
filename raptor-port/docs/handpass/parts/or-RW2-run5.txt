@@ -1,0 +1,10 @@
+people now: ["Drifter","Ranger","Tally"] times: "540-660"
+history button pressed: true
+dots on Wed, Personal Inputs as it stands: []
+Ground Programme section: 0 in Ground Programme section; marks of other kinds: 
+ground row text: RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O + ADD till 15 Jul
+pressed show on Personal Inputs
+dots on Wed after unfolding Personal Inputs: [{"tag":"DIV","sec":"sec-inp","row":"Range brief MEETING 09:00 11:00 Drifter A Ranger IP Tally O ","on":"sub plist one sec sec-inp","attrs":"data-inprow=imqoidgg0fvw9d6~slipway data-histdot="}]
+after hover over a puck on the row, bubbles: []
+board dots: []
+ERRORS none

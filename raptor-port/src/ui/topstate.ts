@@ -17,7 +17,8 @@ import { oilPendingFor, openWarAt } from '../leavewar/sync'
 import { inpById } from '../engine/inputs'
 import { setOilAsk, setInpEdit, BELLLIST, setBellList, setOilList } from './pops'
 import { me } from '../state/perms'
-import { holidayLineOn, noticeSpan, isWarNotice, type Notice } from '../state/notices'
+import { holidayLineOn, noticeSpan, isWarNotice, postOf, type Notice } from '../state/notices'
+import { PEOPLE } from '../engine/people'
 import { unreadFor, markNoticeRead } from '../state/noticeseen'
 import { trackerUndoApi, onTrackerUndo, trackerUndoVersion } from '../tracker/undo-bridge.js'
 
@@ -96,6 +97,18 @@ export function openNotice(n: Notice): void {
     const span = noticeSpan(n) || { a: String(hol.a), b: String(hol.b || hol.a) }
     setOilList({ from: span.a, to: span.b, name: span.name != null ? span.name : n.name, fresh: false })
     notify(); return
+  }
+  /* A POSTING'S LINE ([POSTOUT-RUN-NOTICE] — D1547, D1691): Admin → Users at his row, ringed, the Archived fold opened
+     for an archived man (UsersPanel's ringPerson). A man with no row there — deleted by the posting, or since — opens
+     nothing: the line is only read, and stays in the bell as the record (D1691) */
+  const po = postOf(n)
+  if (po) {
+    markNoticeRead(n.id)
+    const p: any = (PEOPLE as any)[po.who]
+    if (!p || p.deleted || p.special) { notify(); return }
+    setBellList(false)
+    openAdminUsers({ person: po.who })
+    return
   }
   /* A LEAVE WAR LINE (the overhaul's M4, 9.6): the Leave War at that day — where a move took it, at its new days — his
      cell ringed; a bidding line, the stretch's first day */

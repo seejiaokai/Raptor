@@ -75,3 +75,26 @@ describe('an HO’s half, in a sentence beside its box', () => {
   })
 })
 
+
+/* A TAKEN-BACK LINE SAYS WHAT IT TOOK BACK, STRUCK THROUGH (his D1699, 5 Nov 26): its own words "taken back", and the line
+   it replaces word for word in `struck` — the bell draws them crossed out before "taken back · Saber". */
+describe('a taken-back line keeps the words it took back (D1699)', () => {
+  const back = (part: Record<string, unknown>) => {
+    const w = noticeWords({ id: 'n3', at: 0, name: 'Your leave', by: null, what: [{ k: 'lwback', a: '2026-02-10', b: '2026-02-10', ref: 'n1', ...part }] } as unknown as Notice)
+    return [w.struck, w.what]
+  }
+  it('an approval, a refusal, a half day, a retyped bid', () => {
+    expect(back({ c: 'LL', d: 'approved' })).toEqual(['LL approved', 'taken back'])
+    expect(back({ c: 'OL*', d: 'refused' })).toEqual(['OL (PM) refused', 'taken back'])
+    expect(back({ c: '*OL', w: '*LL', d: 'retyped' })).toEqual(['LL (AM) bid changed to OL (AM)', 'taken back'])
+  })
+  it('a move says where it took the leave; bidding opened or closed says so', () => {
+    expect(back({ c: 'LL', d: 'moved', to: '2026-02-17', tb: '2026-02-18' })).toEqual(['LL moved to Tue 17 – Wed 18 Feb', 'taken back'])
+    expect(back({ d: 'open' })).toEqual(['Bidding open', 'taken back'])
+    expect(back({ d: 'close' })).toEqual(['Bidding closed', 'taken back'])
+  })
+  it('a posting out taken back: "Posted out · now SANS", struck', () => {
+    const w = noticeWords({ id: 'n4', at: 0, name: 'Ranger', day: '2026-11-16', by: null, what: [{ k: 'poback', who: 'nobody', o: 'sans' }] } as unknown as Notice)
+    expect([w.struck, w.what]).toEqual(['Posted out · now SANS', 'taken back'])
+  })
+})

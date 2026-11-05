@@ -1,0 +1,224 @@
+{
+ "s0_filed": {
+  "tag": "s0_filed",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul UNDO"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "menu1": {
+  "text": "PLANS — WEDNESDAY Live working copy ●live now — this is what publishes + Alt Plan",
+  "btns": [
+   "data-plangolive=2|Live working copy ●live now — this is wh",
+   "data-plandup=1|+ Alt Plan"
+  ]
+ },
+ "plansSaved": {
+  "list": [
+   "Plan A:dr1",
+   "Plan B:dr2"
+  ],
+  "live": "dr2"
+ },
+ "xToast": "Ground item removed — back under Personal Inputs — RANGE DRILL, 14:00–15:00, Ranger",
+ "s1_afterX": {
+  "tag": "s1_afterX",
+  "rowInDays": -1,
+  "groundRows": [],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "menu2": {
+  "text": "PLANS — WEDNESDAY Plan Atap to make it the live day ✎ Plan B ●live now — this is what publishes ✎ + Alt Plan ✎ Manage plans",
+  "btns": [
+   "data-plansel=dr1|Plan Atap to make it the live day",
+   "data-planedit=dr1|✎",
+   "data-plangolive=2|Plan B ●live now — this is what publishe",
+   "data-planedit=dr2|✎",
+   "data-plandup=1|+ Alt Plan",
+   "data-planmanage=1|✎ Manage plans"
+  ]
+ },
+ "switchToast": "Switched to \"Plan A\" — this is now the live Wednesday",
+ "plansSwitched": {
+  "list": [
+   "Plan A:dr1",
+   "Plan B:dr2"
+  ],
+  "live": "dr1"
+ },
+ "s2_afterSwitch": {
+  "tag": "s2_afterSwitch",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "a1": {
+  "tag": "attempt1.5",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger",
+     "Tally"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP Tally O + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "buttons": [
+  "Range drill",
+  "Accept"
+ ],
+ "acceptNoteEarly": "Ranger's Range drill is on the ground programme again — its row was already there · Tally came off its row — not in the input; drop him on again to add him",
+ "acceptRaw": [
+  "Ranger's Range drill is on the ground programme again — its row was already there · Tally came off its row — not in the input; drop him on again to add him"
+ ],
+ "acceptNote": "Ranger's Range drill is on the ground programme again — its row was already there · Tally came off its row — not in the input; drop him on again to add him",
+ "s5_afterAccept": {
+  "tag": "s5_afterAccept",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul UNDO"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "windowPeople": {
+  "pressed": [],
+  "personSelect": [
+   "Ranger"
+  ],
+  "head": "⠿\nRanger · 15 Jul\n✕"
+ },
+ "drop2Raw": [
+  "Tally added to Range drill"
+ ],
+ "s6": {
+  "tag": "s6_secondDrop",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger",
+     "Tally"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP Tally O + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger",
+     "Tally"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP Tally O till 15 Jul UNDO"
+   }
+  ],
+  "input": [
+   "Ranger",
+   "Tally"
+  ],
+  "foldRows": 1
+ },
+ "dayCards": [
+  "All day CobraOL Overseas leave — off island By Saber",
+  "All day GambitOIL",
+  "till 17 Jul GritATT C Medically down",
+  "till 17 Jul NomadOD Overseas duty — exercise, off island",
+  "14:00–15:00 Ranger, TallyTRAINING Range drill · till 15 Jul By Saber"
+ ],
+ "windowPeople2": {
+  "pressed": [
+   "Ranger",
+   "Tally"
+  ],
+  "personSelect": [],
+  "head": "⠿\nRanger +1 · 15 Jul\n✕"
+ },
+ "inputsEnd": {
+  "type": "Training",
+  "title": "Range drill",
+  "date": "Jul 15",
+  "to": null,
+  "s": 840,
+  "e": 900,
+  "people": [
+   "Ranger",
+   "Tally"
+  ],
+  "by": "stiff"
+ }
+}
