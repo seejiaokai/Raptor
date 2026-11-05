@@ -993,6 +993,14 @@ own). One row per admin, written only by him (own row — §11), removed with hi
 
 From today: `settings/reqseen:<accountId>`.
 
+### Squadrons — one app, one database, many squadrons (his D1695, 5 Nov 26 — to design, [MULTI-SQN-DESIGN]; with D281, D282, D1100)
+
+His direction, not yet designed: one app and one database for every squadron; each person given his home squadron when his
+account is made; rights that may let him view other squadrons read only; a permanent transfer to another squadron when he
+posts out (the Post out sheet's greyed "Transfer to Sqn"); and a day planned half in one squadron and half in another. For
+the IT side: every record carries its squadron, and who may read or change another squadron's rows is the database's own
+security (business units and security roles on Dataverse) — designed with him, with pictures, before the database step.
+
 ### Notice
 
 Owner: **Scheduler**. New 12 Oct 26 (the one-rule build's step 7 — owner D755 (3), D760, D769). A line of a person's

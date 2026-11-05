@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1695 | 5 Nov 26 | His direction: one app and one database for many squadrons — each person's squadron set when his account is made, rights to view other squadrons read only, a permanent transfer when he posts out, a day planned half in one squadron and half in another. |
 | D1694 | 5 Nov 26 | On Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row on each side, clear of his name, as built — not on the row's edge, as drawn. |
 | D1691 | 5 Nov 26 | When a posting out deletes a man on its date, his line in the admins' bells opens nothing when tapped — he has no row left on Admin → Users — and the line stays in the bell as the record, as the bell's "Deleted" line for an input does. |
 | D1690 | 5 Nov 26 | The admins' bell line for a posting out that ran on its date leads with the man in bold and the date, then "Posted out" and what the outcome did — "Ranger · Mon 16 Nov / Posted out · archived, account suspended" — option B as drawn, not "Posting out" first. |
