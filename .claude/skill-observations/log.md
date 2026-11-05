@@ -3488,3 +3488,18 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** The guard filed by Observation 601 (an unconditional default: any multi-line script goes to a scratchpad file through the file tool) is still not built; count this as a further met-again for it. Until it is, apostrophes in test names are best avoided in generated edits (a double-quoted string or a reworded name).
 
 **Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.
+
+### Observation 802: A safety-net message no control reaches is pictured through its element's nearest real refusal
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [NOTSAVED-REFUSAL-LOOK] — picturing four "not saved" refusals as they look today before drawing one shared look
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 1 ("drive … to the 'today' state through the app's own controls")
+
+**Issue:** Each message was a backstop that fires only when a check disagrees with the screen. Forcing that disagreement through a developer hook (flipping the page's role) made the app refuse AND undo the hook, so the box carrying the message vanished with it — a run lost to a state the app is built to correct. What worked: reach the same element through its nearest REAL refusal (a typing refusal raises the same tag under the same box), then set only its words — one named transform — and say so on the page; for a passing note, raise the app's own note with the exact constant.
+
+**Suggested improvement:** add to the method's step 1: "A message no control reaches (a safety net) is pictured by reaching its ELEMENT through the nearest real state that raises it, then changing only its words, named on the page; first try whether the forcing hook survives the app's own correction — a refusal often restores what it refused."
+
+**Principle:** When the state you need is one the system actively corrects, picture the container from a reachable sibling state and change the minimum, rather than fighting the correction.

@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/notsaved-refusal-look -->
+### `claude/notsaved-refusal-look` — [NOTSAVED-REFUSAL-LOOK] DRAWN, put to him; waiting for his answer (5 Nov 26)
+- **Done:** the four "not saved" refusals pictured today and one shared look drawn on the real app (D1665, D1625) — https://claude.ai/artifact/5iK5a5aEMJuP9WXpEkqYhS (Q1, recommended: build as drawn). Pictures, page and script: `raptor-port/docs/mock/2026-11-05-notsaved-refusal/`, `raptor-port/scripts/handpass/nsr1105-today.mjs`. Nothing in `raptor-port/src` changed.
+- **Next:** record his answer (a ruling, in `design.md`), then build on this branch: `.bp-err` (Leave War `balances.css`, the Grades window and the person window share it) and the passing note's "not saved" kind (`ui/toast.ts` — a new kind beside `warn`/`hard`, raised by `inputedit.tsx` NOT_SAVED and line ~2086, `BalancesPage.tsx`'s unmount note, `boot.ts`'s document note) in the drawing's face — keep its `nsr-` values; then the bug-check order (read it first).
+- **Parallel chats (his "start 1 and 2", 5 Nov 26; proposed as cards from here):** `claude/css-font-inherit-look` (rulings D1680–D1689, lessons 86–88, observations 810–819) and `claude/postout-bell-look` (D1690–D1699, 89–91, 820–829). This chat holds rulings D1667–D1679, lessons 83–85, observations 802–809.
+- **Opening line if handed off:** Continue `claude/notsaved-refusal-look`: `git fetch origin`, `git switch claude/notsaved-refusal-look`, `git pull --ff-only`. Read `HANDOFF.md` (this block) and [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md`; record his answer to Q1 on the page, then build and bug-check it.
+<!-- /now -->
 <!-- now:claude/member-guest-checks -->
 ### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
 - **Shipped:** the member / guest check of the night and the build of his morning answers — the pass after asking for access (D1650, D1654, D1656), "Not sent yet" while its save has failed (D1664), the "Not saved" strip everywhere with the OIL bar alike (D1655), the band on the sign-in, access screens and guest page (D1657), a member's own Scheduler tick read only (D1651), the `?savefail` test switch (D1666); three walk faults fixed red first. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`; his look on his iPhone done, "Ok looks good merge live".

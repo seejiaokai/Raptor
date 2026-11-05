@@ -1,0 +1,27 @@
+R1 [desktop] {"realRefusal":"Type a whole number or a half, like 17 or 17.5"}
+R1 [desktop] {"crop":{"x":174.796875,"y":221.5,"w":494,"h":148}}
+R1 [desktop] {"crop":{"x":174.796875,"y":221.5,"w":494,"h":148}}
+R1 [desktop] {"crop":{"x":174.796875,"y":221.5,"w":494,"h":148}}
+R2 [desktop] {"gname":"grade-name-sp"}
+R2 [desktop] {"realRefusal":"Give the grade a name"}
+R2 [desktop] {"crop":{"x":725.46875,"y":164,"w":440,"h":250}}
+R2 [desktop] {"crop":{"x":725.46875,"y":164,"w":440,"h":250}}
+R2 [desktop] {"crop":{"x":725.46875,"y":164,"w":440,"h":250}}
+R4 [desktop] {"fileInputs":1}
+R4 [desktop] {"toast":{"text":"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.","cls":"","shown":"1"}}
+R5 [desktop] {"toast":{"text":"Not saved — that change was refused, and nothing was kept","cls":"","shown":"1"}}
+R1 [phone] {"realRefusal":"Type a whole number or a half, like 17 or 17.5"}
+R1 [phone] {"crop":{"x":0,"y":201.296875,"w":402,"h":150}}
+R1 [phone] {"crop":{"x":0,"y":201.296875,"w":402,"h":150}}
+R1 [phone] {"crop":{"x":0,"y":201.296875,"w":402,"h":150}}
+R2 [phone] {"gname":"grade-name-sp"}
+R2 [phone] {"realRefusal":"Give the grade a name"}
+R2 [phone] {"crop":{"x":0,"y":235.5,"w":400,"h":250}}
+R2 [phone] {"crop":{"x":0,"y":235.5,"w":400,"h":250}}
+R2 [phone] {"crop":{"x":0,"y":235.5,"w":400,"h":250}}
+R4 [phone] {"fileInputs":1}
+R4 [phone] {"toast":{"text":"Couldn't save that document — your browser storage may be full, so it may not be here after a reload.","cls":"","shown":"1"}}
+R5 [phone] {"toast":{"text":"Not saved — that change was refused, and nothing was kept","cls":"","shown":"1"}}
+
+errors:
+
