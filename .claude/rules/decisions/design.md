@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1654 | 5 Nov 26 | On the screen after asking for access, the pass keeps its blue fade from the top left; the agent's reading, drawn for his look: laid over the whole card so it thins out across the tear line. |
 | D1652 | 5 Nov 26 | The keyboard batch's three details the mock-up did not draw stay as built: the cyan keyboard ring on the Scheduler Board menus' small buttons; Enter on the calendar button with "Jump to a date" open closing and reopening it in place (a mouse click only closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar. |
 | D1650 | 5 Nov 26 | The screen after asking for access takes look B's pass at its top — the claws, a "Waiting for an admin" mark, his callsign large, his initials, seat and CAT — and look A's foot under it: the three steps (request sent, an admin approves, you're on the schedule), the read-only line and its two buttons; drawn for him once more before it is built. |
 | D1649 | 5 Nov 26 | The screen a newcomer sees after asking for access ("Your request is with the admins") is redesigned to look cooler and more welcoming, in the TALON look, and drawn for him as mock-ups to choose from before anything is built (D1625); he chose a combination of the two looks (D1650). — changed by D1650 |

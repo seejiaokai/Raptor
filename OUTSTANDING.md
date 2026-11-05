@@ -126,7 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
-- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649): B's pass on top, A's steps below (D1650); the combined drawing to him, then the build.
+- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649): B's pass on top, A's steps below (D1650), the blue fade from the top left over the whole card (D1654); then the build.
 - [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).

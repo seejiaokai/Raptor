@@ -186,8 +186,12 @@ const BAND = () => {
 const SMOOTH = `#accessWaiting .login-card.awb{background:linear-gradient(180deg,rgba(59,198,232,.10) 0,rgba(59,198,232,.04) 26%,rgba(59,198,232,0) 44%),var(--panel)}
 #accessWaiting .awb-top{background:transparent}`
 const SOLID = `#accessWaiting .awb-top{background:var(--panel-2)}`
+/* his pick, 5 Nov 26 ("I like the fade that starts from top left"): the diagonal fade kept, laid over the whole card as
+   one surface, so it thins out across the tear and never ends at an edge */
+const DIAG = `#accessWaiting .login-card.awb{background:linear-gradient(135deg,rgba(59,198,232,.13) 0,rgba(59,198,232,.06) 22%,rgba(59,198,232,0) 48%),var(--panel)}
+#accessWaiting .awb-top{background:transparent}`
 if (process.env.ONLY === 'CV') {
-  for (const [name, css, tag] of [['C-smooth', SMOOTH, 'C — the tint fades out before the tear'], ['C-solid', SOLID, 'C — no tint: two plain surfaces']]) {
+  for (const [name, css, tag] of [['C-smooth', SMOOTH, 'C — the tint fades out before the tear'], ['C-solid', SOLID, 'C — no tint: two plain surfaces'], ['C-diag', DIAG, 'C — your fade from the top left, softened']]) {
     const page = await reachWaiting('phone')
     await page.evaluate(s => { window.__awSteps = s }, steps)
     await page.evaluate(lookC)
