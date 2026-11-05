@@ -221,6 +221,48 @@ img,a{-webkit-user-drag:none;user-drag:none}
 .acc-out{display:block;width:100%;margin-top:12px;padding:10px;border-radius:10px;
   background:transparent;border:1px solid var(--edge);color:var(--ink-2);font-size:13px;font-weight:600;cursor:pointer}
 .acc-out:hover{color:var(--ink);border-color:var(--edge-2)}
+/* THE SCREEN AFTER ASKING FOR ACCESS — the pass (owner D1650, D1654, D1656, 5 Nov 26; the drawing
+   docs/mock/2026-11-05-access-wait/img/C-diag-phone.png, C-desk.png — its styling carried over from
+   scripts/handpass/aw1105-mock.mjs, lookC with DIAG, on branch claude/keyboard-windows-batch-5eff45). One card, one
+   surface: the blue fade from the top left lies over the whole card and thins out across the tear (his lesson 82 — a fade
+   is not cut off partway), the dashed tear with its two notches the only divider. No glow on the claws (D887). */
+#accessWaiting .login-card.acc-pass{padding:0;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,rgba(59,198,232,.13) 0,rgba(59,198,232,.06) 22%,rgba(59,198,232,0) 48%),var(--panel)}
+.pass-top{padding:20px 20px 18px}
+.pass-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.pass-claws{width:22px;height:22px;flex:0 0 22px;fill:var(--accent)}
+.pass-state{display:inline-flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--accent);
+  border:1px solid rgba(59,198,232,.45);border-radius:999px;padding:4px 10px 4px 8px;white-space:nowrap}
+.pass-state i{width:7px;height:7px;border-radius:50%;background:var(--accent)}
+.pass-cs{margin:0 -.12em 0 0;font-size:30px;font-weight:800;letter-spacing:.12em;color:var(--ink);line-height:1.05;
+  text-transform:uppercase;overflow-wrap:anywhere}
+.pass-fields{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;column-gap:28px;margin:14px 0 0}
+.pass-fields dt{font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.pass-fields dd{margin:0;font-size:15px;font-weight:700;color:var(--ink)}
+.pass-tear{position:relative;height:0;border-top:2px dashed var(--edge-2);margin:0 16px}
+.pass-tear::before,.pass-tear::after{content:'';position:absolute;top:-12px;width:22px;height:22px;border-radius:50%;
+  background:var(--bg);border:1px solid var(--edge)}
+.pass-tear::before{left:-28px}
+.pass-tear::after{right:-28px}
+.pass-foot{padding:18px 20px 20px}
+/* the three steps: request sent (done, a tick), an admin approves (now, a dashed ring round a dot), you're on the schedule */
+.pass-steps{list-style:none;margin:2px 0 18px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);position:relative}
+.pass-steps li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;font-size:11.5px;line-height:1.3;
+  color:var(--ink-3);position:relative;padding:0 4px}
+.pass-steps li::before{content:'';position:absolute;top:10px;left:calc(-50% + 14px);right:calc(50% + 14px);height:2px;
+  background:var(--edge-2);border-radius:1px}
+.pass-steps li:first-child::before{display:none}
+.pass-steps li.done+li::before{background:var(--accent)}
+.pass-dot{width:22px;height:22px;border-radius:50%;box-sizing:border-box;display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--edge-2);background:var(--panel)}
+.pass-steps li.done .pass-dot{background:var(--accent);border-color:var(--accent)}
+.pass-steps li.done{color:var(--ink-2)}
+.pass-steps li.now{color:var(--ink);font-weight:600}
+.pass-steps li.now .pass-dot{border-color:var(--accent);border-style:dashed}
+.pass-steps li.now .pass-dot::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.pass-steps svg{width:12px;height:12px;stroke:var(--accent-ink);stroke-width:3;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.pass-who{text-align:center;margin:12px 0 0;font-size:12px;color:var(--ink-3);overflow-wrap:anywhere}
+.pass-who b{color:var(--ink-2);font-weight:600}
 /* the guest view's slim bar: the mark, the note, Sign out — and the week window stays
    on a phone too (the member's phone reaches weeks from the calendar, which a guest
    does not mount) */

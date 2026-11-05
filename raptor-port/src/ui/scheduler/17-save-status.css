@@ -35,13 +35,24 @@
    board, the Leave War's OIL tracker), under that surface's own bar — the Inputs calendar and the Medical view are part
    of the Inputs page now (D620, D626), under the top bar ([BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26). Pinned by
    e2e/save-note.spec.ts. */
-:root{--save-band:36px}
+:root{--save-band:36px;
+  /* THE STRIP (owner D1655, 5 Nov 26 — look 1 of his questions page, docs/mock/2026-11-05-save-band/img/look1-*.png): the
+     band reads from the left — a drawn warning sign, "Not saved" in bold and "keep this page open" quieter — with Retry a
+     solid amber button at the right, the amber wash fading across the band from the words. The OIL bar takes the same
+     look (D1655: "restyled alike"). Height, place and the amber line under it unchanged (D587, D841); no glow (D887). */
+  --band-wash:linear-gradient(90deg,rgba(229,194,74,.20),rgba(229,194,74,.06) 55%,rgba(229,194,74,.03)),var(--bg);
+  --band-sign:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill='none' stroke='%23E5C24A' stroke-width='1.6' stroke-linejoin='round'/%3E%3Cpath d='M8 6v3.6' stroke='%23E5C24A' stroke-width='1.6' stroke-linecap='round'/%3E%3Ccircle cx='8' cy='11.7' r='.95' fill='%23E5C24A'/%3E%3C/svg%3E") center/16px 16px no-repeat}
 .topbar.save-failed{padding-bottom:calc(12px + var(--save-band))}
 .topbar > .savestat.failed, .saveband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;
-  justify-content:flex-end;gap:10px;border:0;border-top:1px solid rgba(229,194,74,.5);border-radius:0;box-shadow:none;
-  background:linear-gradient(180deg,rgba(229,194,74,.16),rgba(229,194,74,.09)),var(--bg);
-  font-size:12.5px;font-weight:600;color:#E5C24A;white-space:nowrap;pointer-events:auto}
+  justify-content:space-between;gap:10px;border:0;border-top:1px solid rgba(229,194,74,.5);border-radius:0;box-shadow:none;
+  background:var(--band-wash);
+  font-size:12.5px;font-weight:600;color:var(--ink);white-space:nowrap;pointer-events:auto}
 .topbar > .savestat.failed{left:0;right:0}
+/* ACROSS THE TOP OF A SCREEN WITH NO TOP BAR — the sign-in and the access screens (owner D1657, 5 Nov 26): the band is the
+   screen's first line and the screen moves down under it, so nothing is covered; the amber line is under it, as under
+   a bar (D841). Above the screen's own layer (.login, 300 — the band is drawn inside it). */
+.saveband.is-screen{position:fixed;top:0;left:0;right:0;z-index:2;border-top:0;border-bottom:1px solid rgba(229,194,74,.5)}
+.login.band-up{top:var(--save-band)}
 /* TWO THINGS FLOAT AT A FIXED HEIGHT ABOVE THE BAR'S LAYER, and where the bar is three lines (a phone on its side, a
    narrow desktop window) the taller bar would reach them: the week's two side arrows (mid-screen — on a short screen
    the right-hand one would lie on Retry) and Edit Schedule's blue CREW tab (150px down the right edge). Both move down
@@ -77,15 +88,17 @@
    band's own quiet button, as Retry is. Both buttons are Retry's height. */
 .topbar.oil-waiting{padding-bottom:calc(12px + var(--save-band))}
 .topbar.save-failed.oil-waiting{padding-bottom:calc(12px + 2 * var(--save-band))}
-.oilband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;justify-content:flex-end;
+.oilband{box-sizing:border-box;height:var(--save-band);margin:0;padding:0 20px;display:flex;align-items:center;justify-content:flex-start;
   gap:calc(10px * var(--oil-fit,1));border:0;border-top:1px solid rgba(229,194,74,.5);border-radius:0;overflow:hidden;
-  background:linear-gradient(180deg,rgba(229,194,74,.16),rgba(229,194,74,.09)),var(--bg);
+  background:var(--band-wash);
   font-size:calc(12.5px * var(--oil-fit,1));font-weight:600;color:#E5C24A;white-space:nowrap;pointer-events:auto}
 .oilband.is-top{position:fixed;left:0;right:0}
-.oilband .oil-msg{flex:0 0 auto;font-weight:700;color:#FFF0D6}
+.oilband .oil-msg{flex:0 0 auto;margin-right:auto}   /* the words at the left, the two buttons at the right (the strip, D1655) */
 .oilband button{flex:0 0 auto;margin:0;padding:4px calc(12px * var(--oil-fit,1));border-radius:9px;border:1px solid currentColor;
   background:rgba(229,194,74,.12);color:inherit;font:inherit;font-weight:700;cursor:pointer}
-.oilband button.yes{background:var(--accent);border-color:var(--accent);color:#05222b}
+/* "Answer OIL" is the band's one main button, solid amber as Retry is (the strip, D1655 — "the OIL bar restyled alike";
+   the agent's reading, named to him: it was the app's cyan accent under D840's drawing) */
+.oilband button.yes{background:#E5C24A;border-color:#E5C24A;color:#1F1803}
 @media (hover:hover){.oilband button.yes:hover{filter:brightness(1.06)}}
 /* the app's ring, set a little off the button so it shows round the filled one too (the design look's K10, D830) */
 .oilband button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -108,9 +121,16 @@
 .topbar.save-failed, .topbar.oil-waiting{border-bottom-color:rgba(229,194,74,.5)}
 .sb-top:has(> .saveband), .sb-top:has(> .oilband){border-bottom-color:rgba(229,194,74,.5)}
 .savestat .sv-msg, .saveband .sv-msg{min-width:0;overflow:hidden;text-overflow:ellipsis}
-.savestat .sv-ico, .saveband .sv-ico{margin-right:6px}
-.topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid currentColor;
-  background:rgba(229,194,74,.12);color:inherit;font:inherit;font-weight:700;cursor:pointer}
+/* the strip's words, in both bands (D1655): the sign, the lead in bold amber, the rest quieter; the dash between them kept
+   in the text for a screen reader but not drawn — the space and the change of weight part them */
+.savestat .sv-msg, .saveband .sv-msg, .oilband .oil-msg{display:flex;align-items:center;gap:calc(9px * var(--oil-fit,1));font-weight:500;color:var(--ink-2)}
+.savestat .sv-msg b, .saveband .sv-msg b, .oilband .oil-msg b{flex:0 0 auto;color:#F2D46B;font-weight:700}
+.savestat .sv-rest, .saveband .sv-rest{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.sv-sign{width:16px;height:16px;flex:0 0 16px;background:var(--band-sign)}
+.sv-sep{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
+.topbar > .savestat.failed button, .saveband button{flex:0 0 auto;margin:0;padding:4px 14px;border-radius:9px;border:1px solid #E5C24A;
+  background:#E5C24A;color:#1F1803;font:inherit;font-weight:700;cursor:pointer}
+.topbar > .savestat.failed button:focus-visible, .saveband button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* on the board the band is the LAST line of the board's own bar (inside .sb-top, so --sb-topH follows it), let out to
    the bar's edges past its padding; in the Medical view opened full (its column is `.inpcal` — no screen opens it so
    today) and the Leave War's OIL tracker it is a line of the column, between the head and the body */
@@ -140,6 +160,7 @@
   /* the OIL band on that wide board: its words and its two buttons together, held at the screen's left edge */
   .schedboard.sb-wide .sb-top > .oilband{justify-content:flex-start}
   .schedboard.sb-wide .sb-top > .oilband > *{position:sticky;left:20px}
+  .schedboard.sb-wide .sb-top > .oilband > .oil-msg{margin-right:0}   /* together at the left, as before, on a bar that pans */
 }
 @media (max-width:820px){
   .topbar.save-failed{padding-bottom:calc(8px + var(--save-band))}   /* the phone bar's own 8px */

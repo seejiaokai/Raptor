@@ -12,11 +12,14 @@ import { signIn, sessionFor } from '../state/accounts'
 import { resetSession, notify } from '../state/store'
 import { setPage } from '../state/view'
 import { takeReopen } from './pagedownload'
+import { SaveBand, useSaveFailed } from './SaveStatus'
 
 export function Login() {
   const [user, setUser] = useState('')
   const [pass, setPass] = useState('')
   const [err, setErr] = useState('')
+  /* a save that failed shows here too, across the top, the page moved down under it (D1657) */
+  const failed = useSaveFailed()
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,7 +38,8 @@ export function Login() {
   }
 
   return (
-    <div className="login" id="login">
+    <div className={'login' + (failed ? ' band-up' : '')} id="login">
+      <SaveBand screen />
       <div className="login-wrap">
         {/* the squadron eyebrow ("142") was removed at the owner's ask
             (8 Sep 26); the .lb-unit CSS is left in place, unused, harmless */}

@@ -43,7 +43,7 @@ export const qualI = (p: any, k: string) => !!(p && AAR_I_KEYS.indexOf(k) >= 0 &
 export const OWN_ROW_ONLY = 'You can only edit your own row'
 export const RENAME_ADMIN_ONLY = 'Only an admin can change a callsign'
 export const MGMT_ADMIN_ONLY = 'Only an admin can tick Management'
-export const SCHED_ADMIN_ONLY = 'Only an admin can tick Scheduler'
+export const SCHED_ADMIN_ONLY = 'Only an admin can appoint a scheduler'
 
 /* returns null when done, or the refusal (already toasted) */
 export function updatePersonField(pid: string, op: QualsOp): string | null {

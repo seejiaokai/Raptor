@@ -30,6 +30,7 @@ import { OilConfirm } from './OilConfirm'
 import { WAIT_WORDS, answerOilWait, leaveOilWait, oilBarAgain, oilBarOk } from './oilwait'
 import { useVersion } from './useStore'
 import { fixedOrigin } from './kbscroll'
+import { SplitWords } from './SaveStatus'
 
 export function OilWait() {
   useVersion()
@@ -118,7 +119,9 @@ function Bar({ top }: { top?: boolean }) {
   return (
     <div className={'oilband' + (top ? ' is-top' : '')} role="status" data-testid="oilbar" ref={el}
       onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); if (!e.repeat) oilBarOk() } }}>
-      <span className="oil-msg" data-testid="oilbar-text">{b.text}</span>
+      {/* the strip, as the "Not saved" band (D1655 — "the OIL bar restyled alike"): the sign, what did not happen in bold,
+          why quieter; the words unchanged, the dash kept for a screen reader */}
+      <span className="oil-msg" data-testid="oilbar-text">{(([lead, ...rest]) => rest.length ? <SplitWords lead={lead} rest={rest.join(' — ')} /> : lead)(b.text.split(' — '))}</span>
       <button type="button" ref={answer} className="yes" data-testid="oilbar-answer" onClick={oilBarAgain}>Answer OIL</button>
       <button type="button" data-testid="oilbar-ok" onClick={oilBarOk}>OK</button>
     </div>
