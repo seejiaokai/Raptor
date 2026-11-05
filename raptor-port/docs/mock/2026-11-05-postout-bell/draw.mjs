@@ -126,9 +126,9 @@ for (const size of ['desk', 'phone']) {
     return { all: Object.keys(P).filter(id => !P[id].special && !P[id].archived && !P[id].san && !P[id].deleted && !P[id].pers), cs: Object.fromEntries(Object.keys(P).map(id => [id, P[id].cs])) }
   })
   await lwOpen(page)
-  const onGrid = await page.evaluate(() => [...document.querySelectorAll('[data-testid^="row-"]')].map(r => r.getAttribute('data-testid').slice(4)))
+  const onGrid = new Set(await page.evaluate(() => [...document.querySelectorAll('[data-testid^="row-"]')].map(r => r.getAttribute('data-testid').slice(4))))
   /* Ranger (bane) holds a sign-in (us/us), so his line shows the account half; the other three have none */
-  const pick = ['bane', ...men.all.filter(id => id !== 'bane' && id !== 'stiff' && onGrid.includes(id)).slice(6, 9)]
+  const pick = ['bane', ...men.all.filter(id => id !== 'bane' && id !== 'stiff' && onGrid.has(id)).slice(6, 9)]
   const plan = [['overseas', pick[0]], ['delete', pick[1]], ['sans', pick[2]], ['none', pick[3]]]
   const lines = []
   for (const [outcome, id] of plan) {
