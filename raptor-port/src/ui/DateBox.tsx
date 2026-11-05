@@ -92,8 +92,9 @@ export function DateBox(p: {
   const { standPatch, dropPatch, patchNode } = useTapPatch()
   /* a box switched off while its calendar is up is closed for good — not left to spring open when it is switched on */
   /* …put right in the render that sees it switched off, not an effect after it (React Doctor's
-     no-adjust-state-on-prop-change, 6 Nov 26): React draws the box again at once, before anything reaches the screen, so
-     the calendar is never painted for one frame over a box already switched off — as the effect let it be */
+     no-adjust-state-on-prop-change, 6 Nov 26): React draws the box again at once, before anything reaches the screen, so a
+     switched-off box never wears the open look (`is-open`, `aria-expanded`) for one frame, as the effect let it; the
+     calendar itself was already held off by the render's own `!p.disabled` (the fresh read, 6 Nov 26) */
   useShutWhenOff(p.disabled, open, setOpen)
   const close = (at?: { x: number; y: number } | null) => {
     setOpen(false)
@@ -276,7 +277,7 @@ export function Layer({ label, name, value, min, max, markWd, at, today, box, on
   return (
     // eslint-disable-next-line react-doctor/no-static-element-interactions -- the layer only stops its own presses and keys from reaching the form behind it (D1012, D1020); it does nothing of its own, and its card and buttons carry every press
     <div className={'dcal-layer' + (phone ? ' is-phone' : '')} ref={layer} onClickCapture={e => { pt.current = e.detail > 0 ? { x: e.clientX, y: e.clientY } : null }} onClick={mine} onPointerDown={mine} onMouseDown={mine} onKeyDown={mine}>
-      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- the veil round the card: a tap outside closes it, as every pop-up of the app does (owner, 4 Sep 26); the keys close it with Escape, taken on the layer above */}
+      {/* eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- the veil round the card: a tap outside closes it, as every pop-up of the app does (owner, 4 Sep 26); the keys close it with Escape, taken at the window by Layer's own listener (D1020) */}
       <div className="dcal-scrim" data-testid="dcal-scrim" onClick={() => onClose(pt.current)} />
       {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the windows and sheets that open this calendar and their stacking order; the card floats over its own box on the app's veil, layered on purpose (the tap patch lies over it) */}
       <div className="dcal-card" ref={card} role="dialog" aria-modal="true" aria-label={month ? label : `${label} — pick a date`} data-testid="dcal-card">
