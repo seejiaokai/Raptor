@@ -48,20 +48,24 @@ const NSR_CSS = `.nsr-ref{display:flex !important;align-items:flex-start;gap:7px
 .nsr-ref b{color:#FFB3B9;font-weight:700;flex:0 0 auto}
 .nsr-rest{color:var(--ink-2,#B9C2CE);font-weight:500}
 .nsr-note{background:#2a1215 !important;border-color:#FF7A84 !important;color:var(--ink-2,#B9C2CE) !important}
+.nsr-grey{background:var(--panel-2,#1A1F26) !important;border-color:var(--edge-2,#2F3742) !important;color:var(--ink-2,#B6C0CB) !important}
+.nsr-ref.nsr-grey b{color:var(--ink,#E8EDF2)}
+.nsr-left{left:0 !important;right:auto !important}
 .nsr-mark{outline:3px solid #ff3b6b !important;outline-offset:3px}
 .nsr-mark-today{outline:3px dashed #ff3b6b !important;outline-offset:3px}`
-const face = (lead, rest) => `<span class="nsr-sign" aria-hidden="true"></span><span><b>${lead}</b>${rest ? `<span class="nsr-rest"> ${rest}</span>` : ''}</span>`
+const face = (lead, rest, colon = false) => `<span class="nsr-sign" aria-hidden="true"></span><span><b>${lead}${colon && rest ? ':' : ''}</b>${rest ? `<span class="nsr-rest"> ${rest}</span>` : ''}</span>`
 /* the refusal tag under a box, in the proposed face */
-async function tagProposed(page, sel, lead, rest) {
+async function tagProposed(page, sel, lead, rest, variant = 'red', left = false) {
   await page.addStyleTag({ content: NSR_CSS })
-  await page.evaluate(([s, html]) => { const e = document.querySelector(s); e.innerHTML = html; e.classList.add('nsr-ref') }, [sel, face(lead, rest)])
+  await page.evaluate(([s, html, grey, lf]) => { const e = document.querySelector(s); e.innerHTML = html; e.classList.add('nsr-ref'); e.classList.toggle('nsr-grey', grey); e.classList.toggle('nsr-left', lf) }, [sel, face(lead, rest, variant !== 'r1'), variant === 'grey', left])
 }
-/* a passing note in the proposed face — raised through the app's own note, its words split lead / rest */
-async function noteProposed(page, lead, rest) {
+/* a passing note in the proposed face — raised through the app's own note, its words split lead / rest; round 2 (his D1667)
+   puts a colon after the lead and draws a grey variant: the note's own grey face with only the sign in red */
+async function noteProposed(page, lead, rest, variant = 'r1') {
   await page.addStyleTag({ content: NSR_CSS })
   await page.evaluate(([l, r]) => window.toast(r ? `${l} ${r}` : l, 'warn'), [lead, rest])
   await page.waitForTimeout(260)
-  await page.evaluate((html) => { const t = document.getElementById('toastEl'); t.innerHTML = html; t.classList.add('nsr-ref', 'nsr-note') }, face(lead, rest))
+  await page.evaluate(([html, grey]) => { const t = document.getElementById('toastEl'); t.innerHTML = html; t.classList.add('nsr-ref'); t.classList.toggle('nsr-note', !grey); t.classList.toggle('nsr-grey', grey) }, [face(lead, rest, variant !== 'r1'), variant === 'grey'])
   await page.waitForTimeout(60)
 }
 /* a passing note as TODAY, raised through the app's own note with its exact words */
@@ -102,8 +106,9 @@ for (const size of ['desktop', 'phone']) {
     await page.evaluate((s) => { const e = document.querySelector(s); if (e) e.textContent = 'Not saved' }, T(box + '-err'))
     await page.waitForTimeout(100)
     rec('R1', size, { crop: await crop(page, sel, `R1-figbox-today-${sfx}`, { x: 220, y: 60 }) })
-    await tagProposed(page, T(box + '-err'), 'Not saved', '')
+    await tagProposed(page, T(box + '-err'), 'Not saved', '', 'r1')
     rec('R1', size, { crop: await crop(page, sel, `R1-figbox-proposed-${sfx}`, { x: 220, y: 60 }) })
+    for (const v of ['red', 'grey']) { await tagProposed(page, T(box + '-err'), 'Blocked', '', v, true); await crop(page, sel, `R1-figbox-r2${v}-${sfx}`, { x: 220, y: 60 }) }
     /* R3: the note a figure box raises when it leaves the screen with a figure still typed in and that figure is refused
        (BalancesPage.tsx — the lock landing while he types; leaving the box by a press saves first, so on one device no
        button reaches it): its exact words, raised through the app's own note */
@@ -114,6 +119,7 @@ for (const size of ['desktop', 'phone']) {
     await noteProposed(page, 'Dice LVE App bal not saved', 'Locked by admin')
     await page.screenshot({ path: join(OUT, `R3-figbox-gone-proposed-${sfx}.png`) })
     await crop(page, '#toastEl', `R3c-figbox-gone-proposed-${sfx}`, { x: 40, y: 30 })
+    for (const v of ['red', 'grey']) { await noteProposed(page, 'Blocked', 'Dice LVE App bal. Locked by admin.', v); await crop(page, '#toastEl', `R3c-figbox-gone-r2${v}-${sfx}`, { x: 40, y: 30 }) }
     await page.waitForTimeout(2600)
     /* R2: the Grades window — a grade's name emptied (its real refusal), then the same line as "Not saved" */
     await page.locator(T('bal-grades')).first().click(); await page.waitForTimeout(700)
@@ -125,8 +131,9 @@ for (const size of ['desktop', 'phone']) {
       rec('R2', size, { crop: await crop(page, T(gname), `R2-grades-real-${sfx}`, { x: 140, y: 110 }) })
       await page.evaluate((s) => { const e = document.querySelector(s); if (e) e.textContent = 'Not saved' }, T(gname + '-err'))
       rec('R2', size, { crop: await crop(page, T(gname), `R2-grades-today-${sfx}`, { x: 140, y: 110 }) })
-      await tagProposed(page, T(gname + '-err'), 'Not saved', '')
+      await tagProposed(page, T(gname + '-err'), 'Not saved', '', 'r1')
       rec('R2', size, { crop: await crop(page, T(gname), `R2-grades-proposed-${sfx}`, { x: 140, y: 110 }) })
+      for (const v of ['red', 'grey']) { await tagProposed(page, T(gname + '-err'), 'Blocked', '', v); await crop(page, T(gname), `R2-grades-r2${v}-${sfx}`, { x: 140, y: 110 }) }
       await page.screenshot({ path: join(OUT, `R2-grades-whole-today-${sfx}.png`) })
     }
     await page.context().close()
@@ -151,6 +158,7 @@ for (const size of ['desktop', 'phone']) {
     await noteProposed(page, "Couldn't save that document", 'your browser storage may be full, so it may not be here after a reload.')
     await page.screenshot({ path: join(OUT, `R4-document-proposed-${sfx}.png`) })
     await crop(page, '#toastEl', `R4c-document-proposed-${sfx}`, { x: 40, y: 30 })
+    for (const v of ['red', 'grey']) { await noteProposed(page, "Couldn't save that document", 'your browser storage may be full, so it may not be here after a reload.', v); await crop(page, '#toastEl', `R4c-document-r2${v}-${sfx}`, { x: 40, y: 30 }) }
     await page.context().close()
   }
   /* ---- R5: the schedule's refused change — no control reaches it; the app's own note, its exact words ---- */
@@ -166,11 +174,13 @@ for (const size of ['desktop', 'phone']) {
     await noteProposed(page, 'Not saved', 'that change was refused, and nothing was kept')
     await page.screenshot({ path: join(OUT, `R5-schedule-proposed-${sfx}.png`) })
     await crop(page, '#toastEl', `R5c-schedule-proposed-${sfx}`, { x: 40, y: 30 })
+    for (const v of ['red', 'grey']) { await noteProposed(page, 'Blocked', 'nothing was kept', v); await crop(page, '#toastEl', `R5c-schedule-r2${v}-${sfx}`, { x: 40, y: 30 }); await page.screenshot({ path: join(OUT, `R5-schedule-r2${v}-${sfx}.png`) }) }
     await page.evaluate(() => window.toast('Not saved — that change is not yours to make', 'warn'))
     await page.waitForTimeout(400)
     await crop(page, '#toastEl', `R5bc-schedule-today-${sfx}`, { x: 40, y: 30 })
     await noteProposed(page, 'Not saved', 'that change is not yours to make')
     await crop(page, '#toastEl', `R5bc-schedule-proposed-${sfx}`, { x: 40, y: 30 })
+    for (const v of ['red', 'grey']) { await noteProposed(page, 'Blocked', 'that change is not yours to make', v); await crop(page, '#toastEl', `R5bc-schedule-r2${v}-${sfx}`, { x: 40, y: 30 }) }
     await page.context().close()
   }
 }

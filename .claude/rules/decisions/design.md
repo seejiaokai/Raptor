@@ -27,8 +27,9 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1667 | 5 Nov 26 | A refusal of one change opens with the bold word "Blocked:", the rest after the colon in quieter words; never "Not saved", which stays the failed-save band's alone, and never "Refused", which already names a leave bid or access request turned down; a document too big to store keeps its own words. |
 | D1666 | 5 Nov 26 | The app's address takes a test switch, `?savefail`: in the one tab opened with it every save is refused, so the "Not saved" band, its Retry and the pass's "Not sent yet" can be seen on his own iPhone; without it the app saves as always, and nobody else is touched. |
-| D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). |
+| D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). — changed by D1667 |
 | D1664 | 5 Nov 26 | While a save has failed, the pass after asking for access reads "Not sent yet" in the band's amber — its mark and its first step — and its approved look comes back by itself once the save lands. |
 | D1663 | 5 Nov 26 | His direction: the "Not saved" design is one design across the whole app. — changed by D1665 |
 | D1643 | 4 Nov 26 | On a phone held sideways the page names always go into the side menu and the top bar is one row, for everyone, even where a member's fewer names would fit beside TALON. |
