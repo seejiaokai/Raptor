@@ -109,7 +109,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
 - [HUMAN-RETEST] — the last re-test left: the Leave War links, with the 7 Sep phone check.
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
-- [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); drawn and answered 5 Nov 26 (D1690, D1691) — ready to build, not yet placed in his order.
+- [POSTOUT-RUN-NOTICE] — when a posting out runs on its date, each admin's bell is told (D1546, D1547 — A); drawn and answered 5 Nov 26 (D1690, D1691) — ready to build; his pick 5 Nov 26: built next, on `claude/postout-bell-look`.
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
