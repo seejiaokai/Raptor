@@ -205,6 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-SECURITY-ROLES] — the agent designs the database's security roles from data-model §11 (D1653); IT enters them; a member-only account tests them.
 - [DB-ONE-MASTER-FIXES] — the check's places that do not read the one table, for the database step (D1587, D1589): Quals ticks, holidays, a posted-out man, a Tracker student, medical documents, four smaller, history names.
 - [DB-OIL-OWN-TABLE] — at the database step earned OIL gets its own table by person and date, not tied to a Leave War period, read by every screen (D1579, 3 Nov 26).
 - [DB-WEEK-AHEAD] — at the database step, the weeks on either side are fetched ahead and kept on the phone, so a cross never waits on the network (his question, 3 Nov 26).
@@ -253,6 +254,21 @@ pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it st
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+
+### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
+**What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
+(26 tables × admin, member, guest, pending): (1) each table's create / read / change / delete per role, at none, own rows or
+all rows; (2) row ownership — the app sets a person's account as owner of his rows when it makes them (his Person and
+QualMark rows, his inputs), so "his own row only" holds in the database; (3) column-level protection for the columns a member
+may not change on his own row (the callsign, Management, Scheduler — D218, D1510, D1651); (4) every rule a role cannot hold
+(a published day changes only by amendment, the day lock, the commit gate's checks) with what stands in for it, the platform
+having no server-side code today (`docs/handover-dataverse.md`), and the risk left. Read by a fresh reader and a security
+reader (D1411). **Joining:** the admin's one choice, member or admin, puts the person into a group ("TALON members" /
+"TALON admins") that carries the role — no per-person ticking. **For the IT side:** whether the admin accounts may add people
+to those groups from the app (a role-assigning permission granted once) or IT does it per joiner; and the one squadron group
+that lets an account into the environment at all. **Then:** IT enters the roles (by hand or as one package, an hour or two);
+the kit's test with a second, member-only account (the move plan's point 35). The agent's reading of Dataverse, to check in
+the hosting trial ([M365-HOSTING-TRIAL]) and with the IT side. **Place:** the database step.
 
 ### [SAVEBAND-LOOK] The "Not saved" band, nicer (his idea, 5 Nov 26)
 **What:** his words: *"I'm thinking of making the not saved look nicer"*. The band is one design in one stylesheet
