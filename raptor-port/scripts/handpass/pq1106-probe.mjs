@@ -198,3 +198,18 @@ if (what === 'why') {
   console.log(JSON.stringify(r, null, 1))
   await br.close()
 }
+
+if (what === 'edge') {
+  // the name column's left edge pictured as he would see it: unzoomed and at 0.9, unscrolled and scrolled sideways
+  for (const engine of ['chromium', 'webkit']) {
+    const { br, p } = await open(engine)
+    await p.evaluate(() => window.scrollTo(0, 0)); await sleep(300)
+    for (const [z, sl] of [[1, 0], [1, 150], [0.9, 0], [0.9, 261]]) {
+      await p.evaluate(([z, sl]) => { document.getElementById('qtbl').style.setProperty('--qz', String(z)); document.querySelector('#page-quals .qwrap').scrollLeft = sl }, [z, sl]); await sleep(250)
+      const r = await p.evaluate(() => { const n = [...document.querySelectorAll('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(q => q.top > 140)[0]; return { y: n.top - 6 } })
+      await p.screenshot({ path: path.join(out, `edge-${engine}-z${z}-sl${sl}.png`), clip: { x: 10, y: r.y, width: 40, height: 60 } })
+    }
+    await br.close()
+  }
+  console.log('pictured')
+}

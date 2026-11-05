@@ -386,9 +386,10 @@ test.describe('Quals on a phone pinches (D1110)', () => {
   /* [QUALS-ZOOM-EDGE-SLIVER] (found 30 Oct 26, the pinch walk; fixed the night of 6 Nov 26): after a pinch, at a zoom
      between whole steps, the table scrolled sideways, a one-screen-pixel sliver of the cells scrolled under the name
      column (a CAT chip's colour, a white letter) showed at the column's left edge — in Chromium and in WebKit alike. The
-     layout puts the name cell exactly at the edge; the browser paints the sticky cell up to a screen pixel to the right
-     of it, and the strip between the table's clip and the painted cell shows what is under it. Read in the screen's own
-     pixels (a reading of the boxes says it is covered), a strip two pixels wide from the edge, down every row in sight. */
+     layout puts the name cell exactly at the edge, but its left border is the table's to draw and the sticky cell leaves
+     that slot see-through. Read in the screen's own pixels (a reading of the boxes says it is covered), a strip two pixels
+     wide from the edge, down every row in sight. Unscrolled, the table's own left line shows through the slot as it always
+     has: the cover is drawn only once the table is scrolled sideways. */
   test('after a pinch to a zoom between whole steps, nothing scrolled under the name column shows at its left edge ([QUALS-ZOOM-EDGE-SLIVER], D1518)', async ({ browser, baseURL }) => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
@@ -396,6 +397,8 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const z = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
     expect(z, 'a zoom between whole steps').toBeGreaterThan(0.8)
     expect(z).toBeLessThan(0.97)
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('#qtbl td.qname')!, '::before').content),
+      "unscrolled, nothing covers the table's own left line").toBe('none')
     const bright: string[] = []
     for (let sl = 1; sl <= 400; sl += 13) {
       const g = await page.evaluate(sl => {
