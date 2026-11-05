@@ -3,6 +3,8 @@
 //   A — "your puck": how he will appear on the schedule (the app's own puck, shown at twice its size on a strip of the
 //       week), and three steps — request sent, an admin approves, you're on the schedule — the middle one current.
 //   B — "the pass": the card as a pass with his callsign large, his initials, seat and CAT, a perforation, then the words.
+//   C — his pick (D1650, "A combination of both"): B's pass on top, A's three steps, the read-only line and the two
+//       buttons below; "Signed in as …" kept small at the foot. Run alone with ONLY=C.
 //   A + band — look A with the failed-save band of [GUEST-SAVE-WARNING] (the app's own `.saveband` markup), the page
 //       moved down under it so nothing is covered.
 // Usage (from raptor-port/): WALK_DIR=<frozen dist> node scripts/handpass/aw1105-mock.mjs
@@ -67,6 +69,9 @@ const CSS = `
 .awb-perf::before{left:-28px}
 .awb-perf::after{right:-28px}
 .awb-bot{padding:18px 20px 20px}
+.awb-bot .aw-steps{margin:2px 0 18px}
+.awc-who{text-align:center;margin:12px 0 0;font-size:12px;color:var(--ink-3)}
+.awc-who b{color:var(--ink-2);font-weight:600}
 `
 
 const steps = `<ol class="aw-steps">
@@ -145,6 +150,47 @@ function lookB() {
     <div class="awb-perf" aria-hidden="true"></div>
     <div class="awb-bot"><h2 class="acc-h">Your request is with the admins</h2>${who}
       <p class="acc-p">You'll be able to sign in as soon as an admin approves it.</p>${rest}</div>`
+}
+
+function lookC() {
+  const card = document.querySelector('#accessWaiting .login-card')
+  const asked = document.querySelector('#accAsked')
+  const cs = asked.querySelector('b').textContent
+  const sum = (asked.textContent.match(/\(([^)]*)\)/) || [, ''])[1]
+  const parts = sum.split('·').map(s => s.trim())
+  const ini = parts[0] || '—', seat = parts[1] || '—', cat = ((parts[2] || '').replace(/^CAT\s*/, '')) || '—'
+  const name = card.querySelector('.acc-who b').textContent
+  const rest = [...card.querySelectorAll('#accAsked ~ *')].map(n => n.outerHTML).join('')
+  const glyph = document.querySelector('.lb-glyph').outerHTML.replace('class="lb-glyph"', '')
+  card.classList.add('awb')
+  card.innerHTML = `<div class="awb-top">
+      <div class="awb-row">${glyph}<span class="awb-state"><i></i>Waiting for an admin</span></div>
+      <div class="awb-cs">${cs}</div>
+      <dl class="awb-fields"><div><dt>Initials</dt><dd>${ini}</dd></div><div><dt>Seat</dt><dd>${seat}</dd></div><div><dt>CAT</dt><dd>${cat}</dd></div></dl>
+    </div>
+    <div class="awb-perf" aria-hidden="true"></div>
+    <div class="awb-bot">${window.__awSteps}${rest}<p class="awc-who">Signed in as <b>${name}</b></p></div>`
+}
+
+const BAND = () => {
+  const b = document.createElement('div')
+  b.className = 'saveband'; b.setAttribute('role', 'status')
+  b.innerHTML = '<span class="sv-msg"><span class="sv-ico" aria-hidden="true">⚠</span>Not saved — keep this page open</span><button type="button">Retry</button>'
+  Object.assign(b.style, { position: 'fixed', top: '0', left: '0', right: '0', zIndex: '9999', height: '40px' })
+  document.body.appendChild(b)
+  document.querySelector('#accessWaiting').style.top = '40px'
+}
+if (process.env.ONLY === 'C') {
+  for (const size of ['phone', 'desktop']) {
+    const page = await reachWaiting(size)
+    await page.evaluate(s => { window.__awSteps = s }, steps)
+    await page.evaluate(lookC)
+    await shot(page, size, 'C', 'C — your pick: the pass, then the steps')
+    if (size === 'phone') { await page.evaluate(BAND); await shot(page, size, 'C-band', 'C — with the "Not saved" band', 52) }
+    await page.context().close()
+  }
+  console.log('done C', L.errs.length ? L.errs : 'no browser errors')
+  process.exit(0)
 }
 
 for (const size of ['phone', 'desktop']) {

@@ -126,7 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
-- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649); mock-ups to him first.
+- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649): B's pass on top, A's steps below (D1650); the combined drawing to him, then the build.
 - [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
@@ -145,6 +145,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
+- [SAVEBAND-LOOK] — his idea of 5 Nov 26: the "Not saved" band made nicer; two looks drawn (the strip, the pill), his pick first.
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
@@ -252,6 +253,16 @@ pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it st
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+
+### [SAVEBAND-LOOK] The "Not saved" band, nicer (his idea, 5 Nov 26)
+**What:** his words: *"I'm thinking of making the not saved look nicer"*. The band is one design in one stylesheet
+(`raptor-port/src/ui/scheduler/17-save-status.css`, `ui/SaveStatus.tsx`), drawn in four places: under the top bar on every
+page, under the Scheduler Board's own bar, in the Leave War's OIL tracker, and in the Inputs page's full Medical view; the
+"OIL not answered" bar shares its look and height (D841). Two looks drawn on the real app: 1, the strip (a drawn warning
+sign, "Not saved" bold, Retry a solid amber button) and 2, the pill (one amber pill in the middle of a plain band) —
+`raptor-port/docs/mock/2026-11-05-save-band/img/`, script `scripts/handpass/sb1105-mock.mjs`. Both keep the band's
+height, place and amber line (D587, D841) and add no glow (D887). **Place:** his pick first; then one build with
+[ACCESS-WAIT-LOOK] and [GUEST-SAVE-WARNING]'s band, the OIL bar restyled alike.
 
 ### [ACCESS-WAIT-LOOK] The screen after asking for access, cooler and more welcoming (D1649, 5 Nov 26)
 **What:** his words of 5 Nov 26 on the picture of "Your request is with the admins" (the screen a newcomer sees once he has
