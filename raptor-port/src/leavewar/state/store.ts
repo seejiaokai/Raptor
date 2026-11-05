@@ -1563,7 +1563,11 @@ function applyLwRecord(s: State, e: CmdRecordEntry): void {
 export const lwStore: CmdEnlistableStore = {
   key: 'leavewar',
   capture: () => LW_BASELINE,                                  // the immutable ref IS the snapshot
-  restore: (snap) => { state = snap as State; LW_BASELINE = snap as State; LW_SIG++ },
+  /* a rollback puts back the RECORDS only — the role and viewer are the session's (setRole at sign-in and the admin's member
+     view, D292; setViewer the "View as" mirror), never records, and neither moves the baseline: restoring them from the
+     snapshot put an admin's controls under a member badge after a refused change ([LW-NIGHT1025-OLDER] (f),
+     `rolerestore.test.ts`) */
+  restore: (snap) => { const s = { ...(snap as State), role: state.role, viewer: state.viewer }; state = s; LW_BASELINE = s; LW_SIG++ },
   records: () => lwDecompose(LW_BASELINE),
   signature: () => String(LW_SIG),                             // [CMDL-FINISH] C9
   /* [CMDL-FINISH] §3 (F8/GU-007) — batch, delete-aware record write for the undo
