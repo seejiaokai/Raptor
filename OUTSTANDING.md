@@ -54,6 +54,25 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **Now (D994, 18 Oct 26):** the small fixes that need no answer or look from him, batched by area with one check each.
   The scheduling pages on a phone are done (pull request 533); the next area is next. The questions the backlog keeps
   for him wait until he says so.
+- **Next, in order — sized 5 Nov 26 (his "size it"; the plan `raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`,
+  his page https://claude.ai/artifact/NthXwi7aV811LMmuC1ENmE).** Each job its own branch from `main`, its own check, live on
+  his "merge live"; React Doctor's 183 findings in the app ride with their area's job (D1534, D490).
+  - **Night 1:** (1) Leave War faults — [LW-NIGHT1025-OLDER] (a) first, then (c), (d), (f), (g); [CSS-WRAPPER-GUARD] — FULL.
+    (2) The board by the keys — [BOARD-KEYS-LEFT], [WINDOWS-KEEP-KEYS]' three leftovers, [WEEK-GLIDE-TWO-PAGES] — WALK.
+    (3) React Doctor on the shell, state and windows (about 90), with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) — WALK.
+  - **Night 2:** (4) People and Quals — [QUALS-HEAD-FINGER-CAPTURE], [QUALS-PINCH-NOSDA-HEAD], [QUALS-ZOOM-EDGE-SLIVER], React
+    Doctor's ~55 there. (5) Inputs — [INP-CARD-COLUMNS], [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor's ~35 there. (6) Insights —
+    [STACK-LEFTOVERS] (1), (2), React Doctor's 3; [LW-M1-READ-LEFTOVERS] archived.
+  - **Night 3 (no app change):** (7) the checks — [CI-SMOKE-TIMEOUT], [SHELL-SCRIPT-GUARD], [MERGE-ONCE-RECORDS] (his "merge
+    live"). (8) documents — [RULINGS-SPENT-PASS], [CAL-JOB-LEFT], [LW-READS-OWED-1024], [WORD-LIST]. (9) the folder —
+    [REPO-TIDY] (1), [MAIN-CHECKOUT-STALE] (2).
+  - **Then one pictures round for him** (about 12 questions, each drawn first — D1625): [BOARD-SIDEWAYS-KEYS],
+    [BOARD-NARROW-DESKTOP-REMARKS], [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
+    (2), (3), [LOGIC-WORDS-WORKHOURS], [OIL-EARN-DAY-SWITCH-WORDS], [OIL-INERT-TAP-SILENT], [INP-ADD-RIGHT], [LW-MORE-BELOW-CUE],
+    [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
+  - **His two questions in the plan (open):** React Doctor's 284 findings outside the app (tests, mock-up pages, scripts) —
+    left (recommended) or one night more; the order — nights 1–3 first (recommended) or the pictures round first.
+  - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
@@ -64,7 +83,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Schedule and amendments**
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
-- [OIL-NOTIFY-SEEN] — all three left BUILT 2 Nov 26 (pull request 620, the schedule leftovers); archive once live.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
 - [LOOK-COUNT-BOARD-ASK] — the board's look at a version shows no "N pending", the week's look shows one — whether a look should show it is his question, kept (D994).
@@ -159,6 +177,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CI-SMOKE-TIMEOUT] — GitHub's Tracker smoke job has no time limit: on 5 Nov 26 one half hung 16 minutes and would have waited 6 hours (night 3, job 7).
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -2131,6 +2150,16 @@ the first slide ends (about half a second) restores only View-only Sched's week:
 3 Nov 26) and its scrolling off (since 3 Nov 26) until a reload. **Fix:** keep every week touched in a burst and restore each at the
 last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
 unreachable; with the next change to the slide.
+
+### [CI-SMOKE-TIMEOUT] GitHub's Tracker smoke job has no time limit (found 5 Nov 26, the round-4 merge; the agent's)
+**Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
+`4d13c06d8` half an hour before), `tracker (smoke 1/2)` ran 16 minutes with every other job finished; it was cancelled and
+re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
+others), so a hang waits for GitHub's default of 6 hours. **To do:** a `timeout-minutes` on each test job, set from its measured
+length on GitHub's machines with room to spare (the smoke halves about 3–4 min — measure first); if the smoke hangs again,
+find where (its own log), as D87 says. **Also here:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
+(a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
+`.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
 
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
