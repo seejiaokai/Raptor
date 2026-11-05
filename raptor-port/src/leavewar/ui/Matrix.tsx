@@ -1508,19 +1508,48 @@ export function Matrix() {
     setBubble(null)
     /* a second quick press lands where the note stood — on the grid — and opened that day's window (the night's walk, F2):
        the clicks of the next moment are swallowed, the press that moved him up being the one he meant */
+    guardGrid(false)
+  }
+  /* THE MOMENT AFTER A PRESS THAT TOOK SOMETHING OFF THE GRID: the clicks of the next moment on the grid are swallowed, the
+     press that did it being the one he meant. Only a pointer's click on the grid — a key's click (detail 0) and a click on
+     the top bar or a pop-up go through (the night's code read, R6). Armed by "Show ›" (F2), every pointer click, and by a
+     window over the grid closing (below, (d)) — `secondOnly`: then only a SECOND tap is swallowed, a finger's (touch or
+     pen, at a tap's speed) or a click the browser counts as a double (detail 2 and more); a mouse's single click goes
+     through at once, so a desktop's quick next click on another day after a window closes still opens it */
+  const guardGrid = (secondOnly: boolean) => {
     unswallowRef.current?.()
-    /* only a pointer's click on the grid (the second touch of F2) — a key's click (detail 0) and a click on the top bar
-       or a pop-up go through (the night's code read, R6) */
+    let finger = false
+    const down = (e: Event) => { finger = e instanceof PointerEvent && (e.pointerType === 'touch' || e.pointerType === 'pen') }
     const swallow = (e: Event) => {
-      if (e instanceof MouseEvent && e.detail > 0 && e.target instanceof Element && e.target.closest('.mx')) { e.stopPropagation(); e.preventDefault() }
+      if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx')) return
+      if (secondOnly && !finger && e.detail < 2) return
+      e.stopPropagation(); e.preventDefault()
     }
+    document.addEventListener('pointerdown', down, true)
     document.addEventListener('click', swallow, true)
     const t = window.setTimeout(() => unswallowRef.current?.(), 450)
-    unswallowRef.current = () => { window.clearTimeout(t); document.removeEventListener('click', swallow, true); unswallowRef.current = null }
+    unswallowRef.current = () => {
+      window.clearTimeout(t)
+      document.removeEventListener('pointerdown', down, true)
+      document.removeEventListener('click', swallow, true)
+      unswallowRef.current = null
+    }
   }
   /* the guard ends with the grid, never outliving it */
   const unswallowRef = useRef<(() => void) | null>(null)
   useEffect(() => () => unswallowRef.current?.(), [])
+  /* A DOUBLE TAP ON A LEAVE BUTTON ([LW-NIGHT1025-OLDER] (d), the night of 25 Oct 26's walker 1, S21.2): a leave pressed
+     places it and closes the window, and the finger's second tap a moment later fell through to the grid where the button
+     had stood — a man's CAT pop-up, his figures, a day's window. Whenever the one-day window or the drag window closes (a
+     leave placed, its ✕, a Delete, a Post out — every press that ends it) the grid is guarded for that moment
+     (`doubletap.test.tsx`). */
+  const winUpRef = useRef(false)
+  useEffect(() => {
+    const up = !!open || !!sel
+    if (winUpRef.current && !up) guardGrid(true)
+    winUpRef.current = up
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, sel])
   useEffect(() => {
     if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
     const before = beforeRef.current
