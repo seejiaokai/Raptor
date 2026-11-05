@@ -68,6 +68,7 @@ scrolls it sideways: `inputs.md` (D893).
 
 | # | Date | The rule |
 |---|---|---|
+| D1658 | 5 Nov 26 | Edit Schedule's "Publish AL1", which a member sees looking pressable only through this PC's developer route, is left as it is: no member reaches the page anywhere else, and every change he tries there is refused. |
 | D1653 | 5 Nov 26 | The database's security roles are designed by the agent at the database step, not before: each table's permissions per role, row ownership set by the app, the protected columns, and what stands in for each rule a role cannot hold; IT enters them, and a member-only account tests them. |
 | D1651 | 5 Nov 26 | On Quals only an admin ticks the Scheduler column too: a member's own Scheduler cell reads only, as his Management cell does, and a member's command that changes it is refused at the Quals write and the commit gate; he still ticks every other column of his own row. |
 | D1547 | 31 Oct 26 | A posting out runs by itself on its date, as today, and each admin's bell then gets one line saying it ran — the man, the date and what the outcome did ("Posting out · Drifter · Mon 14 Nov · archived, account suspended") — a tap opening his row on Admin → Users; it does not wait for anyone to accept it. |

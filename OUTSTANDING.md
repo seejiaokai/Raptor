@@ -126,7 +126,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
-- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649): B's pass on top, A's steps below (D1650), the blue fade from the top left over the whole card (D1654); then the build.
+- [ACCESS-WAIT-LOOK] — the screen after asking for access made cooler and more welcoming (D1649): B's pass on top, A's steps below (D1650), the blue fade from the top left over the whole card (D1654); approved to build (D1656), with the Not saved band on it, the guest page and sign-in (D1657).
 - [QUALS-PINCH-NOSDA-HEAD] — Quals mid-pinch in, only in a browser without scroll-driven animations: the pinned row's name heading is carried left until the lift (found 31 Oct 26 while building [QUALS-PINCH-MID]; small).
 - [LW-PINCH-FROZEN-WEBKIT-OFF] — Leave War, Safari's engine only: mid-pinch in with the dates frozen, the frozen date row read about 360 px off its columns (older — origin/main the same; found 31 Oct 26; maybe a reading, not a fault — a look first).
 - [QUALS-ZOOM-EDGE-SLIVER] — Quals after a pinch, at a fractional zoom: a one-pixel sliver of a scrolled cell's letters at the name column's left edge (older; found 30 Oct 26).
@@ -145,7 +145,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
 
 **Look, words and the phone (the whole app)**
-- [SAVEBAND-LOOK] — his idea of 5 Nov 26: the "Not saved" band made nicer; two looks drawn (the strip, the pill), his pick first.
+- [SAVEBAND-LOOK] — the "Not saved" band takes look 1, the strip, everywhere, the OIL bar alike (D1655); to build with [ACCESS-WAIT-LOOK].
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock.
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
@@ -278,8 +278,7 @@ page, under the Scheduler Board's own bar, in the Leave War's OIL tracker, and i
 "OIL not answered" bar shares its look and height (D841). Two looks drawn on the real app: 1, the strip (a drawn warning
 sign, "Not saved" bold, Retry a solid amber button) and 2, the pill (one amber pill in the middle of a plain band) —
 `raptor-port/docs/mock/2026-11-05-save-band/img/`, script `scripts/handpass/sb1105-mock.mjs`. Both keep the band's
-height, place and amber line (D587, D841) and add no glow (D887). **Place:** his pick first; then one build with
-[ACCESS-WAIT-LOOK] and [GUEST-SAVE-WARNING]'s band, the OIL bar restyled alike.
+height, place and amber line (D587, D841) and add no glow (D887). **His pick, 5 Nov 26 (D1655): look 1, the strip.** **Place:** one build with [ACCESS-WAIT-LOOK] and [GUEST-SAVE-WARNING]'s band (D1657), the OIL bar restyled alike.
 
 ### [ACCESS-WAIT-LOOK] The screen after asking for access, cooler and more welcoming (D1649, 5 Nov 26)
 **What:** his words of 5 Nov 26 on the picture of "Your request is with the admins" (the screen a newcomer sees once he has
@@ -1337,7 +1336,7 @@ switched on in our environment? a separate development environment? Dataverse av
 developer ("maker") seat in dev? how people get in (a security group, security roles)? which connectors are allowed?
 how work moves from dev to production, and who presses it? auditing and backups on, and how to restore? where settings and
 secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
-from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
+from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (5 Nov 26, his "as recommended"): would you import a ready-made solution file built on his own Microsoft 365, or only build the tables from `SCHEMA.md`, as the SWiFT kit says — and what publisher prefix should the tables use (a file built with another prefix would not drop in)?** **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
 each person's app on our licences?** *(29 Sep 26: Microsoft's figure is 40,000 requests a person a day on the Power Apps

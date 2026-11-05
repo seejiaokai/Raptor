@@ -92,7 +92,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
     switched off) — deleting the line is not enough, because the history is public and keeps the old one (D1408) — his to
     do, put to him; only then does its fingerprint go in `.gitleaksignore`. Not a secret (an example, a test value, an id
     that looks like a key): its fingerprint goes in `.gitleaksignore` with a comment saying what it is, who judged it and
-    when. Changing that file makes the next run scan the whole history again.
+    when. (D1661, 5 Nov 26: his yes to the member / guest check's two walk-results lines — the app's own access-request record id — listed by file and line.) Changing that file makes the next run scan the whole history again.
   - **GitHub's own scanning and the required check — both on since 31 Oct 26** (D1535, D1540; read back above). Until
     then GitHub's own scanning was off and `main` had no rulesets, so a red `secrets scan` stopped a merge only because
     nothing merges red. Both are repository settings — his to change, never the agent's.

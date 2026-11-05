@@ -249,3 +249,5 @@ another; a file taken from an entry by an undo) — carried by their unit tests,
 Walk: docs/handpass/2026-11-05-keys-windows.md · 233 pictures (115 walk, 41 re-walk, 77 the Leave War viewer walk) · 24 surfaces · 152 checks walked (+ 29 Leave War rows, 60 re-walk) · MISSING: 0 (2 rows NOT WALKED and 1 by code, each with its carrier named)
 
 **His answer, 5 Nov 26 (D1652):** the three details the mock-up did not draw — the cyan ring on the board menus' small buttons, Enter on the calendar button closing and reopening "Jump to a date" in place, and the keys on "Answer OIL" after "Don't add" — stay as built (pictures `raptor-port/docs/mock/2026-11-05-keys-windows/img/departures/`).
+
+**His answer, 5 Nov 26 (D1659):** the side-by-side look by eye stands in place of the drawing-check tool for this batch, as D1566 did for the year build.
