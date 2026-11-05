@@ -199,7 +199,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Database step — at the end (D473)**
 - [M365-MOVE-PLAN] — the M365 move plan, his strikes owed.
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
-- [M365-HOSTING-TRIAL] — the app on his own M365 with no database, at a good stopping point in the Tracker's work (D1532).
+- [M365-HOSTING-TRIAL] — the app on his own M365 with no database (D1532) — **waits for his word: no test account yet (D1682, 5 Nov 26)**; not proposed again until he raises it.
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
 - [DB-WAITING-CREATEDBY] — the database's own "created by" on a waiting person's change-log row would name him; write such rows through a service account.
 - [DB-ONE-MASTER-FIXES] — the check's places that do not read the one table, for the database step (D1587, D1589): Quals ticks, holidays, a posted-out man, a Tracker student, medical documents, four smaller, history names.
