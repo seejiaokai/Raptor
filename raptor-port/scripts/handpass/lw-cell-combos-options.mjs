@@ -19,6 +19,19 @@
 //   fit    — a box wearing the Inputs page's 2px left edge centres its letters in the room right of that edge; a
 //            four-letter code and a starred one go one step smaller in a whole-day box.
 // ZOOMED RIGHT OUT (question 3) — `cc-far` on the grid table: colours only (the drawing script).
+//
+// C — THE REVISED DESIGN (after the design review of 6 Nov 26, and his question "so whole day, AM and PM will always be
+// top and bottom half?"): every box keeps telling whole from half by its size.
+//   floor  — a whole day beside a half: the whole day keeps the whole cell, its ring right round it, its letters in the
+//            free half; the half sits over its own half, inset, with a dark keyline ("a whole day under a morning").
+//   split  — two whole days: one tile split in two — the halves touch, their outer corners round, their inner corners
+//            square — where a morning and an afternoon stay two separate rounded boxes with a gap.
+//   pile   — three or more entries: the box shown steps in and wears a hard grey offset behind it, a stack of cards;
+//            no "+n" tag.
+//   alarm  — "needs an admin" keeps its "!" in the amber tab, with a dark keyline so it never melts into an amber box;
+//            the box's letters step left of it.
+//   gone   — a day after a posting out: the box itself carries the posting hatch; no PO tag.
+//   last   — his last day in: a 2px yellow line down the day's right edge, the box stepped clear of it; no PO tag.
 export const OPTIONS = {
   today: { css: '', map: null },
   stack: { css: '', map: 'stack' },
@@ -26,6 +39,7 @@ export const OPTIONS = {
   A: { css: 'flags fit', map: 'stack flags' },
   'A-poflags': { css: 'poflags makeway fit', map: 'stack poflags makeway' },
   B: { css: 'edge flags fit', map: 'edge flags' },
+  C: { css: 'floor marks fit', map: 'floor marks' },
 }
 const P = '#page-leavewar .mx td'
 const GREY = 'rgba(150, 162, 178, .95)', AMBER = '#F2C879'
@@ -62,10 +76,67 @@ ${P}.cc-flags.pofin .mk { right: 2px; }`,
 ${P}.cc-tt .c.whole { align-items: flex-end; padding-bottom: 1px; font-size: 7.5px !important; letter-spacing: 0 !important; }
 ${P}.cc-tt .c.whole.wide { font-size: 6.5px !important; letter-spacing: -.02em !important; }
 ${P}.cc-tt .c.whole.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }`,
+  floor: `
+${P} .c.cc-floor { inset: 2px !important; border-radius: 4px !important; padding: 0 !important; font-size: 7.5px !important; letter-spacing: 0 !important; }
+${P} .c.cc-floor.wide { font-size: 6.5px !important; letter-spacing: -.02em !important; }
+${P} .c.cc-floor.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
+${P} .c.cc-floor.cc-lo { align-items: flex-end; padding-bottom: 1.5px !important; }
+${P} .c.cc-floor.cc-hi { align-items: flex-start; padding-top: 1.5px !important; }
+${P} .c.cc-roof { left: 4px !important; right: 4px !important; border-radius: 3px !important; padding: 0 !important; z-index: 1; font-size: 6.5px !important; letter-spacing: 0 !important; }
+${P} .c.cc-roof.wide { font-size: 5.5px !important; letter-spacing: -.02em !important; }
+${P} .c.cc-roof.w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
+${P} .c.cc-roof.cc-am { top: 4px !important; bottom: calc(50% + .5px) !important; }
+${P} .c.cc-roof.cc-pm { top: calc(50% + .5px) !important; bottom: 4px !important; }
+${P} .c.cc-roof.s-a { box-shadow: inset 0 0 0 1px rgba(var(--h), .85), 0 0 0 1px #0E141B !important; background: rgba(var(--h), max(var(--fill), .55)); }
+${P} .c.cc-roof.k-unav.s-a { background: #2A323C !important; box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78), 0 0 0 1px #0E141B !important; }
+${P} .c.cc-split.top { bottom: 50% !important; border-radius: 4px 4px 0 0 !important; }
+${P} .c.cc-split.bot { top: 50% !important; border-radius: 0 0 4px 4px !important; }
+${P} .c.cc-split.wide { font-size: 6.5px !important; }
+${P} .c.cc-split.w4 { font-size: 6px !important; letter-spacing: -.03em !important; }`,
+  marks: `
+${P}.cc-pile .mk.more { display: none !important; }
+/* a mark that takes room from a box steps its letters down one size */
+${P}.cc-pile .c.whole { font-size: 8.5px !important; letter-spacing: 0 !important; }
+${P}.cc-pile .c.whole.wide { font-size: 7.5px !important; letter-spacing: -.02em !important; }
+${P}.cc-pile .c.whole.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
+${P}.cc-pile .c:is(.top, .bot) { font-size: 7px !important; }
+${P}.cc-pile .c:is(.top, .bot).wide { font-size: 5.5px !important; }
+${P}.cc-pile .c:is(.top, .bot).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
+${P}.cc-last .c.whole.wide { font-size: 8px !important; }
+${P}.cc-last .c.whole.w4 { font-size: 6.5px !important; }
+${P}.cc-pile.cc-last .c.whole.wide { font-size: 7px !important; }
+${P}.cc-pile.cc-last .c.whole.w4 { font-size: 5.5px !important; }
+${P}.cc-last.cc-alarm .c.whole:not(.cc-floor) { padding-top: 2.5px !important; }
+${P}.cc-last .c:is(.top, .bot).w4 { font-size: 5.5px !important; }
+${P}.cc-pile .c.whole { right: 4.5px !important; bottom: 4.5px !important; }
+${P}.cc-pile .c.top { right: 4.5px !important; }
+${P}.cc-pile .c.bot { right: 4.5px !important; bottom: 3px !important; }
+${P}.cc-pile .c.s-a { box-shadow: inset 0 0 0 1px rgba(var(--h), .85), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+${P}.cc-pile .c.s-w { box-shadow: 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+${P}.cc-pile .c.k-unav.s-a { box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+/* the "!" tab, a little smaller than today's, so it stays above a whole day's letters (which sit mid-height); a box whose
+   letters are in the top half steps them left of it, one size smaller */
+${P}.cc-alarm .mk.warn { top: 0 !important; right: 0 !important; bottom: auto !important; font-size: 6.5px !important; line-height: 1 !important; padding: .5px 1.5px !important; box-shadow: 0 0 0 1px #0E141B !important; color: #1A1206 !important; z-index: 2; }
+${P}.cc-alarm .c.whole:not(.cc-floor) { padding-top: 1.5px !important; }
+${P}.cc-alarm .c:is(.top, .cc-floor.cc-hi):not(.cc-roof) { padding-right: 4.5px !important; font-size: 6.5px !important; letter-spacing: 0 !important; }
+${P}.cc-alarm .c:is(.top, .cc-floor.cc-hi):not(.cc-roof).wide { font-size: 5.5px !important; letter-spacing: -.02em !important; }
+${P}.cc-alarm .c:is(.top, .cc-floor.cc-hi):not(.cc-roof).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
+${P}.cc-alarm .c.cc-roof.cc-am { left: 3px !important; right: 6.5px !important; }
+${P}.cc-alarm .c.cc-roof.cc-am.w4 { font-size: 4.5px !important; }
+${P}.cc-gone .potag { display: none !important; }
+${P}.cc-gone .c { background-image: repeating-linear-gradient(135deg, rgba(14, 20, 27, .3) 0 1.5px, transparent 1.5px 4px) !important; }
+${P}.cc-last .polast { display: none !important; }
+${P}.cc-last { box-shadow: inset -2px 0 0 #F2C879; }
+${P}.cc-last .c { right: 3.5px !important; }
+${P}.cc-last.cc-alarm .mk.warn { right: 2px !important; }
+${P}.cc-pile.cc-last .c:is(.whole, .top, .bot) { right: 6px !important; }
+${P} .c:where(.top, .bot) { padding: 0 !important; }`,
   fit: `
-${P} .c:is(.raptor, .moved):is(.whole, .top, .bot, .cc-main) { padding-left: 2px !important; padding-right: 0 !important; }
+${P} .c:is(.raptor, .moved):is(.whole, .top, .bot, .cc-main) { padding-left: 2px !important; }
 ${P} .c.whole.w4 { font-size: 7px !important; letter-spacing: -.05em !important; }
-${P} .c.whole.cc-star { font-size: 8.5px !important; letter-spacing: -.01em !important; }`,
+${P} .c.whole.cc-star { font-size: 8.5px !important; letter-spacing: -.01em !important; }
+${P} .c.cc-star:is(.top, .bot) { font-size: 6px !important; letter-spacing: 0 !important; }
+${P} .c.cc-star.cc-roof { font-size: 5.5px !important; }`,
 }
 /* the markup each option draws, from today's: boxes [{ c, place }], tiles, extra classes on the cell */
 export function remap(map, cb) {
@@ -81,6 +152,22 @@ export function remap(map, cb) {
     const [a, b] = out.boxes
     a.place = 'whole'; a.extra = ' cc-main'
     b.extra = ` cc-edge${b.place === 'right-am' ? ' cc-am' : b.place === 'right-pm' ? ' cc-pm' : ''}`; b.place = 'right'; b.noText = true
+  }
+  if (has('floor') && out.boxes.length === 2) {
+    const [a, b] = out.boxes
+    if (a.place === 'left' && b.place === 'right') { a.place = 'top'; a.extra = ' cc-split'; b.place = 'bot'; b.extra = ' cc-split' }
+    else if (a.place === 'left' && (b.place === 'right-am' || b.place === 'right-pm')) {
+      const am = b.place === 'right-am'
+      a.place = 'whole'; a.extra = ` cc-floor ${am ? 'cc-lo' : 'cc-hi'}`
+      b.place = am ? 'top' : 'bot'; b.extra = ` cc-roof ${am ? 'cc-am' : 'cc-pm'}`
+      out.boxes = [a, b]
+    }
+  }
+  if (has('marks') && out.boxes.length) {
+    if (cb.tiles.includes('more')) out.extraTd.push('cc-pile')
+    if (cb.tiles.includes('warn')) out.extraTd.push('cc-alarm')
+    if (cb.tiles.includes('po')) out.extraTd.push('cc-gone')
+    if (cb.tiles.includes('last')) out.extraTd.push('cc-last')
   }
   if ((has('flags') || has('poflags')) && out.boxes.length) out.extraTd.push('cc-flags')
   if (has('makeway') && out.boxes.some(b => b.place === 'whole') && (cb.tiles.includes('more') || cb.tiles.includes('warn'))) out.extraTd.push('cc-tt')

@@ -481,6 +481,111 @@
    "n": 15,
    "file": "desk-Apo-15.png",
    "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 1,
+   "file": "desk-C-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 2,
+   "file": "desk-C-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 3,
+   "file": "desk-C-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 4,
+   "file": "desk-C-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 5,
+   "file": "desk-C-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 6,
+   "file": "desk-C-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 7,
+   "file": "desk-C-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 8,
+   "file": "desk-C-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 9,
+   "file": "desk-C-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 10,
+   "file": "desk-C-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 11,
+   "file": "desk-C-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 12,
+   "file": "desk-C-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 13,
+   "file": "desk-C-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 14,
+   "file": "desk-C-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 15,
+   "file": "desk-C-15.png",
+   "z": 1
   }
  ]
 }

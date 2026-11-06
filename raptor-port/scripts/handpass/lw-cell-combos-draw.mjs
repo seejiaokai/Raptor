@@ -54,9 +54,11 @@ const LOOKS = [
   { id: 'A', css: 'flags fit', map: 'stack flags', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'B', css: 'edge flags fit', map: 'edge flags', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'Apo', css: 'poflags makeway fit', map: 'stack poflags makeway', z: SIZE === 'phone' ? 0.8 : 1 },
+  { id: 'C', css: 'floor marks fit', map: 'floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
   ...(SIZE === 'phone' ? [
     { id: 'today-far', css: '', map: null, z: 0.4 },
     { id: 'A-far', css: 'flags fit', map: 'stack flags', z: 0.4, far: true },
+    { id: 'C-far', css: 'floor marks fit', map: 'floor marks', z: 0.4, far: true },
   ] : []),
 ]
 

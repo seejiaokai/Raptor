@@ -26,9 +26,9 @@ const FAMS = [
 ]
 const cnt = (fs, key, z) => { if (!fs) return null; const f = fs.find(x => x.fam === key && (z == null || x.zoom === z)); return f ? [f.fail, f.n] : null }
 const COLS = [
-  ['measure-phone-system.json', 0.8, 'today'], ['measure-phone-system-A.json', 0.8, 'A'], ['measure-phone-system-B.json', 0.8, 'B'],
-  ['measure-phone-wide.json', 0.8, 'today'], ['measure-phone-wide-A.json', 0.8, 'A'], ['measure-phone-wide-B.json', 0.8, 'B'],
-  ['measure-desk-system.json', 1, 'today'], ['measure-desk-system-A.json', 1, 'A'], ['measure-desk-system-B.json', 1, 'B'],
+  ['measure-phone-system.json', 0.8, 'today'], ['measure-phone-system-C.json', 0.8, 'C'], ['measure-phone-system-A.json', 0.8, 'A'],
+  ['measure-phone-wide.json', 0.8, 'today'], ['measure-phone-wide-C.json', 0.8, 'C'], ['measure-phone-wide-A.json', 0.8, 'A'],
+  ['measure-desk-system.json', 1, 'today'], ['measure-desk-system-C.json', 1, 'C'], ['measure-desk-system-A.json', 1, 'A'],
 ]
 const data = COLS.map(([f, z]) => fam(f) && fam(f).filter(x => x.zoom === z))
 /* one compact table for a phone's width: per kind of day, the combinations whose letters fail — the iPhone size counted in
@@ -41,7 +41,7 @@ const deskCols = [6, 7, 8].map(i => data[i])
 const totalN = data[0] ? ALLF(data[0])[1] : 0
 const table = `<table class="cnt"><thead>
 <tr><th rowspan="2">Day holds <small>(combinations)</small></th><th colspan="3">iPhone size</th><th colspan="3">Desktop</th></tr>
-<tr>${['Today', 'A', 'B', 'Today', 'A', 'B'].map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>
+<tr>${['Today', 'C', 'A', 'Today', 'C', 'A'].map(h => `<th>${h}</th>`).join('')}</tr></thead><tbody>
 ${FAMS.map(([k, label]) => { const n = data[0] && cnt(data[0], k); return `<tr><th>${label} <small>(${n ? n[1].toLocaleString('en-GB') : '?'})</small></th>${phoneCols.map(([a, b]) => num(worst(a && cnt(a, k), b && cnt(b, k)))).join('')}${deskCols.map(d => num(d && cnt(d, k))).join('')}</tr>` }).join('\n')}
 <tr class="tot"><th>All <small>(${totalN.toLocaleString('en-GB')})</small></th>${phoneCols.map(([a, b]) => num(worst(ALLF(a), ALLF(b)))).join('')}${deskCols.map(d => num(ALLF(d))).join('')}</tr></tbody></table>`
 
@@ -50,9 +50,9 @@ const pic = (size, look, n, cls = '') => `<img class="cellimg ${size} ${cls}" sr
 const row = (n, looks) => `<div class="case"><div class="n">${n}</div><div class="say">${say(n)}</div>
   <div class="looks">${looks.map(([look, lab, rec]) => `<figure class="${rec ? 'rec' : ''}">${pic('phone', look, n)}<figcaption>${lab}</figcaption></figure>`).join('')}
   <figure class="desk">${looks.map(([look]) => pic('desk', look, n)).join('')}<figcaption>desktop: ${looks.map(l => l[1]).join(' · ')}</figcaption></figure></div></div>`
-const L3 = [['today', 'Today'], ['A', 'A', 1], ['B', 'B']]
-const L2q = [['today', 'Today'], ['A', 'Flags', 1], ['Apo', 'Words kept']]
-const L2 = [['today', 'Today'], ['A', 'Fixed', 1]]
+const L3 = [['today', 'Today'], ['C', 'C', 1], ['A', 'A (first drawing)']]
+const L2q = [['today', 'Today'], ['C', 'C', 1], ['A', 'Flags (first drawing)']]
+const L2 = [['today', 'Today'], ['C', 'Fixed', 1]]
 const alt = fam('measure-phone-system-A-poflags.json')
 const altFail = alt ? alt.filter(x => x.zoom === 0.8).reduce((a, f) => a + f.fail, 0) : null
 
@@ -87,7 +87,7 @@ table.cnt { border-collapse: collapse; font-size: 12.5px; width: 100%; margin: 6
 .note { font-size: 13px; color: var(--ink-3); }
 /* the live check: the grid's own box rules (matrix.css, look F), at the grid's own sizes */
 #live { background: var(--panel); border: 1px solid var(--edge); border-radius: 10px; padding: 12px 14px; }
-#live button { font: inherit; font-weight: 700; background: var(--accent); color: #052A34; border: 0; border-radius: 6px; padding: 8px 14px; font-weight: 700; font-size: 14px; }
+#live button { font: inherit; font-weight: 700; background: var(--accent); color: #052A34; border: 0; border-radius: 6px; padding: 8px 14px; min-height: 44px; font-weight: 700; font-size: 14px; }
 #liveOut { margin-top: 10px; font-size: 13px; } #liveOut .lrow { margin: 4px 0; } #liveOut .cut { color: #FF9D9D; } #liveOut .fit { color: #8BE3A4; }
 .lab { position: absolute; left: -9999px; top: 0; }
 .lab .z { zoom: .8; display: flex; flex-wrap: wrap; gap: 4px; font-family: "Inter Tight", system-ui, sans-serif; }
@@ -104,25 +104,26 @@ table.cnt { border-collapse: collapse; font-size: 12.5px; width: 100%; margin: 6
 
 <section class="ask">
 <h2>What I need from you</h2>
+<p class="note">Redrawn after a design review and your question "so whole day, AM and PM will always be top and bottom half?". My first drawing (A) did make every two-entry day look like a morning and an afternoon, and its corner flags made the "!" too quiet and the same colour as the leave. C fixes both.</p>
 <ol>
-<li><b>Two entries on one day</b> (pictures 1–6). Today they stand side by side and the letters are cut — "FO|TC", "TC|TH", as on your iPhone. <span class="rec-tag">Recommended: A</span> — one above the other, both codes whole, as a morning and an afternoon are drawn. B keeps the first entry's letters and shows the second only as a colour edge. A changes your D1167 (side by side), so it needs your word.</li>
-<li><b>Corner tags over letters</b> (pictures 7–12). The "+2", "!", grey PO and yellow last-day PO sit on the letters. <span class="rec-tag">Recommended: Flags</span> — on a day that holds a box, each tag becomes a small corner flag in its own colour (grey at the top: more on this day; amber: needs an admin; grey at the foot: posted out), and his last day in becomes a thin yellow line down the day's right edge. The letters keep their full size; the count and the words show when the day is tapped, and a day with nothing on it keeps its "PO". The other choice, "Words kept", keeps "+2" and "!" and moves a whole day's letters below them, smaller. Both change how the PO tags look on such a day (your 19 Aug 26 last-day tag, D1720's grey tag), so they need your word.</li>
-<li><b>Zoomed right out</b> (the last strip). Your iPhone draws two-letter codes at a fixed smallest size, so zoomed out they spill over their boxes while the rest are too small to read. <span class="rec-tag">Recommended:</span> at the two smallest zoom steps the boxes show their colours only.</li>
+<li><b>Two entries on one day</b> (pictures 1–6). <span class="rec-tag">Recommended: C</span> — a whole day always reads as a whole day. Beside a half, the whole day keeps the whole cell and the half sits on it (5, 6). Two whole days are one box split in two, the halves touching (1–4). A morning and an afternoon stay two separate boxes with a gap, as today (15). Both codes stay whole. It changes your D1167 (side by side), so it needs your word.</li>
+<li><b>Marks on a day</b> (pictures 7–12). <span class="rec-tag">Recommended: C</span> — "!" keeps its amber tab, with a dark outline so it stands out on an amber leave (8, 12). More than two entries show as a small stack of cards behind the box, in place of "+2" (7). On a posted-out day the box itself carries the posting stripes, in place of the grey PO (9). His last day in is a yellow line down the day's right edge, in place of the yellow PO, on every last day, empty or not (10, 11). Letters stay whole; where a mark takes room, they drop one size. It changes the PO tags (your 19 Aug 26 last-day tag, D1720's grey tag) and the "+n", so it needs your word.</li>
+<li><b>Zoomed right out</b> (the last strips). <span class="rec-tag">Recommended:</span> the boxes show their colours only, and the "!" stays.</li>
 </ol>
-<p class="note">Also fixed, without a question: ATCH, PERS, APPT, OML and the app's own FO* / HO* are a hair too wide for a whole-day box; they drop one letter size (pictures 13–14). Picture 15 fits today and stays as it is.</p>
-<p class="note">Answer by number, e.g. "1 A, 2 yes, 3 yes". After you pick, I build it, measure all 23,940 combinations again, and walk the grid on both sizes — the look, what a tap opens and how each entry is changed from there (D1725).</p>
+<p class="note">Also fixed, without a question: ATCH, PERS, APPT, OML and the app's own FO* / HO* drop one letter size where they were a hair too wide, and letters sit clear of the Inputs page's cyan edge (13–14).</p>
+<p class="note">Answer by number, for example "1 C, 2 C, 3 yes". After you pick, I build it, measure all 23,940 combinations again, and walk the grid on both sizes — the look, what a tap opens and how each entry is changed from there (D1725).</p>
 </section>
 
 <h2>1 · Two entries on one day</h2>
 <p>Each picture is one real day cell of the built grid at your iPhone's size (402 wide, the grid's opening zoom), enlarged. The desktop's are beside.</p>
 ${[1, 2, 3, 4, 5, 6].map(n => row(n, L3)).join('\n')}
 
-<h2>2 · Corner tags over letters</h2>
+<h2>2 · Marks on a day</h2>
 ${[7, 8, 9, 10, 11, 12].map(n => row(n, L2q)).join('\n')}
 
 <h2>3 · Zoomed right out (your iPhone, the smallest zoom)</h2>
 <p>Today:</p><img class="strip" src="${uri('phone-today-far-strip.png')}" alt="">
-<p>Recommended — colours only:</p><img class="strip" src="${uri('phone-A-far-strip.png')}" alt="">
+<p>Recommended — colours only, the "!" kept:</p><img class="strip" src="${uri('phone-C-far-strip.png')}" alt="">
 
 <h2>Also fixed — long codes alone</h2>
 ${[13, 14, 15].map(n => row(n, L2)).join('\n')}
@@ -130,11 +131,11 @@ ${[13, 14, 15].map(n => row(n, L2)).join('\n')}
 <h2>The count</h2>
 <p>How many combinations still have letters cut by the box's edge or under a corner tag — every code, every place in the cell, every corner tag, approved, pending and refused. The iPhone size counts whichever fails more: your PC's letters or letters wider than your iPhone's.</p>
 <div class="tablewrap">${table}</div>
-<p class="note">A and B here include question 2's Flags. In letters wider still on a desktop, a few remain a hair over (OML alone, the app's HO* and APPT beside a flag); the build gives those one more size step. Question 2's other choice, "Words kept", with A: ${altFail == null ? 'not measured' : altFail.toLocaleString('en-GB') + ' of 23,940 combinations still have letters cut or covered at the iPhone size'}.</p>
+<p class="note">C and A here are whole designs (question 1 and question 2 together). In letters far wider than a desktop draws, a few long codes on a crowded last day are still a hair over in C; the build steps those down too.</p>
 
 <h2>Check it on your phone</h2>
 <section id="live">
-<p>This measures the boxes here, on your phone, in its own letters — today's side-by-side and A's one-above-the-other.</p>
+<p>This measures the boxes here, on your phone, in its own letters — today's side-by-side and C's one-above-the-other.</p>
 <button type="button" id="go">Measure on this phone</button>
 <div id="liveOut"></div>
 </section>
@@ -158,7 +159,7 @@ ${[13, 14, 15].map(n => row(n, L2)).join('\n')}
   }
   document.getElementById('go').addEventListener('click', function () {
     var out = document.getElementById('liveOut'), lines = [];
-    var A = [['left', 'Today — side by side (whole day, half width)'], ['right-am', 'Today — a half beside a whole day'], ['top', 'A — one above the other'], ['whole', 'One whole-day box']];
+    var A = [['left', 'Today — side by side (whole day, half width)'], ['right-am', 'Today — a half beside a whole day'], ['top', 'C and A — one above the other'], ['whole', 'One whole-day box']];
     A.forEach(function (p) { var r = fits(p[0]);
       lines.push('<div class="lrow"><b>' + p[1] + '</b>: ' + (r.cut.length ? '<span class="cut">cut — ' + r.cut.join(' ') + '</span>' : '<span class="fit">every code fits</span>') + '</div>'); });
     var c = document.getElementById('clamp'); c.innerHTML = '<div style="zoom:.4;font-size:10px;font-weight:700;display:inline-block" id="c1">LLLLLLLLLL</div><br><div style="font-size:10px;font-weight:700;display:inline-block" id="c2">LLLLLLLLLL</div>';
