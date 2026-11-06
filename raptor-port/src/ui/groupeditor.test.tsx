@@ -303,7 +303,7 @@ describe('an input already filed, read by a member', () => {
     await click(tid('pp-several'))
     await click(puckBtn(b))
     await click($('#inpEditSave'))
-    expect(said.join(' | ')).not.toMatch(/not saved|not yours/i)
+    expect(said.join(' | ')).not.toMatch(/Blocked:|not saved|not yours/i)
     expect(win(), 'saved: the window has closed').toBeNull()
     expect(inIt(r.iid)).toEqual([member, b])
     expect(String(live(r.iid).by), 'the input of several is his filing').toBe(member)

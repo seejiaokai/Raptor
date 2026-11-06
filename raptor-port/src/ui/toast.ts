@@ -27,7 +27,8 @@ let BATCH:Array<{msg:string,kind:any,part?:ToastPart}>|null=null;
 /** how many notes the batch that is open has been handed so far — 0 where none is open. The input's window asks it
  *  (ui/inputedit.tsx `saidSaved`): a save that said something of its own keeps "Input added" beside it, in the one note. */
 export function toastHeld():number{ return BATCH?BATCH.filter(m=>m.msg).length:0 }
-const RANK=(k:any)=>k==='hard'?3:k==='warn'?2:1;
+/* a refusal of one change ('blocked' — owner D1668) ranks with an amber note: neither outranks the other, the first said wins */
+const RANK=(k:any)=>k==='hard'?3:k==='warn'||k==='blocked'?2:1;
 const sentence=(s:string)=>s.charAt(0).toUpperCase()+s.slice(1)+'.';
 export function toastBatch<T>(fn:()=>T):T{
   if(BATCH)return fn();
@@ -126,6 +127,28 @@ export function sayToReader(words:string):void{
   if(sayT)clearTimeout(sayT);
   sayT=setTimeout(()=>{ sayT=null; el.textContent=words },30);
 }
+/* A REFUSAL OF ONE CHANGE — "BLOCKED:" (owner D1667, D1668, 6 Nov 26 — "B", the grey note; the drawing of record
+   docs/mock/2026-11-05-notsaved-refusal/img/*-r2grey-*.png). Where the app refused one change and kept nothing — not a
+   failed save, which is the "Not saved" band's alone (D1665) — the note is the app's own plain grey note, with only a drawn
+   "no entry" sign in red before its words: its lead (the words up to the first colon, "Blocked:" or a document's
+   "Couldn't save that document:") in bold white, the rest quieter. Never a red box: red already means a change KEPT that
+   clashes. Its place, size and timing are any note's; it holds as long as an amber one, since it says something did not
+   happen. Its look is in ui/scheduler/28-blocked.css, read off `data-face`; the words are built as elements, never as
+   markup, so nothing typed into a name can become markup here. */
+export const BLOCKED='Blocked';
+/** the lead of a blocked note — its words up to and including the first colon — and the rest; no colon: the whole as lead */
+export function blockedParts(msg:string):{lead:string,rest:string}{
+  const i=msg.indexOf(':');
+  return i>0&&i<60?{lead:msg.slice(0,i+1),rest:msg.slice(i+1).trim()}:{lead:msg,rest:''};
+}
+function blockedFace(t:HTMLElement,msg:string){
+  const {lead,rest}=blockedParts(msg);
+  const sign=document.createElement('span'); sign.className='bk-sign'; sign.setAttribute('aria-hidden','true');
+  const words=document.createElement('span'); words.className='bk-words';
+  const b=document.createElement('b'); b.textContent=lead; words.appendChild(b);
+  if(rest){ const r=document.createElement('span'); r.className='bk-rest'; r.textContent=' '+rest; words.appendChild(r); }
+  t.replaceChildren(sign,words);
+}
 /* kind==='warn' tints the toast amber — used when something was allowed but is
    not right, e.g. dropping crew who are not current for the shift. */
 /* how many notes have been SHOWN — a note that is waiting to be said asks it, so as not to replace one raised since
@@ -150,7 +173,10 @@ export function toast(msg:any,kind:any,part?:ToastPart){
     t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:540;pointer-events:none;background:var(--panel-2);border:1px solid var(--edge-2);color:var(--ink);padding:10px 16px;border-radius:10px;font-size:12.5px;box-shadow:0 20px 50px -20px rgba(0,0,0,.8);transition:opacity .22s ease';
     /* the reader hears the region's copy (sayToReader, above), never this box as well */
     t.setAttribute('aria-hidden','true');document.body.appendChild(t);}
-  t.textContent=msg; t.style.opacity='1';
+  const blocked=kind==='blocked';
+  if(blocked){ t.dataset.face='blocked'; blockedFace(t,String(msg==null?'':msg)) }
+  else { delete t.dataset.face; t.textContent=msg }
+  t.style.opacity='1';
   sayToReader(String(msg==null?'':msg));
   placeToast();
   /* 'hard' (5 Sep 26) — the drop delta's colour for a breach the validator
@@ -186,7 +212,7 @@ export function toast(msg:any,kind:any,part?:ToastPart){
      mattered and the less time there was. So the hold now GROWS with the
      message: the flat time as a floor, then reading time on top, capped so a
      runaway message cannot park a toast on screen for ever. */
-  const hold=Math.min(12000,Math.max(tint?4200:2600,String(msg).length*60+1200));
+  const hold=Math.min(12000,Math.max(tint||blocked?4200:2600,String(msg).length*60+1200));
   if(toastT)clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.opacity='0';
     /* the reader's copy goes with it, where it is still this note's — no stale words for a reader to meet later */
     const r=$('srSay'); if(r&&r.textContent===String(msg==null?'':msg))r.textContent='' },hold);

@@ -4,6 +4,11 @@
 import type { BalKind } from '../engine/leaveyear'
 import { balanceProblem, leaveFiguresOf, setTypedBalance } from '../state/store'
 
+/** THE STORE REFUSED THE CHANGE (owner D1667, D1668): the tag under the box reads "Blocked" in the app's grey note with a
+ *  red "no entry" sign — never "Not saved", the failed-save band's alone; the box's other refusals ("Type a whole number…")
+ *  stay red tags (BalancesPage.tsx ErrWords) */
+export const BLOCKED = 'Blocked'
+
 /** a figure as the page writes it — the app's one helper (figwords.ts) */
 export { figWords } from './figwords'
 
@@ -25,9 +30,9 @@ export function saveTypedFigure(pid: string, kind: BalKind, n: number, part?: 'c
     if (part === 'cf' && cf === k.cf) return null
     const why = balanceProblem(pid, 'LVE', amount, cf)
     if (why) return why
-    return setTypedBalance(pid, 'LVE', amount, cf, { amount: k.app, cf: k.cf }) ? null : 'Not saved'
+    return setTypedBalance(pid, 'LVE', amount, cf, { amount: k.app, cf: k.cf }) ? null : BLOCKED
   }
   const why = balanceProblem(pid, kind, n)
   if (why) return why
-  return setTypedBalance(pid, kind, n, undefined, { amount: k.app }) ? null : 'Not saved'
+  return setTypedBalance(pid, kind, n, undefined, { amount: k.app }) ? null : BLOCKED
 }

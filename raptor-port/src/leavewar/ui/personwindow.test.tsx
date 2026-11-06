@@ -154,7 +154,8 @@ describe('who gets a box (D1203, D1242, D1220 — B6)', () => {
     // the passing note says it, the box being gone; D850)
     act(() => { saber(); setBalanceLock(true); ranger() })
     expect(screen.getByTestId('pw-LVE').tagName).toBe('SPAN')
-    expect(said.some(m => /not saved: Locked by admin$/.test(m))).toBe(true)
+    /* "Blocked:" first, in the grey refusal note (owner D1667, D1668) */
+    expect(said.some(m => /^Blocked: .+\. Locked by admin\.$/.test(m))).toBe(true)
     expect(leaveFiguresOf(RANGER).kinds.LVE.app).not.toBe(20)
   })
 })

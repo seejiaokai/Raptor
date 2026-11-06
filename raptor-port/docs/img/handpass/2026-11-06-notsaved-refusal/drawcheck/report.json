@@ -1,0 +1,2938 @@
+{
+ "spec": "A refusal of one change — \"Blocked\", the grey note",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "figbox-phone",
+   "title": "The figure box's \"Blocked\" tag (Balances, Reaper's App bal), iPhone (WebKit)",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R1-figbox-r2grey-phone"
+   },
+   "approved": {
+    "picture": "R1-figbox-r2grey-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "box",
+     "label": "the figure box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 137,
+        "y": 261.3,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 169,
+        "y": 267.9,
+        "w": 14,
+        "h": 16.8
+       },
+       "text": "22 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 137,
+        "y": 261.3,
+        "w": 54,
+        "h": 30
+       },
+       "ink": {
+        "x": 169,
+        "y": 267.9,
+        "w": 14,
+        "h": 16.8
+       },
+       "text": "22 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 14px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    },
+    {
+     "part": "tag",
+     "label": "the \"Blocked\" tag",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the left of box)",
+       "drawing": "53",
+       "build": "0",
+       "by": "53px further left",
+       "accepted": "his D1670, 7 Nov 26 (\"Q2 yes\"): the grey tag hangs from its own box's left edge on a phone as on a desktop, as built; the drawing's 53px came from laying the grey face over a red tag the app had nudged on screen",
+       "counts": false
+      }
+     ],
+     "picture": "figbox-phone--tag.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 190,
+        "y": 295.3,
+        "w": 79.9,
+        "h": 27.6
+       },
+       "ink": {
+        "x": 220,
+        "y": 302.1,
+        "w": 40.9,
+        "h": 14
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-err.nsr-ref.nsr-left.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 137,
+        "y": 295.3,
+        "w": 79.9,
+        "h": 27.6
+       },
+       "ink": {
+        "x": 167,
+        "y": 302.1,
+        "w": 40.9,
+        "h": 14
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-err.bp-blocked"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 199,
+        "y": 302.3,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 146,
+        "y": 302.3,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "word",
+     "label": "\"Blocked\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 220,
+        "y": 302.1,
+        "w": 40.9,
+        "h": 14
+       },
+       "ink": {
+        "x": 220,
+        "y": 302.1,
+        "w": 40.9,
+        "h": 14
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 167,
+        "y": 301.3,
+        "w": 40.9,
+        "h": 15.6
+       },
+       "ink": {
+        "x": 167,
+        "y": 302.1,
+        "w": 40.9,
+        "h": 14
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "figbox-desk",
+   "title": "The figure box's \"Blocked\" tag (Balances, Reaper's App bal), desktop",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R1-figbox-r2grey-desk"
+   },
+   "approved": {
+    "picture": "R1-figbox-r2grey-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "box",
+     "label": "the figure box",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 281.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.3,
+        "y": 287.4,
+        "w": 15.5,
+        "h": 16.2
+       },
+       "text": "22 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 281.5,
+        "w": 54,
+        "h": 28
+       },
+       "ink": {
+        "x": 423.3,
+        "y": 287.4,
+        "w": 15.5,
+        "h": 16.2
+       },
+       "text": "22 ",
+       "typed": true,
+       "look": {
+        "fill": "rgb(13, 18, 23)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)",
+         "1px solid rgb(255, 122, 132)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "right",
+        "justify": "flex-end",
+        "font": "700 13.5px",
+        "spacing": "normal"
+       },
+       "tag": "input.mth-in.bp-bx"
+      }
+     }
+    },
+    {
+     "part": "tag",
+     "label": "the \"Blocked\" tag",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 313.5,
+        "w": 83.2,
+        "h": 27.6
+       },
+       "ink": {
+        "x": 424.8,
+        "y": 318.5,
+        "w": 44.2,
+        "h": 16
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-err.nsr-ref.nsr-left.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 394.8,
+        "y": 313.5,
+        "w": 83.2,
+        "h": 27.6
+       },
+       "ink": {
+        "x": 424.8,
+        "y": 318.5,
+        "w": 44.2,
+        "h": 16
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bp-err.bp-blocked"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 403.8,
+        "y": 320.5,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 403.8,
+        "y": 320.5,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "word",
+     "label": "\"Blocked\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 424.8,
+        "y": 318.5,
+        "w": 44.2,
+        "h": 16
+       },
+       "ink": {
+        "x": 424.8,
+        "y": 318.5,
+        "w": 44.2,
+        "h": 16
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 424.8,
+        "y": 319.5,
+        "w": 44.2,
+        "h": 15.6
+       },
+       "ink": {
+        "x": 424.8,
+        "y": 318.5,
+        "w": 44.2,
+        "h": 16
+       },
+       "text": "Blocked",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "figbox-gone-phone",
+   "title": "A figure box's refusal said in the passing note, iPhone (WebKit)",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R3c-figbox-gone-r2grey-phone"
+   },
+   "approved": {
+    "picture": "R3c-figbox-gone-r2grey-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 811,
+        "w": 378,
+        "h": 37
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 255.4,
+        "h": 14
+       },
+       "text": "Blocked: Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 811,
+        "w": 378,
+        "h": 37
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 255.4,
+        "h": 14
+       },
+       "text": "Blocked: Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 823,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 823,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 102.3,
+        "y": 822,
+        "w": 203.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 102.3,
+        "y": 822,
+        "w": 203.2,
+        "h": 14
+       },
+       "text": "Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 102.3,
+        "y": 822,
+        "w": 203.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 102.3,
+        "y": 822,
+        "w": 203.2,
+        "h": 14
+       },
+       "text": "Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "figbox-gone-desk",
+   "title": "A figure box's refusal said in the passing note, desktop",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R3c-figbox-gone-r2grey-desk"
+   },
+   "approved": {
+    "picture": "R3c-figbox-gone-r2grey-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 614.5,
+        "y": 800,
+        "w": 307,
+        "h": 38
+       },
+       "ink": {
+        "x": 652.5,
+        "y": 811,
+        "w": 252,
+        "h": 16
+       },
+       "text": "Blocked: Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 614.5,
+        "y": 800,
+        "w": 307,
+        "h": 38
+       },
+       "ink": {
+        "x": 652.5,
+        "y": 811,
+        "w": 252,
+        "h": 16
+       },
+       "text": "Blocked: Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 631.5,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 631.5,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 652.5,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 652.5,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 652.5,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 652.5,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 701.9,
+        "y": 811,
+        "w": 202.6,
+        "h": 16
+       },
+       "ink": {
+        "x": 701.9,
+        "y": 811,
+        "w": 202.6,
+        "h": 16
+       },
+       "text": "Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 701.9,
+        "y": 811,
+        "w": 202.6,
+        "h": 16
+       },
+       "ink": {
+        "x": 701.9,
+        "y": 811,
+        "w": 202.6,
+        "h": 16
+       },
+       "text": "Dice LVE App bal. Locked by admin.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "document-phone",
+   "title": "A document too big to store, iPhone (WebKit)",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R4c-document-r2grey-phone"
+   },
+   "approved": {
+    "picture": "R4c-document-r2grey-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 10,
+        "w": 378,
+        "h": 50
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "text": "Couldn't save that document: your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 10,
+        "w": 378,
+        "h": 50
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "text": "Couldn't save that document: your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 22,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 22,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 21,
+        "w": 173.4,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 173.4,
+        "h": 14
+       },
+       "text": "Couldn't save that document:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 21,
+        "w": 173.4,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 173.4,
+        "h": 14
+       },
+       "text": "Couldn't save that document:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "text": "your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "ink": {
+        "x": 50,
+        "y": 21,
+        "w": 319.7,
+        "h": 28
+       },
+       "text": "your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "document-desk",
+   "title": "A document too big to store, desktop",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R4c-document-r2grey-desk"
+   },
+   "approved": {
+    "picture": "R4c-document-r2grey-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 457.5,
+        "y": 800,
+        "w": 621,
+        "h": 38
+       },
+       "ink": {
+        "x": 495.5,
+        "y": 811,
+        "w": 566,
+        "h": 16
+       },
+       "text": "Couldn't save that document: your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 457.5,
+        "y": 800,
+        "w": 621,
+        "h": 38
+       },
+       "ink": {
+        "x": 495.5,
+        "y": 811,
+        "w": 566,
+        "h": 16
+       },
+       "text": "Couldn't save that document: your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 474.5,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 474.5,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 495.5,
+        "y": 811,
+        "w": 170.8,
+        "h": 16
+       },
+       "ink": {
+        "x": 495.5,
+        "y": 811,
+        "w": 170.8,
+        "h": 16
+       },
+       "text": "Couldn't save that document:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 495.5,
+        "y": 811,
+        "w": 170.8,
+        "h": 16
+       },
+       "ink": {
+        "x": 495.5,
+        "y": 811,
+        "w": 170.8,
+        "h": 16
+       },
+       "text": "Couldn't save that document:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 666.3,
+        "y": 811,
+        "w": 395.3,
+        "h": 16
+       },
+       "ink": {
+        "x": 666.3,
+        "y": 811,
+        "w": 395.3,
+        "h": 16
+       },
+       "text": "your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 666.3,
+        "y": 811,
+        "w": 395.3,
+        "h": 16
+       },
+       "ink": {
+        "x": 666.3,
+        "y": 811,
+        "w": 395.3,
+        "h": 16
+       },
+       "text": "your browser storage may be full, so it may not be here after a reload.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "schedule-phone",
+   "title": "The schedule's refused change, iPhone (WebKit)",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R5c-schedule-r2grey-phone"
+   },
+   "approved": {
+    "picture": "R5c-schedule-r2grey-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 811,
+        "w": 378,
+        "h": 37
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 148.4,
+        "h": 14
+       },
+       "text": "Blocked: nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 811,
+        "w": 378,
+        "h": 37
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 148.4,
+        "h": 14
+       },
+       "text": "Blocked: nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 823,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 29,
+        "y": 823,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 50,
+        "y": 822,
+        "w": 52.3,
+        "h": 14
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 102.3,
+        "y": 822,
+        "w": 96.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 102.3,
+        "y": 822,
+        "w": 96.2,
+        "h": 14
+       },
+       "text": "nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 102.3,
+        "y": 822,
+        "w": 96.2,
+        "h": 14
+       },
+       "ink": {
+        "x": 102.3,
+        "y": 822,
+        "w": 96.2,
+        "h": 14
+       },
+       "text": "nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "schedule-desk",
+   "title": "The schedule's refused change, desktop",
+   "drawing": {
+    "script": "scripts/handpass/nsr1105-today.mjs",
+    "shot": "R5c-schedule-r2grey-desk"
+   },
+   "approved": {
+    "picture": "R5c-schedule-r2grey-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "note",
+     "label": "the passing note",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 665.7,
+        "y": 800,
+        "w": 204.6,
+        "h": 38
+       },
+       "ink": {
+        "x": 703.7,
+        "y": 811,
+        "w": 149.6,
+        "h": 16
+       },
+       "text": "Blocked: nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.nsr-ref.nsr-grey"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 665.7,
+        "y": 800,
+        "w": 204.6,
+        "h": 38
+       },
+       "ink": {
+        "x": 703.7,
+        "y": 811,
+        "w": 149.6,
+        "h": 16
+       },
+       "text": "Blocked: nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "sign",
+     "label": "its \"no entry\" sign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 682.7,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-sign"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 682.7,
+        "y": 812,
+        "w": 14,
+        "h": 14
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' ",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-sign"
+      }
+     }
+    },
+    {
+     "part": "lead",
+     "label": "the bold lead",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 703.7,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 703.7,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 703.7,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "ink": {
+        "x": 703.7,
+        "y": 811,
+        "w": 49.4,
+        "h": 16
+       },
+       "text": "Blocked:",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "b"
+      }
+     }
+    },
+    {
+     "part": "rest",
+     "label": "the quieter rest",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 753.1,
+        "y": 811,
+        "w": 100.3,
+        "h": 16
+       },
+       "ink": {
+        "x": 753.1,
+        "y": 811,
+        "w": 100.3,
+        "h": 16
+       },
+       "text": "nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nsr-rest"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 753.1,
+        "y": 811,
+        "w": 100.3,
+        "h": 16
+       },
+       "ink": {
+        "x": 753.1,
+        "y": 811,
+        "w": 100.3,
+        "h": 16
+       },
+       "text": "nothing was kept",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "500 12.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.bk-rest"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

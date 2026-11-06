@@ -1451,7 +1451,13 @@ export function commitEditMedChoices(r: any, draft: any, ask: { clashes: any[]; 
    `ok` — saved — and `refused`: the inner saves were content and the OUTER command said no. A refusal that said
    nothing of its own (the commit gate has no voice) is said here, so no Save is ever silent. A refused command puts
    the list back as NEW objects: a door that holds a record across the save finds it again by its id. */
-export const NOT_SAVED = 'Not saved — that change was refused, and nothing was kept'
+/* a refusal of one change opens with "Blocked:" and wears the grey note (owner D1667, D1668 — its words as drawn:
+   docs/mock/2026-11-05-notsaved-refusal/img/R5c-schedule-r2grey-*.png); "Not saved" is the failed-save band's alone */
+export const NOT_SAVED = 'Blocked: nothing was kept'
+export const NOT_YOURS = 'Blocked: that change is not yours to make'
+/** a refusal with its own reason (D1669): "Blocked: <reason>. Nothing was saved[ for anyone: take that person off the list, or change it]." */
+export const reasonRefusal = (why: string, several: boolean): string =>
+  `Blocked: ${why.replace(/[.\s]+$/, '')}. Nothing was saved${several ? ' for anyone: take that person off the list, or change it' : ''}.`
 export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: boolean } {
   const say = HOOKS.toast
   /* held in an object: the door's answer is set inside the save's own callback */
@@ -1461,7 +1467,7 @@ export function saveBatchX(fn: () => boolean | void): { ok: boolean; refused: bo
   try { done = writeInputsBatch(() => { got.inner = fn() }) } finally { HOOKS.toast = say }
   const content = got.inner !== false
   const refused = content && !done
-  if (refused && !got.spoke) say(NOT_SAVED, 'warn')
+  if (refused && !got.spoke) say(NOT_SAVED, 'blocked')
   return { ok: content && done, refused }
 }
 export const saveBatch = (fn: () => boolean | void): boolean => saveBatchX(fn).ok
@@ -2083,7 +2089,10 @@ export function commitInput(rec: any | null, draft: any, people: any[], opts?: I
   } finally { HOOKS.toast = say }
   if (!ok) {
     const why = heard[0]
-    say(why ? `${why} — nothing was saved${next.length > 1 ? ' for anyone: take that person off the list, or change it' : ''}` : 'Not saved — that change is not yours to make', 'warn')
+    /* a refusal that carries its own reason is grey "Blocked:" too (owner D1669, 7 Nov 26 — "Q1 yes"; pictured
+       docs/img/handpass/2026-11-06-notsaved-refusal/question/Q1-reason-grey-*.png): the reason, then what it cost, each a sentence */
+    if (why) say(reasonRefusal(why, next.length > 1), 'blocked')
+    else say(NOT_YOURS, 'blocked')
     return false
   }
   if (heard.length) say(heard.join(' · '), 'warn')

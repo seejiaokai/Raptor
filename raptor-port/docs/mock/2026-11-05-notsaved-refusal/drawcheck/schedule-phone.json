@@ -1,0 +1,184 @@
+{
+ "state": "schedule-phone",
+ "drawing": {
+  "script": "scripts/handpass/nsr1105-today.mjs",
+  "shot": "R5c-schedule-r2grey-phone"
+ },
+ "recorded": "2026-11-06T15:40:32.800Z",
+ "drawnOn": "main at 1f4b9b885",
+ "checkout": "2fa83931d",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "note": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 811,
+    "w": 378,
+    "h": 37
+   },
+   "ink": {
+    "x": 50,
+    "y": 822,
+    "w": 148.4,
+    "h": 14
+   },
+   "text": "Blocked: nothing was kept",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.nsr-ref.nsr-grey"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 29,
+    "y": 823,
+    "w": 14,
+    "h": 14
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.nsr-sign"
+  },
+  "lead": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 50,
+    "y": 822,
+    "w": 52.3,
+    "h": 14
+   },
+   "ink": {
+    "x": 50,
+    "y": 822,
+    "w": 52.3,
+    "h": 14
+   },
+   "text": "Blocked:",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  },
+  "rest": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 102.3,
+    "y": 822,
+    "w": 96.2,
+    "h": 14
+   },
+   "ink": {
+    "x": 102.3,
+    "y": 822,
+    "w": 96.2,
+    "h": 14
+   },
+   "text": "nothing was kept",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.nsr-rest"
+  }
+ },
+ "approved": {
+  "picture": "R5c-schedule-r2grey-phone.png",
+  "identical": true
+ }
+}

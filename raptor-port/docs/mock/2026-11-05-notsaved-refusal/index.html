@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>"Not saved" refusals: one look of their own</title>
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; background: #0d1117; color: #e6edf3; font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+  main { max-width: 1200px; margin: 0 auto; padding: 20px 16px 60px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 19px; margin: 30px 0 6px; padding-top: 12px; border-top: 1px solid #30363d; }
+  p { margin: 6px 0; }
+  .sub { color: #8b949e; font-size: 12px; }
+  .now { background: #161b22; border: 1px solid #3BC6E8; border-radius: 12px; padding: 14px 16px; margin: 16px 0 8px; }
+  .now b.q { color: #3BC6E8; }
+  .rec { color: #7ee2a8; font-weight: 600; }
+  .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 8px 0 10px; }
+  @media (max-width: 760px) { .trio { grid-template-columns: 1fr; } }
+  figure { margin: 0; background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 8px; }
+  figcaption { font-size: 12px; color: #8b949e; margin-bottom: 6px; }
+  .t { color: #f0a35e; font-weight: 700; } .r { color: #ff9aa2; font-weight: 700; } .g { color: #c9d1d9; font-weight: 700; }
+  img { display: block; width: 100%; height: auto; border-radius: 6px; cursor: zoom-in; }
+  ul { margin: 6px 0; padding-left: 20px; } li { margin: 3px 0; }
+  .note { background: #1c1f26; border-left: 3px solid #8b949e; padding: 8px 12px; border-radius: 4px; color: #c9d1d9; margin: 10px 0; font-size: 12px; }
+  #zoom { position: fixed; inset: 0; background: rgba(0,0,0,.92); display: none; align-items: center; justify-content: center; z-index: 9; overflow: auto; }
+  #zoom img { width: auto; max-width: none; cursor: zoom-out; }
+  #zoom.on { display: flex; }
+</style>
+</head>
+<body>
+<main>
+  <h1>"Not saved" refusals: one look of their own</h1>
+  <p class="sub">Round 2 · 5 Nov 26 · redrawn with your answer that a refusal opens with <b>Blocked:</b> (D1667) · on the real app at your PC's and your iPhone's size · tap any picture to see it full size</p>
+
+  <div class="now">
+    <p><b class="q">The question, Q2:</b> which look should every "Blocked:" message take?</p>
+    <ul>
+      <li><b>A · Red box</b>: the dark red box with a red edge, as first drawn.</li>
+      <li><b>B · Grey note</b>: the app's plain grey note, with only the "no entry" sign in red and "Blocked:" in bold white.</li>
+    </ul>
+    <p class="rec">My recommendation: B, the grey note.</p>
+    <p class="sub">Why: in this app a red box already means "your change was kept, but it clashes" (the red note after a drop, the day's red issues bar). With A, a scheduler glancing at red could take a dropped change for the usual clash note. With B, red stays for clashes, and the sign and the bold "Blocked:" carry the meaning. It's also the quieter, cleaner look you asked for. The cost: the Leave War's other refusals ("Type a whole number…") stay red tags, so on that page a grey "Blocked" tag would sit beside red ones.</p>
+  </div>
+
+  <div class="note">In both, the bold word takes a colon ("Blocked:"). The "Not saved" band stays amber with its warning triangle and Retry, as approved. Every other word is as today, except the schedule's general message, drawn as "Blocked: nothing was kept". A design check of round 1 (its scores and findings) is kept in this folder as design-check.md.</div>
+
+  <h2>1 · The schedule's refused change</h2>
+  <p class="sub">Today: "Not saved — that change was refused, and nothing was kept". Drawn: "Blocked: nothing was kept", so the word "refused" isn't said twice.</p>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R5c-schedule-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R5c-schedule-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R5c-schedule-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R5c-schedule-today-phone.png" alt="Today, iPhone"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R5c-schedule-r2red-phone.png" alt="Red box, iPhone"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R5c-schedule-r2grey-phone.png" alt="Grey note, iPhone"></figure>
+  </div>
+  <h2>2 · The schedule: "not yours to make"</h2>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R5bc-schedule-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R5bc-schedule-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R5bc-schedule-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <h2>3 · A Leave War figure box (Balances page)</h2>
+  <p class="sub">The tag now opens to the right, so it no longer covers the next row's grade arrow. It still gives no reason, as today.</p>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R1-figbox-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R1-figbox-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R1-figbox-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R1-figbox-today-phone.png" alt="Today, iPhone"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R1-figbox-r2red-phone.png" alt="Red box, iPhone"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R1-figbox-r2grey-phone.png" alt="Grey note, iPhone"></figure>
+  </div>
+  <h2>4 · The same box's passing note (a lock landing while he types)</h2>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R3c-figbox-gone-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R3c-figbox-gone-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R3c-figbox-gone-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R3c-figbox-gone-today-phone.png" alt="Today, iPhone"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R3c-figbox-gone-r2red-phone.png" alt="Red box, iPhone"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R3c-figbox-gone-r2grey-phone.png" alt="Grey note, iPhone"></figure>
+  </div>
+  <h2>5 · The Grades window</h2>
+  <p class="sub">On the iPhone pictures the test browser draws a serif typeface; your iPhone shows the app's normal letters.</p>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R2-grades-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R2-grades-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R2-grades-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R2-grades-today-phone.png" alt="Today, iPhone"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R2-grades-r2red-phone.png" alt="Red box, iPhone"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R2-grades-r2grey-phone.png" alt="Grey note, iPhone"></figure>
+  </div>
+  <h2>6 · A document too big to store: keeps its own words (D1667)</h2>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R4c-document-today-desk.png" alt="Today, PC"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R4c-document-r2red-desk.png" alt="Red box, PC"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R4c-document-r2grey-desk.png" alt="Grey note, PC"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R4c-document-today-phone.png" alt="Today, iPhone"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R4c-document-r2red-phone.png" alt="Red box, iPhone"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R4c-document-r2grey-phone.png" alt="Grey note, iPhone"></figure>
+  </div>
+
+  <h2>Where the note sits: whole screen, unchanged</h2>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · PC</figcaption><img src="img/R5-schedule-today-desk.png" alt="Today, PC whole screen"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · PC</figcaption><img src="img/R5-schedule-r2red-desk.png" alt="Red, PC whole screen"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · PC</figcaption><img src="img/R5-schedule-r2grey-desk.png" alt="Grey, PC whole screen"></figure>
+  </div>
+  <div class="trio">
+    <figure><figcaption><span class="t">TODAY</span> · iPhone</figcaption><img src="img/R5-schedule-today-phone.png" alt="Today, iPhone whole screen"></figure>
+    <figure><figcaption><span class="r">A · RED BOX</span> · iPhone</figcaption><img src="img/R5-schedule-r2red-phone.png" alt="Red, iPhone whole screen"></figure>
+    <figure><figcaption><span class="g">B · GREY NOTE</span> · iPhone</figcaption><img src="img/R5-schedule-r2grey-phone.png" alt="Grey, iPhone whole screen"></figure>
+  </div>
+
+  <div class="note">How these were pictured: each place was reached with the app's own buttons. The document message is real: the browser's storage was made to refuse the file. The Leave War's two were reached through their real typing refusal, then given the new words. The schedule's two and the figure box's passing note can't be reached by any button today, so they were raised through the app's own passing note.</div>
+</main>
+<div id="zoom" role="dialog" aria-label="Full size picture"></div>
+<script>
+  const z = document.getElementById('zoom'), zi = document.createElement('img'); z.appendChild(zi)
+  document.querySelectorAll('main img').forEach(i => i.addEventListener('click', () => { zi.src = i.src; zi.alt = i.alt; z.classList.add('on') }))
+  z.addEventListener('click', () => z.classList.remove('on'))
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') z.classList.remove('on') })
+</script>
+</body>
+</html>

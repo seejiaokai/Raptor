@@ -20,6 +20,17 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/notsaved-refusal-look -->
+### `claude/notsaved-refusal-look` — [NOTSAVED-REFUSAL-LOOK] BUILT and walked (D1668, the grey "Blocked" note); his Q1 and Q2 built (D1669, D1670); MERGED LIVE on his "merge live" of 7 Nov 26 (pull request 639); this block goes at the next handoff — written 7 Nov 26, verify before use
+- **Done:** `main` brought in (202 behind; notes clashes kept both sides); D1668's short line read against its full row by a fresh reader — PASS. Built (`2fa83931d`): the passing note's `blocked` kind (grey note, red drawn "no entry" sign, the lead to the first colon bold white, the rest quieter, read from the left) for the schedule's two catch-alls ("Blocked: nothing was kept", "Blocked: that change is not yours to make"), the document too big to store, and a Leave War box leaving refused; the Leave War's store refusal as the grey "Blocked" tag. WALK: 27/27 at 1536 and 402 (WebKit); drawing check 31/32. Evidence `raptor-port/docs/handpass/2026-11-06-notsaved-refusal.md`.
+- **His answers, 7 Nov 26 (built):** Q1 yes — D1669, the reason refusal grey "Blocked: <reason>. Nothing was saved…" (`ui/inputedit.tsx reasonRefusal`); Q2 yes — D1670, the tag under its own box kept (the drawing check green, the difference kept). **Waiting on him:** his iPhone look, then "merge live" (D1640: that word means his look is done).
+- **Left on the PC:** `C:
+srb1106` (the drawing's build, a link into the app's packages — delete the link `raptor-port
+ode_modules` before the folder) and `C:
+sr1106` (a half copy, stopped) — both outside the repo, safe to delete.
+- **Numbers:** this chat holds rulings D1667–D1679 (D1667–D1670 used); lessons 83–85 unused; observations 802–809 (802–804 used).
+- **Opening line:** none — merged; a new job starts level with `main`. [NOTSAVED-REFUSAL-LOOK] archived; [WEBKIT-DOCNOTE-SIGNIN] stays open (his iPhone answer).
+<!-- /now -->
 <!-- now:claude/lw-cell-combos -->
 ### `claude/lw-cell-combos` — [LW-CELL-COMBOS] MERGED LIVE on his "merge live" (6 Nov 26, pull request 650); this block goes at the next handoff — written 6 Nov 26, verify before use
 - **Where it started:** his D1723/D1725 — every combination of entries on one Leave War day measured, fixes drawn, his pick built. Design rounds and his answers: D1726 (zoomed out, one letter scale), D1727 (two whole side by side turned; whole beside a half keeps the cell; "!" tag; stack of cards), D1728 (last day = yellow line; a gone day's entry = its box striped, no PO mark; an empty gone day keeps "PO"), D1729 (faint stripes), D1730 (not faded; the stack's card grey), D1731 (the Legend's "Marks on a day" as drawn). Design review of the chosen look: `raptor-port/docs/img/handpass/2026-11-06-lw-cell-combos/design-review-2026-11-06-chosen.md`.

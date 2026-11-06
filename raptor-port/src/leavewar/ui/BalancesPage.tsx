@@ -44,7 +44,7 @@ import './balances.css'
 /** A figure as the page writes it: halves .5 (D1246), a minus sign, never a hyphen — the app's one helper, kept in the
  *  figure box's module so the grid and the bid windows write a figure through the same words (FigureCell.tsx). */
 import { figWords } from './figwords'
-import { saveTypedFigure } from './balancefigs'
+import { BLOCKED, saveTypedFigure } from './balancefigs'
 /** what a box's words read as a number — "−2", "-2", "17.5", "+3"; NaN for anything else (the store's refusal names it) */
 const readFig = (t: string) => { const s = t.trim().replace(/^\+/, '').replace(/^[−–]/, '-'); return /^-?(\d+(\.\d*)?|\.\d+)$/.test(s) ? Number(s) : NaN }
 
@@ -129,6 +129,14 @@ function keepInSight(e: HTMLElement): void {
 /** ONE BOX (the spec §1.1, D1080): saves on Enter or on leaving it, never on each key; Escape puts the old figure back; one
  *  tap then typing replaces it — the app's own arming for its figure boxes (ui/interactions.ts, `input.mth-in`). `save`
  *  answers the refusal's words, or null when it saved; the words stand at the box until it is next typed in. */
+/* THE TAG UNDER A BOX (owner D1668, 6 Nov 26 — "B"; R1-figbox-r2grey-*.png, R2-grades-r2grey-*.png): a change the store
+   refused reads "Blocked" in the app's plain grey note, a red "no entry" sign before it — never a red box, which means a
+   change kept that clashes; every other refusal of the box keeps the red tag. Shared by the figure boxes, the Grades window
+   and the person window. */
+export function ErrWords({ err }: { err: string }) {
+  return err === BLOCKED ? <><span className="bk-sign" aria-hidden="true" /><b>{BLOCKED}</b></> : <>{err}</>
+}
+const errCls = (err: string) => `bp-err${err === BLOCKED ? ' bp-blocked' : ''}`
 export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
   value: number
   sm?: boolean
@@ -179,7 +187,9 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
     /* a box taken away emptied was no save he asked for: nothing is said of it */
     if (typed.current === null || typed.current.trim() === '') return
     const why = commitText(typed.current)
-    if (why) HOOKS.toast(`${labelNow.current} not saved: ${why}`, 'warn')
+    /* the grey refusal note, "Blocked:" first (owner D1667, D1668 — R3c-figbox-gone-r2grey-*.png: "Blocked: Dice LVE App
+       bal. Locked by admin.") */
+    if (why) HOOKS.toast(why === BLOCKED ? `${BLOCKED}: ${labelNow.current}.` : `${BLOCKED}: ${labelNow.current}. ${why}.`, 'blocked')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runs once, as the box leaves the screen: what it saves comes from the refs set as he types (held, typed), never from this render's figures
   }, [])
   /* Escape inside a window (the Grades window — a Sheet, whose Escape closes it) puts the old figure back FIRST: the window
@@ -243,7 +253,7 @@ export function FigBox({ value, sm, label, testid, save, plus, cls, fit }: {
         onKeyDown={key}
         onBlur={() => { held.current = held.current ?? { save, value, shown }; if (skip.current) { skip.current = false; typed.current = null; setText(null); return } commit(); held.current = null }}
       />
-      {err && <span className="bp-err" ref={errRef} role="alert" data-testid={testid ? `${testid}-err` : undefined}>{err}</span>}
+      {err && <span className={errCls(err)} ref={errRef} role="alert" data-testid={testid ? `${testid}-err` : undefined}><ErrWords err={err} /></span>}
     </span>
   )
 }

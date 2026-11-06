@@ -475,7 +475,7 @@ describe('A8 — a group’s OIL question is headed for the group, by every door
        of it is installed here, for this save, and taken out again. */
     setOilPlan(oilAskPlan)
     try { await click(tid('oil-no')); await click(tid('oilconf-save')) } finally { setOilPlan(null) }
-    expect(said.filter(m => /not saved|nothing was saved/i.test(m)), 'his answer is his to give: nothing is refused').toEqual([])
+    expect(said.filter(m => /^Blocked:|not saved|nothing was saved/i.test(m)), 'his answer is his to give: nothing is refused').toEqual([])
     expect(live(rec.iid).oil, 'one answer, on the one record').toEqual({ '2026-10-17': 0 })
     expect(idsOf(live(rec.iid)), 'for both of its people').toEqual(ppl)
   })

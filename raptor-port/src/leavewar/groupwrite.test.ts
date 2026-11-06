@@ -535,7 +535,7 @@ describe('the OIL question — ONE answer for everyone in the input, given by wh
     said = []
     expect(commitInput(null, sat(), THREE, { oil: { [SAT]: 1 } })).toBe(false)
     expect(feb(), 'nothing filed for anyone').toHaveLength(0)
-    expect(said.join(' '), 'and it says so').toMatch(/not saved|nothing was saved/i)
+    expect(said.join(' '), 'and it says so').toMatch(/^Blocked:|not saved|nothing was saved/i)
     expect(commitInput(null, sat(), THREE, { oil: { [SAT]: 0.5 } })).toBe(true)
     expect(idsOf(the())).toEqual(THREE)
   })

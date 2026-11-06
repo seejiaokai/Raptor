@@ -1004,7 +1004,8 @@ describe('STEP 3 — product fault C, reported and left red: a member is offered
     await click($('#inpEditDel'))
     said.length = 0
     await click(tid('inped-delall-yes'))
-    expect(said.join(' | ')).not.toMatch(/was refused, and nothing was kept|not yours to make/)
+    /* the two catch-all refusals, in their words since D1667 ("Blocked: nothing was kept" / "…not yours to make") */
+    expect(said.join(' | ')).not.toMatch(/nothing was kept|not yours to make/)
     expect(live('fc2'), 'the press he was offered did what it said').toBeUndefined()
   })
 
