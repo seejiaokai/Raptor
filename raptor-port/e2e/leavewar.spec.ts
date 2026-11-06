@@ -6408,7 +6408,8 @@ test('posting out tags the last day, and the row leaves the months after it', as
   await page.locator('[data-testid="po-overseas"]').click()
   await page.locator('[data-testid="po-confirm"]').click()
 
-  // The first day gone is hatched; the last day IN wears the PO tag.
+  // The first day gone is hatched; the last day IN wears its mark — the yellow line since his D1728 (its "PO" kept for a
+  // screen reader, drawn 2px wide).
   await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
   const tag = page.locator('[data-testid="polast-slipway"]')
   await expect(tag).toHaveText('PO')

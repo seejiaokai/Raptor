@@ -1226,6 +1226,10 @@ export function Matrix() {
   // complaint set. On the TABLE, not an ancestor, and it changes only when the
   // zoom steps — a restyle the zoom itself already costs, never per frame.
   const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
+  /* ZOOMED OUT, EVERY CODE AT ONE SCALE (his D1726, 6 Nov 26): below zoom 1 a whole day's two letters are set at 8.9px,
+     under the 9px the iPhone's browser never shrinks a letter below — so LL and OL shrink with the grid like every other
+     code instead of standing big (matrix.css `table.mx.lw-small`). A class on the tables, changed only when the zoom crosses 1. */
+  const smallCls = zoom < 1 ? ' lw-small' : ''
 
   /* PINCH TO ZOOM THE GRID (owner D1282, D1283, D1284, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`), the app's one pinch body
      (ui/pinchzoom.ts — the Scheduler Board's and Quals' too). While the fingers move the grid is stretched as a picture,
@@ -3702,7 +3706,7 @@ export function Matrix() {
           ref={wrapRef}
           onScroll={onWrapScroll}
         >
-          <table className="mx" style={zoomStyle}>
+          <table className={`mx${smallCls}`} style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
                 screenshot): counts first, then the month buttons, then the
                 callsign + dates header, then the event rows, then the roster.
@@ -3982,7 +3986,7 @@ export function Matrix() {
             const cols = s.cols
             return (
               <table
-                className={`mx${extra ? ' ' + extra : ''}`}
+                className={`mx${extra ? ' ' + extra : ''}${smallCls}`}
                 style={{ tableLayout: 'fixed', width: cols.reduce((a, b) => a + b, 0) / zoom, ...(zoomStyle ?? null) }}
               >
                 <colgroup>
@@ -4057,7 +4061,7 @@ export function Matrix() {
             data-testid="frozen-cols"
             style={{ top: bandTop ?? 0, ...(bandTop == null ? { visibility: 'hidden' as const } : null) }}
           >
-            <table className="mx" style={zoomStyle}>
+            <table className={`mx${smallCls}`} style={zoomStyle}>
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (

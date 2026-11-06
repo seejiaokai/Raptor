@@ -39,6 +39,8 @@
 //   gone   — a day after a posting out: the box itself carries the posting hatch; no PO tag.
 //   last   — his last day in: a 2px yellow line down the day's right edge, the box stepped clear of it; no PO tag.
 export const OPTIONS = {
+  /* the built app since step 3 — the measuring script draws the cell as MatrixRows does, no stylesheet of ours */
+  build: { css: '', map: null },
   today: { css: '', map: null },
   stack: { css: '', map: 'stack' },
   edge: { css: 'edge', map: 'edge' },

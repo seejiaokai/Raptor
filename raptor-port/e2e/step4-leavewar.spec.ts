@@ -486,7 +486,9 @@ test('clearing leave after a posting-out: LL with the PO tag, charged, never cou
   await backToWar(page)
   await showMonth(page, D)
   await expect(chip(page, P, D)).toHaveText('LL')
-  await expect(page.locator(`[data-testid="potag-${P}-${D}"]`)).toBeVisible()
+  // no PO tag beside an entry on a gone day since his D1728 (6 Nov 26): the stripes on its box say it (`bx-gone`)
+  await expect(page.locator(`[data-testid="potag-${P}-${D}"]`)).toHaveCount(0)
+  await expect(page.locator(`[data-testid="cell-${P}-${D}"]`)).toHaveClass(/bx-gone/)
   expect(await figure(page, P, 'lve')).toBe(lve0 - 2)
   expect(await counts()).toBe(manning0)            // already out of manning; the leave changes nothing
 })

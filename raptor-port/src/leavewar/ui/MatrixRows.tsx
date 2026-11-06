@@ -15,7 +15,7 @@ import { figWords } from './figwords'
 import { NamePuck } from './NamePuck'
 import { offWar, type Contrib, type DayView } from '../engine/dayview'
 import type { Views } from '../engine/dayview'
-import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
+import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairLook, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
 
 /* the drag configurations of the rows (`RowDragCfg`, `MANNING_DRAG` …): ui/matrixrowparts.ts */
 
@@ -357,29 +357,32 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            box. The second entry is the day view's next record in its one order (`compareContrib`). */
         const entries = live && view ? view.all.filter(c => c.kind !== 'notice') : NO_ENTRIES
         const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
-        const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
+        /* …and how the two are drawn (his D1727): side by side turned, or a whole day with the half over its own half */
+        const look = two ? pairLook(two) : null
+        const where = look ? look[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
         const wide = text.replace('*', '').length > 3 ? ' wide w4' : text.replace('*', '').length > 2 ? ' wide' : ''   // four letters (ATCH — D1375) a step smaller still
         /* the joined bar (D1359): its classes; a day the drag selects shows as today — its own box, its code, the cyan */
         const joins = live ? joinClasses(d.date, views[p.id], recs) : []   // a day the drag selects undoes them in the stylesheet (td.selcell)
-        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
+        const star = text.includes('*') ? ' bx-star' : ''
+        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${star}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
         const portionClass = ''
         const second = two ? entries[1]! : null
         /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */
         const mk = two && mark === '+1' ? '' : mark
-        /* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8, #9, 23 Oct 26). The mark ("!", "+n") keeps the
-           top-right corner and the PO tag the bottom-right — until a box in that half of the cell holds letters there: a
-           morning box (`top`) or a morning HO beside a whole day (`right-am`) under the mark, an afternoon one (`bot`,
-           `right-pm`) under the tag. A whole day's letters (and a side-by-side box's) sit mid-height, clear of both.
-           Then the tile takes the other corner on the right when nothing is there — no box's letters, no other tile —
-           (`mklo`, `pohi`); when there is none, the box's letters step aside for it (matrix.css). Classes on the cell,
-           no node added (`docs/performance.md` §E). */
-        const places: readonly string[] = !live ? [] : two ?? [where]
-        const lettersTop = places.some(pl => pl === 'top' || pl === 'right-am')
-        const lettersBot = places.some(pl => pl === 'bot' || pl === 'right-pm')
+        /* THE DAY'S MARKS (his D1727, D1728, D1729, D1730, 6 Nov 26 — [LW-CELL-COMBOS]). Each is a class on the cell, no node
+           added (`docs/performance.md` §E), and each keeps every box's letters whole (measured on all 23,940 combinations):
+           - `bx-alarm`: the amber "!" is a small outlined tag in the top-right corner, the boxes making room for it;
+           - `bx-pile`: three or more entries draw the one box as the top of a stack of cards — a grey card behind it — in
+             place of the "+n" corner (the tile stays in the cell, hidden, for its words to a screen reader and a hover);
+           - `bx-gone`: an entry on a day after his posting out wears faint dark stripes on its box, and no PO mark at all —
+             the posting's hatch round it says the rest; a gone day with nothing filed keeps its bare "PO";
+           - `bx-last`: his last day in carries a thin yellow line down its right edge — the `.polast` tile itself, drawn as
+             a line (matrix.css) — and its boxes step left of it. */
         const mkShown = !!mk && (here || outLeave || notYetArrived)
-        const poTag = outLeave && !notYetArrived
-        const mkLow = mkShown && lettersTop && !lettersBot && !poTag
-        const poHigh = poTag && lettersBot && !lettersTop && !mkShown
+        const amber = !!view?.amber
+        const alarm = mkShown && live && amber
+        const pile = mkShown && live && !amber && !two
+        const goneBox = outLeave && !notYetArrived
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
         // stays true here. `raptor` says the approval happened elsewhere and
@@ -427,7 +430,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${mkLow ? ' mklo' : ''}${poHigh ? ' pohi' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin bx-last' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${alarm ? ' bx-alarm' : ''}${pile ? ' bx-pile' : ''}${goneBox ? ' bx-gone' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -443,7 +446,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
               /* the second box wears its own edges too (the scenario designer's find): the Inputs page's by the same one rule
                  as the main box (`offWar` — filed there, or the app's own credit, as it wears alone), the dotted one for
                  leave moved here */
-              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${joins[1] ?? ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${look![1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${boxText(second.code, !!second.auto).includes('*') ? ' bx-star' : ''}${joins[1] ?? ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
                 {boxText(second.code, !!second.auto)}
               </span>
             )}
@@ -463,9 +466,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                 {mk}
               </span>
             )}
-            {poTag && (
-              <span className="potag" data-testid={`potag-${p.id}-${d.date}`}>PO</span>
-            )}
+            {/* no PO tag beside an entry on a gone day (his D1728): the stripes on the box and the hatch round it say it */}
             {lastIn && (
               <span
                 className="polast"

@@ -18,9 +18,10 @@ const OUT = L.OUT
 mkdirSync(OUT, { recursive: true })
 /* OPT=<option> measures a candidate fix (lw-cell-combos-options.mjs) — its markup and stylesheet over the real build */
 const OPT = process.env.OPT || 'today'
+const CLEAR_TAG = process.env.CLEAR === '1' ? '-clear' : ''
 const { OPTIONS, CSS, remap } = await import('./lw-cell-combos-options.mjs')
 if (!OPTIONS[OPT]) throw new Error('no option ' + OPT)
-const tag = `${SIZE}-${FONT}${OPT === 'today' ? '' : '-' + OPT}${process.env.ZOOMS && process.env.ZOOMS !== '0.8' && process.env.ZOOMS !== '1' ? '-z' + process.env.ZOOMS : ''}`
+const tag = `${SIZE}-${FONT}${OPT === 'today' ? '' : '-' + OPT}${CLEAR_TAG}${process.env.ZOOMS && process.env.ZOOMS !== '0.8' && process.env.ZOOMS !== '1' ? '-z' + process.env.ZOOMS : ''}`
 console.log('[lw-cell-combos-measure v1]', tag, ZOOMS.join(' '), L.DIST)
 
 /* THE CODES the grid can draw (engine/codes.ts KIND, boxText), each with what decides its box: its kind (colour class),
@@ -75,7 +76,23 @@ for (const c of CODES.filter(c => LEAVES.includes(c.id))) for (const s of ['w', 
 console.log('combinations:', combos.length)
 
 /* the cell's classes and inner markup exactly as MatrixRows draws them */
+/* OPT=build: the cell as the BUILT app draws it since [LW-CELL-COMBOS] step 3 (his D1727, D1728) — MatrixRows `pairLook`
+   and the cell's `bx-` marks, with no stylesheet of ours on top: this is the re-walk of the build. */
+function buildMarkup(cb) {
+  const pl = cb.boxes.map(b => b.place)
+  let looks = pl
+  if (pl.length === 2 && pl[0] === 'left' && pl[1] === 'right') looks = ['left bx-tilt', 'right bx-tilt']
+  else if (pl.length === 2 && pl[0] === 'left') looks = pl[1] === 'right-am' ? ['whole bx-floor bx-lo', 'top bx-roof bx-am'] : ['whole bx-floor bx-hi', 'bot bx-roof bx-pm']
+  const warn = cb.tiles.includes('warn'), more = cb.tiles.includes('more') && !warn && cb.boxes.length === 1
+  const po = cb.tiles.includes('po'), last = cb.tiles.includes('last')
+  const mk = warn ? 'warn' : more ? 'more' : ''
+  const td = ['act', po ? 'gone outlv bx-gone' : '', last ? 'pofin bx-last' : '', mk ? 'mkd' : '', 'hasc', warn ? 'bx-alarm' : '', more ? 'bx-pile' : ''].filter(Boolean).join(' ')
+  const spans = cb.boxes.map((b, i) => `<span class="c k-${b.c.kind} s-${b.state || 'a'} ${looks[i]}${wideOf(b.c.text)}${b.c.text.includes('*') ? ' bx-star' : ''}${b.c.edge ? ' raptor' : ''}">${b.c.text}</span>`).join('')
+  const tiles = (mk ? `<span class="mk ${mk}">${mk === 'more' ? '+2' : '!'}</span>` : '') + (last ? '<span class="polast">PO</span>' : '')
+  return { td, html: spans + tiles }
+}
 function markup(cb0) {
+  if (OPT === 'build') return buildMarkup(cb0)
   const cb = OPTIONS[OPT].map ? remap(OPTIONS[OPT].map, cb0) : { ...cb0, extraTd: [] }
   const places = cb.boxes.map(b => b.place)
   const lettersTop = places.some(p => p === 'top' || p === 'right-am')
@@ -127,12 +144,16 @@ console.log('host cells', host.ids.length, 'font', host.font)
 
 /* measure every combination in one cell, at one zoom: the boxes' letters against their room */
 const SMALL = (OPTIONS[OPT].css || '').split(' ').includes('scale')
-const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId, small }) => {
+/* CLEAR=1: a letter touching its box's own edge line counts as not whole too (the design review of 6 Nov 26 — a letter on
+   the ring reads cramped, and "inside the box" let it pass) */
+const CLEAR = process.env.CLEAR === '1'
+const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId, small, build, clear }) => {
   const td = document.querySelector(`[data-testid="${cellId}"]`)
   const table = td.closest('table')
   const keep = { cls: td.className, html: td.innerHTML, zoom: table.style.zoom, lwz: table.style.getPropertyValue('--lwz') }
   table.style.zoom = String(z); table.style.setProperty('--lwz', String(z))
   table.classList.toggle('cc-small', !!small && z < 1)
+  if (build) table.classList.toggle('lw-small', z < 1)   // the build's own class (Matrix `smallCls`), set by the zoom
   const out = []
   const TOL = 0.3
   for (const it of items) {
@@ -187,7 +208,8 @@ const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId, small }
       const roomL = r.left + Math.max(inset, edgeL), roomR = r.right - inset
       const out = pts.filter(([x, y]) => x < r.left || x > r.right || y < r.top || y > r.bottom).length
       const underEdge = edgeL ? pts.filter(([x, y]) => x >= r.left && x < r.left + edgeL && y >= r.top && y <= r.bottom).length : 0
-      const onLine = pts.filter(([x, y]) => x >= r.left && x <= r.right && (x < r.left + inset || x > r.right - inset)).length
+      const onLine = pts.filter(([x, y]) => x >= r.left && x <= r.right && y >= r.top && y <= r.bottom &&
+        (x < r.left + inset || x > r.right - inset || (clear && (y < r.top + inset || y > r.bottom - inset)))).length
       const inTile = (q, x, y) => x > q.l && x < q.r && y > q.t && y < q.b && (!q.tri || (q.tri === 'top' ? x - q.l > y - q.t : x - q.l > q.b - y))
       const by = tiles.filter(q => pts.some(([x, y]) => inTile(q, x, y))).map(q => q.k.replace('mk ', ''))
       const cut = out > 0, vcut = false
@@ -195,14 +217,14 @@ const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId, small }
         fs: +fsPx.toFixed(2), boxW: +r.width.toFixed(2), boxH: +r.height.toFixed(2),
         room: +(roomR - roomL).toFixed(2), need: +(inkR - inkL).toFixed(2), short: +Math.max(0, (inkR - inkL) - (roomR - roomL)).toFixed(2),
         inkH: +(inkB - inkT).toFixed(2), cut, edge: underEdge > 0, line: onLine > 0, by,
-        ok: !cut && !underEdge && !by.length }
+        ok: !cut && !underEdge && !by.length && !(clear && onLine > 0) }
     })
     out.push({ boxes, cellW: +cr.width.toFixed(2), cellH: +cr.height.toFixed(2) })
   }
   td.className = keep.cls; td.innerHTML = keep.html
   table.style.zoom = keep.zoom; if (keep.lwz) table.style.setProperty('--lwz', keep.lwz); else table.style.removeProperty('--lwz')
   return out
-}, { items, z, cellId, small: SMALL })
+}, { items, z, cellId, small: SMALL, build: OPT === 'build', clear: CLEAR })
 
 const results = []
 for (const z of ZOOMS) {
