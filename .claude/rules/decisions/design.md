@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1668 | 6 Nov 26 | Every "Blocked:" refusal of one change takes the app's plain grey note, with only the "no entry" sign in red and "Blocked:" in bold white, not a red box, so that red keeps meaning a change kept that clashes. |
 | D1667 | 5 Nov 26 | A refusal of one change opens with the bold word "Blocked:", the rest after the colon in quieter words; never "Not saved", which stays the failed-save band's alone, and never "Refused", which already names a leave bid or access request turned down; a document too big to store keeps its own words. |
 | D1666 | 5 Nov 26 | The app's address takes a test switch, `?savefail`: in the one tab opened with it every save is refused, so the "Not saved" band, its Retry and the pass's "Not sent yet" can be seen on his own iPhone; without it the app saves as always, and nobody else is touched. |
 | D1665 | 5 Nov 26 | The app's other "not saved" messages — a refusal of one change (a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) — take one matching look of their own, kept apart from the "Not saved" band's; each is pictured today and the common look drawn for him before anything is built (D1625). — changed by D1667 |
