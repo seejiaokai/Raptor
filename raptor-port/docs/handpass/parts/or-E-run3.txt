@@ -1,0 +1,52 @@
+E6 Ranger bell at start {"id":"notifyBell","lit":true,"open":"false"}
+saved e6-01-bell-lit
+E6 tap {"id":"notifyBell","lit":true,"open":"true"} 
+saved e6-02-list-full
+saved e6-02-list
+E6 list {"box":{"x":8,"y":46,"w":374,"h":357},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-t","scrolls":false,"markAll":{"x":283,"y":373,"bottom":395,"visible":true},"empty":null,"n":6,"lines":["[unread] Training | Fri 17 Jul | Cancelled · Saber | 2 h | bold 600 h52 op 1","[unread] Training | Fri 17 Jul | You were added · Saber | 2 h | bold 600 h52 op 1","[unread] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 2 h | bold 600 h52 op 1","[unread] Solo drill | Thu 16 Jul | You were added · Saber | 2 h | bold 600 h52 op 1","[unread] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 4 h | bold 600 h52 op 1","[unread] Range brief | Wed 15 Jul | You were added · Saber | 4 h | bold 600 h52 op 1"]}
+E6 raw list facts {"vw":390,"box":{"x":8,"y":46,"w":374,"h":357},"bell":{"x":342,"y":8,"w":34,"h":32,"right":376},"hit":true}
+E6 tap on first line {"line":"TrainingFri 17 Jul Cancelled · Saber 2 h","window":1,"title":"Training","page":"page-inputs","listOpen":0}
+saved e6-03-line-opens-input
+saved e6-04-one-read-full
+saved e6-04-one-read
+E6 list after one read {"box":{"x":8,"y":46,"w":374,"h":357},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-t","scrolls":false,"markAll":{"x":283,"y":373,"bottom":395,"visible":true},"empty":null,"n":6,"lines":["[read] Training | Fri 17 Jul | Cancelled · Saber | 3 h | bold 400 h52 op 1","[unread] Training | Fri 17 Jul | You were added · Saber | 3 h | bold 600 h52 op 1","[unread] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 3 h | bold 600 h52 op 1","[unread] Solo drill | Thu 16 Jul | You were added · Saber | 3 h | bold 600 h52 op 1","[unread] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 5 h | bold 600 h52 op 1","[unread] Range brief | Wed 15 Jul | You were added · Saber | 5 h | bold 600 h52 op 1"]}
+E6 bell state while list open {"id":"notifyBell","lit":true,"open":"true"}
+E5 ids ["imqoidhybvv2jdp","imqomntn0ung5d8"]
+E5 bars [{"iid":"imqoidhybvv2jdp","t":"2 · Range brief","strike":"line-through","op":"0.6","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"},{"iid":"imqomntn0ung5d8","t":"Ranger","strike":"line-through","op":"0.6","tip":"Ranger · Solo drill · Training · 16 Jul · 10:00–11:00 / Cancelled — WX"},{"iid":"imqoidgimhl1km7","t":"Ranger","strike":"none","op":"1","tip":"Ranger · Appointment · 16 Jul · 17:00–18:30 / Placed by Ranger · 29 Jun 26, 09:07"},{"iid":"imqomnxgx1tqlvw","t":"2 · Training","strike":"line-through","op":"0.6","tip":"Hex, Ranger · Training · 17 Jul · 09:00–10:00 / Cancelled"},{"iid":"imqoidgimw4gb9c","t":"4 · Meeting","strike":"none","op":"1","tip":"Drifter, Echo, Ranger, Saber · Meeting · 23 Jul · 10:00–11:00 / Placed by Saber for 4 people · 25 Jun 26, 14:32"}]
+saved e5-01-month-full
+E5 card (Range brief, as Ranger) [{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":"rgb(138, 150, 163)","h":51,"w":332,"over":false}]
+saved e5-02-card
+E5 Range brief window controls (pickers/calendar days left out) [{"id":"pp-several","tag":"button","text":"Several people","dis":false,"ro":false},{"id":"pp-all-pilots","tag":"button","text":"All","dis":false,"ro":false},{"id":"pp-all-wsos","tag":"button","text":"All","dis":false,"ro":false},{"id":"pp-all-personnel","tag":"button","text":"All","dis":false,"ro":false},{"id":"inpEditType","tag":"select","text":"LL OL OIL CCL PL FCL EL CL HL OML ATT C ","dis":false,"ro":false},{"id":"inpEditOwnTitle","tag":"input","text":"Range brief","dis":false,"ro":false},{"id":"inpEditAllday","tag":"input","text":"on","dis":false,"ro":false},{"id":"inpEditStart","tag":"input","text":"09:00","dis":false,"ro":false},{"id":"inpEditEnd","tag":"input","text":"10:00","dis":false,"ro":false},{"id":"inpEditRmk","tag":"input","text":"Bring your kit","dis":false,"ro":false},{"id":"inped-takeout","tag":"button","text":"Take me out","dis":false,"ro":false},{"id":"inpEditCancel","tag":"button","text":"Close","dis":false,"ro":false}]
+tap on Tally refused by the page: TimeoutError: locator.tap: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('#inpEdit
+E5 Ranger taps Tally in the window: before {"pressed":"false","cls":"pp-puck","aria":null,"pe":"auto"} after {"pressed":"false","cls":"pp-puck"} Save visible: 0 INPUTS ["Ranger","Hex"] 
+E5 window title bar {"text":"CXWX","controls":0}
+E5 window text PEOPLE 2 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder B Cutter C Dash C Echo IW Fable C Ghost C Grit C Hex C Ledger IW Quill IW Relay IW Rune B Ryder C Scope IW Static IW Vector C Wisp C SANS Bolt C Jester B Kraken D Marlin A Otter D Pixel D Rebel B Scribe D Tally O Zenith C Zulu O PERSONNEL All Cotter Ratchet Widget TYPE LL OL OIL CCL PL FCL EL CL HL OML ATT C ATT B Upchit Training CSE Meeting Fly with Personal Appointment Duty Event OD Other TITLE WHEN all day REMARKS Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00 Take me out Only
+saved e5-03-window-full
+E5 any un-cancel control []
+saved e5-04-window-takemeout
+E5 list card Range brief [{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":"rgb(138, 150, 163)","h":51,"w":330,"over":false}]
+saved e5-05-list-Range-brief
+E5 list card Solo drill [{"text":"10:00–11:00 RangerTRAINING CXSolo drillWX By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":null,"h":51,"w":330,"over":false}]
+saved e5-05-list-Solo-drill
+E5 solo card before [{"text":"10:00–11:00 RangerTRAINING CXSolo drillWX By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":null,"h":51,"w":332,"over":false}]
+E5 solo window controls [{"id":"pp-several","tag":"button","text":"Several people","dis":false,"ro":false},{"id":"inTypeHelp","tag":"button","text":"?","dis":false,"ro":false},{"id":"inpEditType","tag":"select","text":"LL OL OIL CCL PL FCL EL CL HL OML ATT C ","dis":false,"ro":false},{"id":"inpEditOwnTitle","tag":"input","text":"Solo drill","dis":false,"ro":false},{"id":"inpEditAllday","tag":"input","text":"on","dis":false,"ro":false},{"id":"inpEditStart","tag":"input","text":"10:00","dis":false,"ro":false},{"id":"inpEditEnd","tag":"input","text":"11:00","dis":false,"ro":false},{"id":"inpEditRmk","tag":"input","text":"","dis":false,"ro":false},{"id":"inpEditDel","tag":"button","text":"Delete","dis":false,"ro":false},{"id":"inpEditCancel","tag":"button","text":"Cancel","dis":false,"ro":false},{"id":"inpEditSave","tag":"button","text":"Save","dis":false,"ro":false}]
+E5 solo window title bar "CXWX"
+saved e5-06-solo-window-full
+E5 after Ranger saves {"iid":"imqomntn0ung5d8","date":"Jul 16","s":600,"e":660,"type":"Training","people":["Ranger"],"cx":true,"cxr":"WX","by":"stiff","ttl":"Solo drill reworded","rmk":"Bring water"} Input updated
+E5 oil sheet? 0
+E5 solo card after {"text":"10:00–11:00 RangerTRAINING CXSolo drill rewordedWX · Bring water By Saber","tag":"CX","strike":"line-through","why":"WX"}
+saved e5-07-solo-after-full
+saved e5-07-solo-after
+E6 mark-all control 1 6
+E6 bell after Mark all read {"id":"notifyBell","lit":false,"open":"true"} list open: 1
+saved e6-05-all-read-full
+saved e6-05-all-read
+E6 list after all read {"box":{"x":8,"y":46,"w":374,"h":321},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-line","scrolls":false,"markAll":null,"empty":null,"n":6,"lines":["[read] Training | Fri 17 Jul | Cancelled · Saber | 3 h | bold 400 h52 op 1","[read] Training | Fri 17 Jul | You were added · Saber | 3 h | bold 400 h52 op 1","[read] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 3 h | bold 400 h52 op 1","[read] Solo drill | Thu 16 Jul | You were added · Saber | 3 h | bold 400 h52 op 1","[read] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 5 h | bold 400 h52 op 1","[read] Range brief | Wed 15 Jul | You were added · Saber | 5 h | bold 400 h52 op 1"]}
+E6 bell after reload + sign-in {"id":"notifyBell","lit":false,"open":"false"}
+saved e6-06-after-reload
+saved e6-07-list-after-reload-full
+saved e6-07-list-after-reload
+E6 list after reload {"box":{"x":8,"y":46,"w":374,"h":321},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-line","scrolls":false,"markAll":null,"empty":null,"n":6,"lines":["[read] Training | Fri 17 Jul | Cancelled · Saber | 3 h | bold 400 h52 op 1","[read] Training | Fri 17 Jul | You were added · Saber | 3 h | bold 400 h52 op 1","[read] Solo drill | Thu 16 Jul | Cancelled — WX · Saber | 3 h | bold 400 h52 op 1","[read] Solo drill | Thu 16 Jul | You were added · Saber | 3 h | bold 400 h52 op 1","[read] Range brief | Wed 15 Jul | Cancelled — WX · Saber | 5 h | bold 400 h52 op 1","[read] Range brief | Wed 15 Jul | You were added · Saber | 5 h | bold 400 h52 op 1"]}
+errors []

@@ -1,0 +1,20 @@
+PASS B1-phone Edit Schedule: the band is up — saw true
+NOTE B1-phone — {"h":36,"left":0,"right":402,"vw":402,"wordsLeft":14,"retryRight":14,"lead":"Not saved","rest":"keep this page open","sepShown":false,"retryBg":"rgb(229, 194, 74)","edge":"rgba(229, 194, 74, 0.5)","line":"rgba(229, 194, 74, 0.5)","text":"Not saved — keep this page openRetry"}
+PASS B2-phone Retry saves and the band goes — saw true
+PASS W1-phone the waiting screen says the request did not save (the band) — saw true
+PASS W2-phone nothing under the band: the logo below it — saw {"bandTop":0,"bandBottom":36,"logoTop":80,"covered":false}
+PASS W3-phone Retry saves the request and the band goes — saw true
+NOTE W4-phone — {"cs":"Stranger","state":"Waiting for an admin","fields":["InitialsST","SeatPilot","CATOCU"],"steps":["done:Request sent","now:An admin approves",":You're on the schedule"],"who":"Signed in as stranger","sideScroll":false}
+PASS G1-phone the guest page: the band is the bar's last line — saw true
+NOTE G1-phone — {"bandBottom":79,"barBottom":80,"pageTop":80,"covers":false}
+NOTE S1-phone — the sign-in after signing out with the save still failing: band up
+PASS B1-desk Edit Schedule: the band is up — saw true
+NOTE B1-desk — {"h":36,"left":0,"right":1536,"vw":1536,"wordsLeft":20,"retryRight":20,"lead":"Not saved","rest":"keep this page open","sepShown":false,"retryBg":"rgb(229, 194, 74)","edge":"rgba(229, 194, 74, 0.5)","line":"rgba(229, 194, 74, 0.5)","text":"Not saved — keep this page openRetry"}
+PASS B2-desk Retry saves and the band goes — saw true
+PASS W1-desk the waiting screen says the request did not save (the band) — saw true
+PASS W2-desk nothing under the band: the logo below it — saw {"bandTop":0,"bandBottom":36,"logoTop":193,"covered":false}
+PASS W3-desk Retry saves the request and the band goes — saw true
+NOTE W4-desk — {"cs":"Stranger","state":"Waiting for an admin","fields":["InitialsST","SeatPilot","CATOCU"],"steps":["done:Request sent","now:An admin approves",":You're on the schedule"],"who":"Signed in as stranger","sideScroll":false}
+PASS G1-desk the guest page: the band is the bar's last line — saw true
+NOTE G1-desk — {"bandBottom":92,"barBottom":93,"pageTop":93,"covers":false}
+NOTE S1-desk — the sign-in after signing out with the save still failing: band up

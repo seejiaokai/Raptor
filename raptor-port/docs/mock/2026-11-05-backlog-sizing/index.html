@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Raptor — the backlog, sized</title>
+<style>
+body{margin:0;background:#0b0d10;color:#e8edf2;font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:18px 14px 48px}
+h1{font-size:24px;margin:0 0 12px}
+h2{font-size:12px;margin:28px 0 8px;color:#9fb3c8;text-transform:uppercase;letter-spacing:.06em}
+.now{border:1px solid #2b6cb0;background:#0f1a26;border-radius:10px;padding:12px 14px}
+.now p{margin:5px 0}
+table{width:100%;border-collapse:collapse;font-size:15px}
+th,td{text-align:left;vertical-align:top;padding:8px 8px;border-bottom:1px solid #232a33}
+th{color:#9fb3c8;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td.n{white-space:nowrap;color:#b7c3cf}
+.night td{background:#121820;color:#9fb3c8;font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+.big{font-size:24px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:10px 0}
+.card{border:1px solid #232a33;border-radius:10px;padding:10px 12px;background:#11151b}
+.card small{display:block;color:#9fb3c8}
+ol li{margin:6px 0}
+.muted{color:#9fb3c8}
+</style></head><body><main>
+<h1>The backlog, sized — what I can finish alone</h1>
+<div class="now">
+<p><b>About 3 nights</b> of work need nothing from you. Then <b>one pictures page</b> of about 12 small questions, and about 1 night to build your answers. So roughly <b>a week</b> to clear everything except the big features and the database.</p>
+<p><b>Two choices for you</b> are at the bottom. Recommended: start with night 1, because it fixes the one real fault first.</p>
+</div>
+
+<h2>React Doctor today</h2>
+<div class="grid">
+<div class="card"><span class="big">584</span><small>findings in the whole project (675 on 3 Nov, 952 on 31 Oct)</small></div>
+<div class="card"><span class="big">183</span><small>in the app itself: the jobs below handle these</small></div>
+<div class="card"><span class="big">0</span><small>left in the Leave War and the Tracker</small></div>
+<div class="card"><span class="big">401</span><small>outside the app: tests, mock-up pages, scripts, the original app, the rules engine</small></div>
+</div>
+<p class="muted">Past jobs fixed about 6 in 10 findings and kept the rest with a written reason, so expect about 110 fixed and 70 kept.</p>
+
+<h2>The nine jobs</h2>
+<table>
+<tr><th>Job</th><th>What it fixes</th><th>Time</th></tr>
+<tr class="night"><td colspan="3">Night 1</td></tr>
+<tr><td>1. Leave War faults</td><td>Words typed for a new afternoon bid land on the morning bid (a real fault). Also: a posted-out man's gone days taking bids, a double tap reaching the grid, a refused change resetting the admin view, a note hidden under the day panel.</td><td class="n">3½ h</td></tr>
+<tr><td>2. The board by the keyboard</td><td>The board's menus, its day and week buttons and the crew-day picker reachable by keys; Escape on Sort all; three small window leftovers.</td><td class="n">2½ h</td></tr>
+<tr><td>3. React Doctor: the main shell</td><td>About 90 of the 183: the top bar, the windows, saved state. Nothing you see changes; every screen is pictured before and after.</td><td class="n">2½ h</td></tr>
+<tr class="night"><td colspan="3">Night 2</td></tr>
+<tr><td>4. People and Quals</td><td>Dragging a Quals heading by finger; two pinch-zoom edge faults; React Doctor's ~55 in Holidays, the people picker, Quals, sign-in.</td><td class="n">3 h</td></tr>
+<tr><td>5. Inputs</td><td>Your pick A for the Inputs cards (three lined-up columns); six small older faults; React Doctor's ~35 there.</td><td class="n">3 h</td></tr>
+<tr><td>6. Insights and tidy-ups</td><td>Two Insights cases never tried; one shared wording helper; finished items archived.</td><td class="n">1½ h</td></tr>
+<tr class="night"><td colspan="3">Night 3: no app change</td></tr>
+<tr><td>7. The checks</td><td>A time limit on the Tracker test that hung today; the guard against the script mistake (your go, D811); record files that merge without clashing. Needs your "merge live".</td><td class="n">3 h</td></tr>
+<tr><td>8. Documents</td><td>Old rulings archived; stale lines in the Codex guide (your approval); owed reads.</td><td class="n">3 h</td></tr>
+<tr><td>9. The folder</td><td>The 47 old working copies cleared after checking each.</td><td class="n">1 h</td></tr>
+</table>
+
+<h2>Already done elsewhere: needs only your look</h2>
+<p>Pull requests 636 (keyboard batch), 637 (Tracker tidy), 639 ("not saved" messages), 641 (posting-out bell line).</p>
+
+<h2>Not counted here</h2>
+<p class="muted">The big features (Leave War M5, caps and ops limits, End-of-Day, the Tracker's graph: about 1–2 weeks each), and the database / M365 move (waits on IT and your test account).</p>
+
+<h2>Your two choices</h2>
+<ol>
+<li><b>React Doctor outside the app</b> (tests, mock-up pages, scripts): <b>leave them (recommended)</b>, since none is shipped or seen. The alternative is one more night to clean them.</li>
+<li><b>Order:</b> <b>nights 1–3 first (recommended)</b>, or the pictures page first.</li>
+</ol>
+<p class="muted">Cost: your weekly allowance is at 44%, resetting Monday 19:00. Each night is estimated at 10–15%, so nights 1 and 2 fit before the reset.</p>
+</main></body></html>

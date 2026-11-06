@@ -1,0 +1,8 @@
+NOTE X1-admin-step — on|Undo — the guest switch
+NOTE X2-redo-click — page.click: Timeout 3000ms exceeded.
+Call log:
+[2m  - waiting for locator('#red
+NOTE X2-redo — {"redo":"off|Redo","said":[],"writes":[]}
+PASS X2 in his member view the admin's own setting step is not undone: nothing saved, the page stays, he is told why — saw {"asMember":"Saber · Member","undo":"on|Undo — the guest switch","said":["Switch back to the admin view to undo that."],"writes":[],"page":"inputs→inputs"}
+NOTE X3 — {"bandAdmin":true,"bandLogin":false,"bandAccess":false,"refusedWrites":3}
+NOTE X4-admin-back — {"writes":354,"model":"28532:881707668","elog":0,"undo":null,"redo":null,"page":"viewsched","failedBand":false,"notes":3}

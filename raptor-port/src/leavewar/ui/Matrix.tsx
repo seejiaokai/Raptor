@@ -55,6 +55,7 @@ import { GROUP_DRAG, GROUP_PRIO_DRAG, MANNING_DRAG, NO_QUALS, type QualPill, typ
 import { rowInWindow } from './rowinwindow'
 import { bubbleParts, bubbleWords, worsenedRows, type BubbleFlags, type FiledKind } from './bubblewords'
 import { warInputs, type WarInput } from '../absences'
+import { ReorderIcon } from '../../ui/icons'
 import './matrix.css'
 
 /** the year of a 'yyyy-mm-dd' date, as the grid's corner writes it (D1561) */
@@ -257,7 +258,11 @@ export function Matrix() {
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
   const openPerson = open ? people.find(p => p.id === open.id) : undefined
-  const openPostedOut = open?.posting
+  /* …only a BARE gone day, to the admin (his D1722, D1725, 6 Nov 26): a gone day that holds anything — an Inputs entry, leave,
+     an OIL award, two entries — opens for him exactly what the same day opens on any other day; the posted-out sheet is the
+     empty day's (the walk set the same entries on Vapor and Diesel side by side, `scripts/handpass/lw-d1722-walk.mjs`) */
+  const openGoneHolds = !!open && role === 'admin' && !!views[open.id]?.[open.date]?.main
+  const openPostedOut = openGoneHolds ? false : open?.posting
     ? open.posting === 'po' && !!openPerson && openPerson.to !== null
     : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'po'   // D320: by stint
   // …and its mirror at the other end: a day BEFORE the person posted in
@@ -1221,6 +1226,10 @@ export function Matrix() {
   // complaint set. On the TABLE, not an ancestor, and it changes only when the
   // zoom steps — a restyle the zoom itself already costs, never per frame.
   const zoomStyle = zoom !== 1 ? ({ zoom, '--lwz': zoom } as import('react').CSSProperties) : undefined
+  /* ZOOMED OUT, EVERY CODE AT ONE SCALE (his D1726, 6 Nov 26): below zoom 1 a whole day's two letters are set at 8.9px,
+     under the 9px the iPhone's browser never shrinks a letter below — so LL and OL shrink with the grid like every other
+     code instead of standing big (matrix.css `table.mx.lw-small`). A class on the tables, changed only when the zoom crosses 1. */
+  const smallCls = zoom < 1 ? ' lw-small' : ''
 
   /* PINCH TO ZOOM THE GRID (owner D1282, D1283, D1284, 23 Oct 26 — `[LW-PHONE-PINCH-ZOOM]`), the app's one pinch body
      (ui/pinchzoom.ts — the Scheduler Board's and Quals' too). While the fingers move the grid is stretched as a picture,
@@ -1507,19 +1516,67 @@ export function Matrix() {
     setBubble(null)
     /* a second quick press lands where the note stood — on the grid — and opened that day's window (the night's walk, F2):
        the clicks of the next moment are swallowed, the press that moved him up being the one he meant */
+    guardGrid(false)
+  }
+  /* THE MOMENT AFTER A PRESS THAT TOOK SOMETHING OFF THE GRID: the clicks of the next moment on the grid are swallowed, the
+     press that did it being the one he meant. Only a pointer's click on the grid — a key's click (detail 0), a click on the
+     top bar or a pop-up, and the month buttons (`.mstripe`, drawn inside the grid's table — the walk's S4e, 6 Nov 26: a
+     month tapped just after a leave was placed did nothing) go through (the night's code read, R6). Armed by "Show ›" (F2:
+     every pointer click on the grid, 450 ms) and by a window over the grid closing (below, (d)) — `second`: then only a
+     SECOND press is swallowed: a finger's (touch or pen) or a click the browser counts as a double (detail 2 and more),
+     landing within 32 px of the press that closed the window, for 600 ms (the walk's S2 met Chromium's touch click about
+     440 ms after the close). A mouse's single click, and a finger's quick tap anywhere else, go through at once — as move
+     mode's own guard asks a place as well as a time (D262 — "a time alone also dropped a deliberate click made quickly on
+     another day"); the code read's F3. */
+  const guardGrid = (second: boolean) => {
     unswallowRef.current?.()
-    /* only a pointer's click on the grid (the second touch of F2) — a key's click (detail 0) and a click on the top bar
-       or a pop-up go through (the night's code read, R6) */
+    const from = second ? lastPressRef.current : null
+    /* only a window closed by a press INSIDE it (a leave, its ✕, a Delete) is guarded: a tap on the grid that closed it is
+       the grid's own, and the same day tapped again at once is a press he meant (the fix's narrow read, N1); a window closed
+       by a key leaves no press (N2) */
+    if (second && !from?.inWin) return
     const swallow = (e: Event) => {
-      if (e instanceof MouseEvent && e.detail > 0 && e.target instanceof Element && e.target.closest('.mx')) { e.stopPropagation(); e.preventDefault() }
+      if (!(e instanceof MouseEvent) || e.detail <= 0 || !(e.target instanceof Element) || !e.target.closest('.mx') || e.target.closest('.mstripe')) return
+      if (from) {
+        const now = lastPressRef.current
+        if (!(now?.finger || e.detail >= 2)) return
+        const at = now && now !== from ? now : { x: e.clientX, y: e.clientY }
+        if (Math.hypot(at.x - from.x, at.y - from.y) > 32) return
+      }
+      e.stopPropagation(); e.preventDefault()
     }
     document.addEventListener('click', swallow, true)
-    const t = window.setTimeout(() => unswallowRef.current?.(), 450)
+    const t = window.setTimeout(() => unswallowRef.current?.(), second ? 600 : 450)
     unswallowRef.current = () => { window.clearTimeout(t); document.removeEventListener('click', swallow, true); unswallowRef.current = null }
   }
+  /* every press, where and by what — read by the guard above; always listening (the code read's F4: a listener added only
+     once the guard was armed could miss a second press that came first) */
+  const lastPressRef = useRef<{ x: number; y: number; finger: boolean; inWin: boolean } | null>(null)
+  useEffect(() => {
+    const down = (e: PointerEvent) => {
+      const inWin = e.target instanceof Element && !!e.target.closest('.bidsheet')
+      lastPressRef.current = { x: e.clientX, y: e.clientY, finger: e.pointerType === 'touch' || e.pointerType === 'pen', inWin }
+    }
+    const key = () => { lastPressRef.current = null }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('keydown', key, true)
+    return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
+  }, [])
   /* the guard ends with the grid, never outliving it */
   const unswallowRef = useRef<(() => void) | null>(null)
   useEffect(() => () => unswallowRef.current?.(), [])
+  /* A DOUBLE TAP ON A LEAVE BUTTON ([LW-NIGHT1025-OLDER] (d), the night of 25 Oct 26's walker 1, S21.2): a leave pressed
+     places it and closes the window, and the finger's second tap a moment later fell through to the grid where the button
+     had stood — a man's CAT pop-up, his figures, a day's window. Whenever the one-day window or the drag window closes (a
+     leave placed, its ✕, a Delete, a Post out — every press that ends it) the grid is guarded for that moment
+     (`doubletap.test.tsx`). */
+  const winUpRef = useRef(false)
+  useEffect(() => {
+    const up = !!open || !!sel
+    if (winUpRef.current && !up) guardGrid(true)
+    winUpRef.current = up
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open, sel])
   useEffect(() => {
     if (sheetUp) { if (!beforeRef.current) beforeRef.current = flaggedNow(); return }
     const before = beforeRef.current
@@ -3418,14 +3475,16 @@ export function Matrix() {
   const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
-    && !(openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
+    && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
     ? inputsFilledDay(openView) : null
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
     && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
-    (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
+    /* leave dated outside his time opens the list on HIS OWN tap (owner answer C); an admin's tap there opens what the day
+       opens on any other day (D1722, D1725 — `openGoneHolds` above) */
+    (role !== 'admin' && !!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
      war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the
@@ -3615,7 +3674,8 @@ export function Matrix() {
                   >
                     {/* "Done" in words at every width (D1275 — on a phone too, narrowing D1019's short words for this one
                         button): its own class, never the droppable `.rtlbl` the phone hides */}
-                    ⇅<span className="rtword"> Done</span>
+                    {/* the typed ⇅ is the app's drawn Reorder mark (owner D1703, 5 Nov 26) */}
+                    <ReorderIcon /><span className="rtword"> Done</span>
                   </button>
                 )}
                 {/* No − / + here any more: the grid is pinched (a desktop: Ctrl+scroll), owner D1276 / D1228 — they went
@@ -3646,7 +3706,7 @@ export function Matrix() {
           ref={wrapRef}
           onScroll={onWrapScroll}
         >
-          <table className="mx" style={zoomStyle}>
+          <table className={`mx${smallCls}`} style={zoomStyle}>
             {/* THE ROW ORDER IS THE OWNER'S (18 Aug 26, arrows on a
                 screenshot): counts first, then the month buttons, then the
                 callsign + dates header, then the event rows, then the roster.
@@ -3926,7 +3986,7 @@ export function Matrix() {
             const cols = s.cols
             return (
               <table
-                className={`mx${extra ? ' ' + extra : ''}`}
+                className={`mx${extra ? ' ' + extra : ''}${smallCls}`}
                 style={{ tableLayout: 'fixed', width: cols.reduce((a, b) => a + b, 0) / zoom, ...(zoomStyle ?? null) }}
               >
                 <colgroup>
@@ -4001,7 +4061,7 @@ export function Matrix() {
             data-testid="frozen-cols"
             style={{ top: bandTop ?? 0, ...(bandTop == null ? { visibility: 'hidden' as const } : null) }}
           >
-            <table className="mx" style={zoomStyle}>
+            <table className={`mx${smallCls}`} style={zoomStyle}>
               <tbody className="mxbody">
                 {rosterSequence().map(item => {
                   if (item.kind === 'group') return (
@@ -4046,7 +4106,6 @@ export function Matrix() {
                         <div className="whorow">
                           <button className="whoedit" tabIndex={-1} onClick={() => openWho(p.id)}>
                             {namePuck(p)}
-                            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag">SANS</span>}
                           </button>
                         </div>
                       </td>
@@ -4277,6 +4336,7 @@ export function Matrix() {
           poFrom={addDays(openPerson!.to!, 1)}
           outcome={outcomeOf(openPerson) ?? 'none'}
           hasAccount={hasAccount(open.id)}
+          noSans={!!openPerson?.pers}
           blockedFor={o => postingBlocked(open.id, o)}
           /* [ONE-DOOR] (Fable F1 / Astra 2): archived on Admin → Users — Restore there is the one way back; the store's
              lock, installed by the sync, as the account and block lookups are (the war never reads Raptor's people) */

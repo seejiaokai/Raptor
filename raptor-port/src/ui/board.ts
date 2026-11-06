@@ -37,11 +37,12 @@ import { resolveMissionRole } from '../engine/mission-role'
 import { dayDrafts, curDraftId, draftDup, draftSelect, ROWSLEFT, rowsLeftSentences } from '../engine/drafts'
 import { oilPutBackWatch, oilNeedSaid } from './oilputback'
 import { setTplEdit, setDayTplEdit, setDraftsEdit, setWaveEdit } from './pops'
-import { noteOpener, menuEscape } from './sheetfocus'
+import { noteOpener, menuEscape, menuKeys, locate, keysBack } from './sheetfocus'
 import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
+import { glyphSvg, GEAR_INNER } from './glyphs'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -678,7 +679,11 @@ export function dayTabsHTML(di: number) {
   const dayNum = (dt: string) => dt.replace(/^\S+\s+/, '').replace(/\s+\d{4}$/, '')
   /* data-fit: the chip's room is its weekday with a two-digit date ("Wed 30"), measured in whatever font draws it, so the
      › after the chips stays put from week to week (owner D1122; the figures are of one width — 10-board-history.css) */
-  const chips = DAYS.map((x: any, i: number) => { const dw = esc(x.dow.slice(0, 3)); return `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}" data-fit="${dw} 30">${dw} ${esc(dayNum(x.dt))}</span>` }).join('')
+  /* A STOP FOR THE KEYS (owner D1646, 5 Nov 26 — the mock-up's picture 2c): role="button" and tabindex 0, so Tab reaches each
+     chip and Enter or Space presses it (SchedBoard.tsx, the strip's own keys), the app's keyboard ring on it
+     (10-board-history.css, :focus-visible only); the picked day says so to a screen reader (aria-current). Spans still, not
+     buttons: a button would take a button's own look and box in a bar whose rows are measured. */
+  const chips = DAYS.map((x: any, i: number) => { const dw = esc(x.dow.slice(0, 3)); return `<span class="sbday ${i === di ? 'on' : ''}" data-sbtab="${i}" data-fit="${dw} 30" role="button" tabindex="0"${i === di ? ' aria-current="date"' : ''}>${dw} ${esc(dayNum(x.dt))}</span>` }).join('')
   /* WEEK ARROWS FLANK THE DAY CHIPS ON DESKTOP (owner, 23 Aug 26 — "in
      scheduler board i cant go between weeks except through the calendar").
      They live INSIDE #sbDays, which is display:flex on a desktop and
@@ -687,7 +692,7 @@ export function dayTabsHTML(di: number) {
      is untouched because these carry data-sbweek instead. One press jumps a
      whole week and keeps the open weekday, so the strip relabels to the new
      week with the same column still lit (boardWeekStep). */
-  const wk = (d: number, g: string, t: string) => `<span class="sbday sbweek" data-sbweek="${d}" title="${t}" aria-label="${t}">${g}</span>`
+  const wk = (d: number, g: string, t: string) => `<span class="sbday sbweek" data-sbweek="${d}" title="${t}" aria-label="${t}" role="button" tabindex="0">${g}</span>`
   return wk(-1, '‹', 'Previous week') + chips + wk(1, '›', 'Next week')
 }
 
@@ -1627,11 +1632,27 @@ function popMenu(anchor: HTMLElement, html: string, onPick: (e: any, close: () =
   }
   const stop = followVisible(place)
   document.addEventListener('scroll', place, true)
-  box.addEventListener('click', (e: any) => onPick(e, () => box.remove()))
+  /* A PICK MADE BY THE KEYS GIVES THEM BACK TO THE MENU'S BUTTON (owner D1646 — the menu takes the keys when opened by
+     them, sheetfocus.ts menuKeys): the item they were on goes with the menu, and what the pick changes redraws the board
+     from strings a moment later, so the button is found again then (locate) — unless what the pick opened (a window) has
+     taken them meanwhile (keysBack leaves them there). A press of the mouse in Chromium gives the item the keys too, so a
+     mouse pick there comes back to the button as well; on a phone, and in Safari, a tap gives an item no keys and nothing moves.
+     ONLY ONCE THE REDRAW HAS RUN (the fresh read's F1, 5 Nov 26): put back at once, the keys landed in the OLD button — for the
+     duty role's list that is its text box, and with the caret in it the board withholds that panel's redraw, so the box went on
+     showing the words it had before the pick; typed over, those words were saved over the pick. A moment later the panel has
+     been drawn with the pick and the keys go to the new box. */
+  const back = locate(anchor)
+  box.addEventListener('click', (e: any) => onPick(e, () => {
+    const had = box.contains(document.activeElement)
+    box.remove()
+    if (had) setTimeout(() => keysBack(back), 0)
+  }))
   /* deferred by a tick, or the very click that OPENED this box closes it */
   setTimeout(() => document.addEventListener('click', function off() { box.remove(); document.removeEventListener('click', off) }, { once: true }), 0)
   /* Escape takes it away, the board under it staying, and the keys go back to its button ([VEILED-WINDOWS-BAR]) */
   menuEscape(box, anchor)
+  /* …and the keys: opened by them, on its first pick; the arrows through it (owner D1646 — sheetfocus.ts menuKeys) */
+  menuKeys(box, anchor)
   return box
 }
 /* + BLOCK's picker (owner, 13 Aug 26): the saved duty TEMPLATES, straight up \u2014
@@ -1904,7 +1925,8 @@ export function waveMenu(anchor: HTMLElement, di: any) {
      and shows / hides / deletes what appears here, so the old separate ✎ editor and
      ⚙ Manage buttons collapse into this single data-wvedit opener. It rides the Day
      header when the board's generic add shows one, else the Add header. */
-  const pen = `<button class="wm-pen wm-mng" data-wvedit="1" title="Manage flying waves">⚙</button>`
+  /* the app's one gear, drawn (owner D1509, D1707) — in its button's colour */
+  const pen = `<button class="wm-pen wm-mng" data-wvedit="1" title="Manage flying waves">${glyphSvg(GEAR_INNER)}</button>`
   const dayBtns = (di == null)
     ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')

@@ -2650,7 +2650,7 @@ test('the person window blocks nothing: no scrim, the page scrolls behind it, it
    that cell — no sheet up — opens its sheet as ever. What it cannot: the COAST
    after the lift — this container's headless Chromium flings no native
    scroller from synthetic touches at all (probed on a bare scroller, 6 Sep
-   26), so the deceleration is the device's to show (BUG-TESTING.md #371).
+   26), so the deceleration is the device's to show (docs/archive/BUG-TESTING.md #371).
    Phone project only: the one with a touch screen. */
 test('a finger behind an open sheet scrolls the grid itself; a tap on a cell closes the sheet and opens nothing', async ({ page }) => {
   test.skip(!isPhone(), 'a touch-screen creature')
@@ -2924,7 +2924,9 @@ test('while rearranging, the bar reads "⇅ Done" in words (D1275)', async ({ pa
   for (const width of isPhone() ? [390, 360] : [1440]) {
     await page.setViewportSize({ width, height: isPhone() ? 664 : 900 })
     await page.waitForTimeout(200)
-    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('⇅ Done')
+    /* its ⇅ is the app's drawn Reorder mark since D1703 */
+    expect((await done.innerText()).replace(/\s+/g, ' ').trim(), `${width}: the word is drawn`).toBe('Done')
+    await expect(done.locator('svg.btnglyph'), `${width}: the Reorder mark beside it`).toHaveCount(1)
     if (isPhone()) await expectBarLines(page, ['counts-toggle', 'open-chip', 'roster-arrange', 'legend-open'])
   }
   await done.click()
@@ -5257,7 +5259,7 @@ test('an admin hand-drags the roster from the ⇅ toggle, which is also the way 
     await expect(gone).toHaveCount(0)
     const lbl = toggle.locator('.rtlbl')
     await expect(lbl).toBeHidden()
-    expect((await toggle.textContent())!.trim().startsWith('⇅')).toBe(true)
+    await expect(toggle.locator('svg.btnglyph'), 'the drawn Reorder mark (D1703 — the typed ⇅ before)').toHaveCount(1)
     await expect(page.locator(`[data-testid="drag-${before[0]}"]`)).toHaveCount(1)
     await toggle.click()
     await expect(toggle).toHaveCount(0)
@@ -6406,7 +6408,8 @@ test('posting out tags the last day, and the row leaves the months after it', as
   await page.locator('[data-testid="po-overseas"]').click()
   await page.locator('[data-testid="po-confirm"]').click()
 
-  // The first day gone is hatched; the last day IN wears the PO tag.
+  // The first day gone is hatched; the last day IN wears its mark — the yellow line since his D1728 (its "PO" kept for a
+  // screen reader, drawn 2px wide).
   await expect(page.locator('[data-testid="cell-slipway-2026-06-15"]')).toHaveClass(/gone/)
   const tag = page.locator('[data-testid="polast-slipway"]')
   await expect(tag).toHaveText('PO')
@@ -7787,11 +7790,13 @@ test('the "kept pending" note is said once: the same open day’s list, back aft
   await page.getByTestId('bid-LL').click()
   if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
   await expect(page.getByText(new RegExp(`kept pending — He posts out on ${dmOf(po)}`)), 'said once, after the press (R3b)').toBeVisible()
-  /* the list's own Delete: the bid goes, the same day stays open, on its window again */
-  await page.locator('[data-testid^="dl-clear-"]').first().click()
-  await expect(page.getByTestId('bid-approve-tick')).toBeVisible()
-  await page.evaluate(d => (window as any).lwSetCell('slipway', d, 'OL'), day)      // a bid arriving from elsewhere
-  await expect(page.getByTestId('daylist'), 'the day’s list again, the OL pending').toBeVisible()
+  /* his D1722, D1725 (6 Nov 26): an admin's tap on a posted-out day that holds anything opens what the day opens on any
+     other day — the window stays, the day's list no longer takes its place (the old premise, the list's own Delete, is gone
+     with it). Said once: closed and opened again, the same day carries no stale note. */
+  await expect(page.getByTestId('bid-picker'), 'the window stays, as on any other day').toBeVisible()
+  await page.getByTestId('bid-cancel').click()
+  await page.locator(`[data-testid="cell-slipway-${day}"]`).click()
+  await expect(page.getByTestId('bid-picker'), 'the day opens its usual window again').toBeVisible()
   await page.waitForTimeout(300)
   await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
 })

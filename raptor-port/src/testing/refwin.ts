@@ -582,7 +582,7 @@ function relead(html: string): string {
    byte comparison keeps comparing STRUCTURE rather than failing on a word the
    owner renamed. A rename that reaches dayHTML has to land here in the same
    PR, or the parity gate goes red for a reason that has nothing to do with
-   behaviour; HANDOFF.md records the same trap for CHIP_LABEL.
+   behaviour; HANDOFF-ARCHIVE.md records the same trap for CHIP_LABEL.
    MAIN/SPARE needed no entry, and that is worth writing down so the next
    reader does not go looking: the seed week has no standalone wave, so the
    `sa` branch that carried the .rolet chip never renders on a compared day

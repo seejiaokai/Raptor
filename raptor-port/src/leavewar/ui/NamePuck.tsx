@@ -8,7 +8,7 @@
    ONE drawer for both places the grid draws a name — the row (`MatrixRows.tsx`) and the phone's frozen copy of it
    (`Matrix.tsx`) — so the two cannot drift. The OIL tracker's name list keeps its own badge: his ruling covers the grid. */
 import { QCHIP } from '../../engine/people'
-import { catClass, catText, type Person } from '../engine'
+import { catClass, catText, outcomeOf, type Person } from '../engine'
 
 /** The chip's words: the schedule's own letter where it has one ("O" for OCU), "G" for ground personnel (D1470). */
 function chipText(p: Person): string {
@@ -28,10 +28,18 @@ export function NamePuck({ p, quals, testid, onChipEnter, onChipLeave, onChipCli
 }) {
   const has = quals.length > 0
   const gnd = !!p.pers || p.seat === 'gnd'
-  const cls = 'puck' + (p.seat === 'wso' ? ' r' : '') + (gnd ? ' pers' : '')
+  /* EVERY SANS MAN WEARS THE SANS PURPLE LINE (his D1697, D1698, 5 Nov 26 — the drawing docs/mock/2026-11-05-taken-back-sans/,
+     pictures 1–4): the schedule's own SANS class (`.puck.san` — the purple line on the right, over the chip's last points,
+     D651), for a SANS man in the SANS group and for a man posted out as SANS, from when the posting is set — in his old
+     place with SANS off the war (D283), where the separate "SANS" tag it replaces squeezed his callsign to one letter on a
+     phone (D1692). One drawer, so the row and the phone's frozen copy cannot differ. */
+  const san = !!p.san || (p.to !== null && outcomeOf(p) === 'sans')
+  const cls = 'puck' + (p.seat === 'wso' ? ' r' : '') + (gnd ? ' pers' : '') + (san ? ' san' : '')
   return (
     <span className={cls}>
       <span className="nm">{p.callsign}</span>
+      {/* the line is drawing only: a screen reader hears "SANS" with the name, as it heard the old tag (the code read's 3) */}
+      {san && <span className="lw-sr"> SANS</span>}
       {/* eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- the chip sits inside the name's own button (the row's one Tab stop, which opens his person window), where a control of its own is not allowed; the qualifications it lists are read out as part of that button's name, from the chip's label */}
       <span
         className={`role lw-chip ${catClass(p)}${has ? ' has-quals' : ''}`}

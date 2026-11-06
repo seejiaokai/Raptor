@@ -1,0 +1,15 @@
+before {"st":"{\"people\":[\"Ranger\",\"Trident\"],\"oil\":null}","undo":"on|Undo — a public holiday on 17 Jul"}
+after tap + add {"rosArm":true,"armTxt":"","rosOpen":true}
+picture B2-2-board-armed.png
+picture B2-3-question.png
+RESULT B2-question {"up":1,"lead":"Adding Tally to Fri brief","cancel":"Don’t add","save":"Add","saveDisabled":true,"box":{"x":22,"y":258,"w":346,"h":328,"right":368,"bottom":586,"inside":true,"onTop":true},"saveBox":{"x":303,"y":547,"w":49,"h":28,"right":352,"bottom":575,"inside":true,"onTop":true},"cancelBox":{"x":213,"y":547,"w":81,"h":28,"right":295,"bottom":575,"inside":true,"onTop":true},"head":"OIL — Ranger +2, Fri brief"}
+picture B2-4-after-escape.png
+RESULT B2-escape {"q":0,"armed":{"rosArm":true,"armTxt":"","rosOpen":true},"bar":"Not added — OIL not answered","st":"{\"people\":[\"Ranger\",\"Trident\"],\"oil\":null}","undoSame":true,"barBox":{"x":98,"y":732,"w":195,"h":94,"right":293,"bottom":826,"inside":true,"onTop":true}}
+armed after OK {"rosArm":true,"armTxt":"","rosOpen":true}
+x candidates 1 <b>OIL — Ranger +2, Fri brief</b><button class="x" aria-label="Close">✕</button>
+picture B2-5-after-x.png
+RESULT B2-x {"q":0,"armed":{"rosArm":true,"armTxt":"","rosOpen":true},"bar":"Not added — OIL not answered","st":"{\"people\":[\"Ranger\",\"Trident\"],\"oil\":null}","undoSame":true}
+picture B2-6-after-no-add.png
+RESULT B2-no-add {"saveLive":true,"toast":"Tally added to Fri brief — not counted for OIL","armed":{"rosArm":false,"armTxt":"","rosOpen":false},"st":"{\"people\":[\"Ranger\",\"Trident\",\"Tally\"],\"oil\":{\"2026-07-17\":0}}","q":0,"bar":0,"undo":"on|Undo — a personal input"}
+RESULT B2-undo {"st":"{\"people\":[\"Ranger\",\"Trident\"],\"oil\":null}","same":true}
+ERRORS []

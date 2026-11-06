@@ -41,6 +41,15 @@
         ],
         "createdAt": "2026-10-22T02:31:16.303Z",
         "reason": "agent judgement: the mock-up review page's own .note style (a 3px neutral grey quote rule, not an accent colour), unchanged since the page's first version; not app UI"
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "raptor-port/src/ui/scheduler/25-inputs-calendar.css"
+        ],
+        "createdAt": "2026-11-05T12:35:10.469Z",
+        "reason": "owner ruling D729 (10 Oct 26): a timed input bar is lighter - a tint of its colour and its left edge, approved as drawn"
       }
     ]
   },

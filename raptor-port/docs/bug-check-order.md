@@ -998,6 +998,14 @@ the reader's instructions or model change, it is run on every case and a change 
    is drawn on the screen (the screen's own frames, its pixels counted in the thing's box), not by the element being there or
    its opacity; and an animation's first frames are checked as well as its middle (`scripts/handpass/talon-page-claw-walk.mjs`
    case V; its evidence `docs/handpass/2026-11-03-talon-pages.md` §His find).
+23. **A tap's window taken from the build's own reading, never set against the rulings for that entry elsewhere (his iPhone
+   pictures, the D1720 build, 6 Nov 26).** The walk tapped the OD drawn over Diesel's posted-out days, saw the day's list open
+   and called it PASS — because the build had chosen the day's list. His D1565 already said an entry of several days filed
+   on the Inputs page opens whole from a tap on any of its days; on an ordinary day the same OD opened that window, so the
+   two looked different side by side. The sizing step also never read this list, as §7.11 asks.
+   **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
+   ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
+   lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
 
 ## 8. Making the checks FIND rather than CONFIRM
 
@@ -1035,6 +1043,14 @@ the reader's instructions or model change, it is run on every case and a change 
    that walk real records never meet it.
 
 ---
+
+23. **A fault in the picture, looked past because it was not the thing under test (his iPhone picture, Admin → Users' "Add a
+   person", 5 Nov 26).** The posting-out bell walk pictured Admin → Users on a phone at every landing; in those very pictures
+   "PILOT, WSO OR PERSONNEL" broke onto two lines and its box stood lower than CAT's, a text box shorter than the pick-list
+   beside it — against his lesson 43 since 23 Oct 26. The walk checked the ringed row and nothing else on the screen.
+   **Lesson:** every screen a walk pictures is also checked for the standing layout lessons — each pair of side-by-side boxes
+   measured one height and one line (lesson 43), at a phone's width with an iPhone's letters as well as a desktop's — not only
+   the part the change made (`scripts/handpass/adm-pairs-measure.mjs` is the pattern).
 
 ## 9. The evidence, and the owner's sixty-second check
 

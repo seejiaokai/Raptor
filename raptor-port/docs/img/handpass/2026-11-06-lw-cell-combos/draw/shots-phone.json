@@ -1,0 +1,1678 @@
+{
+ "cases": [
+  {
+   "n": 1,
+   "say": "FO award beside a whole-day Attach (his Cobra, Sat 26 Dec)"
+  },
+  {
+   "n": 2,
+   "say": "Attach beside an Other, both whole days (his Cobra, Sun 27 Dec)"
+  },
+  {
+   "n": 3,
+   "say": "Leave (LL) during a course (CSE)"
+  },
+  {
+   "n": 4,
+   "say": "Overseas leave (OL) pending, beside a medical (OML)"
+  },
+  {
+   "n": 5,
+   "say": "A whole day of leave and an HO in the morning"
+  },
+  {
+   "n": 6,
+   "say": "A course and leave in the afternoon"
+  },
+  {
+   "n": 7,
+   "say": "Three entries: one box and \"+2\""
+  },
+  {
+   "n": 8,
+   "say": "A clash: \"!\" on a whole day"
+  },
+  {
+   "n": 9,
+   "say": "Leave on a posted-out day (grey PO)"
+  },
+  {
+   "n": 10,
+   "say": "Leave on his last day in (yellow PO)"
+  },
+  {
+   "n": 11,
+   "say": "A morning on his last day in"
+  },
+  {
+   "n": 12,
+   "say": "An afternoon on a posted-out day with \"!\""
+  },
+  {
+   "n": 13,
+   "say": "Attach alone, whole day"
+  },
+  {
+   "n": 14,
+   "say": "The app's own FO, alone"
+  },
+  {
+   "n": 15,
+   "say": "A morning and an afternoon (fits today — the control)"
+  },
+  {
+   "n": 16,
+   "say": "A posted-out day: a course and leave in the afternoon"
+  },
+  {
+   "n": 17,
+   "say": "His last day in: an Attach in the morning, a medical in the afternoon"
+  },
+  {
+   "n": 18,
+   "say": "His last day in: leave and an HO in the morning"
+  },
+  {
+   "n": 19,
+   "say": "His last day in: two whole days"
+  }
+ ],
+ "shots": [
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 1,
+   "file": "phone-today-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 2,
+   "file": "phone-today-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 3,
+   "file": "phone-today-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 4,
+   "file": "phone-today-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 5,
+   "file": "phone-today-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 6,
+   "file": "phone-today-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 7,
+   "file": "phone-today-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 8,
+   "file": "phone-today-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 9,
+   "file": "phone-today-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 10,
+   "file": "phone-today-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 11,
+   "file": "phone-today-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 12,
+   "file": "phone-today-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 13,
+   "file": "phone-today-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 14,
+   "file": "phone-today-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 15,
+   "file": "phone-today-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 16,
+   "file": "phone-today-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 17,
+   "file": "phone-today-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 18,
+   "file": "phone-today-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today",
+   "n": 19,
+   "file": "phone-today-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 1,
+   "file": "phone-A-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 2,
+   "file": "phone-A-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 3,
+   "file": "phone-A-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 4,
+   "file": "phone-A-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 5,
+   "file": "phone-A-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 6,
+   "file": "phone-A-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 7,
+   "file": "phone-A-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 8,
+   "file": "phone-A-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 9,
+   "file": "phone-A-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 10,
+   "file": "phone-A-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 11,
+   "file": "phone-A-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 12,
+   "file": "phone-A-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 13,
+   "file": "phone-A-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 14,
+   "file": "phone-A-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 15,
+   "file": "phone-A-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 16,
+   "file": "phone-A-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 17,
+   "file": "phone-A-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 18,
+   "file": "phone-A-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "A",
+   "n": 19,
+   "file": "phone-A-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 1,
+   "file": "phone-B-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 2,
+   "file": "phone-B-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 3,
+   "file": "phone-B-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 4,
+   "file": "phone-B-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 5,
+   "file": "phone-B-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 6,
+   "file": "phone-B-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 7,
+   "file": "phone-B-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 8,
+   "file": "phone-B-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 9,
+   "file": "phone-B-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 10,
+   "file": "phone-B-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 11,
+   "file": "phone-B-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 12,
+   "file": "phone-B-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 13,
+   "file": "phone-B-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 14,
+   "file": "phone-B-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 15,
+   "file": "phone-B-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 16,
+   "file": "phone-B-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 17,
+   "file": "phone-B-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 18,
+   "file": "phone-B-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "B",
+   "n": 19,
+   "file": "phone-B-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 1,
+   "file": "phone-Apo-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 2,
+   "file": "phone-Apo-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 3,
+   "file": "phone-Apo-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 4,
+   "file": "phone-Apo-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 5,
+   "file": "phone-Apo-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 6,
+   "file": "phone-Apo-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 7,
+   "file": "phone-Apo-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 8,
+   "file": "phone-Apo-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 9,
+   "file": "phone-Apo-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 10,
+   "file": "phone-Apo-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 11,
+   "file": "phone-Apo-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 12,
+   "file": "phone-Apo-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 13,
+   "file": "phone-Apo-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 14,
+   "file": "phone-Apo-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 15,
+   "file": "phone-Apo-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 16,
+   "file": "phone-Apo-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 17,
+   "file": "phone-Apo-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 18,
+   "file": "phone-Apo-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "Apo",
+   "n": 19,
+   "file": "phone-Apo-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 1,
+   "file": "phone-C-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 2,
+   "file": "phone-C-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 3,
+   "file": "phone-C-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 4,
+   "file": "phone-C-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 5,
+   "file": "phone-C-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 6,
+   "file": "phone-C-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 7,
+   "file": "phone-C-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 8,
+   "file": "phone-C-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 9,
+   "file": "phone-C-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 10,
+   "file": "phone-C-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 11,
+   "file": "phone-C-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 12,
+   "file": "phone-C-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 13,
+   "file": "phone-C-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 14,
+   "file": "phone-C-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 15,
+   "file": "phone-C-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 16,
+   "file": "phone-C-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 17,
+   "file": "phone-C-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 18,
+   "file": "phone-C-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "C",
+   "n": 19,
+   "file": "phone-C-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 1,
+   "file": "phone-D-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 2,
+   "file": "phone-D-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 3,
+   "file": "phone-D-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 4,
+   "file": "phone-D-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 5,
+   "file": "phone-D-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 6,
+   "file": "phone-D-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 7,
+   "file": "phone-D-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 8,
+   "file": "phone-D-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 9,
+   "file": "phone-D-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 10,
+   "file": "phone-D-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 11,
+   "file": "phone-D-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 12,
+   "file": "phone-D-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 13,
+   "file": "phone-D-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 14,
+   "file": "phone-D-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 15,
+   "file": "phone-D-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 16,
+   "file": "phone-D-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 17,
+   "file": "phone-D-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 18,
+   "file": "phone-D-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 19,
+   "file": "phone-D-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 1,
+   "file": "phone-E-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 2,
+   "file": "phone-E-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 3,
+   "file": "phone-E-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 4,
+   "file": "phone-E-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 5,
+   "file": "phone-E-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 6,
+   "file": "phone-E-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 7,
+   "file": "phone-E-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 8,
+   "file": "phone-E-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 9,
+   "file": "phone-E-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 10,
+   "file": "phone-E-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 11,
+   "file": "phone-E-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 12,
+   "file": "phone-E-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 13,
+   "file": "phone-E-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 14,
+   "file": "phone-E-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 15,
+   "file": "phone-E-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 16,
+   "file": "phone-E-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 17,
+   "file": "phone-E-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 18,
+   "file": "phone-E-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 19,
+   "file": "phone-E-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 1,
+   "file": "phone-F-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 2,
+   "file": "phone-F-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 3,
+   "file": "phone-F-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 4,
+   "file": "phone-F-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 5,
+   "file": "phone-F-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 6,
+   "file": "phone-F-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 7,
+   "file": "phone-F-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 8,
+   "file": "phone-F-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 9,
+   "file": "phone-F-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 10,
+   "file": "phone-F-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 11,
+   "file": "phone-F-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 12,
+   "file": "phone-F-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 13,
+   "file": "phone-F-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 14,
+   "file": "phone-F-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 15,
+   "file": "phone-F-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 16,
+   "file": "phone-F-16.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 17,
+   "file": "phone-F-17.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 18,
+   "file": "phone-F-18.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "F",
+   "n": 19,
+   "file": "phone-F-19.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 1,
+   "file": "phone-today-far-01.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 2,
+   "file": "phone-today-far-02.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 3,
+   "file": "phone-today-far-03.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 4,
+   "file": "phone-today-far-04.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 5,
+   "file": "phone-today-far-05.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 6,
+   "file": "phone-today-far-06.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 7,
+   "file": "phone-today-far-07.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 8,
+   "file": "phone-today-far-08.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 9,
+   "file": "phone-today-far-09.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 10,
+   "file": "phone-today-far-10.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 11,
+   "file": "phone-today-far-11.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 12,
+   "file": "phone-today-far-12.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 13,
+   "file": "phone-today-far-13.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 14,
+   "file": "phone-today-far-14.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 15,
+   "file": "phone-today-far-15.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 16,
+   "file": "phone-today-far-16.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 17,
+   "file": "phone-today-far-17.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 18,
+   "file": "phone-today-far-18.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "today-far",
+   "n": 19,
+   "file": "phone-today-far-19.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 1,
+   "file": "phone-A-far-01.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 2,
+   "file": "phone-A-far-02.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 3,
+   "file": "phone-A-far-03.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 4,
+   "file": "phone-A-far-04.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 5,
+   "file": "phone-A-far-05.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 6,
+   "file": "phone-A-far-06.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 7,
+   "file": "phone-A-far-07.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 8,
+   "file": "phone-A-far-08.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 9,
+   "file": "phone-A-far-09.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 10,
+   "file": "phone-A-far-10.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 11,
+   "file": "phone-A-far-11.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 12,
+   "file": "phone-A-far-12.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 13,
+   "file": "phone-A-far-13.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 14,
+   "file": "phone-A-far-14.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 15,
+   "file": "phone-A-far-15.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 16,
+   "file": "phone-A-far-16.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 17,
+   "file": "phone-A-far-17.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 18,
+   "file": "phone-A-far-18.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "A-far",
+   "n": 19,
+   "file": "phone-A-far-19.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 1,
+   "file": "phone-C-far-01.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 2,
+   "file": "phone-C-far-02.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 3,
+   "file": "phone-C-far-03.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 4,
+   "file": "phone-C-far-04.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 5,
+   "file": "phone-C-far-05.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 6,
+   "file": "phone-C-far-06.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 7,
+   "file": "phone-C-far-07.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 8,
+   "file": "phone-C-far-08.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 9,
+   "file": "phone-C-far-09.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 10,
+   "file": "phone-C-far-10.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 11,
+   "file": "phone-C-far-11.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 12,
+   "file": "phone-C-far-12.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 13,
+   "file": "phone-C-far-13.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 14,
+   "file": "phone-C-far-14.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 15,
+   "file": "phone-C-far-15.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 16,
+   "file": "phone-C-far-16.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 17,
+   "file": "phone-C-far-17.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 18,
+   "file": "phone-C-far-18.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "C-far",
+   "n": 19,
+   "file": "phone-C-far-19.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 1,
+   "file": "phone-D-far-01.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 2,
+   "file": "phone-D-far-02.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 3,
+   "file": "phone-D-far-03.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 4,
+   "file": "phone-D-far-04.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 5,
+   "file": "phone-D-far-05.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 6,
+   "file": "phone-D-far-06.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 7,
+   "file": "phone-D-far-07.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 8,
+   "file": "phone-D-far-08.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 9,
+   "file": "phone-D-far-09.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 10,
+   "file": "phone-D-far-10.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 11,
+   "file": "phone-D-far-11.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 12,
+   "file": "phone-D-far-12.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 13,
+   "file": "phone-D-far-13.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 14,
+   "file": "phone-D-far-14.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 15,
+   "file": "phone-D-far-15.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 16,
+   "file": "phone-D-far-16.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 17,
+   "file": "phone-D-far-17.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 18,
+   "file": "phone-D-far-18.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 19,
+   "file": "phone-D-far-19.png",
+   "z": 0.4
+  }
+ ]
+}

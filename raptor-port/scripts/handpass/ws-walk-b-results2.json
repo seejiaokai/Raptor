@@ -1,0 +1,86 @@
+[
+ {
+  "id": "B11 drag Comet from the crew list onto the empty seat: he shows there",
+  "ok": true,
+  "detail": "seat {\"text\":\"CometIP\",\"person\":\"beams\"}",
+  "pics": "B11a B11b B11c"
+ },
+ {
+  "id": "B11b the same man shows in the same seat on the Scheduler Board",
+  "ok": true,
+  "detail": "board seat reads beams",
+  "pics": "B11d"
+ },
+ {
+  "id": "B11c Undo (top bar): he is gone from the seat",
+  "ok": true,
+  "detail": "{\"text\":\"+ FCP\",\"person\":null}",
+  "pics": "B11e"
+ },
+ {
+  "id": "B11d Redo: he is back",
+  "ok": true,
+  "detail": "{\"text\":\"CometIP\",\"person\":\"beams\"}",
+  "pics": "B11f"
+ },
+ {
+  "id": "B12 the bell: its list opens; a click outside, Escape, and the bell again each close it",
+  "ok": true,
+  "detail": "lines 0; outside-click closed true; Escape closed true; bell-again closed true",
+  "pics": "B12a B12b"
+ },
+ {
+  "id": "B13 changes window: opens (clock), a tapped line takes the schedule to that change, ✕ closes it",
+  "ok": false,
+  "detail": "lines 1; key 0.rs130720260xa.rs130720260xb.rmvzo66vxo55cs1.p; the change's place {\"found\":false}; window stayed open 1; closed by ✕ true",
+  "pics": "B13a B13b B13c"
+ },
+ {
+  "id": "B14 ALL AVAIL window: opens from the count chip, moves, ✕ closes it",
+  "ok": true,
+  "detail": "chip 1; window 1; moved {\"dx\":-220,\"dy\":80}; closed by ✕ true; closed by Escape false (information only)",
+  "pics": "B14a B14b B14c B14d"
+ },
+ {
+  "id": "B15 + Block ⚙ (duty templates): opens, Tab stays inside it, ✕/Cancel closes, Escape closes, nothing saved",
+  "ok": true,
+  "detail": "x: {\"up\":1,\"tabs\":[\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"Template name\",\"SELECT\",\"Move down\",\"Role\",\"Start\",\"End\",\"Remove this role\",\"Move up\"],\"closed\":true,\"cancelBtn\":0}; esc: closed true; storage unchanged true",
+  "pics": "B15-duty-*"
+ },
+ {
+  "id": "B15 + Wave ⚙ (wave templates): opens, Tab stays inside it, ✕/Cancel closes, Escape closes, nothing saved",
+  "ok": true,
+  "detail": "x: {\"up\":1,\"tabs\":[\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"BUTTON\",\"Close\",\"BUTTON\",\"BUTTON\",\"BUTTON\"],\"closed\":true,\"cancelBtn\":0}; esc: closed true; storage unchanged true",
+  "pics": "B15-wave-*"
+ },
+ {
+  "id": "B16a Sort all: its dialog opens; Cancel closes it; nothing changed",
+  "ok": false,
+  "detail": "dialog []; cancel button 1; dialogs left 0; data size 17387 -> 17387",
+  "pics": "B16a B16b"
+ },
+ {
+  "id": "B16b a jet's CX (cancel) dialog: opens; Cancel closes it; nothing changed",
+  "ok": false,
+  "detail": "dialog []; cancel 0; left 0; data size 17387",
+  "pics": "B16c B16d"
+ },
+ {
+  "id": "B17 board search: typing a callsign lights the matching pucks; clearing puts them back",
+  "ok": true,
+  "detail": "puck classes before/typed/cleared differ true; restored true; Saber classes typed: [\"puck sm warn hard boxred hl\",\"puck sm warn hard boxred hl\"]; before: [\"puck sm warn hard boxred me\",\"puck sm warn hard boxred me\"]",
+  "pics": "B17a B17b B17c"
+ },
+ {
+  "id": "B18 the sync chip: hover shows its title; pressing toggles its state, pressing again puts it back",
+  "ok": true,
+  "detail": "text \"Sync · slow\" -> \"Sync · 1 s\" -> \"Sync · slow\"; title \"Toggle 1-second sync (for publishing / meetings)\" -> \"Toggle 1-second sync (for publishing / meetings)\"; class pressed fastsync on",
+  "pics": "B18a B18b B18c"
+ },
+ {
+  "id": "B-errs round: no console errors, page errors or failed requests",
+  "ok": true,
+  "detail": "",
+  "pics": ""
+ }
+]

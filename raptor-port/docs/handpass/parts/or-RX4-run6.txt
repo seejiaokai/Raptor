@@ -1,0 +1,25 @@
+filed {"iid":"imqoidgg040cyfc","type":"Personal","title":"RX4 own","date":"Jul 18","s":540,"e":720,"people":["Ranger"]}
+OIL sheet after save: null
+drop toast: ALL AVAIL added to RX4 own | oil sheet: null
+input after drop {"type":"Personal","title":"RX4 own","date":"Jul 18","to":null,"s":540,"e":720,"people":["Ranger","ALL AVAIL"],"by":"stiff"}
+board ALL AVAIL (before publish) [{"rowText":"⠿ PERSONAL Ranger IP ALL AVAIL 44 + ADD CXⓘ■✕","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+saved rx4-6-1-board-row-before-publish
+PUBLISH Sat {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+Edit Schedule ALL AVAIL after publish [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 44 + ADD till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+COUNTS Sat after publish chip: 7 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Saturday 18/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx4-6-2-edit-after-publish
+View-only ALL AVAIL after publish [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 44 till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+saved rx4-6-3-view-after-publish
+LL filed {"iid":"imqoidgg0yy40vy","type":"LL","date":"Jul 18","s":0,"e":1439,"people":["Drifter"]} | oil sheet: null
+Jul 18 inputs [{"iid":"y40vy","type":"LL","title":"","date":"Jul 18","to":null,"s":0,"e":1439,"people":["Drifter"],"by":"Saber"},{"iid":"0cyfc","type":"Personal","title":"RX4 own","date":"Jul 18","to":null,"s":540,"e":720,"people":["Ranger","ALL AVAIL"],"by":"Saber"}]
+Edit Schedule ALL AVAIL after LL [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 43 + ADD till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+COUNTS Sat after LL chip: 1 pending | board: 1 pending | Amendments box: AMENDMENTS 1 day with changes to publish Sat · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Saturday 18/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Drifter · LL Saber 22/6 09:00 filed"] => [1,1,1,1,1] AGREE
+saved rx4-6-4-togoout-after-ll
+saved rx4-6-5-edit-after-ll
+board ALL AVAIL after LL [{"rowText":"⠿ PERSONAL Ranger IP ALL AVAIL 43 + ADD CXⓘ■✕","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+saved rx4-6-6-board-row-after-ll
+View-only ALL AVAIL after LL [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 44 till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+saved rx4-6-7-view-after-ll
+Edit after reload [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 43 + ADD till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+View after reload [{"rowText":"RX4 OWN PERSONAL 09:00 12:00 Ranger IP ALL AVAIL 44 till 18 Jul","pucks":[{"text":"ALL AVAIL","title":"ALL AVAIL","html":"<span class=\"nm\">ALL AVAIL</span>"}]}]
+ERRORS none

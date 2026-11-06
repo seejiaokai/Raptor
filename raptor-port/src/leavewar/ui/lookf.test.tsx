@@ -2,9 +2,10 @@
    A box is `<span class="c k-<kind> s-<fill> <place>[ wide][ raptor][ moved]">TEXT</span>` in a cell marked `hasc`:
    its colour is its kind, its fill where it stands (a filled, w hollow and dashed — pending, r grey and struck —
    refused; what nobody bids for is filled), its place how much of the day (whole, top morning, bot afternoon). A day
-   with exactly two entries draws both — two halves top and bottom, two whole days left and right, a whole day beside
-   a half with the half in its own half of the right side — and drops its "+1" (an amber "!" stays); three or more keep
-   one box and "+n". */
+   with exactly two entries draws both and drops its "+1" (an amber "!" stays) — since his D1727 (6 Nov 26): two halves
+   top and bottom, two whole days left and right with their codes turned (`bx-tilt`), a whole day beside a half keeping
+   the whole cell (`whole bx-floor`) with the half over its own half (`bx-roof`); three or more keep one box, drawn as the
+   top of a stack of cards (`bx-pile` on the cell). */
 import { act, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { closeDates, ingestDutyCredit, initStore, lwEditLists, setBidState, setCell, setPostOut, setRole } from '../state/store'
@@ -51,7 +52,7 @@ describe('one entry, one box', () => {
   it('an FO credit is OIL green and filled — `k-oil s-a` — with the app’s star', () => {
     ingestDutyCredit(P, D, 'FO', 'Duty', [[480, 1080]])
     render(<Matrix />)
-    expect(boxes()).toEqual([['c k-oil s-a whole', 'FO*']])
+    expect(boxes()).toEqual([['c k-oil s-a whole bx-star', 'FO*']])   // the star takes its own letter size (D1727's fit)
   })
 
   it('a medical is rose and filled — `k-med s-a` — ATT B printed B', () => {
@@ -88,17 +89,18 @@ describe('two entries on one day both show (D1146, D1167)', () => {
     const b = boxes()
     expect(b).toHaveLength(2)
     expect(b.map(([cls]) => cls!.split(' ').find(c => c === 'left' || c === 'right'))).toEqual(['left', 'right'])
+    expect(b.every(([cls]) => cls!.split(' ').includes('bx-tilt'))).toBe(true)   // turned to read bottom to top (D1727)
     expect(b.map(([, t]) => t).sort()).toEqual(['CSE', 'LL'])
     expect(b.find(([, t]) => t === 'CSE')![0]).toContain('k-cse s-a')
     expect(b.find(([, t]) => t === 'LL')![0]).toContain('k-ll s-a')
     expect(screen.queryByTestId(`mark-${P}-${D}`)).toBeNull()
   })
 
-  it('a whole day of leave and an HO in the morning: the leave on the left, the HO in the right’s top half', () => {
+  it('a whole day of leave and an HO in the morning: the leave keeps the whole cell, the HO over its morning (D1727)', () => {
     fileAbsence(P, 'LL', D)
     ingestDutyCredit(P, D, 'HO', 'Duty', [[480, 660]])
     render(<Matrix />)
-    expect(boxes()).toEqual([['c k-ll s-a left', 'LL'], ['c k-oil s-a right-am', 'HO*']])
+    expect(boxes()).toEqual([['c k-ll s-a whole bx-floor bx-lo', 'LL'], ['c k-oil s-a top bx-roof bx-am bx-star', 'HO*']])
     // a credit the schedule earned on a day of leave is the admin's to look at (the clash rules, not look F): its amber
     // "!" stays with both boxes drawn — only a "+1" is dropped
     expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('!')
@@ -114,39 +116,41 @@ describe('two entries on one day both show (D1146, D1167)', () => {
     expect(mk.className).toContain('warn')
   })
 
-  it('three entries keep one box and "+2"', () => {
+  it('three entries keep one box, drawn as the top of a stack of cards; the "+2" stays in the cell for its words', () => {
     fileAbsence(P, 'CSE', D)
     fileAbsence(P, 'OD', D)
     fileAbsence(P, 'LL', D)
     render(<Matrix />)
     expect(cell().querySelectorAll('.c')).toHaveLength(1)
-    expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('+2')
+    expect(cell().classList.contains('bx-pile')).toBe(true)
+    expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('+2')   // hidden by matrix.css, kept for its title
   })
 })
 
-/* WALKER 1's FAILS (M2's walk, 23 Oct 26 — `docs/handpass/parts/lw-m2-w1.md` #8, #9, #11). jsdom paints nothing, so
-   these pin what the stylesheet keys on: the cell's `mklo` (the mark drops to the bottom-right) and `pohi` (the PO tag
-   rises to the top-right) where the other corner on the right is free, their absence where it is not (the box's
-   letters then step aside — `boxcorners-css.test.ts` pins those rules), and each box's own `raptor` edge. */
-describe('a corner tile never covers a box’s letters (walker 1 #8, #9)', () => {
+/* THE DAY'S MARKS (his D1727, D1728, D1729, D1730, 6 Nov 26 — [LW-CELL-COMBOS]). jsdom paints nothing, so these pin
+   what the stylesheet keys on (`boxcorners-css.test.ts` pins the rules): `bx-alarm` (the "!" an outlined tag the boxes
+   make room for), `bx-pile` (the stack of cards for three or more), `bx-gone` (an entry after his posting out: stripes on
+   its box, and no PO tag at all — D1728), `bx-last` (his last day in: the yellow line). They replaced the corner tiles'
+   moves of 23 Oct 26 (`mklo`, `pohi`, walker 1's #8, #9). */
+describe('the day’s marks (D1727, D1728)', () => {
   const has = (c: string, d = D) => cell(d).classList.contains(c)
   const notice = () => {
     /* what the inputs door leaves when a filing replaced a bid — an amber "!" with no box of its own (as daylist.test) */
     act(() => { lwEditLists([{ personId: P, date: D, drop: [], add: [{ id: 'n-test', kind: 'notice', code: 'LL', was: 'pending', byType: 'ATT C', byWho: 'an admin', seq: 7, at: '2026-02-01' } as any] }]) })
   }
 
-  it('#8 — a morning medical over an afternoon bid, with the "!": no free corner, so the mark stays and no class moves it', () => {
+  it('#8 — a morning medical over an afternoon bid, with the "!": the cell is `bx-alarm`, the boxes keep their halves', () => {
     fileAbsence(P, '*OML', D)
     expect(setCell(P, D, 'OL*')).toBe(true)
     notice()
     render(<Matrix />)
     expect(boxes()).toEqual([['c k-med s-a top wide', 'OML'], ['c k-ol s-w bot', 'OL']])
     expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('!')
-    expect(has('mkd')).toBe(true)
-    expect(has('mklo')).toBe(false)     // the top box's letters step aside instead (matrix.css)
+    expect(has('bx-alarm')).toBe(true)
+    expect(has('bx-pile')).toBe(false)
   })
 
-  it('#12’s observation — one morning box and its corner: the mark drops to the empty bottom-right', () => {
+  it('one morning box and the "!": `bx-alarm`', () => {
     fileAbsence(P, '*LL', D)
     fileAbsence(P, '*OL', D)          // two leaves on one morning: one box and the "!" (planted raw — the door would refuse it)
     render(<Matrix />)
@@ -154,60 +158,60 @@ describe('a corner tile never covers a box’s letters (walker 1 #8, #9)', () =>
     expect(b).toHaveLength(1)
     expect(b[0]![0]).toMatch(/ top$/)
     expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('!')
-    expect(has('mklo')).toBe(true)
+    expect(has('bx-alarm')).toBe(true)
   })
 
-  it('a whole day and a morning HO with the "!": the HO’s quarter is under the corner, so the mark drops below it', () => {
+  it('a whole day and a morning HO with the "!": the HO over the morning, the cell `bx-alarm`', () => {
     fileAbsence(P, 'LL', D)
     ingestDutyCredit(P, D, 'HO', 'Duty', [[480, 660]])
     render(<Matrix />)
-    expect(boxes()).toEqual([['c k-ll s-a left', 'LL'], ['c k-oil s-a right-am', 'HO*']])
-    expect(has('mklo')).toBe(true)
+    expect(boxes()).toEqual([['c k-ll s-a whole bx-floor bx-lo', 'LL'], ['c k-oil s-a top bx-roof bx-am bx-star', 'HO*']])
+    expect(has('bx-alarm')).toBe(true)
   })
 
-  it('a whole day’s letters sit mid-height: the mark keeps its corner', () => {
+  it('"+2" is a stack, never an alarm', () => {
     fileAbsence(P, 'CSE', D)
     fileAbsence(P, 'OD', D)
     fileAbsence(P, 'LL', D)
     render(<Matrix />)
-    expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('+2')
-    expect(has('mklo')).toBe(false)
+    expect(has('bx-pile')).toBe(true)
+    expect(has('bx-alarm')).toBe(false)
   })
 
-  describe('after a posting-out (#9)', () => {
+  describe('after a posting-out (D1728: no PO tag beside an entry — the stripes on its box say it)', () => {
     beforeEach(() => { setRole('admin'); expect(setPostOut(P, '2026-02-10')).toBe(true) })
 
-    it('#9b — an afternoon half: the PO tag rises to the empty top-right', () => {
+    it('an afternoon half: its box, striped, and no PO tag', () => {
       fileAbsence(P, 'LL*', D)
       render(<Matrix />)
       expect(boxes()).toEqual([['c k-ll s-a bot', 'LL']])
-      expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
-      expect(has('pohi')).toBe(true)
+      expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+      expect(has('bx-gone')).toBe(true)
     })
 
-    it('a whole day: the tag keeps its corner (it touches only the box’s corner, as the approved drawing has it)', () => {
+    it('a whole day: the same', () => {
       fileAbsence(P, 'LL', D)
       render(<Matrix />)
-      expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
-      expect(has('pohi')).toBe(false)
+      expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+      expect(has('bx-gone')).toBe(true)
     })
 
-    it('a morning and an afternoon: no free corner — the tag stays and the bottom box’s letters step aside', () => {
+    it('a morning and an afternoon: both boxes, striped', () => {
       fileAbsence(P, '*OL', D)
       fileAbsence(P, 'LL*', D)
       render(<Matrix />)
       expect(boxes()).toEqual([['c k-ol s-a top', 'OL'], ['c k-ll s-a bot', 'LL']])
-      expect(has('pohi')).toBe(false)
+      expect(has('bx-gone')).toBe(true)
     })
 
-    it('a morning box with the "!": the tag holds the bottom-right, so the mark stays up and neither moves', () => {
+    it('a morning box with the "!": the alarm and the stripes, no PO tag', () => {
       fileAbsence(P, '*LL', D)
       fileAbsence(P, '*OL', D)
       render(<Matrix />)
       expect(screen.getByTestId(`mark-${P}-${D}`).textContent).toBe('!')
-      expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
-      expect(has('mklo')).toBe(false)
-      expect(has('pohi')).toBe(false)
+      expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+      expect(has('bx-alarm')).toBe(true)
+      expect(has('bx-gone')).toBe(true)
     })
 
     it('#9a — a posted-out day with nothing on it: the bare "PO" sits in the frame, centred (`c whole`, unboxed)', () => {
@@ -215,7 +219,14 @@ describe('a corner tile never covers a box’s letters (walker 1 #8, #9)', () =>
       const d = '2026-02-12'
       expect(cell(d).classList.contains('gone')).toBe(true)
       expect(cell(d).classList.contains('hasc')).toBe(true)
+      expect(cell(d).classList.contains('bx-gone')).toBe(false)
       expect([...cell(d).querySelectorAll('.c')].map(b => [b.className, b.textContent])).toEqual([['c whole', 'PO']])
+    })
+
+    it('his last day in is `bx-last`, its tile the yellow line (D1728)', () => {
+      render(<Matrix />)
+      expect(cell('2026-02-09').classList.contains('bx-last')).toBe(true)
+      expect(cell('2026-02-09').querySelector('.polast')).toBeTruthy()
     })
   })
 })

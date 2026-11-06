@@ -212,3 +212,16 @@ describe('the retired Tracker colours do not come back', () => {
     expect(hits).toEqual([])
   })
 })
+
+/* The menus' shade (owner D1706, 5 Nov 26 — the board's look, plain rows that shade under the mouse or the keyboard). The
+   resting rule names `.menupanel.on>button.sm` and sets no fill; a shade rule less specific than it never shows (the round-4
+   code read: no row ever shaded). jsdom cannot hover, so the rules themselves are read: each state carries `.on` and `.sm`. */
+describe('the Tracker\'s menus shade a row as the board\'s do (D1706)', () => {
+  const css = strip(readFileSync(join(__dirname, 'tracker.css'), 'utf8')).replace(/\s+/g, '')
+  it('the resting rule is the specific one', () => { expect(css).toContain('.menupanel.on>button.sm{') })
+  for (const state of ['hover', 'focus-visible']) {
+    it(`a ${state} rule as specific, with the board's raised colour`, () => {
+      expect(css).toMatch(new RegExp(String.raw`\.menupanel\.on>button\.sm:${state}[^{]*\{[^}]*background:var\(--raised`))
+    })
+  }
+})

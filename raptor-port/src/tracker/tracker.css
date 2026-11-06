@@ -645,6 +645,27 @@ small.hint{color:var(--muted);font-size:11px}
 .menupanel{position:fixed;z-index:50;width:200px;overflow:auto;display:none;flex-direction:column;gap:4px;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,.6)}
 .menupanel.on{display:flex}
 .menupanel button{text-align:left;width:100%}
+/* ONE LOOK FOR EVERY MENU OF ACTIONS (owner D1706, 5 Nov 26 — "all as recommended"; drawn by scripts/handpass/cr4-look.mjs
+   q6): the File and the two pencil menus take the Scheduler Board's own small menu (18-oil-board.css `.sb-moremenu` /
+   `.sb-moreitem`) — plain rows in one panel, 38 tall, no box round each item. Raptor's colours by name, each with its value
+   beside it for the standalone Tracker, which has no Raptor sheet (the standalone rule, 9 Sep 26). */
+.menupanel{gap:0;padding:4px;background:var(--panel);border-color:var(--edge-2,#39424D)}
+.menupanel>button,.menupanel.on>button.sm{display:flex;align-items:center;gap:9px;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
+  color:var(--ink);font-size:13px;font-weight:500;white-space:nowrap;box-shadow:none}
+/* the board's shade on a row under the mouse or the keyboard (D1706): written as specific as the resting rule above
+   (`.on` and `.sm`), or its `background:none` wins and no row ever shades (the round-4 code read, 5 Nov 26); hover for a
+   mouse only, as the Leave War's ⋯ menu — a tap closes the menu anyway */
+.menupanel>button:focus-visible,.menupanel.on>button.sm:focus-visible{background:var(--raised,#20262E);border-color:transparent}
+@media (hover:hover){.menupanel>button:hover,.menupanel.on>button.sm:hover{background:var(--raised,#20262E);border-color:transparent}}
+.menupanel>button .trkglyph{margin-right:0}
+/* round 4's drawn marks on the Tracker (owner D1705, D1707 — Glyphs.jsx): the chart-layout tools and the lull's Copy to… at
+   the drawing's 13px, the flex settings' gear at 16 */
+.arrtools button .trkglyph,.arrfold button .trkglyph,#copyLullBtn .trkglyph{width:13px;height:13px;vertical-align:-2px}
+#flexBtn .trkglyph{width:16px;height:16px}
+/* a pixel or two less each side, so the button keeps its 30 wide (26 on a phone) with the drawn 16px gear in place of the
+   narrower ⚙ (D1707 — each gear keeps its button's size; the code read found it 34) */
+#flexBtn{padding-left:6px;padding-right:6px}
+@media (max-width:1050px){#flexBtn{padding-left:4px;padding-right:4px}}
 .menupanel label.sub{display:flex;align-items:center;gap:7px;padding:2px 4px}
 .menupanel .msep{height:1px;background:var(--line);margin:2px 0}
 .menupanel .mnote{font-size:11px;color:var(--muted);padding:2px 4px;line-height:1.5;overflow-wrap:anywhere}

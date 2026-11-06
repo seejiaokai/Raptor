@@ -20,12 +20,17 @@ import { DAYPOP, setDayPop, INSIGHTS, setInsights, INSIGHTS_ALL, setInsightsAll,
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose, useEscWindow } from './sheetfocus'
+import { useBarFree } from './barfree'
 
 export function DayPop() {
   useVersion()
   /* Escape closes it, the keys back on its ⓘ ([VEILED-WINDOWS-BAR], 3 Nov 26 — ui/sheetfocus.ts useEscWindow) */
   const popRef = useRef<HTMLDivElement>(null)
   useEscWindow(popRef, DAYPOP != null, () => { setDayPop(null); notify() })
+  /* the bar over it stays pressable — Undo and Redo work with it open, any other bar control closes it first (owner
+     D1645, 5 Nov 26 — ui/barfree.ts). It reads the day afresh on every repaint, so what an Undo changes on the day shows
+     in it at once; a page or week change closes it (pops.ts DAYPOP_NAV) — its day is a place in the week on screen. */
+  useBarFree(popRef, DAYPOP != null, () => { setDayPop(null); notify() })
   if (DAYPOP == null) return <div className="airpop" id="dayPop" hidden />
   const di = DAYPOP
   validate()
@@ -151,7 +156,14 @@ function airGo(): any {
    typed would be logged as changed from a value the undo had already taken away. */
 let TRWAS: string[] = []
 function trText(g: any) { return (((g && g.traffic) || []) as any[]).join(' · ') }
+/* WHO MAY CHANGE TRAFFIC, AND WHERE (owner D1647, 5 Nov 26 — "Go" on the mock-up page's question 3): an admin, on Edit
+   Schedule and the Scheduler Board (which opens over it) only. View-only Sched changes nothing and carries no Undo, yet an
+   admin's window there had its typing boxes, ✕, Add row and Done — a change made there could not be taken back from that
+   page. There everyone, an admin included, gets the plain read list a member sees. Asked by the drawing below AND by every
+   write the window makes, so no route from the window writes on View-only Sched. */
+function airEditable(): boolean { return isAdmin() && CURPAGE === 'editsched' }
 function airEdit() {
+  if (!airEditable()) return
   const g = airGo()
   if (!g) return; const [di, gi] = String(AIRKEY).split('|')
   const now = trText(g)
@@ -159,10 +171,6 @@ function airEdit() {
   TRWAS = ((g.traffic || []) as any[]).slice()
   afterSchedMutate(); notify()
 }
-/* THE BAR OVER THE WINDOW: the Scheduler Board's own while it is open (it lies over the top bar), else the top bar */
-const AIR_BAR = () => document.querySelector('#schedBoard:not([hidden]) .sb-top') || document.getElementById('burger')?.closest('.topbar') || null
-/* the two buttons of the bar a press on which leaves the window open — the top bar's pair and the board's */
-const AIR_KEEPS = '#undoBtn, #redoBtn, #sbUndo, #sbRedo'
 export function AirPop() {
   useVersion()
   const bodyRef = useRef<HTMLDivElement>(null)
@@ -188,7 +196,7 @@ export function AirPop() {
        command) init/mutate it themselves; an input/del row only renders when
        traffic already exists. */
     const traffic = (g.traffic || []) as any[]
-    const admin = isAdmin(), body = bodyRef.current!
+    const admin = airEditable(), body = bodyRef.current!
     /* [INNERHTML-REPAINT-SWEEP] (21 Oct 26): this effect runs on EVERY repaint, and writing innerHTML again threw
        away the line being typed in — the caret and the box with it — whenever anything else repainted. The boxes
        already on screen are left alone when they hold exactly the list (typing writes each keystroke into the list,
@@ -224,33 +232,9 @@ export function AirPop() {
      clock, the menu, ✓ Done — first closes the window, as a press outside it on the veil does, and then does its own
      job: what they open is drawn under this veil's layer, and a window left over a page it does not belong to would
      edit a wave nobody is looking at. A page or week change closes it too (pops.ts AIRKEY_NAV) — the keys' own route
-     to a page tab, or an undo that lands on another page. */
-  useLayoutEffect(() => {
-    const n = popRef.current
-    if (!n || !open) return
-    const place = () => {
-      const bar = AIR_BAR()
-      const b = bar ? Math.round(bar.getBoundingClientRect().bottom) : 0
-      n.style.top = b > 0 ? b + 'px' : ''
-    }
-    place()
-    window.addEventListener('resize', place)
-    const bar = AIR_BAR()
-    const ro = bar && typeof ResizeObserver !== 'undefined' ? new ResizeObserver(place) : null
-    if (ro && bar) ro.observe(bar)
-    return () => { window.removeEventListener('resize', place); ro?.disconnect() }
-  })
-  useEffect(() => {
-    if (!open) return
-    const press = (e: MouseEvent) => {
-      const t = e.target as HTMLElement | null
-      if (!t || typeof t.closest !== 'function' || !t.closest('.topbar, #schedBoard .sb-top')) return
-      if (t.closest(AIR_KEEPS)) return
-      setAirKey(null); notify()
-    }
-    document.addEventListener('click', press, true)
-    return () => document.removeEventListener('click', press, true)
-  }, [open])
+     to a page tab, or an undo that lands on another page. The machinery is shared with the three windows that took the same
+     way on his D1645 (5 Nov 26): ui/barfree.ts useBarFree. */
+  useBarFree(popRef, open, () => { setAirKey(null); notify() })
   /* ESCAPE CLOSES IT, AND ONLY IT ([VEILED-WINDOWS-BAR], 3 Nov 26 — ui/sheetfocus.ts useEscWindow): it holds no keys, so
      Escape used to do nothing with it up — over the Scheduler Board the board waits for it (boardescape.ts overBoard). A
      line being typed is saved first by its own blur (airEdit), as a press on ✕ saves it; the keys go back to the Traffic
@@ -258,20 +242,20 @@ export function AirPop() {
   useEscWindow(popRef, open, () => { setAirKey(null); notify() })
   if (!open) return <div className="airpop" id="airpop" hidden />
   const close = () => { setAirKey(null); notify() }
-  const admin = isAdmin()
+  const admin = airEditable()
   return (
-    <div className="airpop air-below" id="airpop" ref={popRef} onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
+    <div className="airpop" id="airpop" ref={popRef} onClick={e => { if (clickedOutside(e, 'airpop')) close() }}>
       <div className="airpop-box">
         <div className="airpop-head"><b id="airTitle">{`Traffic · ${g.label || ''}`}</b><button className="x" id="airClose" onClick={close}>✕</button></div>
         <div className="airpop-body" id="airBody" ref={bodyRef}
-          onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i) return; const gg = airGo(); if (gg && gg.traffic) gg.traffic[+i.dataset.airi!] = i.value }}
+          onInput={e => { const i = (e.target as HTMLElement).closest('[data-airi]') as HTMLInputElement | null; if (!i || !airEditable()) return; const gg = airGo(); if (gg && gg.traffic) gg.traffic[+i.dataset.airi!] = i.value }}
           onBlur={e => { if ((e.target as HTMLElement).closest('[data-airi]')) airEdit() }}
           onClick={e => {
             const del = (e.target as HTMLElement).closest('[data-airdel]') as HTMLElement | null
-            if (del) { const gg = airGo(); if (!gg || !gg.traffic) return; gg.traffic.splice(+del.dataset.airdel!, 1); airEdit() }
+            if (del) { const gg = airGo(); if (!gg || !gg.traffic || !airEditable()) return; gg.traffic.splice(+del.dataset.airdel!, 1); airEdit() }
           }} />
         {admin && <div className="airpop-foot" data-admin="">
-          <button className="abtn" id="airAdd" onClick={() => { const gg = airGo(); if (!gg) return; gg.traffic = gg.traffic || []; gg.traffic.push('1 X … / … / … / …'); airEdit() }}>Add row</button>
+          <button className="abtn" id="airAdd" onClick={() => { const gg = airGo(); if (!gg || !airEditable()) return; gg.traffic = gg.traffic || []; gg.traffic.push('1 X … / … / … / …'); airEdit() }}>Add row</button>
           <button className="abtn primary" id="airDone" onClick={close}>Done</button>
         </div>}
       </div>

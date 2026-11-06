@@ -1,0 +1,44 @@
+filed [{"iid":"imqoidgg0d0cr78","type":"LL","date":"Jul 15","s":0,"e":1439,"people":["Drifter","Hex","Hunter"]}]
+Wed unavailable before: ["LL Drifter A till 16 Jul","LL C Hex C till 16 Jul","LL Hunter IP till 16 Jul","OL Cobra IP Overseas leave — off island","ATT C Grit C Medically down till 17 Jul","OD C Nomad C Overseas duty — exercise, off island","OIL C Gambit C"]
+drag toast: Anvil is now unavailable instead of Hex
+Wed unavailable after drag: ["LL Drifter A till 16 Jul","LL C Anvil IP till 16 Jul","LL Hunter IP till 16 Jul","OL Cobra IP Overseas leave — off island","ATT C Grit C Medically down till 17 Jul","OD C Nomad C Overseas duty — exercise, off island","OIL C Gambit C"]
+INPUTS LL: [{"iid":"0cr78","type":"LL","title":"","date":"Jul 15","to":null,"s":0,"e":1439,"people":["Drifter","Anvil","Hunter"],"by":"Saber"}]
+saved rx3-8-0-after-drag
+pre dots (history on): [{"row":"LL Drifter A till 16 Jul","day":2},{"row":"LL C Anvil IP till 16 Jul","day":2},{"row":"LL Hunter IP till 16 Jul","day":2},{"row":"LL Drifter A till 16 Jul","day":3},{"row":"LL C Anvil IP till 16 Jul","day":3},{"row":"LL Hunter IP till 16 Jul","day":3}]
+saved rx3-8-pre-1-history-on
+pre window: {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 0","All changes 3 [on]"],"lines":["cw-gh :: ▾ Input · Anvil, Drifter, Hunter · LL · 3 09:00","cw-l :: Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00","cw-l :: Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00","cw-l :: Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]}
+saved rx3-8-pre-2-all-changes
+saved rx3-8-pre-3-tap-line0
+pre TAP line 0 "Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL Drifter A till 16 Jul","row":"LL Drifter A till 16 Jul","seat":null}]
+saved rx3-8-pre-3-tap-line1
+pre TAP line 1 "Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL C Anvil IP till 16 Jul","row":"LL C Anvil IP till 16 Jul","seat":null}]
+saved rx3-8-pre-3-tap-line2
+pre TAP line 2 "Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL Drifter A till 16 Jul","row":"LL Drifter A till 16 Jul","seat":null}]
+pre dots on Wed: 3
+saved rx3-8-pre-4-dot-0
+pre DOT 0 row="LL Drifter A till 16 Jul" who=Drifter bubble=["DRIFTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]
+saved rx3-8-pre-4-dot-1
+pre DOT 1 row="LL C Anvil IP till 16 Jul" who=Anvil bubble=["ANVIL · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00 LL 15 Jul–16 Jul · added Saber · 22/6 09:00"]
+saved rx3-8-pre-4-dot-2
+pre DOT 2 row="LL Hunter IP till 16 Jul" who=Hunter bubble=["HUNTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]
+RELOADED; sign-in asked again: true
+Wed unavailable after reload: ["LL Drifter A till 16 Jul","LL C Anvil IP till 16 Jul","LL Hunter IP till 16 Jul","OL Cobra IP Overseas leave — off island","ATT C Grit C Medically down till 17 Jul","OD C Nomad C Overseas duty — exercise, off island","OIL C Gambit C"]
+INPUTS LL after reload: [{"iid":"0cr78","type":"LL","title":"","date":"Jul 15","to":null,"s":0,"e":1439,"people":["Drifter","Anvil","Hunter"],"by":"Saber"}]
+post dots (history on): [{"row":"LL Drifter A till 16 Jul","day":2},{"row":"LL C Anvil IP till 16 Jul","day":2},{"row":"LL Hunter IP till 16 Jul","day":2},{"row":"LL Drifter A till 16 Jul","day":3},{"row":"LL C Anvil IP till 16 Jul","day":3},{"row":"LL Hunter IP till 16 Jul","day":3}]
+saved rx3-8-post-1-history-on
+post window: {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 0","All changes 3 [on]"],"lines":["cw-gh :: ▾ Input · Anvil, Drifter, Hunter · LL · 3 09:00","cw-l :: Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00","cw-l :: Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00","cw-l :: Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]}
+saved rx3-8-post-2-all-changes
+saved rx3-8-post-3-tap-line0
+post TAP line 0 "Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL Drifter A till 16 Jul","row":"LL Drifter A till 16 Jul","seat":null}]
+saved rx3-8-post-3-tap-line1
+post TAP line 1 "Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL C Anvil IP till 16 Jul","row":"LL C Anvil IP till 16 Jul","seat":null}]
+saved rx3-8-post-3-tap-line2
+post TAP line 2 "Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00" -> toast="" flash=[{"cls":"pl-row chgflash","text":"LL Drifter A till 16 Jul","row":"LL Drifter A till 16 Jul","seat":null}]
+post dots on Wed: 3
+saved rx3-8-post-4-dot-0
+post DOT 0 row="LL Drifter A till 16 Jul" who=Drifter bubble=["DRIFTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]
+saved rx3-8-post-4-dot-1
+post DOT 1 row="LL C Anvil IP till 16 Jul" who=Anvil bubble=["ANVIL · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00 LL 15 Jul–16 Jul · added Saber · 22/6 09:00"]
+saved rx3-8-post-4-dot-2
+post DOT 2 row="LL Hunter IP till 16 Jul" who=Hunter bubble=["HUNTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"]
+ERRORS none

@@ -166,6 +166,8 @@
 .bl-line.unread .bl-t{color:var(--ink)}
 .bl-line.unread .bl-name{font-weight:600}
 .bl-line.unread .bl-day,.bl-line.unread .bl-what{color:var(--ink-2)}
+/* a taken-back line: what it took back, struck through as drawn (his D1699 — docs/mock/2026-11-05-taken-back-sans/ picture 8) */
+.bl-struck{text-decoration:line-through;text-decoration-thickness:1.5px}
 /* the lines scroll inside the list; the foot under them stays in sight (the walk's C-F4, 27 Oct 26) */
 .bl-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain}
 .bl-foot{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:4px;padding:6px 7px 3px;border-top:1px solid var(--edge)}

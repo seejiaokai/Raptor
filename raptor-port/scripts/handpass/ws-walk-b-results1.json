@@ -1,0 +1,128 @@
+[
+ {
+  "id": "B1 Tab from the top bar reaches Monday's date; cyan ring on it, nothing else changed",
+  "ok": true,
+  "detail": "tabs 13; active {\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"0\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":true,\"outline\":\"solid 2px rgb(59, 198, 232)\"}; data/scroll 28553|20 -> 28553|20",
+  "pics": "B1-tab-to-date-ring.png"
+ },
+ {
+  "id": "B1b Shift+Tab leaves the date, Tab comes back to it with its ring",
+  "ok": true,
+  "detail": "shift+tab went to SUMMARY#.legend-sum; back on {\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"0\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":true,\"outline\":\"solid 2px rgb(59, 198, 232)\"}",
+  "pics": ""
+ },
+ {
+  "id": "B2 Enter opens the Scheduler Board on Monday, the keys on the board",
+  "ok": true,
+  "detail": "SBDAY 0; active {\"tag\":\"DIV\",\"id\":\"schedBoard\",\"cls\":\"schedboard\",\"sbday\":null,\"air\":null,\"info\":false,\"inBoard\":true,\"ring\":true,\"outline\":\"none 3px rgb(241, 244, 247)\"}",
+  "pics": "B2-enter-board-open.png"
+ },
+ {
+  "id": "B3 Escape closes the board; the ring is back on Monday's date",
+  "ok": true,
+  "detail": "{\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"0\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":true,\"outline\":\"solid 2px rgb(59, 198, 232)\"}",
+  "pics": "B3-escape-ring-back.png"
+ },
+ {
+  "id": "B4 Space opens the board; Tab reaches ✓ Done; Enter closes it, ring back on the date",
+  "ok": true,
+  "detail": "tabs to Done 9; after: {\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"0\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":true,\"outline\":\"solid 2px rgb(59, 198, 232)\"}",
+  "pics": "B4a-space-board-done-focused.png B4b-done-ring-back.png"
+ },
+ {
+  "id": "B5.1 + Block: menu up (1); Escape closes only the menu, board stays, ring back on its button",
+  "ok": true,
+  "detail": "gone true; board true; focus on button true; ring true",
+  "pics": "B5-block-up.png B5-block-escaped.png"
+ },
+ {
+  "id": "B5.2 Templates: menu up (1); Escape closes only the menu, board stays, ring back on its button",
+  "ok": true,
+  "detail": "gone true; board true; focus on button true; ring true",
+  "pics": "B5-templates-up.png B5-templates-escaped.png"
+ },
+ {
+  "id": "B5.3 plans selector: menu up (1); Escape closes only the menu, board stays, ring back on its button",
+  "ok": true,
+  "detail": "gone true; board true; focus on button true; ring true",
+  "pics": "B5-plans-up.png B5-plans-escaped.png"
+ },
+ {
+  "id": "B5.4 a jet's stores: menu up (1); Escape closes only the menu, board stays, ring back on its button",
+  "ok": true,
+  "detail": "gone true; board true; focus on button true; ring true",
+  "pics": "B5-stores-up.png B5-stores-escaped.png"
+ },
+ {
+  "id": "B5.5 + Wave: menu up (1); Escape closes only the menu, board stays, ring back on its button",
+  "ok": true,
+  "detail": "gone true; board true; focus on button true; ring true",
+  "pics": "B5-wave-up.png B5-wave-escaped.png"
+ },
+ {
+  "id": "B6a Traffic window over the board: Escape closes it only; keys back on its button",
+  "ok": true,
+  "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"cls\":\"airbtn\",\"sbday\":null,\"air\":\"0|0\",\"info\":false,\"inBoard\":true,\"ring\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\"}",
+  "pics": "B6a-traffic-up.png B6a-traffic-escaped.png"
+ },
+ {
+  "id": "B6b a Traffic line typed but not left: Escape closes the window and the typed text is kept on reopening",
+  "ok": true,
+  "detail": "lines before [\"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\"]; typed 2; closed true; reopened [\"1 X TRANSPORT / WEST HIGH / FL240 / 1300H - 1715H\",\"WSBTYPED1 X … / … / … / …\"]",
+  "pics": "B6b-traffic-typed-not-left.png B6b-traffic-reopened.png"
+ },
+ {
+  "id": "B6c day-details window over the board: Escape closes it only; keys back on its ⓘ",
+  "ok": true,
+  "detail": "{\"tag\":\"BUTTON\",\"id\":\"\",\"cls\":\"dinfobtn\",\"sbday\":null,\"air\":null,\"info\":true,\"inBoard\":true,\"ring\":true,\"outline\":\"auto 1px rgb(16, 16, 16)\"}",
+  "pics": "B6c-daydetails-up.png B6c-daydetails-escaped.png"
+ },
+ {
+  "id": "B6d the week's own Traffic window: Escape closes it, keys back on its button",
+  "ok": true,
+  "detail": "",
+  "pics": "B6d-week-traffic-up.png"
+ },
+ {
+  "id": "B6e the week's day-details window: Escape closes it, keys back on its ⓘ",
+  "ok": true,
+  "detail": "",
+  "pics": "B6e-week-daydetails-up.png"
+ },
+ {
+  "id": "B7 Tab route callsign > mission > brief > take-off > landing > remarks is unchanged, the date never a stop",
+  "ok": true,
+  "detail": "forward msn:true, rl:true, br:true, to:true, ld:true, remarks fr:0.0.0.0:true; (the rally box sits between mission and brief as in the e2e route)",
+  "pics": "B7-tab-route-remarks.png"
+ },
+ {
+  "id": "B8 View-only Sched: 100 Tabs never land on a day's date; its date has no tabindex / button role",
+  "ok": true,
+  "detail": "page viewsched; stops inside the week 90; on a date 0; date markup {\"html\":\"<span class=\\\"dt di-open\\\" data-dayinfo=\\\"0\\\" title=\\\"Day details\\\">Jul 13 · Today</span>\",\"tabindex\":null,\"role\":null}",
+  "pics": "B8-viewonly-after-100-tabs.png"
+ },
+ {
+  "id": "B9 mouse click on the date opens the board; after ✓ Done by mouse the date wears no ring",
+  "ok": true,
+  "detail": "active {\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"1\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":false,\"outline\":\"none 3px rgb(138, 150, 163)\"}",
+  "pics": "B9a-mouse-board-open.png B9b-mouse-after-close-no-ring.png"
+ },
+ {
+  "id": "B-errs desktop part: no console errors, page errors or failed requests",
+  "ok": true,
+  "detail": "",
+  "pics": ""
+ },
+ {
+  "id": "B10 phone 402x874: a tap on the edit week's date opens the board; after closing there is no ring",
+  "ok": true,
+  "detail": "Done found 1; date state {\"outline\":\"none 3px\",\"ring\":false,\"focused\":true}; active {\"tag\":\"SPAN\",\"id\":\"\",\"cls\":\"dt sb-open\",\"sbday\":\"0\",\"air\":null,\"info\":false,\"inBoard\":false,\"ring\":false,\"outline\":\"none 3px rgb(138, 150, 163)\"}",
+  "pics": "B10a-phone-before-tap.png B10b-phone-right-after-tap.png B10c-phone-board-open.png B10d-phone-after-close.png"
+ },
+ {
+  "id": "B10-errs phone: no console errors, page errors or failed requests",
+  "ok": true,
+  "detail": "",
+  "pics": ""
+ }
+]

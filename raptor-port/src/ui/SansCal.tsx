@@ -38,8 +38,8 @@ import { isAdmin } from '../state/perms'
 import { setSansSet } from './pops'
 import { initCalPick } from './calpick'
 import { MONTHS, WD, isoToday } from './daysfmt'
-import { MoonIcon, SunIcon } from './icons'
-import { monthCells } from './InputsCal'
+import { GearIcon, MoonIcon, SunIcon } from './icons'
+import { monthCells } from './inputscal-model'
 import { SansDay } from './SansDay'
 import { maySansAdd, openSansAdd } from './sansadd'
 import { PEOPLE } from '../engine/people'
@@ -284,11 +284,12 @@ export function SansCal({ lead }: { lead?: ReactNode } = {}) {
           <button type="button" className="abtn sc-today" data-testid="sc-today" onClick={goToday}>Today</button>
           <span className="sc-spring" />
           <Highlight people={roster} hi={hi} />
-          {/* THE GEAR (D618, D635): the app's own cog — the Leave War's settings button — never a drawing with rays, which
-              on this calendar would read as the day-flying sun beside it. Admins only; everyone has the line below. */}
+          {/* THE GEAR (D618, D635): the app's one gear — the Leave War's drawn line gear since D1509, in its button's own
+              white (D1707, "the SANS calendar's gear included") — never a drawing with rays, which on this calendar would
+              read as the day-flying sun beside it. Admins only; everyone has the line below. */}
           {isAdmin() && (
             <button type="button" className="abtn sc-gear" data-testid="sc-gear" title="SANS calendar settings — day colours, the late cut-off, the Calendar"
-              aria-label="SANS calendar settings" onClick={() => { setSansSet(true); notify() }}>&#9881;</button>
+              aria-label="SANS calendar settings" onClick={() => { setSansSet(true); notify() }}><GearIcon /></button>
           )}
         </div>
         <div className="sc-sub">

@@ -1,5 +1,5 @@
 /* THE GENERAL MIDNIGHT TAIL + THE AVALON RULE (owner, 11 Aug 26). Spec is
-   docs/session-state.md's "Unfinished" section, confirmed verbatim by the
+   docs/archive/session-state.md's "Unfinished" section, confirmed verbatim by the
    owner. Two things, one file:
      - any timed window that runs past minute 1440 must judge its tail
        against TOMORROW's inputs, everywhere day.input is read;

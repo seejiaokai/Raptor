@@ -1,0 +1,96 @@
+{
+  "results": [
+    {
+      "size": "desk",
+      "step": "C1a",
+      "ok": true,
+      "what": "a posting dated today: its line at once (Ranger / Posted out · now SANS)"
+    },
+    {
+      "size": "desk",
+      "step": "C1b",
+      "ok": true,
+      "what": "the top bar's Undo takes no posting back (D350; Undo greyed): still SANS, the line stands"
+    },
+    {
+      "size": "desk",
+      "step": "C1c",
+      "ok": true,
+      "what": "the posting sheet's Undo post out puts him back, and the line stays as the record (door found)"
+    },
+    {
+      "size": "desk",
+      "step": "C1d",
+      "ok": true,
+      "what": "its tap rings his roster row (bane)"
+    },
+    {
+      "size": "desk",
+      "step": "C5",
+      "ok": false,
+      "what": "midnight passes with Edit Schedule left open, nothing touched: before dark; three minutes after midnight the posting has NOT run and the bell is DARK"
+    },
+    {
+      "size": "desk",
+      "step": "C4",
+      "ok": true,
+      "what": "half-typed on Users kept through the tap (Newbie, newbie@mail); Ranger ringed"
+    },
+    {
+      "size": "desk",
+      "step": "C3a",
+      "ok": true,
+      "what": "a second tap inside the six seconds: Cinch ringed, Ranger not (snap)"
+    },
+    {
+      "size": "desk",
+      "step": "C3b",
+      "ok": true,
+      "what": "both rings gone after six seconds"
+    },
+    {
+      "size": "desk",
+      "step": "C2a",
+      "ok": true,
+      "what": "renamed after the line: it reads his new name (Rogue, Trident, Cinch, Cobra)"
+    },
+    {
+      "size": "desk",
+      "step": "C2b",
+      "ok": true,
+      "what": "restored, his line's tap rings his roster row ({\"ring\":true,\"archived\":false})"
+    },
+    {
+      "size": "desk",
+      "step": "C6",
+      "ok": true,
+      "what": "Admin → Users: Cinch \"posted out 16 Nov · SANS\", Cobra \"posted out 16 Nov\""
+    }
+  ],
+  "errs": [],
+  "log": [
+    "PASS [desk] C1a — a posting dated today: its line at once (Ranger / Posted out · now SANS)",
+    "PASS [desk] C1b — the top bar's Undo takes no posting back (D350; Undo greyed): still SANS, the line stands",
+    "PASS [desk] C1c — the posting sheet's Undo post out puts him back, and the line stays as the record (door found)",
+    "PASS [desk] C1d — its tap rings his roster row (bane)",
+    "FAIL [desk] C5 — midnight passes with Edit Schedule left open, nothing touched: before dark; three minutes after midnight the posting has NOT run and the bell is DARK",
+    "[desk] C5 note: after one click on the page — posting not run, bell dark",
+    "PASS [desk] C4 — half-typed on Users kept through the tap (Newbie, newbie@mail); Ranger ringed",
+    "PASS [desk] C3a — a second tap inside the six seconds: Cinch ringed, Ranger not (snap)",
+    "PASS [desk] C3b — both rings gone after six seconds",
+    "PASS [desk] C2a — renamed after the line: it reads his new name (Rogue, Trident, Cinch, Cobra)",
+    "PASS [desk] C2b — restored, his line's tap rings his roster row ({\"ring\":true,\"archived\":false})",
+    "[desk] C6 Quals: [{\"id\":\"harpoon\",\"row\":true,\"cs\":\"Trident\",\"san\":false,\"deleted\":true},{\"id\":\"snap\",\"row\":true,\"cs\":\"Cinch\",\"san\":true,\"deleted\":false},{\"id\":\"taipan\",\"row\":true,\"cs\":\"Cobra\",\"san\":false,\"deleted\":false}]",
+    "PASS [desk] C6 — Admin → Users: Cinch \"posted out 16 Nov · SANS\", Cobra \"posted out 16 Nov\""
+  ],
+  "report": {
+    "desk": {
+      "pick": [
+        "bane",
+        "harpoon",
+        "snap",
+        "taipan"
+      ]
+    }
+  }
+}

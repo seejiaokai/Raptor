@@ -1,0 +1,902 @@
+{
+ "state": "pass-desk",
+ "drawing": {
+  "script": "scripts/handpass/aw1105-mock.mjs",
+  "shot": "C-desk"
+ },
+ "recorded": "2026-11-05T05:07:22.685Z",
+ "drawnOn": "main at 42df6337b (the access, save-status and sign-in files as on the drawing branch claude/keyboard-windows-batch-5eff45)",
+ "checkout": "9b21816e6",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "card": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 592,
+    "y": 243.2,
+    "w": 352,
+    "h": 445.5
+   },
+   "ink": {
+    "x": 613,
+    "y": 269.2,
+    "w": 299,
+    "h": 398.5
+   },
+   "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU Request sent An admin approves You're on the schedule Meanwhile you can look at the schedule, read only. View the schedule Sign out Signed in as stranger",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)), none",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "16px",
+     "16px",
+     "16px",
+     "16px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.9) 0px 40px 90px -40px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.login-card.acc-card.awb"
+  },
+  "pass-top": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 593,
+    "y": 244.2,
+    "w": 350,
+    "h": 171.5
+   },
+   "ink": {
+    "x": 613,
+    "y": 269.2,
+    "w": 299,
+    "h": 115.5
+   },
+   "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "linear-gradient(135deg, rgba(59, 198, 232, 0.1), rgba(59, 198, 232, 0) 55%), none",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.awb-top"
+  },
+  "mark-row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 264.2,
+    "w": 310,
+    "h": 25
+   },
+   "ink": {
+    "x": 788.7,
+    "y": 269.2,
+    "w": 123.3,
+    "h": 15
+   },
+   "text": "Waiting for an admin",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "space-between",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.awb-row"
+  },
+  "claws": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 265.7,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "svg"
+  },
+  "waiting": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 765.7,
+    "y": 264.2,
+    "w": 157.3,
+    "h": 25
+   },
+   "ink": {
+    "x": 788.7,
+    "y": 269.2,
+    "w": 123.3,
+    "h": 15
+   },
+   "text": "Waiting for an admin",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(59, 198, 232, 0.45)",
+     "1px solid rgba(59, 198, 232, 0.45)",
+     "1px solid rgba(59, 198, 232, 0.45)",
+     "1px solid rgba(59, 198, 232, 0.45)"
+    ],
+    "corners": [
+     "999px",
+     "999px",
+     "999px",
+     "999px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 11px",
+    "spacing": "0.66px"
+   },
+   "tag": "span.awb-state"
+  },
+  "callsign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 303.2,
+    "w": 313.6,
+    "h": 31.5
+   },
+   "ink": {
+    "x": 613,
+    "y": 298.2,
+    "w": 191.2,
+    "h": 40
+   },
+   "text": "Stranger",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "800 30px",
+    "spacing": "3.6px"
+   },
+   "tag": "div.awb-cs"
+  },
+  "fields": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 348.7,
+    "w": 310,
+    "h": 36
+   },
+   "ink": {
+    "x": 613,
+    "y": 348.7,
+    "w": 166.8,
+    "h": 36
+   },
+   "text": "Initials ST Seat Pilot CAT OCU",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "start",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "dl.awb-fields"
+  },
+  "field-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 348.7,
+    "w": 47,
+    "h": 36
+   },
+   "ink": {
+    "x": 613,
+    "y": 348.7,
+    "w": 47,
+    "h": 36
+   },
+   "text": "Initials ST",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div"
+  },
+  "field-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 688,
+    "y": 348.7,
+    "w": 32.4,
+    "h": 36
+   },
+   "ink": {
+    "x": 688,
+    "y": 348.7,
+    "w": 32.4,
+    "h": 36
+   },
+   "text": "Seat Pilot",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div"
+  },
+  "field-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 748.4,
+    "y": 348.7,
+    "w": 31.4,
+    "h": 36
+   },
+   "ink": {
+    "x": 748.4,
+    "y": 348.7,
+    "w": 31.4,
+    "h": 36
+   },
+   "text": "CAT OCU",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div"
+  },
+  "tear": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 609,
+    "y": 415.7,
+    "w": 318,
+    "h": 2
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "2px dashed rgb(57, 66, 77)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.awb-perf"
+  },
+  "steps": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 437.7,
+    "w": 310,
+    "h": 58.9
+   },
+   "ink": {
+    "x": 632.5,
+    "y": 465.7,
+    "w": 272,
+    "h": 29.9
+   },
+   "text": "Request sent An admin approves You're on the schedule",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "ol.aw-steps"
+  },
+  "step-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 437.7,
+    "w": 103.3,
+    "h": 58.9
+   },
+   "ink": {
+    "x": 632.5,
+    "y": 465.7,
+    "w": 64.3,
+    "h": 15
+   },
+   "text": "Request sent",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "li.done"
+  },
+  "step-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 716.3,
+    "y": 437.7,
+    "w": 103.3,
+    "h": 58.9
+   },
+   "ink": {
+    "x": 743,
+    "y": 465.7,
+    "w": 49.9,
+    "h": 29.9
+   },
+   "text": "An admin approves",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "li.now"
+  },
+  "step-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 819.7,
+    "y": 437.7,
+    "w": 103.3,
+    "h": 58.9
+   },
+   "ink": {
+    "x": 838.1,
+    "y": 465.7,
+    "w": 66.4,
+    "h": 29.9
+   },
+   "text": "You're on the schedule",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "li"
+  },
+  "dot-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 653.7,
+    "y": 437.7,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)",
+     "2px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "center",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.aw-dot"
+  },
+  "dot-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 757,
+    "y": 437.7,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "2px dashed rgb(59, 198, 232)",
+     "2px dashed rgb(59, 198, 232)",
+     "2px dashed rgb(59, 198, 232)",
+     "2px dashed rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "center",
+    "font": "600 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.aw-dot"
+  },
+  "dot-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 860.3,
+    "y": 437.7,
+    "w": 22,
+    "h": 22
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "2px solid rgb(57, 66, 77)",
+     "2px solid rgb(57, 66, 77)",
+     "2px solid rgb(57, 66, 77)",
+     "2px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "center",
+    "font": "400 11.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.aw-dot"
+  },
+  "read-only": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 514.6,
+    "w": 310,
+    "h": 20.1
+   },
+   "ink": {
+    "x": 613,
+    "y": 515.6,
+    "w": 289.5,
+    "h": 17
+   },
+   "text": "Meanwhile you can look at the schedule, read only.",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "p.acc-p"
+  },
+  "view": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 550.8,
+    "w": 310,
+    "h": 40
+   },
+   "ink": {
+    "x": 702.7,
+    "y": 562.8,
+    "w": 130.6,
+    "h": 16
+   },
+   "text": "View the schedule",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(5, 42, 52)",
+     "0px none rgb(5, 42, 52)",
+     "0px none rgb(5, 42, 52)",
+     "0px none rgb(5, 42, 52)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(5, 42, 52)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 14px",
+    "spacing": "0.56px"
+   },
+   "tag": "button.go"
+  },
+  "sign-out": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 602.8,
+    "w": 310,
+    "h": 37
+   },
+   "ink": {
+    "x": 742,
+    "y": 613.8,
+    "w": 52,
+    "h": 15
+   },
+   "text": "Sign out",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.acc-out"
+  },
+  "signed-in-as": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 613,
+    "y": 651.8,
+    "w": 310,
+    "h": 16
+   },
+   "ink": {
+    "x": 712.4,
+    "y": 651.8,
+    "w": 111.2,
+    "h": 16
+   },
+   "text": "Signed in as stranger",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "p.awc-who"
+  }
+ },
+ "approved": {
+  "picture": "C-desk.png",
+  "identical": true
+ }
+}

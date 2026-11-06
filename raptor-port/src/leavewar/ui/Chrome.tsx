@@ -18,6 +18,7 @@ import { askApprRing, askLw, isOilUp, lwNavVersion, subscribeLwNav, apprMode, se
 import { pendingCount } from '../approvals'
 import { fig, myLeaveOf } from './myleave'
 import { clashWhat } from './clashwhat'
+import { GearIcon, TicketIcon } from '../../ui/icons'
 import './chrome.css'
 
 /** One of the Legend's swatches: the grid's OWN box, drawn by the same classes the cell uses (look F — D1175), in a frame
@@ -72,21 +73,10 @@ function GridGlyph() {
     </svg>
   )
 }
-function ClockGlyph() {
-  return (
-    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 2" />
-    </svg>
-  )
-}
-function GearGlyph() {
-  return (
-    <svg className="btnglyph" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="3" />
-      <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z" />
-    </svg>
-  )
-}
+/* OIL's mark is OIL's own, a ticket — a day off held (owner D1704, 5 Nov 26, answering his D1700: "Isint the oil earned
+   symbol the same as history?"): the plain clock it wore here is History's, so a clock means History only; the board's OIL
+   Earn wears the same ticket. And the gear is the app's one gear (D1509), shared from ui/icons.tsx — this row's own drawing
+   until round 4 moved it there for every settings button; here it keeps `.btnglyph`'s grey, as today (D1707). */
 
 /* Approvals' mark — a list with a tick, as drawn (`full/r19-nav-*`, `r22-1-desk`) */
 function ApprGlyph() {
@@ -196,7 +186,7 @@ export function Topbar() {
           onClick={go}
           onKeyDown={e => tabKey(e, i)}
         >
-          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : t === 'balances' ? <BalGlyph /> : <ClockGlyph />}
+          {t === 'grid' ? <GridGlyph /> : t === 'approvals' ? <ApprGlyph /> : t === 'balances' ? <BalGlyph /> : <TicketIcon />}
           <span className="intab-t">{label}</span>
           {t === 'approvals' && waiting > 0 && <span className="appr-tabn" data-testid="lw-approvals-count" aria-label={`${waiting} pending`}>{waiting}</span>}
         </button>
@@ -212,7 +202,7 @@ export function Topbar() {
       aria-label="Settings"
       onClick={() => askLw({ kind: 'settings' })}
     >
-      <GearGlyph />
+      <GearIcon />
     </button>
   )
   const view = (
@@ -598,13 +588,16 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-row"><LegBox code="LL" mark="raptor" /><span className="leg-t">Filed on the Inputs page: change it there, not here</span></div>
               {/* the moved stripe: any move of a leave already approved wears it (D1177 — no longer only once bidding closed) */}
               <div className="leg-row"><LegBox code="LL" mark="moved" /><span className="leg-t">Moved here from another day</span></div>
-              {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
-                  rest behind a count (owner comp, 19 Sep 26) */}
-              <div className="leg-sec">The corner — more on the day</div>
-              {/* the grid's own tiles over the grid's own box (walker 1's #64, the code read's F4) */}
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+1</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span><span className="potag">PO</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
+              {/* MARKS ON A DAY (his D1731, 6 Nov 26 — "Legend ok", drawn in docs/img/handpass/2026-11-06-lw-cell-combos/draw/
+                  sheet-legend.png): the grid's own boxes and marks (D1727, D1728) in the Legend's cell-sized frame, the same
+                  classes the grid's cell wears, so the two cannot drift (matrix.css `bx-`). Replaced "The corner — more on the
+                  day" (the "+n" corner, the PO tag); the old rows' words kept. */}
+              <div className="leg-sec">Marks on a day</div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-two-whole"><span className="c k-ll s-a left bx-tilt">LL</span><span className="c k-cse s-a right bx-tilt wide">CSE</span></span><span className="leg-t">Two whole days: side by side, read bottom to top</span></div>
+              <div className="leg-row"><span className="leg-box bx-pile" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+2</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
+              <div className="leg-row"><span className="leg-box bx-alarm" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
+              <div className="leg-row"><span className="leg-box pofin bx-last" data-testid="leg-last-day"><span className="c k-ll s-a whole">LL</span><span className="polast">PO</span></span><span className="leg-t">His last day in the squadron</span></div>
+              <div className="leg-row"><span className="leg-box gone bx-gone" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
               {/* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — every other balance is on
                   the Balances tab and in a person's window, so the Legend teaches the one column the grid still shows. */}
               <div data-testid="legend-figures">

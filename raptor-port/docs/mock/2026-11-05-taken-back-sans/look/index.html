@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taken-back posting lines and the SANS line — your look</title>
+<style>
+  body{margin:0;background:#0b0d10;color:#e6edf3;font:16px/1.5 -apple-system,system-ui,"Segoe UI",sans-serif}
+  main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+  h1{font-size:22px;margin:0 0 6px}
+  h2{font-size:18px;margin:28px 0 8px;color:#3bc6e8}
+  .now{border:1px solid #3bc6e8;border-radius:12px;padding:12px 14px;background:#0f1a20}
+  .now ol{margin:6px 0 0;padding-left:22px}
+  .q{border:1px solid #2f3a46;border-radius:12px;padding:12px 14px;margin:14px 0;background:#12161b}
+  .rec{color:#9be3a6;font-weight:600}
+  .pics{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  figure{margin:0;flex:1 1 300px}
+  figure img{width:100%;border:1px solid #2f3a46;border-radius:8px;cursor:zoom-in;background:#000}
+  figcaption{font-size:13px;color:#9aa5b1;margin-top:4px}
+  a{color:#3bc6e8}
+  .zoom{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;padding:10px;z-index:9}
+  .zoom img{max-width:100%;max-height:100%}
+  .zoom.on{display:flex}
+</style>
+</head>
+<body>
+<main>
+<h1>Taken-back posting lines and the SANS line: your look</h1>
+<div class="now">
+  <b>Look at now:</b>
+  <ol>
+    <li><b>Q4:</b> a posting changed after it ran keeps its old bell line. <span class="rec">Recommended: take it back, as Undo does.</span></li>
+    <li><b>Q2:</b> Balances and Approvals show the purple line only from his date. <span class="rec">Recommended: keep it as built.</span></li>
+    <li>Your look at the preview, on your iPhone: <a href="https://raptor-git-claude-postout-bell-look-kai-e2f5.vercel.app">the preview link</a>.</li>
+  </ol>
+</div>
+
+<h2>Q4: A posting changed after it ran</h2>
+<div class="q">
+  <p>Ranger's SANS posting ran on Mon 16 Nov, and the bell said "Posted out · now SANS". On the 17th Saber moves Ranger's date to the 18th (or picks another outcome). The sheet now says Ranger becomes SANS on the 18th, so he is not SANS today, but every admin's bell still says "Posted out · now SANS". The bell is wrong until the new date. This was there before this build.</p>
+  <p class="rec">Recommended: treat it like Undo post out. The old line is struck through and marked "taken back · Saber". On the new date a fresh "Posted out" line comes.</p>
+  <div class="pics">
+    <figure><img src="q4-sheet-after-move-desk.png" alt="The posting sheet after the date moved to 18 Nov"><figcaption>The sheet after the move: "On 18 Nov: becomes SANS".</figcaption></figure>
+    <figure><img src="q4-bell-after-move-desk.png" alt="The bell still says Posted out now SANS"><figcaption>The bell at the same moment: still "Posted out · now SANS".</figcaption></figure>
+  </div>
+</div>
+
+<h2>Q2: Where the purple line shows before his date</h2>
+<div class="q">
+  <p>On the Leave War grid, a man posted out as SANS wears the purple line from the moment the posting is set (D1697). Balances and Approvals draw the schedule's own name badge, which shows the line only once he actually <i>is</i> SANS, that is, from his date.</p>
+  <p class="rec">Recommended: keep it as built. Before his date he is not SANS yet, and those pages show what is true today.</p>
+  <div class="pics">
+    <figure><img src="q2-grid-before-phone.png" alt="The grid before his date, with the purple line"><figcaption>The grid before his date: the line is there.</figcaption></figure>
+    <figure><img src="q2-balances-before-phone.png" alt="Balances before his date, no line"><figcaption>Balances before his date: no line.</figcaption></figure>
+    <figure><img src="q2-balances-after-phone.png" alt="Balances after his date, the line"><figcaption>Balances from his date: the line.</figcaption></figure>
+  </div>
+</div>
+
+<h2>Built and checked</h2>
+<div class="q">
+  <div class="pics">
+    <figure><img src="s2e-hex-bell-struck-phone.png" alt="The taken-back line struck through"><figcaption>Undo post out: the line Hex had read, struck through, then "taken back · Saber". Unread, so the bell lights.</figcaption></figure>
+    <figure><img src="s19k-ground-crew-no-sans-phone.png" alt="A ground-crew man's posting without SANS"><figcaption>Your ruling: a ground-crew man's Post out offers no SANS.</figcaption></figure>
+    <figure><img src="s19d-long-name-close-phone.png" alt="A long name with the purple line"><figcaption>A long callsign faded on the phone: the purple line still shows.</figcaption></figure>
+  </div>
+  <p>Note only, no answer needed: an "off the manpower" posting undone more than 14 days after its date gets no "taken back" line. Its line had already left the bell after 14 days, as you ruled (D1696), so there is nothing to take back.</p>
+</div>
+</main>
+<div class="zoom" id="z"></div>
+<script>
+  const z = document.getElementById('z')
+  document.querySelectorAll('figure img').forEach(i => i.addEventListener('click', () => { z.replaceChildren(Object.assign(new Image(), { src: i.src, alt: i.alt })); z.classList.add('on') }))
+  z.addEventListener('click', () => z.classList.remove('on'))
+</script>
+</body>
+</html>

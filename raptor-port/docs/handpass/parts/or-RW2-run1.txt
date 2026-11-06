@@ -1,0 +1,11 @@
+Tally added toast: Tally added to Range brief | people: ["Drifter","Hunter","Ranger","Tally"]
+Hunter out toast: Hunter taken out of Range brief | people: ["Drifter","Ranger","Tally"]
+re-timed: 540-660 | people: ["Drifter","Ranger","Tally"]
+window (first tab): {"title":"Changes · week of 13/7 4 changes this week","tabs":["New to you 0","All changes 4"],"text":"⠿ Changes · week of 13/7 4 changes this week ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who Nothing new to you this week. ✓ Mark all as seen"}
+ALL CHANGES / Wed window: {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 0","All changes 4"],"text":"⠿ Changes · Wednesday 15/7 Not yet published ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00 Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00 Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00 Tally · Range brief 15 Jul · added Saber · 22/6 09:00 Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00 Tap a change to go to it — the window stays open."}
+lines (cw-l): ["cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00","cw-l :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]
+TAP "added" (lines matching: 1) toast =  | flash: [{"cls":"seat chgflash","puck":"","text":"Tally O","inprow":null,"fill":"g:2.2.+"}] | row: {"top":462,"inView":true} | window open: true
+   flash 1.4s later: [{"cls":"seat chgflash","puck":"","text":"Tally O","inprow":null,"fill":"g:2.2.+"}]
+TAP "taken out" (lines matching: 1) toast =  | flash: [{"cls":"seat chgflash","puck":"","text":"Drifter A","inprow":null,"fill":"g:2.2.+"}] | row: {"top":442,"inView":true} | window open: true
+   flash 1.4s later: []
+ERRORS none

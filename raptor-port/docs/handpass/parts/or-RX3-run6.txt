@@ -1,0 +1,34 @@
+filed {"iid":"imqoidgg0pzqr7w","type":"Training","title":"Range drill","date":"Jul 15","s":840,"e":900,"people":["Ranger"]}
+s0_filed {"tag":"s0_filed","rowInDays":2,"groundRows":[{"who":["Ranger"],"text":"RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"}],"personalLine":[{"who":["Ranger"],"text":"Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul UNDO"}],"input":["Ranger"],"foldRows":1}
+saved rx3-6-0-filed
+PLAN MENU 1 {"text":"PLANS — WEDNESDAY Live working copy ●live now — this is what publishes + Alt Plan","btns":["data-plangolive=2|Live working copy ●live now — this is wh","data-plandup=1|+ Alt Plan"]}
+saved rx3-6-1-plan-menu
+PLANS after save {"list":["Plan A:dr1","Plan B:dr2"],"live":"dr2"} | toast: Wednesday — "Plan B" is now the live day, edit over it
+saved rx3-6-2-board-before-x
+x pressed, toast: Ground item removed — back under Personal Inputs — RANGE DRILL, 14:00–15:00, Ranger | row in DAYS: -1
+saved rx3-6-3-board-after-x
+s1_afterX {"tag":"s1_afterX","rowInDays":-1,"groundRows":[],"personalLine":[{"who":["Ranger"],"text":"Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"}],"input":["Ranger"],"foldRows":1}
+saved rx3-6-3b-week-after-x
+PLAN MENU 2 {"text":"PLANS — WEDNESDAY Plan Atap to make it the live day ✎ Plan B ●live now — this is what publishes ✎ + Alt Plan ✎ Manage plans","btns":["data-plansel=dr1|Plan Atap to make it the live day","data-planedit=dr1|✎","data-plangolive=2|Plan B ●live now — this is what publishe","data-planedit=dr2|✎","data-plandup=1|+ Alt Plan","data-planmanage=1|✎ Manage plans"]}
+saved rx3-6-4-plan-menu-2
+plansel count 1 text Plan Atap to make it the live day
+SWITCH toast: Switched to "Plan A" — this is now the live Wednesday | now: Switched to "Plan A" — this is now the live Wednesday
+PLANS after switch {"list":["Plan A:dr1","Plan B:dr2"],"live":"dr1"}
+s2_afterSwitch {"tag":"s2_afterSwitch","rowInDays":2,"groundRows":[{"who":["Ranger"],"text":"RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"}],"personalLine":[{"who":["Ranger"],"text":"Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"}],"input":["Ranger"],"foldRows":1}
+saved rx3-6-5-week-after-switch
+   (drag attempt 1 gave no note - retrying like a person would)
+   (drag attempt 2 gave no note - retrying like a person would)
+DROP toast: Tally — already on RANGE DRILL 14:00–15:00 · not added twice | row idx 2
+s3_afterTally {"tag":"s3_afterTally","rowInDays":2,"groundRows":[{"who":["Ranger","Tally"],"text":"RANGE DRILL TRAINING 14:00 15:00 Ranger IP Tally O + ADD till 15 Jul"}],"personalLine":[{"who":["Ranger"],"text":"Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"}],"input":["Ranger"],"foldRows":1}
+saved rx3-6-6-week-after-tally
+buttons in Personal Inputs: ["ntx inpedit|Range drill|data-inpedit=imqoidgg0pzqr7w","accb|Accept|data-acc=g,data-accd=2,data-acck=imqoidgg0pzqr7w"]
+saved rx3-6-7-before-accept
+ACCEPT toast: Ranger's Range drill is on the ground programme again — its row was already there
+s4_afterAccept {"tag":"s4_afterAccept","rowInDays":2,"groundRows":[{"who":["Ranger"],"text":"RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"}],"personalLine":[{"who":["Ranger"],"text":"Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul UNDO"}],"input":["Ranger"],"foldRows":1}
+saved rx3-6-8-week-after-accept
+INPUT WINDOW people: [] | text: ⠿ Ranger · 15 Jul ✕ PERSON ALL AVAIL ALL Ace Anvil Basher Blade Bolt Cinch Cinder Cobra Comet Cotter Cutter Dash Diesel Drifter Echo Fable Forge Gambit Ghost Grit Havoc Hex Hunter Jester Kraken Ledger Marlin Nomad Otter Outlaw Piston Pixel Quill Ranger Ratchet Reaper Rebel Recon Relay Ridge Rune Ryd
+saved rx3-6-9-input-window
+BOARD row people: [["Ranger"]]
+saved rx3-6-10-board
+INPUTS end {"type":"Training","title":"Range drill","date":"Jul 15","to":null,"s":840,"e":900,"people":["Ranger"],"by":"stiff"}
+ERRORS none

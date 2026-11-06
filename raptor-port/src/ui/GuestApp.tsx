@@ -25,15 +25,18 @@ import { logOut } from './logout'
 import { initPan, updateWeekNav } from './pan'
 import { ViewWeek } from './ViewWeek'
 import { useVersion } from './useStore'
+import { SaveStatus, useSaveFailed } from './SaveStatus'
 
 export function GuestApp() {
   useVersion()
   useEffect(() => initPan(), [])
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
   const name = String((SESSION && SESSION.name) || '')
+  /* a failed save's band is the bar's last line here as on every page (D587) — his request may be what did not save (D1657) */
+  const failed = useSaveFailed()
   return (
     <div id="guestApp">
-      <div className="topbar guestbar">
+      <div className={'topbar guestbar' + (failed ? ' save-failed' : '')}>
         <div className="mark">
           <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
           <span className="tx"><span className="k">142</span><span className="v">TALON</span></span>
@@ -42,6 +45,7 @@ export function GuestApp() {
         <div className="right">
           <button className="abtn ghost" id="guestOut" onClick={() => { void logOut() }}>Sign out</button>
         </div>
+        <SaveStatus />
       </div>
       <section className="page on" id="page-viewsched">
         <div className="filters" id="guestChrome">

@@ -87,3 +87,37 @@ describe('the Leave War grid draws each name as the schedule\'s puck (D1468, D14
     } finally { window.matchMedia = was }
   })
 })
+
+/* EVERY SANS MAN WEARS THE SANS PURPLE LINE (his D1697, D1698, 5 Nov 26 — the drawing docs/mock/2026-11-05-taken-back-sans/):
+   the schedule's own SANS class on the puck (`.puck.san` — the line on the right over the chip), for a man in the SANS group
+   and for a man posted out as SANS shown in his old place; the separate "SANS" tag that squeezed his callsign is gone. */
+describe('the SANS purple line on the Leave War names (D1697, D1698)', () => {
+  beforeEach(() => {
+    const st = getState() as any
+    const base = st.people[0]
+    st.people.push({ ...base, id: 'san_t', callsign: 'SANSMAN', q: 'C', seat: 'pilot', sxo: false, pers: false, san: true })
+    st.people.push({ ...base, id: 'po_t', callsign: 'SIDEWINDER', q: 'IP', seat: 'pilot', sxo: false, pers: false, to: '2026-11-15', poOutcome: 'sans' })
+    st.people.push({ ...base, id: 'po_o', callsign: 'OVERSEAS', q: 'C', seat: 'pilot', sxo: false, pers: false, to: '2026-11-15', poOutcome: 'overseas' })
+  })
+  it('a man posted out as SANS: his puck wears .san, and no "SANS" tag stands after it', () => {
+    render(<Matrix />)
+    expect(puckOf('po_t').classList.contains('san')).toBe(true)
+    expect(screen.getByTestId('row-po_t').querySelector('.po-sans-tag')).toBeNull()
+    expect(document.querySelector('.po-sans-tag'), 'nowhere on the grid, the phone\'s frozen copy included').toBeNull()
+  })
+  it('a SANS man on the war wears it too; a man posted out to an Overseas Sqn and a plain pilot do not', () => {
+    render(<Matrix />)
+    expect(puckOf('san_t').classList.contains('san')).toBe(true)
+    expect(puckOf('po_o').classList.contains('san')).toBe(false)
+    expect(puckOf('tata').classList.contains('san')).toBe(false)
+  })
+  it('a screen reader still hears "SANS" with the name — the line is drawing only (the code read, 3 — 5 Nov 26)', () => {
+    render(<Matrix />)
+    for (const id of ['po_t', 'san_t']) {
+      const sr = puckOf(id).querySelector('.lw-sr')
+      expect(sr && sr.textContent, id).toBe(' SANS')
+    }
+    expect(puckOf('po_o').querySelector('.lw-sr'), 'none on a man who is not SANS').toBeNull()
+    expect(puckOf('po_t').querySelector('.nm')!.textContent, 'the name itself unchanged').toBe('SIDEWINDER')
+  })
+})

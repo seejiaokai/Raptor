@@ -1,0 +1,22 @@
+NOTE Bp1-weeks — {"w0":"13/07/2026","w1":"20/07/2026","w2":"13/07/2026","page":"viewsched"}
+NOTE Bp1-info — {"openedCount":1,"afterEscape":0,"afterOutside":0,"afterX":0}
+NOTE Bp2-add-after-nodoc — {"writes":["set raptor:__txn","set raptor:inputs/imw2qntc1k5o631","set raptor:settings/elog:mw2qnez8feks.000001","set raptor:changes/cmw2qnf31jwjbgg-1","remove raptor:__txn"]}
+NOTE Bp2-range — ["inRangeDef|Next 2 weeks","inRangeAll|All dates"]
+NOTE Bp2-add — {"writes":[],"windowStillOpen":false,"said":[],"undo":"on|Undo — Ranger’s OL"}
+NOTE Bp2-rows — []
+NOTE BpB2-inputs-list — {"rows":1,"text":"LATE\nNo document\nAll day\nRangerOL"}
+NOTE BpB2-sched-wed — {"hasRanger":true,"ctx":"Ranger","head":"Wedne day\nJul 22\nDRAFT\n2 X 2\n1 change\ni\n⚠ 1 i ue\n▼\nCOMMON PROGRAMME\nORDERS: FLYING ORDERS SECTION 2\nNAME\nSTART\nPEOPLE\nRM"}
+NOTE BpB2-bell — []
+NOTE BpB2-bell-close — {"openAfterEsc":0,"openAfterOutside":0}
+NOTE Bp3-buttons — ["|✕","inTypeHelp|?","|All day","|AM","|PM","|Custom","|Document","|July 2026›","|13","|‹","|›","|1","|2","|3","|4","|5","|6","|7","|8","|9","|10","|11","|12","|13","|14","|15","|16","|17","|18","|19","|20","|21","|22","|23","|24","|25","|26","|27","|28","|29","|30","|31","inpEditDel|Delete","inpEditCancel|Cancel","inpEditSave|Save"]
+NOTE Bp3-save — {"writes":["set raptor:__txn","set raptor:inputs/imw2qntc1k5o631","set raptor:settings/elog:mw2qnez8feks.000002","set raptor:changes/cmw2qnf31jwjbgg-2","remove raptor:__txn"],"said":[],"rowText":"LATE\nNo document\nAll day\nRangerOL\nwalk remark","winOpen":false}
+NOTE Bp3-delete-btn — 1
+NOTE Bp3-delete — {"writes":["set raptor:__txn","remove raptor:inputs/imw2qntc1k5o631","set raptor:settings/elog:mw2qnez8feks.000003","set raptor:changes/cmw2qnf31jwjbgg-3","remove raptor:__txn"],"said":["Input deleted"],"rows":0,"undo":"on|Undo — Ranger’s OL"}
+NOTE Bp3-undo — {"writes":["set raptor:__txn","set raptor:settings/elog:mw2qnez8feks.000004","set raptor:inputs/imw2qntc1k5o631","set raptor:changes/cmw2qnf31jwjbgg-4","remove raptor:__txn"],"said":["Undid: Ranger’s OL"],"rows":1,"undo":"on|Undo — Ranger’s OL","redo":"on|Redo — Ranger’s OL"}
+NOTE Bp3-redo — {"writes":["set raptor:__txn","set raptor:settings/elog:mw2qnez8feks.000005","remove raptor:inputs/imw2qntc1k5o631","set raptor:changes/cmw2qnf31jwjbgg-5","remove raptor:__txn"],"said":["Redid: Ranger’s OL"],"rows":0,"undo":"on|Undo — Ranger’s OL","redo":"off|Redo"}
+NOTE Bp4-tick — {"before":"","after":"✓","writes":["set raptor:__txn","set raptor:people/bane","set raptor:settings/elog:mw2qnez8feks.000006","set raptor:changes/cmw2qnf31jwjbgg-6","remove raptor:__txn"],"said":[],"undo":"on|Undo — Ranger’s quals"}
+NOTE Bp4-untick — {"after":"","writes":["set raptor:__txn","set raptor:people/bane","set raptor:settings/elog:mw2qnez8feks.000007","set raptor:changes/cmw2qnf31jwjbgg-7","remove raptor:__txn"]}
+NOTE Bp4-mgmt — {"text":"","cls":"qcell qro","title":"Only an admin can tick Management","writes":[],"said":["Only an admin can tick Management"],"ticked":0}
+NOTE Bp4-sched-cell — {"text":"","cls":"qcell","title":null,"writes":["set raptor:__txn","set raptor:people/bane","set raptor:settings/elog:mw2qnez8feks.000008","set raptor:changes/cmw2qnf31jwjbgg-8","remove raptor:__txn"],"said":[]}
+NOTE Bp4-callsign — {"text":"Ranger","editable":false,"writes":[],"said":[],"zzqInPage":false,"popup":[]}
+NOTE BpB1-all-writes — {"count":45,"keys":["set raptor:__txn","set raptor:inputs…","set raptor:settings…","set raptor:changes…","remove raptor:__txn","remove raptor:inputs…","set raptor:people/bane"]}

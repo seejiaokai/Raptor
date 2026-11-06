@@ -16,6 +16,12 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1718 | 6 Nov 26 | The rules diet — each area's rulings rewritten as a short page of how it works now, the old rows archived but searched, the working rules and the bug-check order cut to one-page checklists — waits until Anthropic releases Fable 5.5; no chat starts it before then. |
+| D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. |
+| D1716 | 5 Nov 26 | React Doctor stops counting the mock-up pages and the original app, which are records nobody edits; the tests' and scripts' notes of copying data the old way are left as they are; the app's own findings are still fixed with each area's batch (D1534). |
+| D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |
+| D1662 | 5 Nov 26 | The database's tables, security roles and day-lock flow are not built on his own Microsoft 365 before the database step: D1571 and D473 stand; the hosting trial (D1532) stays the app with no database. |
+| D1659 | 5 Nov 26 | For the keyboard and windows batch (pull request 636) the built screens compared with the mock-up side by side by eye stand in place of the drawing-check tool, as D1566 did for the year build; the tool stays a standing step for every other build with a drawing (D1495). |
 | D1640 | 4 Nov 26 | When he says "merge live" (or "merge now"), his own look is already done: the agent does not ask about it again, and carries the merge through once GitHub's run is green. |
 | D1625 | 3 Nov 26 | Anything new a person will see — a question box, a message, a mark, a button — is drawn and shown to him as a mock-up before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first. |
 | D1613 | 3 Nov 26 | When he offers a different solution, or a new idea for the thing being built, while the agent is building, the agent stops at once and answers it — what it would do, its cost, a recommendation — before building any further; it never carries on with the earlier plan past his newer idea. |

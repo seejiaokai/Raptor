@@ -1,0 +1,26 @@
+filed Standby brief [] Input added
+e7d filed {"iid":"imqoidhwd2eop2f","date":"Jul 15","s":840,"e":900,"type":"Duty","people":["Saber"],"cx":false,"cxr":"","by":"bane","ttl":"Standby brief","rmk":""}
+e7d Ranger own bell after filing {"id":"notifyBell","lit":false,"open":"false"}
+e7d Edit Schedule bell {"id":"notifyBell","lit":true,"open":"false"}
+saved e7d-01-editsched-bell-lit
+saved e7d-02-editsched-list-full
+saved e7d-02-editsched-list
+e7d Edit Schedule list {"box":{"x":782,"y":51,"w":348,"h":98},"vw":1440,"vh":900,"underBell":6,"inView":true,"wideAsScreen":false,"hitIsList":true,"hitTag":"bl-line unread","scrolls":false,"markAll":{"x":1031,"y":119,"bottom":141,"visible":true},"empty":null,"n":1,"lines":["[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"]}
+e7d Edit Schedule list: under pressed bell? {"bell":{"x":1096,"y":13,"w":34,"h":32,"right":1130},"list":{"x":782,"y":51,"w":348,"h":98},"hitIsList":true,"hitTag":"bl-line unread","rightEdgeDelta":0,"vw":1440}
+e7d press outside (Edit Schedule): hit fcell ld list open: 0 bell {"id":"notifyBell","lit":true,"open":"false"}
+e7d board bell {"id":"sbBell","lit":true,"open":"false"}
+saved e7d-03-board-bell-lit
+saved e7d-04-board-list-full
+saved e7d-04-board-list
+e7d board list {"box":{"x":919,"y":101,"w":348,"h":98},"vw":1440,"vh":900,"underBell":6,"inView":true,"wideAsScreen":false,"hitIsList":true,"hitTag":"bl-line unread","scrolls":false,"markAll":{"x":1168,"y":169,"bottom":191,"visible":true},"empty":null,"n":1,"lines":["[unread] Standby brief | Wed 15 Jul | You were added · Ranger | now | bold 600 h52 op 1"]}
+e7d board list: under pressed bell? {"bell":{"x":1233,"y":65,"w":34,"h":30,"right":1267},"list":{"x":919,"y":101,"w":348,"h":98},"hitIsList":true,"hitTag":"bl-line unread","vw":1440}
+e7d elementFromPoint at the centre of each list line [true]
+e7d press outside (board): hit sb-line (inside board) | list open: 0 | board open: 1
+saved e7d-05-after-outside-press
+e7d E10 list open before sign-out: 1
+e7d E10 list open (top bar) before sign-out: 1
+saved e7d-06-list-open-before-signout
+e7d E10 after sign-out: list nodes 0 login form 1
+e7d E10 as Ranger: list nodes 0 bell {"id":"notifyBell","lit":false,"open":"false"}
+saved e7d-07-after-signin-as-ranger
+e7d errors []

@@ -1,0 +1,1146 @@
+{
+ "cases": [
+  {
+   "n": 1,
+   "say": "FO award beside a whole-day Attach (his Cobra, Sat 26 Dec)"
+  },
+  {
+   "n": 2,
+   "say": "Attach beside an Other, both whole days (his Cobra, Sun 27 Dec)"
+  },
+  {
+   "n": 3,
+   "say": "Leave (LL) during a course (CSE)"
+  },
+  {
+   "n": 4,
+   "say": "Overseas leave (OL) pending, beside a medical (OML)"
+  },
+  {
+   "n": 5,
+   "say": "A whole day of leave and an HO in the morning"
+  },
+  {
+   "n": 6,
+   "say": "A course and leave in the afternoon"
+  },
+  {
+   "n": 7,
+   "say": "Three entries: one box and \"+2\""
+  },
+  {
+   "n": 8,
+   "say": "A clash: \"!\" on a whole day"
+  },
+  {
+   "n": 9,
+   "say": "Leave on a posted-out day (grey PO)"
+  },
+  {
+   "n": 10,
+   "say": "Leave on his last day in (yellow PO)"
+  },
+  {
+   "n": 11,
+   "say": "A morning on his last day in"
+  },
+  {
+   "n": 12,
+   "say": "An afternoon on a posted-out day with \"!\""
+  },
+  {
+   "n": 13,
+   "say": "Attach alone, whole day"
+  },
+  {
+   "n": 14,
+   "say": "The app's own FO, alone"
+  },
+  {
+   "n": 15,
+   "say": "A morning and an afternoon (fits today — the control)"
+  },
+  {
+   "n": 16,
+   "say": "A posted-out day: a course and leave in the afternoon"
+  },
+  {
+   "n": 17,
+   "say": "His last day in: an Attach in the morning, a medical in the afternoon"
+  },
+  {
+   "n": 18,
+   "say": "His last day in: leave and an HO in the morning"
+  },
+  {
+   "n": 19,
+   "say": "His last day in: two whole days"
+  }
+ ],
+ "shots": [
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 1,
+   "file": "desk-today-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 2,
+   "file": "desk-today-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 3,
+   "file": "desk-today-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 4,
+   "file": "desk-today-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 5,
+   "file": "desk-today-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 6,
+   "file": "desk-today-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 7,
+   "file": "desk-today-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 8,
+   "file": "desk-today-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 9,
+   "file": "desk-today-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 10,
+   "file": "desk-today-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 11,
+   "file": "desk-today-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 12,
+   "file": "desk-today-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 13,
+   "file": "desk-today-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 14,
+   "file": "desk-today-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 15,
+   "file": "desk-today-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 16,
+   "file": "desk-today-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 17,
+   "file": "desk-today-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 18,
+   "file": "desk-today-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "today",
+   "n": 19,
+   "file": "desk-today-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 1,
+   "file": "desk-A-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 2,
+   "file": "desk-A-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 3,
+   "file": "desk-A-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 4,
+   "file": "desk-A-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 5,
+   "file": "desk-A-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 6,
+   "file": "desk-A-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 7,
+   "file": "desk-A-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 8,
+   "file": "desk-A-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 9,
+   "file": "desk-A-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 10,
+   "file": "desk-A-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 11,
+   "file": "desk-A-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 12,
+   "file": "desk-A-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 13,
+   "file": "desk-A-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 14,
+   "file": "desk-A-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 15,
+   "file": "desk-A-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 16,
+   "file": "desk-A-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 17,
+   "file": "desk-A-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 18,
+   "file": "desk-A-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "A",
+   "n": 19,
+   "file": "desk-A-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 1,
+   "file": "desk-B-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 2,
+   "file": "desk-B-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 3,
+   "file": "desk-B-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 4,
+   "file": "desk-B-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 5,
+   "file": "desk-B-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 6,
+   "file": "desk-B-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 7,
+   "file": "desk-B-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 8,
+   "file": "desk-B-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 9,
+   "file": "desk-B-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 10,
+   "file": "desk-B-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 11,
+   "file": "desk-B-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 12,
+   "file": "desk-B-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 13,
+   "file": "desk-B-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 14,
+   "file": "desk-B-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 15,
+   "file": "desk-B-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 16,
+   "file": "desk-B-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 17,
+   "file": "desk-B-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 18,
+   "file": "desk-B-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "B",
+   "n": 19,
+   "file": "desk-B-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 1,
+   "file": "desk-Apo-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 2,
+   "file": "desk-Apo-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 3,
+   "file": "desk-Apo-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 4,
+   "file": "desk-Apo-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 5,
+   "file": "desk-Apo-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 6,
+   "file": "desk-Apo-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 7,
+   "file": "desk-Apo-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 8,
+   "file": "desk-Apo-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 9,
+   "file": "desk-Apo-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 10,
+   "file": "desk-Apo-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 11,
+   "file": "desk-Apo-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 12,
+   "file": "desk-Apo-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 13,
+   "file": "desk-Apo-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 14,
+   "file": "desk-Apo-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 15,
+   "file": "desk-Apo-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 16,
+   "file": "desk-Apo-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 17,
+   "file": "desk-Apo-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 18,
+   "file": "desk-Apo-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "Apo",
+   "n": 19,
+   "file": "desk-Apo-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 1,
+   "file": "desk-C-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 2,
+   "file": "desk-C-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 3,
+   "file": "desk-C-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 4,
+   "file": "desk-C-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 5,
+   "file": "desk-C-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 6,
+   "file": "desk-C-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 7,
+   "file": "desk-C-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 8,
+   "file": "desk-C-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 9,
+   "file": "desk-C-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 10,
+   "file": "desk-C-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 11,
+   "file": "desk-C-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 12,
+   "file": "desk-C-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 13,
+   "file": "desk-C-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 14,
+   "file": "desk-C-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 15,
+   "file": "desk-C-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 16,
+   "file": "desk-C-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 17,
+   "file": "desk-C-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 18,
+   "file": "desk-C-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "C",
+   "n": 19,
+   "file": "desk-C-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 1,
+   "file": "desk-D-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 2,
+   "file": "desk-D-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 3,
+   "file": "desk-D-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 4,
+   "file": "desk-D-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 5,
+   "file": "desk-D-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 6,
+   "file": "desk-D-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 7,
+   "file": "desk-D-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 8,
+   "file": "desk-D-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 9,
+   "file": "desk-D-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 10,
+   "file": "desk-D-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 11,
+   "file": "desk-D-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 12,
+   "file": "desk-D-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 13,
+   "file": "desk-D-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 14,
+   "file": "desk-D-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 15,
+   "file": "desk-D-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 16,
+   "file": "desk-D-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 17,
+   "file": "desk-D-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 18,
+   "file": "desk-D-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 19,
+   "file": "desk-D-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 1,
+   "file": "desk-E-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 2,
+   "file": "desk-E-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 3,
+   "file": "desk-E-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 4,
+   "file": "desk-E-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 5,
+   "file": "desk-E-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 6,
+   "file": "desk-E-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 7,
+   "file": "desk-E-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 8,
+   "file": "desk-E-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 9,
+   "file": "desk-E-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 10,
+   "file": "desk-E-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 11,
+   "file": "desk-E-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 12,
+   "file": "desk-E-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 13,
+   "file": "desk-E-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 14,
+   "file": "desk-E-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 15,
+   "file": "desk-E-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 16,
+   "file": "desk-E-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 17,
+   "file": "desk-E-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 18,
+   "file": "desk-E-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 19,
+   "file": "desk-E-19.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 1,
+   "file": "desk-F-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 2,
+   "file": "desk-F-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 3,
+   "file": "desk-F-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 4,
+   "file": "desk-F-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 5,
+   "file": "desk-F-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 6,
+   "file": "desk-F-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 7,
+   "file": "desk-F-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 8,
+   "file": "desk-F-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 9,
+   "file": "desk-F-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 10,
+   "file": "desk-F-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 11,
+   "file": "desk-F-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 12,
+   "file": "desk-F-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 13,
+   "file": "desk-F-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 14,
+   "file": "desk-F-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 15,
+   "file": "desk-F-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 16,
+   "file": "desk-F-16.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 17,
+   "file": "desk-F-17.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 18,
+   "file": "desk-F-18.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "F",
+   "n": 19,
+   "file": "desk-F-19.png",
+   "z": 1
+  }
+ ]
+}

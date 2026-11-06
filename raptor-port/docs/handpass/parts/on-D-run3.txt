@@ -1,0 +1,47 @@
+D3 cards: 4
+D3 count after yes to all: 4 OF 4 ANSWERED
+D3 left: 
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D3-yes-to-all.png
+D3 list after save: 0
+D3 Fri inputs oil: 
+D3 Saber lit: false
+D3 Saber lines: []
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D3-saber-bell.png
+D3 Warden lit: false
+D3 Warden lines: []
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D3-warden-bell.png
+D3 errors: []
+D4 saber id: stiff
+D4 list after Later: 0
+D4 oil after Later (nothing written): Range brief:null ; Gate duty:null ; Safety board:null
+D4 undo: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"off|Redo"}
+D4 undo before: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"off|Redo"}
+D4 SABER lit: true
+D4 SABER lines: [{"unread":true,"text":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"}]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-saber-bell.png
+D4 Saber tap: list: 1
+D4 lead present: 0
+D4 bell list still: 0
+D4 Saber tap toast: 
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-saber-tap-list.png
+D4 count: 4 TO ANSWER
+D4 WARDEN lit: true
+D4 WARDEN lines: [{"unread":true,"text":"National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"}]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-warden-bell.png
+D4 Warden tap: list: 1
+D4 lead present: 0
+D4 bell list closed: true
+D4 title: OIL — Fri 17 Jul Public holiday · National Day
+D4 measure: {"x":984,"y":96,"w":440,"h":404,"inside":true,"onTop":true}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-warden-list.png
+D4 count: 4 OF 4 ANSWERED
+D4 toast after save: OIL answered for 4 inputs
+D4 oil after answer: Range brief:{"2026-07-17":0.5} ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0.5}
+D4 Warden lit: false
+D4 WARDEN lines after: []
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-warden-bell-after.png
+D4 SABER lit after: false
+D4 SABER lines after: []
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D4-saber-bell-after.png
+D4 errors: []
+PICS {"d3a":"D3-yes-to-all.png","d3b":"D3-saber-bell.png","d3c":"D3-warden-bell.png","d4a":"D4-saber-bell.png","d4b":"D4-saber-tap-list.png","d4c":"D4-warden-bell.png","d4d":"D4-warden-list.png","d4e":"D4-warden-bell-after.png","d4f":"D4-saber-bell-after.png"}

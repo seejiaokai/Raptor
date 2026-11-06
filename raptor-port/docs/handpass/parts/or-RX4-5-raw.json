@@ -1,0 +1,147 @@
+{
+ "filed": {
+  "iid": "imqoidgg02d7w7t",
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "s": 540,
+  "e": 600,
+  "people": [
+   "Drifter",
+   "Hunter",
+   "Ranger"
+  ]
+ },
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "seatsPub": [
+  {
+   "who": "Drifter",
+   "title": "Drifter · A · 4-ship FL · SXO",
+   "attrs": "data-slot=g:2.2 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  },
+  {
+   "who": "Hunter",
+   "title": "Hunter · IP · instructor pilot",
+   "attrs": "data-slot=g:2.2.x0 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  },
+  {
+   "who": "Ranger",
+   "title": "Ranger · IP · instructor pilot · SXO",
+   "attrs": "data-slot=g:2.2.x1 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  }
+ ],
+ "inputs": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 600,
+  "people": [
+   "Drifter",
+   "Ranger"
+  ],
+  "by": "stiff"
+ },
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Hunter · Range brief Saber 22/6 09:00 taken out"
+  ],
+  "b": "1 pending",
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "seatsWeek": [
+  {
+   "who": "Drifter",
+   "title": "Drifter · A · 4-ship FL · SXO",
+   "attrs": "data-slot=g:2.2 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  },
+  {
+   "who": "Ranger",
+   "title": "Edited — goes out as AL1",
+   "attrs": "data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  }
+ ],
+ "seatsBoard": [
+  {
+   "who": "Drifter",
+   "title": "Drifter · A · 4-ship FL · SXO",
+   "attrs": "data-slot=g:2.2 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  },
+  {
+   "who": "Ranger",
+   "title": "Edited — goes out as AL1",
+   "attrs": "data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  }
+ ],
+ "seatsWeekReload": [
+  {
+   "who": "Drifter",
+   "title": "Drifter · A · 4-ship FL · SXO",
+   "attrs": "data-slot=g:2.2 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  },
+  {
+   "who": "Ranger",
+   "title": "Edited — goes out as AL1",
+   "attrs": "data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1",
+   "cls": "seat",
+   "extraEls": ""
+  }
+ ],
+ "errs": []
+}

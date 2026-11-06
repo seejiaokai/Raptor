@@ -105,6 +105,7 @@ import { flushSync } from 'react-dom'
 import { LW_ZOOM_MAX, lwMonthFitZoom, roundZoom } from './lwzoom'
 import { Sheet } from './Sheet'
 import { useVersion } from './useStore'
+import { CalIcon, GearIcon } from '../../ui/icons'
 import './bidpicker.css'
 import './oiltracker.css'
 
@@ -748,12 +749,13 @@ export function OilTracker({ person, onClose, onGranted }: {
           </button>
         )}
         <button className={`tchip oil-cal${mode === 'pick' ? ' on' : ''}`} data-testid="oil-range-pick" onClick={() => { setMode('pick'); setPicking(true) }} title="Pick a date range" aria-label="Pick a date range">
-          <span className="ci" aria-hidden="true">📅</span>
+          {/* Edit Schedule's line calendar, not the 📅 emoji an iPhone draws in colour (owner D1508, D1707, 5 Nov 26) */}
+          <span className="ci" aria-hidden="true"><CalIcon /></span>
           <span className="cl">Range</span>
         </button>
         <span className="oil-right">
           <button className={`tchip${legend ? ' on' : ''}`} data-testid="oil-legend" aria-expanded={legend} onClick={() => setLegend(l => !l)} title="What the boxes mean" aria-label="What the boxes mean">?</button>
-          {admin && <button className="tchip oil-gear" data-testid="oil-settings" onClick={() => setView('settings')} title="Settings" aria-label="Settings">⚙</button>}
+          {admin && <button className="tchip oil-gear" data-testid="oil-settings" onClick={() => setView('settings')} title="Settings" aria-label="Settings"><GearIcon /></button>}
         </span>
         <span className="note oil-window" data-testid="oil-window">{win.label}</span>
       </div>

@@ -1,0 +1,13 @@
+filed: {"iid":"imqoidgg0nuc0je","people":["Drifter","Hunter","Ranger"],"type":"Meeting","title":"Range brief","date":"Jul 15","s":540,"e":600}
+x pressed toast: Ground item removed — back under Personal Inputs — RANGE BRIEF, 09:00–10:00, 3 people | row in DAYS: -1
+window text: ⠿ Drifter +2 · 15 Jul ✕ PEOPLE 3 picked Several people WHOEVER IS FREE THAT DAY ALL AVAIL ALL PILOTS All Ace A Anvil IP Blade IP Cinch IP Cobra IP Comet IP Diesel D Drifter A Forge IP Gambit C Havoc IP Hunter IP Nomad C Outlaw C Piston IP Ranger IP Reaper IR Recon O Ridge C Saber IP Saint B Sidewinder IP Talisman O Torch C Trident IP Vandal IP Vapor D Warden IP Wildcard O WSOS All Basher IW Cinder
+re-time toast: Input updated | INPUTS: {"iid":"imqoidgg0nuc0je","type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":600,"e":660,"people":["Drifter","Hunter","Ranger"],"oil":"[[\"Drifter\",null],[\"Hunter\",null],[\"Ranger\",null]]","cx":false,"cxr":"","info":false,"box":false,"ver":"[\"people\",\"type\",\"allday\",\"s\",\"e\",\"date\",\"yr\",\"remarks\",\"mod\",\"title\",\"iid\",\"by\",\"modBy\",\"at\",\"modAt\",\"ord\",\"acc\"]","filedBy":"stiff"} | window open: 0 | row in DAYS: -1
+Personal Inputs section text (history off): ⠿ PERSONAL INPUTS 1 input · show ⌄
+dots on Wed (history on, section as it stands): []
+sec-inp html (head): <div class="sub plist one sec sec-inp"><div class="sub-h pl-fold" data-pitog="2"><span class="secgrip" title="Drag to reorder this section" aria-label="Reorder this section">⠿</span><span>Personal Inputs</span><span class="pl-hint">1 input · show ⌄</span></div></div>
+pressed "show"; section now: ⠿ PERSONAL INPUTS times and remarks type in place · clear a time for all day · press the type to change it · hide ⌃ A removed input flags nothing until accepted again — delete it here if it should go entirely. NAME START END PEOPLE RMKS Range brief MEETING 10:00 11:00 Drifter A Hunter IP Ranger IP t
+dots on Wed (after unfolding): [{"tag":"DIV","sec":"sub plist one sec sec-inp","row":"Range brief MEETING 10:00 11:00 Drifter A Hunter IP Ranger IP till 15 ","attrs":"data-inprow=imqoidgg0nuc0je~slipway data-histdot="}]
+dots in Personal Inputs: 1
+DOT 0 bubble= ["DRIFTER · RANGE BRIEF Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00 on the programme → taken off the programme Saber · 22/6 09:00 09:00–10:00 → 10:00–11:00 Saber · 22/6 09:00"]
+LINES: ["cw-gh :: ▾ Input · Drifter, Hunter, Ranger · Range brief · 3 09:00","cw-l :: Range brief 15 Jul · times 09:00–10:00 → 10:00–11:00 Saber · 22/6 09:00","cw-l :: Range brief 15 Jul · filed on the programme → taken off the programme Saber · 22/6 09:00","cw-l :: Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]
+ERRORS none

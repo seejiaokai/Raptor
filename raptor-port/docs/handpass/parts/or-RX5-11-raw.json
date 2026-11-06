@@ -1,0 +1,74 @@
+{
+ "q1": "OIL — Tally, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save",
+ "q1toast": "Tally is on OIL ask instead of Ranger",
+ "cancel1": true,
+ "q2": "OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save",
+ "q2toast": "Ranger added to OIL ask",
+ "cancel2": true,
+ "rec": {
+  "type": "Training",
+  "title": "OIL ask",
+  "date": "Jul 18",
+  "to": null,
+  "s": 540,
+  "e": 720,
+  "people": [
+   "Tally",
+   "Ranger"
+  ],
+  "by": "stiff"
+ },
+ "oilField": {
+  "oil": null,
+  "people": [
+   {
+    "cs": "Tally",
+    "oil": null
+   },
+   {
+    "cs": "Ranger",
+    "oil": null
+   }
+  ]
+ },
+ "dayCards": [
+  "OIL? 09:00–12:00 Ranger, TallyTRAINING OIL ask · till 18 Jul By Saber"
+ ],
+ "rowText": "Ranger, Tally 18 Jul 09:00–12:00 OIL ask TRAINING till 18 JulBy Saber now OIL?",
+ "rowButtons": [
+  "OIL?"
+ ],
+ "btnCount": 1,
+ "after": {
+  "oilconf": true,
+  "editWin": true
+ },
+ "question": "OIL — Ranger +1, OIL ask ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands on the Leave War as an HO cell and moves the OIL balance. Hours count start to finish for the whole day, so published schedule work on the same day can raise it. Choose an option above Cancel Save",
+ "heading": {
+  "firstEl": "DIV.airpop-head :: OIL — Ranger +1, OIL ask ✕",
+  "firstLines": [
+   "OIL — Ranger +1, OIL ask",
+   "✕",
+   "THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH)",
+   "Does it deserve HO — half a day of OIL?",
+   "Yes — credit HO",
+   "No OIL"
+  ],
+  "titleAttr": null
+ },
+ "buttons": [
+  "|✕",
+  "oil-yes|Yes — credit HO",
+  "oil-no|No OIL",
+  "|Cancel",
+  "oilconf-save|Save"
+ ],
+ "winHead": {
+  "pressed": [
+   "Ranger",
+   "Tally"
+  ],
+  "personSelect": [],
+  "head": "⠿\nRanger +1 · 18 Jul\n✕"
+ }
+}

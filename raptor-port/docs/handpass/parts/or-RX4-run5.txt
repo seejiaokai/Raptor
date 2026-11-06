@@ -1,0 +1,15 @@
+filed {"iid":"imqoidgg02d7w7t","type":"Meeting","title":"Range brief","date":"Jul 15","s":540,"e":600,"people":["Drifter","Hunter","Ranger"]}
+PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+week seats as published [{"who":"Drifter","title":"Drifter · A · 4-ship FL · SXO","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","extraEls":""},{"who":"Hunter","title":"Hunter · IP · instructor pilot","attrs":"data-slot=g:2.2.x0 | data-drag=1","cls":"seat","extraEls":""},{"who":"Ranger","title":"Ranger · IP · instructor pilot · SXO","attrs":"data-slot=g:2.2.x1 | data-drag=1","cls":"seat","extraEls":""}]
+take off Hunter: Hunter taken out of Range brief
+input now {"type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":540,"e":600,"people":["Drifter","Ranger"],"by":"stiff"}
+COUNTS chip: 1 pending | board: 1 pending | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Hunter · Range brief Saber 22/6 09:00 taken out"] => [1,1,1,1,1] AGREE
+saved rx4-5-1-window-hunter-off
+week seats [{"who":"Drifter","title":"Drifter · A · 4-ship FL · SXO","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","extraEls":""},{"who":"Ranger","title":"Edited — goes out as AL1","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","extraEls":""}]
+saved rx4-5-2-week-row-zoom
+saved rx4-5-2b-week-wide
+board seats [{"who":"Drifter","title":"Drifter · A · 4-ship FL · SXO","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","extraEls":""},{"who":"Ranger","title":"Edited — goes out as AL1","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","extraEls":""}]
+saved rx4-5-3-board-row-zoom
+saved rx4-5-3b-board-wide
+week seats after reload [{"who":"Drifter","title":"Drifter · A · 4-ship FL · SXO","attrs":"data-slot=g:2.2 | data-drag=1","cls":"seat","extraEls":""},{"who":"Ranger","title":"Edited — goes out as AL1","attrs":"data-slot=g:2.2.x0 | data-alp=1 | data-aln=1 | title=Edited — goes out as AL1 | data-drag=1","cls":"seat","extraEls":""}]
+ERRORS none

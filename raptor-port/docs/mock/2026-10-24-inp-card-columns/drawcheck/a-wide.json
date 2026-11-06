@@ -1,0 +1,1050 @@
+{
+ "state": "a-wide",
+ "drawing": {
+  "script": "scripts/handpass/inp-card-columns-look.mjs",
+  "shot": "a-wide"
+ },
+ "recorded": "2026-11-05T18:19:05.356Z",
+ "drawnOn": "claude/lw-m3-placing-leave at 7a661b29c",
+ "checkout": "cc3ba8d84",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 3,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 8,
+    "y": 154,
+    "w": 386,
+    "h": 3533
+   },
+   "ink": {
+    "x": 10,
+    "y": 154,
+    "w": 382,
+    "h": 3496.8
+   },
+   "text": "Thu 1 Jan 1 input LATE No document All day Drifter OL Mon 5 Jan 1 input No document All day Static ATT C ATT C — filed on Inputs Tue 6 Jan 1 input No document All day Static OML OML — filed on Inputs Wed 7 Jan 1 input No document All day Static Upchit Medically up 7 Jan Thu 8 Jan 1 input LATE No document All day Gambit LL Fri 9 Jan 1 input LATE No document All day Hunter OIL Mon 12 Jan 1 input LATE till 13 Jan Rune CSE Wed 14 Jan 1 input LATE No document All day Nomad OIL Thu 15 Jan 1 input LATE No document All day Relay CCL Fri 16 Jan 1 input LATE No document till 17 Jan Ace OL Thu 5 Feb 1 input No document AM Outlaw LL Mon 2 Mar 1 input No document All day Hunter OIL Mon 30 Mar 1 input No document All day Hunter OIL Mon 11 May 1 input No document All day Drifter OIL Tue 12 May 1 input No document All day Drifter OIL Mon 1 Jun 1 input No document All day Blade OIL Tue 2 Jun 1 input No document All day Blade OIL Wed 3 Jun 1 input No document All day Blade OIL Sat 13 Jun 1 input No document All day Drifter OIL Mon 15 Jun 1 input till 19 Jun Zenith ATT B Grounded — may still work Sat 20 Jun 1 input All day Zenith Upchit Medically up 20 Jun Sat 4 Jul 1 input LATE All day Cinder Duty SDO — weekend duty crew Mon 6 Jul 1 input till 9 Jul Quill OML Medically down Mon 13 Jul 5 input s All day Gambit Fly with Keen for any wave till 17 Jul Grit ATT C Medically down All day Vector OML Medical leave 13 Jul 09:00–17:00 Zenith Meeting Desk / staff work By Saber LATE 10:00–11:00 Bolt Appointment HSP blood panel Tue 14 Jul 3 input s LATE No document All day Quill LL Local leave LATE No document All day Wisp OIL OIL — CO approved, post-detachment LATE 14:00–16:00 Saint Appointment Dental appt Wed 15 Jul 3 input s No document All day Cobra OL Overseas leave — off island By Saber No document All day Gambit OIL till 17 Jul Nomad OD Overseas duty — exercise, off island Thu 16 Jul 2 input s No document All day Gambit OIL 17:00–18:30 Ranger Appointment Medical / PHA Mon 20 Jul 1 input 10:00–12:00 Vapor Appointment Medical / PHA Wed 22 Jul 1 input 15:00–17:00 ALL Event Sports afternoon · PT kit By Saber Thu 23 Jul 2 input s All day Gambit OML Medical leave — grounded 10:00–11:00 Drifter, Echo, Ranger, Saber Meeting Flight safety brief By Saber Fri 24 Jul 1 input LATE No document All day Tally LL Local leave By Saber Sat 25 Jul 1 input 09:00–12:00 ALL AVAIL Duty Hangar clean-up By Saber Mon 15 Feb 27 1 input No document All day Trident OIL Tue 4 May 27 1 input No document All day Cinder OIL",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.inlist"
+  },
+  "card-0": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 175,
+    "w": 386,
+    "h": 36.8
+   },
+   "ink": {
+    "x": 34,
+    "y": 183,
+    "w": 350,
+    "h": 20.3
+   },
+   "text": "LATE No document All day Drifter OL",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.red"
+  },
+  "hrs-0": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 182.3,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 183.3,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-1": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 246.8,
+    "w": 386,
+    "h": 53.1
+   },
+   "ink": {
+    "x": 18,
+    "y": 254.8,
+    "w": 366,
+    "h": 38.2
+   },
+   "text": "No document All day Static ATT C ATT C — filed on Inputs",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.red"
+  },
+  "hrs-1": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 253.8,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 254.8,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-2": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 334.9,
+    "w": 386,
+    "h": 53.1
+   },
+   "ink": {
+    "x": 18,
+    "y": 342.9,
+    "w": 366,
+    "h": 38.2
+   },
+   "text": "No document All day Static OML OML — filed on Inputs",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.red"
+  },
+  "hrs-2": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 341.9,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 342.9,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-3": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 423,
+    "w": 386,
+    "h": 53.1
+   },
+   "ink": {
+    "x": 18,
+    "y": 431,
+    "w": 366,
+    "h": 38.2
+   },
+   "text": "No document All day Static Upchit Medically up 7 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.amb"
+  },
+  "hrs-3": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 430,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 431,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-4": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 511.1,
+    "w": 386,
+    "h": 36.8
+   },
+   "ink": {
+    "x": 34,
+    "y": 519.1,
+    "w": 350,
+    "h": 20.3
+   },
+   "text": "LATE No document All day Gambit LL",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.red"
+  },
+  "hrs-4": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 518.4,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 519.4,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-5": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 583,
+    "w": 386,
+    "h": 36.8
+   },
+   "ink": {
+    "x": 34,
+    "y": 591,
+    "w": 350,
+    "h": 20.3
+   },
+   "text": "LATE No document All day Hunter OIL",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.red"
+  },
+  "hrs-5": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 340.2,
+    "y": 590.3,
+    "w": 43.8,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 340.2,
+    "y": 591.3,
+    "w": 43.8,
+    "h": 20
+   },
+   "text": "All day",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "card-6": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 8,
+    "y": 654.8,
+    "w": 386,
+    "h": 36.8
+   },
+   "ink": {
+    "x": 34,
+    "y": 662.8,
+    "w": 350,
+    "h": 20.3
+   },
+   "text": "LATE till 13 Jan Rune CSE",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.icard.amb"
+  },
+  "hrs-6": {
+   "found": true,
+   "count": 44,
+   "box": {
+    "x": 323.6,
+    "y": 662.1,
+    "w": 60.4,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 323.6,
+    "y": 663.1,
+    "w": 60.4,
+    "h": 20
+   },
+   "text": "till 13 Jan",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-hrs"
+  },
+  "late-0": {
+   "found": true,
+   "count": 13,
+   "box": {
+    "x": 147.1,
+    "y": 182,
+    "w": 52.3,
+    "h": 22.8
+   },
+   "ink": {
+    "x": 153.1,
+    "y": 183,
+    "w": 40.3,
+    "h": 20
+   },
+   "text": "LATE",
+   "typed": false,
+   "look": {
+    "fill": "rgb(229, 168, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 27, 0)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14.82px",
+    "spacing": "0.8892px"
+   },
+   "tag": "button.sd-late"
+  },
+  "late-4": {
+   "found": true,
+   "count": 13,
+   "box": {
+    "x": 147.1,
+    "y": 518.1,
+    "w": 52.3,
+    "h": 22.8
+   },
+   "ink": {
+    "x": 153.1,
+    "y": 519.1,
+    "w": 40.3,
+    "h": 20
+   },
+   "text": "LATE",
+   "typed": false,
+   "look": {
+    "fill": "rgb(229, 168, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 27, 0)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14.82px",
+    "spacing": "0.8892px"
+   },
+   "tag": "button.sd-late"
+  },
+  "late-5": {
+   "found": true,
+   "count": 13,
+   "box": {
+    "x": 147.1,
+    "y": 590,
+    "w": 52.3,
+    "h": 22.8
+   },
+   "ink": {
+    "x": 153.1,
+    "y": 591,
+    "w": 40.3,
+    "h": 20
+   },
+   "text": "LATE",
+   "typed": false,
+   "look": {
+    "fill": "rgb(229, 168, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 27, 0)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14.82px",
+    "spacing": "0.8892px"
+   },
+   "tag": "button.sd-late"
+  },
+  "late-6": {
+   "found": true,
+   "count": 13,
+   "box": {
+    "x": 147.1,
+    "y": 661.8,
+    "w": 52.3,
+    "h": 22.8
+   },
+   "ink": {
+    "x": 153.1,
+    "y": 662.8,
+    "w": 40.3,
+    "h": 20
+   },
+   "text": "LATE",
+   "typed": false,
+   "look": {
+    "fill": "rgb(229, 168, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)",
+     "0px none rgb(42, 27, 0)"
+    ],
+    "corners": [
+     "4px",
+     "4px",
+     "4px",
+     "4px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 27, 0)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 14.82px",
+    "spacing": "0.8892px"
+   },
+   "tag": "button.sd-late"
+  },
+  "nodoc-0": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 182.3,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 183.3,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  },
+  "nodoc-1": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 253.8,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 254.8,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  },
+  "nodoc-2": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 341.9,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 342.9,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  },
+  "nodoc-3": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 430,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 431,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  },
+  "nodoc-4": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 518.4,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 519.4,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  },
+  "nodoc-5": {
+   "found": true,
+   "count": 26,
+   "box": {
+    "x": 211.4,
+    "y": 590.3,
+    "w": 92,
+    "h": 22.2
+   },
+   "ink": {
+    "x": 211.4,
+    "y": 591.3,
+    "w": 92,
+    "h": 20
+   },
+   "text": "No document",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)",
+     "0px none rgb(138, 150, 163)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(138, 150, 163)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 14.82px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.icard-nodoc"
+  }
+ },
+ "approved": {
+  "picture": "a-wide.png",
+  "identical": true
+ }
+}

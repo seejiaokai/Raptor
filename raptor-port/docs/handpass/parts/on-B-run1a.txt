@@ -1,0 +1,5 @@
+iid imqoidhuu8paiwi ["RANGE BRIEF: Ranger","Hangar open day: Tally"] {"2026-07-18":0.5}
+puck counts 1 1
+picture B1-0-board-setup.png
+boxes {"x":28,"y":322.78125,"width":74,"height":15} {"x":28,"y":412.28125,"width":74,"height":15}
+ERRORS []

@@ -1072,7 +1072,7 @@ export function BidPicker({
           </div>
           {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): which posting it is — four short chips; one line saying what
               the chosen one does on the date; the button just "Post out". A Delete asks twice (D287 (3)). */}
-          <OutcomeChips value={poOutcome} testid="po"
+          <OutcomeChips value={poOutcome} testid="po" noSans={!!getState().people.find(x => x.id === personId)?.pers}
             onChange={o => { setPoOutcome(o); setDelArmed(false); setPostErr('') }} />
           {outcomeLine(poOutcome, poDate, !!hasAccount) && (
             <div className="bidsheet-row postout"><span className="note" data-testid="po-line">{outcomeLine(poOutcome, poDate, !!hasAccount)}</span></div>
@@ -1365,6 +1365,7 @@ export function PostOutSheet({
   poFrom,
   outcome,
   hasAccount,
+  noSans,
   blockedFor,
   lockedWhy,
   deletesNow,
@@ -1385,6 +1386,8 @@ export function PostOutSheet({
   outcome: PostOutcome
   /** whether he has an account (the line names it only then) */
   hasAccount?: boolean
+  /** a ground-crew man: no SANS chip (his D1709) */
+  noSans?: boolean
   /** why the posting would be held back on its date (the last admin), or null */
   blockedFor?: (outcome: PostOutcome) => string | null
   /** would a posting dated this day run NOW — today or earlier (sync.ts postingRunsBy)? A Delete's date moved there
@@ -1456,7 +1459,7 @@ export function PostOutSheet({
       {locked && <div className="bidsheet-row postout"><span className="note warn" data-testid="postout-locked">{lockedWhy}</span></div>}
       {/* [POST-OUT-OUTCOMES] (D229, D294, D298, D300): the four chips, committed on the tap as the date is — a Delete
           arms its second tap instead; ONE line says what happens on the date (the old two notes said it twice) */}
-      {!locked && <><OutcomeChips value={delArm ? 'delete' : outcome} testid="postout"
+      {!locked && <><OutcomeChips value={delArm ? 'delete' : outcome} testid="postout" noSans={noSans}
         onChange={o => {
           setErr('')
           /* a chip tapped while the date asks is "not that after all": the date goes back to the one that stands */

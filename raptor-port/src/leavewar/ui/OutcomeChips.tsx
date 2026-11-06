@@ -19,16 +19,18 @@ const OUTCOME_CHIPS: { v: PostOutcome | 'transfer'; l: string }[] = [
   { v: 'transfer', l: 'Transfer to Sqn' },
 ]
 
-export function OutcomeChips({ value, onChange, testid }: {
+export function OutcomeChips({ value, onChange, testid, noSans }: {
   value: PostOutcome
   onChange: (o: PostOutcome) => void
+  /** a ground-crew man: no SANS chip — SANS is an aircrew status (his D1709, 5 Nov 26) */
+  noSans?: boolean
   /** the chips' test-id stem — `${testid}-overseas` … */
   testid: string
 }) {
   return (
     <div className="bidsheet-row postout po-outcomes" role="group" aria-label="Posting">
       <span className="lab">Posting</span>
-      {OUTCOME_CHIPS.map(c => {
+      {OUTCOME_CHIPS.filter(c => !(noSans && c.v === 'sans')).map(c => {
         const later = c.v === 'transfer'
         const on = !later && value === c.v
         return (

@@ -10,7 +10,7 @@
        and tapping it is reversible by tapping the same spot again (the chip
        stays, as a ghost) — not a one-way delete;
      - it is a UI gate, so `isLateInput` goes on answering and the mark stays
-       what §Stable decisions says it is — a mark, never a warning;
+       what .claude/rules/decisions/scheduler.md §Settled before this list (The late-input mark) says it is — a mark, never a warning;
      - dropping one hides it on the board AND the week (both read `lateShown`),
        but leaves every OTHER late input showing;
      - the Inputs page keeps its own mark — that page is the paperwork record;

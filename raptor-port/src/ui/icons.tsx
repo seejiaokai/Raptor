@@ -6,6 +6,31 @@
    Lucide-style line glyphs sized by `.btnglyph`. */
 
 import { PEN_INNER } from './pen'
+import { GEAR_INNER, REORDER_INNER, TEMPLATES_INNER, RESET_INNER, PHONE_INNER, DESKTOP_INNER, TICKET_INNER } from './glyphs'
+
+/* ROUND 4'S DRAWN MARKS (owner D1703, D1704, D1707, 5 Nov 26): each drawn from its one source, `ui/glyphs.ts`, which the
+   builders that print a button as text share. Sized and coloured where each stands — `.btnglyph`'s own grey is for a bare
+   icon button; inside a button that says something, the mark takes the button's colour (the CSS beside each). */
+function Drawn({ inner }: { inner: string }) {
+  return (
+    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+      stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+      dangerouslySetInnerHTML={{ __html: inner }} />
+  )
+}
+/** The one settings gear (D1509, D1707). */
+export const GearIcon = () => <Drawn inner={GEAR_INNER} />
+/** Reorder — every ⇅ (D1703). */
+export const ReorderIcon = () => <Drawn inner={REORDER_INNER} />
+/** Templates — a page of blocks (D1703). */
+export const TemplatesIcon = () => <Drawn inner={TEMPLATES_INNER} />
+/** Reset — an arrow turning back (D1703). */
+export const ResetIcon = () => <Drawn inner={RESET_INNER} />
+/** The phone board's layout switch (D1703). */
+export const PhoneIcon = () => <Drawn inner={PHONE_INNER} />
+export const DesktopIcon = () => <Drawn inner={DESKTOP_INNER} />
+/** OIL's own mark, a ticket (D1704). */
+export const TicketIcon = () => <Drawn inner={TICKET_INNER} />
 
 /** A day-grid calendar: two binding posts, a header divider, and date dots —
  *  unmistakable at 16–20px where a plain rounded rectangle was not. */

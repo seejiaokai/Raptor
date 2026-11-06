@@ -48,7 +48,8 @@ describe('SaveStatus', () => {
     for (const n of [band, bar]) {
       expect(n.textContent).toContain('Not saved — keep this page open')
       expect(n.querySelector('button')!.textContent).toBe('Retry')
-      expect(n.querySelector('.sv-ico')!.getAttribute('aria-hidden')).toBe('true')   // the ⚠ is not read out
+      expect(n.querySelector('.sv-sign')!.getAttribute('aria-hidden')).toBe('true')   // the drawn sign is not read out (D1655)
+      expect(n.querySelector('.sv-msg b')!.textContent, '"Not saved" leads, in bold (D1655)').toBe('Not saved')
     }
     /* one warning for a screen reader and the keyboard: while a band shows, the bar's copy is inert and hidden */
     expect([bar.getAttribute('aria-hidden'), bar.hasAttribute('inert')]).toEqual(['true', true])   // jsdom has no .inert property: the attribute

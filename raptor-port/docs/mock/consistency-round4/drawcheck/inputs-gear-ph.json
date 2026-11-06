@@ -1,0 +1,97 @@
+{
+ "state": "inputs-gear-ph",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q1-ph-inputs-new"
+ },
+ "recorded": "2026-11-05T11:32:12.844Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "gear": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 356,
+    "y": 102,
+    "w": 38,
+    "h": 36
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "center",
+    "font": "600 17px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn.inputs-gear.zz-ring"
+  },
+  "gear-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 366,
+    "y": 111,
+    "w": 18,
+    "h": 18
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 17px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q1-ph-inputs-new.png",
+  "identical": true
+ }
+}

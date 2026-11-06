@@ -13,7 +13,7 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, rmSync } from 'node:fs'
 import { join, resolve, relative } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { chromium, LAUNCH, serveDist, measureParts } from './lib.mjs'
+import { chromium, webkit, LAUNCH, serveDist, measureParts } from './lib.mjs'
 import { compare } from './compare.mjs'
 
 console.log('[drawcheck check v1]')
@@ -85,6 +85,8 @@ async function pictures(browser, st, rec, part, D, B, lines, file) {
 
 // ---------------------------------------------------------------- the run
 const browser = await chromium.launch(LAUNCH)
+// a state drawn in WebKit (`engine: 'webkit'` — his iPhone's engine) is measured in WebKit: letters differ between engines
+let wk = null
 const report = []
 const errors = []
 for (const st of spec.states) {
@@ -95,7 +97,8 @@ for (const st of spec.states) {
   if (!existsSync(recFile) && opt('explore')) writeFileSync(join(OUT, st.id + '.stand-in.json'), JSON.stringify({ viewport: st.phone ? { w: 402, h: 874 } : { w: 1536, h: 864 }, dpr: st.phone ? 3 : 1.25 }))
   if (!existsSync(recFile) && !opt('explore')) { report.push({ state: st.id, title: st.title, unrecorded: true }); console.log(`${st.id}: NO DRAWING RECORD (${relative(process.cwd(), recFile)}) — record the drawing first (record.mjs)`); continue }
   const rec = JSON.parse(readFileSync(existsSync(recFile) ? recFile : join(OUT, st.id + '.stand-in.json'), 'utf8')); rec.__png = join(spec.records, recId + '.png')
-  const ctx = await browser.newContext({ viewport: { width: rec.viewport.w, height: rec.viewport.h }, deviceScaleFactor: rec.dpr,
+  const eng = st.engine === 'webkit' ? (wk ||= await webkit.launch()) : browser
+  const ctx = await eng.newContext({ viewport: { width: rec.viewport.w, height: rec.viewport.h }, deviceScaleFactor: rec.dpr,
     hasTouch: !!st.phone, isMobile: !!st.phone, timezoneId: spec.timezone || 'Asia/Singapore' })
   await serveDist(ctx, ORIGIN, DIST)
   const page = await ctx.newPage()
@@ -155,6 +158,7 @@ for (const st of spec.states) {
     : rec.approved?.identical !== true ? ' — note: this record was never compared with the approved picture' : ''))
 }
 await browser.close()
+if (wk) await wk.close()
 
 // ---------------------------------------------------------------- the report
 const counting = report.flatMap(r => (r.parts || []).flatMap(p => p.diffs.filter(d => d.counts).map(d => ({ ...d, state: r.state, part: p.part }))))

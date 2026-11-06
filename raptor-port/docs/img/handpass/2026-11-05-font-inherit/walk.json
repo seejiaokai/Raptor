@@ -1,0 +1,222 @@
+{
+ "rows": [
+  {
+   "dev": "pc1536",
+   "scene": "cancel",
+   "place": "#cxReason",
+   "n": 1,
+   "want": "14px 600",
+   "got": "\"Inter Tight\" 14px 600 h41",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "cancel-reasons",
+   "place": ".cxedit-name",
+   "n": 4,
+   "want": "12px 600",
+   "got": "\"Inter Tight\" 12px 600 h28 / \"Inter Tight\" 12px 600 h28",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "cancel-done",
+   "place": "the line reads CX DUE U/S AIRCRAFT",
+   "n": 1,
+   "want": "CX DUE U/S AIRCRAFT",
+   "got": "CX DUE U/S AIRCRAFT",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "day-notes",
+   "place": ".inputsday .ic-note .ic-pkadd",
+   "n": 1,
+   "want": "14px 700",
+   "got": "\"Inter Tight\" 14px 700 h16",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "day-notes",
+   "place": ".inputsday .ic-newnote-ppl",
+   "n": 1,
+   "want": "12px 700",
+   "got": "\"Inter Tight\" 12px 700 h36",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "input-window",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 2,
+   "want": "13px 600",
+   "got": "\"Inter Tight\" 13px 600 h37 / \"Inter Tight\" 13px 600 h35",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "input-window",
+   "place": ".inpedwin .pp-sw",
+   "n": 1,
+   "want": "12px 600",
+   "got": "\"Inter Tight\" 12px 600 h36",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "input-window",
+   "place": ".pp-all",
+   "n": 3,
+   "want": "11px 600",
+   "got": "\"Inter Tight\" 11px 600 h24 / \"Inter Tight\" 11px 600 h24",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "member-input",
+   "place": ".inped-v",
+   "n": 1,
+   "want": "13px 600",
+   "got": "\"Inter Tight\" 13px 600 h21",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "member-input",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 2,
+   "want": "13px 600",
+   "got": "\"Inter Tight\" 13px 600 h37 / \"Inter Tight\" 13px 600 h35",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "schedule-input",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 5,
+   "want": "13px 600",
+   "got": "\"Inter Tight\" 13px 600 h37 / \"Inter Tight\" 13px 600 h37",
+   "ok": true
+  },
+  {
+   "dev": "pc1536",
+   "scene": "leavewar-switch",
+   "place": "Auto-approve (D1681)",
+   "n": 1,
+   "want": "the app letters 11px 600",
+   "got": "\"Inter Tight\", system-ui, sans-serif 11px 600",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "cancel",
+   "place": "#cxReason",
+   "n": 1,
+   "want": "14px 600",
+   "got": "Inter Tight 14px 600 h38",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "cancel-reasons",
+   "place": ".cxedit-name",
+   "n": 4,
+   "want": "12px 600",
+   "got": "Inter Tight 12px 600 h26 / Inter Tight 12px 600 h26",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "cancel-done",
+   "place": "the line reads CX DUE U/S AIRCRAFT",
+   "n": 1,
+   "want": "CX DUE U/S AIRCRAFT",
+   "got": "CX DUE U/S AIRCRAFT",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "day-notes",
+   "place": ".inputsday .ic-note .ic-pkadd",
+   "n": 1,
+   "want": "14px 700",
+   "got": "Inter Tight 14px 700 h16",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "day-notes",
+   "place": ".inputsday .ic-newnote-ppl",
+   "n": 1,
+   "want": "12px 700",
+   "got": "Inter Tight 12px 700 h36",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "input-window",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 2,
+   "want": "13px 600",
+   "got": "Inter Tight 13px 600 h43 / Inter Tight 13px 600 h33",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "input-window",
+   "place": ".inpedwin .pp-sw",
+   "n": 1,
+   "want": "12px 600",
+   "got": "Inter Tight 12px 600 h44",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "input-window",
+   "place": ".pp-all",
+   "n": 3,
+   "want": "11px 600",
+   "got": "Inter Tight 11px 600 h24 / Inter Tight 11px 600 h24",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "member-input",
+   "place": ".inped-v",
+   "n": 1,
+   "want": "13px 600",
+   "got": "Inter Tight 13px 600 h19",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "member-input",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 2,
+   "want": "13px 600",
+   "got": "Inter Tight 13px 600 h43 / Inter Tight 13px 600 h33",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "schedule-input",
+   "place": ".inped-body select, .inped-body input:not([type=checkbox])",
+   "n": 5,
+   "want": "13px 600",
+   "got": "Inter Tight 13px 600 h43 / Inter Tight 13px 600 h43",
+   "ok": true
+  },
+  {
+   "dev": "iphone",
+   "scene": "leavewar-switch",
+   "place": "Auto-approve (D1681)",
+   "n": 1,
+   "want": "the app letters 11px 600",
+   "got": "Inter Tight, system-ui, sans-serif 11px 600",
+   "ok": true
+  }
+ ],
+ "errs": [],
+ "fails": 0
+}

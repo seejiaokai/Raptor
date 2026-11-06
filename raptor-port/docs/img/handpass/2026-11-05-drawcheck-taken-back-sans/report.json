@@ -1,0 +1,2048 @@
+{
+ "spec": "The SANS purple line on a posted-out man, and the taken-back bell line",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\37df10f156419f1e\\1943ff09-8813-4d81-9284-fab1ff9ac280\\scratchpad\\frozen2",
+ "all": false,
+ "report": [
+  {
+   "state": "sans-desk",
+   "title": "Sidewinder's name on the grid, posted out as SANS, desktop",
+   "drawing": {
+    "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+    "shot": "2-sans-proposed-desk"
+   },
+   "approved": {
+    "picture": "2-sans-proposed-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "puck",
+     "label": "Sidewinder's name puck",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 33,
+        "y": 424,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 38,
+        "y": 424.8,
+        "w": 65.2,
+        "h": 12.3
+       },
+       "text": "Sidewinder IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.san"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 33,
+        "y": 424,
+        "w": 74,
+        "h": 15
+       },
+       "ink": {
+        "x": 38,
+        "y": 424.8,
+        "w": 65.2,
+        "h": 12.3
+       },
+       "text": "Sidewinder IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.san"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "his callsign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 34,
+        "y": 425,
+        "w": 57,
+        "h": 13
+       },
+       "ink": {
+        "x": 38,
+        "y": 425,
+        "w": 44.8,
+        "h": 12
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 34,
+        "y": 425,
+        "w": 57,
+        "h": 13
+       },
+       "ink": {
+        "x": 38,
+        "y": 425,
+        "w": 44.8,
+        "h": 12
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 9px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nm"
+      }
+     }
+    },
+    {
+     "part": "chip",
+     "label": "his CAT chip",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 91,
+        "y": 425,
+        "w": 15,
+        "h": 13
+       },
+       "ink": {
+        "x": 93.8,
+        "y": 424.8,
+        "w": 9.4,
+        "h": 12
+       },
+       "text": "IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(232, 178, 59)",
+        "image": "",
+        "edge": [
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(42, 30, 2)",
+        "align": "left",
+        "justify": "center",
+        "font": "800 9.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.role.lw-chip.q-sxo.has-quals"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 91,
+        "y": 425,
+        "w": 15,
+        "h": 13
+       },
+       "ink": {
+        "x": 93.8,
+        "y": 424.8,
+        "w": 9.4,
+        "h": 12
+       },
+       "text": "IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(232, 178, 59)",
+        "image": "",
+        "edge": [
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(42, 30, 2)",
+        "align": "left",
+        "justify": "center",
+        "font": "800 9.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.role.lw-chip.q-sxo.has-quals"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "sans-phone",
+   "title": "Sidewinder's name in the phone's frozen column, iPhone (WebKit)",
+   "drawing": {
+    "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+    "shot": "2-sans-proposed-phone"
+   },
+   "approved": {
+    "picture": "2-sans-proposed-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "puck",
+     "label": "Sidewinder's name puck",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 15.8,
+        "y": 430.5,
+        "w": 53.9,
+        "h": 12
+       },
+       "ink": {
+        "x": 19.5,
+        "y": 430,
+        "w": 48.1,
+        "h": 13
+       },
+       "text": "Sidewinder IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.san"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 15.8,
+        "y": 430.5,
+        "w": 53.9,
+        "h": 12
+       },
+       "ink": {
+        "x": 19.5,
+        "y": 430,
+        "w": 48.1,
+        "h": 13
+       },
+       "text": "Sidewinder IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(110, 106, 46)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)",
+         "1px solid rgba(0, 0, 0, 0)"
+        ],
+        "corners": [
+         "3px",
+         "3px",
+         "3px",
+         "3px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.puck.san"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "his callsign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16.3,
+        "y": 431,
+        "w": 39.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 19.5,
+        "y": 431.2,
+        "w": 47.5,
+        "h": 10
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nm"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 16.3,
+        "y": 431,
+        "w": 39.8,
+        "h": 11
+       },
+       "ink": {
+        "x": 19.5,
+        "y": 431.2,
+        "w": 47.5,
+        "h": 10
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)",
+         "0px none rgb(251, 250, 240)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(251, 250, 240)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.nm"
+      }
+     }
+    },
+    {
+     "part": "chip",
+     "label": "his CAT chip",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 56.1,
+        "y": 431,
+        "w": 13.1,
+        "h": 11
+       },
+       "ink": {
+        "x": 57.7,
+        "y": 430,
+        "w": 9.9,
+        "h": 13
+       },
+       "text": "IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(232, 178, 59)",
+        "image": "",
+        "edge": [
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(42, 30, 2)",
+        "align": "left",
+        "justify": "center",
+        "font": "800 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.role.lw-chip.q-sxo.has-quals"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 56.1,
+        "y": 431,
+        "w": 13.1,
+        "h": 11
+       },
+       "ink": {
+        "x": 57.7,
+        "y": 430,
+        "w": 9.9,
+        "h": 13
+       },
+       "text": "IP",
+       "typed": false,
+       "look": {
+        "fill": "rgb(232, 178, 59)",
+        "image": "",
+        "edge": [
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)",
+         "0px none rgb(42, 30, 2)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(42, 30, 2)",
+        "align": "left",
+        "justify": "center",
+        "font": "800 11.25px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.role.lw-chip.q-sxo.has-quals"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "bell-desk",
+   "title": "Hex's bell after Saber's Undo post out, desktop",
+   "drawing": {
+    "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+    "shot": "8-hex-bell-struck-desk-close"
+   },
+   "approved": {
+    "picture": "8-hex-bell-struck-desk-close.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "list",
+     "label": "the bell list",
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "113.5",
+       "build": "149.5",
+       "by": "36px more",
+       "accepted": "the drawing state: its cloned unread line never raised the list’s own \"Mark all read\" foot, which the built list draws under an unread line (as kept for the posting line, postout-bell.mjs)",
+       "counts": false
+      }
+     ],
+     "picture": "bell-desk--list.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 897,
+        "y": 50,
+        "w": 348,
+        "h": 113.5
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 300,
+        "h": 87.7
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bell-list"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 897,
+        "y": 50,
+        "w": 348,
+        "h": 149.5
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 300,
+        "h": 124.5
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h Mark all read",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bell-list"
+      }
+     }
+    },
+    {
+     "part": "line-1",
+     "label": "the taken-back line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 902,
+        "y": 55,
+        "w": 338,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 300,
+        "h": 35.9
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line.unread.tb-new"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 902,
+        "y": 55,
+        "w": 338,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 300,
+        "h": 35.9
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line.unread"
+      }
+     }
+    },
+    {
+     "part": "name-1",
+     "label": "its man, in bold",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 62,
+        "w": 65.6,
+        "h": 17
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 65.6,
+        "h": 17
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "b.bl-name"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 62,
+        "w": 65.6,
+        "h": 17
+       },
+       "ink": {
+        "x": 929,
+        "y": 62,
+        "w": 65.6,
+        "h": 17
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "b.bl-name"
+      }
+     }
+    },
+    {
+     "part": "day-1",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1001.6,
+        "y": 62,
+        "w": 71.4,
+        "h": 17
+       },
+       "ink": {
+        "x": 1001.6,
+        "y": 62,
+        "w": 71.4,
+        "h": 17
+       },
+       "text": "Mon 16 Nov",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "i.bl-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1001.6,
+        "y": 62,
+        "w": 71.4,
+        "h": 17
+       },
+       "ink": {
+        "x": 1001.6,
+        "y": 62,
+        "w": 71.4,
+        "h": 17
+       },
+       "text": "Mon 16 Nov",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "i.bl-day"
+      }
+     }
+    },
+    {
+     "part": "what-1",
+     "label": "its words, struck and after",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 81.9,
+        "w": 269.4,
+        "h": 16.9
+       },
+       "ink": {
+        "x": 929,
+        "y": 81.9,
+        "w": 236.4,
+        "h": 16
+       },
+       "text": "Posted out · now SANS · taken back · Saber",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-what"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 81.9,
+        "w": 269.4,
+        "h": 16.9
+       },
+       "ink": {
+        "x": 929,
+        "y": 81.9,
+        "w": 236.4,
+        "h": 16
+       },
+       "text": "Posted out · now SANS · taken back · Saber",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-what"
+      }
+     }
+    },
+    {
+     "part": "struck-1",
+     "label": "the struck words",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 81.9,
+        "w": 126.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 929,
+        "y": 81.9,
+        "w": 126.5,
+        "h": 16
+       },
+       "text": "Posted out · now SANS",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "s"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 929,
+        "y": 81.9,
+        "w": 126.5,
+        "h": 16
+       },
+       "ink": {
+        "x": 929,
+        "y": 81.9,
+        "w": 126.5,
+        "h": 16
+       },
+       "text": "Posted out · now SANS",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "s.bl-struck"
+      }
+     }
+    },
+    {
+     "part": "dot-1",
+     "label": "its unread dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 913,
+        "y": 68,
+        "w": 7,
+        "h": 7
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 913,
+        "y": 68,
+        "w": 7,
+        "h": 7
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-dot"
+      }
+     }
+    },
+    {
+     "part": "line-2",
+     "label": "Warden's line (read, not undone)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 902,
+        "y": 106.8,
+        "w": 338,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 929,
+        "y": 113.8,
+        "w": 300,
+        "h": 35.9
+       },
+       "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 902,
+        "y": 106.8,
+        "w": 338,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 929,
+        "y": 113.8,
+        "w": 300,
+        "h": 35.9
+       },
+       "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "bell-phone",
+   "title": "Hex's bell after Saber's Undo post out, iPhone (WebKit)",
+   "drawing": {
+    "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+    "shot": "8-hex-bell-struck-phone-close"
+   },
+   "approved": {
+    "picture": "8-hex-bell-struck-phone-close.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "list",
+     "label": "the bell list",
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "113.5",
+       "build": "149.5",
+       "by": "36px more",
+       "accepted": "the drawing state: its cloned unread line never raised the list’s own \"Mark all read\" foot, which the built list draws under an unread line (as kept for the posting line, postout-bell.mjs)",
+       "counts": false
+      }
+     ],
+     "picture": "bell-phone--list.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 8,
+        "y": 46,
+        "w": 386,
+        "h": 113.5
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 338,
+        "h": 85.1
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bell-list.wide"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 8,
+        "y": 46,
+        "w": 386,
+        "h": 149.5
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 338,
+        "h": 122.6
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h Mark all read",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.bell-list.wide"
+      }
+     }
+    },
+    {
+     "part": "line-1",
+     "label": "the taken-back line",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 51,
+        "w": 376,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 338,
+        "h": 33.4
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line.unread.tb-new"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 51,
+        "w": 376,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 338,
+        "h": 33.4
+       },
+       "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line.unread"
+      }
+     }
+    },
+    {
+     "part": "name-1",
+     "label": "its man, in bold",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 59.9,
+        "w": 69.3,
+        "h": 15
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 69.3,
+        "h": 15
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "b.bl-name"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 59.9,
+        "w": 69.3,
+        "h": 15
+       },
+       "ink": {
+        "x": 40,
+        "y": 59.9,
+        "w": 69.3,
+        "h": 15
+       },
+       "text": "Sidewinder",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "b.bl-name"
+      }
+     }
+    },
+    {
+     "part": "day-1",
+     "label": "its date",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 116.3,
+        "y": 59.9,
+        "w": 70.1,
+        "h": 15
+       },
+       "ink": {
+        "x": 116.3,
+        "y": 59.9,
+        "w": 70.1,
+        "h": 15
+       },
+       "text": "Mon 16 Nov",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "i.bl-day"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 116.3,
+        "y": 59.9,
+        "w": 70.1,
+        "h": 15
+       },
+       "ink": {
+        "x": 116.3,
+        "y": 59.9,
+        "w": 70.1,
+        "h": 15
+       },
+       "text": "Mon 16 Nov",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "i.bl-day"
+      }
+     }
+    },
+    {
+     "part": "what-1",
+     "label": "its words, struck and after",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 77.9,
+        "w": 307.9,
+        "h": 16.9
+       },
+       "ink": {
+        "x": 40,
+        "y": 79.3,
+        "w": 247.3,
+        "h": 14
+       },
+       "text": "Posted out · now SANS · taken back · Saber",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-what"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 77.9,
+        "w": 307.9,
+        "h": 16.9
+       },
+       "ink": {
+        "x": 40,
+        "y": 79.3,
+        "w": 247.3,
+        "h": 14
+       },
+       "text": "Posted out · now SANS · taken back · Saber",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-what"
+      }
+     }
+    },
+    {
+     "part": "struck-1",
+     "label": "the struck words",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 79.3,
+        "w": 131.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 40,
+        "y": 79.3,
+        "w": 131.3,
+        "h": 14
+       },
+       "text": "Posted out · now SANS",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "s"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 40,
+        "y": 79.3,
+        "w": 131.3,
+        "h": 14
+       },
+       "ink": {
+        "x": 40,
+        "y": 79.3,
+        "w": 131.3,
+        "h": 14
+       },
+       "text": "Posted out · now SANS",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 12.5px",
+        "spacing": "normal"
+       },
+       "tag": "s.bl-struck"
+      }
+     }
+    },
+    {
+     "part": "dot-1",
+     "label": "its unread dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 24,
+        "y": 64,
+        "w": 7,
+        "h": 7
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 24,
+        "y": 64,
+        "w": 7,
+        "h": 7
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "span.bl-dot"
+      }
+     }
+    },
+    {
+     "part": "line-2",
+     "label": "Warden's line (read, not undone)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 102.8,
+        "w": 376,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 40,
+        "y": 111.7,
+        "w": 338,
+        "h": 33.4
+       },
+       "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 13,
+        "y": 102.8,
+        "w": 376,
+        "h": 51.8
+       },
+       "ink": {
+        "x": 40,
+        "y": 111.7,
+        "w": 338,
+        "h": 33.4
+       },
+       "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "left",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.bl-line"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

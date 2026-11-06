@@ -30,7 +30,7 @@ import { INPUTS, inpMeta, typeGroup, isSansAvail, needsDoc, peopleOf, idsOf, lea
 import { voidedOil } from '../engine/oil'
 /* the seeded accounts, read only by the posting pass's first-write rule below (accounts.ts imports this file; the call is
    made only when a command is judged, never as the module loads) */
-import { seedAccounts } from './accounts'
+import { seedAccounts, ACCOUNTS_LIST, isAdminAccount } from './accounts'
 import { oilPlanOf } from './inputgate-hook'
 import type { Actor, Change, CommitEnvelope } from '../command/types'
 
@@ -362,14 +362,18 @@ export const mayRenameCallsign = (): boolean => roleOf() === null || isAdmin()
 /* the Management tick on his row is the admin's too (D1510, narrowing D149 as D218 did): the Leave War draws its Management
    group, first on the war, from this tick (D1502). No session → true */
 export const mayTickManagement = (): boolean => roleOf() === null || isAdmin()
+/* …and the Scheduler tick (D1651, 5 Nov 26, narrowing D1510 and D149): it decides who may sign SKED CK, PLANNED BY and
+   APPROVED BY, and a scheduler is always an admin (D785) — a member unticking his own blanked his signatures. No session → true */
+export const mayTickScheduler = (): boolean => roleOf() === null || isAdmin()
 /* what a member's own Quals row may not change, read by the commit gate below (data-model.md §11, the Person row):
    the callsign (D218 — compared whole, so another shape that prints the same is still a change), the Management tick
-   (D1510 — truthy, as the Leave War reads it), the archive and placeholder marks, and — the security read of 29 Oct 26 —
+   (D1510 — truthy, as the Leave War reads it), the Scheduler tick (D1651 — truthy, as the sign-off lists read it), the archive and placeholder marks, and — the security read of 29 Oct 26 —
    the delete mark and its date, and how, when and by whom he was archived: archiving and deleting a person are the admin's.
    (`sanBy` and `ord` are not here: his own SANS tick drops `sanBy` by design, and §11 does not name his place in the order) */
 const OWN_ROW_ADMIN_ONLY: [string, (p: any) => any][] = [
   ['his callsign', p => JSON.stringify(p?.cs ?? null)],
   ['his Management tick', p => !!p?.quals?.mgmt],
+  ['his Scheduler tick', p => !!p?.quals?.sched],   // D1651 — truthy, as isScheduler reads it
   ['his archive mark', p => !!p?.archived],
   ['who archived him', p => JSON.stringify([p?.archivedBy ?? null, p?.archivedOn ?? null, p?.archivedWho ?? null])],
   ['his delete mark', p => JSON.stringify([!!p?.deleted, p?.deletedFrom ?? null])],
@@ -567,9 +571,13 @@ export const COMMAND_OPS: Record<string, CommandOp> = {
   'person.backSeen': op(T.person, 'U', 'required'),
   /* a posting written with a take-back of what the posting made (its archive, its suspension, its SANS tick) — and its
      Undo, before or after it ran (leavewar/sync.ts takeBack, and restoreBody's undo mode on the posting's own archive) */
-  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U']]),
+  /* …and its Undo takes back the posting's bell lines ([NOTICE-UNDO-RETRACT], D1693, D1699): each admin's line removed (D), and
+     one he had read replaced by its "taken back" line (C) */
+  'lw.postout': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.user, 'U'], [T.notice, 'C'], [T.notice, 'D']]),
   /* the posting pass on its date — a reconciler (the system actor); every table an outcome writes is named (D200) */
-  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D']]),
+  /* …and each admin's bell line saying it ran ([POSTOUT-RUN-NOTICE], D1547 — a Notice created; so too a posting made today,
+     run inside `lw.postout` above) */
+  'lw.postoutRun': op(T.profile, 'U', 'never', [[T.person, 'U'], [T.person, 'D'], [T.user, 'U'], [T.user, 'D'], [T.sched, 'U'], [T.amendment, 'C'], [T.input, 'D'], [T.input, 'U'], [T.bid, 'D'], [T.award, 'D'], [T.notice, 'C']]),
 }
 for (const k of SETTINGS_KEYS_ALL) COMMAND_OPS[`settings.${k}`] = op(T.setting, 'U')
 /* COMMANDS ONLY AN ADMIN RUNS, though the table they write grants a member the same letter for his own change: the war's
@@ -782,8 +790,9 @@ function onlyChangesWords(before: unknown, after: unknown): boolean {
 const STAMP_SKEW_MS = 5 * 60_000
 const STAMP_AHEAD_MS = 5_000
 /* the kinds of a bell line only a Leave War command of an admin's writes (state/notices.ts NoticeWhat: `lw`, `lwopen`,
-   `lwback`) — a member's notice carries none (the notices case below) */
-const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol'])
+   `lwback`) — a member's notice carries none (the notices case below); nor a posting's line (`po`, [POSTOUT-RUN-NOTICE] —
+   written only by the posting pass, the app's own act) */
+const WAR_LINE_KINDS = new Set(['lw', 'lwopen', 'lwback', 'oilhol', 'po', 'poback'])
 const placedOf = (r: any): string => `${r?.placedBy ?? ''}|${r?.placedAt ?? ''}`
 /* the halves a request's code takes — "*LL" the morning, "LL*" the afternoon, "LL" both (the war's notation, read here
    without reaching into the war's engine) */
@@ -1019,13 +1028,14 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
      set, from anything else, to the posting's own date (the day after his last day in, `to`), a date already come — or, for
      a Delete of a man who never arrived, his record removed (store.ts forgetPersonFrom) on a date already come */
   const posted = new Map<string, string>()
+  const postedOn = new Map<string, string>()   // each posted man's posting date (the bell lines' check, below)
   for (const c of env.changes) {
     if (c.collection !== 'lw.postouts') continue
     const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
     let date: string | null = null, outcome: string | undefined
     if (f && typeof f.to === 'string' && ISO_DAY.test(f.to) && f.poDone === isoAddDay(f.to) && (!b || b.poDone !== f.poDone)) { date = f.poDone; outcome = passOutcomeOf(f) }
     else if (!f && b && typeof b.to === 'string' && ISO_DAY.test(b.to) && passOutcomeOf(b) === 'delete') { date = isoAddDay(b.to); outcome = 'delete' }
-    if (date && date <= today && outcome) posted.set(String(c.id), outcome)
+    if (date && date <= today && outcome) { posted.set(String(c.id), outcome); postedOn.set(String(c.id), date) }
   }
   const refuse = (c: Change) => `the posting pass may change only the men it posts out, and only as their posting does (${c.collection}/${c.id})`
   const accounts = new Map<string, any>()   // account id → its row before, for each posted man's account the pass changes
@@ -1076,6 +1086,32 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       if (f && (String(f.pid) !== String(b.pid) || f.role !== b.role || f.name !== b.name)) return refuse(c)
       accounts.set(rowId, b)
     }
+  }
+  /* THE PASS'S BELL LINES ([POSTOUT-RUN-NOTICE] — D1547; tightened by the build's security read, 5 Nov 26): only NEW
+     lines, the app's own (nobody named as their maker), never one rewritten or taken away. A posting's line (`po`) is a
+     line of that one part, about a man this very pass posts out, saying the outcome that ran (`acct` only for an Overseas
+     Sqn), dated his posting date, about no input, addressed to an admin who can sign in and never to the man himself —
+     one an admin a man. Any other line the pass makes is a Delete's: the lines its inputs owe the others in them
+     (state/sched-commit.ts tellPass — the app's act, with no name, R12), each about an input this changeset changes and
+     none of the war's or a posting's kinds. At the database step the pass's service account writes exactly these. */
+  const admins = new Set(ACCOUNTS_LIST.filter(x => isAdminAccount(x) && x.on && x.pid != null).map(x => String(x.pid)))
+  const told = new Set<string>()
+  const deletes = [...posted.values()].includes('delete')
+  const inputsChanged = new Set(env.changes.filter(c => c.collection === 'inputs').map(c => String(c.id)))
+  for (const c of env.changes) {
+    if (c.collection !== 'notices') continue
+    const n: any = c.op === 'delete' ? null : c.after
+    if (c.before != null || !n || n.by != null || !Array.isArray(n.what) || !n.what.length) return refuse(c)
+    const parts: any[] = n.what
+    if (parts.some(p => p && p.k === 'po')) {
+      const p = parts[0], who = String(p.who)
+      const ok = parts.length === 1 && p.k === 'po' && posted.has(who) && p.o === posted.get(who)
+        && (p.acct === undefined || (p.acct === true && p.o === 'overseas'))
+        && n.iid === '' && n.day === postedOn.get(who) && String(n.to) !== who && admins.has(String(n.to))
+        && !told.has(`${n.to}|${who}`)
+      if (!ok) return refuse(c)
+      told.add(`${n.to}|${who}`)
+    } else if (!deletes || parts.some(p => WAR_LINE_KINDS.has(String(p && p.k))) || !inputsChanged.has(String(n.iid))) return refuse(c)
   }
   /* the rest of the pass's settings rows: for a Delete, the request waiting under his account's sign-in name and his bell's
      row, both removed; nothing else */

@@ -12,7 +12,6 @@ import { reqRowText } from './reqrow'
 import { markEdit } from '../engine/publish'
 import { reconcileIssuedMarks } from '../engine/drafts'
 import { intimeFold } from '../engine/events'
-import { reportingIssuesForWave } from '../engine/reporting'
 import { storesText } from '../engine/stores'
 import { validate } from '../engine/validate'
 import { afterSchedMutate } from '../state/view'
@@ -20,7 +19,7 @@ import * as view from '../state/view'
 import { notify } from '../state/store'
 import { schedWrite, SCHED_TYPES } from '../state/sched-commit'
 import { canEditSched } from '../state/auth'
-import { fmtTxt, intimeLineHTML, areaText, atimeText, boxText } from './html'
+import { fmtTxt, intimeLineHTML, areaText, atimeText, boxText, reportNote } from './html'
 import { fmtHM } from '../engine/time'
 import { routeScheduleTab } from './schedule-tab'
 
@@ -60,7 +59,7 @@ export function routeReportingInput(e:Event){
   const w=DAYS[di]?.waves?.[gi], feedback=line.closest('.intimes')?.querySelector('[data-reporting-feedback]');
   if(!w||!feedback)return;
   const intimes=[...(w.intimes||[])];intimes[ix]=line.textContent||'';
-  feedback.textContent=reportingIssuesForWave({...w,intimes},gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ');
+  feedback.textContent=reportNote({...w,intimes},gi);
 }
 
 /* [ARCH-STACK] f/u#1 (F-05): a text mutation records SYNCHRONOUSLY through a
@@ -261,7 +260,7 @@ export function routeFocusOut(e: FocusEvent) {
         const r = line.parentElement
         if (r?.classList.contains('itrow')) r.dataset.move = `mv:it.${di}.${gi}.${index}`
       })
-      if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ')
+      if(feedback)feedback.textContent=reportNote(w,+gi!)
       txtCommit()
       return
     }
@@ -278,7 +277,7 @@ export function routeFocusOut(e: FocusEvent) {
     }
     const want = intimeLineHTML(nv); if (!sameInner(il, want)) il.innerHTML = want
     // Escape/no-op blur must also discard any unsaved preview diagnostic.
-    if(feedback)feedback.textContent=reportingIssuesForWave(w,+gi!).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ')
+    if(feedback)feedback.textContent=reportNote(w,+gi!)
     return
   }
   /* the typed stores text ("bombs…") — opts.bombs lives outside the txt-key

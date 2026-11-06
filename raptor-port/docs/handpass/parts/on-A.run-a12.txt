@@ -1,0 +1,12 @@
+rows now ["RANGE BRIEF: Ranger","Hangar open day: Tally","SAFETY BOARD: Sidewinder"]
+rows raw ["0:RANGE BRIEF:bane","1:Hangar open day:nick","2:SAFETY BOARD:mamba","3:Armoury check:harpoon"]
+idx 0 1 2 3
+start ["RANGE BRIEF: Ranger","Hangar open day: Tally","SAFETY BOARD: Sidewinder","Armoury check: Trident"]
+Q1 Swapping Tally and Ranger
+bar after 1st Not swapped — OIL not answered
+bar still there before 2nd drag 1 {"x":527,"y":832,"w":387,"h":50,"inside":true,"onTop":true,"vw":1440,"vh":900}
+Q2 1 Swapping Trident and Sidewinder
+bar after 2nd 1 Not swapped — OIL not answered | nothing moved true
+Answer OIL offers Swapping Trident and Sidewinder | heading OIL — Trident, Safety board
+after answering ["RANGE BRIEF: Ranger","Hangar open day: Tally","SAFETY BOARD: Trident","Armoury check: Sidewinder"] toast Trident and Sidewinder swapped bar 0
+errors []

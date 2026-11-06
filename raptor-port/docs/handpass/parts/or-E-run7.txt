@@ -1,0 +1,16 @@
+filed Sat X ["oil question shown"] Input added
+E8b filed {"people":["Ranger"],"by":"stiff","s":540,"e":600,"oil":{"oil":{"2026-07-18":0.5}},"people_oil":[["Ranger",null]]}
+E8b replace #1 toast: Tally is on Sat X instead of Ranger | record {"people":["Tally"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null]]} | question {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Tally, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lan"}
+E8b answered Yes: sheet 0 {"people":["Tally"],"by":"stiff","s":540,"e":600,"oil":{"oil":{"2026-07-18":0.5}},"people_oil":[["Tally",null]]}
+E8b Tally saved: question null | record {"people":["Tally"],"by":"stiff","s":660,"e":720,"oil":{"oil":{"2026-07-18":0.5}},"people_oil":[["Tally",null]]} Input updated
+E8b notices for Saber [["nick","when",null]]
+E8b replace #2 toast: Hex is on Sat X instead of Tally | record {"people":["Hex"],"by":"stiff","s":660,"e":720,"oil":{},"people_oil":[["Hex",null]]} | question {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Hex, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lands"}
+saved e8-03-replace-question
+E8b closed unanswered: true | sheet now 0 | record {"people":["Hex"],"by":"stiff","s":660,"e":720,"oil":{},"people_oil":[["Hex",null]]} | any dialog/sheet standing: 
+saved e8-04-after-close
+E8b who am I undefined
+E8b Saber bell: question + notice {"id":"notifyBell","lit":true,"open":"false"}
+saved e8-05-saber-bell
+E8b first tap: question? null | list open: 1
+saved e8-06-first-tap
+errors []

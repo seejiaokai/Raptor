@@ -1,0 +1,164 @@
+[kw-walk v4] → docs/img/handpass/2026-11-05-keys-windows/walk  build C:/Users/User/AppData/Local/Temp/claude/165715d78b84c047/b7e215cf-29d7-4456-bc35-225c1ceb8a61/scratchpad/kw-dist  only all
+PASS S1.editsched.1 Jump to a date opens on editsched — saw true
+PASS S1.editsched.2 Jump to a date, editsched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S1.editsched.3 Jump to a date, editsched: the box sits below the bar and on the screen — saw {"boxTop":246,"boxFoot":677,"barFoot":58,"vh":864}
+PASS S1.editsched.4 Undo pressed with it open: the window stays, the week stays — saw true
+PASS S1.editsched.5 Escape after a press on Undo closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":"Jump to a date","cls":"wk wk-cal","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":false}
+PASS S1.editsched.6 the bell closes the window first and its list opens — saw {"cal":false,"bell":true}
+PASS S1.editsched.7 its ✕ closes it — saw false
+PASS S1.editsched.8 a tap on its surround closes it — saw false
+PASS S1.editsched.9 a date picked closes it and the schedule goes there — saw {"from":"13/07/2026","to":"20/07/2026"}
+NOTE S1.editsched — back on the week of 13/07/2026
+PASS S1.viewsched.1 Jump to a date opens on viewsched — saw true
+PASS S1.viewsched.2 Jump to a date, viewsched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S1.viewsched.3 Jump to a date, viewsched: the box sits below the bar and on the screen — saw {"boxTop":245,"boxFoot":676,"barFoot":57,"vh":864}
+PASS S1.viewsched.6 the bell closes the window first and its list opens — saw {"cal":false,"bell":true}
+PASS S1.viewsched.7 its ✕ closes it — saw false
+PASS S1.viewsched.8 a tap on its surround closes it — saw false
+PASS S1.viewsched.9 a date picked closes it and the schedule goes there — saw {"from":"13/07/2026","to":"20/07/2026"}
+NOTE S1.viewsched — back on the week of 13/07/2026
+PASS S1.board.1 the board's calendar opens — saw true
+PASS S1.board.2 Jump to a date over the board: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"sbUndo","over":"bi"}
+PASS S1.board.3 Jump to a date over the board: the box sits below the bar and on the screen — saw {"boxTop":270,"boxFoot":701,"barFoot":106,"vh":864}
+PASS S1.board.4 the board's Undo with it open: the window stays — saw true
+PASS S1.board.5 another control of the board's bar (the day) closes it first, then does its job — saw {"cal":false,"from":1,"to":3}
+PASS S2.week.1 the day details open from the edit week's ⓘ — saw "Monday · Jul 13 · 4 X 4 X 1"
+PASS S2.week.2 day details, Edit Schedule: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S2.week.3 day details, Edit Schedule: the box sits below the bar and on the screen — saw {"boxTop":142,"boxFoot":780,"barFoot":58,"vh":864}
+PASS S2.week.4 Undo with it open: it stays, and reads the day as Undo left it (the wave added is gone from its title) — saw {"before":"Monday · Jul 13 · 4 X 4 X 1","after":"Monday · Jul 13 · 4 X 4"}
+PASS S2.week.5 Redo: it reads the day again — saw "Monday · Jul 13 · 4 X 4 X 1"
+PASS S2.close Close Close closes the day details — saw false
+PASS S2.close ✕ ✕ closes the day details — saw false
+PASS S2.close Escape Escape closes the day details — saw false
+PASS S2.close the bell the bell closes the day details — saw false
+PASS S2.close a page name (or ☰) a page name (or ☰) closes the day details — saw false
+PASS S2.view.1 the day details open on View-only Sched — saw "Tuesday · Jul 14 · 4 X 4"
+PASS S2.view.2 day details, View-only Sched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S2.view.3 day details, View-only Sched: the box sits below the bar and on the screen — saw {"boxTop":142,"boxFoot":779,"barFoot":57,"vh":864}
+PASS S2.board.1 the day details open over the board — saw "Wednesday · Jul 15 · 4 X 4"
+PASS S2.board.2 day details over the board: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"sbUndo","over":"bi"}
+PASS S2.board.3 day details over the board: the box sits below the bar and on the screen — saw {"boxTop":166,"boxFoot":804,"barFoot":106,"vh":864}
+PASS S2.board.4 the board's Undo with it open: it stays — saw true
+PASS S2.board.5 a day or week step on the board's bar closes it first — saw false
+PASS S3.med.1 the viewer opens from a medical card — saw true
+PASS S3.med.2 the viewer over the Medical page: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S3.med.3 the viewer over the Medical page: the box sits below the bar and on the screen — saw {"boxTop":142,"boxFoot":779,"barFoot":57,"vh":864}
+PASS S3.close Close Close closes the viewer — saw false
+PASS S3.close ✕ ✕ closes the viewer — saw false
+PASS S3.close Escape Escape closes the viewer — saw false
+PASS S3.close the bell the bell closes the viewer — saw false
+PASS S3.undo Undo with the viewer open: it stays, and shows the remarks as Undo left them — saw {"before":"ordinary medical leave — Medically down","saved":"ordinary medical leave — KW WALK REMARK","afterUndo":"ordinary medical leave — Medically down"}
+NOT WALKED S3.list — no paperclip on the Inputs list
+PASS S3.inpwin.1 the schedule's input window keeps the bar covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"inpEditPop"}
+PASS S3.inpwin.2 the viewer opened over it keeps its whole veil: the bar still covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"docViewPop"}
+PASS S3.inpwin.3 the viewer's Close closes it alone: the input window is still there — saw {"viewer":false,"win":true}
+PASS S4.admin.1 View-only Sched, admin: the plain read list — no box, no ✕, no Add row — saw {"boxes":0,"del":0,"add":false,"list":true}
+PASS S4.admin.2 Traffic on View-only Sched, admin: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S4.admin.3 Edit Schedule, an admin: the editing window (Add row) — saw true
+PASS S4.admin.4 the board, an admin: the editing window (Add row) — saw true
+PASS S5.+ Block.1 + Block opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Block.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"sc"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Block.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.+ Block.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.+ Block.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.1 Templates opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm-edit","data":{"daytpledit":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.Templates.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"sbTpl","label":null,"cls":"abtn sb-daybtn","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.Templates.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"sbTpl","label":null,"cls":"abtn sb-daybtn","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.Templates.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.1 the plans selector opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"plangolive":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"plandup":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.the plans selector.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"planselbtn","data":{"planmenu":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.the plans selector.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"planselbtn","data":{"planmenu":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.the plans selector.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"plangolive":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.1 a jet's stores opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tpod"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tk2"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.a jet's stores.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"stcfg","data":{"stcfg":"2.0.0.0"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.a jet's stores.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"stcfg","data":{"stcfg":"2.0.0.0"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.a jet's stores.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm on","data":{"cfg":"tpod"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.1 + Wave opened by Enter: the keys on its first pick, the cyan ring — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"wmkind":""},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.2 ↓ moves to the next item, in the menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm sa","data":{"wmkind":"sc"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.+ Wave.3 Escape closes it, the keys back on its button — saw {"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"wvadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}
+PASS S5.+ Wave.4 opened by the mouse: the keys not moved into it, no ring — saw {"m":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"wvadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true},"ringed":false}
+PASS S5.+ Wave.5 then ↓ on its button: the keys go into the open menu — saw {"tag":"BUTTON","id":"","label":null,"cls":"wm","data":{"wmkind":""},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":true,"inBoard":false}
+PASS S5.pick.1 Empty block picked by the keys: a block added, the keys back on + Block — saw {"blocks0":1,"blocks1":2,"fb":{"tag":"BUTTON","id":"","label":null,"cls":"mbtn add","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","inMenu":false,"inBoard":true}}
+PASS S5.pick.2 keys then mouse: the plans menu opened by Enter, its first pick clicked — the menu closes, no error — saw false
+PASS S5.chips.1 Tab from the board's calendar reaches the day chips — saw {"tag":"SPAN","id":"","label":"Previous week","cls":"sbday sbweek","data":{"sbweek":"-1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.chips.2 Enter on Saturday's chip opens Saturday; the keys stay on its chip, the cyan ring — saw {"tag":"SPAN","id":"","label":null,"cls":"sbday on","data":{"sbtab":"5","fit":"Sat 30"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.chips.3 Space on › moves a week, the same day, the keys on › — saw {"wk":"20/07/2026","fw":{"tag":"SPAN","id":"","label":"Next week","cls":"sbday sbweek","data":{"sbweek":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}}
+PASS S5.chips.4 Enter on ‹ comes back — saw "13/07/2026"
+PASS S5.tab.1 Tab from the board's last stop goes to its first — saw {"stops":180,"at":{"tag":"BUTTON","id":"sbCal","label":"Jump to a date","cls":"abtn sb-calbtn","data":{"kwEnd":"first"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}}
+PASS S5.tab.2 Shift+Tab from its first goes to its last — saw {"tag":"SPAN","id":"","label":null,"cls":"puck pers sm","data":{"person":"gizmo","kwEnd":"last"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.tab.3 with the keys nowhere, Tab lands on the board, never the week behind it — saw {"tag":"BUTTON","id":"sbCal","label":"Jump to a date","cls":"abtn sb-calbtn","data":{"kwEnd":"first"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":true}
+PASS S5.sortall Sort all opened by the keys; Escape closes it, the board stays — saw {"opened":true,"stays":true}
+PASS S5.dayname.1 Shift+Tab from the date reaches the day name — saw {"tag":"SPAN","id":"","label":null,"cls":"dow crewday","data":{"crewday":"4"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":false}
+PASS S5.dayname.2 Enter on Friday's name shows Friday's crew, the cyan ring on the name — saw {"crewHead":"Aircrew · ‹Friday›","dnAfter":{"tag":"SPAN","id":"","label":null,"cls":"dow crewday","data":{"crewday":"4"},"ring":true,"outline":"rgb(59, 198, 232) solid","inMenu":false,"inBoard":false}}
+PASS S6.board the board's red note, a wave of 3 unnamed lines: the unreadable clock said once — saw "WAVE 3: reporting line 1 has no recognised clock. Check the time."
+PASS S6.week the edit week's red note for the same wave: said once — saw "WAVE 3: reporting line 1 has no recognised clock. Check the time."
+PASS S6.issues the day's issues list: one line for the sentence, as it always was (engine unchanged) — saw 1
+PASS S4.member.1 View-only Sched, member: the plain read list — no box, no ✕, no Add row — saw {"boxes":0,"del":0,"add":false,"list":true}
+PASS S4.member.2 Traffic on View-only Sched, member: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S1.editsched.1 Jump to a date opens on editsched — saw true
+PASS S1.editsched.2 Jump to a date, editsched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S1.editsched.3 Jump to a date, editsched: the box sits below the bar and on the screen — saw {"boxTop":246,"boxFoot":677,"barFoot":49,"vh":874}
+PASS S1.editsched.4 Undo pressed with it open: the window stays, the week stays — saw true
+PASS S1.editsched.6 the bell closes the window first and its list opens — saw {"cal":false,"bell":true}
+PASS S1.editsched.7 its ✕ closes it — saw false
+PASS S1.editsched.8 a tap on its surround closes it — saw false
+PASS S1.editsched.9 a date picked closes it and the schedule goes there — saw {"from":"13/07/2026","to":"20/07/2026"}
+NOTE S1.editsched — back on the week of 13/07/2026
+PASS S1.viewsched.1 Jump to a date opens on viewsched — saw true
+PASS S1.viewsched.2 Jump to a date, viewsched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S1.viewsched.3 Jump to a date, viewsched: the box sits below the bar and on the screen — saw {"boxTop":246,"boxFoot":677,"barFoot":49,"vh":874}
+PASS S1.viewsched.6 the bell closes the window first and its list opens — saw {"cal":false,"bell":true}
+PASS S1.viewsched.7 its ✕ closes it — saw false
+PASS S1.viewsched.8 a tap on its surround closes it — saw false
+PASS S1.viewsched.9 a date picked closes it and the schedule goes there — saw {"from":"13/07/2026","to":"20/07/2026"}
+NOTE S1.viewsched — back on the week of 13/07/2026
+PASS S1.board.1 the board's calendar opens — saw true
+PASS S1.board.2 Jump to a date over the board: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"sbUndo","over":"bi"}
+PASS S1.board.3 Jump to a date over the board: the box sits below the bar and on the screen — saw {"boxTop":259,"boxFoot":690,"barFoot":75,"vh":874}
+PASS S1.board.4 the board's Undo with it open: the window stays — saw true
+PASS S1.board.5 another control of the board's bar (the day) closes it first, then does its job — saw {"cal":false,"from":1,"to":2}
+PASS S2.week.1 the day details open from the edit week's ⓘ — saw "Monday · Jul 13 · 4 X 4 X 1"
+PASS S2.week.2 day details, Edit Schedule: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S2.week.3 day details, Edit Schedule: the box sits below the bar and on the screen — saw {"boxTop":140,"boxFoot":783,"barFoot":49,"vh":874}
+PASS S2.week.4 Undo with it open: it stays, and reads the day as Undo left it (the wave added is gone from its title) — saw {"before":"Monday · Jul 13 · 4 X 4 X 1","after":"Monday · Jul 13 · 4 X 4"}
+PASS S2.week.5 Redo: it reads the day again — saw "Monday · Jul 13 · 4 X 4 X 1"
+PASS S2.close Close Close closes the day details — saw false
+PASS S2.close ✕ ✕ closes the day details — saw false
+NOTE S2.close Escape — no keyboard on the phone
+PASS S2.close the bell the bell closes the day details — saw false
+PASS S2.close a page name (or ☰) a page name (or ☰) closes the day details — saw false
+PASS S2.view.1 the day details open on View-only Sched — saw "Tuesday · Jul 14 · 4 X 4"
+PASS S2.view.2 day details, View-only Sched: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S2.view.3 day details, View-only Sched: the box sits below the bar and on the screen — saw {"boxTop":140,"boxFoot":783,"barFoot":49,"vh":874}
+PASS S2.board.1 the day details open over the board — saw "Wednesday · Jul 15 · 4 X 4"
+PASS S2.board.2 day details over the board: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"sbUndo","over":"bi"}
+PASS S2.board.3 day details over the board: the box sits below the bar and on the screen — saw {"boxTop":153,"boxFoot":796,"barFoot":75,"vh":874}
+PASS S2.board.4 the board's Undo with it open: it stays — saw true
+PASS S2.board.5 a day or week step on the board's bar closes it first — saw false
+PASS S3.med.1 the viewer opens from a medical card — saw true
+PASS S3.med.2 the viewer over the Medical page: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"undoBtn","over":"bi"}
+PASS S3.med.3 the viewer over the Medical page: the box sits below the bar and on the screen — saw {"boxTop":262,"boxFoot":661,"barFoot":49,"vh":874}
+PASS S3.close Close Close closes the viewer — saw false
+PASS S3.close ✕ ✕ closes the viewer — saw false
+NOTE S3.close Escape — no keyboard on the phone
+PASS S3.close the bell the bell closes the viewer — saw false
+PASS S3.undo Undo with the viewer open: it stays, and shows the remarks as Undo left them — saw {"before":"ordinary medical leave — Medically down","saved":"ordinary medical leave — KW WALK REMARK","afterUndo":"ordinary medical leave — Medically down"}
+NOT WALKED S3.list — no paperclip on the Inputs list
+PASS S3.inpwin.1 the schedule's input window keeps the bar covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"inpEditPop"}
+PASS S3.inpwin.2 the viewer opened over it keeps its whole veil: the bar still covered — saw {"found":true,"isIt":false,"id":"undoBtn","over":"docViewPop"}
+PASS S3.inpwin.3 the viewer's Close closes it alone: the input window is still there — saw {"viewer":false,"win":true}
+PASS S4.admin.1 View-only Sched, admin: the plain read list — no box, no ✕, no Add row — saw {"boxes":0,"del":0,"add":false,"list":true}
+PASS S4.admin.2 Traffic on View-only Sched, admin: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+PASS S4.admin.3 Edit Schedule, an admin: the editing window (Add row) — saw true
+PASS S4.admin.4 the board, an admin: the editing window (Add row) — saw true
+NOTE S5 — the board by the keys is walked at a desktop: a phone has no keyboard (its chips are not drawn there)
+PASS S6.board the board's red note, a wave of 3 unnamed lines: the unreadable clock said once — saw "WAVE 3: reporting line 1 has no recognised clock. Check the time."
+PASS S6.week the edit week's red note for the same wave: said once — saw "WAVE 3: reporting line 1 has no recognised clock. Check the time."
+PASS S6.issues the day's issues list: one line for the sentence, as it always was (engine unchanged) — saw 1
+PASS S4.member.1 View-only Sched, member: the plain read list — no box, no ✕, no Add row — saw {"boxes":0,"del":0,"add":false,"list":true}
+PASS S4.member.2 Traffic on View-only Sched, member: the bar is pressable over the window (met at the control's middle) — saw {"found":true,"isIt":true,"id":"notifyBell","over":"[object SVGAnimatedString]"}
+
+152 PASS · 0 FAIL · 2 NOT WALKED · 0 browser errors

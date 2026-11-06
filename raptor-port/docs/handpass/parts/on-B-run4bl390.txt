@@ -1,0 +1,6 @@
+list up 1
+picture B4b-l390-1-top.png
+picture B4b-l390-2-end.png
+picture B4b-l390-3-end-after-yesall.png
+RESULT B4b-l390 {"win0":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"footerAtTop":{"x":761,"y":560,"w":54,"h":28,"right":815,"bottom":588,"inside":false,"onTop":false},"later0":{"x":698,"y":560,"w":55,"h":28,"right":753,"bottom":588,"inside":false,"onTop":false},"yesAllTop":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true},"pageScroll":[0,0,0],"endScroll":{"top":237,"sh":457,"ch":220},"later":{"x":698,"y":323,"w":55,"h":28,"right":753,"bottom":351,"inside":true,"onTop":true},"save":{"x":761,"y":323,"w":54,"h":28,"right":815,"bottom":351,"inside":true,"onTop":true},"yesAllEnd":{"x":676,"y":-41,"w":68,"h":22,"right":744,"bottom":-19,"inside":false,"onTop":false},"pageScrollAfter":[0,0,0],"yesAll2":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true},"countYesAll":"5 OF 5 ANSWERED","leftLine":"","endScroll2":{"top":237,"sh":457,"ch":220},"save2":{"x":761,"y":323,"w":54,"h":28,"right":815,"bottom":351,"inside":true,"onTop":true},"saveLive":true,"closed":true,"written":[{"2026-07-17":0.5},{"2026-07-17":1},{"2026-07-17":0.5},{"2026-07-17":0.5}],"undo":"on|Undo — 5 inputs","toast":"OIL answered for 5 inputs"}
+ERRORS []

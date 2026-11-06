@@ -9,9 +9,9 @@
    always. The object URL is minted here on open and revoked on close — the
    store (state/docs) never holds one, so nothing leaks per stored file. */
 import { placedLine } from './placedline'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { PEOPLE } from '../engine/people'
-import { inpMeta, baseYear, leadOf, remarksTyped } from '../engine/inputs'
+import { inpMeta, baseYear, leadOf, remarksTyped, inpById } from '../engine/inputs'
 import { fmt } from './inputedit'
 import { TODAY, keyToIso } from './weeknav'
 import { docGet, rowDocIds } from '../state/docs'
@@ -22,6 +22,7 @@ import { DOCVIEW, setDocView, setInpEdit } from './pops'
 import { useVersion } from './useStore'
 import { clickedOutside } from './outside'
 import { useSheetFocus } from './sheetfocus'
+import { useBarFree } from './barfree'
 
 export function DocViewer() {
   useVersion()
@@ -33,7 +34,21 @@ export function DocViewer() {
      one page per attached file (owner, 1 Sep 26 — several files on one
      entry), so the pager walks documents, not entries. A row with no file
      keeps its one page (the "no document on file" statement). */
-  const list = v ? (v.rows && v.rows.length ? v.rows : (v.row ? [{ row: v.row, up: v.up }] : [])) : []
+  /* EACH ROW READ AGAIN FROM THE INPUTS, BY ITS ID (owner D1645, 5 Nov 26 — the bar's Undo and Redo work with the viewer
+     open, ui/barfree.ts): an undo puts the inputs back as new records, so the record the viewer was opened on may no longer
+     be the input — its remarks, its days, its files as they now are. The live record is shown; an input the undo took
+     away closes the viewer (below). A read-only page is not an input of the list (a Leave War request's papers, a file
+     just added to a window not yet saved), and is shown as it was given. */
+  /* …and an episode of several entries loses the page of each one an undo took away (the fresh read's F5, 5 Nov 26: its
+     page stayed, with "Edit input" on a record no longer there); none left, the viewer closes */
+  /* "gone" means an input that WAS on the list when the viewer opened and is not now — a row the caller handed that was never
+     an input of the list (a page made up for the viewer) is shown as given (GitHub's run of 5 Nov 26: placedshown.test.tsx) */
+  const known = useMemo(() => new Set(v && !v.readOnly ? [v.row, ...((v.rows || []).map((e: any) => e && e.row))]
+    .filter((r: any) => r && r.iid != null && inpById(r.iid)).map((r: any) => r.iid) : []), [v])
+  const live = (row: any) => (v && !v.readOnly && row && row.iid != null ? inpById(row.iid) || (known.has(row.iid) ? null : row) : row)
+  const list = v ? (v.rows && v.rows.length ? v.rows.map((e: any) => ({ ...e, row: live(e.row) })).filter((e: any) => !!e.row)
+    : (v.row && live(v.row) ? [{ row: live(v.row), up: v.up }] : [])) : []
+  const gone = !!v && !v.readOnly && !list.length
   const els = list.flatMap((e: any) => {
     const ids = rowDocIds(e.row)
     return ids.length ? ids.map((id: string) => ({ ...e, docId: id })) : [e]
@@ -53,7 +68,26 @@ export function DocViewer() {
     if (x && x.docId) { const at = els.findIndex((e: any) => e.docId === x.docId); if (at >= 0) return at }
     return x && x.idx ? seatOf(x.idx) : 0
   }
-  if (v !== seenV) { setSeenV(v); setI(seatAt(v)) }
+  /* THE PAGE SHOWN STAYS THE SAME ENTRY (the narrow read of the fixes, G1, 5 Nov 26): the page is a number, and an undo that
+     takes away an entry in FRONT of it (or a redo that brings one back) moved every later page by one — the viewer slid to the
+     next entry, its paper, its title and its "Edit input", with no press on the pager. The page shown is kept by what it is
+     (its entry and its file) and found again when the list changes; only a page that is itself gone falls to its neighbour. */
+  const pageKey = (e: any) => (e ? `${e.row && e.row.iid != null ? e.row.iid : ''}#${e.docId || ''}` : '')
+  const [shown, setShown] = useState('')
+  if (v !== seenV) { const s0 = seatAt(v); setSeenV(v); setI(s0); setShown(pageKey(els[s0])) }
+  else if (shown && els.length) {
+    const at = els.findIndex((e: any) => pageKey(e) === shown)
+    if (at >= 0 && at !== i) setI(at)
+    /* the page shown itself gone (an undo took that file away — the round-2 read's H2): the same entry's other page first, only
+       then the neighbour */
+    else if (at < 0) {
+      const ent = shown.slice(0, shown.lastIndexOf('#'))
+      const same = ent ? els.findIndex((e: any) => pageKey(e).startsWith(ent + '#')) : -1
+      if (same >= 0) { setI(same); setShown(pageKey(els[same])) }
+      else setShown(pageKey(els[Math.min(i, els.length - 1)]))
+    }
+  }
+  const turn = (n: number) => { setI(n); setShown(pageKey(els[n])) }
   const idx = els.length ? Math.min(i, els.length - 1) : 0
   const cur = els.length ? els[idx] : null
   const r = cur && cur.row
@@ -74,6 +108,13 @@ export function DocViewer() {
   }, [r])
 
   const close = () => { setDocView(null); notify() }
+  /* the input an undo took away: the viewer goes with it, never showing a record that no longer stands */
+  useEffect(() => { if (gone) { setDocView(null); notify() } }, [gone])
+  /* the bar over it stays pressable — Undo and Redo work with it open, any other bar control closes it first; over a
+     window that keeps the bar covered (an input's own window) it keeps its whole veil (owner D1645 — ui/barfree.ts). A page
+     change closes it (pops.ts DOCVIEW_NAV). */
+  const popRef = useRef<HTMLDivElement>(null)
+  useBarFree(popRef, !!r, close)
   /* it takes and keeps the keyboard while it is up ([WINDOWS-KEEP-KEYS] — ui/sheetfocus.ts); its own Escape is above */
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef, !!r)
@@ -103,7 +144,7 @@ export function DocViewer() {
   const m = r ? inpMeta(r.type) : null
 
   return (
-    <div className="airpop" id="docViewPop" hidden={!r}
+    <div className="airpop" id="docViewPop" hidden={!r} ref={popRef}
       onClick={e => { if (clickedOutside(e, 'docViewPop')) close() }}>
       <div className="airpop-box docviewbox" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">
@@ -123,10 +164,10 @@ export function DocViewer() {
               nav bar, so the single-doc view is unchanged */}
           {els.length > 1 && <div className="docview-nav">
             <button type="button" className="abtn" id="docViewPrev" aria-label="Previous document"
-              disabled={idx === 0} onClick={() => setI(idx - 1)}>‹</button>
+              disabled={idx === 0} onClick={() => turn(idx - 1)}>‹</button>
             <span className="docview-count">{idx + 1} of {els.length}</span>
             <button type="button" className="abtn" id="docViewNext" aria-label="Next document"
-              disabled={idx === els.length - 1} onClick={() => setI(idx + 1)}>›</button>
+              disabled={idx === els.length - 1} onClick={() => turn(idx + 1)}>›</button>
           </div>}
           {doc && url
             ? (doc.mime === 'application/pdf'

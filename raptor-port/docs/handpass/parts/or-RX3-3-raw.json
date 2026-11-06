@@ -1,0 +1,247 @@
+{
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c0": {
+  "a": "6 changes  [dstat: 6 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "seats": [
+  {
+   "slot": "2.0.0.0.p",
+   "who": "Trident"
+  },
+  {
+   "slot": "2.0.0.0.w",
+   "who": "Relay"
+  },
+  {
+   "slot": "2.0.0.1.p",
+   "who": "Gambit"
+  },
+  {
+   "slot": "2.0.0.1.w",
+   "who": "Hex"
+  },
+  {
+   "slot": "2.0.1.0.p",
+   "who": "Torch"
+  },
+  {
+   "slot": "2.0.1.0.w",
+   "who": "Cutter"
+  },
+  {
+   "slot": "2.0.1.1.p",
+   "who": "Kraken"
+  },
+  {
+   "slot": "2.0.1.1.w",
+   "who": "Otter"
+  },
+  {
+   "slot": "2.1.0.0.p",
+   "who": "Trident"
+  },
+  {
+   "slot": "2.1.0.0.w",
+   "who": "Relay"
+  },
+  {
+   "slot": "2.1.0.1.p",
+   "who": "Bolt"
+  },
+  {
+   "slot": "2.1.0.1.w",
+   "who": "Wisp"
+  },
+  {
+   "slot": "2.1.1.0.p",
+   "who": "Zenith"
+  },
+  {
+   "slot": "2.1.1.0.w",
+   "who": "Fable"
+  },
+  {
+   "slot": "2.1.1.1.p",
+   "who": "Nomad"
+  },
+  {
+   "slot": "2.1.1.1.w",
+   "who": "Pixel"
+  }
+ ],
+ "swap": {
+  "seat": {
+   "slot": "2.0.0.0.p",
+   "who": "Trident"
+  },
+  "toast": "Relay — 1 person is double turning: Relay",
+  "now": [
+   "Trident"
+  ]
+ },
+ "c1": {
+  "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 2",
+  "e": "Waiting to go out as AL1 · 2 changes",
+  "lines": [
+   "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "Trident · Range drill Saber 22/6 09:00 Ranger → Trident"
+  ],
+  "b": "2 pending",
+  "n": [
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "agree": true
+ },
+ "togo": {
+  "title": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabs": [
+   "New to you 0",
+   "All changes 8",
+   "To go out · AL1 2 [on]"
+  ],
+  "lines": [
+   "pl-item :: Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "pl-item :: Trident · Range drill Saber 22/6 09:00 Ranger → Trident"
+  ]
+ },
+ "taps": [
+  {
+   "txt": "Ranger Saber 22/6 09:00 RANGE DRILL · extras → VL ACM · #1 FCP",
+   "toast": "",
+   "flash": [
+    {
+     "cls": "seat chgflash",
+     "puck": "",
+     "text": "Ranger IP",
+     "row": "",
+     "fill": null
+    }
+   ],
+   "lit": [],
+   "pic": "rx3-3-3-tap-line0.png"
+  },
+  {
+   "txt": "Trident · Range drill Saber 22/6 09:00 Ranger → Trident",
+   "toast": "That seat is empty now",
+   "flash": [
+    {
+     "cls": "ppl one chgflash",
+     "puck": "",
+     "text": "Trident IP + ADD",
+     "row": "RANGE DRILL TRAINING 17:00 18:00 Trident IP + ADD till 15 Ju",
+     "fill": "g:2.2.+"
+    }
+   ],
+   "lit": [],
+   "pic": "rx3-3-3-tap-line1.png"
+  }
+ ],
+ "rangerSeats": [
+  "2.0.0.0.p"
+ ],
+ "pub2": {
+  "ok": true,
+  "label": "Publish AL1",
+  "version": "AL1",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c2": {
+  "a": "13 changes  [dstat: 13 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes AL1 Wed · 2 items · 1 input change · appr Cinch",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL2 0",
+  "e": "Waiting to go out as AL2 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "view": {
+  "ranger": [
+   "TAMS CS MSN B TO LD FCP / RCP RMKS VL ACM 08:15 10:35 12:00 Ranger IP TT Relay IW 1B: ACM-4 TPOD 2 TKS C Gambit C Hex C 2A: AC"
+  ],
+  "training": "E RMKS MAINT CONF @ ENG WING 14:00 16:30 Ace A NAV-SYS TRIAL PREP 14:00 Vapor D RANGE DRILL TRAINING 17:00 18:00 Trident IP till 15 Jul UNAVAILABLE NAME START END PEOPLE RMKS OL all day Cobra IP Overseas leave —"
+ },
+ "viewGround": [
+  "MAINT CONF @ ENG WING 14:00 16:30 Ace A",
+  "NAV-SYS TRIAL PREP 14:00 Vapor D",
+  "RANGE DRILL TRAINING 17:00 18:00 Trident IP till 15 Jul"
+ ],
+ "rangerView": [
+  " "
+ ]
+}

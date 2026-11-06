@@ -21,6 +21,7 @@ import * as core from './app/core.js'
 import * as FMT from './app/fileFormat.js'
 import { storage } from './storage.js'
 import Header from './components/Header.jsx'
+import ArrangeTools from './components/ArrangeTools.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { DlgModal } from './components/Modals.jsx'
 import { initStore, notify as raptorNotify, resetSession } from '../state/store'
@@ -28,6 +29,8 @@ import { PEOPLE } from '../engine/people'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { useSyncExternalStore } from 'react'
+import { GEAR_INNER, RESET_INNER } from '../ui/glyphs'
+import { drawnAs } from '../testing/drawn'
 /* a stored student list or course list read back as the Tracker reads it ([DB-READINESS] group A, phase 5b — D462: they
    are stored one row per enrolment / course now, so a raw read of the old key finds nothing) — the doorway's shape */
 const rec = async (k: string) => { const v = await (core as any).storedRecordForTests(k); return v == null ? null : { key: k, value: v } }
@@ -187,6 +190,33 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
       expect(chip.querySelector('.x svg.trkglyph'), 'each student\'s remove is the drawn ✕').toBeTruthy()
       expect(typed.test(chip.textContent!), 'no typed mark on a student').toBe(false)
     }
+  })
+
+  it('D1705, D1707: Edit chart layout\'s tools, the lull\'s Copy to… and ×, and the flex gear wear drawn marks — none typed', async () => {
+    await render()
+    /* the chart's tools are App's, under the bar — drawn here beside it */
+    const tHost = document.createElement('div')
+    document.body.appendChild(tHost)
+    await act(async () => { createRoot(tHost).render(<ArrangeTools />) })
+    /* round 4 of the consistency look (5 Nov 26 — "all as recommended"): each tool a mark in the app's line style, Merge and
+       Unmerge their words alone (no look-alike of ✕ or a hop), the lull's two the Tracker's own copy and ✕ */
+    const tools = [...document.querySelectorAll('#arrTools > button')] as HTMLElement[]
+    expect(tools.length, 'the tools are drawn').toBeGreaterThan(15)
+    const typed = /[✋▣→🗑╱❐✕⌢➤⤢↺📋⧉×]/u
+    for (const b of tools) expect(typed.test(b.textContent!), `"${b.textContent}" has no typed mark`).toBe(false)
+    const named = (w: string) => tools.find(b => b.textContent!.trim() === w)
+    for (const w of ['Move', 'Select', 'Connect', 'Delete', 'Text', 'Line', 'Edit lines', 'Arrow', 'Select all', 'Fit', 'Reset layout', 'Edit events'])
+      expect(named(w)?.querySelector('svg.trkglyph'), `${w} wears its drawn mark`).toBeTruthy()
+    for (const w of ['Merge', 'Unmerge']) {
+      expect(named(w), w).toBeTruthy()
+      expect(named(w)!.querySelector('svg'), `${w} is its words alone`).toBeNull()
+    }
+    /* the marks the app draws too are the same drawings (ui/glyphs.ts — the Tracker keeps copies for a standalone export) */
+    expect(drawnAs(named('Reset layout')!.querySelector('svg'), RESET_INNER), 'Reset layout is the app’s arrow turning back').toBe(true)
+    expect(drawnAs($('#flexBtn')!.querySelector('svg'), GEAR_INNER), 'the flex gear is the app’s one gear').toBe(true)
+    const side = readFileSync(join(__dirname, 'components/SidePanel.jsx'), 'utf8')
+    expect(side, 'Copy to… wears the copy mark').toMatch(/><CopyGlyph \/> Copy to…<\/button>/)
+    expect(side, 'a lull’s remove is the drawn ✕').toMatch(/className="x trbtn" data-lull=\{i\}[\s\S]{0,240}?\}\}><XGlyph \/><\/button>/)
   })
 
   it('Save changes watches flow edits only, and no longer touches a file', () => {

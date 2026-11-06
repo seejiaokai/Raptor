@@ -20,6 +20,8 @@ import { storage } from './storage.js'
 import { setTrackerAdmin, trackerIsAdmin } from './role.js'
 import { wireTrackerPeople, trackerAdminForTracker } from './peoplewire'
 import { initStore, resetSession } from '../state/store'
+import { GEAR_INNER } from '../ui/glyphs'
+import { drawnAs } from '../testing/drawn'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -70,7 +72,10 @@ describe('D1018 — the defaults and the ⚙ in the bar', () => {
   it('the ⚙ sits after Find event, right before the bar\'s Hide, for everyone (as drawn)', async () => {
     const cog = $('#page-tracker header .controls #flexBtn')
     expect(cog, 'the cog in the bar').toBeTruthy()
-    expect(cog!.textContent).toBe('⚙')
+    /* WAS the typed ⚙ (D635). CHANGED by D1509 and D1707 (5 Nov 26): the app's one drawn gear, the Tracker's own copy of it
+       (Glyphs.jsx — a standalone export carries it), in the button's colour */
+    expect(cog!.textContent).toBe('')
+    expect(drawnAs(cog!.querySelector('svg.trkglyph'), GEAR_INNER), 'the app’s one gear').toBe(true)
     expect($('#barHideBtn')!.previousElementSibling, 'right before Hide').toBe(cog)
     expect(cog!.getAttribute('aria-expanded')).toBe('false')
     await asMember()

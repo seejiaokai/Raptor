@@ -1,0 +1,26 @@
+[
+ {
+  "id": "B16a Sort all: opens with the keys inside; Cancel, ✕ and a press on the shade close it; nothing sorted",
+  "ok": true,
+  "detail": "{\"Cancel\":{\"up\":true,\"focusIn\":true,\"closed\":true,\"board\":true,\"dataSame\":true},\"x\":{\"up\":true,\"focusIn\":true,\"closed\":true,\"board\":true,\"dataSame\":true},\"shade\":{\"up\":true,\"focusIn\":true,\"closed\":true,\"board\":true,\"dataSame\":true},\"Escape\":{\"up\":true,\"focusIn\":true,\"closed\":false,\"board\":true,\"dataSame\":true}} — Escape is information only (see seen in passing)",
+  "pics": "B16a-*"
+ },
+ {
+  "id": "B16a-esc Sort all: Escape closes it (design guide §2 — not part of this change; observed only)",
+  "ok": false,
+  "detail": "{\"up\":true,\"focusIn\":true,\"closed\":false,\"board\":true,\"dataSame\":true}",
+  "pics": "B16a-sortall-after-Escape"
+ },
+ {
+  "id": "B16b a jet's CX dialog: opens with the keys in its reason box; ✕, a press on the shade and Escape each close it; the line stays uncancelled",
+  "ok": true,
+  "detail": "{\"x\":{\"up\":true,\"focusId\":\"cxReason\",\"closed\":true,\"board\":true,\"dataSame\":true},\"shade\":{\"up\":true,\"focusId\":\"cxReason\",\"closed\":true,\"board\":true,\"dataSame\":true},\"Escape-in-box\":{\"up\":true,\"focusId\":\"cxReason\",\"closed\":true,\"board\":true,\"dataSame\":true}}",
+  "pics": "B16b-*"
+ },
+ {
+  "id": "B-errs part 4: no console errors, page errors or failed requests",
+  "ok": true,
+  "detail": "",
+  "pics": ""
+ }
+]
