@@ -53,7 +53,11 @@ export const BANDS = [75, 80, 85, 90];
  *  compaction is never held near the true limit (D870); the app's own point stays the backstop. As a percentage of the
  *  app's room: 225% of 400,000 (D1671; about 102% of 880,000 before) — the guard's window runs from the first note to just past the app's own point
  *  (the app tries again at the next request), and on a room of the whole 1M it is 90%, as first built. */
-export const NEVER_HOLD_TOKENS = Math.round(MODEL_WINDOW * 0.9);
+/* TIED TO THE ROOM (his D1671, 7 Nov 26 — the fresh read of the 400,000 change): a fixed 900,000 is 225% of a 400,000
+   room, so a chat whose clean point never came could run from about 384,000 to 900,000 uncompacted. The backstop is now
+   just past the app's own point, 102% of the room (about 408,000 of 400,000), and never past 900,000 (90% of the whole
+   1M, as first built — a room of the whole 1M keeps 900,000). */
+export const NEVER_HOLD_TOKENS = Math.min(Math.round(MODEL_WINDOW * 0.9), Math.round(WINDOW * 1.02));
 export const NEVER_HOLD_AT = Math.round((NEVER_HOLD_TOKENS / WINDOW) * 1000) / 10;
 /** Below this the guard never holds either — a compaction asked for lower down is something else: the app's compaction
  *  of an idle chat, or a chat on a model with a smaller room (the reader's findings 1 and 5, 15 Oct 26). The LAST band,
