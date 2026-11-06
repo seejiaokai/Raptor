@@ -2709,7 +2709,8 @@ touch-action: pan-x pan-y;
 #page-leavewar :is(.mx td, .leg-box).bx-pile .c.k-unav.s-a { box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
 
 /* the "!" an outlined amber tag, small enough to stay above a whole day's letters; a box with letters in the top half
-   steps them left of it, a size smaller; a turned box on the right starts below it */
+   steps them left of it, a size smaller; a turned box on the right starts below it, and a starred or three-letter code
+   there a size smaller again — its letters run the box's length, and OML's M or FO*'s star reached up under the "!" */
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .mk.warn { top: 0 !important; right: 0 !important; bottom: auto !important; font-size: 6.5px !important; line-height: 1 !important; padding: .5px 1.5px !important; box-shadow: 0 0 0 1px #0E141B !important; color: #1A1206 !important; z-index: 2; }
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c.whole:not(.bx-floor) { padding-top: 1.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof) { padding-right: 4.5px !important; font-size: 6.5px !important; letter-spacing: 0 !important; }
@@ -2718,7 +2719,8 @@ touch-action: pan-x pan-y;
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-roof.bx-am { left: 3px !important; right: 6.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-roof.bx-am.w4 { font-size: 4.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right { top: 7.5px !important; font-size: 6.5px !important; }
-#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.wide { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.bx-star { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.wide { font-size: 5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.w4 { font-size: 4.5px !important; }
 
 /* an entry on a day after his posting out: faint dark stripes on its box, no PO mark (D1728, D1729, D1730) */
@@ -2730,7 +2732,7 @@ touch-action: pan-x pan-y;
 #page-leavewar :is(.mx td, .leg-box).bx-last .c.whole.w4 { font-size: 6.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-last .c:is(.top, .bot).w4 { font-size: 5.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c:is(.whole, .top, .bot) { right: 6px !important; }
-#page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c.whole.wide { font-size: 7px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c.whole.wide { font-size: 6.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c.whole.w4 { font-size: 5.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-last.bx-alarm .c.whole:not(.bx-floor) { padding-top: 2.5px !important; }
 #page-leavewar :is(.mx td, .leg-box).bx-last.bx-alarm .mk.warn { right: 2px !important; }
