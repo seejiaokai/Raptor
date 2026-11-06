@@ -163,7 +163,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-OUTLINE-RESCROLL] — Quals' outline after "Check his quals" or an Undo is never cleared, so a later change with that row off screen may scroll the page back to it (found by a code read 6 Nov 26, not walked; low, with the next Quals job).
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
-- [WEBKIT-DOCNOTE-SIGNIN] — in the phone test browser a member's sign-in raises "Couldn't save that document…" (older; found by the refusal walk, 6 Nov 26) — check his iPhone never does.
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
 - [RECALL] — bringing an archived man back fresh into Quals — a future feature, his word.
 
@@ -1105,9 +1104,6 @@ THREE halves now (owner, 15–17 Sep 26):
   - **Process:** produce 1–2 rendered sample PDFs for the owner to PICK before finalizing
     (his "show a picture before product code" rule); nothing merges without "merge live".
 - Separate gated PR after [CRP-FLAG]. Context: [CRP-FLAG]'s review log + the sample image.
-
-### [WEBKIT-DOCNOTE-SIGNIN] A member's sign-in raises the document note in the phone test browser (found 6 Nov 26, the refusal walk)
-**What:** in Playwright's WebKit (the phone runs of every walk) signing in as the member `us` raises "Couldn't save that document: your browser storage may be full…" at once: the demo's seeded documents cannot be stored by that test browser (`raptor-port/src/storage/docstore.ts`, `boot.ts docBoot`). Older than the grey note: the build before it says the same in amber (`raptor-port/scripts/handpass/nsr1106-docnote-probe.mjs`). **To do:** ask him whether his iPhone ever shows it after signing in (on the look card of pull request 639); if never, it is the test browser's and a walk's phone run may ignore it; if it does, find why his phone cannot store the demo's documents. **Place:** with the next Inputs batch, or at his answer.
 
 ### [DB-WAITING-CREATEDBY] The database's own "created by" on a waiting person's change-log row (filed 5 Nov 26)
 **What:** since the member / guest check (`claude/member-guest-checks`), the change-log batch saved with a waiting person's

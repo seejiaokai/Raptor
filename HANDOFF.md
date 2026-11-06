@@ -20,15 +20,6 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/compact-400k -->
-### `claude/compact-400k` — his D1671: every chat compacts at about 400,000; waiting for his "merge live" — written 7 Nov 26, verify before use
-- **Done before it:** [NOTSAVED-REFUSAL-LOOK] MERGED LIVE (pull request 639, 7 Nov 26 — D1667–D1670 built; evidence `raptor-port/docs/handpass/2026-11-06-notsaved-refusal.md`); [WEBKIT-DOCNOTE-SIGNIN] stays open for his iPhone answer.
-- **This branch:** the project's `autoCompactWindow` 880,000 → 400,000 (`.claude/settings.json`); the compaction hooks read it, so only their comments, the "away" message (now worked out from the setting) and their tests changed (17/17); the overnight guide's figures; D878 narrowed; the stale priority line of [NOTSAVED-REFUSAL-LOOK] removed; the merged blocks of `lw-cell-combos`, `postout-bell-look` and `member-guest-checks` cleared; two rulings tripwires raised with their reasons.
-- **Next:** his "merge live" (a setting and hooks — not notes-only, D1407); a new chat then picks up the 400,000 room at its start.
-- **Left on the PC:** `C:\nsrb1106` and `C:\nsr1106` — temporary build folders outside the repo (the link inside the first already removed); safe to delete.
-- **Numbers:** rulings next free D1672 (this chat held D1667–D1679); observations 805–809 unused.
-- **Opening line if handed off:** Continue `claude/compact-400k`: `git fetch origin`, `git switch claude/compact-400k`, `git branch -u origin/claude/compact-400k`, `git pull --ff-only`. Read `HANDOFF.md` (this block); wait for his "merge live", then carry it through (D1088).
-<!-- /now -->
 <!-- now:claude/overnight-1106 -->
 ### `claude/overnight-1106` — the night of 6 Nov 26 DONE: three pull requests waiting for his look; this branch the night's records
 - **Ready for his look and "merge live"** (each its own branch from `main`, unwatched, Auto-fix switched off — D1090):
