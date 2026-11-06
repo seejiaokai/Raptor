@@ -1,0 +1,477 @@
+
+=== phone-system @ zoom 0.8 (Inter Tight, system-ui, sans-serif) ===
+whole day, alone                                   letters 6.8px, room 14.2px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD OTH TRG MTG DTY EVT
+   alone — CUT: FO* (15.0 in 14.6) OML (14.3 in 14.6) ATCH (14.8 in 14.2) PERS (14.5 in 14.2) APPT (15.3 in 14.2)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : CCL FCL FO FO* OML CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 5.2px, room 14.2px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : ATCH PERS APPT
+   under warn,po   : ATCH PERS APPT
+afternoon (bottom half)                            letters 5.2px, room 14.2px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under po        : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+   under more,po   : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+   under warn,po   : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+whole day, left half                               letters 5.2px, room 5.3px
+   alone — fit: FO B C
+   alone — CUT: LL (6.5 in 5.7) OL (7.8 in 5.7) OIL (8.0 in 5.7) CCL (10.0 in 5.7) FCL (9.3 in 5.7) PL (6.8 in 5.7) CL (7.3 in 5.7) EL (6.8 in 5.7) FO* (9.8 in 5.7) OML (10.8 in 5.7) HL (7.0 in 5.7) CSE (9.8 in 5.7) OD (8.3 in 5.7) OTH (10.0 in 5.3) ATCH (13.3 in 5.3) TRG (10.0 in 5.3) MTG (10.5 in 5.3) PERS (13.3 in 5.3) APPT (13.5 in 5.3) DTY (9.8 in 5.3) EVT (9.5 in 5.3)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL FO HL
+   under warn,po   : LL OL PL CL EL HL
+   under warn,last : LL OL PL CL EL FO B C HL
+whole day, right half                              letters 5.2px, room 5.3px
+   alone — fit: FO B C
+   alone — CUT: LL (6.5 in 5.7) OL (7.8 in 5.7) OIL (8.0 in 5.7) CCL (10.0 in 5.7) FCL (9.3 in 5.7) PL (6.8 in 5.7) CL (7.3 in 5.7) EL (6.8 in 5.7) FO* (9.8 in 5.7) OML (10.8 in 5.7) HL (7.0 in 5.7) CSE (9.8 in 5.7) OD (8.3 in 5.7) OTH (10.0 in 5.3) ATCH (13.3 in 5.3) TRG (10.0 in 5.3) MTG (10.5 in 5.3) PERS (13.3 in 5.3) APPT (13.5 in 5.3) DTY (9.8 in 5.3) EVT (9.5 in 5.3)
+   under warn      : LL OL PL CL EL FO B C HL
+   under po        : LL OL PL CL EL FO B C HL
+   under last      : LL OL PL CL EL FO B C HL
+   under warn,po   : LL OL PL CL EL FO B C HL
+   under warn,last : LL OL PL CL EL FO B C HL
+morning beside a whole day (top-right quarter)     letters 5.2px, room 5.3px
+   alone — fit: HO B C
+   alone — CUT: LL (5.8 in 5.7) OL (6.8 in 5.7) OIL (8.0 in 5.7) CCL (10.0 in 5.7) FCL (9.3 in 5.7) PL (6.0 in 5.7) CL (6.3 in 5.7) EL (6.0 in 5.7) HO* (9.3 in 5.7) OML (10.8 in 5.7) HL (6.3 in 5.7) OTH (10.0 in 5.3) ATCH (13.3 in 5.3) TRG (10.0 in 5.3) MTG (10.5 in 5.3) PERS (13.3 in 5.3) APPT (13.5 in 5.3) DTY (9.8 in 5.3) EVT (9.5 in 5.3)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL HO B C HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HO B C HL
+afternoon beside a whole day (bottom-right quarter) letters 5.2px, room 5.3px
+   alone — fit: HO B C
+   alone — CUT: LL (5.8 in 5.7) OL (6.8 in 5.7) OIL (8.0 in 5.7) CCL (10.0 in 5.7) FCL (9.3 in 5.7) PL (6.0 in 5.7) CL (6.3 in 5.7) EL (6.0 in 5.7) HO* (9.3 in 5.7) OML (10.8 in 5.7) HL (6.3 in 5.7) OTH (10.0 in 5.3) ATCH (13.3 in 5.3) TRG (10.0 in 5.3) MTG (10.5 in 5.3) PERS (13.3 in 5.3) APPT (13.5 in 5.3) DTY (9.8 in 5.3) EVT (9.5 in 5.3)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HL
+
+=== phone-system @ zoom 0.4 (Inter Tight, system-ui, sans-serif) ===
+whole day, alone                                   letters 3.4px, room 9.7px
+   alone — fit: OIL CCL FCL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: LL (10.0 in 9.9) OL (12.0 in 9.9) PL (10.8 in 9.9) CL (11.5 in 9.9) EL (10.8 in 9.9) FO (11.3 in 10.3) FO* (15.0 in 9.9) HL (11.3 in 9.9) OD (12.8 in 9.9)
+   under more      : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : LL PL EL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OIL CCL FCL PL EL B C OML CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 2.6px, room 9.7px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : CCL FCL HO HO* OML OTH ATCH TRG MTG PERS APPT DTY EVT
+afternoon (bottom half)                            letters 2.6px, room 9.7px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+whole day, left half                               letters 2.6px, room 3.9px
+   alone — fit: LL PL EL FO B C HL
+   alone — CUT: OL (3.8 in 4.1) OIL (3.8 in 4.1) CCL (4.8 in 4.1) FCL (4.3 in 4.1) CL (3.8 in 4.1) FO* (4.8 in 4.1) OML (5.3 in 4.1) CSE (4.8 in 4.1) OD (4.0 in 4.1) OTH (4.8 in 3.9) ATCH (6.3 in 3.9) TRG (5.0 in 3.9) MTG (5.0 in 3.9) PERS (6.3 in 3.9) APPT (6.5 in 3.9) DTY (4.5 in 3.9) EVT (4.3 in 3.9)
+   under warn      : OL OIL CCL FCL CL FO* CSE OD OTH TRG MTG DTY EVT
+   under po        : OL OIL CCL FCL CL FO* CSE OD OTH TRG MTG DTY EVT
+   under last      : OL OIL CCL FCL CL FO* CSE OD OTH TRG MTG DTY EVT
+   under warn,po   : OL OIL CCL FCL CL FO* CSE OD OTH TRG MTG DTY EVT
+   under warn,last : OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+whole day, right half                              letters 2.6px, room 3.9px
+   alone — fit: LL PL EL FO B C HL
+   alone — CUT: OL (3.8 in 4.1) OIL (3.8 in 4.1) CCL (4.8 in 4.1) FCL (4.3 in 4.1) CL (3.8 in 4.1) FO* (4.8 in 4.1) OML (5.3 in 4.1) CSE (4.8 in 4.1) OD (4.0 in 4.1) OTH (4.8 in 3.9) ATCH (6.3 in 3.9) TRG (5.0 in 3.9) MTG (5.0 in 3.9) PERS (6.3 in 3.9) APPT (6.5 in 3.9) DTY (4.5 in 3.9) EVT (4.3 in 3.9)
+   under warn      : LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG DTY EVT
+morning beside a whole day (top-right quarter)     letters 2.6px, room 3.9px
+   alone — fit: LL OL PL CL EL HO B C HL
+   alone — CUT: OIL (3.8 in 4.1) CCL (4.8 in 4.1) FCL (4.3 in 4.1) HO* (4.3 in 4.1) OML (5.3 in 4.1) OTH (4.8 in 3.9) ATCH (6.3 in 3.9) TRG (5.0 in 3.9) MTG (5.0 in 3.9) PERS (6.3 in 3.9) APPT (6.5 in 3.9) DTY (4.5 in 3.9) EVT (4.3 in 3.9)
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C HL OTH TRG MTG DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C HL OTH TRG MTG DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C HL OTH TRG MTG DTY EVT
+   under warn      : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+   under po        : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+afternoon beside a whole day (bottom-right quarter) letters 2.6px, room 3.9px
+   alone — fit: LL OL PL CL EL HO B C HL
+   alone — CUT: OIL (3.8 in 4.1) CCL (4.8 in 4.1) FCL (4.3 in 4.1) HO* (4.3 in 4.1) OML (5.3 in 4.1) OTH (4.8 in 3.9) ATCH (6.3 in 3.9) TRG (5.0 in 3.9) MTG (5.0 in 3.9) PERS (6.3 in 3.9) APPT (6.5 in 3.9) DTY (4.5 in 3.9) EVT (4.3 in 3.9)
+   under warn,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C HL OTH TRG MTG DTY EVT
+   under warn      : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+   under po        : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+   under last      : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+   under warn,last : OIL CCL FCL HO* OTH TRG MTG DTY EVT
+
+=== phone-system @ zoom 1.4 (Inter Tight, system-ui, sans-serif) ===
+whole day, alone                                   letters 11.9px, room 24.6px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG DTY EVT
+   alone — CUT: OML (25.3 in 25.3) ATCH (26.3 in 24.6) MTG (24.5 in 24.6) PERS (25.8 in 24.6) APPT (26.5 in 24.6)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : CCL FCL FO FO* OML CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 9.1px, room 24.6px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : ATCH PERS APPT
+   under warn,po   : ATCH PERS APPT
+afternoon (bottom half)                            letters 9.1px, room 24.6px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under po        : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+   under more,po   : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+   under warn,po   : OL OIL CCL FCL PL CL EL HO HO* OML HL OTH TRG MTG DTY EVT
+whole day, left half                               letters 9.1px, room 9.2px
+   alone — fit: FO B C
+   alone — CUT: LL (11.5 in 9.8) OL (13.5 in 9.8) OIL (14.0 in 9.8) CCL (17.5 in 9.8) FCL (16.0 in 9.8) PL (12.3 in 9.8) CL (13.0 in 9.8) EL (12.3 in 9.8) FO* (17.3 in 9.8) OML (19.0 in 9.8) HL (12.8 in 9.8) CSE (17.3 in 9.8) OD (14.5 in 9.8) OTH (17.5 in 9.2) ATCH (23.0 in 9.2) TRG (17.8 in 9.2) MTG (18.5 in 9.2) PERS (23.0 in 9.2) APPT (23.5 in 9.2) DTY (17.0 in 9.2) EVT (16.5 in 9.2)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL FO HL
+   under last      : LL OL PL CL EL FO HL
+   under warn,po   : LL OL PL CL EL FO HL
+   under warn,last : LL OL PL CL EL FO B C HL
+whole day, right half                              letters 9.1px, room 9.2px
+   alone — fit: FO B C
+   alone — CUT: LL (11.5 in 9.8) OL (13.5 in 9.8) OIL (14.0 in 9.8) CCL (17.5 in 9.8) FCL (16.0 in 9.8) PL (12.3 in 9.8) CL (13.0 in 9.8) EL (12.3 in 9.8) FO* (17.3 in 9.8) OML (19.0 in 9.8) HL (12.8 in 9.8) CSE (17.3 in 9.8) OD (14.5 in 9.8) OTH (17.5 in 9.2) ATCH (23.0 in 9.2) TRG (17.8 in 9.2) MTG (18.5 in 9.2) PERS (23.0 in 9.2) APPT (23.5 in 9.2) DTY (17.0 in 9.2) EVT (16.5 in 9.2)
+   under warn      : LL OL PL CL EL FO B C HL
+   under po        : LL OL PL CL EL FO B C HL
+   under last      : LL OL PL CL EL FO B C HL
+   under warn,po   : LL OL PL CL EL FO B C HL
+   under warn,last : LL OL PL CL EL FO B C HL
+morning beside a whole day (top-right quarter)     letters 9.1px, room 9.2px
+   alone — fit: HO B C
+   alone — CUT: LL (9.8 in 9.8) OL (11.8 in 9.8) OIL (14.0 in 9.8) CCL (17.5 in 9.8) FCL (16.0 in 9.8) PL (10.5 in 9.8) CL (11.3 in 9.8) EL (10.5 in 9.8) HO* (16.0 in 9.8) OML (19.0 in 9.8) HL (11.0 in 9.8) OTH (17.5 in 9.2) ATCH (23.0 in 9.2) TRG (17.8 in 9.2) MTG (18.5 in 9.2) PERS (23.0 in 9.2) APPT (23.5 in 9.2) DTY (17.0 in 9.2) EVT (16.5 in 9.2)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL HO B C HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HO B C HL
+afternoon beside a whole day (bottom-right quarter) letters 9.1px, room 9.2px
+   alone — fit: HO B C
+   alone — CUT: LL (9.8 in 9.8) OL (11.8 in 9.8) OIL (14.0 in 9.8) CCL (17.5 in 9.8) FCL (16.0 in 9.8) PL (10.5 in 9.8) CL (11.3 in 9.8) EL (10.5 in 9.8) HO* (16.0 in 9.8) OML (19.0 in 9.8) HL (11.0 in 9.8) OTH (17.5 in 9.2) ATCH (23.0 in 9.2) TRG (17.8 in 9.2) MTG (18.5 in 9.2) PERS (23.0 in 9.2) APPT (23.5 in 9.2) DTY (17.0 in 9.2) EVT (16.5 in 9.2)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HL
+
+=== phone-wide @ zoom 0.8 (Verdana, DejaVu Sans, sans-serif) ===
+whole day, alone                                   letters 6.8px, room 15.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD OTH TRG MTG PERS DTY EVT
+   alone — CUT: FO* (18.3 in 16.3) OML (15.8 in 16.3) ATCH (16.8 in 15.9) APPT (16.5 in 15.9)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : OIL CCL FCL FO FO* OML CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 5.2px, room 15.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : HO* ATCH APPT
+   under warn,po   : HO* ATCH APPT
+afternoon (bottom half)                            letters 5.2px, room 15.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under po        : OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+   under more,po   : OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+   under warn,po   : OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+whole day, left half                               letters 5.2px, room 6.2px
+   alone — fit: FO B C
+   alone — CUT: LL (6.8 in 6.6) OL (8.3 in 6.6) OIL (9.8 in 6.6) CCL (10.0 in 6.6) FCL (9.5 in 6.6) PL (7.3 in 6.6) CL (7.5 in 6.6) EL (7.0 in 6.6) FO* (11.8 in 6.6) OML (12.0 in 6.6) HL (8.0 in 6.6) CSE (10.0 in 6.6) OD (9.3 in 6.6) OTH (11.3 in 6.2) ATCH (14.8 in 6.2) TRG (11.0 in 6.2) MTG (11.5 in 6.2) PERS (14.0 in 6.2) APPT (14.8 in 6.2) DTY (10.8 in 6.2) EVT (10.0 in 6.2)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL FO HL
+   under warn,po   : LL OL PL CL EL HL
+   under warn,last : LL OL PL CL EL FO B C HL
+whole day, right half                              letters 5.2px, room 6.2px
+   alone — fit: FO B C
+   alone — CUT: LL (6.8 in 6.6) OL (8.3 in 6.6) OIL (9.8 in 6.6) CCL (10.0 in 6.6) FCL (9.5 in 6.6) PL (7.3 in 6.6) CL (7.5 in 6.6) EL (7.0 in 6.6) FO* (11.8 in 6.6) OML (12.0 in 6.6) HL (8.0 in 6.6) CSE (10.0 in 6.6) OD (9.3 in 6.6) OTH (11.3 in 6.2) ATCH (14.8 in 6.2) TRG (11.0 in 6.2) MTG (11.5 in 6.2) PERS (14.0 in 6.2) APPT (14.8 in 6.2) DTY (10.8 in 6.2) EVT (10.0 in 6.2)
+   under warn      : LL OL PL CL EL FO B C HL
+   under po        : LL OL PL CL EL FO B C HL
+   under last      : LL OL PL CL EL FO B C HL
+   under warn,po   : LL OL PL CL EL FO B C HL
+   under warn,last : LL OL PL CL EL FO B C HL
+morning beside a whole day (top-right quarter)     letters 5.2px, room 6.2px
+   alone — fit: LL EL HO B C
+   alone — CUT: OL (7.3 in 6.6) OIL (9.8 in 6.6) CCL (10.0 in 6.6) FCL (9.5 in 6.6) PL (6.3 in 6.6) CL (6.5 in 6.6) HO* (11.3 in 6.6) OML (12.0 in 6.6) HL (7.0 in 6.6) OTH (11.3 in 6.2) ATCH (14.8 in 6.2) TRG (11.0 in 6.2) MTG (11.5 in 6.2) PERS (14.0 in 6.2) APPT (14.8 in 6.2) DTY (10.8 in 6.2) EVT (10.0 in 6.2)
+   under last      : LL OL PL CL EL HO B C HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HO B C HL
+   under warn      : OL PL CL HL
+   under po        : OL PL CL HL
+afternoon beside a whole day (bottom-right quarter) letters 5.2px, room 6.2px
+   alone — fit: LL EL HO B C
+   alone — CUT: OL (7.3 in 6.6) OIL (9.8 in 6.6) CCL (10.0 in 6.6) FCL (9.5 in 6.6) PL (6.3 in 6.6) CL (6.5 in 6.6) HO* (11.3 in 6.6) OML (12.0 in 6.6) HL (7.0 in 6.6) OTH (11.3 in 6.2) ATCH (14.8 in 6.2) TRG (11.0 in 6.2) MTG (11.5 in 6.2) PERS (14.0 in 6.2) APPT (14.8 in 6.2) DTY (10.8 in 6.2) EVT (10.0 in 6.2)
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn      : OL PL CL HL
+   under po        : OL PL CL HL
+   under last      : OL PL CL HL
+   under warn,last : OL PL CL HL
+
+=== phone-wide @ zoom 0.4 (Verdana, DejaVu Sans, sans-serif) ===
+whole day, alone                                   letters 3.4px, room 12.5px
+   alone — fit: LL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: OL (12.8 in 12.7) FO* (18.3 in 12.7) OD (14.0 in 12.7)
+   under more      : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO B C OML HL CSE OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : OL FO APPT
+morning (top half)                                 letters 2.6px, room 12.5px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : HO* OML OTH ATCH MTG PERS APPT DTY
+afternoon (bottom half)                            letters 2.6px, room 12.5px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+whole day, left half                               letters 2.6px, room 5.3px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD DTY EVT
+   alone — CUT: FO* (5.8 in 5.5) OML (6.0 in 5.5) OTH (5.5 in 5.3) ATCH (7.3 in 5.3) TRG (5.3 in 5.3) MTG (5.5 in 5.3) PERS (6.8 in 5.3) APPT (7.0 in 5.3)
+   under warn      : FO* OML OTH TRG MTG
+   under po        : FO* OML OTH TRG MTG
+   under last      : FO* OML OTH TRG MTG
+   under warn,po   : FO* OML OTH TRG MTG
+   under warn,last : FO* OML OTH TRG MTG DTY
+whole day, right half                              letters 2.6px, room 5.3px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD DTY EVT
+   alone — CUT: FO* (5.8 in 5.5) OML (6.0 in 5.5) OTH (5.5 in 5.3) ATCH (7.3 in 5.3) TRG (5.3 in 5.3) MTG (5.5 in 5.3) PERS (6.8 in 5.3) APPT (7.0 in 5.3)
+   under warn      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH TRG MTG DTY EVT
+   under po        : LL OL PL CL EL FO FO* B C OML HL OD OTH TRG MTG
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH TRG MTG DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH TRG MTG DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH TRG MTG DTY EVT
+morning beside a whole day (top-right quarter)     letters 2.6px, room 5.3px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO B C HL DTY EVT
+   alone — CUT: HO* (5.5 in 5.5) OML (6.0 in 5.5) OTH (5.5 in 5.3) ATCH (7.3 in 5.3) TRG (5.3 in 5.3) MTG (5.5 in 5.3) PERS (6.8 in 5.3) APPT (7.0 in 5.3)
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG DTY EVT
+   under warn      : HO* OML OTH TRG MTG
+   under po        : HO* OML OTH TRG MTG
+afternoon beside a whole day (bottom-right quarter) letters 2.6px, room 5.3px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO B C HL DTY EVT
+   alone — CUT: HO* (5.5 in 5.5) OML (6.0 in 5.5) OTH (5.5 in 5.3) ATCH (7.3 in 5.3) TRG (5.3 in 5.3) MTG (5.5 in 5.3) PERS (6.8 in 5.3) APPT (7.0 in 5.3)
+   under warn,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG DTY EVT
+   under warn      : HO* OML OTH TRG MTG
+   under po        : HO* OML OTH TRG MTG
+   under last      : HO* OML OTH TRG MTG
+   under warn,last : HO* OML OTH TRG MTG
+
+=== phone-wide @ zoom 1.4 (Verdana, DejaVu Sans, sans-serif) ===
+whole day, alone                                   letters 11.9px, room 28.1px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD OTH TRG MTG PERS DTY EVT
+   alone — CUT: FO* (28.5 in 28.8) OML (28.0 in 28.8) ATCH (29.0 in 28.1) APPT (28.8 in 28.1)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : OIL CCL FCL FO FO* OML CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 9.1px, room 28.1px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : HO* ATCH APPT
+   under warn,po   : HO* ATCH APPT
+afternoon (bottom half)                            letters 9.1px, room 28.1px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under po        : OL OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+   under more,po   : OL OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+   under warn,po   : OL OIL CCL FCL HO OML OTH TRG MTG PERS DTY EVT
+whole day, left half                               letters 9.1px, room 10.9px
+   alone — fit: FO B C
+   alone — CUT: LL (12.0 in 11.6) OL (14.8 in 11.6) OIL (17.3 in 11.6) CCL (17.8 in 11.6) FCL (16.8 in 11.6) PL (13.0 in 11.6) CL (13.5 in 11.6) EL (12.5 in 11.6) FO* (20.8 in 11.6) OML (20.8 in 11.6) HL (14.0 in 11.6) CSE (17.5 in 11.6) OD (16.5 in 11.6) OTH (19.5 in 10.9) ATCH (25.5 in 10.9) TRG (19.0 in 10.9) MTG (20.0 in 10.9) PERS (24.5 in 10.9) APPT (25.5 in 10.9) DTY (19.0 in 10.9) EVT (17.8 in 10.9)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL FO HL
+   under warn,po   : LL OL PL CL EL HL
+   under warn,last : LL OL PL CL EL FO B C HL
+whole day, right half                              letters 9.1px, room 10.9px
+   alone — fit: FO B C
+   alone — CUT: LL (12.0 in 11.6) OL (14.8 in 11.6) OIL (17.3 in 11.6) CCL (17.8 in 11.6) FCL (16.8 in 11.6) PL (13.0 in 11.6) CL (13.5 in 11.6) EL (12.5 in 11.6) FO* (20.8 in 11.6) OML (20.8 in 11.6) HL (14.0 in 11.6) CSE (17.5 in 11.6) OD (16.5 in 11.6) OTH (19.5 in 10.9) ATCH (25.5 in 10.9) TRG (19.0 in 10.9) MTG (20.0 in 10.9) PERS (24.5 in 10.9) APPT (25.5 in 10.9) DTY (19.0 in 10.9) EVT (17.8 in 10.9)
+   under warn      : LL OL PL CL EL FO B C HL
+   under po        : LL OL PL CL EL FO B C HL
+   under last      : LL OL PL CL EL FO B C HL
+   under warn,po   : LL OL PL CL EL FO B C HL
+   under warn,last : LL OL PL CL EL FO B C HL
+morning beside a whole day (top-right quarter)     letters 9.1px, room 10.9px
+   alone — fit: LL HO B C
+   alone — CUT: OL (12.5 in 11.6) OIL (17.3 in 11.6) CCL (17.8 in 11.6) FCL (16.8 in 11.6) PL (11.3 in 11.6) CL (11.5 in 11.6) EL (10.8 in 11.6) HO* (19.8 in 11.6) OML (20.8 in 11.6) HL (12.3 in 11.6) OTH (19.5 in 10.9) ATCH (25.5 in 10.9) TRG (19.0 in 10.9) MTG (20.0 in 10.9) PERS (24.5 in 10.9) APPT (25.5 in 10.9) DTY (19.0 in 10.9) EVT (17.8 in 10.9)
+   under last      : LL OL PL CL EL HO B C HL
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn,last : LL OL PL CL EL HO B C HL
+   under warn      : OL PL CL EL HL
+   under po        : OL PL CL EL HL
+afternoon beside a whole day (bottom-right quarter) letters 9.1px, room 10.9px
+   alone — fit: LL HO B C
+   alone — CUT: OL (12.5 in 11.6) OIL (17.3 in 11.6) CCL (17.8 in 11.6) FCL (16.8 in 11.6) PL (11.3 in 11.6) CL (11.5 in 11.6) EL (10.8 in 11.6) HO* (19.8 in 11.6) OML (20.8 in 11.6) HL (12.3 in 11.6) OTH (19.5 in 10.9) ATCH (25.5 in 10.9) TRG (19.0 in 10.9) MTG (20.0 in 10.9) PERS (24.5 in 10.9) APPT (25.5 in 10.9) DTY (19.0 in 10.9) EVT (17.8 in 10.9)
+   under warn,po   : LL OL PL CL EL HO B C HL
+   under warn      : OL PL CL EL HL
+   under po        : OL PL CL EL HL
+   under last      : OL PL CL EL HL
+   under warn,last : OL PL CL EL HL
+
+=== desk-system @ zoom 1 ("Inter Tight", system-ui, sans-serif) ===
+whole day, alone                                   letters 8.5px, room 17.5px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO FO* B C HL CSE OD OTH TRG MTG PERS DTY EVT
+   alone — CUT: OML (18.3 in 18.0) ATCH (17.8 in 17.5) APPT (17.8 in 17.5)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : OIL CCL FCL FO FO* OML CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 6.5px, room 17.5px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : HO* ATCH APPT
+   under warn,po   : HO* ATCH APPT
+afternoon (bottom half)                            letters 6.5px, room 17.5px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   alone — CUT: none
+   under po        : HO OML OTH TRG MTG PERS DTY
+   under more,po   : HO OML OTH TRG MTG PERS DTY
+   under warn,po   : HO OML OTH TRG MTG PERS DTY
+whole day, left half                               letters 6.5px, room 6.5px
+   alone — fit: FO B C
+   alone — CUT: LL (6.8 in 7.0) OL (9.0 in 7.0) OIL (9.5 in 7.0) CCL (10.5 in 7.0) FCL (9.8 in 7.0) PL (7.8 in 7.0) CL (8.0 in 7.0) EL (7.0 in 7.0) FO* (12.0 in 7.0) OML (13.8 in 7.0) HL (8.8 in 7.0) CSE (10.3 in 7.0) OD (10.5 in 7.0) OTH (12.3 in 6.5) ATCH (15.5 in 6.5) TRG (11.8 in 6.5) MTG (13.0 in 6.5) PERS (14.0 in 6.5) APPT (15.8 in 6.5) DTY (11.5 in 6.5) EVT (10.8 in 6.5)
+   under warn      : LL OL OIL PL CL EL HL
+   under po        : LL OL OIL PL CL EL HL
+   under last      : LL OL OIL PL CL EL FO HL
+   under warn,po   : LL OL OIL PL CL EL HL
+   under warn,last : LL OL OIL PL CL EL FO B C HL
+whole day, right half                              letters 6.5px, room 6.5px
+   alone — fit: FO B C
+   alone — CUT: LL (6.8 in 7.0) OL (9.0 in 7.0) OIL (9.5 in 7.0) CCL (10.5 in 7.0) FCL (9.8 in 7.0) PL (7.8 in 7.0) CL (8.0 in 7.0) EL (7.0 in 7.0) FO* (12.0 in 7.0) OML (13.8 in 7.0) HL (8.8 in 7.0) CSE (10.3 in 7.0) OD (10.5 in 7.0) OTH (12.3 in 6.5) ATCH (15.5 in 6.5) TRG (11.8 in 6.5) MTG (13.0 in 6.5) PERS (14.0 in 6.5) APPT (15.8 in 6.5) DTY (11.5 in 6.5) EVT (10.8 in 6.5)
+   under warn      : LL OL OIL PL CL EL FO B C HL
+   under po        : LL OL OIL PL CL EL FO B C HL
+   under last      : LL OL OIL PL CL EL FO B C HL
+   under warn,po   : LL OL OIL PL CL EL FO B C HL
+   under warn,last : LL OL OIL PL CL EL FO B C HL
+morning beside a whole day (top-right quarter)     letters 6.5px, room 6.5px
+   alone — fit: LL EL HO B C
+   alone — CUT: OL (7.8 in 7.0) OIL (9.5 in 7.0) CCL (10.5 in 7.0) FCL (9.8 in 7.0) PL (6.5 in 7.0) CL (6.8 in 7.0) HO* (11.8 in 7.0) OML (13.8 in 7.0) HL (7.5 in 7.0) OTH (12.3 in 6.5) ATCH (15.5 in 6.5) TRG (11.8 in 6.5) MTG (13.0 in 6.5) PERS (14.0 in 6.5) APPT (15.8 in 6.5) DTY (11.5 in 6.5) EVT (10.8 in 6.5)
+   under last      : LL OL OIL PL CL EL HO B C HL
+   under warn,po   : LL OL OIL PL CL EL HO B C HL
+   under warn,last : LL OL OIL PL CL EL HO B C HL
+   under warn      : OL OIL PL CL HL
+   under po        : OL OIL PL CL HL
+afternoon beside a whole day (bottom-right quarter) letters 6.5px, room 6.5px
+   alone — fit: LL EL HO B C
+   alone — CUT: OL (7.8 in 7.0) OIL (9.5 in 7.0) CCL (10.5 in 7.0) FCL (9.8 in 7.0) PL (6.5 in 7.0) CL (6.8 in 7.0) HO* (11.8 in 7.0) OML (13.8 in 7.0) HL (7.5 in 7.0) OTH (12.3 in 6.5) ATCH (15.5 in 6.5) TRG (11.8 in 6.5) MTG (13.0 in 6.5) PERS (14.0 in 6.5) APPT (15.8 in 6.5) DTY (11.5 in 6.5) EVT (10.8 in 6.5)
+   under warn,po   : LL OL OIL PL CL EL HO B C HL
+   under warn      : OL OIL PL CL HL
+   under po        : OL OIL PL CL HL
+   under last      : OL OIL PL CL HL
+   under warn,last : OL OIL PL CL HL
+
+=== desk-wide @ zoom 1 (Verdana, "DejaVu Sans", sans-serif) ===
+whole day, alone                                   letters 8.5px, room 17.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL FO B C HL CSE OD DTY EVT
+   alone — CUT: FO* (20.3 in 18.4) OML (19.8 in 18.4) OTH (18.5 in 17.9) ATCH (20.5 in 17.9) TRG (18.0 in 17.9) MTG (19.0 in 17.9) PERS (19.8 in 17.9) APPT (20.5 in 17.9)
+   under more      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under po        : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under last      : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL FO FO* B C OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : OIL CCL FCL FO FO* OML HL CSE OD OTH ATCH TRG MTG PERS APPT DTY EVT
+morning (top half)                                 letters 6.5px, room 17.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG PERS DTY EVT
+   alone — CUT: ATCH (18.5 in 17.9) APPT (18.3 in 17.9)
+   under last      : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn,last : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH ATCH TRG MTG PERS APPT DTY EVT
+   under warn      : HO* ATCH PERS APPT
+   under warn,po   : HO* ATCH PERS APPT
+   under more      : ATCH APPT
+   under po        : ATCH APPT
+afternoon (bottom half)                            letters 6.5px, room 17.9px
+   alone — fit: LL OL OIL CCL FCL PL CL EL HO HO* B C OML HL OTH TRG MTG PERS DTY EVT
+   alone — CUT: ATCH (18.5 in 17.9) APPT (18.3 in 17.9)
+   under po        : LL OL OIL CCL FCL PL CL EL HO OML HL OTH TRG MTG DTY EVT
+   under more,po   : LL OL OIL CCL FCL PL CL EL HO OML HL OTH TRG MTG DTY EVT
+   under warn,po   : LL OL OIL CCL FCL PL CL EL HO OML HL OTH TRG MTG DTY EVT
+   under more      : ATCH APPT
+   under warn      : ATCH APPT
+   under last      : ATCH APPT
+   under more,last : ATCH APPT
+   under warn,last : ATCH APPT
+whole day, left half                               letters 6.5px, room 6.7px
+   alone — fit: B C
+   alone — CUT: LL (8.5 in 7.2) OL (10.5 in 7.2) OIL (12.3 in 7.2) CCL (12.8 in 7.2) FCL (12.0 in 7.2) PL (9.3 in 7.2) CL (9.5 in 7.2) EL (8.8 in 7.2) FO (10.0 in 8.2) FO* (14.8 in 7.2) OML (15.0 in 7.2) HL (10.0 in 7.2) CSE (12.5 in 7.2) OD (11.8 in 7.2) OTH (14.0 in 6.7) ATCH (18.5 in 6.7) TRG (13.8 in 6.7) MTG (14.5 in 6.7) PERS (17.5 in 6.7) APPT (18.3 in 6.7) DTY (13.5 in 6.7) EVT (12.8 in 6.7)
+   under warn      : LL PL CL EL
+   under po        : LL PL CL EL
+   under last      : LL PL CL EL
+   under warn,po   : LL PL CL EL
+   under warn,last : LL PL CL EL B C
+whole day, right half                              letters 6.5px, room 6.7px
+   alone — fit: B C
+   alone — CUT: LL (8.5 in 7.2) OL (10.5 in 7.2) OIL (12.3 in 7.2) CCL (12.8 in 7.2) FCL (12.0 in 7.2) PL (9.3 in 7.2) CL (9.5 in 7.2) EL (8.8 in 7.2) FO (10.0 in 8.2) FO* (14.8 in 7.2) OML (15.0 in 7.2) HL (10.0 in 7.2) CSE (12.5 in 7.2) OD (11.8 in 7.2) OTH (14.0 in 6.7) ATCH (18.5 in 6.7) TRG (13.8 in 6.7) MTG (14.5 in 6.7) PERS (17.5 in 6.7) APPT (18.3 in 6.7) DTY (13.5 in 6.7) EVT (12.8 in 6.7)
+   under warn      : LL PL CL EL B C
+   under po        : LL PL CL EL B C
+   under last      : LL PL CL EL B C
+   under warn,po   : LL PL CL EL B C
+   under warn,last : LL PL CL EL B C
+morning beside a whole day (top-right quarter)     letters 6.5px, room 6.7px
+   alone — fit: B C
+   alone — CUT: LL (7.5 in 7.2) OL (9.0 in 7.2) OIL (12.3 in 7.2) CCL (12.8 in 7.2) FCL (12.0 in 7.2) PL (8.0 in 7.2) CL (8.3 in 7.2) EL (7.8 in 7.2) HO (10.0 in 8.2) HO* (14.3 in 7.2) OML (15.0 in 7.2) HL (8.8 in 7.2) OTH (14.0 in 6.7) ATCH (18.5 in 6.7) TRG (13.8 in 6.7) MTG (14.5 in 6.7) PERS (17.5 in 6.7) APPT (18.3 in 6.7) DTY (13.5 in 6.7) EVT (12.8 in 6.7)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL B C HL
+   under warn,po   : LL OL PL CL EL B C HL
+   under warn,last : LL OL PL CL EL B C HL
+afternoon beside a whole day (bottom-right quarter) letters 6.5px, room 6.7px
+   alone — fit: B C
+   alone — CUT: LL (7.5 in 7.2) OL (9.0 in 7.2) OIL (12.3 in 7.2) CCL (12.8 in 7.2) FCL (12.0 in 7.2) PL (8.0 in 7.2) CL (8.3 in 7.2) EL (7.8 in 7.2) HO (10.0 in 8.2) HO* (14.3 in 7.2) OML (15.0 in 7.2) HL (8.8 in 7.2) OTH (14.0 in 6.7) ATCH (18.5 in 6.7) TRG (13.8 in 6.7) MTG (14.5 in 6.7) PERS (17.5 in 6.7) APPT (18.3 in 6.7) DTY (13.5 in 6.7) EVT (12.8 in 6.7)
+   under warn      : LL OL PL CL EL HL
+   under po        : LL OL PL CL EL HL
+   under last      : LL OL PL CL EL HL
+   under warn,po   : LL OL PL CL EL B C HL
+   under warn,last : LL OL PL CL EL HL

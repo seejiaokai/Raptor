@@ -178,26 +178,28 @@ describe('the tap list', () => {
 })
 
 describe('leave outside the time in the squadron (owner answer C)', () => {
-  it('leave after a posting-out shows the leave code with the PO tag', () => {
+  it('leave after a posting-out shows the leave code, striped, with no PO tag (D1728)', () => {
     setRole('admin')
     expect(setPostOut(P, '2026-02-10')).toBe(true)
     fileAbsence(P, 'LL', D)
     setViewer(P)
     render(<Matrix />)
     expect(cell().textContent).toContain('LL')
-    expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
+    expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()   // the stripes on its box say it (his D1728)
+    expect(cell().className).toContain('bx-gone')
     expect(cell().className).toContain('gone')        // still off the manning
   })
   /* his D1720 (6 Nov 26, [LW-PO-DAYS-DRAWING]): an OD over a posted-out man's gone days was filed whole but drew a bare
      "PO" — it reads as two days skipped. Whatever is filed there shows as leave does, and a tap opens the day's list. */
-  it('an overseas duty after a posting-out shows its OD box with the PO tag, still off the manning', () => {
+  it('an overseas duty after a posting-out shows its OD box, striped, still off the manning', () => {
     setRole('admin')
     expect(setPostOut(P, '2026-02-10')).toBe(true)
     fileAbsence(P, 'OD', D)
     render(<Matrix />)
     expect(cell().textContent).toContain('OD')
     expect(cell().textContent).not.toMatch(/^PO$/)
-    expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
+    expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+    expect(cell().className).toContain('bx-gone')
     expect(cell().className).toContain('gone')
   })
   it('a gone day with nothing filed keeps its bare PO', () => {

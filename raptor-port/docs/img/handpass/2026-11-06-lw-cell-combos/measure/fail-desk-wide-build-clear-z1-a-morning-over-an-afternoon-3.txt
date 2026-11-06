@@ -1,0 +1,48 @@
+1. LL@top + PERS@bot [last]
+2. LL@top + PERS@bot [warn,po]
+3. LL@top + PERS@bot [warn,last]
+4. LL@top + APPT@bot
+5. LL@top + APPT@bot [warn]
+6. LL@top + APPT@bot [po]
+7. LL@top + APPT@bot [last]
+8. LL@top + APPT@bot [warn,po]
+9. LL@top + APPT@bot [warn,last]
+10. LL@top + DTY@bot
+11. LL@top + DTY@bot [warn]
+12. LL@top + DTY@bot [po]
+13. LL@top + DTY@bot [last]
+14. LL@top + DTY@bot [warn,po]
+15. LL@top + DTY@bot [warn,last]
+16. LL@top + EVT@bot
+17. LL@top + EVT@bot [warn]
+18. LL@top + EVT@bot [po]
+19. LL@top + EVT@bot [last]
+20. LL@top + EVT@bot [warn,po]
+21. LL@top + EVT@bot [warn,last]
+22. OL@top + LL@bot
+23. OL@top + LL@bot [warn]
+24. OL@top + LL@bot [po]
+25. OL@top + LL@bot [last]
+26. OL@top + LL@bot [warn,po]
+27. OL@top + LL@bot [warn,last]
+28. OL@top + OL@bot
+29. OL@top + OL@bot [warn]
+30. OL@top + OL@bot [po]
+31. OL@top + OL@bot [last]
+32. OL@top + OL@bot [warn,po]
+33. OL@top + OL@bot [warn,last]
+34. OL@top + OIL@bot
+35. OL@top + OIL@bot [po]
+36. OL@top + OIL@bot [last]
+37. OL@top + CCL@bot
+38. OL@top + CCL@bot [po]
+39. OL@top + CCL@bot [last]
+40. OL@top + FCL@bot
+41. OL@top + FCL@bot [po]
+42. OL@top + FCL@bot [last]
+43. OL@top + PL@bot
+44. OL@top + PL@bot [warn]
+45. OL@top + PL@bot [po]
+46. OL@top + PL@bot [last]
+47. OL@top + PL@bot [warn,po]
+48. OL@top + PL@bot [warn,last]

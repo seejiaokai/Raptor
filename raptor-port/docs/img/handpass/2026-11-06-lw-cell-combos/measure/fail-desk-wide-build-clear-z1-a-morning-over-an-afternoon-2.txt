@@ -1,0 +1,48 @@
+1. LL@top + B@bot
+2. LL@top + B@bot [warn]
+3. LL@top + B@bot [po]
+4. LL@top + B@bot [last]
+5. LL@top + B@bot [warn,po]
+6. LL@top + B@bot [warn,last]
+7. LL@top + C@bot
+8. LL@top + C@bot [warn]
+9. LL@top + C@bot [po]
+10. LL@top + C@bot [last]
+11. LL@top + C@bot [warn,po]
+12. LL@top + C@bot [warn,last]
+13. LL@top + OML@bot
+14. LL@top + OML@bot [po]
+15. LL@top + OML@bot [last]
+16. LL@top + HL@bot
+17. LL@top + HL@bot [warn]
+18. LL@top + HL@bot [po]
+19. LL@top + HL@bot [last]
+20. LL@top + HL@bot [warn,po]
+21. LL@top + HL@bot [warn,last]
+22. LL@top + OTH@bot
+23. LL@top + OTH@bot [warn]
+24. LL@top + OTH@bot [po]
+25. LL@top + OTH@bot [last]
+26. LL@top + OTH@bot [warn,po]
+27. LL@top + OTH@bot [warn,last]
+28. LL@top + ATCH@bot
+29. LL@top + ATCH@bot [warn]
+30. LL@top + ATCH@bot [po]
+31. LL@top + ATCH@bot [last]
+32. LL@top + ATCH@bot [warn,po]
+33. LL@top + ATCH@bot [warn,last]
+34. LL@top + TRG@bot
+35. LL@top + TRG@bot [warn]
+36. LL@top + TRG@bot [po]
+37. LL@top + TRG@bot [last]
+38. LL@top + TRG@bot [warn,po]
+39. LL@top + TRG@bot [warn,last]
+40. LL@top + MTG@bot
+41. LL@top + MTG@bot [warn]
+42. LL@top + MTG@bot [po]
+43. LL@top + MTG@bot [last]
+44. LL@top + MTG@bot [warn,po]
+45. LL@top + MTG@bot [warn,last]
+46. LL@top + PERS@bot
+47. LL@top + PERS@bot [warn]
+48. LL@top + PERS@bot [po]

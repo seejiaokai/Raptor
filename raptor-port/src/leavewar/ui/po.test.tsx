@@ -141,7 +141,7 @@ describe('placing and managing PO from the grid', () => {
     expect(p.poArchive).toBe(false)
   })
 
-  it("the person's LAST day wears the PO corner tag (owner, 19 Aug 26)", () => {
+  it("the person's LAST day wears its mark (owner, 19 Aug 26) — the yellow line since his D1728", () => {
     const id = anId()
     setRole('admin')
     render(<Matrix />)
@@ -153,6 +153,7 @@ describe('placing and managing PO from the grid', () => {
     const tag = screen.getByTestId(`polast-${id}`)
     expect(tag.textContent).toBe('PO')
     expect(screen.getByTestId(`cell-${id}-2026-06-14`).className).toContain('pofin')
+    expect(screen.getByTestId(`cell-${id}-2026-06-14`).className).toContain('bx-last')   // drawn as the line (matrix.css)
     expect(screen.getByTestId(`cell-${id}-2026-06-14`).contains(tag)).toBe(true)
   })
 
