@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1730 | 6 Nov 26 | An entry on a day after a man's posting out keeps its box in full colour, with the faint stripes alone; it is not faded. |
 | D1729 | 6 Nov 26 | The stripes that mark an entry on a day after a man's posting out are the faint dark stripes, not stronger grey ones. |
 | D1728 | 6 Nov 26 | On the Leave War a man's last day in is marked by a yellow line down the day's right edge, never the word; a day after his posting out that holds an entry is marked by the posting's grey diagonal stripes alone — no PO strip, no grey line, no PO word — and a gone day with nothing filed keeps its bare "PO". — changed by D1729 |
 | D1727 | 6 Nov 26 | On a Leave War day holding two entries, two whole days stand side by side with codes reading bottom to top, and a whole day beside a half keeps the cell; on a boxed day "!" stays an outlined tag, three or more entries show as a stack of cards, and posting out is marked by stripes and a yellow line (D1728). — changed by D1728 |
