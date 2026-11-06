@@ -225,14 +225,14 @@ after). His answer is a new ruling on whether Sol keeps the seat.
 **Done, and answered (owner, D601, 6 Oct 26 — "ok sol can be a 2nd reviewer"):** the side-by-side ran once, on the Insights
 fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 keeps the second seat.** It is not repeated.
 
-**Who reads the finished code now — D790 (owner, 13 Oct 26: "Yes option 2"); still so — D1594 (3 Nov 26, replacing D1593 of the same day: "I dont have subscription to astra yet or sol" — a Codex sign-in that answers is not his subscription; Codex is not called until he says it is back).** While the ChatGPT readers are out (D761):
+**Who reads the finished code now — D790 (owner, 13 Oct 26: "Yes option 2"); still so — D1734 (7 Nov 26, replacing D1594: "It's on a pro plan so lesser usage limits for now. So I call it when I want" — Astra and Sol 6.1 are called only when he calls for them, each time).** Unless he calls for a ChatGPT reader (D1734):
 **every job that needs a code read gets a FRESH Opus read of its finished code — a reader that did not write it and has seen
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
 it ends the standing Fable read of those changes D790 gave).** The chat that wrote the code never reads its own work. Every claim of either
 reader is written as a failing test before it is believed. A plan's read before a build is as it was. A job that goes without
-a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and when Astra and Sol 6.1 are back, how
-they fit with this is put to him — not assumed. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
+a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and now that Astra and Sol 6.1 are
+back on his call (D1734), the reads owed are put to him to call or drop — never called by the agent on its own. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
 (D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable
 found 3 real faults and the Opus reader 11, with no false alarm from either — the tables are in
 `handpass/2026-10-13-oil-ask-notify.md` §12.1 and `handpass/2026-10-12-one-rule.md` §10b (the trial’s backlog item,
