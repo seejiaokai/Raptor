@@ -126,11 +126,13 @@ if (!host) throw new Error('no row of day cells in view')
 console.log('host cells', host.ids.length, 'font', host.font)
 
 /* measure every combination in one cell, at one zoom: the boxes' letters against their room */
-const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId }) => {
+const SMALL = (OPTIONS[OPT].css || '').split(' ').includes('scale')
+const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId, small }) => {
   const td = document.querySelector(`[data-testid="${cellId}"]`)
   const table = td.closest('table')
   const keep = { cls: td.className, html: td.innerHTML, zoom: table.style.zoom, lwz: table.style.getPropertyValue('--lwz') }
   table.style.zoom = String(z); table.style.setProperty('--lwz', String(z))
+  table.classList.toggle('cc-small', !!small && z < 1)
   const out = []
   const TOL = 0.3
   for (const it of items) {
@@ -156,7 +158,7 @@ const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId }) => {
       cv.font = font
       if ('letterSpacing' in cv) cv.letterSpacing = `${ls}px`
       const m = cv.measureText(e.textContent)
-      const scaleX = m.width ? lt.width / m.width : 1
+      const scaleX = m.width ? ((cs.writingMode && cs.writingMode !== 'horizontal-tb') ? 1 : lt.width / m.width) : 1
       const ck = `${font}|${ls}|${e.textContent}|${scaleX.toFixed(3)}`
       const cache = (window.__ccInk ||= new Map())
       let ink = cache.get(ck)
@@ -174,8 +176,11 @@ const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId }) => {
         cache.set(ck, ink)
       }
       const fA = m.fontBoundingBoxAscent ?? fsPx * .9
+      /* a turned box (his "read down to up", option D): the advance runs up from the line's bottom, the letters' tops
+         face left — the baseline a vertical line `fA` in from the line box's left */
+      const turned = cs.writingMode && cs.writingMode !== 'horizontal-tb'
       const base = lt.top + fA
-      const pts = ink.map(([dx, dy]) => [lt.left + dx, base + dy])
+      const pts = turned ? ink.map(([dx, dy]) => [lt.left + fA + dy, lt.bottom - dx * (lt.height / (m.width || 1))]) : ink.map(([dx, dy]) => [lt.left + dx, base + dy])
       const inkL = Math.min(...pts.map(p => p[0])), inkR = Math.max(...pts.map(p => p[0])), inkT = Math.min(...pts.map(p => p[1])), inkB = Math.max(...pts.map(p => p[1]))
       const inset = (/k-unav/.test(e.className) ? 1.5 : 1) * z          // the box's own edge line, 1px (1.5 outlined)
       const edgeL = /raptor|moved/.test(e.className) ? 2 * z : 0          // the Inputs page's (or a move's) 2px left edge
@@ -197,7 +202,7 @@ const measureAll = (items, z, cellId) => P.evaluate(({ items, z, cellId }) => {
   td.className = keep.cls; td.innerHTML = keep.html
   table.style.zoom = keep.zoom; if (keep.lwz) table.style.setProperty('--lwz', keep.lwz); else table.style.removeProperty('--lwz')
   return out
-}, { items, z, cellId })
+}, { items, z, cellId, small: SMALL })
 
 const results = []
 for (const z of ZOOMS) {

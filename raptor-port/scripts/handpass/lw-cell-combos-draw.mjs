@@ -54,11 +54,14 @@ const LOOKS = [
   { id: 'A', css: 'flags fit', map: 'stack flags', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'B', css: 'edge flags fit', map: 'edge flags', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'Apo', css: 'poflags makeway fit', map: 'stack poflags makeway', z: SIZE === 'phone' ? 0.8 : 1 },
-  { id: 'C', css: 'floor marks fit', map: 'floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
+  { id: 'C', css: 'floor marks fit scale', map: 'floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
+  { id: 'D', css: 'floor marks fit tilt scale', map: 'tilt floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
+  { id: 'E', css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip', z: SIZE === 'phone' ? 0.8 : 1 },
   ...(SIZE === 'phone' ? [
     { id: 'today-far', css: '', map: null, z: 0.4 },
     { id: 'A-far', css: 'flags fit', map: 'stack flags', z: 0.4, far: true },
     { id: 'C-far', css: 'floor marks fit', map: 'floor marks', z: 0.4, far: true },
+    { id: 'D-far', css: 'floor marks fit tilt scale', map: 'tilt floor marks', z: 0.4 },
   ] : []),
 ]
 
@@ -85,6 +88,7 @@ for (const look of LOOKS) {
     st.textContent = css
     const tbl = document.querySelector('#page-leavewar table.mx tbody td[data-testid^="cell-"]').closest('table')
     tbl.style.zoom = String(z); tbl.style.setProperty('--lwz', String(z)); tbl.classList.toggle('cc-far', !!far)
+    tbl.classList.toggle('cc-small', /cc-small/.test(css) && z < 1)
     const vw = window.innerWidth
     const rows = [...tbl.querySelectorAll('tbody tr')].filter(r => r.querySelector('td[data-testid^="cell-"]'))
     /* two rows of people if one row cannot hold every case */

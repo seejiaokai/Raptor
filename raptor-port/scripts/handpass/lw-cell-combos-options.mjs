@@ -20,6 +20,12 @@
 //            four-letter code and a starred one go one step smaller in a whole-day box.
 // ZOOMED RIGHT OUT (question 3) — `cc-far` on the grid table: colours only (the drawing script).
 //
+// D — HIS IDEA (6 Nov 26, "manipulate the words such that it can also be tilted 90 degrees to the left … read down to
+// up"): C, but two whole days stay SIDE BY SIDE, each the full height (his D1167), their words turned to read from the
+// bottom up — so a whole day keeps looking whole and each code has the cell's height to stand in.
+//   tilt   — writing-mode vertical-rl turned half a turn (reads bottom to top, letters' tops to the left); the Inputs
+//            edge drawn on the far side so that, turned, it is still on the box's left.
+//
 // C — THE REVISED DESIGN (after the design review of 6 Nov 26, and his question "so whole day, AM and PM will always be
 // top and bottom half?"): every box keeps telling whole from half by its size.
 //   floor  — a whole day beside a half: the whole day keeps the whole cell, its ring right round it, its letters in the
@@ -39,7 +45,9 @@ export const OPTIONS = {
   A: { css: 'flags fit', map: 'stack flags' },
   'A-poflags': { css: 'poflags makeway fit', map: 'stack poflags makeway' },
   B: { css: 'edge flags fit', map: 'edge flags' },
-  C: { css: 'floor marks fit', map: 'floor marks' },
+  C: { css: 'floor marks fit scale', map: 'floor marks' },
+  D: { css: 'floor marks fit tilt scale', map: 'tilt floor marks' },
+  E: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip' },
 }
 const P = '#page-leavewar .mx td'
 const GREY = 'rgba(150, 162, 178, .95)', AMBER = '#F2C879'
@@ -131,6 +139,48 @@ ${P}.cc-last .c { right: 3.5px !important; }
 ${P}.cc-last.cc-alarm .mk.warn { right: 2px !important; }
 ${P}.cc-pile.cc-last .c:is(.whole, .top, .bot) { right: 6px !important; }
 ${P} .c:where(.top, .bot) { padding: 0 !important; }`,
+  /* HIS D1726: zoomed out, every code's letters shrink by one same scale. A box set at 10px (a whole day's two letters)
+     is held at 9px by the iPhone's smallest-letter floor at any zoom below 0.9, so LL and OL grew bigger than the rest;
+     set at 8.9px whenever the grid is zoomed below 1 (`cc-small` on the grid's table — Matrix knows its zoom), the
+     floor never applies. A desktop at 1 keeps 10px. */
+  scale: `
+#page-leavewar table.mx.cc-small td .c.whole:not(.wide) { font-size: 8.9px !important; }`,
+  /* HIS IDEA (6 Nov 26, "how about PO is also tilted"): the PO keeps its word, turned to read bottom to top in a 6px strip
+     down the day's right edge — yellow on his last day in, grey on a day after a posting out — and the boxes step left of
+     it, their letters one size smaller. The turned pair of two whole days has no room for a strip beside it, so there the
+     PO stays D's yellow line or the hatch on the box. */
+  postrip: `
+${P}.cc-postrip { box-shadow: none !important; }
+${P}.cc-postrip .c { background-image: none !important; }
+${P}.cc-postrip :is(.potag, .polast) { display: flex !important; align-items: center; justify-content: center; top: 2px !important; bottom: 2px !important; right: 1px !important; left: auto !important; width: 5px !important; height: auto !important; padding: 0 !important; border-radius: 2px !important; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 5px !important; letter-spacing: .04em !important; line-height: 1 !important; box-shadow: none !important; }
+${P}.cc-postrip .polast { background: #F2C879 !important; color: #04222b !important; }
+${P}.cc-postrip .potag { background: rgba(150, 162, 178, .95) !important; color: #0d1117 !important; }
+${P}.cc-postrip .c:is(.whole, .top, .bot, .cc-floor) { right: 7px !important; }
+${P}.cc-postrip .c.cc-roof { left: 3px !important; right: 8px !important; font-size: 6px !important; }
+${P}.cc-postrip .c.cc-roof.wide { font-size: 4.5px !important; }
+${P}.cc-postrip .c.cc-roof.w4 { font-size: 4px !important; }
+${P}.cc-postrip.cc-pile .c:is(.whole, .top, .bot) { right: 7px !important; }
+${P}.cc-postrip .c.whole:not(.cc-floor) { font-size: 8.5px !important; letter-spacing: 0 !important; }
+${P}.cc-postrip .c.whole.wide:not(.cc-floor) { font-size: 6.5px !important; letter-spacing: -.02em !important; }
+${P}.cc-postrip .c.whole.w4:not(.cc-floor) { font-size: 5px !important; letter-spacing: -.04em !important; }
+${P}.cc-postrip .c:is(.top, .bot).wide { font-size: 5px !important; }
+${P}.cc-postrip .c:is(.top, .bot).w4 { font-size: 4px !important; letter-spacing: -.04em !important; }
+/* the "!" on a PO day stands at the top of the PO strip — the day's right edge one status column, "!" above, PO below */
+${P}.cc-postrip.cc-alarm .mk.warn { right: 1px !important; top: 2px !important; width: 5px !important; height: 7px !important; padding: 0 !important; display: flex !important; align-items: center; justify-content: center; font-size: 6px !important; border-radius: 2px !important; }
+${P}.cc-postrip.cc-alarm :is(.potag, .polast) { top: 10px !important; font-size: 5px !important; }
+${P}.cc-postrip.cc-alarm .c { padding-right: 0 !important; }`,
+  tilt: `
+${P} .c.cc-tilt { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 7.5px !important; letter-spacing: 0 !important; padding: 0 !important; }
+${P} .c.cc-tilt.wide { font-size: 7px !important; letter-spacing: -.02em !important; }
+${P} .c.cc-tilt.w4 { font-size: 6.5px !important; letter-spacing: -.04em !important; }
+${P} .c.cc-tilt.left { border-radius: 2px 4px 4px 2px !important; }
+${P} .c.cc-tilt.right { border-radius: 4px 2px 2px 4px !important; }
+${P} .c.cc-tilt:is(.raptor, .moved)::before { left: auto !important; right: 0 !important; }
+${P} .c.cc-tilt:is(.raptor, .moved) { padding: 0 2px 0 0 !important; }
+${P} .c.cc-tilt.w4 { font-size: 6px !important; }
+${P}.cc-alarm .c.cc-tilt.right { top: 7.5px !important; font-size: 6.5px !important; }
+${P}.cc-alarm .c.cc-tilt.right.wide { font-size: 5.5px !important; }
+${P}.cc-alarm .c.cc-tilt.right.w4 { font-size: 4.5px !important; }`,
   fit: `
 ${P} .c:is(.raptor, .moved):is(.whole, .top, .bot, .cc-main) { padding-left: 2px !important; }
 ${P} .c.whole.w4 { font-size: 7px !important; letter-spacing: -.05em !important; }
@@ -153,7 +203,10 @@ export function remap(map, cb) {
     a.place = 'whole'; a.extra = ' cc-main'
     b.extra = ` cc-edge${b.place === 'right-am' ? ' cc-am' : b.place === 'right-pm' ? ' cc-pm' : ''}`; b.place = 'right'; b.noText = true
   }
-  if (has('floor') && out.boxes.length === 2) {
+  if (has('tilt') && out.boxes.length === 2 && out.boxes[0].place === 'left' && out.boxes[1].place === 'right') {
+    out.boxes[0].extra = ' cc-tilt'; out.boxes[1].extra = ' cc-tilt'
+  }
+  if (has('floor') && out.boxes.length === 2 && !(has('tilt') && out.boxes[1].place === 'right')) {
     const [a, b] = out.boxes
     if (a.place === 'left' && b.place === 'right') { a.place = 'top'; a.extra = ' cc-split'; b.place = 'bot'; b.extra = ' cc-split' }
     else if (a.place === 'left' && (b.place === 'right-am' || b.place === 'right-pm')) {
@@ -163,6 +216,7 @@ export function remap(map, cb) {
       out.boxes = [a, b]
     }
   }
+  if (has('postrip') && out.boxes.length && (cb.tiles.includes('po') || cb.tiles.includes('last')) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
   if (has('marks') && out.boxes.length) {
     if (cb.tiles.includes('more')) out.extraTd.push('cc-pile')
     if (cb.tiles.includes('warn')) out.extraTd.push('cc-alarm')

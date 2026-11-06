@@ -34,5 +34,7 @@ each change from it — pictured at his iPhone's size and a desktop's, each driv
 3. **Build** what he picks, every combination re-measured by the same script (it is the re-walk), at both sizes and the
    zoom ends; a WALK tier check at least, the drawing check against his pick.
 
+**His D1726 (6 Nov 26), question 3 answered:** zoomed out, the boxes keep their letters and every code's letters shrink with the grid by one same scale — LL and OL never drawn bigger than the rest (today the iPhone's 9px smallest-letter floor keeps the 10px boxes' letters at 9px). The build sets those letters so the floor never applies at any zoom below 1, and re-measures at the zoom ends.
+
 Not in this job: what a tap on such a day opens and what can be changed there — that is his other question of 6 Nov 26
 (full editing on the Leave War), filed apart.

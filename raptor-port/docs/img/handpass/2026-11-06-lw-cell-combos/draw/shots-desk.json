@@ -586,6 +586,216 @@
    "n": 15,
    "file": "desk-C-15.png",
    "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 1,
+   "file": "desk-D-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 2,
+   "file": "desk-D-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 3,
+   "file": "desk-D-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 4,
+   "file": "desk-D-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 5,
+   "file": "desk-D-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 6,
+   "file": "desk-D-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 7,
+   "file": "desk-D-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 8,
+   "file": "desk-D-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 9,
+   "file": "desk-D-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 10,
+   "file": "desk-D-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 11,
+   "file": "desk-D-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 12,
+   "file": "desk-D-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 13,
+   "file": "desk-D-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 14,
+   "file": "desk-D-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "D",
+   "n": 15,
+   "file": "desk-D-15.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 1,
+   "file": "desk-E-01.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 2,
+   "file": "desk-E-02.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 3,
+   "file": "desk-E-03.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 4,
+   "file": "desk-E-04.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 5,
+   "file": "desk-E-05.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 6,
+   "file": "desk-E-06.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 7,
+   "file": "desk-E-07.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 8,
+   "file": "desk-E-08.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 9,
+   "file": "desk-E-09.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 10,
+   "file": "desk-E-10.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 11,
+   "file": "desk-E-11.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 12,
+   "file": "desk-E-12.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 13,
+   "file": "desk-E-13.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 14,
+   "file": "desk-E-14.png",
+   "z": 1
+  },
+  {
+   "size": "desk",
+   "look": "E",
+   "n": 15,
+   "file": "desk-E-15.png",
+   "z": 1
   }
  ]
 }

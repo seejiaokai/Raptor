@@ -589,6 +589,216 @@
   },
   {
    "size": "phone",
+   "look": "D",
+   "n": 1,
+   "file": "phone-D-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 2,
+   "file": "phone-D-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 3,
+   "file": "phone-D-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 4,
+   "file": "phone-D-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 5,
+   "file": "phone-D-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 6,
+   "file": "phone-D-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 7,
+   "file": "phone-D-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 8,
+   "file": "phone-D-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 9,
+   "file": "phone-D-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 10,
+   "file": "phone-D-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 11,
+   "file": "phone-D-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 12,
+   "file": "phone-D-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 13,
+   "file": "phone-D-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 14,
+   "file": "phone-D-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "D",
+   "n": 15,
+   "file": "phone-D-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 1,
+   "file": "phone-E-01.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 2,
+   "file": "phone-E-02.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 3,
+   "file": "phone-E-03.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 4,
+   "file": "phone-E-04.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 5,
+   "file": "phone-E-05.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 6,
+   "file": "phone-E-06.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 7,
+   "file": "phone-E-07.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 8,
+   "file": "phone-E-08.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 9,
+   "file": "phone-E-09.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 10,
+   "file": "phone-E-10.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 11,
+   "file": "phone-E-11.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 12,
+   "file": "phone-E-12.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 13,
+   "file": "phone-E-13.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 14,
+   "file": "phone-E-14.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
+   "look": "E",
+   "n": 15,
+   "file": "phone-E-15.png",
+   "z": 0.8
+  },
+  {
+   "size": "phone",
    "look": "today-far",
    "n": 1,
    "file": "phone-today-far-01.png",
@@ -900,6 +1110,111 @@
    "look": "C-far",
    "n": 15,
    "file": "phone-C-far-15.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 1,
+   "file": "phone-D-far-01.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 2,
+   "file": "phone-D-far-02.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 3,
+   "file": "phone-D-far-03.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 4,
+   "file": "phone-D-far-04.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 5,
+   "file": "phone-D-far-05.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 6,
+   "file": "phone-D-far-06.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 7,
+   "file": "phone-D-far-07.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 8,
+   "file": "phone-D-far-08.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 9,
+   "file": "phone-D-far-09.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 10,
+   "file": "phone-D-far-10.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 11,
+   "file": "phone-D-far-11.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 12,
+   "file": "phone-D-far-12.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 13,
+   "file": "phone-D-far-13.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 14,
+   "file": "phone-D-far-14.png",
+   "z": 0.4
+  },
+  {
+   "size": "phone",
+   "look": "D-far",
+   "n": 15,
+   "file": "phone-D-far-15.png",
    "z": 0.4
   }
  ]
