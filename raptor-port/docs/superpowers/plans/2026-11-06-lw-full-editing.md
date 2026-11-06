@@ -24,6 +24,10 @@ day waits for the next amendment (D178); a clash is refused with its reason (the
 
 ## The job, in order
 
+**His D1725 (6 Nov 26), for the build and the walk alike:** every combination of entries on a day (whole days, halves, two or
+more, each kind) is checked for how it looks on the grid, what a tap opens, how that window looks, and how to reach and make
+each change from it — pictured at his iPhone's size and a desktop's, each driven through the real controls.
+
 1. **Design, drawn first (D1625, D853):** with Impeccable, standardised to the app (D1496), at his iPhone's size and a
    desktop's — the one-entry window, the window of a day with two and three entries, Move of an Inputs entry, Delete's
    question, a change of days; what a member sees beside an admin; a medical (its document); a published day. Rounds of at

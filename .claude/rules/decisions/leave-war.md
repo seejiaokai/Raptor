@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1725 | 6 Nov 26 | Every build and walk of the Leave War's entries — this fix, [LW-CELL-COMBOS] and [LW-FULL-EDITING] — covers every combination of entries on a day (whole days, halves, two or more, each kind) for how it looks on the grid, what a tap opens, how that window looks, and how to reach and make each change, pictured at both sizes. |
 | D1724 | 6 Nov 26 | His direction: on the Leave War every entry — an overseas duty, a course, an Attach, an Other, a medical, leave filed on the Inputs page — can be moved, deleted and its days and remarks changed there, and a day of two or more entries opens the window that adds more, each entry with its own Move and Delete; drawn first. |
 | D1723 | 6 Nov 26 | His direction: every combination of entries sharing one Leave War day — whole days, halves, three or more, every code's letters, beside the corner marks and PO tags — is measured at his iPhone's size and a desktop's, and each whose letters do not show whole is fixed, drawn for him first (D1625). |
 | D1722 | 6 Nov 26 | A tap on an entry filed on the Inputs page over a posted-out man's gone days opens the window it opens on any other day — an entry of several days whole, as D1565 draws it — not the day's list. |

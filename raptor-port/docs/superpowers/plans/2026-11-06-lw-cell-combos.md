@@ -17,6 +17,10 @@ Sun 27 Dec (an Attach beside an Other) drawn side by side with their letters cut
 
 ## The job, in order
 
+**His D1725 (6 Nov 26), for the build and the walk alike:** every combination of entries on a day (whole days, halves, two or
+more, each kind) is checked for how it looks on the grid, what a tap opens, how that window looks, and how to reach and make
+each change from it — pictured at his iPhone's size and a desktop's, each driven through the real controls.
+
 1. **Go through every combination, measured, not guessed.** A script on the real build lays out each combination on one
    day — every pair of a whole day, a morning and an afternoon; three or more ("+n"); every kind's letters (2, 3 and 4
    letters, FO* / HO* with the star, B / C, ATCH, OTH, CSE, OD, the leaves); each beside a corner mark, the grey PO tag and
