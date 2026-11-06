@@ -1,0 +1,46 @@
+[
+ {
+  "id": "S7-postout",
+  "size": "desk",
+  "did": "post Diesel out as Overseas from 2026-12-29",
+  "saw": "{\"date0\":\"2026-12-29\",\"date\":\"2026-12-29\",\"line\":\"On 29 Dec: archived.\",\"calNote\":\"\",\"confirmDisabled\":false,\"confirmed\":true}",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-desk-1-postout-sheet"
+  ]
+ },
+ {
+  "id": "S7-i",
+  "size": "desk",
+  "did": "drag Diesel 2026-12-28..2026-12-30 (window true), pressed sel-file-OD (twice: the first left the row empty)",
+  "saw": "cells 28/29/30 Dec = [\"OD:s-a\",\"PO:\",\"PO:\"]; window open after: []",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-desk-2-drag-window-before-OD",
+   "s7-desk-3-after-OD",
+   "s7-desk-4-diesel-row"
+  ]
+ },
+ {
+  "id": "S7-ii",
+  "size": "desk",
+  "did": "the Inputs page, calendar on December 2026 — choose the month and year",
+  "saw": "bars drawn: [\"Diesel · OD\"]",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-desk-5-inputs-december"
+  ]
+ },
+ {
+  "id": "S7-iii",
+  "size": "desk",
+  "did": "Echo posted out (true) from 2026-12-29; LL dragged over 2026-12-28..2026-12-30 (window true)",
+  "saw": "cells 28/29/30 Dec = [\"LL:s-w\",\"LL:s-w\",\"LL:s-w\"]; window said \"\"",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-desk-6-echo-drag-window",
+   "s7-desk-7-echo-after-LL",
+   "s7-desk-8-echo-row"
+  ]
+ }
+]

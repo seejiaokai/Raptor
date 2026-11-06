@@ -188,6 +188,48 @@ describe('leave outside the time in the squadron (owner answer C)', () => {
     expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
     expect(cell().className).toContain('gone')        // still off the manning
   })
+  /* his D1720 (6 Nov 26, [LW-PO-DAYS-DRAWING]): an OD over a posted-out man's gone days was filed whole but drew a bare
+     "PO" — it reads as two days skipped. Whatever is filed there shows as leave does, and a tap opens the day's list. */
+  it('an overseas duty after a posting-out shows its OD box with the PO tag, still off the manning', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'OD', D)
+    render(<Matrix />)
+    expect(cell().textContent).toContain('OD')
+    expect(cell().textContent).not.toMatch(/^PO$/)
+    expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
+    expect(cell().className).toContain('gone')
+  })
+  it('a gone day with nothing filed keeps its bare PO', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    render(<Matrix />)
+    expect(cell().textContent).toBe('PO')
+    expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+  })
+  /* his D1722 (his iPhone look, 6 Nov 26): the tap opens the window the same OD opens on any other day, not the day's list */
+  it("an admin's tap on that OD opens its usual window, its line on top — not the day's list or the posted-out sheet", () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'OD', D)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(within(screen.getByTestId('bid-picker')).getAllByTestId('bid-heldday')[0]!.textContent).toContain('OD')
+    expect(screen.queryByTestId('daylist-sheet')).toBeNull()
+    expect(screen.queryByTestId('postout-sheet')).toBeNull()
+  })
+  it('an admin’s tap on leave there opens its usual window too (D1725), and a bare gone day the posted-out sheet', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'LL', D)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('daylist-sheet')).toBeNull()
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
+  })
 })
 
 

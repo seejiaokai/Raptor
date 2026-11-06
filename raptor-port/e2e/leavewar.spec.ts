@@ -7789,11 +7789,13 @@ test('the "kept pending" note is said once: the same open day’s list, back aft
   await page.getByTestId('bid-LL').click()
   if (await page.getByText(/Tap the same leave again/).isVisible().catch(() => false)) await page.getByTestId('bid-LL').click()
   await expect(page.getByText(new RegExp(`kept pending — He posts out on ${dmOf(po)}`)), 'said once, after the press (R3b)').toBeVisible()
-  /* the list's own Delete: the bid goes, the same day stays open, on its window again */
-  await page.locator('[data-testid^="dl-clear-"]').first().click()
-  await expect(page.getByTestId('bid-approve-tick')).toBeVisible()
-  await page.evaluate(d => (window as any).lwSetCell('slipway', d, 'OL'), day)      // a bid arriving from elsewhere
-  await expect(page.getByTestId('daylist'), 'the day’s list again, the OL pending').toBeVisible()
+  /* his D1722, D1725 (6 Nov 26): an admin's tap on a posted-out day that holds anything opens what the day opens on any
+     other day — the window stays, the day's list no longer takes its place (the old premise, the list's own Delete, is gone
+     with it). Said once: closed and opened again, the same day carries no stale note. */
+  await expect(page.getByTestId('bid-picker'), 'the window stays, as on any other day').toBeVisible()
+  await page.getByTestId('bid-cancel').click()
+  await page.locator(`[data-testid="cell-slipway-${day}"]`).click()
+  await expect(page.getByTestId('bid-picker'), 'the day opens its usual window again').toBeVisible()
   await page.waitForTimeout(300)
   await expect(page.getByText(/kept pending/), 'no stale note — nothing was kept pending this time').toHaveCount(0)
 })

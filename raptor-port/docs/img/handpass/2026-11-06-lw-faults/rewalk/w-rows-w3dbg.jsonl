@@ -1,0 +1,5 @@
+{"id":"S4e-quick120","size":"phone","did":"place LL, ~112 ms later tap OCT","saw":"lit before=DEC after=OCT; open=[]","verdict":"PASS","pics":["s4e-phone-quick120-q","s4e-phone-quick120-settled"],"build":"dist"}
+{"id":"S4e-slow1000","size":"phone","did":"place LL, ~1014 ms later tap AUG","saw":"lit before=DEC after=AUG; open=[]","verdict":"PASS","pics":["s4e-phone-slow1000-q","s4e-phone-slow1000-settled"],"build":"dist"}
+{"id":"S4e-quick120b","size":"phone","did":"place LL, ~102 ms later tap MAR","saw":"lit before=DEC after=MAR; open=[]","verdict":"PASS","pics":["s4e-phone-quick120b-q","s4e-phone-quick120b-settled"],"build":"dist"}
+{"id":"S4e-undo","size":"phone","did":"place LL, ~106 ms later press #undoBtn","saw":"before=true after=false","verdict":"PASS","pics":["s4e-phone-undo-q","s4e-phone-undo-settled"],"build":"dist"}
+{"id":"S4e-approvalstab","size":"phone","did":"place LL, ~114 ms later press [data-testid=\"lw-tab-approvals\"]","saw":"before=false after=true","verdict":"PASS","pics":["s4e-phone-approvalstab-q","s4e-phone-approvalstab-settled"],"build":"dist"}

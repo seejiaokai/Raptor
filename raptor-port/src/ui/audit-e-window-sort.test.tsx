@@ -269,3 +269,26 @@ describe('a next year leave approved on the Leave War', () => {
     clean('NY-')
   })
 })
+
+/* THE DESKTOP LIST'S COLUMN HEADINGS SORT BY KEYBOARD TOO (React Doctor's click-events-have-key-events on the heading, the
+   night of 6 Nov 26 — the design guide's §3: anything a mouse can do, the keys can). A heading took only a click: Tab
+   never reached it and no key sorted. Now each is a stop of the keyboard, and Enter or Space on it sorts as a click does
+   — the same press again turns the order round; any other key does nothing. */
+describe('the column headings by keyboard', () => {
+  const key = async (el: Element, k: string) => {
+    await act(async () => { el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true })) })
+  }
+  it('a heading is a stop of the keyboard; Enter or Space on it sorts as a click does, again turns it round', async () => {
+    await showAllDates()
+    const th = () => $('#intbl thead th[data-sort="type"]')
+    expect(th(), 'the Type heading').toBeTruthy()
+    expect(th().tabIndex, 'Tab reaches it').toBe(0)
+    await key(th(), 'Enter')
+    const once = th().getAttribute('aria-sort')
+    expect(once, 'Enter sorts by it').not.toBe('none')
+    await key(th(), ' ')
+    expect(th().getAttribute('aria-sort'), 'Space again turns it round').not.toBe(once)
+    await key(th(), 'a')
+    expect(th().getAttribute('aria-sort'), 'any other key does nothing').not.toBe(once)
+  })
+})

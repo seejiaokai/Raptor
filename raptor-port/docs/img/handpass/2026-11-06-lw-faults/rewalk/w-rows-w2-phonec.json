@@ -1,0 +1,46 @@
+[
+ {
+  "id": "S2-gap120",
+  "size": "phonec",
+  "did": "tap LL, tap again at the same point after ~120 ms (real 111 ms)",
+  "saw": "EXPECTED LL placed once, nothing open. Second tap landed on frozen-cols|SPAN.role lw-chip q-c; cell=LL:s-w; open after=[]; LL at {\"x\":67,\"y\":760}",
+  "verdict": "PASS",
+  "pics": [
+   "s2-phonec-g120-t2q",
+   "s2-phonec-g120-settled"
+  ]
+ },
+ {
+  "id": "S2-gap170",
+  "size": "phonec",
+  "did": "tap LL, tap again at the same point after ~170 ms (real 147 ms)",
+  "saw": "EXPECTED LL placed once, nothing open. Second tap landed on frozen-cols|SPAN.role lw-chip q-c; cell=LL:s-w; open after=[]; LL at {\"x\":67,\"y\":760}",
+  "verdict": "PASS",
+  "pics": [
+   "s2-phonec-g170-t2q",
+   "s2-phonec-g170-settled"
+  ]
+ },
+ {
+  "id": "S2-gap400",
+  "size": "phonec",
+  "did": "tap LL, tap again at the same point after ~400 ms (real 379 ms)",
+  "saw": "EXPECTED LL placed once, nothing open. Second tap landed on frozen-cols|SPAN.role lw-chip q-c; cell=LL:s-w; open after=[]; LL at {\"x\":67,\"y\":760}",
+  "verdict": "PASS",
+  "pics": [
+   "s2-phonec-g400-t2q",
+   "s2-phonec-g400-settled"
+  ]
+ },
+ {
+  "id": "S2-gap700",
+  "size": "phonec",
+  "did": "tap LL, tap again at the same point after ~700 ms (real 682 ms)",
+  "saw": "EXPECTED LL placed once; the second tap (after the moment) opens what is under it. Second tap landed on frozen-cols|SPAN.role lw-chip q-c; cell=LL:s-w; open after=[\"person-window\"]; LL at {\"x\":67,\"y\":760}",
+  "verdict": "PASS",
+  "pics": [
+   "s2-phonec-g700-t2q",
+   "s2-phonec-g700-settled"
+  ]
+ }
+]
