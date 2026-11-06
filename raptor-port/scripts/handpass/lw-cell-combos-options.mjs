@@ -51,6 +51,8 @@ export const OPTIONS = {
   /* his D1727 with the agent's fallback: the turned PO strip on a PO day holding ONE box; a PO day holding two entries keeps D's
      yellow line (last day) or the stripes on the boxes (posted out), where the strip leaves the codes no room */
   F: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip postone' },
+  /* his idea (6 Nov 26): the last day in is always the yellow line, never the word — "PO" is shown from the posted-out day on */
+  G: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip postone lastline' },
 }
 const P = '#page-leavewar .mx td'
 const GREY = 'rgba(150, 162, 178, .95)', AMBER = '#F2C879'
@@ -219,7 +221,7 @@ export function remap(map, cb) {
       out.boxes = [a, b]
     }
   }
-  if (has('postrip') && out.boxes.length && (!has('postone') || out.boxes.length === 1) && (cb.tiles.includes('po') || cb.tiles.includes('last')) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
+  if (has('postrip') && out.boxes.length && (!has('postone') || out.boxes.length === 1) && (cb.tiles.includes('po') || (cb.tiles.includes('last') && !has('lastline'))) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
   if (has('marks') && out.boxes.length) {
     if (cb.tiles.includes('more')) out.extraTd.push('cc-pile')
     if (cb.tiles.includes('warn')) out.extraTd.push('cc-alarm')
