@@ -34,6 +34,10 @@ export const CASES = [
   { n: 13, say: 'Attach alone, whole day', boxes: [box('ATCH', 'whole', 1)], tiles: [] },
   { n: 14, say: "The app's own FO, alone", boxes: [box('FO*', 'whole', 1)], tiles: [] },
   { n: 15, say: 'A morning and an afternoon (fits today — the control)', boxes: [box('LL', 'top'), box('OD', 'bot', 1)], tiles: [] },
+  { n: 16, say: 'A posted-out day: a course and leave in the afternoon', boxes: [box('CSE', 'left', 1), box('OIL', 'right-pm')], tiles: ['po'] },
+  { n: 17, say: 'His last day in: an Attach in the morning, a medical in the afternoon', boxes: [box('ATCH', 'top', 1), box('OML', 'bot', 1)], tiles: ['last'] },
+  { n: 18, say: 'His last day in: leave and an HO in the morning', boxes: [box('CCL', 'left'), box('HO', 'right-am')], tiles: ['last'] },
+  { n: 19, say: 'His last day in: two whole days', boxes: [box('LL', 'left'), box('CSE', 'right', 1)], tiles: ['last'] },
 ]
 function markup(cb0, map, star) {
   const cb = map ? remap(map, cb0) : { ...cb0, extraTd: [] }
@@ -57,6 +61,7 @@ const LOOKS = [
   { id: 'C', css: 'floor marks fit scale', map: 'floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'D', css: 'floor marks fit tilt scale', map: 'tilt floor marks', z: SIZE === 'phone' ? 0.8 : 1 },
   { id: 'E', css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip', z: SIZE === 'phone' ? 0.8 : 1 },
+  { id: 'F', css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip postone', z: SIZE === 'phone' ? 0.8 : 1 },
   ...(SIZE === 'phone' ? [
     { id: 'today-far', css: '', map: null, z: 0.4 },
     { id: 'A-far', css: 'flags fit', map: 'stack flags', z: 0.4, far: true },

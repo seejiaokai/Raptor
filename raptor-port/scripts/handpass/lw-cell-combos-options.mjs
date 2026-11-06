@@ -48,6 +48,9 @@ export const OPTIONS = {
   C: { css: 'floor marks fit scale', map: 'floor marks' },
   D: { css: 'floor marks fit tilt scale', map: 'tilt floor marks' },
   E: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip' },
+  /* his D1727 with the agent's fallback: the turned PO strip on a PO day holding ONE box; a PO day holding two entries keeps D's
+     yellow line (last day) or the stripes on the boxes (posted out), where the strip leaves the codes no room */
+  F: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip postone' },
 }
 const P = '#page-leavewar .mx td'
 const GREY = 'rgba(150, 162, 178, .95)', AMBER = '#F2C879'
@@ -135,7 +138,7 @@ ${P}.cc-gone .potag { display: none !important; }
 ${P}.cc-gone .c { background-image: repeating-linear-gradient(135deg, rgba(14, 20, 27, .3) 0 1.5px, transparent 1.5px 4px) !important; }
 ${P}.cc-last .polast { display: none !important; }
 ${P}.cc-last { box-shadow: inset -2px 0 0 #F2C879; }
-${P}.cc-last .c { right: 3.5px !important; }
+${P}.cc-last .c:not(.left) { right: 3.5px !important; }
 ${P}.cc-last.cc-alarm .mk.warn { right: 2px !important; }
 ${P}.cc-pile.cc-last .c:is(.whole, .top, .bot) { right: 6px !important; }
 ${P} .c:where(.top, .bot) { padding: 0 !important; }`,
@@ -216,7 +219,7 @@ export function remap(map, cb) {
       out.boxes = [a, b]
     }
   }
-  if (has('postrip') && out.boxes.length && (cb.tiles.includes('po') || cb.tiles.includes('last')) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
+  if (has('postrip') && out.boxes.length && (!has('postone') || out.boxes.length === 1) && (cb.tiles.includes('po') || cb.tiles.includes('last')) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
   if (has('marks') && out.boxes.length) {
     if (cb.tiles.includes('more')) out.extraTd.push('cc-pile')
     if (cb.tiles.includes('warn')) out.extraTd.push('cc-alarm')
