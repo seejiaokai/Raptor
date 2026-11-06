@@ -588,13 +588,16 @@ export function StageBar({ manningOpen = true, onManning, extra }: { manningOpen
               <div className="leg-row"><LegBox code="LL" mark="raptor" /><span className="leg-t">Filed on the Inputs page: change it there, not here</span></div>
               {/* the moved stripe: any move of a leave already approved wears it (D1177 — no longer only once bidding closed) */}
               <div className="leg-row"><LegBox code="LL" mark="moved" /><span className="leg-t">Moved here from another day</span></div>
-              {/* [ARCH-STACK] step 4 — the corner mark: one code per day, the
-                  rest behind a count (owner comp, 19 Sep 26) */}
-              <div className="leg-sec">The corner — more on the day</div>
-              {/* the grid's own tiles over the grid's own box (walker 1's #64, the code read's F4) */}
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+1</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
-              <div className="leg-row"><span className="leg-box" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span><span className="potag">PO</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
+              {/* MARKS ON A DAY (his D1731, 6 Nov 26 — "Legend ok", drawn in docs/img/handpass/2026-11-06-lw-cell-combos/draw/
+                  sheet-legend.png): the grid's own boxes and marks (D1727, D1728) in the Legend's cell-sized frame, the same
+                  classes the grid's cell wears, so the two cannot drift (matrix.css `bx-`). Replaced "The corner — more on the
+                  day" (the "+n" corner, the PO tag); the old rows' words kept. */}
+              <div className="leg-sec">Marks on a day</div>
+              <div className="leg-row"><span className="leg-box" data-testid="leg-two-whole"><span className="c k-ll s-a left bx-tilt">LL</span><span className="c k-cse s-a right bx-tilt wide">CSE</span></span><span className="leg-t">Two whole days: side by side, read bottom to top</span></div>
+              <div className="leg-row"><span className="leg-box bx-pile" data-testid="leg-corner-more"><span className="c k-ll s-a whole">LL</span><span className="mk more">+2</span></span><span className="leg-t">More on this day — tap to see every entry</span></div>
+              <div className="leg-row"><span className="leg-box bx-alarm" data-testid="leg-corner-warn"><span className="c k-ll s-a whole">LL</span><span className="mk warn">!</span></span><span className="leg-t">Something on this day needs an admin — tap to see</span></div>
+              <div className="leg-row"><span className="leg-box pofin bx-last" data-testid="leg-last-day"><span className="c k-ll s-a whole">LL</span><span className="polast">PO</span></span><span className="leg-t">His last day in the squadron</span></div>
+              <div className="leg-row"><span className="leg-box gone bx-gone" data-testid="leg-corner-po"><span className="c k-ll s-a whole">LL</span></span><span className="leg-t">Leave after a posting-out — not counted for manning</span></div>
               {/* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — every other balance is on
                   the Balances tab and in a person's window, so the Legend teaches the one column the grid still shows. */}
               <div data-testid="legend-figures">

@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1731 | 6 Nov 26 | The Leave War's Legend is built as drawn: its section "Marks on a day" teaches two whole days side by side read bottom to top, the stack of cards, the "!" tag, his last day's yellow line ("His last day in the squadron") and a gone day's striped box ("Leave after a posting-out — not counted for manning"). |
 | D1730 | 6 Nov 26 | An entry on a day after a man's posting out keeps its box in full colour, with the faint stripes alone; it is not faded. |
 | D1729 | 6 Nov 26 | The stripes that mark an entry on a day after a man's posting out are the faint dark stripes, not stronger grey ones. |
 | D1728 | 6 Nov 26 | On the Leave War a man's last day in is marked by a yellow line down the day's right edge, never the word; a day after his posting out that holds an entry is marked by the posting's grey diagonal stripes alone — no PO strip, no grey line, no PO word — and a gone day with nothing filed keeps its bare "PO". — changed by D1729 |

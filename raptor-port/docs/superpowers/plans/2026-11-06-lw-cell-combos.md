@@ -34,6 +34,8 @@ each change from it — pictured at his iPhone's size and a desktop's, each driv
 3. **Build** what he picks, every combination re-measured by the same script (it is the re-walk), at both sizes and the
    zoom ends; a WALK tier check at least, the drawing check against his pick.
 
+**His D1731 (6 Nov 26) — "Legend ok":** the Legend's "Marks on a day" as drawn (`docs/img/handpass/2026-11-06-lw-cell-combos/draw/sheet-legend.png`).
+
 **His D1730 (6 Nov 26) — "Top one better":** a gone day's box stays in full colour with the faint stripes, not faded; the stack's back card stays grey. The design review of the chosen look (20/32, `docs/img/handpass/2026-11-06-lw-cell-combos/design-review-2026-11-06-chosen.md`) leaves four build fixes that change no design: the turned boxes step down under a "!" so it has its own corner; letters measured clear of the ring, not only inside the box (a size step where not); a 1–2px gap before the yellow last-day line; the desktop's 97 to zero.
 
 **His D1728 (6 Nov 26) — "we don't need the vertical grey line on the right or PO shown":** his last day in is a yellow line down the day's right edge, never the word; a gone day holding an entry is marked by the posting's grey diagonal stripes alone (no PO strip, no grey line); a gone day with nothing filed keeps its bare "PO"; an entry of several days runs as one striped bar. Replaces D1727's PO strip. Pictures: `docs/img/handpass/2026-11-06-lw-cell-combos/draw/sheet-posting-out-*.png`; option K1 in the options file (map `tilt floor marks`, D's faint dark stripes — his D1729, "Faint is nicer", not `gonehatch`) is the build's starting point.

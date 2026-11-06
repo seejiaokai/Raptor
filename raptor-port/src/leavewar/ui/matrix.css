@@ -945,7 +945,7 @@ touch-action: pan-x pan-y;
   position: relative;
 }
 
-.mx td.pofin .polast {
+:is(.mx td, .leg-box).pofin .polast {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -2656,18 +2656,18 @@ touch-action: pan-x pan-y;
 /* HOW A DAY'S ENTRIES AND MARKS SHARE ITS CELL (his D1726, D1727, D1728, D1729, D1730 — 6 Nov 26, [LW-CELL-COMBOS]).
    Every combination of entries, codes and marks on one day (23,940) was measured on the built grid at his iPhone's size and
    a desktop's, every zoom, letters on their own ink; these rules are the design that left none cut. The classes come from
-   MatrixRows (`pairLook`, the cell's `bx-` marks). The `#page-leavewar` scope outranks the joined bar's rules, and the
+   MatrixRows (`pairLook`, the cell's `bx-` marks); the Legend's "Marks on a day" draws the same boxes in its `.leg-box` (D1731). The `#page-leavewar` scope outranks the joined bar's rules, and the
    `!important`s are the measured design's, over the box's base sizes and places above. */
 
 /* two whole days side by side, full height, their codes turned to read bottom to top */
-#page-leavewar .mx td .c.bx-tilt { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 7.5px !important; letter-spacing: 0 !important; padding: 0 !important; }
-#page-leavewar .mx td .c.bx-tilt.wide { font-size: 7px !important; letter-spacing: -.02em !important; }
-#page-leavewar .mx td .c.bx-tilt.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
-#page-leavewar .mx td .c.bx-tilt.left { border-radius: 2px 4px 4px 2px !important; }
-#page-leavewar .mx td .c.bx-tilt.right { border-radius: 4px 2px 2px 4px !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 7.5px !important; letter-spacing: 0 !important; padding: 0 !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt.wide { font-size: 7px !important; letter-spacing: -.02em !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt.left { border-radius: 2px 4px 4px 2px !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt.right { border-radius: 4px 2px 2px 4px !important; }
 /* turned, the Inputs edge (and the moved one) runs along the box's foot, which is its right side once turned */
-#page-leavewar .mx td .c.bx-tilt:is(.raptor, .moved)::before { left: auto !important; right: 0 !important; }
-#page-leavewar .mx td .c.bx-tilt:is(.raptor, .moved) { padding: 0 2px 0 0 !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt:is(.raptor, .moved)::before { left: auto !important; right: 0 !important; }
+#page-leavewar :is(.mx td, .leg-box) .c.bx-tilt:is(.raptor, .moved) { padding: 0 2px 0 0 !important; }
 
 /* a whole day beside a half keeps the whole cell; its letters low under a morning, high over an afternoon */
 #page-leavewar .mx td .c.bx-floor { inset: 2px !important; border-radius: 4px !important; padding: 0 !important; font-size: 7.5px !important; letter-spacing: 0 !important; }
@@ -2695,45 +2695,48 @@ touch-action: pan-x pan-y;
 #page-leavewar .mx td .c.bx-star.bx-roof { font-size: 5.5px !important; }
 
 /* three or more entries: the box is the top card of a stack, a grey card behind it, in place of "+n" (D1727, D1730) */
-#page-leavewar .mx td.bx-pile .mk.more { display: none !important; }
-#page-leavewar .mx td.bx-pile .c.whole { right: 4.5px !important; bottom: 4.5px !important; font-size: 8.5px !important; letter-spacing: 0 !important; }
-#page-leavewar .mx td.bx-pile .c.whole.wide { font-size: 7.5px !important; letter-spacing: -.02em !important; }
-#page-leavewar .mx td.bx-pile .c.whole.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
-#page-leavewar .mx td.bx-pile .c.top { right: 4.5px !important; }
-#page-leavewar .mx td.bx-pile .c.bot { right: 4.5px !important; bottom: 3px !important; }
-#page-leavewar .mx td.bx-pile .c:is(.top, .bot) { font-size: 7px !important; }
-#page-leavewar .mx td.bx-pile .c:is(.top, .bot).wide { font-size: 5.5px !important; }
-#page-leavewar .mx td.bx-pile .c:is(.top, .bot).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
-#page-leavewar .mx td.bx-pile .c.s-a { box-shadow: inset 0 0 0 1px rgba(var(--h), .85), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
-#page-leavewar .mx td.bx-pile .c.s-w { box-shadow: 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
-#page-leavewar .mx td.bx-pile .c.k-unav.s-a { box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .mk.more { display: none !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.whole { right: 4.5px !important; bottom: 4.5px !important; font-size: 8.5px !important; letter-spacing: 0 !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.whole.wide { font-size: 7.5px !important; letter-spacing: -.02em !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.whole.w4 { font-size: 6px !important; letter-spacing: -.04em !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.top { right: 4.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.bot { right: 4.5px !important; bottom: 3px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c:is(.top, .bot) { font-size: 7px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c:is(.top, .bot).wide { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c:is(.top, .bot).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.s-a { box-shadow: inset 0 0 0 1px rgba(var(--h), .85), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.s-w { box-shadow: 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile .c.k-unav.s-a { box-shadow: inset 0 0 0 1.5px rgba(200, 212, 228, .78), 2.5px 2.5px 0 rgba(150, 162, 178, .9) !important; }
 
 /* the "!" an outlined amber tag, small enough to stay above a whole day's letters; a box with letters in the top half
    steps them left of it, a size smaller; a turned box on the right starts below it */
-#page-leavewar .mx td.bx-alarm .mk.warn { top: 0 !important; right: 0 !important; bottom: auto !important; font-size: 6.5px !important; line-height: 1 !important; padding: .5px 1.5px !important; box-shadow: 0 0 0 1px #0E141B !important; color: #1A1206 !important; z-index: 2; }
-#page-leavewar .mx td.bx-alarm .c.whole:not(.bx-floor) { padding-top: 1.5px !important; }
-#page-leavewar .mx td.bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof) { padding-right: 4.5px !important; font-size: 6.5px !important; letter-spacing: 0 !important; }
-#page-leavewar .mx td.bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof).wide { font-size: 5.5px !important; letter-spacing: -.02em !important; }
-#page-leavewar .mx td.bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
-#page-leavewar .mx td.bx-alarm .c.bx-roof.bx-am { left: 3px !important; right: 6.5px !important; }
-#page-leavewar .mx td.bx-alarm .c.bx-roof.bx-am.w4 { font-size: 4.5px !important; }
-#page-leavewar .mx td.bx-alarm .c.bx-tilt.right { top: 7.5px !important; font-size: 6.5px !important; }
-#page-leavewar .mx td.bx-alarm .c.bx-tilt.right.wide { font-size: 5.5px !important; }
-#page-leavewar .mx td.bx-alarm .c.bx-tilt.right.w4 { font-size: 4.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .mk.warn { top: 0 !important; right: 0 !important; bottom: auto !important; font-size: 6.5px !important; line-height: 1 !important; padding: .5px 1.5px !important; box-shadow: 0 0 0 1px #0E141B !important; color: #1A1206 !important; z-index: 2; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.whole:not(.bx-floor) { padding-top: 1.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof) { padding-right: 4.5px !important; font-size: 6.5px !important; letter-spacing: 0 !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof).wide { font-size: 5.5px !important; letter-spacing: -.02em !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c:is(.top, .bx-floor.bx-hi):not(.bx-roof).w4 { font-size: 5px !important; letter-spacing: -.04em !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-roof.bx-am { left: 3px !important; right: 6.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-roof.bx-am.w4 { font-size: 4.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right { top: 7.5px !important; font-size: 6.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.wide { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-alarm .c.bx-tilt.right.w4 { font-size: 4.5px !important; }
 
 /* an entry on a day after his posting out: faint dark stripes on its box, no PO mark (D1728, D1729, D1730) */
-#page-leavewar .mx td.bx-gone .c { background-image: repeating-linear-gradient(135deg, rgba(14, 20, 27, .3) 0 1.5px, transparent 1.5px 4px) !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-gone .c { background-image: repeating-linear-gradient(135deg, rgba(14, 20, 27, .3) 0 1.5px, transparent 1.5px 4px) !important; }
 
 /* his last day in: the boxes step left of the yellow line (the `.polast` tile above), a long code a size smaller */
-#page-leavewar .mx td.bx-last .c:not(.left) { right: 3.5px !important; }
-#page-leavewar .mx td.bx-last .c.whole.wide { font-size: 8px !important; }
-#page-leavewar .mx td.bx-last .c.whole.w4 { font-size: 6.5px !important; }
-#page-leavewar .mx td.bx-last .c:is(.top, .bot).w4 { font-size: 5.5px !important; }
-#page-leavewar .mx td.bx-pile.bx-last .c:is(.whole, .top, .bot) { right: 6px !important; }
-#page-leavewar .mx td.bx-pile.bx-last .c.whole.wide { font-size: 7px !important; }
-#page-leavewar .mx td.bx-pile.bx-last .c.whole.w4 { font-size: 5.5px !important; }
-#page-leavewar .mx td.bx-last.bx-alarm .c.whole:not(.bx-floor) { padding-top: 2.5px !important; }
-#page-leavewar .mx td.bx-last.bx-alarm .mk.warn { right: 2px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last .c:not(.left) { right: 3.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last .c.whole.wide { font-size: 8px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last .c.whole.w4 { font-size: 6.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last .c:is(.top, .bot).w4 { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c:is(.whole, .top, .bot) { right: 6px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c.whole.wide { font-size: 7px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-pile.bx-last .c.whole.w4 { font-size: 5.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last.bx-alarm .c.whole:not(.bx-floor) { padding-top: 2.5px !important; }
+#page-leavewar :is(.mx td, .leg-box).bx-last.bx-alarm .mk.warn { right: 2px !important; }
 
 /* zoomed out, every code at one scale (D1726): a whole day's two letters at 8.9px, under the iPhone's 9px floor */
 #page-leavewar table.mx.lw-small td .c.whole:not(.wide) { font-size: 8.9px !important; }
+
+/* the Legend's posted-out box sits on the posting's own hatch, as the grid's gone day does (D1731) */
+#page-leavewar .leg-box.gone { background: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(58, 67, 79, .75) 4px, rgba(58, 67, 79, .75) 6px); }

@@ -216,17 +216,21 @@ describe('the colour/mark legend', () => {
 
   /* The figure beside each name (D1245, 22 Oct 26): LVE alone since the overhaul's M2 — the Legend teaches that one
      column, no longer every balance the old drawer and picker carried (walker 1's fault 65, the code read's F2). */
-  /* walker 1's #64 (the code read's F4): the corner rows are the grid's own box with the grid's own tiles — "+1", the
-     amber "!" and the PO tag — never the old text swatch, so the key cannot show a mark the grid does not paint */
-  it("draws the corner rows with the grid's own box and tiles", () => {
+  /* walker 1's #64 (the code read's F4): the Legend's marks are the grid's own box with the grid's own classes, never a text
+     swatch, so the key cannot show a mark the grid does not paint — since his D1731 (6 Nov 26) the section "Marks on a day":
+     the stack of cards, the "!" tag, the last day's yellow line, the striped gone day, and two whole days turned */
+  it("draws the marks on a day with the grid's own box and classes (D1731)", () => {
     render(<StageBar />)
     fireEvent.click(screen.getByTestId('legend-open'))
-    for (const [id, tile] of [['leg-corner-more', '.mk.more'], ['leg-corner-warn', '.mk.warn'], ['leg-corner-po', '.potag']] as const) {
+    for (const [id, cls, tile] of [['leg-corner-more', 'bx-pile', '.mk.more'], ['leg-corner-warn', 'bx-alarm', '.mk.warn'], ['leg-last-day', 'bx-last', '.polast'], ['leg-corner-po', 'bx-gone', null]] as const) {
       const box = screen.getByTestId(id)
-      expect(box.className).toBe('leg-box')
+      expect(box.classList.contains('leg-box')).toBe(true)
+      expect(box.classList.contains(cls)).toBe(true)
       expect(box.querySelector('.c.k-ll.s-a.whole')?.textContent).toBe('LL')
-      expect(box.querySelector(tile)).toBeTruthy()
+      if (tile) expect(box.querySelector(tile)).toBeTruthy()
     }
+    expect(screen.getByTestId('leg-corner-po').querySelector('.potag')).toBeNull()   // no PO tag beside an entry (D1728)
+    expect([...screen.getByTestId('leg-two-whole').querySelectorAll('.c.bx-tilt')].map(c => c.textContent)).toEqual(['LL', 'CSE'])
     expect(screen.getByTestId('legend-open').ownerDocument.querySelector('.leg-sw.legmk')).toBeNull()
   })
 
