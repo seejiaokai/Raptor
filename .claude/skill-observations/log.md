@@ -3672,3 +3672,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** add to the method's step 1: "A message no control reaches (a safety net) is pictured by reaching its ELEMENT through the nearest real state that raises it, then changing only its words, named on the page; first try whether the forcing hook survives the app's own correction — a refusal often restores what it refused."
 
 **Principle:** When the state you need is one the system actively corrects, picture the container from a reachable sibling state and change the minimum, rather than fighting the correction.
+
+### Observation 803: The document check passed with a merge's clash markers still in a full-text rulings file
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** [NOTSAVED-REFUSAL-LOOK] — bringing main (202 commits) into the branch before the build
+**Skill:** New skill candidate: none — the project's document check (`raptor-port/scripts/docsize.mjs`)
+**Type:** internal
+**Phase/Area:** the merge of notes files; the document check as the guard
+
+**Issue:** Six notes files clashed; one more (`.claude/decisions-full/design.md`) was missed by the resolver because the merge's printed list was cut short by `tail`. The document check then passed (exit 0) with `<<<<<<<`, `=======` and `>>>>>>>` lines still in that file; only `git commit` refused, naming it.
+
+**Suggested improvement:** the document check fails on any line beginning `<<<<<<< `, `=======` or `>>>>>>> ` in a file it reads; and a merge's clash list is read from `git diff --name-only --diff-filter=U`, never from the merge's own printout through `tail`.
+
+**Principle:** A guard that reads files should refuse the one marker a half-finished merge always leaves; and a list that decides what to fix is taken whole from the tool that keeps it, never from a cut-short printout.
+
+### Observation 804: A drawing laid over a live element inherits whatever the app had done to that element
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** [NOTSAVED-REFUSAL-LOOK] — the drawing check after the build
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method — drawing a new face on an existing element
+
+**Issue:** The drawing restyled a red refusal tag into the grey "Blocked" tag in place. On the phone the app had already moved the red tag sideways to keep it on screen (an inline nudge set from its first width); the restyled, narrower tag kept the nudge, so the approved picture shows it 53px from its box. The build, drawing the tag fresh, needs no nudge — and the drawing check reported a difference that was the drawing's, not the build's. Found only by measuring both builds with a probe.
+
+**Suggested improvement:** add to the method: "when a drawing restyles a live element, clear what the app set on it for its old look (inline position, transform, a measured width) or re-run the app's own placing after the restyle; name in the drawing any element whose place the app works out from its size."
+
+**Principle:** A mock made by restyling a live element carries the app's adjustments for the old look; reset them, or the approved picture records an artefact the real build will never draw.

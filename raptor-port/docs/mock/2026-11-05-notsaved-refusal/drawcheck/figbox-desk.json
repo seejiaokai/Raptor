@@ -1,0 +1,184 @@
+{
+ "state": "figbox-desk",
+ "drawing": {
+  "script": "scripts/handpass/nsr1105-today.mjs",
+  "shot": "R1-figbox-r2grey-desk"
+ },
+ "recorded": "2026-11-06T15:39:45.042Z",
+ "drawnOn": "main at 1f4b9b885",
+ "checkout": "2fa83931d",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "box": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 394.8,
+    "y": 281.5,
+    "w": 54,
+    "h": 28
+   },
+   "ink": {
+    "x": 423.3,
+    "y": 287.4,
+    "w": 15.5,
+    "h": 16.2
+   },
+   "text": "22 ",
+   "typed": true,
+   "look": {
+    "fill": "rgb(13, 18, 23)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(255, 122, 132)",
+     "1px solid rgb(255, 122, 132)",
+     "1px solid rgb(255, 122, 132)",
+     "1px solid rgb(255, 122, 132)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "right",
+    "justify": "flex-end",
+    "font": "700 13.5px",
+    "spacing": "normal"
+   },
+   "tag": "input.mth-in.bp-bx"
+  },
+  "tag": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 394.8,
+    "y": 313.5,
+    "w": 83.2,
+    "h": 27.6
+   },
+   "ink": {
+    "x": 424.8,
+    "y": 318.5,
+    "w": 44.2,
+    "h": 16
+   },
+   "text": "Blocked",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.bp-err.nsr-ref.nsr-left.nsr-grey"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 403.8,
+    "y": 320.5,
+    "w": 14,
+    "h": 14
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2016%2016'%3E%3Ccircl",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.nsr-sign"
+  },
+  "word": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 424.8,
+    "y": 318.5,
+    "w": 44.2,
+    "h": 16
+   },
+   "ink": {
+    "x": 424.8,
+    "y": 318.5,
+    "w": 44.2,
+    "h": 16
+   },
+   "text": "Blocked",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  }
+ },
+ "approved": {
+  "picture": "R1-figbox-r2grey-desk.png",
+  "identical": true
+ }
+}
