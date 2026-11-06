@@ -1243,6 +1243,16 @@ export function waveHeadTail(w:any):string{
    under it print the clock alone. Drawn by the board's builder (board.ts) and kept true by the refresh below. */
 export const SB_PREVDAY='<span class="sb-prevday">(prev day)</span>';
 export function sbPrevDay(w:any):boolean{if(!w||isStandalone(w))return false; const r=waveInTime(w); return r!=null&&r<0;}
+/* THE RED NOTE UNDER A WAVE'S IN-TIME LINES — ONE BODY FOR EVERY WRITER (owner D1648, 5 Nov 26 — "Go" on the mock-up page's
+   question 4): the builder below (intimesInner), the refresh above it, and the two in ui/textedit.ts (a line being typed, a
+   line committed) each joined the wave's issues one message per formation, so a wave of several unnamed lines (each named
+   for the wave) and an unreadable whole-wave clock said the same sentence once a line — "WAVE 3: reporting line 1 has no
+   recognised clock. Check the time." three times. Each distinct sentence is said once now, in the order first met; the
+   day's issues list (engine/reporting.ts reportingIssuesForDay, read by validate) is unchanged. A fault the formation's
+   own R box causes is the box's to explain, never the lines' (D509 — the box carries it), as before. */
+export function reportNote(w:any,gi=0):string{
+  return [...new Set(reportingIssuesForWave(w,gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg))].join(' ');
+}
 export function refreshWaveReports(root:ParentNode|null|undefined):void{
   if(!root)return;
   /* …and the red explanation under a wave's lines (the Rally reader's second pass, 6 Oct 26; D509 "explained while
@@ -1253,7 +1263,7 @@ export function refreshWaveReports(root:ParentNode|null|undefined):void{
     const [di,gi]=String(blk.dataset.intimes).split('|').map(Number), w=DAYS[di!]&&DAYS[di!].waves&&DAYS[di!].waves[gi!];
     const note=blk.querySelector('[data-reporting-feedback]');
     if(!w||!note)return;
-    const want=reportingIssuesForWave(w,gi).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' ');
+    const want=reportNote(w,gi);
     if(note.textContent!==want)note.textContent=want;
   });
   root.querySelectorAll<HTMLElement>('[data-move^="mv:w."]').forEach(go=>{
@@ -1296,7 +1306,7 @@ export function intimesInner(w:any,ek?:any,grip?:boolean){
       +`<button class="itx" data-itdel="${ek}|${i}" title="Remove this ${REPORTING_LABEL} line" aria-label="Remove this ${REPORTING_LABEL} line">✕</button>`;
     return grip?`<div class="itrow" data-move="mv:it.${ek.replace('|','.')}.${i}"><span class="sb-grip" title="Drag to move this line">⠿</span>${pair}</div>`:pair;
   }).join('')
-    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportingIssuesForWave(w).filter(i=>!(i.box&&!i.lines.length)).map(i=>i.msg).join(' '))}</span>`:'');}
+    + (ek?`<span class="reporting-feedback" data-reporting-feedback data-warnkey="it:${ek.replace('|','.')}" role="status">${esc(reportNote(w))}</span>`:'');}
 /* AREA and TIME are not the model fields they are edited through. Until a
    scheduler types over them they READ OFF THE AIRCRAFT: the distinct area codes on
    the formation, and the formation's own TO–LD. Both surfaces have to agree on that
@@ -1465,7 +1475,7 @@ export function saBadgesHTML(key:any,a:any,ed:any,board?:boolean){
    instead — the clickable control that is always present so the dropped state
    stays reachable. The Inputs page keeps its own mark — see lateShown in
    state/view.ts. Gated at the UI, never in the engine: `isLateInput` goes on
-   answering, and the mark was never a rule (§Stable decisions). */
+   answering, and the mark was never a rule (.claude/rules/decisions/scheduler.md §Settled before this list, The late-input mark). */
 /* THE MARK OF A SHARED INPUT IS ITS ONE ROW'S (`[GROUP-INPUT-ONE-ROW]`; owner D661 — the plan
    2026-10-10-group-input-one-row-plan.md §4.5: "the LATE chip on the one row or the one line is shown when any of its
    records reads late, and a tap drops or restores it for all of them"). A shared input is drawn as ONE row on the
@@ -1779,10 +1789,13 @@ function dayHTMLBody(di:any,ed:any,vsel?:any){
        the board at all. role="button" + tabindex="0" make it one Tab stop that a screen reader names as a button; Enter and
        Space open it (interactions.ts routeOpenKey), the ring is keyboard-only (11-drag.css). Not a text box, so the
        schedule's own Tab route (schedule-tab.ts, D551–D555) never visits it. EDIT week only: the view week's date keeps the
-       reference's markup byte for byte (the parity gate, html.test.ts normDt). */
+       reference's markup byte for byte (the parity gate, html.test.ts normDt).
+       THE DAY NAME BESIDE IT TOO (owner D1646, 5 Nov 26 — the mock-up's picture 2d): it shows that day's crew in the aircrew
+       panel on a press, and took no key — the same two marks make it a stop, Enter and Space press it (routeOpenKey), the
+       ring the same (11-drag.css); lifted off the parity compare by normDow, as normDt lifts the date's. */
     let h=`<section class="day ${d.today?'today':''} ${ok?'dok':''}${PV?(PVQ?' issued':' preview'):''}" data-day="${di}">
       <div class="day-head">${ed
-        ? `<span class="dow crewday" data-crewday="${di}" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
+        ? `<span class="dow crewday" data-crewday="${di}" role="button" tabindex="0" title="Show this day's crew in the aircrew panel">${d.dow}</span><span class="dt sb-open" data-sbday="${di}" role="button" tabindex="0" title="Open scheduler board">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : isGuest()   /* a guest's tree has no day panel (GuestApp) — plain text, never a dead door */
         ? `<span class="dow">${d.dow}</span><span class="dt">${shortYear(d.dt)}${d.today?' · Today':''}</span>`
         : `<span class="dow di-open" data-dayinfo="${di}" title="Day details">${d.dow}</span><span class="dt di-open" data-dayinfo="${di}" title="Day details">${shortYear(d.dt)}${d.today?' · Today':''}</span>`}${(ed||vsel)?`<span class="dhtpl">${ed?`<button class="dhbtn" data-daytplopen="${di}" title="Save this day, or apply a saved template">Templates</button>`:''}${planSelectorHTML(di)}</span>`:''}<span class="dhver">${verTagHTML(di)}${nysMarkHTML(di)}</span>

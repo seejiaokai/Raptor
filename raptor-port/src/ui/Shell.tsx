@@ -35,7 +35,7 @@ import { HIST } from '../state/history'
 import { useVersion, useUndoVersion } from './useStore'
 import { ViewWeek } from './ViewWeek'
 import { legendHTML } from './html'
-import { routeClick, routeOpenKey } from './interactions'
+import { routeClick, routeOpenKey, routeMenuKey } from './interactions'
 import { routeFocusOut, routeFocusIn, routeKeyDown, routeReportingInput } from './textedit'
 import { DayPop, InsightsModal, AirPop } from './Modals'
 import { WeekCal } from './WeekCal'
@@ -276,6 +276,7 @@ export function Shell() {
     document.addEventListener('input', routeReportingInput)
     document.addEventListener('keydown', routeKeyDown)
     document.addEventListener('keydown', routeOpenKey)
+    document.addEventListener('keydown', routeMenuKey)
     const dragOff = initDrag()
     const panOff = initPan()
     return () => {
@@ -287,6 +288,7 @@ export function Shell() {
       document.removeEventListener('input', routeReportingInput)
       document.removeEventListener('keydown', routeKeyDown)
       document.removeEventListener('keydown', routeOpenKey)
+      document.removeEventListener('keydown', routeMenuKey)
       document.removeEventListener('focusin', routeFocusIn)
       dragOff()
     }

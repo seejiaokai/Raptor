@@ -8,6 +8,7 @@ import { CURPAGE, SBDAY, DPREV, navGen } from '../state/view'
 import { notify } from '../state/store'
 import { oilModeOn } from './oilmode'
 import { windowOverSchedule } from './pops'
+import { noteOpener } from './sheetfocus'
 
 const WEEK_TEXT = '[data-txt],[data-inp],[data-itline],[data-bombs],[data-area],[data-atime]'
 const BOARD_TEXT = '[data-bfld],[data-ifld],[data-itline],[data-bombs],[data-area],[data-atime]'
@@ -107,8 +108,13 @@ export function routeScheduleTab(e: KeyboardEvent, refresh: (el: HTMLElement) =>
   source.blur()
   /* THE SAVE ASKED FOR A WINDOW (W12): a weekend duty request's time opens the OIL question, drawn a moment after this
      handler ends. Stop here — the caret must not land in a box behind it, where typing and further Tabs would go on
-     editing the schedule unseen; the window takes the keyboard when it opens (ui/sheetfocus.ts). */
-  if (windowOverSchedule()) return true
+     editing the schedule unseen; the window takes the keyboard when it opens (ui/sheetfocus.ts).
+     AND GIVES THEM BACK TO THE BOX HE WAS TYPING IN ([WINDOWS-KEEP-KEYS]'s leftover — the reader D2's second pass, 6 Oct 26:
+     "after the OIL question is answered the caret is on nothing"). The box was blurred above, before the window opened, so
+     the window found the keys on nothing and had nothing to give them back to: his place in the run was lost. The box is
+     named to the window now (noteOpener — found again by its marks after the save's redraw), and the keys go back to it
+     when the question is answered or set aside. */
+  if (windowOverSchedule()) { noteOpener(source); return true }
   if (!sameScope(scope)) return true
   // A blur handler can deliberately give a newly opened dialog its own caret.
   // Preserve that focus rather than overriding it with the collected successor.

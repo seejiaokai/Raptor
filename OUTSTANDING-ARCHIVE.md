@@ -7881,3 +7881,16 @@ change.
 **Done (6 Nov 26, merged live on his "merge live", pull request 650):** taken in by [LW-CELL-COMBOS]: his last day in is a yellow line down the day's right edge, never the word (his D1728); the boxes step left of it (walk L-last-or-half).
 **What:** on a man's last day in the squadron the grid draws a small yellow "PO" tag at the top of the cell; when a box stands on that day — Diesel's OD on 28 Dec, Echo's LL on `main` too — the tag sits over the top of its letters (picture `raptor-port/docs/img/handpass/2026-11-06-lw-faults/d1720/A-phone-1-diesel-row.png`). The walker 1 rule of 23 Oct 26 (a corner tile never covers a box's letters) moved the other corner marks but not this one. **Older, not from D1720.** A fix moves the tag or the letters, so it is a look he sees: drawn for him first (D1625). **Place:** his to place.
 
+
+*Moved here 2026-11-06 by backlog-archive.mjs ([SAVEBAND-LOOK]). Forward facts: `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`.*
+
+### [SAVEBAND-LOOK] The "Not saved" band, nicer (his idea, 5 Nov 26)
+**Done (built and live with pull request 638, `claude/member-guest-checks`, 5 Nov 26; archived when pull request 636 merged, 6 Nov 26):** evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`.
+**What:** his words: *"I'm thinking of making the not saved look nicer"*. The band is one design in one stylesheet
+(`raptor-port/src/ui/scheduler/17-save-status.css`, `ui/SaveStatus.tsx`), drawn in four places: under the top bar on every
+page, under the Scheduler Board's own bar, in the Leave War's OIL tracker, and in the Inputs page's full Medical view; the
+"OIL not answered" bar shares its look and height (D841). Two looks drawn on the real app: 1, the strip (a drawn warning
+sign, "Not saved" bold, Retry a solid amber button) and 2, the pill (one amber pill in the middle of a plain band) —
+`raptor-port/docs/mock/2026-11-05-save-band/img/`, script `scripts/handpass/sb1105-mock.mjs`. Both keep the band's
+height, place and amber line (D587, D841) and add no glow (D887). **His pick, 5 Nov 26 (D1655): look 1, the strip.** **Place:** one build with [ACCESS-WAIT-LOOK] and [GUEST-SAVE-WARNING]'s band (D1657), the OIL bar restyled alike.
+

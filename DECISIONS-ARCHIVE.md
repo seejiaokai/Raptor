@@ -363,6 +363,12 @@ day they moved. The live list and its map: `DECISIONS.md`.
 |---|---|---|---|---|
 | D1616 | 4 Nov 26 | **REPLACED BY D1618 (4 Nov 26).** *"1. Yes show me mock up"* — to the design look's question 1 (the start-up claw and the sign-in's logo both on screen during the claw's 0.2 s fade), after asking *"eventually there will be no login page correct?"* and *"So next time when someone logins they go to the view schedule page"* and being told yes to both, with the recommendation to land on whichever logo the first screen shows | **As the start-up claw goes, it glides and shrinks onto the logo of the screen it hands over to — the sign-in's logo today, the top bar's small claw beside "142 TALON" once Microsoft's sign-in replaces the page — so the two never show at once; it adds no time; the top-bar version is drawn for him before it is built.** The agent's readings, stated to him: any claw not yet drawn finishes on the way (the mock-up of 4 Nov 26); the same 0.22 s as today's fade, sliding and fading only, so it keeps running on a busy phone; after the move the first screen is View-only Sched for everyone (`state/store.ts resetSession`, checked); a reader who asked for less motion keeps today's plain removal. | `raptor-port/docs/ui-contracts.md` §The loading claw; filed as [TALON-CLAW-HANDOVER] |
 
+## Moved 5 Nov 26
+
+| # | Date | His ruling, in his words where short enough | What it means | Where it lives now |
+|---|---|---|---|---|
+| D1661 | 5 Nov 26 | **SPENT 5 Nov 26 — the two lines added to `.gitleaksignore` on `claude/member-guest-checks` (commit 6c8ab1f62).** *"My fade looks good. The rest as recommended"* — to "may I add the two flagged lines to the secrets scan's list?", recommended yes | **The two lines the secrets scan flagged on the member / guest check's branch — the app's own access-request record id in two walk-results files — go on the scan's list of findings judged not a secret, by file and line, as the scan's guide says (D1408).** A one-off permission, spent when the lines are added. | `raptor-port/docs/gates-and-deploy.md` (D1661) |
+
 ## Moved 6 Nov 26
 
 | # | Date | His ruling, in his words where short enough | What it means | Where it lives now |

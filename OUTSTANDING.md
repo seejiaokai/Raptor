@@ -174,10 +174,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
-- [VEILED-WINDOWS-BAR] — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
+- [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
-- [WINDOWS-KEEP-KEYS] — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
-- [BOARD-KEYS-LEFT] — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
+- [WINDOWS-KEEP-KEYS] — his answer D1648 (5 Nov 26), building the night of 5 Nov 26 — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
+- [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
+- [BOARD-KEYS-LEFT] — his answer D1646 (5 Nov 26), building the night of 5 Nov 26 — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -231,6 +232,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [AIRCRAFT-TYPE-SETTING] — each deployment set to its aircraft type by a setting, one code base (D1536); at the database step or hand-over.
 - [M365-HOSTING-TRIAL] — the app on his own M365 with no database (D1532) — **waits for his word: no test account yet (D1682, 5 Nov 26)**; not proposed again until he raises it.
 - [DB-STEP] — the move into the shared database: the table format written on his side, then the one adapter.
+- [DB-SECURITY-ROLES] — the agent designs the database's security roles from data-model §11 (D1653); IT enters them; a member-only account tests them.
 - [DB-WAITING-CREATEDBY] — the database's own "created by" on a waiting person's change-log row would name him; write such rows through a service account.
 - [DB-ONE-MASTER-FIXES] — the check's places that do not read the one table, for the database step (D1587, D1589): Quals ticks, holidays, a posted-out man, a Tracker student, medical documents, four smaller, history names.
 - [DB-OIL-OWN-TABLE] — at the database step earned OIL gets its own table by person and date, not tied to a Leave War period, read by every screen (D1579, 3 Nov 26).
@@ -315,6 +317,30 @@ pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it st
 tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
 gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
 Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+
+### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
+**What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
+(26 tables × admin, member, guest, pending): (1) each table's create / read / change / delete per role, at none, own rows or
+all rows; (2) row ownership — the app sets a person's account as owner of his rows when it makes them (his Person and
+QualMark rows, his inputs), so "his own row only" holds in the database; (3) column-level protection for the columns a member
+may not change on his own row (the callsign, Management, Scheduler — D218, D1510, D1651); (4) every rule a role cannot hold
+(a published day changes only by amendment, the day lock, the commit gate's checks) with what stands in for it, the platform
+having no server-side code today (`docs/handover-dataverse.md`), and the risk left. Read by a fresh reader and a security
+reader (D1411). **Joining:** the admin's one choice, member or admin, puts the person into a group ("TALON members" /
+"TALON admins") that carries the role — no per-person ticking. **For the IT side:** whether the admin accounts may add people
+to those groups from the app (a role-assigning permission granted once) or IT does it per joiner; and the one squadron group
+that lets an account into the environment at all. **Then:** IT enters the roles (by hand or as one package, an hour or two);
+the kit's test with a second, member-only account (the move plan's point 35). The agent's reading of Dataverse, to check in
+the hosting trial ([M365-HOSTING-TRIAL]) and with the IT side. **Place:** the database step.
+**The day lock without a plug-in (the agent's reading, 5 Nov 26, to check in the hosting trial):** `data-model.md` §3 ScheduleDay's lock rests on ownership plus one plug-in and SYSTEM Custom APIs. Without them: ownership and the free team stay as designed (a non-holder's save refused by the database itself); schedulers get Assign at User depth only; every change of holder (take a free or idle day, a take-over asked or forced) goes through an instant Power Automate flow the app starts, run under a service account IT sets up, which checks the rules first — idle read from the row's own `modifiedon`, the server's clock — and then reassigns; a code app can call a flow directly (since about April 2026, a community source). Left soft, in the app only: one person's two tabs (the database cannot tell them apart). For IT: may a flow run as a service account and reassign rows; does it need a premium connector.
+
+### [ACCESS-WAIT-LOOK] The screen after asking for access, cooler and more welcoming (D1649, 5 Nov 26)
+**Done (built and live with pull request 638, `claude/member-guest-checks`, 5 Nov 26; archived when pull request 636 merged, 6 Nov 26):** evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`.
+**What:** his words of 5 Nov 26 on the picture of "Your request is with the admins" (the screen a newcomer sees once he has
+asked for access, `raptor-port/src/ui/AccessScreen.tsx`): *"this design is quite ugly. Can u make it more cool and
+welcoming"*. **To do:** mock-ups drawn on the real app, a phone and a desktop, a few directions with one recommended, the
+failed-save band of [GUEST-SAVE-WARNING] drawn on the chosen one; his pick; then the build with a walk. **Place:** now, his
+pick first.
 
 ### [TRK-STANDALONE-LEFTOVERS] The code kept only for a standalone Tracker (D1538, 31 Oct 26)
 **What:** since D1538 the Tracker will never be exported back out as its own app, so the code that exists only for a standalone
@@ -1363,7 +1389,7 @@ switched on in our environment? a separate development environment? Dataverse av
 developer ("maker") seat in dev? how people get in (a security group, security roles)? which connectors are allowed?
 how work moves from dev to production, and who presses it? auditing and backups on, and how to restore? where settings and
 secrets live? can server-side rules be plug-ins, and who may deploy them? **and: can our squadron admin set a person's role
-from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (D351,
+from inside the app, or must IT assign it?** (decides whether "make Hex an admin" is one tap or an IT request). **And (5 Nov 26, his "as recommended"): would you import a ready-made solution file built on his own Microsoft 365, or only build the tables from `SCHEMA.md`, as the SWiFT kit says — and what publisher prefix should the tables use (a file built with another prefix would not drop in)?** **And (D351,
 28 Sep 26): how long is the change history kept (the retention rule)?** — it decides whether Admin → Data's "Clear edit
 history…" follows that rule or goes; until then it stays as it is. **And (D356, 29 Sep 26): what request limit applies to
 each person's app on our licences?** *(29 Sep 26: Microsoft's figure is 40,000 requests a person a day on the Power Apps
@@ -2015,6 +2041,7 @@ stay readable by other models). **Place:** next, after pull request 524.
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The night of 5 Nov 26 (his "Go"): the keyboard and windows batch (D1645–D1648 — `claude/keyboard-windows-batch-5eff45`); [TRK-STANDALONE-LEFTOVERS] with the Tracker's React Doctor warnings (saved data: the Tracker's storage path); [MEMBER-EDITPAGE-CHECK] with [GUEST-SAVE-WARNING] (who may do what) | a fresh, blind Opus reader each (D790), and for the last a security read (D1411) | Astra and Sol 6.1 |
 | The Inputs batch [INPUTS-FIXES-1103] — the October finds and his answers (saved data: the LATE drop and Make public; the published record: To go out, Make public on a published day; D1594) — on `claude/inputs-small-fixes-2`, pull request 625 | a fresh, blind Opus reader (D790), its scenarios a fresh Opus reader's (D1594) | Astra's scenario design and code read; Sol 6.1's second read |
 | The night of 31 Oct 26 (D1531) — the M365 move plan page (`claude/m365-move-plan`); [SYSTEM-PASS-SAVES-ROSTER] with [LW-DELETED-RESTORE-OVERREFUSE] (saved data, who may write it — `claude/lw-roster-restore-fixes`); the secrets scan and scorecard (D1408, D1409 — `claude/secrets-scan-scorecard`); the pinch fixes (`claude/pinch-fixes-1031`) | each: one fresh, blind Opus reader (D790, D903); job 2 also the security read (D1411) | Astra's and Sol 6.1's reads (job 2's two, D590) |
 | The Leave War small fixes — a deleted man's leftover bid refused at every door and in Undo / Redo (saved data: an approval writes a leave input), the clash note's and credited sheet's codes, the month's memo across its edge; FULL-checked on the night of 29–30 Oct 26 on `claude/lw-small-fixes-1030` (pull request 592) | the scenario design and the code read: fresh, blind Opus readers (D790); the two fix rounds' narrow reads: fresh Opus readers (the second still owed at the time of writing) | Astra's scenario design and Astra's and Sol 6.1's reads of the finished code (saved data) |
@@ -2163,7 +2190,19 @@ armFreshTime). **Place:** low — with the next iPhone look at the board.
 ### [LOOK-COUNT-BOARD-ASK] The Scheduler Board's look at a version shows no "N pending"; the week's look shows one (found 2 Nov 26 by the schedule leftovers' walk — a question kept for him)
 **A question for him, not put until he says (D994).** Opened from the plans selector on a published day with changes waiting, the week's 👁 look at an issued version shows the day's "N pending" (since 2 Nov 26 the working copy's own count — `[LOOK-PENDING-COUNT]`, `html.ts` PVPC), while the Scheduler Board's look shows none: its strip under a look carries only who signed the version and the plans selector (`board.ts boardSignBody`, its `pv` branch). View-only Sched's issued face shows none either (AM24). Pictures: `raptor-port/docs/img/handpass/2026-11-02-schedule-leftovers/walk/D8-2-look-at-original-count.png` (the week) beside `D8-4-board-look-count.png` (the board). **To ask:** should a look at an issued version show the day's waiting count — on both, on neither? Recommended when put: on both, since the look's bar offers "Load onto working copy", and what it would throw away is the point. **Place:** with the next change to the version look or the board's sign strip.
 
+### [LOCATE-ITEM-MARKS] Finding a redrawn button again by its first mark (filed 5 Nov 26 — the keyboard and windows batch's second narrow read)
+**What:** `raptor-port/src/ui/sheetfocus.ts locate()` finds a control again after a string redraw by its id, else by its FIRST
+`data-` attribute. Where a button's first mark names an action shared by many items (an input's "→ Ground"), the search can
+land on another item's button — the read's H1, where the keys' "twin" could have been another input's "→ Ground", one Enter
+from putting that input on the programme unseen. H1 itself is fixed in that batch (the twin must carry the same `data-acck`).
+**The reader's question:** should `locate()` know a short list of the marks that name the item a button belongs to (an
+input's, a row's, a wave's), and match on them before the first mark? **To do:** list the controls `locate()` is used for,
+which carry such a mark, and either teach it the list with a test per kind or close this with the reason. Nothing a person
+sees changes. **Place:** low, the agent's — with the next keyboard or windows job. Evidence:
+`raptor-port/docs/handpass/parts/kw1105/read-fixes2-opus.md`.
+
 ### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
+**His answer, 5 Nov 26 ("Go" — the mock-up page's question 2): D1646** — the board's small menus, its day and week chips and Edit Schedule's day name reached and pressed by the keyboard, the app's cyan ring; (2) and (5) ride with it. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
 Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (`raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b), older than that job:
 (1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
 the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
@@ -2197,6 +2236,7 @@ was that. **To do:** if it fails again, make it wait on what it needs, not on ti
 **Place:** low — watch.
 
 ### [VEILED-WINDOWS-BAR] The other veiled windows keep the bar covered; three things do not close on Escape (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s roll-call; older; low)
+**His answers, 5 Nov 26 ("Go" — the mock-up page's questions 1 and 3): D1645** — the bar stays pressable over "Jump to a date", the day-details window and the document viewer (the input window and the question boxes keep it covered); **D1647** — on View-only Sched the Traffic window is the read-only list for everyone. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
 **The Escape part BUILT the night of 3 Nov 26 (commit `e76f32440`):** the board's small menus (and the duty role list, built by the same menu), the Traffic window and the day-details window close on Escape, newest first, the board staying open, the keys back on their button; a Traffic line being typed is saved as ✕ saves it. Which windows cover the top bar is unchanged — that part stays open. The report: `raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b.
 Every window drawn on the `.airpop` veil covers the top bar (or the board's bar) as the Traffic window did. Its roll-call, in `raptor-port/docs/handpass/2026-10-30-board-escape-traffic.md` §2: the day-details window (read only), the schedule's own input window, the document viewer and the week calendar could take the Traffic window's way (the veil from the bar's foot, Undo and Redo free, any other bar control closing them first); the question sheets (the OIL question, upchit, "covers other days", no medical document, the medical clash, the cancel-reason and Sort all dialogs) must keep it — a change behind an unanswered question is what they exist to stop. D641 does not plainly cover any of them (its windows are the calendar job's, with no veil), so none was changed. Also not closing on Escape, met by the same check: the Traffic window and the day-details window (neither holds the keys — the [WINDOWS-KEEP-KEYS] kind), and the Scheduler Board's small menus (+ Block, Templates, the plans selector, a jet's stores, + Wave — `ui/board.ts popMenu`); with any of them up, Escape now leaves the board open. Also met, not judged: on View-only Sched an admin's Traffic window is the editing one (its boxes, Add row, ✕) — a page that changes nothing otherwise and carries no Undo (D347); whether that is meant is to be checked against the rulings before it is called a fault. **To do:** for each window, the agent's call by the window rules, a test first; the menus close on Escape, the keyboard back on their button. **Place:** low — with the next windows job.
 
@@ -2204,6 +2244,7 @@ Every window drawn on the `.airpop` veil covers the top bar (or the board's bar)
 Only the Tracker answers Ctrl+Z and Ctrl+Y (`raptor-port/src/tracker/app/core.js`, D372). On Edit Schedule, View-only Sched, the Scheduler Board and the other pages of the app, Ctrl+Z inside a box is the browser's own undo of that box's typing, and anywhere else nothing — which is why the walk of 21 Oct 26 found "Ctrl+Z inside the Traffic window does nothing". **A question for him (D994 — not put until he says):** should Ctrl+Z / Ctrl+Y (⌘Z on a Mac) press the top bar's Undo / Redo everywhere, leaving a box's own typing undo to the box while it has the caret? Recommended: yes — the schedulers work mostly at a desktop and want to be as efficient as possible (D820), and the Tracker already does it. **Place:** with the next keyboard batch, on his answer.
 
 ### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
+**His answer, 5 Nov 26 ("Go" — the mock-up page's question 4): D1648** — an unreadable clock explained once under the wave's lines. The other two leftovers (the keys back after the OIL question, the red note's refresh test) need no answer. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
 The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
 schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
 check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered

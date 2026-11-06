@@ -853,6 +853,11 @@ is added. Remarks remain free text. The engine's first-valid clock and separate
 IN/RALLY scope precedence are documented in `engine-rules.md`.
 
 An editable block has one empty-when-clear `reporting-feedback` status span.
+**Each distinct sentence in it is said once (owner D1648, 5 Nov 26):** every writer — the builder (`html.ts intimesInner`),
+the refresh (`refreshWaveReports`) and the line typed and committed (`textedit.ts`) — reads one body, `html.ts
+reportNote`, which joins the wave's issues with each message once, in the order met; a wave of several unnamed lines and an
+unreadable whole-wave clock no longer repeats it once a line. The day's issues list keeps one issue a line. Pinned by
+`ui/reportnote.test.tsx` (with the refresh's own test, [WINDOWS-KEEP-KEYS]'s "AB-F2").
 The document input listener previews the active line in a cloned wave only:
 it updates this span, without storing, marking history, repainting the week
 or moving the caret. It names an actual wrong pair while typing. Blur/Enter
@@ -1660,7 +1665,22 @@ area-time cells), Tabbed to while the window or menu stays up — Escape is the 
 next Escape, as the movable windows and the board leave it; from any other box (a search box, a select, a checkbox) Escape
 closes the window or menu; not the box the menu hangs from (the duty role's list: the first Escape closes the list,
 the second puts the role back). Which windows cover the
-top bar is unchanged. Pinned by `ui/boardkeys.test.tsx`, `ui/boardescape.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
+top bar: the next paragraph's own (D1645 since 5 Nov 26). Pinned by `ui/boardkeys.test.tsx`, `ui/boardescape.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
+
+**The board's small menus, its day and week chips and Edit Schedule's day name by the keys (owner D1646, 5 Nov 26 —
+`sheetfocus.ts menuKeys`).** A menu of + Block, Templates, the plans selector, a jet's stores, + Wave or the duty role list
+opened by Enter, Space or ↓ on its button (↓ in the role box — `interactions.ts routeMenuKey`) puts the keys on its first
+pick (`.wm`, not the pencil); ↑ ↓ move through every button in it, round the ends; Enter or Space picks, the keys then
+back on its button (`board.ts popMenu`; the stores menu keeps them on the store pressed though it draws its buttons
+again). "By the keys" is the last Enter, Space or ↓ pressed on that button with no pointer pressed since; a menu opened by
+the mouse or a finger is as before. The ring is the app's cyan keyboard ring, `:focus-visible` only (`10-board-history.css`
+— inside a pick's edge, outside the small buttons). The board's day and week chips (`board.ts dayTabsHTML`) and the edit
+week's day name (`html.ts`, `.dow.crewday`) are `role="button"` `tabindex="0"` stops pressed by Enter and Space (`SchedBoard.tsx`
+`#sbDays` — the keys stay on the chip pressed after the strip's redraw; `interactions.ts routeOpenKey` for the day name);
+the view week keeps the reference's markup (`html.test.ts normDow`). While the board is open Tab goes round it
+(`boardescape.ts keepTabOnBoard`) — last stop to first, first to last, a Tab from the page behind back onto it — what lies
+over the board keeping its own keys. Escape closes the Sort all box (`useEscClose`). Pinned by `ui/boardmenukeys.test.tsx`
+and `e2e/keys-windows.spec.ts`.
 
 **The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**
 Its veil (`.airpop.air-below`) starts at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while
@@ -1671,8 +1691,30 @@ the window redraws its list. Any other control of the bar first closes the windo
 then does its job — what it opens is drawn under the veil's layer (460). The window closes on a page change and a week
 change (`VIEW_RESET` `'page'`/`'week'`, `pops.ts AIRKEY_NAV`) and follows its wave by the wave's `rid` (`pops.ts
 AIRRID`, `Modals.tsx airGo`) when an undo moves it, closing when the wave is gone. A press on the veil still closes it.
-The other veiled windows (`.airpop`) keep the veil over the bar: `OUTSTANDING.md` `[VEILED-WINDOWS-BAR]`. Pinned by
-`ui/trafficwin.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
+Pinned by `ui/trafficwin.test.tsx` and `e2e/board-escape-traffic.spec.ts`.
+
+**Three more windows leave the bar pressable, one body for all four (owner D1645, 5 Nov 26 — `ui/barfree.ts useBarFree`).**
+"Jump to a date" (`WeekCal.tsx`), the day-details window (`Modals.tsx DayPop`) and the document viewer (`DocViewer.tsx`)
+take the Traffic window's way through the one hook it now uses too: the veil from the bar's foot (`.air-below`), Undo and
+Redo free (`BAR_KEEPS`), any other bar control closing the window first. Escape still closes each after a press on Undo —
+"Jump to a date" hears it on the document now (`sheetfocus.ts useEscWindow`, no longer its own `onKeyDown`) — and a window
+closed with the keys on Undo or Redo gives them back to its opener (a passive effect: React puts the focus back after a
+commit's DOM work). Over another veil (the document viewer opened over an input's own window) a window keeps its whole veil:
+once placed, what the browser finds at the bar's Undo must be the bar. The input window (`#inpEditPop`) and the question
+sheets keep the bar covered. Undo with one open: the day-details window reads its day afresh; the viewer re-reads its input
+by `iid` and closes when the input is gone (a read-only page is shown as given); the day details close on a week or page
+change, the calendar and the viewer on a page change (`pops.ts DAYPOP_NAV`, `WEEKCAL_NAV`, `DOCVIEW_NAV`). Pinned by
+`ui/barfree.test.tsx` and `e2e/keys-windows.spec.ts`.
+
+**Traffic on View-only Sched is the read list for everyone (owner D1647, 5 Nov 26 — `Modals.tsx airEditable`).** The editing
+window (boxes, ✕, Add row, Done) is drawn for an admin on Edit Schedule and the Scheduler Board only; every write the
+window makes asks the same. Pinned by `ui/barfree.test.tsx` and `e2e/keys-windows.spec.ts`.
+
+**After a question sheet the keys go back to where they were, found again after a redraw ([WINDOWS-KEEP-KEYS]'s leftover,
+5 Nov 26).** `useSheetFocus` gives them back to the control they were on, found by its marks (`locate`) once the answer's
+string redraw has replaced it; the schedule's Tab route stops when its save raises a window — the OIL question put before a
+change (`OILWAIT`) now counts (`pops.ts windowOverSchedule`) — and names the box to it (`noteOpener`), so the keys go back
+to the box he was typing in. Pinned by `ui/oilkeysback.test.tsx`.
 
 **A rendered read-only board has exactly two routes in**, and every
 read-only path (`stoRO`/`mvRO`/`ro`, `sbGrip`'s `.ro` track, `applyDrop`'s

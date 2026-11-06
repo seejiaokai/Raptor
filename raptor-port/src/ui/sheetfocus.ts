@@ -57,6 +57,10 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
     const el = box.current
     if (!open || !el) return
     const before = document.activeElement as HTMLElement | null
+    /* where the keys were, found again by its marks once a string redraw has replaced it ([WINDOWS-KEEP-KEYS]'s leftover,
+       5 Nov 26): the answer to a question redraws the schedule behind it — the box or button the keys were on is a new
+       one by the time the sheet closes, and they were given back to nothing */
+    const was = before && before !== document.body && !el.contains(before) ? locate(before) : null
     const back = opener; opener = null
     if (!el.contains(before)) ((first && first(el)) || el).focus({ preventScroll: true })
     if (!sheets.length) document.addEventListener('keydown', keepKeys, true)
@@ -67,7 +71,7 @@ export function useSheetFocus(box: RefObject<HTMLElement | null>, open = true, f
       if (!sheets.length) document.removeEventListener('keydown', keepKeys, true)
       const now = document.activeElement
       /* where it came from — or, when that was a menu item the menu took away with it, the button that opened the menu */
-      const to = before && before !== document.body && before.isConnected && !el.contains(before) ? before : back ? back() : null
+      const to = (was && was()) || (back ? back() : null)
       if (!to) return
       if (now === document.body || now == null || el.contains(now)) to.focus({ preventScroll: true })
     }
@@ -92,13 +96,34 @@ export function noteOpener(el: HTMLElement | null): void {
 export function locate(el: HTMLElement): () => HTMLElement | null {
   const q = (v: string) => v.replace(/["\\]/g, '\\$&')
   const da = [...el.attributes].find(x => x.name.startsWith('data-'))
-  const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]` : ''
+  /* …and, where its first mark names only a KIND (an input's "→ Ground" / "→ Unavail" / "Reject" — `data-acc` is g, u or x),
+     by the mark that names WHICH ITEM it is too (`data-acck`, the input's key): another input's button of the same kind is
+     never its twin (the round-2 read's H1, 5 Nov 26 — the keys landed on another input's "→ Ground", one Enter from putting
+     it on the programme unseen). A control whose own kind changed (→ Ground become Reject) then has no twin: nowhere is
+     better than the wrong one. */
+  const own = el.getAttribute('data-acck')
+  const sel = el.id ? `[id="${q(el.id)}"]` : da ? `${el.tagName.toLowerCase()}[${da.name}="${q(da.value)}"]${own != null && da.name !== 'data-acck' ? `[data-acck="${q(own)}"]` : ''}` : ''
   /* a control on the Scheduler Board is looked for again on the board: the week behind it draws the same buttons with the
      same marks (a wave's Traffic, a day's ⓘ), and the keys must not land on the week's copy, hidden under the board */
   const within: ParentNode = el.closest('#schedBoard') || document
+  /* …and a control of a week's day on THAT day (the fresh read's F4, 5 Nov 26): an input covering Monday to Friday draws the
+     same name button on each day, and the first one on the page was found — Monday's, perhaps scrolled out of sight — for a
+     press made on Thursday's. The day is looked up afresh: the redraw may have replaced the day itself. */
+  const dayEl = el.closest('.day[data-day]')
+  const day = dayEl?.getAttribute('data-day') ?? null
+  const weekId = (dayEl?.parentElement as HTMLElement | null)?.id || ''
   return () => {
     if (el.isConnected) return el
     if (!sel) return null
+    const weekBox: ParentNode | null = weekId ? document.getElementById(weekId) : within
+    const dayBox = day != null && weekBox ? weekBox.querySelector<HTMLElement>(`.day[data-day="${q(day)}"]`) : null
+    /* …and where the day no longer draws it (the input moved to another day by its own window — the narrow read's G2), on the
+       day it now stands on, in the same week; neither, nothing */
+    const pick = (root: ParentNode | null) => {
+      const all = root ? [...root.querySelectorAll<HTMLElement>(sel)] : []
+      return all.find(n => n.getClientRects().length > 0) || all[0] || null
+    }
+    if (day != null) return pick(dayBox) || pick(weekBox)
     const all = [...within.querySelectorAll<HTMLElement>(sel)]
     return all.find(n => n.getClientRects().length > 0) || all[0] || null
   }
@@ -199,6 +224,65 @@ export function menuEscape(box: HTMLElement, anchor: HTMLElement): void {
     box.remove()
     keysBack(back)
   }, anchor)
+}
+
+/* A SMALL MENU OPENED BY THE KEYS PUTS THEM ON ITS FIRST ITEM, AND THE ARROWS MOVE THROUGH IT (owner D1646, 5 Nov 26 —
+   "Go" on the mock-up page's question 2, docs/mock/2026-11-05-keys-windows/img/2b-desktop-blockmenu-drawn.png;
+   [BOARD-KEYS-LEFT]). The board's small menus — + Block, Templates, the plans selector, a jet's stores, + Wave, the duty
+   role list (board.ts popMenu, interactions.ts openStoresMenu) — were added at the page's end with the keys left on their
+   button: Enter opened one and nothing in it could be reached. Opened by Enter, Space or ↓ on its button (↓ in the duty
+   role's box), the keys go onto its first item — the first of its picks (`.wm`), not the pencil in its corner; ↑ and ↓ move
+   through every button in it, round from the last to the first; Enter (or Space) is the button's own press, its pick;
+   Escape was already its own (menuEscape). The ring is the app's keyboard ring, for the keys only (:focus-visible,
+   10-board-history.css) — a menu opened by a press of the mouse or a finger opens exactly as before, the keys where they
+   were and no ring.
+   HOW "BY THE KEYS" IS KNOWN: the last key pressed (Enter, Space or ↓) was pressed on the menu's button — the keydown that
+   becomes the button's click — and no pointer was pressed since. Read and forgotten as a menu opens. */
+let keyOn: EventTarget | null = null
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', e => { keyOn = e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown' ? e.target : null }, true)
+  document.addEventListener('pointerdown', () => { keyOn = null }, true)
+  document.addEventListener('mousedown', () => { keyOn = null }, true)
+}
+const menuItems = (box: HTMLElement) =>
+  [...box.querySelectorAll<HTMLElement>('button')].filter(b => !(b as HTMLButtonElement).disabled && !b.closest('[hidden]'))
+/** `box` hangs from `anchor`: the arrows move through its buttons, and opened by the keys the keys land on its first pick */
+export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
+  const back = locate(anchor)
+  box.addEventListener('keydown', e => {
+    /* TAB OUT OF ITS END LEAVES THE MENU AS ESCAPE DOES (the fresh read's F3, 5 Nov 26): the menu stands at the page's end, so a
+       Tab past its last item walked out of the page and then onto the top bar hidden under the Scheduler Board. Inside it Tab
+       goes on as the browser's own (the stores menu's pencil turns it into a little form of names and buttons); past its last
+       stop, or Shift+Tab before its first, it closes the menu, unhooking its outside-click listener as every other way out
+       does, and the keys go back to its button — the next Tab is the board's. */
+    if (e.key === 'Tab' && !e.altKey && !e.ctrlKey && !e.metaKey) {
+      const at = document.activeElement as HTMLElement | null
+      if (!at || !box.contains(at)) return
+      const stops = [...box.querySelectorAll<HTMLElement>(STOPS)].filter(n => !(n as HTMLButtonElement).disabled && !n.closest('[hidden]'))
+      if (stops.length && at !== (e.shiftKey ? stops[0] : stops[stops.length - 1])) return
+      e.preventDefault()
+      const out = (box as any)._offClick
+      if (out) document.removeEventListener('click', out)
+      box.remove()
+      keysBack(back)
+      return
+    }
+    if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.altKey || e.ctrlKey || e.metaKey || e.isComposing) return
+    const at = document.activeElement as HTMLElement | null
+    if (!at || at.tagName !== 'BUTTON' || !box.contains(at)) return
+    const list = menuItems(box), i = list.indexOf(at)
+    if (i < 0) return
+    e.preventDefault()
+    list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length]!.focus({ preventScroll: true })
+  })
+  const by = !!keyOn && (keyOn === anchor || (keyOn instanceof Node && anchor.contains(keyOn)))
+  keyOn = null
+  if (by) menuFirst(box)?.focus({ preventScroll: true })
+}
+/** the item a menu opened by the keys puts them on: its first pick, else its first button */
+export function menuFirst(box: HTMLElement): HTMLElement | null {
+  const list = menuItems(box)
+  return list.find(b => b.classList.contains('wm')) || list[0] || null
 }
 
 /* the topmost sheet holding the keyboard, if any — a window with its own Escape asks it before closing under one */

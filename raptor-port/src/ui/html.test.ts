@@ -340,7 +340,9 @@ describe('view-week markup parity with the reference', () => {
        on the reference (its dow has no data-crewday), and the behaviour itself
        is pinned positively just below. */
     const normDow = (s: string) => s.replace(
-      /<span class="dow crewday" data-crewday="(\d+)" title="Show this day's crew in the aircrew panel">/g,
+      /* since D1646 (5 Nov 26) the day name is a stop for the keys, as the date beside it (normDt, below): its role="button"
+         and tabindex="0" go with the rest of the divergence */
+      /<span class="dow crewday" data-crewday="(\d+)" role="button" tabindex="0" title="Show this day's crew in the aircrew panel">/g,
       '<span class="dow sb-open" data-sbday="$1" title="Open scheduler board">')
     /* Divergence ([BOARD-OPEN-BY-KEYS], 3 Nov 26): the edit week's DATE is a stop for the keys — role="button" and
        tabindex="0" on the .dt.sb-open span, so Enter and Space open the board. Lifted off before the compare; a no-op on
