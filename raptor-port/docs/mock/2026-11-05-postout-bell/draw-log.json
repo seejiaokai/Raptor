@@ -1,0 +1,201 @@
+{
+  "log": [
+    "[desk] posted out Ranger (bane) — overseas — the sheet said \"On 16 Nov: archived, account suspended.\"",
+    "[desk] posted out Trident (harpoon) — delete — the sheet said \"On 16 Nov the app deletes him automatically. Days he flew keep his puck.\"",
+    "[desk] posted out Cinch (snap) — sans — the sheet said \"On 16 Nov: becomes SANS.\"",
+    "[desk] posted out Cobra (taipan) — none — the sheet said \"On 16 Nov: off the manpower, nothing else.\"",
+    "[desk] after the clock moved to 2026-11-16T00:00:00.000Z: [{\"id\":\"bane\",\"archived\":true,\"san\":false,\"deleted\":false},{\"id\":\"harpoon\",\"archived\":true,\"san\":false,\"deleted\":true},{\"id\":\"snap\",\"archived\":false,\"san\":true,\"deleted\":false},{\"id\":\"taipan\",\"archived\":false,\"san\":false,\"deleted\":false}]",
+    "[desk] the bell today: []",
+    "[desk] drawn (cloned from a real line: false): [\"Posting outMon 16 NovCobra · off the manpower2 h\",\"Posting outMon 16 NovCinch · now SANS2 h\",\"Posting outMon 16 NovTrident · deleted2 h\",\"Posting outMon 16 NovRanger · archived, account suspended2 h\"]",
+    "[desk] line heights: [{\"line\":\"overseas\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"delete\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"sans\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"none\",\"h\":52,\"whatH\":17,\"whatOverflow\":false}]",
+    "[desk] landing on Ranger (overseas): his row — \"Rangerus · Pilot · CAT IPArchived 16 Nov 26 by his posting (Overseas Sqn)Member\"",
+    "[desk] a deleted man's row on Admin → Users: none — nowhere to land",
+    "[desk] landing on Cinch (sans): his row — \"Cinchno sign-in · Pilot · CAT IPposted out 16 Nov · SANS\"",
+    "[phone] posted out Ranger (bane) — overseas — the sheet said \"On 16 Nov: archived, account suspended.\"",
+    "[phone] posted out Trident (harpoon) — delete — the sheet said \"On 16 Nov the app deletes him automatically. Days he flew keep his puck.\"",
+    "[phone] posted out Cinch (snap) — sans — the sheet said \"On 16 Nov: becomes SANS.\"",
+    "[phone] posted out Cobra (taipan) — none — the sheet said \"On 16 Nov: off the manpower, nothing else.\"",
+    "[phone] after the clock moved to 2026-11-16T00:00:00.000Z: [{\"id\":\"bane\",\"archived\":true,\"san\":false,\"deleted\":false},{\"id\":\"harpoon\",\"archived\":true,\"san\":false,\"deleted\":true},{\"id\":\"snap\",\"archived\":false,\"san\":true,\"deleted\":false},{\"id\":\"taipan\",\"archived\":false,\"san\":false,\"deleted\":false}]",
+    "[phone] the bell today: []",
+    "[phone] drawn (cloned from a real line: false): [\"Posting outMon 16 NovCobra · off the manpower2 h\",\"Posting outMon 16 NovCinch · now SANS2 h\",\"Posting outMon 16 NovTrident · deleted2 h\",\"Posting outMon 16 NovRanger · archived, account suspended2 h\"]",
+    "[phone] line heights: [{\"line\":\"overseas\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"delete\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"sans\",\"h\":52,\"whatH\":17,\"whatOverflow\":false},{\"line\":\"none\",\"h\":52,\"whatH\":17,\"whatOverflow\":false}]",
+    "[phone] landing on Ranger (overseas): his row — \"Rangerus · Pilot · CAT IPArchived 16 Nov 26 by his posting (Overseas Sqn)Member\"",
+    "[phone] a deleted man's row on Admin → Users: none — nowhere to land",
+    "[phone] landing on Cinch (sans): his row — \"Cinchno sign-in · Pilot · CAT IPposted out 16 Nov · SANS\""
+  ],
+  "errs": [],
+  "report": {
+    "desk": {
+      "lines": [
+        {
+          "outcome": "overseas",
+          "id": "bane",
+          "cs": "Ranger",
+          "sheetLine": "On 16 Nov: archived, account suspended.",
+          "what": "Ranger · archived, account suspended"
+        },
+        {
+          "outcome": "delete",
+          "id": "harpoon",
+          "cs": "Trident",
+          "sheetLine": "On 16 Nov the app deletes him automatically. Days he flew keep his puck.",
+          "what": "Trident · deleted"
+        },
+        {
+          "outcome": "sans",
+          "id": "snap",
+          "cs": "Cinch",
+          "sheetLine": "On 16 Nov: becomes SANS.",
+          "what": "Cinch · now SANS"
+        },
+        {
+          "outcome": "none",
+          "id": "taipan",
+          "cs": "Cobra",
+          "sheetLine": "On 16 Nov: off the manpower, nothing else.",
+          "what": "Cobra · off the manpower"
+        }
+      ],
+      "todayLines": [],
+      "ran": [
+        {
+          "id": "bane",
+          "archived": true,
+          "san": false,
+          "deleted": false
+        },
+        {
+          "id": "harpoon",
+          "archived": true,
+          "san": false,
+          "deleted": true
+        },
+        {
+          "id": "snap",
+          "archived": false,
+          "san": true,
+          "deleted": false
+        },
+        {
+          "id": "taipan",
+          "archived": false,
+          "san": false,
+          "deleted": false
+        }
+      ],
+      "fit": [
+        {
+          "line": "overseas",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "delete",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "sans",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "none",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        }
+      ],
+      "pending": []
+    },
+    "phone": {
+      "lines": [
+        {
+          "outcome": "overseas",
+          "id": "bane",
+          "cs": "Ranger",
+          "sheetLine": "On 16 Nov: archived, account suspended.",
+          "what": "Ranger · archived, account suspended"
+        },
+        {
+          "outcome": "delete",
+          "id": "harpoon",
+          "cs": "Trident",
+          "sheetLine": "On 16 Nov the app deletes him automatically. Days he flew keep his puck.",
+          "what": "Trident · deleted"
+        },
+        {
+          "outcome": "sans",
+          "id": "snap",
+          "cs": "Cinch",
+          "sheetLine": "On 16 Nov: becomes SANS.",
+          "what": "Cinch · now SANS"
+        },
+        {
+          "outcome": "none",
+          "id": "taipan",
+          "cs": "Cobra",
+          "sheetLine": "On 16 Nov: off the manpower, nothing else.",
+          "what": "Cobra · off the manpower"
+        }
+      ],
+      "todayLines": [],
+      "ran": [
+        {
+          "id": "bane",
+          "archived": true,
+          "san": false,
+          "deleted": false
+        },
+        {
+          "id": "harpoon",
+          "archived": true,
+          "san": false,
+          "deleted": true
+        },
+        {
+          "id": "snap",
+          "archived": false,
+          "san": true,
+          "deleted": false
+        },
+        {
+          "id": "taipan",
+          "archived": false,
+          "san": false,
+          "deleted": false
+        }
+      ],
+      "fit": [
+        {
+          "line": "overseas",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "delete",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "sans",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        },
+        {
+          "line": "none",
+          "h": 52,
+          "whatH": 17,
+          "whatOverflow": false
+        }
+      ],
+      "pending": []
+    }
+  }
+}

@@ -1,0 +1,444 @@
+{
+  "results": [
+    {
+      "size": "desk",
+      "step": "A0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "desk",
+      "step": "A1",
+      "ok": true,
+      "what": "before the date the bell has no posting line (0)"
+    },
+    {
+      "size": "desk",
+      "step": "B1",
+      "ok": true,
+      "what": "the bell is lit"
+    },
+    {
+      "size": "desk",
+      "step": "B2a",
+      "ok": true,
+      "what": "four posting lines (Ranger · Mon 16 Nov / Posted out · archived, account suspended | Trident · Mon 16 Nov / Posted out · deleted | Cinch · Mon 16 Nov / Posted out · now SANS | Cobra · Mon 16 Nov / Posted out · off the manpower)"
+    },
+    {
+      "size": "desk",
+      "step": "B2b",
+      "ok": true,
+      "what": "each in his words, the man first, Mon 16 Nov, in the drawn order"
+    },
+    {
+      "size": "desk",
+      "step": "B2c",
+      "ok": true,
+      "what": "each unread and its words on one line (heights 52, 52, 52, 52)"
+    },
+    {
+      "size": "desk",
+      "step": "B2d",
+      "ok": true,
+      "what": "the posting lines first in the list"
+    },
+    {
+      "size": "desk",
+      "step": "B3a",
+      "ok": true,
+      "what": "Admin → Users opened at his row (admin)"
+    },
+    {
+      "size": "desk",
+      "step": "B3b",
+      "ok": true,
+      "what": "his row is in the Archived fold, opened"
+    },
+    {
+      "size": "desk",
+      "step": "B3c",
+      "ok": true,
+      "what": "his row wears the just-added ring (rgb(30, 134, 255) 0px 0px 0px 2px inset)"
+    },
+    {
+      "size": "desk",
+      "step": "B3d",
+      "ok": true,
+      "what": "his row in view, under the top bar, uncovered (top 398, bar 57, bottom 466/864)"
+    },
+    {
+      "size": "desk",
+      "step": "B3e",
+      "ok": true,
+      "what": "the ring stands clear of his name (8px)"
+    },
+    {
+      "size": "desk",
+      "step": "B3f",
+      "ok": true,
+      "what": "the bell list closed"
+    },
+    {
+      "size": "desk",
+      "step": "B4",
+      "ok": true,
+      "what": "the ring gone after its six seconds"
+    },
+    {
+      "size": "desk",
+      "step": "B5a",
+      "ok": true,
+      "what": "Ranger's line now read"
+    },
+    {
+      "size": "desk",
+      "step": "B5b",
+      "ok": true,
+      "what": "the SANS man's roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})"
+    },
+    {
+      "size": "desk",
+      "step": "B6",
+      "ok": true,
+      "what": "the man off the manpower: his roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})"
+    },
+    {
+      "size": "desk",
+      "step": "B7",
+      "ok": true,
+      "what": "a deleted man's line opens nothing: still on the Leave War, the list up, the line read (leavewar, list true)"
+    },
+    {
+      "size": "desk",
+      "step": "B8",
+      "ok": true,
+      "what": "Mark all read: every line read, the bell out (lit false)"
+    },
+    {
+      "size": "desk",
+      "step": "B9a",
+      "ok": true,
+      "what": "the bell again closes the list"
+    },
+    {
+      "size": "desk",
+      "step": "B9b",
+      "ok": true,
+      "what": "Escape closes the list"
+    },
+    {
+      "size": "desk",
+      "step": "B9c",
+      "ok": true,
+      "what": "a press outside closes the list"
+    },
+    {
+      "size": "desk",
+      "step": "B10",
+      "ok": true,
+      "what": "after a reload: the same four lines, read (4)"
+    },
+    {
+      "size": "desk",
+      "step": "B11a",
+      "ok": true,
+      "what": "the member view: no posting line (0)"
+    },
+    {
+      "size": "desk",
+      "step": "B11b",
+      "ok": true,
+      "what": "back in the admin view: the four lines (4)"
+    },
+    {
+      "size": "desk",
+      "step": "B12",
+      "ok": true,
+      "what": "Hex's bell: his own four lines, unread (Ranger:unread, Trident:unread, Cinch:unread, Cobra:unread)"
+    },
+    {
+      "size": "desk",
+      "step": "B13",
+      "ok": true,
+      "what": "a member's bell: no posting line (0)"
+    },
+    {
+      "size": "phone",
+      "step": "A0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "phone",
+      "step": "A1",
+      "ok": true,
+      "what": "before the date the bell has no posting line (0)"
+    },
+    {
+      "size": "phone",
+      "step": "B1",
+      "ok": true,
+      "what": "the bell is lit"
+    },
+    {
+      "size": "phone",
+      "step": "B2a",
+      "ok": true,
+      "what": "four posting lines (Ranger · Mon 16 Nov / Posted out · archived, account suspended | Trident · Mon 16 Nov / Posted out · deleted | Cinch · Mon 16 Nov / Posted out · now SANS | Cobra · Mon 16 Nov / Posted out · off the manpower)"
+    },
+    {
+      "size": "phone",
+      "step": "B2b",
+      "ok": true,
+      "what": "each in his words, the man first, Mon 16 Nov, in the drawn order"
+    },
+    {
+      "size": "phone",
+      "step": "B2c",
+      "ok": true,
+      "what": "each unread and its words on one line (heights 52, 52, 52, 52)"
+    },
+    {
+      "size": "phone",
+      "step": "B2d",
+      "ok": true,
+      "what": "the posting lines first in the list"
+    },
+    {
+      "size": "phone",
+      "step": "B3a",
+      "ok": true,
+      "what": "Admin → Users opened at his row (admin)"
+    },
+    {
+      "size": "phone",
+      "step": "B3b",
+      "ok": true,
+      "what": "his row is in the Archived fold, opened"
+    },
+    {
+      "size": "phone",
+      "step": "B3c",
+      "ok": true,
+      "what": "his row wears the just-added ring (rgb(30, 134, 255) 0px 0px 0px 2px inset)"
+    },
+    {
+      "size": "phone",
+      "step": "B3d",
+      "ok": true,
+      "what": "his row in view, under the top bar, uncovered (top 401, bar 49, bottom 473/874)"
+    },
+    {
+      "size": "phone",
+      "step": "B3e",
+      "ok": true,
+      "what": "the ring stands clear of his name (8px)"
+    },
+    {
+      "size": "phone",
+      "step": "B3f",
+      "ok": true,
+      "what": "the bell list closed"
+    },
+    {
+      "size": "phone",
+      "step": "B4",
+      "ok": true,
+      "what": "the ring gone after its six seconds"
+    },
+    {
+      "size": "phone",
+      "step": "B5a",
+      "ok": true,
+      "what": "Ranger's line now read"
+    },
+    {
+      "size": "phone",
+      "step": "B5b",
+      "ok": true,
+      "what": "the SANS man's roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":405,\"bottom\":468,\"vh\":874,\"barBottom\":49,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})"
+    },
+    {
+      "size": "phone",
+      "step": "B6",
+      "ok": true,
+      "what": "the man off the manpower: his roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":405,\"bottom\":468,\"vh\":874,\"barBottom\":49,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})"
+    },
+    {
+      "size": "phone",
+      "step": "B7",
+      "ok": true,
+      "what": "a deleted man's line opens nothing: still on the Leave War, the list up, the line read (leavewar, list true)"
+    },
+    {
+      "size": "phone",
+      "step": "B8",
+      "ok": true,
+      "what": "Mark all read: every line read, the bell out (lit false)"
+    },
+    {
+      "size": "phone",
+      "step": "B9a",
+      "ok": true,
+      "what": "the bell again closes the list"
+    },
+    {
+      "size": "phone",
+      "step": "B9c",
+      "ok": true,
+      "what": "a press outside closes the list"
+    },
+    {
+      "size": "phone",
+      "step": "B10",
+      "ok": true,
+      "what": "after a reload: the same four lines, read (4)"
+    },
+    {
+      "size": "phone",
+      "step": "B12",
+      "ok": true,
+      "what": "Hex's bell: his own four lines, unread (Ranger:unread, Trident:unread, Cinch:unread, Cobra:unread)"
+    },
+    {
+      "size": "phone",
+      "step": "B13",
+      "ok": true,
+      "what": "a member's bell: no posting line (0)"
+    }
+  ],
+  "errs": [],
+  "log": [
+    "PASS [desk] A0 — Hex made an admin on Admin → Users",
+    "[desk] posted out Ranger (bane) — overseas — the sheet said \"On 16 Nov: archived, account suspended.\"",
+    "[desk] posted out Trident (harpoon) — delete — the sheet said \"On 16 Nov the app deletes him automatically. Days he flew keep his puck.\"",
+    "[desk] posted out Cinch (snap) — sans — the sheet said \"On 16 Nov: becomes SANS.\"",
+    "[desk] posted out Cobra (taipan) — none — the sheet said \"On 16 Nov: off the manpower, nothing else.\"",
+    "PASS [desk] A1 — before the date the bell has no posting line (0)",
+    "[desk] after the clock moved: [{\"id\":\"bane\",\"archived\":true,\"san\":false,\"deleted\":false},{\"id\":\"harpoon\",\"archived\":true,\"san\":false,\"deleted\":true},{\"id\":\"snap\",\"archived\":false,\"san\":true,\"deleted\":false},{\"id\":\"taipan\",\"archived\":false,\"san\":false,\"deleted\":false}]",
+    "PASS [desk] B1 — the bell is lit",
+    "PASS [desk] B2a — four posting lines (Ranger · Mon 16 Nov / Posted out · archived, account suspended | Trident · Mon 16 Nov / Posted out · deleted | Cinch · Mon 16 Nov / Posted out · now SANS | Cobra · Mon 16 Nov / Posted out · off the manpower)",
+    "PASS [desk] B2b — each in his words, the man first, Mon 16 Nov, in the drawn order",
+    "PASS [desk] B2c — each unread and its words on one line (heights 52, 52, 52, 52)",
+    "PASS [desk] B2d — the posting lines first in the list",
+    "PASS [desk] B3a — Admin → Users opened at his row (admin)",
+    "PASS [desk] B3b — his row is in the Archived fold, opened",
+    "PASS [desk] B3c — his row wears the just-added ring (rgb(30, 134, 255) 0px 0px 0px 2px inset)",
+    "PASS [desk] B3d — his row in view, under the top bar, uncovered (top 398, bar 57, bottom 466/864)",
+    "PASS [desk] B3e — the ring stands clear of his name (8px)",
+    "PASS [desk] B3f — the bell list closed",
+    "PASS [desk] B4 — the ring gone after its six seconds",
+    "PASS [desk] B5a — Ranger's line now read",
+    "PASS [desk] B5b — the SANS man's roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})",
+    "PASS [desk] B6 — the man off the manpower: his roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":407,\"bottom\":458,\"vh\":864,\"barBottom\":57,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})",
+    "PASS [desk] B7 — a deleted man's line opens nothing: still on the Leave War, the list up, the line read (leavewar, list true)",
+    "PASS [desk] B8 — Mark all read: every line read, the bell out (lit false)",
+    "PASS [desk] B9a — the bell again closes the list",
+    "PASS [desk] B9b — Escape closes the list",
+    "PASS [desk] B9c — a press outside closes the list",
+    "PASS [desk] B10 — after a reload: the same four lines, read (4)",
+    "PASS [desk] B11a — the member view: no posting line (0)",
+    "PASS [desk] B11b — back in the admin view: the four lines (4)",
+    "PASS [desk] B12 — Hex's bell: his own four lines, unread (Ranger:unread, Trident:unread, Cinch:unread, Cobra:unread)",
+    "PASS [desk] B13 — a member's bell: no posting line (0)",
+    "PASS [phone] A0 — Hex made an admin on Admin → Users",
+    "[phone] posted out Ranger (bane) — overseas — the sheet said \"On 16 Nov: archived, account suspended.\"",
+    "[phone] posted out Trident (harpoon) — delete — the sheet said \"On 16 Nov the app deletes him automatically. Days he flew keep his puck.\"",
+    "[phone] posted out Cinch (snap) — sans — the sheet said \"On 16 Nov: becomes SANS.\"",
+    "[phone] posted out Cobra (taipan) — none — the sheet said \"On 16 Nov: off the manpower, nothing else.\"",
+    "PASS [phone] A1 — before the date the bell has no posting line (0)",
+    "[phone] after the clock moved: [{\"id\":\"bane\",\"archived\":true,\"san\":false,\"deleted\":false},{\"id\":\"harpoon\",\"archived\":true,\"san\":false,\"deleted\":true},{\"id\":\"snap\",\"archived\":false,\"san\":true,\"deleted\":false},{\"id\":\"taipan\",\"archived\":false,\"san\":false,\"deleted\":false}]",
+    "PASS [phone] B1 — the bell is lit",
+    "PASS [phone] B2a — four posting lines (Ranger · Mon 16 Nov / Posted out · archived, account suspended | Trident · Mon 16 Nov / Posted out · deleted | Cinch · Mon 16 Nov / Posted out · now SANS | Cobra · Mon 16 Nov / Posted out · off the manpower)",
+    "PASS [phone] B2b — each in his words, the man first, Mon 16 Nov, in the drawn order",
+    "PASS [phone] B2c — each unread and its words on one line (heights 52, 52, 52, 52)",
+    "PASS [phone] B2d — the posting lines first in the list",
+    "PASS [phone] B3a — Admin → Users opened at his row (admin)",
+    "PASS [phone] B3b — his row is in the Archived fold, opened",
+    "PASS [phone] B3c — his row wears the just-added ring (rgb(30, 134, 255) 0px 0px 0px 2px inset)",
+    "PASS [phone] B3d — his row in view, under the top bar, uncovered (top 401, bar 49, bottom 473/874)",
+    "PASS [phone] B3e — the ring stands clear of his name (8px)",
+    "PASS [phone] B3f — the bell list closed",
+    "PASS [phone] B4 — the ring gone after its six seconds",
+    "PASS [phone] B5a — Ranger's line now read",
+    "PASS [phone] B5b — the SANS man's roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":405,\"bottom\":468,\"vh\":874,\"barBottom\":49,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})",
+    "PASS [phone] B6 — the man off the manpower: his roster row ringed, in view ({\"ringed\":true,\"shadow\":\"rgb(30, 134, 255) 0px 0px 0px 2px inset\",\"top\":405,\"bottom\":468,\"vh\":874,\"barBottom\":49,\"nameGap\":8,\"uncovered\":true,\"archived\":false,\"fold\":\"false\"})",
+    "PASS [phone] B7 — a deleted man's line opens nothing: still on the Leave War, the list up, the line read (leavewar, list true)",
+    "PASS [phone] B8 — Mark all read: every line read, the bell out (lit false)",
+    "PASS [phone] B9a — the bell again closes the list",
+    "PASS [phone] B9c — a press outside closes the list",
+    "PASS [phone] B10 — after a reload: the same four lines, read (4)",
+    "PASS [phone] B12 — Hex's bell: his own four lines, unread (Ranger:unread, Trident:unread, Cinch:unread, Cobra:unread)",
+    "PASS [phone] B13 — a member's bell: no posting line (0)"
+  ],
+  "report": {
+    "desk": {
+      "pick": [
+        "Ranger",
+        "Trident",
+        "Cinch",
+        "Cobra"
+      ],
+      "ran": [
+        {
+          "id": "bane",
+          "archived": true,
+          "san": false,
+          "deleted": false
+        },
+        {
+          "id": "harpoon",
+          "archived": true,
+          "san": false,
+          "deleted": true
+        },
+        {
+          "id": "snap",
+          "archived": false,
+          "san": true,
+          "deleted": false
+        },
+        {
+          "id": "taipan",
+          "archived": false,
+          "san": false,
+          "deleted": false
+        }
+      ]
+    },
+    "phone": {
+      "pick": [
+        "Ranger",
+        "Trident",
+        "Cinch",
+        "Cobra"
+      ],
+      "ran": [
+        {
+          "id": "bane",
+          "archived": true,
+          "san": false,
+          "deleted": false
+        },
+        {
+          "id": "harpoon",
+          "archived": true,
+          "san": false,
+          "deleted": true
+        },
+        {
+          "id": "snap",
+          "archived": false,
+          "san": true,
+          "deleted": false
+        },
+        {
+          "id": "taipan",
+          "archived": false,
+          "san": false,
+          "deleted": false
+        }
+      ]
+    }
+  }
+}

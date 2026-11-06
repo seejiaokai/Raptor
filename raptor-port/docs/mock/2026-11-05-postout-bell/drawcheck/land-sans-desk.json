@@ -1,0 +1,107 @@
+{
+ "state": "land-sans-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-postout-bell/draw.mjs",
+  "shot": "3-land-sans-desk"
+ },
+ "recorded": "2026-11-05T09:04:03.184Z",
+ "drawnOn": "claude/postout-bell-look at 890964ac7",
+ "checkout": "4ffc31e4e",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 126
+ },
+ "parts": {
+  "row": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 607,
+    "y": 406.5,
+    "w": 584,
+    "h": 51
+   },
+   "ink": {
+    "x": 607,
+    "y": 414.5,
+    "w": 278.4,
+    "h": 34
+   },
+   "text": "Cinch no sign-in · Pilot · CAT IP posted out 16 Nov · SANS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "rgb(30, 134, 255) 0px 0px 0px 2px inset",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.acc-row.od-row.pb-land"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 607,
+    "y": 414.5,
+    "w": 388,
+    "h": 17
+   },
+   "ink": {
+    "x": 607,
+    "y": 414.5,
+    "w": 32.8,
+    "h": 17
+   },
+   "text": "Cinch",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.acc-name"
+  }
+ },
+ "approved": {
+  "picture": "3-land-sans-desk.png",
+  "identical": true
+ }
+}

@@ -26,6 +26,17 @@ carries no boxed "Draft" (its DRAFT tag says it once — the view-week compare l
 (`04-pucks-sections.css`); the crew panel's placeholders heading reads "Placeholders". The rounds and their pictures:
 `superpowers/specs/2026-10-16-words-pass.md`.
 
+## Letters in boxes and buttons (owner D1680, 5 Nov 26 — "build it as drawn")
+
+A box or button never takes the browser's own letters. A font line that names `inherit` inside the `font:` shorthand
+(`font: 600 13px inherit`) is not a font: the browser drops the whole line. Write `font-family: inherit` with its size and
+weight beside it (and its line height where it had one). The nine places that had it — the Scheduler Board's cancel box
+and its reasons list, an input's own window (its boxes and selects, a member's fixed name, Several people, the groups'
+All), the opened day's note + and + people, and the old day pop-up's boxes, drawn nowhere now — were fixed as drawn
+(`docs/mock/2026-11-05-font-inherit/`), and a stylesheet test refuses the shorthand form from now on (`src/ui/font-inherit-css.test.ts`). The Leave War's
+bid windows' Auto-approve switch shares the "Several people" look and takes the same letters (owner D1681, 5 Nov 26 —
+"as recommended"; its own 11px kept, `leavewar/ui/bidpicker.css`).
+
 ## Rendering
 
 > The speed rules these guarantees serve — and every measured round behind them
@@ -6785,7 +6796,7 @@ Pinned in `ui/accounts-ui.test.tsx` (AC10) and `ui/memberview.test.tsx`.
 The approved mock-up `docs/mock/post-out.html` §1 is the design of record (D299). On EVERY posting door — the bid sheet's
 PO (`po-*`), an existing posting's Post out sheet (`postout-*`), the drag selection's PO (`sel-po-*`) — the same row:
 the date once, in its own box ("PO from"); four short chips `leavewar/ui/OutcomeChips.tsx` — "Overseas Sqn" (the
-default — the old "Archive on PO date"), "Delete", "SANS", "Transfer to Sqn" (drawn, not pressable — "Comes with the
+default — the old "Archive on PO date"), "Delete", "SANS" (never offered for a ground-crew man — SANS is an aircrew status, his D1709, 5 Nov 26; the writer `sync.ts postOutProblem` refuses it too), "Transfer to Sqn" (drawn, not pressable — "Comes with the
 shared database", D281); ONE line saying what the chosen one does on the date ("On 14 Oct: archived, account
 suspended." — the account named only when he has one; "archived on Quals" until Quals lost its archive, D310); the button just "Post out" (D300; "Post in" likewise). Tapping
 the chosen chip again un-chooses it — "off the manpower, nothing else" (the agent's call, on his look card). **A Delete
@@ -6987,10 +6998,18 @@ required — D225), "Pilot, WSO or personnel" `#accSeat` ("Pick…", Pilot, WSO,
 `#accCat` ("Pick…" then the seat's CATs; absent for personnel; back to Pick… when the seat changes to one that cannot hold
 it); the two selects wear the boxes' look (`.login select`); "Request access" `#accSend`, errors in `#accErr` — never
 whether a callsign is taken (a person not yet let in may not read the roster). *(Was, 26 Sep 26 `[ACCOUNTS]`: Callsign
-`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — what he
-asked, one line `#accAsked`: "You asked for access as **Viper** (JKB · Pilot · CAT C).", "an admin will answer it"; with
-the guest switch ON, "View the schedule" `#accGuest` takes him straight into the guest view, D221);
-**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). With the admin's guest switch ON a
+`#accCs`, Name `#accFull` — the Name box gave way to the initials, D219.)*); **Waiting** (`#accessWaiting` — since D1650 / D1656,
+5 Nov 26, a PASS, `.acc-pass`: the claws and a "Waiting for an admin" mark, his callsign large `#accAsked` (set smaller, never
+below 16px, until it fits one line — `AccessScreen.tsx PassCallsign`), his initials, seat and CAT (`.pass-fields` — one he did
+not give is left out), a dashed tear line, then the three steps (Request sent · An admin approves · You're on the schedule,
+the middle one where he is), with the guest switch ON "Meanwhile you can look at the schedule, read only." and "View the
+schedule" `#accGuest` (straight into the guest view, D221), Sign out, and "Signed in as …" `#accName` small at the foot; the
+blue fade from the top left over the whole card (D1654). *Was, 26 Sep 26: one line `#accAsked`, "You asked for access as
+**Viper** (JKB · Pilot · CAT C).", "an admin will answer it".*);
+**Switched off** (`#accessOff`). Each has Sign out (`#accOut`, through `ui/logout.ts`). Each, and the sign-in, carries the
+failed-save band across its top while a save has failed, the screen moved down under it (D1657 — §The failed-save warning).
+Above the phone width the column is centred only while it fits, so a screen taller than the window starts at its top and
+every part can be scrolled to (`.login-wrap{margin-block:auto}`, 5 Nov 26). With the admin's guest switch ON a
 person waiting instead gets the guest view (`ui/GuestApp.tsx`, `#guestApp`): a slim bar (the mark, "Waiting for access —
 view only" `#guestNote`, Sign out `#guestOut`), the week window, and the week from the view page's builder — what a
 member reads on View-only Sched, read only (D215): a published day's ISSUED face (no working-draft picker) and a day not
@@ -11364,7 +11383,7 @@ Pins: `ui/sanscal.test.tsx`, `ui/sansday.test.tsx`, `ui/sanssettings.test.tsx`, 
 - **The Inputs list has no edit in place (owner D718, D723 — 10 Oct 26).** On a phone (`max-width:820px`, followed
   live — `ui/usephone.ts`) the list is the input card under a slim heading a day ("SAT 18 JUL · 6 inputs"), in date
   order; an input of several days stands under its first day. On a desktop it is the table, its columns and sorting as
-  they were, without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
+  they were (its headings also sort from the keyboard — Tab, then Enter or Space, the cyan ring on the heading, D1719), without the pencil and the cross: the Name is a button and a click on the row opens the input's window;
   the paperclip and the OIL / OIL? chips stay in its last column. Everything the pencil's row did is done in the window
   (`ui/inputedit.tsx`), which for that reason now carries (a) the two-tap calendar for EVERY saved input its reader may
   change, not only a shared one (D681's door widened — what D718 left behind of D681's reading 7), and (b) the OIL line
@@ -11734,7 +11753,24 @@ a deleted pin. Planning-only Undo/Redo returns to Member Calendar, where notes a
 
 **The line under it is amber (owner D841, 14 Oct 26):** while the warning is up — or the bar that waits on an OIL answer, which has the same band (D831, D840) — the top bar's own bottom edge is the band's amber, never Edit Schedule's cyan; it returns to the page's own when the bands go.
 
-**The rule (D587):** when a save has failed, the warning — "⚠ Not saved — keep this page open" and **Retry** — fills a
+**Its look — the strip (owner D1655, 5 Nov 26; the drawing `docs/mock/2026-11-05-save-band/img/look1-*.png`):** read from
+the left — a drawn warning sign, **Not saved** in bold amber, "keep this page open" quieter — and **Retry** a solid amber
+button at the right; the amber wash fades across the band from the words. The words are the same; the dash between them is
+kept in the text (a screen reader hears one sentence) but not drawn. Height, place and the amber line under it unchanged
+(D587, D841); no glow (D887). The bar that waits on an OIL answer takes the same look (D1655 — "restyled alike"): its sign,
+what did not happen in bold ("Not swapped"), why quieter, then **Answer OIL** solid amber (the agent's reading of "alike";
+it was the app's cyan under D840's drawing) and **OK** quiet — still one line (D840). One body for both: `SaveStatus.tsx
+SplitWords`.
+**One design across the whole app (his direction D1663, 5 Nov 26):** the band wears the strip wherever it is drawn — the places below. The app's other "not saved" words (refusals of one change, not a failed save: a Leave War figure box, the grades window, the schedule's refused change, a document too big to store) take one matching look of their own, apart from the band's — pictured and drawn for him first (D1665, filed as [NOTSAVED-REFUSAL-LOOK]).
+**Seen on purpose: `?savefail` (his D1666, 5 Nov 26):** a tab opened with `?savefail` on the address refuses every save (`storage/boot.ts chooseBackend` — reading still works), so the band, its Retry and the pass's "Not sent yet" can be looked at on a real phone; without it nothing changes. Pinned by `storage/boot.test.ts`.
+**Under a failed save the pass says it is not sent (D1664, 5 Nov 26):** on the screen after asking for access, while the band is up, the "Waiting for an admin" mark and the first step read "Not sent yet" in the band's amber; once the save lands the pass's approved look is back by itself.
+**Also where there is no top bar (owner D1657, 5 Nov 26 — `[GUEST-SAVE-WARNING]`):** the sign-in screen and the access
+screens (asking for access, waiting, suspended) carry the band across the top of the screen (`SaveBand screen`,
+`.saveband.is-screen`), the screen moved down under it (`.login.band-up`) so nothing is covered — so a stranger whose
+request was not saved is never told it was sent; the guest page carries it as its bar's last line, exactly as every page's
+top bar does (`GuestApp.tsx` mounts `SaveStatus` in its `.topbar.guestbar`). Pinned by `ui/accounts-ui.test.tsx` (D1657).
+
+**The rule (D587):** when a save has failed, the warning — "Not saved — keep this page open" and **Retry** — fills a
 line of its own along the bottom of the top bar, edge to edge. The top bar is one line (36px, `--save-band`) taller
 while it shows, so the page moves down and **nothing is under the warning, on any page, at any size**. It goes when the
 save lands. The passing "Saving…" note is unchanged: it floats under the bar's right end, takes no press, and never
@@ -11824,7 +11860,12 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   (`MatrixRows.tsx pairPlaces`). An HO takes its half by the day view's window (an award's stored half, the app's own by
   where its work started — `engine/warrecs.ts creditHalf`); an FO is always whole (`placeOf`). Letters bare
   (`boxText` — the half is said by where the box sits; B and C for ATT B / C; an app-credited OIL keeps its star). Three or
-  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. The Inputs-page edge and the moved
+  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. *[AMENDED 6 Nov 26 by his D1727,
+  D1728 — [LW-CELL-COMBOS]: two whole days stand side by side, codes turned to read bottom to top (`bx-tilt`); a whole day
+  beside a half keeps the cell, the half over its own half (`bx-floor` / `bx-roof`, `matrixrowparts.ts pairLook`); three
+  or more entries are a stack of cards (`bx-pile`, the "+n" tile kept hidden for its words); the "!" a small outlined amber
+  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`.]*
+  The Inputs-page edge and the moved
   edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
   per cell (`docs/performance.md` §E).
 - **Each box's edge is its own entry's, and no corner tile covers letters (walker 1's #8, #9, #11 — 23 Oct 26):** the
@@ -11834,7 +11875,10 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   the top-right and the PO tag the bottom-right unless a box's letters sit there (a morning box or a morning HO's quarter
   under the mark; an afternoon one under the tag): then the tile takes the other right-hand corner if it is free
   (`mklo`, `pohi` on the cell), else that box's letters step aside, the box keeping its place and size
-  (`boxcorners-css.test.ts`).
+  (`boxcorners-css.test.ts`). *[AMENDED 6 Nov 26 by his D1727, D1728: `mklo` and `pohi` are gone — the marks are the
+  cell's `bx-` classes above; no PO tag beside an entry on a gone day, its box striped (`bx-gone`, his D1729, D1730); his
+  last day in a yellow line down the day's right edge (`bx-last`, the `.polast` tile drawn as a line); the Legend teaches
+  them under "Marks on a day" (D1731).]*
 - **The Legend (r7-07):** the colour (what kind), the fill (where it stands), the size (how much of the day), the dates
   (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
   box in a cell-sized frame, so the key cannot show a colour the grid does not paint.
@@ -11974,7 +12018,7 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
 - **A date clicked behind a new input's window (D1298):** on the Inputs calendar it never lights as picked while the window keeps its old date; what it does is his to choose.
 - **The Medical tab's "+ Medical" and its window on the right (D1300) — BUILT 24 Oct 26:** on a desktop (over 820) "+ Medical" is the row's last button, at its right end; while an input's window is open the sections make room at their right for it (`.medview.med-room`, `16-medical.css`), so every card stands clear of it; a phone keeps "+ Medical" first and its window in the middle (D1137, D997). A save from the Medical tab asks the tab to show the input (`state/view.ts MEDREVEAL` — its own, turning no calendar), and its card wears the app's one just-added mark for six seconds (`.innew`, with `data-fresh`), brought on screen by the least movement; where it is seen, "Input added" is left unsaid (`ui/seen.ts`). A place he dragged the window to stays his (the window shell's memory). Pins: `ui/medicalview.test.tsx`, `e2e/medical.spec.ts` (at 1500 × 950 and his PC's 1229 × 600).
 - **The admin's "Approve what I enter" remembered, a toggle (D1302):** *BUILT 24 Oct 26 — §The bid windows after M3, round 3.* left off it stays off in every bid window until he turns it on; a small toggle in the title bar.
-- **The Inputs list's cards line up their right-hand marks (D1305; his pick A, D1310 — three columns sized to the letters, no card taller):** on a card's top line LATE, "No document" and the hours (or "till <date>") each stand in the same place on every card, so the list reads as columns; drawn for him first, not yet built (filed as [INP-CARD-COLUMNS]).
+*[REPLACED 6 Nov 26 by D1721: the cards stay as they are, each mark just before what follows it; the columns are not built.]* - **The Inputs list's cards line up their right-hand marks (D1305; his pick A, D1310 — three columns sized to the letters, no card taller):** on a card's top line LATE, "No document" and the hours (or "till <date>") each stand in the same place on every card, so the list reads as columns; drawn for him first, not yet built (filed as [INP-CARD-COLUMNS]).
 - **The Inputs calendar's bars take the Leave War's kind colours (D1304):** one colour per kind on both pages; duties a colour of their own; decided with [INPUT-COLOURS]. **His D1317:** the duty and commitment bars' words must read clearly against them — the grey slate with white words drawn for Q3 does not — and stay apart from the overseas duty's slate; redrawn with the design skill first. **His D1321: outlined** — a dark bar, a light edge, light words; every absence filled. *BUILT 24 Oct 26:* `inputscal-model.ts colourOf` (an upchit with medical, as drawn), the bar's `kd k-<kind>` or `duty` class, `scheduler/25-inputs-calendar.css` — a timed bar a tint with its left edge (D729).
 
 ## The Leave War after the M3 build of 25 Oct 26 — as built (D1355–D1380)
@@ -12034,6 +12078,8 @@ Its open day is its own listener set — opening, stepping, or a bid placed with
   source); the group's heading stays "OCU".
 - **Ground personnel's chip reads "G" (D1470),** in the Personnel white; the group's heading stays "Personnel"; the
   schedule's own ground-crew puck (no chip) is unchanged.
+- **Whatever is filed on a posted-out man's gone days shows on the grid (D1720, 6 Nov 26; [LW-PO-DAYS-DRAWING]):** an overseas duty, a course, a medical, an Other — as well as leave and OIL — on a day after his posting out is drawn as its box over the posting hatch, the joined bar across its days and the small PO tag on each gone day, as leave already was; it counts nobody (the hatch stays). A gone day with nothing filed keeps its bare "PO". `leavewar/ui/MatrixRows.tsx` (`outLeave`). A tap on such an entry opens the window it opens on any other day — an entry of several days whole (D1565) — not the day's list (D1722).
+- **Every SANS man's name wears the SANS purple line (his D1692; drawn and answered 5 Nov 26 — D1697, D1698; [PO-SANS-PUCK-EDGE]):** the name puck takes the schedule's own SANS class (`.puck.san`, the purple line on the right over the chip's last points — D651) for every SANS man on the grid: the SANS group at the foot ("+ SANS" on — D1698) and a man posted out as SANS shown in his old place, from when the posting is set (D1697), on the row and the phone's frozen copy alike (`NamePuck.tsx`, the one drawer). The separate "SANS" tag (D283's picture 4a, `po-sans-tag`) is gone: it squeezed his callsign to one letter on a phone. The drawing of record: `docs/mock/2026-11-05-taken-back-sans/` pictures 1–4. Balances and Approvals draw the schedule's own puck (`sync.ts puckHtml`), so there the line shows only from his posting date, once he IS SANS — kept as built (his D1711, 5 Nov 26).
 - **Built (28 Oct 26):** `leavewar/ui/NamePuck.tsx` draws it for the grid's row (`MatrixRows.tsx`) and the phone's frozen copy
   (`Matrix.tsx`) — the schedule's `.puck` / `.nm` / `.role` classes, so its look is the scheduler's stylesheet; the chip's text
   `chipText` (the schedule's `QCHIP` for OCU, "G" for ground personnel), its colour the war's `catClass`; `matrix.css` adds
@@ -12306,3 +12352,16 @@ Built to `docs/mock/lw-overhaul/full-m5a-person.mjs` (round 20d's tiles: `m5a-p2
   tools row…". **How a pinned part is checked:** `scripts/handpass/pinned-sweep.mjs` on every page, zoomed in and out and
   scrolled, with a list forced to draw past its box (calibrated red on the Balances build before D1519), and
   `scripts/handpass/pinned-pinch.mjs` under a pinch — `docs/handpass/2026-10-30-scroll-pinned.md`.
+
+## Matching looks, round 4 (5 Nov 26 — [UI-CONSISTENCY-LOOK], his "all as recommended")
+
+The page and its pictures: `raptor-port/docs/img/handpass/2026-11-05-consistency-round4/` (drawn by `raptor-port/scripts/handpass/cr4-look.mjs`, every new mark's path in its `ICON`).
+
+- **D1701 — the legends stay as they are:** Edit Schedule's fold (D926), the Leave War's and the Tracker's Legend buttons opening the same panel, the Inputs and SANS colour keys in view.
+- **D1708 — wherever the Inputs row wraps (below 1366 on his PC; at 1366 too with wider letters):** the filters and the gear start the second line at its LEFT, together — the right end put the gear under an open input window at 1280 (found by the build's walk); one line keeps them at the right end. Narrows D1702.
+- **D1702 — the Inputs calendar's top row:** the filters and the gear one group at the row's right end where the row holds one line (D1708 for the wrapped row); the search box's basis 170 (box 102) only between 1340 and 1439 wide, so 1366 holds one line; a wrapper round Filters, the fields and the gear, `display:contents` at a phone's width (D693's phone row untouched).
+- **D1703 — the board's and the Leave War's typed marks** become line icons: ⇅ the Tracker's Reorder mark (Sort all, Auto sort, Rearrange the grid, Done); Templates a page of blocks; Reset order an arrow turning back; the phone menu's layout switch a phone and a screen.
+- **D1704 — OIL's own mark, a ticket,** on the board's OIL Earn and the Leave War's OIL tab; a clock means only History (D1700).
+- **D1705 — the Tracker's typed marks** become line icons, as drawn (Merge and Unmerge in words).
+- **D1706 — one look for every menu of actions:** the board's plain rows (`.sb-moremenu`), for the Leave War window's ⋯ and the Tracker's File and pencil menus too; rows 38 tall; Grant OIL's green kept (D1320); the board's Templates and + Wave (choices) unchanged.
+- **D1707 — the one gear (D1509) in its button's own colour,** the SANS calendar's included; the OIL tracker's 📅 becomes Edit Schedule's calendar (D1508).

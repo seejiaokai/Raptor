@@ -1,0 +1,148 @@
+{
+ "state": "sans-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+  "shot": "2-sans-proposed-desk"
+ },
+ "recorded": "2026-11-05T11:43:04.629Z",
+ "drawnOn": "claude/postout-bell-look at e4779887e",
+ "checkout": "2ee227d0b",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 285
+ },
+ "parts": {
+  "puck": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 33,
+    "y": 424,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 38,
+    "y": 424.8,
+    "w": 65.2,
+    "h": 12.3
+   },
+   "text": "Sidewinder IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(110, 106, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.san"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 34,
+    "y": 425,
+    "w": 57,
+    "h": 13
+   },
+   "ink": {
+    "x": 38,
+    "y": 425,
+    "w": 44.8,
+    "h": 12
+   },
+   "text": "Sidewinder",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)",
+     "0px none rgb(251, 250, 240)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(251, 250, 240)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.nm"
+  },
+  "chip": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 91,
+    "y": 425,
+    "w": 15,
+    "h": 13
+   },
+   "ink": {
+    "x": 93.8,
+    "y": 424.8,
+    "w": 9.4,
+    "h": 12
+   },
+   "text": "IP",
+   "typed": false,
+   "look": {
+    "fill": "rgb(232, 178, 59)",
+    "image": "",
+    "edge": [
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)",
+     "0px none rgb(42, 30, 2)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(42, 30, 2)",
+    "align": "left",
+    "justify": "center",
+    "font": "800 9.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.role.lw-chip.q-sxo.has-quals"
+  }
+ },
+ "approved": {
+  "picture": "2-sans-proposed-desk.png",
+  "identical": true
+ }
+}

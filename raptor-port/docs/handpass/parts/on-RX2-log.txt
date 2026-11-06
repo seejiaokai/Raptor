@@ -1,0 +1,248 @@
+R1 Warden admin: true
+R1 filed: {"ids":["imqoidhz2q8egz5","imqoidjao9dpddl","imqoidklyb3e2mg"],"thu":"imqoidlw6g1mgas"}
+R1 Fri/Thu inputs: []
+R1 form dates: ["2026-07-17","2026-07-17"]
+R1 list after add: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R1 bells before: {"Saber":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}}
+R1 undo before: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"off|Redo"}
+R1 hol lines: ["2026-01-01||Thu 1 Jan PH PH","2026-02-17||Tue 17 – Wed 18 Feb PH PH","2026-07-17||Fri 17 Jul National Day PH","2026-08-09||Sun 9 Aug PH PH","2026-12-25||Fri 25 Dec PH PH"]
+R1 form buttons: ["hol-prev","hol-year","hol-next","hol-add","hol-list","hol-kind-ph","hol-kind-off","hol-name","hol-short","hol-dates","hol-delete","hol-cancel","hol-save"]
+R1 form dates at open: ["2026-07-17","2026-07-17"]
+R1 form dates after picking: ["2026-07-16","2026-07-17"]
+R1 hol err: (none)
+R1 list after change: {"title":"OIL — Thu 16 – Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","10:00–11:00 TallyTRAINING Thu brief By Saber Yes ·","14:00–15:00 SidewinderMEETING Safety board By Sabe","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R1 measure list: {"x":984,"y":96,"w":440,"h":564,"right":1424,"bottom":660,"inside":true,"onTop":true}
+R1 bells after: {"Saber":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 6 inputs need an OIL answer · Saber 1 min"]},"Warden":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 6 inputs need an OIL answer · Saber 1 min"]}}
+R1 lines in Warden bell: 1
+R1 list from Warden bell: {"title":"OIL — Thu 16 – Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","10:00–11:00 TallyTRAINING Thu brief By Saber Yes ·","14:00–15:00 SidewinderMEETING Safety board By Sabe","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R1 rename result: {"d":null,"err":""}
+R1 list after rename: null
+R1 bells after rename: {"Saber":{"lit":1,"lines":["[unread] Founders DayThu 16 – Fri 17 Jul 6 inputs need an OIL answer · Saber 2 min"]},"Warden":{"lit":0,"lines":["Founders DayThu 16 – Fri 17 Jul 6 inputs need an OIL answer · Saber 2 min"]}}
+R1 lines: 1
+R1 list from bell after rename: {"title":"OIL — Thu 16 – Fri 17 Jul Public holiday · Founders Day","lead":"(none)","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","10:00–11:00 TallyTRAINING Thu brief By Saber Yes ·","14:00–15:00 SidewinderMEETING Safety board By Sabe","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R1 old name anywhere on screen (list/bell open): false
+R1 hol lines after rename: ["Thu 1 Jan PH PH","Tue 17 – Wed 18 Feb PH PH","Thu 16 – Fri 17 Jul Founders Day PH","Sun 9 Aug PH PH","Fri 25 Dec PH PH"]
+R1 old name on screen with holidays list open: false
+R1 inputs state: Range brief:null ; Gate duty:null ; Safety board:null ; Thu brief:null
+R1 errors: []
+R2 Warden admin: true
+R2 filed: ["imqoidhy4ir7wdm","imqoidja6etyazb","imqoidkkxm644gm"]
+R2 form dates: ["2026-07-16","2026-07-17"]
+R2 list after add: {"title":"OIL — Thu 16 – Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"5 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R2 bells before shortening: {"Saber":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 5 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 5 inputs need an OIL answer · Saber now"]}}
+R2 hol lines: ["2026-01-01|Thu 1 Jan PH PH","2026-02-17|Tue 17 – Wed 18 Feb PH PH","2026-07-16|Thu 16 – Fri 17 Jul National Day PH","2026-08-09|Sun 9 Aug PH PH","2026-12-25|Fri 25 Dec PH PH"]
+R2 form dates at open: ["2026-07-16","2026-07-17"]
+R2 form dates after picking Fri only: ["2026-07-17","2026-07-17"]
+R2 hol err: (none)
+R2 list after shortening: null
+R2 bells after shortening: {"Saber":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber 1 min"]},"Warden":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber 1 min"]}}
+R2 lines in Saber bell: 1
+R2 list from Saber bell: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R2 lines in Warden bell: 1
+R2 list from Warden bell: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R2 inputs state: Range brief:null ; Gate duty:null ; Safety board:null
+R2 errors: []
+R3 Warden admin: true
+R3 filed: ["imqoidhxy3ck3ms","imqoidja29kur47","imqoidkkrspyfjt"]
+R3 form dates: ["2026-07-16","2026-07-17"]
+R3 list after add: {"title":"OIL — Thu 16 – Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"5 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R3 bells after first add + Later: {"Saber":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 5 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] National DayThu 16 – Fri 17 Jul 5 inputs need an OIL answer · Saber now"]}}
+R3 after pressing delete: buttons: ["iset-cancel:Cancel"]
+R3 hol lines after delete: ["2026-01-01|Thu 1 Jan PH PH","2026-02-17|Tue 17 – Wed 18 Feb PH PH","2026-08-09|Sun 9 Aug PH PH","2026-12-25|Fri 25 Dec PH PH"]
+R3 list after removal: null
+R3 bells after removal: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R3 form dates 2nd: ["2026-07-17","2026-07-17"]
+R3 list after 2nd add: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R3 bells after second add: {"Saber":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}}
+R3 inputs state: Range brief:null ; Gate duty:null ; Safety board:null
+R3 errors: []
+R4 Warden admin: true
+R4 filed: {"ids":["imqoidhydmlryvl","imqoidjaibn0tzc","imqoidkl8csfw0n"],"mon":"imqoidlv3o2avj2"}
+R4 Sat/Sun inputs the demo holds: []
+R4 form dates: ["2026-07-17","2026-07-20"]
+R4 list after add: {"title":"OIL — Fri 17 – Mon 20 Jul Public holiday · Long weekend","lead":"Long weekend is now a public holiday.","count":"6 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","09:00–10:00 TallyTRAINING Mon brief By Saber Yes ·","10:00–12:00 VaporAPPOINTMENT Medical / PHA Yes · H","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R4 measure list: {"x":984,"y":96,"w":440,"h":564,"right":1424,"bottom":660,"inside":true,"onTop":true}
+R4 holiday lines on the list: ["2026-01-01|Thu 1 Jan PH PH","2026-02-17|Tue 17 – Wed 18 Feb PH PH","2026-07-17|Fri 17 – Mon 20 Jul Long weekend PH","2026-08-09|Sun 9 Aug PH PH","2026-12-25|Fri 25 Dec PH PH"]
+R4 bells: {"Saber":{"lit":1,"lines":["[unread] Long weekendFri 17 – Mon 20 Jul 6 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] Long weekendFri 17 – Mon 20 Jul 6 inputs need an OIL answer · Saber now"]}}
+R4 inputs state: Range brief:null ; Gate duty:null ; Safety board:null ; Mon brief:null
+R4 errors: []
+R6 Warden admin: true
+R6 filed: ["imqoidhtr9ucudn","imqoidj4hej7twm","imqoidkf9etd0ew"]
+R6 presets: [["event-quick-0","PH"],["event-quick-1","Off day"],["event-quick-2","No Leave"],["event-quick-3","SC"]]
+R6 SC read-out: Working event
+R6 band: 14 Jul 26 – 15 Jul 26
+R6 after tagging SC (work): list: 0
+R6 bells after SC placed: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R6 SC row kinds offered: ["off:PH:false","free:Off day:false","nolv:No leave:false","work:Work:true"]
+R6 kind ids: ["off","free","nolv","work"]
+R6 using kind for holiday: off
+R6 after re-tag as holiday: kinds: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 list up: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 list after closing editor: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 bells after re-tag as holiday: {"Saber":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]}}
+R6 undo: {"undo":"on|Undo — a Leave War setting","redo":"off|Redo"}
+R6 plain kind candidates: ["off","free","nolv","work"]
+R6 kinds now: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 plain kind chosen (second reading of pressed kinds above): free
+R6 after re-tag back: kinds: ["off:PH:false","free:Off day:true","nolv:No leave:false","work:Work:false"]
+R6 list up: null
+R6 bells after re-tag back: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R6 after re-tag as holiday again: kinds: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 list up: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 bells after re-tag again: {"Saber":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]}}
+R6 errors: []
+R6 Warden admin: true
+R6 filed: ["imqoidhscfzwepr","imqoidj3059m3p5","imqoidkg1h3npy6"]
+R6 presets: [["event-quick-0","PH"],["event-quick-1","Off day"],["event-quick-2","No Leave"],["event-quick-3","SC"]]
+R6 SC read-out: Working event
+R6 band: 14 Jul 26 – 15 Jul 26
+R6 after tagging SC (work): list: 0
+R6 bells after SC placed: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R6 SC row kinds offered: ["off:PH:false","free:Off day:false","nolv:No leave:false","work:Work:true"]
+R6 kind ids: ["off","free","nolv","work"]
+R6 using kind for holiday: off
+R6 after re-tag as holiday: kinds: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 list up: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 list after closing editor: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 bells after re-tag as holiday: {"Saber":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]}}
+R6 undo: {"undo":"on|Undo — a Leave War setting","redo":"off|Redo"}
+R6 plain kind candidates: ["off","free","nolv","work"]
+R6 kinds now: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 plain kind chosen (second reading of pressed kinds above): work
+R6 after re-tag back: kinds: ["off:PH:false","free:Off day:false","nolv:No leave:false","work:Work:true"]
+R6 list up: null
+R6 bells after re-tag back: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R6 after re-tag as holiday again: kinds: ["off:PH:true","free:Off day:false","nolv:No leave:false","work:Work:false"]
+R6 list up: {"title":"OIL — Tue 14 – Thu 16 Jul Public holiday · SC","lead":"SC is now a public holiday.","count":"6 TO ANSWER","cards":["till 17 Jul NomadOD Overseas duty — exercise, off ","All day TridentDUTY Thu duty By Saber Yes · FO No","09:00–10:00 SidewinderTRAINING Wed brief By Saber ","09:00–10:00 TallyTRAINING Tue brief By Saber Yes ·","14:00–16:00 SaintAPPOINTMENT Dental appt Yes · HO ","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · "],"left":"What is left goes to the schedulers’ bells"}
+R6 bells after re-tag again: {"Saber":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] SCTue 14 – Thu 16 Jul 6 inputs need an OIL answer · Saber now"]}}
+R6 errors: []
+R7 Warden admin: true
+R7 filed: ["imqoidhwje7cejx","imqoidj9mo2938t","imqoidklqsrj69y"]
+R7 presets: [["event-quick-0","PH"],["event-quick-1","Off day"],["event-quick-2","No Leave"],["event-quick-3","SC"]]
+R7 readout: Public holiday · work on it earns OIL
+R7 name box: ["event-text=","event-short=PH"]
+R7 before save: list: 0
+R7 current page: leavewar
+R7 list: {"title":"OIL — Fri 17 Jul Public holiday","lead":"Fri 17 Jul is now a public holiday.","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R7 measure list: {"x":984,"y":96,"w":440,"h":437,"right":1424,"bottom":533,"inside":true,"onTop":true}
+R7 title bold part: []
+R7 list gone after Later: true
+R7 bells: {"Saber":{"lit":1,"lines":["[unread] Public holidayFri 17 Jul 4 inputs need an OIL answer · Saber now"]},"Warden":{"lit":1,"lines":["[unread] Public holidayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}}
+R7 line html: <span class="bl-dot" aria-hidden="true"></span><span class="bl-main"><span class="bl-t"><b class="bl-name">Public holiday</b><i class="bl-day">Fri 17 Jul</i></span><span class="bl-what">4 inputs need an OIL answer · Saber</span></span><span class="bl-ago">now</span>
+R7 bold parts: ["Public holiday"]
+R7 bold weight of first word: ["bl-dot:400:","bl-main:400:Public holidayFri 17 Jul4 inpu","bl-t:400:Public holidayFri 17 Jul","bl-name:600:Public holiday","bl-day:400:Fri 17 Jul","bl-what:400:4 inputs need an OIL answer · ","bl-ago:400:now"]
+R7 inputs state: Range brief:null ; Gate duty:null ; Safety board:null
+R7 errors: []
+R8 Warden admin: true
+R8 filed: ["imqoidhzb7pwi9p","imqoidjb3xrhvbg","imqoidkl9fx1f3w"]
+R8 list after add: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 Saber list open from the bell: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 list still open after changing person: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 input window open: 1
+R8 pop title: Gate duty
+R8 oilconf: 1
+R8 oilconf text: OIL — Trident, Gate duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 17 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell 
+R8 state after Warden answered: Range brief:null ; Gate duty:{"2026-07-17":1} ; Safety board:null
+R8 list as Warden, now: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"3 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 list as Saber, now: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"3 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 Saber bell line now (both bells peek): {"Saber":{"lit":1,"lines":["National DayFri 17 Jul 3 inputs need an OIL answer · Saber 2 min"]},"Warden":{"lit":1,"lines":["[unread] National DayFri 17 Jul 3 inputs need an OIL answer · Saber 2 min"]}}
+R8 after Yes to all: {"count":"3 OF 3 ANSWERED","left":"","saveDisabled":false}
+R8 after Save: Range brief:{"2026-07-17":0.5} ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0.5}
+R8 oil objects: ["{\"2026-07-17\":0.5}","{\"2026-07-17\":1}","{\"2026-07-17\":0.5}"]
+R8 list closed: true
+R8 bells after save: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R8 errors: []
+R8 Warden admin: true
+R8 filed: ["imqoidhvci0csvi","imqoidj54sjyvmw","imqoidkdzrjyy3s"]
+R8 list after add: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 Saber list open from the bell: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 list still open after changing person: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"4 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 input window open: 1
+R8 pop title: Gate duty
+R8 oilconf: 1
+R8 oilconf text: OIL — Trident, Gate duty ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 17 JUL (WEEKEND / PH) Does it deserve FO — a full day of OIL? Yes — credit FO No OIL The credit lands on the Leave War as an FO cell 
+R8 state after Warden answered: Range brief:null ; Gate duty:{"2026-07-17":1} ; Safety board:null
+R8 list as Warden, now: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"3 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 list as Saber, now: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"(none)","count":"3 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","09:00–12:00 Ranger, TallyTRAINING Range brief By S","14:00–15:00 SidewinderMEETING Safety board By Sabe"],"left":"What is left goes to the schedulers’ bells"}
+R8 Saber bell line now (both bells peek): {"Saber":{"lit":1,"lines":["National DayFri 17 Jul 3 inputs need an OIL answer · Saber 2 min"]},"Warden":{"lit":1,"lines":["[unread] National DayFri 17 Jul 3 inputs need an OIL answer · Saber 2 min"]}}
+R8 after Yes to all: {"count":"3 OF 3 ANSWERED","left":"","saveDisabled":false}
+R8 after Save: Range brief:{"2026-07-17":0.5} ; Gate duty:{"2026-07-17":1} ; Safety board:{"2026-07-17":0.5}
+R8 oil objects: ["{\"2026-07-17\":0.5}","{\"2026-07-17\":1}","{\"2026-07-17\":0.5}"]
+R8 demo overseas duty oil: ["imqoidgicznwlqc:null","imqoidgicb8287t:{\"2026-07-17\":1}"]
+R8 list closed: true
+R8 bells after save: {"Saber":{"lit":0,"lines":[]},"Warden":{"lit":0,"lines":[]}}
+R8 errors: []
+R9-desk Warden admin: true
+R9-desk people ids tried: ["bane","slipway","dj","prowler","pump","slash","harpoon","snap","taipan","mamba","shaft","chaps","boosh","beams"]
+R9-desk ten filed: 10
+R9-desk form dates: ["2026-07-17","2026-07-17"]
+R9-desk list: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"11 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","08:00–08:30 RangerMEETING Short 1 By Saber Yes · H","08:00–08:30 SidewinderMEETING Short 10 By Saber Ye","09:00–09:30 DrifterMEETING Short 2 By Saber Yes · ","10:00–10:30 AceMEETING Short 3 By Saber Yes · HO N","11:00–11:30 HunterMEETING Short 4 By Saber Yes · H","12:00–12:30 PistonMEETING Short 5 By Saber Yes · H","13:00–13:30 BladeMEETING Short 6 By Saber Yes · HO","14:00–14:30 TridentMEETING Short 7 By Saber Yes · ","15:00–15:30 CinchMEETING Short 8 By Saber Yes · HO","16:00–16:30 CobraMEETING Short 9 By Saber Yes · HO"],"left":"What is left goes to the schedulers’ bells"}
+R9-desk top: {"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":196,"w":68,"h":22,"right":1340,"bottom":218,"inside":true,"onTop":true},"noall":{"x":1348,"y":196,"w":63,"h":22,"right":1411,"bottom":218,"inside":true,"onTop":true},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]}
+R9-desk mid: {"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":145,"w":68,"h":22,"right":1340,"bottom":167,"inside":true,"onTop":true},"noall":{"x":1348,"y":145,"w":63,"h":22,"right":1411,"bottom":167,"inside":true,"onTop":true},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]}
+R9-desk end: {"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":94,"w":68,"h":22,"right":1340,"bottom":116,"inside":true,"onTop":false},"noall":{"x":1348,"y":94,"w":63,"h":22,"right":1411,"bottom":116,"inside":true,"onTop":false},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]}
+R9-desk R: {"title":"OIL — Fri 17 Jul Public holiday · National Day","count0":"11 TO ANSWER","cards":11,"top":{"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":196,"w":68,"h":22,"right":1340,"bottom":218,"inside":true,"onTop":true},"noall":{"x":1348,"y":196,"w":63,"h":22,"right":1411,"bottom":218,"inside":true,"onTop":true},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]},"scMid":{"top":51,"sh":832,"ch":730,"cls":"win-body"},"mid":{"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":145,"w":68,"h":22,"right":1340,"bottom":167,"inside":true,"onTop":true},"noall":{"x":1348,"y":145,"w":63,"h":22,"right":1411,"bottom":167,"inside":true,"onTop":true},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]},"scEnd":{"top":102,"sh":832,"ch":730,"cls":"win-body"},"end":{"win":{"x":984,"y":96,"w":440,"h":780,"right":1424,"bottom":876,"inside":true,"onTop":true},"later":{"x":1294,"y":835,"w":55,"h":28,"right":1349,"bottom":863,"inside":true,"onTop":true},"save":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"yesall":{"x":1272,"y":94,"w":68,"h":22,"right":1340,"bottom":116,"inside":true,"onTop":false},"noall":{"x":1348,"y":94,"w":63,"h":22,"right":1411,"bottom":116,"inside":true,"onTop":false},"foot":{"foot":{"top":825,"bottom":875,"h":50},"win":{"top":96,"bottom":876},"scroller":{"top":145,"bottom":875},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]},"yesallTap":{"ok":true,"m":{"x":1272,"y":196,"w":68,"h":22,"right":1340,"bottom":218,"inside":true,"onTop":true}},"countAfter":"11 OF 11 ANSWERED","leftAfter":"","saveLive":true,"saveBeforeTap":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true},"saveTap":{"ok":true,"m":{"x":1357,"y":835,"w":54,"h":28,"right":1411,"bottom":863,"inside":true,"onTop":true}},"closed":true,"written":["{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}"],"writtenCount":10,"undo":{"undo":"on|Undo — 11 inputs","redo":"off|Redo"},"toast":""}
+R9-desk errors: []
+R9-p844 Warden admin: true
+R9-p844 people ids tried: ["bane","slipway","dj","prowler","pump","slash","harpoon","snap","taipan","mamba","shaft","chaps","boosh","beams"]
+R9-p844 ten filed: 10
+R9-p844 form dates: ["2026-07-17","2026-07-17"]
+R9-p844 list: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"11 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","08:00–08:30 RangerMEETING Short 1 By Saber Yes · H","08:00–08:30 SidewinderMEETING Short 10 By Saber Ye","09:00–09:30 DrifterMEETING Short 2 By Saber Yes · ","10:00–10:30 AceMEETING Short 3 By Saber Yes · HO N","11:00–11:30 HunterMEETING Short 4 By Saber Yes · H","12:00–12:30 PistonMEETING Short 5 By Saber Yes · H","13:00–13:30 BladeMEETING Short 6 By Saber Yes · HO","14:00–14:30 TridentMEETING Short 7 By Saber Yes · ","15:00–15:30 CinchMEETING Short 8 By Saber Yes · HO","16:00–16:30 CobraMEETING Short 9 By Saber Yes · HO"],"left":"What is left goes to the schedulers’ bells"}
+R9-p844 top: {"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":121,"w":68,"h":22,"right":294,"bottom":143,"inside":true,"onTop":true},"noall":{"x":302,"y":121,"w":63,"h":22,"right":365,"bottom":143,"inside":true,"onTop":true},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]}
+R9-p844 mid: {"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":85,"w":68,"h":22,"right":294,"bottom":107,"inside":true,"onTop":true},"noall":{"x":302,"y":85,"w":63,"h":22,"right":365,"bottom":107,"inside":true,"onTop":true},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]}
+R9-p844 end: {"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":50,"w":68,"h":22,"right":294,"bottom":72,"inside":true,"onTop":false},"noall":{"x":302,"y":50,"w":63,"h":22,"right":365,"bottom":72,"inside":true,"onTop":false},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]}
+R9-p844 R: {"title":"OIL — Fri 17 Jul Public holiday · National Day","count0":"11 TO ANSWER","cards":11,"top":{"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":121,"w":68,"h":22,"right":294,"bottom":143,"inside":true,"onTop":true},"noall":{"x":302,"y":121,"w":63,"h":22,"right":365,"bottom":143,"inside":true,"onTop":true},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]},"scMid":{"top":36,"sh":832,"ch":761,"cls":"win-body"},"mid":{"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":85,"w":68,"h":22,"right":294,"bottom":107,"inside":true,"onTop":true},"noall":{"x":302,"y":85,"w":63,"h":22,"right":365,"bottom":107,"inside":true,"onTop":true},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]},"scEnd":{"top":71,"sh":832,"ch":761,"cls":"win-body"},"end":{"win":{"x":12,"y":12,"w":366,"h":820,"right":378,"bottom":832,"inside":true,"onTop":true},"later":{"x":248,"y":791,"w":55,"h":28,"right":303,"bottom":819,"inside":true,"onTop":true},"save":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"yesall":{"x":226,"y":50,"w":68,"h":22,"right":294,"bottom":72,"inside":true,"onTop":false},"noall":{"x":302,"y":50,"w":63,"h":22,"right":365,"bottom":72,"inside":true,"onTop":false},"foot":{"foot":{"top":781,"bottom":831,"h":50},"win":{"top":12,"bottom":832},"scroller":{"top":70,"bottom":831},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]},"yesallTap":{"ok":true,"m":{"x":226,"y":121,"w":68,"h":22,"right":294,"bottom":143,"inside":true,"onTop":true}},"countAfter":"11 OF 11 ANSWERED","leftAfter":"","saveLive":true,"saveBeforeTap":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true},"saveTap":{"ok":true,"m":{"x":311,"y":791,"w":54,"h":28,"right":365,"bottom":819,"inside":true,"onTop":true}},"closed":true,"written":["{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}"],"writtenCount":10,"undo":{"undo":"on|Undo — 11 inputs","redo":"off|Redo"},"toast":""}
+R9-p844 errors: []
+R9-l390 Warden admin: true
+R9-l390 people ids tried: ["bane","slipway","dj","prowler","pump","slash","harpoon","snap","taipan","mamba","shaft","chaps","boosh","beams"]
+R9-l390 ten filed: 10
+R9-l390 form dates: ["2026-07-17","2026-07-17"]
+R9-l390 list: {"title":"OIL — Fri 17 Jul Public holiday · National Day","lead":"National Day is now a public holiday.","count":"11 TO ANSWER","cards":["All day NomadOD Overseas duty — exercise, off isla","08:00–08:30 RangerMEETING Short 1 By Saber Yes · H","08:00–08:30 SidewinderMEETING Short 10 By Saber Ye","09:00–09:30 DrifterMEETING Short 2 By Saber Yes · ","10:00–10:30 AceMEETING Short 3 By Saber Yes · HO N","11:00–11:30 HunterMEETING Short 4 By Saber Yes · H","12:00–12:30 PistonMEETING Short 5 By Saber Yes · H","13:00–13:30 BladeMEETING Short 6 By Saber Yes · HO","14:00–14:30 TridentMEETING Short 7 By Saber Yes · ","15:00–15:30 CinchMEETING Short 8 By Saber Yes · HO","16:00–16:30 CobraMEETING Short 9 By Saber Yes · HO"],"left":"What is left goes to the schedulers’ bells"}
+R9-l390 top: {"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true},"noall":{"x":752,"y":196,"w":63,"h":22,"right":815,"bottom":218,"inside":true,"onTop":true},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]}
+R9-l390 mid: {"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":-110,"w":68,"h":22,"right":744,"bottom":-88,"inside":false,"onTop":false},"noall":{"x":752,"y":-110,"w":63,"h":22,"right":815,"bottom":-88,"inside":false,"onTop":false},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]}
+R9-l390 end: {"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":-416,"w":68,"h":22,"right":744,"bottom":-394,"inside":false,"onTop":false},"noall":{"x":752,"y":-416,"w":63,"h":22,"right":815,"bottom":-394,"inside":false,"onTop":false},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]}
+R9-l390 R: {"title":"OIL — Fri 17 Jul Public holiday · National Day","count0":"11 TO ANSWER","cards":11,"top":{"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true},"noall":{"x":752,"y":196,"w":63,"h":22,"right":815,"bottom":218,"inside":true,"onTop":true},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":2},"pageScroll":[0,0]},"scMid":{"top":306,"sh":832,"ch":220,"cls":"win-body"},"mid":{"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":-110,"w":68,"h":22,"right":744,"bottom":-88,"inside":false,"onTop":false},"noall":{"x":752,"y":-110,"w":63,"h":22,"right":815,"bottom":-88,"inside":false,"onTop":false},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":1},"pageScroll":[0,0]},"scEnd":{"top":612,"sh":832,"ch":220,"cls":"win-body"},"end":{"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":325,"w":55,"h":28,"right":753,"bottom":353,"inside":true,"onTop":true},"save":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"yesall":{"x":676,"y":-416,"w":68,"h":22,"right":744,"bottom":-394,"inside":false,"onTop":false},"noall":{"x":752,"y":-416,"w":63,"h":22,"right":815,"bottom":-394,"inside":false,"onTop":false},"foot":{"foot":{"top":315,"bottom":365,"h":50},"win":{"top":96,"bottom":366},"scroller":{"top":145,"bottom":365},"scrollerEndsAboveFoot":false,"footBottomAtWindowBottom":true,"samples":33,"cardHitsInFoot":0,"cardsOverlappingFoot":0},"pageScroll":[0,0]},"yesallTap":{"ok":true,"m":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true}},"countAfter":"11 OF 11 ANSWERED","leftAfter":"","saveLive":true,"saveBeforeTap":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true},"saveTap":{"ok":true,"m":{"x":761,"y":325,"w":54,"h":28,"right":815,"bottom":353,"inside":true,"onTop":true}},"closed":true,"written":["{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}","{\"2026-07-17\":0.5}"],"writtenCount":10,"undo":{"undo":"on|Undo — 11 inputs","redo":"off|Redo"},"toast":""}
+R9-l390 errors: []
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":330,"y":305,"w":74,"h":15,"right":404,"bottom":320,"inside":true,"onTop":true},"tally":{"x":330,"y":349,"w":74,"h":15,"right":404,"bottom":364,"inside":true,"onTop":true}}
+R10 from/to: [{"x":367.1875305175781,"y":356.28126525878906},{"x":367.1875305175781,"y":312.46876525878906}]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":330,"y":286,"w":74,"h":15,"right":404,"bottom":301,"inside":true,"onTop":true},"tally":{"x":330,"y":330,"w":74,"h":15,"right":404,"bottom":345,"inside":true,"onTop":true}}
+R10 from/to: [{"x":367.1875305175781,"y":337.28126525878906},{"x":367.1875305175781,"y":293.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: "]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":245,"y":338,"w":74,"h":15,"right":319,"bottom":353,"inside":true,"onTop":true},"tally":{"x":245,"y":389,"w":74,"h":15,"right":319,"bottom":404,"inside":false,"onTop":false}}
+R10 from/to: [{"x":282.296875,"y":396.28125},{"x":282.296875,"y":345.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":245,"y":170,"w":74,"h":15,"right":319,"bottom":185,"inside":true,"onTop":false},"tally":{"x":245,"y":221,"w":74,"h":15,"right":319,"bottom":236,"inside":true,"onTop":true}}
+R10 from/to: [{"x":282.296875,"y":228.28125},{"x":282.296875,"y":177.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: "]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":245,"y":240,"w":74,"h":15,"right":319,"bottom":255,"inside":true,"onTop":true},"tally":{"x":245,"y":291,"w":74,"h":15,"right":319,"bottom":306,"inside":true,"onTop":true}}
+R10 from/to: [{"x":282.296875,"y":298.28125},{"x":282.296875,"y":247.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: "]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":245,"y":240,"w":74,"h":15,"right":319,"bottom":255,"inside":true,"onTop":true},"tally":{"x":245,"y":291,"w":74,"h":15,"right":319,"bottom":306,"inside":true,"onTop":true}}
+R10 from/to: [{"x":282.296875,"y":298.28125},{"x":282.296875,"y":247.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: "]
+R10 question up: 0
+R10 R: {"up":0,"errors":[]}
+R10 before: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 pucks: {"ranger":{"x":245,"y":262,"w":74,"h":15,"right":319,"bottom":277,"inside":true,"onTop":true},"tally":{"x":245,"y":313,"w":74,"h":15,"right":319,"bottom":328,"inside":true,"onTop":true}}
+R10 from/to: [{"x":282.296875,"y":320.28125},{"x":282.296875,"y":269.46875}]
+R10 ground after drag: ["RANGE BRIEF: Ranger","Hangar open day: Tally"]
+R10 question up: 1
+R10 question geometry: {"card":{"x":202,"y":39,"r":642,"b":351,"w":440,"h":312},"cancel":{"x":471,"y":312,"r":561,"b":340,"w":90,"h":28},"save":{"x":569,"y":312,"r":626,"b":340,"w":57,"h":28},"cardInScreen":true,"cancelInCard":true,"saveInCard":true,"cancelInScreen":true,"saveInScreen":true,"cancelOnTop":true,"saveOnTop":true,"sameRow":true,"scroller":{"cls":"airpop-box upconf-box","sh":326,"ch":310,"top":39,"bottom":351},"buttonsBelowWords":false,"innerH":390,"innerW":844}
+R10 after scrolling the card words to the end: {"scrollTop":16,"cancel":[312,340],"save":[312,340],"cardBottom":351,"innerH":390}
+R10 bar: {"text":{"text":"Not swapped — OIL not answered","answer":"Answer OIL","ok":"OK"},"geo":{"bar":[229,322,615,372],"answer":[454,333,546,361],"ok":[556,333,600,361],"insideScreen":true,"sideBySide":true,"barOnTop":true,"answerOnTop":true,"okOnTop":true},"lit":[true,true]}
+R10 R: {"up":1,"lead":"Swapping Tally and Ranger","cancelText":"Don’t swap","saveText":"Swap","saveDisabled":true,"nothingMoved":true,"undoSame":true,"geo":{"card":{"x":202,"y":39,"r":642,"b":351,"w":440,"h":312},"cancel":{"x":471,"y":312,"r":561,"b":340,"w":90,"h":28},"save":{"x":569,"y":312,"r":626,"b":340,"w":57,"h":28},"cardInScreen":true,"cancelInCard":true,"saveInCard":true,"cancelInScreen":true,"saveInScreen":true,"cancelOnTop":true,"saveOnTop":true,"sameRow":true,"scroller":{"cls":"airpop-box upconf-box","sh":326,"ch":310,"top":39,"bottom":351},"buttonsBelowWords":false,"innerH":390,"innerW":844},"geoEnd":{"scrollTop":16,"cancel":[312,340],"save":[312,340],"cardBottom":351,"innerH":390},"lit":[true,true],"bar":{"text":"Not swapped — OIL not answered","answer":"Answer OIL","ok":"OK"},"barGeo":{"bar":[229,322,615,372],"answer":[454,333,546,361],"ok":[556,333,600,361],"insideScreen":true,"sideBySide":true,"barOnTop":true,"answerOnTop":true,"okOnTop":true},"nothingMovedAfter":true,"undoSameAfter":true,"oil":"Range brief:{\"2026-07-18\":0.5}","errors":[]}

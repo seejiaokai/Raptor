@@ -1,0 +1,13 @@
+A — publish, no drag
+  toast Saturday published — APPROVED
+  WEEK Sat {"dstat":"11 changes i Unpublish","head":"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 11 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Bla","buttons":["Unpublish"],"signs":["","","",""],"marks":0}
+  all heads ["i Publish day","i Publish day","i Publish day","i Publish day","i Publish day","11 changes i Unpublish","i Publish day"]
+  errors []
+B — drag, Don’t swap, publish
+  question 1 Swapping Tally and Ranger
+  bar Not swapped — OIL not answered
+  toast Saturday published — APPROVED
+  WEEK Sat {"dstat":"11 changes i Unpublish","head":"Saturday Jul 18 Templates Live working copy ▾ ORIG 0 X 0 X 0 11 changes i Unpublish SIGNED ORIG CUR CKAce SKED CKBasher PLANNEDBolt APPROVEDCinch SIGN-OFF CUR CK — name — — name — Ace Anvil Basher Bla","buttons":["Unpublish"],"signs":["","","",""],"marks":0}
+  all heads ["i Publish day","i Publish day","i Publish day","i Publish day","i Publish day","11 changes i Unpublish","i Publish day"]
+  errors []
+exit 0

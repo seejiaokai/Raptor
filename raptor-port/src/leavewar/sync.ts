@@ -146,10 +146,10 @@ import { askNewWar } from './ui/warask'
 import { applyDelete, deleteCutoff, effectiveToday, stashPreflight } from '../state/person-delete'
 import { peopleStore, settingsStore, finishPeopleWrite, revertUnsavedPeople } from '../state/people-settings-commit'
 import { schedStore, schedApplyEnd, resyncSchedBaseline, commitInputs, SCHED_TYPES } from '../state/sched-commit'
-import { noticeHoliday, noticeWar, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart } from '../state/notices'
+import { noticeHoliday, noticeWar, noticePosting, noticePostingBack, setHolidayLeft, setHolidaySpan, setDerivedNotices, isWarNotice, NOTICES, type Notice, type NoticePart, type PoOutcome } from '../state/notices'
 import { askLw, askRing, setApprMode, setBalancesUp } from './ui/lwnav'
 import { ringCell } from './ui/cellring'
-import { hasRead } from '../state/noticeseen'
+import { hasRead, forgetRead } from '../state/noticeseen'
 import { renameCallsign } from '../engine/slots'
 import { ELOG } from '../engine/editlog'
 import { callsignProblem } from '../state/roster-add'
@@ -301,7 +301,8 @@ export function installAbsenceDoor(): void {
   setHolidayTell(tellHoliday)
   /* M4 batch 9: a decision on a man's leave, and bidding opened or closed, tell the bell (tellWar, below) */
   setDecisionTell({ leave: warLeaveNow, decisions: tellWar, openings: tellBidding })
-  setDerivedNotices(endedLines)
+  /* (and the admins' line for a posting with nothing to run — postedLines, [POSTOUT-RUN-NOTICE]) */
+  setDerivedNotices(pid => [...endedLines(pid), ...postedLines(pid)])
   setHolidayLeft(holidayLeft)
   setHolidaySpan(holidaySpan)
   /* WHICH DAYS CAN EARN OIL AT ALL — the schedule's blind-desk warning asks
@@ -1399,6 +1400,36 @@ function endedLines(pid: string): Notice[] {
   return out
 }
 
+/* A POSTING WITH NOTHING TO RUN — "off the manpower" ([POSTOUT-RUN-NOTICE], D1690). Its date is the whole of it: no pass
+   runs and nothing is written (poDueNow skips it — postingPendingTag's "nothing to run"), so, as with a stretch that ends,
+   each admin's bell works the line out from the stored posting once its date has come — a steady id, read like any other
+   line, dated the posting's own midnight. Old news is not listed: a posting whose date passed more than fourteen days ago
+   (ENDED_DAYS, the ended stretch's rule), so the postings of months gone do not arrive as a pile of new lines. At the
+   database step a scheduled flow may write it instead, beside the pass (noted for the IT side). */
+function postedLines(pid: string): Notice[] {
+  if (!schedulerIds().includes(pid)) return []
+  /* (an admin is never told of his own posting — as the pass's lines, above) */
+  const today = effectiveToday(), since = addDays(today, -ENDED_DAYS)
+  const out: Notice[] = []
+  for (const [id, rec] of Object.entries(getState().postOuts)) {
+    if (!rec || !rec.to || rec.gone) continue
+    const o = outcomeOf(rec)
+    if (o && o !== 'none') continue
+    const poDate = addDays(rec.to, 1)
+    if (id === pid || poDate > today || poDate < since) continue
+    const body = rosterBody(id)
+    if (!body || body.special || body.deleted) continue
+    const at = new Date(+poDate.slice(0, 4), +poDate.slice(5, 7) - 1, +poDate.slice(8, 10)).getTime()
+    /* the line's id is steady, so his read record holds it — but once "Undo post out" has told this admin it was taken back
+       ([NOTICE-UNDO-RETRACT], D1693), the same posting set again is NEWS: the id carries how many such "taken back" lines
+       he holds for this man and date, so it comes back unread (the scenario designer's 12, 5 Nov 26). An admin never told
+       (he had not read it, or pressed the Undo himself) keeps the plain id — unread, or his own act */
+    const backs = NOTICES.filter(n => { const q = (n.what || [])[0]; return n.to === pid && n.day === poDate && q?.k === 'poback' && q.who === id }).length
+    out.push({ id: `po:${id}:${poDate}${backs ? `:${backs}` : ''}`, to: pid, by: null, at, iid: '', name: String(body.cs), day: poDate, what: [{ k: 'po', who: id, o: 'none' }] })
+  }
+  return out
+}
+
 /** A TAP ON THE BELL'S LEAVE WAR LINE (M4 9.6): the Leave War, the war holding the date, the grid at that day and his cell
  *  ringed (ui/cellring.ts — the just-added mark). The page's first-visit landing takes the ask instead of its own
  *  (LeaveWarPage.tsx). A man with no row on the grid (a SANS man while SANS is off the war — B12) is shown his person
@@ -1445,7 +1476,8 @@ export function warNoticesReversed(changes: ReadonlyArray<{ collection: string; 
       const last = again[again.length - 1]
       if (last && !hasRead(n.to, last)) continue
       const d = p.k === 'lwopen' ? (p.open ? 'open' : 'close') : p.d
-      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}) }] })
+      /* (where a move took it, too: the taken-back line says the line it replaces word for word, struck — D1699) */
+      made.push({ ...n, what: [{ k: 'lwback', ...(p.k === 'lw' && p.c ? { c: p.c } : {}), a: p.a, b: p.b, d, ref: n.id, ...(p.k === 'lw' && p.w ? { w: p.w } : {}), ...(p.k === 'lw' && p.to ? { to: p.to, ...(p.tb ? { tb: p.tb } : {}) } : {}) }] })
     } else {
       if (!NOTICES.some(x => x.id === n.id) || !NOTICES.some(x => { const q = (x.what || [])[0]; return x.to === n.to && q?.k === 'lwback' && q.ref === n.id })) continue
       /* an "again" line he has not read is shown again with its line (M9): no second one beside it */
@@ -2313,10 +2345,20 @@ export function runPoOutcomes(): void {
         SYNCING = true
         try {
           if (own) revertUnsavedPeople()   // before the enlist: the roster as saved, so nothing else rides in (above)
-          if (needsDays) resyncSchedBaseline()
+          /* the scheduler store's starting point brought up to what is in memory BEFORE it is enlisted — every time now that
+             every pass enlists it ([POSTOUT-RUN-NOTICE]'s two reads, 5 Nov 26): the store's changes are worked out against
+             that point, so a schedule or request change sitting in memory outside every command (a browser's console) would
+             otherwise be saved inside this pass as the app's own act. Taken in, it is never saved by anyone (the next command
+             starts from the same point), as commitInputsWith does for the same reason; it was always so for a delete */
+          resyncSchedBaseline()
           txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
-          if (needsDays) txn.enlist(schedStore)   // no saved week is written for a delete ([DB-READINESS] group A, phase 6 (d))
+          /* the scheduler store too, every time: the admins' bell lines are its records ([POSTOUT-RUN-NOTICE], below) — and a
+             delete's days (no saved week is written for a delete — [DB-READINESS] group A, phase 6 (d)) */
+          txn.enlist(schedStore)
           const told: Array<[string, string]> = []
+          /* each posting that RAN, for the admins' bells: a held one changed nothing and tells nothing new (D306's note
+             already speaks); `acct` — an archived man held a sign-in, read before it is suspended */
+          const ran: Array<{ id: string; poDate: string; outcome: PoOutcome; acct: boolean }> = []
           for (const d0 of due) {
             const d = poDueNow(d0.id, effectiveToday())
             if (!d || d.key !== d0.key) continue
@@ -2324,6 +2366,7 @@ export function runPoOutcomes(): void {
             const held = poHeldReason(d.id, d.outcome, d.poDate)
             if (held) { told.push([d.key, held]); continue }
             const body = rosterBody(d.id)!   // (poDueNow just found his body)
+            ran.push({ id: d.id, poDate: d.poDate, outcome: d.outcome as PoOutcome, acct: !!accountOfPid(d.id) })
             if (d.outcome === 'overseas') {
               if (!body.archived) { body.archived = true; body.archivedBy = 'po'; body.archivedOn = d.poDate }   // D329: when
               suspendForPosting(d.id)
@@ -2344,10 +2387,26 @@ export function runPoOutcomes(): void {
             }
             markPostingDone(d.id, d.poDate)
           }
+          /* NOBODY IS GONE SILENTLY ([POSTOUT-RUN-NOTICE] — owner D1546, D1547 A, D1690): each posting that ran is one line in
+             every admin's bell — "Ranger · Mon 16 Nov / Posted out · archived, account suspended". Written here, inside the
+             pass's own command, so a refused pass tells nobody; the line then stays as the record that it ran (the top bar's
+             Undo never takes a posting back — D350 — and the posting sheet's own Undo is a command of its own). The admins
+             are read AFTER the outcomes, so an admin archived or deleted by his posting is not told; nor is an admin told
+             of his own posting (made SANS, he is still an admin) */
+          /* (the latest date first, then in the Post out sheet's own order of outcomes — Overseas Sqn, Delete, SANS — then
+             by callsign, as drawn: each a millisecond earlier than the one before, since the bell lists the newest first.
+             The postings keep no order of when they were made — the walk's B2b; one first opening may run two dates) */
+          if (ran.length) {
+            const to = schedulerIds(), now = Date.now(), rank: Record<string, number> = { overseas: 0, delete: 1, sans: 2 }
+            const cs = (id: string) => String(rosterBody(id)?.cs ?? id)
+            ;[...ran].sort((a, b) => (a.poDate < b.poDate ? 1 : a.poDate > b.poDate ? -1 : 0) || (rank[a.outcome] ?? 3) - (rank[b.outcome] ?? 3) || cs(a.id).localeCompare(cs(b.id)))
+              .forEach((r, i) => noticePosting(to.filter(t => t !== r.id), r.id, r.outcome, r.poDate, r.acct, now - i))
+          }
           validate()
           finishPeopleWrite()
-          /* a delete also takes the schedule's own save step (the loaded week filed — person-delete.ts deletePerson) */
-          if (needsDays) { schedApplyEnd(); cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() }) }
+          /* the schedule's own save step — the bell's lines; for a delete the loaded week filed too (person-delete.ts deletePerson) */
+          schedApplyEnd()
+          if (needsDays) cmdDeferEffect(() => { HOOKS.reflow(); HOOKS.histPush() })
           /* said once the command has landed (a refused one says nothing) */
           if (told.length) { const say = () => told.forEach(([k, t]) => tellOnce(k, t)); if (!cmdDeferEffect(say)) say() }
         } finally {
@@ -2456,11 +2515,16 @@ export function restoreProblem(id: string, postIn: string): string | null {
 function restoreBody(id: string, rename: string | null, postIn?: string): boolean {
   const body = rosterBody(id)!   // (both callers have found his body, archived)
   let ok = true
+  let forget: string[] = []
   const r = cmdCommit({
     /* UNDO is the posting's own decision taken back (the posting command, as `takeBack` is); RESTORE is Admin → Users'.
        The change history says each as what it is (Astra's read of the [DRAFT-PENDING] fixes, 02) */
     type: postIn === undefined ? 'lw.postout' : 'person.restore', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
+      /* the posting sheet's Undo takes back the posting's bell lines with it ([NOTICE-UNDO-RETRACT], D1693 — takeBack's
+         notes); Restore on Admin → Users is "he's back", not the posting undone: its lines stay */
+      const lines = postIn === undefined ? postingLinesOf(id) : []
+      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       if (rename != null && !renameCallsign(id, rename)) { ok = false; return }
       if (postIn === undefined) setPostOut(id, null)
@@ -2476,11 +2540,14 @@ function restoreBody(id: string, rename: string | null, postIn?: string): boolea
         enableForRestore(id)
         body.back = true
       }
+      if (lines.length) forget = retractPostingLines(lines)
       validate()
       finishPeopleWrite()
+      if (lines.length) schedApplyEnd()
     },
   })
   if (!ok || (r && 'ok' in r && r.ok === false)) return false
+  if (forget.length) forgetRead(forget)
   markBack(id)
   raptorNotify()
   return true
@@ -2619,29 +2686,96 @@ export function undoPostOut(id: string): boolean {
   /* …and otherwise the date alone — always as the posting command (`lw.postout`, never a bare war write routed as a
      generic `lw.edit` — Astra's code read 4, 27 Sep 26), taking back what else the posting made (the SANS tick it put on;
      an account it suspended is only ever suspended with its archive, so Restore above enables it) */
-  return takeBack(id, () => setPostOut(id, null))
+  return takeBack(id, () => setPostOut(id, null), {}, true)
+}
+/* THE POSTING'S BELL LINES, TAKEN BACK WITH IT ([NOTICE-UNDO-RETRACT] step 1 — owner D1693, D1699, 5 Nov 26). The posting
+   sheet's "Undo post out" is a command of its own, never an Undo step (D350), so it takes back the lines its posting made
+   itself, inside its own command: each admin's line about this posting goes; one he had READ (his read record — state/
+   noticeseen.ts hasRead) is replaced by "~~Posted out · now SANS~~ · taken back · Saber", unread; one he had not read simply
+   goes; the admin who pressed Undo gets nothing, read or not — he did it (as the war's own "taken back" lines: noticeWar
+   never tells their maker). The "off the manpower" line is no stored line — each admin's bell works it out from the posting
+   (postedLines, D1696) — so it goes by itself with the posting; read, it gets its "taken back" line all the same.
+   `postingLinesOf` is read BEFORE the write clears the posting (the derived line is gone after it). A posting whose date
+   has not come made no line, and its Undo touches no bell.
+   A posting that ran and is then CHANGED on its Post out sheet — its date moved, or another outcome — takes its lines back
+   the same way (his D1710, [PO-CHANGE-RETRACT]): `postOut` below. */
+function postingLinesOf(id: string): Notice[] {
+  const rec = getState().postOuts[id]
+  if (!rec || !rec.to) return []
+  /* the stored lines THIS posting wrote when it ran: only once it has run (`poDone` is its date), and only the lines of
+     its date and outcome. Any other posting line of his is another posting's record and stays — an earlier posting he was
+     restored from, even when the Restore reopened that same stint (post-in on the posting's own day: no boundary — the
+     fix's own read, 1 and 2, 5 Nov 26, which the old "every line of this stint" test took back). A posting moved or changed
+     after it ran has no older line left to find: the change itself took them back (D1710, `postOut`). */
+  const poDate = addDays(rec.to, 1)
+  const o = outcomeOf(rec)
+  const mine = rec.poDone === poDate
+    ? NOTICES.filter(n => { const p = (n.what || [])[0]; return p?.k === 'po' && p.who === id && n.day === poDate && p.o === o })
+    : []
+  /* …and of its own RUN: restored on the posting's own day, then posted again for the same date and outcome, he has two runs'
+     lines no date or outcome tells apart (the fix round's narrow read, 1). One run writes every admin's line with one
+     moment (runPoOutcomes → noticePosting), and a man's posting runs once in a pass — so the newest moment is this run's.
+     Never "the newest line per admin": an admin at the first run and not the second would lose the first's record. */
+  const last = mine.reduce((m, n) => Math.max(m, n.at), -Infinity)
+  const stored = mine.filter(n => n.at === last)
+  const derived = schedulerIds().flatMap(pid => postedLines(pid)).filter(n => { const p = n.what[0]; return p?.k === 'po' && p.who === id })
+  return [...stored, ...derived]
+}
+/* Returns the ids of the presser's OWN lines he had read: they leave his read record after the command (forgetRead — the
+   code read's 2, 5 Nov 26), or a posting set again for the same date, whose worked-out line keeps its id, came back to him
+   already read. A "taken back" line goes only to a man still an admin (the security read's S1, 5 Nov 26): a posting's
+   lines are a scheduler's, and one who is a member since is not sent one (his old line still goes); an admin whose sign-in is
+   suspended is still one, and is (the fixes' read 1 — by role, never by `schedulerIds`, which wants the sign-in on). */
+function retractPostingLines(lines: readonly Notice[]): string[] {
+  const by = me() != null ? String(me()) : null
+  const at = Date.now()
+  const admins = new Set(ACCOUNTS_LIST.filter(a => isAdminAccount(a) && !!a.pid).map(a => String(a.pid)))
+  const forget: string[] = []
+  for (const n of lines) {
+    const ix = NOTICES.findIndex(x => x.id === n.id)
+    if (ix >= 0) NOTICES.splice(ix, 1)
+    if (n.to === by) { if (by && hasRead(by, n)) forget.push(n.id); continue }
+    if (!hasRead(n.to, n) || !admins.has(n.to)) continue
+    const p = n.what[0]
+    if (p?.k !== 'po') continue
+    noticePostingBack(n.to, by, p.who, p.o, n.day, !!p.acct, at)
+  }
+  return forget
 }
 /* a posting write that also takes back what the posting made and no longer makes TODAY — the archive (#444's rule),
    the account's suspension and the SANS tick — in ONE command over the people, settings and war stores. It is NOT
-   "he's back": no prompt (the plan's Round 2, Fable 5). */
-function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}): boolean {
+   "he's back": no prompt (the plan's Round 2, Fable 5). `retract` — the posting sheet's "Undo post out", or a change that
+   leaves a posting no longer as it ran (D1710): its bell lines are taken back too (above), the scheduler store joining the
+   command only then. */
+function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; suspend?: boolean; sans?: boolean } = {}, retract = false): boolean {
   const body = rosterBody(id)
   let ok = false
-  cmdCommit({
+  let forget: string[] = []
+  const r = cmdCommit({
     type: 'lw.postout', scope: { module: 'people' }, meta: null,
     apply: (txn: Txn) => {
+      const lines = retract ? postingLinesOf(id) : []
+      /* the scheduler store's starting point brought up to memory BEFORE it is enlisted, as the posting pass does (its
+         notes there): only this command's own lines are its change */
+      if (lines.length) { resyncSchedBaseline(); txn.enlist(schedStore) }
       txn.enlist(peopleStore); txn.enlist(settingsStore); txn.enlist(lwStore)
       ok = write()
       if (!ok || !body) return
       if (!keep.archive && body.archived && body.archivedBy === 'po') { body.archived = false; delete body.archivedBy; delete body.archivedOn }
       if (!keep.suspend) enableAfterPosting(id)
       if (!keep.sans && body.sanBy === 'po') { body.san = false; if (body.quals) body.quals.san = false; delete body.sanBy }
+      if (lines.length) forget = retractPostingLines(lines)
       validate()
       finishPeopleWrite()
+      if (lines.length) schedApplyEnd()
     },
   })
-  if (ok) raptorNotify()
-  return ok
+  /* the command LANDED — never only its body run: a commit refused after the body put every store back, his read record
+     included (the fixes' read 2, as restoreBody already asks) */
+  const landed = ok && !(r && 'ok' in r && r.ok === false)
+  if (landed && forget.length) forgetRead(forget)
+  if (landed) raptorNotify()
+  return landed
 }
 
 /**
@@ -2658,7 +2792,15 @@ function takeBack(id: string, write: () => boolean, keep: { archive?: boolean; s
 export function postOutProblem(id: string, outcome: PostOutcome): string | null {
   const here = adminArchived(id)
   if (here) return here
+  /* NO SANS FOR GROUND CREW (his D1709, 5 Nov 26): SANS is an aircrew status — the chips offer him none (OutcomeChips), and
+     the writer refuses it whatever door asks */
+  if (outcome === 'sans' && isGroundCrew(id)) return "Ground crew can't be made SANS"
   return outcome === 'delete' && me() != null && id === me() ? "You can't delete yourself — ask another admin" : null
+}
+/** a ground-crew man (the war's `pers`, Raptor's GND seat) — offered no SANS posting (his D1709) */
+export function isGroundCrew(id: string): boolean {
+  const b = rosterBody(id)
+  return !!b && (!!b.pers || b.seat === 'GND')
 }
 export function postOut(id: string, from: string, archive: boolean | PostOutcome = true): boolean {
   const body = rosterBody(id)
@@ -2675,7 +2817,16 @@ export function postOut(id: string, from: string, archive: boolean | PostOutcome
      first posting and a change with nothing to take back included: a bare war write was routed as a generic `lw.edit`,
      a member's own-bid row (Astra's code read 4, 27 Sep 26). The command's gate decides who may; the take-back inside it
      touches only what the posting made. */
-  return takeBack(id, () => setPostOut(id, from, outcome), keep)
+  /* A POSTING THAT RAN, THEN CHANGED, TAKES BACK ITS BELL LINES (his D1710, 5 Nov 26 — [PO-CHANGE-RETRACT], the take-back
+     code read's 1). Its date moved — later, or earlier — or another outcome: what the bells say it did is no longer what it
+     does (the SANS tick lifted above, the archive back), and the store clears its "has run" mark so it runs, and tells,
+     again on its own date. So its lines go as the sheet's Undo takes them (a read one struck through, "taken back · Saber";
+     an unread one simply goes; the admin who changed it told nothing). "Changed" is the store's own test for clearing that
+     mark (store.ts setPostOut `same`, read from the saved posting); which lines are its own — none before it has run — is
+     `postingLinesOf`'s. Saved unchanged, nothing is taken back. */
+  const w = getState().postOuts[id]
+  const changed = !!w && !!w.to && !(addDays(w.to, 1) === from && outcomeOf(w) === outcome)
+  return takeBack(id, () => setPostOut(id, from, outcome), keep, changed)
 }
 
 /* ---- wiring -------------------------------------------------------------- */
@@ -2709,6 +2860,43 @@ const mirroredViewer = (): string | null => (VIEWER_PIN && VIEWER_PIN.s === SESS
 /* and the signed-in person's callsign beside it, read off Raptor's whole roster (the war's own
    roster may not hold him — a SANS or archived callsign): the approver stamp's fallback */
 const mirrorCallsign = (): void => { const m = me(); setViewerCallsign(m && rosterBody(m) ? rosterBody(m)!.cs : null) }
+
+/* THE POSTINGS' MIDNIGHT ([POSTOUT-RUN-NOTICE] — owner D1546: "so it is not like gone silently"; the walk's C5, 5 Nov 26).
+   The posting pass runs on every change the app makes (raptorSubscribe, below) — and on nothing else: with the app left
+   open and untouched across midnight, a posting dated that day did not run, and no admin's bell was told, until someone
+   next changed a page. So the app wakes itself just after each local midnight, and whenever the page is shown again after
+   the day has turned (a phone asleep through midnight runs no timer): one notify, and the pass — with the OIL pass beside
+   it, as on any change — runs as it would at the next tap. The Leave War page's own day clock (ui/dayclock.ts, D1266)
+   still redraws what that page reads of today; this one wakes the passes on every page. One clock, started by the app's boot
+   (src/boot.ts) — never by wiring the sync, which every Leave War test does (the fix round's read, 3: a real timer armed in
+   each would fire inside a later test). Re-armed if started again; answers its clean-up. */
+let POSTCLOCK: (() => void) | null = null
+export function installPostingClock(): () => void {
+  if (POSTCLOCK) POSTCLOCK()
+  if (typeof window === 'undefined' || typeof document === 'undefined') { POSTCLOCK = null; return () => {} }
+  let seen = effectiveToday()
+  let timer: ReturnType<typeof setTimeout> | null = null
+  const check = () => { const now = effectiveToday(); if (now !== seen) { seen = now; raptorNotify() } }
+  const arm = () => {
+    if (timer) clearTimeout(timer)
+    const d = new Date(), next = new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1, 0, 0, 1)
+    timer = setTimeout(() => { check(); arm() }, Math.max(1000, next.getTime() - d.getTime()))
+  }
+  const onShow = () => { if (document.visibilityState !== 'hidden') { check(); arm() } }
+  arm()
+  document.addEventListener('visibilitychange', onShow)
+  window.addEventListener('pageshow', onShow)
+  window.addEventListener('focus', onShow)
+  const off = () => {
+    if (timer) clearTimeout(timer)
+    document.removeEventListener('visibilitychange', onShow)
+    window.removeEventListener('pageshow', onShow)
+    window.removeEventListener('focus', onShow)
+    if (POSTCLOCK === off) POSTCLOCK = null
+  }
+  POSTCLOCK = off
+  return off
+}
 
 export function wireLeaveWarSync(): void {
   /* [POST-OUT-OUTCOMES]: the posting's one line names his account only when he has one — the answer installed here, at

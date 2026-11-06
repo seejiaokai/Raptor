@@ -185,6 +185,20 @@ export function pairPlaces(mainPortion: string | undefined, second: Contrib): [P
   if (a === b) return null
   return a === 'am' ? ['top', 'bot'] : ['bot', 'top']
 }
+/* HOW TWO ENTRIES SHARE A DAY'S CELL (his D1727, 6 Nov 26 — measured on all 23,940 combinations, [LW-CELL-COMBOS]): two whole
+   days stand side by side, each the full height, their codes turned to read bottom to top (`bx-tilt`); a whole day beside a
+   half keeps the whole cell, its letters low under a morning (`bx-lo`) or high over an afternoon (`bx-hi`), and the half sits
+   over its own half of it (`bx-roof`, `bx-am` / `bx-pm`); a morning and an afternoon stay one over the other. The place each
+   box is drawn in, from `pairPlaces`' places, in the same order. Classes only — no element is added (D991). */
+export function pairLook(two: readonly [Place, Place]): [string, string] {
+  const [a, b] = two
+  const floor = (half: Place) => `whole bx-floor ${half === 'right-am' ? 'bx-lo' : 'bx-hi'}`
+  const roof = (half: Place) => (half === 'right-am' ? 'top bx-roof bx-am' : 'bot bx-roof bx-pm')
+  if (a === 'left' && b === 'right') return ['left bx-tilt', 'right bx-tilt']
+  if (a === 'left') return [floor(b), roof(b)]
+  if (b === 'left') return [roof(a), floor(a)]
+  return [a, b]
+}
 /* ONE ENTRY OVER SEVERAL DAYS READS AS ONE JOINED BAR (his D1359, 25 Oct 26 — "Joined bar (Recommended)"; drawn in
    docs/img/handpass/2026-10-25-lw-drawings/multi-day/, md5 and busy B / C). An entry is a leave, a course, an overseas duty
    or a commitment filed as ONE input (its iid), or a run of bids with one set of words (the store's own run, `reqRunKey`).

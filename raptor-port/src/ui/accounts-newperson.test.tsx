@@ -103,7 +103,39 @@ describe('NP4 — the sign-up card asks what the admin asks (D214, D222, D225, D
     expect($('#accErr').textContent, 'the walk: the refusal goes once he changes a field').toBe('')
     await type($('#accCat') as HTMLSelectElement, 'C')
     await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
-    expect($('#accAsked').textContent).toBe("You asked for access as Viper (Pilot · CAT C). You'll be able to sign in as soon as an admin approves it.")
+    /* the pass (D1650, D1656 — the sentence that said this went with the heading): his callsign large, then what he gave —
+       no initials, so no Initials field rather than a blank one */
+    expect($('#accAsked').textContent).toBe('Viper')
+    const fields = [...document.querySelectorAll('#accessWaiting .pass-fields > div')].map(d => `${d.querySelector('dt')!.textContent}=${d.querySelector('dd')!.textContent}`)
+    expect(fields).toEqual(['Seat=Pilot', 'CAT=C'])
+  })
+  it('D1650 / D1656: the screen after asking is the pass, then the three steps, the read-only line, its two buttons and "Signed in as" at the foot', async () => {
+    await signInAs('pass@mail')
+    await type($('#accCs') as HTMLInputElement, 'Stranger')
+    await type($('#accIni') as HTMLInputElement, 'ST')
+    await type($('#accSeat') as HTMLSelectElement, 'GND')
+    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    const card = $('#accessWaiting .acc-pass')
+    expect(card, 'the pass').toBeTruthy()
+    expect(card.querySelector('.pass-state')!.textContent).toBe('Waiting for an admin')
+    expect(card.querySelector('.pass-cs')!.textContent).toBe('Stranger')
+    /* personnel hold no CAT: no CAT field */
+    expect([...card.querySelectorAll('.pass-fields dt')].map(n => n.textContent)).toEqual(['Initials', 'Seat'])
+    expect([...card.querySelectorAll('.pass-fields dd')].map(n => n.textContent)).toEqual(['ST', 'Personnel'])
+    /* the tear line, then the steps in order, the middle one where he is */
+    const parts = [...card.children].map(n => n.className)
+    expect(parts).toEqual(['pass-top', 'pass-tear', 'pass-foot'])
+    expect([...card.querySelectorAll('.pass-steps li')].map(n => `${n.className}:${n.textContent}`))
+      .toEqual(['done:Request sent', 'now:An admin approves', ":You're on the schedule"])
+    expect(card.querySelector('.pass-steps li.now')!.getAttribute('aria-current')).toBe('step')
+    /* what the two looks dropped is gone */
+    expect(card.textContent).not.toContain('Your request is with the admins')
+    expect(card.textContent).not.toContain('as soon as an admin approves')
+    /* Sign out, then "Signed in as …" small, last */
+    const foot = card.querySelector('.pass-foot')!
+    expect(foot.lastElementChild!.className).toBe('pass-who')
+    expect(foot.lastElementChild!.textContent).toBe('Signed in as pass@mail')
+    expect(foot.querySelector('#accOut')).toBeTruthy()
   })
 })
 

@@ -1,0 +1,6 @@
+1. APPT@bot [more,po]
+2. APPT@bot [warn,po]
+3. DTY@bot [more,po]
+4. DTY@bot [warn,po]
+5. EVT@bot [more,po]
+6. EVT@bot [warn,po]

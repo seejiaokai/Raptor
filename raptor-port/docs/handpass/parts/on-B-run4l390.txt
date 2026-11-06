@@ -1,0 +1,11 @@
+Warden has an admin sign-in 1
+filed ["imqoidicwev5tzq","imqoidjpxmnvhm3","imqoidl1kswlenz","imqoidmdao2g179"]
+list up 1
+picture B4-l390-1-list.png
+picture B4-l390-2-list-scrolled.png
+picture B4-l390-3-yesall.png
+RESULT B4-l390-list {"title":"OIL — Fri 17 Jul Public holiday · National Day","count":"5 TO ANSWER","cards":5,"win":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"later":{"x":698,"y":560,"w":55,"h":28,"right":753,"bottom":588,"inside":false,"onTop":false},"save":{"x":761,"y":560,"w":54,"h":28,"right":815,"bottom":588,"inside":false,"onTop":false},"yesall":{"x":676,"y":196,"w":68,"h":22,"right":744,"bottom":218,"inside":true,"onTop":true},"noall":{"x":752,"y":196,"w":63,"h":22,"right":815,"bottom":218,"inside":true,"onTop":true},"lead":"National Day is now a public holiday.","scroll":[{"cls":"win-body","sh":457,"ch":220}],"pageScroll0":[0,0],"scrolled":{"top":237,"sh":457,"ch":220},"yesallHit":{"x":676,"y":-41,"w":68,"h":22,"right":744,"bottom":-19,"inside":false,"onTop":false},"afterYesAll":"5 OF 5 ANSWERED","saveLive":true,"pageScroll1":[0,0],"laterAfter":{"x":698,"y":560,"w":55,"h":28,"right":753,"bottom":588,"inside":false,"onTop":false},"saveAfter":{"x":761,"y":560,"w":54,"h":28,"right":815,"bottom":588,"inside":false,"onTop":false},"afterNoAll":"5 OF 5 ANSWERED","laterClosed":true,"nothingWritten":true}
+picture B4-l390-4-bell.png
+picture B4-l390-5-list-from-bell.png
+RESULT B4-l390-bell {"lit":1,"btn":{"x":488,"y":104,"w":34,"h":32,"right":522,"bottom":136,"inside":true,"onTop":true},"listUp":1,"box":{"x":174,"y":142,"w":348,"h":98,"right":522,"bottom":240,"inside":true,"onTop":true},"line":{"x":179,"y":147,"w":338,"h":52,"right":517,"bottom":199,"inside":true,"onTop":true},"lineText":"National DayFri 17 Jul 5 inputs need an OIL answer · Saber now","openedList":1,"bellGone":0,"winB":{"x":388,"y":96,"w":440,"h":270,"right":828,"bottom":366,"inside":true,"onTop":true},"leadAbsent":true}
+ERRORS []

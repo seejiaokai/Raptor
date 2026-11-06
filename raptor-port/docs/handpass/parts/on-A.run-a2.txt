@@ -1,0 +1,17 @@
+Q1 Swapping Tally and Ranger
+bar Not swapped — OIL not answered
+bar gone, question back 0 1 Swapping Tally and Ranger swapDisabled true
+yes text Yes — credit HO swap enabled true
+flash after swap [true,false]
+toast Tally and Ranger swapped | all toasts ["Input added","Tally and Ranger swapped"]
+ground ["RANGE BRIEF: Tally","Hangar open day: Ranger"] oil {"oil":{"2026-07-18":0.5},"grp":null} bar/question 0 0 undo changed true
+OIL EARN [{"who":"Fable","item":"r:rs130720265x1","txt":"Fable FO","on":true},{"who":"Tally","item":"i:imqoidhydgtp835","txt":"Tally HO","on":true},{"who":"Ranger","item":"r:rmqoidjnciihuvp","txt":"Ranger HO","on":true},{"who":"Tally","item":"i:imqoidhydgtp835","txt":"Tally HO","on":true}]
+CARDS after swap {"cards":["09:00–12:00 TallyTRAINING Range brief By Saber"],"cell":""}
+UNDO #sbUndo
+after undo ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] oil {"oil":{"2026-07-18":0.5},"grp":null} matches before true true
+toast Undid: a personal input
+REDO #sbRedo
+after redo ground ["RANGE BRIEF: Tally","Hangar open day: Ranger"] oil {"oil":{"2026-07-18":0.5},"grp":null}
+after reload ground ["RANGE BRIEF: Tally","Hangar open day: Ranger"] oil {"oil":{"2026-07-18":0.5},"grp":null}
+CARDS after reload {"cards":["09:00–12:00 TallyTRAINING Range brief By Saber"],"cell":""}
+errors []

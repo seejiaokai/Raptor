@@ -1,0 +1,138 @@
+[
+ {
+  "id": "S7-postout",
+  "size": "phone",
+  "did": "post Diesel out as Overseas from 2026-12-29",
+  "saw": "{\"date0\":\"2026-12-29\",\"date\":\"2026-12-29\",\"line\":\"On 29 Dec: archived.\",\"calNote\":\"\",\"confirmDisabled\":false,\"confirmed\":true}",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-phone-1-postout-sheet"
+  ]
+ },
+ {
+  "id": "S7-i",
+  "size": "phone",
+  "did": "drag Diesel 2026-12-28..2026-12-30 (window true), pressed sel-file-OD (twice: the first left the row empty)",
+  "saw": "cells 28/29/30 Dec = [\"OD:s-a\",\"PO:\",\"PO:\"]; window open after: []",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-phone-2-drag-window-before-OD",
+   "s7-phone-3-after-OD",
+   "s7-phone-4-diesel-row"
+  ]
+ },
+ {
+  "id": "S7-ii",
+  "size": "phone",
+  "did": "the Inputs page, calendar on December 2026 — choose the month and year",
+  "saw": "bars drawn: [\"Diesel · OD\"]",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-phone-5-inputs-december"
+  ]
+ },
+ {
+  "id": "S7-iii",
+  "size": "phone",
+  "did": "Echo posted out (true) from 2026-12-29; LL dragged over 2026-12-28..2026-12-30 (window true)",
+  "saw": "cells 28/29/30 Dec = [\"LL:s-w\",\"LL:s-w\",\"LL:s-w\"]; window said \"\"",
+  "verdict": "RECORD",
+  "pics": [
+   "s7-phone-6-echo-drag-window",
+   "s7-phone-7-echo-after-LL",
+   "s7-phone-8-echo-row"
+  ]
+ },
+ {
+  "id": "S8-1",
+  "size": "phone",
+  "did": "tap a free day, Auto-approve ON (true), place LL (window closed=true)",
+  "saw": "cell = LL:s-a; bell/toast not read",
+  "verdict": "PASS",
+  "pics": [
+   "s8-phone-1-window-auto-on",
+   "s8-phone-3-landed"
+  ]
+ },
+ {
+  "id": "S8-2",
+  "size": "phone",
+  "did": "reopen the leave; close by X, by Escape (desktop), by a tap outside",
+  "saw": "open:bid-picker | x:[] | esc: desktop only | outside:[\"person-window\"]",
+  "verdict": "RECORD",
+  "pics": [
+   "s8-phone-4-reopen",
+   "s8-phone-5-after-ways"
+  ]
+ },
+ {
+  "id": "S8-3",
+  "size": "phone",
+  "did": "drag Cinch 2026-11-28..2026-11-30 (window true), Auto-approve OFF, OL, close the drag window",
+  "saw": "window stayed after fill=false; cells=[\"OL:s-w\",\"OL:s-w\",\"OL:s-w\"]",
+  "verdict": "PASS",
+  "pics": [
+   "s8-phone-6-drag-window",
+   "s8-phone-7-after-fill"
+  ]
+ },
+ {
+  "id": "S8-4",
+  "size": "phone",
+  "did": "top bar Undo once, then Redo once",
+  "saw": "cell 2026-11-28 before=OL:s-w; after Undo [2026-11-28,2026-11-30, Warden 2026-11-24]=[\"empty\",\"empty\",\"LL:s-a\"]; after Redo=[\"OL:s-w\",\"OL:s-w\",\"LL:s-a\"]",
+  "verdict": "PASS",
+  "pics": [
+   "s8-phone-8-undo",
+   "s8-phone-9-redo"
+  ]
+ },
+ {
+  "id": "S8-5a",
+  "size": "phone",
+  "did": "Approvals tab",
+  "saw": "Cinch lines: [\"Cinch IP OL 28–30 Nov › Approve Refuse 1 day 22.5 P 27 4 Nov 09:01 · by Saber\"]; tab count 15",
+  "verdict": "FAIL",
+  "pics": [
+   "s8-phone-10-approvals"
+  ]
+ },
+ {
+  "id": "S8-5b",
+  "size": "phone",
+  "did": "the bell",
+  "saw": "panel text: (not found)",
+  "verdict": "RECORD",
+  "pics": [
+   "s8-phone-11-bell"
+  ]
+ },
+ {
+  "id": "S8-5c",
+  "size": "phone",
+  "did": "My leave (the admin Saber: his own; Warden / Cinch are not him)",
+  "saw": "open: [\"person-window\"]",
+  "verdict": "RECORD",
+  "pics": [
+   "s8-phone-12-my-leave"
+  ]
+ },
+ {
+  "id": "S8-5d",
+  "size": "phone",
+  "did": "the Inputs page, November (the approved LL of Warden should be an entry)",
+  "saw": "bars: [\"Warden\"]",
+  "verdict": "PASS",
+  "pics": [
+   "s8-phone-13-inputs"
+  ]
+ },
+ {
+  "id": "S8-errs",
+  "size": "phone",
+  "did": "console errors and failed requests collected during the round",
+  "saw": "0 new: []",
+  "verdict": "PASS",
+  "pics": []
+ }
+]

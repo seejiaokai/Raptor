@@ -45,3 +45,9 @@ b31a10e54f43ae2c5972e3cd93b68a96b27c1b7d:raptor-port/docs/handpass/parts/lw-nigh
 # a walk's list of the app's own new input record ids.
 6e1cbfd4350c5c463901107d6fc582d10dede35d:raptor-port/docs/handpass/parts/dbrA-W4-newkeys.json:generic-api-key:1
 7612b19d8a5ec263821231ce2e235fc237c29e5a:raptor-port/docs/handpass/parts/dbrA-W4-newkeys.json:generic-api-key:1
+
+# The member / guest check's walk results (pull request 638, 5 Nov 26): the app's own access-request record id
+# ("accessreq:" and a random id) in a saved list of writes. Opened on his PC and judged NOT a secret by the agent;
+# listed on his yes, 5 Nov 26 (D1661). By file and line, so the run's merge commit, new each push, is covered too.
+raptor-port/docs/img/handpass/2026-11-05-member-guest/rewalk/results-rewalk.txt:generic-api-key:2
+raptor-port/docs/img/handpass/2026-11-05-member-guest/walk/results-cd-Cd.txt:generic-api-key:4

@@ -1,0 +1,20 @@
+D5 filed: ["{\"people\":[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090002280}],\"type\":\"Training\",\"allday\":false,\"s\":540,\"e\":720,\"date\":\"Jul 16\",\"yr\":2026,\"remarks\":\"till 17 Jul\",\"mod\":\"2026-06-22\",\"title\":\"Two day course\",\"endDate\":\"Jul 17\",\"iid\":\"imqoidi7b62vc4j\",\"by\":\"stiff\",\"modBy\":\"stiff\",\"at\":1782090002280,\"modAt\":1782090002280,\"ord\":0,\"acc\":\"g\"}","{\"people\":[{\"p\":\"mamba\",\"by\":\"stiff\",\"at\":1782090004047}],\"type\":\"Meeting\",\"allday\":false,\"s\":840,\"e\":900,\"date\":\"Jul 17\",\"yr\":2026,\"remarks\":\"\",\"mod\":\"2026-06-22\",\"title\":\"Safety board\",\"iid\":\"imqoidjkffi5g5a\",\"by\":\"stiff\",\"modBy\":\"stiff\",\"at\":1782090004047,\"modAt\":1782090004047,\"ord\":-1024,\"acc\":\"g\"}"]
+D5 lists open: 1
+D5 title: OIL — Thu 16 – Fri 17 Jul Public holiday · Founders Days
+D5 lead: Founders Days is now a public holiday.
+D5 count: 4 TO ANSWER
+D5 cards: ["till 17 Jul NomadOD Overseas duty — exercise, off island Yes · FO No","09:00–12:00 · till 17 Jul RangerTRAINING Two day course By Saber Yes · HO No","14:00–15:00 SidewinderMEETING Safety board By Saber Yes · HO No","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · HO No"]
+D5 measure: {"x":984,"y":96,"w":440,"h":443,"inside":true,"onTop":true}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D5-list.png
+D5 after save: ["Two day course:{\"2026-07-16\":0.5,\"2026-07-17\":0.5}","Safety board:null"]
+D5 Saber lines: [{"unread":true,"text":"Founders DaysThu 16 – Fri 17 Jul 3 inputs need an OIL answer · Saber now"}]
+D5 Saber lit: true
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D5-saber-bell.png
+D5 Warden lit: true
+D5 Warden lines: [{"unread":true,"text":"Founders DaysThu 16 – Fri 17 Jul 3 inputs need an OIL answer · Saber now"}]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D5-warden-bell.png
+D5 Warden list title: OIL — Thu 16 – Fri 17 Jul Public holiday · Founders Days
+D5 count: 3 TO ANSWER
+D5 cards: ["till 17 Jul NomadOD Overseas duty — exercise, off island Yes · FO No","14:00–15:00 SidewinderMEETING Safety board By Saber Yes · HO No","17:00–18:30 RangerAPPOINTMENT Medical / PHA Yes · HO No"]
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D5-warden-list.png
+D5 errors: []

@@ -1,0 +1,32 @@
+filed Sat X ["oil question shown"] Input added
+E8c filed {"people":["Ranger"],"by":"stiff","s":540,"e":600,"oil":{"oil":{"2026-07-18":0.5}},"people_oil":[["Ranger",null]]}
+E8c replace toast: Tally is on Sat X instead of Ranger | record {"people":["Tally"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null]]} | question {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Tally, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit lan"}
+E8c closed unanswered: true {"people":["Tally"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null]]}
+join target {"x":143,"y":247.28125,"cls":"addz"}
+E8c join Hex toast: Hex added to Sat X | record {"people":["Tally","Hex"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null],["Hex",null]]} | question {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Hex +1, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit la"}
+E8c closed unanswered: true
+join target {"x":104,"y":261.78125,"cls":"addz"}
+E8c join Anvil toast: Anvil added to Sat X | record {"people":["Tally","Hex","Anvil"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null],["Hex",null],["Anvil",null]]} | question {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Anvil +2, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit "}
+E8c closed unanswered: true
+saved e8-03-three-people
+E8c Saber bell (question waiting, no notice yet): {"id":"notifyBell","lit":true,"open":"false"}
+E8c Tally has Take me out: 1
+E8c Tally took himself out: toast Schedule updated | record {"people":["Tally","Hex","Anvil"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Tally",null],["Hex",null],["Anvil",null]]} | any confirm sheet: 
+saved e8-04-tally-confirm
+E8c confirm buttons ["inped-takeout-yes:Take me out","inped-takeout-no:Stay in"]
+E8c Tally confirmed: toast You are out of this input | record {"people":["Hex","Anvil"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Hex",null],["Anvil",null]]}
+saved e8-04-tally-took-out
+E8c notices for Saber [["nick","rem",null]]
+E8c record now {"people":["Hex","Anvil"],"by":"stiff","s":540,"e":600,"oil":{},"people_oil":[["Hex",null],["Anvil",null]]}
+E8c Saber bell: question + notice {"id":"notifyBell","lit":true,"open":"false"}
+saved e8-05-saber-bell
+E8c first tap: question? {"buttons":["x:✕","oil-yes:Yes — credit HO","oil-no:No OIL","abtn ghost:Cancel","oilconf-save:Save"],"text":"OIL — Anvil +1, Sat X ✕ THIS INPUT FALLS ON A NON-WORKING DAY — 18 JUL (WEEKEND / PH) Does it deserve HO — half a day of OIL? Yes — credit HO No OIL The credit "} | list open: 0
+saved e8-06-first-tap
+E8c answered: sheet 0 {"people":["Hex","Anvil"],"by":"stiff","s":540,"e":600,"oil":{"oil":{"2026-07-18":0.5}},"people_oil":[["Hex",null],["Anvil",null]]} Input updated | bell {"id":"notifyBell","lit":true,"open":"false"}
+E8c after answering, what is standing: win-inputsday-x
+saved e8-06b-after-answer
+E8c next tap: list open: 1 | sheet: 0
+saved e8-07-next-tap-list-full
+saved e8-07-next-tap-list
+E8c the list {"box":{"x":8,"y":46,"w":374,"h":98},"vw":390,"vh":844,"underBell":6,"inView":true,"wideAsScreen":true,"hitIsList":true,"hitTag":"bl-line unread","scrolls":false,"markAll":{"x":283,"y":114,"bottom":136,"visible":true},"empty":null,"n":1,"lines":["[unread] Sat X | Sat 18 Jul | Tally taken off · Tally | now | bold 600 h52 op 1"]}
+errors []

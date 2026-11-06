@@ -1,0 +1,22 @@
+[
+ {
+  "id": "S2-dblclick",
+  "size": "desk",
+  "did": "page.mouse.dblclick on LL",
+  "saw": "EXPECTED LL placed once, nothing open. cell=LL:s-w; open after=[]; LL at {\"x\":566,\"y\":616}",
+  "verdict": "PASS",
+  "pics": [
+   "s2-desk-dbl-settled"
+  ]
+ },
+ {
+  "id": "S2-click-next",
+  "size": "desk",
+  "did": "one click on LL, ~200 ms later one single click on another day's cell",
+  "saw": "EXPECTED that day's window opens. open=[\"bid-picker\"]; window says: Drifter Mon 16 Nov Auto-approve ✕ No manning row turns amber; cell d2=LL:s-w",
+  "verdict": "PASS",
+  "pics": [
+   "s2-desk-click-next"
+  ]
+ }
+]

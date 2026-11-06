@@ -1,0 +1,12 @@
+before {"st":"[\"RANGE BRIEF: Ranger\",\"Hangar open day: Tally\"]","undo":"on|Undo — a change to the schedule","oil":"{\"2026-07-18\":0.5}"}
+drag from {"x":265,"y":318.5} to {"x":65,"y":459.28125}
+picture B3b-2-question.png
+RESULT B3b-question {"up":1,"lead":"Putting Hex in place of Ranger","cancel":"Don’t swap","save":"Swap","saveDisabled":true,"box":{"x":22,"y":258,"w":346,"h":328,"right":368,"bottom":586,"inside":true,"onTop":true},"saveBox":{"x":295,"y":547,"w":57,"h":28,"right":352,"bottom":575,"inside":true,"onTop":true},"nothing":true,"undoSame":true}
+picture B3b-3-cancelled.png
+RESULT B3b-cancel {"q":0,"sel":{"selected":[],"oktake":0},"drawer":false,"bar":"Not swapped — OIL not answered","st":true,"undoSame":true,"oilSame":true,"barBox":{"x":98,"y":732,"w":195,"h":94,"right":293,"bottom":826,"inside":true,"onTop":true}}
+question back via the bar true Putting Hex in place of Ranger
+picture B3b-4-after.png
+RESULT B3b-answered {"toast":"Hex is on Range brief instead of Ranger","sel":{"selected":[],"oktake":0},"drawer":false,"st":"[\"RANGE BRIEF: Hex\",\"Hangar open day: Tally\"]","oil":"{\"2026-07-18\":0.5}","q":0,"bar":0,"undo":"on|Undo — a personal input"}
+RESULT B3b-ranger-elsewhere []
+RESULT B3b-undo {"st":"[\"RANGE BRIEF: Ranger\",\"Hangar open day: Tally\"]","same":true}
+ERRORS []

@@ -1,0 +1,48 @@
+1. LL@left + HO@right-pm
+2. LL@left + HO@right-pm [warn]
+3. LL@left + HO@right-pm [po]
+4. LL@left + HO@right-pm [last]
+5. LL@left + HO@right-pm [warn,po]
+6. LL@left + HO@right-pm [warn,last]
+7. LL@left + HO*@right-pm
+8. LL@left + HO*@right-pm [warn]
+9. LL@left + HO*@right-pm [po]
+10. LL@left + HO*@right-pm [last]
+11. LL@left + HO*@right-pm [warn,po]
+12. LL@left + HO*@right-pm [warn,last]
+13. LL@left + B@right-pm
+14. LL@left + B@right-pm [warn]
+15. LL@left + B@right-pm [po]
+16. LL@left + B@right-pm [last]
+17. LL@left + B@right-pm [warn,po]
+18. LL@left + B@right-pm [warn,last]
+19. LL@left + C@right-pm
+20. LL@left + C@right-pm [warn]
+21. LL@left + C@right-pm [po]
+22. LL@left + C@right-pm [last]
+23. LL@left + C@right-pm [warn,po]
+24. LL@left + C@right-pm [warn,last]
+25. LL@left + OML@right-pm
+26. LL@left + OML@right-pm [warn]
+27. LL@left + OML@right-pm [po]
+28. LL@left + OML@right-pm [last]
+29. LL@left + OML@right-pm [warn,po]
+30. LL@left + OML@right-pm [warn,last]
+31. LL@left + HL@right-pm
+32. LL@left + HL@right-pm [warn]
+33. LL@left + HL@right-pm [po]
+34. LL@left + HL@right-pm [last]
+35. LL@left + HL@right-pm [warn,po]
+36. LL@left + HL@right-pm [warn,last]
+37. LL@left + OTH@right-pm
+38. LL@left + OTH@right-pm [warn]
+39. LL@left + OTH@right-pm [po]
+40. LL@left + OTH@right-pm [last]
+41. LL@left + OTH@right-pm [warn,po]
+42. LL@left + OTH@right-pm [warn,last]
+43. LL@left + ATCH@right-pm
+44. LL@left + ATCH@right-pm [warn]
+45. LL@left + ATCH@right-pm [po]
+46. LL@left + ATCH@right-pm [last]
+47. LL@left + ATCH@right-pm [warn,po]
+48. LL@left + ATCH@right-pm [warn,last]

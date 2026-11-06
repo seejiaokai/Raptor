@@ -141,6 +141,29 @@ for (const size of SIZES) {
       const wide = await bandFacts(page, true)
       expect(wide, 'in wider letters it is STILL one line, nothing cut').toMatchObject({ height: 36, oneLine: true, nothingCut: true })
       expect(await ground(page)).toEqual(before)
+      /* THE BOARD'S DESKTOP LAYOUT ON A PHONE ON ITS SIDE (the member / guest build's walk, 5 Nov 26 - walker B's S11): that
+         layout is switched on upright (its menu is there only) and stays on when the phone turns; it is 1180 wide and pans.
+         The bar's three parts were each held to the screen's left edge, but the bar clips what is in it, so none was held:
+         panned to the far right, "Answer OIL" lay off the screen's left edge. The bar is held to the screen as a whole now,
+         its words at the left and its two buttons at the right, as upright. */
+      if (size.short) {
+        await page.setViewportSize({ width: 390, height: 844 })
+        await page.locator('#sbMore').click(); await page.locator('#sbMoreWide').click()
+        await expect(page.locator('#schedBoard')).toHaveClass(/sb-wide/)
+        await page.setViewportSize({ width: 844, height: 390 })
+        const widest = await page.locator('#schedBoard').evaluate(b => b.scrollWidth - b.clientWidth)
+        expect(widest, 'the layout pans').toBeGreaterThan(100)
+        for (const at of [0, Math.round(widest / 2), widest]) {
+          await page.locator('#schedBoard').evaluate((b, x) => { b.scrollLeft = x }, at)
+          const seen = await page.evaluate(() => [...document.querySelectorAll('#schedBoard [data-testid="oilbar"] button')].map(b => {
+            const r = b.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+            return { t: b.textContent, inScreen: r.left >= 0 && r.right <= innerWidth, hit: hit === b || b.contains(hit) }
+          }))
+          expect(seen, `panned ${at}: Answer OIL and OK on screen, each the thing a finger lands on`).toEqual([
+            { t: 'Answer OIL', inScreen: true, hit: true }, { t: 'OK', inScreen: true, hit: true }])
+        }
+        await page.locator('#schedBoard').evaluate(b => { b.scrollLeft = 0 })
+      }
       /* answered: the swap, with its answer */
       await press('[data-testid="oilbar-answer"]')
       /* ONE RING, NEVER TWO (owner D842, 14 Oct 26 — "Double blue ring"). An answer picked BY KEYBOARD is both picked

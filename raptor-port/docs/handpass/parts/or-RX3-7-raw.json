@@ -1,0 +1,151 @@
+{
+ "add": "Tally added to Range brief",
+ "off": "Hunter taken out of Range brief",
+ "inputsBefore": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 660,
+  "people": [
+   "Drifter",
+   "Ranger",
+   "Tally"
+  ],
+  "by": "stiff"
+ },
+ "before": {
+  "title": "Changes · Wednesday 15/7 Not yet published",
+  "tabs": [
+   "New to you 0",
+   "All changes 4 [on]"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00",
+   "cw-l :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00",
+   "cw-l :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"
+  ]
+ },
+ "signedAgain": true,
+ "inputsAfter": {
+  "type": "Meeting",
+  "title": "Range brief",
+  "date": "Jul 15",
+  "to": null,
+  "s": 540,
+  "e": 660,
+  "people": [
+   "Drifter",
+   "Ranger",
+   "Tally"
+  ],
+  "by": "stiff"
+ },
+ "after": {
+  "title": "Changes · Wednesday 15/7 Not yet published",
+  "tabs": [
+   "New to you 0",
+   "All changes 4 [on]"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00",
+   "cw-l :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00",
+   "cw-l :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"
+  ]
+ },
+ "tap_added": {
+  "txt": "Tally · Range brief 15 Jul · added Saber · 22/6 09:00",
+  "flash": [
+   {
+    "cls": "seat chgflash",
+    "puck": "",
+    "text": "Tally O",
+    "row": "RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ",
+    "fill": "g:2.2.+"
+   }
+  ],
+  "pic": "rx3-7-3-tap-added.png"
+ },
+ "tap_taken out": {
+  "txt": "Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+  "flash": [
+   {
+    "cls": "seat chgflash",
+    "puck": "",
+    "text": "Drifter A",
+    "row": "RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ",
+    "fill": "g:2.2.+"
+   },
+   {
+    "cls": "seat chgflash",
+    "puck": "",
+    "text": "Tally O",
+    "row": "RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ",
+    "fill": "g:2.2.+"
+   }
+  ],
+  "pic": "rx3-7-3-tap-takenout.png"
+ },
+ "rangerPages": [
+  "viewsched",
+  "inputs",
+  "quals",
+  "logic",
+  "leavewar",
+  "tracker",
+  "help"
+ ],
+ "rangerPage": "editsched",
+ "histBtn": "no #histBtn",
+ "rangerView": {
+  "top": [
+   "fastSync|Toggle 1-second sync (for publ",
+   "notifyBell|Notifications",
+   "insightBtn|Week insights",
+   "logout|Logout"
+  ],
+  "chg": [
+   "dpend dpendbtn dnew|4 new"
+  ],
+  "histAny": false
+ },
+ "rangerWin0": {
+  "title": "Changes · Wednesday 15/7 Not yet published",
+  "tabs": [
+   "New to you 4 [on]",
+   "All changes 4"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 NEW 09:00",
+   "cw-l fre :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00",
+   "cw-l fre :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l fre :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l fre :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"
+  ]
+ },
+ "rangerWin": {
+  "title": "Changes · Wednesday 15/7 Not yet published",
+  "tabs": [
+   "New to you 4",
+   "All changes 4 [on]"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 NEW 09:00",
+   "cw-l fre :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00",
+   "cw-l fre :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l fre :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l fre :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"
+  ]
+ },
+ "rangerBell": [
+  "Range briefWed 15 Jul Now 09:00–11:00 · Saber now",
+  "Range briefWed 15 Jul Hunter taken off · Saber now",
+  "Range briefWed 15 Jul Tally added · Saber now",
+  "Range briefWed 15 Jul You were added · Saber now"
+ ]
+}

@@ -21,6 +21,8 @@ import { initStore as lwInitStore, setRole as lwSetRole } from '../leavewar/stat
 import { memoryBackend } from '../leavewar/state/storage'
 import { _resetFloatWins } from './winorder'
 import { INPEDIT, INPSET, setInpEdit, setInpSet } from './pops'
+import { GEAR_INNER } from './glyphs'
+import { drawnAs } from '../testing/drawn'
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
 let host: HTMLDivElement, root: Root
@@ -129,10 +131,18 @@ describe('a calendar tab takes the screen, no more (D664)', () => {
   })
 })
 
-describe('the gear (D635, D639)', () => {
-  it('an admin has it on the Inputs tab — the app’s own cog, never a drawing — and it opens the Inputs calendar’s settings', async () => {
+describe('the gear (D635, D639; drawn — D1509, D1707)', () => {
+  /* WAS "the app's own cog, never a drawing" — the typed ⚙ (D635). CHANGED by D1509 and D1707 (5 Nov 26): the one gear
+     everywhere is the Leave War's drawn line gear, in its button's colour; still never a drawing with rays (D635's point —
+     on these calendars a sun means day flying). */
+  it('an admin has it on the Inputs tab — the app’s one drawn gear, no typed ⚙ — and it opens the Inputs calendar’s settings', async () => {
     const gear = $('[data-testid="in-gear"]')!
-    expect(gear.textContent).toBe('⚙'); expect(gear.querySelector('svg')).toBeNull()
+    expect(gear.textContent).toBe(''); expect(drawnAs(gear.querySelector('svg'), GEAR_INNER), 'the Leave War’s gear').toBe(true)
+    /* D1702: the filters and the gear are one group, so they wrap together and the gear never stands alone */
+    const group = gear.closest('.inputs-filtergroup')!
+    expect(group, 'the gear in the filters’ group').toBeTruthy()
+    expect([...group.children].map(e => e.id || e.className.split(' ')[0]), 'Filters, the fields, then the gear')
+      .toEqual(['inFiltersBtn', 'inFilters', 'inGear'])
     expect(gear.getAttribute('aria-label')).toBe('Inputs calendar settings')
     expect(INPSET).toBe(false)
     await click('[data-testid="in-gear"]')

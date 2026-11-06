@@ -8,15 +8,14 @@
    Their non-component helpers moved on, whole, to ui/matrixrowparts.ts on 31 Oct 26 (React Doctor, D1534). */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
+import { addDays, boxText, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
 import type { WarRec } from '../engine/warrecs'
 import { FigureCell } from './FigureCell'
 import { figWords } from './figwords'
 import { NamePuck } from './NamePuck'
 import { offWar, type Contrib, type DayView } from '../engine/dayview'
-import { outcomeOf } from '../engine'
 import type { Views } from '../engine/dayview'
-import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
+import { JOIN_REACH, ROSTER_DRAG, cellOpenable, entryFill, joinClasses, nameFigures, pairLook, pairPlaces, placeOf, type PersonRecs, type QualPill, type RowDragCfg } from './matrixrowparts'
 
 /* the drag configurations of the rows (`RowDragCfg`, `MANNING_DRAG` …): ui/matrixrowparts.ts */
 
@@ -178,8 +177,6 @@ export const PersonRow = memo(function PersonRow({ p, version, period, monthDays
               onChipLeave={() => api.current.chipLeave()}
               onChipClick={el => api.current.chipClick(p, el)}
             />
-            {/* D283 (the approved picture 4a): a SANS posting shown in his old place (Show SANS off) wears a SANS tag */}
-            {p.to !== null && outcomeOf(p) === 'sans' && <span className="po-sans-tag" data-testid={`sans-tag-${p.id}`}>SANS</span>}
           </button>
           {/* The free-text role-label edit box is GONE (owner, 28 Aug 26 —
               "i can edit personnel, dont need to show that, just leave it as
@@ -292,13 +289,17 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            before someone posts in and after they post out (clearing leave). It
            SHOWS as the leave code — blank-looking before posting-in, with the
            small PO tag after posting-out — and never counts for manning (the
-           hatch stays). */
+           hatch stays). Since his D1728 (6 Nov 26) no PO tag: the box wears faint stripes (`bx-gone`, below). */
         const view = views[p.id]?.[d.date]
         /* …and an OIL AWARD dated there too (Astra's final read, 3, 27 Sep 26): one may be given after a man posts out or
            before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
            nobody could tap — his own award hidden from him, and from the admin's eye. It shows with the posting hatch,
            like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
-        const outLeave = !here && !!code && !!view?.main && (codeOf(view.main.code)?.spends != null || view.main.kind === 'credit')
+        /* …and WHATEVER ELSE IS FILED there (his D1720, 6 Nov 26 — [LW-PO-DAYS-DRAWING]): an overseas duty, a course, a medical,
+           an Other dragged over his gone days was filed whole but drew a bare "PO", as if two days were skipped. Every filed
+           entry now shows as leave does — its box over the hatch, striped (no PO tag since his D1728), counting nobody; an empty gone
+           day stays "PO". */
+        const outLeave = !here && !!code && !!view?.main
         const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
@@ -357,29 +358,32 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            box. The second entry is the day view's next record in its one order (`compareContrib`). */
         const entries = live && view ? view.all.filter(c => c.kind !== 'notice') : NO_ENTRIES
         const two = entries.length === 2 ? pairPlaces(portion, entries[1]!) : null
-        const where = two ? two[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
+        /* …and how the two are drawn (his D1727): side by side turned, or a whole day with the half over its own half */
+        const look = two ? pairLook(two) : null
+        const where = look ? look[0] : portion === 'am' ? 'top' : portion === 'pm' ? 'bot' : 'whole'
         const wide = text.replace('*', '').length > 3 ? ' wide w4' : text.replace('*', '').length > 2 ? ' wide' : ''   // four letters (ATCH — D1375) a step smaller still
         /* the joined bar (D1359): its classes; a day the drag selects shows as today — its own box, its code, the cyan */
         const joins = live ? joinClasses(d.date, views[p.id], recs) : []   // a day the drag selects undoes them in the stylesheet (td.selcell)
-        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
+        const star = text.includes('*') ? ' bx-star' : ''
+        const chipState = live ? `k-${kindOf(code)} s-${fill} ${where}${wide}${star}${joins[0] ?? ''}` : text ? 'whole' : ''  // a bare "PO" sits in the frame too, unboxed
         const portionClass = ''
         const second = two ? entries[1]! : null
         /* with the day's two entries both drawn (D1146), "+1" has nothing more to say; the amber "!" stays */
         const mk = two && mark === '+1' ? '' : mark
-        /* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8, #9, 23 Oct 26). The mark ("!", "+n") keeps the
-           top-right corner and the PO tag the bottom-right — until a box in that half of the cell holds letters there: a
-           morning box (`top`) or a morning HO beside a whole day (`right-am`) under the mark, an afternoon one (`bot`,
-           `right-pm`) under the tag. A whole day's letters (and a side-by-side box's) sit mid-height, clear of both.
-           Then the tile takes the other corner on the right when nothing is there — no box's letters, no other tile —
-           (`mklo`, `pohi`); when there is none, the box's letters step aside for it (matrix.css). Classes on the cell,
-           no node added (`docs/performance.md` §E). */
-        const places: readonly string[] = !live ? [] : two ?? [where]
-        const lettersTop = places.some(pl => pl === 'top' || pl === 'right-am')
-        const lettersBot = places.some(pl => pl === 'bot' || pl === 'right-pm')
+        /* THE DAY'S MARKS (his D1727, D1728, D1729, D1730, 6 Nov 26 — [LW-CELL-COMBOS]). Each is a class on the cell, no node
+           added (`docs/performance.md` §E), and each keeps every box's letters whole (measured on all 23,940 combinations):
+           - `bx-alarm`: the amber "!" is a small outlined tag in the top-right corner, the boxes making room for it;
+           - `bx-pile`: three or more entries draw the one box as the top of a stack of cards — a grey card behind it — in
+             place of the "+n" corner (the tile stays in the cell, hidden, for its words to a screen reader and a hover);
+           - `bx-gone`: an entry on a day after his posting out wears faint dark stripes on its box, and no PO mark at all —
+             the posting's hatch round it says the rest; a gone day with nothing filed keeps its bare "PO";
+           - `bx-last`: his last day in carries a thin yellow line down its right edge — the `.polast` tile itself, drawn as
+             a line (matrix.css) — and its boxes step left of it. */
         const mkShown = !!mk && (here || outLeave || notYetArrived)
-        const poTag = outLeave && !notYetArrived
-        const mkLow = mkShown && lettersTop && !lettersBot && !poTag
-        const poHigh = poTag && lettersBot && !lettersTop && !mkShown
+        const amber = !!view?.amber
+        const alarm = mkShown && live && amber
+        const pile = mkShown && live && !amber && !two
+        const goneBox = outLeave && !notYetArrived
         // Two marks on top of the state colour, never instead of it: the
         // squadron reads green as approved and magenta as pending, and that
         // stays true here. `raptor` says the approval happened elsewhere and
@@ -412,6 +416,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           // …and the person may bid clearing leave after posting out, or leave dated before they post in — on an open day;
           // any other such day of his gives the closed note (D1176)
           (!here && role !== 'admin' && viewer === p.id)
+        // (Since his D1728, 6 Nov 26, the tile below is drawn as a yellow line down the day's right edge, never the word.)
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise
@@ -427,7 +432,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           <td
             key={d.date}
             data-testid={`cell-${p.id}-${d.date}`}
-            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${mkLow ? ' mklo' : ''}${poHigh ? ' pohi' : ''}`}
+            className={`${cls}${actionable ? ' act' : ''}${lastIn ? ' pofin bx-last' : ''}${mk ? ' mkd' : ''}${text ? ' hasc' : ''}${alarm ? ' bx-alarm' : ''}${pile ? ' bx-pile' : ''}${goneBox ? ' bx-gone' : ''}`}
             onClick={actionable
               ? () => api.current.setOpen({ id: p.id, callsign: p.callsign, date: d.date })
               : undefined}
@@ -443,7 +448,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
               /* the second box wears its own edges too (the scenario designer's find): the Inputs page's by the same one rule
                  as the main box (`offWar` — filed there, or the app's own credit, as it wears alone), the dotted one for
                  leave moved here */
-              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${two[1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${joins[1] ?? ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
+              <span className={`c k-${kindOf(second.code)} s-${entryFill(second)} ${look![1]}${boxText(second.code).length > 3 ? ' wide w4' : boxText(second.code).length > 2 ? ' wide' : ''}${boxText(second.code, !!second.auto).includes('*') ? ' bx-star' : ''}${joins[1] ?? ''}${offWar(second) ? ' raptor' : ''}${movedShown && second.movedFrom ? ' moved' : ''}`}>
                 {boxText(second.code, !!second.auto)}
               </span>
             )}
@@ -463,9 +468,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
                 {mk}
               </span>
             )}
-            {poTag && (
-              <span className="potag" data-testid={`potag-${p.id}-${d.date}`}>PO</span>
-            )}
+            {/* no PO tag beside an entry on a gone day (his D1728): the stripes on the box and the hatch round it say it */}
             {lastIn && (
               <span
                 className="polast"

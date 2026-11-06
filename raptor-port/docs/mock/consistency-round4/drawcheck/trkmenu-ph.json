@@ -1,0 +1,148 @@
+{
+ "state": "trkmenu-ph",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q6-ph-trkmenu-new"
+ },
+ "recorded": "2026-11-05T11:35:30.959Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "panel": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 100,
+    "y": 117,
+    "w": 200,
+    "h": 86
+   },
+   "ink": {
+    "x": 141,
+    "y": 133.5,
+    "w": 50.6,
+    "h": 53
+   },
+   "text": "Import… Export…",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.6) 0px 12px 32px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.menupanel.on.zz-menu.zz-rows"
+  },
+  "item1": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 105,
+    "y": 122,
+    "w": 190,
+    "h": 38
+   },
+   "ink": {
+    "x": 141,
+    "y": 133.5,
+    "w": 49.8,
+    "h": 15
+   },
+   "text": "Import…",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.sm"
+  },
+  "item2": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 105,
+    "y": 160,
+    "w": 190,
+    "h": 38
+   },
+   "ink": {
+    "x": 141,
+    "y": 171.5,
+    "w": 50.6,
+    "h": 15
+   },
+   "text": "Export…",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "500 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.sm"
+  }
+ },
+ "approved": {
+  "picture": "q6-ph-trkmenu-new.png",
+  "identical": true
+ }
+}

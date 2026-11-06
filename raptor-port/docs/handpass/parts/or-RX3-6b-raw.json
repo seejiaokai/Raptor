@@ -1,0 +1,150 @@
+{
+ "s0_filed": {
+  "tag": "s0_filed",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul UNDO"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "menu1": {
+  "text": "PLANS — WEDNESDAY Live working copy ●live now — this is what publishes + Alt Plan",
+  "btns": [
+   "data-plangolive=2|Live working copy ●live now — this is wh",
+   "data-plandup=1|+ Alt Plan"
+  ]
+ },
+ "plansSaved": {
+  "list": [
+   "Plan A:dr1",
+   "Plan B:dr2"
+  ],
+  "live": "dr2"
+ },
+ "xToast": "Ground item removed — back under Personal Inputs — RANGE DRILL, 14:00–15:00, Ranger",
+ "s1_afterX": {
+  "tag": "s1_afterX",
+  "rowInDays": -1,
+  "groundRows": [],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "menu2": {
+  "text": "PLANS — WEDNESDAY Plan Atap to make it the live day ✎ Plan B ●live now — this is what publishes ✎ + Alt Plan ✎ Manage plans",
+  "btns": [
+   "data-plansel=dr1|Plan Atap to make it the live day",
+   "data-planedit=dr1|✎",
+   "data-plangolive=2|Plan B ●live now — this is what publishe",
+   "data-planedit=dr2|✎",
+   "data-plandup=1|+ Alt Plan",
+   "data-planmanage=1|✎ Manage plans"
+  ]
+ },
+ "switchToast": "Switched to \"Plan A\" — this is now the live Wednesday",
+ "plansSwitched": {
+  "list": [
+   "Plan A:dr1",
+   "Plan B:dr2"
+  ],
+  "live": "dr1"
+ },
+ "s2_afterSwitch": {
+  "tag": "s2_afterSwitch",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "a1": {
+  "tag": "attempt1",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ },
+ "a2": {
+  "tag": "attempt2",
+  "rowInDays": 2,
+  "groundRows": [
+   {
+    "who": [
+     "Ranger",
+     "Tally"
+    ],
+    "text": "RANGE DRILL TRAINING 14:00 15:00 Ranger IP Tally O + ADD till 15 Jul"
+   }
+  ],
+  "personalLine": [
+   {
+    "who": [
+     "Ranger"
+    ],
+    "text": "Range drill TRAINING 14:00 15:00 Ranger IP till 15 Jul ACCEPT"
+   }
+  ],
+  "input": [
+   "Ranger"
+  ],
+  "foldRows": 1
+ }
+}

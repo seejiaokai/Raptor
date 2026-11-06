@@ -1,0 +1,866 @@
+{
+ "state": "list-phone",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-postout-bell/draw.mjs",
+  "shot": "2b-bell-manfirst-phone"
+ },
+ "recorded": "2026-11-05T09:04:35.286Z",
+ "drawnOn": "claude/postout-bell-look at 890964ac7",
+ "checkout": "4ffc31e4e",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 8,
+    "y": 46,
+    "w": 386,
+    "h": 217.1
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 338,
+    "h": 188.7
+   },
+   "text": "Ranger Mon 16 Nov Posted out · archived, account suspended 2 h Trident Mon 16 Nov Posted out · deleted 2 h Cinch Mon 16 Nov Posted out · now SANS 2 h Cobra Mon 16 Nov Posted out · off the manpower 2 h",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bell-list.wide"
+  },
+  "line-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 51,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Ranger Mon 16 Nov Posted out · archived, account suspended 2 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.pb-new"
+  },
+  "name-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 59.9,
+    "w": 44.8,
+    "h": 15
+   },
+   "ink": {
+    "x": 40,
+    "y": 59.9,
+    "w": 44.8,
+    "h": 15
+   },
+   "text": "Ranger",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 91.8,
+    "y": 59.9,
+    "w": 70.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 91.8,
+    "y": 59.9,
+    "w": 70.1,
+    "h": 15
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 77.9,
+    "w": 313,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 40,
+    "y": 79.3,
+    "w": 233.5,
+    "h": 14
+   },
+   "text": "Posted out · archived, account suspended",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "dot-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 24,
+    "y": 64,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  },
+  "line-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 102.8,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 111.7,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Trident Mon 16 Nov Posted out · deleted 2 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.pb-new"
+  },
+  "name-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 111.7,
+    "w": 43.3,
+    "h": 15
+   },
+   "ink": {
+    "x": 40,
+    "y": 111.7,
+    "w": 43.3,
+    "h": 15
+   },
+   "text": "Trident",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 90.3,
+    "y": 111.7,
+    "w": 70.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 90.3,
+    "y": 111.7,
+    "w": 70.1,
+    "h": 15
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 129.7,
+    "w": 313,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 40,
+    "y": 131.1,
+    "w": 111.9,
+    "h": 14
+   },
+   "text": "Posted out · deleted",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "dot-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 24,
+    "y": 115.8,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  },
+  "line-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 154.5,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 163.5,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Cinch Mon 16 Nov Posted out · now SANS 2 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.pb-new"
+  },
+  "name-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 163.5,
+    "w": 36.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 40,
+    "y": 163.5,
+    "w": 36.1,
+    "h": 15
+   },
+   "text": "Cinch",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 83.1,
+    "y": 163.5,
+    "w": 70.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 83.1,
+    "y": 163.5,
+    "w": 70.1,
+    "h": 15
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 181.4,
+    "w": 313,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 40,
+    "y": 182.9,
+    "w": 131.3,
+    "h": 14
+   },
+   "text": "Posted out · now SANS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "dot-3": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 24,
+    "y": 167.5,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  },
+  "line-4": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 13,
+    "y": 206.3,
+    "w": 376,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 40,
+    "y": 215.2,
+    "w": 338,
+    "h": 33.4
+   },
+   "text": "Cobra Mon 16 Nov Posted out · off the manpower 2 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.pb-new"
+  },
+  "name-4": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 215.2,
+    "w": 37.6,
+    "h": 15
+   },
+   "ink": {
+    "x": 40,
+    "y": 215.2,
+    "w": 37.6,
+    "h": 15
+   },
+   "text": "Cobra",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-4": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 84.6,
+    "y": 215.2,
+    "w": 70.1,
+    "h": 15
+   },
+   "ink": {
+    "x": 84.6,
+    "y": 215.2,
+    "w": 70.1,
+    "h": 15
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-4": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 40,
+    "y": 233.2,
+    "w": 313,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 40,
+    "y": 234.6,
+    "w": 167.2,
+    "h": 14
+   },
+   "text": "Posted out · off the manpower",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "dot-4": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 24,
+    "y": 219.3,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  }
+ },
+ "approved": {
+  "picture": "2b-bell-manfirst-phone.png",
+  "identical": true
+ }
+}

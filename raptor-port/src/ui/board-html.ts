@@ -1,5 +1,6 @@
 /* The scheduler-board panel builders — sbInputsHTML, sbNotesPanel,
    sbProgPanel, sbSimPanel, sbSlot, labelToTitle/titleToLabel — verbatim. */
+import { glyphSvg, REORDER_INNER } from './glyphs'
 import { DAYS } from '../engine/data'
 import { requestOfBox } from '../engine/overlay'
 import { rowPeopleDrawn, inputRowSeveral } from '../engine/grouprows'
@@ -87,7 +88,8 @@ export function sbNudge(_addr:any,_ro?:any){ return ''; }
    engine/reorder.ts's sortsec dispatch in boardMbtn parses — NOT a mv:
    address, sorting is a whole-section operation, not a row move. */
 export function sbSortBtn(addr:any,ro?:any){
-  return ro?'':`<button class="mbtn" data-sortsec="${addr}" title="Sort this section">⇅ Auto sort</button>`;
+  /* the typed ⇅ is the app's drawn Reorder mark (owner D1703, 5 Nov 26) */
+  return ro?'':`<button class="mbtn" data-sortsec="${addr}" title="Sort this section">${glyphSvg(REORDER_INNER)} Auto sort</button>`;
 }
 
 export const SB_BANDS=[

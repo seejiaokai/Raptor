@@ -24,7 +24,7 @@ import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
 import { setDocView, setInpSet, setInpEdit } from './pops'
-import { CalIcon, ClipIcon, FilterIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
+import { CalIcon, ClipIcon, FilterIcon, GearIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
 import { TODAY, keyToIso } from './weeknav'
@@ -106,6 +106,7 @@ const plusDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(),
    exactly the today+14 above, so an untouched squadron opens on the same window
    it always did. An admin can make it any number of weeks, optionally running
    on to that week's Sunday. */
+// eslint-disable-next-line react-doctor/only-export-components -- the List's first window, the page's own rule kept beside the page that opens on it; the tests of that window import it from here
 export function initialRange(now = new Date()) {
   return lookaheadRange(now)
 }
@@ -158,6 +159,7 @@ const listRow = (iid: string) => `#inBody [data-iid="${iid}"], #inList [data-iid
    All dates."). Two days of one month share the month ("10–24 Oct"); otherwise each says its own ("28 Oct – 3 Nov",
    "28 Dec – 3 Jan 2027" — a day outside the loaded year keeps its year, as everywhere). A window with a start and no
    end yet — the first of the picker's two taps — is "from 10 Oct". */
+// eslint-disable-next-line react-doctor/only-export-components -- the List's dates in few words, read with the input window's date helpers (ui/inputedit.tsx), as the Medical tab reads them too; a model file importing those would draw the input window's whole module graph into it
 export function rangeWords(from: string, to: string): string {
   if (from && to) {
     if (from.slice(0, 7) === to.slice(0, 7) && fmtDay(from).split(' ').length === 2) return `${+from.slice(8, 10)}–${fmtDay(to)}`
@@ -179,6 +181,7 @@ const inWindow = (r: any, from: string, to: string) => {
   return true
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the page's three tabs, the List's filters, its window of dates and the just-saved mark share one set of state; split, the order of the effects that bring a saved input on screen would move
 export function InputsPage() {
   useVersion()
   /* A PHONE, as the stylesheet calls one (06-inputs.css: the same `max-width:820px` at which the table used to be
@@ -523,7 +526,9 @@ export function InputsPage() {
   const th = (key: string, label: string) => (
     <th className={'insort' + (sort.key === key ? ' on' : '')} data-sort={key}
       aria-sort={sort.key === key ? (sort.dir > 0 ? 'ascending' : 'descending') : 'none'}
-      title={`Sort by ${label.toLowerCase()}`} onClick={() => sortBy(key)}>
+      title={`Sort by ${label.toLowerCase()}`} onClick={() => sortBy(key)}
+      /* the keys sort it too, as a click does (React Doctor's click-events-have-key-events, 6 Nov 26 — the design guide's §3) */
+      tabIndex={0} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sortBy(key) } }}>
       {label}<span className="inarrow">{sort.key === key ? (sort.dir > 0 ? '▲' : '▼') : ''}</span>
     </th>
   )
@@ -612,6 +617,11 @@ export function InputsPage() {
     <span className="inputs-spring" />
     {/* the switch after the spring in the page as well as on screen, so the keyboard meets it where it is drawn (D1125) */}
     {views}
+    {/* THE FILTERS AND THE GEAR ARE ONE GROUP (owner D1702, 5 Nov 26 — round 4 of the consistency look, "all as
+        recommended"): at a narrow desktop (1366) the gear alone dropped to a second line; in one group they wrap together, at
+        the row's right end, so the gear keeps its corner at every desktop width. On a phone the group is not drawn as a box
+        (`display:contents`, 25-inputs-calendar.css), so the phone's row of D693 is untouched. */}
+    <div className="inputs-filtergroup">
     <button className="abtn" id="inFiltersBtn" title="Filters" aria-label={appliedFilters.length ? `Filters, ${appliedFilters.length} set` : 'Filters'} aria-expanded={filtersOpen} aria-controls="inFilters" onClick={()=>{ if (phone) setCalOpen(false); setFiltersOpen(o=>!o) }}><FilterIcon /><span className="inv-t">Filters</span>{appliedFilters.length>0&&<span className="inputs-filter-count">{appliedFilters.length}</span>}</button>
     {/* NO WORDS OVER THE THREE BOXES (D729 — V5; D726): "Person", "Type" and "Search" stood over them on a phone, where
         the boxes already read "Everyone", "All types" and "Search inputs". Each keeps its name for a screen reader. */}
@@ -628,13 +638,15 @@ export function InputsPage() {
       </select></label>
       <label className="inputs-search searchbox"><SrchIcon /><input id="inFSearch" type="search" aria-label="Search inputs" placeholder="Search inputs" value={fSearch} onChange={e => { unpin(); setFSearch(e.target.value) }} /></label>
     </div>
-    {/* THE GEAR (D635, D639): the app's own cog — the Leave War's settings button — never a drawing with rays. Admins
-        only. It opens the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the
-        door to "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
+    {/* THE GEAR (D635, D639): the app's one gear — the Leave War's drawn line gear since D1509, in its button's own white
+        (D1707) — never a drawing with rays, which on this calendar would read as the day-flying sun. Admins only. It opens
+        the Inputs calendar's settings window: the late cut-off for inputs, the members' switch, and the door to
+        "Calendar…" (ui/InputsSettings.tsx); the Logic page's rows open the same window. */}
     {isAdmin() && (
       <button type="button" className="abtn inputs-gear" id="inGear" data-testid="in-gear" title="Inputs calendar settings — the late cut-off, who may file for other people, the Calendar"
-        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}>&#9881;</button>
+        aria-label="Inputs calendar settings" onClick={() => { setInpSet(true); notify() }}><GearIcon /></button>
     )}
+    </div>
   </>)
   /* the filters put back to none — the summary line's "Clear filters", and the same words in a day opened on the calendar
      whose inputs they all hide (D731 (2); ui/InputsCal.tsx) */

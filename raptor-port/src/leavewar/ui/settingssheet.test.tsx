@@ -8,6 +8,8 @@ import { Matrix } from './Matrix'
 import { SettingsSheet } from './SettingsSheet'
 import { setLwOnScreen } from '../state/screen'
 import { askLw } from './lwnav'
+import { REORDER_INNER, RESET_INNER } from '../../ui/glyphs'
+import { drawnAs } from '../../testing/drawn'
 
 /* ⚙ stands at the top row's right end since D1254 (Chrome.tsx `Topbar`), outside the grid: the grid rendered alone is
    asked as the ⚙ press asks it (ui/lwnav.ts). */
@@ -64,7 +66,9 @@ describe('the grid card\'s bar (D1254)', () => {
     expect(outer().classList.contains('mx-arranging')).toBe(false)
     // D1254: the way in is a line in ⚙, and it closes the sheet so the grid is in reach
     openSettings()
-    expect(screen.getByTestId('settings-rearrange').textContent!.trim()).toBe('⇅ Rearrange the grid')
+    /* the typed ⇅ became the app's drawn Reorder mark (owner D1703, 5 Nov 26) */
+    expect(screen.getByTestId('settings-rearrange').textContent!.trim()).toBe('Rearrange the grid')
+    expect(drawnAs(screen.getByTestId('settings-rearrange').querySelector('svg'), REORDER_INNER), 'the Reorder mark').toBe(true)
     fireEvent.click(screen.getByTestId('settings-rearrange'))
     expect(screen.queryByTestId('settings-sheet')).toBeNull()
     expect(screen.getByTestId('manning-drag-sets')).toBeTruthy()
@@ -86,12 +90,13 @@ describe('the grid card\'s bar (D1254)', () => {
   /* WAS "the toggle reads ⇅ with the word on a droppable tail — icon-only on a phone" (Rearrange → Rearranging). Since
      D1254 the bar's button is the way out only. RE-EXPRESSED by D1275 (23 Oct 26): "⇅ Done" in words on a phone too — the
      word is never on the droppable tail the phone hides. The − / + it stepped aside for went with pinch to zoom (D1276). */
-  it('Done reads "⇅ Done", its word never on the droppable tail (D1275)', () => {
+  it('Done reads "Done" after the drawn Reorder mark (D1703 — the typed ⇅ before it), its word never on the droppable tail (D1275)', () => {
     setRole('admin')
     render(<Matrix />)
     startRearrange()
     const btn = screen.getByTestId('roster-arrange')
-    expect(btn.textContent!.replace(/\s+/g, ' ').trim()).toBe('⇅ Done')
+    expect(btn.textContent!.replace(/\s+/g, ' ').trim()).toBe('Done')
+    expect(drawnAs(btn.querySelector('svg'), REORDER_INNER), 'the Reorder mark').toBe(true)
     expect(btn.querySelector('.rtlbl')).toBeNull()
     expect(screen.queryByTestId('lw-zoom')).toBeNull()
     fireEvent.click(btn)
@@ -536,6 +541,9 @@ describe('⚙ Settings — Reset order', () => {
     expect(getState().rosterOrder).toEqual([])
     expect(btn().disabled).toBe(true)
     expect(btn().textContent).toMatch(/Reset order/)
+    /* the typed ↺ became the drawn arrow turning back (owner D1703, 5 Nov 26); "Really reset?" is words alone, as before */
+    expect(btn().textContent).not.toMatch(/↺/)
+    expect(drawnAs(btn().querySelector('svg'), RESET_INNER), 'the Reset mark').toBe(true)
     // its line went with D1499; the button's own title says so
     expect(btn().title).toBe('The roster is already in the default order')
   })
@@ -545,6 +553,7 @@ describe('⚙ Settings — Reset order', () => {
     expect(btn().disabled).toBe(false)
     fireEvent.click(btn())
     expect(btn().textContent).toBe('Really reset?')
+    expect(btn().querySelector('svg'), 'the question is words alone').toBeNull()
     expect(getState().rosterOrder, 'the first tap only asks').toEqual(['ramp', 'ace'])
     fireEvent.click(btn())
     expect(getState().rosterOrder).toEqual([])

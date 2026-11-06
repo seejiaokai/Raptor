@@ -20,6 +20,11 @@ import { getState as lwState } from '../leavewar/state/store'
 import { viewerId, roleOf } from '../state/perms'
 import { setPage, BACKPROMPT } from '../state/view'
 import { setDayApproved, setSign, dayApproved } from '../engine/publish'
+import { vi } from 'vitest'
+import { setSaveStatusSource } from './SaveStatus'
+import { Postman } from '../storage/postman'
+import { Whiteboard } from '../storage/whiteboard'
+import { MemoryBackend } from '../storage/memory'
 
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
@@ -266,5 +271,81 @@ describe('PO3 — Suspend / Enable, "suspended", the sign-in (D285, D300)', () =
     expect(accountByName('hex')).toBeUndefined()
     expect((PEOPLE as any).rocky.deleted).toBe(true)
     expect($('[data-acct="achex"]'), 'his row leaves the list').toBeFalsy()
+  })
+})
+
+/* D1657 (5 Nov 26, "the rest as recommended" — [GUEST-SAVE-WARNING], answering the member / guest check's finding): when a
+   save has failed, the "Not saved — keep this page open · Retry" band shows on the sign-in screen, the screen after asking
+   for access and the guest page too, the page moved down under it so nothing is covered — so a stranger whose request
+   was not saved is never told it was sent. Its Retry saves, and the band goes. */
+describe('D1657 — the failed-save band on the sign-in, the access screens and the guest page', () => {
+  const be = new MemoryBackend(), wb = new Whiteboard(), pm = new Postman(be)
+  beforeAll(() => { pm.attach(wb); setSaveStatusSource(pm) })
+  const fail = async () => {
+    be.failNext(1000)
+    await act(async () => { wb.set('inputs', 'd1657', String(Math.random())) })
+    await vi.waitFor(() => expect(pm.status).toBe('failed'), { timeout: 3000 })
+    await act(async () => { notify() })
+  }
+  const retry = async (band: HTMLElement) => {
+    be.failNext(0)
+    await click(band.querySelector('button'))
+    await vi.waitFor(() => expect(pm.status).toBe('saved'), { timeout: 3000 })
+    await act(async () => { notify() })
+  }
+  it('the sign-in: the band across the top of the screen, the page moved down under it; Retry saves and it goes', async () => {
+    await act(async () => { resetSession(null); notify() })
+    expect($('#login')).toBeTruthy()
+    expect($('.saveband'), 'nothing while saves work').toBeFalsy()
+    await fail()
+    const band = $('.saveband.is-screen')
+    expect(band, 'the band').toBeTruthy()
+    expect(band.textContent).toContain('Not saved — keep this page open')
+    expect($('#login').classList.contains('band-up'), 'the page moved down under it').toBe(true)
+    await retry(band)
+    expect($('.saveband'), 'gone once saved').toBeFalsy()
+    expect($('#login').classList.contains('band-up')).toBe(false)
+  })
+  it('asking for access, and the screen after it: the band, the page moved down', async () => {
+    await signInAs('band1657@mail')
+    expect($('#accessRequest')).toBeTruthy()
+    await fail()
+    expect($('.saveband.is-screen'), 'on Request access').toBeTruthy()
+    expect($('#accessRequest').classList.contains('band-up')).toBe(true)
+    await type($('#accCs') as HTMLInputElement, 'Band')
+    await type($('#accSeat') as HTMLSelectElement, 'FCP')
+    await type($('#accCat') as HTMLSelectElement, 'C')
+    await act(async () => { $('#accForm').dispatchEvent(new Event('submit', { bubbles: true, cancelable: true })) })
+    expect($('#accessWaiting')).toBeTruthy()
+    expect($('.saveband.is-screen'), 'the request was not saved: the waiting screen says so').toBeTruthy()
+    expect($('#accessWaiting').classList.contains('band-up')).toBe(true)
+    /* D1664 (5 Nov 26, "As recommended"): while it is not saved the pass says so - its mark and its first step read
+       "Not sent yet" (the band's amber), the second step not yet his */
+    const steps = () => [...document.querySelectorAll('#accessWaiting .pass-steps li')].map(n => `${n.className}:${n.textContent}`)
+    expect($('#accessWaiting .pass-state').textContent, 'the mark').toBe('Not sent yet')
+    expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(true)
+    expect(steps(), 'the steps').toEqual(['unsent:!Not sent yet', ':An admin approves', ":You're on the schedule"])
+    expect(document.querySelector('#accessWaiting .pass-steps li[aria-current]'), 'no step is where he is yet').toBeNull()
+    await retry($('.saveband.is-screen'))
+    expect($('.saveband')).toBeFalsy()
+    /* saved: the approved look is back by itself */
+    expect($('#accessWaiting .pass-state').textContent).toBe('Waiting for an admin')
+    expect($('#accessWaiting .pass-state').classList.contains('unsent')).toBe(false)
+    expect(steps()).toEqual(['done:Request sent', 'now:An admin approves', ":You're on the schedule"])
+  })
+  it('the guest page: the band is the guest bar last line, as on every other page', async () => {
+    await signInAs('ad', 'a'); setGuestView(true)
+    await signInAs('band1657@mail')
+    expect($('#guestApp')).toBeTruthy()
+    await fail()
+    const bar = $('#guestApp .topbar.guestbar')
+    expect(bar.classList.contains('save-failed'), 'the bar makes room').toBe(true)
+    const band = bar.querySelector('.savestat.failed') as HTMLElement
+    expect(band, 'the band in the bar').toBeTruthy()
+    expect(band.textContent).toContain('Not saved — keep this page open')
+    await retry(band)
+    expect(bar.classList.contains('save-failed')).toBe(false)
+    expect($('#guestApp .savestat.failed')).toBeFalsy()
+    await signInAs('ad', 'a'); setGuestView(false)
   })
 })

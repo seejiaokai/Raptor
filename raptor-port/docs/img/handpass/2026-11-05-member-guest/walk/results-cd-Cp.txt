@@ -1,0 +1,15 @@
+PASS Cp0 admin switches the guest view on — saw true
+NOTE Cp0-signin — {"ids":["accessRequest"],"band":[],"words":"TALON Request access Signed in as walker-guest You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT Request access Sign out"}
+NOTE Cp1-empty-refusal — {"where":{"ids":["accessRequest"],"band":[],"words":"TALON Request access Signed in as walker-guest You're not on the squadron's list yet. Tell the admins who you are and they'll give you access. DISPLAYED CALLSIGN/NAME INITIALS PILOT, WSO OR PERSONNEL CAT Type the callsign or name Request access Sign out"},"said":[],"writes":[]}
+PASS CpC1 request sent: waiting screen, one save (an accessreq key) — saw {"where":{"ids":["accessWaiting"],"band":[],"words":"TALON Your request is with the admins Signed in as walker-guest You asked for access as Walker (WK · Pilot · CAT OCU). You'll be able to sign in as soon as an admin approves it. Meanwhile you can look at the schedule, read only. View the schedule Sign out"},"writes":["set raptor:__txn","set raptor:settings/accessreq:rqmw2qsms3dla1","set raptor:changes/cmw2qshey5ilea1-2","remove raptor:__txn"]}
+NOTE Cp2-in-guest — true
+NOTE Cp2-controls — ["BUTTON#guestOut.abtn ghost|Sign out"]
+NOTE Cp2-weeks — 0
+NOTE Cp2-scroller — {"x":0,"y":58.5,"w":402,"h":2404.34375,"left0":12,"cls":"week"}
+NOTE Cp2-swipe — {"how":"touch events unavailable: Illegal constructor | then pointer drag","left0":12,"afterSynthetic":12,"afterScrollBy":402}
+NOTE Cp2-longpress — {"lp":"unavailable: Illegal constructor","open":["guestApp"]}
+NOTE Cp2-puck-tap — {"visibleWindows":[]}
+NOTE Cp2-daytitle — []
+PASS CpC2 whole guest part: 0 storage writes (except reopen-page key, recorded) — saw []
+NOTE Cp2-signin-again — {"again":{"ids":["guestApp"],"band":[],"words":"142 TALON Waiting for access — view only Sign out Monday Jul 13 · Today DRAFT 4 X 4 COMMON PROGRAMME EP: ENGINE FIRE ON TAKE OFF ORDERS: FLYING ORDERS SECTION 2 NAME START PEOPLE RMKS SODB 07:45 08:15 MET + NOTAM BRIEF 08:15 08:30 Warden IP FLIGHT SAFETY STAND"},"writes":["remove talon:reopen-page"]}
+NOTE Cp3-requests — {"walkerMentions":1,"reqEl":["acc-row req: walker-guest asked as Walker · WK · Pilot · CAT OCU · 5/11 07:23 Give access Refuse"]}

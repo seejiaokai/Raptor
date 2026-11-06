@@ -1,0 +1,58 @@
+{
+  "results": [
+    {
+      "size": "desk",
+      "step": "F0",
+      "ok": true,
+      "what": "Hex made an admin on Admin → Users"
+    },
+    {
+      "size": "desk",
+      "step": "S13m",
+      "ok": true,
+      "what": "date moved after it ran: Saber's own \"Posted out\" line gone, no \"taken back\" line for him ([])"
+    },
+    {
+      "size": "desk",
+      "step": "S13",
+      "ok": true,
+      "what": "date moved to 18 Nov after it ran, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",\"Mon 16 Nov\",true]])"
+    },
+    {
+      "size": "desk",
+      "step": "S14m",
+      "ok": true,
+      "what": "SANS → Overseas after it ran: no \"now SANS\" line left in Saber's bell ([[\"Posted out · archived, account suspended\",\"Mon 16 Nov\"]])"
+    },
+    {
+      "size": "desk",
+      "step": "S14",
+      "ok": true,
+      "what": "SANS → Overseas after the run, then Undo: no \"Posted out\" line left standing, Hex told it was taken back ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+    }
+  ],
+  "errs": [],
+  "log": [
+    "PASS [desk] F0 — Hex made an admin on Admin → Users",
+    "[desk] the men: Ranger (bane), Cinch (snap), taipan",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "[desk] S13 after the move: {\"line\":\"On 18 Nov: becomes SANS.\",\"box\":\"Wed 18 Nov 26▾\"}; Ranger {\"cs\":\"Ranger\",\"san\":false,\"sanBy\":null,\"archived\":false,\"deleted\":false}",
+    "[desk] S13 Saber's bell after the move: []",
+    "PASS [desk] S13m — date moved after it ran: Saber's own \"Posted out\" line gone, no \"taken back\" line for him ([])",
+    "[postingSheet] bane: reached by 2026-11-30",
+    "[desk] S13 Undo door found; PO boxes left on his row in Nov: 0",
+    "PASS [desk] S13 — date moved to 18 Nov after it ran, then Undo: no \"Posted out\" line left standing ([[\"Posted out · now SANS · taken back · Saber\",\"Mon 16 Nov\",true]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "[desk] S14 Saber's bell after the change: [[\"Posted out · archived, account suspended\",\"Mon 16 Nov\"]]",
+    "PASS [desk] S14m — SANS → Overseas after it ran: no \"now SANS\" line left in Saber's bell ([[\"Posted out · archived, account suspended\",\"Mon 16 Nov\"]])",
+    "[postingSheet] bane: reached by 2026-11-16",
+    "PASS [desk] S14 — SANS → Overseas after the run, then Undo: no \"Posted out\" line left standing, Hex told it was taken back ([[\"Posted out · now SANS · taken back · Saber\",true]])"
+  ],
+  "report": {
+    "desk": {
+      "X": "snap",
+      "Y": "taipan",
+      "csX": "Cinch"
+    }
+  }
+}

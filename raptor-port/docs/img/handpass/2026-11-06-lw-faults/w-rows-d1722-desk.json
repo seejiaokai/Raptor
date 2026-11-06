@@ -1,0 +1,98 @@
+[
+ {
+  "id": "S-look",
+  "size": "desk",
+  "did": "the same entries on Vapor (here) and Diesel (posted out from 21 Dec): OD 22–24, FO 24–25, Other AM 28–29, LL 30–31",
+  "saw": "Vapor [\"OD:s-a\",\"FO:s-a,OD:s-a\",\"OD:s-a\",\"FO:s-a,OD:s-a\",\"FO:s-a\",\"OTH:s-a\",\"OTH:s-a\",\"LL:s-a\",\"LL:s-a\"]; Diesel [\"OD:s-a\",\"FO:s-a,OD:s-a\",\"OD:s-a\",\"FO:s-a,OD:s-a\",\"FO:s-a\",\"OTH:s-a\",\"OTH:s-a\",\"LL:s-a\",\"LL:s-a\"]",
+  "verdict": "PASS",
+  "pics": [
+   "S-desk-Vapor-row",
+   "S-desk-Diesel-row"
+  ]
+ },
+ {
+  "id": "C1-mid",
+  "size": "desk",
+  "did": "tap an OD of three days, its middle day (2026-12-23) on Vapor, then on Diesel",
+  "saw": "Vapor: bid-picker \"22–24 Dec\" [All 3 days | Wed 23] held: ODWhole day· change it on the Inputs pag · Diesel: bid-picker \"22–24 Dec\" [All 3 days | Wed 23] held: ODWhole day· change it on the Inputs pag",
+  "verdict": "PASS",
+  "pics": [
+   "C1-mid-desk-Vapor",
+   "C1-mid-desk-Diesel"
+  ]
+ },
+ {
+  "id": "C1-end",
+  "size": "desk",
+  "did": "tap an OD of three days, its first day (2026-12-22) on Vapor, then on Diesel",
+  "saw": "Vapor: bid-picker \"22–24 Dec\" [All 3 days | Tue 22] held: ODWhole day· change it on the Inputs pag · Diesel: bid-picker \"22–24 Dec\" [All 3 days | Tue 22] held: ODWhole day· change it on the Inputs pag",
+  "verdict": "PASS",
+  "pics": [
+   "C1-end-desk-Vapor",
+   "C1-end-desk-Diesel"
+  ]
+ },
+ {
+  "id": "C3-two",
+  "size": "desk",
+  "did": "tap an OD and an FO award on one day (2026-12-24) on Vapor, then on Diesel",
+  "saw": "Vapor: daylist-sheet \"Thu 24 Dec\" · Diesel: daylist-sheet \"Thu 24 Dec\"",
+  "verdict": "PASS",
+  "pics": [
+   "C3-two-desk-Vapor",
+   "C3-two-desk-Diesel"
+  ]
+ },
+ {
+  "id": "C2-half",
+  "size": "desk",
+  "did": "tap an Other, a morning (2026-12-28) on Vapor, then on Diesel",
+  "saw": "Vapor: bid-picker \"Mon 28 Dec\" · Diesel: bid-picker \"Mon 28 Dec\"",
+  "verdict": "PASS",
+  "pics": [
+   "C2-half-desk-Vapor",
+   "C2-half-desk-Diesel"
+  ]
+ },
+ {
+  "id": "C3-fo",
+  "size": "desk",
+  "did": "tap an FO award alone (2026-12-25) on Vapor, then on Diesel",
+  "saw": "Vapor: bid-picker \"Fri 25 Dec\" · Diesel: bid-picker \"Fri 25 Dec\"",
+  "verdict": "RECORD (same)",
+  "pics": [
+   "C3-fo-desk-Vapor",
+   "C3-fo-desk-Diesel"
+  ]
+ },
+ {
+  "id": "C4-leave",
+  "size": "desk",
+  "did": "tap LL of two days (2026-12-30) on Vapor, then on Diesel",
+  "saw": "Vapor: bid-picker \"30–31 Dec\" [All 2 days | Wed 30] · Diesel: bid-picker \"30–31 Dec\" [All 2 days | Wed 30]",
+  "verdict": "RECORD (same)",
+  "pics": [
+   "C4-leave-desk-Vapor",
+   "C4-leave-desk-Diesel"
+  ]
+ },
+ {
+  "id": "E-edit",
+  "size": "desk",
+  "did": "the Inputs page, December: tap Diesel's entry there",
+  "saw": "",
+  "verdict": "RECORD",
+  "pics": [
+   "E-desk-1-inputs-december",
+   "E-desk-2-opened"
+  ]
+ },
+ {
+  "id": "errs",
+  "size": "desk",
+  "did": "console errors during the walk",
+  "saw": "0: []",
+  "verdict": "PASS",
+  "pics": []
+ }
+]

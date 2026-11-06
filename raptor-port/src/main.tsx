@@ -6,7 +6,7 @@ import { HOOKS } from './engine/hooks'
 import { toast, toastBatch } from './ui/toast'
 import { App } from './ui/App'
 import { installProbeBridge, isLocalHost } from './probe-bridge'
-import { chooseBackend, guardUnload } from './storage/boot'
+import { armSaveFail, chooseBackend, guardUnload } from './storage/boot'
 import { watchSaves } from './storage/savewait'
 import { StoreAheadError } from './storage/schema'
 import { setSaveStatusSource } from './ui/SaveStatus'
@@ -33,6 +33,8 @@ async function boot(): Promise<void> {
   setToast(toast)
   HOOKS.toastBatch = toastBatch   // one press, one message — only the publish command opens one ([AMEND-SMALL-SEEN] 1)
   const { postman } = await bootApp(chooseBackend(), bootPolicyFrom(import.meta.env as any))
+  /* the ?savefail test switch (D1666) starts refusing saves only now, once the boot's own writes are done */
+  armSaveFail()
 
   /* the indicator and the unload guard hang off the postman */
   setSaveStatusSource(postman)

@@ -1,0 +1,309 @@
+{
+  "log": [
+    "[desk] Hex made an admin: true",
+    "[desk] posting out Sidewinder (mamba) as SANS and Warden (nact) with no chip",
+    "[desk] Hex's bell on the date: [{\"id\":\"bell-line-nmwihyire20xs\",\"unread\":true,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":true,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[desk] after Mark all read: [{\"id\":\"bell-line-nmwihyire20xs\",\"unread\":false,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":false,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[desk] TODAY his name on the grid: [{\"where\":\"row\",\"cls\":\"puck\",\"name\":\"Sidewinder\",\"nameShown\":\"cut (46/53px)\",\"puckW\":63,\"tag\":true,\"line\":false}]",
+    "[desk] PROPOSED his name on the grid: [{\"where\":\"row\",\"cls\":\"puck san\",\"name\":\"Sidewinder\",\"nameShown\":\"whole\",\"puckW\":74,\"tag\":false,\"line\":\"4px\"}]",
+    "[desk] after Undo post out: [{\"id\":\"mamba\",\"san\":false},{\"id\":\"nact\",\"san\":false}]",
+    "[desk] Saber's own bell after his undo: [{\"id\":\"bell-line-nmwihyire1l0u\",\"unread\":true,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":true,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[desk] the SANS group's pucks with \"+ SANS\" on: [{\"name\":\"Zenith\",\"line\":false},{\"name\":\"Bolt\",\"line\":false},{\"name\":\"Rebel\",\"line\":false},{\"name\":\"Jester\",\"line\":false},{\"name\":\"Kraken\",\"line\":false},{\"name\":\"Marlin\",\"line\":false},{\"name\":\"Otter\",\"line\":false},{\"name\":\"Pixel\",\"line\":false},{\"name\":\"Scribe\",\"line\":false},{\"name\":\"Tally\",\"line\":false},{\"name\":\"Zulu\",\"line\":false}]",
+    "[desk] Hex's bell after the undo, TODAY: [{\"id\":\"bell-line-nmwihyire20xs\",\"unread\":false,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":false,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[desk] PROPOSED Hex's bell: [\"SidewinderMon 16 NovPosting out taken back · Sabernow\"]",
+    "[desk] the drawn lines' height and fit: [{\"h\":52,\"whatCut\":false}]",
+    "[desk] B (struck through): height and fit [{\"h\":52,\"whatCut\":false}]",
+    "[phone] Hex made an admin: true",
+    "[phone] posting out Sidewinder (mamba) as SANS and Warden (nact) with no chip",
+    "[phone] Hex's bell on the date: [{\"id\":\"bell-line-nmwihyix42nib\",\"unread\":true,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":true,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[phone] after Mark all read: [{\"id\":\"bell-line-nmwihyix42nib\",\"unread\":false,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":false,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[phone] TODAY his name on the grid: [{\"where\":\"row\",\"cls\":\"puck\",\"name\":\"Sidewinder\",\"nameShown\":\"cut (8/67px)\",\"puckW\":16,\"tag\":true,\"line\":false},{\"where\":\"phone frozen copy\",\"cls\":\"puck\",\"name\":\"Sidewinder\",\"nameShown\":\"cut (8/67px)\",\"puckW\":16,\"tag\":true,\"line\":false}]",
+    "[phone] PROPOSED his name on the grid: [{\"where\":\"row\",\"cls\":\"puck san\",\"name\":\"Sidewinder\",\"nameShown\":\"cut (50/67px)\",\"puckW\":54,\"tag\":false,\"line\":\"3.984375px\"},{\"where\":\"phone frozen copy\",\"cls\":\"puck san\",\"name\":\"Sidewinder\",\"nameShown\":\"cut (50/67px)\",\"puckW\":54,\"tag\":false,\"line\":\"3.984375px\"}]",
+    "[phone] after Undo post out: [{\"id\":\"mamba\",\"san\":false},{\"id\":\"nact\",\"san\":false}]",
+    "[phone] Saber's own bell after his undo: [{\"id\":\"bell-line-nmwihyix416lv\",\"unread\":true,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":true,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[phone] the SANS group's pucks with \"+ SANS\" on: [{\"name\":\"Zenith\",\"line\":false},{\"name\":\"Bolt\",\"line\":false},{\"name\":\"Rebel\",\"line\":false},{\"name\":\"Jester\",\"line\":false},{\"name\":\"Kraken\",\"line\":false},{\"name\":\"Marlin\",\"line\":false},{\"name\":\"Otter\",\"line\":false},{\"name\":\"Pixel\",\"line\":false},{\"name\":\"Scribe\",\"line\":false},{\"name\":\"Tally\",\"line\":false},{\"name\":\"Zulu\",\"line\":false}]",
+    "[phone] Hex's bell after the undo, TODAY: [{\"id\":\"bell-line-nmwihyix42nib\",\"unread\":false,\"text\":\"SidewinderMon 16 NovPosted out · now SANSnow\"},{\"id\":\"bell-line-po:nact:2026-11-16\",\"unread\":false,\"text\":\"WardenMon 16 NovPosted out · off the manpower8 h\"}]",
+    "[phone] PROPOSED Hex's bell: [\"SidewinderMon 16 NovPosting out taken back · Sabernow\"]",
+    "[phone] the drawn lines' height and fit: [{\"h\":52,\"whatCut\":false}]",
+    "[phone] B (struck through): height and fit [{\"h\":52,\"whatCut\":false}]"
+  ],
+  "errs": [],
+  "report": {
+    "desk": {
+      "sans": "Sidewinder",
+      "none": "Warden",
+      "hexBefore": [
+        {
+          "id": "bell-line-nmwihyire20xs",
+          "unread": true,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": true,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "hexRead": [
+        {
+          "id": "bell-line-nmwihyire20xs",
+          "unread": false,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": false,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "today": [
+        {
+          "where": "row",
+          "cls": "puck",
+          "name": "Sidewinder",
+          "nameShown": "cut (46/53px)",
+          "puckW": 63,
+          "tag": true,
+          "line": false
+        }
+      ],
+      "proposed": [
+        {
+          "where": "row",
+          "cls": "puck san",
+          "name": "Sidewinder",
+          "nameShown": "whole",
+          "puckW": 74,
+          "tag": false,
+          "line": "4px"
+        }
+      ],
+      "group": [
+        {
+          "name": "Zenith",
+          "line": false
+        },
+        {
+          "name": "Bolt",
+          "line": false
+        },
+        {
+          "name": "Rebel",
+          "line": false
+        },
+        {
+          "name": "Jester",
+          "line": false
+        },
+        {
+          "name": "Kraken",
+          "line": false
+        },
+        {
+          "name": "Marlin",
+          "line": false
+        },
+        {
+          "name": "Otter",
+          "line": false
+        },
+        {
+          "name": "Pixel",
+          "line": false
+        },
+        {
+          "name": "Scribe",
+          "line": false
+        },
+        {
+          "name": "Tally",
+          "line": false
+        },
+        {
+          "name": "Zulu",
+          "line": false
+        }
+      ],
+      "saberToday": [
+        {
+          "id": "bell-line-nmwihyire1l0u",
+          "unread": true,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": true,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "hexToday": [
+        {
+          "id": "bell-line-nmwihyire20xs",
+          "unread": false,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": false,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "drawn": [
+        "SidewinderMon 16 NovPosting out taken back · Sabernow"
+      ],
+      "fit": [
+        {
+          "h": 52,
+          "whatCut": false
+        }
+      ]
+    },
+    "phone": {
+      "sans": "Sidewinder",
+      "none": "Warden",
+      "hexBefore": [
+        {
+          "id": "bell-line-nmwihyix42nib",
+          "unread": true,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": true,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "hexRead": [
+        {
+          "id": "bell-line-nmwihyix42nib",
+          "unread": false,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": false,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "today": [
+        {
+          "where": "row",
+          "cls": "puck",
+          "name": "Sidewinder",
+          "nameShown": "cut (8/67px)",
+          "puckW": 16,
+          "tag": true,
+          "line": false
+        },
+        {
+          "where": "phone frozen copy",
+          "cls": "puck",
+          "name": "Sidewinder",
+          "nameShown": "cut (8/67px)",
+          "puckW": 16,
+          "tag": true,
+          "line": false
+        }
+      ],
+      "proposed": [
+        {
+          "where": "row",
+          "cls": "puck san",
+          "name": "Sidewinder",
+          "nameShown": "cut (50/67px)",
+          "puckW": 54,
+          "tag": false,
+          "line": "3.984375px"
+        },
+        {
+          "where": "phone frozen copy",
+          "cls": "puck san",
+          "name": "Sidewinder",
+          "nameShown": "cut (50/67px)",
+          "puckW": 54,
+          "tag": false,
+          "line": "3.984375px"
+        }
+      ],
+      "group": [
+        {
+          "name": "Zenith",
+          "line": false
+        },
+        {
+          "name": "Bolt",
+          "line": false
+        },
+        {
+          "name": "Rebel",
+          "line": false
+        },
+        {
+          "name": "Jester",
+          "line": false
+        },
+        {
+          "name": "Kraken",
+          "line": false
+        },
+        {
+          "name": "Marlin",
+          "line": false
+        },
+        {
+          "name": "Otter",
+          "line": false
+        },
+        {
+          "name": "Pixel",
+          "line": false
+        },
+        {
+          "name": "Scribe",
+          "line": false
+        },
+        {
+          "name": "Tally",
+          "line": false
+        },
+        {
+          "name": "Zulu",
+          "line": false
+        }
+      ],
+      "saberToday": [
+        {
+          "id": "bell-line-nmwihyix416lv",
+          "unread": true,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": true,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "hexToday": [
+        {
+          "id": "bell-line-nmwihyix42nib",
+          "unread": false,
+          "text": "SidewinderMon 16 NovPosted out · now SANSnow"
+        },
+        {
+          "id": "bell-line-po:nact:2026-11-16",
+          "unread": false,
+          "text": "WardenMon 16 NovPosted out · off the manpower8 h"
+        }
+      ],
+      "drawn": [
+        "SidewinderMon 16 NovPosting out taken back · Sabernow"
+      ],
+      "fit": [
+        {
+          "h": 52,
+          "whatCut": false
+        }
+      ]
+    }
+  }
+}

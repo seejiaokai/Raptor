@@ -184,6 +184,9 @@ function ArrangeDefaults() {
   )
 }
 
+/* how long a row a bell's posting line lands on stays ringed — the app's one just-added mark's six seconds (state/view.ts
+   FRESH_MS; 06-inputs.css inflash) */
+const RING_MS = 6000
 export function AdminPage() {
   useVersion()
   /* which category the pane shows; `drilled` only matters on a phone, where the
@@ -193,6 +196,9 @@ export function AdminPage() {
      drilled in, never the category list first ([ACCOUNTS-NEW-PERSON]) */
   const [drilled, setDrilled] = useState(() => !!ADMINOPEN)
   const [openNew, setOpenNew] = useState(0)
+  /* a man to bring into view and ring on Users (a bell's posting line — [POSTOUT-RUN-NOTICE]): `seq` the tap, `on` while his
+     row wears the just-added mark — its six seconds */
+  const [ring, setRing] = useState<{ seq: number; pid: string; on: boolean } | null>(null)
   const admin = isAdmin()
   /* THE ONE CONSUMER of "open Admin → Users" (state/view.ts ADMINOPEN — Fable F2, Astra 4):
      keyed on its `seq`, so it works whether this page was just mounted or was already up
@@ -204,8 +210,21 @@ export function AdminPage() {
     if (!it) return
     setCat('users'); setDrilled(true)
     setOpenNew(it.newPerson ? it.seq : 0)
+    const seq = it.seq, person = it.person
+    setRing(person ? { seq, pid: person, on: true } : null)
     clearAdminOpen()
   }, [intentSeq])
+  /* THE RING'S SIX SECONDS, an effect of its own keyed on the tap: the intent's effect above runs again the moment ADMINOPEN
+     is cleared, and a timer it cleaned up there left the ring on for good (the walk's B4); keyed here, a second tap starts
+     its own six seconds and a page left takes its timer with it */
+  const ringingSeq = ring && ring.on ? ring.seq : 0
+  useEffect(() => {
+    if (!ringingSeq) return
+    /* (cleared whole, not left switched off: a Users list drawn again under this page — the member view switched and back —
+       would take a kept tap as new and open the fold again; the fix round's read, 5) */
+    const t = setTimeout(() => setRing(r => (r && r.seq === ringingSeq ? null : r)), RING_MS)
+    return () => clearTimeout(t)
+  }, [ringingSeq])
   const waiting = admin ? waitingCount() : 0
   /* the forced-member render — this is what makes the page gate non-vacuous:
      the nav already hides the tab, so the only way here as a member is state
@@ -247,7 +266,7 @@ export function AdminPage() {
             <section className={'adm-panel' + (cat === 'users' ? ' on' : '')} id="admUsers">
               {/* `shown`: the waiting list is on his screen — Users chosen, and on a phone
                   drilled in (the category list alone does not count — D216, D227) */}
-              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} />
+              <UsersPanel shown={cat === 'users' && (drilled || !HOOKS.isPhone())} openNew={openNew} ring={ring} />
             </section>
             {/* ---- Squadron configuration — front doors to the two template
                 editors. The modals are App-level siblings (App.tsx), so they

@@ -42,6 +42,7 @@ import { openAvailWinFrom } from './availopen'
 import { shownBuiltins, shownTemplates, waveFromTpl, kindLabel, WAVE_BUILTIN, WAVETPL_CFG } from '../engine/wavetpl'
 import { HOOKS } from '../engine/hooks'
 import { penSvg } from './pen'
+import { glyphSvg, GEAR_INNER } from './glyphs'
 import { canEditSched } from '../state/auth'
 import * as view from '../state/view'
 import { esc } from '../state/view'
@@ -1924,7 +1925,8 @@ export function waveMenu(anchor: HTMLElement, di: any) {
      and shows / hides / deletes what appears here, so the old separate ✎ editor and
      ⚙ Manage buttons collapse into this single data-wvedit opener. It rides the Day
      header when the board's generic add shows one, else the Add header. */
-  const pen = `<button class="wm-pen wm-mng" data-wvedit="1" title="Manage flying waves">⚙</button>`
+  /* the app's one gear, drawn (owner D1509, D1707) — in its button's colour */
+  const pen = `<button class="wm-pen wm-mng" data-wvedit="1" title="Manage flying waves">${glyphSvg(GEAR_INNER)}</button>`
   const dayBtns = (di == null)
     ? `<h5 class="wm-hpen">Day${pen}</h5><div class="wm-row" id="wmDays">`
       + DAYS.map((x: any, i: number) => `<button class="wm ${i === 0 ? 'on' : ''}" data-wmday="${i}" style="padding:6px 9px;font-size:11.5px">${esc(x.dow.slice(0, 3))}</button>`).join('')

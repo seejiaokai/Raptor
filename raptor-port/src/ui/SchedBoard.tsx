@@ -11,7 +11,7 @@ import { toggleChanges } from './changesopen'
 import { weekDates } from '../engine/editlog'
 import { CURWEEK } from '../engine/waves'
 import { setWeekCal, setInsights } from './pops'
-import { CalIcon, HistIcon, HlIcon, PenIcon, SrchIcon } from './icons'
+import { CalIcon, DesktopIcon, HistIcon, HlIcon, PenIcon, PhoneIcon, ReorderIcon, SrchIcon, TemplatesIcon, TicketIcon } from './icons'
 import { HlChips } from './hlchips'
 import { oilShown, oilModeOn, toggleOilMode } from './oilmode'
 import { wireHistBubble, hideHistBub, histBubRecheck, refreshHistDots } from './histbubble'
@@ -576,9 +576,10 @@ export function SchedBoard() {
               <button className="sb-moreitem" id="sbMoreInsights" role="menuitem" onClick={()=>{setMoreOpen(false);setInsights(true);notify()}}>Insights</button>
               {/* the same gate Sort all has on the desktop bar: edit mode, and not while a frozen published version is shown */}
               {open && HOOKS.editMode() && <button className="sb-moreitem" id="sbMoreSort" role="menuitem" disabled={SBDAY != null && DPREV.has(SBDAY)}
-                onClick={() => { setMoreOpen(false); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span> Sort all</button>}
+                onClick={() => { setMoreOpen(false); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi"><ReorderIcon /></span> Sort all</button>}
               <button className="sb-moreitem" id="sbMoreWide" role="menuitem"
-                onClick={() => { setMoreOpen(false); toggleWide(); notify() }}><span className="bi">{SBWIDE ? '📱' : '🖥'}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
+                onClick={() => { setMoreOpen(false); toggleWide(); notify() }}>{/* the layout switch drawn, a phone or a screen — an iPhone drew 📱 / 🖥 in colour (owner D1703, 5 Nov 26) */}
+                <span className="bi">{SBWIDE ? <PhoneIcon /> : <DesktopIcon />}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
             </div>}
           </span>
           <div className="searchbox sb-search"><SrchIcon /><input id="searchB" placeholder="name / callsign" aria-label="Search by name or callsign"
@@ -621,12 +622,13 @@ export function SchedBoard() {
           <span className="sb-dayctl">
           {open && HOOKS.editMode() && !oilModeOn(SBDAY) && <button className="abtn sb-daybtn" id="sbTpl" disabled={DPREV.has(SBDAY)}
             title="Save this day, or apply a saved one"
-            onClick={e => { if (SBDAY != null) dayTplMenu(e.currentTarget as HTMLElement, SBDAY) }}><span className="bi">▤</span><span className="bl"> Templates</span></button>}
+            onClick={e => { if (SBDAY != null) dayTplMenu(e.currentTarget as HTMLElement, SBDAY) }}><span className="bi"><TemplatesIcon /></span><span className="bl"> Templates</span></button>}
           {open && HOOKS.editMode() && oilShown(SBDAY) && <button className={'abtn sb-daybtn sb-oilbtn' + (oilModeOn(SBDAY) ? ' on' : '')} id="sbOil"
             aria-pressed={oilModeOn(SBDAY)} disabled={DPREV.has(SBDAY)}
             title={oilModeOn(SBDAY) ? 'Leave OIL mode and edit the schedule again' : 'Show who earns OIL on this day, and change it'}
             onClick={() => { if (SBDAY != null) { const on = toggleOilMode(SBDAY); HOOKS.toast(on ? 'OIL Earn: tap a puck to stop that man earning from that event, or an item to stop the whole item earning' : 'Back to editing the schedule'); notify() } }}>
-            <span className="bi">◧</span><span className="bl"> OIL Earn</span></button>}
+            {/* OIL's own mark, a ticket — never History's clock, which stands on this same bar (owner D1700, D1704) */}
+            <span className="bi"><TicketIcon /></span><span className="bl"> OIL Earn</span></button>}
           {/* [UNDO-TOPBAR] (D349, 28 Sep 26): on a desktop Sort all sits BEFORE Undo, in this desktop-only wrapper (the
               approved mock-up); on a phone it is in the ⋯ menu beside the highlighter. Sort all — every section on this day at once, not one row like
               every other control here. Gated on HOOKS.editMode() — the same
@@ -643,7 +645,7 @@ export function SchedBoard() {
               +Line/+Wave above. */}
           {open && HOOKS.editMode() && <button className="abtn" id="sbSortAll" disabled={DPREV.has(SBDAY)}
             title="Reorder every section on this day back into its own reading order, waves and duty blocks included — one confirm, one undo step"
-            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi">⇅</span><span className="bl"> Sort all</span></button>}
+            onClick={() => { if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi"><ReorderIcon /></span><span className="bl"> Sort all</span></button>}
           </span>
           {/* UNDO STOPS AT THE DOOR OF THE MODE — AND THIS IS THE BUTTON IT HAS
               TO STOP (walk find, 22 Sep 26). The same guard was already on the

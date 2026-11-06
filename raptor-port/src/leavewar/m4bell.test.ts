@@ -42,7 +42,8 @@ const DAYS = ['2026-02-03', '2026-02-04', '2026-02-05']
 const lineOf = (p: string, dates: string[], to: DecideLine['to']): DecideLine =>
   ({ personId: p, to, parts: dates.map(date => { const r = req(p, date); return { date, recId: r.id, state: r.state as DecidePart['state'] } }) })
 /* his lines, in words — newest first */
-const lines = (pid: string) => noticesFor(pid).map(n => { const w = noticeWords(n); return [w.name, w.day, w.what, w.who].filter(Boolean).join(' · ') })
+/* a taken-back line's struck words shown in ~~ ~~, as the bell draws them struck through (his D1699) */
+const lines = (pid: string) => noticesFor(pid).map(n => { const w = noticeWords(n); return [w.name, w.day, w.struck ? `~~${w.struck}~~ · ${w.what}` : w.what, w.who].filter(Boolean).join(' · ') })
 const leaveOf = (p: string) => INPUTS.filter((r: any) => holds(r, p) && r.lw && String(r.date).startsWith('Feb'))
 const bids = (p: string, code = 'LL') => { for (const d of DAYS) expect(setCell(p, d, code)).toBe(true) }
 
@@ -198,7 +199,7 @@ describe('Undo (9.3 — D1216)', () => {
     mem['sqn142_noticeseen:bane'] = JSON.stringify({ upto: 0, ids: [noticesFor('bane')[0]!.id] }); noticeSeenLoad()
     T(9)
     expect(globalUndo().ok).toBe(true)
-    expect(lines('bane')).toEqual(['Your leave · Tue 3 – Thu 5 Feb · Approval of LL taken back · Saber'])
+    expect(lines('bane')).toEqual(['Your leave · Tue 3 – Thu 5 Feb · ~~LL approved~~ · taken back · Saber'])
     T(10)
     expect(globalRedo().ok).toBe(true)
     const now = noticesFor('bane')
@@ -222,7 +223,7 @@ describe('an unread "again" line and the next Undo (M9 — D1216)', () => {
     T(10); expect(globalRedo().ok).toBe(true)
     expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · LL approved again · Saber')
     T(11); expect(globalUndo().ok).toBe(true)
-    expect(lines('bane'), 'the unread "again" line went with the Undo').toEqual(['Your leave · Tue 3 – Thu 5 Feb · Approval of LL taken back · Saber'])
+    expect(lines('bane'), 'the unread "again" line went with the Undo').toEqual(['Your leave · Tue 3 – Thu 5 Feb · ~~LL approved~~ · taken back · Saber'])
     T(12); expect(globalRedo().ok).toBe(true)
     expect(lines('bane').filter(l => l.includes('approved again')), 'one "again" line, never two').toHaveLength(1)
     expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · LL approved again · Saber')
@@ -235,7 +236,7 @@ describe('an unread "again" line and the next Undo (M9 — D1216)', () => {
     T(10); expect(globalRedo().ok).toBe(true)
     readNewest()
     T(11); expect(globalUndo().ok).toBe(true)
-    expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · Approval of LL taken back · Saber')
+    expect(lines('bane')[0]).toBe('Your leave · Tue 3 – Thu 5 Feb · ~~LL approved~~ · taken back · Saber')
     expect(lines('bane').filter(l => l.includes('approved again')), 'the approval it repeated no longer stands').toHaveLength(0)
   })
 })

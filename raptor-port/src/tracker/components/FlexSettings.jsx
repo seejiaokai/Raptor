@@ -1,10 +1,11 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import * as core from '../app/core.js';
 import { fixedOrigin } from '../../ui/kbscroll';
+import { GearGlyph } from './Glyphs.jsx';
 
 /* THE TRACKER'S FLEX SETTINGS (owner D1006, D1014, D1018 — 18 Oct 26, approved "as recommended" on the pictures
    docs/img/handpass/2026-10-18-trk-flex-legend/02-topbar-proposed-*, 03-flex-settings-admin-*, 04-flex-settings-member-*).
-   A settings icon, the app's cog ⚙, in the Tracker's bar after Find event (as drawn), opens a window: the one switch
+   A settings icon, the app's one gear (drawn since D1509 / D1707 — Glyphs.jsx GearGlyph), in the Tracker's bar after Find event (as drawn), opens a window: the one switch
    "Track flex" with its line, then the bands — six typed "From" days, each "To" following from the next row, each
    band's words and colour fixed and drawn as the Info panel's own flex bar. THE WORDS ARE HIS AS DRAWN
    (scripts/handpass/mock-trk-flex-legend.mjs drew them): any change to them is put to him first.
@@ -15,7 +16,7 @@ import { fixedOrigin } from '../../ui/kbscroll';
      bad figure, saying why on the line above the buttons.
    - It is not a dragged window: it opens under its button, as the Legend does, so a tap outside can close it (design
      guide §2) — the picture's six-dot grip, which says "drag me", is left out for that reason.
-   - The keyboard goes in when it opens, Tab stays inside, and it comes back to the ⚙ however it closed. */
+   - The keyboard goes in when it opens, Tab stays inside, and it comes back to the gear however it closed. */
 
 /* The window's width (the picture's, about 400px), less the screen's 6px margins on a phone (as the Legend) */
 const WIDTH = 400, PAD = 6;
@@ -143,7 +144,7 @@ export default function FlexSettings() {
     <>
       <button className={'sm icon' + (open ? ' primary' : '')} id="flexBtn" ref={btn} data-testid="trk-flex-open" title="Flex settings"
         aria-label="Flex settings" aria-haspopup="dialog" aria-expanded={open} aria-controls="trkFlexWin"
-        onClick={() => (open ? close() : core.openFlexWin())}>⚙</button>
+        onClick={() => (open ? close() : core.openFlexWin())}><GearGlyph /></button>
       {open ? <Body btn={btn} close={close} /> : null}
     </>
   );

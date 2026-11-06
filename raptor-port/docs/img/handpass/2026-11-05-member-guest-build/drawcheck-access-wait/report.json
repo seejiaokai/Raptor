@@ -1,0 +1,4139 @@
+{
+ "spec": "The screen after asking for access (the pass)",
+ "dist": "C:\\Users\\User\\AppData\\Local\\Temp\\claude\\37df10f156419f1e\\88e46b60-fe4d-4cbb-9fcb-000cf7cf0960\\scratchpad\\walk-6dd252ef3",
+ "all": false,
+ "report": [
+  {
+   "state": "pass-phone",
+   "title": "The pass, iPhone (WebKit), a stranger who asked for access",
+   "drawing": {
+    "script": "scripts/handpass/aw1105-mock.mjs",
+    "shot": "C-diag-phone"
+   },
+   "approved": {
+    "picture": "C-diag-phone.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "card",
+     "label": "the card (the pass)",
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "435.5",
+       "build": "422.5",
+       "by": "13px less",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--card.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 25,
+        "y": 102,
+        "w": 352,
+        "h": 435.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 128,
+        "w": 299,
+        "h": 388.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU Request sent An admin approves You're on the schedule Meanwhile you can look at the schedule, read only. View the schedule Sign out Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(135deg, rgba(59, 198, 232, 0.13) 0px, rgba(59, 198, 232, 0.06) 22%, rgba(59, 198, 232, 0) 48%), none",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 40px 90px -40px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.login-card.acc-card.awb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 25,
+        "y": 102,
+        "w": 352,
+        "h": 422.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 128,
+        "w": 299,
+        "h": 375.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU Request sent An admin approves You're on the schedule Meanwhile you can look at the schedule, read only. View the schedule Sign out Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(135deg, rgba(59, 198, 232, 0.13) 0px, rgba(59, 198, 232, 0.06) 22%, rgba(59, 198, 232, 0) 48%), none",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 40px 90px -40px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.login-card.acc-card.acc-pass"
+      }
+     }
+    },
+    {
+     "part": "pass-top",
+     "label": "the pass's top (the callsign's part)",
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "163.5",
+       "build": "150.5",
+       "by": "13px less",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--pass-top.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 26,
+        "y": 103,
+        "w": 350,
+        "h": 163.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 128,
+        "w": 299,
+        "h": 107.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-top"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 26,
+        "y": 103,
+        "w": 350,
+        "h": 150.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 128,
+        "w": 299,
+        "h": 107.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-top"
+      }
+     }
+    },
+    {
+     "part": "mark-row",
+     "label": "the pass top's mark row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 123,
+        "w": 310,
+        "h": 22
+       },
+       "ink": {
+        "x": 223.4,
+        "y": 128,
+        "w": 121.6,
+        "h": 12
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-row"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 123,
+        "w": 310,
+        "h": 22
+       },
+       "ink": {
+        "x": 223.4,
+        "y": 128,
+        "w": 121.6,
+        "h": 12
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-row"
+      }
+     }
+    },
+    {
+     "part": "claws",
+     "label": "the claws",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 123,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 123,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "waiting",
+     "label": "the \"Waiting for an admin\" mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 200.4,
+        "y": 123,
+        "w": 155.6,
+        "h": 22
+       },
+       "ink": {
+        "x": 223.4,
+        "y": 128,
+        "w": 121.6,
+        "h": 12
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)"
+        ],
+        "corners": [
+         "999px",
+         "999px",
+         "999px",
+         "999px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "0.66px"
+       },
+       "tag": "span.awb-state"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 200.4,
+        "y": 123,
+        "w": 155.6,
+        "h": 22
+       },
+       "ink": {
+        "x": 223.4,
+        "y": 128,
+        "w": 121.6,
+        "h": 12
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)"
+        ],
+        "corners": [
+         "999px",
+         "999px",
+         "999px",
+         "999px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "0.66px"
+       },
+       "tag": "span.pass-state"
+      }
+     }
+    },
+    {
+     "part": "callsign",
+     "label": "the callsign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 159,
+        "w": 313.6,
+        "h": 31.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 153.8,
+        "w": 213.8,
+        "h": 42
+       },
+       "text": "Stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 30px",
+        "spacing": "3.6px"
+       },
+       "tag": "div.awb-cs"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 159,
+        "w": 313.6,
+        "h": 31.5
+       },
+       "ink": {
+        "x": 46,
+        "y": 153.8,
+        "w": 213.8,
+        "h": 42
+       },
+       "text": "Stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 30px",
+        "spacing": "3.6px"
+       },
+       "tag": "h2.pass-cs"
+      }
+     }
+    },
+    {
+     "part": "fields",
+     "label": "the three fields (initials, seat, CAT)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 204.5,
+        "w": 310,
+        "h": 31
+       },
+       "ink": {
+        "x": 46,
+        "y": 204.5,
+        "w": 168.9,
+        "h": 31
+       },
+       "text": "Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "start",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "dl.awb-fields"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 204.5,
+        "w": 310,
+        "h": 31
+       },
+       "ink": {
+        "x": 46,
+        "y": 204.5,
+        "w": 168.9,
+        "h": 31
+       },
+       "text": "Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "start",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "dl.pass-fields"
+      }
+     }
+    },
+    {
+     "part": "field-1",
+     "label": "the Initials field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 204.5,
+        "w": 47.6,
+        "h": 31
+       },
+       "ink": {
+        "x": 46,
+        "y": 204.5,
+        "w": 47.6,
+        "h": 31
+       },
+       "text": "Initials ST",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 204.5,
+        "w": 47.6,
+        "h": 31
+       },
+       "ink": {
+        "x": 46,
+        "y": 204.5,
+        "w": 47.6,
+        "h": 31
+       },
+       "text": "Initials ST",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "field-2",
+     "label": "the Seat field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 121.6,
+        "y": 204.5,
+        "w": 32.2,
+        "h": 31
+       },
+       "ink": {
+        "x": 121.6,
+        "y": 204.5,
+        "w": 32.2,
+        "h": 31
+       },
+       "text": "Seat Pilot",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 121.6,
+        "y": 204.5,
+        "w": 32.2,
+        "h": 31
+       },
+       "ink": {
+        "x": 121.6,
+        "y": 204.5,
+        "w": 32.2,
+        "h": 31
+       },
+       "text": "Seat Pilot",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "field-3",
+     "label": "the CAT field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 181.8,
+        "y": 204.5,
+        "w": 33.1,
+        "h": 31
+       },
+       "ink": {
+        "x": 181.8,
+        "y": 204.5,
+        "w": 33.1,
+        "h": 31
+       },
+       "text": "CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 181.8,
+        "y": 204.5,
+        "w": 33.1,
+        "h": 31
+       },
+       "ink": {
+        "x": 181.8,
+        "y": 204.5,
+        "w": 33.1,
+        "h": 31
+       },
+       "text": "CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "tear",
+     "label": "the tear line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "164.5",
+       "build": "151.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--tear.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 42,
+        "y": 266.5,
+        "w": 318,
+        "h": 2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(57, 66, 77)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-perf"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 42,
+        "y": 253.5,
+        "w": 318,
+        "h": 2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(57, 66, 77)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-tear"
+      }
+     }
+    },
+    {
+     "part": "steps",
+     "label": "the steps row",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "186.5",
+       "build": "173.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--steps.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 288.5,
+        "w": 310,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 64.2,
+        "y": 319,
+        "w": 273.2,
+        "h": 26.9
+       },
+       "text": "Request sent An admin approves You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "ol.aw-steps"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 275.5,
+        "w": 310,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 64.2,
+        "y": 306,
+        "w": 273.2,
+        "h": 26.9
+       },
+       "text": "Request sent An admin approves You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "ol.pass-steps"
+      }
+     }
+    },
+    {
+     "part": "step-1",
+     "label": "step 1 \"Request sent\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 288.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 64.2,
+        "y": 319,
+        "w": 67,
+        "h": 12
+       },
+       "text": "Request sent",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 275.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 64.2,
+        "y": 306,
+        "w": 67,
+        "h": 12
+       },
+       "text": "Request sent",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.done"
+      }
+     }
+    },
+    {
+     "part": "step-2",
+     "label": "step 2 \"An admin approves\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 149.3,
+        "y": 288.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 175.1,
+        "y": 319,
+        "w": 51.9,
+        "h": 26.9
+       },
+       "text": "An admin approves",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.now"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 149.3,
+        "y": 275.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 175.1,
+        "y": 306,
+        "w": 51.9,
+        "h": 26.9
+       },
+       "text": "An admin approves",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.now"
+      }
+     }
+    },
+    {
+     "part": "step-3",
+     "label": "step 3 \"You're on the schedule\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 252.7,
+        "y": 288.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 271.2,
+        "y": 319,
+        "w": 66.2,
+        "h": 26.9
+       },
+       "text": "You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 252.7,
+        "y": 275.5,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 271.2,
+        "y": 306,
+        "w": 66.2,
+        "h": 26.9
+       },
+       "text": "You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li"
+      }
+     }
+    },
+    {
+     "part": "dot-1",
+     "label": "step 1's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 86.7,
+        "y": 288.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 86.7,
+        "y": 275.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "dot-2",
+     "label": "step 2's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 190,
+        "y": 288.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 190,
+        "y": 275.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "dot-3",
+     "label": "step 3's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 293.3,
+        "y": 288.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 293.3,
+        "y": 275.5,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "read-only",
+     "label": "the read-only line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "263.4",
+       "build": "250.4",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--read-only.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 365.4,
+        "w": 310,
+        "h": 20.1
+       },
+       "ink": {
+        "x": 46,
+        "y": 367.9,
+        "w": 290.6,
+        "h": 15
+       },
+       "text": "Meanwhile you can look at the schedule, read only.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.acc-p"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 352.4,
+        "w": 310,
+        "h": 20.1
+       },
+       "ink": {
+        "x": 46,
+        "y": 354.9,
+        "w": 290.6,
+        "h": 15
+       },
+       "text": "Meanwhile you can look at the schedule, read only.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.acc-p"
+      }
+     }
+    },
+    {
+     "part": "view",
+     "label": "\"View the schedule\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "299.5",
+       "build": "286.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--view.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 401.5,
+        "w": 310,
+        "h": 40
+       },
+       "ink": {
+        "x": 135.7,
+        "y": 413.5,
+        "w": 130.6,
+        "h": 16
+       },
+       "text": "View the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "0.56px"
+       },
+       "tag": "button.go"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 388.5,
+        "w": 310,
+        "h": 40
+       },
+       "ink": {
+        "x": 135.7,
+        "y": 400.5,
+        "w": 130.6,
+        "h": 16
+       },
+       "text": "View the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "0.56px"
+       },
+       "tag": "button.go"
+      }
+     }
+    },
+    {
+     "part": "sign-out",
+     "label": "\"Sign out\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "351.5",
+       "build": "338.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--sign-out.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 453.5,
+        "w": 310,
+        "h": 37
+       },
+       "ink": {
+        "x": 175,
+        "y": 464.5,
+        "w": 52,
+        "h": 15
+       },
+       "text": "Sign out",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.acc-out"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 440.5,
+        "w": 310,
+        "h": 37
+       },
+       "ink": {
+        "x": 175,
+        "y": 451.5,
+        "w": 52,
+        "h": 15
+       },
+       "text": "Sign out",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.acc-out"
+      }
+     }
+    },
+    {
+     "part": "signed-in-as",
+     "label": "\"Signed in as …\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "400.5",
+       "build": "387.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-phone--signed-in-as.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 502.5,
+        "w": 310,
+        "h": 14
+       },
+       "ink": {
+        "x": 143,
+        "y": 502.5,
+        "w": 116,
+        "h": 14
+       },
+       "text": "Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.awc-who"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 46,
+        "y": 489.5,
+        "w": 310,
+        "h": 14
+       },
+       "ink": {
+        "x": 143,
+        "y": 489.5,
+        "w": 116,
+        "h": 14
+       },
+       "text": "Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.pass-who"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "pass-desk",
+   "title": "The pass, desktop, a stranger who asked for access",
+   "drawing": {
+    "script": "scripts/handpass/aw1105-mock.mjs",
+    "shot": "C-desk"
+   },
+   "approved": {
+    "picture": "C-desk.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "card",
+     "label": "the card (the pass)",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top)",
+       "drawing": "243.2",
+       "build": "249.7",
+       "by": "6.5px lower",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "445.5",
+       "build": "432.5",
+       "by": "13px less",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "fill",
+       "what": "its shading",
+       "drawing": "linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)), none",
+       "build": "linear-gradient(135deg, rgba(59, 198, 232, 0.13) 0px, rgba(59, 198, 232, 0.06) 22%, rgba(59, 198, 232, 0) 48%), none",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--card.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 592,
+        "y": 243.2,
+        "w": 352,
+        "h": 445.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 269.2,
+        "w": 299,
+        "h": 398.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU Request sent An admin approves You're on the schedule Meanwhile you can look at the schedule, read only. View the schedule Sign out Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)), none",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 40px 90px -40px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.login-card.acc-card.awb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 592,
+        "y": 249.7,
+        "w": 352,
+        "h": 432.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 275.7,
+        "w": 299,
+        "h": 385.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU Request sent An admin approves You're on the schedule Meanwhile you can look at the schedule, read only. View the schedule Sign out Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "linear-gradient(135deg, rgba(59, 198, 232, 0.13) 0px, rgba(59, 198, 232, 0.06) 22%, rgba(59, 198, 232, 0) 48%), none",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "16px",
+         "16px",
+         "16px",
+         "16px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.9) 0px 40px 90px -40px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.login-card.acc-card.acc-pass"
+      }
+     }
+    },
+    {
+     "part": "pass-top",
+     "label": "the pass's top (the callsign's part)",
+     "diffs": [
+      {
+       "check": "height",
+       "what": "its height",
+       "drawing": "171.5",
+       "build": "158.5",
+       "by": "13px less",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "fill",
+       "what": "its fill colour",
+       "drawing": "rgb(26, 31, 38)",
+       "build": "rgba(0, 0, 0, 0)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "fill",
+       "what": "its shading",
+       "drawing": "linear-gradient(135deg, rgba(59, 198, 232, 0.1), rgba(59, 198, 232, 0) 55%), none",
+       "build": "none",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--pass-top.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 593,
+        "y": 244.2,
+        "w": 350,
+        "h": 171.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 269.2,
+        "w": 299,
+        "h": 115.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "linear-gradient(135deg, rgba(59, 198, 232, 0.1), rgba(59, 198, 232, 0) 55%), none",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-top"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 593,
+        "y": 250.7,
+        "w": 350,
+        "h": 158.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 275.7,
+        "w": 299,
+        "h": 115.5
+       },
+       "text": "Waiting for an admin Stranger Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-top"
+      }
+     }
+    },
+    {
+     "part": "mark-row",
+     "label": "the pass top's mark row",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 264.2,
+        "w": 310,
+        "h": 25
+       },
+       "ink": {
+        "x": 788.7,
+        "y": 269.2,
+        "w": 123.3,
+        "h": 15
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-row"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 270.7,
+        "w": 310,
+        "h": 25
+       },
+       "ink": {
+        "x": 788.7,
+        "y": 275.7,
+        "w": 123.3,
+        "h": 15
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "space-between",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-row"
+      }
+     }
+    },
+    {
+     "part": "claws",
+     "label": "the claws",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 265.7,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 272.2,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "svg"
+      }
+     }
+    },
+    {
+     "part": "waiting",
+     "label": "the \"Waiting for an admin\" mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765.7,
+        "y": 264.2,
+        "w": 157.3,
+        "h": 25
+       },
+       "ink": {
+        "x": 788.7,
+        "y": 269.2,
+        "w": 123.3,
+        "h": 15
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)"
+        ],
+        "corners": [
+         "999px",
+         "999px",
+         "999px",
+         "999px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "0.66px"
+       },
+       "tag": "span.awb-state"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 765.7,
+        "y": 270.7,
+        "w": 157.3,
+        "h": 25
+       },
+       "ink": {
+        "x": 788.7,
+        "y": 275.7,
+        "w": 123.3,
+        "h": 15
+       },
+       "text": "Waiting for an admin",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)",
+         "1px solid rgba(59, 198, 232, 0.45)"
+        ],
+        "corners": [
+         "999px",
+         "999px",
+         "999px",
+         "999px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "start",
+        "justify": "normal",
+        "font": "700 11px",
+        "spacing": "0.66px"
+       },
+       "tag": "span.pass-state"
+      }
+     }
+    },
+    {
+     "part": "callsign",
+     "label": "the callsign",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 303.2,
+        "w": 313.6,
+        "h": 31.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 298.2,
+        "w": 191.2,
+        "h": 40
+       },
+       "text": "Stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 30px",
+        "spacing": "3.6px"
+       },
+       "tag": "div.awb-cs"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 309.7,
+        "w": 313.6,
+        "h": 31.5
+       },
+       "ink": {
+        "x": 613,
+        "y": 304.7,
+        "w": 191.2,
+        "h": 40
+       },
+       "text": "Stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "800 30px",
+        "spacing": "3.6px"
+       },
+       "tag": "h2.pass-cs"
+      }
+     }
+    },
+    {
+     "part": "fields",
+     "label": "the three fields (initials, seat, CAT)",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 348.7,
+        "w": 310,
+        "h": 36
+       },
+       "ink": {
+        "x": 613,
+        "y": 348.7,
+        "w": 166.8,
+        "h": 36
+       },
+       "text": "Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "start",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "dl.awb-fields"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 355.2,
+        "w": 310,
+        "h": 36
+       },
+       "ink": {
+        "x": 613,
+        "y": 355.2,
+        "w": 166.8,
+        "h": 36
+       },
+       "text": "Initials ST Seat Pilot CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "start",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "dl.pass-fields"
+      }
+     }
+    },
+    {
+     "part": "field-1",
+     "label": "the Initials field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 348.7,
+        "w": 47,
+        "h": 36
+       },
+       "ink": {
+        "x": 613,
+        "y": 348.7,
+        "w": 47,
+        "h": 36
+       },
+       "text": "Initials ST",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 355.2,
+        "w": 47,
+        "h": 36
+       },
+       "ink": {
+        "x": 613,
+        "y": 355.2,
+        "w": 47,
+        "h": 36
+       },
+       "text": "Initials ST",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "field-2",
+     "label": "the Seat field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 688,
+        "y": 348.7,
+        "w": 32.4,
+        "h": 36
+       },
+       "ink": {
+        "x": 688,
+        "y": 348.7,
+        "w": 32.4,
+        "h": 36
+       },
+       "text": "Seat Pilot",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 688,
+        "y": 355.2,
+        "w": 32.4,
+        "h": 36
+       },
+       "ink": {
+        "x": 688,
+        "y": 355.2,
+        "w": 32.4,
+        "h": 36
+       },
+       "text": "Seat Pilot",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "field-3",
+     "label": "the CAT field",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 748.4,
+        "y": 348.7,
+        "w": 31.4,
+        "h": 36
+       },
+       "ink": {
+        "x": 748.4,
+        "y": 348.7,
+        "w": 31.4,
+        "h": 36
+       },
+       "text": "CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 748.4,
+        "y": 355.2,
+        "w": 31.4,
+        "h": 36
+       },
+       "ink": {
+        "x": 748.4,
+        "y": 355.2,
+        "w": 31.4,
+        "h": 36
+       },
+       "text": "CAT OCU",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div"
+      }
+     }
+    },
+    {
+     "part": "tear",
+     "label": "the tear line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "172.5",
+       "build": "159.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--tear.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 609,
+        "y": 415.7,
+        "w": 318,
+        "h": 2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(57, 66, 77)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.awb-perf"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 609,
+        "y": 409.2,
+        "w": 318,
+        "h": 2
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(57, 66, 77)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.pass-tear"
+      }
+     }
+    },
+    {
+     "part": "steps",
+     "label": "the steps row",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "194.5",
+       "build": "181.5",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--steps.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 437.7,
+        "w": 310,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 632.5,
+        "y": 465.7,
+        "w": 272,
+        "h": 29.9
+       },
+       "text": "Request sent An admin approves You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "ol.aw-steps"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 431.2,
+        "w": 310,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 632.5,
+        "y": 459.2,
+        "w": 272,
+        "h": 29.9
+       },
+       "text": "Request sent An admin approves You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "ol.pass-steps"
+      }
+     }
+    },
+    {
+     "part": "step-1",
+     "label": "step 1 \"Request sent\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 437.7,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 632.5,
+        "y": 465.7,
+        "w": 64.3,
+        "h": 15
+       },
+       "text": "Request sent",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.done"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 431.2,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 632.5,
+        "y": 459.2,
+        "w": 64.3,
+        "h": 15
+       },
+       "text": "Request sent",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.done"
+      }
+     }
+    },
+    {
+     "part": "step-2",
+     "label": "step 2 \"An admin approves\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 716.3,
+        "y": 437.7,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 743,
+        "y": 465.7,
+        "w": 49.9,
+        "h": 29.9
+       },
+       "text": "An admin approves",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.now"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 716.3,
+        "y": 431.2,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 743,
+        "y": 459.2,
+        "w": 49.9,
+        "h": 29.9
+       },
+       "text": "An admin approves",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li.now"
+      }
+     }
+    },
+    {
+     "part": "step-3",
+     "label": "step 3 \"You're on the schedule\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 819.7,
+        "y": 437.7,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 838.1,
+        "y": 465.7,
+        "w": 66.4,
+        "h": 29.9
+       },
+       "text": "You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 819.7,
+        "y": 431.2,
+        "w": 103.3,
+        "h": 58.9
+       },
+       "ink": {
+        "x": 838.1,
+        "y": 459.2,
+        "w": 66.4,
+        "h": 29.9
+       },
+       "text": "You're on the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "li"
+      }
+     }
+    },
+    {
+     "part": "dot-1",
+     "label": "step 1's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 653.7,
+        "y": 437.7,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 653.7,
+        "y": 431.2,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)",
+         "2px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "dot-2",
+     "label": "step 2's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 757,
+        "y": 437.7,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 757,
+        "y": 431.2,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)",
+         "2px dashed rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "dot-3",
+     "label": "step 3's dot",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 860.3,
+        "y": 437.7,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.aw-dot"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 860.3,
+        "y": 431.2,
+        "w": 22,
+        "h": 22
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)",
+         "2px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "50%",
+         "50%",
+         "50%",
+         "50%"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "center",
+        "font": "400 11.5px",
+        "spacing": "-0.065px"
+       },
+       "tag": "span.pass-dot"
+      }
+     }
+    },
+    {
+     "part": "read-only",
+     "label": "the read-only line",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "271.4",
+       "build": "258.4",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--read-only.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 514.6,
+        "w": 310,
+        "h": 20.1
+       },
+       "ink": {
+        "x": 613,
+        "y": 515.6,
+        "w": 289.5,
+        "h": 17
+       },
+       "text": "Meanwhile you can look at the schedule, read only.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.acc-p"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 508.1,
+        "w": 310,
+        "h": 20.1
+       },
+       "ink": {
+        "x": 613,
+        "y": 509.1,
+        "w": 289.5,
+        "h": 17
+       },
+       "text": "Meanwhile you can look at the schedule, read only.",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.acc-p"
+      }
+     }
+    },
+    {
+     "part": "view",
+     "label": "\"View the schedule\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "307.6",
+       "build": "294.6",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--view.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 550.8,
+        "w": 310,
+        "h": 40
+       },
+       "ink": {
+        "x": 702.7,
+        "y": 562.8,
+        "w": 130.6,
+        "h": 16
+       },
+       "text": "View the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "0.56px"
+       },
+       "tag": "button.go"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 544.3,
+        "w": 310,
+        "h": 40
+       },
+       "ink": {
+        "x": 702.7,
+        "y": 556.3,
+        "w": 130.6,
+        "h": 16
+       },
+       "text": "View the schedule",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)",
+         "0px none rgb(5, 42, 52)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "700 14px",
+        "spacing": "0.56px"
+       },
+       "tag": "button.go"
+      }
+     }
+    },
+    {
+     "part": "sign-out",
+     "label": "\"Sign out\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "359.6",
+       "build": "346.6",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "edge",
+       "what": "its top edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "edge",
+       "what": "its right edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "edge",
+       "what": "its bottom edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "edge",
+       "what": "its left edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      },
+      {
+       "check": "colour",
+       "what": "its words' colour",
+       "drawing": "rgb(241, 244, 247)",
+       "build": "rgb(182, 192, 203)",
+       "by": "",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--sign-out.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 602.8,
+        "w": 310,
+        "h": 37
+       },
+       "ink": {
+        "x": 742,
+        "y": 613.8,
+        "w": 52,
+        "h": 15
+       },
+       "text": "Sign out",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.acc-out"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 596.3,
+        "w": 310,
+        "h": 37
+       },
+       "ink": {
+        "x": 742,
+        "y": 607.3,
+        "w": 52,
+        "h": 15
+       },
+       "text": "Sign out",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 13px",
+        "spacing": "normal"
+       },
+       "tag": "button.acc-out"
+      }
+     }
+    },
+    {
+     "part": "signed-in-as",
+     "label": "\"Signed in as …\"",
+     "diffs": [
+      {
+       "check": "place",
+       "what": "where it sits (from the top of card)",
+       "drawing": "408.6",
+       "build": "395.6",
+       "by": "13px higher",
+       "accepted": null,
+       "counts": true
+      }
+     ],
+     "picture": "pass-desk--signed-in-as.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 651.8,
+        "w": 310,
+        "h": 16
+       },
+       "ink": {
+        "x": 712.4,
+        "y": 651.8,
+        "w": 111.2,
+        "h": 16
+       },
+       "text": "Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.awc-who"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 613,
+        "y": 645.3,
+        "w": 310,
+        "h": 16
+       },
+       "ink": {
+        "x": 712.4,
+        "y": 645.3,
+        "w": 111.2,
+        "h": 16
+       },
+       "text": "Signed in as stranger",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)",
+         "0px none rgb(138, 150, 163)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(138, 150, 163)",
+        "align": "center",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "p.pass-who"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

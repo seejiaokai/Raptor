@@ -1,0 +1,16 @@
+D1 warden admin: true
+D1 ids: ["imqoidi0fk2v6wg","imqoidjdgm7ns7h","imqoidkpleu70od"]
+D1 inputs on Fri: ["imqoidkpleu70od|Safety board|Jul 17|mamba","imqoidjdgm7ns7h|Gate duty|Jul 17|harpoon","imqoidi0fk2v6wg|Range brief|Jul 17|bane+nick","imqoidgjeteezzw|OML|Jul 13|","imqoidgjeujw2um|Appointment|Jul 16|","imqoidgjegff1os|Appointment|Jul 14|","imqoidgje2jpwku|OL|Jul 15|","imqoidgjej0095k|LL|Jul 14|","imqoidgje18dkrf|OIL|Jul 14|","imqoidgje5ajmx5|ATT C|Jul 13|","imqoidgjeef9rzy|Fly with|Jul 13|","imqoidgje1nuta2|Meeting|Jul 13|","imqoidgjeh6i434|OD|Jul 15|","imqoidgjehv65g4|Appointment|Jul 13|","imqoidgje03o03n|OML|Jul 23|","imqoidgjez8480x|Appointment|Jul 20|","imqoidgjeb59h3l|LL|Jul 24|","imqoidgjesgvqlx|SANS Availability|Jul 13|","imqoidgje5zfp7m|SANS Availability|Jul 14|","imqoidgjewvle27|SANS Availability|Jul 15|","imqoidgje8z0trz|SANS Availability|Jul 15|","imqoidgjehrub65|SANS Availability|Jul 15|","imqoidgje82n6vr|SANS Availability|Jul 14|","imqoidgje7a4xh9|OML|Jul 6|","imqoidgje5gv9vc|ATT B|Jun 15|","imqoidgjehe5weg|Upchit|Jun 20|","imqoidgjeunc3fz|Meeting|Jul 23|stiff+bane+slipway+freak","imqoidgjexu30i5|Duty|Jul 25|allavail","imqoidgjer1la8x|Sports afternoon|Jul 22|all","imqoidgk4tritsg|OL|Jan 1|","imqoidgk4xp2p5n|OIL|Jan 9|","imqoidgk4s22v2f|OL|Jan 16|","imqoidgk4zhm799|LL|Jan 8|","imqoidgk48cv84h|CSE|Jan 12|","imqoidgk4mpbwst|CCL|Jan 15|","imqoidgk4ytszhf|OIL|May 4|","imqoidgk4wqi3t3|OIL|May 11|","imqoidgk492hmay|OIL|May 12|","imqoidgk42gtmy8|OIL|Jun 13|","imqoidgk4d02zdz|OIL|Mar 2|","imqoidgk4zu63fl|OIL|Mar 30|","imqoidgk4qovf1f|OIL|Jul 15|","imqoidgk4gpwruo|OIL|Jul 16|","imqoidgk477vasx|OIL|Jun 1|","imqoidgk4kvqd9g|OIL|Jun 2|","imqoidgk43xp1k8|OIL|Jun 3|","imqoidgk4ks8xxl|OIL|Feb 15|","imqoidgk4m3m928|OIL|Jan 14|","imqoidgk4u0u3m9|ATT C|Jan 5|","imqoidgk4m2kf6h|OML|Jan 6|","imqoidgk4d4sw1g|Upchit|Jan 7|","imqoidgk4sejdrt|Duty|Jul 4|"]
+D1 list count: 1
+D1 title: OIL — Fri 17 Jul Public holiday · National Day
+D1 lead: National Day is now a public holiday.
+D1 count: 4 TO ANSWER
+D1 save disabled: true
+D1 left: What is left goes to the schedulers’ bells
+D1 cards: ["All day NomadOD Overseas duty — exercise, off island Yes · FO No","All day TridentDUTY Gate duty By Saber Yes · FO No","09:00–12:00 Ranger, TallyTRAINING Range brief By Saber Yes · HO No","14:00–15:00 SidewinderMEETING Safety board By Saber Yes · HO No"]
+D1 measure: {"x":984,"y":96,"w":440,"h":443,"inside":true,"onTop":true}
+D1 measure save: {"x":1357,"y":496,"w":54,"h":28,"inside":true,"onTop":true}
+D1 undo: {"undo":"on|Undo — a public holiday on 17 Jul","redo":"off|Redo"}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D1-list-opens.png
+D1 pic: D1-list-opens.png
+D1 errors: []

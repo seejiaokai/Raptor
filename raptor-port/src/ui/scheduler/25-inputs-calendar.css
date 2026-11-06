@@ -31,6 +31,15 @@
 .inputs-top .inputs-views{order:3}
 .inputs-top #inFiltersBtn,.inputs-top .inputs-filterfields{order:4}
 .inputs-top .inputs-gear{order:5}
+/* THE FILTERS AND THE GEAR, ONE GROUP AT THE ROW'S RIGHT END (owner D1702, 5 Nov 26 — round 4 of the consistency look, "all
+   as recommended"; drawn by scripts/handpass/cr4-look.mjs q3): measured on `main`, at 1366 the gear stood alone on a second
+   line. In one box the two wrap together. On one line the spring before the switch takes the room, so the box stands at the
+   row's right end. WHERE THE ROW WRAPS the box starts the second line at its LEFT (owner D1708, 5 Nov 26 — his "A", drawn by
+   cr4-look.mjs d1708 and approved "Yes"): with a left margin of its own it stood at that line's right end, under an open
+   input window at 1280, its gear unpressable. No margin, so no width to pick: it follows wherever the letters wrap the row.
+   On a phone the box is not drawn (`display:contents`, the 820px block below): its three are the row's own again, D693's
+   row untouched. */
+.inputs-top .inputs-filtergroup{order:4;display:flex;align-items:center;gap:8px;min-width:0;flex:0 1 auto}
 /* ONE LOOK FOR THE TWO CALENDARS' ROW ON A DESKTOP (owner D1125): every button drawn 36 tall, as the tabs are (D698 — his
    "yes" to the 36 was his word for this size, D487), and the month's arrows, Today and the gear the same sizes on the
    Inputs and SANS rows, so they stand in the same places (the SANS rows: 24-sans-calendar.css `.sc-head-tabs`). */
@@ -70,6 +79,9 @@
 .inputs-top .inputs-filterfields{display:flex;align-items:center;gap:8px;flex-wrap:nowrap;padding:0;flex:0 1 auto;min-width:0}
 .inputs-top .inputs-filterfields label{flex:0 1 150px;min-width:96px}
 .inputs-top .inputs-filterfields label.inputs-search{flex:0 1 220px}
+/* BETWEEN 1340 and 1439 wide the search box a little narrower, so 1366 holds one line (D1702 — after the rule above, which it narrows: written before it, it lost to it, found by the walk; its box 135 → 102 wide
+   measured, "Search inputs" still whole, a callsign or "Appointment" fitting as typed) */
+@media (min-width:1340px) and (max-width:1439px){.inputs-top .inputs-filterfields label.inputs-search{flex-basis:170px}}
 /* the search is the app's one search box (owner D1127): the line magnifier inside, the box as tall as the two selects
    beside it (44 on a phone, 36 on a desktop — the D1125 block); the input inside carries no box of its own */
 .inputs-filterfields label.searchbox{flex-direction:row;align-items:center;gap:6px;min-height:44px;box-sizing:border-box;padding:0 10px}
@@ -175,6 +187,8 @@
     background:var(--accent);color:#04222b;font-size:10px;font-weight:800;line-height:16px;text-align:center}
   .inputs-top .inputs-filterfields.open label{flex:1 1 calc(50% - 8px)}
   .inputs-top .inputs-filterfields.open label.inputs-search{flex-basis:100%}
+  /* the desktop's group of the filters and the gear (D1702) is not drawn here: its three stand in this row as before */
+  .inputs-top .inputs-filtergroup{display:contents}
 }
 /* AND ON A DESKTOP (the calendar job's bug check, 8 Oct 26 - seen by three of its walkers and in D624's pairs): the tabs,
    the tools and both months ran to the very edge of the screen - the gear and the colour key's last word flush against
@@ -415,8 +429,10 @@ body.in-cal{padding-bottom:0}
 
 /* ---- THE GEAR and the settings window's switch (ui/InputsSettings.tsx; the window's own look is the SANS settings
    window's — `.floatwin.sanswin`, `.sset-…`, 24-sans-calendar.css). The gear is the Leave War's own glyph in a fixed
-   box, as on the SANS calendar (D635). ---- */
+   box, as on the SANS calendar (D635) — drawn since D1509, 18px as the typed one stood, in the button's own white like every
+   drawn mark in a button (D1707: `.btnglyph`'s grey is for a bare icon button). ---- */
 .inputs-top .inputs-gear{width:44px;min-width:44px;padding:0;font-size:17px;line-height:1}
+.inputs-top .abtn.inputs-gear .btnglyph{width:18px;height:18px;color:currentColor;flex-shrink:0}
 .sset-check{display:flex;align-items:flex-start;gap:10px;min-height:40px;padding:4px 0;font-size:13px;line-height:1.35;color:var(--ink);cursor:pointer}
 .sset-check input{flex:0 0 auto;width:18px;height:18px;margin:1px 0 0;accent-color:var(--accent)}
 /* the Logic page's door to a calendar's settings window (D639) */
@@ -515,7 +531,7 @@ body.in-cal{padding-bottom:0}
 .pp-top .inped-v,.pp-count{flex:1 1 auto;min-width:0}
 .pp-count{font-size:12px;font-weight:700;color:var(--ink-2)}
 .pp-sw{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;min-height:36px;padding:0 11px 0 9px;border:1px solid var(--edge-2);
-  border-radius:999px;background:transparent;color:var(--ink-2);font:600 12px inherit;cursor:pointer;white-space:nowrap}
+  border-radius:999px;background:transparent;color:var(--ink-2);font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
 .pp-sw-dot{width:26px;height:14px;border-radius:999px;background:var(--edge-2);position:relative;flex:0 0 auto;transition:background .12s}
 .pp-sw-dot::after{content:'';position:absolute;top:2px;left:2px;width:10px;height:10px;border-radius:50%;background:var(--ink-2);transition:transform .12s}
 .pp-sw.on{border-color:var(--accent);color:var(--ink)}
@@ -528,7 +544,7 @@ body.in-cal{padding-bottom:0}
 .pp-group{display:flex;flex-direction:column;gap:5px;min-width:0}
 .pp-gh{display:flex;align-items:center;gap:8px}
 .pp-gh b{font:700 11px 'Barlow Condensed','Inter Tight',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3)}
-.pp-all{min-height:24px;padding:0 9px;border:1px solid var(--edge-2);border-radius:999px;background:transparent;color:var(--ink-2);font:600 11px inherit;cursor:pointer;position:relative}
+.pp-all{min-height:24px;padding:0 9px;border:1px solid var(--edge-2);border-radius:999px;background:transparent;color:var(--ink-2);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;position:relative}
 .pp-all::after{content:'';position:absolute;inset:-8px -4px}
 .pp-all.on{border-color:var(--accent);color:var(--ink)}
 .pp-pucks{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:5px}
@@ -599,7 +615,7 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-note .ic-secpk{min-width:0;display:flex;justify-content:center}
 .inputsday .ic-note .ic-secpk .seat{display:flex;justify-content:center}
 .inputsday .ic-note .ic-secpk .seat,.inputsday .ic-note .ic-secpk .puck{min-width:0;max-width:100%;width:100%}
-.inputsday .ic-note .ic-pkadd{min-height:var(--puck-h);height:auto;width:100%;padding:0;font:700 14px/1 inherit;border:1px dashed var(--edge-2);border-radius:5px;
+.inputsday .ic-note .ic-pkadd{min-height:var(--puck-h);height:auto;width:100%;padding:0;font-family:inherit;font-size:14px;font-weight:700;line-height:1;border:1px dashed var(--edge-2);border-radius:5px;
   background:transparent;color:var(--ink-2);cursor:pointer}
 .inputsday .ic-note .ic-pkadd:hover,.inputsday .ic-note .ic-pkadd:focus-visible{border-color:var(--accent);color:var(--accent)}
 /* people and no words (D695): the people take the row, three across; the pencil and the cross end it */
@@ -619,7 +635,7 @@ body.in-cal{padding-bottom:0}
 .inputsday .ic-poppuck-edit:focus{outline:none;border-color:var(--accent)}
 @media (max-width:820px){.inputsday .ic-poppuck-edit{font-size:16px;padding:2px 9px}}
 .inputsday .ic-newnote-ppl{flex:0 0 auto;min-height:36px;padding:0 10px;border:1px dashed var(--edge-2);border-radius:7px;background:transparent;color:var(--ink-2);
-  font:700 12px/1 inherit;white-space:nowrap;cursor:pointer}
+  font-family:inherit;font-size:12px;font-weight:700;line-height:1;white-space:nowrap;cursor:pointer}
 .inputsday .ic-newnote-ppl:hover,.inputsday .ic-newnote-ppl:focus-visible{border-color:var(--accent);color:var(--accent)}
 /* the picker opened for a note being written says which words it is for */
 .ic-pick-for{padding:6px 12px 0;font-size:12px;color:var(--ink-2);overflow-wrap:anywhere}

@@ -18,7 +18,7 @@ import { ME } from '../state/auth'
 import { PEOPLE, QORDER } from '../engine/people'
 import { fmt, fmtDay, unfmt, firstPersonalType } from './inputedit'
 import { INPEDIT, setInpEdit } from './pops'
-import { monthCells } from './InputsCal'
+import { monthCells } from './inputscal-model'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 

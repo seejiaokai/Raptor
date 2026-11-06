@@ -218,6 +218,7 @@ export function accountsLoad(): void {
        hold reads '' (the admin picks at approval); the slicing is only for records written
        by an older build — every writer REFUSES an over-long value instead (D226) */
     const seat = SEATS.some(v => v.v === x.seat) ? String(x.seat) : ''
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- a seat's CATs are a handful (six at most), asked once a request at load: a Set would cost more than the scan it saves
     const cat = seat && seat !== 'GND' && catsFor(seat).includes(x.cat) ? String(x.cat) : ''
     reqs.push({
       id: x.id, name, cs: String(x.cs ?? '').slice(0, MAX_CS), ini: String(x.ini ?? '').toUpperCase().slice(0, MAX_INITIALS),
@@ -235,8 +236,8 @@ export const accountById = (id: any): Account | undefined => ACCOUNTS_LIST.find(
 export const accountOfPid = (pid: any): Account | undefined => ACCOUNTS_LIST.find(a => a.pid === pid)
 export const requestByName = (name: any): AccessRequest | undefined => ACCESS_REQS.find(r => r.name === normName(name))
 export const waitingCount = (): number => ACCESS_REQS.length
-/* what he gave, in one line — "JKB · Pilot · CAT C" / "BC · Personnel" — the waiting
-   screen and Admin → Users read this one body (a blank part drops out) */
+/* what he gave, in one line — "JKB · Pilot · CAT C" / "BC · Personnel" — Admin → Users reads this one body (a blank
+   part drops out); the waiting screen shows the same parts as the pass's fields since D1656 (ui/AccessScreen.tsx) */
 export function requestSummary(r: AccessRequest): string {
   const seat = r.seat === 'GND' ? 'Personnel' : seatLabel(r.seat)
   return [r.ini, seat, r.cat && `CAT ${r.cat}`].filter(Boolean).join(' · ')

@@ -3152,7 +3152,7 @@ const hintGeom = () => pg.evaluate(() => {
   };
 });
 const moveState = await hintGeom();
-await pg.click('#arrTools button:has-text("╱ Line")'); await pg.waitForTimeout(250);
+await pg.click('#arrTools button:text-is("Line")')   /* its ╱ is a drawn mark since D1705 */; await pg.waitForTimeout(250);
 const lineState = await hintGeom();
 ok('switching to the Line tool does not move the board',
   lineState.top === moveState.top && lineState.wrapHeight === moveState.wrapHeight,
@@ -3166,7 +3166,7 @@ ok('the hint is visible, takes exactly one line of real space, and passes clicks
    selected. Only the resting state is pinned. */
 ok('the chart below is not covered by the edit-mode hint (the colour strip moved into Legend, D1018)', moveState.legendClear,
   `Move: ${moveState.legendClear}, Line: ${lineState.legendClear}`);
-await pg.click('#arrTools button:has-text("✋ Move")'); await pg.waitForTimeout(200);
+await pg.click('#arrTools button:text-is("Move")')   /* its ✋ is a drawn mark since D1705 */; await pg.waitForTimeout(200);
 await arr(); await pg.waitForTimeout(400);
 /* option VALUES are syllabus ids now (1B-ii); find Tx 2026 by its label TEXT */
 const txOpt = await pg.evaluate(() => {

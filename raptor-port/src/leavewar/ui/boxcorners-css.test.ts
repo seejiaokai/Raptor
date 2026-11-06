@@ -1,12 +1,11 @@
 // @vitest-environment node — reads a stylesheet off disk; under the project's jsdom default `import.meta.url` is not a file: URL
-/* A CORNER TILE NEVER COVERS A BOX'S LETTERS (walker 1's #8 and #9, M2's walk, 23 Oct 26 —
-   `docs/handpass/parts/lw-m2-w1.md`). The amber "!" covered the L of a morning OML; a "+1" the O of a morning HO; the PO
-   tag the second L of an afternoon LL after a posting-out. `lookf.test.tsx` pins the cell's classes (MatrixRows `mkLow`
-   → `mklo`, `poHigh` → `pohi`); jsdom cannot lay a box out, so this pins the stylesheet's half, as `arrangepaint.test.ts`
-   does its own: where the other corner on the right is free the tile moves there; where none is, the box under the tile
-   keeps its place and size (its half says how much of the day, D1160) and only its letters step aside. Measured in a
-   browser on the same rules, 23 Oct 26: every overlap the walker found went to 0. What only the running app can show —
-   the letters' real fit on his iPhone's font — is the re-walk's. */
+/* HOW A DAY'S ENTRIES AND MARKS SHARE ITS CELL — the stylesheet's half (his D1726, D1727, D1728, D1729, D1730, 6 Nov 26 —
+   [LW-CELL-COMBOS]). Every combination of entries, codes and marks on one day (23,940) was measured on the built grid at
+   his iPhone's size and a desktop's, at every zoom, letters on their own ink; the `bx-` rules are the design that left none
+   cut, and `lookf.test.tsx` pins the classes MatrixRows gives the cell and its boxes. jsdom cannot lay a box out, so this
+   pins the rules themselves, as `arrangepaint.test.ts` does its own; the letters' real fit is the measuring script's
+   (`scripts/handpass/lw-cell-combos-measure.mjs`) and the walk's. It replaced the corner tiles' moves of 23 Oct 26
+   (`mklo`, `pohi` — walker 1's #8, #9), which the stack, the tag and the line made needless. */
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 
@@ -18,36 +17,45 @@ const bodyOf = (sel: string): string | null => {
   const m = css.match(re)
   return m ? m[1]!.replace(/\s+/g, '') : null
 }
+const P = '#page-leavewar .mx td'
+/** the marks' and the turned boxes' rules draw in the Legend's box too (D1731) */
+const PL = '#page-leavewar :is(.mx td, .leg-box)'
 
-describe('the tile moves to the free corner', () => {
-  it('the mark drops to the bottom-right (and off the last-day ribbon’s corner)', () => {
-    expect(bodyOf('.mx td.mklo .mk')).toBe('top:auto;bottom:0;right:0;border-radius:4px000;')
+describe('two entries on a day (D1727)', () => {
+  it('two whole days stand side by side, their codes turned to read bottom to top', () => {
+    expect(bodyOf(`${PL} .c.bx-tilt`)).toBe('writing-mode:vertical-rl;transform:rotate(180deg);font-size:7.5px!important;letter-spacing:0!important;padding:0!important;')
   })
-  it('the PO tag rises to the top-right', () => {
-    expect(bodyOf('.mx td.pohi .potag')).toBe('top:0;bottom:auto;border-radius:0004px;')
-  })
-  it('the drop comes after the last-day rule it overrides (the same weight, so the later wins)', () => {
-    expect(css.indexOf('.mx td.mklo .mk')).toBeGreaterThan(css.indexOf('.mx td.pofin .mk'))
+  it('a whole day beside a half keeps the whole cell, and the half sits over its own half', () => {
+    expect(bodyOf(`${P} .c.bx-floor`)).toMatch(/^inset:2px!important;/)
+    expect(bodyOf(`${P} .c.bx-roof.bx-am`)).toBe('top:4px!important;bottom:calc(50%+.5px)!important;')
+    expect(bodyOf(`${P} .c.bx-roof.bx-pm`)).toBe('top:calc(50%+.5px)!important;bottom:4px!important;')
   })
 })
 
-describe('with no free corner the letters step aside — the box keeps its place and size', () => {
-  it('a morning box under the mark keeps room on its right, and beside its left edge mark', () => {
-    expect(bodyOf('.mx td.mkd:not(.mklo) .c.top')).toBe('padding:05.5px02px;')
+describe('the day’s marks', () => {
+  it('three or more: the box is the top of a stack of cards, the "+n" hidden (D1727, the grey card D1730)', () => {
+    expect(bodyOf(`${PL}.bx-pile .mk.more`)).toBe('display:none!important;')
+    expect(bodyOf(`${PL}.bx-pile .c.s-a`)).toContain('2.5px2.5px0rgba(150,162,178,.9)')
   })
-  it('an afternoon box under the PO tag the same', () => {
-    expect(bodyOf('.mx td.outlv:not(.pohi) .c.bot')).toBe('padding:09.5px02px;')
+  it('the "!" is an outlined tag in the top-right corner', () => {
+    expect(bodyOf(`${PL}.bx-alarm .mk.warn`)).toContain('box-shadow:0001px#0E141B!important;')
   })
-  it('a three-letter code there takes its letters a step smaller', () => {
-    expect(bodyOf('.mx td.mkd:not(.mklo) .c.top.wide,\n.mx td.outlv:not(.pohi) .c.bot.wide')).toBe('font-size:6px;')
+  it('an entry after a posting out wears the faint dark stripes, not faded (D1728, D1729, D1730)', () => {
+    const b = bodyOf(`${PL}.bx-gone .c`)
+    expect(b).toBe('background-image:repeating-linear-gradient(135deg,rgba(14,20,27,.3)01.5px,transparent1.5px4px)!important;')
+    expect(b).not.toContain('opacity')
   })
-  it('the tile over such a box is at its slimmest', () => {
-    expect(bodyOf('.mx td:not(.mklo) .c.top ~ .mk')).toBe('padding:1px1.5px;')
-    expect(bodyOf('.mx td:not(.pohi) .c.bot ~ .potag')).toBe('padding:1px;')
+  it('his last day in: the tile is a thin yellow line down the right edge, and the boxes step left of it (D1728)', () => {
+    const line = bodyOf(':is(.mx td, .leg-box).pofin .polast')!
+    expect(line).toContain('width:2px;')
+    expect(line).toContain('font-size:0;')
+    expect(line).toContain('background:#F2C879;')
+    expect(bodyOf(`${PL}.bx-last .c:not(.left)`)).toBe('right:3.5px!important;')
   })
-  it('nothing in these rules moves or resizes a box', () => {
-    for (const sel of ['.mx td.mkd:not(.mklo) .c.top', '.mx td.outlv:not(.pohi) .c.bot']) {
-      expect(bodyOf(sel)).not.toMatch(/(^|;)(top|bottom|left|right|inset|width|height):/)
-    }
+  it('zoomed out, a whole day’s two letters sit under the iPhone’s 9px floor, so every code keeps one scale (D1726)', () => {
+    expect(bodyOf('#page-leavewar table.mx.lw-small td .c.whole:not(.wide)')).toBe('font-size:8.9px!important;')
+  })
+  it('the corner tiles’ old moves are gone', () => {
+    for (const gone of ['td.mklo', 'td.pohi', ':not(.mklo)', ':not(.pohi)', '.mx td.pofin .mk']) expect(css).not.toContain(gone)
   })
 })

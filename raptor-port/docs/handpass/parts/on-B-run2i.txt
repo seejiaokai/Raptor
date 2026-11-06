@@ -1,0 +1,6 @@
+before {"st":"{\"who\":[null,{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090001555},{\"p\":\"harpoon\",\"by\":\"stiff\",\"at\":1782090001555}],\"oil\":null,\"grp\":null,\"ppl\":{\"people\":[{\"p\":\"bane\",\"by\":\"stiff\",\"at\":1782090001555},{\"p\":\"harpoon\",\"by\":\"stiff\",\"at\":1782090001555}]}}","undo":"on|Undo — a public holiday on 17 Jul"}
+after tapping Tally in the drawer {"drawer":true,"ros":true,"oktake":58}
+picture B2-2-tally-armed-drawer.png
+drawer closed {"ros":false,"oktake":58}
+picture B2-3-question.png
+RESULT B2-question {"up":0,"lead":"","cancel":"","save":"","saveDisabled":null,"box":null,"saveBox":null}

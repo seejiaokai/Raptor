@@ -29,6 +29,8 @@ import { validate } from '../engine/validate'
 import { openScheduler, boardWeekStep } from './board'
 import { setOilDay } from '../state/view'
 import { oilOffReason } from './oilmode'
+import { TICKET_INNER } from './glyphs'
+import { drawnAs } from '../testing/drawn'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
@@ -96,6 +98,12 @@ describe('the button is drawn only where a day can earn (§2.8)', () => {
   it('OIL1, OIL18 — a weekend day offers it, an ordinary weekday does not', async () => {
     await open(SAT)
     expect(oilBtn(), 'the Saturday offers OIL Earn').toBeTruthy()
+    /* the desktop bar's OIL Earn wears OIL's own mark, the ticket — never History's clock beside it, nor the typed ◧
+       (owner D1700, D1704, 5 Nov 26) */
+    const sbOil = $('#sbOil')
+    expect(sbOil, 'the bar’s OIL Earn').toBeTruthy()
+    expect(sbOil.textContent!.trim()).toBe('OIL Earn')
+    expect(drawnAs(sbOil.querySelector('.bi svg'), TICKET_INNER), 'OIL’s ticket').toBe(true)
     await open(1)
     expect(oilBtn(), 'Tuesday is unchanged — five days a week the board is the same').toBeFalsy()
   })

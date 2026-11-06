@@ -45,6 +45,7 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1705 | 5 Nov 26 | The Tracker's typed marks become drawn line icons, as drawn: each tool of Edit chart layout takes a mark in the app's line style, Merge and Unmerge keep their words alone, and the lull's Copy to… takes the copy mark, its × the drawn ✕. |
 | D1660 | 5 Nov 26 | The Tracker's "● saved" shown in a browser that refuses to keep anything is drawn for him with the Tracker's next batch, not now: a fix adds words on screen, so a mock-up comes first (D1625). |
 | D1564 | 2 Nov 26 | On his iPhone the Tracker bar's student, course and year dropdowns draw their words whole: the cut words seen in the test browser were that browser's own drawing, not the app's, and nothing is changed. |
 | D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |

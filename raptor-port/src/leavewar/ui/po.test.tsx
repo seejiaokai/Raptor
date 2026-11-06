@@ -17,6 +17,7 @@ import { getState, initStore, setAccountLookup, setPostingBlockLookup, setPostOu
 import { countsFor, inSquadron } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
+import { SelectSheet } from './SelectSheet'
 import { more } from './more-testkit'   // round 3: the three behind the ⋯ (D1326)
 
 beforeEach(() => {
@@ -140,7 +141,7 @@ describe('placing and managing PO from the grid', () => {
     expect(p.poArchive).toBe(false)
   })
 
-  it("the person's LAST day wears the PO corner tag (owner, 19 Aug 26)", () => {
+  it("the person's LAST day wears its mark (owner, 19 Aug 26) — the yellow line since his D1728", () => {
     const id = anId()
     setRole('admin')
     render(<Matrix />)
@@ -152,6 +153,7 @@ describe('placing and managing PO from the grid', () => {
     const tag = screen.getByTestId(`polast-${id}`)
     expect(tag.textContent).toBe('PO')
     expect(screen.getByTestId(`cell-${id}-2026-06-14`).className).toContain('pofin')
+    expect(screen.getByTestId(`cell-${id}-2026-06-14`).className).toContain('bx-last')   // drawn as the line (matrix.css)
     expect(screen.getByTestId(`cell-${id}-2026-06-14`).contains(tag)).toBe(true)
   })
 
@@ -286,5 +288,48 @@ describe('the four posting chips', () => {
       fireEvent.click(screen.getByTestId('po-delete'))
       expect(screen.getByTestId('po-line').textContent).toBe('On 15 Jun the app deletes him automatically. Days he flew keep his puck.')
     } finally { setAccountLookup(null) }
+  })
+})
+
+/* NO SANS FOR GROUND CREW (his D1709, 5 Nov 26 — "No SANS for ground crew"): SANS is an aircrew status, so a ground-crew
+   man's posting offers no SANS chip — on the bid sheet's PO and on his Post out sheet — and the other three stay. */
+describe('no SANS for ground crew (D1709)', () => {
+  beforeEach(() => {
+    const st = getState() as any
+    st.people.push({ ...st.people[0], id: 'gnd_t', callsign: 'RIGGER', pers: true, seat: 'gnd', sxo: false, scd: false, scn: false, xq: [] })
+  })
+  it("the bid sheet's PO: no SANS chip for him; an aircrew man keeps it", () => {
+    setRole('admin')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-gnd_t-2026-06-15'))
+    fireEvent.click(more('bid-postout'))
+    expect(screen.queryByTestId('po-sans'), 'no SANS for ground crew').toBeNull()
+    expect(screen.getByTestId('po-overseas')).toBeTruthy()
+    expect(screen.getByTestId('po-delete')).toBeTruthy()
+  })
+  it('his Post out sheet: no SANS chip either', () => {
+    setRole('admin')
+    setPostOut('gnd_t', '2026-06-15', 'overseas')
+    render(<Matrix />)
+    fireEvent.click(screen.getByTestId('cell-gnd_t-2026-06-20'))
+    expect(screen.getByTestId('postout-undo')).toBeTruthy()
+    expect(screen.queryByTestId('postout-sans')).toBeNull()
+    expect(screen.getByTestId('postout-overseas')).toBeTruthy()
+  })
+})
+
+describe('no SANS for ground crew — the drag window (D1709; the fixes read, info 3)', () => {
+  it('a drag over his days alone: the drag window Post out offers no SANS chip', () => {
+    const st = getState() as any
+    st.people.push({ ...st.people[0], id: 'gnd_d', callsign: 'SPANNER', pers: true, seat: 'gnd', sxo: false, scd: false, scn: false, xq: [] })
+    setRole('admin')
+    const sel = { people: ['gnd_d'], from: '2026-06-15', to: '2026-06-17', cells: ['2026-06-15', '2026-06-16', '2026-06-17'].map(date => ({ personId: 'gnd_d', date })) }
+    render(<SelectSheet sel={sel as any} people={() => 'SPANNER'} role="admin" canDecide onDone={() => {}} onMove={() => {}} onClose={() => {}} onPostOut={() => undefined} onPostIn={() => undefined} />)
+    fireEvent.click(screen.getByTestId('sel-more'))
+    const po = screen.queryByTestId('sel-postout')
+    expect(po, 'the drag window has its Post out').toBeTruthy()
+    fireEvent.click(po!)
+    expect(screen.queryByTestId('sel-po-sans')).toBeNull()
+    expect(screen.getByTestId('sel-po-overseas')).toBeTruthy()
   })
 })

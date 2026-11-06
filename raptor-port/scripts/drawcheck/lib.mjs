@@ -6,7 +6,8 @@ import { existsSync, readFileSync, statSync } from 'node:fs'
 import { join, extname, resolve } from 'node:path'
 
 const require = createRequire(new URL('../../package.json', import.meta.url))
-export const { chromium } = require('@playwright/test')
+// WebKit too: a drawing taken in WebKit (his iPhone's engine) is measured in WebKit, never compared across engines
+export const { chromium, webkit } = require('@playwright/test')
 // the repo's own browser fallback (playwright.config.ts): a fixed browser only where the container has one
 const CHROMIUM = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium'
 export const LAUNCH = existsSync(CHROMIUM) ? { executablePath: CHROMIUM } : {}

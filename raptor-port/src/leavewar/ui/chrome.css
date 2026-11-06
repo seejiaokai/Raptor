@@ -662,7 +662,7 @@
   .card-hd .rtlbl {
     display: none;
   }
-  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "⇅ Done" in words (`.rtword`, never hidden); the − / +
+  /* D1275 (23 Oct 26): while Rearrange is on, its way out reads "Done" in words, after the drawn Reorder mark since D1703 (`.rtword`, never hidden); the − / +
      that stepped aside for it went with the pinch (D1276) */
 }
 
@@ -999,7 +999,8 @@
 
 }
 
-/* the legend's corner rows draw the grid's own `.mk` / `.potag` inside a `.leg-box` (matrix.css) since M2 */
+/* the legend's "Marks on a day" rows draw the grid's own boxes and marks (`.mk`, `.polast`, the `bx-` classes) inside a
+   `.leg-box` (matrix.css) — since M2, the marks since his D1731 (6 Nov 26) */
 
 /* THE LEAVE WAR'S NAVIGATION, AS DRAWN IN ROUND 19 (D1254 — `docs/mock/lw-overhaul/full/r19-nav-*`, `full/r21-rows-*`).
    Row 1 the Inputs page's own tab row (`.inputs-tabs` / `.intab`, 25-inputs-calendar.css — one look for the two pages),

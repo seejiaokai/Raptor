@@ -1,0 +1,1152 @@
+{
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "s0_published": {
+  "weekSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "weekSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "boardSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardPend": "6 changes"
+ },
+ "takeToast": "Drifter taken out of Range brief",
+ "backToast": "Drifter added to Range brief",
+ "cBack": {
+  "a": "8 changes  [dstat: 8 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "b": "8 changes",
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "s1_drifterBack": {
+  "weekSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "weekSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "boardSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardPend": "8 changes"
+ },
+ "tallyToast": "Tally added to Range brief",
+ "cTally": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Tally · Range brief Saber 22/6 09:00 added"
+  ],
+  "b": "1 pending",
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "s2_tallyIn": {
+  "weekSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Tally",
+    "puckCls": "puck r sm san",
+    "titles": [
+     "Tally · OCU (ab-initio) · SANS",
+     "Edited — goes out as AL1"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck r sm san",
+      "title": "Tally · OCU (ab-initio) · SANS",
+      "text": "Tally O"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": "Edited — goes out as AL1",
+      "text": "Tally O"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   }
+  ],
+  "weekSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO",
+   "Tally: tag=none; title=Tally · OCU (ab-initio) · SANS / Edited — goes out as AL1"
+  ],
+  "boardSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Tally",
+    "puckCls": "puck r sm san",
+    "titles": [
+     "Tally · OCU (ab-initio) · SANS",
+     "Edited — goes out as AL1"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck r sm san",
+      "title": "Tally · OCU (ab-initio) · SANS",
+      "text": "Tally O"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": "Edited — goes out as AL1",
+      "text": "Tally O"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   }
+  ],
+  "boardSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO",
+   "Tally: tag=none; title=Tally · OCU (ab-initio) · SANS / Edited — goes out as AL1"
+  ],
+  "boardPend": "1 pending"
+ },
+ "signedAgain": true,
+ "cReload": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Tally · Range brief Saber 22/6 09:00 added"
+  ],
+  "b": "1 pending",
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "s3_reload": {
+  "weekSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Tally",
+    "puckCls": "puck r sm san",
+    "titles": [
+     "Tally · OCU (ab-initio) · SANS",
+     "Edited — goes out as AL1"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck r sm san",
+      "title": "Tally · OCU (ab-initio) · SANS",
+      "text": "Tally O"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": "Edited — goes out as AL1",
+      "text": "Tally O"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   }
+  ],
+  "weekSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO",
+   "Tally: tag=none; title=Tally · OCU (ab-initio) · SANS / Edited — goes out as AL1"
+  ],
+  "boardSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   },
+   {
+    "who": "Tally",
+    "puckCls": "puck r sm san",
+    "titles": [
+     "Tally · OCU (ab-initio) · SANS",
+     "Edited — goes out as AL1"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck r sm san",
+      "title": "Tally · OCU (ab-initio) · SANS",
+      "text": "Tally O"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": "Edited — goes out as AL1",
+      "text": "Tally O"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP Tally O + "
+     }
+    ]
+   }
+  ],
+  "boardSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO",
+   "Tally: tag=none; title=Tally · OCU (ab-initio) · SANS / Edited — goes out as AL1"
+  ],
+  "boardPend": "1 pending"
+ },
+ "tallyOff": "Tally taken out of Range brief",
+ "cOff": {
+  "a": "10 changes  [dstat: 10 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "b": "10 changes",
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "s4_tallyOff": {
+  "weekSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl ",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "weekSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardSeats": [
+   {
+    "who": "Drifter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Drifter · A · 4-ship FL · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Drifter · A · 4-ship FL · SXO",
+      "text": "Drifter A"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Drifter A"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Hunter",
+    "puckCls": "puck sm",
+    "titles": [
+     "Hunter · IP · instructor pilot"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Hunter · IP · instructor pilot",
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Hunter IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   },
+   {
+    "who": "Ranger",
+    "puckCls": "puck sm",
+    "titles": [
+     "Ranger · IP · instructor pilot · SXO"
+    ],
+    "hollowTag": [],
+    "chain": [
+     {
+      "tag": "SPAN",
+      "cls": "puck sm",
+      "title": "Ranger · IP · instructor pilot · SXO",
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "SPAN",
+      "cls": "seat",
+      "title": null,
+      "text": "Ranger IP"
+     },
+     {
+      "tag": "DIV",
+      "cls": "ppl",
+      "title": null,
+      "text": "Drifter A Hunter IP Ranger IP + ADD"
+     }
+    ]
+   }
+  ],
+  "boardSummary": [
+   "Drifter: tag=none; title=Drifter · A · 4-ship FL · SXO",
+   "Hunter: tag=none; title=Hunter · IP · instructor pilot",
+   "Ranger: tag=none; title=Ranger · IP · instructor pilot · SXO"
+  ],
+  "boardPend": "10 changes"
+ }
+}
