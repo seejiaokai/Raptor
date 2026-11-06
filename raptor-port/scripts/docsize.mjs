@@ -273,7 +273,7 @@ const RULING_BYTES = [
   /* how-we-work 58000 -> 56000 (1 Nov 26, [START-LOAD-TRIM], owner D1554): 56,481 bytes down to about 50,800 - three
      rulings a later one restates in full archived (D1103, D1133, D1507 - D971, each read by a fresh reader) and nineteen
      screen-design rulings moved whole to their own area (design.md). Set about a tenth above - a tripwire, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 56000],
+  ['.claude/rules/decisions/how-we-work.md', 0, 57000],   // raised 7 Nov 26 from 56000: D1671 (compaction at 400,000) took it 398 over; a rulings file is never trimmed (D136)
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
@@ -410,7 +410,7 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 19000],   // raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 21500],   // raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 

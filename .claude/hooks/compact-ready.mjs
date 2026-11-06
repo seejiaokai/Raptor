@@ -8,14 +8,16 @@
 //   … --away    he is away (an /overnight run, or his word): the guard is off until --back, or 16 hours (D872)
 //   … --back    he is back: the guard holds again
 import { writeFileSync } from 'node:fs';
-import { readyPath, clearReady, awayPath, clearAway } from './compact-lib.mjs';
+import { readyPath, clearReady, awayPath, clearAway, WINDOW } from './compact-lib.mjs';
 
 const cwd = process.cwd();
 if (process.argv.includes('--away')) {
   const p = awayPath(cwd);
   if (!p) { console.log('Not inside a git checkout — no mark written.'); process.exit(1); }
   writeFileSync(p, JSON.stringify({ at: Date.now() }));
-  console.log('Away: the guard is off — the app compacts by itself at about 845,000 tokens (96% of its 880,000 room) (until --back, or 16 hours).');
+  /* the figures read from the app's room (the setting — 400,000 since his D1671), never written in */
+  const k = n => Math.round(n / 1000).toLocaleString('en-GB') + ',000';
+  console.log(`Away: the guard is off — the app compacts by itself at about ${k(WINDOW * 0.96)} tokens (96% of its ${k(WINDOW)} room) (until --back, or 16 hours).`);
 } else if (process.argv.includes('--back')) {
   clearAway(cwd);
   console.log('Back: the guard holds a compaction for a clean point again.');

@@ -2,7 +2,7 @@
 // PostToolUse hook, every tool — [COMPACT-WHEN-MOD] (D868, D870, D871). Two short notes, each said once, put in front
 // of the agent after a tool use:
 //   1. Once the chat is 75% full of the app's own room (and again at 80, 85, 90 — D878; the app compacts at about 96%
-//      of it, so the first note leaves some 185,000 tokens): find a clean point, save the state the way a handoff
+//      of it, so the first note leaves some 84,000 tokens at a room of 400,000 — D1671): find a clean point, save the state the way a handoff
 //      would, and judge — he is here and the job is nearly done → offer him a handoff (D871); otherwise carry on.
 //   2. Once the guard has held an automatic compaction: a compaction is WAITING — at the next clean point save the
 //      state and mark "ready"; it then comes at the next step. The mark is asked for only here, so the compaction
