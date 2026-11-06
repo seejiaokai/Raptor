@@ -180,29 +180,29 @@ test('the room is the app\'s own: the setting where one is set, else the whole 1
   assert.equal(appRoom({ CLAUDE_CONTEXT_WINDOW: '200000' }, [set880]), 200000); // a test's override
 });
 
-test('this checkout counts against its own setting, and the first note leaves room before the app compacts (D878)', () => {
-  assert.equal(WINDOW, 880000); // .claude/settings.json's autoCompactWindow
+test('this checkout counts against its own setting, and the first note leaves room before the app compacts (D878, D1671)', () => {
+  assert.equal(WINDOW, 400000); // .claude/settings.json's autoCompactWindow — 400,000 since his D1671 (880,000 before)
   const firstNote = (BANDS[0] / 100) * WINDOW, appCompacts = 0.96 * WINDOW;
-  assert.equal(firstNote, 660000);
-  assert.ok(appCompacts - firstNote >= 180000, `only ${appCompacts - firstNote} tokens between the first note and the compaction`);
+  assert.equal(firstNote, 300000);
+  assert.ok(appCompacts - firstNote >= 80000, `only ${appCompacts - firstNote} tokens between the first note and the compaction`);
   assert.ok(HOLD_FROM > BANDS[0] && HOLD_FROM < 96, String(HOLD_FROM)); // told first; and just below the app's own attempt
-  assert.equal(HOLD_FROM, 90); // 792,000 of 880,000 (the fresh read's finding 1)
+  assert.equal(HOLD_FROM, 90); // 360,000 of 400,000 (the fresh read's finding 1; 792,000 of 880,000 before D1671)
   assert.equal(NEVER_HOLD_TOKENS, 900000); // the backstop stays 90% of the model's whole room
   assert.ok(NEVER_HOLD_AT > 96, String(NEVER_HOLD_AT)); // the guard can hold the app's own attempt at about 96%
-  // as first built the first note came at 800,000 — only about 45,000 before the compaction: the fault this fixes
-  assert.ok(appCompacts - 800000 < 50000);
+  // as first built the first note came at 800,000 of the whole 1M — past where the app now compacts (D1671)
+  assert.ok(800000 > appCompacts);
 });
 
-test('the four hooks, run as the app runs them with the room this checkout sets: the note at 660,000, not 800,000 (D878)', () => {
+test('the four hooks, run as the app runs them with the room this checkout sets: the note at 300,000 of 400,000 (D878, D1671)', () => {
   const here = fileURLToPath(new URL('.', import.meta.url));
   const run = (f, input) => spawnSync(process.execPath, [join(here, f)], { input: JSON.stringify(input), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } });
   const sid = `room-${process.pid}-${Date.now()}`;
-  assert.equal(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r1.jsonl', [asst(0, 0, 650000)]) }).stdout, ''); // 74%: silent
-  const at = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r2.jsonl', [asst(0, 0, 665000)]) }).stdout).hookSpecificOutput.additionalContext;
-  assert.match(at, /^This chat is 76% full \(about 665k of the app's 880k; it compacts by itself at about 96%\)/);
-  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 846000)]), cwd: gdir });
+  assert.equal(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r1.jsonl', [asst(0, 0, 296000)]) }).stdout, ''); // 74%: silent
+  const at = JSON.parse(run('compact-watch.mjs', { session_id: sid, transcript_path: transcript('r2.jsonl', [asst(0, 0, 304000)]) }).stdout).hookSpecificOutput.additionalContext;
+  assert.match(at, /^This chat is 76% full \(about 304k of the app's 400k; it compacts by itself at about 96%\)/);
+  const g = run('compact-guard.mjs', { session_id: `${sid}-g`, trigger: 'auto', transcript_path: transcript('r3.jsonl', [asst(0, 0, 385000)]), cwd: gdir });
   assert.equal(JSON.parse(g.stdout).decision, 'block'); // the app's own attempt at ~96% is held for a clean point
-  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-i`, trigger: 'auto', transcript_path: transcript('r6.jsonl', [asst(0, 0, 700000)]), cwd: gdir }).stdout, ''); // 700,000: let through
+  assert.equal(run('compact-guard.mjs', { session_id: `${sid}-i`, trigger: 'auto', transcript_path: transcript('r6.jsonl', [asst(0, 0, 340000)]), cwd: gdir }).stdout, ''); // 340,000 (85%): let through
   assert.equal(run('compact-guard.mjs', { session_id: `${sid}-h`, trigger: 'auto', transcript_path: transcript('r4.jsonl', [asst(0, 0, 901000)]), cwd: gdir }).stdout, ''); // past 900,000: never held
-  assert.equal(spawnSync(process.execPath, [join(here, 'statusline.mjs')], { input: JSON.stringify({ transcript_path: transcript('r5.jsonl', [asst(0, 0, 665000)]) }), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } }).stdout, 'Chat 75.6% full'.replace('75.6', '76') + ' · compact at the next clean point');
+  assert.equal(spawnSync(process.execPath, [join(here, 'statusline.mjs')], { input: JSON.stringify({ transcript_path: transcript('r5.jsonl', [asst(0, 0, 304000)]) }), encoding: 'utf8', env: { ...process.env, CLAUDE_CONTEXT_WINDOW: '' } }).stdout, 'Chat 76% full · compact at the next clean point');
 });

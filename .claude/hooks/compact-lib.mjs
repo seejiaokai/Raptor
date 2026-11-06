@@ -18,8 +18,8 @@ import { fileURLToPath } from 'node:url';
 export const MODEL_WINDOW = 1_000_000;
 
 /** THE APP'S OWN ROOM — what every figure here is a percentage of ([COMPACT-BANDS-WINDOW], his ruling D878, 15 Oct 26).
- *  The app counts the chat against the `autoCompactWindow` setting when one is set (880,000 here) and compacts at 96%
- *  of it — about 845,000. Counted against the whole 1M, as first built, the first note came at 800,000, only about
+ *  The app counts the chat against the `autoCompactWindow` setting when one is set (400,000 here since his D1671, 7 Nov 26; 880,000 before) and compacts at 96%
+ *  of it — about 384,000 (about 845,000 at 880,000). Counted against the whole 1M, as first built, the first note came at 800,000, only about
  *  45,000 before the compaction, and read about 10 points lower than the app's own figure. So the room is read the way
  *  the app reads it: the setting in this project's local settings, else its shared settings (the folder these hooks
  *  sit in — the app runs them from its project folder), else his own settings; else the whole 1M. CLAUDE_CONTEXT_WINDOW
@@ -46,18 +46,18 @@ export const WINDOW = ROOM.room;
 /** Whether that room came from a setting — only then is the app's own point measured (96% of it, check (a) of
  *  15 Oct 26), so only then do the notes name it (the fresh read of [COMPACT-BANDS-WINDOW], finding 4). */
 export const ROOM_SET = ROOM.set;
-/** The first note comes at 75% of the app's room — about 660,000 of 880,000, some 185,000 before the app compacts at
+/** The first note comes at 75% of the app's room — about 300,000 of 400,000 (D1671; 660,000 of 880,000 before), some 84,000 before the app compacts at
  *  96% of it (D878's reading) — then again every five points. On a room of the whole 1M they are 750,000 and up. */
 export const BANDS = [75, 80, 85, 90];
 /** The token count from which the guard never holds a compaction back: 90% of the model's whole room (900,000), so a
  *  compaction is never held near the true limit (D870); the app's own point stays the backstop. As a percentage of the
- *  app's room: about 102% of 880,000 — the guard's window runs from the first note to just past the app's own point
+ *  app's room: 225% of 400,000 (D1671; about 102% of 880,000 before) — the guard's window runs from the first note to just past the app's own point
  *  (the app tries again at the next request), and on a room of the whole 1M it is 90%, as first built. */
 export const NEVER_HOLD_TOKENS = Math.round(MODEL_WINDOW * 0.9);
 export const NEVER_HOLD_AT = Math.round((NEVER_HOLD_TOKENS / WINDOW) * 1000) / 10;
 /** Below this the guard never holds either — a compaction asked for lower down is something else: the app's compaction
  *  of an idle chat, or a chat on a model with a smaller room (the reader's findings 1 and 5, 15 Oct 26). The LAST band,
- *  90% of the app's room (792,000 of 880,000): just below the app's own attempt at 96%, so the guard catches that attempt
+ *  90% of the app's room (360,000 of 400,000 since D1671; 792,000 of 880,000 before): just below the app's own attempt at 96%, so the guard catches that attempt
  *  and nothing else, and the agent has been told three times before anything is held. Not the first note's 75%: the app
  *  makes no ordinary attempt below 96%, and a compaction held there would send the whole chat again and tell the agent
  *  one is waiting when none will come for some 150,000 tokens (the fresh read of [COMPACT-BANDS-WINDOW], finding 1). */

@@ -20,27 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/notsaved-refusal-look -->
-### `claude/notsaved-refusal-look` — [NOTSAVED-REFUSAL-LOOK] BUILT and walked (D1668, the grey "Blocked" note); his Q1 and Q2 built (D1669, D1670); MERGED LIVE on his "merge live" of 7 Nov 26 (pull request 639); this block goes at the next handoff — written 7 Nov 26, verify before use
-- **Done:** `main` brought in (202 behind; notes clashes kept both sides); D1668's short line read against its full row by a fresh reader — PASS. Built (`2fa83931d`): the passing note's `blocked` kind (grey note, red drawn "no entry" sign, the lead to the first colon bold white, the rest quieter, read from the left) for the schedule's two catch-alls ("Blocked: nothing was kept", "Blocked: that change is not yours to make"), the document too big to store, and a Leave War box leaving refused; the Leave War's store refusal as the grey "Blocked" tag. WALK: 27/27 at 1536 and 402 (WebKit); drawing check 31/32. Evidence `raptor-port/docs/handpass/2026-11-06-notsaved-refusal.md`.
-- **His answers, 7 Nov 26 (built):** Q1 yes — D1669, the reason refusal grey "Blocked: <reason>. Nothing was saved…" (`ui/inputedit.tsx reasonRefusal`); Q2 yes — D1670, the tag under its own box kept (the drawing check green, the difference kept). **Waiting on him:** his iPhone look, then "merge live" (D1640: that word means his look is done).
-- **Left on the PC:** `C:
-srb1106` (the drawing's build, a link into the app's packages — delete the link `raptor-port
-ode_modules` before the folder) and `C:
-sr1106` (a half copy, stopped) — both outside the repo, safe to delete.
-- **Numbers:** this chat holds rulings D1667–D1679 (D1667–D1670 used); lessons 83–85 unused; observations 802–809 (802–804 used).
-- **Opening line:** none — merged; a new job starts level with `main`. [NOTSAVED-REFUSAL-LOOK] archived; [WEBKIT-DOCNOTE-SIGNIN] stays open (his iPhone answer).
-<!-- /now -->
-<!-- now:claude/lw-cell-combos -->
-### `claude/lw-cell-combos` — [LW-CELL-COMBOS] MERGED LIVE on his "merge live" (6 Nov 26, pull request 650); this block goes at the next handoff — written 6 Nov 26, verify before use
-- **Where it started:** his D1723/D1725 — every combination of entries on one Leave War day measured, fixes drawn, his pick built. Design rounds and his answers: D1726 (zoomed out, one letter scale), D1727 (two whole side by side turned; whole beside a half keeps the cell; "!" tag; stack of cards), D1728 (last day = yellow line; a gone day's entry = its box striped, no PO mark; an empty gone day keeps "PO"), D1729 (faint stripes), D1730 (not faded; the stack's card grey), D1731 (the Legend's "Marks on a day" as drawn). Design review of the chosen look: `raptor-port/docs/img/handpass/2026-11-06-lw-cell-combos/design-review-2026-11-06-chosen.md`.
-- **Shipped:** the build on the branch — `src/leavewar/ui/MatrixRows.tsx` (`pairLook` in `matrixrowparts.ts`; cell classes `bx-alarm`/`bx-pile`/`bx-gone`/`bx-last`; no `potag` beside an entry), `matrix.css` (the `bx-` block at its foot; the `mklo`/`pohi` rules gone; `.polast` drawn as the 2px line), `Matrix.tsx` (`lw-small` on the tables below zoom 1), `Chrome.tsx` (Legend). Tests moved: `lookf`, `boxcorners-css`, `daylist`, `po`, `chrome`, the row snapshots `__rows__/`, e2e `step4-leavewar.spec.ts` (no potag) and a comment in `leavewar.spec.ts`. Pull request 650, a DRAFT based on `main` — no full GitHub run on the build yet. **Then (this chat):** the "!" fit (`matrix.css` `.bx-alarm .c.bx-tilt.right.bx-star` 5.5px, `.wide` 5px; a stacked three-letter code on his last day 6.5px), re-measured; the D201 words (`docs/ui-contracts.md`, three comments in `MatrixRows.tsx`, one in `chrome.css`); the walk `scripts/handpass/lw-cell-combos-walk.mjs` and probe `…-probe-floor.mjs`; evidence `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`; ledger row.
-- **Unfinished:** nothing of this job. [LW-CELL-COMBOS], [LW-SIDE-BOXES-CUT] and [LW-POLAST-COVERS-LETTERS] archived. The rim pass's one worse family (a half over a whole day touching its edge) stays recorded in the sheet §5, his to rule only if he asks.
-- **Branch:** `claude/lw-cell-combos`; pull request 650, out of draft, based on `main` (0 behind when written); released here (`git switch --detach`) after this push.
-- **Gates:** GitHub's run of pull request 650 on the "!" fix: 25 pass, 2 skipped (his PC's runner, the deploy) — the push of the sheet re-runs it; read its result before his "merge live". Locally: `npm run build` green; the walk 32 checks a size, 0 failures, 0 console errors.
-- **Open questions for him:** none. **Running when written:** none. Build copies `C:/dcc1106` (old) and `C:/dcc-build1106` (an earlier build) — delete both when done (the shell's guard refuses `rm -rf` on them; ask him or use the file explorer). A build of today's `main` sits in this chat's scratch folder only.
-- **Pick up here:** nothing on this branch — never switch a new chat to it (merged). Next free ruling D1732.
-- **Opening line:** none — the branch is merged; a new job starts level with `main`. **Also open, waiting for his merge live:** pull requests 639 (`claude/notsaved-refusal-look`), 637 (`claude/tracker-standalone-tidy`), 636 (`claude/keyboard-windows-batch-5eff45`).
+<!-- now:claude/compact-400k -->
+### `claude/compact-400k` — his D1671: every chat compacts at about 400,000; waiting for his "merge live" — written 7 Nov 26, verify before use
+- **Done before it:** [NOTSAVED-REFUSAL-LOOK] MERGED LIVE (pull request 639, 7 Nov 26 — D1667–D1670 built; evidence `raptor-port/docs/handpass/2026-11-06-notsaved-refusal.md`); [WEBKIT-DOCNOTE-SIGNIN] stays open for his iPhone answer.
+- **This branch:** the project's `autoCompactWindow` 880,000 → 400,000 (`.claude/settings.json`); the compaction hooks read it, so only their comments, the "away" message (now worked out from the setting) and their tests changed (17/17); the overnight guide's figures; D878 narrowed; the stale priority line of [NOTSAVED-REFUSAL-LOOK] removed; the merged blocks of `lw-cell-combos`, `postout-bell-look` and `member-guest-checks` cleared; two rulings tripwires raised with their reasons.
+- **Next:** his "merge live" (a setting and hooks — not notes-only, D1407); a new chat then picks up the 400,000 room at its start.
+- **Left on the PC:** `C:\nsrb1106` and `C:\nsr1106` — temporary build folders outside the repo (the link inside the first already removed); safe to delete.
+- **Numbers:** rulings next free D1672 (this chat held D1667–D1679); observations 805–809 unused.
+- **Opening line if handed off:** Continue `claude/compact-400k`: `git fetch origin`, `git switch claude/compact-400k`, `git branch -u origin/claude/compact-400k`, `git pull --ff-only`. Read `HANDOFF.md` (this block); wait for his "merge live", then carry it through (D1088).
 <!-- /now -->
 <!-- now:claude/overnight-1106 -->
 ### `claude/overnight-1106` — the night of 6 Nov 26 DONE: three pull requests waiting for his look; this branch the night's records
@@ -55,22 +42,6 @@ sr1106` (a half copy, stopped) — both outside the repo, safe to delete.
 - **Left on the PC:** temporary build folders `C:dw1106`, `C:db1106` (each with a link into the app's packages — delete the link before the folder) and `C:da1106`, outside the repo.
 - **Numbers:** rulings next free D1726; the walk ledger has the night's three rows and the D1720 walk's (on its branch).
 - **Opening line for the next job:** none set — his answers to Q1–Q3, or the next night from the sized plan (`raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`, night 2's job 6 and night 1's jobs 2–3 once pull request 636 is live).
-<!-- /now -->
-<!-- now:claude/postout-bell-look -->
-### `claude/postout-bell-look` — LIVE on his "merge live" of 5 Nov 26 (pull request 641); this block goes at the next handoff
-- **Shipped:** the posting-out bell line ([POSTOUT-RUN-NOTICE] — D1546, D1547, D1690, D1691, D1694, D1696); "Undo post out" takes it back, struck through ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699); the SANS purple line on a posted-out SANS man's puck ([PO-SANS-PUCK-EDGE] — D1692, D1697, D1698); no SANS for ground crew ([PO-SANS-GROUND-CREW] — D1709); a posting changed after it ran takes back its lines ([PO-CHANGE-RETRACT] — D1710), with three older posting faults its reads found (an earlier posting's line taken by a later one's Undo after a Restore on its own day; "+ SANS" on: a re-save told twice, a post-in wiped the posting). Evidence `raptor-port/docs/handpass/2026-11-05-postout-bell.md`, `raptor-port/docs/handpass/2026-11-05-taken-back-sans.md` (§16 the last part).
-- **Left open, filed:** [NOTICE-UNDO-RETRACT] step 2 (the input lines and the holiday's OIL line taken back the same way — his to place); for the database step, a posting's runs carried on its record (under [DB-STEP]).
-- **On this PC, not committed:** a stash, "noise left by the earlier drawing replay" (`.impeccable/config.json`, the drawing's `draw-log.json`) — not this job's; safe to drop (`git stash list`, then `git stash drop` on it).
-- **Numbers:** rulings — next free after D1711 (check the live files; D1712–D1715 were held by this branch, unused); design lessons next free 95; observations next free 834 (823 has a "met again" line).
-- **Opening line for the next job:** none set by this branch — take the next item from `## Next, in order` or the backlog's priority list.
-<!-- /now -->
-<!-- now:claude/member-guest-checks -->
-### `claude/member-guest-checks` — LIVE on his "merge live" of 5 Nov 26 (pull request 638); this block goes at the next handoff
-- **Shipped:** the member / guest check of the night and the build of his morning answers — the pass after asking for access (D1650, D1654, D1656), "Not sent yet" while its save has failed (D1664), the "Not saved" strip everywhere with the OIL bar alike (D1655), the band on the sign-in, access screens and guest page (D1657), a member's own Scheduler tick read only (D1651), the `?savefail` test switch (D1666); three walk faults fixed red first. Evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`; his look on his iPhone done, "Ok looks good merge live".
-- **Left open, filed:** [NOTSAVED-REFUSAL-LOOK] (D1665 — the other "not saved" refusal messages get one look of their own, pictured and drawn for him first) — the next job, in a fresh chat from `main`.
-- **For whoever merges pull request 636 (`claude/keyboard-windows-batch-5eff45`) next:** it carries rulings D1645–D1662 and the drawings and drawing scripts this build used, and marks D1651 "not yet built" in `raptor-port/docs/data-model.md` §11 (Person, QualMark, the Management paragraph) and `raptor-port/docs/engine-rules.md`'s Quals row — bring `main` in first and keep `main`'s BUILT wording; its [SAVEBAND-LOOK] and [ACCESS-WAIT-LOOK] are built and live — archive them; the drawing scripts `aw1105-*`, `sb1105-mock.mjs` it adds are what `scripts/drawcheck/specs/access-wait.mjs` and `save-band.mjs` replay.
-- **Numbers:** rulings next free D1667; design lessons next free 83; observations next free 802.
-- **Opening line for the next job:** Start from `main`: `git fetch origin`, `git switch --detach origin/main`, then create the branch `claude/notsaved-refusal-look`. Read `HANDOFF.md` and the backlog item [NOTSAVED-REFUSAL-LOOK] in `OUTSTANDING.md` (his D1665): picture each "not saved" refusal message as it is today, reached through the app's own controls, draw one matching look of their own on the real app, and put it to him before building anything.
 <!-- /now -->
 ## Next, in order
 
