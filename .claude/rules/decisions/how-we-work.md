@@ -16,8 +16,9 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1732 | 7 Nov 26 | The rules diet — area rulings as short how-it-works pages, old rows archived but searched, the working rules and bug-check order one-page checklists — starts now on Opus; its plan and before-and-after sizes go to him before any change, read by Astra (Codex confirmed back first, D1594) and a fresh Opus reader, each blind, to see which is better. |
+| D1733 | 7 Nov 26 | The handoff file's gate baseline keeps only the newest count; each older one moves whole to its archive file, so a new chat no longer reads about 50 stale entries each headed "latest". |
 | D1671 | 7 Nov 26 | Every chat in this project compacts at about 400,000 tokens: the project's autoCompactWindow is 400,000, not 880,000, so the first reminder (about 300,000), the hold until the state is saved (from about 360,000) and the app's own compaction (about 384,000) all come with it. |
-| D1718 | 6 Nov 26 | The rules diet — each area's rulings rewritten as a short page of how it works now, the old rows archived but searched, the working rules and the bug-check order cut to one-page checklists — waits until Anthropic releases Fable 5.5; no chat starts it before then. |
 | D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. |
 | D1716 | 5 Nov 26 | React Doctor stops counting the mock-up pages and the original app, which are records nobody edits; the tests' and scripts' notes of copying data the old way are left as they are; the app's own findings are still fixed with each area's batch (D1534). |
 | D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |
