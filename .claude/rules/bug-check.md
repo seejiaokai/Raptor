@@ -52,9 +52,9 @@ in the order's §7.11, and from then on every sizing step and walker's brief che
 MISSING, not whether the code is wrong), **both of them reading the code** only on money, published
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.
-**Who they are now (D590, 5 Oct 26):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
+**Who they are now (D590, 5 Oct 26 — Astra and Sol 6.1 only on his call since D1734):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
 required; Fable is on call only (a bug Opus cannot crack, or a big open-ended plan, on his word). What Codex wrote, Opus reads.
-**While the ChatGPT readers are out (D790, 13 Oct 26 — "Yes option 2"; still out — D1594, 3 Nov 26, replacing D1593 of the same day: a Codex sign-in that answers is not his subscription; Codex is not called until he says it is back):** every job that needs a code read gets a FRESH, blind
+**Unless he calls for a ChatGPT reader (D790, 13 Oct 26 — "Yes option 2"; D1734, 7 Nov 26, replacing D1594: his subscription is back on a Pro plan with lower limits, and Astra or Sol 6.1 is called only when he calls for it, each time):** every job that needs a code read gets a FRESH, blind
 Opus read of its finished code (never by the chat that wrote it). **Fable is used for nothing unless he calls for it (D903,
 15 Oct 26 — "don't include fable in anything anymore unless I call for it")** — the riskiest changes get the Opus read alone.
 

@@ -3,7 +3,7 @@
 **Started 7 Nov 26 (D1732, replacing D1718):** his words: "u can start now u can also ask astra to review it as well and see what is
 better". Opus with high thinking, in a fresh chat; the plan and the sizes before and after are put to him first, and nothing
 changes until he approves; the plan is read by Astra and by a fresh Opus reader, each blind, to see which is better
-(confirm with him first that his ChatGPT subscription is back — D1594). Backlog item: [RULES-DIET].
+(his ChatGPT subscription is back on a Pro plan, Astra called when he calls for it — D1734; he called for it here). Backlog item: [RULES-DIET].
 
 _Before 7 Nov 26:_ **Waiting on:** Anthropic releasing Fable 5.5. **Not started before then** — his words: "3 we do it next time when anthropic
 comes up with fable 5.5" (D1718). Backlog item: [RULES-DIET].

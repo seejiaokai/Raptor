@@ -77,7 +77,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
-- **When ChatGPT is back (not before 1 Nov 26 — D761):** the reads owed in [NO-ASTRA-LIST].
+- **ChatGPT is back on a Pro plan, called only on his word (D1734, 7 Nov 26):** the reads owed in [NO-ASTRA-LIST], each his to call (D761).
 - **Before any collaborator is added:** the checks runner comes off this repo ([REPO-PRIVATE]).
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
