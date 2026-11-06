@@ -188,6 +188,34 @@ describe('leave outside the time in the squadron (owner answer C)', () => {
     expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
     expect(cell().className).toContain('gone')        // still off the manning
   })
+  /* his D1720 (6 Nov 26, [LW-PO-DAYS-DRAWING]): an OD over a posted-out man's gone days was filed whole but drew a bare
+     "PO" — it reads as two days skipped. Whatever is filed there shows as leave does, and a tap opens the day's list. */
+  it('an overseas duty after a posting-out shows its OD box with the PO tag, still off the manning', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'OD', D)
+    render(<Matrix />)
+    expect(cell().textContent).toContain('OD')
+    expect(cell().textContent).not.toMatch(/^PO$/)
+    expect(screen.getByTestId(`potag-${P}-${D}`)).toBeTruthy()
+    expect(cell().className).toContain('gone')
+  })
+  it('a gone day with nothing filed keeps its bare PO', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    render(<Matrix />)
+    expect(cell().textContent).toBe('PO')
+    expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
+  })
+  it("an admin's tap on that OD opens the day's list, not the posted-out sheet", () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'OD', D)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('postout-sheet')).toBeNull()
+  })
 })
 
 

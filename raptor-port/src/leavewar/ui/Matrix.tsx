@@ -3474,7 +3474,10 @@ export function Matrix() {
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
     && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
-    (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
+    /* any entry filed outside his time opens the list where the bid window does not (his D1720 — the grid draws it there
+       now): an admin's tap on an OD, a course or a medical over his gone days shows it, where the posted-out sheet hid it;
+       his own tap on one still opens the window above (F3); an OIL award keeps its own window (D261) */
+    (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && openView.main.kind !== 'credit'))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
      war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the

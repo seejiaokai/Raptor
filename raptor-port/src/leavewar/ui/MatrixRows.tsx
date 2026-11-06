@@ -8,7 +8,7 @@
    Their non-component helpers moved on, whole, to ui/matrixrowparts.ts on 31 Oct 26 (React Doctor, D1534). */
 import { memo, useMemo, type MutableRefObject, type PointerEvent as ReactPointerEvent, type RefCallback } from 'react'
 import { shortDate } from './dates'
-import { addDays, boxText, codeOf, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
+import { addDays, boxText, inSquadron, kindOf, beforeFirstStint, lastDayIn, isBiddable, isDuty, isWeekend, parseCell, legacyViews, shiftedFrom, stateOf, type Person, type Period, type DayInfo, type Grid, type States, type Role, type Figure, type FigureLines } from '../engine'
 import type { WarRec } from '../engine/warrecs'
 import { FigureCell } from './FigureCell'
 import { figWords } from './figwords'
@@ -295,7 +295,10 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
            nobody could tap — his own award hidden from him, and from the admin's eye. It shows with the posting hatch,
            like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
-        const outLeave = !here && !!code && !!view?.main && (codeOf(view.main.code)?.spends != null || view.main.kind === 'credit')
+        /* …and WHATEVER ELSE IS FILED there (his D1720, 6 Nov 26 — [LW-PO-DAYS-DRAWING]): an overseas duty, a course, a medical,
+           an Other dragged over his gone days was filed whole but drew a bare "PO", as if two days were skipped. Every filed
+           entry now shows as leave does — its box over the hatch, the PO tag, counting nobody; an empty gone day stays "PO". */
+        const outLeave = !here && !!code && !!view?.main
         const mark = view?.mark ?? ''
         const cls = [
           here ? '' : 'gone',
