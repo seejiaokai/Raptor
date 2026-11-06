@@ -3702,3 +3702,26 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** add to the method: "when a drawing restyles a live element, clear what the app set on it for its old look (inline position, transform, a measured width) or re-run the app's own placing after the restyle; name in the drawing any element whose place the app works out from its size."
 
 **Principle:** A mock made by restyling a live element carries the app's adjustments for the old look; reset them, or the approved picture records an artefact the real build will never draw.
+
+### Observation 836: Measure what a chat reads with the project's calibrated estimate, never a stock tokenizer
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** [RULES-DIET] — measuring what a chat reads before code, for the rules-diet plan
+**Skill:** New skill candidate: context-load audit (measure what a session must read, by rule, per job profile)
+**Type:** open-source
+**Phase/Area:** measurement
+
+**Issue:** The first pass counted tokens with Anthropic's older public tokenizer package and got numbers about 30% lower
+than the project's own estimate (`docsize.mjs` `estTokens`, fitted on measured loads, 2.74 characters a token, capitals
+dearer). Only the calibrated estimate matched the app's own count of the every-chat layer (≈38,000). The 6 Nov brief had
+used 4 bytes a token and under-read the same way. A plan whose headline rests on "how full a chat gets" would have
+under-stated the problem by a third.
+
+**Suggested improvement:** a context-load audit (a skill, or `docsize --reads`) that (1) uses the calibration fitted on
+the app's own measured loads, (2) checks it against one fresh measured load before trusting it, (3) counts by layer —
+every chat, per message, per file opened, per job's required reads — and by job profile, (4) states each "read by rule"
+assumption beside its number.
+
+**Principle:** A size measure is only as good as its calibration against the system that actually pays the cost; check
+one known figure before trusting a tool's count, and prefer the project's measured fit over a generic counter.
