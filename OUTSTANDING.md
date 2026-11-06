@@ -119,12 +119,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-CAL-CLICK-BEHIND-NEW] — on the Inputs and SANS calendars a date clicked behind a new input's window lights as picked while the window keeps its date (his D1298); his choice of what it does first.
 - [LW-READS-OWED-1024] — left: design lessons 49, 50 and 52 reworded to what he said (the fix worded in the reader's file), and D1297's sweep of earlier evidence sheets with its fresh reader.
 - [CSS-WRAPPER-GUARD] — BUILT the night of 6 Nov 26 (`claude/lw-faults-1106`): the check, with the 202 rules after the bid sheet's wrapper listed — not deliberate after all; moving them is [LW-BIDPICKER-CSS-INSIDE].
-- [LW-PO-DAYS-DRAWING] — a question for him, with a drawing first (D1625): an OD dragged over a posted-out man's gone days is filed whole but the grid shows a bare "PO" there.
+- [LW-PO-DAYS-DRAWING] — his D1720 (6 Nov 26): whatever is filed on a posted-out man's gone days drawn as leave is there; building on `claude/lw-faults-1106` (pull request 646).
 - [LW-DOUBLETAP-OTHER-WINDOWS] — the double tap's second tap still falls through the person window, ⚙ Settings, the event window and five more over the grid; the guard of 6 Nov 26 covers them cheaply (low, the agent's).
 - [LW-ROLLBACK-FOCUS] — a refused war change still puts back the jump-to-a-day state, so the grid can jump back after one (low, needs its own look).
 - [LW-BIDPICKER-CSS-INSIDE] — the bid sheet's 202 style rules move inside the Leave War's wrapper, as a walked job (low, the agent's).
 - [LW-BID-BUBBLE] — the bubble after a bid: his question, waiting (the pick-look page's Q3); redrawn with D1313, D1314 in place before it is put to him again.
-- [INP-CARD-COLUMNS] — built as drawn the night of 6 Nov 26, then taken back: as drawn 6 of 46 cards grow a line on his iPhone, against D1310's own "no card grows taller"; a question for him — A as drawn, or R (columns sized to the letters, an empty document column closing; 1 of 46 taller), R recommended (`claude/inputs-batch-1106`).
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
@@ -2276,14 +2275,6 @@ on a desktop "+ Input" stands at the left of the list's row and its window opens
 columns — as "+ Medical" did before D1300. **To do, on his word:** the same as the Medical tab (design lesson 47) — the
 button at the right, the list making room while the window is open, the row filed wearing its mark (it already does); a
 picture first (D853). **Place:** with the next Inputs batch.
-
-### [INP-CARD-COLUMNS] The Inputs list's cards line up their right-hand marks (his D1305, 24 Oct 26)
-**6 Nov 26:** he could not see a difference between today and R in the night's pictures; redrawn with the marks ringed (today's paperclips about 10 dots apart where the time words differ, R's on one line — https://claude.ai/artifact/NjwCh2sTrR9eda245Aq1Vh). Recommendation changed to leave the cards as today and close this item; his answer waited.
-**Seen (his picture of pull request 569's preview, the Inputs list on a phone):** on each card's top line LATE, "No document"
-and the hours stand wherever the words before them end, so they wander from card to card. **His pick (D1310): A** — three columns (LATE, the document, the hours), drawn by `scripts/handpass/inp-card-columns-look.mjs` (columns 3.7em / 7.4em / 5.6em, gap .6em, held with wider letters). **To do:** build it on the card (`ui/InputCard.tsx`,
-`scheduler/25-inputs-calendar.css`), checked on an opened day's cards too, at 390 and 402 and with an iPhone's wider letters.
-**Place:** with M3's follow-ups on `claude/lw-m3-placing-leave` if he wants it before the merge, else the next Inputs batch.
-**The night of 6 Nov 26** (`claude/inputs-batch-1106`, evidence `raptor-port/docs/handpass/2026-11-06-inputs-batch.md`, pictures `raptor-port/docs/img/handpass/2026-11-06-inputs-batch/question/`): built as drawn, the drawing check green, then taken back — on his iPhone's 402 width 6 of 46 list cards grow a line (up to 9 at 390): commitments with long kind names (APPOINTMENT, MEETING, ATTACH) and a four-name meeting; two standing browser tests that pin card height fail. **The question for him:** A as drawn (6 of 46 taller), or R — the columns sized to the letters and a card with no document mark closing that column (1 of 46 taller, the four-name meeting), the LATE and document columns moving off the drawing. Recommended R. The build is one checkout away (the report in `raptor-port/docs/handpass/parts/inp1106/builder-report.md`).
 
 ### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
 **25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.

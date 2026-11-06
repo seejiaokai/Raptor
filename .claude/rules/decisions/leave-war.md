@@ -56,6 +56,7 @@ rules — `raptor-port/docs/superpowers/specs/2026-09-20-one-absence-behaviour-r
 
 | # | Date | The rule |
 |---|---|---|
+| D1720 | 6 Nov 26 | On the Leave War grid any entry filed on a day after a man's posting out — an overseas duty, a course, a medical, an Other, as well as leave and OIL — is drawn as its box over the posting hatch, as leave already is: a joined bar across its days, the small PO tag on each gone day, counting nobody; a gone day with nothing filed keeps its bare "PO". |
 | D1711 | 5 Nov 26 | On the Leave War's Balances and Approvals pages a man posted out as SANS wears the SANS purple line only from his posting date, as built — they show what is true today; the grid keeps it from when the posting is set (D1697). |
 | D1698 | 5 Nov 26 | On the Leave War grid every SANS man's name wears the SANS purple line on the right of its chip — the men in the SANS group at the grid's foot ("+ SANS" on) as well as a man posted out as SANS in his old place — so every SANS man on the grid looks alike, as on the schedule (D651). |
 | D1697 | 5 Nov 26 | A man posted out as SANS, shown in his old place on the Leave War grid, is built as drawn on 5 Nov 26: the "SANS" tag goes and his name wears the schedule's own purple line on the right of its chip, on the row and the phone's frozen copy alike; the line shows from when the posting is set, as the tag did. |
