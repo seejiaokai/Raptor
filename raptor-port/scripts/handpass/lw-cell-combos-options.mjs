@@ -159,6 +159,9 @@ ${P} .c:where(.top, .bot) { padding: 0 !important; }`,
      it, their letters one size smaller. The turned pair of two whole days has no room for a strip beside it, so there the
      PO stays D's yellow line or the hatch on the box. */
   /* D1728: the stripes on a gone day's box in the posting's own grey, at the cell hatch's angle, so they show on a dark box too */
+  /* review of 6 Nov 26: a gone day's entry counts nobody — its box faded, so it reads as not counted even on a dark box; the faint stripes kept (D1729) */
+  gonefade: `
+${P}.cc-gone .c { opacity: .5; }`,
   gonehatch: `
 ${P}.cc-gone .c { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(150, 162, 178, .6) 4px 6px) !important; }`,
   goneline: `
