@@ -730,7 +730,8 @@ test('a reload (not ?fresh) keeps every filed leave, cut, notice and post-out â€
   await showMonth(page, '2026-07-14'); await showMonth(page, '2026-02-11')
   const before = await snapshot()
   expect(before.cells).toContain('ammo@2026-02-11=LL!')
-  expect(before.cells).toContain('casper@2026-07-13=LLPO')
+  expect(before.cells).toContain('casper@2026-07-13=LL')   // no PO tag beside an entry on a gone day since his D1728
+  expect(before.cells).not.toContain('casper@2026-07-13=LLPO')
 
   await page.reload()
   await openWar(page)
