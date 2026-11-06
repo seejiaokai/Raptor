@@ -500,7 +500,9 @@ describe('ALL AVAIL / ALL on an input\'s row — every hand (D750, D753, D755, D
       expect(said).toContain('already on')
       expect(said).toContain(cs('bane'))
       expect(said).toContain(cs('pike'))
-      expect(said, 'never the bare refusal').not.toContain('Not saved')
+      /* the bare refusal reads "Blocked: nothing was kept" since D1667 — and "Not saved" is the band's alone */
+      expect(said, 'never the bare refusal').not.toContain('nothing was kept')
+      expect(said, 'never the band words').not.toContain('Not saved')
     })
   })
 

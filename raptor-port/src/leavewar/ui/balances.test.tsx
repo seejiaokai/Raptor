@@ -22,7 +22,7 @@ import { setMemberTodayForTests } from '../engine'
 import { projectPeople } from '../state/raptorRoster'
 import { wireLeaveWarSync } from '../sync'
 import { BalancesPage, FigBox } from './BalancesPage'
-import { figWords, saveTypedFigure } from './balancefigs'
+import { BLOCKED, figWords, saveTypedFigure } from './balancefigs'
 import { deleteAsk } from './gradeswords'
 import { Topbar } from './Chrome'
 import { lwPage, setApprMode, setBalancesUp, takeLwAsk } from './lwnav'
@@ -241,16 +241,47 @@ describe('the page for a member (D1242, D1487)', () => {
     expect(screen.getByTestId('bal-locked').textContent).toBe('Locked by admin')
     expect(screen.getByTestId('bal-locked').querySelector('svg')).toBeTruthy()
   })
-  it('the lock landing while his box holds a figure: not saved, and he is told why (B6)', () => {
+  it('the lock landing while his box holds a figure: not saved, and he is told why (B6) — "Blocked:", the grey note (D1667, D1668)', () => {
     const said: string[] = []
-    HOOKS.toast = (m: string) => { said.push(m) }
+    const kinds: unknown[] = []
+    HOOKS.toast = (m: string, k?: unknown) => { said.push(m); kinds.push(k) }
     ranger()
     render(<BalancesPage />)
     const was = lve('bane').app
     typeIn('bal-LVE-bane', '30')
     act(() => { saber(); setBalanceLock(true); ranger() })
     expect(lve('bane').app).toBe(was)
-    expect(said.join(' ')).toContain('not saved: Locked by admin')
+    expect(said.join(' ')).toMatch(/^Blocked: .+\. Locked by admin\.$/)
+    expect(kinds, 'the grey refusal note, not an amber one').toEqual(['blocked'])
+  })
+})
+
+describe('a change the store refused reads "Blocked" in the grey note; every other refusal keeps the red tag (D1668)', () => {
+  it('the store said no: "Blocked", the red "no entry" sign before it, the grey face', () => {
+    render(<FigBox value={5} label="a figure" testid="fb" save={() => BLOCKED} />)
+    fireEvent.blur(typeIn('fb', '6'))
+    const tag = screen.getByTestId('fb-err')
+    expect(tag.className).toBe('bp-err bp-blocked')
+    expect(tag.querySelector('.bk-sign')?.getAttribute('aria-hidden')).toBe('true')
+    expect(tag.querySelector('b')?.textContent).toBe('Blocked')
+    expect(tag.textContent, "never 'Not saved', the failed-save band's words alone (D1667)").toBe('Blocked')
+    expect(tag.getAttribute('role')).toBe('alert')
+  })
+  it('a figure it cannot take: the red tag, its words, no sign', () => {
+    render(<FigBox value={5} label="a figure" testid="fb" save={() => 'Type a whole number or a half, like 17 or 17.5'} />)
+    fireEvent.blur(typeIn('fb', '6'))
+    const tag = screen.getByTestId('fb-err')
+    expect(tag.className).toBe('bp-err')
+    expect(tag.querySelector('.bk-sign')).toBeNull()
+    expect(tag.textContent).toBe('Type a whole number or a half, like 17 or 17.5')
+  })
+  it("the stylesheet: the blocked tag is the grey note, hung from the box's left edge, never the red box", () => {
+    const css = readFileSync('src/leavewar/ui/balances.css', 'utf8')
+    const rule = /\.bp-err\.bp-blocked \{([^}]*)\}/.exec(css)?.[1] ?? ''
+    expect(rule).toContain('background: var(--panel-2')
+    expect(rule).toContain('border-color: var(--edge-2')
+    expect(rule).toContain('left: 0; right: auto')
+    expect(rule).not.toMatch(/#2a1215|#FF7A84/i)
   })
 })
 

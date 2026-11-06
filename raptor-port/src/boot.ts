@@ -50,7 +50,9 @@ export async function bootApp(backend: Backend, policy: BootPolicy = DEMO_POLICY
     backend instanceof BrowserBackend ? idbDocStore() : null,
     /* a dropped document write is rare (storage full/locked) but must not be
        silent — the file works this session but won't survive a reload */
-    () => HOOKS.toast("Couldn't save that document — your browser storage may be full, so it may not be here after a reload.", 'warn'),
+    /* the grey refusal note, keeping its own words (owner D1667, D1668 — R4c-document-r2grey-*.png): its lead is
+       the words before the colon */
+    () => HOOKS.toast("Couldn't save that document: your browser storage may be full, so it may not be here after a reload.", 'blocked'),
   )
   /* [DB-READINESS] group A, phase 5.2 — every boot starts from the seed its policy gives it (the demo's, frozen, or none),
      reset in place BEFORE anything reads storage, so no boot inherits another's (state/seeds.ts) */

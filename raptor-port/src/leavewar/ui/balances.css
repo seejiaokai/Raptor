@@ -83,6 +83,12 @@
   /* (built) a refusal stands at its box, in the warning red, until the box is typed in again */
   .bp-fb.bad .bp-bx { border-color: #FF7A84; }
   .bp-err { position: absolute; top: calc(100% + 4px); right: 0; z-index: 6; width: max-content; max-width: 240px; padding: 5px 8px; border-radius: 7px; background: #2a1215; border: 1px solid #FF7A84; color: #FFB3B9; font: 600 12px/1.3 system-ui; white-space: normal; text-align: left; }
+  /* (built) a change the STORE refused reads "Blocked" (owner D1667, D1668 — "B"): the app's plain grey note, only its drawn
+     "no entry" sign red (ui/scheduler/28-blocked.css --blocked-sign) and "Blocked" in bold white — never this red box, which
+     means a change kept that clashes; it hangs from the box's left edge, clear of a grade's arrow. As drawn:
+     docs/mock/2026-11-05-notsaved-refusal/img/R1-figbox-r2grey-*.png, R2-grades-r2grey-*.png (scripts/handpass/nsr1105-today.mjs) */
+  .bp-err.bp-blocked { display: flex; align-items: flex-start; gap: 7px; left: 0; right: auto; background: var(--panel-2, #1A1F26); border-color: var(--edge-2, #2F3742); color: var(--ink-2, #B6C0CB); }
+  .bp-err.bp-blocked b { color: var(--ink, #E8EDF2); font-weight: 700; }
   .bp-z, .bp .z { color: #7d8894; font-weight: 500; }
   /* read only (round 19b at the desktop's size): its figure's right edge on the box figures' line */
   .bp-ro { display: inline-flex; align-items: center; justify-content: flex-end; box-sizing: border-box; padding-right: 10px; min-width: 54px; height: 28px; font: 700 13.5px system-ui; color: #f1f4f7; font-variant-numeric: tabular-nums; }

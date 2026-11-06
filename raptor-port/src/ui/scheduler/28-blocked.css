@@ -1,0 +1,16 @@
+/* A REFUSAL OF ONE CHANGE — "BLOCKED:" (owner D1667, D1668, 6 Nov 26 — "B", the grey note). The drawing of record is
+   docs/mock/2026-11-05-notsaved-refusal/img/*-r2grey-*.png, its values those of scripts/handpass/nsr1105-today.mjs
+   (`nsr-`): the app's plain grey note — its own fill, edge and size — with only a drawn "no entry" sign in red, the lead
+   in bold white and the rest quieter, read from the left. Never a red box: red already means a change kept that clashes
+   (D1668). Global, so the Leave War's figure boxes and Grades window wear the same sign (leavewar/ui/balances.css
+   .bp-blocked). The note's words are built in ui/toast.ts (`blockedFace`). */
+:root{
+  --blocked-sign:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ccircle cx='8' cy='8' r='6.4' fill='none' stroke='%23FF7A84' stroke-width='1.8'/%3E%3Cpath d='M3.6 12.4 12.4 3.6' stroke='%23FF7A84' stroke-width='1.8' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+.bk-sign{display:inline-block;width:14px;height:14px;flex:0 0 14px;margin-top:1px;background:var(--blocked-sign)}
+/* the passing note: on a phone the note centres its words (ui/toast.ts placeToast, an inline style) — a blocked note
+   reads from the left, its sign first, as drawn */
+#toastEl[data-face="blocked"]{display:flex;align-items:flex-start;gap:7px;text-align:left !important}
+#toastEl[data-face="blocked"] .bk-words{min-width:0;text-align:left}
+#toastEl[data-face="blocked"] b{color:var(--ink);font-weight:700}
+#toastEl[data-face="blocked"] .bk-rest{color:var(--ink-2);font-weight:500}

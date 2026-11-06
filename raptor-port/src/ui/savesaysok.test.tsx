@@ -95,7 +95,7 @@ describe('the editor', () => {
     const n = INPUTS.length
     await refusing(async () => { await click($('#inpEditSave')) })
     expect(said(/Input added/), 'never "Input added"').toBe(false)
-    expect(said(/not saved/i), 'it says it was not saved').toBe(true)
+    expect(said(/^Blocked:|not saved/i), 'it says it was not saved').toBe(true)
     expect(INPUTS.length).toBe(n)
     expect(INPEDIT, 'the window stays').toBeTruthy()
     expect(($('#inpEditRmk') as HTMLInputElement).value, 'with what was typed').toBe('saysok new')
@@ -111,7 +111,7 @@ describe('the editor', () => {
     await setV($('#inpEditRmk'), 'typed and not to be lost')
     await refusing(async () => { await click($('#inpEditSave')) })
     expect(said(/Input updated/), 'never "Input updated"').toBe(false)
-    expect(said(/not saved/i)).toBe(true)
+    expect(said(/^Blocked:|not saved/i)).toBe(true)
     expect(byId(id).remarks, 'nothing was kept').toBe('saysok')
     expect(INPEDIT, 'the window stays').toBeTruthy()
     expect(INPEDIT, 'on the record as the list now holds it').toBe(byId(id))
@@ -127,7 +127,7 @@ describe('the editor', () => {
     await act(async () => { setInpEdit(byId(id)); notify() })
     await refusing(async () => { await click($('#inpEditDel')) })
     expect(said(/Input deleted/), 'never "Input deleted"').toBe(false)
-    expect(said(/not saved/i)).toBe(true)
+    expect(said(/^Blocked:|not saved/i)).toBe(true)
     expect(byId(id), 'the record is still there').toBeTruthy()
     expect(INPEDIT).toBe(byId(id))
     TOASTS = []
@@ -143,7 +143,7 @@ describe('the editor', () => {
     await click($('[data-testid="medclash-0"] .upconf-ans button'))               // "ATT B replaces"
     await refusing(async () => { await click($('[data-testid="medclash-save"]')) })
     expect(said(/Input added/), 'never "Input added"').toBe(false)
-    expect(said(/not saved/i)).toBe(true)
+    expect(said(/^Blocked:|not saved/i)).toBe(true)
     expect(byId(c).endDate, 'the old entry was not trimmed').toBe('Jul 15')
     expect(INPUTS.some((r: any) => r.person === 'bane' && r.type === 'ATT B' && r.date === 'Jul 13')).toBe(false)
     expect(INPEDIT, 'the window stays').toBeTruthy()
@@ -195,7 +195,7 @@ describe('the Inputs List', () => {
     await click($('[data-testid="oil-yes"]'))
     await refusing(async () => { await click($('[data-testid="oilconf-save"]')) })
     expect(said(/Input updated/), 'never "Input updated"').toBe(false)
-    expect(said(/not saved/i)).toBe(true)
+    expect(said(/^Blocked:|not saved/i)).toBe(true)
     expect(byId(id).remarks).toBe('saysok')
     expect(byId(id).oil).toBeUndefined()
     expect($('[data-testid="win-inputedit"]'), 'the window is still open').toBeTruthy()
@@ -208,7 +208,7 @@ describe('the Inputs List', () => {
     await click($('[data-testid="oil-all"]'))
     await refusing(async () => { await click($('[data-testid="oilconf-save"]')) })
     expect(said(/OIL decision updated/)).toBe(false)
-    expect(said(/not saved/i)).toBe(true)
+    expect(said(/^Blocked:|not saved/i)).toBe(true)
     expect(byId(id).oil).toEqual({ '2026-07-18': 1, '2026-07-19': 0 })
   })
   it('opened from its row, Delete: a refused delete never says "Input deleted"', async () => {

@@ -15,7 +15,8 @@
    Every change is one command the top bar's Undo takes back (`lw.grades`). */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { addGrade, deleteGrade, gradeDaysNow, gradeHolders, gradeNameProblem, liveGrades, moveGrade, renameGrade, setGradeDays } from '../state/store'
-import { FigBox } from './BalancesPage'
+import { ErrWords, FigBox } from './BalancesPage'
+import { BLOCKED } from './balancefigs'
 import { deleteAsk } from './gradeswords'
 import { Sheet } from './Sheet'
 import { usePhone } from './phone'
@@ -59,7 +60,7 @@ function NameBox({ id, name, testid, onSave }: { id: string; name: string; testi
         onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); commit() } }}
         onBlur={() => { if (err) { setText(null); setErr(null); return } commit() }}
       />
-      {err && <span className="bp-err" role="alert" data-testid={`${testid}-err`} id={`gw-err-${id}`}>{err}</span>}
+      {err && <span className={`bp-err${err === BLOCKED ? ' bp-blocked' : ''}`} role="alert" data-testid={`${testid}-err`} id={`gw-err-${id}`}><ErrWords err={err} /></span>}
     </span>
   )
 }
@@ -189,7 +190,7 @@ export function GradesSheet({ anchor, onClose }: { anchor: HTMLElement | null; o
     const why = gradeNameProblem(name) ?? daysProblem(days)
     if (why) { setDraft(d => (d ? { ...d, err: why } : d)); return }
     if (addGrade(name, days)) setDraft(null)
-    else setDraft(d => (d ? { ...d, err: 'Not saved' } : d))
+    else setDraft(d => (d ? { ...d, err: BLOCKED } : d))
   }
 
   return (
@@ -216,10 +217,10 @@ export function GradesSheet({ anchor, onClose }: { anchor: HTMLElement | null; o
                 onPointerDown={e => startDrag(e, g.id)}
                 onKeyDown={e => gripKey(e, g.id)}
               >⠿</button>
-              <NameBox id={g.id} name={g.name} testid={`grade-name-${g.id}`} onSave={v => gradeNameProblem(v, g.id) ?? (renameGrade(g.id, v) ? null : 'Not saved')} />
+              <NameBox id={g.id} name={g.name} testid={`grade-name-${g.id}`} onSave={v => gradeNameProblem(v, g.id) ?? (renameGrade(g.id, v) ? null : BLOCKED)} />
               <span className="n" data-testid={`grade-holds-${g.id}`}>{people(n)}</span>
               <span className="gw-days">
-                <FigBox value={gradeDaysNow(g)} plus label={`${g.name}: days added each 1 Jan`} testid={`grade-days-${g.id}`} save={v => daysProblem(v) ?? (setGradeDays(g.id, v) ? null : 'Not saved')} />
+                <FigBox value={gradeDaysNow(g)} plus label={`${g.name}: days added each 1 Jan`} testid={`grade-days-${g.id}`} save={v => daysProblem(v) ?? (setGradeDays(g.id, v) ? null : BLOCKED)} />
               </span>
               <button type="button" className="xx" data-testid={`grade-del-${g.id}`} aria-label={`Delete ${g.name}`} onClick={() => del(g.id)}>✕</button>
             </div>
@@ -253,7 +254,7 @@ export function GradesSheet({ anchor, onClose }: { anchor: HTMLElement | null; o
               onChange={e => setDraft({ ...draft, name: e.target.value, err: null })}
               onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addDraft() } }}
             />
-            {draft.err && <span className="bp-err" role="alert" data-testid="grade-draft-err">{draft.err}</span>}
+            {draft.err && <span className={`bp-err${draft.err === BLOCKED ? ' bp-blocked' : ''}`} role="alert" data-testid="grade-draft-err"><ErrWords err={draft.err} /></span>}
           </span>
           <span className="n" />
           <span className="gw-days">
