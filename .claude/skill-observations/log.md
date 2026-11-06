@@ -3637,6 +3637,8 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Issue:** The walk script judged "cut" by comparing the text's line box with its box; on half-height boxes the line box is taller than the capitals, so four kinds of day failed falsely. Then a picture showed a box with no letters at all, which read as a fault; it was a joined multi-day bar whose later days hide their code on purpose (transparent text). The full combination measure, by contrast, read ink pixels but only checked corner tags — never whether one box covers another's letters.
 
+**Met again, same day:** `docs/walk-scripts.md` already says "Whether letters fit is measured on their ink" (6 Nov 26) — the new walk script was written without it, so the rule did not reach the moment of writing. The guard to propose: one shared on-screen helper (ink-based) that walk scripts import for "letters fit", in place of each script writing its own.
+
 **Suggested improvement:** In walk-scripts §4, a step that judges text fit uses the glyphs' ink (or the long axis only, for a line box) and lists the classes that hide text by design (e.g. a joined bar's later days) before calling a missing word a fault; and a combination measure checks box-over-box overlap of ink as well as tag-over-ink.
 
 **Principle:** Judge "cut" by ink, not by the text's layout box; and before calling missing text a fault, ask whether the design hides it on purpose.

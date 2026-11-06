@@ -115,6 +115,9 @@ And the measure itself: red on the build before the "!" fix (96 / 97), green aft
 - **The words that still described the corner tiles and the PO tag** (his D201 for D1727, D1728) — corrected: `docs/ui-contracts.md`
   (the box, the corner tiles), `MatrixRows.tsx` (three comments), `chrome.css` (one comment).
 
+**Taken in:** [LW-SIDE-BOXES-CUT] (two whole days side by side cutting ATCH / OTH — now turned, measured whole) and
+[LW-POLAST-COVERS-LETTERS] (the last-day "PO" over a box's letters — now a yellow line, D1728).
+
 ## 10. The gates
 GitHub's run of pull request 650 on the "!" fix: 25 pass, 2 skipped (his PC's runner, the live deploy). A later push of this
 sheet and the comments re-runs it.
