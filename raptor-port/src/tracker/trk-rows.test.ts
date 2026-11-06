@@ -45,7 +45,7 @@ async function addCourse(core: any, name: string) {
 }
 /* a structural chart edit — one ball added through the chart's own list editor — then ✓ Save changes */
 async function addBall(core: any, id: string) {
-  const arr = JSON.parse(JSON.stringify(core.SYL))
+  const arr = structuredClone(core.SYL)
   arr.push({ id, type: 'sim', seq: 999, prereqs: [], phase: arr.length ? arr[0].phase : 'P' })
   expect(await core.saveSylText(JSON.stringify(arr))).toBeNull()
   await core.persistSyl()

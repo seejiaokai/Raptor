@@ -1,0 +1,28 @@
+filed {"iid":"imqoidgg0i9mji4","type":"Meeting","title":"Range brief","date":"Jul 15","s":540,"e":600,"people":["Drifter","Hunter","Ranger"]}
+Tally added: Tally added to Range brief
+Hunter off: Hunter taken out of Range brief
+INPUTS before reload: {"type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":540,"e":660,"people":["Drifter","Ranger","Tally"],"by":"stiff"}
+BEFORE RELOAD window: {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 0","All changes 4 [on]"],"lines":["cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00","cw-l :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]}
+saved rx3-7-1-before-reload
+RELOADED; the page asked to sign in again: true
+INPUTS after reload: {"type":"Meeting","title":"Range brief","date":"Jul 15","to":null,"s":540,"e":660,"people":["Drifter","Ranger","Tally"],"by":"stiff"}
+AFTER RELOAD window: {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 0","All changes 4 [on]"],"lines":["cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 09:00","cw-l :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]}
+saved rx3-7-2-after-reload
+saved rx3-7-3-tap-added
+TAP added "Tally · Range brief 15 Jul · added Saber · 22/6 09:00" -> toast:  | flash: [{"cls":"seat chgflash","puck":"","text":"Tally O","row":"RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ","fill":"g:2.2.+"}]
+saved rx3-7-3-tap-takenout
+TAP taken out "Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00" -> toast:  | flash: [{"cls":"seat chgflash","puck":"","text":"Drifter A","row":"RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ","fill":"g:2.2.+"},{"cls":"seat chgflash","puck":"","text":"Tally O","row":"RANGE BRIEF MEETING 09:00 11:00 Drifter A Ranger IP Tally O ","fill":"g:2.2.+"}]
+now signed in as Ranger; page: viewsched
+Ranger can see pages: ["viewsched","inputs","quals","logic","leavewar","tracker","help"]
+Ranger: page editsched | #histBtn: no #histBtn
+saved rx3-7-4-ranger-page
+RANGER view-only probe: {"top":["fastSync|Toggle 1-second sync (for publ","notifyBell|Notifications","insightBtn|Week insights","logout|Logout"],"chg":["dpend dpendbtn dnew|4 new"],"histAny":false}
+saved rx3-7-6-ranger-view-only
+Ranger: chip on Wed: 4 new
+RANGER window (first tab): {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 4 [on]","All changes 4"],"lines":["cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 NEW 09:00","cw-l fre :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l fre :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l fre :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l fre :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]}
+saved rx3-7-8-ranger-window-first
+RANGER window (All changes / Wed): {"title":"Changes · Wednesday 15/7 Not yet published","tabs":["New to you 4","All changes 4 [on]"],"lines":["cw-gh :: ▾ Input · Drifter, Ranger, Tally · Range brief · 4 NEW 09:00","cw-l fre :: Range brief 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l fre :: Hunter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l fre :: Tally · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l fre :: Drifter, Hunter, Ranger · Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00"]}
+saved rx3-7-9-ranger-window-all
+RANGER bell: ["Range briefWed 15 Jul Now 09:00–11:00 · Saber now","Range briefWed 15 Jul Hunter taken off · Saber now","Range briefWed 15 Jul Tally added · Saber now","Range briefWed 15 Jul You were added · Saber now"]
+saved rx3-7-7-ranger-bell
+ERRORS none

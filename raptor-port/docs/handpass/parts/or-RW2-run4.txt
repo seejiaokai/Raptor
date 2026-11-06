@@ -1,0 +1,14 @@
+filed: {"iid":"imqoidgg0l03fhb","people":["Ranger"],"type":"Training","title":"Gun drill","date":"Jul 15","s":540,"e":600}
+row idx 2 {"prog":"GUN DRILL","str":"09:00","end":"10:00","who":"Ranger","more":[],"cx":false,"cxr":"","info":false,"box":false,"keys":"prog,str,end,who,rmks,srcType,src,srcv,rid"}
+re-timed on row; INPUTS: {"iid":"imqoidgg0l03fhb","type":"Training","title":"Gun drill","date":"Jul 15","to":null,"s":540,"e":660,"people":["Ranger"],"oil":"[[\"Ranger\",null]]","cx":false,"cxr":"","info":false,"box":false,"ver":"[\"people\",\"type\",\"allday\",\"s\",\"e\",\"date\",\"yr\",\"remarks\",\"mod\",\"title\",\"iid\",\"by\",\"modBy\",\"at\",\"modAt\",\"ord\",\"acc\"]","filedBy":"stiff"}
+re-word toast: Input updated | INPUTS: {"iid":"imqoidgg0l03fhb","type":"Training","title":"Gun range drill","date":"Jul 15","to":null,"s":540,"e":660,"people":["Ranger"],"oil":"[[\"Ranger\",null]]","cx":false,"cxr":"","info":false,"box":false,"ver":"[\"people\",\"type\",\"allday\",\"s\",\"e\",\"date\",\"yr\",\"remarks\",\"mod\",\"title\",\"iid\",\"by\",\"modBy\",\"at\",\"modAt\",\"ord\",\"acc\"]","filedBy":"stiff"} | window open: 0
+dots on Wed (history on, as it stands): []
+pressed show on Personal Inputs
+dots on Wed (Personal Inputs open): [{"tag":"DIV","sec":"sec-inp","row":"Gun range drill TRAINING 09:00 11:00 Ranger IP till 15 Jul UNDO","attrs":"data-inprow=imqoidgg0l03fhb data-histdot="}]
+dot elements on Wed: 1
+DOT 0 {"sec":"sec-inp","row":"Gun range drill TRAINING 09:00 11:00 Ranger IP til"} bubble= ["RANGER · GUN RANGE DRILL Gun drill added · 15 Jul (on the programme) Saber · 22/6 09:00 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00 Gun drill → Gun range drill Saber · 22/6 09:00"]
+LINES: ["cw-gh :: ▾ Input · Ranger · Gun range drill · 3 09:00","cw-l :: 15 Jul · title Gun drill → Gun range drill Saber · 22/6 09:00","cw-l :: Gun drill 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00","cw-l :: Gun drill added · 15 Jul (on the programme) Saber · 22/6 09:00"]
+TAP line 0 "15 Jul · title Gun drill → Gun range drill Saber · 22/6 09:00" toast="" flash=[{"cls":"seat chgflash","text":"Ranger IP"}]
+TAP line 1 "Gun drill 15 Jul · times 09:00–10:00 → 09:00–11:00 Saber · 22/6 09:00" toast="" flash=[{"cls":"seat chgflash","text":"Ranger IP"}]
+TAP line 2 "Gun drill added · 15 Jul (on the programme) Saber · 22/6 09:00" toast="" flash=[{"cls":"seat chgflash","text":"Ranger IP"}]
+ERRORS none

@@ -73,6 +73,9 @@ body.dw-lock{overflow:hidden}
    dayTabsHTML) — figures of one width: the › week arrow after them never moves as the dates change (owner D1122, 21 Oct 26
    — a fresh reader's find: 22 Feb → 1 Mar slid it 47px; a 6em room then proved too small in GitHub's Linux font) */
 .sb-days .sbday[data-sbtab]{text-align:center;font-variant-numeric:tabular-nums}
+/* the chips are stops for the keys (owner D1646 — the mock-up's picture 2c): the app's keyboard ring, for the keys only */
+.sb-days .sbday:focus{outline:none}
+.sb-days .sbday:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 /* THE WEEK-JUMP ARROWS flanking the day chips (board.ts dayTabsHTML). Chip-
    shaped so they read as part of the strip, but glyph-only and muted, so the
    dated days stay the emphasis; a hair of margin sets each off from the row it
@@ -374,6 +377,12 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 /* a row that cannot be chosen LOOKS it (walker B3, 25 Sep 26 — a template refused on a published day, D96, was drawn and
    lit on hover exactly like a live one): dimmed, no pointer, no hover */
 .wavemenu button.wm:disabled{opacity:.45;cursor:not-allowed}
+/* THE KEYS' RING IN A SMALL MENU (owner D1646 — the mock-up's picture 2b): the app's cyan keyboard ring, inside a pick's own
+   edge as the Logic page's menu items wear it (.lgmi, 01-logic.css); round the small buttons (the pencil, the gear, Manage)
+   just outside them. For the keys only (:focus-visible) — a menu opened or pressed by the mouse shows none. */
+.wavemenu button:focus{outline:none}
+.wavemenu button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wavemenu button.wm:focus-visible{outline-offset:-2px;border-radius:8px}
 .wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
 .wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
 .wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}

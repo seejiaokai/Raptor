@@ -1,7 +1,6 @@
 import { SrchGlyph } from './SrchGlyph.jsx';
 import { PenGlyph, InfoGlyph, ListGlyph, UploadGlyph, UpGlyph, ReorderGlyph, CopyGlyph, TrashGlyph, DownloadGlyph } from './Glyphs.jsx';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { trackerHosted } from '../undo-bridge.js';
 import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import Legend from './Legend.jsx';
@@ -163,19 +162,8 @@ function HeaderSearch() {
   );
 }
 
-/* The standalone Tracker's own ↶ ↷ (inside Raptor the pair is in the app's top bar — see Header below). A component of
-   its own so the bar's function stays short (React Doctor, 31 Oct 26); it draws the same two buttons as before. */
-function OwnUndoRedo() {
-  return (
-    <>
-      <button className="sm icon" id="trUndoBtn" disabled={!core.canUndo()} title={core.canUndo() ? 'Undo ' + core.undoWhat() + ' (Ctrl+Z)' : 'Nothing to undo'} onClick={core.doUndo}>↶</button>
-      <button className="sm icon" id="trRedoBtn" disabled={!core.canRedo()} title={core.canRedo() ? 'Redo ' + core.redoWhat() + ' (Ctrl+Y)' : 'Nothing to redo'} onClick={core.doRedo}>↷</button>
-    </>
-  );
-}
-
-/* The save corner at the bar's far right — its words, then ✓ Save changes. Its own component for the same reason as
-   OwnUndoRedo; the comments that say why it is drawn this way stay at its place in the bar. */
+/* The save corner at the bar's far right — its words, then ✓ Save changes. A component of its own so the bar's function
+   stays short (React Doctor, 31 Oct 26); the comments that say why it is drawn this way stay at its place in the bar. */
 function SaveSlot() {
   /* Unsaved FLOW edits only. Until 9 Sep 26 this also watched the user's file
      (`fileDirty`), so a mark lit the button and pressing it opened a save-file
@@ -274,16 +262,10 @@ export default function Header() {
             title, type, crew & prerequisites; marking is off while it is on. */}
         <button className={'sm icon' + (core.showDetails ? ' primary' : '')} id="detailsBtn" aria-pressed={!!core.showDetails} title="Show each event's title, type, crew & prerequisites on hover (tap on a phone) — marking is off while this is on" onClick={core.toggleDetails}><InfoGlyph /></button>
 
-        {/* ↶ Undo / ↷ Redo, on the bar for everyone (owner, 9 Sep 26 — "not
-            only isolated to under edit"). They take back a mark, a failure
-            count or a date as well as a chart edit (core.js, the undo section);
-            greyed when there is nothing to take back, and the tooltip names
-            what the next press would do. Same ids the edit strip used, so the
-            smoke suite's presses land here. */}
-        {/* [UNDO-TOPBAR] (owner D347 / D349 (2), 28 Sep 26): inside Raptor the pair is drawn in the app's TOP BAR, in
-            Edit Schedule's place and look, still undoing the Tracker's own changes (undo-bridge.js); the standalone
-            Tracker keeps it here — nothing hosts it there (Fable's red team 3). */}
-        {trackerHosted() ? null : <OwnUndoRedo />}
+        {/* ↶ Undo / ↷ Redo are not on this bar: [UNDO-TOPBAR] (owner D347 / D349 (2), 28 Sep 26) draws them in the app's
+            TOP BAR, in Edit Schedule's place and look, still undoing the Tracker's own changes (undo-bridge.js), with the
+            ids #trUndoBtn / #trRedoBtn. The pair this bar drew for the standalone Tracker went with
+            [TRK-STANDALONE-LEFTOVERS] (D1538 — the Tracker is never exported again; 5 Nov 26). */}
 
         {/* Show All moved to the right of the syllabus group (owner, 9 Sep 26).
             On a phone the button is hidden: the Show All tab under the bar is

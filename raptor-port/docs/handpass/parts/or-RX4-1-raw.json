@@ -1,0 +1,202 @@
+{
+ "filed": [
+  {
+   "iid": "imqoidgg0obynw6",
+   "type": "OD",
+   "date": "Jul 15",
+   "s": 360,
+   "e": 1080,
+   "people": [
+    "Ranger",
+    "Hex",
+    "Hunter"
+   ]
+  }
+ ],
+ "toastFiled": "Input added for 3 people",
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c0": {
+  "a": "1 new  [dstat: 1 new i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "card0": [
+  "till 17 Jul NomadOD Overseas duty — exercise, off island",
+  "06:00–18:00 Hex, Hunter, RangerOD till 15 Jul By Ranger"
+ ],
+ "pressedAfter": [
+  "Hunter",
+  "Hex"
+ ],
+ "saveToasts": "Input updated",
+ "inputs1": [
+  {
+   "iid": "bynw6",
+   "type": "OD",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 360,
+   "e": 1080,
+   "people": [
+    "Hex",
+    "Hunter"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "9ltd6",
+   "type": "OD",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "people": [],
+   "by": "Nomad"
+  }
+ ],
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Ranger · OD Saber 22/6 09:00 taken out"
+  ],
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "card1": [
+  "till 17 Jul NomadOD Overseas duty — exercise, off island",
+  "06:00–18:00 Hex, HunterOD till 15 Jul By Saber"
+ ],
+ "rowBefore": "OD 06:00 18:00 C Hex C till 15 Jul",
+ "toastType": "Input updated",
+ "inputs2": [
+  {
+   "iid": "bynw6",
+   "type": "OD",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 360,
+   "e": 1080,
+   "people": [
+    "Hunter"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "zh1db",
+   "type": "OD",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 600,
+   "e": 1080,
+   "people": [
+    "Hex"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "9ltd6",
+   "type": "OD",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "people": [],
+   "by": "Nomad"
+  }
+ ],
+ "c2": {
+  "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 2",
+  "e": "Waiting to go out as AL1 · 2 changes",
+  "lines": [
+   "Ranger · OD Saber 22/6 09:00 taken out",
+   "Hex · OD Saber 22/6 09:00 his own now — 10:00–18:00"
+  ],
+  "b": "2 pending",
+  "n": [
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "agree": true
+ },
+ "winAll": {
+  "title": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabs": [
+   "New to you 1",
+   "All changes 9",
+   "To go out · AL1 2 [on]"
+  ],
+  "lines": [
+   "pl-item  :: Ranger · OD Saber 22/6 09:00 taken out",
+   "pl-item  :: Hex · OD Saber 22/6 09:00 his own now — 10:00–18:00"
+  ]
+ },
+ "unav": [
+  "OD 06:00 18:00 Hunter IP till 15 Jul",
+  "OD 10:00 18:00 C Hex C till 15 Jul",
+  "OL Cobra IP Overseas leave — off island",
+  "ATT C Grit C Medically down till 17 Jul",
+  "OD C Nomad C Overseas duty — exercise, off island",
+  "OIL C Gambit C"
+ ],
+ "card2": [
+  "till 17 Jul NomadOD Overseas duty — exercise, off island",
+  "06:00–18:00 HunterOD till 15 Jul By Saber",
+  "10:00–18:00 HexOD till 15 Jul By Saber"
+ ],
+ "errs": []
+}

@@ -1,0 +1,64 @@
+{
+  "rows": [
+    {
+      "scn": "S14",
+      "step": "Edit Schedule change made: its own undo is lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"off\":false,\"title\":\"Undo — a day note\"}",
+      "pics": "S14-1-es-changed.png"
+    },
+    {
+      "scn": "S14",
+      "step": "top bar undo on Edit Schedule took back the page change; the Tracker mark was NOT taken back; Tracker undo is lit with the mark tooltip",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ES undo after: {\"off\":true,\"title\":\"Undo\"}; ST-02 dco; Tracker undo \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S14-2-back-on-tracker.png"
+    },
+    {
+      "scn": "S14",
+      "step": "focus before Ctrl+Z on Edit Schedule (then blurred)",
+      "note": "DIV# editable"
+    },
+    {
+      "scn": "S14",
+      "step": "Ctrl+Z on Edit Schedule never takes back the Tracker mark (Edit Schedule has no Ctrl+Z of its own: its change stays, same before the Tracker was ever opened - see S14b)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ES undo after {\"off\":false,\"title\":\"Undo — a day note\"}; ST-02 dco",
+      "pics": ""
+    },
+    {
+      "scn": "S14",
+      "step": "Ctrl+Z on the Tracker took back the newest Tracker mark (ST-01) and NOT the Edit Schedule change",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ST-01 0; ES undo {\"off\":false,\"title\":\"Undo — a day note\"}",
+      "pics": "S14-3-es-still-changed.png"
+    },
+    {
+      "scn": "S14",
+      "step": "after Ctrl+Z pressed on Edit Schedule while the Tracker is hidden, the Tracker still holds ST-02",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ST-02 dco",
+      "pics": ""
+    },
+    {
+      "scn": "S14",
+      "step": "via the bell or Quals → Tracker",
+      "note": "not walked (the Tracker was reached by its tab only)"
+    },
+    {
+      "scn": "S14",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

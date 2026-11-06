@@ -1,12 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { PenGlyph } from './Glyphs.jsx';
+import { ArrowHeadGlyph, ConnectGlyph, EditLinesGlyph, FitGlyph, HandGlyph, LineGlyph, ListGlyph, PenGlyph, ResetGlyph, SelectAllGlyph, SelectGlyph, TrashGlyph } from './Glyphs.jsx';
+
+/* EACH TOOL A DRAWN MARK (owner D1705, 5 Nov 26 — round 4 of the consistency look, "all as recommended"): the typed ✋ ▣ → 🗑
+   ╱ ❐ ➤ ⤢ ↺ 📋 (an iPhone drew some as coloured emoji) are marks in the app's line style (Glyphs.jsx); Merge and Unmerge are
+   their words alone. A space after each mark, as the typed ones had. */
 import * as core from '../app/core.js';
 
 const TOOLS = [
-  { t: 'move', label: '✋ Move', title: 'Drag balls to reposition' },
-  { t: 'select', label: '▣ Select', title: 'Drag a box on empty space to select several balls, then drag any of them to move the group' },
-  { t: 'connect', label: '→ Connect', title: 'Click prerequisite first, then the event that depends on it' },
-  { t: 'delball', label: '🗑 Delete', title: 'Delete whatever is selected — events or a line. With nothing selected, click an event, a drawn line, or a prerequisite arrow to delete it.', style: { borderLeft: '4px solid var(--red)' } },
+  { t: 'move', label: <><HandGlyph /> Move</>, title: 'Drag balls to reposition' },
+  { t: 'select', label: <><SelectGlyph /> Select</>, title: 'Drag a box on empty space to select several balls, then drag any of them to move the group' },
+  { t: 'connect', label: <><ConnectGlyph /> Connect</>, title: 'Click prerequisite first, then the event that depends on it' },
+  { t: 'delball', label: <><TrashGlyph /> Delete</>, title: 'Delete whatever is selected — events or a line. With nothing selected, click an event, a drawn line, or a prerequisite arrow to delete it.', style: { borderLeft: '4px solid var(--red)' } },
 ];
 const ADDS = [
   { a: 'flight', label: '+ Flight', style: { borderLeft: '4px solid var(--flight)' } },
@@ -17,8 +21,8 @@ const ADDS = [
 ];
 const TOOLS2 = [
   { t: 'text', label: <><PenGlyph /> Text</>, title: 'Click a ball to edit its text/type/number' },
-  { t: 'line', label: '╱ Line', title: 'Draw a free right-angle line: click to start, then click where it ends. Ends snap to a ball or to another line; anything left loose stays unlinked.' },
-  { t: 'editlines', label: '❐ Edit lines', title: 'Show N/E/S/W snap points on every ball; select a line and drag its ends onto them' },
+  { t: 'line', label: <><LineGlyph /> Line</>, title: 'Draw a free right-angle line: click to start, then click where it ends. Ends snap to a ball or to another line; anything left loose stays unlinked.' },
+  { t: 'editlines', label: <><EditLinesGlyph /> Edit lines</>, title: 'Show N/E/S/W snap points on every ball; select a line and drag its ends onto them' },
 ];
 
 /* Shows the chart's real size, not a hard-wired 8.5. The box keeps its own text
@@ -46,7 +50,7 @@ const SHORT = {
   editlines: 'drag a line’s end onto a blue point', merge: 'tap a line, then one crossing it',
   unmerge: 'tap a line, then one crossing it',
 };
-const LABEL = Object.fromEntries([...TOOLS, ...TOOLS2, { t: 'merge', label: '✕ Merge' }, { t: 'unmerge', label: '⌢ Unmerge' }].map(o => [o.t, o.label]));
+const LABEL = Object.fromEntries([...TOOLS, ...TOOLS2, { t: 'merge', label: 'Merge' }, { t: 'unmerge', label: 'Unmerge' }].map(o => [o.t, o.label]));
 
 export default function ArrangeTools() {
   const wrap = useRef(null);
@@ -70,7 +74,7 @@ export default function ArrangeTools() {
       <div className="arrfold" id="arrFold">
         <button className="primary" id="foldTool" title="The tool in use — Tools ▾ has the rest" onClick={() => core.setToolsOpen(!core.toolsOpen)}>{LABEL[core.tool] || core.tool}</button>
         <span className="foldhint" id="foldHint">{core.hintFlash || SHORT[core.tool] || ''}</span>
-        <button id="foldFit" title="Fit the whole flow in view" onClick={then(core.fitView)}>⤢ Fit</button>
+        <button id="foldFit" title="Fit the whole flow in view" onClick={then(core.fitView)}><FitGlyph /> Fit</button>
         <button id="foldTools" className="foldtools" aria-expanded={core.toolsOpen ? 'true' : 'false'} aria-controls="arrTools"
           title="Every chart tool" onClick={() => core.setToolsOpen(!core.toolsOpen)}>Tools ▾</button>
       </div>
@@ -87,23 +91,23 @@ export default function ArrangeTools() {
       {TOOLS2.map(o => (
         <button key={o.t} className={core.tool === o.t ? 'primary' : ''} title={o.title} onClick={() => core.toolButtonClick(o.t)}>{o.label}</button>
       ))}
-      <button id="arrowBtn" title="Select a line — drawn or prerequisite — then cycle: arrow at end → arrow at other end → no arrow" onClick={then(core.arrowClick)}>➤ Arrow</button>
-      <button className={core.tool === 'merge' ? 'primary' : ''} title="Click one line then a crossing line: the hop is removed, and near-parallel drawn lines snap flush into one straight run. Drawn lines are merged by default." onClick={() => core.toolButtonClick('merge')}>✕ Merge</button>
-      <button className={core.tool === 'unmerge' ? 'primary' : ''} title="Click one line then a crossing line to give the crossing an inverted-U hop. Works on drawn lines as well as prerequisite arrows." onClick={() => core.toolButtonClick('unmerge')}>⌢ Unmerge</button>
+      <button id="arrowBtn" title="Select a line — drawn or prerequisite — then cycle: arrow at end → arrow at other end → no arrow" onClick={then(core.arrowClick)}><ArrowHeadGlyph /> Arrow</button>
+      <button className={core.tool === 'merge' ? 'primary' : ''} title="Click one line then a crossing line: the hop is removed, and near-parallel drawn lines snap flush into one straight run. Drawn lines are merged by default." onClick={() => core.toolButtonClick('merge')}>Merge</button>
+      <button className={core.tool === 'unmerge' ? 'primary' : ''} title="Click one line then a crossing line to give the crossing an inverted-U hop. Works on drawn lines as well as prerequisite arrows." onClick={() => core.toolButtonClick('unmerge')}>Unmerge</button>
       <span className="sep"></span>
-      <button id="selectAllBtn" title="Select every ball so the font box applies to all" onClick={then(core.selectAllClick)}>▣ Select all</button>
+      <button id="selectAllBtn" title="Select every ball so the font box applies to all" onClick={then(core.selectAllClick)}><SelectAllGlyph /> Select all</button>
       <FontBox />
       <span className="sep"></span>
       {/* ↶ Undo / ↷ Redo left this strip for the main bar on 9 Sep 26 (owner):
           they take back marks as well as chart edits now, so they belong where
           everyone can reach them, not only inside edit mode. Header.jsx. */}
-      <button id="fitBtn" title="Fit the whole flow in view" onClick={then(core.fitView)}>⤢ Fit</button>
+      <button id="fitBtn" title="Fit the whole flow in view" onClick={then(core.fitView)}><FitGlyph /> Fit</button>
       {/* Moved out of the header, where showing up only in edit mode pushed
           Marking as onto another row and slid the buttons under the pointer.
           The header's #fitViewBtn was a duplicate of #fitBtn and is gone. */}
-      <button id="resetLayout" title="Put every event back where the chart says it goes" onClick={then(core.resetLayoutClick)}>↺ Reset layout</button>
+      <button id="resetLayout" title="Put every event back where the chart says it goes" onClick={then(core.resetLayoutClick)}><ResetGlyph /> Reset layout</button>
       <span className="sep"></span>
-      <button id="editSyl" title="Open the full event list to edit names, types, crew and prerequisites" onClick={then(core.openModal)}>📋 Edit events</button>
+      <button id="editSyl" title="Open the full event list to edit names, types, crew and prerequisites" onClick={then(core.openModal)}><ListGlyph /> Edit events</button>
       <div className="arrnote">Double-click any pokéball on the chart to edit that event directly.</div>
     </div>
     </div>

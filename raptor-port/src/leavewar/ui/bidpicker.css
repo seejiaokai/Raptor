@@ -1909,6 +1909,7 @@
 /* "APPROVE WHAT I ENTER" AS THE APP'S SWITCH (change 8, D1302): the Inputs window's "Several people" switch, sized to the
    title bar's small words, standing before ✕ */
 .bidsheet-hd .bp-sw { margin-left: auto; min-height: 0; border: 0; background: none; padding: 0; gap: 5px; font-size: 11px; color: var(--ink-2); align-self: center; }
+/* its letters are `.pp-sw`'s, the app's at 600, as the title beside it (owner D1681, 5 Nov 26); only the size is its own */
 .bidsheet-hd .bp-sw + .x { margin-left: 4px; }
 .bidsheet-hd .bp-sw:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 999px; }
 
@@ -1923,12 +1924,21 @@
    leave buttons above it. Now the chips set the row's height and the ⋯ stretches to it, centred, in every engine. */
 .bidsheet .bp-more { flex: 1 1 auto; display: flex; align-items: center; justify-content: center; font-size: 16px; letter-spacing: 1px; line-height: 1; padding-top: 0; padding-bottom: 0; }
 .bidsheet .bp-more[aria-expanded='true'] { border-color: rgba(59, 198, 232, .55); color: var(--accent); }
-/* its menu opens UPWARD over the window, its right edge on the ⋯'s */
-.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 150px; padding: 8px;
-  background: var(--panel); border: 1px solid var(--edge-2); border-radius: 10px; box-shadow: 0 8px 24px rgba(0, 0, 0, .45); }
-.bidsheet .bp-menu .bp-menu-item { justify-content: flex-start; text-align: left; white-space: nowrap; background: var(--panel-2); color: var(--ink-2); border: 1px solid var(--edge); }
-/* Grant OIL in OIL given's green (D1320) — the FO and HO boxes' own colours */
-.bidsheet .bp-menu .bp-menu-item.oil-give { background: rgba(70, 196, 108, .2); color: #DDF8E6; border-color: rgba(70, 196, 108, .7); }
+/* its menu opens UPWARD over the window, its right edge on the ⋯'s. ONE LOOK FOR EVERY MENU OF ACTIONS (owner D1706, 5 Nov 26
+   — his "should I just follow this design", then "all as recommended"): the Scheduler Board's own small menu
+   (18-oil-board.css `.sb-moremenu` / `.sb-moreitem`) — plain rows in one panel, 38 tall, no box round each — in place of a
+   boxed button per item; what each item does is unchanged. */
+.bidsheet .bp-menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: flex; flex-direction: column; gap: 0; min-width: 150px; padding: 4px;
+  background: var(--panel); border: 1px solid var(--edge-2); border-radius: 10px; box-shadow: 0 10px 28px rgba(0, 0, 0, .5); }
+.bidsheet .bp-menu .bp-menu-item { display: flex; align-items: center; justify-content: flex-start; gap: 9px; min-height: 38px; padding: 8px 11px;
+  text-align: left; white-space: nowrap; background: none; color: var(--ink); border: 0; border-radius: 7px; font-size: 13px; font-weight: 500;
+  letter-spacing: 0; text-transform: none; box-shadow: none; }
+.bidsheet .bp-menu .bp-menu-item:focus-visible { background: var(--raised); }
+@media (hover: hover) { .bidsheet .bp-menu .bp-menu-item:hover { background: var(--raised); } }
+/* Grant OIL in OIL given's green (D1320) — the FO and HO boxes' own colours — kept as a tinted row (D1706) */
+.bidsheet .bp-menu .bp-menu-item.oil-give { background: rgba(70, 196, 108, .2); color: #DDF8E6; }
+.bidsheet .bp-menu .bp-menu-item.oil-give:focus-visible { background: rgba(70, 196, 108, .3); }
+@media (hover: hover) { .bidsheet .bp-menu .bp-menu-item.oil-give:hover { background: rgba(70, 196, 108, .3); } }
 
 /* THE DAY'S LIST, ROUND 3 (D1315, D1327–D1330): the list's outer frame gone, each entry the window's full width, led by its
    box as the grid draws it, its short words beside it, then one row of actions and its words row */

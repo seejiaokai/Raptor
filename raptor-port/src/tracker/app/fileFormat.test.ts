@@ -74,6 +74,7 @@ describe('the links block (fileFormat.js)', () => {
     const f = file({ students: people('26ABSG', '2026', 'STUDENT A'), links })
     expect(f.contains).toEqual({ charts: false, students: true, links: true })
     expect(f.links).toEqual(links)
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the round trip IS the test: the file as it is written to disk and read back, which is JSON — a structuredClone would skip the very step being checked
     const r = readFile(JSON.parse(JSON.stringify(f)))
     expect(r.links).toEqual(links)
     expect(r.contains.links).toBe(true)

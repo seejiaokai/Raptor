@@ -218,6 +218,7 @@ export function accountsLoad(): void {
        hold reads '' (the admin picks at approval); the slicing is only for records written
        by an older build — every writer REFUSES an over-long value instead (D226) */
     const seat = SEATS.some(v => v.v === x.seat) ? String(x.seat) : ''
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- a seat's CATs are a handful (six at most), asked once a request at load: a Set would cost more than the scan it saves
     const cat = seat && seat !== 'GND' && catsFor(seat).includes(x.cat) ? String(x.cat) : ''
     reqs.push({
       id: x.id, name, cs: String(x.cs ?? '').slice(0, MAX_CS), ini: String(x.ini ?? '').toUpperCase().slice(0, MAX_INITIALS),

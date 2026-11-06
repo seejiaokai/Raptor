@@ -1,0 +1,102 @@
+{
+ "state": "autosort-pc",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q4-pc-autosort-new"
+ },
+ "recorded": "2026-11-05T11:33:44.991Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "autosort": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1055.6,
+    "y": 384.5,
+    "w": 81.3,
+    "h": 21.1
+   },
+   "ink": {
+    "x": 1074.6,
+    "y": 390.1,
+    "w": 56.3,
+    "h": 13
+   },
+   "text": "Auto sort",
+   "typed": false,
+   "look": {
+    "fill": "rgb(32, 38, 46)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 9.5px",
+    "spacing": "0.475px"
+   },
+   "tag": "button.mbtn.zz-one.zz-ring"
+  },
+  "autosort-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1061.6,
+    "y": 388.5,
+    "w": 13,
+    "h": 13
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 9.5px",
+    "spacing": "0.475px"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q4-pc-autosort-new.png",
+  "identical": true
+ }
+}

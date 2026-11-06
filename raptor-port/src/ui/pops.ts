@@ -1,4 +1,4 @@
-import { VIEW_RESET } from '../state/view'
+import { VIEW_RESET, OILWAIT } from '../state/view'
 import { DAYS } from '../engine/data'
 /* Which pop-ups are open — module state so the delegated click routing can
    open them; the components read it and re-render via the store version. */
@@ -204,7 +204,10 @@ export function resetPopsForSession(): void { for (const p of POPS_RESET) p.rese
    asks this straight after the save it causes, so it never puts the caret in a box behind a window that save opened
    (a weekend duty request's time → the OIL question), and never walks the schedule while one is up. */
 export function windowOverSchedule(): boolean {
-  if (INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null) return true
+  /* …and the OIL question put before a change (state/view.ts OILWAIT, ui/OilWaitSheet.tsx — [WINDOWS-KEEP-KEYS]'s leftover,
+     5 Nov 26): a name typed in an input's row and left by Tab can raise it, and the route then put the caret in the next box
+     behind it — the question's keys given back there, not to the box he was typing in */
+  if (INPEDIT || MEDMOVE || DOCVIEW || INSIGHTS || AIRKEY || TPLEDIT || WAVEEDIT || DAYTPLEDIT || DRAFTSEDIT || WEEKCAL || DAYPOP != null || OILWAIT) return true
   /* the Scheduler Board's cancel-reason and Sort all dialogs (RF2, 6 Oct 26 — Sol's read): their state lives in
      ui/board.ts, which imports this file, so they are asked of the page — both are always mounted and shown by
      dropping `hidden` */
@@ -217,6 +220,14 @@ VIEW_RESET.push({name:'INSIGHTS_ALL',scopes:['week'],reset:()=>setInsightsAll(fa
    (Modals.tsx), an undo can land on another page or week — and a nav tab pressed by the keys changes page — and the
    window's 'di|gi' would then name a wave of a week or page nobody is looking at. */
 VIEW_RESET.push({ name: 'AIRKEY_NAV', scopes: ['week', 'page'], reset: () => setAirKey(null) })
+/* …AND SO DO THE THREE WINDOWS THAT TOOK ITS WAY (owner D1645, 5 Nov 26 — ui/barfree.ts): with the bar's Undo and Redo free
+   over them, an undo can land on another page or week, as a page name pressed by the keys does. The day-details window
+   names a day by its place in the week on screen, so a week change closes it too; "Jump to a date" and the document viewer
+   belong to the page they were opened on (the calendar to the schedule's week, the viewer to its input's row), so a page
+   change closes them — a week change is the calendar's own job, and an input is no week's. */
+VIEW_RESET.push({ name: 'DAYPOP_NAV', scopes: ['week', 'page'], reset: () => setDayPop(null) })
+VIEW_RESET.push({ name: 'WEEKCAL_NAV', scopes: ['page'], reset: () => setWeekCal(false) })
+VIEW_RESET.push({ name: 'DOCVIEW_NAV', scopes: ['page'], reset: () => setDocView(null) })
 /* THE INPUTS AND SANS SETTINGS CLOSE ON A PAGE CHANGE (F8 of the 3 Nov 26 re-check — the Inputs batch): opened from their
    calendar's gear (or Logic's rows), they stayed up over Edit Schedule, a window about a page nobody is on. A week change
    leaves them: their settings are the squadron's, not the week's. */

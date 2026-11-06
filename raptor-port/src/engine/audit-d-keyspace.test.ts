@@ -276,7 +276,7 @@ describe('sortDutyBlocks — free text, no times, and the AVALON-built desk (sce
   })
 })
 
-describe('labels are NOT renumbered (scenario 9 — documented-deliberate, HANDOFF §Known issues)', () => {
+describe('labels are NOT renumbered (scenario 9 — documented-deliberate, HANDOFF-ARCHIVE.md §Known issues / open work)', () => {
   it('a day built out of order sorts to read WAVE 2 above WAVE 1 and both labels are untouched', () => {
     DAYS[0].waves = [
       { label: 'WAVE 1', formations: [{ cs: 'a', to: '1500', aircraft: [] }] },

@@ -18,7 +18,9 @@ import { DUTYTPL_CFG } from '../engine/dutytpl'
 import { SBDAY, afterSchedMutate } from '../state/view'
 import * as view from '../state/view'
 import { cxText, dayHTML } from './html'
-import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT, pickDayTpl, dayTplArmKey } from './board'
+import { openScheduler, closeScheduler, boardArmClick, boardChange, boardMbtn, boardHTML, askSortAll, sortAllCommit, SORTALL, addLine, addWave, askCx, cxCommit, CXT, pickDayTpl, dayTplArmKey, SBWIDE } from './board'
+import { GEAR_INNER, REORDER_INNER, TEMPLATES_INNER, PHONE_INNER, DESKTOP_INNER } from './glyphs'
+import { drawnAs } from '../testing/drawn'
 import { setCurWeek, CURWEEK } from '../engine/waves'
 import { addDayTpl, DAYTPL_CFG } from '../engine'
 import { applyMove } from '../engine/reorder'
@@ -174,10 +176,30 @@ describe('the scheduler board (tfin board group)', () => {
     await act(async () => { afterSchedMutate(); notify() })
   })
 
+  /* ROUND 4 OF THE CONSISTENCY LOOK (owner D1703, D1707, 5 Nov 26 — "all as recommended"): the board's typed marks are the
+     app's drawn line marks — every ⇅ the Reorder mark, Templates a page of blocks, the phone menu's layout switch a phone
+     and a screen — so every device draws them alike (an iPhone drew 📱 / 🖥 in colour) */
+  it('Sort all, Templates, each section’s Auto sort and the ⋯ menu wear the drawn marks; no typed mark is left', async () => {
+    expect(drawnAs($('#sbSortAll .bi svg'), REORDER_INNER), 'Sort all').toBe(true)
+    expect(drawnAs($('#sbTpl .bi svg'), TEMPLATES_INNER), 'Templates').toBe(true)
+    const auto = $('#sbBoard [data-sortsec]')
+    expect(auto.textContent!.trim()).toBe('Auto sort')
+    expect(drawnAs(auto.querySelector('svg'), REORDER_INNER), 'Auto sort').toBe(true)
+    await click($('#sbMore'))
+    expect(drawnAs($('#sbMoreSort .bi svg'), REORDER_INNER), 'the menu’s Sort all').toBe(true)
+    expect(drawnAs($('#sbMoreWide .bi svg'), SBWIDE ? PHONE_INNER : DESKTOP_INNER), 'the layout switch').toBe(true)
+    expect(/[⇅▤◧⚙📱🖥]/u.test($('#schedBoard').textContent!), 'no typed mark left on the board').toBe(false)
+    await click($('#sbMore'))
+    expect($('#sbMoreMenu'), 'the menu closed again').toBeNull()
+  })
+
   it('+ Wave opens the kind menu: a flying wave and the three standalone kinds', async () => {
     await click($('[data-wvadd]'))
     const menu = $('.wavemenu')
     expect(menu).toBeTruthy()
+    /* its manage button wears the one drawn gear (D1509, D1707), not the typed ⚙ */
+    expect(menu.querySelector('.wm-mng')!.textContent).toBe('')
+    expect(drawnAs(menu.querySelector('.wm-mng svg'), GEAR_INNER), 'the one gear').toBe(true)
     const kinds = [...menu.querySelectorAll('[data-wmkind]')].map(b => (b as HTMLElement).dataset.wmkind)
     expect(kinds).toEqual(['', 'sc', 'avalon', 'bb'])
     /* no day chips when opened from the board — the day is already chosen */

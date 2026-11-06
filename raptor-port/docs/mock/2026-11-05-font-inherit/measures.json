@@ -1,0 +1,582 @@
+{
+ "pc1536-cancel": {
+  "targets": [
+   2
+  ],
+  "today": [
+   {
+    "what": "#cxReason \"U/S AIRCRAFT\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 388,
+    "h": 37
+   }
+  ],
+  "fix": [
+   {
+    "what": "#cxReason \"U/S AIRCRAFT\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "14px",
+    "weight": "600",
+    "w": 388,
+    "h": 41
+   }
+  ]
+ },
+ "pc1536-cancel-reasons": {
+  "targets": [
+   3
+  ],
+  "today": [
+   {
+    "what": "input.cxedit-name \"WX\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 282,
+    "h": 27
+   },
+   {
+    "what": "input.cxedit-name \"OPS\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 282,
+    "h": 27
+   },
+   {
+    "what": "input.cxedit-name \"LOGS\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 282,
+    "h": 27
+   },
+   {
+    "what": "input.cxedit-name \"\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 320,
+    "h": 27
+   }
+  ],
+  "fix": [
+   {
+    "what": "input.cxedit-name \"WX\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 282,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"OPS\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 282,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"LOGS\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 282,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 320,
+    "h": 28
+   }
+  ]
+ },
+ "pc1536-day-notes": {
+  "targets": [
+   8,
+   9
+  ],
+  "today": [
+   {
+    "what": "button.ic-pkadd \"+\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 92,
+    "h": 17
+   },
+   {
+    "what": "#icNewNotePpl \"+ people\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 74,
+    "h": 36
+   }
+  ],
+  "fix": [
+   {
+    "what": "button.ic-pkadd \"+\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "14px",
+    "weight": "700",
+    "w": 92,
+    "h": 16
+   },
+   {
+    "what": "#icNewNotePpl \"+ people\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "700",
+    "w": 72,
+    "h": 36
+   }
+  ]
+ },
+ "pc1536-input-window": {
+  "targets": [
+   4,
+   6,
+   7
+  ],
+  "today": [
+   {
+    "what": "button.pp-sw.on \"Several people\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 144,
+    "h": 36
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 35,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 35,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", sans-serif",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 35,
+    "h": 24
+   }
+  ],
+  "fix": [
+   {
+    "what": "button.pp-sw.on \"Several people\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 135,
+    "h": 36
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 33,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 33,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 33,
+    "h": 24
+   }
+  ]
+ },
+ "pc1536-member-input": {
+  "targets": [
+   5,
+   4
+  ],
+  "today": [
+   {
+    "what": "#inpEditPersonFixed \"Ranger\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 398,
+    "h": 21
+   },
+   {
+    "what": "#inpEditType \"OL\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 398,
+    "h": 35
+   },
+   {
+    "what": "#inpEditRmk \"Dentist 0900\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 313,
+    "h": 33
+   },
+   {
+    "what": "#inpEditTill \"on\"",
+    "family": "Arial",
+    "size": "13.3333px",
+    "weight": "400",
+    "w": 13,
+    "h": 13
+   }
+  ],
+  "fix": [
+   {
+    "what": "#inpEditPersonFixed \"Ranger\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 398,
+    "h": 21
+   },
+   {
+    "what": "#inpEditType \"OL\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 398,
+    "h": 37
+   },
+   {
+    "what": "#inpEditRmk \"Dentist 0900\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 313,
+    "h": 35
+   },
+   {
+    "what": "#inpEditTill \"on\"",
+    "family": "\"Inter Tight\", system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 13,
+    "h": 13
+   }
+  ]
+ },
+ "pc1536-errors": [],
+ "iphone-cancel": {
+  "targets": [
+   2
+  ],
+  "today": [
+   {
+    "what": "#cxReason \"U/S AIRCRAFT\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 326,
+    "h": 38
+   }
+  ],
+  "fix": [
+   {
+    "what": "#cxReason \"U/S AIRCRAFT\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "14px",
+    "weight": "600",
+    "w": 326,
+    "h": 38
+   }
+  ]
+ },
+ "iphone-cancel-reasons": {
+  "targets": [
+   3
+  ],
+  "today": [
+   {
+    "what": "input.cxedit-name \"WX\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 220,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"OPS\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 220,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"LOGS\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 220,
+    "h": 28
+   },
+   {
+    "what": "input.cxedit-name \"\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 258,
+    "h": 28
+   }
+  ],
+  "fix": [
+   {
+    "what": "input.cxedit-name \"WX\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 220,
+    "h": 26
+   },
+   {
+    "what": "input.cxedit-name \"OPS\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 220,
+    "h": 26
+   },
+   {
+    "what": "input.cxedit-name \"LOGS\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 220,
+    "h": 26
+   },
+   {
+    "what": "input.cxedit-name \"\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 258,
+    "h": 26
+   }
+  ]
+ },
+ "iphone-day-notes": {
+  "targets": [
+   8,
+   9
+  ],
+  "today": [
+   {
+    "what": "button.ic-pkadd \"+\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 87,
+    "h": 17
+   },
+   {
+    "what": "#icNewNotePpl \"+ people\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 72,
+    "h": 36
+   }
+  ],
+  "fix": [
+   {
+    "what": "button.ic-pkadd \"+\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "14px",
+    "weight": "700",
+    "w": 87,
+    "h": 16
+   },
+   {
+    "what": "#icNewNotePpl \"+ people\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "700",
+    "w": 71,
+    "h": 36
+   }
+  ]
+ },
+ "iphone-input-window": {
+  "targets": [
+   4,
+   6,
+   7
+  ],
+  "today": [
+   {
+    "what": "button.pp-sw.on \"Several people\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 142,
+    "h": 44
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 34,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 34,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 34,
+    "h": 24
+   }
+  ],
+  "fix": [
+   {
+    "what": "button.pp-sw.on \"Several people\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "12px",
+    "weight": "600",
+    "w": 140,
+    "h": 44
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 34,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 34,
+    "h": 24
+   },
+   {
+    "what": "button.pp-all \"All\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "11px",
+    "weight": "600",
+    "w": 34,
+    "h": 24
+   }
+  ]
+ },
+ "iphone-member-input": {
+  "targets": [
+   5,
+   4
+  ],
+  "today": [
+   {
+    "what": "#inpEditPersonFixed \"Ranger\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "13px",
+    "weight": "400",
+    "w": 346,
+    "h": 19
+   },
+   {
+    "what": "#inpEditType \"OL\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 346,
+    "h": 44
+   },
+   {
+    "what": "#inpEditRmk \"Dentist 0900\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 267,
+    "h": 34
+   },
+   {
+    "what": "#inpEditTill \"on\"",
+    "family": "MS Shell Dlg",
+    "size": "13px",
+    "weight": "400",
+    "w": 12,
+    "h": 12
+   }
+  ],
+  "fix": [
+   {
+    "what": "#inpEditPersonFixed \"Ranger\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 346,
+    "h": 19
+   },
+   {
+    "what": "#inpEditType \"OL\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 346,
+    "h": 43
+   },
+   {
+    "what": "#inpEditRmk \"Dentist 0900\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 267,
+    "h": 33
+   },
+   {
+    "what": "#inpEditTill \"on\"",
+    "family": "Inter Tight, system-ui, sans-serif",
+    "size": "13px",
+    "weight": "600",
+    "w": 12,
+    "h": 12
+   }
+  ]
+ },
+ "iphone-errors": []
+}

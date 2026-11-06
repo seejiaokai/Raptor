@@ -1,0 +1,12 @@
+before [ 'RANGE BRIEF: Ranger', 'Hangar open day: Tally' ] {"oil":{"2026-07-18":0.5},"grp":null} {"undoBtn":"on|Undo — a change to the schedule","redoBtn":"off|Redo","sbUndo":"on|Undo — a change to the schedule","sbRedo":"off|Redo"} {"n":2,"ok":1,"id":"sbBell","on":[false,false]}
+question 1 Swapping Tally and Ranger | Don’t swap | Swap saveDisabled true
+after drag ground [ 'RANGE BRIEF: Ranger', 'Hangar open day: Tally' ] undoSame true
+measure q {"x":500,"y":286,"w":440,"h":328,"inside":true,"onTop":true,"vw":1440,"vh":900}
+flash [ true, true ]
+bar Not swapped — OIL not answered | Answer OIL | OK
+measure bar {"x":527,"y":832,"w":387,"h":50,"inside":true,"onTop":true,"vw":1440,"vh":900}
+ground [ 'RANGE BRIEF: Ranger', 'Hangar open day: Tally' ] oil {"oil":{"2026-07-18":0.5},"grp":null} undoSame true bells {"n":2,"ok":1,"id":"sbBell","on":[false,false]}
+bell lines Saber []
+bar still 1
+oil earn pucks [{"who":"Fable","item":"r:rs130720265x1","on":true,"cls":"seat oilpk on","txt":"Fable FO"},{"who":"Ranger","item":"i:imqoidhvy0khph4","on":true,"cls":"seat oilpk on","txt":"Ranger HO"},{"who":"Tally","item":"r:rmqoidjl3fw7c6d","on":true,"cls":"seat oilpk on","txt":"Tally HO"},{"who":"Ranger","item":"i:imqoidhvy0khph4","on":true,"cls":"seat oilpk on","txt":"Ranger HO"}]
+errors []

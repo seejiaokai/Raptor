@@ -21,6 +21,7 @@ import * as core from './app/core.js'
 import * as FMT from './app/fileFormat.js'
 import { storage } from './storage.js'
 import Header from './components/Header.jsx'
+import ArrangeTools from './components/ArrangeTools.jsx'
 import SidePanel from './components/SidePanel.jsx'
 import { DlgModal } from './components/Modals.jsx'
 import { initStore, notify as raptorNotify, resetSession } from '../state/store'
@@ -28,6 +29,8 @@ import { PEOPLE } from '../engine/people'
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { useSyncExternalStore } from 'react'
+import { GEAR_INNER, RESET_INNER } from '../ui/glyphs'
+import { drawnAs } from '../testing/drawn'
 /* a stored student list or course list read back as the Tracker reads it ([DB-READINESS] group A, phase 5b — D462: they
    are stored one row per enrolment / course now, so a raw read of the old key finds nothing) — the doorway's shape */
 const rec = async (k: string) => { const v = await (core as any).storedRecordForTests(k); return v == null ? null : { key: k, value: v } }
@@ -84,7 +87,17 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
   }
   beforeEach(() => { document.body.innerHTML = '' })
 
-  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'trUndoBtn', 'trRedoBtn', 'saveStat']
+  const EVERYONE = ['activeSel', 'showAllBtn', 'hSearchBtn', 'courseSel', 'courseMenuBtn', 'sylSel', 'sylMenuBtn', 'arrangeBtn', 'detailsBtn', 'saveStat']
+
+  /* [UNDO-TOPBAR] (D347, D349 (2)): the Tracker's ↶ ↷ are the app's top bar's (ui/Shell.tsx UndoPair, through
+     undo-bridge.js), never its own bar's. The bar used to draw its own pair whenever nothing had told it the app hosts it
+     — the standalone Tracker's way, retired with [TRK-STANDALONE-LEFTOVERS] (D1538, 5 Nov 26) — so a bar drawn on its
+     own, as here, now draws none */
+  it('the bar draws no Undo / Redo pair of its own — the top bar carries it', async () => {
+    resetSession({ user: 'ad', role: 'admin' })
+    await render()
+    expect($('#trUndoBtn')).toBeNull(); expect($('#trRedoBtn')).toBeNull()
+  })
 
   it('admin: every control including the File menu', async () => {
     resetSession({ user: 'ad', role: 'admin' })
@@ -177,6 +190,33 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
       expect(chip.querySelector('.x svg.trkglyph'), 'each student\'s remove is the drawn ✕').toBeTruthy()
       expect(typed.test(chip.textContent!), 'no typed mark on a student').toBe(false)
     }
+  })
+
+  it('D1705, D1707: Edit chart layout\'s tools, the lull\'s Copy to… and ×, and the flex gear wear drawn marks — none typed', async () => {
+    await render()
+    /* the chart's tools are App's, under the bar — drawn here beside it */
+    const tHost = document.createElement('div')
+    document.body.appendChild(tHost)
+    await act(async () => { createRoot(tHost).render(<ArrangeTools />) })
+    /* round 4 of the consistency look (5 Nov 26 — "all as recommended"): each tool a mark in the app's line style, Merge and
+       Unmerge their words alone (no look-alike of ✕ or a hop), the lull's two the Tracker's own copy and ✕ */
+    const tools = [...document.querySelectorAll('#arrTools > button')] as HTMLElement[]
+    expect(tools.length, 'the tools are drawn').toBeGreaterThan(15)
+    const typed = /[✋▣→🗑╱❐✕⌢➤⤢↺📋⧉×]/u
+    for (const b of tools) expect(typed.test(b.textContent!), `"${b.textContent}" has no typed mark`).toBe(false)
+    const named = (w: string) => tools.find(b => b.textContent!.trim() === w)
+    for (const w of ['Move', 'Select', 'Connect', 'Delete', 'Text', 'Line', 'Edit lines', 'Arrow', 'Select all', 'Fit', 'Reset layout', 'Edit events'])
+      expect(named(w)?.querySelector('svg.trkglyph'), `${w} wears its drawn mark`).toBeTruthy()
+    for (const w of ['Merge', 'Unmerge']) {
+      expect(named(w), w).toBeTruthy()
+      expect(named(w)!.querySelector('svg'), `${w} is its words alone`).toBeNull()
+    }
+    /* the marks the app draws too are the same drawings (ui/glyphs.ts — the Tracker keeps copies for a standalone export) */
+    expect(drawnAs(named('Reset layout')!.querySelector('svg'), RESET_INNER), 'Reset layout is the app’s arrow turning back').toBe(true)
+    expect(drawnAs($('#flexBtn')!.querySelector('svg'), GEAR_INNER), 'the flex gear is the app’s one gear').toBe(true)
+    const side = readFileSync(join(__dirname, 'components/SidePanel.jsx'), 'utf8')
+    expect(side, 'Copy to… wears the copy mark').toMatch(/><CopyGlyph \/> Copy to…<\/button>/)
+    expect(side, 'a lull’s remove is the drawn ✕').toMatch(/className="x trbtn" data-lull=\{i\}[\s\S]{0,240}?\}\}><XGlyph \/><\/button>/)
   })
 
   it('Save changes watches flow edits only, and no longer touches a file', () => {
@@ -568,13 +608,13 @@ describe('the seam stays light', () => {
     expect(role).not.toMatch(/^\s*import /m)
   })
 
-  it('the two undo ids Raptor already owns were renamed — and the pair lives on the bar now', () => {
+  it('the two undo ids Raptor already owns were renamed — and the pair lives on the app\'s top bar now', () => {
     const tools = readFileSync(join(__dirname, 'components/ArrangeTools.jsx'), 'utf8')
     const hdr = readFileSync(join(__dirname, 'components/Header.jsx'), 'utf8')
     expect(tools).not.toMatch(/id="(undoBtn|redoBtn|trUndoBtn|trRedoBtn)"/)
-    expect(hdr).not.toMatch(/id="(undoBtn|redoBtn)"/)
-    expect(hdr).toMatch(/id="trUndoBtn"/)
-    expect(hdr).toMatch(/id="trRedoBtn"/)
+    expect(hdr).not.toMatch(/id="(undoBtn|redoBtn|trUndoBtn|trRedoBtn)"/)
+    const shell = readFileSync(join(__dirname, '../ui/Shell.tsx'), 'utf8')
+    expect(shell).toMatch(/page === 'tracker' \? \['trUndoBtn', 'trRedoBtn'\]/)
   })
 })
 
@@ -759,12 +799,15 @@ describe('the person bridge and the link (peoplewire.ts → people.js → core.j
     } finally { HOOKS.whoami = real }
   })
 
-  it('with no roster handed over — the standalone app — + Add is the old "Student callsign:" prompt, byte for byte', async () => {
-    /* owner, 9 Sep 26: the Tracker goes back out to its standalone repo, where
-       a student is created by typing a name and nothing feeds people.js. An
-       empty list must not draw an empty roster section, a search box or a
-       "nobody matches" line over the text box — the dialog is the old prompt */
-    setPeople([])
+  it('with nobody on the roster to offer, + Add is the old "Student callsign:" prompt, byte for byte', async () => {
+    /* Kept inside Raptor ([TRK-STANDALONE-LEFTOVERS], 5 Nov 26), though it was first kept for the standalone app (owner,
+       9 Sep 26), which D1538 retired: Raptor itself can hand over an EMPTY roster — the roster offers aircrew only
+       (peoplewire.ts projectForTracker), so a new shared store whose one person is its first admin, ground crew, offers
+       nobody. An empty list must not draw an empty roster section, a search box or a "nobody matches" line over the
+       text box — the dialog is the old prompt */
+    const groundOnly = projectForTracker({ boss: { cs: 'Boss', seat: 'GND', pers: true, q: '' } })
+    expect(groundOnly, 'the premise: Raptor can hand over nobody').toEqual([])
+    setPeople(groundOnly)
     const Live = () => { useSyncExternalStore(C.subscribe, C.getVersion); return <DlgModal /> }
     const host = document.createElement('div'); host.className = 'host'; document.body.appendChild(host)
     const root = createRoot(host)

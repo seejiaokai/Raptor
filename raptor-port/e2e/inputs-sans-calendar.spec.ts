@@ -123,7 +123,7 @@ test('the gear: three colours and the late cut-off are saved from its window, re
   const need=await answer(page);const total=need.p+need.w
   await expect(cell(page)).toHaveClass(/\bt-red\b/)
   /* the gear is the app's own cog — never the sun, which on this calendar means day flying (D635) */
-  await expect(tid(page,'sc-gear')).toHaveText('⚙');await expect(tid(page,'sc-gear').locator('svg')).toHaveCount(0)
+  /* the app's one drawn gear since D1509 / D1707 */ await expect(tid(page,'sc-gear')).toHaveText('');await expect(tid(page,'sc-gear').locator('svg.btnglyph')).toHaveCount(1)
   await tid(page,'sc-gear').click();await expect(tid(page,'win-sansset')).toBeVisible()
   /* a window, not a wall (D641): dragged aside by its bar, and the month behind it still answers a press */
   const bar=(await tid(page,'win-sansset').locator('.win-bar').boundingBox())!

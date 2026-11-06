@@ -1,0 +1,166 @@
+{
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c0": {
+  "a": "6 changes  [dstat: 6 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "order0": [
+  "Drifter",
+  "Hunter",
+  "Ranger"
+ ],
+ "takeToast": "Drifter taken out of Range brief",
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Drifter · Range brief Saber 22/6 09:00 taken out"
+  ],
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "backToast": "Drifter added to Range brief",
+ "order1": [
+  "Hunter",
+  "Ranger",
+  "Drifter"
+ ],
+ "c2": {
+  "a": "8 changes  [dstat: 8 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "hist0": {
+  "title": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabs": [
+   "New to you 0",
+   "All changes 8 [on]",
+   "To go out · AL1 0"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Hunter, Ranger · Range brief · 3 09:00",
+   "cw-l :: Drifter · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l :: Drifter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l :: Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00",
+   "cw-gh :: ▾ The day · 5 09:00",
+   "cw-l sti :: Published — the Original Saber · 22/6 09:00",
+   "cw-l sti :: Signed · APPROVED BY · Cinch Saber · 22/6 09:00",
+   "cw-l sti :: Signed · PLANNED BY · Bolt Saber · 22/6 09:00",
+   "cw-l sti :: Signed · SKED CK · Basher Saber · 22/6 09:00",
+   "cw-l sti :: Signed · CUR CK · Ace Saber · 22/6 09:00"
+  ]
+ },
+ "wkButtons": [
+  "06/07/2026|Jul 06",
+  "13/07/2026|Jul 13[on]",
+  "20/07/2026|Jul 20",
+  "27/07/2026|Jul 27"
+ ],
+ "nextWeek": [
+  "20/07/2026"
+ ],
+ "backWeek": [
+  "13/07/2026"
+ ],
+ "c3": {
+  "a": "8 changes  [dstat: 8 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "hist1": {
+  "title": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabs": [
+   "New to you 0",
+   "All changes 8 [on]",
+   "To go out · AL1 0"
+  ],
+  "lines": [
+   "cw-gh :: ▾ Input · Drifter, Hunter, Ranger · Range brief · 3 09:00",
+   "cw-l :: Drifter · Range brief 15 Jul · added Saber · 22/6 09:00",
+   "cw-l :: Drifter · Range brief 15 Jul · taken out Saber · 22/6 09:00",
+   "cw-l :: Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00",
+   "cw-gh :: ▾ The day · 5 09:00",
+   "cw-l sti :: Published — the Original Saber · 22/6 09:00",
+   "cw-l sti :: Signed · APPROVED BY · Cinch Saber · 22/6 09:00",
+   "cw-l sti :: Signed · PLANNED BY · Bolt Saber · 22/6 09:00",
+   "cw-l sti :: Signed · SKED CK · Basher Saber · 22/6 09:00",
+   "cw-l sti :: Signed · CUR CK · Ace Saber · 22/6 09:00"
+  ]
+ },
+ "orderEnd": [
+  "Hunter",
+  "Ranger",
+  "Drifter"
+ ],
+ "same": true
+}

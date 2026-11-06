@@ -29,6 +29,8 @@ import { useVersion } from './useStore'
 import { mondayOf, keyToIso, dayIndexInWeek, TODAY } from './weeknav'
 import { clickedOutside } from './outside'
 import { DateCal } from './DateCal'
+import { useEscWindow } from './sheetfocus'
+import { useBarFree } from './barfree'
 
 /** The day the user is currently looking at, as `yyyy-mm-dd`: the board's open
  *  day, else the schedule carousel's left-most visible day, else the loaded
@@ -49,9 +51,21 @@ function currentDayIso(): string {
 export function WeekCal() {
   useVersion()
   const boxRef = useRef<HTMLDivElement>(null)
+  const popRef = useRef<HTMLDivElement>(null)
   const openerRef = useRef<Element | null>(null)
   const open = WEEKCAL !== false
   const context = WEEKCAL
+  /* THE BAR OVER IT STAYS PRESSABLE (owner D1645, 5 Nov 26 — ui/barfree.ts): Undo and Redo work with it open; any other
+     bar control closes it first and then does its job (the calendar's own button opens it again). Nothing of the week is
+     held in it — it reads the day being looked at as it draws — so an Undo leaves nothing stale in it; a page change
+     closes it (pops.ts WEEKCAL_NAV).
+     ESCAPE IS HEARD ON THE DOCUMENT, NOT ONLY INSIDE IT (the trap the mock-up's build brief named): it was its own
+     onKeyDown, so once the keys left it — to Undo — Escape did nothing. It is heard now as the Traffic and day-details
+     windows hear it (sheetfocus.ts useEscWindow): newest first, a question sheet over it answering its own, the month and
+     year lists shutting first (DateCal's own Escape, heard before it at the window); the keys go back to its opener. */
+  const shut = () => { setWeekCal(false); notify() }
+  useEscWindow(popRef, open, () => { shut(); (openerRef.current as HTMLElement | null)?.focus?.() })
+  useBarFree(popRef, open, shut)
 
   /* The calendar opens on the current day's month: it is drawn afresh each time the window opens (closed, it is not
      drawn at all), and reads the day once as it is drawn — so paging months while it is up is kept until it closes,
@@ -88,8 +102,7 @@ export function WeekCal() {
   const todayIso = keyToIso(TODAY)
 
   return (
-    <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date"
-      onKeyDown={e => { if (e.key === 'Escape') { e.stopPropagation(); close() } }}
+    <div className="airpop" id="weekCal" role="dialog" aria-label="Jump to a date" ref={popRef}
       onClick={e => { if (clickedOutside(e, 'weekCal')) close() }}>
       <div className="airpop-box weekcal-box" ref={boxRef}>
         <div className="airpop-head"><b>Jump to a date</b>

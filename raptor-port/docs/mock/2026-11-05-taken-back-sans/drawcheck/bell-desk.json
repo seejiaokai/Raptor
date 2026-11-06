@@ -1,0 +1,348 @@
+{
+ "state": "bell-desk",
+ "drawing": {
+  "script": "docs/mock/2026-11-05-taken-back-sans/draw.mjs",
+  "shot": "8-hex-bell-struck-desk-close"
+ },
+ "recorded": "2026-11-05T11:43:21.247Z",
+ "drawnOn": "claude/postout-bell-look at e4779887e",
+ "checkout": "2ee227d0b",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "list": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 897,
+    "y": 50,
+    "w": 348,
+    "h": 113.5
+   },
+   "ink": {
+    "x": 929,
+    "y": 62,
+    "w": 300,
+    "h": 87.7
+   },
+   "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now Warden Mon 16 Nov Posted out · off the manpower 8 h",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.5) 0px 10px 28px 0px",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.bell-list"
+  },
+  "line-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 902,
+    "y": 55,
+    "w": 338,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 929,
+    "y": 62,
+    "w": 300,
+    "h": 35.9
+   },
+   "text": "Sidewinder Mon 16 Nov Posted out · now SANS · taken back · Saber now",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line.unread.tb-new"
+  },
+  "name-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 929,
+    "y": 62,
+    "w": 65.6,
+    "h": 17
+   },
+   "ink": {
+    "x": 929,
+    "y": 62,
+    "w": 65.6,
+    "h": 17
+   },
+   "text": "Sidewinder",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "600 13px",
+    "spacing": "normal"
+   },
+   "tag": "b.bl-name"
+  },
+  "day-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 1001.6,
+    "y": 62,
+    "w": 71.4,
+    "h": 17
+   },
+   "ink": {
+    "x": 1001.6,
+    "y": 62,
+    "w": 71.4,
+    "h": 17
+   },
+   "text": "Mon 16 Nov",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "i.bl-day"
+  },
+  "what-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 929,
+    "y": 81.9,
+    "w": 269.4,
+    "h": 16.9
+   },
+   "ink": {
+    "x": 929,
+    "y": 81.9,
+    "w": 236.4,
+    "h": 16
+   },
+   "text": "Posted out · now SANS · taken back · Saber",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-what"
+  },
+  "struck-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 929,
+    "y": 81.9,
+    "w": 126.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 929,
+    "y": 81.9,
+    "w": 126.5,
+    "h": 16
+   },
+   "text": "Posted out · now SANS",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "s"
+  },
+  "dot-1": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 913,
+    "y": 68,
+    "w": 7,
+    "h": 7
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "50%",
+     "50%",
+     "50%",
+     "50%"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "span.bl-dot"
+  },
+  "line-2": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 902,
+    "y": 106.8,
+    "w": 338,
+    "h": 51.8
+   },
+   "ink": {
+    "x": 929,
+    "y": 113.8,
+    "w": 300,
+    "h": 35.9
+   },
+   "text": "Warden Mon 16 Nov Posted out · off the manpower 8 h",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "left",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "normal"
+   },
+   "tag": "button.bl-line"
+  }
+ },
+ "approved": {
+  "picture": "8-hex-bell-struck-desk-close.png",
+  "identical": true
+ }
+}

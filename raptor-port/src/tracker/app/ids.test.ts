@@ -43,7 +43,7 @@ describe('upgradeCourseBlock', () => {
     expect(block.bySyllabus.A.roster.some((r: any) => r.pid)).toBe(false)
   })
   it('does not mutate its input', () => {
-    const src = legacy(); const copy = JSON.parse(JSON.stringify(src))
+    const src = legacy(); const copy = structuredClone(src)
     upgradeCourseBlock(src, null); expect(src).toEqual(copy)
   })
   it('re-keys ONLY a syllabus whose roster was strings; an entry-keyed syllabus and its maps are left exactly as they are (review finding 5)', () => {
@@ -139,7 +139,7 @@ describe('reconcileIds', () => {
     const up = upgradeCourseBlock({ bySyllabus: { A: { roster: ['ALPHA'], marks: { ALPHA: { 'ST-01': { g: 'dco' } } }, dates: {} } } }, null).block
     const { block } = reconcileIds(up, [{ id: 'sA', name: 'ALPHA' }])
     expect(block.bySyllabus.A.roster).toEqual([{ id: 'sA', name: 'ALPHA' }]); expect(Object.keys(block.bySyllabus.A.marks)).toEqual(['sA'])
-    const src = file(), copy = JSON.parse(JSON.stringify(src))
+    const src = file(), copy = structuredClone(src)
     expect(reconcileIds(src, []).block).toEqual(copy); expect(src).toEqual(copy)
   })
 })

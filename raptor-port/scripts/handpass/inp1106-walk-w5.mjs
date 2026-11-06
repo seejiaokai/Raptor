@@ -1,0 +1,22 @@
+console.log('[inp1106-walk-w5 v1]')
+import { open, sleep } from './inp1106-walk-lib.mjs'
+const { br, p, errs, shot, tap } = await open('phone')
+const T = 'w5-phone-'
+const log = (...a) => console.log(...a)
+const wins = () => p.evaluate(() => [...document.querySelectorAll('[data-testid^=win-]')].filter(e => e.offsetWidth).map(e => e.dataset.testid))
+await tap(p.locator('#inCalBtn'), T + 's0-month')
+await p.locator('#inpCal [data-icday="2026-07-14"]').tap({ position: { x: 10, y: 10 } }); await p.screenshot({ path: (await import('./inp1106-walk-lib.mjs')).OUT + '/' + T + 's1-day14-quick.png' }); await sleep(700); await shot(T + 's1-day14')
+log('wins:', JSON.stringify(await wins()))
+const cards = p.locator('[data-testid=win-inputsday] .icard')
+log('cards in 14 Jul:', await cards.count(), JSON.stringify(await cards.evaluateAll(els => els.map(e => e.innerText.replace(/\s+/g, ' ').slice(0, 50)))))
+await tap(cards.first(), T + 's2-card-tapped')
+log('after card tap wins:', JSON.stringify(await wins()))
+await tap(p.locator('[data-testid=win-inputedit-x]'), T + 's3-x')
+log('after ✕ wins:', JSON.stringify(await wins()), 'cards still:', await cards.count())
+// the second card too
+await tap(cards.nth(1), T + 's4-card2-tapped')
+log('card2 wins:', JSON.stringify(await wins()))
+await tap(p.locator('[data-testid=win-inputedit-x]'), T + 's5-x2')
+log('after ✕ wins:', JSON.stringify(await wins()))
+log('ERRORS', JSON.stringify(errs))
+await br.close()

@@ -1,0 +1,54 @@
+{
+  "rows": [
+    {
+      "scn": "S17",
+      "step": "member marks ST-02",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S17-1-member-marked.png"
+    },
+    {
+      "scn": "S17",
+      "step": "Logout with nothing unsaved: no question, the sign-in card shows",
+      "size": "D",
+      "role": "member",
+      "pass": true,
+      "said": "question 0",
+      "pics": ""
+    },
+    {
+      "scn": "S17",
+      "step": "admin signs in in the same tab: the member's mark is shown; top bar undo greyed (not the member's history); corner clean",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ST-02 dco; undo greyed; corner \"\"",
+      "pics": "S17-2-admin-sees.png"
+    },
+    {
+      "scn": "S17",
+      "step": "both marks are stored under raptor:tracker/, none under ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker keys changed 3; ocuLocal 2; ocu 0",
+      "pics": "S17-3-admin-marked.png"
+    },
+    {
+      "scn": "S17",
+      "step": "reload: both marks are there",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "ST-02 dco, ST-01 dco",
+      "pics": "S17-4-reloaded.png"
+    },
+    {
+      "scn": "S17",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

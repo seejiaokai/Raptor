@@ -1,0 +1,10 @@
+PASS 1b desktop: with the veil from the bar's foot (58px) Undo is the element under its own centre — saw true
+NOTE 2a — desktop: after Enter on + Block the keys are on "mbtn add + Block"
+NOTE 2c — desktop: a board day chip's tabIndex today -1 (−1 = Tab never reaches it)
+NOTE 2d — desktop: the edit week's day name's tabIndex today -1
+NOTE 3 — desktop: the window's lines 1
+NOTE 4 — the new wave's address 2.2
+NOTE 4a — today's words under the box: "WAVE 3: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time. WAVE 3: reporting line 1 has no recognised clock. Check the time."
+NOTE 4b — drawn: "WAVE 3: reporting line 1 has no recognised clock. Check the time."
+PASS 1b phone: with the veil from the bar's foot (49px) Undo is the element under its own centre — saw true
+NOTE 3 — phone: the window's lines 1

@@ -20,6 +20,8 @@ import { storage } from './storage.js'
 import { setTrackerAdmin, trackerIsAdmin } from './role.js'
 import { wireTrackerPeople, trackerAdminForTracker } from './peoplewire'
 import { initStore, resetSession } from '../state/store'
+import { GEAR_INNER } from '../ui/glyphs'
+import { drawnAs } from '../testing/drawn'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 const C: any = core
@@ -70,14 +72,17 @@ describe('D1018 — the defaults and the ⚙ in the bar', () => {
   it('the ⚙ sits after Find event, right before the bar\'s Hide, for everyone (as drawn)', async () => {
     const cog = $('#page-tracker header .controls #flexBtn')
     expect(cog, 'the cog in the bar').toBeTruthy()
-    expect(cog!.textContent).toBe('⚙')
+    /* WAS the typed ⚙ (D635). CHANGED by D1509 and D1707 (5 Nov 26): the app's one drawn gear, the Tracker's own copy of it
+       (Glyphs.jsx — a standalone export carries it), in the button's colour */
+    expect(cog!.textContent).toBe('')
+    expect(drawnAs(cog!.querySelector('svg.trkglyph'), GEAR_INNER), 'the app’s one gear').toBe(true)
     expect($('#barHideBtn')!.previousElementSibling, 'right before Hide').toBe(cog)
     expect(cog!.getAttribute('aria-expanded')).toBe('false')
     await asMember()
     expect($('#flexBtn'), 'a member has it too').toBeTruthy()
     await asAdmin()
   })
-  it('nobody wired is the standalone Tracker — everyone; wired, the answer is Raptor\'s', async () => {
+  it('nobody wired (only a test that never loads the page) — everyone; wired, the answer is Raptor\'s', async () => {
     setTrackerAdmin(null)
     expect(trackerIsAdmin()).toBe(true)
     setTrackerAdmin(trackerAdminForTracker)
@@ -258,6 +263,7 @@ describe('D462 / D120 — kept: one stored row, read at boot, carried by a whole
     expect(charts.flex, 'a whole backup carries it').toEqual(mine)
     if (ids.length > 1) expect((await C.collectCharts(ids.slice(0, 1), { deleted: false })).flex, 'a handover does not').toBeUndefined()
     const file = FMT.buildFile({ savedAt: '2026-10-18T00:00:00Z', charts })
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the round trip IS the test: the export file as it is written to disk and read back, which is JSON — a structuredClone would skip the very step being checked
     expect(FMT.readFile(JSON.parse(JSON.stringify(file))).charts!.flex).toEqual(mine)
     await backToDefaults()
     let closing = ''

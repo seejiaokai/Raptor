@@ -1,0 +1,12 @@
+filed imqoidhx6of3vys {"people":["Ranger"],"oil":{"2026-07-18":1}}
+armed {"rosArm":true,"drawer":true}
+picture B6-OD-1-armed.png
+picture B6-OD-2-question.png
+RESULT B6-OD-question {"up":1,"lead":"Putting Hex in place of Ranger","head":"OIL — Hex, OD thing","cancel":"Don’t swap","save":"Swap","saveDisabled":true,"box":{"x":22,"y":258,"w":346,"h":328,"right":368,"bottom":586,"inside":true,"onTop":true},"saveBox":{"x":295,"y":547,"w":57,"h":28,"right":352,"bottom":575,"inside":true,"onTop":true},"unchanged":true,"undoSame":true}
+picture B6-OD-3-cancelled.png
+RESULT B6-OD-cancel {"q":0,"armed":{"rosArm":false,"drawer":true},"bar":"Not swapped — OIL not answered","rec":true,"undoSame":true,"barBox":{"x":98,"y":732,"w":195,"h":94,"right":293,"bottom":826,"inside":true,"onTop":true}}
+question back via the bar true Putting Hex in place of Ranger
+picture B6-OD-4-after.png
+RESULT B6-OD-answered {"toast":"Hex is now unavailable instead of Ranger","rec":"{\"people\":[\"Hex\"],\"oil\":{\"2026-07-18\":1}}","q":0,"bar":0,"armed":{"rosArm":false,"drawer":true},"undo":"on|Undo — a personal input"}
+RESULT B6-OD-undo {"rec":"{\"people\":[\"Ranger\"],\"oil\":{\"2026-07-18\":1}}","same":true}
+ERRORS []

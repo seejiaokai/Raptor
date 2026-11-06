@@ -1,0 +1,7 @@
+.icard-corner{float:right;display:inline-grid;grid-template-columns:auto 3.7em 8em minmax(6.2em,max-content);align-items:center;
+  margin-left:10px;min-height:20px}
+.icard-corner > *{grid-row:1;justify-self:end}
+.icard-corner > .sd-late, .icard-corner > .oiltag{grid-column:2}
+.icard-corner > .sd-late:has(+ .oiltag){grid-column:1;margin-right:8px}
+.icard-corner > .icard-nodoc, .icard-corner > .icard-doc{grid-column:3}
+.icard-corner > .icard-hrs{grid-column:4}

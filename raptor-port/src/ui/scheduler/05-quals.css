@@ -68,6 +68,20 @@
 /* on a phone two fingers on the table zoom the table (owner D1110, 21 Oct 26 — QualsPage, ui/pinchzoom.ts): pan-x pan-y leaves
    one finger to scroll both ways and keeps the browser's own pinch off it, so the page around it never zooms */
 @media (max-width:820px){.qwrap{touch-action:pan-x pan-y} #qtbl,.qfixed .qtbl{zoom:var(--qz,1)}}
+/* NOTHING SHOWS AT THE NAME COLUMN'S LEFT EDGE AT A ZOOM BETWEEN WHOLE STEPS ([QUALS-ZOOM-EDGE-SLIVER], found 30 Oct 26,
+   fixed the night of 6 Nov 26 — D1518: nothing pinned leaks). Zoomed by a pinch to, say, 0.9 and scrolled sideways, the
+   layout puts the sticky name cell exactly at the table's edge, but in a table of collapsed borders the cell's left
+   border is the table's to draw, and the sticky cell leaves that slot see-through — Chromium and WebKit alike: a sliver up
+   to a screen pixel wide showed the cells scrolled under it (a CAT chip's colour, a white letter). A strip inside the cell
+   covers nothing (measured); a strip of the cell's own fill just left of it, clipped by the table's scroll box, does.
+   Unscrolled the table's own left line shows through the slot, and is kept as it is: the strip is drawn only once the
+   table is scrolled sideways (`.xscroll`; measured before and after, unscrolled and scrolled, both engines), when the
+   line has scrolled away and whatever is under it showed. A phone's only, where the zoom is; the name heading
+   the same. Pinned by e2e/pinchzoom.spec.ts "after a pinch to a zoom between whole steps…". */
+@media (max-width:820px){
+  .qwrap.xscroll .qtbl td.qname::before,.qwrap.xscroll .qtbl thead th[data-sort="cs"]::before{content:'';position:absolute;top:0;bottom:0;left:-3px;width:3px;
+    background:inherit;pointer-events:none}
+}
 .qwrap .lift-frame{z-index:2}
 /* THE FROZEN QUALS HEADER (owner, 29 Aug 26 — "the quals top bar should also
    freeze like the leave war top bar … desktop and mobile … same mechanism").
@@ -105,6 +119,10 @@
    see-through below the shrunken row, so the rows show under it rather than a strip of the box and its shadow. Only while
    the fingers are down. */
 .qfixed.q-pinching{overflow-x:clip;overflow-y:visible;background:transparent;box-shadow:none}
+/* …and the moving row's own name heading hides, the still copy over the left (`.qfixed-frozen`, held there by the pinch)
+   standing for it — in both paths, the browser's follow or not ([QUALS-PINCH-NOSDA-HEAD], the night of 6 Nov 26; the
+   Leave War's answer, D1287): stretched with the row it was carried left of the table's edge until the lift */
+.qfixed.q-pinching .qfixed-scroll thead th[data-sort="cs"]{visibility:hidden}
 @keyframes qx-follow{from{transform:translateX(0px)}to{transform:translateX(calc(-1 * var(--qx-max, 0) * 1px))}}
 /* the mirror table drops the grid's own left margin/min-width — it is sized to
    the measured widths (table-layout:fixed) and positioned by the fixed wrapper */

@@ -79,6 +79,7 @@ const RECORDS: Record<string, string> = {
   'ui/interactions.ts': 'the schedule\'s hands on an input',
   'ui/oilputback.ts': 'what a whole-day replacement (a load, a plan switch) put back that still needs an OIL answer — reads the records (D865)',
   'ui/MedicalView.tsx': 'the Medical tab',
+  'ui/DocViewer.tsx': 'the document viewer — finds the input it shows again by its id (inpById) after an undo put the records back (D1645, 5 Nov 26)',
   'ui/MedMoveConfirm.tsx': 'the medical move\'s sheet',
   'ui/oilmode.ts': 'OIL Earn',
   'ui/pendlist.ts': 'the pending list',

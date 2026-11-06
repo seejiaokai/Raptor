@@ -1,0 +1,31 @@
+start INPUTS [["Range brief",true,"WX"]]
+filed Solo drill [] Input added
+solo filed {"iid":"imqomntn0ung5d8","date":"Jul 16","s":600,"e":660,"type":"Training","people":["Ranger"],"cx":false,"cxr":"","by":"stiff","ttl":"Solo drill","rmk":""}
+solo cancelled {"iid":"imqomntn0ung5d8","title":"Solo drill","people":["Ranger"],"cx":true,"cxr":"WX","s":600,"e":660}
+picked ["bane","rocky"]
+oil question after bare save 0
+bare filed {"iid":"imqomnxgx1tqlvw","title":"","type":"Training","cx":false}
+bare cancelled {"iid":"imqomnxgx1tqlvw","people":["Ranger","Hex"],"cx":true,"cxr":"","s":540,"e":600}
+E3 bar (Fri 17, quiet day) [{"text":"2 · Training","strike":"line-through","opacity":"0.6","tip":"Hex, Ranger · Training · 17 Jul · 09:00–10:00\nCancelled\nPlaced by Saber for 2 people · 22 Jun 26, 11:00 · changed by Saber · 22 Jun 26, 11:00","w":48,"h":14,"inScreen":true}]
+saved e3-01-month-full
+saved e3-01-bar
+E3 bars on that day [{"t":"Grit · ATT C","h":14,"strike":"none","op":"1"},{"t":"Nomad · OD","h":14,"strike":"none","op":"1"},{"t":"2 · Training","h":14,"strike":"line-through","op":"0.6"}]
+E3 card [{"text":"09:00–10:00 Hex, RangerTRAINING CX By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":null,"kindStrike":"line-through","why":null,"rmkColour":null,"h":51,"w":332,"over":false}]
+E3 card neighbours [{"h":51,"t":"All day GritATT C Medically down till 17 Jul"},{"h":51,"t":"All day NomadOD Overseas duty — exercise, off island"},{"h":51,"t":"09:00–10:00 Hex, RangerTRAINING CX By Saber"}]
+saved e3-02-day-full
+saved e3-02-card
+E3 window title bar {"text":"CX","title":"Hex +1 · 17 Jul","controls":0}
+saved e3-03-window-full
+E3 list card [{"text":"09:00–10:00 Hex, RangerTRAINING CX By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":null,"kindStrike":"line-through","why":null,"rmkColour":null,"h":51,"w":330,"over":false}]
+E3 list neighbours [{"h":35,"t":"LATE All day DrifterOL"},{"h":51,"t":"All day StaticATT C ATT C — filed on Inputs"},{"h":51,"t":"All day StaticOML OML — filed on Inputs"},{"h":51,"t":"All day StaticUPCHIT Medically up 7 Jan"},{"h":35,"t":"LATE All day GambitLL"},{"h":35,"t":"LATE All day HunterOIL"},{"h":35,"t":"LATE till 13 Jan RuneCSE"},{"h":35,"t":"LATE All day NomadOIL"},{"h":35,"t":"LATE All day RelayCCL"},{"h":35,"t":"LATE till 17 Jan AceOL"},{"h":35,"t":"All day HunterOIL"},{"h":35,"t":"All day HunterOIL"},{"h":35,"t":"All day DrifterOIL"},{"h":35,"t":"All day DrifterOIL"},{"h":35,"t":"All day BladeOIL"},{"h":35,"t":"All day BladeOIL"},{"h":35,"t":"All day BladeOIL"},{"h":35,"t":"All day DrifterOIL"},{"h":51,"t":"till 19 Jun ZenithATT B Grounded — may still work"},{"h":51,"t":"All day ZenithUPCHIT Medically up 20 Jun"},{"h":51,"t":"LATE All day CinderDUTY SDO — weekend duty crew"},{"h":51,"t":"till 9 Jul QuillOML Medically down"},{"h":51,"t":"All day GambitFLY WITH Keen for any wave"},{"h":51,"t":"till 17 Jul GritATT C Medically down"},{"h":51,"t":"All day VectorOML Medical leave 13 Jul"},{"h":51,"t":"09:00–17:00 ZenithMEETING Desk / staff work By Sab"},{"h":51,"t":"LATE 10:00–11:00 BoltAPPOINTMENT HSP blood panel"},{"h":51,"t":"LATE All day QuillLL Local leave"},{"h":51,"t":"LATE All day WispOIL OIL — CO approved, post-detac"},{"h":51,"t":"LATE 14:00–16:00 SaintAPPOINTMENT Dental appt"},{"h":51,"t":"All day CobraOL Overseas leave — off island By Sab"},{"h":35,"t":"All day GambitOIL"},{"h":51,"t":"till 17 Jul NomadOD Overseas duty — exercise, off "},{"h":51,"t":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · "},{"h":35,"t":"All day GambitOIL"},{"h":51,"t":"10:00–11:00 RangerTRAINING CXSolo drillWX By Saber"},{"h":51,"t":"17:00–18:30 RangerAPPOINTMENT Medical / PHA"},{"h":51,"t":"09:00–10:00 Hex, RangerTRAINING CX By Saber"},{"h":51,"t":"10:00–12:00 VaporAPPOINTMENT Medical / PHA"},{"h":51,"t":"15:00–17:00 ALLEVENT Sports afternoon · PT kit By "}]
+saved e3-04-list-full
+saved e3-04-list-card
+E3 week PI line {"text":"CX Training 09:00 10:00 Hex C Ranger IP UNDO","tag":"CX","name":"Training","nameStrike":"line-through","h":62}
+saved e3-05-week-inputs-line
+E3 week ground row {"text":"CXTRAINING 09:00 10:00 Hex C Ranger IP + ADD","h":58} neighbours [{"h":41,"t":"GROUND SCHOOL - EW 09:00 11:00 Saber IP "},{"h":58,"t":"CXTRAINING 09:00 10:00 Hex C Ranger IP +"},{"h":40,"t":"AIRCREW ADMIN 11:00 12:00 + ADD"}]
+saved e3-06-week-ground-row
+E3 board PI line {"text":"CX Training Hex C Ranger IP UNDO","tag":"CX","itemcell":"CX Training","nameStrike":"none","h":89,"inScreen":true}
+saved e3-07-board-line-full
+saved e3-07-board-line
+errors []
+saved e3-zz-end

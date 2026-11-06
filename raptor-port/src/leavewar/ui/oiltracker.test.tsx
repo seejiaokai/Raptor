@@ -8,6 +8,8 @@ import { setMemberTodayForTests } from '../engine'
 import { memoryBackend } from '../state/storage'
 import { Matrix } from './Matrix'
 import { askLw } from './lwnav'
+import { GEAR_INNER } from '../../ui/glyphs'
+import { drawnAs } from '../../testing/drawn'
 
 /* the OIL tracker opens from the OIL tab of the top row since D1254 (Chrome.tsx `Topbar`): the grid rendered alone is
    asked as the tab's press asks it (ui/lwnav.ts). */
@@ -68,6 +70,11 @@ describe('the OIL tracker grid', () => {
     setRole('admin')
     openTracker()
     expect(screen.getByTestId('oil-settings')).toBeTruthy()
+    /* the one drawn gear (D1509, D1707), and Range's mark Edit Schedule's line calendar (D1508, D1707) — no typed ⚙ or 📅 */
+    expect(screen.getByTestId('oil-settings').textContent).toBe('')
+    expect(drawnAs(screen.getByTestId('oil-settings').querySelector('svg'), GEAR_INNER), 'the one gear').toBe(true)
+    expect(screen.getByTestId('oil-range-pick').textContent).toBe('Range')
+    expect(screen.getByTestId('oil-range-pick').querySelector('.ci svg.btnglyph'), 'the line calendar').toBeTruthy()
     expect(screen.getByTestId('oil-bar-idle').textContent).toContain('hold and drag')
     expect(screen.getByTestId('oil-name-ramp').getAttribute('role')).toBe('button')
   })

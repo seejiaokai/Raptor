@@ -1,0 +1,216 @@
+{
+  "rows": [
+    {
+      "scn": "S1",
+      "step": "baseline after sign-in: no ocu: key",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "keys 332",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "first Tracker visit: no ocu: key",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"tracker\":[\"raptor:tracker/v3:courseidmig\",\"raptor:tracker/v3:cmw2kvxa06akrhn:idmig\",\"raptor:tracker/v3:master:chart:sbagaa2026\",\"raptor:tracker/v3:cmw2kvxa06akrhn:plan\",\"raptor:tracker/v3:seedstamp\",\"raptor:tracker/v3:master:chart:sb2024\",\"raptor:tracker/v3:sylcatmig\",\"raptor:tracker/v3:sylreset\",\"raptor:tracker/v3:cmw2kvxa06akrhn:sb2026:enr:smw2kvxa3xxrgnx\",\"raptor:tracker/v3:cmw2kvxa06akrhn:sb2026:enr:smw2kvxa35nkgl7\",\"raptor:tracker/v3:master:chart:sb2026\",\"raptor:tracker/v3:eventinfomig\",\"",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "mark ST-02 DCO: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 3 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-D-mark_ST_02_DCO.png"
+    },
+    {
+      "scn": "S1",
+      "step": "failure on ST-01 with Failed-on date: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 1 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-D-failure_on_ST_01_with_Failed_on_date.png"
+    },
+    {
+      "scn": "S1",
+      "step": "Failed-on date set",
+      "note": "Tue 3 Nov 26\n▾"
+    },
+    {
+      "scn": "S1",
+      "step": "Last flown currency day in Info: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 1 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-D-Last_flown_currency_day_in_Info.png"
+    },
+    {
+      "scn": "S1",
+      "step": "Last flown currency set",
+      "note": "Mon 2 Nov 26"
+    },
+    {
+      "scn": "S1",
+      "step": "+ Add a student from the roster: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 4 ocuLocal 1 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-D-_Add_a_student_from_the_roster.png"
+    },
+    {
+      "scn": "S1",
+      "step": "student added",
+      "note": "Recon\nPilot · OCU"
+    },
+    {
+      "scn": "S1",
+      "step": "student options / course options",
+      "note": "{\"sel\":[\"STUDENT A\",\"STUDENT B\",\"RECON\"],\"csel\":[\"26ABSG\"]}"
+    },
+    {
+      "scn": "S1",
+      "step": "move the student pick away and back: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 0 ocuLocal 1 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-D-move_the_student_pick_away_and_back.png"
+    },
+    {
+      "scn": "S1",
+      "step": "reload: DCO mark, failure date, currency day, same student all back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"before\":{\"g\":\"dco\",\"student\":\"smw2kvxa3xxrgnx\"},\"after\":{\"g\":\"dco\",\"student\":\"smw2kvxa3xxrgnx\"},\"fd\":\"Tue 3 Nov 26\\n▾\",\"failDate\":\"Tue 3 Nov 26\\n▾\",\"cv\":\"Mon 2 Nov 26\",\"curr\":\"Mon 2 Nov 26\"}",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "after reload still no ocu: key",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "errors",
+      "note": "none"
+    },
+    {
+      "scn": "S1",
+      "step": "baseline after sign-in: no ocu: key",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "keys 332",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "first Tracker visit: no ocu: key",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "{\"tracker\":[\"raptor:tracker/v3:cmw2kwemmafcu77:sb2026:enr:smw2kwemtdk962v\",\"raptor:tracker/v3:cmw2kwemmafcu77:plan\",\"raptor:tracker/v3:cmw2kwemmafcu77:rostermig\",\"raptor:tracker/v3:master:chart:sbagaa2026\",\"raptor:tracker/v3:master:chart:sb2026\",\"raptor:tracker/v3:master:course:cmw2kwemmafcu77\",\"raptor:tracker/v3:courseidmig\",\"raptor:tracker/v3:sylreset\",\"raptor:tracker/v3:sylcatmig\",\"raptor:tracker/v3:master:chart:sbtx2026\",\"raptor:tracker/v3:seedstamp\",\"raptor:tracker/v3:cmw2kwemmafcu77:sb2026",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "mark ST-02 DCO: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 3 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-P-mark_ST_02_DCO.png"
+    },
+    {
+      "scn": "S1",
+      "step": "failure on ST-01 with Failed-on date: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 1 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-P-failure_on_ST_01_with_Failed_on_date.png"
+    },
+    {
+      "scn": "S1",
+      "step": "Failed-on date set",
+      "note": "Tue 3 Nov 26\n▾"
+    },
+    {
+      "scn": "S1",
+      "step": "Last flown currency day in Info: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 1 ocuLocal 0 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-P-Last_flown_currency_day_in_Info.png"
+    },
+    {
+      "scn": "S1",
+      "step": "Last flown currency set",
+      "note": "Mon 2 Nov 26"
+    },
+    {
+      "scn": "S1",
+      "step": "+ Add a student from the roster: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 4 ocuLocal 1 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-P-_Add_a_student_from_the_roster.png"
+    },
+    {
+      "scn": "S1",
+      "step": "student added",
+      "note": "Recon\nPilot · OCU"
+    },
+    {
+      "scn": "S1",
+      "step": "student options / course options",
+      "note": "{\"sel\":[\"STUDENT A\",\"STUDENT B\",\"RECON\"],\"csel\":[\"26ABSG\"]}"
+    },
+    {
+      "scn": "S1",
+      "step": "move the student pick away and back: changed keys only raptor:tracker/ (+ocuLocal:); no ocu:",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 0 ocuLocal 1 other [] ocu 0; corner \"● saved\"",
+      "pics": "S1-P-move_the_student_pick_away_and_back.png"
+    },
+    {
+      "scn": "S1",
+      "step": "reload: DCO mark, failure date, currency day, same student all back",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "{\"before\":{\"g\":\"dco\",\"student\":\"smw2kwemtdk962v\"},\"after\":{\"g\":\"dco\",\"student\":\"smw2kwemtdk962v\"},\"fd\":\"Tue 3 Nov 26\\n▾\",\"failDate\":\"Tue 3 Nov 26\\n▾\",\"cv\":\"Mon 2 Nov 26\",\"curr\":\"Mon 2 Nov 26\"}",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "after reload still no ocu: key",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S1",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

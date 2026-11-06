@@ -1,0 +1,23 @@
+/* S17 — sign in as another person without a reload, then write (D member then admin).  node scripts/handpass/trk1105-walk-s17.mjs */
+import { open, back, login, navTo, keys, diffKeys, classify, ocuAny, pair, words, grade, mark, shot, mk, sleep } from './trk1105-walk-lib.mjs'
+console.log('trk1105-walk-s17 v1')
+const L = mk('S17')
+const { browser, page, errors } = await open({ who: 'u' })
+const k0 = await keys(page)
+await mark(page, 'ST-02', 'dco', false); await sleep(1200)
+L.ok('member marks ST-02', 'D', 'member', (await grade(page, 'ST-02')) === 'dco', 'grade dco', await shot(page, 'S17-1-member-marked'))
+await page.locator('#logout').click(); await sleep(1500)
+const q = await page.locator('#dlgModal:visible').count()
+L.ok('Logout with nothing unsaved: no question, the sign-in card shows', 'D', 'member', q === 0 && (await page.locator('#luser').count()) === 1, `question ${q}`)
+await login(page, 'a'); await navTo(page, 'tracker', false); await page.waitForSelector('#flowSvg .ball'); await sleep(700)
+const pr = await pair(page), w = await words(page)
+L.ok("admin signs in in the same tab: the member's mark is shown; top bar undo greyed (not the member's history); corner clean", 'D', 'admin', (await grade(page, 'ST-02')) === 'dco' && pr.undoOff === true, `ST-02 ${await grade(page, 'ST-02')}; undo ${pr.undoOff ? 'greyed' : 'lit'}; corner "${w.corner}"`, await shot(page, 'S17-2-admin-sees'))
+await mark(page, 'ST-01', 'dco', false); await sleep(1500)
+const k1 = await keys(page), cl = classify(diffKeys(k0, k1))
+L.ok('both marks are stored under raptor:tracker/, none under ocu:', 'D', 'admin', cl.tracker.length > 0 && cl.ocu.length === 0 && ocuAny(k1).length === 0 && cl.other.length === 0, `tracker keys changed ${cl.tracker.length}; ocuLocal ${cl.ocuLocal.length}; ocu ${cl.ocu.length}`, await shot(page, 'S17-3-admin-marked'))
+await page.reload(); await back(page, 'a', false)
+const g = [await grade(page, 'ST-02'), await grade(page, 'ST-01')]
+L.ok('reload: both marks are there', 'D', 'admin', g[0] === 'dco' && g[1] === 'dco', `ST-02 ${g[0]}, ST-01 ${g[1]}`, await shot(page, 'S17-4-reloaded'))
+L.note('errors', errors.join(' | ').slice(0, 400) || 'none')
+await browser.close()
+L.save('S17')

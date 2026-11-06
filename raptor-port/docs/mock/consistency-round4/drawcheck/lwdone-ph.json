@@ -1,0 +1,102 @@
+{
+ "state": "lwdone-ph",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q4-ph-lwdone-new"
+ },
+ "recorded": "2026-11-05T11:34:12.679Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "done": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 251.9,
+    "y": 160.3,
+    "w": 68,
+    "h": 26.3
+   },
+   "ink": {
+    "x": 276.9,
+    "y": 168.6,
+    "w": 32,
+    "h": 12
+   },
+   "text": "Done",
+   "typed": false,
+   "look": {
+    "fill": "rgba(59, 198, 232, 0.16)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(59, 198, 232, 0.6)",
+     "1px solid rgba(59, 198, 232, 0.6)",
+     "1px solid rgba(59, 198, 232, 0.6)",
+     "1px solid rgba(59, 198, 232, 0.6)"
+    ],
+    "corners": [
+     "8px",
+     "8px",
+     "8px",
+     "8px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.rtbtn.on.zz-ring"
+  },
+  "done-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 262.9,
+    "y": 166.3,
+    "w": 14,
+    "h": 14
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 11.5px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q4-ph-lwdone-new.png",
+  "identical": true
+ }
+}

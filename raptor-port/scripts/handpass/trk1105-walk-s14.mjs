@@ -1,0 +1,48 @@
+/* S14 — two separate histories while the Tracker dozes (D admin).  An Edit Schedule note stands for the Inputs change (a
+   control that saves and has its own undo).   node scripts/handpass/trk1105-walk-s14.mjs */
+import { open, navTo, pair, grade, mark, click, shot, mk, sleep } from './trk1105-walk-lib.mjs'
+console.log('trk1105-walk-s14 v1')
+const L = mk('S14')
+const { browser, page, errors } = await open({})
+const es = () => page.evaluate(() => { const u = document.getElementById('undoBtn'); return u ? { off: u.disabled, title: u.title } : null })
+const esChange = async txt => { await navTo(page, 'editsched'); await sleep(600); await page.locator('.txed:visible').first().click(); await page.keyboard.type(txt); await page.keyboard.press('Tab'); await sleep(900) }
+await mark(page, 'ST-02', 'dco', false)
+await esChange('walk14')
+const e0 = await es()
+L.ok('Edit Schedule change made: its own undo is lit', 'D', 'admin', e0 && e0.off === false, JSON.stringify(e0), await shot(page, 'S14-1-es-changed'))
+// 1. top bar undo on the other page
+await click(page, '.topbar #undoBtn'); await sleep(700)
+const e1 = await es()
+await navTo(page, 'tracker'); await sleep(600)
+let g = await grade(page, 'ST-02'), pr = await pair(page)
+L.ok('top bar undo on Edit Schedule took back the page change; the Tracker mark was NOT taken back; Tracker undo is lit with the mark tooltip', 'D', 'admin', e1.off === true && g === 'dco' && pr.undoOff === false && /mark on ST-02/.test(pr.title), `ES undo after: ${JSON.stringify(e1)}; ST-02 ${g}; Tracker undo "${pr.title}"`, await shot(page, 'S14-2-back-on-tracker'))
+// 2. Ctrl+Z on the other page, with a fresh change
+await esChange('walk14b')
+const act = await page.evaluate(() => { const a = document.activeElement; const d = a ? a.tagName + '#' + a.id + (a.isContentEditable ? ' editable' : '') : null; if (a && a.blur) a.blur(); return d })
+L.note('focus before Ctrl+Z on Edit Schedule (then blurred)', act)
+await page.keyboard.press('Control+z'); await sleep(700)
+const e2 = await es()
+await navTo(page, 'tracker'); await sleep(600)
+g = await grade(page, 'ST-02')
+L.ok('Ctrl+Z on Edit Schedule never takes back the Tracker mark (Edit Schedule has no Ctrl+Z of its own: its change stays, same before the Tracker was ever opened - see S14b)', 'D', 'admin', g === 'dco', `ES undo after ${JSON.stringify(e2)}; ST-02 ${g}`)
+// 3. reverse: a page change, then a Tracker mark; Ctrl+Z on the Tracker leaves the page change
+await esChange('walk14c')
+await navTo(page, 'tracker'); await sleep(500)
+await mark(page, 'ST-01', 'dco', false)
+await page.locator('#board').hover()
+await page.keyboard.press('Control+z'); await sleep(700)
+const g1 = await grade(page, 'ST-01')
+await navTo(page, 'editsched'); await sleep(500)
+const e3 = await es()
+L.ok('Ctrl+Z on the Tracker took back the newest Tracker mark (ST-01) and NOT the Edit Schedule change', 'D', 'admin', g1 !== 'dco' && e3.off === false, `ST-01 ${g1}; ES undo ${JSON.stringify(e3)}`, await shot(page, 'S14-3-es-still-changed'))
+// 4. Tracker top bar undo (button) with the page hidden doesn't touch the page either; and keyboard asleep while hidden
+await navTo(page, 'tracker'); await sleep(500)
+await navTo(page, 'editsched'); await sleep(500)
+await page.keyboard.press('Control+z'); await sleep(700)
+await navTo(page, 'tracker'); await sleep(500)
+const gA = await grade(page, 'ST-02')
+L.ok('after Ctrl+Z pressed on Edit Schedule while the Tracker is hidden, the Tracker still holds ST-02', 'D', 'admin', gA === 'dco', `ST-02 ${gA}`)
+L.note('via the bell or Quals → Tracker', 'not walked (the Tracker was reached by its tab only)')
+L.note('errors', errors.join(' | ').slice(0, 400) || 'none')
+await browser.close()
+L.save('S14')

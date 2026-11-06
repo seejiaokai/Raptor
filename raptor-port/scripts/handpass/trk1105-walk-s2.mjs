@@ -1,0 +1,28 @@
+/* S2 — a reload inside the save's short wait keeps the change (D admin).  node scripts/handpass/trk1105-walk-s2.mjs */
+import { open, back, keys, ocuAny, grade, mark, openBall, shot, mk, sleep, D } from './trk1105-walk-lib.mjs'
+console.log('trk1105-walk-s2 v1')
+const L = mk('S2')
+const { browser, ctx, page, errors } = await open({})
+// 1: click DCO then reload at once
+await openBall(page, 'ST-02')
+await page.locator('#pop .opts button[data-g="dco"]').first().click()
+await page.reload()
+await back(page, 'a', false)
+const g1 = await grade(page, 'ST-02')
+const p1 = await shot(page, 'S2-after-instant-reload')
+L.ok('mark then F5 at once: the mark is there', 'D', 'admin', g1 === 'dco', 'grade ' + g1, p1)
+// 2: mark, close the tab at once, reopen
+await openBall(page, 'ST-01')
+await page.locator('#pop .opts button[data-g="dco"]').first().click()
+await page.close({ runBeforeUnload: true })
+const page2 = await ctx.newPage()
+await page2.goto('http://127.0.0.1:4180/')
+await back(page2, 'a', false)
+const g2 = await grade(page2, 'ST-01')
+const p2 = await shot(page2, 'S2-after-tab-close-reopen')
+L.ok('mark, close the tab at once, reopen: the mark is there', 'D', 'admin', g2 === 'dco', 'grade ' + g2, p2)
+const k = await keys(page2)
+L.ok('no ocu: key after both', 'D', 'admin', ocuAny(k).length === 0, '')
+L.note('errors', errors.join(' | ') || 'none')
+await browser.close()
+L.save('S2')

@@ -18,20 +18,13 @@
    kept on the way back to one person, D656 reading 4) and `several`, and saves through ui/inputedit.tsx commitInput. */
 import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { PEOPLE, isSpecial } from '../engine/people'
-import { isUpchit, needsDoc, placeholderKind, placeholderProblem, shapeProblem } from '../engine/inputs'
+import { placeholderKind, placeholderProblem } from '../engine/inputs'
 import { canEditSched } from '../state/auth'
-import { mayFileGroup, mayFileInputFor, me } from '../state/perms'
-import { fileForOtherRefusal, rosterOptions } from './inputedit'
+import { mayFileGroup } from '../state/perms'
 import { puck } from './html'
 import { edgeAutoScroll, findScroller } from './edgescroll'
-
-const cs = (id: any): string => (PEOPLE[id] ? String(PEOPLE[id].cs) : String(id ?? ''))
-const az = (ids: string[]) => [...ids].sort((a, b) => cs(a).localeCompare(cs(b), undefined, { sensitivity: 'base' }))
-
-/** the people this picker offers: today's list (no archived man, no placeholder puck), SANS people only on the SANS
- *  calendar — a SANS availability is refused for anyone else at the save */
-export const pickRoster = (sansOnly?: boolean): string[] =>
-  az(rosterOptions().filter(id => !PEOPLE[id].special && (!sansOnly || PEOPLE[id].san)))
+/* who the picker offers and what is wrong with the people picked live in ./peoplepick-model (moved whole, 6 Nov 26) */
+import { PLACEHOLDER_HEADING, PLACEHOLDER_IDS, cs, mayPickOthers, pickProblem, pickRoster } from './peoplepick-model'
 
 const GROUPS: Array<{ k: string; label: string; has: (p: any) => boolean }> = [
   { k: 'pilots', label: 'Pilots', has: p => !p.san && !p.pers && p.seat !== 'RCP' },
@@ -40,21 +33,6 @@ const GROUPS: Array<{ k: string; label: string; has: (p: any) => boolean }> = [
   { k: 'personnel', label: 'Personnel', has: p => !!p.pers && !p.san },
 ]
 
-/* ---- "ALL AVAIL" AND "ALL" AS A CHOICE ([INPUT-ALL-AVAIL]; owner D700, D702, D711, D712, D713 — 9 Oct 26) ------------
-   His words: "Can the inputs have an all avail and all selection too? Only allowed for duty and other commitments."
-   The schedule's two placeholders are offered in the ONE-PERSON list, under a heading that says what both mean (D702:
-   each "stands for whoever is free" — and neither takes ground crew, D52, so "everyone" would be false). Which kinds
-   may carry one, and that it is one day, is ONE body — engine/inputs.ts placeholderProblem — asked here, at every save
-   door and by the save boundary's hard check.
-   AND IN "SEVERAL PEOPLE" TOO (step 3 of the one-rule build, 12 Oct 26 — owner D750: "'Several people' takes ALL AVAIL
-   / ALL, so the puck is one of the input's own people"; D753: "offered only where the input is a single day; and an
-   input takes ALL or ALL AVAIL, never both"; the plan 2026-10-11-one-rule-plan.md §4.5). Until then a placeholder was
-   filed on its own and "Several people" refused one. Now the two are pucks of their own above the groups, under the
-   same heading: one may be picked beside the people; where this input cannot hold one — longer than a day, or not one
-   of the seven kinds (six until D778, 12 Oct 26) — they are drawn greyed with the reason under them (`phWhy`: the window's own answer, of its
-   draft's kind and dates). */
-export const PLACEHOLDER_IDS = (): string[] => Object.keys(PEOPLE).filter(id => PEOPLE[id].special)
-export const PLACEHOLDER_HEADING = 'Whoever is free that day'
 /** The two entries, as a group of a person list. `type`: the kind being filed — offered only for one a placeholder may
  *  carry; `current`: the person now chosen — a placeholder already chosen is ALWAYS listed, whatever the kind has
  *  become, so the box never shows another name over it (nothing is substituted for what he picked). `all`: list both
@@ -67,40 +45,7 @@ export function PlaceholderGroup({ type, current, all, value }: { type?: any; cu
   return <optgroup label={PLACEHOLDER_HEADING} data-ph="1">{ids.map(id => <option key={id} value={value ? value(id) : id}>{cs(id)}</option>)}</optgroup>
 }
 
-/** may he pick someone other than himself for this kind at all? (an admin: yes; a member: a kind he may file for others) */
-const mayPickOthers = (type: any): boolean => canEditSched() || mayFileInputFor('\u0000another', type)
-
-/** What is wrong with the people picked for this kind, and the one press that corrects it — or null. */
-export function pickProblem(people: readonly string[], several: boolean, type: any, phWhy?: (id: string) => string): { why: string; fix: string[]; fixLabel: string } | null {
-  const mine = me()
-  /* A PLACEHOLDER PICKED ([INPUT-ALL-AVAIL]; one of an input's people since step 3 of the one-rule build — D750, D753).
-     Where this input cannot hold one — a kind it may not carry, or longer than a day (`phWhy`, where the caller knows
-     its dates; the kind alone where it does not, and the save says the rest by the same body) — the sentence is the
-     one body's. The one press: beside other people, it is taken out; alone, a MEMBER files it for himself. Never both
-     of them (D753), however that came about. */
-  const phs = people.filter(p => isSpecial(p))
-  const ph = phs[0]
-  if (phs.length > 1) return { why: shapeProblem({ type, people: people.map(p => ({ p })) }) || `This input already has ${cs(ph)}`, fix: people.filter(p => p !== phs[1]), fixLabel: `Take ${cs(phs[1])} out` }
-  if (ph != null) {
-    const why = phWhy ? phWhy(ph) : placeholderProblem({ person: ph, type })
-    if (why && people.length > 1) return { why, fix: people.filter(p => p !== ph), fixLabel: `Take ${cs(ph)} out` }
-    /* the one press is a MEMBER's ("File it for me only" — what he may always do); an admin is offered none: he
-       picks the name it is really for from the list (Astra's scenario design, 9 Oct 26 — the admin was being offered
-       to file another kind's input for HIMSELF) */
-    if (why) return { why, fix: !canEditSched() && mine != null ? [mine] : [], fixLabel: 'File it for me only' }
-  }
-  if (several && people.length > 1 && !mayFileGroup(type)) {
-    if (canEditSched()) return {
-      why: `${isUpchit(type) ? 'An upchit' : needsDoc(type) ? 'A medical entry' : 'This'} is filed for one person at a time — each needs its own document`,
-      fix: [people[0]], fixLabel: `Keep ${cs(people[0])} only`,
-    }
-    return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [people[0]], fixLabel: 'File it for me only' }
-  }
-  const other = people.find(p => !isSpecial(p) && !mayFileInputFor(p, type))
-  if (other != null && !canEditSched()) return { why: fileForOtherRefusal(type), fix: mine != null ? [mine] : [], fixLabel: 'File it for me only' }
-  return null
-}
-
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one picker in its two modes (one person, several), the placeholders and the finger's drag across the pucks share one set of props and refs; split, the drag's reading of what is picked and the lists it lights could drift apart, in the window every input is filed through
 export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly, more, moreIds, phWhy, onChange }: {
   people: string[]
   several: boolean
@@ -140,6 +85,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   const phBar = (id: string) => (phWhy ? phWhy(id) : placeholderProblem({ person: id, type }))
   const picked = people.filter(p => isSpecial(p))
   const named = people.length - picked.length
+  /* who is picked, asked once a puck — the groups' pucks and "All" read it in a loop (React Doctor js-set-map-lookups) */
+  const chosen = new Set(people)
   const togglePh = (id: string) => {
     if (people.includes(id)) { if (people.length > 1) onChange(people.filter(p => p !== id), true) }
     else if (!phBar(id)) onChange([...people.filter(p => !isSpecial(p)), id], true)
@@ -247,6 +194,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
   return (
     <div className="inped-f pp" data-testid="pp">
       <span className="inped-k">{several ? 'People' : 'Person'}</span>
+      {/* eslint-disable-next-line react-doctor/click-events-have-key-events -- not a control: the capture only swallows the one click that ends a finger's drag across the pucks; every puck inside is a button the keyboard reaches and presses */}
       <div className="pp-body" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}
         onClickCapture={e => {
           /* the click that follows a drag belongs to the drag — once, and only straight after it */
@@ -285,7 +233,7 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
             <div className="pp-gh"><b>{PLACEHOLDER_HEADING}</b></div>
             <div className="pp-pucks">
               {phIds.map(id => {
-                const on = people.includes(id)
+                const on = chosen.has(id)
                 return (
                   <button key={id} type="button" className={'pp-puck' + (on ? ' on' : '')} data-ph={id} disabled={!on && !!phBar(id)}
                     aria-pressed={on} aria-label={cs(id)} onClick={() => togglePh(id)}>
@@ -299,7 +247,8 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
           </div>
         )}
         {several && groups.map(g => {
-          const all = g.ids.every(id => people.includes(id))
+          const all = g.ids.every(id => chosen.has(id))
+          const inGroup = new Set(g.ids)
           /* "All" on the SANS heading only where SANS is the one group there is (the SANS calendar) — D656 names it on
              Pilots and WSOs, D659 on Personnel */
           const withAll = g.k !== 'sans' || groups.length === 1
@@ -310,17 +259,17 @@ export function PeoplePick({ people, several, type, sansOnly, lockOne, readOnly,
                 {withAll && (
                   <button type="button" className={'pp-all' + (all ? ' on' : '')} aria-pressed={all} data-testid={'pp-all-' + g.k}
                     onClick={() => {
-                      const rest = people.filter(p => !g.ids.includes(p))
+                      const rest = people.filter(p => !inGroup.has(p))
                       /* a second press clears the group — but never the last man: an input is for somebody */
                       if (all) onChange(rest.length ? rest : people.slice(0, 1), true)
-                      else onChange([...people, ...g.ids.filter(id => !people.includes(id))], true)
+                      else onChange([...people, ...g.ids.filter(id => !chosen.has(id))], true)
                     }}>All</button>
                 )}
               </div>
               <div className="pp-pucks">
                 {g.ids.map(id => (
-                  <button key={id} type="button" className={'pp-puck' + (people.includes(id) ? ' on' : '')} data-pp={id}
-                    aria-pressed={people.includes(id)} aria-label={cs(id)} onClick={() => toggle(id)}>
+                  <button key={id} type="button" className={'pp-puck' + (chosen.has(id) ? ' on' : '')} data-pp={id}
+                    aria-pressed={chosen.has(id)} aria-label={cs(id)} onClick={() => toggle(id)}>
                     <span aria-hidden="true" dangerouslySetInnerHTML={{ __html: puck(id, false, true, false).replace(' tabindex="0"', '') }} />
                   </button>
                 ))}

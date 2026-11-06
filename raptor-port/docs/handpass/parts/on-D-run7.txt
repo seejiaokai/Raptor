@@ -1,0 +1,17 @@
+D7 before: Saber: {"lit":true,"L":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}
+D7 before: Warden: {"lit":true,"L":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}
+D7 toast: Input added
+D7 visible confirm-like buttons: []
+D7 Holidays list: Thu 1 Jan PH PH Tue 17 – Wed 18 Feb PH PH Sun 9 Aug PH PH Fri 25 Dec PH PH
+D7 OIL list open?: 0
+D7 after remove: Saber: {"lit":false,"L":[]}
+D7 after remove: Warden: {"lit":false,"L":[]}
+D7 undo: {"undo":"on|Undo — removing the public holiday on 17 Jul","redo":"off|Redo"}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D7-removed-warden-bell.png
+D7 list after re-add: 1
+D7 count: 4 TO ANSWER
+D7 re-added: Saber: {"lit":true,"L":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D7-readded-saber-bell.png
+D7 re-added: Warden: {"lit":true,"L":["[unread] National DayFri 17 Jul 4 inputs need an OIL answer · Saber now"]}
+picture docs\img\handpass\2026-10-13-oil-ask-notify\D\D7-readded-warden-bell.png
+D7 errors: []

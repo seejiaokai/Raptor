@@ -6,13 +6,18 @@
    must read exactly as it did — every chart with the event — never lose them.
 
    Its own file so the Tracker boots FRESH here, over a store seeded with the
-   old key before init (vitest gives every file its own module instance and
-   its own jsdom storage). */
+   old key before init (vitest gives every file its own module instance). The
+   store is the app's own door — a whiteboard through the adapter the boot
+   plugs in (storage/adapters.ts trackerTarget) — since the doorway's bare
+   browser-storage path went with [TRK-STANDALONE-LEFTOVERS] (D1538). */
 import { beforeAll, describe, expect, it } from 'vitest'
 import { diffDetails, realFlatEdits, blockFromFlat, mergeBlock, scrubBlock, isDetailsTable } from './app/eventDetails.js'
 import { EVENT_INFO } from './data/eventInfo.js'
 import * as core from './app/core.js'
 import { initStore, resetSession } from '../state/store'
+import { setStorageImpl } from './storage.js'
+import { Whiteboard } from '../storage/whiteboard'
+import { trackerTarget } from '../storage/adapters'
 
 const C: any = core
 const EI: any = EVENT_INFO
@@ -47,10 +52,12 @@ describe('the helpers', () => {
 })
 
 describe('details typed before D126 are carried over, not dropped', () => {
+  const wb = new Whiteboard()
   beforeAll(async () => {
+    setStorageImpl(trackerTarget(wb))
     /* what a browser that typed details before D126 holds: one table, keyed by
        event code, under the old key */
-    localStorage.setItem('ocu:v3:eventinfo', JSON.stringify({ 'BFM-3': { name: 'OLD TYPED NAME' } }))
+    wb.set('tracker', 'v3:eventinfo', JSON.stringify({ 'BFM-3': { name: 'OLD TYPED NAME' } }))
     initStore()
     resetSession({ user: 'ad', role: 'admin' })
     const board = document.createElement('div'); board.id = 'board'; document.body.appendChild(board)
@@ -66,12 +73,12 @@ describe('details typed before D126 are carried over, not dropped', () => {
       expect(C.infoFor('BFM-3').name, 'on ' + C.sylName(id)).toBe('OLD TYPED NAME'); seen++
     }
     expect(seen, 'the premise: more than one chart carries BFM-3').toBeGreaterThan(1)
-    expect(JSON.parse(localStorage.getItem('ocu:v3:eventinfo')!), 'the old key is a backup, never rewritten').toEqual({ 'BFM-3': { name: 'OLD TYPED NAME' } })
+    expect(JSON.parse(wb.get('tracker', 'v3:eventinfo')!), 'the old key is a backup, never rewritten').toEqual({ 'BFM-3': { name: 'OLD TYPED NAME' } })
     /* the per-chart details, read as the Tracker reads them — stored one row per chart and ball since [DB-READINESS]
        group A phase 5b (D462) */
     const now = JSON.parse((await C.storedRecordForTests('v3:master:eventinfo'))!)
     expect(isDetailsTable(now), 'the new per-chart key holds them').toBe(true)
-    expect(Object.keys(localStorage).some(k => k.startsWith('ocu:v3:master:info:')), 'one row per chart and ball').toBe(true)
+    expect(wb.keys('tracker').some(k => k.startsWith('v3:master:info:')), 'one row per chart and ball').toBe(true)
   })
 
   /* [DB-READINESS] group A, phase 5b: stored one row per chart and ball, "no details at all" reads like "never converted"
@@ -79,13 +86,13 @@ describe('details typed before D126 are carried over, not dropped', () => {
   it('every detail cleared, then the Tracker opened again: the old one-table details do NOT come back', async () => {
     await C.storeRecordForTests('v3:master:eventinfo', '{}')
     C.resetInitForTests(); await C.init(); await C.whenLoaded()
-    expect(localStorage.getItem('ocu:v3:eventinfo'), 'the old record is still there, as a backup').not.toBeNull()
+    expect(wb.get('tracker', 'v3:eventinfo'), 'the old record is still there, as a backup').not.toBeNull()
     for (const id of C.orderedSylIds()) {
       await C.switchSyllabus(id); await C.whenLoaded()
       if (C.byid['BFM-3']) expect(C.infoFor('BFM-3').name, 'on ' + C.sylName(id)).not.toBe('OLD TYPED NAME')
     }
     /* put it back for the next test, as the first boot had it */
-    localStorage.removeItem('ocu:v3:eventinfomig')
+    wb.delete('tracker', 'v3:eventinfomig')
     C.resetInitForTests(); await C.init(); await C.whenLoaded()
   })
 

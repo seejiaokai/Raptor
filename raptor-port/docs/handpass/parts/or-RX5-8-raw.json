@@ -1,0 +1,339 @@
+{
+ "clockCheck": [
+  "2026-06-22T01:00:01.289Z",
+  "2026-06-22T01:00:02.828Z"
+ ],
+ "pub": {
+  "ok": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "selects": 4,
+  "signRead": [
+   {
+    "key": "cur",
+    "value": "dj",
+    "text": "Ace"
+   },
+   {
+    "key": "sked",
+    "value": "glass",
+    "text": "Basher"
+   },
+   {
+    "key": "plan",
+    "value": "yeti",
+    "text": "Bolt"
+   },
+   {
+    "key": "appr",
+    "value": "snap",
+    "text": "Cinch"
+   }
+  ]
+ },
+ "c0": {
+  "a": "6 changes  [dstat: 6 changes i Unpublish]",
+  "c": "AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · nothing waiting to go out",
+  "tabLabel": "To go out · AL1 0",
+  "e": "Waiting to go out as AL1 · 0 changes",
+  "lines": [],
+  "n": [
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "agree": true
+ },
+ "rec0": {
+  "people": [
+   {
+    "p": "slipway",
+    "by": "stiff",
+    "at": 1782090003841
+   },
+   {
+    "p": "rocky",
+    "by": "stiff",
+    "at": 1782090003841
+   },
+   {
+    "p": "prowler",
+    "by": "stiff",
+    "at": 1782090003841
+   }
+  ],
+  "type": "LL",
+  "allday": true,
+  "s": 0,
+  "e": 1439,
+  "date": "Jul 15",
+  "yr": 2026,
+  "remarks": "till 15 Jul",
+  "mod": "2026-06-22",
+  "iid": "imqoidjep2v12fn",
+  "by": "stiff",
+  "modBy": "stiff",
+  "at": 1782090003841,
+  "modAt": 1782090003841,
+  "ord": 0
+ },
+ "pressedAfter": [
+  "Drifter",
+  "Hunter"
+ ],
+ "saveToast": "Input updated",
+ "afterTakeOut": [
+  {
+   "iid": "v12fn",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Hunter"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "sm9v8",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 14",
+   "to": null,
+   "people": [],
+   "by": "Quill"
+  },
+  {
+   "iid": "0lpvx",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 24",
+   "to": null,
+   "people": [],
+   "by": "Saber"
+  },
+  {
+   "iid": "tnqgx",
+   "type": "LL",
+   "title": "",
+   "date": "Jan 8",
+   "to": null,
+   "people": []
+  }
+ ],
+ "c1": {
+  "a": "1 pending  [dstat: 1 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 1",
+  "e": "Waiting to go out as AL1 · 1 change",
+  "lines": [
+   "Hex · LL Saber 22/6 09:00 taken out"
+  ],
+  "n": [
+   1,
+   1,
+   1,
+   1,
+   1
+  ],
+  "agree": true
+ },
+ "clockMove": [
+  "2026-06-22T01:00:17.244Z",
+  "2026-06-22T01:05:17.758Z"
+ ],
+ "newLL": [
+  {
+   "iid": "imqoik9ym6ssspl",
+   "type": "LL",
+   "date": "Jul 15",
+   "s": 480,
+   "e": 720,
+   "people": [
+    "Hex"
+   ]
+  }
+ ],
+ "rec1": {
+  "people": [
+   {
+    "p": "rocky",
+    "by": "stiff",
+    "at": 1782090318190
+   }
+  ],
+  "type": "LL",
+  "allday": false,
+  "s": 480,
+  "e": 720,
+  "date": "Jul 15",
+  "yr": 2026,
+  "remarks": "till 15 Jul",
+  "mod": "2026-06-22",
+  "iid": "imqoik9ym6ssspl",
+  "by": "stiff",
+  "modBy": "stiff",
+  "at": 1782090318190,
+  "modAt": 1782090318190,
+  "ord": -1024
+ },
+ "c2": {
+  "a": "2 pending  [dstat: 2 pending i Publish AL1 Unpublish]",
+  "c": "AMENDMENTS 1 day with changes to publish Wed · 2 changes · 2 input changes Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL.",
+  "d": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabLabel": "To go out · AL1 2",
+  "e": "Waiting to go out as AL1 · 2 changes",
+  "lines": [
+   "Hex · LL Saber 22/6 09:05 filed",
+   "Hex · LL Saber 22/6 09:00 taken out"
+  ],
+  "n": [
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "agree": true
+ },
+ "winAll": {
+  "title": "Changes · Wednesday 15/7 Published · 2 changes waiting to go out as AL1",
+  "tabs": [
+   "New to you 0",
+   "All changes 8",
+   "To go out · AL1 2 [on]"
+  ],
+  "lines": [
+   "pl-item  :: Hex · LL Saber 22/6 09:05 filed",
+   "pl-item  :: Hex · LL Saber 22/6 09:00 taken out"
+  ]
+ },
+ "firstAfter": {
+  "people": [
+   {
+    "p": "slipway",
+    "by": "stiff",
+    "at": 1782090003841
+   },
+   {
+    "p": "prowler",
+    "by": "stiff",
+    "at": 1782090003841
+   }
+  ],
+  "type": "LL",
+  "allday": true,
+  "s": 0,
+  "e": 1439,
+  "date": "Jul 15",
+  "yr": 2026,
+  "remarks": "till 15 Jul",
+  "mod": "2026-06-22",
+  "iid": "imqoidjep2v12fn",
+  "by": "stiff",
+  "modBy": "stiff",
+  "at": 1782090003841,
+  "modAt": 1782090013422,
+  "ord": 0,
+  "hand": 1,
+  "leftAt": {
+   "rocky": 1
+  }
+ },
+ "at": {
+  "first": {
+   "at": 1782090003841,
+   "rec": [
+    "people",
+    "type",
+    "allday",
+    "s",
+    "e",
+    "date",
+    "yr",
+    "remarks",
+    "mod",
+    "iid",
+    "by",
+    "modBy",
+    "at",
+    "modAt",
+    "ord"
+   ]
+  },
+  "second": {
+   "at": 1782090318190
+  }
+ },
+ "inputsEnd": [
+  {
+   "iid": "ssspl",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 480,
+   "e": 720,
+   "people": [
+    "Hex"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "v12fn",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Hunter"
+   ],
+   "by": "Saber"
+  },
+  {
+   "iid": "sm9v8",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 14",
+   "to": null,
+   "people": [],
+   "by": "Quill"
+  },
+  {
+   "iid": "0lpvx",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 24",
+   "to": null,
+   "people": [],
+   "by": "Saber"
+  },
+  {
+   "iid": "tnqgx",
+   "type": "LL",
+   "title": "",
+   "date": "Jan 8",
+   "to": null,
+   "people": []
+  }
+ ],
+ "unav": [
+  "LL 08:00 12:00 C Hex C till 15 Jul",
+  "LL Drifter A till 15 Jul",
+  "LL Hunter IP till 15 Jul",
+  "OL Cobra IP Overseas leave — off island",
+  "ATT C Grit C Medically down till 17 Jul",
+  "OD C Nomad C Overseas duty — exercise, off island",
+  "OIL C Gambit C"
+ ]
+}

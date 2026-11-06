@@ -1,0 +1,88 @@
+{
+  "rows": [
+    {
+      "scn": "S10",
+      "step": "empty \"Import a file…\" screen: reach it by deleting courses",
+      "size": "D",
+      "role": "admin",
+      "pass": null,
+      "said": "NOT WALKED: deleting the only course answers \"Keep at least one course. / OK\" — no control reaches the empty screen",
+      "pics": "S10-0-keep-one-course.png"
+    },
+    {
+      "scn": "S10",
+      "step": "fresh: import dialogs",
+      "note": "[{\"text\":\"“2024” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“Tx 2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace i"
+    },
+    {
+      "scn": "S10",
+      "step": "fresh: charts and students are there after the import",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "balls 210; students STUDENT A/STUDENT B",
+      "pics": "S10-fresh-2-imported.png"
+    },
+    {
+      "scn": "S10",
+      "step": "fresh: top bar ↶ after the import",
+      "note": "greyed; title \"Nothing to undo\"; one pair in the top bar: true"
+    },
+    {
+      "scn": "S10",
+      "step": "fresh: nothing written under raptor:tracker/, no ocu: key (memory session)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 0 ocuLocal 0",
+      "pics": ""
+    },
+    {
+      "scn": "S10",
+      "step": "fresh errors",
+      "note": "none"
+    },
+    {
+      "scn": "S10",
+      "step": "real: import dialogs",
+      "note": "[{\"text\":\"“2024” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace it\"],\"pressed\":\"Replace it\"},{\"text\":\"“Tx 2026” already exists. / Replace it, or add the incoming one under a new name? / Skip this one / Add as new / Replace it\",\"labels\":[\"Skip this one\",\"Add as new\",\"Replace i"
+    },
+    {
+      "scn": "S10",
+      "step": "real: charts and students are there after the import",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "balls 210; students STUDENT A/STUDENT B",
+      "pics": "S10-real-2-imported.png"
+    },
+    {
+      "scn": "S10",
+      "step": "real: top bar ↶ after the import",
+      "note": "greyed; title \"Nothing to undo\"; one pair in the top bar: true"
+    },
+    {
+      "scn": "S10",
+      "step": "real backend: changed keys under raptor:tracker/, none ocu:",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 8 ocuLocal 0 other 0",
+      "pics": ""
+    },
+    {
+      "scn": "S10",
+      "step": "real backend: reload — the imported charts and students survive",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "balls 210; students STUDENT A/STUDENT B",
+      "pics": "S10-real-3-reloaded.png"
+    },
+    {
+      "scn": "S10",
+      "step": "real errors",
+      "note": "none"
+    }
+  ]
+}

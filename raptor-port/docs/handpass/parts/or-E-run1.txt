@@ -1,0 +1,30 @@
+filed Range brief [] Input added for 2 people
+E1 filed {"iid":"imqoidhybvv2jdp","date":"Jul 15","s":540,"e":600,"type":"Training","people":["Ranger","Hex"],"cx":false,"cxr":"","by":"stiff","ttl":"Range brief","rmk":"Bring your kit"}
+E1 board closed? cx now {"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":true,"cxr":"WX","s":540,"e":600}
+saved e1-01-board-after-cx
+E1 board row {"cls":"sb-arow c6r cx gr-frominput","text":"⠿ TRAINING Hex C Ranger IP + ADD CXⓘ■✕"}
+saved e1-02-board-ground-row-full
+saved e1-02-board-ground-row
+E1 board PI line {"text":"CX Range brief TRAINING Hex C Ranger IP UNDO","tag":"CX DUE WX bg rgb(240, 85, 95)","name":"Range brief","nameStrike":"line-through","w":320,"h":89,"inScreen":true,"over":false,"kids":[{"cls":"sb-grip ro","text":"","top":420,"h":25,"cut":false},{"cls":"itemcell","text":"CX Range brief TRAINING","top":424,"h":17,"cut":false},{"cls":"atm","text":"","top":420,"h":25,"cut":false},{"cls":"atm","text":"","top":420,"h":25,"cut":false},{"cls":"ppl","text":"Hex C Ranger IP","top":456,"h":15,"cut":false},{"cls":"ain rmkin","text":"","top":451,"h":24,"cut":false},{"cls":"lctl","text":"UNDO","top":481,"h":19,"cut":false}],"sameLine":true}
+saved e1-03-board-inputs-line-full
+saved e1-03-board-inputs-line
+E1 board all PI lines [{"t":"CX Range brief TRAINING Hex C Ranger IP UNDO","h":89}]
+E1 week PI line {"text":"CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO","tag":"CX DUE WX bg rgb(240, 85, 95)","nameStrike":"line-through","name":"Range brief","accText":"Undo","accStrike":"none","rowCls":"pl-row gshared accd","accPseudo":["\" · accepted\"|none","\" · accepted\"|none"],"tagText":"CX DUE WX","cxwhyStrike":"none","h":72,"over":false}
+saved e1-04-week-inputs-line-full
+saved e1-04-week-inputs-line
+E1 week ground row "CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD Bring your kit"
+saved e1-05-week-ground-row
+E1 bar [{"text":"2 · Range brief","strike":"line-through","opacity":"0.6","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00\nCancelled — WX\nPlaced by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 09:00","pseudo":"none"}]
+saved e1-06-month-full
+E1 card [{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":"rgb(138, 150, 163)","h":51,"w":332,"over":false}]
+saved e1-07-day-full
+saved e1-07-card
+E1 other cards heights [{"iid":"imqoidgimovgho3","h":51,"t":"All day CobraOL Overseas leave — off island By Sab"},{"iid":"imqoidgjgyqu2sd","h":35,"t":"All day GambitOIL"},{"iid":"imqoidgimuscg1z","h":51,"t":"till 17 Jul GritATT C Medically down"},{"iid":"imqoidgimg0h7u0","h":51,"t":"till 17 Jul NomadOD Overseas duty — exercise, off "},{"iid":"imqoidhybvv2jdp","h":51,"t":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · "}]
+E1 window title bar {"text":"CXWX","tag":"rgb(240, 85, 95)","why":"rgb(240, 85, 95)","title":"Hex +1 · 15 Jul","inBar":true,"controls":0,"barH":57}
+saved e1-08-window-full
+saved e1-08-window-title
+E1 list card [{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","kindStrike":"none","why":"WX / colour rgb(240, 85, 95)","rmkColour":"rgb(138, 150, 163)","h":51,"w":330,"over":false}]
+saved e1-09-list-full
+saved e1-09-list-card
+E1 list neighbours heights [{"h":35,"t":"LATE All day DrifterOL"},{"h":51,"t":"All day StaticATT C ATT C — filed on Inp"},{"h":51,"t":"All day StaticOML OML — filed on Inputs"},{"h":51,"t":"All day StaticUPCHIT Medically up 7 Jan"},{"h":35,"t":"LATE All day GambitLL"},{"h":35,"t":"LATE All day HunterOIL"},{"h":35,"t":"LATE till 13 Jan RuneCSE"},{"h":35,"t":"LATE All day NomadOIL"},{"h":35,"t":"LATE All day RelayCCL"},{"h":35,"t":"LATE till 17 Jan AceOL"},{"h":35,"t":"All day HunterOIL"},{"h":35,"t":"All day HunterOIL"}]
+E1 errors []

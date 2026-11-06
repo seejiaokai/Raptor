@@ -1,0 +1,25 @@
+filed {"iid":"imqoidgg0pq4rbe","type":"Meeting","title":"Range brief","date":"Jul 15","s":540,"e":600,"people":["Drifter","Hunter","Ranger"]}
+PUBLISH {"ok":true,"label":"Publish day","version":"ORIG","selects":4,"signRead":[{"key":"cur","value":"dj","text":"Ace"},{"key":"sked","value":"glass","text":"Basher"},{"key":"plan","value":"yeti","text":"Bolt"},{"key":"appr","value":"snap","text":"Cinch"}]}
+COUNTS 0 chip: 6 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx4-7-1-published-row
+Drifter off: Drifter taken out of Range brief
+COUNTS 1 (off) chip: 1 pending | board: undefined | Amendments box: AMENDMENTS 1 day with changes to publish Wed · 1 change · 1 input change Publish AL1 No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 | To go out head: Waiting to go out as AL1 · 1 change [tab: To go out · AL1 1] | lines: ["Drifter · Range brief Saber 22/6 09:00 taken out"] => [1,1,1,1,1] AGREE
+Drifter back: Drifter added to Range brief | people: ["Hunter","Ranger","Drifter"]
+COUNTS 2 (back, before week change) chip: 8 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx4-7-2-back-window
+ALL CHANGES Wed BEFORE week change {"title":"Changes · Wednesday 15/7 Published · nothing waiting to go out","tabs":["New to you 0","All changes 8 [on]","To go out · AL1 0"],"lines":["cw-gh :: ▾ Input · Drifter, Hunter, Ranger · Range brief · 3 09:00","cw-l :: Drifter · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l :: Drifter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l :: Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00","cw-gh :: ▾ The day · 5 09:00","cw-l sti :: Published — the Original Saber · 22/6 09:00","cw-l sti :: Signed · APPROVED BY · Cinch Saber · 22/6 09:00","cw-l sti :: Signed · PLANNED BY · Bolt Saber · 22/6 09:00","cw-l sti :: Signed · SKED CK · Basher Saber · 22/6 09:00","cw-l sti :: Signed · CUR CK · Ace Saber · 22/6 09:00"]}
+saved rx4-7-3-allchanges-before
+week picker buttons ["06/07/2026|Jul 06","13/07/2026|Jul 13[on]","20/07/2026|Jul 20","27/07/2026|Jul 27"]
+saved rx4-7-4-week-picker-before
+current 13/07/2026 next 20/07/2026
+saved rx4-7-5-next-week
+on next week: ["20/07/2026"]
+back on week: ["13/07/2026"]
+saved rx4-7-6-back-on-week
+saved rx4-7-7-back-row
+COUNTS 3 (after week change and back) chip: 8 changes | board: undefined | Amendments box: AMENDMENTS No pending changes No amendments published yet — publish a day, edit it, then publish an AL. | window title: Changes · Wednesday 15/7 Published · nothing waiting to go out | To go out head: Waiting to go out as AL1 · 0 changes [tab: To go out · AL1 0] | lines: [] => [0,0,0,0,0] AGREE
+saved rx4-7-8-after-weekchange-togoout
+ALL CHANGES Wed AFTER week change {"title":"Changes · Wednesday 15/7 Published · nothing waiting to go out","tabs":["New to you 0","All changes 8 [on]","To go out · AL1 0"],"lines":["cw-gh :: ▾ Input · Drifter, Hunter, Ranger · Range brief · 3 09:00","cw-l :: Drifter · Range brief 15 Jul · added Saber · 22/6 09:00","cw-l :: Drifter · Range brief 15 Jul · taken out Saber · 22/6 09:00","cw-l :: Range brief added · 15 Jul (on the programme) Saber · 22/6 09:00","cw-gh :: ▾ The day · 5 09:00","cw-l sti :: Published — the Original Saber · 22/6 09:00","cw-l sti :: Signed · APPROVED BY · Cinch Saber · 22/6 09:00","cw-l sti :: Signed · PLANNED BY · Bolt Saber · 22/6 09:00","cw-l sti :: Signed · SKED CK · Basher Saber · 22/6 09:00","cw-l sti :: Signed · CUR CK · Ace Saber · 22/6 09:00"]}
+saved rx4-7-9-allchanges-after
+history lines identical before/after: true | people order ["Drifter","Hunter","Ranger"] ["Hunter","Ranger","Drifter"] ["Hunter","Ranger","Drifter"]
+ERRORS none

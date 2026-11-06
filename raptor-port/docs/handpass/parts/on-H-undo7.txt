@@ -1,0 +1,12 @@
+filed {"people":["Ranger"],"oil":{"2026-07-18":1}}
+undo before {"undoBtn":{"disabled":false,"title":"Undo — a personal input","box":[201,9,30,30],"shown":true,"under":"bi","onTop":true},"redoBtn":{"disabled":true,"title":"Redo","box":[237,9,30,30],"shown":true,"under":"bi","onTop":true},"drawer":[360,202,271,440]}
+question 1 Putting Hex in place of Ranger
+after Swap {"people":["Hex"],"oil":{"2026-07-18":1}} toast Hex is now unavailable instead of Ranger
+undo after swap, drawer as left {"undoBtn":{"disabled":false,"title":"Undo — a personal input","box":[201,9,30,30],"shown":true,"under":"er-h","onTop":false},"redoBtn":{"disabled":true,"title":"Redo","box":[237,9,30,30],"shown":true,"under":"mono er-dayname","onTop":false},"drawer":[119,0,271,844]}
+after a finger on Undo (drawer as left): {"people":["Hex"],"oil":{"2026-07-18":1}} back to start false toast Hex is now unavailable instead of Ranger
+undo now {"undoBtn":{"disabled":false,"title":"Undo — a personal input","box":[201,9,30,30],"shown":true,"under":"er-h","onTop":false},"redoBtn":{"disabled":true,"title":"Redo","box":[237,9,30,30],"shown":true,"under":"mono er-dayname","onTop":false},"drawer":[119,0,271,844]}
+rosTab 1 true
+undo, drawer put away {"undoBtn":{"disabled":false,"title":"Undo — a personal input","box":[201,9,30,30],"shown":true,"under":"bi","onTop":true},"redoBtn":{"disabled":true,"title":"Redo","box":[237,9,30,30],"shown":true,"under":"bi","onTop":true},"drawer":[360,202,271,440]}
+after Undo (drawer away): {"people":["Ranger"],"oil":{"2026-07-18":1}} back to start true toast Undid: a personal input
+errors []
+exit 0

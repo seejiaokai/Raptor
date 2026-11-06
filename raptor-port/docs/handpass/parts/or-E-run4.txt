@@ -1,0 +1,50 @@
+start {"iid":"imqoidhybvv2jdp","date":"Jul 15","s":540,"e":600,"type":"Training","people":["Ranger","Hex"],"cx":true,"cxr":"WX","by":"stiff","ttl":"Range brief","rmk":"Bring your kit"}
+E2 BEFORE (cancelled) {"weekLine":{"text":"CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO","tag":"CX DUE WX","nameStrike":"line-through","h":72},"weekGround":{"cls":"pl-row gshared cx gr-frominput","tag":"CX DUE WX","strike":"none","h":58,"text":"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD Bring your kit"},"boardRow":{"cls":"sb-arow c6r cx gr-frominput","cxBtn":"mbtn on","infoBtn":"mbtn nfo","flagBtn":"mbtn red"},"boardLine":{"text":"CX Range brief TRAINING Hex C Ranger IP UNDO","tag":"CX","nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"line-through","op":"0.6","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","why":"WX / colour rgb(240, 85, 95)","h":51},"windowCx":"CXWX","list":{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","why":"WX / colour rgb(240, 85, 95)","h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":true,"cxr":"WX","s":540,"e":600}}
+E2 un-cancel pressed: INPUTS {"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":false,"cxr":"","s":540,"e":600} 
+saved e2-00-board-after-uncancel
+saved e2-1-uncancelled-week-line
+saved e2-1-uncancelled-week-ground
+saved e2-1-uncancelled-board-row
+saved e2-1-uncancelled-board-line
+saved e2-1-uncancelled-card
+saved e2-1-uncancelled-list
+E2 AFTER un-cancel {"weekLine":{"text":"Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO","tag":null,"nameStrike":"none","h":62},"weekGround":{"cls":"pl-row gshared gr-frominput","tag":null,"strike":"none","h":58,"text":"RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"},"boardRow":{"cls":"sb-arow c6r gr-frominput","cxBtn":"mbtn","infoBtn":"mbtn nfo","flagBtn":"mbtn red"},"boardLine":{"text":"Range brief TRAINING C Hex C Ranger IP UNDO","tag":null,"nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"none","op":"1","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"windowCx":null,"list":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":false,"cxr":"","s":540,"e":600}}
+E2 Undo button Undo — a personal input disabled false
+E2 after Undo note 
+saved e2-2-undo-week-line
+saved e2-2-undo-week-ground
+saved e2-2-undo-board-row
+saved e2-2-undo-board-line
+saved e2-2-undo-card
+saved e2-2-undo-list
+E2 AFTER Undo {"weekLine":{"text":"CX DUE WX Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO","tag":"CX DUE WX","nameStrike":"line-through","h":72},"weekGround":{"cls":"pl-row gshared cx gr-frominput","tag":"CX DUE WX","strike":"none","h":58,"text":"CX DUE WXRANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD Bring your kit"},"boardRow":{"cls":"sb-arow c6r cx gr-frominput","cxBtn":"mbtn on","infoBtn":"mbtn nfo","flagBtn":"mbtn red"},"boardLine":{"text":"CX Range brief TRAINING Hex C Ranger IP UNDO","tag":"CX","nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"line-through","op":"0.6","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Cancelled — WX"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","why":"WX / colour rgb(240, 85, 95)","h":51},"windowCx":"CXWX","list":{"text":"09:00–10:00 Hex, RangerTRAINING CXRange briefWX · Bring your kit By Saber","tag":"CX / bg rgb(240, 85, 95)","titleStrike":"line-through","why":"WX / colour rgb(240, 85, 95)","h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":true,"cxr":"WX","s":540,"e":600}}
+E2 Redo button Redo — a personal input disabled false
+E2 after Redo note 
+saved e2-3-redo-week-line
+saved e2-3-redo-week-ground
+saved e2-3-redo-board-row
+saved e2-3-redo-board-line
+saved e2-3-redo-card
+saved e2-3-redo-list
+E2 AFTER Redo {"weekLine":{"text":"Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO","tag":null,"nameStrike":"none","h":62},"weekGround":{"cls":"pl-row gshared gr-frominput","tag":null,"strike":"none","h":58,"text":"RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"},"boardRow":{"cls":"sb-arow c6r gr-frominput","cxBtn":"mbtn","infoBtn":"mbtn nfo","flagBtn":"mbtn red"},"boardLine":{"text":"Range brief TRAINING C Hex C Ranger IP UNDO","tag":null,"nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"none","op":"1","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"windowCx":null,"list":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":false,"cxr":"","s":540,"e":600}}
+notices [["rocky","stiff","in"],["bane","stiff","cx"],["rocky","stiff","cx"],["stiff","bane","title+rmk"],["bane","stiff","uncx"],["rocky","stiff","uncx"]]
+E4 red box pressed 
+saved e4-1-redbox-week-line
+saved e4-1-redbox-week-ground
+saved e4-1-redbox-board-row
+saved e4-1-redbox-board-line
+saved e4-1-redbox-card
+saved e4-1-redbox-list
+E4 AFTER red box {"weekLine":{"text":"Range brief TRAINING 09:00 10:00 C Hex C Ranger IP Bring your kit UNDO","tag":null,"nameStrike":"none","h":62},"weekGround":{"cls":"pl-row gshared redbox gr-frominput","tag":null,"strike":"none","h":58,"text":"!RANGE BRIEF TRAINING 09:00 10:00 C Hex C Ranger IP + ADD Bring your kit"},"boardRow":{"cls":"sb-arow c6r redbox gr-frominput","cxBtn":"mbtn","infoBtn":"mbtn nfo","flagBtn":"mbtn red on"},"boardLine":{"text":"Range brief TRAINING C Hex C Ranger IP UNDO","tag":null,"nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"none","op":"1","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"windowCx":null,"list":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":false,"cxr":"","s":540,"e":600}}
+E4 red box: card/list/bar/window identical to before? {"card":true,"list":true,"bar":true,"window":true}
+E4 information only pressed 
+saved e4-2-infoonly-week-line
+saved e4-2-infoonly-week-ground
+saved e4-2-infoonly-board-row
+saved e4-2-infoonly-board-line
+saved e4-2-infoonly-card
+saved e4-2-infoonly-list
+E4 AFTER information only {"weekLine":{"text":"Range brief TRAINING 09:00 10:00 Hex C Ranger IP Bring your kit UNDO","tag":null,"nameStrike":"none","h":62},"weekGround":{"cls":"pl-row gshared fyi redbox gr-frominput","tag":null,"strike":"none","h":58,"text":"!RANGE BRIEF TRAINING 09:00 10:00 Hex C Ranger IP + ADD ⓘ Bring your kit"},"boardRow":{"cls":"sb-arow c6r fyi redbox gr-frominput","cxBtn":"mbtn","infoBtn":"mbtn nfo on","flagBtn":"mbtn red on"},"boardLine":{"text":"Range brief TRAINING Hex C Ranger IP UNDO","tag":null,"nameStrike":"none","h":89},"bar":{"text":"2 · Range brief","strike":"none","op":"1","tip":"Hex, Ranger · Range brief · Training · 15 Jul · 09:00–10:00 / Placed by Saber for 2 people · 22 Jun 26, 09:00 · changed by Saber · 22 Jun 26, 17:00"},"card":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"windowCx":null,"list":{"text":"09:00–10:00 Hex, RangerTRAINING Range brief · Bring your kit By Saber","tag":null,"titleStrike":"none","why":null,"h":51},"rec":{"iid":"imqoidhybvv2jdp","title":"Range brief","people":["Ranger","Hex"],"cx":false,"cxr":"","s":540,"e":600}}
+E4 info only: card/list/bar/window identical to before? {"card":true,"list":true,"bar":true,"window":true}
+E3 week ground rows on Fri 17 after the bare one is un-cancelled [{"h":41,"t":"GROUND SCHOOL - EW 09:00 11:00 Saber IP ","cls":"pl-row"},{"h":58,"t":"TRAINING 09:00 10:00 Hex C Ranger IP + A","cls":"pl-row gshared gr-frominput"},{"h":40,"t":"AIRCREW ADMIN 11:00 12:00 + ADD","cls":"pl-row"}]
+errors []

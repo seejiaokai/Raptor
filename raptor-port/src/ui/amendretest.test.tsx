@@ -515,9 +515,10 @@ describe('the ⓘ beside the issued face describes the issued version (Astra #2,
     const issued = ((DAYS[MON] as any).ground || []).filter((g: any) => !g.cx).length
     ;(DAYS[MON] as any).ground.push({ prog: 'UNPUBLISHED BRIEF', str: '10:00', end: '11:00', who: '' })
     ensureRowIds(DAYS)
-    setDayPop(MON)
     try {
+      /* the window opened on each page in turn: since D1645 (5 Nov 26) a page change closes it (pops.ts DAYPOP_NAV) */
       setPage('viewsched')
+      setDayPop(MON)
       await act(async () => { root.render(<DayPop />); notify() })
       expect(groundItems(), 'beside the issued face: the issued version').toBe(String(issued))
       VWORK.add(MON)
@@ -525,6 +526,7 @@ describe('the ⓘ beside the issued face describes the issued version (Astra #2,
       expect(groundItems(), 'beside the Working-draft peek: the working copy').toBe(String(issued + 1))
       VWORK.clear()
       setPage('editsched')
+      setDayPop(MON)
       await act(async () => { notify() })
       expect(groundItems(), 'on the edit page: the working copy').toBe(String(issued + 1))
     } finally { VWORK.clear(); setPage('editsched'); setDayPop(null) }

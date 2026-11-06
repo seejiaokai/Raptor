@@ -1,0 +1,15 @@
+filed imqoidhpdhkv5ch imqoidj63g669zt asked 0
+holiday {"opened":true,"cards":3}
+oils after Later {"oil":null,"grp":null} || {"oil":null,"grp":null}
+fills g:4.2.+ g:4.3.+
+rows Ranger + Sidewinder || Tally + Trident
+Ranger slot g:4.2
+Q 1 Moving Ranger to Safety board | Don’t move | Move saveDisabled true heading OIL — Ranger +2, Safety board
+rows during question unchanged true
+bar Not moved — OIL not answered | Answer OIL | OK
+after cancel rows Ranger + Sidewinder || Tally + Trident unchanged true oils unchanged true
+question again Moving Ranger to Safety board
+toast Ranger moved to Safety board
+after answer rows Sidewinder || Ranger + Tally + Trident oils {"oil":null,"grp":null} || {"oil":{"2026-07-17":0.5},"grp":null}
+after ONE undo rows Ranger + Sidewinder || Tally + Trident same as before true oils back true
+errors []

@@ -1,0 +1,62 @@
+{
+ "made": [
+  "d1708-1366",
+  "d1708-1366-new",
+  "d1708-1340",
+  "d1708-1340-new",
+  "d1708-1300",
+  "d1708-1300-new",
+  "d1708-1280",
+  "d1708-1280-new"
+ ],
+ "measured": {
+  "d1708-1366": {
+   "oneLine": true,
+   "gearLeft": 1314,
+   "gearRight": 0,
+   "pressable": true
+  },
+  "d1708-1366-new": {
+   "oneLine": true,
+   "gearLeft": 1314,
+   "gearRight": 0,
+   "pressable": true
+  },
+  "d1708-1340": {
+   "oneLine": false,
+   "gearLeft": 1288,
+   "gearRight": 0,
+   "pressable": false
+  },
+  "d1708-1340-new": {
+   "oneLine": false,
+   "gearLeft": 431,
+   "gearRight": 858,
+   "pressable": true
+  },
+  "d1708-1300": {
+   "oneLine": false,
+   "gearLeft": 1248,
+   "gearRight": 0,
+   "pressable": false
+  },
+  "d1708-1300-new": {
+   "oneLine": false,
+   "gearLeft": 451,
+   "gearRight": 798,
+   "pressable": true
+  },
+  "d1708-1280": {
+   "oneLine": false,
+   "gearLeft": 1228,
+   "gearRight": 0,
+   "pressable": false
+  },
+  "d1708-1280-new": {
+   "oneLine": false,
+   "gearLeft": 451,
+   "gearRight": 778,
+   "pressable": true
+  }
+ }
+}

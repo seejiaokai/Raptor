@@ -1,0 +1,126 @@
+{
+  "rows": [
+    {
+      "scn": "S12",
+      "step": "(a) slow drag moved the ball; top bar undo is lit, one pair",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "pos {\"x\":348,\"y\":510} to {\"x\":427,\"y\":510}; undo title \"Undo a chart edit (Ctrl+Z)\"",
+      "pics": "S12-D-a1-slow-drag.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) top bar undo puts the slow-dragged ball back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "pos after undo {\"x\":348,\"y\":510} vs start {\"x\":348,\"y\":510}",
+      "pics": ""
+    },
+    {
+      "scn": "S12",
+      "step": "(a) redo moves it again",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"x\":427,\"y\":510}",
+      "pics": ""
+    },
+    {
+      "scn": "S12",
+      "step": "(a) a quick flick drag is one step: undo puts ACG-04 back where it was before the flick",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "start {\"x\":442,\"y\":510}; after flick {\"x\":442,\"y\":580}; after undo {\"x\":442,\"y\":510}",
+      "pics": "S12-D-a2-flick-undone.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) Done editing, then Save changes: one pair, state readable",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "Save changes present 1; undo greyed \"Nothing to undo\"",
+      "pics": "S12-D-a3-saved.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(b) undo pressed with the marking pop-up open: chart loses the mark; the pop-up never shows a grade the chart no longer has",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "top bar reachable true; grade now 0; pop-up open 0; selected before [] after []; pop text \"\"",
+      "pics": "S12-D-b1-undo-under-popup.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(b) Ctrl+Z with keyboard focus on a pop-up button — recorded",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade after Ctrl+Z 0; pop-up open 0",
+      "pics": "S12-D-b2-ctrlz-in-popup.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(c) typed a field in Show All and saved: one pair",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "top bar reachable over the scrim: false; undo greyed \"Nothing to undo\"",
+      "pics": "S12-D-c1-showall-edit.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(c) Show All closes by its Close button, Escape and a press outside",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"stillOpen\":true,\"closedByClose\":true,\"closedByEsc\":true,\"closedByOutside\":true}",
+      "pics": "S12-D-c2-closed.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(d) Legend: opens, closes by Escape and by a press outside, pair state right after",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"openedSomething\":true,\"topBarReachable\":false,\"escCloses\":true,\"outsideCloses\":true,\"pairOk\":true}",
+      "pics": "S12-D-d-Legend-open.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(d) flex settings: opens, closes by Escape and by a press outside, pair state right after",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"openedSomething\":true,\"topBarReachable\":false,\"escCloses\":true,\"outsideCloses\":true,\"pairOk\":true}",
+      "pics": "S12-D-d-flexsettings-open.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(e) Tracker bar hidden: one pair stays in the top bar; page not wider than the window",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"w\":{\"sw\":1536,\"iw\":1536},\"barHidden\":true}",
+      "pics": "S12-D-e1-bar-hidden.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(e) bar shown again: pair still one, page not wider",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"sw\":1536,\"iw\":1536,\"barBack\":true}",
+      "pics": "S12-D-e2-bar-shown.png"
+    },
+    {
+      "scn": "S12",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

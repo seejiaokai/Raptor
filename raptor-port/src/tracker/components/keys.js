@@ -6,7 +6,7 @@
    event's details mid-word. Every Enter handler asks this first. Three signals, because
    browsers differ: React's event carries the native one on `nativeEvent`; a plain DOM
    event has it directly; older engines give only key code 229 ("composition key").
-   Plain JS with no imports, so it stays in the standalone Tracker as it is. */
+   Plain JS with no imports. */
 export function isComposing(e) {
   if (!e) return false;
   if (e.nativeEvent && e.nativeEvent.isComposing) return true;

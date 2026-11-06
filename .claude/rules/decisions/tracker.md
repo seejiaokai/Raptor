@@ -45,6 +45,8 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1705 | 5 Nov 26 | The Tracker's typed marks become drawn line icons, as drawn: each tool of Edit chart layout takes a mark in the app's line style, Merge and Unmerge keep their words alone, and the lull's Copy to… takes the copy mark, its × the drawn ✕. |
+| D1660 | 5 Nov 26 | The Tracker's "● saved" shown in a browser that refuses to keep anything is drawn for him with the Tracker's next batch, not now: a fix adds words on screen, so a mock-up comes first (D1625). |
 | D1564 | 2 Nov 26 | On his iPhone the Tracker bar's student, course and year dropdowns draw their words whole: the cut words seen in the test browser were that browser's own drawing, not the app's, and nothing is changed. |
 | D1538 | 31 Oct 26 | The Tracker is no longer to be exported back out as a standalone app: it lives in Raptor for good, as one of its tabs. |
 | D1406 | 27 Oct 26 | On a touch screen the Tracker's chart draws no scroll bars: it still scrolls, glides and pinches as before; the Info half, Show All and every window keep their normal bars, and a desktop with a mouse keeps both the chart's and the Info panel's bars, which are how a mouse scrolls them. |
@@ -125,9 +127,10 @@ bodies are verbatim ports like `src/engine/` *[no longer since D1534 and D1538, 
 for good and its code is ordinary app code, cleaned to the code check's rules]*). Its state is module `let`s in
 `tracker/app/core.js` with its own subscribe/notify; its storage goes through
 ONE doorway, `tracker/storage.js` (inside Raptor it goes through the whiteboard
-under `raptor:tracker/…`; the bare `ocu:` localStorage path is the standalone/
-no-target fallback, and legacy `ocu:` keys are imported once — corrected
-17 Sep 26, see `docs/data-schema.md` §World 3 — the
+under `raptor:tracker/…`; legacy `ocu:` keys are imported once by the browser
+backend (`src/storage/browser.ts`) — corrected 17 Sep 26, see `docs/data-schema.md`
+§World 3. *[5 Nov 26, [TRK-STANDALONE-LEFTOVERS], D1538: the bare `ocu:` path is gone (no target: records in memory),
+as are the bar's own Undo / Redo pair and `hosted` flag (D347).]* — the
 standalone app's SharePoint/Dataverse/Firebase layers were dropped; the shared
 database replaces this file when it arrives). *[Since 30 Sep 26 (`[DB-READINESS]` group A phase 5b, D462, D464) the
 course list, each course and chart's student list and the chart records (definitions, names, order, hidden, deleted, and

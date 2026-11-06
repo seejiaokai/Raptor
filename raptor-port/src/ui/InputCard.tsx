@@ -35,6 +35,7 @@ import { useState, type KeyboardEvent as ReactKeyboardEvent, type ReactNode } fr
 import type { CardFacts } from './inputcard-model'
 import { ClipIcon } from './icons'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one card for the list, the opened day and the OIL list (D718–D724): each mark is one condition on its own facts (LATE, OIL?, the document, a cancel, a title, a remark, "By"); split, the one card would become several that can drift apart
 export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onDoc, onKey, flash, action, children }: {
   /** the input's address — its record's id */
   id: string
@@ -71,6 +72,7 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onDoc,
   const label = [names, title, kind, when].filter(Boolean).join(', ') + (cx ? ', cancelled' + (why ? ' — ' + why : '') : '')
     + (late ? ', late' : '') + (oil ? ', OIL question not answered' : '') + (by ? `, placed by ${by}` : '')
   return (
+    // eslint-disable-next-line react-doctor/no-static-element-interactions, react-doctor/click-events-have-key-events -- a press anywhere on the card opens it, for a finger; the keyboard's and a screen reader's way in is the card's button, its names (`.icard-open`, below), which Enter and Space press
     <div className={'icard ' + tone + (flash ? ' innew' : '')} data-popiid={id} data-iid={row ? id : undefined} data-fresh={flash ? id : undefined} data-testid={`${tid}-row-${id}`}
       onClick={ev => { if (!(ev.target as HTMLElement).closest('button')) onOpen() }}>
       <div className="icard-top">
@@ -82,6 +84,7 @@ export function InputCard({ id, facts, when, late, oil, tid, row, onOpen, onDoc,
           {facts.doc === 'none' && <span className="icard-nodoc" data-testid={`${tid}-nodoc`}>No document</span>}
           <span className="icard-hrs" data-testid={`${tid}-when`}>{when}</span>
         </span>
+        {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a real <button> is laid out as a box, and a box that does not fit beside the corner drops whole to the next line: a shared input's names would start under the hours, not wrap round them (D721 — this file's head) */}
         <span className="icard-open" role="button" tabIndex={0} data-testid={`${tid}-open`} aria-label={label}
           onKeyDown={e => {
             if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(); return }

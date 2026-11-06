@@ -1,0 +1,78 @@
+{
+  "rows": [
+    {
+      "scn": "S15",
+      "step": "while the Tracker loads (slow network): the top bar pair is drawn once, greyed, in every sample",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "19 samples before the chart; claw-like element seen in 20; first {\"balls\":0,\"u\":1,\"off\":true,\"roff\":true,\"title\":\"Nothing to undo\",\"claw\":true}; titles Nothing to undo",
+      "pics": "S15-D-1-loading.png"
+    },
+    {
+      "scn": "S15",
+      "step": "a press on the greyed undo while loading",
+      "note": "n/a"
+    },
+    {
+      "scn": "S15",
+      "step": "Tracker chart arrives; no page error from the pair meanwhile",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "drawn true after 5 s; new errors []",
+      "pics": "S15-D-2-drawn.png"
+    },
+    {
+      "scn": "S15",
+      "step": "once the chart is drawn, a mark lights undo",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S15-D-3-marked.png"
+    },
+    {
+      "scn": "S15",
+      "step": "D errors",
+      "note": "none"
+    },
+    {
+      "scn": "S15",
+      "step": "while the Tracker loads (slow network): the top bar pair is drawn once, greyed, in every sample",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "13 samples before the chart; claw-like element seen in 14; first {\"balls\":0,\"u\":1,\"off\":true,\"roff\":true,\"title\":\"Nothing to undo\",\"claw\":true}; titles Nothing to undo",
+      "pics": "S15-P-1-loading.png"
+    },
+    {
+      "scn": "S15",
+      "step": "a press on the greyed undo while loading",
+      "note": "n/a"
+    },
+    {
+      "scn": "S15",
+      "step": "Tracker chart arrives; no page error from the pair meanwhile",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "drawn true after 4 s; new errors []",
+      "pics": "S15-P-2-drawn.png"
+    },
+    {
+      "scn": "S15",
+      "step": "once the chart is drawn, a mark lights undo",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "title \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S15-P-3-marked.png"
+    },
+    {
+      "scn": "S15",
+      "step": "P errors",
+      "note": "none"
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+{
+ "dragToast": "Anvil is now unavailable instead of Hex",
+ "unavBefore": [
+  "LL Drifter A till 16 Jul",
+  "LL C Anvil IP till 16 Jul",
+  "LL Hunter IP till 16 Jul",
+  "OL Cobra IP Overseas leave — off island",
+  "ATT C Grit C Medically down till 17 Jul",
+  "OD C Nomad C Overseas duty — exercise, off island",
+  "OIL C Gambit C"
+ ],
+ "inputBefore": [
+  {
+   "iid": "0cr78",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Anvil",
+    "Hunter"
+   ],
+   "by": "Saber"
+  }
+ ],
+ "pre": {
+  "dots": [
+   {
+    "row": "LL Drifter A till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL C Anvil IP till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL Hunter IP till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL Drifter A till 16 Jul",
+    "day": 3
+   },
+   {
+    "row": "LL C Anvil IP till 16 Jul",
+    "day": 3
+   },
+   {
+    "row": "LL Hunter IP till 16 Jul",
+    "day": 3
+   }
+  ],
+  "win": {
+   "title": "Changes · Wednesday 15/7 Not yet published",
+   "tabs": [
+    "New to you 0",
+    "All changes 3 [on]"
+   ],
+   "lines": [
+    "cw-gh :: ▾ Input · Anvil, Drifter, Hunter · LL · 3 09:00",
+    "cw-l :: Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00",
+    "cw-l :: Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00",
+    "cw-l :: Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+   ]
+  },
+  "taps": [
+   {
+    "txt": "Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL Drifter A till 16 Jul",
+      "row": "LL Drifter A till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-pre-3-tap-line0.png"
+   },
+   {
+    "txt": "Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL C Anvil IP till 16 Jul",
+      "row": "LL C Anvil IP till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-pre-3-tap-line1.png"
+   },
+   {
+    "txt": "Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL Drifter A till 16 Jul",
+      "row": "LL Drifter A till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-pre-3-tap-line2.png"
+   }
+  ],
+  "dotTaps": [
+   {
+    "info": {
+     "row": "LL Drifter A till 16 Jul",
+     "who": "Drifter"
+    },
+    "bubble": [
+     "DRIFTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-pre-4-dot-0.png"
+   },
+   {
+    "info": {
+     "row": "LL C Anvil IP till 16 Jul",
+     "who": "Anvil"
+    },
+    "bubble": [
+     "ANVIL · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00 LL 15 Jul–16 Jul · added Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-pre-4-dot-1.png"
+   },
+   {
+    "info": {
+     "row": "LL Hunter IP till 16 Jul",
+     "who": "Hunter"
+    },
+    "bubble": [
+     "HUNTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-pre-4-dot-2.png"
+   }
+  ]
+ },
+ "signedAgain": true,
+ "unavAfter": [
+  "LL Drifter A till 16 Jul",
+  "LL C Anvil IP till 16 Jul",
+  "LL Hunter IP till 16 Jul",
+  "OL Cobra IP Overseas leave — off island",
+  "ATT C Grit C Medically down till 17 Jul",
+  "OD C Nomad C Overseas duty — exercise, off island",
+  "OIL C Gambit C"
+ ],
+ "inputAfter": [
+  {
+   "iid": "0cr78",
+   "type": "LL",
+   "title": "",
+   "date": "Jul 15",
+   "to": null,
+   "s": 0,
+   "e": 1439,
+   "people": [
+    "Drifter",
+    "Anvil",
+    "Hunter"
+   ],
+   "by": "Saber"
+  }
+ ],
+ "post": {
+  "dots": [
+   {
+    "row": "LL Drifter A till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL C Anvil IP till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL Hunter IP till 16 Jul",
+    "day": 2
+   },
+   {
+    "row": "LL Drifter A till 16 Jul",
+    "day": 3
+   },
+   {
+    "row": "LL C Anvil IP till 16 Jul",
+    "day": 3
+   },
+   {
+    "row": "LL Hunter IP till 16 Jul",
+    "day": 3
+   }
+  ],
+  "win": {
+   "title": "Changes · Wednesday 15/7 Not yet published",
+   "tabs": [
+    "New to you 0",
+    "All changes 3 [on]"
+   ],
+   "lines": [
+    "cw-gh :: ▾ Input · Anvil, Drifter, Hunter · LL · 3 09:00",
+    "cw-l :: Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00",
+    "cw-l :: Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00",
+    "cw-l :: Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+   ]
+  },
+  "taps": [
+   {
+    "txt": "Hex · LL 15 Jul–16 Jul · taken out Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL Drifter A till 16 Jul",
+      "row": "LL Drifter A till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-post-3-tap-line0.png"
+   },
+   {
+    "txt": "Anvil · LL 15 Jul–16 Jul · added Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL C Anvil IP till 16 Jul",
+      "row": "LL C Anvil IP till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-post-3-tap-line1.png"
+   },
+   {
+    "txt": "Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00",
+    "toast": "",
+    "flash": [
+     {
+      "cls": "pl-row chgflash",
+      "text": "LL Drifter A till 16 Jul",
+      "row": "LL Drifter A till 16 Jul",
+      "seat": null
+     }
+    ],
+    "pic": "rx3-8-post-3-tap-line2.png"
+   }
+  ],
+  "dotTaps": [
+   {
+    "info": {
+     "row": "LL Drifter A till 16 Jul",
+     "who": "Drifter"
+    },
+    "bubble": [
+     "DRIFTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-post-4-dot-0.png"
+   },
+   {
+    "info": {
+     "row": "LL C Anvil IP till 16 Jul",
+     "who": "Anvil"
+    },
+    "bubble": [
+     "ANVIL · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00 LL 15 Jul–16 Jul · added Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-post-4-dot-1.png"
+   },
+   {
+    "info": {
+     "row": "LL Hunter IP till 16 Jul",
+     "who": "Hunter"
+    },
+    "bubble": [
+     "HUNTER · LL Drifter, Hex, Hunter · LL added · 15 Jul–16 Jul Saber · 22/6 09:00"
+    ],
+    "pic": "rx3-8-post-4-dot-2.png"
+   }
+  ]
+ }
+}

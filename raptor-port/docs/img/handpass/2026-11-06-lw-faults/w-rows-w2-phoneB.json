@@ -1,0 +1,13 @@
+[
+ {
+  "id": "S2-target-cell",
+  "size": "phoneB",
+  "did": "tap LL, then ~170 ms later a tap on a DAY CELL (Reaper, another point than LL: the guard is the grid, not one point); real gap 396 ms",
+  "saw": "EXPECTED nothing opens. point held cell-dice-2026-11-18|TD. act; open after=[\"bid-picker\"]; cell d=LL:s-w",
+  "verdict": "FAIL",
+  "pics": [
+   "s2-phoneB-cell-t2q",
+   "s2-phoneB-cell-settled"
+  ]
+ }
+]

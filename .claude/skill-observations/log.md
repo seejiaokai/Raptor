@@ -691,6 +691,8 @@ Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writin
 
 **Met again 4 Nov 26 (`claude/leave-war-small-fixes`, D1633):** twice in one job — a stray `cat > "$TMP/x"` at the head of a command waited on stdin until stopped (2 min), and a `node -e` edit of a probe script lost its escapes so nothing was written (found only because the next step's count read 0). Both redone with the Write and Edit tools. Still the conditional habit; the unconditional default proposed above would have stopped both.
 
+**Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Met a second time the same job: a regex appended by a quoted heredoc reached the test file with its backslashes gone, and the new test failed on the fixed code too; put right with the Edit tool and `String.raw`. Same lesson: code goes in with the Edit tool.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
@@ -3488,6 +3490,173 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** The guard filed by Observation 601 (an unconditional default: any multi-line script goes to a scratchpad file through the file tool) is still not built; count this as a further met-again for it. Until it is, apostrophes in test names are best avoided in generated edits (a double-quoted string or a reworded name).
 
 **Principle:** A lesson filed but not built recurs at the same rate; a silent partial write (a file truncated, no error) is the costlier form of the same trap, because the next step can run on half a script.
+
+### Observation 820: A mark's own style moved the floating panel it marked
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** drawing the posting-out bell line on the real app ([POSTOUT-RUN-NOTICE]); numbered in this chat's range 820–829 (a parallel chat holds 802–819)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** The Method, step 3 — the mark drawn on the element
+
+**Issue:** The "today" mark (a dashed outline and a tag in `::after`) carried `position:relative` so the tag had a box to sit against. On the bell's list, which is `position:fixed`, that rule pulled the list out of its place into the page's flow: the "today" picture showed no list at all, and the script passed with no error. Found only by looking at the picture.
+
+**Suggested improvement:** In step 3, add: a mark's class never sets `position` (or display, size, overflow-hiding) on the element it marks; a fixed, absolute or sticky element already gives its tag a box, and a static one gets the tag as a child instead. Have the drawing script assert the marked element's box is unchanged (same rect before and after the class is added).
+
+**Principle:** A mark drawn on an element must not change that element's layout; check the element's box before and after adding the mark, because a broken frame passes silently.
+
+### Observation 821: A drawn mock-up of an event's result never asked whether the event happens in every case drawn
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** building the posting-out bell line ([POSTOUT-RUN-NOTICE]) from its approved drawing and the handoff's build notes
+**Skill:** mockups-on-the-real-app (brainstorming) and session-handoff
+**Type:** open-source
+**Phase/Area:** the drawing step; the handoff's "what the build carries"
+
+**Issue:** The drawing showed four bell lines, one per outcome of a posting, as if each were written when "the posting runs on its date". In the app one of the four outcomes ("off the manpower") never runs anything on its date — so there was no moment to write its line, and the build needed a different mechanism (a line each bell works out from stored data). The drawing script had moved the clock and seen the other three run, but cloned all four lines by hand, so the gap never showed. Separately, the handoff said the line was written "inside the command, so an Undo takes it back" — but an earlier ruling says the top-bar Undo never takes a posting back; the build had to find that out from a failing test.
+
+**Suggested improvement:** In the mock-up guide: when a drawing shows what an event produces (a notification, a mark, a line), the drawing script asserts for EVERY drawn case that the event actually fires in the running app (a hook, a log, a state change), and lists any case where it does not as a design question. In the handoff skill: a build note that claims a behaviour of an existing mechanism (Undo, a save, a permission) names the ruling or test that shows it, or says it is unchecked.
+
+**Principle:** A picture of a result is not evidence that its cause happens; and a claim about how an existing mechanism behaves is a guess until a ruling or a test is named for it.
+### Observation 810: A CSS fix drawn by editing the app's own rule in place
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [CSS-FONT-INHERIT] — drawing nine dropped `font:` lines today beside the fix (branch claude/css-font-inherit-look)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page / the transform
+
+**Issue:** The fix was a stylesheet correction. An injected sheet would sit at a different place in the cascade and could beat (or lose to) rules the real fix would not. Writing the corrected declarations into the page's own CSSOM rule (`rule.style.setProperty`), found by its exact selector text, gave an exact "after", reversible with `removeProperty`; the script refused unless each rule was found once. A second trap: the crop picked the first visible `.floatwin` in document order — a day window behind the input window.
+
+**Suggested improvement:** Add to the method: "a fix that only corrects existing CSS is drawn by editing that rule in the page's CSSOM in place, never by an injected sheet; assert each rule found exactly once". And in the n-th-visible-match line: "the front window, not the first in document order".
+
+**Principle:** Draw a style fix where it will live: change the real rule in place, so the picture inherits the cascade the build will have.
+
+### Observation 822: A drawing that removes a node the app draws blanks the app on its next redraw
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** drawing [PO-SANS-PUCK-EDGE] on the real app (claude/postout-bell-look; numbers 820–829 held by this branch)
+**Skill:** brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** Traps When Injecting Into a Live Page
+
+**Issue:** The drawing took the "SANS" tag out with `remove()` to picture the proposal. Two steps later the app redrew that row (a setting changed, a posting was undone) and the whole screen went blank: React threw "removeChild: the node to be removed is not a child", because the node it owned was gone. Three runs were spent on the wrong cause (a button not found, a sheet in the way) before the page's own error was printed.
+
+**Suggested improvement:** Add to the guide's traps: "To take away a part the app draws, hide it (`style.display='none'`), never remove it — a removed node crashes the app's next redraw of it, and every later step reads a blank screen. Print the page's errors to the run's log as they happen, not only at the end."
+
+**Principle:** In a page a framework owns, a drawing may hide or add, never delete what the framework made; and a script's first move on a strange failure is to read the page's own error.
+
+### Observation 823: A walk helper that reaches a control by one route blames the app when the state changes the route
+**Status:** OPEN
+**Date:** 5 Nov 26
+**Session context:** the take-back walk (claude/postout-bell-look); the posting sheet's Undo after the posting's date was moved
+**Skill:** New skill candidate: walk-script helpers (docs/walk-scripts.md)
+**Type:** open-source
+**Phase/Area:** walk-scripts §4 — pressing the control the app routes
+
+**Issue:** The helper opened the posting sheet by tapping the posting date's day. Once the date was moved later, that day became an ordinary day and opened another sheet, so the walk reported the Undo button MISSING and the scenario FAILED, as if the app had lost a door. Two more first-run FAILs had the same shape (a deleted man's row is kept; a page tab hid the grid).
+
+**Suggested improvement:** walk-scripts §4: a helper that reaches a control lists every route a person has to it (the day itself, a day inside the state, a menu), tries each in turn, logs which one worked, and pictures each failed try, so a FAIL means "no route found", never "my one route changed".
+
+**Principle:** A door check proves absence only when it has tried every door the state can offer; one remembered route is evidence about the script, not the app.
+
+- Met again 5 Nov 26 ([PO-CHANGE-RETRACT], walk S22): the step tried every route and still found no Undo — because with "+ SANS" on the app draws a ran SANS posting with no posting day (D283), so no route exists in that state. A door check must first ask whether the STATE offers the door at all (read the app's drawing rule), not only try every route; proposed guard: a walker's brief names, for each door it presses, the states in which the app draws it.
+
+### Observation 830: A finding about a drawn icon's colour was read from its button, not the icon
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — picturing the settings gears (numbers 830–839 held by this branch; 820–829 by `claude/postout-bell-look`)
+**Skill:** brainstorming (mockups-on-the-real-app.md, "Judging the Proposal")
+**Type:** open-source
+**Phase/Area:** measuring an existing component before a finding is filed
+
+**Issue:** A consistency sweep filed "the Leave War's gear is cyan, the others white" from the button's computed `color`. The button's colour was indeed the accent, but the svg inside it carries its own class whose rule sets a grey, so on screen the gear was grey like every other drawn icon. The finding sat in the backlog for two weeks as a question for the owner; picturing it at 2x showed the grey, and measuring the svg's own computed colour confirmed it.
+
+**Suggested improvement:** In "An existing component shown inside a mock is measured, not styled", add: measure the colour of the drawn part itself (the svg, the glyph's element), not its container — an icon's class may override the colour it would inherit; and look at the picture before filing a colour finding.
+
+**Principle:** A colour finding is measured on the pixels' own element; a container's colour is a guess about its children.
+
+### Observation 831: An opening line that switches branches in the main folder can land on another chat's unsaved work
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** start of [UI-CONSISTENCY-LOOK] round 4; the opening line said `git switch --detach origin/main` in the main folder, which held another live chat's branch and ten uncommitted source files
+**Skill:** session-handoff (the opening line it writes)
+**Type:** internal
+**Phase/Area:** the ready-to-paste opening line for a new job
+
+**Issue:** The opening line for a new job tells the new chat to detach and branch in the folder it starts in. With parallel chats, that folder is often another chat's working copy with uncommitted work: switching would carry those edits onto the new branch or disturb the other chat (the 3 Nov 26 note in memory records a commit landing on the wrong branch this way). This chat checked `git status` first and made its own short-path folder (`git worktree add ../Raptor-<name>`), as the memory note says, but the opening line itself did not.
+
+**Suggested improvement:** The session-handoff skill's opening-line template for a new job gains one clause: "if `git status` shows changes you did not make, or another chat is on this folder's branch, run `git worktree add --detach ../Raptor-<short> origin/main` and work there instead."
+
+**Principle:** An instruction to switch branches must first check whose folder it is; the guard belongs in the instruction, not in the reader's memory.
+
+### Observation 832: A design reader passed a new icon that the owner saw at once looked like its neighbour
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** [UI-CONSISTENCY-LOOK] round 4 — the drawn OIL Earn mark (a clock) beside the board's History button (a clock with an arrow)
+**Skill:** impeccable (critique, Assessment A's brief) and brainstorming (mockups-on-the-real-app.md)
+**Type:** open-source
+**Phase/Area:** checking newly drawn icons before they are put to the owner
+
+**Issue:** The drawing borrowed an existing mark (a plain clock) for a button whose bar already carried a clock-shaped mark meaning something else. The owner saw it at once; a fresh, blind design reader asked to judge whether the new icons "read clearly, match each other and the app's line icons, and are ambiguous" called the borrowing "a good link" — it compared each new mark with its source and with the other new marks, never with the marks already standing beside it.
+
+**Suggested improvement:** In the mock-up method and in the critique reader's brief, add one step for any new or borrowed mark: lay it beside every mark already on its bar and its page (an inventory taken from the running page, not the source) and name any pair a person could mistake.
+
+**Principle:** A borrowed icon carries its old meaning into a new neighbourhood; check it against its neighbours, not only against where it came from.
+
+### Observation 833: A search for tests that read an old mark, filtered to "assertion-looking" lines, missed the browser tests
+
+**Status:** OPEN
+**Date:** 2026-11-05
+**Session context:** Raptor, building round 4 of the consistency look (typed marks → drawn icons)
+**Skill:** New skill candidate: replacing a visible string/glyph across an app
+**Type:** open-source
+**Phase/Area:** finding every test that pins the old text before changing it
+
+**Issue:** Before swapping typed marks for drawings, the agent grepped tests for the marks but piped through a filter of assertion keywords and a comment filter; the e2e specs and a smoke script that clicked `has-text("╱ Line")` or asserted `toBe('⇅ Done')` slipped through, and only the CI run (minutes later, on another machine) found five of them. Separately, the approved drawing itself showed a control covered by a window — a pixel-faithful build reproduced the defect, and only a test that PRESSES the control in that state found it.
+
+**Suggested improvement:** When replacing a visible string, list FILES (not lines) containing the old string across every test kind — unit, browser, smoke scripts — with no filter, then read each hit. And for any layout move, press each moved control in the states the drawing shows (a window open), not only measure it.
+
+**Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.
+
+### Observation 834: A geometric "letters fit" check needs the letters' own pixels, and must know which letters are hidden on purpose
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** Raptor, the walk of a Leave War cell redesign (boxes side by side, halves over wholes, corner tags)
+**Skill:** bug-check order (walk scripts — docs/walk-scripts.md §4)
+**Type:** open-source
+**Phase/Area:** on-screen assertions that a box's text is not cut or covered
+
+**Issue:** The walk script judged "cut" by comparing the text's line box with its box; on half-height boxes the line box is taller than the capitals, so four kinds of day failed falsely. Then a picture showed a box with no letters at all, which read as a fault; it was a joined multi-day bar whose later days hide their code on purpose (transparent text). The full combination measure, by contrast, read ink pixels but only checked corner tags — never whether one box covers another's letters.
+
+**Met again, same day:** `docs/walk-scripts.md` already says "Whether letters fit is measured on their ink" (6 Nov 26) — the new walk script was written without it, so the rule did not reach the moment of writing. The guard to propose: one shared on-screen helper (ink-based) that walk scripts import for "letters fit", in place of each script writing its own.
+
+**Suggested improvement:** In walk-scripts §4, a step that judges text fit uses the glyphs' ink (or the long axis only, for a line box) and lists the classes that hide text by design (e.g. a joined bar's later days) before calling a missing word a fault; and a combination measure checks box-over-box overlap of ink as well as tag-over-ink.
+
+**Principle:** Judge "cut" by ink, not by the text's layout box; and before calling missing text a fault, ask whether the design hides it on purpose.
+
+### Observation 835: A build of the live branch for a before/after measure needs a recipe that skips the picture folders
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** Raptor, measuring the branch against today's main for a "made worse?" count
+**Skill:** bug-check order (walk scripts) / gates-and-deploy
+**Type:** internal
+**Phase/Area:** making a comparison build of main without a second worktree
+
+**Issue:** No document says how to build main beside a branch. A first try copied main's whole app folder (git archive) and spent minutes dragging gigabytes of walk pictures; excluding the docs folder made the copy take 8 seconds, and linking the installed packages let it build in one second. A per-session browser test also ignored a pixel-density override sent on a second debugging session, so close-up pictures came out at normal size.
+
+**Suggested improvement:** Add to docs/walk-scripts.md: "a build of main: git archive origin/main -- raptor-port ':(exclude)raptor-port/docs' into scratch, junction node_modules, vite build --outDir <scratch>, LW_DIST=<that>"; and for 4x close-ups make the context with that pixel density rather than overriding it mid-run.
+
+**Principle:** A comparison build should copy only what the build reads; and set rendering density when the browser context is made, not after.
 
 ### Observation 802: A safety-net message no control reaches is pictured through its element's nearest real refusal
 

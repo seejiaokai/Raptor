@@ -1,0 +1,36 @@
+{
+  "rows": [
+    {
+      "scn": "S2",
+      "step": "mark then F5 at once: the mark is there",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S2-after-instant-reload.png"
+    },
+    {
+      "scn": "S2",
+      "step": "mark, close the tab at once, reopen: the mark is there",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "grade dco",
+      "pics": "S2-after-tab-close-reopen.png"
+    },
+    {
+      "scn": "S2",
+      "step": "no ocu: key after both",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S2",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

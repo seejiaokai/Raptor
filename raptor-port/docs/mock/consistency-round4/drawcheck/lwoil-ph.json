@@ -1,0 +1,143 @@
+{
+ "state": "lwoil-ph",
+ "drawing": {
+  "script": "scripts/handpass/cr4-look.mjs",
+  "shot": "q4-ph-lwoil-b"
+ },
+ "recorded": "2026-11-05T11:34:07.640Z",
+ "drawnOn": "main at f197e586f",
+ "checkout": "06fde6c82",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "tabs": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 53,
+    "w": 326,
+    "h": 44
+   },
+   "ink": {
+    "x": 40.4,
+    "y": 66.8,
+    "w": 286.3,
+    "h": 16
+   },
+   "text": "Grid Approvals 13 Balances OIL",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "11px",
+     "11px",
+     "11px",
+     "11px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.inputs-tabs.lw-tabs.zz-tabs"
+  },
+  "oil-tab": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 282.4,
+    "y": 57,
+    "w": 51.6,
+    "h": 36
+   },
+   "ink": {
+    "x": 306.8,
+    "y": 66.8,
+    "w": 19.8,
+    "h": 16
+   },
+   "text": "OIL",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "center",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "button.intab.zz-oiltab.zz-ring"
+  },
+  "oil-mark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 289.8,
+    "y": 68.5,
+    "w": 13,
+    "h": 13
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "center",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q4-ph-lwoil-b.png",
+  "identical": true
+ }
+}

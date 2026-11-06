@@ -70,7 +70,23 @@ export type NoticePart =
   /* bidding opened or closed on a stretch (D1214) — `end`: closed because its last date passed (derived, never stored) */
   | { k: 'lwopen'; a: string; b: string; open: boolean; end?: true }
   /* a war line the admin's Undo took back after the member had read it (D1216): `ref` the line it was, `d` what it said */
-  | { k: 'lwback'; c?: string; a: string; b: string; d: LwDid | 'open' | 'close'; ref: string; w?: string }
+  | { k: 'lwback'; c?: string; a: string; b: string; d: LwDid | 'open' | 'close'; ref: string; w?: string; to?: string; tb?: string }
+  /* A MAN'S POSTING OUT RAN ON ITS DATE ([POSTOUT-RUN-NOTICE] — owner D1546: "So it is not like gone silently"; D1547 A:
+     it runs by itself and every admin's bell is told; D1690: the man first, in bold, then "Posted out" and what the
+     outcome did; D1691: a deleted man's line opens nothing). About no input (`iid` is ''): `name` is his callsign when it
+     ran (read by today's callsign while he is on the roster), `day` the posting's date. `who` — the man; `o` — the outcome
+     that ran (`none` — "off the manpower": nothing runs, so that line is worked out by each admin's bell, never stored —
+     leavewar/sync.ts postedLines); `acct` — an archived man who held a sign-in (his account was suspended with him).
+     Nobody is named as who set it: a posting keeps no such record. */
+  | { k: 'po'; who: string; o: PoOutcome; acct?: true }
+  /* A POSTING OUT TAKEN BACK ([NOTICE-UNDO-RETRACT] step 1 — owner D1693, D1699): the posting sheet's "Undo post out" took
+     back a posting whose line this admin had already READ, so in its place he gets this one, unread, by whoever pressed
+     it — the line's own words struck through, then "taken back · Saber" (his idea, D1699). One he had not read simply went;
+     the admin who pressed Undo gets none. `who`, `o`, `acct` — as the line it takes back; `day` its posting date. */
+  | { k: 'poback'; who: string; o: PoOutcome; acct?: true }
+
+/** what a posting out did on its date, for the admins' bells ([POSTOUT-RUN-NOTICE]) */
+export type PoOutcome = 'overseas' | 'delete' | 'sans' | 'none'
 
 /** what the war did to a man's leave, for his bell (M4 9.1, 9.4a, 9.7) */
 export type LwDid = 'approved' | 'refused' | 'repend' | 'putback' | 'moved' | 'deleted' | 'added' | 'bidmoved' | 'biddel' | 'retyped'
@@ -312,6 +328,10 @@ export function noticeLive(n: Notice): boolean {
     }
     return true
   }
+  /* A POSTING'S LINE IS A SCHEDULER'S, as a holiday's is (below): it is addressed to an admin and its tap opens Admin →
+     Users, so with his member view on (D292) it is neither listed nor counted, and is there again, read or unread as he
+     left it, when he switches back */
+  if (w && (w.k === 'po' || w.k === 'poback')) return mayEditSched()
   const h = holOf(n)
   if (!h) return true
   /* A SCHEDULER'S LINE, AND ONLY WHILE HE IS ONE (the check's walk, E8 — 13 Oct 26; owner D785, with the reading told to
@@ -363,6 +383,47 @@ export function noticeWar(to: readonly string[], by: string | null, part: Notice
   }
   return made
 }
+/* ---- a posting out that ran ([POSTOUT-RUN-NOTICE]) ---------------------------------------------------------- */
+/** THE POSTING'S LINES — one an admin, pushed INSIDE the posting pass's own command (leavewar/sync.ts runPoOutcomes, the
+ *  scheduler store enlisted), so a refused pass tells nobody; once made it stays as the record that the posting ran (the top
+ *  bar's Undo never takes a posting back — D350). `to` — every admin who can sign in (D1547: "each admin's bell"), the man
+ *  himself left out by the caller; a man no longer here is told nothing. Answers how many were made. */
+export function noticePosting(to: readonly string[], who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): number {
+  const p: any = PEOPLE[who]
+  const part: NoticePart = acct && o === 'overseas' ? { k: 'po', who, o, acct: true } : { k: 'po', who, o }
+  let made = 0
+  for (const t of new Set(to.map(String))) {
+    if (!here(t)) continue
+    NOTICES.push({ id: mint(at), to: t, by: null, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+    made++
+  }
+  return made
+}
+/** A POSTING'S LINE TAKEN BACK ([NOTICE-UNDO-RETRACT] step 1 — D1693, D1699): one line to an admin who had read the
+ *  posting's line, pushed INSIDE the posting sheet's "Undo post out" command (leavewar/sync.ts retractPostingLines), by the
+ *  admin who pressed it — never to him. Its words: the posting's own, struck, then "taken back · Saber" (noticeWords). */
+export function noticePostingBack(to: string, by: string | null, who: string, o: PoOutcome, day: string, acct: boolean, at: number = Date.now()): boolean {
+  if (!here(to) || (by != null && to === by)) return false
+  const p: any = PEOPLE[who]
+  const part: NoticePart = acct && o === 'overseas' ? { k: 'poback', who, o, acct: true } : { k: 'poback', who, o }
+  NOTICES.push({ id: mint(at), to, by, at, iid: '', name: p && p.cs ? String(p.cs) : who, day, what: [part] })
+  return true
+}
+/** the posting a line is about, or null — the bell's tap asks it (ui/topstate.ts openNotice) */
+export function postOf(n: Pick<Notice, 'what'>): { who: string; o: PoOutcome; acct: boolean } | null {
+  const p: any = (n.what || [])[0]
+  return p && (p.k === 'po' || p.k === 'poback') ? { who: String(p.who), o: p.o as PoOutcome, acct: !!p.acct } : null
+}
+/* what the outcome did, in the past (D1690 — the drawing of record docs/mock/2026-11-05-postout-bell/, picture 2b): the
+   sheet's own line (leavewar/ui/outcomewords.ts) said as done. A Delete reads "deleted" whether or not he held a sign-in
+   (D1690's words — his account goes with him) */
+const PO_DID: Record<PoOutcome, (acct: boolean) => string> = {
+  overseas: acct => (acct ? 'archived, account suspended' : 'archived'),
+  delete: () => 'deleted',
+  sans: () => 'now SANS',
+  none: () => 'off the manpower',
+}
+
 /** is this one of the war's lines? */
 export const isWarNotice = (n: Pick<Notice, 'what'>): boolean => { const k = (n.what || [])[0]?.k; return k === 'lw' || k === 'lwopen' || k === 'lwback' }
 const openOf = (n: Notice): { a: string; b: string } | null => { const p: any = (n.what || [])[0]; return p && p.k === 'lwopen' ? { a: String(p.a), b: String(p.b || p.a) } : null }
@@ -460,17 +521,12 @@ function partWords(p: NoticePart): string {
       }
       return c
     }
+    case 'po': return `Posted out · ${PO_DID[p.o] ? PO_DID[p.o](!!p.acct) : 'off the manpower'}`
     /* "Bidding" with a capital, as his drawing writes it (his D1433, 27 Oct 26) */
     case 'lwopen': return p.end ? 'Bidding closed · its dates ended' : p.open ? 'Bidding open' : 'Bidding closed'
-    case 'lwback': {
-      const c = (p.c || '').replace(/\*/g, '')
-      const what: Record<string, string> = {
-        approved: `Approval of ${c}`, added: `Approval of ${c}`, refused: `Refusal of ${c}`, repend: `Return of ${c} to pending`,
-        putback: `Put-back of ${c}`, moved: `Move of ${c}`, deleted: `Deletion of ${c}`, bidmoved: `Move of ${c} bid`,
-        biddel: `Deletion of ${c} bid`, retyped: `Change of ${(p.w || '').replace(/\*/g, '')} bid to ${c}`, open: 'Opening of bidding', close: 'Closing of bidding',
-      }
-      return `${what[p.d] || c} taken back`
-    }
+    /* a taken-back line's own words are "taken back"; what it took back is said struck through beside them (backWords) */
+    case 'lwback': return 'taken back'
+    case 'poback': return 'taken back'
   }
 }
 /* a bidding stretch said without its weekdays — "1 Apr – 30 Jun" (D1214's words) */
@@ -478,9 +534,23 @@ function stretchWords(a: string, b: string): string {
   const d = (iso: string) => `${+iso.slice(8, 10)} ${MON[+iso.slice(5, 7) - 1]}`
   return a === b ? d(a) : `${d(a)} – ${d(b)}`
 }
+/* WHAT A TAKEN-BACK LINE TOOK BACK (his D1699, 5 Nov 26 — "If the post out was taken back shouldn't it show that it's
+   striked out?"): the words the line it replaces said, drawn struck through before "taken back · Saber" — "~~LL approved~~
+   · taken back · Saber", "~~Posted out · now SANS~~ · taken back · Saber". Rebuilt from the part itself, so the words are
+   always the original line's own (one body: partWords). A move made before its line kept where it took the leave reads
+   "LL moved" — demo data only (D56). */
+function backWords(p: NoticePart): string {
+  if (p.k === 'poback') return partWords({ k: 'po', who: p.who, o: p.o, ...(p.acct ? { acct: true as const } : {}) })
+  if (p.k !== 'lwback') return ''
+  if (p.d === 'open' || p.d === 'close') return partWords({ k: 'lwopen', a: p.a, b: p.b, open: p.d === 'open' })
+  if (p.d === 'moved' || p.d === 'bidmoved') {
+    if (!p.to) return `${lwCode(p.c || '')} ${p.d === 'moved' ? 'moved' : 'bid moved'}`
+  }
+  return partWords({ k: 'lw', c: p.c || '', a: p.a, b: p.b, d: p.d, ...(p.w ? { w: p.w } : {}), ...(p.to ? { to: p.to, tb: p.tb } : {}) })
+}
 /** A LINE OF THE LIST, IN THE SHORTER WORDING (D769): the input and its date; what happened — the first two things,
  *  where a save changed several — and who did it ('' where the app did). */
-export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string } {
+export function noticeWords(n: Notice): { name: string; day: string; what: string; who: string; struck?: string } {
   /* A HOLIDAY'S LINE (D783 (6) — the picture of record, docs/mock/2026-10-12-oil-notify/*-hol-6-bell.png): the holiday
      and its date(s); how many inputs are LEFT to answer, counted now; who made it a holiday */
   const h = holOf(n)
@@ -494,7 +564,18 @@ export function noticeWords(n: Notice): { name: string; day: string; what: strin
   const w: any = (n.what || [])[0]
   if (w && (w.k === 'lw' || w.k === 'lwopen' || w.k === 'lwback')) {
     const bidding = w.k === 'lwopen' || (w.k === 'lwback' && (w.d === 'open' || w.d === 'close'))
-    return { name: n.name, day: bidding ? stretchWords(w.a, w.b || w.a) : noticeRun(w.a, w.b), what: partWords(w), who: n.by ? cs(n.by) : '' }
+    return { name: n.name, day: bidding ? stretchWords(w.a, w.b || w.a) : noticeRun(w.a, w.b), what: partWords(w), who: n.by ? cs(n.by) : '', ...(w.k === 'lwback' ? { struck: backWords(w) } : {}) }
+  }
+  /* A POSTING'S LINE (D1690 — picture 2b): the man in bold, by his callsign of today (a deleted man keeps his record, so
+     his name still reads), the posting's date; "Posted out · archived, account suspended"; nobody named */
+  if (w && w.k === 'po') {
+    const p: any = PEOPLE[String(w.who)]
+    return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: '' }
+  }
+  /* …and taken back (D1699): "Ranger · Mon 16 Nov / ~~Posted out · now SANS~~ · taken back · Saber" */
+  if (w && w.k === 'poback') {
+    const p: any = PEOPLE[String(w.who)]
+    return { name: p && p.cs ? String(p.cs) : n.name, day: noticeDay(n.day), what: partWords(w), who: n.by ? cs(n.by) : '', struck: backWords(w) }
   }
   /* (a bid it replaced on the Leave War is said after the rest, never cut by the first-two rule — M4 9.3a: "You were added ·
      replaces your LL bid") */

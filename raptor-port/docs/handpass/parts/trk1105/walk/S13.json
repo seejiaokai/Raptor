@@ -1,0 +1,59 @@
+{
+  "rows": [
+    {
+      "scn": "S13",
+      "step": "text boxes found on the Tracker by searching input/textarea (not from memory)",
+      "note": "hSearch, epwIn"
+    },
+    {
+      "scn": "S13",
+      "step": "Find event box: Ctrl+Z is the box's own text undo; the chart mark stays; top bar undo still lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "typed \"walk\", after Ctrl+Z \"wal\"; ST-02 grade dco; undo lit \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S13-Find_event_box.png"
+    },
+    {
+      "scn": "S13",
+      "step": "+ Add student search: Ctrl+Z is the box's own text undo; the chart mark stays; top bar undo still lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "typed \"walk\", after Ctrl+Z \"wal\"; ST-02 grade dco; undo lit \"Undo the mark on ST-02 for STUDENT A (Ctrl+Z)\"",
+      "pics": "S13-_Add_student_search.png"
+    },
+    {
+      "scn": "S13",
+      "step": "Info panel number box: Ctrl+Z is the box's own text undo; the chart mark stays; top bar undo still lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "typed \"7\", after Ctrl+Z \"2\"; ST-02 grade dco; undo lit \"Undo the pace for STUDENT A (Ctrl+Z)\"",
+      "pics": "S13-Info_panel_number_box.png"
+    },
+    {
+      "scn": "S13",
+      "step": "Show All filter: Ctrl+Z is the box's own text undo; the chart mark stays; top bar undo still lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "typed \"walk\", after Ctrl+Z \"wal\"; ST-02 grade dco; undo lit \"Undo the pace for STUDENT A (Ctrl+Z)\"",
+      "pics": "S13-Show_All_filter.png"
+    },
+    {
+      "scn": "S13",
+      "step": "Show All event field (crew): Ctrl+Z is the box's own text undo; the chart mark stays; top bar undo still lit",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "typed \"walk\", after Ctrl+Z \"wal\"; ST-02 grade dco; undo lit \"Undo the pace for STUDENT A (Ctrl+Z)\"",
+      "pics": "S13-Show_All_event_field_crew_.png"
+    },
+    {
+      "scn": "S13",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

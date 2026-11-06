@@ -1,0 +1,13 @@
+start ["RANGE BRIEF: Ranger","Hangar open day: Tally + Trident"] {"s":540,"e":720,"rmk":"","oil":{"2026-07-18":0.5}}
+typed start 10:00 | question 0 bar 0 | ground ["RANGE BRIEF: Ranger","Hangar open day: Tally + Trident"] | toast Input added
+  input now {"s":600,"e":720,"rmk":"","oil":{"2026-07-18":0.5}}
+typed end 13:00 | question 0 bar 0 | ground ["RANGE BRIEF: Ranger","Hangar open day: Tally + Trident"] | toast Input added
+  input now {"s":600,"e":780,"rmk":"","oil":{"2026-07-18":0.5}}
+typed remark | question 0 bar 0 | ground ["RANGE BRIEF: Ranger","Hangar open day: Tally + Trident"] | toast Input added
+  input now {"s":600,"e":780,"rmk":"bring maps","oil":{"2026-07-18":0.5}}
+Hangar row before ["nick","harpoon"]
+pucks on Hangar row 2
+right-clicked the second puck | question 0 bar 0 | ground ["RANGE BRIEF: Ranger","Hangar open day: Tally"] | toast Trident removed
+Hangar row after ["nick"]
+dragged Tally off to nowhere | question 0 bar 0 | ground ["RANGE BRIEF: Ranger","Hangar open day: "] | toast Trident removed
+errors []

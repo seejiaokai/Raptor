@@ -113,13 +113,16 @@ describe('his own award outside his posting dates (the final read)', () => {
     fireEvent.click(cell)
     expectReadOnlyAward('Recall', 'OC Ops', '3 days')
   })
-  it('an admin still gets the posting sheet first on such a day, and sees the FO on the grid', () => {
+  /* his D1722, D1725 (6 Nov 26): a gone day that holds anything opens, for the admin, what the day opens on any other day —
+     the award's own window; the posted-out sheet is the bare gone day's */
+  it('an admin gets the award’s own window on such a day, as on any other day, and sees the FO on the grid', () => {
     setPostOut(ME, '2026-05-01', false)
     render(<Matrix />)
     const cell = screen.getByTestId(`cell-${ME}-${OUTSIDE}`)
     expect(cell.textContent).toContain('FO')
     fireEvent.click(cell)
-    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
+    expect(screen.queryByTestId('postout-sheet')).toBeNull()
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
   })
 })
 
