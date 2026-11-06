@@ -289,7 +289,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            before someone posts in and after they post out (clearing leave). It
            SHOWS as the leave code — blank-looking before posting-in, with the
            small PO tag after posting-out — and never counts for manning (the
-           hatch stays). */
+           hatch stays). Since his D1728 (6 Nov 26) no PO tag: the box wears faint stripes (`bx-gone`, below). */
         const view = views[p.id]?.[d.date]
         /* …and an OIL AWARD dated there too (Astra's final read, 3, 27 Sep 26): one may be given after a man posts out or
            before he posts in ("Place leave or OIL here instead…", N12), and the day drew a bare PO (or blank) that
@@ -297,7 +297,8 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
            like the leave beside it, counts nobody (the hatch stays), and his own tap opens it read only (D261). */
         /* …and WHATEVER ELSE IS FILED there (his D1720, 6 Nov 26 — [LW-PO-DAYS-DRAWING]): an overseas duty, a course, a medical,
            an Other dragged over his gone days was filed whole but drew a bare "PO", as if two days were skipped. Every filed
-           entry now shows as leave does — its box over the hatch, the PO tag, counting nobody; an empty gone day stays "PO". */
+           entry now shows as leave does — its box over the hatch, striped (no PO tag since his D1728), counting nobody; an empty gone
+           day stays "PO". */
         const outLeave = !here && !!code && !!view?.main
         const mark = view?.mark ?? ''
         const cls = [
@@ -415,6 +416,7 @@ export const PersonMonth = memo(function PersonMonth({ p, period, days, grid, st
           // …and the person may bid clearing leave after posting out, or leave dated before they post in — on an open day;
           // any other such day of his gives the closed note (D1176)
           (!here && role !== 'admin' && viewer === p.id)
+        // (Since his D1728, 6 Nov 26, the tile below is drawn as a yellow line down the day's right edge, never the word.)
         // Their LAST day in the squadron wears a small PO tag (owner, 19 Aug
         // 26 — chosen over nothing after the edge case was put to him):
         // someone posting out on the 1st has a final month that otherwise

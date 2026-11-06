@@ -11818,7 +11818,12 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   (`MatrixRows.tsx pairPlaces`). An HO takes its half by the day view's window (an award's stored half, the app's own by
   where its work started — `engine/warrecs.ts creditHalf`); an FO is always whole (`placeOf`). Letters bare
   (`boxText` — the half is said by where the box sits; B and C for ATT B / C; an app-credited OIL keeps its star). Three or
-  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. The Inputs-page edge and the moved
+  more entries keep one box and "+n"; two drawn drop a "+1"; an amber "!" always stays. *[AMENDED 6 Nov 26 by his D1727,
+  D1728 — [LW-CELL-COMBOS]: two whole days stand side by side, codes turned to read bottom to top (`bx-tilt`); a whole day
+  beside a half keeps the cell, the half over its own half (`bx-floor` / `bx-roof`, `matrixrowparts.ts pairLook`); three
+  or more entries are a stack of cards (`bx-pile`, the "+n" tile kept hidden for its words); the "!" a small outlined amber
+  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`.]*
+  The Inputs-page edge and the moved
   edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
   per cell (`docs/performance.md` §E).
 - **Each box's edge is its own entry's, and no corner tile covers letters (walker 1's #8, #9, #11 — 23 Oct 26):** the
@@ -11828,7 +11833,10 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   the top-right and the PO tag the bottom-right unless a box's letters sit there (a morning box or a morning HO's quarter
   under the mark; an afternoon one under the tag): then the tile takes the other right-hand corner if it is free
   (`mklo`, `pohi` on the cell), else that box's letters step aside, the box keeping its place and size
-  (`boxcorners-css.test.ts`).
+  (`boxcorners-css.test.ts`). *[AMENDED 6 Nov 26 by his D1727, D1728: `mklo` and `pohi` are gone — the marks are the
+  cell's `bx-` classes above; no PO tag beside an entry on a gone day, its box striped (`bx-gone`, his D1729, D1730); his
+  last day in a yellow line down the day's right edge (`bx-last`, the `.polast` tile drawn as a line); the Legend teaches
+  them under "Marks on a day" (D1731).]*
 - **The Legend (r7-07):** the colour (what kind), the fill (where it stands), the size (how much of the day), the dates
   (open, not open), the left edge, the corner, the figures, the letters — every swatch `Chrome.tsx LegBox`, the grid's own
   box in a cell-sized frame, so the key cannot show a colour the grid does not paint.

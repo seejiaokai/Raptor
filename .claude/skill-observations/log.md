@@ -3625,3 +3625,33 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** When replacing a visible string, list FILES (not lines) containing the old string across every test kind — unit, browser, smoke scripts — with no filter, then read each hit. And for any layout move, press each moved control in the states the drawing shows (a window open), not only measure it.
 
 **Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.
+
+### Observation 834: A geometric "letters fit" check needs the letters' own pixels, and must know which letters are hidden on purpose
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** Raptor, the walk of a Leave War cell redesign (boxes side by side, halves over wholes, corner tags)
+**Skill:** bug-check order (walk scripts — docs/walk-scripts.md §4)
+**Type:** open-source
+**Phase/Area:** on-screen assertions that a box's text is not cut or covered
+
+**Issue:** The walk script judged "cut" by comparing the text's line box with its box; on half-height boxes the line box is taller than the capitals, so four kinds of day failed falsely. Then a picture showed a box with no letters at all, which read as a fault; it was a joined multi-day bar whose later days hide their code on purpose (transparent text). The full combination measure, by contrast, read ink pixels but only checked corner tags — never whether one box covers another's letters.
+
+**Suggested improvement:** In walk-scripts §4, a step that judges text fit uses the glyphs' ink (or the long axis only, for a line box) and lists the classes that hide text by design (e.g. a joined bar's later days) before calling a missing word a fault; and a combination measure checks box-over-box overlap of ink as well as tag-over-ink.
+
+**Principle:** Judge "cut" by ink, not by the text's layout box; and before calling missing text a fault, ask whether the design hides it on purpose.
+
+### Observation 835: A build of the live branch for a before/after measure needs a recipe that skips the picture folders
+
+**Status:** OPEN
+**Date:** 2026-11-06
+**Session context:** Raptor, measuring the branch against today's main for a "made worse?" count
+**Skill:** bug-check order (walk scripts) / gates-and-deploy
+**Type:** internal
+**Phase/Area:** making a comparison build of main without a second worktree
+
+**Issue:** No document says how to build main beside a branch. A first try copied main's whole app folder (git archive) and spent minutes dragging gigabytes of walk pictures; excluding the docs folder made the copy take 8 seconds, and linking the installed packages let it build in one second. A per-session browser test also ignored a pixel-density override sent on a second debugging session, so close-up pictures came out at normal size.
+
+**Suggested improvement:** Add to docs/walk-scripts.md: "a build of main: git archive origin/main -- raptor-port ':(exclude)raptor-port/docs' into scratch, junction node_modules, vite build --outDir <scratch>, LW_DIST=<that>"; and for 4x close-ups make the context with that pixel density rather than overriding it mid-run.
+
+**Principle:** A comparison build should copy only what the build reads; and set rendering density when the browser context is made, not after.
