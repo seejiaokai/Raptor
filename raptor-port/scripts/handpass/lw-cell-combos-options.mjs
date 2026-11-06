@@ -228,12 +228,14 @@ export function remap(map, cb) {
       out.boxes = [a, b]
     }
   }
-  if (has('postrip') && out.boxes.length && (!has('postone') || out.boxes.length === 1) && (cb.tiles.includes('po') || (cb.tiles.includes('last') && !has('lastline'))) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
+  /* runonce: a bar joined across days keeps running; its PO shows once, on the run's last day */
+  const midRun = has('runonce') && out.boxes.some(b => (b.j || '').includes('jr'))
+  if (!midRun && has('postrip') && out.boxes.length && (!has('postone') || out.boxes.length === 1) && (cb.tiles.includes('po') || (cb.tiles.includes('last') && !has('lastline'))) && !out.boxes.some(b => (b.extra || '').includes('cc-tilt'))) out.extraTd.push('cc-postrip')
   if (has('marks') && out.boxes.length) {
     if (cb.tiles.includes('more')) out.extraTd.push('cc-pile')
     if (cb.tiles.includes('warn')) out.extraTd.push('cc-alarm')
-    if (cb.tiles.includes('po') && !(has('goneline') && !out.extraTd.includes('cc-postrip'))) out.extraTd.push('cc-gone')
-    if (cb.tiles.includes('po') && has('goneline') && !out.extraTd.includes('cc-postrip')) out.extraTd.push('cc-goneline')
+    if (cb.tiles.includes('po') && !(has('goneline') && !midRun && !out.extraTd.includes('cc-postrip'))) out.extraTd.push('cc-gone')
+    if (cb.tiles.includes('po') && has('goneline') && !midRun && !out.extraTd.includes('cc-postrip')) out.extraTd.push('cc-goneline')
     if (cb.tiles.includes('last')) out.extraTd.push('cc-last')
   }
   if ((has('flags') || has('poflags')) && out.boxes.length) out.extraTd.push('cc-flags')
