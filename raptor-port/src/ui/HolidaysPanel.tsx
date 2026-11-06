@@ -114,6 +114,13 @@ const textOf = async (f: File): Promise<string> => {
   try { return new TextDecoder('utf-8', { fatal: true }).decode(buf) } catch { return new TextDecoder('windows-1252').decode(buf) }
 }
 
+/** runs `reset` while the component is drawn with a new `value` — React's own way to put state right when a prop changes,
+ *  before the frame is shown (an effect does it one frame late) */
+function useOnChange<T>(value: T, reset: () => void) {
+  const [seen, setSeen] = useState(value)
+  if (seen !== value) { setSeen(value); reset() }
+}
+
 export function HolidaysPanel({ year, setYear, onOpen }: {
   year: number
   setYear: (y: number) => void
@@ -168,8 +175,10 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   const createYear = () => setWhy(createWhy(createOilPeriodFor(String(year)), year))
   const step = (by: number) => { setWhy(''); setYear(year + by) }
   /* the year can also be turned from outside — a swipe on the list (ui/DaysWindow.tsx, D786): what was said about the
-     year left behind goes with it, as the arrows' own step has it */
-  useEffect(() => { setWhy(''); setPv(null); setAddedNote('') }, [year])   // …and an import being looked at
+     year left behind goes with it, as the arrows' own step has it — …and an import being looked at. Put right while the
+     new year is drawn, not after (React Doctor no-adjust-state-on-prop-change, 6 Nov 26): an effect left the old year's
+     words on the new year's list for one frame */
+  useOnChange(year, () => { setWhy(''); setPv(null); setAddedNote('') })
 
   return (
     <div className="hol" data-testid="days-part-holidays">
@@ -262,6 +271,7 @@ export function HolidaysPanel({ year, setYear, onOpen }: {
   )
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one form for a new holiday and a changed one, its Save, "Save and add another" and the wait for a period to cover it share one set of state; split, the wait could press a Save of a form that no longer holds what he pressed
 export function HolidayForm({ line, year, onClose }: {
   /** the line being changed; null = a new one */
   line: HolidayLine | null
@@ -304,6 +314,9 @@ export function HolidayForm({ line, year, onClose }: {
     setErr(r.message); setWaiting(r.reason === 'noperiod')
     return true
   }
+  /* eslint-disable react-doctor/no-adjust-state-on-prop-change -- Save is pressed by him, or once by the wait below the
+     moment a period covers the day (THE WAIT): the press he already made, carried out — not state set after a prop
+     changed; the form shows what that Save said, as it would have at his press */
   const save = (more: boolean) => {
     const d = draft()
     if (typeof d === 'string') { setSaved(''); setWaiting(false); setErr(d); return }
@@ -316,6 +329,7 @@ export function HolidayForm({ line, year, onClose }: {
     setErr(''); setSaved(`Saved: ${name.trim() || holidayWord(kind)}, ${when(d.from, d.to)}.`)
     setName(''); setShort(''); setShortTouched(false); setRange(null); setAnchor(next); setCalKey(k => k + 1)
   }
+  /* eslint-enable react-doctor/no-adjust-state-on-prop-change */
   const remove = () => { if (line && !refused(holidayRemove(line))) onClose() }
 
   /* THE WAIT. While it waits, the run of uncovered dates its first day sits in is read at every paint (Days repaints on

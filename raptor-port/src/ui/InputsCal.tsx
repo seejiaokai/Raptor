@@ -49,7 +49,7 @@ import { fmt, fmtDay, inputTone, newInputSeed, removeInput, upchitDeleteAsk, sha
 import { INPEDIT, setDocView, setInpEdit, setMedMove } from './pops'
 import { initCalDrag } from './caldrag'
 import { initCalPick, SWIPE_MIN } from './calpick'
-import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn } from './inputscal-model'
+import { barText, dayTag, fitLanes, itemsOn, layoutBars, monthItems, type BarItem, inputPassesPerson, inputMatchesSearch, namesOf, everyoneIn, monthCells } from './inputscal-model'
 import { placedLineOf } from './placedline'
 import { InputCard } from './InputCard'
 import { AskCard } from './AskCard'
@@ -87,28 +87,13 @@ const isoToday = () => {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
-/* The grid for one month, Monday-first (m is 1-12, calendar convention, the
-   same as CALMONTH). Pure and exported so a test can assert the shape
-   directly rather than parsing rendered DOM for it. */
-export function monthCells(y: number, m: number): (string | null)[] {
-  const first = new Date(Date.UTC(y, m - 1, 1))
-  /* JS getUTCDay() is Sunday-first; this rotates it Mon=0…Sun=6, the same
-     rotation RangeCal.tsx uses for its own grid. */
-  const lead = (first.getUTCDay() + 6) % 7
-  const days = new Date(Date.UTC(y, m, 0)).getUTCDate()
-  const cells: (string | null)[] = []
-  for (let i = 0; i < lead; i++) cells.push(null)
-  for (let d = 1; d <= days; d++) cells.push(`${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`)
-  while (cells.length % 7) cells.push(null)
-  return cells
-}
-
 /* One day cell's content: every input covering `iso`, filtered exactly the
    way InputsPage's own table filters its rows (~line 368-370 there) so the
    calendar and the list can never disagree about what a filter hides — plus
    whatever plan pucks were dropped on that day. Pure and exported so the
    chip tests can drive a day directly instead of steering the whole page
    through the DOM to get there. */
+// eslint-disable-next-line react-doctor/only-export-components -- one day's inputs as the month and the List both filter them, read with the page's own window helpers (ui/inputedit.tsx); a model file importing those would draw the input window's whole module graph into the pure models, and the tests that drive a day directly import it from here
 export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSearch: string }, mode?: 'member') {
   const label = fmt(iso)
   let inputs = inputsInMode(INPUTS, mode).filter((r: any) => inputCoversDate(r, label))
@@ -140,6 +125,7 @@ export function dayEntries(iso: string, f: { fPerson: string, fType: string, fSe
 /* nobody lit: one array for every render that is handed none */
 const NONE_LIT: string[] = []
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the month, its opened day and its pickers share one set of state, refs and the one pointer machine on the grid (drag across days, the swipe, the carried bar); split, the order its effects run in moves under every gesture the calendar's walks have pinned
 export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, litAt, lead, tools, under, onClearFilters }:
   { fPerson: string, fType: string, fSearch: string, seedIso?: string,
     /** the inputs the page has just been shown — one added, one changed, one brought back by Undo — by id, for their six
@@ -272,7 +258,9 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
      Guarded by identity, so a NEWER reveal set while this calendar unmounts (a save that switches mode) is kept. */
   const spendReveal=()=>{ if(shown.current&&INPREVEAL===shown.current)clearInpReveal(); shown.current=null }
   /* THE MARK ON THE MONTH (D851, D854): a lit input's bar, while no day is open over the month */
-  const barLit=(key:string)=>popIso==null&&lit.includes(key)
+  /* looked up once a render, by every bar and every card of an opened day (React Doctor's js-set-map-lookups) */
+  const litOn=new Set(lit)
+  const barLit=(key:string)=>popIso==null&&litOn.has(key)
   /* …AND IN THE OPENED DAY ITS CARD IS BROUGHT INTO THE WINDOW'S OWN VIEW — a day with many inputs lists the new one
      below the fold, and a mark nobody can see is no feedback (the guide's "appears where it belongs, in view"). The
      least movement, inside the window only; jsdom has no scrolling at all, hence the guard.
@@ -1149,6 +1137,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
               }
               return (
                 <div className="ic-newnote">
+                  {/* eslint-disable-next-line react-doctor/no-autofocus -- the box opens only because "+ Note" was pressed to type a note: the keys go where he asked, as every box the app opens to be typed in does */}
                   <input className="ic-poppuck-edit" autoFocus value={puckDraft} aria-label="New planning note"
                     placeholder="e.g. brief the new guy"
                     onChange={e => setPuckDraft(e.target.value)} onBlur={leave} onKeyDown={noteKey} />
@@ -1185,7 +1174,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const forAll = team && (delAsk === it.key ? askedAll.current : mayDeleteInput(r))
                   const when = cardWhen(r, it.b, iso)
                   return (
-                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={lit.includes(it.key)}
+                    <InputCard key={it.key} id={it.key} tid="idy" facts={cardOf(it.rows, undefined, when)} when={when} flash={litOn.has(it.key)}
                       late={lateNoteOf(it.rows, lateWord)} oil={oilSignNote(oilSignDay(r))} onOpen={() => openInput(r)} onKey={onLineKey(it)}
                       onDoc={() => { setDocView({ row: r }); notify() }}>
                       {/* HANGS FROM THE CARD THE DELETE KEY ACTED ON (owner D1628, 4 Nov 26): the input window's Delete question
@@ -1268,6 +1257,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
     }
     return (
       <div className="ic-pickwrap" onPointerDown={e => { if (e.target === e.currentTarget) close() }}>
+        {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the app's own windows and their stacking order, with its own backdrop and focus rules; the picker sits over its day window on the page's own veil, layered on purpose */}
         <div className="ic-pick" role="dialog" aria-modal="true" aria-label="Add people" tabIndex={-1} onClick={e => e.stopPropagation()}>
           <div className="ic-pick-head">
             <b>Add people</b>
@@ -1377,6 +1367,7 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
                   const cls = 'ib-day' + (ci >= 5 ? ' is-we' : '') + (iso === todayIso ? ' is-today' : '') + (tag ? ' k-' + tag.kind : '') +
                     (picked ? ' is-picked' : '') + (iso === popIso ? ' is-open' : '')
                   return (
+                    // eslint-disable-next-line react-doctor/prefer-tag-over-role -- the date's keyboard stop, laid over its cell in the month's grid with no content of its own: a <button> brings the browser's button box and its own press, which the grid's one pointer machine (drag across days, the swipe) would then share
                     <div key={iso} className={cls} data-icday={iso} role="button" tabIndex={iso === tabAt ? 0 : -1} aria-pressed={iso === popIso}
                       aria-label={`${dayWord(iso)}${tag ? ', ' + KIND_SAY[tag.kind] : ''}, ${n ? `${n} input${n > 1 ? 's' : ''}` : 'no inputs'}`}
                       onKeyDown={onKey(iso)} onFocus={() => setAt(iso)} />

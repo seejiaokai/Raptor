@@ -53,10 +53,13 @@ export function Login() {
           <b>L</b>eave &amp; <b>O</b>ps <b>N</b>exus</div>
 
         <form className="login-card" id="loginForm" onSubmit={submit}>
-          <label>Username</label>
+          {/* each label names its box (React Doctor label-has-associated-control, 6 Nov 26): a screen reader reads
+              "Username" on the box, and a press on the word puts the caret there; nothing drawn changes */}
+          <label htmlFor="luser">Username</label>
+          {/* eslint-disable-next-line react-doctor/no-autofocus -- the sign-in card is the whole page and the username its first box: the caret waits there so a person types straight away, as the app has always opened (the 7 Aug 26 "login page stays simple") */}
           <input id="luser" autoComplete="username" placeholder="username" autoFocus
             value={user} onChange={e => setUser(e.target.value)} />
-          <label>Password</label>
+          <label htmlFor="lpass">Password</label>
           <input id="lpass" type="password" autoComplete="current-password" placeholder="password"
             value={pass} onChange={e => setPass(e.target.value)} />
           <div className="err" id="lerr">{err}</div>

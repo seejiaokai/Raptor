@@ -1,0 +1,52 @@
+[
+ {
+  "id": "S4a",
+  "size": "phone",
+  "did": "bid window's X tapped twice (118)",
+  "saw": "EXPECTED closes, nothing opens behind. second tap on cell-harpoon-2026-12-09|TD. act; open after=[]",
+  "verdict": "PASS",
+  "pics": [
+   "s4-phone-a-settled"
+  ]
+ },
+ {
+  "id": "S4b",
+  "size": "phone",
+  "did": "bid window open, tap another man's day on the grid",
+  "saw": "EXPECTED that day's window opens. point held cell-dice-2026-12-03|TD. act; window now says \"\"",
+  "verdict": "FAIL",
+  "pics": [
+   "s4-phone-b-settled"
+  ]
+ },
+ {
+  "id": "S4c",
+  "size": "phone",
+  "did": "day panel X tapped twice (126) — this window is not guarded",
+  "saw": "RECORD only: second tap landed on group-SXO|TD.grpfill; open after=[]",
+  "verdict": "RECORD",
+  "pics": [
+   "s4-phone-c-panel",
+   "s4-phone-c-settled"
+  ]
+ },
+ {
+  "id": "S4d",
+  "size": "phone",
+  "did": "desktop-only step",
+  "saw": "not run on the phone",
+  "verdict": "NOT WALKED",
+  "pics": []
+ },
+ {
+  "id": "S4e",
+  "size": "phone",
+  "did": "place LL (window closes), ~122 ms later tap the OCT month button",
+  "saw": "EXPECTED the grid moves to that month. lit month before=\"DEC\" after=\"DEC\"; Oct 15 drawn=true; open=[]",
+  "verdict": "FAIL",
+  "pics": [
+   "s4-phone-e-q",
+   "s4-phone-e-settled"
+  ]
+ }
+]
