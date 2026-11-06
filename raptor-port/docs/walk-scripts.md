@@ -190,6 +190,12 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   fixed window 15–18 points low and the page behind it, the numbers saying it held still. Stamp each frame with a mark
   the compositor moves (`kbs-slide-walk.mjs`: a 4px mark sweeping the foot of the screen, 400ms a sweep, its sweep told
   by a colour the page paints) and time the picture by it.
+- **Whether letters fit is measured on their ink, at the size the browser drew them** (6 Nov 26, [LW-CELL-COMBOS]). A
+  text's box runs a few px past its capitals, and counted corner tags clear of the letters as covering them: draw the
+  same letters on a canvas in the same font, size and spacing, and test those pixels (`lw-cell-combos-measure.mjs`).
+  And WebKit — the phone tests' browser, as on an iPhone — never shrinks under a zoom a letter set at 9px or more below
+  9px: the grid's 10px boxes are drawn at 9px at the phone's opening zoom and spill past their boxes zoomed right out.
+  Read the drawn size; never the stylesheet's size times the zoom.
 
 ## 6. The re-walk
 

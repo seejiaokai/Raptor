@@ -20,6 +20,12 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/lw-cell-combos -->
+### `claude/lw-cell-combos` — [LW-CELL-COMBOS] measured and drawn; WAITING for his three answers, nothing built
+- **Measured, 6 Nov 26:** 23,940 combinations of entries on one day, on the built app, at his iPhone's size and a desktop's — today ~21,000 show letters cut or under a corner tag. Put to him: https://claude.ai/artifact/XJ7trCLBd9BQFyiF4VTG54 — 1: two entries A (recommended, one above the other; sets aside D1167) or B; 2: corner tags as flags (recommended) or "Words kept"; 3: colours only zoomed right out. Option A with flags measures 0 failures on both sizes; the page has a live check for his iPhone.
+- **Scripts:** `raptor-port/scripts/handpass/lw-cell-combos-*.mjs` — `-measure` (`OPT=A` measures a candidate; re-run on the build, it is the re-walk), `-options` (each candidate's markup and CSS — the build starts there), `-draw`, `-page`, `-report`; results `raptor-port/docs/img/handpass/2026-11-06-lw-cell-combos/`.
+- **Next, on his answers:** record them (next free D1726), build in `matrix.css` / `MatrixRows.tsx`, re-measure all 23,940, then a WALK by D1725 (look, tap, window, the way to change each) at both sizes; the desktop's widest-letter leftovers (OML alone, HO*, APPT beside a flag) get one more size step. Build folder `C:/dcc1106` to delete after.
+<!-- /now -->
 <!-- now:claude/overnight-1106 -->
 ### `claude/overnight-1106` — the night of 6 Nov 26 DONE: three pull requests waiting for his look; this branch the night's records
 - **Ready for his look and "merge live"** (each its own branch from `main`, unwatched, Auto-fix switched off — D1090):
