@@ -3725,3 +3725,26 @@ assumption beside its number.
 
 **Principle:** A size measure is only as good as its calibration against the system that actually pays the cost; check
 one known figure before trusting a tool's count, and prefer the project's measured fit over a generic counter.
+
+### Observation 837: Compressing a rule set needs mechanical checks for the links the old format carried
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** [RULES-DIET] — converting one-line rulings into "how it works now" pages; a fresh blind reader read plan v1
+**Skill:** New skill candidate: context-load audit / rules consolidation (with #836)
+**Type:** open-source
+**Phase/Area:** converting a list of rulings into a current-state page
+
+**Issue:** The first sample pages, written carefully by hand, still dropped six clauses of rulings they cited, "placed"
+46 rulings as a bare list of numbers, and lost the "changed by" links that told a reader a rule had been narrowed. The
+account also invented a disposition ("history") the project's archive rules do not allow. A blind reader found all of it;
+two small checks then found the same class mechanically — a citation counts only in a statement (enough words per cited
+number), and a line citing a rule must also cite every later rule its full record marks as changing it.
+
+**Suggested improvement:** when consolidating rules, write the checks first and run them on the first sample before
+writing more: (1) every live rule is cited on a statement line somewhere that loads; (2) no bare lists; (3) each rule's
+change marks travel with it; (4) dispositions use only the project's own archive categories, each confirmed against the
+full record.
+
+**Principle:** A compressed format must carry, as a check, every relationship the verbose format carried implicitly —
+otherwise the compression silently drops exactly the narrowings and clauses that mattered.
