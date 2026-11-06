@@ -86,6 +86,10 @@ drawing laid its grey face over the red tag after the app had nudged that red ta
 draws the grey tag fresh, which needs no nudge. The desktop drawing has it at the box's left edge, as built.
 **Recommended: keep the build** (the tag under its own box, alike on phone and desktop). The check stays red until he rules.
 
+## His answers, 7 Nov 26 — built the same day
+- **Q1 yes (D1669):** the reason refusal is grey too — "Blocked: <reason>. Nothing was saved[ for anyone: take that person off the list, or change it]." (`ui/inputedit.tsx reasonRefusal`). Its words and kind pinned by `toastblocked.test.ts`; the related suites (71 files, 1,930 tests) green; its look is the same note as S1–S6, pictured in `question/Q1-reason-grey-*.png` with these words.
+- **Q2 yes (D1670):** the build's tag place is kept; the drawing check's difference is kept with his ruling — the check re-run: **GREEN, 0 unexplained, 1 kept**.
+
 ## His look (on his iPhone)
 1. Leave War → Balances: nothing to do but look — the grey tag needs a refusal no button reaches; the pictures show it.
 2. Inputs → + Input → Document: if his iPhone's storage is fine, nothing shows (good).
@@ -94,4 +98,4 @@ draws the grey tag fresh, which needs no nudge. The desktop drawing has it at th
 ## Reads
 WALK tier: no code read is required (§5). The short line of D1668 was read against its full row by one fresh reader: PASS.
 
-Walk: host, 27 PASS / 0 FAIL at 1536 + 402 (WebKit), pictures in `docs/img/handpass/2026-11-06-notsaved-refusal/walk/`; drawing check 31/32, the one difference put to him.
+Walk: host, 27 PASS / 0 FAIL at 1536 + 402 (WebKit), pictures in `docs/img/handpass/2026-11-06-notsaved-refusal/walk/`; drawing check green (31/32, the one difference kept on his D1670); Q1's change carried by its tests and the same note's walk.

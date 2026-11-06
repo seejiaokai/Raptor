@@ -1,8 +1,8 @@
 # Drawing check — A refusal of one change — "Blocked", the grey note
 
-Build: `the grey note at 2fa83931d` · run 6 Nov 2026, 23:41 · tolerance 2px
+Build: `the grey note at D1669` · run 7 Nov 2026, 00:04 · tolerance 2px
 
-**RED** — 1 difference(s) unexplained, 0 kept as built by his ruling, 0 screen(s) not checked.
+**GREEN** — 0 difference(s) unexplained, 1 kept as built by his ruling, 0 screen(s) not checked.
 
 ## The figure box's "Blocked" tag (Balances, Reaper's App bal), iPhone (WebKit) (`figbox-phone`, 402 × 874 at 2)
 
@@ -11,7 +11,7 @@ Drawing: `scripts/handpass/nsr1105-today.mjs` → `R1-figbox-r2grey-phone.png` (
 | Part | Difference | Drawing | Built | |
 |---|---|---|---|---|
 | the figure box | matches | | | |
-| the "Blocked" tag | where it sits (from the left of box) — 53px further left | 53 | 0 | **unexplained** · [picture](figbox-phone--tag.png) |
+| the "Blocked" tag | where it sits (from the left of box) — 53px further left | 53 | 0 | kept as built: his D1670, 7 Nov 26 ("Q2 yes"): the grey tag hangs from its own box's left edge on a phone as on a desktop, as built; the drawing's 53px came from laying the grey face over a red tag the app had nudged on screen · [picture](figbox-phone--tag.png) |
 | its "no entry" sign | matches | | | |
 | "Blocked" | matches | | | |
 

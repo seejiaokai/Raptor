@@ -94,5 +94,7 @@ export default {
     ...both('document', 'A document too big to store', 'R4c-document-r2grey', reachDocument, noteParts),
     ...both('schedule', 'The schedule\'s refused change', 'R5c-schedule-r2grey', raised('editsched', 'Blocked: nothing was kept'), noteParts),
   ],
-  accepted: [],
+  accepted: [
+    { state: 'figbox-phone', part: 'tag', check: 'place', why: 'his D1670, 7 Nov 26 ("Q2 yes"): the grey tag hangs from its own box\'s left edge on a phone as on a desktop, as built; the drawing\'s 53px came from laying the grey face over a red tag the app had nudged on screen' },
+  ],
 }

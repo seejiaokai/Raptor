@@ -7,7 +7,7 @@
 import { readFileSync } from 'node:fs'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { toast, clearToast, blockedParts, BLOCKED } from './toast'
-import { NOT_SAVED, NOT_YOURS } from './inputedit'
+import { NOT_SAVED, NOT_YOURS, reasonRefusal } from './inputedit'
 
 const note = () => document.getElementById('toastEl') as HTMLElement
 afterEach(() => { clearToast(); note()?.remove(); vi.useRealTimers() })
@@ -29,6 +29,13 @@ describe('the grey "Blocked:" note (D1667, D1668)', () => {
     expect(NOT_SAVED).toBe('Blocked: nothing was kept')
     expect(NOT_YOURS).toBe('Blocked: that change is not yours to make')
     expect(NOT_SAVED.startsWith(`${BLOCKED}:`) && NOT_YOURS.startsWith(`${BLOCKED}:`)).toBe(true)
+  })
+  it('a refusal with its own reason is grey "Blocked:" too, its reason then what it cost, each a sentence (D1669)', () => {
+    expect(reasonRefusal('Ranger is already on leave that day', true)).toBe('Blocked: Ranger is already on leave that day. Nothing was saved for anyone: take that person off the list, or change it.')
+    expect(reasonRefusal('Ranger is already on leave that day.', false)).toBe('Blocked: Ranger is already on leave that day. Nothing was saved.')
+    toast(reasonRefusal('Ranger is already on leave that day', false), 'blocked')
+    expect(note().querySelector('b')?.textContent).toBe('Blocked:')
+    expect(note().dataset.face).toBe('blocked')
   })
   it('a document too big to store keeps its own words, its lead the words before the colon', () => {
     const doc = "Couldn't save that document: your browser storage may be full, so it may not be here after a reload."

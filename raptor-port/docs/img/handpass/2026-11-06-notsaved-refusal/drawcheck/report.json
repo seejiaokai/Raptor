@@ -116,8 +116,8 @@
        "drawing": "53",
        "build": "0",
        "by": "53px further left",
-       "accepted": null,
-       "counts": true
+       "accepted": "his D1670, 7 Nov 26 (\"Q2 yes\"): the grey tag hangs from its own box's left edge on a phone as on a desktop, as built; the drawing's 53px came from laying the grey face over a red tag the app had nudged on screen",
+       "counts": false
       }
      ],
      "picture": "figbox-phone--tag.png",
