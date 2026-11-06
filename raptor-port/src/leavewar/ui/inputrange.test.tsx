@@ -9,7 +9,7 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { INPUTS } from '../../engine/inputs'
-import { getState, heldRunAt, initStore, lwHistInit, setDayAward, setPeople, setRole, setViewer } from '../state/store'
+import { getState, heldRunAt, initStore, lwHistInit, setDayAward, setPeople, setPostOut, setRole, setViewer } from '../state/store'
 import { initStore as raptorInitStore } from '../../state/store'
 import { setSession } from '../../state/auth'
 import { projectPeople } from '../state/raptorRoster'
@@ -184,5 +184,20 @@ describe('a member on his own row', () => {
     expect(title()).toBe('9–12 Feb')
     expect(allChip().textContent).toBe('All 4 days')
     expect(within(sheet()).queryByTestId('bid-oil'), 'Grant OIL is an admin’s').toBeNull()
+  })
+})
+
+/* his D1722 (6 Nov 26 — his iPhone pictures): Forge's OD over his posted-out days opened the day's list, where the same OD
+   before the posting opened whole ("Forge 24–27 Dec", All 4 days). Over the gone days it opens whole too. */
+describe('an OD of four days over a posted-out man’s gone days opens whole, as on any other day (D1722)', () => {
+  it('a tap on a gone day of it: its dates in the title, "All 4 days", its line on top — no posted-out sheet', () => {
+    expect(setPostOut(P, DAYS[1]!)).toBe(true)
+    fileAbsence(P, 'OD', DAYS[0]!, DAYS[3]!)
+    tap(DAYS[2])
+    expect(title()).toBe('9–12 Feb')
+    expect(allChip().textContent).toBe('All 4 days')
+    expect(within(sheet()).getAllByTestId('bid-heldday')[0]!.textContent).toContain('OD')
+    expect(screen.queryByTestId('postout-sheet')).toBeNull()
+    expect(screen.queryByTestId('daylist-sheet')).toBeNull()
   })
 })

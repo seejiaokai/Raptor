@@ -1,0 +1,46 @@
+[
+ {
+  "id": "S1a-reopen",
+  "size": "desk",
+  "did": "AM + \"Am\" + LL, tap the day again (low half of the cell). Brief expected PM + empty box; the window instead opened on the placed AM bid",
+  "saw": "placed=true; cell=LL:s-w; portions=portion-full:false portion-am:true portion-pm:false; Remarks value on reopen=\"Am\"",
+  "verdict": "RECORD",
+  "pics": [
+   "s1-desk-1-am-typed",
+   "s1-desk-2-reopen"
+  ]
+ },
+ {
+  "id": "S1-lesson23",
+  "size": "desk",
+  "did": "measured Remarks box, till tick, till date, Document",
+  "saw": "bid-remarks: top 529 h 30 mid 544; bid-till: top 538 h 13 mid 544; bid-tilldate: top 536 h 17 mid 544; bid-doc-row: top 529 h 30 mid 544; spread of middles=0px",
+  "verdict": "PASS",
+  "pics": [
+   "s1-desk-3-geometry"
+  ]
+ },
+ {
+  "id": "S1a",
+  "size": "desk",
+  "did": "in the reopened window press PM (a new half), read Remarks",
+  "saw": "Remarks value after PM pressed=\"\"",
+  "verdict": "PASS",
+  "pics": [
+   "s1-desk-3b-pm-pressed"
+  ]
+ },
+ {
+  "id": "S1b",
+  "size": "desk",
+  "did": "PM + \"Pm\" + OL; read both halves",
+  "saw": "placed=true; cell=LL:s-w,OL:s-w; window after both: {\"top\":{\"remarks\":\"Am|Pm\",\"lit\":[\"dl-r-rmw1etkz61qmbg\",\"dl-placed-r-rmw1etkz61qmbg\",\"dl-approve-rmw1etkz61qmbg\",\"dl-refuse-rmw1etkz61qmbg\",\"dl-move-rmw1etkz61qmbg\",\"dl-clear-rmw1etkz61qmbg\"]},\"low\":{\"remarks\":\"Am|Pm\",\"lit\":[\"dl-r-rmw1etkz61qmbg\",\"dl-placed-r-rmw1etkz61qmbg\",\"dl-approve-rmw1etkz61qmbg\",\"dl-refuse-rmw1etkz61qmbg\",\"dl-move-rmw1etkz61qmbg\",\"dl-clear-rmw1etkz61qmbg\"]}}; Approvals lines: [\"Drifter A OIL Tue 10 Feb, AM › 0.5 day OIL 4 P 27.5 — Approve Refuse\",\"Drifter A LL Fri 20 Nov, AM › 0.5 day 23 P 27 4 Nov 09:00 · by Saber Approve Refuse\",\"Drifter A OL Fri 20 Nov, PM › 0.5 day 23 P 27 4 Nov 09:00 · by Saber Approve Refuse\"]",
+  "verdict": "RECORD",
+  "pics": [
+   "s1-desk-4-row",
+   "s1-desk-5-open-top",
+   "s1-desk-5-open-low",
+   "s1-desk-6-approvals"
+  ]
+ }
+]
