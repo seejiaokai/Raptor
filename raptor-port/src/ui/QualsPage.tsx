@@ -282,6 +282,7 @@ function qualsTable(cols: any[], qSeatView: string, qSort: any, qEditing: boolea
     + `<tbody>${qualsGrpRow(qSeatView, ids.length, cols.length)}${rows}</tbody>`
 }
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the table, its frozen heading row, the pinch and the column drag share one set of refs and the order their effects run in (the pinned row measured after the pinch lets go, the landing flash after the reorder); split, that order would move on a page tuned frame by frame on his iPhone
 export function QualsPage() {
   const ver = useVersion()
   const [qSeatView, setSeat] = useState('FCP')
@@ -309,6 +310,11 @@ export function QualsPage() {
      man's rename went to Admin → Users ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state). */
   /* D284: "Check his quals" — his row, outlined in his seat view (an archived man is never prompted: Enable is refused
      on him, D322, and Restore lifts the archive first) */
+  /* STATE, NOT A REF, though nothing draws it (React Doctor rerender-state-only-in-handlers — kept; the code read of 6 Nov 26):
+     set with the seat view, in the same render, so the outline below first runs on the man's own view. As a ref it was seen
+     at once by the outline effect after an Undo (focusQualsRow → the effect above), on the old All table: the page jumped
+     to his row there, then again once the view changed. */
+  // eslint-disable-next-line react-doctor/rerender-state-only-in-handlers -- its render is what lines the outline up with the seat view set beside it (above)
   const [backHl, setBackHl] = useState<string | null>(null)
   const checkBack = (id: string) => {
     const p = PEOPLE[id]
@@ -566,7 +572,15 @@ export function QualsPage() {
       const th = (e.target as HTMLElement).closest('th[data-col]') as HTMLElement | null
       if (!th || (e.target as HTMLElement).closest('[data-del]')) return
       from = th.dataset.col!
+      /* A FINGER'S HOLD IS ON THE ELEMENT IT LANDED ON ([QUALS-HEAD-FINGER-CAPTURE], the night of 6 Nov 26 — found 21 Oct
+         26): a press on the heading's words is held by the words (`.qlbl`), not by the heading, so letting go of the
+         heading's hold alone left every move reported on the words the press began on and the column never found a new
+         home (a finger slid onto the next heading moved nothing; only the edge scroll's re-read ever did). Both holds are
+         let go — and the move below reads the heading under the finger itself, so an engine that keeps a hold anyway
+         still lands it. Pinned by e2e/pinchzoom.spec.ts "in Edit quals a heading pressed on its words by a finger…". */
       try { th.releasePointerCapture?.(e.pointerId) } catch { /* mouse: nothing to release */ }
+      const pressed = e.target as Element
+      if (pressed !== th) try { pressed.releasePointerCapture?.(e.pointerId) } catch { /* nothing held there */ }
       th.classList.add('qdragging')
       /* the frame goes up in the same tick as the pointerdown — ONE measurement
          here and one at the landing, nothing per pointermove. It is placed in
@@ -586,7 +600,11 @@ export function QualsPage() {
       if (!from) return
       lx = e.clientX; ly = e.clientY
       auto?.point(lx, ly)
-      const th = (e.target as HTMLElement).closest?.('th[data-col]') as HTMLElement | null
+      /* the heading under the pointer, read from where it is — never from the event's target alone, which a hold kept on
+         the element pressed would leave naming the first heading (above); the target only where nothing can be read from
+         the point (a test page with no layout) */
+      const hit = document.elementFromPoint?.(lx, ly) as HTMLElement | null | undefined
+      const th = (hit?.closest?.('th[data-col]') ?? (e.target as HTMLElement).closest?.('th[data-col]')) as HTMLElement | null
       if (!th || th.dataset.col === from) return
       if (th !== over) { clear(); over = th; th.classList.add('qdrop') }
     }
@@ -963,14 +981,16 @@ export function QualsPage() {
         {/* Enable editing and Export stay up here (owner, 15 Aug 26); the View
             switch moved down to sit directly above the table it filters. */}
         <div className="grow"></div>
-        <div className="searchbox"><SrchIcon /><input id="qFilter" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
+        {/* eslint-disable-next-line react-doctor/no-placeholder-only-field -- every search box in the app is drawn as the week's, its words inside the box beside the magnifier (owner D1127, 21 Oct 26); a screen reader reads its name from aria-label */}
+        <div className="searchbox"><SrchIcon /><input id="qFilter" aria-label="Filter people" placeholder="filter" value={qSearch} onChange={e => setQSearch(e.target.value)} /></div>
       </div>
       {/* only while the mode is on: adding a qualification, and the sentence
           that says what the headings do while it is on. Both live here rather
           than in the qbar so the toolbar does not change width every time the
           mode is toggled. */}
       {canEditQuals() && <div className="qadd" id="qQualBar">
-        <span className="lab">Add qualification</span>
+        {/* the words name the box (React Doctor no-placeholder-only-field, 6 Nov 26): a label tied to it, drawn as the span was */}
+        <label className="lab" htmlFor="qNewQual">Add qualification</label>
         <input id="qNewQual" placeholder="e.g. LOW LEVEL" maxLength={14} style={{ width: 150 }}
           value={newQual} onChange={e => setNewQual(e.target.value)}
           onKeyDown={e => { if (e.key === 'Enter') addQual() }} />
@@ -1033,6 +1053,7 @@ export function QualsPage() {
           under it stays the single accessible/interactive copy — except that a
           click on a heading still sorts, so the frozen bar is usable while scrolled. */}
       {stuck && (
+        // eslint-disable-next-line react-doctor/click-events-have-key-events, react-doctor/no-static-element-interactions -- a picture of the heading row, hidden from a screen reader (aria-hidden on its tables): the keyboard sorts from the table's own headings under it, which stay the one interactive copy; a press here is the finger's shortcut while the table is scrolled
         <div className="qfixed" data-testid="qsticky-head"
           style={{ top: stuck.top, left: stuck.left, width: stuck.width }}
           onClick={e => {
@@ -1052,22 +1073,26 @@ export function QualsPage() {
                    it scrolls away with its rows and the mirror is header-only. */
                 + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
           </div>
-          {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT (the browser's follow only, D993). A table moved by a transform
+          {/* THE CALLSIGN HEADING, PINNED OVER THE LEFT. With the browser's follow (D993) a table moved by a transform
               cannot keep its heading's sticky-left, so a copy of the row, clipped to the callsign column's width, stands
               still over the left while the moving row passes under it — the Leave War's frozen copy (`.mxfixed-frozen`).
-              A press on it sorts, as on the moving row (the bar's own click handler). */}
-          {sdaActive && (
-            /* one pixel past the column: the line between it and the next heading is drawn across their boundary, and
-               cut at it the still copy kept only its left half (the code read's F3) — the pixel past is the next
-               heading's own edge, on the same background */
-            <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
-              <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
-                style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
-                dangerouslySetInnerHTML={{ __html:
-                  `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
-                  + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
-            </div>
-          )}
+              A press on it sorts, as on the moving row (the bar's own click handler).
+              AND WITHOUT IT TOO ([QUALS-PINCH-NOSDA-HEAD], the night of 6 Nov 26 — the Leave War's answer, D1287): there
+              the moving row's own sticky name heading stood still at rest, but mid-pinch in it was stretched with the row
+              and carried left of the table's edge until the lift — on any phone whose browser has no scroll-driven
+              animations (an iPhone before iOS 26). The copy is drawn in both paths, held at the left while the fingers
+              move (the pinch's `alsoTL`), and the row's own name heading hides while pinching (05-quals.css
+              `.qfixed.q-pinching`); at rest it covers that heading where it already stands. */}
+          {/* one pixel past the column: the line between it and the next heading is drawn across their boundary, and
+              cut at it the still copy kept only its left half (the code read's F3) — the pixel past is the next
+              heading's own edge, on the same background */}
+          <div className="qfixed-frozen" aria-hidden="true" style={{ width: stuck.cols[0] + 1 }}>
+            <table className={'qtbl' + (qEditing ? ' editing' : '') + (canEditQuals() ? ' qediting' : '')}
+              style={{ tableLayout: 'fixed', width: stuck.cols.reduce((a, b) => a + b, 0) / qzEff, minWidth: 0, ['--qz' as any]: qz }}
+              dangerouslySetInnerHTML={{ __html:
+                `<colgroup>${stuck.cols.map(w => `<col style="width:${w / qzEff}px">`).join('')}</colgroup>`
+                + qualsHead(cols, qSeatView, qSort, canEditQuals(), armDel) }} />
+          </div>
         </div>
       )}
       {/* The Archived section, its Restore, "Restore as" and the archived man's rename moved to Admin → Users

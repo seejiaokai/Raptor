@@ -179,8 +179,41 @@ test.describe('the board\'s desktop layout on a phone pinches (D1109)', () => {
 
 test.describe('Quals on a phone pinches (D1110)', () => {
   /* a pinch whose first finger lands on a heading in Edit quals lets the heading go (the code read, finding 3 —
-     QualsPage cancelColDrag): not pinned here, because a finger over CDP never picks a heading up in this browser (its
-     press is held by the heading's words; OUTSTANDING [QUALS-HEAD-FINGER-CAPTURE]) — the board's twin is pinned above */
+     QualsPage cancelColDrag): the board's twin is pinned above; the finger's drag itself is pinned just below */
+
+  /* [QUALS-HEAD-FINGER-CAPTURE] (found 21 Oct 26, fixed the night of 6 Nov 26): a finger pressed on a heading's WORDS and
+     slid onto the next heading but one moved no column — the press is held by the words, and the drag let go only of the
+     heading's hold, so every move named the first heading. Driven clear of the edge scroll, whose own re-read hid it. */
+  test('in Edit quals a heading pressed on its words by a finger and slid along the row moves its column', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await page.locator('#qEdit').tap(); await page.locator('#qEditQuals').tap(); await sleep(300)
+    await page.evaluate(() => {
+      const w = document.querySelector('#page-quals .qwrap') as HTMLElement, ths = [...document.querySelectorAll('#qtbl thead th[data-col]')]
+      const name = document.querySelector('#qtbl thead th[data-sort="cs"]')!.getBoundingClientRect()
+      w.scrollLeft += ths[1].getBoundingClientRect().left - name.right - 8
+    }); await sleep(300)
+    const cols = () => page.evaluate(() => [...document.querySelectorAll<HTMLElement>('#qtbl thead th[data-col]')].map(t => t.dataset.col))
+    const before = await cols()
+    const at = await page.evaluate(() => {
+      const ths = [...document.querySelectorAll('#qtbl thead th[data-col]')]
+      const l = ths[1].querySelector('.qlbl')!.getBoundingClientRect(), t = ths[2].getBoundingClientRect()
+      const x = l.left + l.width / 2, y = l.top + l.height / 2, hit = document.elementFromPoint(x, y)
+      return { x, y, tx: t.left + t.width / 2, onWords: !!hit?.closest('.qlbl'), clear: t.left + t.width / 2 < innerWidth - 48 }
+    })
+    expect(at.onWords, 'the finger lands on the heading\'s words').toBe(true)
+    expect(at.clear, 'the heading it is slid onto stands clear of the edge scroll\'s band').toBe(true)
+    await touch(cdp, 'touchStart', [[at.x, at.y]]); await sleep(60)
+    for (let i = 1; i <= 12; i++) { await touch(cdp, 'touchMove', [[at.x + (at.tx - at.x) * i / 12, at.y]]); await sleep(24) }
+    await sleep(90)
+    expect(await page.evaluate(() => [...document.querySelectorAll<HTMLElement>('#qtbl thead th.qdrop')].map(t => t.dataset.col)),
+      'mid-drag, the heading under the finger is lit as the landing').toEqual([before[2]])
+    await touch(cdp, 'touchEnd', []); await sleep(500)
+    const after = await cols()
+    expect(after.slice(0, 4), 'the column moved under the finger').toEqual([before[0], before[2], before[1], before[3]])
+    expect(errs).toEqual([])
+    await context.close()
+  })
   test('the table zooms, the buttons stay; the pinned heading row lines up; a second finger off the table still pinches', async ({ browser, baseURL }) => {
     const { context, page, errs, cdp } = await phone(browser, baseURL)
     await go(page, 'quals'); await sleep(400)
@@ -309,6 +342,86 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     expect(errs).toEqual([])
     await context.close()
   })
+  /* [QUALS-PINCH-NOSDA-HEAD] (filed 31 Oct 26, fixed the night of 6 Nov 26): in a browser with no scroll-driven animations
+     (an iPhone before iOS 26 — Playwright's WebKit and Chromium both have them, so they are reported missing here, the
+     Leave War test's way) the pinned row had no still copy of its name heading, and mid-pinch in its own was stretched
+     with the row and carried left of the table's edge (measured -159 for an edge at 20). Every name heading a person
+     can see in the pinned row stands at the edge, mid-pinch and after the lift. */
+  test('without scroll-driven animations, part-way down, a pinch in keeps the pinned row\'s name heading at the left edge ([QUALS-PINCH-NOSDA-HEAD], D1287)', async ({ browser, baseURL }) => {
+    const context = await browser.newContext({ baseURL, viewport: PHONE, isMobile: true, hasTouch: true })
+    await context.addInitScript(() => {
+      const real = CSS.supports.bind(CSS)
+      CSS.supports = ((...a: any[]) => (/scroll-timeline|timeline-scope|animation-timeline/.test(a.join(' ')) ? false : (real as any)(...a))) as any
+    })
+    const page = await context.newPage()
+    const errs: string[] = []
+    page.on('pageerror', e => errs.push(String(e)))
+    await login(page)
+    await page.addStyleTag({ content: '#toastEl{visibility:hidden!important}' })
+    const cdp = await context.newCDPSession(page)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    expect(await page.locator('#page-quals .qwrap.q-sda').count(), 'the page took the path without the browser\'s follow').toBe(0)
+    await page.evaluate(() => window.scrollTo(0, 420)); await sleep(500)
+    await expect(page.locator('[data-testid="qsticky-head"]')).toHaveCount(1)
+    const seen = () => page.evaluate(() => {
+      const wrapL = document.querySelector('#page-quals .qwrap')!.getBoundingClientRect().left
+      const m = document.querySelector('[data-testid="qsticky-head"]')!
+      const shown = (e: Element | null) => { if (!e) return false; const r = e.getBoundingClientRect(); return r.width > 0 && getComputedStyle(e).visibility !== 'hidden' }
+      const heads = [m.querySelector('.qfixed-frozen th[data-sort="cs"]'), m.querySelector('.qfixed-scroll th[data-sort="cs"]')]
+        .filter(shown).map(e => Math.round(e!.getBoundingClientRect().left * 10) / 10)
+      return { wrapL, heads, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
+    })
+    const rest = await seen()
+    expect(rest.heads.length, 'at rest a name heading is drawn in the pinned row').toBeGreaterThan(0)
+    const mid = await midPinch(cdp, 200, 450, 90, 250, seen)
+    expect(mid.transformed, 'read mid-pinch').toBe(true)
+    expect(mid.heads.length, `mid-pinch in, a name heading is drawn in the pinned row (${JSON.stringify(mid)})`).toBeGreaterThan(0)
+    expect(mid.heads.filter(l => Math.abs(l - mid.wrapL) > 1.5), `mid-pinch in, every name heading seen stands at the table's left edge (${JSON.stringify(mid)})`).toEqual([])
+    const after = await seen()
+    expect(after.heads.filter(l => Math.abs(l - after.wrapL) > 1.5), `after the lift too (${JSON.stringify(after)})`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
+  /* [QUALS-ZOOM-EDGE-SLIVER] (found 30 Oct 26, the pinch walk; fixed the night of 6 Nov 26): after a pinch, at a zoom
+     between whole steps, the table scrolled sideways, a one-screen-pixel sliver of the cells scrolled under the name
+     column (a CAT chip's colour, a white letter) showed at the column's left edge — in Chromium and in WebKit alike. The
+     layout puts the name cell exactly at the edge, but its left border is the table's to draw and the sticky cell leaves
+     that slot see-through. Read in the screen's own pixels (a reading of the boxes says it is covered), a strip two pixels
+     wide from the edge, down every row in sight. Unscrolled, the table's own left line shows through the slot as it always
+     has: the cover is drawn only once the table is scrolled sideways. */
+  test('after a pinch to a zoom between whole steps, nothing scrolled under the name column shows at its left edge ([QUALS-ZOOM-EDGE-SLIVER], D1518)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    await pinch(cdp, 200, 500, 200, 180)
+    const z = await page.evaluate(() => parseFloat(getComputedStyle(document.getElementById('qtbl')!).zoom || '1'))
+    expect(z, 'a zoom between whole steps').toBeGreaterThan(0.8)
+    expect(z).toBeLessThan(0.97)
+    expect(await page.evaluate(() => getComputedStyle(document.querySelector('#qtbl td.qname')!, '::before').content),
+      "unscrolled, nothing covers the table's own left line").toBe('none')
+    const bright: string[] = []
+    for (let sl = 1; sl <= 400; sl += 13) {
+      const g = await page.evaluate(sl => {
+        const w = document.querySelector('#page-quals .qwrap') as HTMLElement; w.scrollLeft = sl
+        const r = w.getBoundingClientRect(), names = [...document.querySelectorAll('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(q => q.top > 140 && q.bottom < innerHeight - 10)
+        return { x: r.left, top: names[0].top, h: names[names.length - 1].bottom - names[0].top, sl: w.scrollLeft }
+      }, sl)
+      await sleep(30)
+      const png = await page.screenshot({ clip: { x: g.x, y: g.top, width: 2, height: g.h } })
+      const k = await page.evaluate(async b64 => {
+        const img = await new Promise<HTMLImageElement>(ok => { const i = new Image(); i.onload = () => ok(i); i.src = 'data:image/png;base64,' + b64 })
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height; const x = c.getContext('2d')!; x.drawImage(img, 0, 0)
+        const d = x.getImageData(0, 0, c.width, c.height).data; let n = 0
+        for (let i = 0; i < d.length; i += 4) if (Math.max(d[i], d[i + 1], d[i + 2]) > 100) n++
+        return n
+      }, png.toString('base64'))
+      if (k) bright.push(`scrolled ${Math.round(g.sl)}: ${k} bright pixels`)
+    }
+    expect(bright, `at zoom ${z.toFixed(3)}, the name column's left edge shows only its own fill`).toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
+
   /* A PINCH THAT TURNS (the code read of 31 Oct 26, finding 1): part-way down a pinch out scrolls the page up with the pinch
      (D1288's `scrollPage`), which unpins the heading row frozen under the top bar; the fingers turning back to a pinch in
      scroll the page down again, and the row was pinned anew mid-gesture — drawn at rest over the stretched table (not one of
