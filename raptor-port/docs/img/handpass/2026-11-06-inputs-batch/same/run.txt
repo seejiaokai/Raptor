@@ -1,0 +1,16 @@
+[inp1106-same v2]
+SAME  desk-month  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}
+SAME  desk-day-open  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}
+SAME  desk-list  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,2660]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,2660]}
+SAME  desk-list-sorted  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,2660]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,2660]}
+SAME  desk-new-input  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1203]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1203]}
+SAME  desk-sans  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}
+SAME  desk-medical  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1920,1080]}
+SAME  phone-month  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-day-open  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-list  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-list-sorted  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-new-input  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-sans  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+SAME  phone-medical  before vs before-again: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}  before vs after: {"same":true,"share":0,"pixels":0,"where":null,"size":[1206,2622]}
+14 the same, 0 differ
