@@ -1,0 +1,36 @@
+{
+  "rows": [
+    {
+      "scn": "S7",
+      "step": "Edit Schedule change with saves blocked: the band shows",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S7-1-band-on-editschedule.png"
+    },
+    {
+      "scn": "S7",
+      "step": "first visit + a mark: the corner never said saved while the band stood (polled every 40 ms)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "violations []; corner \"\"; band \"⚠Not saved — keep this page openRetry\"",
+      "pics": "S7-3-marked-failing.png"
+    },
+    {
+      "scn": "S7",
+      "step": "block lifted + Retry: the band goes and the corner words come back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "band \"\" corner \"● saved\"",
+      "pics": "S7-4-recovered.png"
+    },
+    {
+      "scn": "S7",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

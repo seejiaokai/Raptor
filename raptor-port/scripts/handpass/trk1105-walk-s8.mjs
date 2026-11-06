@@ -1,0 +1,58 @@
+/* S8 — a save that fails while the Tracker is kept hidden, and the way back (D admin Chromium; P admin WebKit).
+   The "input filed on Inputs" of the scenario is replaced by a note typed on Edit Schedule (one control of the app's
+   own that saves); the Tracker is hidden either way.   node scripts/handpass/trk1105-walk-s8.mjs */
+import { open, navTo, words, grade, mark, click, shot, tap2, setFail, retryBtn, greenPixels, cornerRect, mk, sleep, D, P } from './trk1105-walk-lib.mjs'
+console.log('trk1105-walk-s8 v1')
+const L = mk('S8')
+async function otherPageChange(page, touch) {
+  await navTo(page, 'editsched', touch); await sleep(800)
+  const t = page.locator('.txed:visible').first()
+  if (touch) await t.tap(); else await t.click()
+  await page.keyboard.type('walk 1105'); await page.keyboard.press('Tab')
+}
+for (const [tag, engine, size, touch] of [['D', 'chromium', D, false], ['P', 'webkit', P, true]]) {
+  const { browser, page, errors } = await open({ engine, size, touch, who: 'a', fail: true })
+  await mark(page, 'ST-02', 'dco', touch); await sleep(1500)
+  let w = await words(page)
+  const clip0 = await cornerRect(page)
+  const barTop = () => page.evaluate(() => { const e = document.getElementById('courseSel'); return Math.round(e.getBoundingClientRect().top) })
+  const top0 = await barTop()
+  L.ok('start: corner has its words', tag, 'admin', /saved/.test(w.corner), `corner "${w.corner}"`)
+  await setFail(page, true)
+  await otherPageChange(page, touch)
+  await sleep(3500)
+  w = await words(page)
+  L.ok('on the other page, band shows (the Tracker is hidden)', tag, 'admin', /Not saved/.test(w.band), `band "${w.band}"`, await shot(page, `S8-${tag}-1-other-page-failed`))
+  await page.evaluate(() => { window.__viol = []; window.__poll = setInterval(() => { const s = document.getElementById('saveStat'), b = document.querySelector('.topbar .savestat.failed'); if (s && b && s.getBoundingClientRect().width > 1 && /saved/i.test(s.textContent)) window.__viol.push(s.textContent.trim()) }, 30) })
+  await navTo(page, 'tracker', touch)
+  await sleep(120)
+  const first = await shot(page, `S8-${tag}-2-back-first-frame`)
+  await sleep(1200)
+  w = await words(page)
+  const balls = await page.locator('#flowSvg .ball').count()
+  const clip = { ...clip0, y: clip0.y + (await barTop()) - top0 }
+  const gp = await greenPixels(page, clip)
+  const viol = await page.evaluate(() => window.__viol)
+  L.ok('back on the Tracker: corner draws nothing (element + pixels), no saved seen on any poll; chart drawn untouched', tag, 'admin', w.corner === '' && gp.green === 0 && viol.length === 0 && balls > 20 && /Not saved/.test(w.band), `corner "${w.corner}" greenPx ${gp.green} violations ${viol.length} balls ${balls} band "${w.band}"`, first + ',' + await shot(page, `S8-${tag}-3-back-settled`))
+  await setFail(page, false)
+  if (touch) await tap2(page, retryBtn(page), `S8-${tag}-4-retry`); else await retryBtn(page).click()
+  await sleep(2800)
+  w = await words(page)
+  L.ok('block lifted, Retry from the Tracker: band goes, words back', tag, 'admin', !w.band && /saved/.test(w.corner), `band "${w.band}" corner "${w.corner}"`, await shot(page, `S8-${tag}-5-recovered`))
+  // reverse: fail on the Tracker, go away, Retry there, come back
+  await setFail(page, true)
+  await mark(page, 'ST-01', 'dco', touch, 2500)
+  w = await words(page)
+  L.ok('reverse: fail on the Tracker — band, corner silent', tag, 'admin', /Not saved/.test(w.band) && w.corner === '', `band "${w.band}" corner "${w.corner}"`, await shot(page, `S8-${tag}-6-reverse-failed`))
+  await navTo(page, 'editsched', touch); await sleep(500)
+  await setFail(page, false)
+  if (touch) await tap2(page, retryBtn(page), `S8-${tag}-7-retry-elsewhere`); else await retryBtn(page).click()
+  await sleep(2800)
+  const w2 = await words(page)
+  await navTo(page, 'tracker', touch); await sleep(500)
+  w = await words(page)
+  L.ok('reverse: Retry on the other page, back on the Tracker: corner words are back', tag, 'admin', !w.band && /saved/.test(w.corner), `other-page band after retry "${w2.band}"; back: band "${w.band}" corner "${w.corner}"`, await shot(page, `S8-${tag}-8-reverse-back`))
+  L.note('errors', errors.join(' | ').slice(0, 400) || 'none')
+  await browser.close()
+}
+L.save('S8')

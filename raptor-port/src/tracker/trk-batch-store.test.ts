@@ -9,7 +9,7 @@
    Each was run RED against the code before the batch (the evidence sheet's break list names the lines). */
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import * as core from './app/core.js'
-import { setStorageImpl, useSaveHealth } from './storage.js'
+import { setStorageImpl, setSaveHealth } from './storage.js'
 import { setPeople, setGonePeople } from './people.js'
 import { deletedForTracker } from './peoplewire'
 import { Whiteboard } from '../storage/whiteboard'
@@ -44,7 +44,7 @@ beforeAll(async () => {
   await C.init()
   await C.whenLoaded()
 })
-afterAll(() => { board.remove(); setStorageImpl(null); useSaveHealth(null) })
+afterAll(() => { board.remove(); setStorageImpl(null); setSaveHealth(null) })
 
 describe('D981 — a man deleted through Post out leaves the courses still running for him', () => {
   it('events still to do: he leaves the list (stored), and nothing of his record is erased; a man not deleted stays', async () => {
@@ -161,7 +161,7 @@ describe('[TRK-UNDO-WRITES-DEFAULTS] — the first ↶ of a mark stores nothing 
 describe('[TRK-SAVE-FAIL-SAYS-SAVED] — no "saved" while the saver has failed', () => {
   it('words that say saved step aside while a save has failed, and come back once it lands', async () => {
     let status = 'saved'; const subs = new Set<() => void>()
-    useSaveHealth({ get status() { return status }, onStatus(f: () => void) { subs.add(f); return () => subs.delete(f) } })
+    setSaveHealth({ get status() { return status }, onStatus(f: () => void) { subs.add(f); return () => subs.delete(f) } })
     await C.saveOrderList(C.orderedSylNames())
     expect(C.saveWords().text, 'saved, while it is').toMatch(/saved/)
     status = 'failed'; subs.forEach(f => f()); await settle()

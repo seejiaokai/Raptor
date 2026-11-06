@@ -4,17 +4,14 @@
    functions here at the end of its init, so the Tracker's ~280 KB chart engine stays out of every Raptor visit
    (tracker.test.tsx guards that Raptor never imports core.js).
 
-   `hosted` — set by Raptor's page seam (TrackerPage.tsx): the Tracker is drawn inside Raptor, whose top bar carries its
-   pair. The STANDALONE Tracker (it will be exported back out on its own — the Tracker's §Architecture) never sets it, so
-   its own header keeps drawing its ↶ ↷, as the "+ Add with no roster" feature degrades (Fable's red team 3). */
+   The Tracker's own header draws no pair: the top bar is the only place it is drawn. Until [TRK-STANDALONE-LEFTOVERS]
+   (5 Nov 26) a `hosted` flag here, set by the page seam, told the header to leave its own pair out — the standalone
+   Tracker, never hosted, kept it; D1538 retired the standalone Tracker, and the flag and that pair went. */
 let API = null
 let VERSION = 0
-let HOSTED = false
 const subs = new Set()
 export function setTrackerUndo(api) { API = api; pingTrackerUndo() }
 export function trackerUndoApi() { return API }
 export function pingTrackerUndo() { VERSION++; subs.forEach(f => { try { f() } catch (_) { /* a listener's fault stays its own */ } }) }
 export function onTrackerUndo(f) { subs.add(f); return () => { subs.delete(f) } }
 export function trackerUndoVersion() { return VERSION }
-export function setTrackerHosted(v) { HOSTED = !!v }
-export function trackerHosted() { return HOSTED }

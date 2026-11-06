@@ -4,7 +4,17 @@
 > this app.").** Every passage below that speaks of the standalone Tracker going back out to `seejiaokai/Tracker` — "the
 > standalone rule" (9 Sep 26), and the notes that "a standalone export of the Tracker must carry" Raptor's date box,
 > `ui/kbscroll.ts` or `ui/edgescroll.ts` — no longer binds a change: they are kept as the history of why the code is
-> shaped as it is. The code kept only for a standalone Tracker is filed as [TRK-STANDALONE-LEFTOVERS].
+> shaped as it is. **[TRK-STANDALONE-LEFTOVERS] (5 Nov 26) took out the code kept only for a standalone Tracker:** the
+> storage doorway's bare `ocu:` path (with nothing plugged in — only a unit test that never runs the boot — it keeps its
+> records in memory; a browser's old `ocu:` keys are still brought in once by the browser backend) and the bar's own
+> ↶ ↷ with the `hosted` flag that hid them inside Raptor. **Kept, each for a reason that is not the export:** + Add's
+> `Student callsign:` prompt with nobody to offer (Raptor's roster offers aircrew only, so a store whose one person is
+> ground crew hands over nobody); `role.js`'s and `people.js`'s no-import shape (Raptor's logout must not pull in the
+> chart engine, and the Tracker reads nothing of Raptor's store — the three seams); the answers each bridge gives with
+> nothing wired (only a unit test reaches them). **Still copies, not yet taken back to Raptor's own:** the Tracker's own
+> drawings of the app's glyphs and pencil (`components/Glyphs.jsx`, `SrchGlyph.jsx`) and its own palette for a page
+> with no `:root` (`trk-palette.test.ts`) — a change a person could see if a copy has drifted, so left for a job of its
+> own. The notes below that "a standalone export must carry" a file are history only.
 
 > **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
 > his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the
@@ -89,7 +99,8 @@
 >   9 Sep 26 `v3:links` record is folded into `pid` by the once-per-course
 >   migration and gone). A typed name still adds an unlinked student — and with NO
 >   roster handed over the dialog IS the old `Student callsign:` prompt, byte
->   for byte. **That is the standalone rule** (owner, 9 Sep 26): the Tracker
+>   for byte (kept since D1538 because Raptor can hand over nobody — aircrew only).
+>   **That was the standalone rule** (owner, 9 Sep 26 — retired by D1538): the Tracker
 >   goes back out to `seejiaokai/Tracker` one day, where a student is created
 >   by typing a name and nothing feeds `people.js`; the picker, the link and
 >   the `by` stamp exist only where Raptor hands people over, and everything
@@ -273,14 +284,14 @@ he reports it again, ask which button he pressed and what the status line said.
   `kLastStudent`/`kLast` stay shared on purpose. **The course and student a
   person reopens on are remembered per PERSON on the browser** (D376, 28 Sep 26 —
   "own place"): someone signing in after someone else never lands on the other
-  person's pick; with nobody signed in (the standalone Tracker) the browser keeps
+  person's pick; with nobody signed in as a person the browser keeps
   one place as before. **The CHART he has open on a course is part of that place and
   NOTHING ELSE** (30 Sep 26, `[DB-READINESS]` group A phase 5b): it used to be written
   into the course's shared plan too (`v3:<course>:plan` `sylId`), so on a shared store
   whoever opened a course last moved everyone's chart; now every load reads his own pick
   (`mySylOn`) and the course's plan names only the course's own chart — set when the
   course is made, repaired when its chart is deleted, brought by an Import (and the
-  person importing then sees the file's chart), or by the standalone Tracker.
+  person importing then sees the file's chart), or by a load with nobody signed in as a person.
 - **Several people's lists are stored one row per thing** (30 Sep 26, phase 5b —
   D462): a course's student list per chart, the course list, the charts and the
   details on each ball. A save writes only what it changed against what that copy
@@ -362,8 +373,8 @@ What to know before touching one:
 - **The marking pop-up and the failures list stay open under the calendar** because the calendar's layer keeps every press to itself (`ui/DateBox.tsx`'s `mine`); the Tracker's own "a click outside the pop-up closes it" listens on the document and so never hears one. Nothing in the Tracker names the calendar. Proved in a browser only — the smoke suite's named check and the look (`scripts/handpass/trk-datebox-look.mjs`); a unit test cannot see it (no page listener is mounted there).
 - **A refused day in Done on / Failed on of an event NOT yet done stays in the box with its line** (the store's rule of 28 Sep 26 — never turned into today); the calendar then opens on that day's month.
 - **What the read of the finished code added (a fresh, blind Opus reader, 13 Oct 26 — `docs/handpass/parts/trk-datebox/read-opus.md`; all fixed, tests first):** in the Tracker a pick is a SAVE, so the app box's guards matter more here than anywhere — the tap that opens the calendar leaves a patch (a double tap picked a day nobody chose); "take this date off" settles for 400ms (a double press took the day off the next failure, which had slid up under the finger); the two Last Flown boxes offer it only for a day put in by hand, and it shows the latest flight done (D123); the date setters no longer fold two changes inside two seconds into one undo step (that was for typing — `setEpw` and `setDownDays` still fold; `setDownDays` and the Upchit box went on 18 Oct 26 — D1002, the down days worked out from the Inputs); the calendar is handed the squadron's today and a first day of 1900; `handleDeleteKey` spares a date box (it knew the old box as a typing field); each box is given its name (`title`).
-- **A standalone export of the Tracker must carry the app's date box:** `ui/DateBox.tsx`, `ui/DateCal.tsx`, what they import (`ui/daysfmt.ts`, `ui/sideswipe.ts`) and `ui/scheduler/26-date-calendar.css` — two Tracker components draw it now. (The architecture note in `.claude/rules/decisions/tracker.md` lists the Raptor-only code as the people bridge and the page; this is one more seam of the same kind.)
-- **A standalone export of the Tracker must carry `ui/kbscroll.ts` and what it imports (`ui/pinchzoom.ts`)** (29 Oct 26, his keyboard readout): the Flex settings window, the Legend and the bar's menus take their place from its `fixedOrigin`, so the keys sliding his iPhone's page never lift them.
+- **(History — D1538: no standalone export any more.) A standalone export of the Tracker must carry the app's date box:** `ui/DateBox.tsx`, `ui/DateCal.tsx`, what they import (`ui/daysfmt.ts`, `ui/sideswipe.ts`) and `ui/scheduler/26-date-calendar.css` — two Tracker components draw it now. (The architecture note in `.claude/rules/decisions/tracker.md` lists the Raptor-only code as the people bridge and the page; this is one more seam of the same kind.)
+- **(History — D1538.) A standalone export of the Tracker must carry `ui/kbscroll.ts` and what it imports (`ui/pinchzoom.ts`)** (29 Oct 26, his keyboard readout): the Flex settings window, the Legend and the bar's menus take their place from its `fixedOrigin`, so the keys sliding his iPhone's page never lift them.
 - **Not changed, and the app's "small calendars" step (step two) does not name it:** the lull periods' own calendar (`.lullcal`) — a range picked on a calendar the Tracker draws itself.
 
 ## A test of the question box waits for the box's own focus (`[TRK-DLG-FOCUS-UNSTEADY]`, steadied 13 Oct 26)
@@ -373,8 +384,8 @@ The Tracker's question box (`components/Modals.jsx`) puts the keyboard in its te
 ## The chart editor pans at its edge (D899, the night of 15 Oct 26)
 
 `app/core.js` now imports Raptor's `ui/edgescroll.ts` (`edgePan`): a ball, a group, an arrow's end or bend square, a drawn
-line's end or corner square carried to Edit chart layout's edge pans the canvas (`followEdge`) — **a standalone export of
-the Tracker carries `ui/edgescroll.ts` with it.** Not given the pan: the ▣ Select box, a pan of empty space (named to him).
+line's end or corner square carried to Edit chart layout's edge pans the canvas (`followEdge`) — *(history, D1538: a
+standalone export of the Tracker would have carried `ui/edgescroll.ts` with it.)* Not given the pan: the ▣ Select box, a pan of empty space (named to him).
 **Older, met by the night's reads, filed:** every ball move ends in `wireBoard()` (more listeners each time — a wheel step
 zooms n+1 times; `[TRK-WIREBOARD-REPEAT]`); a ball or handle dropped left of or above the chart's start (no pan needed,
 right after ⤢ Fit) lands at a negative place and is cut off the chart outside the editor (`[TRK-BALL-OFF-CHART-LEFT]`).

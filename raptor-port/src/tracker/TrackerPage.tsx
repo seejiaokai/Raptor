@@ -23,7 +23,6 @@
 import { memo, useEffect } from 'react'
 import App, { PAGE_ID } from './App.jsx'
 import { wireTrackerPeople } from './peoplewire'
-import { setTrackerHosted } from './undo-bridge.js'
 import { setTrackerSeedDemo } from './app/core.js'
 import { seedDemoNow } from '../state/seeds'
 import './tracker.css'
@@ -33,10 +32,6 @@ import './tracker.css'
    (core.js subscribe/getVersion) — nothing it draws arrives through props,
    so the parent's render can stop at this line. `active` is the one prop, and
    a tab switch is exactly when it must re-render. */
-/* [UNDO-TOPBAR] (D349 (2)): inside Raptor the Tracker's ↶ ↷ are drawn in the app's top bar (ui/topbits.tsx, through
-   undo-bridge.js), so its own header leaves them out; set before the first render. The standalone Tracker never loads
-   this seam and keeps its own pair. */
-setTrackerHosted(true)
 /* THE BOOT POLICY ([DB-READINESS] group A, phase 5 — D463): the Tracker boots at its first mount, long after Raptor's
    boot, so this page — the seam between the two — tells it the policy Raptor booted with (state/seeds.ts): on a shared
    store it makes no course and no demo student. Set as this chunk loads, before the first mount's init. */

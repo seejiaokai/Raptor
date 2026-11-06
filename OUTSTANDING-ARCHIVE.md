@@ -7894,3 +7894,14 @@ sign, "Not saved" bold, Retry a solid amber button) and 2, the pill (one amber p
 `raptor-port/docs/mock/2026-11-05-save-band/img/`, script `scripts/handpass/sb1105-mock.mjs`. Both keep the band's
 height, place and amber line (D587, D841) and add no glow (D887). **His pick, 5 Nov 26 (D1655): look 1, the strip.** **Place:** one build with [ACCESS-WAIT-LOOK] and [GUEST-SAVE-WARNING]'s band (D1657), the OIL bar restyled alike.
 
+
+*Moved here 2026-11-06 by backlog-archive.mjs ([ACCESS-WAIT-LOOK]). Forward facts: `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`.*
+
+### [ACCESS-WAIT-LOOK] The screen after asking for access, cooler and more welcoming (D1649, 5 Nov 26)
+**Done — the pass after asking for access, built as drawn (D1650, D1654, D1656) and live with pull request 638 (5 Nov 26); archived when pull request 637 merged, 6 Nov 26:** evidence `raptor-port/docs/handpass/2026-11-05-member-guest-build.md`.
+**What:** his words of 5 Nov 26 on the picture of "Your request is with the admins" (the screen a newcomer sees once he has
+asked for access, `raptor-port/src/ui/AccessScreen.tsx`): *"this design is quite ugly. Can u make it more cool and
+welcoming"*. **To do:** mock-ups drawn on the real app, a phone and a desktop, a few directions with one recommended, the
+failed-save band of [GUEST-SAVE-WARNING] drawn on the chosen one; his pick; then the build with a walk. **Place:** now, his
+pick first.
+

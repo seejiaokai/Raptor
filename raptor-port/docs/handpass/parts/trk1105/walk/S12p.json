@@ -1,0 +1,140 @@
+{
+  "rows": [
+    {
+      "scn": "S12",
+      "step": "(a) Edit chart layout on: the pair stays in the top bar, on screen and reachable",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"r0\":{\"onScreen\":true,\"reachable\":true},\"pr0\":{\"u\":1,\"r\":1,\"inTop\":true,\"inTracker\":false}}",
+      "pics": "S12-P-a1-arrange-on-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) phone: the strip panel (where it has one) does not cover the pair",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"stripToggle\":0,\"r1\":{\"onScreen\":true,\"reachable\":true}}",
+      "pics": "S12-P-a2-strip-panel.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) a drag of ACG-03 lights the top bar undo",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "pos {\"x\":155,\"y\":440} to {\"x\":213,\"y\":440}; \"Undo a chart edit (Ctrl+Z)\"",
+      "pics": "S12-P-a3-dragged.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) top bar undo (tap) puts the ball back",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "pos after {\"x\":155,\"y\":440} vs start {\"x\":155,\"y\":440}",
+      "pics": "S12-P-a4-undo-now.png,S12-P-a4-undo-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) after Done / Save: one pair, still in the top bar",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "undo greyed",
+      "pics": "S12-P-a5-after.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(e) phone: Tracker bar hidden: pair stays, page not wider than the window",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"sw\":402,\"iw\":402}",
+      "pics": "S12-P-e1-hidden.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(e) phone: bar shown again, one pair, not wider",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"sw\":402,\"iw\":402,\"back\":true}",
+      "pics": "S12-P-e2-shown.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(c) phone: Show All opens; pair state right (top bar reachable: false)",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "show all visible true",
+      "pics": "S12-P-c1-showall-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(d) phone: Legend opens and closes; one pair afterwards",
+      "size": "P",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": "S12-P-d1-legend-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "P errors",
+      "note": "none"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) Edit chart layout on: the pair stays in the top bar, on screen and reachable",
+      "size": "L",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"r0\":{\"onScreen\":true,\"reachable\":true},\"pr0\":{\"u\":1,\"r\":1,\"inTop\":true,\"inTracker\":false}}",
+      "pics": "S12-L-a1-arrange-on-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) sideways: Tools ▾ opens over the chart and the pair is still on screen and pressable",
+      "size": "L",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"toolsButton\":1,\"r1\":{\"onScreen\":true,\"reachable\":true}}",
+      "pics": "S12-L-a2-tools-open.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) a drag of ST-02 lights the top bar undo",
+      "size": "L",
+      "role": "admin",
+      "pass": true,
+      "said": "pos {\"x\":574,\"y\":158} to {\"x\":626,\"y\":239}; \"Undo a chart edit (Ctrl+Z)\"",
+      "pics": "S12-L-a3-dragged.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) top bar undo (tap) puts the ball back",
+      "size": "L",
+      "role": "admin",
+      "pass": false,
+      "said": "pos after {\"x\":566,\"y\":238} vs start {\"x\":574,\"y\":158}",
+      "pics": "S12-L-a4-undo-now.png,S12-L-a4-undo-set.png"
+    },
+    {
+      "scn": "S12",
+      "step": "(a) after Done / Save: one pair, still in the top bar",
+      "size": "L",
+      "role": "admin",
+      "pass": true,
+      "said": "undo greyed",
+      "pics": "S12-L-a5-after.png"
+    },
+    {
+      "scn": "S12",
+      "step": "L errors",
+      "note": "none"
+    }
+  ]
+}

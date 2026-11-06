@@ -21,10 +21,13 @@
 /* THE TRACKER'S ONE ADMIN GATE (owner D1014, 18 Oct 26 — narrows D121): the flex settings — their figures and their
    on / off switch (D1006) — are an admin's alone to change; everything else in the Tracker stays everyone's. So the
    Tracker reads ONE answer about the signed-in person again, "is he an admin?", and only for that. It crosses here,
-   with no imports, for the reason the rest of this file does: Raptor's side (peoplewire.ts) hands in a function that
+   with no imports, for the reason the rest of this file does (Raptor's logout and store read this file, and must not
+   pull the Tracker's chart engine in with it): Raptor's side (peoplewire.ts) hands in a function that
    asks Raptor's one permissions module (state/perms.ts) each time — the session can change under an open tab (logout,
-   the admin's member view). Nobody wired = the standalone Tracker, which has no accounts: its one user is everyone, as
-   D121 always had it, so the answer is yes. The command gate still refuses a member's write inside Raptor (perms.ts
+   the admin's member view). The page seam wires it as its chunk loads, before the Tracker is first drawn, so nobody
+   wired is only a unit test that never loads the page: the answer is yes, the same answer Raptor's side gives the
+   headless engine (peoplewire.ts trackerAdminForTracker) — the standalone Tracker's reason, its one user being everyone,
+   went with D1538 ([TRK-STANDALONE-LEFTOVERS], 5 Nov 26). The command gate still refuses a member's write inside Raptor (perms.ts
    COMMAND_OPS 'trk.flex' — a Setting, the admin's), so this is the screen's answer, never the only lock. */
 let adminFn = null
 export function setTrackerAdmin(fn) { adminFn = typeof fn === 'function' ? fn : null }

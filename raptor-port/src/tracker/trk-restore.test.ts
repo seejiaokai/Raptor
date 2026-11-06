@@ -216,6 +216,7 @@ describe('one Tracker action, one saved group (the group-wide walk, W5 findings 
   })
 
   it('an Import bringing a course this browser never had: every group it saves carries its batch', async () => {
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the students block as an export file carries it into an Import, which is JSON written and read back — a structuredClone would keep what a file cannot hold
     const out = JSON.parse(JSON.stringify(await (core as any).collectStudents()))
     const first = out.courses[0], cid = typeof first === 'string' ? first : first.id
     const NEW = 'cimpxnew1'

@@ -1,0 +1,144 @@
+{
+  "rows": [
+    {
+      "scn": "S19",
+      "step": "pick a student from the bar dropdown (the course list holds one course)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "student STUDENT B; courses 26ABSG",
+      "pics": "S19-1-picked.png"
+    },
+    {
+      "scn": "S19",
+      "step": "+ Add picker closes by Cancel, by a press outside and by Escape",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"cancel\":true,\"outside\":true,\"escape\":true}",
+      "pics": "S19-2-add-closed.png"
+    },
+    {
+      "scn": "S19",
+      "step": "+ Add: the roster man is added and picked",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "added \"Recon\"; students STUDENT A/STUDENT B/RECON",
+      "pics": "S19-3-added.png"
+    },
+    {
+      "scn": "S19",
+      "step": "three marks set (DCO, failure with its date, N.A.); the marking pop-up closes by Close, Escape and a press outside",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"close\":true,\"esc\":true,\"outside\":true} ST-02 dco ST-03 na",
+      "pics": "S19-4-marks.png"
+    },
+    {
+      "scn": "S19",
+      "step": "down-days window, Legend, Show All and Find event open and close by each of their ways",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "{\"downEsc\":true,\"downOutside\":true,\"downOpened\":true,\"Legend\":{\"opened\":true,\"esc\":true,\"outside\":true},\"Show All\":{\"opened\":true,\"esc\":true,\"outside\":true},\"find\":{\"listShown\":true,\"clearedByEsc\":true}}",
+      "pics": "S19-6-all-closed.png"
+    },
+    {
+      "scn": "S19",
+      "step": "undo two steps and redo one from the top bar (a step is a mark, a date or a pick)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "marks before dco,na; after two undos dco,0; after one redo dco,0; redo lit after undos true; last undo title \"Undo the failure count on ST-01 for RECON (Ctrl+Z)\"",
+      "pics": "S19-7-undo-redo.png"
+    },
+    {
+      "scn": "S19",
+      "step": "hide the Tracker bar and show it again",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "hidden true",
+      "pics": ""
+    },
+    {
+      "scn": "S19",
+      "step": "File Export then File Import of the same file: dialogs answered, chart still drawn, marks still there",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "dialogs Replace it > Replace it > Replace it > Replace it > OK > OK; ST-02 dco",
+      "pics": "S19-8-imported.png"
+    },
+    {
+      "scn": "S19",
+      "step": "Edit Schedule and back, Inputs and back, reload, sign out and in: the Tracker comes back",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": "S19-9-after-signin.png"
+    },
+    {
+      "scn": "S19",
+      "step": "Tracker after the reload and sign-in: same student, marks (DCO, N.A.), failure date, course start, course list",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "student \"RECON\"; marks dco,na; pop shows failure 03/11/26 true; course start \"Sun 1 Nov 26\n▾\"; courses 26ABSG",
+      "pics": "S19-10-tracker-after.png"
+    },
+    {
+      "scn": "S19",
+      "step": "Show All's table lists the events for that student's chart (ST-01 and ST-02 present)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "rows present",
+      "pics": ""
+    },
+    {
+      "scn": "S19",
+      "step": "the Info panel's Last flown / currency bars are drawn",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "Info text has Last Flown and Landing currency: true",
+      "pics": "S19-12-info.png"
+    },
+    {
+      "scn": "S19",
+      "step": "the person's window from Quals for the added student: opens; does it name his Tracker course? (recorded)",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "found \"Recon\" on Quals 1; page text mentions the Tracker course 26ABSG: false; mentions Tracker: false",
+      "pics": "S19-13-person-window.png"
+    },
+    {
+      "scn": "S19",
+      "step": "through the whole round: only raptor:tracker/ (and ocuLocal:) keys changed beside the app's own; no ocu: key",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "tracker 14; ocuLocal 2; appOwn 14; ocu 0",
+      "pics": ""
+    },
+    {
+      "scn": "S19",
+      "step": "one pair, top bar only",
+      "size": "D",
+      "role": "admin",
+      "pass": true,
+      "said": "",
+      "pics": ""
+    },
+    {
+      "scn": "S19",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}

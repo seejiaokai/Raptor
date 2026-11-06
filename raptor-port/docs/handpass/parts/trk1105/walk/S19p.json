@@ -1,0 +1,81 @@
+{
+  "rows": [
+    {
+      "scn": "S19p",
+      "step": "phone: student picked; + Add closed by Cancel and by a tap outside, then a roster man added",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "cancel true; outside true; students STUDENT A/STUDENT B/RECON",
+      "pics": "S19p-1-add-now.png,S19p-1-add-set.png"
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: three marks set by tap (DCO, failure with date, N.A.); the pop-up closed by its Close",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "ST-02 dco, ST-03 na, pop closed true",
+      "pics": "S19p-2-dco-set.png,S19p-3-na-set.png"
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: Info and Show All tabs open; Legend opens and a tap outside closes it",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "legend opened true, closed by outside tap true",
+      "pics": "S19p-6-legend-set.png"
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: top bar undo twice, redo once (taps with two pictures each)",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "redo lit after undos true; undo title \"Undo the failure count on ST-01 for RECON (Ctrl+Z)\"",
+      "pics": "S19p-7-undo1-now.png,S19p-7-redo-set.png"
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: hide the bar and show it again",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "hidden true",
+      "pics": ""
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: File Export gives a file (WebKit)",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "C:\\Users\\User\\AppData\\Local\\Temp\\trk1105-walk\\S19p-export.json",
+      "pics": ""
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: after reload, sign-out and in: same student, the DCO mark, the N.A. still taken back, and the failure date",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "marks (ST-03 N.A. was taken back by the two undos before the reload) dco,0; failure date shown true",
+      "pics": "S19p-8-after.png"
+    },
+    {
+      "scn": "S19p",
+      "step": "phone: only raptor:tracker/ and ocuLocal: keys beside the app's own; no ocu: key; one pair, top bar only",
+      "size": "P",
+      "role": "member",
+      "pass": true,
+      "said": "tracker 6; ocuLocal 2; ocu 0",
+      "pics": ""
+    },
+    {
+      "scn": "S19p",
+      "step": "errors",
+      "note": "none"
+    }
+  ]
+}
