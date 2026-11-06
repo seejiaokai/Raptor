@@ -55,6 +55,8 @@ export const OPTIONS = {
   G: { css: 'floor marks fit tilt scale postrip', map: 'tilt floor marks postrip postone lastline' },
   /* his question (6 Nov 26, "shouldn't the grey PO show too?"): a gone day holding two entries wears a grey line down its right edge, as the last day wears its yellow one */
   H: { css: 'floor marks fit tilt scale postrip goneline', map: 'tilt floor marks postrip postone lastline goneline' },
+  /* his D1728 (6 Nov 26): no PO mark beside an entry on a gone day — the posting's grey stripes on the box alone; the last day a yellow line */
+  K: { css: 'floor marks fit tilt scale gonehatch', map: 'tilt floor marks' },
 }
 const P = '#page-leavewar .mx td'
 const GREY = 'rgba(150, 162, 178, .95)', AMBER = '#F2C879'
@@ -156,6 +158,9 @@ ${P} .c:where(.top, .bot) { padding: 0 !important; }`,
      down the day's right edge — yellow on his last day in, grey on a day after a posting out — and the boxes step left of
      it, their letters one size smaller. The turned pair of two whole days has no room for a strip beside it, so there the
      PO stays D's yellow line or the hatch on the box. */
+  /* D1728: the stripes on a gone day's box in the posting's own grey, at the cell hatch's angle, so they show on a dark box too */
+  gonehatch: `
+${P}.cc-gone .c { background-image: repeating-linear-gradient(45deg, transparent 0 4px, rgba(150, 162, 178, .6) 4px 6px) !important; }`,
   goneline: `
 ${P}.cc-goneline { box-shadow: inset -2px 0 0 rgba(170, 182, 198, 1) !important; }
 ${P}.cc-goneline .potag { display: none !important; }
