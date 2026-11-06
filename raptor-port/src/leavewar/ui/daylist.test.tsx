@@ -207,14 +207,28 @@ describe('leave outside the time in the squadron (owner answer C)', () => {
     expect(cell().textContent).toBe('PO')
     expect(screen.queryByTestId(`potag-${P}-${D}`)).toBeNull()
   })
-  it("an admin's tap on that OD opens the day's list, not the posted-out sheet", () => {
+  /* his D1722 (his iPhone look, 6 Nov 26): the tap opens the window the same OD opens on any other day, not the day's list */
+  it("an admin's tap on that OD opens its usual window, its line on top — not the day's list or the posted-out sheet", () => {
     setRole('admin')
     expect(setPostOut(P, '2026-02-10')).toBe(true)
     fileAbsence(P, 'OD', D)
     render(<Matrix />)
     fireEvent.click(cell())
-    expect(screen.getByTestId('daylist-sheet')).toBeTruthy()
+    expect(within(screen.getByTestId('bid-picker')).getAllByTestId('bid-heldday')[0]!.textContent).toContain('OD')
+    expect(screen.queryByTestId('daylist-sheet')).toBeNull()
     expect(screen.queryByTestId('postout-sheet')).toBeNull()
+  })
+  it('an admin’s tap on leave there opens its usual window too (D1725), and a bare gone day the posted-out sheet', () => {
+    setRole('admin')
+    expect(setPostOut(P, '2026-02-10')).toBe(true)
+    fileAbsence(P, 'LL', D)
+    render(<Matrix />)
+    fireEvent.click(cell())
+    expect(screen.getByTestId('bid-picker')).toBeTruthy()
+    expect(screen.queryByTestId('daylist-sheet')).toBeNull()
+    fireEvent.click(screen.getByTestId('bid-cancel'))
+    fireEvent.click(screen.getByTestId(`cell-${P}-2026-02-16`))
+    expect(screen.getByTestId('postout-sheet')).toBeTruthy()
   })
 })
 

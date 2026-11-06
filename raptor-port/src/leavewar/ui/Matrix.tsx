@@ -258,7 +258,11 @@ export function Matrix() {
   // undo it, owner 18 Aug 26). A day before the person joined is blank, not a
   // post-out, so it is excluded — there is nothing to undo there.
   const openPerson = open ? people.find(p => p.id === open.id) : undefined
-  const openPostedOut = open?.posting
+  /* …only a BARE gone day, to the admin (his D1722, D1725, 6 Nov 26): a gone day that holds anything — an Inputs entry, leave,
+     an OIL award, two entries — opens for him exactly what the same day opens on any other day; the posted-out sheet is the
+     empty day's (the walk set the same entries on Vapor and Diesel side by side, `scripts/handpass/lw-d1722-walk.mjs`) */
+  const openGoneHolds = !!open && role === 'admin' && !!views[open.id]?.[open.date]?.main
+  const openPostedOut = openGoneHolds ? false : open?.posting
     ? open.posting === 'po' && !!openPerson && openPerson.to !== null
     : !!open && !!openPerson && postingSheetFor(openPerson, open.date) === 'po'   // D320: by stint
   // …and its mirror at the other end: a day BEFORE the person posted in
@@ -3467,17 +3471,16 @@ export function Matrix() {
   const openHeld = open && openView && (placing || !(role === 'admin' && (openPostedOut || openNotYetArrived))) && canBidOn(open.id, open.date)
     /* (only LEAVE there — the day's list's own rule, `listOpen` below: a course, a medical or an OD outside his time still opens
        the window, as a course's day did before — the fresh code read's F3) */
-    && !(openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
+    && !(role !== 'admin' && openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null)
     ? inputsFilledDay(openView) : null
   /* A COMMITMENT UNDER UNAVAILABLE (D1356) opens the day's list, its remarks read there by everyone — except beside the
      half he may still bid on, where the free half's window comes first and names it in one line (D1353, D1371) */
   const commitHeld = !!openView && openView.all.some(c => c.kind === 'absence' && isCommitCode(c.code))
     && !(open && canBidOn(open.id, open.date) && freeHalfBeside(openView))
   const listOpen = !!open && !!openView && !openHeld && (openView.mark !== '' || commitHeld ||
-    /* any entry filed outside his time opens the list where the bid window does not (his D1720 — the grid draws it there
-       now): an admin's tap on an OD, a course or a medical over his gone days shows it, where the posted-out sheet hid it;
-       his own tap on one still opens the window above (F3); an OIL award keeps its own window (D261) */
-    (!!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && openView.main.kind !== 'credit'))
+    /* leave dated outside his time opens the list on HIS OWN tap (owner answer C); an admin's tap there opens what the day
+       opens on any other day (D1722, D1725 — `openGoneHolds` above) */
+    (role !== 'admin' && !!openPerson && !inSquadron(openPerson, open.date) && !!openView.main && codeOf(openView.main.code)?.spends != null))
   /* …but on a day OPEN for him, beside half a day of leave — filed on the Inputs page or approved on the war — the free
      half's bid comes first (the free-half rule, CURRENT-STATE item D — found by the screen-test helper, 22 Oct 26; for
      war-approved leave by M1's code read, M2: `main` opened the bid window there): remarks at any time must not hide the

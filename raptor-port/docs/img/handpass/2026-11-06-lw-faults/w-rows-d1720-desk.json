@@ -21,10 +21,10 @@
   "id": "B-tap",
   "size": "desk",
   "did": "tap Diesel's 2026-12-29 (the OD bar), then ✕; tap 2026-12-30, Escape",
-  "saw": "open: []; list: \"Diesel Tue 29 Dec ✕ OD Change it on the Inputs page\"; after ✕: []; after Escape: []",
+  "saw": "open: [\"bid-picker\"]; list: \"Diesel 28–30 Dec Auto-approve ✕ No manning row is amber or red OD Whole day · change it on the Inputs page till 30 Dec Document Whole day AM PM All 3 days Tue 29 LL 25 OL 25 OIL −3 CCL −1 FCL −3 PL −3 EL −3 CL −3 CSE OD \"; after ✕: []; after Escape: []",
   "verdict": "PASS",
   "pics": [
-   "B-desk-1-tap-29-list",
+   "B-desk-1-tap-29-window",
    "B-desk-2-closed"
   ]
  },
