@@ -107,7 +107,15 @@ const FILES = [
   /* 83 -> 88, 26 Oct 26 (the records of the night of 21 Oct 26, pull request 560, merged on his D1402): five lines of
      his D1297 (24 Oct 26 - a fault he finds that the walk missed is learned from by itself, the same day), merged with a
      code change while the size check was deferred (D29). A live rule every chat needs; nothing is spent. */
-  ['.claude/rules/bug-check.md',         0,   88],
+  /* THE FIVE ALWAYS-LOADED FILES AS CHECKLISTS (8 Nov 26, claude/rules-diet-step-4-7b92cb, owner D1735 - the rules
+     diet's step 4, part 2): each file's old text moved whole to raptor-port/docs/archive/rule-files-2026-11-08.md
+     (D138), a checklist written in its place stating every rule it carried, one statement each with its numbers. Each
+     tripwire reset to about a tenth above the checklist's line count - room for the next ruling, a tripwire, not a
+     target (D141). bug-check 88 -> 85 (77 lines); record-decisions 160 -> 93 (84); plain-language 70 -> 65 (60);
+     doc-structure 100 -> 106 (96) and shipping 135 -> 172 (156) RISE: this check counts lines, and the old text held
+     long unwrapped lines that the checklists wrap at 120 characters - in bytes doc-structure is about the same (its
+     table kept whole) and shipping is smaller (14,913 -> 13,816). */
+  ['.claude/rules/bug-check.md',         0,   85],
   /* 60 -> 100, 23 Sep 26 ([DOCS-GUARD] step 1). The file had ALREADY grown to 95 with the ceiling
      unmoved — the D53 "read it before you ask him anything" rule, a genuinely live rule — and
      nothing noticed, because this gate ran nowhere. Raised to what is true plus a little room,
@@ -117,16 +125,16 @@ const FILES = [
      ruling overwrites another is a live rule every session must carry, the moment a ruling is heard. 145 -> 160,
      28 Sep 26 (owner, D390): how a ruling is read and filed now that each loads as one line — open its full row
      before acting on its detail; search the full-text folder with the shell — is a live rule every session carries. */
-  ['.claude/rules/record-decisions.md',  0,  160],
+  ['.claude/rules/record-decisions.md',  0,   93],   // 160 -> 93 (8 Nov 26): a checklist of 84 lines (D1735) - the head of the bug-check row above
   /* plain-language 60 -> 70 and shipping 110 -> 115 (16 Oct 26, the documents tidy after pull request 519 went live): both
      crossed with his rulings of 15 Oct 26 on when the preview link, the pictures and the handoff prompt come (D904-D906)
      and that pictures come whenever anything on screen is talked about (D921) - live rules every chat must carry before
      any project file is read; none is trimmed (D136, D141). Room for the next, not a target. */
-  ['.claude/rules/plain-language.md',    0,   70],
+  ['.claude/rules/plain-language.md',    0,   65],   // 70 -> 65 (8 Nov 26): a checklist of 60 lines (D1735) - the head of the bug-check row above
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
-  ['.claude/rules/doc-structure.md',     0,  100],
-  ['.claude/rules/shipping.md',          0,  135],   // 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
+  ['.claude/rules/doc-structure.md',     0,  106],   // 100 -> 106 (8 Nov 26): a checklist of 96 lines, wrapped (D1735) - the head of the bug-check row above
+  ['.claude/rules/shipping.md',          0,  172],   // 135 -> 172 (8 Nov 26): a checklist of 156 lines, wrapped, fewer bytes (D1735) - the head of the bug-check row above; 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
