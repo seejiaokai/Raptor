@@ -4595,3 +4595,10 @@ ones.** What changes in the bullets below, each left as written:
 - Pinned by `engine/inputtitle.test.ts`, `engine/scshift-inputs.test.ts` (a title's words decide nothing; two requests of
   one name), `engine/accept.test.ts`, `engine/dutyrest.test.ts`, `ui/inputtitle.test.tsx`, `ui/inputtitle-row.test.tsx`,
   `ui/latepub.test.tsx` (the published day), `state/demostamps.test.ts`.
+
+## Where a day with nothing entered starts (D1786, 8 Nov 26)
+
+His ruling, not yet built: a flyer's line with no in-time or rally entered starts his day at take-off less the default
+rally (VCONF.reportLead) for his long day and his Insights hours, as it already does for his OIL — one start, not the step.
+Today `events.ts` sets the report to the in-time or else the step, so `validate.ts`'s work span never reaches its own
+take-off-less-rally fallback. The build and its checks: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md` (group 4); the Logic page's words follow.

@@ -148,6 +148,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 
 | # | Date | The rule |
 |---|---|---|
+| D1787 | 8 Nov 26 | On a desktop the Inputs list's "+ Input" stands at the right end of its row, as "+ Medical" does, and while its window is open the list makes room for it where Remarks keeps a usable width — about 1340 wide and up, Name, Start and End narrowing first — and narrower, the window covers the list as today; the phone is unchanged. |
 | D1721 | 6 Nov 26 | The Inputs list's cards keep their top line's right-hand marks as they are today — LATE, the document and the hours each standing just before what follows them; the three-column layout of D1305 and D1310 is not built. |
 | D1719 | 6 Nov 26 | On a desktop the Inputs List's column headings sort from the keyboard as built — Tab reaches each, Enter or Space sorts as a click does, and the heading the keys are on wears the app's cyan ring inside its cell; a mouse click draws no ring. |
 | D1708 | 5 Nov 26 | Where the Inputs calendar's top row is too narrow for one line, the filters and the gear start the second line at its left, together, so the gear is never alone and never under an open input window; where the row holds one line they stay at its right end (D1702). |
@@ -230,7 +231,7 @@ stored — `raptor-port/docs/data-schema.md`; the files — `raptor-port/docs/fi
 | D768 | 12 Oct 26 | A cancelled input keeps its place in the day's order on the Inputs calendar — it is not sorted last, on a phone or a desktop. |
 | D763 | 11 Oct 26 | Who is in an input is changed only by whoever filed it or by a scheduler: a person who is in a shared input he did not file does not add anyone to it — he may always take himself out. |
 | D732 | 10 Oct 26 | Escape while the day's title is being typed puts the title back as it was and leaves the day open; a second Escape closes the day — the same manners as a planning note's box (D731 (9)). |
-| D729 | 10 Oct 26 | The design vet's five changes to the Inputs calendar and list are approved as drawn: the list's own add form becomes one "+ Input" button; the desktop list says "By Saber" only where someone else filed it; the window's instructions go; a shared bar leads with its count and a timed bar is lighter; the settings and small words are shorter. |
+| D729 | 10 Oct 26 | The design vet's five changes to the Inputs calendar and list are approved as drawn: the list's own add form becomes one "+ Input" button; the desktop list says "By Saber" only where someone else filed it; the window's instructions go; a shared bar leads with its count and a timed bar is lighter; the settings and small words are shorter. — changed by D1787 |
 | D728 | 10 Oct 26 | On an input's card the automatic "till <date>" is left out of the remark — the card's corner already says it; and later, as its own job, the app stops writing "till <date>" into remarks and every screen prints it from the input's own dates. |
 | D727 | 10 Oct 26 | On the desktop Inputs list a shared input names everyone in it — never "Drifter +3" — and the kind keeps its pill there (drawing A). |
 | D725 | 10 Oct 26 | On a phone the days of the calendar in an input's window are made bigger — a finger's size, as the inputs list's pencil calendar had. |

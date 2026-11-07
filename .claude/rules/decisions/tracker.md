@@ -34,6 +34,8 @@ carried-over traps — `raptor-port/docs/tracker/known-gaps.md`; what it stores 
 
 | # | Date | The rule |
 |---|---|---|
+| D1790 | 8 Nov 26 | When the Tracker's marking window would not fit below the event tapped, the chart slides the event up under the tabs with its own smooth scroll, only as far as needed, and stays there after Close, and the window opens whole below it, on a phone and a desktop; an event too near the chart's end to slide falls back to the page's option B. |
+| D1791 | 8 Nov 26 | On a phone the ✕ in the Tracker's Find strip empties the box and puts Find away — the keyboard down, the tabs back — as Escape does, its hover words "Clear the search and close Find"; a pick from the list puts Find away on purpose; on a desktop nothing changes. |
 | D1705 | 5 Nov 26 | The Tracker's typed marks become drawn line icons, as drawn: each tool of Edit chart layout takes a mark in the app's line style, Merge and Unmerge keep their words alone, and the lull's Copy to… takes the copy mark, its × the drawn ✕. |
 | D1660 | 5 Nov 26 | The Tracker's "● saved" shown in a browser that refuses to keep anything is drawn for him with the Tracker's next batch, not now: a fix adds words on screen, so a mock-up comes first (D1625). |
 | D1564 | 2 Nov 26 | On his iPhone the Tracker bar's student, course and year dropdowns draw their words whole: the cut words seen in the test browser were that browser's own drawing, not the app's, and nothing is changed. |
