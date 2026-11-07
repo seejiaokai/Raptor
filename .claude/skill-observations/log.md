@@ -3885,3 +3885,29 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The brief told the side chat to cut its branch from `main` and then read the handoff file's block for the night. That block had been written on the coordinating chat's own branch and was not on `main`, so the fresh branch did not have it; the side chat found it only by searching every remote branch's copy of the file.
 **Suggested improvement:** In the overnight guide's step that starts side chats, the brief names the branch that carries the night's block (or the block is pushed to `main` first, or pasted into the brief).
 **Principle:** A pointer handed to a fresh worker must resolve from where that worker starts; state written on one branch is invisible to a worker started from another.
+
+### Observation 848: A tag on a ringed part was cut off by a panel that hides overflow, and the script ran clean
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the board helper's drawings; numbered past 846, which another open branch holds.
+**Skill:** brainstorming (the reference `mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture (the method's step 3)
+
+**Issue:** Twice in one night a plain-words tag drawn on a ringed part (its own `::before`) was clipped by a parent that hides what overflows it — the board's OIL Earn bar, and a flying wave's panel at 821 wide. The script reported no error; only looking at the picture showed the cut tag.
+**Suggested improvement:** In the method file's traps, and in the tag helper of the drawing scripts: before the picture, check that each tag's box lies inside every ancestor whose overflow is hidden or clipped, and refuse the picture (or move the tag) when it does not.
+**Principle:** A mark drawn inside a component inherits its clipping; a check that the mark is wholly visible belongs in the step that draws it, not in the eye afterwards.
+
+### Observation 849: Two headless-browser traps when picturing a scroll frame by frame
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the Leave War helper capturing a one-frame blink of a frozen header.
+**Skill:** New skill candidate: a "frame-by-frame capture" note in the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** capturing motion as a series of still frames
+
+**Issue:** (1) The browser's synthesized scroll gesture moved nothing on the page in headless mode; raw touch events did. (2) The developer-protocol screenshot's clip is in page coordinates, so on a scrolled page the scroll offset has to be added or the crop lands in the wrong place.
+**Suggested improvement:** Add both to the walk-scripts guide's traps, with the working recipe (raw touch events for a phone scroll; clip plus scroll offset).
+**Principle:** A capture tool's defaults are tuned for a page at rest; a scroll under test needs the gesture and the coordinates checked against what the picture shows.
