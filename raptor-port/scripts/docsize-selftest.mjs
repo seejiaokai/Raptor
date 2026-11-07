@@ -509,7 +509,12 @@ scenario('a seam file missing one seam path the old probe did not use', true, c 
 scenario('an area file still loading on a seam path the old probe did not use', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/QualsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/QualsPage.tsx' })
 scenario('a seam file missing one of its area file\'s own paths', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/docs/leavewar/**').replace('its architecture', 'rulings')) }, { mustSay: 'does not load on raptor-port/docs/leavewar/**, a path of its area file' })
 scenario('a seam file gone once its area file no longer loads on its seam', true, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**').replace('its architecture', 'rulings')), { mustSay: '.claude/rules/seams/leave-war.md is missing' })
-scenario('…but no seam file while the area file still loads on every seam path (today)', false, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS).replace('its architecture', 'rulings')))
+{ /* …but no seam file while the area file still loads on every seam path (today) — read directly: an area file written
+     into the test repo would fail the gate's other checks (its map row, its tripwire), not the seam check */
+  const area = seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS).replace('its architecture', 'rulings')
+  const got = RLs.seamProblems([], f => (f === LW_AREA ? area : '')), ok = !got.length; if (!ok) failed++
+  console.log(`${ok ? 'PASS' : 'MISS'}  …but no seam file while the area file still loads on every seam path (today)${ok ? '' : ` — got: ${got[0]}`}`)
+}
 scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
 scenario('a seam file whose area file still loads on the seam', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx')); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/InputsPage.tsx' })
 scenario('a seam file nobody registered', true, c => c.write('.claude/rules/seams/other.md', seamFile('raptor-port/src/other/**')), { mustSay: 'a seam file nobody registered' })

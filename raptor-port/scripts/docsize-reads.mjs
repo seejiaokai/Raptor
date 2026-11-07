@@ -61,7 +61,7 @@ const dirOf = f => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
 
 /* the part of a file a read takes. A heading is matched by its start, then a boundary — never a letter or digit — so
    "## 1." or "## 1" never takes "## 10." (the step-1 reader's question 4) */
-const headed = (l, s) => l.startsWith(s) && !/^[p{L}p{N}]/u.test(l.slice(s.length))
+const headed = (l, s) => l.startsWith(s) && !/^[\p{L}\p{N}]/u.test(l.slice(s.length))
 export function partOf(text, { upTo, sections } = {}) {
   const ls = linesOf(text), inF = RL.fencedFlags(ls), level = i => { const m = !inF[i] && /^(#{1,6})\s/.exec(ls[i]); return m ? m[1].length : 0 }
   if (upTo) { const at = ls.findIndex((l, i) => !inF[i] && headed(l, upTo)); return at < 0 ? { text: ls.join('\n'), missing: [upTo] } : { text: ls.slice(0, at).join('\n'), missing: [] } }
