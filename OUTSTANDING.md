@@ -1627,7 +1627,8 @@ ask him with the next change to the checks; the agent's recommendation: yes, onc
 "afterwards").
 
 ### [RULING-HOME-HOOK] Name the rulings whose home a file is, at the moment it is edited — OPEN (Fable's red team of [RULINGS-SLIM], 28 Sep 26)
-**What:** once every ruling loads as one short line (D390), the guard that a chat opens the full row before acting on its
+**What:** once every ruling loads as one short line (D390) — or, in an area converted to a page, as a statement of it
+(D1735) — the guard that a chat opens the full row before acting on its
 detail is a rule. Fable's stronger, structural form: a hook on Edit / Write that searches the full rows'
 "Where it lives now" cells (`.claude/decisions-full/`) for the path being edited and tells the chat "this file is the home
 of D320, D323, D328 — open their full rows first". **Open before building:** which hook event can put words in front of

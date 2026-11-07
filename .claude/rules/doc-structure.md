@@ -3,7 +3,7 @@
 **Owner, 24 Sep 26 — D140:** *"read only what's applicable for the job automatically and knows how to navigate …
 new info going into the repo will follow this structure automatically … so that I don't need to do another
 optimisation in the future or spring cleaning."* **D141:** no line targets — the test is whether a block is NEEDED
-where it sits, organised and written clearly. **D138:** a move never rewords; a rewrite is checked for meaning.
+where it sits, organised and written clearly. **D138:** a move never rewords; a rewrite is checked for meaning. The rulings' full text is a searched tier (D390), and each area converts to a page of how it works now (D1735).
 The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is its short, always-loaded form.
 
 ## What a chat reads, and when
@@ -13,12 +13,12 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
   `raptor-port/` is opened; most of its rules are ONE line, each naming its full text in `raptor-port/docs/guide-full.md` (D391).
 - **At the start of a chat:** `HANDOFF.md` — where things stand (`## Now`, a block per chat) and what is next.
 - **By itself, per area:** `.claude/rules/decisions/scheduler.md`, `leave-war.md`, `oil.md`, `tracker.md`,
-  `people-accounts.md`, `it-flow-guide.md`, `inputs.md` (the Inputs pages — D802), `design.md` (the screen-design rulings — how a screen looks and behaves, loaded with screen work, D1554) — each area's rulings, settled decisions and architecture — load when a matching file is opened
+  `people-accounts.md`, `it-flow-guide.md`, `inputs.md` (the Inputs pages — D802), `design.md` (the screen-design rulings — how a screen looks and behaves, loaded with screen work, D1554, D1735) — each area's rulings, settled decisions and architecture — load when a matching file is opened
   **with the Read tool**. A shell read (`cat`, `grep`) does not load them, and neither does planning before any file is
   open: **before planning or editing in an area, open its file yourself** — People & accounts for any work on
-  accounts, sign-in, Admin → Users, Quals, one-door, posting in or out, archive, restore or delete (D390). A brief for
-  ASTRA names the area files the change touches and their full-text files — Codex loads none of this by itself (D140).
-- **A ruling loads as one line; its full row does not (D390).** Before acting on a ruling's detail or asking him about
+  accounts, sign-in, Admin → Users, Quals, one-door, posting in or out, archive, restore or delete (D390, D1735). A brief for
+  ASTRA names the area files the change touches and their full-text files — Codex loads none of this by itself (D140, D141).
+- **A ruling loads as one line — in an area converted to a page, as a statement of its page; its full row does not (D390, D1735).** Before acting on a ruling's detail or asking him about
   it, open its full row in `.claude/decisions-full/` — `grep -h '^| D149 |' .claude/decisions-full/*.md` (the shell;
   the Grep tool hides a long row).
 - **When the job needs it:** the reference doc the map names. **Never whole:** an archive, a full-text rulings file or the guide's full text —
@@ -29,7 +29,7 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 ## Where a new fact goes — one home each
 | It is… | Its home |
 |---|---|
-| a ruling — a decision, preference, correction, "leave it", "no" | one full row at the top of its area's rulings table, the moment he says it; `backlog-archive.mjs --rulings` moves the row to `.claude/decisions-full/` and leaves its short line (`record-decisions.md`, D390) |
+| a ruling — a decision, preference, correction, "leave it", "no" | one full row at the top of its area's rulings table, the moment he says it; `backlog-archive.mjs --rulings` moves the row to `.claude/decisions-full/` and leaves its short line — in an area converted to a page, the page's line is rewritten or added instead (`record-decisions.md`, D390, D1735) |
 | an open job, a found-not-fixed, a deferral, a question to put to him later | an `OUTSTANDING.md` item — the ONE backlog — and a line in its priority list |
 | how a rule or a surface behaves (a contract) | `engine-rules.md`, `ui-contracts.md`, `feature-impact.md`, `performance.md`, `data-schema.md` (in `raptor-port/docs/`) |
 | a rule EVERY task needs, whatever the area | an unscoped file under `.claude/rules/` (a general ruling: `decisions/how-we-work.md`) — `raptor-port/CLAUDE.md` loads only once a `raptor-port/` file is opened, so it carries the project-side copy or pointer, never the only one |
@@ -46,30 +46,30 @@ The full policy and the tiers: `raptor-port/docs/doc-budget.md`. This file is it
 
 ## When it leaves — moved whole, never deleted, never reworded
 - A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`
-  after its lasting facts have a pointer in a live doc (D29).
-- A **replaced ruling, one a later ruling restates in full (D971, a fresh reader checking each), or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136) —
-  its mark written in its full row in `.claude/decisions-full/`; the command drops its short line (D390).
+  after its lasting facts have a pointer in a live doc (D29, D137).
+- A **replaced ruling, one a later ruling restates in full (D971, a fresh reader checking each), or a spent one-off permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136, D137, D1735) —
+  its mark written in its full row in `.claude/decisions-full/`; the command drops its short line, and on a page every line citing it is rewritten first (D390, D1735).
 - A `## Now` **block whose work has merged** → removed at the next handoff, once its open residue is filed.
 - A **passage a newer ruling supersedes**, in a file every chat reads → moved whole to `raptor-port/docs/archive/` IN
   THE SAME CHANGE, leaving the new rule and a one-line pointer (newest-instruction-wins says fix the stale text; this
   says where the old text goes).
-- **Anything no longer needed where it sits** (D141) → moved whole by `… backlog-archive.mjs --move` (exact anchors,
+- **Anything no longer needed where it sits** (D141, D390, D1735) → moved whole by `… backlog-archive.mjs --move` (exact anchors,
   byte for byte, a one-line pointer naming the destination) to its home above. `node raptor-port/scripts/docsize.mjs
   --moves` then lists what left and did not arrive — the rewrites a reviewer must read.
 
 ## In his workflow
 He works until the context is full, then hands off to a fresh chat; he seldom compacts; he merges only when happy,
-on his "merge live"; he sometimes runs two worktrees in parallel and merges both (D140).
+on his "merge live"; he sometimes runs two worktrees in parallel and merges both (D140, D141, D390, D1735).
 - **The handoff** is the step that matters: the session-handoff skill rewrites this chat's `## Now` block, files
   what is open, removes merged blocks, and gives him a ready-to-paste opening line that names `HANDOFF.md` and the
-  branch, and Remote Control is on in the new chat (D1195 — the app's setting already connects it; where it is off, the new chat switches it on). **He picks nothing — he only pastes (D975, 17 Oct 26, replacing D368): the new-chat screen has no branch or
+  branch, and Remote Control is on in the new chat (D1195 — the app's setting already connects it; where it is off, the new chat switches it on). **He picks nothing — he only pastes (D975, 17 Oct 26): the new-chat screen has no branch or
   worktree picker, so the outgoing chat releases its branch as its last step and the opening line switches the new chat
   to it, with what to do if the switch is refused** — a new job: level with `main`; an unmerged branch continuing: that
   `claude/<name>` branch; a just-merged branch: never. Compaction, if it happens, is the same: persist first.
 - **Unattended runs (D596, D667, D766)** — when he leaves a job to run while he is asleep or away: moved whole to `raptor-port/docs/doc-budget.md` §5 (D1556); the overnight guide carries the same rulings.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
-- **The Claudex loop** (Opus 5.5 builds; Astra reviews, Sol 6.1 second where two readers are required, Fable on call only — D67, D590): plans and review logs are tier-3 docs (the
+- **The Claudex loop** (Opus 5.5 builds; the code read a fresh, blind Opus read, Astra and Sol 6.1 only on his call, Fable on his call only — D67, D353, D590, D601, D790, D903, D1734, D1738, D1739): plans and review logs are tier-3 docs (the
   table above); the ripple walk reads `feature-impact.md`.
 
 ## The check that keeps it
@@ -78,5 +78,5 @@ a lost or doubled backlog item or ruling, a rulings map out of step, a misfiled 
 root outside its short list, a document outside `raptor-port/docs/`, an always-loaded rules file nobody registered,
 two `## Now` blocks for one branch, a new reference doc no map names), and `HANDOFF.md` losing its shape — a block's
 `<!-- /now -->`, or one of `## Now`, `## Next, in order`, `## Gate baseline` (each once, in that order). Each always-read file also has a size
-TRIPWIRE (D141): crossing it means "move what does not belong here to its home", never "cut to a number" — and a
-change that touches `raptor-port/src` never trims a document (D29).
+TRIPWIRE (D141, D390, D1735): crossing it means "move what does not belong here to its home", never "cut to a number" — and a
+change that touches `raptor-port/src` never trims a document (D29, D137).
