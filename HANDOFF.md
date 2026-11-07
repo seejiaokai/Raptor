@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/rules-diet-step-4-7b92cb -->
+### `claude/rules-diet-step-4-7b92cb` — chat 2: the rules diet's step 4, part 1 (the general rulings as a page); written 7 Nov 26 — verify before use
+- **Built (commits 2cf3fcacc, 40a7f2711):** `.claude/rules/decisions/how-we-work.md` is a page (the v3 sample brought up to date with D1735–D1744); ten spent rulings archived (D86, D602, D832, D972, D973, D974, D1556, D1566, D1659, and D1736 — spent by its own text once steps 1 and 2 landed; told to him); D136 kept live (D1735 narrows it); the five always-loaded files got 42 citations the page shape's checks require (no rewording); the pointers in `AGENTS.md`, `raptor-port/CLAUDE.md`'s map row and `DECISIONS.md`'s head; tripwire 61000 → 25000. `docsize` OK. `docsize --reads`: start 42,767 → 28,942 tokens; each job about 4–5% less (Leave War 326,028 → 312,203).
+- **In hand:** the account by requirement (`raptor-port/docs/superpowers/briefs/2026-11-07-rules-diet-step4-account.md`, written by a helper) → its gaps fixed → the two blind reads (D1739), brief `…/2026-11-07-rules-diet-step4-read-brief.md`: Astra by `codex exec -m gpt-6-astra -s read-only -c model_reasoning_effort=high "Read and follow the brief at <path> exactly. Your final message is the report it asks for." < /dev/null`, and a fresh Opus reader (Agent) — reports saved as `…-step4-read-astra.md` / `…-step4-read-opus.md`; every finding checked and fixed → a step-4 section in the plan → pull request (notes only, but his "merge live" — D1737; Auto-fix off) → report to him with "merge live?".
+- **Left for part 2 (chat 3):** the five always-loaded files as checklists (plan §3; stories moved whole to `raptor-port/docs/guide-full.md` by `--move`), each with its account and both readers; `codex-guide.md` needed no change.
+- **Parallel:** chat 1's pull request 661 adds D1745 to `how-we-work.md` — when it merges, bring `main` in (`git merge --no-commit --no-ff origin/main`, then `backlog-archive.mjs --rulings --merge`) and state D1745 under "The platform and the database". Chat 1 was told (D302).
+- **Rulings:** none new this chat.
+<!-- /now -->
 <!-- now:claude/merge-at-once -->
 ### `claude/merge-at-once` — merging at once on his word (D1742), and both his allowances used up by Mon 9 Nov 26 19:00 (D1743); written 7 Nov 26, 21:55 — verify before use
 - **Live today:** the rules diet's steps 1–3 (pull requests 656, 657, 658); the start-of-chat size item closed (D1741, pull request 659).
