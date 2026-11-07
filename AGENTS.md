@@ -1,6 +1,6 @@
 # AGENTS.md — for Codex working in this repo
 
-**Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds; Codex is called as the REVIEWER (Astra the standing reviewer, first of two, D1770; Sol 6.1 second only on his call, otherwise the fresh, blind Opus reader — a changed working guide too, D1761) and BUILDS only on his word, each time. The full arrangement, and how Codex reviews and builds: `raptor-port/docs/codex-guide.md` — read it before any review or build.
+**Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds; Codex is called as the REVIEWER (Astra the standing reviewer, first of two where two are required, D1770; a fresh, blind Opus read of finished code always beside his, D790; where two are required, Sol 6.1 second only on his call, otherwise the fresh, blind Opus reader — a plan's red team and a changed working guide too, D1760, D1761) and BUILDS only on his word, each time. The full arrangement, and how Codex reviews and builds: `raptor-port/docs/codex-guide.md` — read it before any review or build.
 
 This file is a bridge: it holds no rules of its own beyond the short list below — it tells you which files carry them.
 **Nothing in this repo loads by itself for you. Open what is named here, with your own reads, before you plan, review
