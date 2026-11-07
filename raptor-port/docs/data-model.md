@@ -53,6 +53,15 @@ table list may be in any format a person can read, names anything that says what
 pick when the tables are made; §9's day lock (rule 8, §12 question 8) was designed with one plug-in and is redesigned for that platform
 when the lock is built.
 
+**The IT side's written answers, 8 Nov 26 (`OUTSTANDING.md` `[IT-QUESTIONS]`; at the database step this list is first built
+in his own test account — his D1749):** the table list goes to them as a `tables.json` in their kit's format, built with the
+same kit; they have ONE production environment for code apps, set the short code (prefix) themselves and build their tables
+exactly from the `tables.json` we finally send — our test tables are not carried over; access to the app is one user
+security group with basic access, and who may do what is the app's own roles, checked by the app — database-level rights are
+theirs (§11 and §9 rule 8 carry what this changes, put to him); no outside connectors, only M365 services (Power Automate,
+Teams); unique keys and change tracking not confirmed (§9's change log has the fallback); large files in SharePoint with a link
+(Attachment); a flow runs by itself, owned by the unit's role-based account; auditing is on, its keeping theirs.
+
 ## 2. Design rules every entity follows
 
 | Rule | What it means in the schema |
@@ -722,6 +731,9 @@ App change: the drawer becomes a **shared** file store. The app keeps its
 synchronous in-memory read cache; the database step owns write-behind retry,
 durability confirmation, and referential integrity between row and file
 (section 7).
+**Where the file lives (the IT side, 8 Nov 26 — §12 question 2):** each environment has limited space, so large files go
+to SharePoint and this row saves the link (`storeRef`). Who may open a file there — every member (D211) — is set on the
+SharePoint library, not by this table; that, and whether the app may reach SharePoint itself, are still to ask them.
 
 ### LeaveWar
 
@@ -1000,6 +1012,9 @@ account is made; rights that may let him view other squadrons read only; a perma
 posts out (the Post out sheet's greyed "Transfer to Sqn"); and a day planned half in one squadron and half in another. For
 the IT side: every record carries its squadron, and who may read or change another squadron's rows is the database's own
 security (business units and security roles on Dataverse) — designed with him, with pictures, before the database step.
+**The IT side's advice, 8 Nov 26:** manage it by app role — a column naming the squadron and the app's own rules stopping
+one squadron editing another's; database-level rights are theirs and beyond our control. So the "database's own security"
+above becomes the app's roles in the design ([MULTI-SQN-DESIGN]), and the column stays on every record.
 
 ### Notice
 
@@ -1407,6 +1422,10 @@ D450–D452:
    but it cannot hand a day from one person to another (a take-over, an idle day) without a permission that would also
    let him save it, nor tell two tabs of one person apart — so the server check is required, not a fallback.* **The
    version check stays underneath:** a stale save is refused and reloaded, never silently overwritten.
+   *8 Nov 26 — the IT side's answers 3, 8 and 9: no plug-in, one basic access for everyone, and who may do what is the
+   app's own roles; database-level rights are theirs. So the database cannot itself refuse a save from someone who does
+   not hold the day; the app holds the lock, and the version check underneath is the database's own refusal only if a
+   code app's save can carry the row's version (to prove in his test account, D1749). Put to him 8 Nov 26.*
 9. **Nothing but the holder writes a day; everything else that changes what a day shows is worked out on read from its
    own table** (Astra 4, Fable 4 and 7 — Open question 9's recommendation, now the design). The working-out is applied
    to the day's working copy when it loads and at every check, BEFORE the comparison with the issued version — that is
@@ -1509,7 +1528,10 @@ and redraws once — never a half state no command produced. One request per che
 batch needs no re-read — its versions came back with its changeset. When the token has expired (a screen away too
 long), the screen re-reads what it shows. Old batches are purged after the token's lifetime. **Change tracking is switched on for `ChangeBatch`** (a table setting, off by default); the
 environment's change-tracking retention sets how long a token lives and is the purge age of old batches (round 3,
-Fable 2). A "slow down" reply (429) is obeyed. Every write the app makes goes through the one adapter, so every write has its batch; a bulk load by
+Fable 2). *8 Nov 26 — the IT side are not sure change tracking can be switched on, and think not (their answer 5):
+until it is proven in his test account (D1749), the check reads `ChangeBatch` by an ordinary query for rows newer than
+the last one it saw (by `committedAt`, with a small overlap, dropping batch ids already seen) — still one small request
+when nothing changed. Their caution stands: a patchy connection must never set off a flood of re-reads or re-sends.* A "slow down" reply (429) is obeyed. Every write the app makes goes through the one adapter, so every write has its batch; a bulk load by
 the technical team must write batches too, or screens see it only on reload. The Leave War's OIL pass and the sync
 derivations read the same log.
 
@@ -1550,6 +1572,11 @@ asked for access, and the admin's guest switch is on (OFF by default): he reads 
 Dataverse terms: security roles, one **business unit** (single tenant — one squadron, one environment, no
 cross-squadron rows), **row ownership** by the person's `User` where the own-row rule applies. C R U D = create, read,
 update, delete (delete is the soft delete throughout).
+*8 Nov 26 — the IT side's answers 3, 8 and 9:* access to the app is one user security group from the M365 directory,
+giving basic access; who may do what is the app's own roles, controlled inside the app; database-level rights are the
+PP CoE's, beyond our control. So this table is held by the app's own checks (the page, the write path, the commit gate —
+`src/state/perms.ts`), not by Dataverse security roles, and "The server enforces, the browser mirrors" below does not hold
+as written. Put to him 8 Nov 26, with D1653.
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
@@ -1630,7 +1657,8 @@ admin team; round 3, Astra 3: a member edits his own row, which an organisation-
 privilege on the store (a Dataverse security role) and a check at the API's
 write path; the browser keeps its `canEditSched` / `canEditRow` / role
 checks for feedback only, and a screen that lets a member try something the
-role refuses is a bug in the mirror, not a hole. **Retention** (placeholder
+role refuses is a bug in the mirror, not a hole. *(8 Nov 26: the IT side keeps database-level rights for itself and
+advises the app's own roles — see the note at the head of this section; put to him.)* **Retention** (placeholder
 until the team answers Open question 4): tombstoned rows and the `EditLog`
 are kept for a period the squadron sets, then purged by a scheduled job;
 `Person`, `Amendment`, `AmendmentRetraction` and `IssuedSignoff` are never purged.
@@ -1639,10 +1667,13 @@ are kept for a period the squadron sets, then purged by a scheduled job;
 
 1. **Dataverse table naming and publisher prefix** — the schema names above
    are logical. What prefix? (The platform's own `createdby` / `modifiedby`
-   / `versionnumber` columns are used as-is — section 2.)
+   / `versionnumber` columns are used as-is — section 2.) **ANSWERED 8 Nov 26:** the PP CoE sets the short code when it
+   creates the tables from our `tables.json`; names are lowercase letters and digits in their kit's format. To ask: the
+   code early, so his test tables use the same one and the app's link to the tables does not change.
 2. **File store** — SharePoint document library, Dataverse file column, or
    Azure Blob? It decides what `Attachment.storeRef` holds and who enforces
-   the 8 MB cap.
+   the 8 MB cap. **ANSWERED 8 Nov 26:** Dataverse by default, but space is limited — large files in SharePoint, the
+   link saved (`Attachment`). Who may read them there: still to ask.
 3. **Auth provider** — Entra ID is assumed. How is a signed-in principal
    matched to a `Person` on first sign-in: by callsign, by an admin mapping
    step, or automatically by email? **ANSWERED by the owner, 25 Sep 26 (D165): an
@@ -1653,7 +1684,8 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    compliance record or an operational convenience? (Who may read it is settled: admins and members, a medical change in
    full — D169, D211; each person's own "seen" is `EditLogSeen`, §11.) **And `EditLog.seq` is yours (30 Sep 26):** the
    store's own rising number, assigned as each line is saved; until then the app orders the log by `(at, lineId)`, and
-   "seen" and an account's `seenFrom` are positions in that order — please confirm you can assign it.
+   "seen" and an account's `seenFrom` are positions in that order — please confirm you can assign it. **8 Nov 26:** the
+   platform's audit is on and managed by the PP CoE; how long it — and this log — are kept is still to ask (D351).
 5. **Is `Attempt` history required from day one?** Two routes: build the
    table at stage 1 and back-fill it from the existing `{ g, f, fd, d }`
    summary (one pass, dates present for most rows), or keep the summary
@@ -1675,7 +1707,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    tracking gives `since(changeSeq)`. A thin API only if the change feed
    needs it: the cross-module derivations (section 8) and the row merge at
    stage 2 are the two places a server-side step might be simpler than a
-   client replaying the feed.
+   client replaying the feed. **8 Nov 26:** direct — no plug-ins and no outside connectors, so nothing can sit in front;
+   and the database's rights are one basic access for everyone (§11's note), so the version check is what the store
+   itself enforces, if a code app's save can carry it (to prove in his test account, D1749).
 8. **The day lock's one server-side check (29 Sep 26 — the lock must be
    firm: D450).** Row ownership does most of it (the holder owns the
    `ScheduleDay` row; every scheduler is in the free team; Write and Assign
@@ -1691,7 +1725,9 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    `ShareToPreviousOwnerOnAssign` to false and every relationship from
    `ScheduleDay` to Referential, Assign = Cascade None; make the free team an
    owner team with Read on `ScheduleDay`; run the check as SYSTEM; and switch
-   change tracking on for `ChangeBatch`.
+   change tracking on for `ChangeBatch`. **Overtaken 7–8 Nov 26:** no plug-ins (7 Nov), no database-level rights of ours
+   — the app's own roles (8 Nov, answers 8 and 9) — and change tracking not confirmed (answer 5); so neither row
+   ownership nor a server check is ours to set, and the lock is held by the app (rule 8's note; put to him, D450).
 9. **A member's input, a deleted person, a request handed on — worked out on
    read (29 Sep 26; the design now, section 9 rule 9).** Nothing but a day's
    holder writes the day: a member writes only his `Input`, a delete only

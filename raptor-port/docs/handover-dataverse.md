@@ -11,6 +11,16 @@ tables settle", this paragraph wins. What we still need from you is smaller: an 
 written in, your naming rule and prefix, and the limits of the platform (no plug-ins or Custom APIs today; Dataverse
 functions and Power Automate flows; what the 2,000-row reading limit is).
 
+**ANSWERED 8 Nov 26 — your written reply to our 12 questions (`OUTSTANDING.md` `[IT-QUESTIONS]`):** you take our table
+list as a `tables.json` in your kit's format and build it with the same kit; the PP CoE has one production environment for
+code apps, sets the short code when it creates the tables, and builds them exactly from the `tables.json` we finally send —
+our own test tables, in his test account (his D1749), are for our testing only; access to the app is one user security
+group with basic access, and who may do what is the app's own roles, controlled inside the app — database-level rights are
+yours; no outside connectors, only M365 services such as Power Automate and Teams; large files in SharePoint with a link;
+a flow runs by itself, owned by the unit's role-based account; auditing is on and managed by you. Still to ask: your short
+code early, what basic access allows on the app's tables, Dataverse Functions, SharePoint from the app and who may read it,
+how long the audit is kept, how the unit gets a role-based account, and the first admin (item 8).
+
 ## What we agreed
 
 - **You design the tables.** Our documents are a proposal and an inventory,
@@ -72,8 +82,10 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
   roles and which role may create / read / update / delete which table.
 - Your answers to the open questions in `data-model.md` §12, in one line
   each:
-  1. the publisher prefix and naming convention;
-  2. where files live (SharePoint library, Dataverse file column, or Blob);
+  1. the publisher prefix and naming convention; **answered 8 Nov 26: the PP CoE sets it when it creates the tables —
+     please tell us early, so his test tables match;**
+  2. where files live (SharePoint library, Dataverse file column, or Blob); **answered 8 Nov 26: SharePoint for large
+     files, a link saved in the table — who may read them there still to settle;**
   3. how a signed-in person is matched to a `Person` row the first time — **answered by the owner, 25 Sep 26
      (D165):** by an admin mapping step. Everyone signs in with their own defence mail (Microsoft) account;
      the app's admin creates each `Person` (his callsign or name — ONE field, "Callsign/Name", D219 — initials,
@@ -90,7 +102,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
      all (the security group / environment roles) is set in your environment, not by the app;
   4. how long the edit log is kept and who may read it; **(owner, D351, 28 Sep 26): until then Admin → Data's "Clear edit
      history…" stays as it is (admin-only, two taps, permanent, leaving a dated line naming who cleared how much); your
-     retention rule decides whether it follows that rule or goes**;
+     retention rule decides whether it follows that rule or goes** — *8 Nov 26: auditing is on and managed by you; how
+     long it is kept still to ask*;
   5. whether the attempt-by-attempt training history is built from day one
      or after the first migration stage;
   6. whether a day of the flying programme is split into its rows from the start or later — **a week is
@@ -98,7 +111,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
      two schedulers on two days of one week must never write the same record** (`data-model.md` §9, the day
      lock, with its own two questions for you, Open questions 8 and 9);
   7. whether the app calls the Dataverse Web API directly from the Code App,
-     or a thin API sits in front of it;
+     or a thin API sits in front of it; *8 Nov 26: directly — no plug-ins or outside connectors, so nothing can sit in
+     front;*
   8. **the first admin of your empty tables** (`data-model.md` §12 q11, 30 Sep 26): a build setting naming his sign-in
      and person — or a `Person` you made — from which the app's first start makes his admin account, in one changeset;
      which you prefer, where app settings live, and which value sign-in hands the app.
@@ -125,6 +139,9 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
   old rights at once — in every open tab and on every device — so the server checks the CURRENT account and its
   role on every write, never a copy the app took when he signed in. Today's app cannot: its accounts live in one
   browser and its open tabs share nothing, so a change reaches only the next sign-in on that same browser.
+  *8 Nov 26 — your answers 8 and 9:* roles are the app's own, so it is the app that reads the CURRENT account and its role
+  from the tables before every save, on every device; removing a person from the app's security group — access to the app
+  at all — is yours.
 - **A person is never erased — a delete is a hidden mark** (added 27 Sep 26, `[POST-OUT-OUTCOMES]` — owner D287, D290,
   D297). A man who leaves flying for good is deleted: his `User` goes and his `Person` row is KEPT with the tombstone set
   (and the first day he is gone, `deletedFrom`) — invisible everywhere, his callsign free for someone new, never restored.
@@ -149,7 +166,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
    **CHANGED 7 Nov 26 (his D1749, and your answer that you take no solution files):** at the database step your own
    table-building kit builds the tables first in his test account, where the app is tested; then you get the tested
    table list in the kit's format and build the same tables with the same kit. The 2 Nov 26 recommendation below is kept
-   as it was.
+   as it was. **Confirmed 8 Nov 26 (your answers 1 and 4):** a `tables.json` in your kit's format, which you build with
+   the kit in your one production environment, with your short code; ours, in his account, are for testing only.
    **How the tables are built and handed over (the agent's recommendation of 2 Nov 26; its test held to the database step,
    his D1571):** a re-runnable setup script, written from `data-model.md`, builds every table in his own environment through
    Dataverse's Web API — each column's exact type and length, the links between tables, the unique keys — straight into a
