@@ -20,6 +20,8 @@ small code change that merely sits in an interface file: the skill's detector al
 **Open it before** designing, restyling, wording or reviewing anything a person sees — a screen, a window, a note, a
 button's label — and before a look-and-feel review. It does not replace `ui-contracts.md` (how each surface behaves and
 its measured sizes) or `performance.md` (what may never be slowed): it is the judgement that sits on top of them.
+**Open it by section** (his D1735, 7 Nov 26): `.claude/rules/ui-design.md` §Which part of the guide to open names the
+section for each kind of work; this head, §0 and §9 are read whole for every design job.
 
 *(D805–D809, D812 and D813 were recorded on the Inputs batch's branch, pull request 497; their rows reach this branch
 when that one is live.)*

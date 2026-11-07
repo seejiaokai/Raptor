@@ -42,7 +42,8 @@ is the agent's job, answered out of §5.
 
 **Then, before executing anything:**
 
-1. **Open this file.** Not from memory — it changes.
+1. **Open this file — by its checklist, `bug-check-checklist.md`** (his D1735, 7 Nov 26), which names, step by step, the
+   section to open; every section that applies is read whole when its step comes. Not from memory — it changes.
 2. **Answer the eight questions in §5** against the actual change and **state the TIER out loud**:
    NONE / LOOK / WALK / FULL. If a question cannot be answered NO with a reason that could be
    written down, the answer is YES.

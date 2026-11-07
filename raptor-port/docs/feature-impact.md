@@ -8,6 +8,12 @@ things out."*
 This file is that record. It is not a list of features — it is the **map you
 check a feature against before you build it and again before you call it done.**
 
+**How to read it — by section (his D1735, 7 Nov 26):** first §3, the per-feature checklist, whole. Then go down §1's
+surfaces by name, out loud — `grep -o '^| \*\*[^*]*\*\*' docs/feature-impact.md` lists every one — and read in full
+the row of each surface the change touches; then the §2 flow of each kind of edit it makes; §4's funnels and
+drift-seams for each it writes through or crosses; and a dated section (the paragraphs under this title, the sections
+after §4) when the change is in its subject. Unsure whether one applies: read it.
+
 **Schedule keyboard flow,4 Oct26 (D550–D556):** week contenteditable and Board
 native/shared text boxes → gesture-time current-day DOM route → native blur/change
 → existing schedule/input command writers, validation, marks and persistence.

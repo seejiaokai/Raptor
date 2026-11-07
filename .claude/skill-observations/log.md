@@ -3827,3 +3827,16 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In §Recommended activation setup, where the hook is described: if the hook prints text read from a file, strip control characters before escaping, and fall back to the short instruction when the text is empty or near the host's cap; test the hook on a missing, empty, oversized and control-character file, not only the normal one.
 
 **Principle:** A hook that feeds text to the agent fails silently at its edges — size caps and encoding — so it should fail open to a known-good minimal text, and its test cases must include those edges, not just the happy path.
+
+### Observation 843: A few lines of a reference doc read with the Read tool loaded a whole rulings file
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — editing pointer lines in the ripple map, the design guide and the project guide's full text
+**Skill:** session-handoff (context budgeting); New skill candidate: none
+**Type:** open-source
+**Phase/Area:** reading for an edit late in a long chat
+
+**Issue:** To edit two lines under the ripple map's title, the chat opened three lines of it with the file reader. The project's scoped rules load a rulings file whenever a matching file is opened with that reader, and the ripple map is on the scheduler rulings' paths, so about 45,000 tokens loaded for three lines, taking the chat from about 50% to 84% and forcing a handoff before the step's reads could run. A shell read (sed, grep) loads nothing.
+**Suggested improvement:** In the handoff and context guidance: before opening a file only to edit or peek at a few lines, check whether it sits on a scoped rules file's paths (the measure's layer J lists the known ones); if it does and that rules file is not needed for the job, take the lines with a shell read and make the edit by a small script or the editor after a shell read.
+**Principle:** A tool that loads context as a side effect should be chosen deliberately: for a small peek late in a long session, use the read path with no side effects.

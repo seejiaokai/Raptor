@@ -12,7 +12,7 @@ paths:
 
 **Loads by itself** whenever a file under `raptor-port/src/` or a mock-up is opened (words a person reads are written
 in the engine and the state files too, not only in the screens). Before designing, restyling, wording or reviewing
-anything a person sees, **open `raptor-port/docs/design-practices.md`** — the ONE guide (his rulings, then three outside
+anything a person sees, **open `raptor-port/docs/design-practices.md`**, by section as below — the ONE guide (his rulings, then three outside
 design skills' good practices in our own words; nothing installed whole). It is written first and interface jobs are
 judged against it — the calendar's design included (D813). A change that touches nothing a person sees needs none of this.
 
@@ -23,6 +23,14 @@ before building something new, `critique` or `audit` for a look, `clarify` for w
 before it is shown to him. It works ON TOP of the guide, never instead of it: where the skill's default meets this
 guide or one of his rulings, the ruling wins. NOT for a small code change that merely sits in an interface file (a
 fix to behaviour, a test, a comment) — the skill's detector already runs after every interface edit.
+
+## Which part of the guide to open (his D1735, 7 Nov 26)
+
+Each section whole, when the job does that kind of work. **Every design job:** the guide's head, §0 (what wins) and §9,
+his design lessons, whole (D941, D1417). **Words** a person reads: §1; to shorten words already on screen, §1a; to write
+new ones, §1b. **Anything opened, closed or typed in:** §2. **Placing or grouping:** §3. **A colour, mark or emphasis:**
+§4. **Motion:** §5; **a drag:** §5a. **Before anything built is shown to him:** §6. **A look at one component:** §7.
+**A look or review:** §8. Unsure whether one applies: open it.
 
 ## The short form — in force the moment this loads
 
