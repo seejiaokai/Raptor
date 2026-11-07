@@ -443,7 +443,7 @@
   "n": 23,
   "name": "stampForged: the other half's bid is not what a re-type replaces (M10)",
   "file": "src/state/perms.ts",
-  "find": "halvesOfCode(x.code).some(h => mine.includes(h))",
+  "find": "halvesOfCode(x.code).some(h => mine.has(h))",
   "put": "true",
   "tests": [
    "src/leavewar/m4decide.test.ts",

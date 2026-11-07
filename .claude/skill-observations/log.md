@@ -2793,6 +2793,11 @@ passes a "kept after reload" step from it passes by accident when the value happ
 **Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
 reset mode disables before reusing it.
 
+Met again 8 Nov 26 (`claude/rd-shell-state`, `scripts/handpass/rss1108-same.mjs`): the "Not saved" band's test switch
+`?savefail` (D1666) works only on the browser's store, so under `?fresh=1` the band never showed and the comparison pictured
+two identical screens with no band. Guard proposed: `scripts/drawcheck/lib.mjs` (or the walk's start helper) refuses a
+start address carrying both `fresh=1` and `savefail`, so the trap stops the script rather than passing in silence.
+
 ### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
 
 **Status:** OPEN
@@ -3950,6 +3955,20 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The night's plan named two readers for every job (a fresh, blind Opus reader and Astra). Job 4's helper ran only the Opus reader, said so in its pull request, and did not put the job on the reads-owed list; the coordinator accepted the report without comparing its readers to the plan, and the gap surfaced only at the morning check. Astra's read was then run in the morning.
 **Suggested improvement:** In Part 2, when a helper's report arrives, the coordinator ticks each reader the plan's block names for that job against the report before accepting it; a missing one is run then, or the job goes on the reads-owed list in the same change. Each job's brief lists its readers as a checklist the helper's report must answer one by one.
 **Principle:** A plan's named checks are verified against each result as it arrives, not at the end; a check the helper silently left out reads like a check done.
+
+### Observation 856: A key held down was never pressed by a keyboard walk — the reader found it
+
+**Status:** OPEN
+**Renumbered:** written as 850 on the board-keys branch; renumbered 856 when main came in on 8 Nov 26 (851 and 852 were live, 853 to 855 held by other branches)
+**Date:** 8 Nov 26
+**Session context:** the board-keys job of the night of 7–8 Nov 26 (`claude/board-keys`); numbered past the 849 another open branch holds
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`) — the walk of a keyboard change
+**Type:** open-source
+**Phase/Area:** §7 the walk; §7.11 lessons — the orders a keyboard walk presses
+
+**Issue:** Two keyboard walks (5 Nov and 7 Nov) pressed Enter, Space and the arrows once each and passed. The fresh code reader then asked what a HELD Enter does: a button pressed by Enter's key-down opens a menu and moves the keys onto its first pick, and the same key, still down, repeats on that pick and presses it — on the live app a held Enter on + Block added a duty block nobody chose. The walk could have found it in one step (Playwright's `keyboard.down` twice sends a repeat) but no list of orders named it.
+**Suggested improvement:** in the walk's orders for any change that moves the keys when a control is pressed (a menu that opens on its first item, a window that takes the keys), add "the key held down" beside "the key pressed once"; and in the design guide's §2 keyboard rule, that a repeated key never presses what the first press moved the keys onto.
+**Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.
 
 ### Observation 859: A sweep for what a new ruling leaves behind missed the guides outside a hand-picked list
 

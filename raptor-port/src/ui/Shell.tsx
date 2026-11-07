@@ -9,7 +9,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
-import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon } from './icons'
+import { CalIcon, XlsIcon, PdfIcon, HistIcon, HlIcon, SrchIcon, TalonMark } from './icons'
 import { isAdmin, me, mayViewAsMember } from '../state/perms'
 import { toggleChanges } from './changesopen'
 import { weekNew } from './changesmodel'
@@ -85,9 +85,10 @@ import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } 
    a changed setting is not flagged on the schedule); the #vBanner/#eBanner holders
    went with it. The Logic page's own strip still says how many settings differ. */
 
-/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
+/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26), and on 8 Nov 26 to ui/hlchips-model.ts — one definition,
    three surfaces (view week, edit week, board), the drift-seam doctrine. */
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the app's frame: the top bar, its tabs, the two schedule pages and the windows over them share one set of state, refs and effects; split, the hooks and the order their effects run in would move, on the frame every page sits in
 export function Shell() {
   useVersion()
   /* [GLOBAL-UNDO] §13 phase 2 — the Undo/Redo pair now reads the ONE timeline
@@ -371,29 +372,35 @@ export function Shell() {
          at a glance — both widths; View-only keeps the neutral dark. */
       <div ref={topbarRef} className={'topbar' + (page === 'editsched' ? ' editing' : '') + (pairOn ? ' has-undo' : '') + (saveFailed ? ' save-failed' : '') + (oilTop ? ' oil-waiting' : '') + (navFold ? ' nav-fold' : '')}>
         <button className="burger" id="burger" aria-label="Menu" onClick={() => { setDrawer(true); notify() }}><span></span><span></span><span></span></button>
-        <div className="mark">
-          <svg className="rglyph" viewBox="0 -2 60 64" aria-hidden="true"><path d="M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z" /></svg>
-          <span className="tx"><span className="k">142</span><span className="v">TALON</span></span>
-        </div>
+        <TalonMark />
         <nav className="nav" id="topnav">
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab drawn by the bar's own rule for links (`.nav a`), which a <button> would not take without restyling every tab; every test and walk finds the tabs as #topnav a[data-page] */}
           <a data-page="editsched" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'editsched' ? 'on' : ''} onClick={() => nav('editsched')} onKeyDown={navKey('editsched')}>Edit Schedule</a>
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="viewsched" role="button" tabIndex={0} className={page === 'viewsched' ? 'on' : ''} onClick={() => nav('viewsched')} onKeyDown={navKey('viewsched')}>View-only Sched</a>
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="inputs" role="button" tabIndex={0} className={page === 'inputs' ? 'on' : ''} onClick={() => nav('inputs')} onKeyDown={navKey('inputs')}>Inputs</a>
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="quals" role="button" tabIndex={0} className={page === 'quals' ? 'on' : ''} onClick={() => nav('quals')} onKeyDown={navKey('quals')}>Quals</a>
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="logic" role="button" tabIndex={0} className={page === 'logic' ? 'on' : ''} onClick={() => nav('logic')} onKeyDown={navKey('logic')}>Logic</a>
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="leavewar" role="button" tabIndex={0} className={page === 'leavewar' ? 'on' : ''} onClick={() => nav('leavewar')} onKeyDown={navKey('leavewar')}>Leave War</a>
           {/* the OCU progress Tracker (7 Sep 26) — a work tab for everyone,
               after Leave War; everyone edits there, only its File menu
               (Import / Export) is the admin's (owner's second word, 7 Sep 26 —
               tracker/role.js, written from resetSession) */}
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="tracker" role="button" tabIndex={0} className={page === 'tracker' ? 'on' : ''} onClick={() => nav('tracker')} onKeyDown={navKey('tracker')}>Tracker</a>
           {/* Help is for EVERYONE (owner, 25 Aug 26 — "allows anyone to type
               in Bug reports") — after the work tabs, before the admin-only
               tools tab */}
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="help" role="button" tabIndex={0} className={page === 'help' ? 'on' : ''} onClick={() => nav('help')} onKeyDown={navKey('help')}>Help</a>
           {/* the Admin tab sits LAST, always (owner, 23 Aug 26) — the tools
               tab after the work tabs; hidden for a member like the Edit tab,
               but the PAGE is the gate, not this attribute (AdminPage.tsx) */}
+          {/* eslint-disable-next-line react-doctor/prefer-tag-over-role -- a page tab, as Edit Schedule's above */}
           <a data-page="admin" data-admin="" hidden={!admin} role="button" tabIndex={0} className={page === 'admin' ? 'on' : ''} onClick={() => nav('admin')} onKeyDown={navKey('admin')}
             aria-label={waiting ? `Admin — ${waiting} waiting for access` : undefined}>Admin{waiting > 0 && <span className="navbadge" id="admWaitBadge">{waiting}</span>}</a>
         </nav>
@@ -554,7 +561,8 @@ export function Shell() {
           <ScheduleInsightsMenu page="viewsched" id="viewSched" />
           <span className="hlrow"><HlChips /></span>
           <div className="right">
-            <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign"
+            {/* eslint-disable-next-line react-doctor/no-placeholder-only-field -- every search box in the app is drawn as the week's, its words inside the box beside the magnifier (owner D1127, 21 Oct 26); a screen reader reads its name from aria-label */}
+            <div className="searchbox"><SrchIcon /><input id="searchV" placeholder="name / callsign" aria-label="Search by name or callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div>
           </div>
         </div>
@@ -631,7 +639,8 @@ export function Shell() {
                 icons when expanded (owner, 26 Aug 26); display:contents on desktop. */}
             <ScheduleInsightsMenu page="editsched" id="editSched" />
             <span className="hlrow"><HlChips /></span>
-            <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign"
+            {/* eslint-disable-next-line react-doctor/no-placeholder-only-field -- every search box in the app is drawn as the week's, its words inside the box beside the magnifier (owner D1127, 21 Oct 26); a screen reader reads its name from aria-label */}
+            <div className="right"><div className="searchbox"><SrchIcon /><input id="searchE" placeholder="name / callsign" aria-label="Search by name or callsign"
               onInput={e => { setSearch((e.target as HTMLInputElement).value); notify() }} /></div></div>
           </div>
           {/* The "142 Scheduling board · Jul 13 / Edit mode · changes are local

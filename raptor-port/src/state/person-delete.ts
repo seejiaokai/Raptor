@@ -443,6 +443,7 @@ export function deletedRestoreProblem(changes: any[], dir?: 'undo' | 'redo', mod
          past it put him back on those days (the security read of 7d0c12b24, 4 — an Inputs-page lengthening's Redo) */
       else if (ch.collection === 'inputs') hit = !!v && inInput(v, id) && inputDates(v).some(d => d >= cut)
       /* one calendar row per record since phase 2 (`plan/pp:<id>`); its day is its `date` */
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- each calendar row's own short list of people, searched once for the one man deleted
       else if (ch.collection === 'plan') hit = !!v && String(v.date || '') >= cut && Array.isArray(v.ids) && v.ids.includes(id)
       /* B4 of the change-recording re-test (28 Sep 26): once the one Undo takes roster and settings steps, HIS OWN RECORD
          put back un-deleted, or an accounts list that still holds his account, would bring him back whole (D287 — a

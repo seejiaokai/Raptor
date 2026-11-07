@@ -208,6 +208,7 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     if (mine.length !== 1 || phOf(a)) return null
     for (const [iid, b] of before) {
       const after = now.get(iid)
+      // eslint-disable-next-line react-doctor/js-set-map-lookups -- each input's own short list of people, made fresh for this one input and searched once for one man
       if (!after || b.type !== a.type || !ids(b).includes(mine[0]!) || ids(after).includes(mine[0]!)) continue
       return b
     }
@@ -252,11 +253,12 @@ export function noticePass(before: ReadonlyMap<string, any>, live: readonly any[
     }
     const is = ids(a)
     const everyone = new Set<string>([...was, ...is, b.by != null ? String(b.by) : '', a.by != null ? String(a.by) : ''])
+    const wasIn = new Set(was), isIn = new Set(is)
     let shared: NoticePart[] | null = null
     for (const p of everyone) {
       if (!p) continue
-      if (was.includes(p) && !is.includes(p)) { if (split.get(iid) !== p) tell(p, a, [{ k: 'out' }]); continue }
-      if (!was.includes(p) && is.includes(p)) { tell(p, a, [{ k: 'in' }]); continue }
+      if (wasIn.has(p) && !isIn.has(p)) { if (split.get(iid) !== p) tell(p, a, [{ k: 'out' }]); continue }
+      if (!wasIn.has(p) && isIn.has(p)) { tell(p, a, [{ k: 'in' }]); continue }
       /* in it before and after, or its filer: what changed about the input — the same words for each of them (nobody
          who reaches here was put in or taken out, so nobody is in the lists of who was) */
       tell(p, a, shared || (shared = common(b, a, p)))

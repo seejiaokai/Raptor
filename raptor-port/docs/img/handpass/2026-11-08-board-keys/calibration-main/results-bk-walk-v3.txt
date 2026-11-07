@@ -1,0 +1,39 @@
+[bk-walk v3]
+FAIL B1.1 Enter on ⋯ opens its menu, the keys on its first item (Insights), drawn as under the keys — saw {"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true}
+NOTE B1.1 — the ⋯ item under the keys is drawn with outline rgb(59, 198, 232) solid and background rgba(59, 198, 232, 0.16) — the other board menus: a rgb(59, 198, 232) solid ring
+FAIL B1.2 ↓ walks the menu and comes round to its first item (sbMoreInsights, sbMoreSort, sbMoreWide) — saw ["sbMore","sbMore","sbMore","sbMore"]
+FAIL B1.3 ↑ from the first item comes round to the last — saw {"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true}
+PASS B1.4 Escape closes the menu, the keys back on ⋯ (ringed), the board still open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+FAIL B1.5 ↓ on the closed ⋯ opens it on its first item — saw {"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true}
+FAIL b1.ERROR [narrow] the script stopped: locator.click: Timeout 30000ms exceeded.
+FAIL B2.1 ↓ on the day bar's Templates opens its menu, the keys on its first item — saw {"tag":"BUTTON","id":"","text":"Templates","data":{"daytpladd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"color(srgb 0.231373 0.776471 0.909804 / 0.14)","inMore":false,"inMenu":false,"inBoard":true}
+FAIL B2.2 Escape closes it, the keys back on Templates — saw {"tag":"SPAN","id":"","text":"Jul 15","data":{"sbday":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(0, 0, 0, 0)","inMore":false,"inMenu":false,"inBoard":false}
+FAIL B2.3 Enter opens it the same way (as built before tonight) — saw {"tag":"DIV","id":"schedBoard","text":"CalendarWednesday Jul 15","data":{"kblayer":""},"ring":true,"outline":"rgb(241, 244, 247) none","bg":"rgb(11, 13, 16)","inMore":false,"inMenu":false,"inBoard":true}
+PASS B3.1 Enter on Wednesday's date opens its board, the keys on the board — saw {"f":{"tag":"DIV","id":"schedBoard","text":"CalendarWednesday Jul 15","data":{"kblayer":""},"ring":true,"outline":"rgb(241, 244, 247) none","bg":"rgb(11, 13, 16)","inMore":false,"inMenu":false,"inBoard":true},"day":2}
+PASS B3.2 + Block → Empty block by the keys: a block added on the board, the keys back on + Block — saw {"blocks0":1,"blocks1":2,"f":{"tag":"BUTTON","id":"","text":"+ Block","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B3.Templates Templates opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.the plans selector the plans selector opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.3 ✓ Done by Enter: the board closes, the week is back — saw {"board":false}
+NOTE B3.3 — after ✓ Done the keys are on {"tag":"SPAN","id":"","text":"Jul 15","data":{"sbday":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(0, 0, 0, 0)","inMore":false,"inMenu":false,"inBoard":false}; Wednesday's week card carries 0 block parts
+PASS B3.4 the block added on the board is on the week's Wednesday — saw 2
+PASS B3.5 Undo by Enter takes the block back off — saw 1
+PASS B4.1 a tap on ⋯ opens its menu; no item takes the keys or a ring — saw {"op":true,"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":false,"outline":"rgb(59, 198, 232) none","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B4.2 a tap on Insights opens its window, the menu gone — saw true
+PASS B4.3 Insights closed: the board still open — saw true
+PASS B4.4 a tap on the layout switch changes the layout, the menu gone — saw true
+PASS B4.5 and back — saw false
+PASS B4.6 ✓ Done closes the board — saw false
+NOTE G1 — attempt 1: editsched crossed 13/07/2026→20/07/2026; viewsched shown 402px wide at its scroll 12, flicked, now on 13/07/2026; covered (ms) Edit 573→985, View 1109→1503; frames with BOTH weeks covered: 0, most copies at once: 2, copies up after the flick: 2
+NOTE G1 — attempt 1: the second cross did not land inside the first slide — tried again
+NOTE G1 — attempt 2: editsched crossed 13/07/2026→20/07/2026; viewsched shown 402px wide at its scroll 2340, flicked, now on 27/07/2026; covered (ms) Edit 513→912, View 979→1355; frames with BOTH weeks covered: 0, most copies at once: 2, copies up after the flick: 2
+NOTE G1 — attempt 2: the second cross did not land inside the first slide — tried again
+NOTE G1 — attempt 3: editsched crossed 27/07/2026→03/08/2026; viewsched shown 402px wide at its scroll 12, flicked, now on 27/07/2026; covered (ms) Edit 474→871, View 938→1320; frames with BOTH weeks covered: 0, most copies at once: 2, copies up after the flick: 2
+NOTE G1 — attempt 3: the second cross did not land inside the first slide — tried again
+NOT WALKED G1 — three tries and the second cross never landed inside the first slide
+NOTE G2 — attempt 1: viewsched crossed 27/07/2026→03/08/2026; editsched shown 402px wide at its scroll 12, flicked, now on 27/07/2026; covered (ms) Edit 743→1159, View 454→null; frames with BOTH weeks covered: 16, most copies at once: 4, copies up after the flick: 4
+FAIL G2.1 a cross on viewsched, then one on editsched begun inside its slide: afterwards neither week is left covered or unscrollable, the page not clipped — saw {"e":{"pe":"","ox":"","cpe":"auto"},"v":{"pe":"none","ox":"hidden","cpe":"none"},"body":""}
+PASS G2.2 and no glide copy is left on screen — saw 0
+FAIL G2.swipe.viewsched afterwards a finger swipe on View-only Sched's week moves it a day, in the same week — saw {"from":2340,"to":2340}
+PASS G2.swipe.editsched afterwards a finger swipe on Edit Schedule's week moves it a day, in the same week — saw {"from":2328,"to":1962}
+FAIL G3.1 one cross on View-only Sched (Sunday → next Monday): it crosses, the week takes touches and scrolls again — saw {"wk0":"27/07/2026","wk":"27/07/2026","st":{"e":{"pe":"","ox":"","cpe":"none"},"v":{"pe":"none","ox":"hidden","cpe":"none"},"body":""}}
+FAIL G3.swipe.viewsched afterwards a finger swipe on View-only Sched's week moves it a day, in the same week — saw {"from":2340,"to":2340}

@@ -432,7 +432,11 @@ Four things make it work, and each is load-bearing:
   Safari would not re-snap from (the hold above); and the slide starts at a hand's pace, about 2.4 px/ms, easing out
   over 340 ms, not the 3.9 px/ms that crossed three-quarters of the screen in a tenth of a second. Pinned
   `ui/swipeweeks.test.tsx`, `ui/weekglide.test.ts`, and by a real finger `e2e/weekswipe.spec.ts`; the feel on his
-  iPhone is his look's to judge. *[D1577, 3 Nov 26: this slide stays — the end cards that would have replaced it (D1574) were set aside.]*
+  iPhone is his look's to judge. **A burst of crosses over the two pages** (a cross on Edit Schedule, a switch to
+  View-only Sched and a cross there inside one slide — [WEEK-GLIDE-TWO-PAGES], 7–8 Nov 26): each week the burst covers
+  keeps its own touches and sideways scroll from before it, the page's clip one value for the burst, and the burst's
+  last finish gives every week its touches and scroll back; only the week crossed LAST is landed again — an earlier one
+  keeps the day a switch back to its page gave it (the Opus read's finding 1, 8 Nov 26). *[D1577, 3 Nov 26: this slide stays — the end cards that would have replaced it (D1574) were set aside.]*
 
 `state/store.ts`'s `resetSession` clears it **after** its own `setPage`, which
 is why that line sits at the end of the function rather than beside the other
@@ -1681,6 +1685,17 @@ the view week keeps the reference's markup (`html.test.ts normDow`). While the b
 (`boardescape.ts keepTabOnBoard`) — last stop to first, first to last, a Tab from the page behind back onto it — what lies
 over the board keeping its own keys. Escape closes the Sort all box (`useEscClose`). Pinned by `ui/boardmenukeys.test.tsx`
 and `e2e/keys-windows.spec.ts`.
+**The board's last two menus, and one menu at a time ([BOARD-KEYS-LEFT], the night of 7–8 Nov 26; the two reads of 8 Nov
+26).** At a phone's width (a narrow window at a desk, a tablet with a keyboard) the ⋯ beside the highlighter (Insights,
+Sort all, the layout switch — `SchedBoard.tsx`, drawn ≤ 820 only) opens on its first item by Enter, Space or ↓ (↓ presses ⋯,
+so another board menu up closes as it opens), ↑ ↓ go round its items that can be pressed, Escape closes it and a pick by
+the keys puts them back on ⋯ before the pick acts (Insights and the Sort all box give them back to ⋯ as they close), the
+keys leaving it close it, as the week's ⋯ does; a window widened past 820 with it up closes it, so the next Escape is the
+board's. The day bar's Templates (`[data-daytpladd]`, drawn where `#sbTpl` is not) opens on ↓ as the others do. ↓ goes INTO
+an open menu only from its own button — each string-drawn menu records the button it hangs from (`menuKeys`, `_anchor`);
+from another menu button ↓ presses that button, which closes the first menu as a click outside it. A held Enter opens a
+menu and picks nothing: a repeated Enter inside a board menu or the ⋯ menu is ignored. Pinned by
+`ui/boardmenukeys.test.tsx`; walked `scripts/handpass/bk-walk.mjs` (`docs/handpass/2026-11-08-board-keys.md`).
 
 **The Traffic window leaves the bar over it pressable (`[TRAFFIC-WIN-COVERS-UNDO]`, 30 Oct 26 — `ui/Modals.tsx AirPop`).**
 Its veil (`.airpop.air-below`) starts at the foot of the bar over it — the top bar, or the Scheduler Board's own bar while

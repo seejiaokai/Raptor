@@ -28,7 +28,9 @@ const cue = /(^|[^A-Z])(DS|RED|REDAIR)(?=$|[^A-Z])/
 const text = (v: unknown): string => typeof v === 'string' ? v.trim().replace(/\s+/g, ' ').toUpperCase() : ''
 /* A complete spelling alias only. REDAIR2 remains the entire conditional Mission/context, never exact Red. */
 const normalize = (v: unknown): string => text(v).replace(/(^|[^A-Z0-9])RED(?:AIR|-AIR)(?=$|[^A-Z0-9])/g, '$1RED AIR')
-export function missionContext(f: MissionSource): string {
+/* The context's two parts — the mission and its cue clauses — before they are written as the saved string. The resolver
+   reads them here rather than parsing back the string it has just built (React Doctor's unsafe-parse finding, D1534). */
+function contextParts(f: MissionSource): [string, string[]] {
   const clauses = new Set<string>()
   for (const a of Array.isArray(f?.aircraft) ? f.aircraft : []) {
     for (const raw of (typeof a?.rmks === 'string' ? a.rmks : '').split(/;|\/\//)) {
@@ -36,7 +38,11 @@ export function missionContext(f: MissionSource): string {
       if (cue.test(clause)) clauses.add(clause)
     }
   }
-  return JSON.stringify([1, normalize(f?.msn), [...clauses].sort()])
+  return [normalize(f?.msn), [...clauses].sort()]
+}
+export function missionContext(f: MissionSource): string {
+  const [mission, clauses] = contextParts(f)
+  return JSON.stringify([1, mission, clauses])
 }
 function validContext(context: unknown): context is string {
   if (typeof context !== 'string') return false
@@ -76,7 +82,7 @@ export function validRoleAnswer(id: unknown, answer: unknown): answer is RoleAns
     && Object.keys(identity).every(k => v[k] === identity[k as keyof RoleIdentity])
 }
 export function resolveMissionRole(f: MissionSource, read?: (context: string) => { id: string; answer: unknown } | null): { context: string; role: MissionSide | null; conditional: boolean } {
-  const context = missionContext(f), [_, mission, clauses] = JSON.parse(context)
+  const [mission, clauses] = contextParts(f), context = JSON.stringify([1, mission, clauses])
   if (['DS', 'RED', 'RED AIR'].includes(mission)) return { context, role: 'red', conditional: false }
   const conditional = cue.test(mission) || clauses.length > 0
   if (!conditional) return { context, role: 'blue', conditional: false }
@@ -85,3 +91,14 @@ export function resolveMissionRole(f: MissionSource, read?: (context: string) =>
   if (found && validRoleAnswer(found.id,found.answer) && found.answer.context===context) role=found.answer.side
   return { context, role, conditional: true }
 }
+/* HOW A BLUE/RED ANSWER IS TOLD — the change history's line and Undo's words read it from one body, so the two never
+   drift ([STACK-LEFTOVERS] (2), D489's tidiness note). The line's name is the one the answer's command carried (its
+   spaces closed up, at most 80 letters; '' when it carried none, or no facts at all — a copy rides the day's own
+   command); the side's word is 'Blue' or 'Red', null for no answer. What each says in place of a missing one stays its
+   own: the history names the line from the week and says "Unresolved"; Undo leaves the part out. */
+export function roleAnswerName(detail: unknown): string {
+  let d: any = null
+  try { d = JSON.parse(typeof detail === 'string' && detail ? detail : 'null') } catch { return '' }
+  return typeof d?.name === 'string' ? d.name.replace(/\s+/g, ' ').trim().slice(0, 80) : ''
+}
+export const roleSideWord = (side: unknown): 'Blue' | 'Red' | null => side === 'blue' ? 'Blue' : side === 'red' ? 'Red' : null

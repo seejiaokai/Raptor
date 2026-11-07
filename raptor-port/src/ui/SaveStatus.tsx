@@ -16,19 +16,9 @@
    or the phone's menu is a short visit and has none: the bar's is there when it closes (D587).
    Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning. */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
-import type { Postman, SaveStatus as Status } from '../storage/postman'
+import type { SaveStatus as Status } from '../storage/postman'
 import { fixedOrigin } from './kbscroll'
-
-let source: Postman | null = null
-const subs = new Set<() => void>()
-export function setSaveStatusSource(p: Postman): void {
-  source = p
-  p.onStatus(() => { for (const f of [...subs]) f() })
-  for (const f of [...subs]) f()
-}
-const subscribe = (fn: () => void) => { subs.add(fn); return () => { subs.delete(fn) } }
-const read = (): Status => (source ? source.status : 'saved')
-const readFailed = (): boolean => read() === 'failed'
+import { subscribe, read, readFailed, retrySaves } from './savestatus-source'
 
 /* ONE WARNING AT A TIME FOR A SCREEN READER AND THE KEYBOARD (Astra's read, F5). While a full-screen surface shows the
    warning under its own bar, the top bar's copy is still in the page beneath it — painted over, but a second
@@ -92,7 +82,7 @@ function Warning() {
   return (
     <>
       <span className="sv-msg"><SplitWords lead="Not saved" rest="keep this page open" /></span>
-      <button type="button" onClick={() => { void source?.flush() }}>Retry</button>
+      <button type="button" onClick={retrySaves}>Retry</button>
     </>
   )
 }

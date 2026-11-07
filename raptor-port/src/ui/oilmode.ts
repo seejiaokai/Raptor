@@ -282,6 +282,7 @@ export function oilOffReason(di: any, person: any, item: string): { why: OilOffW
   /* A MAN'S OWN INPUT — he is its only person: the answer is HIS, and the words say so ("answered No", "has not
      answered yet"). An input of several, and the men behind ALL AVAIL, follow ONE answer that is whoever filed it's
      or an admin's (owner D762): the words say that, never that the man refused (the one-rule build, step 2 (d)). */
+  // eslint-disable-next-line react-doctor/js-set-map-lookups -- each input's own short list of people, searched once for one man
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && claimPeople(i).includes(String(person)))
   if (inp && claimPeople(inp).length === 1 && !claimPh(inp)) {
     const what = oilClaimWhat(di, inp)
@@ -768,6 +769,7 @@ export function oilEligible(di: any, person: any, item: string): boolean {
   /* a claim-derived item is eligible when the claim itself is live — ONE body
      decides that, shared with the credit (oilInputEligible), so the mode can
      never offer a toggle on a claim the credit path has already ruled out. */
+  // eslint-disable-next-line react-doctor/js-set-map-lookups -- each input's own short list of people, searched once for one man
   const inp = ev.inputs.find(i => inputItemKey(i.iid) === item && claimPeople(i).includes(String(person)))
   if (inp) return oilInputEligible(d, inp)
   /* D18's EXTRAS — the second man the scheduler stood on a claim's row. The

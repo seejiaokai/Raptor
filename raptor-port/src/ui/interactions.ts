@@ -948,16 +948,21 @@ export function routeOpenKey(e: KeyboardEvent) {
    stores (C) and + Wave, and the duty role's box, whose pick-list opens on a press: ↓ presses it, and the menu, told the
    keys opened it (sheetfocus.ts menuKeys), takes them onto its first item. With that menu already up (opened by the
    mouse), ↓ goes into it. Nothing else of ↓ is taken — a box's own caret, the page's scroll. */
-const MENU_BTN = '[data-dwadd], [data-daytplopen], #sbTpl, [data-planmenu], [data-stcfg], [data-wvadd], [data-rolepick]'
+/* …and the day bar's Templates (data-daytpladd), the board's Templates at a phone's width, where #sbTpl is not drawn
+   ([BOARD-KEYS-LEFT]'s roll-call, 7 Nov 26: Enter opened it on its first pick, ↓ did nothing) */
+const MENU_BTN = '[data-dwadd], [data-daytplopen], [data-daytpladd], #sbTpl, [data-planmenu], [data-stcfg], [data-wvadd], [data-rolepick]'
 export function routeMenuKey(e: KeyboardEvent) {
   if (e.key !== 'ArrowDown' || e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
   const t = e.target as HTMLElement | null
   if (!t || typeof t.closest !== 'function') return
   const b = t.closest(MENU_BTN) as HTMLElement | null
   if (!b || view.CURPAGE !== 'editsched' || !canEditSched()) return
+  /* only THIS button's menu is gone into (the two reads of 8 Nov 26 — Opus finding 2, Astra finding 2): with + Block's menu
+     up, ↓ on Templates went into + Block's menu, its first pick under the keys, Templates never opened. Another button's
+     menu is closed by this one's own click, which is a click outside it, and this one opens. */
   const up = document.querySelector('.wavemenu') as HTMLElement | null
   e.preventDefault()
-  if (up) { menuFirst(up)?.focus({ preventScroll: true }); return }
+  if (up && (up as any)._anchor === b) { menuFirst(up)?.focus({ preventScroll: true }); return }
   b.click()
 }
 

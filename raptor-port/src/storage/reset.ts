@@ -90,6 +90,7 @@ export async function resetPreSchema(backend: Backend, snap: Snapshot): Promise<
   for (const id of Object.keys(snap.settings || {})) if (resetEntry('settings',id)) { pending.push(['settings',id]); delete snap.settings![id] }
   // a fresh/empty store has nothing to clear: just stamp it so later boots skip.
   if (pending.length === 0) { await writeStamp(backend, snap); return }
+  // eslint-disable-next-line react-doctor/async-await-in-loop -- a one-time reset of a handful of keys: all are removed before the check, and the first failure stops it
   for (const [c, id] of pending) await backend.remove(c, id)   // awaited durable deletes
   const after = await backend.loadAll()                        // verify gone, THEN stamp
   if (!RESET.every(c => Object.keys(after[c] || {}).length === 0)) throw new Error('storage reset: cleanup not durable')

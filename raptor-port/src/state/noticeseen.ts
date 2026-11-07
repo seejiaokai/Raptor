@@ -111,5 +111,6 @@ export function markAllNoticesRead(): boolean {
      A6): a holiday's line with nothing left to answer is not in his list, so pressing this cannot have read it — it
      took every notice of his, and such a line came back already read when an input on it needed an answer again. What
      he read before stays read. */
-  return write(pid, { upto: cur.upto, ids: allNoticesFor(pid).filter(x => x.at > cur.upto && (noticeLive(x) || cur.ids.includes(x.id))).map(x => x.id).sort() })
+  const had = new Set(cur.ids)
+  return write(pid, { upto: cur.upto, ids: allNoticesFor(pid).filter(x => x.at > cur.upto && (noticeLive(x) || had.has(x.id))).map(x => x.id).sort() })
 }

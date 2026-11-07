@@ -133,7 +133,7 @@
   "n": 12,
   "name": "fix round 1: a person may change in any field",
   "file": "src/state/perms.ts",
-  "find": "        if (!fields.includes(k)) return refuse(c)\n",
+  "find": "        if (!may.has(k)) return refuse(c)\n",
   "put": "",
   "tests": [
    "src/leavewar/postout-roster.test.ts",

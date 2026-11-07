@@ -36,6 +36,7 @@ export class MemoryBackend implements Backend {
   /** the next n boot replays of the journal fail (storage still full) */
   failReplay(n: number): void { this.replayFailing = n }
   /** test-only: the stored journal, or null */
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the in-memory store copies the way a real store saves (JSON): a test then meets what a browser's storage would hand back
   peekJournal(): Entry[] | null { return this.txn ? JSON.parse(JSON.stringify(this.txn)) : null }
   dropOne(): void { this.dropping += 1 }
   /** test-only read, no latency, no journal */
@@ -55,6 +56,7 @@ export class MemoryBackend implements Backend {
       if (this.replayFailing > 0) { this.replayFailing -= 1; this.recovered = this.txn }
       else { for (const e of this.txn) this.apply(e); this.txn = null }
     }
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the in-memory store copies the way a real store saves (JSON): a test then meets what a browser's storage would hand back
     const snap: Snapshot = JSON.parse(JSON.stringify(this.data))
     if (this.recovered) for (const e of this.recovered) {
       if (e.value === null) delete snap[e.collection][e.id]
@@ -63,10 +65,12 @@ export class MemoryBackend implements Backend {
     return snap
   }
 
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the in-memory store copies the way a real store saves (JSON): a test then meets what a browser's storage would hand back
   unfinished(): Entry[] | null { return this.recovered ? JSON.parse(JSON.stringify(this.recovered)) : null }
 
   async writeJournal(group: Entry[] | null): Promise<void> {
     this.check()
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the in-memory store copies the way a real store saves (JSON): a test then meets what a browser's storage would hand back
     this.txn = group && group.length ? JSON.parse(JSON.stringify(group)) : null
     this.recovered = this.txn
   }
@@ -77,6 +81,7 @@ export class MemoryBackend implements Backend {
     for (const e of entries) this.journal.push({ op: e.value === null ? 'remove' : 'put', collection: e.collection, id: e.id, at: ++this.seq, group: g })
     this.check()                                   // the journal write itself failed: nothing applied
     if (this.dropping > 0) { this.dropping -= 1; return }
+    // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the in-memory store copies the way a real store saves (JSON): a test then meets what a browser's storage would hand back
     this.txn = JSON.parse(JSON.stringify(entries))
     const k = this.crashAfter
     this.crashAfter = null
