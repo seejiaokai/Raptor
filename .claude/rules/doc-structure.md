@@ -80,7 +80,7 @@ tiers: `raptor-port/docs/doc-budget.md`; this file is its short, always-loaded f
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
   the later merge brings `main` in first (D78).
 - **The Claudex loop** (Opus 5.5 builds; the code read a fresh, blind Opus read, Astra and Sol 6.1 only on his call,
-  Fable on his call only — D67, D353, D590, D601, D790, D903, D1734, D1738, D1739): plans and review logs are tier-3
+  Fable on his call only — D67, D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761): plans and review logs are tier-3
   docs (the table above); the ripple walk reads `feature-impact.md`.
 
 ## The check that keeps it

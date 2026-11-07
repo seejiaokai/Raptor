@@ -545,6 +545,11 @@ the readers): a choice put to him, not taken.
 - **Put to him (parked):** who red-teams an important plan when he has not called Astra and Sol 6.1 — D790 kept a plan's
   read as it was, D1734 names a stand-in only for code and scenarios; recommended: a fresh, blind Opus reader meanwhile,
   as plans have been read since 13 Oct.
+- **His answers, 8 Nov 26, to the morning report's questions:** "1 yes" — a fresh, blind Opus reader red-teams such a
+  plan meanwhile (D1760); "call in Astra" — every working-guide change is read by Astra, beside the fresh Opus reader
+  (D1761); "later" — stating once what both the page and a checklist state is left for a later step (D1762). On the
+  agent's reading that Sol 6.1 is not added as a third reader of the diet's reworded steps, he asked whether it is
+  important enough — answered in chat 2, his word awaited.
 
 **The two reads compared (D1732).** Astra checked 174 requirements and found the five files whole; the Opus reader
 checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The

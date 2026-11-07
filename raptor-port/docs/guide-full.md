@@ -236,6 +236,11 @@ barely more than one.
 
 ### Models
 
+- **NARROWED since — who is called now (D1734, 7 Nov 26; D1760 and D1761, 8 Nov 26):** Astra and Sol 6.1 read only when
+  he calls for them, each time; otherwise every code read is a fresh, blind Opus read (D790) and an important plan is
+  red-teamed meanwhile by a fresh, blind Opus reader (D1760); a changed working guide is read by Astra every time, his
+  call, beside a fresh, blind Opus reader (D1761). The page `../.claude/rules/decisions/how-we-work.md` §Models and
+  readers states it as it stands; the bullets below are history where they differ.
 - **NARROWED 5 Oct 26 by D590 — who reviews what Opus writes:** Astra reviews it, and Sol 6.1 is the second reader where
   two are required (the code reads on earned leave, published records, permissions or saved data; an important plan's red
   team; a changed working guide). Fable 5.1 is on call only — a bug Opus 5.5 cannot crack, or a big open-ended plan, on his

@@ -231,7 +231,7 @@ fixes of 3 Oct (`handpass/2026-10-05-codex-stack-check.md` §10.1); **Sol 6.1 ke
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
 it ends the standing Fable read of those changes D790 gave).** The chat that wrote the code never reads its own work. Every claim of either
-reader is written as a failing test before it is believed. A plan's read before a build is as it was. A job that goes without
+reader is written as a failing test before it is believed. A plan's read before a build is as it was — and an important plan he has not called Astra and Sol 6.1 for is red-teamed meanwhile by a fresh, blind Opus reader (D1760, 8 Nov 26: "1 yes"). A changed working guide is read by Astra every time, his call (D1761, 8 Nov 26: "call in Astra"), beside a fresh, blind Opus reader, each blind to the other; Sol 6.1 only on his call. A job that goes without
 a ChatGPT read is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and now that Astra and Sol 6.1 are
 back on his call (D1734), the reads owed are put to him to call or drop — never called by the agent on its own. *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
 (D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable

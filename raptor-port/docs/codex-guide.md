@@ -9,7 +9,7 @@ root.
 **Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds. Codex is called as the REVIEWER:
 Astra reviews what Opus wrote, and Sol 6.1 is the second reader where two are required (OIL, published records,
 permissions, saved data, an important plan, a changed working guide); each reads independently and never reads the
-other's report first. **Codex BUILDS only on his word, each time** — the job on hold is the SANS availability
+other's report first. Since D1734 both are called only on his call — save a changed working guide, which Astra reads every time, beside a fresh, blind Opus reader (D1761). **Codex BUILDS only on his word, each time** — the job on hold is the SANS availability
 calendar's new layout (`OUTSTANDING.md` `[SANS-CALENDAR-WIP]`, D610). For a build, follow his instruction for it and the
 current rulings; what Codex writes, Opus 5.5 reviews, and the writer never approves its own artifact (D67). The
 arrangement that ran until Monday 5 Oct 26 (D494, D496 — Codex planning and building by itself) is over; its text is
@@ -34,7 +34,7 @@ kept whole in `raptor-port/docs/archive/codex-arrangement-2026-10-07.md`.
   sheet with its `Walk:` line. In Codex only, the proportional-checks addendum applies (D499,
   `raptor-port/docs/codex-review-workflow.md`).
 - "A skill" (`.claude/skills/…`) is a Claude working guide. Read one as a document where a rule points at it; never
-  edit one (D70 — a change to a working guide is read by both reviewers before he approves it). The skill
+  edit one (D70, D1761 — a change to a working guide is read by Astra and a fresh, blind Opus reader before he approves it). The skill
   observation log (`.claude/skill-observations/log.md`) is not yours to write.
 - **No feature is designed until he says what it means.** Before building one, ask him — in rounds of at most four
   questions, each with your recommended answer; product choices only, the technical how is yours. Search the rulings
