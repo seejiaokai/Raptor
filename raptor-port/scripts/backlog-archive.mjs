@@ -123,8 +123,6 @@ if (args.includes('--rulings')) {
     const otherName = otherRef === head ? 'your branch' : 'the branch being merged in'
     const paths = ref => [DEC, ARCHR, ...tree(ref, DIR), ...tree(ref, FULL_DIR)]
     for (const f of paths(newRef)) setText(f, show(newRef, f))
-    /* a rulings file only the other side has (a new area it created) starts from its own text — whole, so its rows and
-       its prose are already here, never inserted or reported a second time (Astra and Fable's code reads) */
     const state = ref => {
       const full = new Map(), short = new Map(), arch = new Map(), prose = new Map()
       for (const f of paths(ref)) {
@@ -146,6 +144,8 @@ if (args.includes('--rulings')) {
       return { full, short, arch, prose }
     }
     const B = state(base), O = state(otherRef), N = state(newRef)
+    /* a rulings file only the other side has (a new area it created) starts from its own text — whole, so its rows and
+       its prose are already here, never inserted or reported a second time (Astra and Fable's code reads) */
     /* ...less any row this side already holds: a ruling the other side MOVED into its new file is placed by the replay
        below, never imported a second time (found by the self-test, 28 Sep 26) */
     const heldHere = new Set([...N.full.keys(), ...N.short.keys(), ...N.arch.keys()])
@@ -236,13 +236,25 @@ if (args.includes('--rulings')) {
        still states it as the area's rule in force (the step-1 reader's F4; a retirement on the page side, or a move made
        into this branch, is the page side's own or printed under MOVE ON THE PAGES) */
     for (const [f, mode] of pageMode) {
-      if (mode === 'both') continue
-      const area = RL.stem(f), S = mode === 'theirs' ? N : O, P = mode === 'theirs' ? O : N, side = mode === 'theirs' ? newName : otherName
-      const at = d => (ls => (ls.length ? ` (line ${ls.join(', ')})` : ' (no line of it cites it now)'))(RL.statementsOf(textOf(f) || '').filter(st => st.cites.has(d)).map(st => st.line))
+      const area = RL.stem(f), lines = d => RL.statementsOf(textOf(f) || '').filter(st => st.cites.has(d)).map(st => st.line)
+      const at = d => (ls => (ls.length ? ` (line ${ls.join(', ')})` : ' (no line of it cites it now)'))(lines(d))
+      /* a page both sides hold, merged line by line: a ruling of its area retired on one side only that a line of the
+         merged page still cites — perhaps moved onto the page on the other side (the third reader) */
+      if (mode === 'both') {
+        for (const d of B.full.keys()) {
+          if (![B, N, O].some(X => areaOf(X, d) === area) || !lines(d).length) continue
+          const side = N.arch.has(d) && !O.arch.has(d) ? newName : O.arch.has(d) && !N.arch.has(d) ? otherName : null
+          if (side) placeOnPage.push(`${f}: ${d} — retired on ${side} since the base: take it off the page${at(d)}`)
+        }
+        continue
+      }
+      const S = mode === 'theirs' ? N : O, P = mode === 'theirs' ? O : N, side = mode === 'theirs' ? newName : otherName
       for (const d of B.full.keys()) {
-        if (areaOf(B, d) !== area || P.arch.has(d)) continue
+        /* of the area at the base, or moved onto the page by the page side since (the third reader) */
+        const inBase = areaOf(B, d) === area
+        if ((!inBase && areaOf(P, d) !== area) || P.arch.has(d)) continue
         if (S.arch.has(d)) placeOnPage.push(`${f}: ${d} — retired on ${side} since the base: take it off the page${at(d)}`)
-        else if (mode === 'theirs' && S.full.has(d) && areaOf(S, d) !== area && areaOf(P, d) === area) placeOnPage.push(`${f}: ${d} — moved to ${areaOf(S, d)} on ${side} since the base: move the page line that states it there${at(d)}`)
+        else if (inBase && mode === 'theirs' && S.full.has(d) && areaOf(S, d) !== area && areaOf(P, d) === area) placeOnPage.push(`${f}: ${d} — moved to ${areaOf(S, d)} on ${side} since the base: move the page line that states it there${at(d)}`)
       }
     }
     mergeIds = new Set([...B.full.keys(), ...B.arch.keys(), ...O.full.keys(), ...O.arch.keys(), ...N.full.keys(), ...N.arch.keys()])
@@ -279,7 +291,7 @@ if (args.includes('--rulings')) {
          moving a row to People & accounts and a parallel branch marking it are two different changes, not a clash) */
       if (o.line !== b.line) { if (n.line === b.line) merge.replaceFull.push({ d, line: o.line, was: n.line }); else if (n.line !== o.line) { clash('had its row changed on both sides'); continue } }
       /* a move made there of a ruling changed here: if it lands on a page, that page states it as it was (second reader) */
-      if (o.area !== b.area) { if (n.area === b.area) merge.moveArea.push({ d, to: o.area, changed: n.line !== b.line || N.short.get(d)?.l !== B.short.get(d)?.l, here: newName, there: otherName }); else if (n.area !== o.area) clash('was moved to different areas on the two sides') }
+      if (o.area !== b.area) { if (n.area === b.area) merge.moveArea.push({ d, to: o.area, changed: n.line !== b.line || (N.short.has(d) && N.short.get(d).l !== B.short.get(d)?.l), here: newName, there: otherName }); else if (n.area !== o.area) clash('was moved to different areas on the two sides') }
     }
     /* a short line changed on the other side (both sides in the new layout): three-way too */
     for (const [d, os] of O.short) {
@@ -294,13 +306,16 @@ if (args.includes('--rulings')) {
       if (n === b) merge.shortTake.push({ d, line: os.l }); else conflicts.push(`${d}'s short line was changed on both sides — resolve it by hand`)
     }
     if (conflicts.length) die(`--merge stopped, nothing written:\n  - ${conflicts.join('\n  - ')}`)
-    /* an area file the other side created carries its map row with it */
+    /* an area file the other side created carries its map row with it — each row inserted is kept, in the form the prose
+       reader gives it, so that row alone is never offered again under RE-APPLY BY HAND (the third reader) */
     const decO = (show(otherRef, DEC) || '').split('\n').map(l => l.replace(/\r$/, ''))
+    const carriedRows = new Set()
     for (const f of takenWhole) {
-      const row = decO.find(l => l.includes('`' + f + '`')), dec = files.get(DEC)
-      if (!row || !dec || dec.ls.some(l => l.includes('`' + f + '`'))) continue
+      const row = decO.find(l => /^\| [^|]+ \| `[^`]+` \|/.test(l) && l.includes('`' + f + '`')), dec = files.get(DEC)
+      if (!row || !dec || dec.ls.some(l => /^\| [^|]+ \| `[^`]+` \|/.test(l) && l.includes('`' + f + '`'))) continue
       const at = dec.ls.findIndex(l => l.includes('`' + ARCHR + '`'))
       dec.ls.splice(at < 0 ? dec.ls.length : at, 0, row)
+      carriedRows.add(row.replace(/\|[^|]*\|\s*$/, '| (its D-numbers are rewritten from the files) |'))
     }
     /* the other side's non-row lines: printed WHOLE, never written (a raw "keep both" left two table headers and stale
        prose behind — both red teams) */
@@ -310,7 +325,7 @@ if (args.includes('--rulings')) {
       if (pageMode.has(f)) { if (pageMode.get(f) === 'ours') listProse(f, otherName, proseDiff(B.prose.get(f)?.mine, o.mine)); continue }
       const d0 = proseDiff(B.prose.get(f)?.mine, o.mine), removed = d0.removed
       /* the map row of an area taken whole is already carried above: never offered again (the second reader's side note) */
-      const added = f === DEC ? d0.added.filter(l => ![...takenWhole].some(t => l.includes('`' + t + '`') && files.get(DEC).ls.some(x => x.includes('`' + t + '`')))) : d0.added
+      const added = f === DEC ? d0.added.filter(l => !carriedRows.has(l)) : d0.added
       if (added.length || removed.length) reapply.push(`${f} (its whole text on that side: git show ${otherRef.slice(0, 12)}:${f}):${removed.map(l => `\n      − ${l}`).join('')}${added.map(l => `\n      + ${l}`).join('')}`)
     }
   }

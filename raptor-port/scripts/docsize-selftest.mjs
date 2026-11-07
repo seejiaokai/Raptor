@@ -869,6 +869,38 @@ gitRulings('…the page branch merged into main, D1\'s short line and full row r
 /* the second reader's side note: the map row of an area taken whole is inserted, so it is never offered again to re-apply */
 gitRulings('a new area\'s map row, carried by the merge, is not printed again under RE-APPLY BY HAND', true, newAreaPage('main'), (c, r) =>
   /RE-APPLY BY HAND[\s\S]*fourth\.md/.test(r.stdout) ? 'the carried map row is offered again to re-apply' : newAreaOk(c))
+/* the third reader's read of that fix (7 Nov 26): a ruling moved onto a page since the base and retired on the other
+   side is listed to take off the page (a SPENT ruling is no stale citation to the gate, so only this list catches it);
+   a line of DECISIONS.md that only names a new area's file is still re-applied; and a move is never called "changed"
+   for a short line this side no longer has */
+const spendD1 = (c, run) => { c.edit(FULL, t => t.replace('| D1 | 21 Sep 26 | a |', '| D1 | 21 Sep 26 | **SPENT 22 Sep 26 — used.** a |')); const r = run('--rulings'); if (r.status !== 0) throw new Error('spend: ' + r.stdout + r.stderr) }
+const offPage = (side, f = 'fourth') => new RegExp(`${f}\\.md: D1[^\\n]*retired on ${side} since the base: take it off the page \\(line \\d+(?:, \\d+)*\\)`)
+gitRulings('a ruling moved onto a new page, spent on main, main merged into the page branch: listed to take off the page', true, movedOnto('a', spendD1), (c, r) =>
+  !placed(r, offPage('the branch being merged in')) ? 'not listed' : !has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'D1 was not archived' : '')
+gitRulings('…the page branch merged into main: listed to take off the page', true, movedOnto('main', spendD1), (c, r) =>
+  !placed(r, offPage('your branch')) ? 'not listed' : !has(c, 'DECISIONS-ARCHIVE.md', '| D1 |') ? 'D1 was not archived' : '')
+const bothPage = into => (c, g, run) => {
+  withPage(c); c.commit('the base: other a page')
+  g('checkout', '-q', '-b', 'a'); c.edit(OTHER, t => t.replace(p5, p5 + '\n- Rule a holds on the other screens as well [D1].'))
+  const r0 = run('--rulings', '--move-rows', 'D1', '--to', 'other'); if (r0.status !== 0) throw new Error('the move onto the page did not run clean: ' + r0.stdout + r0.stderr); c.commit('a moves D1 onto the page')
+  g('checkout', '-q', 'main'); spendD1(c, run); c.commit('main spends D1')
+  mergeIn(g, into, into === 'a' ? 'main' : 'a'); return run('--rulings', '--merge')
+}
+gitRulings('…the same on a page both sides hold, main merged into the branch that moved it', true, bothPage('a'), (c, r) => placed(r, offPage('the branch being merged in', 'other')) ? '' : 'not listed')
+gitRulings('…the same on a page both sides hold, that branch merged into main', true, bothPage('main'), (c, r) => placed(r, offPage('your branch', 'other')) ? '' : 'not listed')
+const proseNamingFourth = 'The area `.claude/rules/decisions/fourth.md` was made a page from the start (a line of its own).'
+const newAreaPageProse = (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); withFourth(c, fourthPage({ topic: ['- Rule eleven holds on every screen of the fourth area [D11].', '- Rule seven holds on the fourth screens as well [D7].'] }), D7in4, 'D7, D11')
+  c.edit('DECISIONS.md', t => t + proseNamingFourth + '\n')
+  const r0 = run('--rulings'); if (r0.status !== 0) throw new Error('the new page is not clean: ' + r0.stdout + r0.stderr); c.commit('a: a new area, made a page')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main edits D2')
+  mergeIn(g, 'main', 'a'); return run('--rulings', '--merge')
+}
+gitRulings('…but a line of DECISIONS.md that only names the new area\'s file is still re-applied by hand', true, newAreaPageProse, (c, r) =>
+  !/RE-APPLY BY HAND[\s\S]*made a page from the start/.test(r.stdout) ? 'the line naming the new area was dropped unseen' : /RE-APPLY BY HAND[^\n]*\n(?:[^\n]*\n)*?[^\n]*\+ \| Fourth \|/.test(r.stdout) ? 'the carried map row is offered again to re-apply' : newAreaOk(c))
+const convertGeneral = (c, run) => { c.write(AREA, GENERAL_PAGE); const r = run('--rulings'); if (r.status !== 0) throw new Error('convert: ' + r.stdout + r.stderr) }
+gitRulings('a move onto a page is not called "changed here" because this side made the ruling\'s own area a page', true, movedOnto('main', convertGeneral), (c, r) =>
+  /fourth\.md: D1[^\n]*changed on your branch/.test(r.stdout) ? 'D1 was called changed although only its area became a page' : /MOVE ON THE PAGES[\s\S]*general\.md line \d+[^\n]*states D1, now of fourth\.md/.test(r.stdout) ? '' : 'the general page\'s line was not printed to move')
 
 /* docsize --reads (owner, D1735 — the rules diet's step 1, part 3c; plan §1, §5): what a chat reads, followed through
    the rules files' paths: until nothing new loads, each file counted once, in the first column that loads it. Run on a
