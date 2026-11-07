@@ -3924,3 +3924,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** (1) The browser's synthesized scroll gesture moved nothing on the page in headless mode; raw touch events did. (2) The developer-protocol screenshot's clip is in page coordinates, so on a scrolled page the scroll offset has to be added or the crop lands in the wrong place.
 **Suggested improvement:** Add both to the walk-scripts guide's traps, with the working recipe (raw touch events for a phone scroll; clip plus scroll offset).
 **Principle:** A capture tool's defaults are tuned for a page at rest; a scroll under test needs the gesture and the coordinates checked against what the picture shows.
+
+### Observation 853: A handoff block's times were written from memory and were wrong twice in one night
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), run unattended overnight; numbered past 852, which other open branches hold.
+**Skill:** session-handoff (and the overnight guide's "save the state at every step")
+**Type:** open-source
+**Phase/Area:** writing the progress lines of a handoff block during a long run
+
+**Issue:** The block's progress lines carry a time each. Three were written as guesses and had to be corrected against the clock in a commit of their own; later the same night a fourth line said 01:50 for a commit the log shows at 01:35. Nothing failed, but a reader who times the run, or compares it with another chat's block, is misled, and nothing in the step catches it.
+**Suggested improvement:** In the handoff guide's step that writes a progress line: take the time from the clock in the same command that writes it (the shell's date, or the time of the commit the line describes), never typed; the line names which ("01:35, the page's commit").
+**Principle:** A time in a record is a measured fact; read it from the clock or the commit at the moment of writing, the same as any other number a later reader will rely on.
