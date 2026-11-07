@@ -14,9 +14,15 @@ stated in one of the five always-loaded rule files (`.claude/rules/shipping.md`,
 `record-decisions.md`, `plain-language.md`, `bug-check.md`); those five changed only by added citations and three
 dropped "replacing Dxxx" notes — their rewrite as checklists is a later part. Ten rulings were archived as spent
 one-off permissions (now in `DECISIONS-ARCHIVE.md`, each with a `**SPENT 7 Nov 26 — …**` mark): D86, D602, D832, D972,
-D973, D974, D1556, D1566, D1659, D1736. The builder's account — every part of every old ruling mapped to the line that
+D973, D974, D1556, D1566, D1659, D1736 (and D775, below). The builder's account — every part of every old ruling mapped to the line that
 states it now — is `raptor-port/docs/superpowers/briefs/2026-11-07-rules-diet-step4-account.md`: use it as a map, and
 check it; do not trust it.
+
+**Since this brief was first written** (read the branch at `5a5f35940` or later): the account's 66 gaps were fixed on the
+page (commit `63478ab30` — the account file marks each "Fixed:"); D775 was archived as spent too (eleven archivals); `main`
+was brought in, so the page also states D1745, D1749 and D1571's new wording (compare those with `git show
+origin/main:.claude/rules/decisions/how-we-work.md` and their full rows); and D1750 is new (his "auto merge live" for step
+4). The page's statements are checked by the document check for citations, not for meaning — that is your job.
 
 **The authority is the full rows**, `.claude/decisions-full/how-we-work.md` (his words, the readings told to him, what
 each ruling means) and, for the ten archived, `DECISIONS-ARCHIVE.md`. Search them with the shell —
