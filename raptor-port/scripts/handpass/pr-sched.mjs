@@ -11,6 +11,8 @@
         its R box suggesting 09:00 while Insights counts Saint from 11:00; drawn A (Insights +2h) and B (the words)
      q4 [INP-ADD-RIGHT] the desktop Inputs list closed and open, the Medical tab closed and open, both on a phone; drawn:
         "+ Input" at the right with the list making room, copied from the Medical tab
+     q4n, q4f, q4t, q4m (8 Nov 26, his question about smaller screens): q4 at 1280, 1024 and 821 wide, the safer A drawn,
+        today's narrow list pictured, and the page's Remarks widths measured
    Run from raptor-port/: HP_URL=http://localhost:4291 HP_SHOTS=docs/img/handpass/2026-11-07-pictures-round
         node scripts/handpass/pr-sched.mjs   (PR_ONLY=q1,q3 redoes only those) */
 import { existsSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs'
@@ -680,6 +682,139 @@ if (want('q4')) await tryQ('q4', async () => {
   await strip(P.page, 'q-addright-ph-med', 0, 330, PHONE)
   await P.ctx.close()
   console.log('q4 phone', JSON.stringify(measured.q4.phone))
+})
+
+/* ==== q4n — his follow-up of 8 Nov 26 ("how would 8 look like for a smaller screen if i choose A"): the same list, today
+   and drawn A, its window open, at three desktop widths below his PC's — a laptop (1280 × 800), a small laptop or a
+   tablet on its side (1024 × 768), and the narrowest screen that still gets the desktop layout (821 × 768; at 820 and
+   below the phone layout takes over and its window stands in the middle, D997). Drawn A is the same change as q4's:
+   the button after a spacer at the row's right end, and the list's wrapper making room for the window. ==== */
+if (want('q4n')) await tryQ('q4n', async () => {
+  const n = measured.q4n = {}
+  for (const vp of [{ width: 1280, height: 800 }, { width: 1024, height: 768 }, { width: 821, height: 768 }]) {
+    const W = await world(vp, false)
+    const page = W.page, w = vp.width, m = n[w] = {}
+    await openInputsList(page); await settle(page)
+    await page.locator('#inNew').click(); await sleep(900)
+    m.window = await rect(page, T('win-inputedit')); m.table = await rect(page, '#intbl'); m.wrap = await rect(page, '.inwrap')
+    await ring(page, [{ sel: T('win-inputedit'), tag: `Today at ${w} wide: the window covers the list`, pos: 'left' }])
+    await strip(page, `q-addright-${w}-open`, 56, vp.height - 56, vp)
+    await unring(page)
+    await page.evaluate(room => {
+      const row = document.querySelector('.inputs-listtools'), b = document.querySelector('#inNew')
+      const sp = document.createElement('span'); sp.style.flex = '1'; sp.className = 'zz-spacer'; row.appendChild(sp); row.appendChild(b)
+      document.querySelector('.inwrap').style.paddingRight = room
+    }, ROOM)
+    await sleep(300)
+    /* what the list keeps beside the window: its own width, its scroll width (wider = it scrolls sideways), and each
+       column's width, read off the header cells */
+    m.drawn = await page.evaluate(() => {
+      const wr = document.querySelector('.inwrap'), tb = document.querySelector('#intbl')
+      const sc = [wr, tb.parentElement].find(e => e && e.scrollWidth > e.clientWidth + 1)
+      const cols = [...tb.querySelectorAll('thead th')].map(th => [th.textContent.trim().slice(0, 12), Math.round(th.getBoundingClientRect().width)])
+      const rows = [...tb.querySelectorAll('tbody tr')].filter(r => r.getBoundingClientRect().height > 0)
+      return { tableW: Math.round(tb.getBoundingClientRect().width), scrolls: !!sc, scrollW: sc ? sc.scrollWidth : 0, clientW: sc ? sc.clientWidth : 0, cols,
+        rowH: rows.slice(0, 8).map(r => Math.round(r.getBoundingClientRect().height)) }
+    })
+    await page.evaluate(() => { const w = document.querySelector('.inwrap'), r = document.querySelector('.inrange'); w.style.setProperty('--zz-x', Math.round(r.getBoundingClientRect().right - w.getBoundingClientRect().left + 16) + 'px'); const rr = r.getBoundingClientRect(); w.style.setProperty('--zz-y', Math.round(w.getBoundingClientRect().top - (rr.top + rr.bottom) / 2 - 11) + 'px') })
+    await ring(page, [{ sel: '.inwrap', tag: `Drawn A at ${w} wide: the list makes room`, pos: 'aboveAt', noring: true }, { sel: T('win-inputedit') }])
+    await strip(page, `q-addright-${w}-open-A`, 56, vp.height - 56, vp)
+    await unring(page)
+    console.log('q4n', w, JSON.stringify(m))
+    await W.ctx.close()
+  }
+})
+
+/* ==== q4f — what came of q4n: the plain copy of the Medical tab crushes Remarks below about 1500 wide, because the
+   list's six other columns are fixed (250 + 150 + 115 + 160 + 104 + 96 = 875px, 06-inputs.css) and the room kept for the
+   window is 446. Drawn here, the two ways a build could keep A safe: at 1280 the other columns give up room first while
+   the window is open (Name 110, Start 140, End 90; Type keeps 160 so its widest chip never wraps); at 1024 and 821, too
+   narrow for any of it, the button still moves right but the list does not make room — the window covers it as today. ==== */
+const TIGHT = '.intbl thead th:nth-child(1){width:110px!important}.intbl thead th:nth-child(2){width:140px!important}.intbl thead th:nth-child(3){width:90px!important}'
+if (want('q4f')) await tryQ('q4f', async () => {
+  const f = measured.q4f = {}
+  {
+    const vp = { width: 1280, height: 800 }
+    const W = await world(vp, false), page = W.page
+    await openInputsList(page); await settle(page)
+    await page.locator('#inNew').click(); await sleep(900)
+    await page.evaluate(([room, css]) => {
+      const row = document.querySelector('.inputs-listtools'), b = document.querySelector('#inNew')
+      const sp = document.createElement('span'); sp.style.flex = '1'; sp.className = 'zz-spacer'; row.appendChild(sp); row.appendChild(b)
+      document.querySelector('.inwrap').style.paddingRight = room
+      const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st)
+    }, [ROOM, TIGHT])
+    await sleep(300)
+    f[1280] = await page.evaluate(() => {
+      const tb = document.querySelector('#intbl')
+      const cols = [...tb.querySelectorAll('thead th')].map(th => [th.textContent.trim().slice(0, 12), Math.round(th.getBoundingClientRect().width)])
+      const rows = [...tb.querySelectorAll('tbody tr')].filter(r => r.getBoundingClientRect().height > 0)
+      return { cols, rowH: rows.slice(0, 10).map(r => Math.round(r.getBoundingClientRect().height)) }
+    })
+    await page.evaluate(() => { const w = document.querySelector('.inwrap'), r = document.querySelector('.inrange'); w.style.setProperty('--zz-x', Math.round(r.getBoundingClientRect().right - w.getBoundingClientRect().left + 16) + 'px'); const rr = r.getBoundingClientRect(); w.style.setProperty('--zz-y', Math.round(w.getBoundingClientRect().top - (rr.top + rr.bottom) / 2 - 11) + 'px') })
+    await ring(page, [{ sel: '.inwrap', tag: 'Drawn at 1280: Name, Start and End give up room', pos: 'aboveAt', noring: true }, { sel: T('win-inputedit') }])
+    await strip(page, 'q-addright-1280-open-A-fit', 56, vp.height - 56, vp)
+    await unring(page)
+    console.log('q4f 1280', JSON.stringify(f[1280]))
+    await W.ctx.close()
+  }
+  for (const vp of [{ width: 1024, height: 768 }, { width: 821, height: 768 }]) {
+    const W = await world(vp, false), page = W.page, w = vp.width
+    await openInputsList(page); await settle(page)
+    await page.evaluate(() => {
+      const row = document.querySelector('.inputs-listtools'), b = document.querySelector('#inNew')
+      const sp = document.createElement('span'); sp.style.flex = '1'; sp.className = 'zz-spacer'; row.appendChild(sp); row.appendChild(b)
+    })
+    await sleep(300)
+    f[w] = { inNew: await rect(page, '#inNew'), row: await rect(page, '.inputs-listtools') }
+    await ring(page, [{ sel: '#inNew', tag: `Drawn at ${w}: + Input at the right; its window covers the list, as today`, pos: 'left' }])
+    await strip(page, `q-addright-${w}-A-safe`, 56, 420, vp)
+    await unring(page)
+    console.log('q4f', w, JSON.stringify(f[w]))
+    await W.ctx.close()
+  }
+})
+
+/* ==== q4t — found while drawing q4f: TODAY, with no window open, the desktop list below about 950 wide already crushes
+   Remarks (its six fixed columns take 875px; a phone's list gets a 640px floor and scrolls sideways, 06-inputs.css, but the
+   desktop's does not). Pictured as it is, nothing drawn. ==== */
+if (want('q4t')) await tryQ('q4t', async () => {
+  const vp = { width: 821, height: 768 }
+  const W = await world(vp, false), page = W.page
+  await openInputsList(page); await settle(page)
+  measured.q4t = await page.evaluate(() => {
+    const tb = document.querySelector('#intbl')
+    return { cols: [...tb.querySelectorAll('thead th')].map(th => [th.textContent.trim().slice(0, 12), Math.round(th.getBoundingClientRect().width)]),
+      firstRowH: Math.round(tb.querySelector('tbody tr').getBoundingClientRect().height) }
+  })
+  await page.evaluate(() => { const w = document.querySelector('.inwrap'), r = document.querySelector('.inrange'); w.style.setProperty('--zz-x', Math.round(r.getBoundingClientRect().right - w.getBoundingClientRect().left + 16) + 'px'); const rr = r.getBoundingClientRect(); w.style.setProperty('--zz-y', Math.round(w.getBoundingClientRect().top - (rr.top + rr.bottom) / 2 - 11) + 'px') })
+  await ring(page, [{ sel: '.inwrap', tag: 'Today at 821 wide, no window open: Remarks squeezed to one letter, so each row grows tall', pos: 'aboveAt', noring: true },
+    { sel: '#intbl tbody tr:first-child' }])
+  await strip(page, 'q-addright-821-today', 56, vp.height - 56, vp)
+  await unring(page)
+  console.log('q4t', JSON.stringify(measured.q4t))
+  await W.ctx.close()
+})
+
+/* ==== q4m — the page's two worked-out figures, measured: Remarks beside the open window with Name, Start and End
+   narrowed, at his PC's 1536 and at the 1340 the page names as the cut-off; and today's list with no window at 950. ==== */
+if (want('q4m')) await tryQ('q4m', async () => {
+  const q = measured.q4m = {}
+  for (const w of [1536, 1340, 950]) {
+    const W = await world({ width: w, height: 800 }, false, { dsf: 1 }), page = W.page
+    await openInputsList(page); await settle(page)
+    if (w !== 950) {
+      await page.locator('#inNew').click(); await sleep(900)
+      await page.evaluate(([room, css]) => {
+        document.querySelector('.inwrap').style.paddingRight = room
+        const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st)
+      }, [ROOM, TIGHT])
+      await sleep(300)
+    }
+    q[w] = await page.evaluate(() => Math.round(document.querySelector('#intbl thead th:nth-child(5)').getBoundingClientRect().width))
+    await W.ctx.close()
+  }
+  console.log('q4m remarks width', JSON.stringify(q))
 })
 
 writeFileSync(MEAS, JSON.stringify(measured, null, 1))

@@ -3963,3 +3963,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The block's progress lines carry a time each. Three were written as guesses and had to be corrected against the clock in a commit of their own; later the same night a fourth line said 01:50 for a commit the log shows at 01:35. Nothing failed, but a reader who times the run, or compares it with another chat's block, is misled, and nothing in the step catches it.
 **Suggested improvement:** In the handoff guide's step that writes a progress line: take the time from the clock in the same command that writes it (the shell's date, or the time of the commit the line describes), never typed; the line names which ("01:35, the page's commit").
 **Principle:** A time in a record is a measured fact; read it from the clock or the commit at the moment of writing, the same as any other number a later reader will rely on.
+
+### Observation 858: A layout drawing made only at the owner's own screen width missed that the option breaks on smaller desktops
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the pictures round (chat 3); his follow-up on question 8, "how would 8 look like for a smaller screen if i choose A". Numbered past 855–857, which other branches hold.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`) and the pictures-round brief
+**Type:** open-source
+**Phase/Area:** drawing a layout change on the running app — which screen sizes to draw it at
+
+**Issue:** A change that makes a table give up room for a side window was drawn only at the owner's PC width (1536) and his phone. It looked fine there. Asked about a smaller screen, the same drawing at 1280, 1024 and 821 showed the table crushing one column to a single letter, because the table's other columns had fixed widths. Drawing it at the narrower widths also showed the table was already broken below about 950 wide with no window open at all. The recommendation shown to him had named only the cost at his own width.
+**Suggested improvement:** In the mock-up guide's rules for drawing a change that alters widths or makes room (a side panel, a window that pushes content, a column added or narrowed), draw it at the narrowest width that still gets the desktop layout and at one laptop width (about 1280), as well as at the owner's own sizes. Measure the narrowest column at each width. Put that cost in the recommendation, or draw a safe version, before the page goes to him.
+**Principle:** A layout option is judged at the edges of the range it will run in, not only at the size of the person reviewing it. A fixed-width table that fits one screen can collapse on the next size down, so draw and measure at the narrowest width each layout covers.

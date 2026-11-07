@@ -85,3 +85,7 @@ q-r5e-pc-desktop.png
 q-r5e-ph-today.png
 q-r5e-ph-drawn.png
 q-r5e-ph-drawn-wide.png
+q-addright-1280-open-A.png
+q-addright-1280-open-A-fit.png
+q-addright-1024-A-safe.png
+q-addright-821-today.png
