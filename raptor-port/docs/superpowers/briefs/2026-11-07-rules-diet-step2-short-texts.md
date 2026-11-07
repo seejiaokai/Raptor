@@ -8,6 +8,9 @@ skill-notes short form then goes to him for approval before it is switched on (D
 his "merge live" (D1737). Parts A and B are drafts **not yet switched on**: their hooks are unchanged on the branch until
 the reads are done and he approves.
 
+**Switched on 7 Nov 26 (D1740):** both hooks now print parts A and B, and part B's steps 2–4 are in (part E, "The
+switch-on's reads"). The short form is 7,448 bytes with D1740's citation — 7,373 as drafted, 7,419 after the readers' fixes.
+
 ---
 
 ## A. The note on each of his messages (`.claude/hooks/record-decisions.sh`) — 1,188 bytes → 625
@@ -63,7 +66,6 @@ note points to:**
 | before acting on a ruling's detail, open its full row | `doc-structure.md` §What a chat reads ("A ruling loads as one line; its full row does not (D390)") and the head of `how-we-work.md` — both always loaded |
 | then make sure the named file actually carries it | `record-decisions.md` §The rule (as above) |
 | if it overwrites or narrows an earlier ruling, fix what the old one left behind (D201) | `record-decisions.md` §When a ruling overwrites another; `DECISIONS.md` step 2's last sentence |
-| the rulings whose full rows name this hook as a home — D13 (the check at the moment he speaks), D137 (each ruling filed in its area's file), D201 (fix what the old one left behind) | the note itself, still: it asks the question, names the area's file and states D201 (the fresh Opus reader's A1) |
 | the rulings whose full rows name this hook as a home — D13 (the check at the moment he speaks), D137 (each ruling filed in its area's file), D201 (fix what the old one left behind) | the note itself, still: it asks the question, names the area's file and states D201 (the fresh Opus reader's A1) |
 | the capitals (DECISION, FIRST, AREA, FULL, OVERWRITES) | none — ordinary letters (D970) |
 
@@ -160,3 +162,28 @@ the exclusions (Astra); D1338, replaced by D1356, dropped from D998's bullet (Op
 and D1221 added to the People list (Opus). **C5:** the handoff's shortened paths written out (Astra) and its pointer to
 the older archive corrected (Opus). Not read a second time, by the agent's call: each fix takes the reader's own words or
 a fact checked against the file.
+
+### The switch-on's reads (7 Nov 26, after his approval — D1740)
+
+The switch-on (both hooks, part B's steps 2–4, the file map, and the document check's count of what a chat reads at its
+start) was read blind by a fresh Opus reader (all six questions of `2026-11-07-rules-diet-step2-switchon-read-brief.md`;
+D1736: a hook change read by one fresh reader before it is switched on) and by Astra (questions 1, 3 and 4 — the meaning of
+the texts; D1739). Reports saved whole: `2026-11-07-rules-diet-step2-switchon-read-opus.md`,
+`2026-11-07-rules-diet-step2-switchon-read-astra.md`.
+
+- **Both:** D1740's short line is its full row's rule word for word; the hooks print exactly the approved texts; part B's
+  steps 2–4 say what part B says. Verdicts: switch on after the named fixes.
+- **Astra, medium:** the file map's new row said an area's rulings file loads only with its own files — the Tracker's also
+  loads on the shared sign-out file. Fixed with that file named.
+- **Opus F1, medium:** the document check counted the short form at the start *and* the full guide in every job, so the
+  saving (about 7,500 tokens a chat) would have read as a cost. Fixed: the full guide is no task read when the start gives
+  the short form; two self-test cases.
+- **Opus F2, medium:** the backlog still called the short form unbuilt. Fixed in its priority line and its item.
+- **Opus F3–F5, low:** the start hook now strips a stray control character (it would have broken the output, and the
+  session would get no note), and prints the old instruction when the short form is empty or past 9,500 characters (the
+  app cuts a note past 10,000 to a 2,000-character preview); the check counts a hook that names the file only in a comment,
+  or an empty file, by the fallback it prints. Tested on six cases and two more self-test cases.
+- **Opus F6–F9, low:** D1740's full row names the switch-on's homes; this document's head is dated; the file map's two
+  sentences and the project guide's map row corrected; the hook's comment names "its setup".
+- Not read a second time: each fix takes the reader's own words or code, and the code fixes are pinned by the self-test
+  and the hook's six cases.

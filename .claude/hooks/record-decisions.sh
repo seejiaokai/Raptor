@@ -15,24 +15,13 @@ trap exit_ok ERR
 
 cat <<'NOTE'
 <decision-check>
-Before acting on this message: does it contain a DECISION, RULING, PREFERENCE,
-CORRECTION, "leave it", explicit NO, or a supersession of something earlier —
-anything that outlives the task in front of you?
-
-If yes: record it FIRST, in its AREA's file under .claude/rules/decisions/ (the
-three steps are at the head of DECISIONS.md) — his words, what it means, and the
-file that will now carry it; mark any ruling it replaces or one-off permission it
-spends (in its FULL row, under .claude/decisions-full/); then run
-`node raptor-port/scripts/backlog-archive.mjs --rulings` (it moves the new full row
-there, leaves its one-line short form, updates the map and archives marked rows —
-D390). Before acting on a ruling's detail, open its full row. Then make sure the named
-file actually carries it. The work absorbing a ruling is not the record keeping it.
-If it OVERWRITES or narrows an earlier ruling, fix what the old one left behind in the
-same change: the documents stating it, the app (file the build), the lists (D201).
-
-If no (an ordinary task instruction), ignore this and carry on.
-
-Either way, the closing report carries a `Rulings:` line.
+Before acting on this message: does it hold a decision, ruling, preference, correction,
+"leave it", explicit no, or a change to something earlier — anything that outlives the
+task in front of you? If yes, record it first, in its area's rulings file, before the
+work it implies (the rule: `.claude/rules/record-decisions.md`; the steps: the head of
+`DECISIONS.md`); if it changes an earlier ruling, fix what that one left behind in the
+same change (D201). The work absorbing a ruling is not the record keeping it. If no,
+carry on. Either way, the closing report carries a `Rulings:` line.
 </decision-check>
 NOTE
 exit 0

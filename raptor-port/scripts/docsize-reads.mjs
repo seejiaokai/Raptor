@@ -7,9 +7,10 @@
  *
  * Five kinds of job, four columns; each file is counted ONCE, in the first column that loads it:
  *   start    before he types — every rules file under .claude/rules/ with no paths: (each loads in every chat), a
- *            CLAUDE.md at the repo root, the task-observer hook's note, and the description of each project skill and
+ *            CLAUDE.md at the repo root, the task-observer hook's note (the skill-notes short form since D1740), and the description of each project skill and
  *            helper (the app lists them at the start);
- *   task     what the job reads by rule before its work — the skill-notes guide, HANDOFF.md, OUTSTANDING.md up to its
+ *   task     what the job reads by rule before its work — the skill-notes guide (only when the start hook gives its
+ *            fallback, not the short form — D1740), HANDOFF.md, OUTSTANDING.md up to its
  *            items (its head and priority list) — and what the files it opens load;
  *   check    what a bug check of a screen, interface work and the ripple map read (§1's layers G, H, I — none for a
  *            notes job), and what those reads load in turn (layer J: the ripple map and the performance guide load the
@@ -41,7 +42,7 @@ export const JOBS = [
    of the same or a higher level) — a heading named here and missing from the file is reported, never counted as nothing
    silently */
 export const TASK_READS = [
-  { f: '.claude/skills/task-observer/SKILL.md', why: 'the skill-notes guide, invoked at every task\'s start' },
+  { f: '.claude/skills/task-observer/SKILL.md', why: 'the skill-notes guide, invoked at a task\'s start only when the start hook gives its fallback (D1740)' },
   { f: 'HANDOFF.md', why: 'read first in every chat' },
   { f: 'OUTSTANDING.md', upTo: '## Items', why: 'its head and priority list, before telling him anything is open (D53)' },
 ]
@@ -54,6 +55,11 @@ export const CHECK_READS = [
   { f: 'raptor-port/docs/feature-impact.md', sections: ['## 1.', '## 3.'], why: 'weigh the whole ecosystem: §1 and §3' },
 ]
 export const START_NOTE = '.claude/hooks/task-observer-session-start.sh'
+/* since the rules diet's step 2 (D969, point F; D1740) the start hook prints the skill-notes short form, read from this
+   file, and keeps its here-document only as the fallback: a hook that names the file is counted by the file */
+export const START_SHORT = '.claude/skills/task-observer/SHORT-FORM.md'
+/* the full guide the short form replaces at a task's start: not read again as a task read when the short form is given */
+export const START_FULL = '.claude/skills/task-observer/SKILL.md'
 export const MESSAGE_NOTE = '.claude/hooks/record-decisions.sh'
 
 const linesOf = t => (t || '').split('\n').map(l => l.replace(/\r$/, ''))
@@ -120,14 +126,24 @@ export function measure({ files, read, est, jobs = JOBS, taskReads = TASK_READS,
     ...rules.filter(f => !RL.isScoped(read(f))).map(f => item(f, read(f), 'no paths: — loads in every chat')),
     ...files.filter(f => f === 'CLAUDE.md' && read(f) != null).map(f => item(f, read(f), 'the repo root\'s guide')),
   ]
-  if (read(START_NOTE) != null) start.push(item(START_NOTE, heredocOf(read(START_NOTE)), 'its note, at every session\'s start', 'its note'))
+  /* the hook names the file on a line that is not a comment, and the file has text — else the hook prints its fallback
+     (a fresh reader's F5, 7 Nov 26) */
+  let usesShort = false
+  if (read(START_NOTE) != null) {
+    const hook = read(START_NOTE), names = linesOf(hook).some(l => !/^\s*#/.test(l) && l.includes(START_SHORT))
+    const s = names ? read(START_SHORT) : null, short = s != null && s.trim() ? s : null
+    usesShort = short != null
+    start.push(short != null ? item(START_SHORT, short, 'the start hook\'s note — the skill-notes short form, at every session\'s start')
+      : item(START_NOTE, heredocOf(hook), 'its note, at every session\'s start', 'its note'))
+  }
+  const tReads = usesShort ? taskReads.filter(r => r.f !== START_FULL) : taskReads
   const descs = files.filter(f => (/^\.claude\/skills\/[^/]+\/SKILL\.md$/.test(f) || /^\.claude\/agents\/[^/]+\.md$/.test(f)) && read(f) != null)
   for (const f of descs) start.push(item(f, descriptionOf(read(f)), 'listed at the start', 'description'))
   const message = read(MESSAGE_NOTE) != null ? item(MESSAGE_NOTE, heredocOf(read(MESSAGE_NOTE)), `its note, on each of his messages × ${MESSAGES}`, 'its note') : null
   const atStart = new Set(start.filter(x => !x.part).map(x => x.f))
   const out = jobs.map(j => {
-    const task = taskReads.map(r => take(r, 'task')).filter(Boolean)
-    const loadedT = follow([...taskReads.map(r => r.f), ...j.opens], scoped, claudes, atStart)
+    const task = tReads.map(r => take(r, 'task')).filter(Boolean)
+    const loadedT = follow([...tReads.map(r => r.f), ...j.opens], scoped, claudes, atStart)
     task.push(...loadedT.map(x => item(x.f, read(x.f), x.why)))
     const check = []
     if (j.check !== false) {

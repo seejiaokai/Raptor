@@ -364,6 +364,14 @@ the structural half that survives compaction. The skill is vendored at
 treat it as session-only. Provenance and opt-out:
 `../.claude/skills/TASK-OBSERVER-VENDORED.md`.
 
+*Since 7 Nov 26 (D969, point F, its wording approved — D1740; the rules diet's step 2):* the start hook gives
+the short form, `.claude/skills/task-observer/SHORT-FORM.md`, in place of the instruction above to invoke the
+skill before beginning work; the full skill is invoked only to run a review, to create or edit a skill, for a
+question about its setup, or for a case the short form does not cover. For this project the short form replaces
+the skill description's instruction to invoke the full skill at every session start; if the hook cannot read the
+short form, it prints the old instruction, and the full skill is invoked as before. What the paragraph above says
+of the log and of the OPEN notes stands.
+
 ## Product bar & ideation (owner, 7 Aug 26)
 
 ### Ideate before building non-trivial UX
