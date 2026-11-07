@@ -383,6 +383,19 @@ both shapes). Dry-run on the samples against the real rulings, each page given i
   fail the turn on each and put the run back anyway; so §3's order stands (the page line first, then the command). The
   gate and the recorder read what a page owes from one function (`docsize-rulings.mjs` `pageDebts`). `--merge` keeps
   writing past those debts (part 3 lists them "place on the page").
+- **The fresh Opus reader of step 1 (7 Nov 26 — `docs/superpowers/briefs/2026-11-07-rules-diet-step1-read.md`): its six
+  findings fixed red-first, each with a self-test case.** Two readings set by it, both from §2: a ruling counts as stated
+  only on its own page or — a general ruling — in an always-loaded rules file; anywhere else a citation only points (F1).
+  And a line with words enough to state a converted area's ruling cites the rulings that changed it **wherever it
+  stands** — its page, another page's pointer, an always-loaded file (F2; §5's table said "of its home area"; widened
+  because a stale restatement misleads wherever it loads, D201). **Its cost for step 2 on:** a "From other areas" pointer
+  of four words or more to a converted ruling cites that ruling's changes too; the recorder lists each one owed.
+  **Its five questions, answered:** (1) one probe file per seam was too weak — each seam file is now registered with every
+  seam path its area file carries today, and checked on each, and on each of its area file's own paths; (2) a registered
+  seam file that is missing once its area file no longer loads on its seam now fails; (3) the sizing step's read now
+  takes the types of change as well, which its step 1 picks from — measured 1,227 tokens (the table in §1 says 1,620;
+  the plan's figure was not re-derived); (4) a heading is matched to a boundary, so "## 1" never takes "## 10"; (5) a
+  page's area gets a full-text header in the page's words.
 
 ### Review log
 

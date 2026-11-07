@@ -507,7 +507,7 @@ scenario('a seam file that misses its seam', true, c => c.write(LW_SEAM, seamFil
    longer loads on its seam fails */
 scenario('a seam file missing one seam path the old probe did not use', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS.filter(g => !g.endsWith('engine/inputs.ts')))), { mustSay: 'does not load on raptor-port/src/engine/inputs.ts, a path of its seam' })
 scenario('an area file still loading on a seam path the old probe did not use', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/QualsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/QualsPage.tsx' })
-scenario('a seam file missing one of its area file's own paths', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/docs/leavewar/**').replace('its architecture', 'rulings')) }, { mustSay: 'does not load on raptor-port/docs/leavewar/**, a path of its area file' })
+scenario('a seam file missing one of its area file\'s own paths', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/docs/leavewar/**').replace('its architecture', 'rulings')) }, { mustSay: 'does not load on raptor-port/docs/leavewar/**, a path of its area file' })
 scenario('a seam file gone once its area file no longer loads on its seam', true, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**').replace('its architecture', 'rulings')), { mustSay: '.claude/rules/seams/leave-war.md is missing' })
 scenario('…but no seam file while the area file still loads on every seam path (today)', false, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS).replace('its architecture', 'rulings')))
 scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
@@ -855,15 +855,7 @@ const RFILES = {
 const rRead = f => RFILES[f] ?? null, rEst = t => t.length
 const rRun = (over = {}) => READS.measure({ files: Object.keys(RFILES), read: rRead, est: rEst, jobs: [{ job: 'notes', opens: [], check: false }, { job: 'a', opens: ['app/a/x.ts'] }], taskReads: [{ f: 'HANDOFF.md' }, { f: 'OUTSTANDING.md', upTo: '## Items' }], checkReads: [{ f: 'docs/guide.md', sections: ['## 1.', '## 9.'] }], ...over })
 const fs_ = col => col.map(x => x.f + (x.part ? ` (${x.part})` : ''))
-reads('a heading is matched to a boundary — "## 1" never takes "## 10" (question 4)', () => { const p = READS.partOf('# T
-
-## 10 Ten
-ten
-
-## 1 One
-one
-', { sections: ['## 1'] }); return p.text.startsWith('## 1 One') && !p.text.includes('ten') ? '' : `took: ${p.text.split('
-')[0]}` })
+reads('a heading is matched to a boundary — "## 1" never takes "## 10" (question 4)', () => { const p = READS.partOf('# T\n\n## 10 Ten\nten\n\n## 1 One\none\n', { sections: ['## 1'] }); return p.text.startsWith('## 1 One') && !p.text.includes('ten') ? '' : `took: ${p.text.split('\n')[0]}` })
 reads('the start: rules with no paths:, the hook\'s note and each description — never a scoped rules file or a skill\'s body', () => {
   const m = rRun(), s = fs_(m.start).join(' | ')
   return s !== '.claude/rules/always.md | .claude/hooks/task-observer-session-start.sh (its note) | .claude/skills/s/SKILL.md (description) | .claude/agents/h.md (description)' ? `start was ${s}`
