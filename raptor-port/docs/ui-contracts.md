@@ -12380,3 +12380,28 @@ The page and its pictures: `raptor-port/docs/img/handpass/2026-11-05-consistency
 - **D1705 — the Tracker's typed marks** become line icons, as drawn (Merge and Unmerge in words).
 - **D1706 — one look for every menu of actions:** the board's plain rows (`.sb-moremenu`), for the Leave War window's ⋯ and the Tracker's File and pencil menus too; rows 38 tall; Grant OIL's green kept (D1320); the board's Templates and + Wave (choices) unchanged.
 - **D1707 — the one gear (D1509) in its button's own colour,** the SANS calendar's included; the OIL tracker's 📅 becomes Edit Schedule's calendar (D1508).
+
+## The pictures round's answers, 8 Nov 26
+
+His "All as recommended" to the pictures round's page (https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, its pictures
+and notes in `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`). Each is built to its drawing and checked beside
+it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`.
+- **D1780** — the Scheduler Board on a phone on its side: Calendar, the title, the day strip and search scroll away with the
+  list; the bar of buttons stays.
+- **D1781** — the desktop board from 821 to 1099 wide: the remarks on a row of their own, R over B and TO over LD as on a
+  phone (D1029 and D1026 narrowed).
+- **D1782** — OIL Earn's day button is the slider switch "No OIL earned", cyan when on; the refusal words of D845 stay.
+- **D1783** — in OIL Earn a tap on a puck that cannot earn picks nothing; the plain passing note says "Nothing changed for
+  <callsign>." and the reason.
+- **D1784** — an input filed after publishing wears the waiting mark on its Unavailable row too, as on Ground Programme.
+- **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
+- **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
+  1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
+  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
+- **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
+- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after.
+- **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
+- **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
+- **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
+  hidden warning's ↺; the ✕ stays typed.
+- **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.
