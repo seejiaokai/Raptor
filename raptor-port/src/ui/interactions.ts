@@ -948,7 +948,9 @@ export function routeOpenKey(e: KeyboardEvent) {
    stores (C) and + Wave, and the duty role's box, whose pick-list opens on a press: ↓ presses it, and the menu, told the
    keys opened it (sheetfocus.ts menuKeys), takes them onto its first item. With that menu already up (opened by the
    mouse), ↓ goes into it. Nothing else of ↓ is taken — a box's own caret, the page's scroll. */
-const MENU_BTN = '[data-dwadd], [data-daytplopen], #sbTpl, [data-planmenu], [data-stcfg], [data-wvadd], [data-rolepick]'
+/* …and the day bar's Templates (data-daytpladd), the board's Templates at a phone's width, where #sbTpl is not drawn
+   ([BOARD-KEYS-LEFT]'s roll-call, 7 Nov 26: Enter opened it on its first pick, ↓ did nothing) */
+const MENU_BTN = '[data-dwadd], [data-daytplopen], [data-daytpladd], #sbTpl, [data-planmenu], [data-stcfg], [data-wvadd], [data-rolepick]'
 export function routeMenuKey(e: KeyboardEvent) {
   if (e.key !== 'ArrowDown' || e.defaultPrevented || e.isComposing || e.ctrlKey || e.altKey || e.metaKey || e.shiftKey) return
   const t = e.target as HTMLElement | null

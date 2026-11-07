@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus, useEscClose, locate } from './sheetfocus'
+import { useSheetFocus, useEscClose, locate, pressedByKeys } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -88,11 +88,33 @@ export function SchedBoard() {
      then does not also close the board. Closed with the board. */
   const [moreOpen, setMoreOpen] = useState(false)
   const moreRef = useRef<HTMLSpanElement | null>(null)
+  /* THE ⋯ MENU BY THE KEYS (owner D1646, 5 Nov 26 — the board's small menus by the keyboard; [BOARD-KEYS-LEFT]'s roll-call of
+     7 Nov 26 found this one, drawn only at a phone's width — a narrow window at a desk, a tablet with a keyboard — not yet
+     reached): opened by Enter, Space or ↓ on ⋯ the keys go onto its first item and ↑ ↓ move round it, as in the board's other
+     menus (sheetfocus.ts menuKeys); Escape, or a pick made by the keys, puts them back on ⋯ — before the pick acts, so a window
+     the pick opens (Insights, the Sort all box) gives them back to ⋯ when it closes; the keys leaving it close it, as the
+     week's ⋯ does (ScheduleInsightsMenu.tsx). Opened or picked by the mouse or a finger, nothing of this happens. */
+  const moreKeys = useRef(false)
+  const moreItems = () => [...(moreRef.current?.querySelectorAll<HTMLButtonElement>('.sb-moremenu button') || [])].filter(b => !b.disabled)
+  const moreBack = () => moreRef.current?.querySelector<HTMLElement>('#sbMore')?.focus({ preventScroll: true })
+  useLayoutEffect(() => {
+    if (!moreOpen || !moreKeys.current) return
+    moreKeys.current = false
+    moreItems()[0]?.focus({ preventScroll: true })
+  }, [moreOpen])
+  /* an item's own press: by the keys, the keys go back to ⋯ first */
+  const morePick = (e: React.MouseEvent<HTMLElement>) => { const keys = pressedByKeys(e.currentTarget); setMoreOpen(false); if (keys) moreBack() }
   useEffect(() => { if (!open) setMoreOpen(false) }, [open])
   useEffect(() => {
     if (!moreOpen) return
     const down = (e: Event) => { if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false) }
-    const key = (e: KeyboardEvent) => { if (e.key === 'Escape') { e.stopPropagation(); e.preventDefault(); setMoreOpen(false) } }
+    const key = (e: KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      e.stopPropagation(); e.preventDefault()
+      const inMenu = !!moreRef.current?.querySelector('.sb-moremenu')?.contains(document.activeElement)
+      setMoreOpen(false)
+      if (inMenu) moreBack()
+    }
     document.addEventListener('pointerdown', down, true)
     document.addEventListener('keydown', key, true)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
@@ -568,17 +590,33 @@ export function SchedBoard() {
           <button className={'abtn sb-hltog' + ((HLSET.size || SEARCH) && !HLOPEN ? ' on' : '')} id="sbHl"
             aria-expanded={HLOPEN} aria-label="Highlight filters" title="Highlight by category / quals"
             onClick={() => { toggleHlOpen(); notify() }}><HlIcon /></button>
-          <span className="sb-morewrap" ref={moreRef}>
+          {/* the keys leaving the menu (a Tab out of its end, onto the search) close it, as the week's ⋯ does */}
+          <span className="sb-morewrap" ref={moreRef}
+            onBlur={e => { if (moreOpen && e.relatedTarget && !e.currentTarget.contains(e.relatedTarget as Node)) setMoreOpen(false) }}>
             <button className={'abtn sb-more' + (moreOpen ? ' on' : '')} id="sbMore" aria-haspopup="menu" aria-expanded={moreOpen}
               aria-label="More — Sort all and the layout" title="Sort all · Phone / Desktop layout"
-              onClick={() => setMoreOpen(o => !o)}>⋯</button>
-            {moreOpen && <div className="sb-moremenu" id="sbMoreMenu" role="menu">
-              <button className="sb-moreitem" id="sbMoreInsights" role="menuitem" onClick={()=>{setMoreOpen(false);setInsights(true);notify()}}>Insights</button>
+              onKeyDown={e => {
+                if (e.key !== 'ArrowDown' || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return
+                e.preventDefault()
+                if (moreOpen) moreItems()[0]?.focus({ preventScroll: true })
+                else { moreKeys.current = true; setMoreOpen(true) }
+              }}
+              onClick={e => { const keys = pressedByKeys(e.currentTarget); if (!moreOpen) moreKeys.current = keys; setMoreOpen(!moreOpen) }}>⋯</button>
+            {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- the menu's own ↑ ↓, moving the keys between its items, which are the controls (each a button with role="menuitem") */}
+            {moreOpen && <div className="sb-moremenu" id="sbMoreMenu" role="menu"
+              onKeyDown={e => {
+                if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.altKey || e.ctrlKey || e.metaKey) return
+                const list = moreItems(), i = list.indexOf(document.activeElement as HTMLButtonElement)
+                if (i < 0) return
+                e.preventDefault()
+                list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length]!.focus({ preventScroll: true })
+              }}>
+              <button className="sb-moreitem" id="sbMoreInsights" role="menuitem" onClick={e=>{morePick(e);setInsights(true);notify()}}>Insights</button>
               {/* the same gate Sort all has on the desktop bar: edit mode, and not while a frozen published version is shown */}
               {open && HOOKS.editMode() && <button className="sb-moreitem" id="sbMoreSort" role="menuitem" disabled={SBDAY != null && DPREV.has(SBDAY)}
-                onClick={() => { setMoreOpen(false); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi"><ReorderIcon /></span> Sort all</button>}
+                onClick={e => { morePick(e); if (SBDAY != null) askSortAll(SBDAY) }}><span className="bi"><ReorderIcon /></span> Sort all</button>}
               <button className="sb-moreitem" id="sbMoreWide" role="menuitem"
-                onClick={() => { setMoreOpen(false); toggleWide(); notify() }}>{/* the layout switch drawn, a phone or a screen — an iPhone drew 📱 / 🖥 in colour (owner D1703, 5 Nov 26) */}
+                onClick={e => { morePick(e); toggleWide(); notify() }}>{/* the layout switch drawn, a phone or a screen — an iPhone drew 📱 / 🖥 in colour (owner D1703, 5 Nov 26) */}
                 <span className="bi">{SBWIDE ? <PhoneIcon /> : <DesktopIcon />}</span> {SBWIDE ? 'Phone layout' : 'Desktop layout'}</button>
             </div>}
           </span>

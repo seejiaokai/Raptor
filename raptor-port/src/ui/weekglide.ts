@@ -75,13 +75,21 @@ const EASE = 'cubic-bezier(.25,.5,.25,1)'
    restored ONCE, when the last finishes (→0) — to the MOST RECENT cross's
    landing, tracked here so out-of-order finishes still land the right week.
    This module is the only writer of these two styles, so the captured baseline
-   is always their real pre-glide value. */
+   is always their real pre-glide value.
+   ONE BASELINE PER WEEK, NOT PER BURST ([WEEK-GLIDE-TWO-PAGES], the fourth read
+   of 3 Nov 26, finding 2). Edit Schedule and View-only Sched each keep their own
+   week, both mounted, one shown (Shell.tsx). A cross on Edit Schedule, a switch
+   to View-only Sched and a cross there before the first slide ended (about half
+   a second) used to keep ONE week's baseline and put it back on the LAST week
+   alone: Edit Schedule's week kept its touches off and its scrolling off until a
+   reload, and View-only Sched's took Edit Schedule's baseline. Each week a burst
+   touches now keeps its own pre-glide values and its own latest landing, and the
+   last finish puts every one of them back; the page's own clip stays one value
+   for the burst. */
 let inFlight = 0
-let savedPE: string | null = null
 let savedOverflowX: string | null = null
-let savedRootOX: string | null = null
-let lastRoot: HTMLElement | null = null
-let lastLanded = 0
+type Held = { pe: string; ox: string; landed: number }
+const held = new Map<HTMLElement, Held>()
 
 /* two animation frames from now — one for the browser to paint, one to commit it;
    a setTimeout stand-in where rAF is missing (jsdom) so the clone never leaks */
@@ -236,15 +244,14 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
        week came back from the reveal with no tiles at all and the phone drew it
        in from the top over ~0.4 s — the lower half black. Painted under the
        clones, it is ready when they come off. The pre-glide styles are captured
-       ONCE per burst (see the module baseline above) so an overlapping second
-       cross can't read the already-set values as its baseline. */
-    if (inFlight === 0) {
-      savedPE = root.style.pointerEvents
-      savedOverflowX = document.body.style.overflowX
-      savedRootOX = root.style.overflowX
-    }
+       ONCE per week per burst, the page's clip once per burst (see the module
+       baseline above), so an overlapping second cross can't read the
+       already-set values as its baseline. */
+    if (inFlight === 0) savedOverflowX = document.body.style.overflowX
+    const was = held.get(root)
+    if (was) was.landed = landed                // this week's most recent cross owns its final landing
+    else held.set(root, { pe: root.style.pointerEvents, ox: root.style.overflowX, landed })
     inFlight++
-    lastRoot = root; lastLanded = landed        // the most recent cross owns the final landing
     root.style.pointerEvents = 'none'
     document.body.style.overflowX = 'hidden'
     /* AND STILL IT ([WEEK-SWIPE-CROSS], his iPhone recordings of 3 Nov 26, 06:00 to 08:35, read by the ?swdebug log): after
@@ -261,21 +268,24 @@ export function beginGlide(root: HTMLElement): (() => void) | null {
       if (done) return
       done = true
       out.remove()
-      /* only the LAST glide of a burst re-lands the real week and uncovers it —
-         a still-sliding earlier/later glide keeps root covered by its own
-         clones. It re-lands the MOST RECENT cross's target (lastLanded), so an
-         out-of-order finish can't leave the week on a stale day. */
+      /* only the LAST glide of a burst re-lands the real weeks and uncovers them —
+         a still-sliding earlier/later glide keeps its week covered by its own
+         clones. Each week re-lands on ITS most recent cross's target, so an
+         out-of-order finish can't leave a week on a stale day, and every week the
+         burst touched — one page's and the other's — is put back. */
       if (--inFlight > 0) { inc.remove(); return }
-      const r = lastRoot || root
-      const wasSB = r.style.scrollBehavior
-      r.style.scrollBehavior = 'auto'
-      r.scrollLeft = lastLanded
-      r.style.overflowX = savedRootOX ?? ''          // scrolls again, standing still on its landing
-      r.scrollLeft = lastLanded
-      r.style.scrollBehavior = wasSB
-      r.style.pointerEvents = savedPE ?? ''          // the settled week takes touches again
+      for (const [r, h] of held) {
+        const wasSB = r.style.scrollBehavior
+        r.style.scrollBehavior = 'auto'
+        r.scrollLeft = h.landed
+        r.style.overflowX = h.ox                     // scrolls again, standing still on its landing
+        r.scrollLeft = h.landed
+        r.style.scrollBehavior = wasSB
+        r.style.pointerEvents = h.pe                 // the settled week takes touches again
+      }
+      held.clear()
       document.body.style.overflowX = savedOverflowX ?? ''
-      savedPE = savedOverflowX = savedRootOX = null; lastRoot = null
+      savedOverflowX = null
       /* the incoming clone is the landed week's own picture, so it stays on top
          for two more frames while the browser commits the real week's paint
          underneath — then comes off over identical pixels, never over black */

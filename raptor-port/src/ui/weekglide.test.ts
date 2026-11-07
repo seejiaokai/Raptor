@@ -232,6 +232,37 @@ describe('a fired glide leaves nothing behind', () => {
     expect(document.querySelectorAll('body > .week').length, 'all four clones cleaned up').toBe(1)
   })
 
+  /* [WEEK-GLIDE-TWO-PAGES] (the fourth read of 3 Nov 26, finding 2): Edit Schedule and View-only Sched each keep their own
+     week, both mounted, one shown. A cross on Edit Schedule, a switch to View-only Sched and a cross there before the first
+     slide ended put back only View-only Sched's week — the burst kept one baseline and restored it on the LAST week alone —
+     so Edit Schedule's week stayed untouchable and unscrollable until a reload. Every week a burst touched is put back. */
+  it('a burst over two pages puts back BOTH weeks — the first page\'s week is never left untouchable or unscrollable', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v')
+    edit.style.pointerEvents = 'auto'          // a baseline of its own, to prove each week gets its OWN back
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    expect(edit.style.pointerEvents).toBe('none')
+    expect(edit.style.overflowX).toBe('hidden')
+    // the page switch, then a cross on View-only Sched while Edit Schedule's slide is still running
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()
+    expect(viewWk.style.pointerEvents).toBe('none')
+    vi.runAllTimers()
+    expect(viewWk.style.pointerEvents, 'View-only Sched\'s week takes touches again').toBe('')
+    expect(viewWk.style.overflowX, 'and scrolls again').toBe('')
+    expect(edit.style.pointerEvents, 'Edit Schedule\'s week is given ITS OWN touches back, not left off').toBe('auto')
+    expect(edit.style.overflowX, 'and scrolls again, not stranded').toBe('')
+    expect(document.body.style.overflowX, 'the page clip is lifted').toBe('')
+    expect(clones().length, 'every copy cleaned up').toBe(0)
+    // and the next burst starts clean: a cross on Edit Schedule alone covers and uncovers only it
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    expect(viewWk.style.pointerEvents, 'the other page\'s week is not touched by a later cross').toBe('')
+    vi.runAllTimers()
+    expect(edit.style.pointerEvents).toBe('auto')
+  })
+
   /* owner, 23 Aug 26 — "bleeding at the top bar when swiping". The clone is
      position:fixed from the week's rect.top, which is above the sticky top bar
      once the page is scrolled; at z-index 60 (the bar's own) it tied and, being

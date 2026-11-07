@@ -275,9 +275,15 @@ export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
     e.preventDefault()
     list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length]!.focus({ preventScroll: true })
   })
-  const by = !!keyOn && (keyOn === anchor || (keyOn instanceof Node && anchor.contains(keyOn)))
+  if (pressedByKeys(anchor)) menuFirst(box)?.focus({ preventScroll: true })
+}
+/** whether the press now landing on `el` came from the keys — Enter, Space or ↓ pressed on it, and no pointer since; read
+ *  and forgotten. A menu drawn by React (the board's ⋯, SchedBoard.tsx) asks it as it opens, and as one of its items is
+ *  picked, as menuKeys asks it for the string-drawn menus. */
+export function pressedByKeys(el: HTMLElement): boolean {
+  const by = !!keyOn && (keyOn === el || (keyOn instanceof Node && el.contains(keyOn)))
   keyOn = null
-  if (by) menuFirst(box)?.focus({ preventScroll: true })
+  return by
 }
 /** the item a menu opened by the keys puts them on: its first pick, else its first button */
 export function menuFirst(box: HTMLElement): HTMLElement | null {

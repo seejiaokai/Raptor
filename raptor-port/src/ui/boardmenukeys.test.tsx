@@ -320,3 +320,98 @@ describe('[D1646] Escape closes the Sort all box', () => {
     expect(JSON.stringify(DAYS[2]), 'nothing sorted').toBe(was)
   })
 })
+
+/* [BOARD-KEYS-LEFT]'s roll-call of 7 Nov 26 — two board menus D1646's batch did not reach, both drawn only at a phone's width
+   (820 or less: a narrow window at a desk, a tablet with a keyboard): the ⋯ menu beside the highlighter (Insights, Sort all,
+   the layout switch — SchedBoard.tsx) and the day bar's Templates (board.ts — the desktop bar's Templates is #sbTpl). Each
+   now takes the keys as the board's other menus do. Every case but the mouse's pin is red on the code before. */
+describe('[D1646] the board\'s ⋯ menu by the keys', () => {
+  const more = () => $('#sbMore')
+  const moreMenu = () => $('#sbMoreMenu')
+  const moreItems = () => [...moreMenu().querySelectorAll<HTMLElement>('button')].filter(b => !(b as HTMLButtonElement).disabled)
+  const mouseClick = async (el: HTMLElement) => {
+    await act(async () => { el.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true })); el.dispatchEvent(new MouseEvent('mousedown', { bubbles: true })) })
+    el.focus()
+    await click(el)
+  }
+  it('Enter on ⋯ opens it on its first item; ↓ and ↑ move round it; Escape closes it, the keys back on ⋯', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    expect(moreMenu(), 'the menu is up').toBeTruthy()
+    const list = moreItems()
+    expect(list.length, 'Insights, Sort all, the layout switch').toBe(3)
+    expect(at(), 'the keys on its first item').toBe(list[0])
+    await key('ArrowDown')
+    expect(at(), '↓ to the next').toBe(list[1])
+    await key('ArrowUp')
+    expect(at(), '↑ back').toBe(list[0])
+    await key('ArrowUp')
+    expect(at(), 'round from the first to the last').toBe(list[2])
+    await key('ArrowDown')
+    expect(at(), 'and round from the last to the first').toBe(list[0])
+    await key('Escape')
+    expect(moreMenu(), 'Escape closed it').toBeNull()
+    expect(at(), 'the keys back on ⋯').toBe(more())
+    expect(boardOpen(), 'the board stays').toBe(true)
+  })
+  it('↓ on ⋯ opens it on its first item', async () => {
+    await click(date(2))
+    more().focus()
+    await key('ArrowDown')
+    expect(moreMenu(), '↓ opened it').toBeTruthy()
+    expect(at(), 'the keys on its first item').toBe(moreItems()[0])
+    await key('Escape')
+  })
+  it('opened by the mouse it opens as before: the keys stay on ⋯ (a pin)', async () => {
+    await click(date(2))
+    await mouseClick(more())
+    expect(moreMenu()).toBeTruthy()
+    expect(at(), 'the keys still on ⋯').toBe(more())
+    await key('Escape')
+  })
+  it('a pick by the keys gives them back to ⋯ (the layout switch, pressed twice back as it was)', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    const sw = moreItems()[2]!
+    await pressByKeys(sw)
+    expect(moreMenu(), 'the pick closed the menu').toBeNull()
+    expect(at(), 'the keys back on ⋯').toBe(more())
+    await pressByKeys(more())
+    await pressByKeys(moreItems()[2]!)
+    expect(at()).toBe(more())
+  })
+  it('Insights picked by the keys: closed by Escape, the keys come back to ⋯', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    await pressByKeys(moreItems()[0]!)
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    expect(($('#insightModal') as any).hidden, 'Insights is up').toBe(false)
+    await key('Escape')
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    expect(($('#insightModal') as any).hidden, 'Insights closed').toBe(true)
+    expect(boardOpen(), 'the board stays').toBe(true)
+    expect(at(), 'the keys back on ⋯').toBe(more())
+  })
+  it('the keys leaving the menu (a Tab out of its end) close it', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    const list = moreItems()
+    list[list.length - 1]!.focus()
+    await act(async () => { $('#searchB').focus() })
+    expect(moreMenu(), 'the menu went with the keys').toBeNull()
+  })
+})
+
+describe('[D1646] the day bar\'s Templates (a phone\'s width) by the keys', () => {
+  it('↓ on it opens its menu on its first pick', async () => {
+    await click(date(2))
+    const b = $('#sbBoard [data-daytpladd]')
+    expect(b, 'the day bar\'s Templates').toBeTruthy()
+    b.focus()
+    await key('ArrowDown')
+    expect(menu(), '↓ opened the menu').toBeTruthy()
+    expect(menu().contains(at()) && at().tagName === 'BUTTON', 'the keys are in it').toBe(true)
+    await key('Escape')
+    expect(keysOn(b), 'the keys back on Templates').toBe(true)
+  })
+})
