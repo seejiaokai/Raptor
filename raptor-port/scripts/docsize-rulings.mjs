@@ -160,41 +160,55 @@ export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file
 /* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
    their area files into files of their own that load on the area's own paths AND on the files where the area meets
    the rest of the app — so the area's rulings load only on its own files, and a seam file alone where they meet. Each
-   is registered here with one file inside its area and one on its seam; the gate checks that its `paths:` load it on
-   both, that its area file no longer loads on the seam, and that it has a byte tripwire (docsize.mjs RULING_BYTES). */
+   is registered here with one file inside its area and EVERY seam path its area file carries today (copied 7 Nov 26 from
+   the area files' "the seams where … meets the rest of the app" lists — the step-1 reader's question 1: one probe file
+   per seam let a path be dropped or kept unnoticed). The gate checks that the seam file's `paths:` load it inside the
+   area, on each of its area file's own paths and on each seam path; that its area file loads on none of the seam paths;
+   that a seam file is there once its area file no longer loads on every seam path (question 2 — else nothing carries the
+   architecture there); and that it has a byte tripwire (docsize.mjs RULING_BYTES). A glob is probed by a file name made
+   from it ("**" and "*" read as "probe"). */
 export const SEAM_DIR = '.claude/rules/seams'
 export const SEAMS = [
-  { f: '.claude/rules/seams/leave-war.md', area: '.claude/rules/decisions/leave-war.md', inside: 'raptor-port/src/leavewar/ui/Matrix.tsx', seam: 'raptor-port/src/ui/InputsPage.tsx' },
-  { f: '.claude/rules/seams/tracker.md', area: '.claude/rules/decisions/tracker.md', inside: 'raptor-port/src/tracker/app/core.js', seam: 'raptor-port/src/ui/Shell.tsx' },
+  { f: '.claude/rules/seams/leave-war.md', area: '.claude/rules/decisions/leave-war.md', inside: 'raptor-port/src/leavewar/ui/Matrix.tsx',
+    seams: ['src/main.tsx', 'src/probe-bridge.ts', 'src/state/store.ts', 'src/state/inputgate-hook.ts', 'src/state/people-settings-commit.ts', 'src/storage/**', 'src/command/**', 'src/undo/**', 'src/engine/qualcols.ts', 'src/engine/people.ts', 'src/engine/inputs.ts', 'src/ui/QualsPage.tsx', 'src/ui/InputsPage.tsx', 'src/ui/inputedit.tsx', 'src/ui/Shell.tsx', 'docs/data-schema.md', 'docs/undo-contract.md', 'docs/performance.md'].map(p => 'raptor-port/' + p) },
+  { f: '.claude/rules/seams/tracker.md', area: '.claude/rules/decisions/tracker.md', inside: 'raptor-port/src/tracker/app/core.js',
+    seams: ['src/main.tsx', 'src/state/store.ts', 'src/storage/**', 'src/command/**', 'src/undo/**', 'src/ui/Shell.tsx', 'docs/data-schema.md', 'docs/data-model.md', 'docs/undo-contract.md'].map(p => 'raptor-port/' + p) },
 ]
+export const probeOf = g => g.replace(/\*\*/g, 'probe').replace(/\*/g, 'probe').replace(/\?/g, 'p')
 /* what is wrong with the seam files on disk — [] when nothing; `read` gives a file's text, or '' when it is absent */
 export function seamProblems(files, read) {
   const out = [], known = new Map(SEAMS.map(s => [s.f, s]))
+  for (const s of SEAMS) {
+    const area = read(s.area), lost = area ? s.seams.filter(g => !matchesPaths(pathsOf(area), probeOf(g))) : []
+    if (!read(s.f) && lost.length) out.push(`${s.f} is missing, and ${s.area} no longer loads on ${lost.slice(0, 3).join(', ')}${lost.length > 3 ? ` and ${lost.length - 3} more` : ''} — nothing carries the area's architecture there: restore the seam file (the plan §2), or give the area file those paths back`)
+  }
   for (const f of files.filter(f => f.startsWith(SEAM_DIR + '/') && f.endsWith('.md'))) {
     const s = known.get(f)
     if (!s) { out.push(`${f} is a seam file nobody registered — add it to SEAMS in raptor-port/scripts/docsize-rulings.mjs (a file inside its area and one on its seam) and give it a byte tripwire in docsize.mjs's RULING_BYTES`); continue }
     const globs = pathsOf(read(f))
     if (!globs.length) { out.push(`${f} has no paths: — a seam file loads on its area's own files and on its seam, never in every chat`); continue }
     if (!matchesPaths(globs, s.inside)) out.push(`${f} does not load on ${s.inside}, a file inside its area — its paths: must keep the area's own paths (the plan §2: the architecture binds the whole area)`)
-    if (!matchesPaths(globs, s.seam)) out.push(`${f} does not load on ${s.seam}, a file on its seam — its paths: must carry the seam paths`)
-    const area = read(s.area)
-    if (area && matchesPaths(pathsOf(area), s.seam)) out.push(`${s.area} still loads on ${s.seam}, a seam file's path — once ${f} carries the architecture, the area's rulings load only on its own files (the plan §2); give each ruling that governs the seam a pointer under the page's "From other areas"`)
+    for (const g of s.seams) if (!matchesPaths(globs, probeOf(g))) out.push(`${f} does not load on ${g}, a path of its seam — its paths: must carry every seam path`)
+    const area = read(s.area), own = area ? pathsOf(area) : []
+    for (const g of own) if (!matchesPaths(globs, probeOf(g))) out.push(`${f} does not load on ${g}, a path of its area file — its paths: must keep the area's own paths (the plan §2)`)
+    for (const g of s.seams) if (area && matchesPaths(own, probeOf(g))) out.push(`${s.area} still loads on ${g}, a seam path — once ${f} carries the architecture, the area's rulings load only on its own files (the plan §2); give each ruling that governs the seam a pointer under the page's "From other areas"`)
   }
   return out
 }
 /* The rulings a text cites, outside code spans (a number in a code span is an example): every D-number, and every
    ruling inside a range. `named` is only the numbers written out — a range's ends, never what lies between, since
-   numbers may skip (D78). */
+   numbers may skip (D78). A range is written with a D on both ends ("D654-D656"); a number after a dash without its own D
+   is no ruling — "D1734 – 7 Nov 26" cites D1734 only, and its 7 is a word (the step-1 reader's F6, 7 Nov 26). */
 export function citesIn(text) {
   const s = (text || '').replace(/(`+)[\s\S]*?\1/g, ' ')
   const all = new Set(), named = new Set()
-  for (const m of s.matchAll(/\bD(\d+)(?:\s*[–-]\s*D?(\d+))?\b/g)) {
+  for (const m of s.matchAll(/\bD(\d+)(?:\s*[–-]\s*D(\d+))?\b/g)) {
     const lo = +m[1], hi = m[2] ? +m[2] : lo
     named.add('D' + lo); named.add('D' + hi)
     if (hi > lo && hi - lo <= RANGE_MAX) for (let k = lo; k <= hi; k++) all.add('D' + k)
     else { all.add('D' + lo); all.add('D' + hi) }
   }
-  return { all, named, words: (s.replace(/\bD\d+(?:\s*[–-]\s*D?\d+)?\b/g, ' ').match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu) || []).length }
+  return { all, named, words: (s.replace(/\bD\d+(?:\s*[–-]\s*D\d+)?\b/g, ' ').match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu) || []).length }
 }
 /* THE STATEMENTS of a page or an always-loaded rules file: a heading or a table row is a unit of one line; a bullet
    runs on through its continuation lines; any other run of lines is a paragraph. A unit STATES the rulings it cites
@@ -250,25 +264,36 @@ export const sectionAt = (text, line) => (sectionsOf(text).filter(s => s.line < 
    never disagree. `sources`: each page { f, text, homes: Set of its own area's stem, area } and each always-loaded
    rules file { f, text, homes: the general area's stem once it is a page, else empty — such a file joins only the
    stating, until then }; `live`: Map d -> { line, area } for every live full row; `archived`: Map d -> its cells. A debt:
-     { kind: 'mark', f, line, d, missing } — a statement of a ruling of its own area without the rulings whose marks in
-       that ruling's full row change it (another area's included);
+     { kind: 'mark', f, line, d, missing } — a statement of a ruling of a converted area, wherever it stands, without
+       the rulings whose marks in that ruling's full row change it (another area's included);
      { kind: 'stale', f, line, d, by } — a citation of a ruling archived as replaced by `by` (D201);
      { kind: 'none', f, line, d } — a number that is no ruling (a renumbered clash, a typo);
-     { kind: 'unstated', d, area, at } — a live ruling of a page's area no statement states (`at`: where it is only listed). */
+     { kind: 'unstated', d, area, at, why } — a live ruling of a page's area no statement states (`at`: where it is only
+       cited; `why`: 'short' — a list, or too short to state anything; 'elsewhere' — a page or file that may only point to it).
+   WHERE A RULING IS STATED (plan §2; the step-1 reader's F1, 7 Nov 26): on its home page, or — a general ruling — in an
+   always-loaded rules file; a citation anywhere else only points to it, however many words it has, so a ruling can
+   neither leave its page nor never reach it while a pointer elsewhere keeps the gate green. THE CHANGE MARKS (F2): a line
+   with words enough to state a ruling of a converted area also cites the rulings that changed it, wherever it stands —
+   its page, another page's pointer, an always-loaded rules file even while the general area is still in short lines —
+   since a restatement out of date misleads wherever it loads, and in an always-loaded file in every chat (D201). */
 export function pageDebts(sources, live, archived) {
-  const out = [], stated = new Set(), listedOnly = new Map(), pages = new Set(sources.filter(s => s.area).map(s => s.area))
+  const out = [], stated = new Set(), pointed = new Map(), pages = new Set(sources.filter(s => s.area).map(s => s.area))
   for (const { f, text, homes } of sources) for (const s of statementsOf(text)) {
-    for (const d of s.cites) if (s.states) stated.add(d); else if (!listedOnly.has(d)) listedOnly.set(d, `${f} line ${s.line}`)
-    if (!homes.size) continue
+    for (const d of s.cites) {
+      if (s.states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
+      const why = s.states ? 'elsewhere' : 'short'
+      if (!pointed.has(d) || (why === 'elsewhere' && pointed.get(d).why === 'short')) pointed.set(d, { at: `${f} line ${s.line}`, why })
+    }
     if (s.states) for (const d of s.cites) {
-      if (!live.has(d) || !homes.has(live.get(d).area)) continue
+      if (!live.has(d) || !pages.has(live.get(d).area)) continue
       const missing = [...marksOf(cellsOf(live.get(d).line))].filter(m => live.has(m) && !s.cites.has(m))
       if (missing.length) out.push({ kind: 'mark', f, line: s.line, d, missing })
     }
+    if (!homes.size) continue
     for (const d of s.cites) { const by = archived.has(d) && REPLACED_BY.exec(archived.get(d)[2] || ''); if (by) out.push({ kind: 'stale', f, line: s.line, d, by: by[1] }) }
     for (const d of s.named) if (!live.has(d) && !archived.has(d)) out.push({ kind: 'none', f, line: s.line, d })
   }
-  for (const [d, r] of live) if (pages.has(r.area) && !stated.has(d) && !isRetired(cellsOf(r.line))) out.push({ kind: 'unstated', d, area: r.area, at: listedOnly.get(d) })
+  for (const [d, r] of live) if (pages.has(r.area) && !stated.has(d) && !isRetired(cellsOf(r.line))) out.push({ kind: 'unstated', d, area: r.area, at: pointed.get(d)?.at, why: pointed.get(d)?.why })
   return out
 }
 

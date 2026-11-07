@@ -47,7 +47,7 @@ export const TASK_READS = [
 ]
 export const CHECK_READS = [
   { f: 'raptor-port/docs/bug-check-order.md', why: 'a bug check: "open it"' },
-  { f: 'raptor-port/docs/walk-ledger.md', sections: ['## Before any walk — the sizing step'], why: 'a walk is sized first (D607)' },
+  { f: 'raptor-port/docs/walk-ledger.md', sections: ['## Before any walk — the sizing step', '## The types of change'], why: 'a walk is sized first (D607) — its step 1 picks from the types of change' },
   { f: 'raptor-port/docs/walk-scripts.md', why: 'every walker\'s brief names it' },
   { f: 'raptor-port/docs/design-practices.md', why: 'interface work: the one design guide (D812)' },
   { f: 'raptor-port/docs/performance.md', sections: ['# Part 1'], why: 'interface work: Part 1, the guardrails' },
@@ -59,14 +59,16 @@ export const MESSAGE_NOTE = '.claude/hooks/record-decisions.sh'
 const linesOf = t => (t || '').split('\n').map(l => l.replace(/\r$/, ''))
 const dirOf = f => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
 
-/* the part of a file a read takes */
+/* the part of a file a read takes. A heading is matched by its start, then a boundary — never a letter or digit — so
+   "## 1." or "## 1" never takes "## 10." (the step-1 reader's question 4) */
+const headed = (l, s) => l.startsWith(s) && !/^[p{L}p{N}]/u.test(l.slice(s.length))
 export function partOf(text, { upTo, sections } = {}) {
   const ls = linesOf(text), inF = RL.fencedFlags(ls), level = i => { const m = !inF[i] && /^(#{1,6})\s/.exec(ls[i]); return m ? m[1].length : 0 }
-  if (upTo) { const at = ls.findIndex((l, i) => !inF[i] && l.startsWith(upTo)); return at < 0 ? { text: ls.join('\n'), missing: [upTo] } : { text: ls.slice(0, at).join('\n'), missing: [] } }
+  if (upTo) { const at = ls.findIndex((l, i) => !inF[i] && headed(l, upTo)); return at < 0 ? { text: ls.join('\n'), missing: [upTo] } : { text: ls.slice(0, at).join('\n'), missing: [] } }
   if (!sections) return { text: ls.join('\n'), missing: [] }
   const out = [], missing = []
   for (const s of sections) {
-    const at = ls.findIndex((l, i) => level(i) && l.startsWith(s))
+    const at = ls.findIndex((l, i) => level(i) && headed(l, s))
     if (at < 0) { missing.push(s); continue }
     let end = at + 1; while (end < ls.length && !(level(end) && level(end) <= level(at))) end++
     out.push(ls.slice(at, end).join('\n'))

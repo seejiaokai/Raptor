@@ -58,7 +58,7 @@ function makeRepo(live = LIVE0) {
   g('init', '-q', '-b', 'main')
   g('config', 'user.email', 'selftest@example.invalid'); g('config', 'user.name', 'selftest'); g('config', 'core.autocrlf', 'false')
   /* the gate with a byte tripwire for the test's own area files (every area file needs one — D390) */
-  const gate = readFileSync(GATE, 'utf8').replace('const RULING_BYTES = [\n', "const RULING_BYTES = [\n  ['.claude/rules/decisions/general.md', 2, 6000],\n  ['.claude/rules/decisions/other.md', 2, 6000],\n")
+  const gate = readFileSync(GATE, 'utf8').replace('const RULING_BYTES = [\n', "const RULING_BYTES = [\n  ['.claude/rules/decisions/general.md', 2, 6000],\n  ['.claude/rules/decisions/other.md', 2, 6000],\n  ['.claude/rules/decisions/fourth.md', 2, 6000],\n")
   if (!gate.includes("general.md', 2, 6000")) throw new Error('RULING_BYTES was not found in docsize.mjs — update this self-test')
   w('raptor-port/scripts/docsize.mjs', gate)
   w('raptor-port/scripts/docsize-rulings.mjs', readFileSync(join(HERE, 'docsize-rulings.mjs'), 'utf8'))
@@ -231,7 +231,34 @@ scenario('an area converted to a page beside one still in short lines (both shap
 scenario('a page\'s live ruling stated nowhere', true, c => withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling of .claude/rules/decisions/other.md, a page, and no statement states it' })
 scenario('…cited only in a list of numbers', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- See [D5, D7].'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'cited only at .claude/rules/decisions/other.md line' })
 scenario('…cited only in a code span (an example, not a citation)', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- A citation written in code, as `[D7]`, is an example only.'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling' })
-scenario('…stated in an always-loaded rules file instead', false, c => { withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }); c.write(RULE_FILE, '# Shipping\n\n- Rule seven holds in every chat, whatever the area [D7].\n') })
+/* the step-1 reader's F1 (7 Nov 26): a ruling is stated on its home page, or — a GENERAL ruling — in an always-loaded
+   rules file (plan §2); a scoped area's ruling in an always-loaded file, or on another page, is only pointed to */
+scenario('…a scoped area\'s ruling stated only in an always-loaded rules file is not stated (plan §2: only a general ruling may be)', true, c => { withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }); c.write(RULE_FILE, '# Shipping\n\n- Rule seven holds in every chat, whatever the area [D7].\n') }, { mustSay: 'cited only at .claude/rules/shipping.md line 3, a page or file that may only point to it' })
+scenario('…a general ruling stated in an always-loaded rules file instead of the general page', false, c => { c.write(AREA, GENERAL_PAGE.replace('- Rule b holds in every chat, whatever the area [D2].\n', '')); c.write(RULE_FILE, '# Shipping\n\n- Rule b holds in every chat, whatever the area [D2].\n') })
+const FOURTH = '.claude/rules/decisions/fourth.md', FOURTH_FULL = '.claude/decisions-full/fourth.md'
+const fourthPage = ({ topic = ['- Rule eleven holds on every screen of the fourth area [D11].'], from = ['- General: rule a bears on the fourth area too [D1].'] } = {}) =>
+  PAGE_HEAD.replace('src/other/**', 'src/fourth/**').replace('# Other —', '# Fourth —') + ['## The rules', ...topic, '', '## Settled designs, by screen', '- The fourth screen keeps the look it was built with [D11].', '', '## From other areas', ...from, ''].join('\n')
+const FOURTH_FULL0 = ['# Rulings — fourth: the full rows', '', '| # | Date | ruling | meaning | home |', '|---|---|---|---|---|', fullRow('D11', 'k', 'this file'), ''].join('\n')
+const withFourth = (c, page = fourthPage(), full = FOURTH_FULL0, ids = 'D11') => { c.write(FOURTH, page); c.write(FOURTH_FULL, full); c.edit('DECISIONS.md', t => t.replace('| Archive |', mapRow('Fourth', FOURTH, ids) + '\n| Archive |')) }
+const D7in4 = topOf(FOURTH_FULL0, fullRow('D7', 'g', 'this file'))
+const point7 = { from: ['- General: rule a bears on the other area too [D1].', '- Fourth: the fourth screen rule bears here too [D7].'] }
+scenario('a page\'s ruling pointed to only from another page\'s "From other areas" is not stated (F1)', true, c => { withPage(c, point7); withFourth(c, fourthPage(), D7in4, 'D7, D11') }, { mustSay: 'D7 is a live ruling of .claude/rules/decisions/fourth.md, a page, and no statement states it' })
+scenario('…and stated on its own page as well, it passes', false, c => { withPage(c, point7); withFourth(c, fourthPage({ topic: ['- Rule eleven holds on every screen of the fourth area [D11].', '- Rule seven holds on the fourth screens as well [D7].'] }), D7in4, 'D7, D11') })
+scenario('a general ruling pointed to only from an area page, the general page not stating it (F1)', true, c => { c.write(AREA, GENERAL_PAGE.replace('- Rule a holds in every chat, whatever the area [D1].\n', '')); withPage(c) }, { mustSay: 'D1 is a live ruling of .claude/rules/decisions/general.md, a page' })
+/* the step-1 reader's F2: a line restating a converted area's ruling without the ruling that changed it fails wherever it
+   stands — an always-loaded rules file (read in every chat) or another page's pointer — not only on its home page */
+scenario('an always-loaded rules file restating a page\'s ruling without its change fails, the page itself right (F2)', true, c => { withPage(c, { topic: ['- Rule five holds on every screen of the other area, on Mondays only [D5, D2].'] }, { full: narrowD5(OTHER_FULL0) }); c.write(RULE_FILE, '# Shipping\n\n- Rule five holds on every screen of the other area, as first ruled [D5].\n') }, { mustSay: '.claude/rules/shipping.md line 3 states D5 but does not cite D2' })
+scenario('…the reader\'s shape: the page states only the narrowing, the rules file the ruling as first ruled (F2)', true, c => { withPage(c, { topic: [] }, { full: OTHER_FULL0.replace('| D5 | 21 Sep 26 | e | **Rule e.** e |', '| D5 | 21 Sep 26 | e | **— NARROWED 22 Sep 26 BY D6: only on Mondays.** **Rule e.** e |') }); c.write(RULE_FILE, '# Shipping\n\n- Rule five holds on every day of the week, as first ruled [D5].\n') }, { mustSay: 'states D5 but does not cite D6' })
+scenario('another page\'s pointer restating a page\'s ruling without its change fails (F2)', true, c => { withPage(c, point7); withFourth(c, fourthPage({ topic: ['- Rule seven holds on the fourth screens, as rule eleven narrows it [D7, D11].'] }), D7in4.replace('| D7 | 21 Sep 26 | g | **Rule g.** g |', '| D7 | 21 Sep 26 | g | **— NARROWED 22 Sep 26 BY D11: only on Mondays.** **Rule g.** g |'), 'D7, D11') }, { mustSay: '.claude/rules/decisions/other.md line 20 states D7 but does not cite D11' })
+/* the step-1 reader's F6: a dash before a number is a range only when the number carries its own D */
+scenario('a date after a dash ("D5 – 3 Nov 26") is no range (F6)', false, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area, as ruled D5 – 3 Nov 26 [D5].'] }))
+{
+  const RLc = await import(pathToFileURL(join(HERE, 'docsize-rulings.mjs')).href)
+  for (const [text, want] of [['D1734 – 7 Nov 26', 'D1734'], ['D1500–02', 'D1500'], ['[D5–D7]', 'D5,D6,D7'], ['D654-D656', 'D654,D655,D656']]) {
+    const got = [...RLc.citesIn(text).all].sort().join(), ok = got === want; if (!ok) failed++
+    console.log(`${ok ? 'PASS' : 'MISS'}  citesIn: "${text}" — expected ${want}, got ${got}`)
+  }
+}
 scenario('a line stating a ruling as it was, beside a separate line citing the ruling that narrowed it (D43 / D755)', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- Rule b bears on the other area on Mondays only [D2].'] }, { full: narrowD5(OTHER_FULL0) }), { mustSay: 'states D5 but does not cite D2' })
 scenario('…and with the narrowing cited on the line it narrows, it passes', false, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area, on Mondays only [D5, D2].'] }, { full: narrowD5(OTHER_FULL0) }))
 scenario('a page citing a ruling archived as replaced', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- Rule zero holds on the other screen as before [D0].'] }), { mustSay: 'cites D0, which D1 replaced' })
@@ -472,9 +499,17 @@ scenario('a new area rulings file with no paths: (it would load in every chat)',
 /* THE SEAM FILES (D1735; the rules-diet plan §2): registered with a file inside the area and one on its seam — a seam file
    loads on both, its area file no longer on the seam, and a seam file nobody registered fails */
 const LW_SEAM = '.claude/rules/seams/leave-war.md', LW_AREA = '.claude/rules/decisions/leave-war.md'
+const RLs = await import(pathToFileURL(join(HERE, 'docsize-rulings.mjs')).href), LW_SEAMS = RLs.SEAMS[0].seams
 const seamFile = (...globs) => `---\npaths:\n${globs.map(g => `  - ${g}`).join('\n')}\n---\n\n# The Leave War — its architecture\n\nMoved whole from its area file.\n`
-scenario('a seam file loading inside its area and on its seam', false, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', '# where it meets the rest of the app', 'raptor-port/src/ui/InputsPage.tsx')))
-scenario('a seam file that misses its seam', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**')), { mustSay: 'does not load on raptor-port/src/ui/InputsPage.tsx, a file on its seam' })
+scenario('a seam file loading inside its area and on its seam', false, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', '# where it meets the rest of the app', ...LW_SEAMS)))
+scenario('a seam file that misses its seam', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**')), { mustSay: 'does not load on raptor-port/src/ui/InputsPage.tsx, a path of its seam' })
+/* the step-1 reader's questions 1 and 2: every seam path is checked, not one probe; a seam file gone while its area no
+   longer loads on its seam fails */
+scenario('a seam file missing one seam path the old probe did not use', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS.filter(g => !g.endsWith('engine/inputs.ts')))), { mustSay: 'does not load on raptor-port/src/engine/inputs.ts, a path of its seam' })
+scenario('an area file still loading on a seam path the old probe did not use', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/QualsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/QualsPage.tsx' })
+scenario('a seam file missing one of its area file's own paths', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS)); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/docs/leavewar/**').replace('its architecture', 'rulings')) }, { mustSay: 'does not load on raptor-port/docs/leavewar/**, a path of its area file' })
+scenario('a seam file gone once its area file no longer loads on its seam', true, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**').replace('its architecture', 'rulings')), { mustSay: '.claude/rules/seams/leave-war.md is missing' })
+scenario('…but no seam file while the area file still loads on every seam path (today)', false, c => c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', ...LW_SEAMS).replace('its architecture', 'rulings')))
 scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
 scenario('a seam file whose area file still loads on the seam', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx')); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/InputsPage.tsx' })
 scenario('a seam file nobody registered', true, c => c.write('.claude/rules/seams/other.md', seamFile('raptor-port/src/other/**')), { mustSay: 'a seam file nobody registered' })
@@ -573,6 +608,12 @@ mover('page: renumbered on a clash — the page still citing the old number is r
 mover('--move-rows from a short-line area into a page: the short line dropped, the full row moved, the page stating it', true, { prep: c => { withPage(c); c.commit('page') }, args: ['--rulings', '--move-rows', 'D1', '--to', 'other'], check: c =>
   has(c, AREA, '| D1 |') || has(c, FULL, '| D1 |') ? 'D1 is still in general' : has(c, OTHER, '| D1 |') ? 'a short line was written on the page' : !has(c, OTHER_FULL, fullRow('D1', 'a')) ? 'the full row did not arrive whole'
   : !c.read('DECISIONS.md').includes('other.md` | always | D6, D5, D1 |') || !c.read('DECISIONS.md').includes('general.md` | always | D2 |') ? 'the map does not follow' : '' })
+/* the step-1 reader's F1, the recorder's route: a ruling moved from one page to another that does not state it */
+const pages7 = c => { withPage(c, { topic: [p5, '- Rule seven holds on the other screens as well [D7].'] }, { full: fullWith(D7full), ids: 'D7, D6, D5' }); withFourth(c); c.commit('two pages'); c.snap = c.read('DECISIONS.md') }
+mover('--move-rows from a page to another page that does not state it is refused — the old page\'s line only points (F1)', false, { prep: pages7, args: ['--rulings', '--move-rows', 'D7', '--to', 'fourth'], check: (c, r) =>
+  !/D7 \("Seven is the rule\."\): no line of \.claude\/rules\/decisions\/fourth\.md states it/.test(r.stdout) ? 'the page that must state it was not named' : has(c, OTHER_FULL, '| D7 |') ? nothingWritten(c) || '' : 'D7 left its full-text file' })
+mover('…and with the new page stating it, the move is made and the old page\'s line printed to move', true, { prep: c => { pages7(c); c.write(FOURTH, fourthPage({ topic: ['- Rule eleven holds on every screen of the fourth area [D11].', '- Rule seven holds on the fourth screens as well [D7].'] })) }, args: ['--rulings', '--move-rows', 'D7', '--to', 'fourth'], check: (c, r) =>
+  has(c, OTHER_FULL, '| D7 |') || !has(c, FOURTH_FULL, '| D7 |') ? 'D7 did not move' : !/MOVE ON THE PAGES[\s\S]*other\.md line \d+ \(## The rules\) states D7, now of fourth\.md/.test(r.stdout) ? 'the old page\'s line was not printed to move' : '' })
 mover('--move-rows out of a page: a short line made from its heading, the page line that states it printed to move', true, { prep: c => { withPage(c); c.commit('page') }, args: ['--rulings', '--move-rows', 'D5', '--to', 'general'], check: (c, r) =>
   has(c, OTHER_FULL, '| D5 |') ? 'D5 is still in other' : !has(c, AREA, '| D5 | 21 Sep 26 | Rule e. |') || !has(c, FULL, fullRow('D5', 'e', 'this file')) ? 'the short line and the full row did not arrive in general'
   : !/MOVE ON THE PAGES[\s\S]*other\.md line \d+ \(## The rules\) states D5, now of general\.md/.test(r.stdout) ? 'the page line was not printed to move' : !/UNREAD[\s\S]*\| D5 \|/.test(r.stdout) ? 'the made short line was not listed UNREAD' : '' })
@@ -751,6 +792,48 @@ gitRulings('an area converted to a page on both sides since the base stops the c
   g('checkout', '-q', 'main'); c.write(OTHER, otherPage({ settled: ['- The other screen keeps its first look, as built [D6].'] })); c.commit('main converts')
   mergeIn(g, 'a', 'main'); c.snap = c.read(OTHER); return run('--rulings', '--merge') }, (c, r) =>
   !/converted to a page on both sides/.test(r.stderr) ? 'it did not say so' : c.read(OTHER) !== c.snap ? 'it wrote anyway' : '')
+/* the step-1 reader's F5: a page stop is resolved in the file itself, and the next run takes the resolution */
+const markersIn = c => [OTHER, OTHER_FULL, 'DECISIONS.md'].some(f => /^(<{7}|>{7}|={7})/m.test(c.read(f)))
+gitRulings('a page line both sides edited, resolved by hand in the file: the next run takes it (F5)', true, (c, g, run) => {
+  withPage(c); c.commit('the base: other a page')
+  const rec = (d, row, line) => { c.edit(OTHER_FULL, t => topOf(t, row)); c.edit(OTHER, t => t.replace(p5, p5 + '\n' + line)); const r = run('--rulings'); if (r.status !== 0) throw new Error(r.stdout + r.stderr) }
+  const l7 = '- Rule seven holds on the other screens as well [D7].', l8 = '- Rule eight holds on the other screens as well [D8].'
+  g('checkout', '-q', '-b', 'a'); rec('D7', D7full, l7); c.commit('a records D7')
+  g('checkout', '-q', 'main'); rec('D8', D8full, l8); c.commit('main records D8')
+  mergeIn(g, 'a', 'main'); c.r1 = run('--rulings', '--merge')
+  c.write(OTHER, otherPage({ topic: [p5, l7, l8] })); return run('--rulings', '--merge') }, c =>
+  c.r1.status === 0 || !/both sides edited the same page line/.test(c.r1.stderr) || !/in the file itself/.test(c.r1.stderr) ? 'the first run did not stop, saying to resolve it in the file itself'
+  : markersIn(c) ? 'conflict markers left' : !has(c, OTHER, '[D7]') || !has(c, OTHER, '[D8]') ? 'the hand resolution was not kept' : !has(c, OTHER_FULL, D7full) || !has(c, OTHER_FULL, D8full) ? 'a row did not reach the full-text table' : '')
+gitRulings('…an area converted on both sides, one side\'s page kept by hand in the file: the next run takes it (F5)', true, (c, g, run) => {
+  c.write(OTHER, OTHER_SHORT0); c.write(OTHER_FULL, OTHER_FULL0); addOther(c, 'D6, D5'); c.commit('the base: other in short lines')
+  g('checkout', '-q', '-b', 'a'); c.write(OTHER, otherPage()); c.commit('a converts')
+  g('checkout', '-q', 'main'); c.write(OTHER, otherPage({ settled: ['- The other screen keeps its first look, as built [D6].'] })); c.commit('main converts')
+  mergeIn(g, 'a', 'main'); c.r1 = run('--rulings', '--merge'); c.write(OTHER, otherPage()); return run('--rulings', '--merge') }, c =>
+  c.r1.status === 0 || !/in the file itself/.test(c.r1.stderr) ? 'the first run did not stop, saying to resolve it in the file itself' : markersIn(c) ? 'conflict markers left' : c.read(OTHER) !== otherPage() ? 'the kept page was not taken' : '')
+/* the step-1 reader's F3: a new area created directly as a page on one side, merged each way */
+const newAreaPage = into => (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); withFourth(c, fourthPage({ topic: ['- Rule eleven holds on every screen of the fourth area [D11].', '- Rule seven holds on the fourth screens as well [D7].'] }), D7in4, 'D7, D11')
+  const r0 = run('--rulings'); if (r0.status !== 0) throw new Error('the new page is not clean: ' + r0.stdout + r0.stderr); c.commit('a: a new area, made a page')
+  g('checkout', '-q', 'main'); c.edit(FULL, t => t.replace('**Rule b.** b |', '**Rule b.** b, on main |')); c.commit('main edits D2')
+  mergeIn(g, into, into === 'a' ? 'main' : 'a'); return run('--rulings', '--merge')
+}
+const newAreaOk = c => c.read(FOURTH_FULL).split('| D7 |').length !== 2 || c.read(FOURTH_FULL).split('| D11 |').length !== 2 ? 'D7 and D11 are not each once in the full-text file' : has(c, FOURTH, '| D') ? 'a row was put on the page' : !has(c, FULL, 'b, on main') ? 'main\'s edit of D2 was lost' : !/fourth\.md` \| always \| D7, D11 \|/.test(c.read('DECISIONS.md')) ? 'the map row did not follow' : ''
+gitRulings('a new area made a page on the branch being merged in (F3)', true, newAreaPage('main'), newAreaOk)
+gitRulings('…the same, main merged into that branch (F3)', true, newAreaPage('a'), newAreaOk)
+/* the step-1 reader's F4: what the side still in short lines retired or moved out of an area the other side made a page */
+const pageVsOld = (into, oldWork) => (c, g, run) => {
+  c.write(OTHER, OTHER_SHORT0); c.write(OTHER_FULL, OTHER_FULL0); addOther(c, 'D6, D5'); c.commit('the base: other in short lines')
+  g('checkout', '-q', '-b', 'page'); c.write(OTHER, otherPage()); const r0 = run('--rulings'); if (r0.status !== 0) throw new Error(r0.stdout + r0.stderr); c.commit('page: other converted')
+  g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'old'); oldWork(c, run); c.commit('old')
+  mergeIn(g, into, into === 'page' ? 'old' : 'page'); return run('--rulings', '--merge')
+}
+const spendD6 = (c, run) => { c.edit(OTHER_FULL, t => t.replace('| D6 | 21 Sep 26 | f |', '| D6 | 21 Sep 26 | **SPENT 22 Sep 26 — used.** f |')); const r = run('--rulings'); if (r.status !== 0) throw new Error(r.stdout + r.stderr) }
+const moveD5 = (c, run) => { const r = run('--rulings', '--move-rows', 'D5', '--to', 'general'); if (r.status !== 0) throw new Error(r.stdout + r.stderr) }
+const placed = (r, re) => re.test((r.stdout.split('PLACE ON THE PAGE')[1] || '').split('\n\n')[0])
+gitRulings('a ruling the short-line branch spent, merged into the page branch, is listed to take off the page (F4)', true, pageVsOld('page', spendD6), (c, r) => placed(r, /D6[^\n]*retired on the branch being merged in[^\n]*take it off the page \(line \d+\)/) ? '' : 'not listed')
+gitRulings('…the page merged into the short-line branch (F4)', true, pageVsOld('old', spendD6), (c, r) => placed(r, /D6[^\n]*retired on your branch[^\n]*take it off the page \(line \d+\)/) ? '' : 'not listed')
+gitRulings('a ruling the short-line branch moved out, the page merged into it, is listed to move (F4)', true, pageVsOld('old', moveD5), (c, r) => placed(r, /D5[^\n]*moved to general\.md on your branch[^\n]*\(line \d+\)/) ? '' : 'not listed')
+gitRulings('…the short-line branch merged into the page branch: MOVE ON THE PAGES names the line (F4)', true, pageVsOld('page', moveD5), (c, r) => /MOVE ON THE PAGES[\s\S]*other\.md line \d+ \(## The rules\) states D5, now of general\.md/.test(r.stdout) ? '' : 'not printed')
 
 /* docsize --reads (owner, D1735 — the rules diet's step 1, part 3c; plan §1, §5): what a chat reads, followed through
    the rules files' paths: until nothing new loads, each file counted once, in the first column that loads it. Run on a
@@ -772,6 +855,15 @@ const RFILES = {
 const rRead = f => RFILES[f] ?? null, rEst = t => t.length
 const rRun = (over = {}) => READS.measure({ files: Object.keys(RFILES), read: rRead, est: rEst, jobs: [{ job: 'notes', opens: [], check: false }, { job: 'a', opens: ['app/a/x.ts'] }], taskReads: [{ f: 'HANDOFF.md' }, { f: 'OUTSTANDING.md', upTo: '## Items' }], checkReads: [{ f: 'docs/guide.md', sections: ['## 1.', '## 9.'] }], ...over })
 const fs_ = col => col.map(x => x.f + (x.part ? ` (${x.part})` : ''))
+reads('a heading is matched to a boundary — "## 1" never takes "## 10" (question 4)', () => { const p = READS.partOf('# T
+
+## 10 Ten
+ten
+
+## 1 One
+one
+', { sections: ['## 1'] }); return p.text.startsWith('## 1 One') && !p.text.includes('ten') ? '' : `took: ${p.text.split('
+')[0]}` })
 reads('the start: rules with no paths:, the hook\'s note and each description — never a scoped rules file or a skill\'s body', () => {
   const m = rRun(), s = fs_(m.start).join(' | ')
   return s !== '.claude/rules/always.md | .claude/hooks/task-observer-session-start.sh (its note) | .claude/skills/s/SKILL.md (description) | .claude/agents/h.md (description)' ? `start was ${s}`

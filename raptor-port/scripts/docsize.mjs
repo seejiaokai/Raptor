@@ -788,9 +788,10 @@ function rulings(allow) {
 
   /* THE PAGES (owner, D1735, 7 Nov 26 — the rules diet, plan raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
      §2, §5). For each area converted to a page: its shape (docsize-rulings.mjs pageShapeProblems); every live ruling of
-     the area STATED — its number cited on a statement of its page or of an always-loaded rules file (D136 as D1735
-     narrows it: no longer a line of its own, but never out of what loads); every statement that cites a ruling of the
-     page's own area also cites each live ruling that ruling's full row marks as changing it, another area's included
+     the area STATED — its number cited on a statement of its own page or, a general ruling, of an always-loaded rules file
+     (D136 as D1735 narrows it: no longer a line of its own, but never out of what loads; anywhere else a citation only
+     points — the step-1 reader's F1); every statement, wherever it stands, that cites a ruling of a converted area also
+     cites each live ruling that ruling's full row marks as changing it, another area's included (F2)
      (a narrowing is cited on the line it narrows — the plan's readers, H1b and Astra's finding 2); and no citation of a
      ruling archived as replaced (D201: the line is rewritten in the same change), nor of a number that is no ruling. The
      check sees citations, not meaning: whether a line says what its rulings say is the fresh reader's, from the
@@ -807,7 +808,7 @@ function rulings(allow) {
       x.kind === 'mark' ? `${x.f} line ${x.line} states ${x.d} but does not cite ${x.missing.join(', ')}, which ${x.missing.length > 1 ? 'change' : 'changes'} it (the mark in ${x.d}'s full row) — write the line as it stands since then and cite [${[x.d, ...x.missing].join(', ')}] on it`
       : x.kind === 'stale' ? `${x.f} line ${x.line} cites ${x.d}, which ${x.by} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`
       : x.kind === 'none' ? `${x.f} line ${x.line} cites ${x.d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`
-      : `${x.d} is a live ruling of ${pageOf.get(x.area)}, a page, and no statement states it${x.at ? ` — it is cited only at ${x.at}, which is a list or too short to state anything` : ''}: state the rule on its page, or in an always-loaded rules file, and cite [${x.d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
+      : `${x.d} is a live ruling of ${pageOf.get(x.area)}, a page, and no statement states it${x.at ? ` — it is cited only at ${x.at}, ${x.why === 'elsewhere' ? 'a page or file that may only point to it' : 'which is a list or too short to state anything'}` : ''}: state the rule on its own page — a general ruling may be stated in an always-loaded rules file instead — and cite [${x.d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
   }
 
   const src = readNow(RULECHECK)
