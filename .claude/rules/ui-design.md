@@ -27,10 +27,12 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
 ## Which part of the guide to open (his D1735, 7 Nov 26)
 
 Each section whole, when the job does that kind of work. **Every design job:** the guide's head, §0 (what wins) and §9,
-his design lessons, whole (D941, D1417). **Words** a person reads: §1; to shorten words already on screen, §1a; to write
-new ones, §1b. **Anything opened, closed or typed in:** §2. **Placing or grouping:** §3. **A colour, mark or emphasis:**
-§4. **Motion:** §5; **a drag:** §5a. **Before anything built is shown to him:** §6. **A look at one component:** §7.
-**A look or review:** §8. Unsure whether one applies: open it.
+his design lessons, whole (D941, D1417). **Words** a person reads, written or changed: §1 and §1b; to shorten words
+already on screen, §1a too (D833). **Any new control, or anything a person opens, closes, presses, hovers, drags or
+types in:** §2. **Placing or grouping:** §3. **A colour, mark or emphasis:** §4. **A new action:** §1's point on
+feedback and §4's "One mark, one look". **Motion:** §5; **a drag:** §5a. **Before anything built is shown to him:** §6.
+**A look at one component:** §7. **A look or review, or any page of mock-ups put to him:** §8. **Changing the guide
+itself:** its last part, "Changing this guide". Unsure whether one applies: open it.
 
 ## The short form — in force the moment this loads
 
