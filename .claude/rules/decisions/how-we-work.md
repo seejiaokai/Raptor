@@ -261,9 +261,15 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The tables are the one master of saved data: every screen and area reads from them and writes to them, so everything
   stays in step; only what makes no sense in a table stays out, each named with its reason [D1580]; what does not read
   the one table is one item for the database step, nothing of it built before then [D1587, D473].
-- No tables, roles, day-lock flow, setup script or sign-in test on his M365 before the database step [D1571, D1662]; the
-  hosting trial is the app without a database, run inside Power Apps and still saving in the browser, for him to test
+- No tables, roles or day-lock flow on his M365 before the database step, and the table setup — now the IT side's own
+  kit — and the test of whether it may sign in as him on his PC wait for it: nothing of either written or tried before
+  then [D1571, D1662, D1749, D473]; the hosting trial is the app without a database, run inside Power Apps and still saving in the browser, for him to test
   himself [D1532].
+- At the database step the app and its tables go first into his own premium M365 test account: the tables built there
+  with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side,
+  who build the same tables with the same kit; nothing of the database is built there before that step [D1749, D473].
+- February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date,
+  and no step is rushed or its checks cut to meet one [D1745].
 - At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change
   shown whole in the change history, words on screen kept to his design rulings, a clean copy for the PPCoE with this
   project kept whole [D1536, D1537].
