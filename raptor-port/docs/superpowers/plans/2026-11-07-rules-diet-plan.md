@@ -471,6 +471,48 @@ sixteen to eight, most where a step's wording or a tier gate kept part of a sect
 what was left — every finding held when checked, seven in lines the Opus reader had passed. As in the plan's own reads,
 neither alone was enough.
 
+### Step 4, part 1 — the general rulings as a page, measured (8 Nov 26, `claude/rules-diet-step-4-7b92cb`)
+
+`how-we-work.md` is a page (`<!-- shape: page -->`); eleven spent rulings archived (D86, D602, D775, D832, D972, D973,
+D974, D1556, D1566, D1659, D1736); D136 kept live (D1735 narrows it); the five always-loaded files gained only the
+citations the page shape's checks need, and four small additions the reads asked for (D228, D1297, D1742, the steps
+for a converted area). Account by requirement: `../briefs/2026-11-07-rules-diet-step4-account.md` (216 rulings).
+
+| Measure (`docsize --reads`, tokens) | Before | First draft | After the account's 66 gaps | After both reads' fixes |
+|---|---|---|---|---|
+| Start of every chat | 42,767 | 28,942 | 32,477 | 34,335 |
+| A Leave War job, all told | 326,028 | 312,203 | — | 321,862 |
+| The page itself (bytes) | 59,493 (short lines) | 21,430 | 31,022 | 35,695 |
+
+The saving is smaller than §3 projected (the sample's 6,602 tokens for the page): the sample had dropped or bent parts
+of 66 rulings, and the two reads found about 40 more — a condition, a reading told to him, an exception. Stated whole,
+the page is 13,337 tokens, about 6,700 more than the sample; the start of a chat is still about a fifth lighter.
+
+| Read | Reader | Findings | What was done |
+|---|---|---|---|
+| The account by requirement | a helper (Opus), every row against the page | 66 gaps | all fixed by the same helper, `63478ab30` |
+| The page and the five files' citations, blind | Astra (`../briefs/2026-11-07-rules-diet-step4-read-astra.md`) | 8: 2 high, 6 medium | all taken |
+| The same, blind | a fresh Opus reader (`../briefs/2026-11-07-rules-diet-step4-read-opus.md`) | 7 (4 medium, 3 low) and about 27 small | all taken but two, below |
+
+- **Astra:** the one fresh Opus read stood in for plans and guide changes too, where D790 limits it to finished code
+  (high); D785's instruction to walkers and readers (high); D1537's engine kept out of strict checking; what the drawing
+  check measures (D1494); the guard's hold limits and idle compaction (D1671, D884); the test account's match to the IT
+  side (D1749); the pass and fail of the code check (D1539); the re-read after compaction and the context % (D868).
+- **Opus:** D785 too; the standing rule that no outside skill is installed whole (D812, D835); the policy's and the
+  backlog's one-line wording (D201 — `doc-budget.md` §4, §5, `[RULING-HOME-HOOK]`); D625's readers; the merge lock and
+  the morning report (D1750); Sol 6.1 beside D1743 (stated as the agent's reading: the second seat is the Opus
+  reader's); and conditions dropped from D1222, D1531, D1551, D1557, D1572, D1717, D607, D808, D820, D822, D872, D941,
+  D971, D1732, D490, D350, D1495, D228, D1297, D1742.
+- **Not taken:** the Opus read's "round 4 of the consistency look is still open" — the backlog has it answered, built and
+  live (pull request 643), so "1–4 live" stands; its doubt on archiving D1736 — the ruling's own text ends it once steps
+  1 and 2 landed, Astra confirmed it, and step 5a waits for his word anyway (D1750), so a script or hook change 5a needs
+  is asked for with it.
+
+**The two reads compared (D1732).** Astra found the two most serious — the readers' rules — both in lines the Opus
+reader had passed; every one of its eight held. The Opus read was wider: about 34 findings, most a dropped condition,
+and the documents left in the old shape, which Astra did not look for. Four overlapped (D785, D1537, D884, D1749). As in
+step 3, neither alone was enough.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

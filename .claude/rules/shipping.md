@@ -54,7 +54,7 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
 - **On his "merge live" (D1742, 7 Nov 26):** the job's closing records were pushed before his look was
   asked for, written to be true once it is live; merge at once if the run on the last pushed commit is green, then
-  confirm the live app as below — nothing is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
+  confirm the live app as below — nothing is pushed between his word and the merge. If his look brings a change, the fix and its records are pushed together and his look is asked again (D1742). His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
   watching, never twice for the same work. **Since D1097 (21 Oct 26): every stop that waits on him** — the work done
@@ -89,7 +89,7 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   public repo there by itself) and his PC's runner stays STOPPED; when it goes private again, the runner starts again.
 - **Once the repo is private (D89; public meanwhile, D106, D1530):** when the repo goes private, read this first — how the checks then run on his PC, moved whole to `raptor-port/docs/gates-and-deploy.md` §The checks run on HIS PC (D1556).
 - **Parallel chats take turns through ONE lock on his PC (D228, 26 Sep 26 — "why not both? and deconflict the full
-  checks").** Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out
+  checks").** Each parallel chat keeps its own branch, ports and rulings range (D228). Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out
   walk, TAKE the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`); if it is held, WAIT (check every
   few minutes; never start alongside); RELEASE it the moment the run ends, pass or fail (`… gatelock.mjs release`, or

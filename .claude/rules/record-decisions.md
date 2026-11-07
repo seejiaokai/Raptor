@@ -11,7 +11,7 @@ The story behind this rule — two misses of one evening, 21 Sep 26 (D13, D137),
 ## The rule
 
 **The moment he states something that outlives the current task, add it to its area's rulings file
-BEFORE doing the work it implies** (D13, D137; the three steps are at the head of `DECISIONS.md`). Not after the
+BEFORE doing the work it implies** (D13, D137; the three steps — and, for an area converted to a page, its own steps — are at the head of `DECISIONS.md`). Not after the
 work, not at the end of the session, not "once I see where it lands".
 
 What counts: a ruling, a product decision, a correction to how you work, a preference, a "leave

@@ -36,6 +36,7 @@ order is in force:
 
 Learn from it by yourself (D1297), the same day, without asking him: fix it red-first, write why the walk missed it as a lesson
 in the order's §7.11, and from then on every sizing step and walker's brief checks its scenarios against that list.
+Every closing report names the lessons added, and he may strike any (D1297).
 
 ## The three that get skipped under pressure — do not
 
