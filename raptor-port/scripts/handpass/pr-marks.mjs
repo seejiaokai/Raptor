@@ -96,11 +96,13 @@ async function ring(page, sels, tag = null, opts = {}) {
     if (opts.pos === 'up') e.classList.add('zz-up'); if (opts.pos === 'in') e.classList.add('zz-in'); if (opts.rt) e.classList.add('zz-rt')
     if (opts.css) { const st = document.createElement('style'); st.id = 'zz-x'; st.textContent = '.zz-x.zz-tb::before,.zz-x.zz-ta::after{' + opts.css + '}'; document.head.appendChild(st); e.classList.add('zz-x') }
     if (opts.vis) { e.dataset.zzOv = e.style.overflowY || '-'; e.style.overflowY = 'visible' }
+    /* a box that clips its overflow both ways would clip its own tag: opened for the picture, put back by unring */
+    if (opts.open) { e.dataset.zzOa = e.style.overflow || '-'; e.style.overflow = 'visible' }
   }, [sels, tag, opts])
 }
 const unring = page => page.evaluate(() => {
   document.querySelectorAll('.zz-ring').forEach(e => e.classList.remove('zz-ring'))
-  document.querySelectorAll('[data-zz-tag]').forEach(e => { e.classList.remove('zz-tb', 'zz-ta', 'zz-up', 'zz-in', 'zz-rt', 'zz-x'); delete e.dataset.zzTag; if (e.dataset.zzPos) { e.style.position = ''; delete e.dataset.zzPos } if (e.dataset.zzOv) { e.style.overflowY = e.dataset.zzOv === '-' ? '' : e.dataset.zzOv; delete e.dataset.zzOv } })
+  document.querySelectorAll('[data-zz-tag]').forEach(e => { e.classList.remove('zz-tb', 'zz-ta', 'zz-up', 'zz-in', 'zz-rt', 'zz-x'); delete e.dataset.zzTag; if (e.dataset.zzPos) { e.style.position = ''; delete e.dataset.zzPos } if (e.dataset.zzOv) { e.style.overflowY = e.dataset.zzOv === '-' ? '' : e.dataset.zzOv; delete e.dataset.zzOv } if (e.dataset.zzOa) { e.style.overflow = e.dataset.zzOa === '-' ? '' : e.dataset.zzOa; delete e.dataset.zzOa } })
   const st = document.getElementById('zz-x'); if (st) st.remove()
 })
 const boxOf = (page, sel) => page.evaluate(sel => {
@@ -154,6 +156,39 @@ const swapMark = (page, sel, sym, svgHtml) => page.evaluate(([sel, sym, svgHtml]
   return n
 }, [sel, sym, svgHtml])
 async function mustSwap(page, sel, sym, svgHtml) { const n = await swapMark(page, sel, sym, svgHtml); if (!n) throw new Error(`swap: no ${sym} in ${sel}`); return n }
+/* his iPhone draws the typed 👁 as a coloured emoji; this test browser draws it plain, as a grey text eye, so a "today"
+   picture taken as it is shows him nothing of the problem (the design read of 8 Nov 26). For the "today" pictures only, the
+   eye is set in the emoji fonts with its emoji selector: the PC's own colour eye stands in for the one his iPhone draws.
+   swapMark then still finds the 👁 (it drops the selector after it), so the drawn picture swaps the same eye. */
+const colourEye = (page, sel) => page.evaluate(sel => {
+  let n = 0
+  for (const e of document.querySelectorAll(sel)) {
+    const w = document.createTreeWalker(e, NodeFilter.SHOW_TEXT); const hits = []
+    while (w.nextNode()) if (w.currentNode.nodeValue.includes('\u{1F441}') && !w.currentNode.parentElement.classList.contains('zz-emoji')) hits.push(w.currentNode)
+    for (const t of hits) {
+      const parts = t.nodeValue.split('\u{1F441}'); const frag = document.createDocumentFragment()
+      parts.forEach((p, i) => {
+        const q = i > 0 && p.startsWith('️') ? p.slice(1) : p
+        if (q) frag.appendChild(document.createTextNode(q))
+        if (i < parts.length - 1) {
+          const s = document.createElement('span'); s.className = 'zz-emoji'
+          s.textContent = '\u{1F441}'; frag.appendChild(s); n++
+        }
+      })
+      t.replaceWith(frag)
+    }
+  }
+  /* each eye keeps the room its plain eye took, so no line wraps differently from the app's own (the colour eye is a
+     little wider here, and his iPhone's width is not known): only its look changes */
+  for (const s of document.querySelectorAll(sel.split(',').map(x => x.trim() + ' .zz-emoji:not([data-w])').join(','))) {
+    const w = s.getBoundingClientRect().width; s.dataset.w = String(Math.round(w * 10) / 10)
+    s.style.cssText = `display:inline-flex;justify-content:center;width:${w}px;white-space:nowrap;font-family:'Segoe UI Emoji','Apple Color Emoji','Noto Color Emoji',sans-serif`
+    s.textContent = '\u{1F441}️'
+  }
+  return n
+}, sel)
+/* back to the app's own plain eye before a drawing, so the drawn mark stands where the typed one stood, nothing else */
+const plainEye = page => page.evaluate(() => { for (const s of document.querySelectorAll('.zz-emoji')) s.replaceWith(document.createTextNode('\u{1F441}')) })
 /* every visible text holding a mark, for the roll of what shows where */
 const marksOf = (page, sym) => page.evaluate(sym => {
   const out = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
@@ -353,13 +388,18 @@ async function r5a(tag, vp, touch) {
   if (!M.week.length) throw new Error('premise: no 👁 on the week')
   const fr = '#eWeek .planselbtn.pv, #eWeek .dprev-bar'
   await settle(page)
-  await ring(page, ['#eWeek .planselbtn.pv', '#eWeek .dprev-bar'], 'Typed 👁: an emoji, so each phone draws its own', { tagSel: '#eWeek .dprev-bar', rt: true })
-  await around(page, `q-r5a-${tag}-week`, fr, vp, { pad: 14, padX: 14, padB: 46 })
+  M.weekColoured = await colourEye(page, fr)
+  /* the tag hangs under the selector, on the day's signatures: under the bar it covered the issue count, and above the
+     selector the day's name (the design read, 8 Nov 26) */
+  const UP = { tagSel: '#eWeek .planselbtn.pv', open: true }
+  await ring(page, ['#eWeek .planselbtn.pv', '#eWeek .dprev-bar'], 'Typed 👁: a colour emoji (your iPhone draws its own)', UP)
+  await around(page, `q-r5a-${tag}-week`, fr, vp, { pad: 14, padX: 14 })
   await unring(page)
+  await plainEye(page)
   await mustSwap(page, '#eWeek .planselbtn.pv .psl', '\u{1F441}', svg(ICON.eye, 11, 'vertical-align:-1.5px'))
   await mustSwap(page, '#eWeek .dprev-bar', '\u{1F441}', svg(ICON.eye, 12, 'vertical-align:-2px'))
-  await ring(page, ['#eWeek .planselbtn.pv', '#eWeek .dprev-bar'], 'Drawn: the app’s own line eye', { tagSel: '#eWeek .dprev-bar', rt: true })
-  await around(page, `q-r5a-${tag}-week-drawn`, fr, vp, { pad: 14, padX: 14, padB: 46 })
+  await ring(page, ['#eWeek .planselbtn.pv', '#eWeek .dprev-bar'], 'Drawn: the app’s own line eye', UP)
+  await around(page, `q-r5a-${tag}-week-drawn`, fr, vp, { pad: 14, padX: 14 })
   await unring(page)
   // the board's own look at the version: back to the live copy first (a look at a version keeps the board's door on the
   // week shut), the board opened, then the board's own selector → the same Original
@@ -375,19 +415,27 @@ async function r5a(tag, vp, touch) {
     const have = []
     for (const s of bsel) if (await boxOf(page, s)) have.push(s)
     await settle(page)
+    for (const s of have) await colourEye(page, s)
     /* on a desktop the board's selector (top left) and its bar (the side panel, right) are a screen apart: one picture each */
     const shots = tag === 'pc' ? have.map(s => [s, s.includes('planselbtn') ? '-sel' : '-bar']) : [[have.join(', '), '']]
+    /* where each tag hangs: above the selector (on the day's signatures); on the desktop's side panel, whose top clips,
+       under the issue bar beneath the look's bar, so the issue count stays readable (the design read, 8 Nov 26) */
+    const below = 58
+    const where = sfx => sfx === '-bar'
+      ? [{ css: `top:calc(100% + ${below}px)!important;bottom:auto!important;white-space:normal!important;max-width:250px!important` }, { pad: 12, padX: 12, padB: below + 52 }]
+      : [{ pos: 'up', open: true }, { pad: 12, padX: sfx === '-sel' ? 150 : 12, padT: 46 }]
     for (const [s, sfx] of shots) {
-      const one = s.split(', ')
-      await ring(page, one, 'Typed 👁: an emoji, so each phone draws its own', { tagSel: one[one.length - 1], rt: !sfx.includes('sel') })
-      await around(page, `q-r5a-${tag}-board${sfx}`, s, vp, { pad: 12, padX: sfx === '-sel' ? 150 : 12, padB: 44 })
+      const one = s.split(', '); const [t, c] = where(sfx)
+      await ring(page, one, 'Typed 👁: a colour emoji (your iPhone draws its own)', { tagSel: one[0], ...t })
+      await around(page, `q-r5a-${tag}-board${sfx}`, s, vp, c)
       await unring(page)
     }
+    await plainEye(page)
     for (const s of have) await swapMark(page, s, '\u{1F441}', svg(ICON.eye, s.includes('planselbtn') ? 11 : 12, s.includes('planselbtn') ? 'vertical-align:-1.5px' : 'vertical-align:-2px'))
     for (const [s, sfx] of shots) {
-      const one = s.split(', ')
-      await ring(page, one, 'Drawn: the app’s own line eye', { tagSel: one[one.length - 1], rt: !sfx.includes('sel') })
-      await around(page, `q-r5a-${tag}-board${sfx}-drawn`, s, vp, { pad: 12, padX: sfx === '-sel' ? 150 : 12, padB: 44 })
+      const one = s.split(', '); const [t, c] = where(sfx)
+      await ring(page, one, 'Drawn: the app’s own line eye', { tagSel: one[0], ...t })
+      await around(page, `q-r5a-${tag}-board${sfx}-drawn`, s, vp, c)
       await unring(page)
     }
   })
@@ -469,6 +517,29 @@ async function r5c(tag, vp, touch) {
 }
 
 /* ================= round 5 (d): the warning lines' ✕ / ↺ ================= */
+/* two marks from one page side by side, each cut from it at its own size at 2× (the same scale), each named under it */
+async function sideBySide(page, name, parts, title) {
+  const shots = []
+  for (const [sel, label] of parts) {
+    /* a part is a selector cut from the page now, or a cut taken earlier: History's button is cut before the hide, while
+       the page still stands as its own picture shows it (cut after the hide, the phone's top bar came out shifted) */
+    let buf = sel
+    if (typeof sel === 'string') {
+      const r = await R(page, sel); if (!r) throw new Error('side by side: nothing at ' + sel)
+      buf = await page.screenshot({ clip: { x: r.l, y: r.t, width: r.w, height: r.h } })
+    }
+    shots.push({ b64: buf.toString('base64'), w: buf.readUInt32BE(16) / 2, label })
+  }
+  const ctx2 = await browser.newContext({ viewport: { width: 402, height: 400 }, deviceScaleFactor: 2 })
+  const p2 = await ctx2.newPage()
+  const fig = x => `<figure style="margin:0;display:flex;flex-direction:column;align-items:center;gap:9px"><img src="data:image/png;base64,${x.b64}" style="width:${x.w}px;display:block"><figcaption>${x.label}</figcaption></figure>`
+  await p2.setContent(`<body style="margin:0;background:#0b0f14"><div id="sbs" style="display:inline-flex;flex-direction:column;gap:14px;padding:14px 18px 16px;font:700 12.5px/1.3 -apple-system,'Segoe UI',system-ui,sans-serif;color:#ffb020">`
+    + `<div style="align-self:flex-start;border:1px solid #ffb020;border-radius:6px;padding:3px 7px">${title}</div>`
+    + `<div style="display:flex;gap:36px;align-items:flex-end;justify-content:center">${shots.map(fig).join('')}</div></div></body>`)
+  await sleep(200)
+  await p2.locator('#sbs').screenshot({ path: `${OUT}/${name}.png` }); made.push(name)
+  await ctx2.close()
+}
 async function r5d(tag, vp, touch) {
   const { ctx, page } = await world(vp, touch)
   const M = measured['r5d-' + tag] = {}
@@ -496,6 +567,13 @@ async function r5d(tag, vp, touch) {
         await ring(page, [HIST], 'History, on the same board', { css: 'left:auto!important;right:calc(100% + 8px)!important;top:4px!important;bottom:auto!important' })
         await around(page, `q-r5d-${tag}-board-history`, HIST, vp, { pad: 10, padX: 90, padB: 36 })
         await unring(page)
+        /* the History button on top: Edit Schedule's own, covered by the board, also matches and stands a little apart */
+        const h = await page.evaluate(sel => {
+          const e = [...document.querySelectorAll(sel)].find(e => { const r = e.getBoundingClientRect(); if (!r.width || !r.height) return false; const t = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2); return t && (t === e || e.contains(t)) })
+          if (!e) return null; const r = e.getBoundingClientRect(); return { l: r.left, t: r.top, w: r.width, h: r.height }
+        }, HIST)
+        M.boardHistoryTop = h && { l: Math.round(h.l), t: Math.round(h.t), w: Math.round(h.w) }
+        if (h) M.histCut = await page.screenshot({ clip: { x: h.l, y: h.t, width: h.w, height: h.h } })
       }
       if (M.historyInMenu) { await page.keyboard.press('Escape').catch(() => {}); await sleep(400) }
     }
@@ -504,18 +582,29 @@ async function r5d(tag, vp, touch) {
     M.boardMute = await page.evaluate(() => [...document.querySelectorAll('#sbWarn .wln-mute')].filter(e => e.getBoundingClientRect().width).slice(0, 3).map(e => ({ t: e.textContent, fs: getComputedStyle(e).fontSize, w: Math.round(e.getBoundingClientRect().width), col: getComputedStyle(e).color, op: getComputedStyle(e).opacity })))
     console.log('r5d', tag, 'board', JSON.stringify(M.boardMute), 'history', JSON.stringify(M.boardHistory))
     const w = await boxOf(page, '#sbWarn')
-    const top = tag === 'pc' ? 0 : w.y - 40, h = tag === 'pc' ? w.y + 300 : 300
+    /* where each tag hangs: on a line of the list's head it covered the issue count (the design read, 8 Nov 26). On a phone,
+       above the list's box at its right, the room above cut wide enough for two lines; on a desktop the top bar's History
+       (ringed there) stands above the box, so the tag lies at the left of the list's fifth and sixth lines, clear of
+       their ✕ */
+    const top = tag === 'pc' ? 0 : w.y - 58, h = tag === 'pc' ? w.y + 300 : 318
+    const fifth = tag === 'pc' ? await page.evaluate(() => { const b = document.querySelector('#sbWarn').getBoundingClientRect(); const l = [...document.querySelectorAll('#sbWarn .wln')].filter(e => e.getBoundingClientRect().height)[4]; return l ? Math.round(l.getBoundingClientRect().top - b.top) : 190 }) : 0
+    const TAG = tag === 'pc'
+      ? { tagSel: '#sbWarn', open: true, css: `top:${fifth}px!important;bottom:auto!important;left:20px!important;right:auto!important;white-space:normal!important;max-width:240px!important` }
+      : { tagSel: '#sbWarn', pos: 'up', rt: true, open: true, css: 'white-space:normal!important;max-width:290px!important' }
     const shoot = async name => { if (tag === 'pc') await strip(page, name, top, h, vp, w.x - 40, w.r - w.x + 60); else await strip(page, name, top, h, vp) }
     await settle(page)
-    await ring(page, ['#sbWarn .wln.hid .wln-mute', '#sbWarn .wln:not(.hid) .wln-mute'], 'Typed ↺ flags it again, ✕ hides it', { tagSel: '#sbWarn .wln.hid', pos: 'up', rt: true })
+    await ring(page, ['#sbWarn .wln.hid .wln-mute', '#sbWarn .wln:not(.hid) .wln-mute'], 'Typed ↺ flags it again, ✕ hides it', TAG)
     if (tag === 'pc' && M.boardHistory) await ring(page, [HIST, '#sbWarn .wln.hid .wln-mute', '#sbWarn .wln:not(.hid) .wln-mute'])
     await shoot(`q-r5d-${tag}-board`)
     await unring(page)
     await mustSwap(page, '#sbWarn .wln.hid .wln-mute', '↺', svg(ICON.reset, 13, 'vertical-align:-2px'))
-    await ring(page, ['#sbWarn .wln.hid .wln-mute'], 'Drawn: ↺ the Reset arrow, ✕ stays', { tagSel: '#sbWarn .wln.hid', pos: 'up', rt: true })
+    await ring(page, ['#sbWarn .wln.hid .wln-mute'], 'Drawn: the hidden line’s arrow becomes the Reset arrow; ✕ stays', TAG)
     if (tag === 'pc' && M.boardHistory) await ring(page, [HIST, '#sbWarn .wln.hid .wln-mute'])
     await shoot(`q-r5d-${tag}-board-drawn`)
     await unring(page)
+    /* lesson 92 at a glance: History's clock and the drawn arrow, each cut from this same page at the same scale */
+    if (tag === 'ph' && M.histCut) await sideBySide(page, `q-r5d-${tag}-history-vs-reset`, [[M.histCut, 'History'], ['#sbWarn .wln.hid .wln-mute', 'Flag this again (drawn)']], 'History · Flag this again (drawn)')
+    delete M.histCut
   })
   // Edit Schedule's warning list on the week (the board's hide shows here too — one set of hides)
   await tryQ(`r5d ${tag} week`, async () => {
@@ -528,14 +617,15 @@ async function r5d(tag, vp, touch) {
     console.log('r5d', tag, 'week', JSON.stringify(M.weekMute), 'history', JSON.stringify(M.weekHistory))
     const hid = await boxOf(page, '#eWeek .witem.hid .witem-mute')
     const box = await boxOf(page, '#eWeek .dwbox[data-dwbox="0"]')
-    const shoot = name => strip(page, name, box.y - 40, 300, vp, box.x - 10, box.r - box.x + 20)
+    const shoot = name => strip(page, name, box.y - 58, 318, vp, box.x - 10, box.r - box.x + 20)
+    const TAG = { tagSel: '#eWeek .dwbox[data-dwbox="0"]', pos: 'up', rt: true, open: true, css: 'white-space:normal!important;max-width:290px!important' }
     await settle(page)
-    await ring(page, ['#eWeek .witem-mute'], hid ? 'Typed ↺ flags it again, ✕ hides it' : 'Typed ✕ hides it', { tagSel: hid ? '#eWeek .witem.hid' : '#eWeek .witem', pos: 'up', rt: true })
+    await ring(page, ['#eWeek .witem-mute'], hid ? 'Typed ↺ flags it again, ✕ hides it' : 'Typed ✕ hides it', TAG)
     await shoot(`q-r5d-${tag}-week`)
     await unring(page)
     if (hid) {
       await mustSwap(page, '#eWeek .witem.hid .witem-mute', '↺', svg(ICON.reset, 13, 'vertical-align:-2px'))
-      await ring(page, ['#eWeek .witem.hid .witem-mute'], 'Drawn: ↺ the Reset arrow, ✕ stays', { tagSel: '#eWeek .witem.hid', pos: 'up', rt: true })
+      await ring(page, ['#eWeek .witem.hid .witem-mute'], 'Drawn: the hidden line’s arrow becomes the Reset arrow; ✕ stays', TAG)
       await shoot(`q-r5d-${tag}-week-drawn`)
       await unring(page)
     }

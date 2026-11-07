@@ -130,8 +130,9 @@ published version, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore, a
 
 **(b) Still open? Yes, all four typed today** (round 4, live since pull request 643, drew the board's, the Leave War's and
 the Tracker's tools but not these). Measured:
-- **(a) 👁** — a typed character, which his iPhone draws as a coloured emoji (the test browser draws it plain). Two
-  places: the day's selector, "👁 Original" (10.5 px, 55 px wide), on Edit Schedule's week and the Scheduler Board; and
+- **(a) 👁** — a typed character, which his iPhone draws as a coloured emoji. The test browser draws it as a plain grey
+  eye, so a picture taken as it stands shows none of the problem: in the "today" pictures the eye is set in colour, the
+  PC's own colour eye standing in for his iPhone's, in the room the plain eye took (no line moves). Two places: the day's selector, "👁 Original" (10.5 px, 55 px wide), on Edit Schedule's week and the Scheduler Board; and
   the look's banner line "👁 Viewing the issued Original — read-only…" (11.5 px) under it on both, and "👁 Viewing plan …"
   for a saved plan's look (the same banner).
 - **(b) ⤢ / ⤡** — the Inputs calendar's last button on its legend row, 34 × 28: ⤢ "Show every input" at rest, ⤡ "Show
@@ -141,14 +142,16 @@ the Tracker's tools but not these). Measured:
   course, 12 px. The same window's ⠿ ▲ ▼ are typed too (see the end).
 - **(d) ✕ / ↺** — on each warning line, on the Scheduler Board (17 lines on Monday) and on Edit Schedule's day list:
   ✕ hides it (12 px), and the hidden line's ✕ becomes ↺ "Flag this again" (14 px). History's clock stands on the top bar
-  of both pages (desktop at the bar's right; phone at x 285–315).
+  of both pages (on the phone's board at x 265–295, a 30 px button).
 
-**(c) Pictures** (each real picture ringed with its typed mark named; each drawn one tagged "Drawn: …").
+**(c) Pictures** (each real picture ringed with its typed mark named; each drawn one tagged "Drawn: …"; no tag covers an
+issue count).
 - (a) `q-r5a-pc-week.png` / `-drawn`, `q-r5a-ph-week.png` / `-drawn` — Monday's Original on Edit Schedule: the
   selector and the banner. `q-r5a-pc-board-sel.png` / `-drawn` and `q-r5a-pc-board-bar.png` / `-drawn` — the board's
   selector and banner at the PC size (two pictures, the board being wide); `q-r5a-ph-board.png` / `-drawn` — the board
-  on the phone. Drawn: the app's own line eye from the wave templates window (its Shown button), 11 px in the selector,
-  12 px in the banner.
+  on the phone. The five "today" pictures show the eye in colour (the PC's colour eye, as above), tagged "Typed 👁: a
+  colour emoji (your iPhone draws its own)". Drawn: the app's own grey line eye from the wave templates window (its
+  Shown button), 11 px in the selector, 12 px in the banner, tagged "Drawn: the app's own line eye".
 - (b) `q-r5b-pc-compact.png`, `q-r5b-pc-every.png` and the phone pair — real, ⤢ at rest and ⤡ pressed;
   `q-r5b-pc-compact-drawn.png`, `q-r5b-pc-every-drawn.png` and the phone pair — drawn: arrows out for "Show every
   input", arrows in for "Show the month compact".
@@ -156,26 +159,34 @@ the Tracker's tools but not these). Measured:
   deleted; drawn: the Reset arrow before "Restore".
 - (d) `q-r5d-pc-board.png` / `-drawn`, `q-r5d-ph-board.png` / `-drawn` — the board's warning list, one line hidden (↺)
   and the rest ✕; `q-r5d-pc-week.png` / `-drawn`, `q-r5d-ph-week.png` / `-drawn` — the same on Edit Schedule's day
-  list; drawn: ↺ becomes the Reset arrow, ✕ stays. `q-r5d-pc-week-history.png`, `q-r5d-ph-board-history.png`,
-  `q-r5d-ph-week-history.png` — real: History's clock on the same page, for the caution under B (on the PC board picture
-  History is ringed too).
+  list. Today's tagged "Typed ↺ flags it again, ✕ hides it"; drawn, "Drawn: the hidden line's arrow becomes the Reset
+  arrow; ✕ stays". `q-r5d-pc-week-history.png`, `q-r5d-ph-board-history.png`, `q-r5d-ph-week-history.png` — real:
+  History's clock on the same page (on the PC board pictures History is ringed too).
+  `q-r5d-ph-history-vs-reset.png` — the two side by side, each cut from the phone's board at the same scale: History's
+  clock and the drawn arrow on a hidden line, tagged "History · Flag this again (drawn)", for the caution under A and
+  B.
 
 **(d) Options.** No new words: every button keeps its words and its hover words.
 - **A — all four as drawn** (recommended). (a) the line eye the app already draws in the wave templates window; (b) two
-  new marks in the app's line style, four arrows out and four arrows in — **a departure named** (lesson 18): today's ⤡
-  points out on the other slant, which says nothing of "smaller"; the drawn one points in; (c) and (d) the Reset arrow,
-  the arrow turning back that already means "put back" on the Leave War's Reset order and the Tracker's Reset layout
-  (D1703, D1705). The ✕ stays typed: it is the app's close-and-remove mark in over a hundred places on its screens; only the
-  Tracker draws its own. Changes no ruling; carries D1124 / lesson 70 (one thing, one mark) to these four.
-- **B — the first three as drawn, and the warning's ↺ left typed.** The caution (lesson 92): History's clock is that same
-  arrow turning back with clock hands added, and it stands on the top bar of both pages with the warning lists. Changes
-  no ruling.
+  new marks in the app's line style, two arrows pointing out and two arrows pointing in — **a departure named** (lesson
+  18): today's ⤡ points out on the other slant, which says nothing of "smaller"; the drawn one points in; (c) and (d) the
+  Reset arrow, the arrow turning back that already means "put back" on the Leave War's Reset order and the Tracker's
+  Reset layout (D1703, D1705). The ✕ stays typed: it is the app's close-and-remove mark in over a hundred places on its
+  screens; only the Tracker draws its own. **For (d), A relies on D1700**, the ruling nearest it: "any new mark a person
+  could mistake for another on its bar or page is redrawn before it is built", with the reading told to him then, that
+  the Reset arrow is History's arrow without the clock and means "put back" wherever it stands, kept unless he says
+  otherwise. A puts that arrow in the warning list, on the same page as History's clock (`q-r5d-ph-history-vs-reset.png`
+  shows the two together). Changes no ruling if he finds them easy to tell apart; carries D1124 / lesson 70 (one thing,
+  one mark) to these four.
+- **B — the first three as drawn, and the warning's ↺ left typed.** The caution (lesson 92, D1700): History's clock is
+  that same arrow turning back with clock hands added, and it stands on the top bar of both pages with the warning
+  lists. Changes no ruling.
 
 **(e) Recommendation: A.** One mark, one meaning everywhere: the arrow turning back already means "put back" in two
-places, and Flag this again is a put-back; History's clock reads apart by its hands and its place on the top bar, away
-from the warning lists. The eye is a mark the
-app draws already, so it looks the same on his iPhone as on a PC, which a typed 👁 does not. B is right only if he finds
-the warning's arrow and History's clock hard to tell apart in the pictures.
+places, and Flag this again is a put-back. Side by side, History's clock reads apart by its hands, its white, its full
+button and its place on the top bar; the drawn arrow is smaller, grey, on a struck-through line. The eye is a mark the
+app draws already, so it looks the same on his iPhone as on a PC, which a typed 👁 does not. B is right if he finds the
+two in `q-r5d-ph-history-vs-reset.png` hard to tell apart: then D1700 says the warning's arrow is not built.
 
 **(f) Worked example.** On Edit Schedule Saber hides the clash warning on his own line (OPS SHARING + NAV SYS BRIEF & VL
 BFM): today its line stays, struck through, with a typed ↺ at its end; with A the ↺ is the same drawn arrow as the Leave
@@ -240,8 +251,10 @@ stand above it.
 
 ## Could not picture, and why
 
-- **His iPhone itself**: a coloured 👁, its keyboard, its letters. The test browser draws 👁 in one colour and shows no
-  keyboard; the wider letters were stood in for by making every letter a seventh wider (question 4).
+- **His iPhone itself**: its own coloured 👁, its keyboard, its letters. An iPhone draws 👁 as a coloured emoji; the test
+  browser draws it as a plain grey eye, so question 3's "today" pictures show the PC's colour eye in its place, which is
+  not his iPhone's own drawing (to see his: open Monday's Original on his phone). The browser shows no keyboard; the wider
+  letters were stood in for by making every letter a seventh wider (question 4).
 - **"👁 Viewing plan …"** (a saved plan's look): the same banner and the same eye as the published version's look
   pictured in question 3; it needs a saved plan made first, and the drawn change is the same swap.
 - **Questions 1 and 2 drawn at the PC size**: only today's desktop pop-up is pictured; Find covers nothing on a desktop.
