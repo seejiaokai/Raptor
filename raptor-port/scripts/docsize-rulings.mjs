@@ -152,6 +152,36 @@ function bodyOf(text) {
 export const isPage = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), inF = fencedFlags(ls), fm = fmEnd(ls); return ls.some((l, i) => i >= fm && !inF[i] && l.trim() === PAGE_MARK) }
 /* does the file load only with its area (a `paths:` key in its frontmatter)? */
 export const isScoped = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); return fm > 0 && ls.slice(1, fm - 1).some(l => /^paths:/.test(l)) }
+/* A rules file's `paths:` globs, comments and blank lines left out — the files whose opening loads it. */
+export const pathsOf = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); if (!fm) return []; const at = ls.findIndex((l, i) => i < fm && /^paths:/.test(l)); if (at < 0) return []; const out = []; for (let i = at + 1; i < fm - 1; i++) { const m = /^\s+-\s+(.+?)\s*$/.exec(ls[i]); if (m) out.push(m[1].replace(/^['"]|['"]$/g, '')); else if (/^\S/.test(ls[i])) break } return out }
+/* One glob of a `paths:` list as a pattern: `**` any number of folders, `*` and `?` within one name. */
+export const globRe = g => new RegExp('^' + g.split(/(\*\*\/|\/\*\*$|\*\*|\*|\?)/).map(p => p === '**/' ? '(?:.*/)?' : p === '/**' ? '(?:/.*)?' : p === '**' ? '.*' : p === '*' ? '[^/]*' : p === '?' ? '[^/]' : p.replace(/[.+^${}()|[\]\\]/g, '\\$&')).join('') + '$')
+export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file))
+/* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
+   their area files into files of their own that load on the area's own paths AND on the files where the area meets
+   the rest of the app — so the area's rulings load only on its own files, and a seam file alone where they meet. Each
+   is registered here with one file inside its area and one on its seam; the gate checks that its `paths:` load it on
+   both, that its area file no longer loads on the seam, and that it has a byte tripwire (docsize.mjs RULING_BYTES). */
+export const SEAM_DIR = '.claude/rules/seams'
+export const SEAMS = [
+  { f: '.claude/rules/seams/leave-war.md', area: '.claude/rules/decisions/leave-war.md', inside: 'raptor-port/src/leavewar/ui/Matrix.tsx', seam: 'raptor-port/src/ui/InputsPage.tsx' },
+  { f: '.claude/rules/seams/tracker.md', area: '.claude/rules/decisions/tracker.md', inside: 'raptor-port/src/tracker/app/core.js', seam: 'raptor-port/src/ui/Shell.tsx' },
+]
+/* what is wrong with the seam files on disk — [] when nothing; `read` gives a file's text, or '' when it is absent */
+export function seamProblems(files, read) {
+  const out = [], known = new Map(SEAMS.map(s => [s.f, s]))
+  for (const f of files.filter(f => f.startsWith(SEAM_DIR + '/') && f.endsWith('.md'))) {
+    const s = known.get(f)
+    if (!s) { out.push(`${f} is a seam file nobody registered — add it to SEAMS in raptor-port/scripts/docsize-rulings.mjs (a file inside its area and one on its seam) and give it a byte tripwire in docsize.mjs's RULING_BYTES`); continue }
+    const globs = pathsOf(read(f))
+    if (!globs.length) { out.push(`${f} has no paths: — a seam file loads on its area's own files and on its seam, never in every chat`); continue }
+    if (!matchesPaths(globs, s.inside)) out.push(`${f} does not load on ${s.inside}, a file inside its area — its paths: must keep the area's own paths (the plan §2: the architecture binds the whole area)`)
+    if (!matchesPaths(globs, s.seam)) out.push(`${f} does not load on ${s.seam}, a file on its seam — its paths: must carry the seam paths`)
+    const area = read(s.area)
+    if (area && matchesPaths(pathsOf(area), s.seam)) out.push(`${s.area} still loads on ${s.seam}, a seam file's path — once ${f} carries the architecture, the area's rulings load only on its own files (the plan §2); give each ruling that governs the seam a pointer under the page's "From other areas"`)
+  }
+  return out
+}
 /* The rulings a text cites, outside code spans (a number in a code span is an example): every D-number, and every
    ruling inside a range. `named` is only the numbers written out — a range's ends, never what lies between, since
    numbers may skip (D78). */

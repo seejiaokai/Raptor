@@ -468,6 +468,29 @@ scenario('a new top-level reference doc on the map', false, c => { c.write('rapt
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))
 scenario('over a ceiling says it is a tripwire, not a target (D141)', true, c => c.edit('OUTSTANDING.md', t => t + 'x\n'.repeat(3000)), { mustSay: 'TRIPWIRE' })   // 3000: well past the backlog's tripwire (2150 since 7 Oct 26, D609; at 1400, and again at 2000, this stopped crossing it when the tripwire rose — keep it well above the marker in docsize.mjs)
 scenario('a new area rulings file with no paths: (it would load in every chat)', true, c => c.write(OTHER, '# Rulings — other\n'), { mustSay: 'loads in EVERY chat' })
+/* THE SEAM FILES (D1735; the rules-diet plan §2): registered with a file inside the area and one on its seam — a seam file
+   loads on both, its area file no longer on the seam, and a seam file nobody registered fails */
+const LW_SEAM = '.claude/rules/seams/leave-war.md', LW_AREA = '.claude/rules/decisions/leave-war.md'
+const seamFile = (...globs) => `---\npaths:\n${globs.map(g => `  - ${g}`).join('\n')}\n---\n\n# The Leave War — its architecture\n\nMoved whole from its area file.\n`
+scenario('a seam file loading inside its area and on its seam', false, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', '# where it meets the rest of the app', 'raptor-port/src/ui/InputsPage.tsx')))
+scenario('a seam file that misses its seam', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**')), { mustSay: 'does not load on raptor-port/src/ui/InputsPage.tsx, a file on its seam' })
+scenario('a seam file that misses its own area', true, c => c.write(LW_SEAM, seamFile('raptor-port/src/ui/InputsPage.tsx')), { mustSay: 'a file inside its area' })
+scenario('a seam file whose area file still loads on the seam', true, c => { c.write(LW_SEAM, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx')); c.write(LW_AREA, seamFile('raptor-port/src/leavewar/**', 'raptor-port/src/ui/InputsPage.tsx').replace('its architecture', 'rulings')) }, { mustSay: 'still loads on raptor-port/src/ui/InputsPage.tsx' })
+scenario('a seam file nobody registered', true, c => c.write('.claude/rules/seams/other.md', seamFile('raptor-port/src/other/**')), { mustSay: 'a seam file nobody registered' })
+{ /* the paths: matcher, read directly — the globs the rules files use today */
+  const RLp = await import(pathToFileURL(join(HERE, 'docsize-rulings.mjs')).href)
+  const cases = [
+    ['** at the end takes any depth', ['raptor-port/src/**'], 'raptor-port/src/leavewar/ui/Matrix.tsx', true],
+    ['…but not a sibling folder', ['raptor-port/src/**'], 'raptor-port/srcx/a.ts', false],
+    ['* stays inside one name', ['raptor-port/src/ui/Input*.tsx'], 'raptor-port/src/ui/InputsPage.tsx', true],
+    ['…never across a folder', ['raptor-port/src/ui/Input*.tsx'], 'raptor-port/src/ui/Inputs/x.tsx', false],
+    ['**/ in the middle, then a name pattern, then /**', ['raptor-port/docs/**/*lw-*/**'], 'raptor-port/docs/img/handpass/2026-x-lw-a/b.png', true],
+    ['**/ matches no folder at all', ['raptor-port/src/**/*Oil*'], 'raptor-port/src/OilDayList.tsx', true],
+    ['a dot is a dot, not any letter', ['raptor-port/src/*.ts*'], 'raptor-port/src/mainxts', false],
+    ['paths: read from frontmatter, a comment line skipped', RLp.pathsOf(seamFile('a/**', '# a comment', 'b/c.ts')), 'b/c.ts', true],
+  ]
+  for (const [name, globs, file, want] of cases) { const got = RLp.matchesPaths(globs, file), ok = got === want; if (!ok) failed++; console.log(`${ok ? 'PASS' : 'MISS'}  paths: ${name} — expected ${want}, got ${got}`) }
+}
 
 /* THE TEXT MOVER (backlog-archive.mjs --move, D138): exact, or nothing. */
 const SRC = 'raptor-port/docs/superpowers/specs/a.md', DST = 'raptor-port/docs/superpowers/specs/b.md'

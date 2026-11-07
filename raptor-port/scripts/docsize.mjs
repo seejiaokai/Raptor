@@ -405,6 +405,12 @@ const RULING_BYTES = [
      D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
      every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
   ['.claude/rules/decisions/tracker.md', 2, 32500],   // raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
+  /* 7 Nov 26 (D1735, the rules diet's step 1): the two seam files, registered before they are written (step 2 moves
+     the Leave War's and the Tracker's "## Architecture" sections into them whole — 13,077 and 10,988 bytes measured
+     that day), each a tenth above its section and its paths: header. Registered with their probe files in
+     docsize-rulings.mjs SEAMS; until step 2 writes them they are not there, and not reported missing. */
+  ['.claude/rules/seams/leave-war.md', 2, 15000],
+  ['.claude/rules/seams/tracker.md', 2, 12500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
@@ -932,6 +938,10 @@ function structure() {
     const scoped = head.startsWith('---\n') && /^paths:/m.test(head.slice(4, head.indexOf('\n---', 4) + 1))
     if (!scoped && !registered.has(f)) fails.push(`${f} loads in EVERY chat (no paths:) but is not registered in ${SELF}'s FILES — register it with a ceiling (tier 0), or give it paths: so it loads only with its area`)
   }
+  /* the seam files (D1735; plan §2): each registered, loading inside its area and on its seam, its area file no longer on
+     the seam, and each with a byte tripwire */
+  fails.push(...RL.seamProblems(md, readNow))
+  for (const f of md.filter(f => f.startsWith(RL.SEAM_DIR + '/'))) if (!RULING_BYTES.some(r => r[0] === f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
   /* HANDOFF.md ## Now: one block per branch, and a merged branch's block is stale */
   const seen = new Map()
   for (const l of unfenced(splitLines(readNow(HANDOFF)))) { const m = NOW_MARK.exec(l); if (m) seen.set(m[1], (seen.get(m[1]) || 0) + 1) }
@@ -1029,7 +1039,7 @@ function ceilings(codeChange) {
   console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} ${pad('changed', 8)} tripwire`)
   let rTier0 = 0, rTok0 = 0
   for (const [f, tier, ceiling] of RULING_BYTES) {
-    if (!existsSync(join(REPO, f))) { console.log(`  ${pad(f, 44)} MISSING`); continue }
+    if (!existsSync(join(REPO, f))) { if (!f.startsWith(RL.SEAM_DIR + '/')) console.log(`  ${pad(f, 44)} MISSING`); continue }
     const text = readNow(f), n = Buffer.byteLength(text, 'utf8'), tok = estTokens(text)
     if (tier === 0) { rTier0 += n; rTok0 += tok }
     /* the short lines a later ruling changed — read each against it at the next tidy: one it restates in full leaves (D971) */
