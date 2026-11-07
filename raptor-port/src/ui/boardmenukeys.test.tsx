@@ -400,6 +400,89 @@ describe('[D1646] the board\'s ⋯ menu by the keys', () => {
     await act(async () => { $('#searchB').focus() })
     expect(moreMenu(), 'the menu went with the keys').toBeNull()
   })
+  /* THE TWO READS OF 8 NOV 26 (docs/superpowers/briefs/2026-11-08-board-keys-read-*.md) */
+  it('Astra 1: ↓ on ⋯ with another board menu up closes that one first — one menu at a time, one Escape', async () => {
+    await click(date(2))
+    await mouseClick($('#sbBoard [data-dwadd]'))
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })     // its click-outside is listening by now
+    expect(menu(), '+ Block\'s menu is up').toBeTruthy()
+    more().focus()
+    await key('ArrowDown')
+    expect(menu(), '+ Block\'s menu went as ⋯ opened').toBeNull()
+    expect(moreMenu(), '⋯ is up').toBeTruthy()
+    expect(at(), 'the keys on its first item').toBe(moreItems()[0])
+    await key('Escape')
+    expect(moreMenu(), 'Escape closed it').toBeNull()
+    expect(at(), 'the keys back on ⋯').toBe(more())
+    expect(boardOpen(), 'the board stays').toBe(true)
+  })
+  it('Opus Q2: a held Enter opens the menu but does not pick — its repeat, landing on the first item, is ignored', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    expect(at()).toBe(moreItems()[0])
+    const rep = await key('Enter', { repeat: true })
+    expect(rep.defaultPrevented, 'the repeat presses nothing').toBe(true)
+    expect(moreMenu(), 'the menu still up').toBeTruthy()
+    const one = await key('Enter')
+    expect(one.defaultPrevented, 'a fresh Enter still picks').toBe(false)
+    await key('Escape')
+  })
+  it('Opus 3: Sort all picked by the keys — the keys come back to ⋯ when its box closes', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    await pressByKeys(moreItems().find(b => b.id === 'sbMoreSort')!)
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    expect(SORTALL, 'the Sort all box is up').not.toBeNull()
+    await key('Escape')
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    expect(SORTALL, 'Escape closed it, nothing sorted').toBeNull()
+    expect(boardOpen(), 'the board stays').toBe(true)
+    expect(at(), 'the keys back on ⋯').toBe(more())
+  })
+  it('Opus 3: the arrows step over an item that cannot be pressed (Sort all on a day being looked back at)', async () => {
+    await click(date(2))
+    await pressByKeys(more())
+    ;($('#sbMoreSort') as HTMLButtonElement).disabled = true
+    await key('ArrowDown')
+    expect(at().id, '↓ from Insights skips Sort all').toBe('sbMoreWide')
+    await key('ArrowUp')
+    expect(at().id).toBe('sbMoreInsights')
+    await key('Escape')
+  })
+  it('Opus 3: Space on ⋯ opens it on its first item, as Enter does', async () => {
+    await click(date(2))
+    more().focus()
+    await key(' ')
+    await click(more())                          // Space presses a button as it comes up
+    expect(moreMenu()).toBeTruthy()
+    expect(at(), 'the keys on its first item').toBe(moreItems()[0])
+    await key('Escape')
+  })
+  it('Opus 3: a pick by the mouse does not move the keys onto ⋯ (the ring is for the keys only)', async () => {
+    await click(date(2))
+    await mouseClick(more())
+    const sw = moreItems()[2]!
+    await mouseClick(sw)
+    expect(moreMenu(), 'the pick closed the menu').toBeNull()
+    expect(at(), 'the app did not put the keys on ⋯').not.toBe(more())
+    await mouseClick(more()); await mouseClick(moreItems()[2]!)        // the layout back as it was
+  })
+  it('Opus Q3: a window widened past a phone\'s width with the menu up closes it, so the next Escape is the board\'s', async () => {
+    const was = window.matchMedia
+    let wide = false
+    const heard: (() => void)[] = []
+    ;(window as any).matchMedia = (q: string) => ({ media: q, get matches() { return /min-width/.test(q) ? wide : false },
+      addEventListener: (_: string, f: () => void) => heard.push(f), removeEventListener: (_: string, f: () => void) => { const i = heard.indexOf(f); if (i >= 0) heard.splice(i, 1) },
+      addListener() {}, removeListener() {} })
+    try {
+      await click(date(2))
+      await pressByKeys(more())
+      expect(moreMenu()).toBeTruthy()
+      wide = true
+      await act(async () => { heard.slice().forEach(f => f()) })
+      expect(moreMenu(), 'the ⋯ is no longer drawn, and its menu went with it').toBeNull()
+    } finally { (window as any).matchMedia = was }
+  })
 })
 
 describe('[D1646] the day bar\'s Templates (a phone\'s width) by the keys', () => {
@@ -413,5 +496,28 @@ describe('[D1646] the day bar\'s Templates (a phone\'s width) by the keys', () =
     expect(menu().contains(at()) && at().tagName === 'BUTTON', 'the keys are in it').toBe(true)
     await key('Escape')
     expect(keysOn(b), 'the keys back on Templates').toBe(true)
+  })
+  it('the reads (Astra 2, Opus 2): ↓ on it with ANOTHER board menu up opens its own, never goes into the other', async () => {
+    await click(date(2))
+    await click($('#sbBoard [data-dwadd]'))
+    await act(async () => { await new Promise(r => setTimeout(r, 10)) })
+    expect(menu(), '+ Block\'s menu is up').toBeTruthy()
+    const b = $('#sbBoard [data-daytpladd]')
+    b.focus()
+    await key('ArrowDown')
+    expect($$('.wavemenu').length, 'one menu').toBe(1)
+    expect(menu().querySelector('[data-daytplsave]'), 'and it is the day\'s Templates').toBeTruthy()
+    expect(menu().contains(at()) && at().tagName === 'BUTTON', 'the keys are in it').toBe(true)
+    await key('Escape')
+    expect(keysOn(b), 'the keys back on Templates').toBe(true)
+  })
+  it('Opus Q2: a held Enter on + Block opens its menu and adds nothing — the repeat on its first pick is ignored', async () => {
+    await click(date(2))
+    await pressByKeys($('#sbBoard [data-dwadd]'))
+    expect(menu().contains(at()), 'the keys on its first pick').toBe(true)
+    const rep = await key('Enter', { repeat: true })
+    expect(rep.defaultPrevented, 'the repeat presses nothing').toBe(true)
+    expect(menu(), 'the menu still up').toBeTruthy()
+    await key('Escape')
   })
 })

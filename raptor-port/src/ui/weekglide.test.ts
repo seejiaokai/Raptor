@@ -263,6 +263,50 @@ describe('a fired glide leaves nothing behind', () => {
     expect(edit.style.pointerEvents).toBe('auto')
   })
 
+  /* THE TWO READS OF 8 NOV 26 (Opus finding 1, Astra's question — docs/superpowers/briefs/2026-11-08-board-keys-read-*.md).
+     Each week's own landing, and only the week crossed LAST is landed at the burst's end: a week crossed earlier was landed
+     by its own repaint as it swapped, and if the person has switched back to its page inside the burst, the switch has
+     since put it on the day it carried — a cross on Edit Schedule (Monday), a cross back on View-only Sched (Sunday), back
+     to Edit Schedule (on Sunday, carried): the burst's end used to drag Edit Schedule's week back to Monday. */
+  const sized = (r: HTMLElement) => {
+    Object.defineProperty(r, 'scrollWidth', { value: 12 + 390 * 7, configurable: true })
+    Object.defineProperty(r, 'clientWidth', { value: 390, configurable: true })
+    Object.defineProperty(r, 'scrollLeft', { value: 0, configurable: true, writable: true })
+  }
+  it('a burst over two pages lands only the week crossed last — a week switched back to keeps the day it was given', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v'); sized(edit); sized(viewWk)
+    view.setWeekJump('mon'); beginGlide(edit)!()          // Edit Schedule crosses forward, onto Monday
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()        // View-only Sched crosses back, onto Sunday (2352, its end)
+    vi.advanceTimersByTime(100)
+    edit.scrollLeft = 2352                                 // back on Edit Schedule: the switch carried Sunday onto its week
+    vi.runAllTimers()
+    expect(viewWk.scrollLeft, 'the week crossed last stands on ITS landing, Sunday').toBe(2352)
+    expect(edit.scrollLeft, 'the week switched back to keeps the day it was given, not dragged back to Monday').toBe(2352)
+    expect([edit.style.pointerEvents, edit.style.overflowX, viewWk.style.pointerEvents, viewWk.style.overflowX], 'both take touches and scroll').toEqual(['', '', '', ''])
+  })
+  it('a burst over two pages whose later slide ends first: nothing is put back until the last one ends', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v'); sized(edit); sized(viewWk)
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()
+    vi.advanceTimersByTime(40)                             // both slides under way
+    const incs = clones().filter(c => c.style.zIndex === '40')
+    expect(incs.length, 'two arriving copies').toBe(2)
+    incs[1]!.dispatchEvent(new Event('transitionend'))    // View-only Sched's ends first
+    expect([edit.style.pointerEvents, viewWk.style.pointerEvents], 'both weeks still covered while one slide runs').toEqual(['none', 'none'])
+    expect(document.body.style.overflowX).toBe('hidden')
+    vi.runAllTimers()
+    expect([edit.style.pointerEvents, edit.style.overflowX, viewWk.style.pointerEvents, viewWk.style.overflowX, document.body.style.overflowX]).toEqual(['', '', '', '', ''])
+    expect(clones().length).toBe(0)
+  })
+
   /* owner, 23 Aug 26 — "bleeding at the top bar when swiping". The clone is
      position:fixed from the week's rect.top, which is above the sticky top bar
      once the page is scrolled; at z-index 60 (the bar's own) it tied and, being

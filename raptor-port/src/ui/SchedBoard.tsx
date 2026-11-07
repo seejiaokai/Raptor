@@ -119,6 +119,17 @@ export function SchedBoard() {
     document.addEventListener('keydown', key, true)
     return () => { document.removeEventListener('pointerdown', down, true); document.removeEventListener('keydown', key, true) }
   }, [moreOpen])
+  /* A WINDOW WIDENED PAST A PHONE'S WIDTH TAKES THE MENU WITH ITS ⋯ (the Opus read's question 3, 8 Nov 26): above 820 the ⋯
+     is not drawn (18-oil-board.css) and its open menu went out of sight with it — still open, so its Escape listener above
+     took the next Escape, which closed nothing anyone could see, and the board's own Escape never came. */
+  useEffect(() => {
+    if (!moreOpen || typeof window.matchMedia !== 'function') return
+    const mq = window.matchMedia('(min-width:821px)')
+    const wide = () => { if (mq.matches) setMoreOpen(false) }
+    if (mq.addEventListener) mq.addEventListener('change', wide)
+    else mq.addListener?.(wide)
+    return () => { if (mq.removeEventListener) mq.removeEventListener('change', wide); else mq.removeListener?.(wide) }
+  }, [moreOpen])
   /* THE MENU OPENS WHOLE ON SCREEN (W18, 5 Oct 26). It hangs from the button's left edge; in the phone's Desktop layout
      the board pans, and with the button near the right edge of the screen the menu ran off it. Measured as it opens,
      before the first paint: if its right edge would pass the screen's, hang it from the button's right edge instead
@@ -599,12 +610,18 @@ export function SchedBoard() {
                 if (e.key !== 'ArrowDown' || e.altKey || e.ctrlKey || e.metaKey || e.shiftKey) return
                 e.preventDefault()
                 if (moreOpen) moreItems()[0]?.focus({ preventScroll: true })
-                else { moreKeys.current = true; setMoreOpen(true) }
+                /* opened as a press of ⋯ is (Astra's read, finding 1, 8 Nov 26): the press is a click outside any other board
+                   menu, so + Block's or Templates' menu goes as this one opens — one menu up, one Escape — and the press is
+                   known to be the keys' (this ↓ was pressed on ⋯) */
+                else e.currentTarget.click()
               }}
               onClick={e => { const keys = pressedByKeys(e.currentTarget); if (!moreOpen) moreKeys.current = keys; setMoreOpen(!moreOpen) }}>⋯</button>
             {/* eslint-disable-next-line react-doctor/no-static-element-interactions -- the menu's own ↑ ↓, moving the keys between its items, which are the controls (each a button with role="menuitem") */}
             {moreOpen && <div className="sb-moremenu" id="sbMoreMenu" role="menu"
               onKeyDown={e => {
+                /* a held Enter opens the menu and picks nothing: its repeat lands on the first item the keys were put on
+                   (the Opus read's question 2, 8 Nov 26 — as in the board's other menus, sheetfocus.ts menuKeys) */
+                if (e.key === 'Enter' && e.repeat) { e.preventDefault(); return }
                 if ((e.key !== 'ArrowDown' && e.key !== 'ArrowUp') || e.altKey || e.ctrlKey || e.metaKey) return
                 const list = moreItems(), i = list.indexOf(document.activeElement as HTMLButtonElement)
                 if (i < 0) return

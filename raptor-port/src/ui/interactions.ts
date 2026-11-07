@@ -957,9 +957,12 @@ export function routeMenuKey(e: KeyboardEvent) {
   if (!t || typeof t.closest !== 'function') return
   const b = t.closest(MENU_BTN) as HTMLElement | null
   if (!b || view.CURPAGE !== 'editsched' || !canEditSched()) return
+  /* only THIS button's menu is gone into (the two reads of 8 Nov 26 — Opus finding 2, Astra finding 2): with + Block's menu
+     up, ↓ on Templates went into + Block's menu, its first pick under the keys, Templates never opened. Another button's
+     menu is closed by this one's own click, which is a click outside it, and this one opens. */
   const up = document.querySelector('.wavemenu') as HTMLElement | null
   e.preventDefault()
-  if (up) { menuFirst(up)?.focus({ preventScroll: true }); return }
+  if (up && (up as any)._anchor === b) { menuFirst(up)?.focus({ preventScroll: true }); return }
   b.click()
 }
 
