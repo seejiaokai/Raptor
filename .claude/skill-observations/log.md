@@ -3763,3 +3763,51 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In the codex-review / claudex-loop review step: when the version under review is not the branch head, or the branch already holds another reviewer's report or a revision built from it, run the reviewer in an exported copy of that commit (picture or binary folders excluded), and say so in the saved report's header.
 
 **Principle:** Blindness is a property of what the reviewer can reach, not of what the brief tells it not to open; give it a tree that contains only what it should see.
+
+### Observation 839: A plan step sized at several chats should name where each chat stops
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet, step 1 (the checks and scripts), started from a handoff that said "start step 1" for a step the plan sizes at three chats
+**Skill:** writing-plans; session-handoff
+**Type:** open-source
+**Phase/Area:** writing-plans — the task list; session-handoff — "Pick up here"
+
+**Issue:** The chat opened at about half full from what loads at the start, and the step it was handed was sized at three chats with no split named. It had to choose its own slice mid-way (the checks first, then the recorder, then merging and the report), and the next two chats depend on that choice being written down.
+
+**Suggested improvement:** writing-plans: when a task is sized at more than one session, list each session's slice and the clean stopping point after it (what is built, tested and committed). session-handoff: when the work in hand spans sessions, the "Pick up here" line names the next slice by its parts, not the whole step.
+
+**Principle:** Work too big for one session is split where it is planned, not where the session happens to fill up; each slice ends at a point that is built, tested and committed.
+
+**Met again 7 Nov 26 (`claude/rules-diet-step1`, part 3):** the handoff named "part 3" as one slice though it held three builds (`--merge` in both shapes, the seam files, `docsize --reads`); the chat started at 41% from what loads at the start and reached 76% from reading the plan and the scripts alone, so it built the smallest (the seam files) and handed off with the other two designed in the block. Proposed guard: the outgoing chat sizes the next slice against what a fresh chat has left after its start-up load (measured, not guessed) and names one build per slice where a build needs its scripts read whole.
+
+### Observation 840: A helper that turns a failed command into empty output made a report read "nothing loads"
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** the rules diet, step 1 part 3c — `docsize --reads`, a report of what a chat reads
+**Skill:** New skill candidate: writing repo scripts (no skill covers it; the project guide's token-discipline rules are nearest)
+**Type:** open-source
+**Phase/Area:** a script's shell-out wrapper
+
+**Issue:** The new report listed files with `git ls-files` through the house wrapper `try { return execFileSync(...) } catch { return '' }`. In this repo the listing outgrows Node's default output buffer (1 MB), so the call threw and the wrapper returned an empty list; the report then printed every rules file as not loading — plausible-looking numbers, wrong by 300,000 tokens. Only comparing them with the plan's known figures caught it.
+
+**Suggested improvement:** In any repo script, a shell-out whose empty result is a meaningful answer ("no files", "nothing changed") must not swallow errors: let it throw, or return null and test for it. Narrow listings to the paths needed, and set `maxBuffer` on any listing of a whole repo.
+
+**Principle:** An error that becomes an empty value is indistinguishable from a true "none"; only swallow errors where "none" and "failed" lead to the same action — and check a new report's first numbers against an independent figure before trusting it.
+
+
+### Observation 841: A reader's fix needs its own reader — and a red-first loop needs a way to run only the new cases
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** Rules diet step 1 — fixing a fresh reader's findings in the document-check scripts, red-first.
+**Skill:** receiving-code-review (and the project's self-test of its document checks)
+**Type:** open-source
+**Phase/Area:** acting on review findings; the fix → re-read loop
+
+**Issue:** Each fix round on a merge tool was read again by a fresh reader, and each read found a gap the fix had left beside it — first a whole neighbouring shape (a new file made in the new layout WITH an item moved into it), then a sibling shape (that item retired on the other side), a filter made too broad, and a false positive from comparing "absent" with a value. All were in the same family as the original finding: a branch that decided "is this the new shape?" from one source when two existed. The self-test suite had no way to run a subset, so seeing only the new cases fail first meant building a scratch copy with each case-runner patched to skip non-matching names (about 12 minutes saved per round over the full run).
+
+**Suggested improvement:** In receiving-code-review: when a finding says "X is decided from source A alone", search for EVERY place that decides X, not just the ones named, and write the case for each sibling state (created / changed / moved / retired) before fixing. For a long test suite used red-first, give it a name filter (an environment variable) so the new cases can be run alone.
+
+**Principle:** A finding names one instance of a decision made from too narrow a source; the fix is complete only when every reader of that decision and every sibling state of the data has a case — and a slow suite without a filter turns red-first into a scratch-copy chore.

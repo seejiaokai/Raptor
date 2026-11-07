@@ -296,8 +296,15 @@ readers' cheaper path: the reads by section and the moves bring most of the savi
 | 4 | The every-chat layer: `how-we-work.md` as the sample page, the five checklists, `AGENTS.md`'s and `codex-guide.md`'s pointers, `raptor-port/CLAUDE.md`'s lines about the old shape; the 10 proposed archivals | a fresh reader, part by part against the rows | 2 |
 | 5a | Areas, smallest first — **OIL first, as the trial of the whole route** (a ruling recorded, one changed, one retired, a merge from a branch still in the old shape), then the IT guide, people, design, Tracker | a fresh reader per page; the gate | 3 |
 | — | **Re-measure and report to him before 5b** — the big three converted only if still worth it | `docsize --reads` | — |
-| 5b | Inputs, scheduler, Leave War — **a few screens per chat**, each with its own account and its own fresh reader; for the scheduler, his choice first between a page and splitting its "Settled" sections by screen with `--move-rows` (D611's mark is crossed; D976 kept one file) | as 5a; Astra if he calls (recommended, §8) | Inputs 2, scheduler 4–5, Leave War 4–5 |
+| 5b | Inputs, scheduler, Leave War — **a few screens per chat**, each with its own account and its own fresh reader; for the scheduler, his choice first between a page and splitting its "Settled" sections by screen with `--move-rows` (D611's mark is crossed; D976 kept one file) | as 5a; Astra too, blind to the Opus reader (D1738 — he called it, §8); if Astra cannot run, he is told first, and the page never goes on without that read | Inputs 2, scheduler 4–5, Leave War 4–5 |
 | 6 | The final measure, before and after, to him | `docsize --reads`, and the status line's fullness on his PC | — |
+
+**Astra too, on every reworded step (his D1739, 7 Nov 26 — "for the risky parts u call Astra in as well"):** every step
+above that rewrites, shortens or summarises a rule — step 2's short texts, step 3's checklists, step 4's page and
+checklists, every page of step 5 — is read by Astra as well as by the fresh Opus reader, each blind to the other, for
+whether any meaning changed (it widens D1738 beyond 5b). Text moved whole and step 1's checks and scripts keep the one
+fresh Opus reader (D1736). If Astra cannot run, he is told before the step goes on, and the step never goes on
+without that read.
 
 About 21 to 23 chats (v2: 17 to 19 — v3 adds the scripts' both-shape tests, OIL as a full trial and the accounts by
 requirement). Part 1's middle column is steps 1–4 in this order. Two to four steps share a branch where they touch one kind of file (D1087); **every step merges on
@@ -356,6 +363,40 @@ The big reference documents a job opens in part (`ui-contracts.md` 1.08 MB, `fil
 371 KB, `walk-ledger.md` 263 KB); the backlog's 158 items; splitting the largest code files (point 5 of 6 Nov, the tidy-ups'
 path, D490, D775); handing off by about 40% full (point 1 of 6 Nov, still put to him); his connectors (point 2, his
 setting, D969 point E). The skill-notes log's overdue review (86 notes open, last review 27 Oct 26) is a job of its own.
+
+### Step 1 — what the built checks found in the samples (7 Nov 26, `claude/rules-diet-step1`)
+
+The page checks of §5 are built (`docsize.mjs` job 1c, the page reading in `docsize-rulings.mjs`, 20 self-test cases in
+both shapes). Dry-run on the samples against the real rulings, each page given its `paths:` and the marker:
+- **OIL:** every live ruling stated, every change mark cited, nothing stale; two statements over the 600-character cap
+  (sample lines 30 and 112: "Every seat can earn…", the scheduler pointer of "From other areas") — **step 5a splits each
+  in two.** The cap stays at the plan's 600.
+- **General:** three statements over the cap (the page's head paragraph, the Tracker-graph line of "Order of work", the
+  platform line) — **step 4 splits them.** Not stated: D1735–D1738 (made after the sample) and the seven spent rulings
+  the sample proposes to archive (D1659, D1566, D974, D973, D972, D602, D86); and D1297, D201 and D56, which the five
+  always-loaded files name **only in a heading** — a heading states nothing (§5), so step 4's checklists cite each on a
+  statement. The page's own lines lack D1735 beside D390, D68, D1554, D1732 and D1738 beside D1734 (marks written
+  after the sample). Once the general page converts, the five files join the change-mark and stale checks (§5): today
+  37 of their lines state a ruling without the one that changed it, and two cite a replaced one (D1594 in
+  `bug-check.md`, D368 in `doc-structure.md`) — all within step 4's rewrite of those files as checklists.
+- **Part 2 (the recorder by marker), a choice §3 left open:** "prints the page and section to edit" is built as a
+  refusal — the recorder prints every edit the page owes and writes nothing until they are made, since the gate would
+  fail the turn on each and put the run back anyway; so §3's order stands (the page line first, then the command). The
+  gate and the recorder read what a page owes from one function (`docsize-rulings.mjs` `pageDebts`). `--merge` keeps
+  writing past those debts (part 3 lists them "place on the page").
+- **The fresh Opus reader of step 1 (7 Nov 26 — `docs/superpowers/briefs/2026-11-07-rules-diet-step1-read.md`): its six
+  findings fixed red-first, each with a self-test case.** Two readings set by it, both from §2: a ruling counts as stated
+  only on its own page or — a general ruling — in an always-loaded rules file; anywhere else a citation only points (F1).
+  And a line with words enough to state a converted area's ruling cites the rulings that changed it **wherever it
+  stands** — its page, another page's pointer, an always-loaded file (F2; §5's table said "of its home area"; widened
+  because a stale restatement misleads wherever it loads, D201). **Its cost for step 2 on:** a "From other areas" pointer
+  of four words or more to a converted ruling cites that ruling's changes too; the recorder lists each one owed.
+  **Its five questions, answered:** (1) one probe file per seam was too weak — each seam file is now registered with every
+  seam path its area file carries today, and checked on each, and on each of its area file's own paths; (2) a registered
+  seam file that is missing once its area file no longer loads on its seam now fails; (3) the sizing step's read now
+  takes the types of change as well, which its step 1 picks from — measured 1,227 tokens (the table in §1 says 1,620;
+  the plan's figure was not re-derived); (4) a heading is matched to a boundary, so "## 1" never takes "## 10"; (5) a
+  page's area gets a full-text header in the page's words.
 
 ### Review log
 

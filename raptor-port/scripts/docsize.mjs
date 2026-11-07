@@ -39,10 +39,15 @@
  *
  * THE RULINGS SINCE D390 (28 Sep 26): each ruling is a short line in its area file and a full row, kept whole, in
  * .claude/decisions-full/ — the shape both this gate and the converter read is docsize-rulings.mjs.
+ * SINCE D1735 (7 Nov 26, the rules diet) an area may convert to a PAGE of how it works now, marked in its body by
+ * `<!-- shape: page -->`: its rulings then have no short lines, and the gate checks instead that each live ruling is
+ * cited on a statement that loads, beside every ruling that changed it, and that no line cites a replaced one (job 1c).
+ * Areas convert one at a time; until one does, it is checked exactly as before.
  *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
  * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check);
  * --marks lists the rulings' back-marks, their drift since the base, and which short lines are extracts (D390).
+ * --reads [--verbose] prints what a chat reads, in tokens, by kind of job — docsize-reads.mjs (D1735; a report, never a gate).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -197,7 +202,10 @@ const FILES = [
   /* DECISIONS.md 92 -> 95 (27 Oct 26, the skill-notes review): three lines in the recording steps — the one command that
      finds the highest ruling number on every branch (observation 670); the file holds the steps every chat follows, so
      the line goes where the step is. Room, not a target. */
-  ['DECISIONS.md',                       1,   96],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
+  /* DECISIONS.md 96 -> 110 (7 Nov 26, D1735 — the rules diet, plan §3): the steps for an area converted to a page, beside
+     the three for an area still in short lines — both routes stand until the last area converts, and this file holds the
+     steps every chat follows. Room, not a target; the paragraph leaves when the last area converts. */
+  ['DECISIONS.md',                       1,  110],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
@@ -398,6 +406,12 @@ const RULING_BYTES = [
      D1170, D1171 (main's round 3 - the Tracker bar's height), already over on `main` and failing the documents check of
      every pull request; none is trimmed (D136). The split or the spent-rulings pass stays filed in [RULINGS-SPENT-PASS]. */
   ['.claude/rules/decisions/tracker.md', 2, 32500],   // raised 5 Nov 26 from 29500: D1705 (round 4's Tracker marks) took it 91 over; never trimmed (D136), a tenth above
+  /* 7 Nov 26 (D1735, the rules diet's step 1): the two seam files, registered before they are written (step 2 moves
+     the Leave War's and the Tracker's "## Architecture" sections into them whole — 13,077 and 10,988 bytes measured
+     that day), each a tenth above its section and its paths: header. Registered with their probe files in
+     docsize-rulings.mjs SEAMS; until step 2 writes them they are not there, and not reported missing. */
+  ['.claude/rules/seams/leave-war.md', 2, 15000],
+  ['.claude/rules/seams/tracker.md', 2, 12500],
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
@@ -463,6 +477,10 @@ const ROW_ID = /^\|\s*(D\d+)\s*\|/
 /* kind: 'short' (four `|` — an index line), 'full' (six — the ruling itself) or 'bad' (any other count, failed for it) */
 const rulingRowsIn = (f, text) => unfenced(splitLines(text)).filter(l => ROW_ID.test(l)).map(line => ({ d: ROW_ID.exec(line)[1], file: f, line, kind: RL.kindOf(line) }))
 const rulingRows = when => rulingFiles(when).flatMap(f => rulingRowsIn(f, when === 'base' ? readBase(f) : readNow(f)))
+/* the rules files every chat loads — directly under .claude/rules/, with no `paths:` (doc-structure.md); a page's ruling
+   may be stated in one of them instead of on its page (D1735, plan §2) */
+const alwaysLoadedRules = () => [...new Set([...(tryGit('ls-files', '--', '.claude/rules') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', '.claude/rules') || '').split('\n')])]
+  .filter(f => /^\.claude\/rules\/[^/]+\.md$/.test(f) && existsSync(join(REPO, f)) && !RL.isScoped(readNow(f)))
 /* a ruling's IDENTITY is its full row (a malformed one still counts, so it is failed for its shape, never as lost) */
 const identityRows = when => rulingRows(when).filter(r => r.kind !== 'short')
 /* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
@@ -700,6 +718,9 @@ function rulings(allow) {
      or spent does not stay live; the archive holds only marked rows; the map agrees with the files; and every live
      full row has exactly one short line in the area file of the same name, and every short line one full row. */
   const areas = new Set(areaFilesNow()), fulls = new Set(fullFilesNow())
+  /* the areas already converted to a page (D1735) — keyed by stem, the name an area file shares with its full-text file */
+  const pageOf = new Map([...areas].filter(f => RL.isPage(readNow(f))).map(f => [RL.stem(f), f]))
+  const isPageFile = f => pageOf.get(RL.stem(f)) === f
   for (const r of allNow) {
     /* the shape every tool here reads: `| D<n> | <d> Mon yy | …` — six `|` for a full row, four for a short line */
     if (!/^\| D\d+ \| \d{1,2} [A-Z][a-z]{2} \d{2} \| /.test(r.line)) fails.push(`${r.d}'s row in ${r.file} is not in the shape "| ${r.d} | <date, e.g. 24 Sep 26> | …" — fix its spacing and date cell`)
@@ -713,6 +734,7 @@ function rulings(allow) {
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
     else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
+    else if (isPageFile(r.file)) fails.push(`${r.d}'s full row is in ${r.file}, a page — a page holds no rows: state the rule on the page, citing [${r.d}], then run ${MOVER_CMD}, which moves the row whole to ${FULL_DIR}/${RL.stem(r.file)} (${DECISIONS}, the steps for a converted area)`)
     else if (areas.has(r.file)) {
       /* a full row still in an area file: a new ruling not yet converted — say what the converter will do with it */
       const why = RL.headingProblem(r.d, RL.headingOf(RL.cellsOf(r.line)))
@@ -736,7 +758,7 @@ function rulings(allow) {
     const marks = RL.marksOf(cells), missing = [...marks].filter(x => !p.tail.has(x)), extra = [...p.tail].filter(x => !marks.has(x))
     if (missing.length || extra.length) fails.push(`${s.d}'s short line ${missing.length ? `does not name ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it` : ''}${missing.length && extra.length ? ', and ' : ''}${extra.length ? `names ${extra.join(', ')}, which its full row carries no mark for` : ''} — write the mark in the full row (${DECISIONS} step 2), then: ${MOVER_CMD}`)
   }
-  for (const [d, f] of fullLive) if (!shortCount.has(d)) fails.push(`${d}'s full row (${f.file}) has no short line — every live ruling loads as one line: ${MOVER_CMD}`)
+  for (const [d, f] of fullLive) if (!shortCount.has(d) && !pageOf.has(RL.stem(f.file))) fails.push(`${d}'s full row (${f.file}) has no short line — every live ruling loads as one line: ${MOVER_CMD}`)
   /* every area file carries a byte tripwire (Astra's red team: an unregistered file could grow unseen) */
   const tripwired = new Set(RULING_BYTES.map(r => r[0]))
   for (const f of areas) if (!tripwired.has(f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
@@ -755,10 +777,38 @@ function rulings(allow) {
       if (!existsSync(join(REPO, m.file))) fails.push(`the map in ${DECISIONS} names \`${m.file}\`, and no such file exists`)
     }
     for (const f of [...areas, RULINGS_ARCHIVE]) if (!byFile.has(f) && existsSync(join(REPO, f))) fails.push(`\`${f}\` holds rulings but is not in the map in ${DECISIONS} — add its row, then run: ${MOVER_CMD}`)
+    /* a converted area's row in the map lists the rulings of its full-text file, since its page holds no rows (D1735 —
+       the fresh Opus reader of the plan, H3: read from the page, the map would empty silently) */
+    const mapFileOf = rf => rf.startsWith(FULL_DIR + '/') && pageOf.has(RL.stem(rf)) ? pageOf.get(RL.stem(rf)) : rf
     const stale = []
-    for (const r of allNow) if (r.file !== DECISIONS && byFile.has(r.file) && !byFile.get(r.file).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`)
-    for (const [f, ids] of byFile) for (const d of ids) if (!allNow.some(r => r.d === d && r.file === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
+    for (const r of allNow) { const mf = mapFileOf(r.file); if (r.file !== DECISIONS && byFile.has(mf) && !byFile.get(mf).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`) }
+    for (const [f, ids] of byFile) for (const d of ids) if (!allNow.some(r => r.d === d && mapFileOf(r.file) === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
     if (stale.length) fails.push(`the map in ${DECISIONS} does not match the files — ${stale.slice(0, 6).join(', ')}${stale.length > 6 ? ` and ${stale.length - 6} more` : ''}; run: ${MOVER_CMD}`)
+  }
+
+  /* THE PAGES (owner, D1735, 7 Nov 26 — the rules diet, plan raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
+     §2, §5). For each area converted to a page: its shape (docsize-rulings.mjs pageShapeProblems); every live ruling of
+     the area STATED — its number cited on a statement of its own page or, a general ruling, of an always-loaded rules file
+     (D136 as D1735 narrows it: no longer a line of its own, but never out of what loads; anywhere else a citation only
+     points — the step-1 reader's F1); every statement, wherever it stands, that cites a ruling of a converted area also
+     cites each live ruling that ruling's full row marks as changing it, another area's included (F2)
+     (a narrowing is cited on the line it narrows — the plan's readers, H1b and Astra's finding 2); and no citation of a
+     ruling archived as replaced (D201: the line is rewritten in the same change), nor of a number that is no ruling. The
+     check sees citations, not meaning: whether a line says what its rulings say is the fresh reader's, from the
+     conversion's account. The always-loaded rules files join the last two checks once the general page converts. */
+  if (pageOf.size) {
+    /* what the pages owe is read in docsize-rulings.mjs pageDebts — one reading, shared with the recorder, which prints
+       each debt as the edit to make (part 2 of the diet's step 1) */
+    const archived = new Map(rowsNow.filter(r => r.file === RULINGS_ARCHIVE).map(r => [r.d, RL.cellsOf(r.line)]))
+    const live = new Map([...fullLive].map(([d, r]) => [d, { line: r.line, area: RL.stem(r.file) }]))
+    const generalPages = [...areas].filter(f => !RL.isScoped(readNow(f))).map(RL.stem).filter(s => pageOf.has(s))
+    const sources = [...[...pageOf].map(([s, f]) => ({ f, text: readNow(f), homes: new Set([s]), area: s })), ...alwaysLoadedRules().map(f => ({ f, text: readNow(f), homes: new Set(generalPages) }))]
+    for (const [, f] of pageOf) for (const p of RL.pageShapeProblems(readNow(f))) fails.push(`${f}, a page: ${p}`)
+    for (const x of RL.pageDebts(sources, live, archived)) fails.push(
+      x.kind === 'mark' ? `${x.f} line ${x.line} states ${x.d} but does not cite ${x.missing.join(', ')}, which ${x.missing.length > 1 ? 'change' : 'changes'} it (the mark in ${x.d}'s full row) — write the line as it stands since then and cite [${[x.d, ...x.missing].join(', ')}] on it`
+      : x.kind === 'stale' ? `${x.f} line ${x.line} cites ${x.d}, which ${x.by} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`
+      : x.kind === 'none' ? `${x.f} line ${x.line} cites ${x.d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`
+      : `${x.d} is a live ruling of ${pageOf.get(x.area)}, a page, and no statement states it${x.at ? ` — it is cited only at ${x.at}, ${x.why === 'elsewhere' ? 'a page or file that may only point to it' : 'which is a list or too short to state anything'}` : ''}: state the rule on its own page — a general ruling may be stated in an always-loaded rules file instead — and cite [${x.d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
   }
 
   const src = readNow(RULECHECK)
@@ -890,6 +940,10 @@ function structure() {
     const scoped = head.startsWith('---\n') && /^paths:/m.test(head.slice(4, head.indexOf('\n---', 4) + 1))
     if (!scoped && !registered.has(f)) fails.push(`${f} loads in EVERY chat (no paths:) but is not registered in ${SELF}'s FILES — register it with a ceiling (tier 0), or give it paths: so it loads only with its area`)
   }
+  /* the seam files (D1735; plan §2): each registered, loading inside its area and on its seam, its area file no longer on
+     the seam, and each with a byte tripwire */
+  fails.push(...RL.seamProblems(md, readNow))
+  for (const f of md.filter(f => f.startsWith(RL.SEAM_DIR + '/'))) if (!RULING_BYTES.some(r => r[0] === f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
   /* HANDOFF.md ## Now: one block per branch, and a merged branch's block is stale */
   const seen = new Map()
   for (const l of unfenced(splitLines(readNow(HANDOFF)))) { const m = NOW_MARK.exec(l); if (m) seen.set(m[1], (seen.get(m[1]) || 0) + 1) }
@@ -962,9 +1016,16 @@ function ceilingMovedWithCode(paths) {
    of the area files fit about 2.74 characters a token for ordinary text and 1.17 capital LETTERS a token (the old
    bytes / 3.7 under-read the scheduler's rulings by half). An estimate for the table, never a gate. */
 export const estTokens = text => { const caps = (text.match(/[A-Z]/g) || []).length; return Math.round((text.length - caps) / 2.74 + caps / 1.17) }
+/* --reads: what a chat reads, measured (D1735 — the rules diet's plan §1, §5). Here, after estTokens, which it is handed:
+   docsize-reads.mjs cannot import this file, which runs the gate as it loads. A report, never a gate (D141). */
+if (process.argv.includes('--reads')) {
+  const { printReads } = await import('./docsize-reads.mjs')
+  printReads(REPO, estTokens, process.argv.includes('--verbose'))
+  process.exit(0)
+}
 /* A short line written in capitals (D970: written in ordinary letters, capitals only where a name or a short form has
    them) — two letters in five of its rule text capitals, at least 20 letters to judge by, or three capital words to open it. */
-export const capsHeavy = line => { const t = RL.parseShort(line).text || ''; const l = (t.match(/[A-Za-z]/g) || []).length, u = (t.match(/[A-Z]/g) || []).length; return (l >= 20 && u / l >= 0.4) || /^(?:[A-Z][A-Z'’-]*\s+){3}/.test(t) }
+export const capsHeavy = line => RL.capsText(RL.parseShort(line).text || '')
 
 function ceilings(codeChange) {
   const fails = [], deferred = [], caps = [], changedIds = []
@@ -987,7 +1048,7 @@ function ceilings(codeChange) {
   console.log(`\n  ${pad('rulings file (loaded)', 44)} ${pad('tier', 5)} ${pad('bytes', 8)} ${pad('~tokens', 8)} ${pad('changed', 8)} tripwire`)
   let rTier0 = 0, rTok0 = 0
   for (const [f, tier, ceiling] of RULING_BYTES) {
-    if (!existsSync(join(REPO, f))) { console.log(`  ${pad(f, 44)} MISSING`); continue }
+    if (!existsSync(join(REPO, f))) { if (!f.startsWith(RL.SEAM_DIR + '/')) console.log(`  ${pad(f, 44)} MISSING`); continue }
     const text = readNow(f), n = Buffer.byteLength(text, 'utf8'), tok = estTokens(text)
     if (tier === 0) { rTier0 += n; rTok0 += tok }
     /* the short lines a later ruling changed — read each against it at the next tidy: one it restates in full leaves (D971) */

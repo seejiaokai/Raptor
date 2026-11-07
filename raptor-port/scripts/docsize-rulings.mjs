@@ -114,7 +114,190 @@ export function rowsOf(text) {
   return ls.flatMap((line, index) => !inF[index] && isRow(line) ? [{ d: idOf(line), kind: kindOf(line), line, index }] : [])
 }
 
-/* The back-mark check: a later row that names an older one beside a change verb, where the older row's marks do not
+/* Text written in capitals (D970: ordinary letters, capitals only where a name or a short form has them) — two letters
+   in five capitals, at least 20 letters to judge by, or three capital words to open it. The short lines' check and the
+   pages' read it the same way. */
+export const capsText = t => { const s = t || '', l = (s.match(/[A-Za-z]/g) || []).length, u = (s.match(/[A-Z]/g) || []).length; return (l >= 20 && u / l >= 0.4) || /^(?:[A-Z][A-Z'’-]*\s+){3}/.test(s) }
+
+/* THE PAGE SHAPE (owner, D1735, 7 Nov 26 — the rules diet: raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
+   §2, §5). An area converts from one short line per ruling to a page of how it works now: each rule stated once, the
+   rulings behind it cited after it as [D12, D40]; the full rows stay whole in .claude/decisions-full/. The MARKER in a
+   file's body says which shape it is in — an HTML comment, not a frontmatter key, so the general file (no frontmatter)
+   keeps loading in every chat — and the gate and the recorder treat a marked file the new way and every other the old
+   way, so the areas convert one at a time and main stays green between them (Astra's read of the plan, finding 1). */
+export const PAGE_MARK = '<!-- shape: page -->'
+/* a statement's length, in characters — "one statement a bullet"; the detail stays in the full rows (plan §5) */
+export const STATEMENT_MAX = 600
+/* a range "D36–D41" cites each ruling in it; a wider span is read as its two ends (a typo must not cite a thousand) */
+const RANGE_MAX = 60
+const fmEnd = ls => { if (ls[0] !== '---') return 0; const e = ls.indexOf('---', 1); return e < 0 ? 0 : e + 1 }
+/* The body's lines, numbered from 1: frontmatter, code blocks and HTML comments blanked (each keeps its place, so a
+   line number names the file's own line); `comment` says a blanked line held a comment, for the marker's read. */
+function bodyOf(text) {
+  const ls = (text || '').split('\n').map(l => l.replace(/\r$/, ''))
+  const inF = fencedFlags(ls), fm = fmEnd(ls)
+  let inC = false
+  return ls.map((l, i) => {
+    if (i < fm || inF[i]) return { n: i + 1, t: '' }
+    let t = '', s = l, was = false
+    while (s) {
+      if (inC) { const e = s.indexOf('-->'); was = true; if (e < 0) { s = ''; break } inC = false; s = s.slice(e + 3); continue }
+      const o = s.indexOf('<!--'); if (o < 0) { t += s; break }
+      t += s.slice(0, o); s = s.slice(o + 4); inC = true; was = true
+    }
+    return { n: i + 1, t: was && !t.trim() ? '' : t, raw: l }
+  })
+}
+/* is this file a page? — the marker on a line of its own, outside code blocks and frontmatter */
+export const isPage = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), inF = fencedFlags(ls), fm = fmEnd(ls); return ls.some((l, i) => i >= fm && !inF[i] && l.trim() === PAGE_MARK) }
+/* does the file load only with its area (a `paths:` key in its frontmatter)? */
+export const isScoped = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); return fm > 0 && ls.slice(1, fm - 1).some(l => /^paths:/.test(l)) }
+/* A rules file's `paths:` globs, comments and blank lines left out — the files whose opening loads it. */
+export const pathsOf = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); if (!fm) return []; const at = ls.findIndex((l, i) => i < fm && /^paths:/.test(l)); if (at < 0) return []; const out = []; for (let i = at + 1; i < fm - 1; i++) { const m = /^\s+-\s+(.+?)\s*$/.exec(ls[i]); if (m) out.push(m[1].replace(/^['"]|['"]$/g, '')); else if (/^\S/.test(ls[i])) break } return out }
+/* One glob of a `paths:` list as a pattern: `**` any number of folders, `*` and `?` within one name. */
+export const globRe = g => new RegExp('^' + g.split(/(\*\*\/|\/\*\*$|\*\*|\*|\?)/).map(p => p === '**/' ? '(?:.*/)?' : p === '/**' ? '(?:/.*)?' : p === '**' ? '.*' : p === '*' ? '[^/]*' : p === '?' ? '[^/]' : p.replace(/[.+^${}()|[\]\\]/g, '\\$&')).join('') + '$')
+export const matchesPaths = (globs, file) => globs.some(g => globRe(g).test(file))
+/* THE SEAM FILES (D1735; the rules-diet plan §2): the Leave War's and the Tracker's architecture, moved whole out of
+   their area files into files of their own that load on the area's own paths AND on the files where the area meets
+   the rest of the app — so the area's rulings load only on its own files, and a seam file alone where they meet. Each
+   is registered here with one file inside its area and EVERY seam path its area file carries today (copied 7 Nov 26 from
+   the area files' "the seams where … meets the rest of the app" lists — the step-1 reader's question 1: one probe file
+   per seam let a path be dropped or kept unnoticed). The gate checks that the seam file's `paths:` load it inside the
+   area, on each of its area file's own paths and on each seam path; that its area file loads on none of the seam paths;
+   that a seam file is there once its area file no longer loads on every seam path (question 2 — else nothing carries the
+   architecture there); and that it has a byte tripwire (docsize.mjs RULING_BYTES). A glob is probed by a file name made
+   from it ("**" and "*" read as "probe"). */
+export const SEAM_DIR = '.claude/rules/seams'
+export const SEAMS = [
+  { f: '.claude/rules/seams/leave-war.md', area: '.claude/rules/decisions/leave-war.md', inside: 'raptor-port/src/leavewar/ui/Matrix.tsx',
+    seams: ['src/main.tsx', 'src/probe-bridge.ts', 'src/state/store.ts', 'src/state/inputgate-hook.ts', 'src/state/people-settings-commit.ts', 'src/storage/**', 'src/command/**', 'src/undo/**', 'src/engine/qualcols.ts', 'src/engine/people.ts', 'src/engine/inputs.ts', 'src/ui/QualsPage.tsx', 'src/ui/InputsPage.tsx', 'src/ui/inputedit.tsx', 'src/ui/Shell.tsx', 'docs/data-schema.md', 'docs/undo-contract.md', 'docs/performance.md'].map(p => 'raptor-port/' + p) },
+  { f: '.claude/rules/seams/tracker.md', area: '.claude/rules/decisions/tracker.md', inside: 'raptor-port/src/tracker/app/core.js',
+    seams: ['src/main.tsx', 'src/state/store.ts', 'src/storage/**', 'src/command/**', 'src/undo/**', 'src/ui/Shell.tsx', 'docs/data-schema.md', 'docs/data-model.md', 'docs/undo-contract.md'].map(p => 'raptor-port/' + p) },
+]
+export const probeOf = g => g.replace(/\*\*/g, 'probe').replace(/\*/g, 'probe').replace(/\?/g, 'p')
+/* what is wrong with the seam files on disk — [] when nothing; `read` gives a file's text, or '' when it is absent */
+export function seamProblems(files, read) {
+  const out = [], known = new Map(SEAMS.map(s => [s.f, s]))
+  for (const s of SEAMS) {
+    const area = read(s.area), lost = area ? s.seams.filter(g => !matchesPaths(pathsOf(area), probeOf(g))) : []
+    if (!read(s.f) && lost.length) out.push(`${s.f} is missing, and ${s.area} no longer loads on ${lost.slice(0, 3).join(', ')}${lost.length > 3 ? ` and ${lost.length - 3} more` : ''} — nothing carries the area's architecture there: restore the seam file (the plan §2), or give the area file those paths back`)
+  }
+  for (const f of files.filter(f => f.startsWith(SEAM_DIR + '/') && f.endsWith('.md'))) {
+    const s = known.get(f)
+    if (!s) { out.push(`${f} is a seam file nobody registered — add it to SEAMS in raptor-port/scripts/docsize-rulings.mjs (a file inside its area and one on its seam) and give it a byte tripwire in docsize.mjs's RULING_BYTES`); continue }
+    const globs = pathsOf(read(f))
+    if (!globs.length) { out.push(`${f} has no paths: — a seam file loads on its area's own files and on its seam, never in every chat`); continue }
+    if (!matchesPaths(globs, s.inside)) out.push(`${f} does not load on ${s.inside}, a file inside its area — its paths: must keep the area's own paths (the plan §2: the architecture binds the whole area)`)
+    for (const g of s.seams) if (!matchesPaths(globs, probeOf(g))) out.push(`${f} does not load on ${g}, a path of its seam — its paths: must carry every seam path`)
+    const area = read(s.area), own = area ? pathsOf(area) : []
+    for (const g of own) if (!matchesPaths(globs, probeOf(g))) out.push(`${f} does not load on ${g}, a path of its area file — its paths: must keep the area's own paths (the plan §2)`)
+    for (const g of s.seams) if (area && matchesPaths(own, probeOf(g))) out.push(`${s.area} still loads on ${g}, a seam path — once ${f} carries the architecture, the area's rulings load only on its own files (the plan §2); give each ruling that governs the seam a pointer under the page's "From other areas"`)
+  }
+  return out
+}
+/* The rulings a text cites, outside code spans (a number in a code span is an example): every D-number, and every
+   ruling inside a range. `named` is only the numbers written out — a range's ends, never what lies between, since
+   numbers may skip (D78). A range is written with a D on both ends ("D654-D656"); a number after a dash without its own D
+   is no ruling — "D1734 – 7 Nov 26" cites D1734 only, and its 7 is a word (the step-1 reader's F6, 7 Nov 26). */
+export function citesIn(text) {
+  const s = (text || '').replace(/(`+)[\s\S]*?\1/g, ' ')
+  const all = new Set(), named = new Set()
+  for (const m of s.matchAll(/\bD(\d+)(?:\s*[–-]\s*D(\d+))?\b/g)) {
+    const lo = +m[1], hi = m[2] ? +m[2] : lo
+    named.add('D' + lo); named.add('D' + hi)
+    if (hi > lo && hi - lo <= RANGE_MAX) for (let k = lo; k <= hi; k++) all.add('D' + k)
+    else { all.add('D' + lo); all.add('D' + hi) }
+  }
+  return { all, named, words: (s.replace(/\bD\d+(?:\s*[–-]\s*D\d+)?\b/g, ' ').match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu) || []).length }
+}
+/* THE STATEMENTS of a page or an always-loaded rules file: a heading or a table row is a unit of one line; a bullet
+   runs on through its continuation lines; any other run of lines is a paragraph. A unit STATES the rulings it cites
+   only when it has at least four words, and two for each ruling it cites — a list of numbers states nothing (the
+   fresh Opus reader of the plan, H1a: the first draft carried a 46-number "stated elsewhere" list). Returns
+   [{ line, kind: 'heading'|'table'|'bullet'|'para', text, cites, named, words, states }]. */
+export function statementsOf(text) {
+  const out = []
+  let cur = null
+  const close = () => { if (!cur) return; const c = citesIn(cur.text); out.push({ ...cur, cites: c.all, named: c.named, words: c.words, states: cur.kind !== 'heading' && c.words >= 4 && c.words >= 2 * c.all.size }); cur = null }
+  for (const { n, t } of bodyOf(text)) {
+    if (!t.trim()) { close(); continue }
+    if (/^#{1,6}\s/.test(t)) { close(); cur = { line: n, kind: 'heading', text: t.trim() }; close(); continue }
+    if (/^\s*\|/.test(t)) { close(); cur = { line: n, kind: 'table', text: t.trim() }; close(); continue }
+    if (/^\s*(?:[-*+]|\d+[.)])\s/.test(t)) { close(); cur = { line: n, kind: 'bullet', text: t.trim().replace(/^(?:[-*+]|\d+[.)])\s+/, '') }; continue }
+    if (cur) { cur.text += ' ' + t.trim(); continue }
+    cur = { line: n, kind: 'para', text: t.trim() }
+  }
+  close()
+  return out
+}
+/* What is wrong with a page's SHAPE — [] when nothing (plan §2, §5): one title; an area page (one with `paths:`) is
+   titled "<Area> — how it works now" and carries a "## Settled" section and a "## From other areas" section, the
+   latter last; the general page, which loads in every chat, has no other areas and no screens, so needs neither; no
+   table rows (a ruling is a statement now, not a row); each statement in ordinary letters and at most STATEMENT_MAX
+   characters. */
+export function pageShapeProblems(text) {
+  const out = [], sts = statementsOf(text)
+  const titles = sts.filter(s => s.kind === 'heading' && /^#\s/.test(s.text))
+  if (titles.length !== 1) out.push(`it has ${titles.length} title headings ("# …") — a page has one`)
+  if (isScoped(text)) {
+    if (titles[0] && !/—\s*how it works now\b/.test(titles[0].text)) out.push(`its title (line ${titles[0].line}) is not "# <Area> — how it works now"`)
+    const h2 = sts.filter(s => s.kind === 'heading' && /^##\s/.test(s.text))
+    if (!h2.some(s => /^##\s+Settled\b/.test(s.text))) out.push('it has no "## Settled …" section — the settled designs, one bullet a surface, each with its numbers')
+    const from = h2.findIndex(s => /^##\s+From other areas\b/.test(s.text))
+    if (from < 0) out.push('it has no "## From other areas" section — each ruling of another area that bears on this one, a few words and its number')
+    else if (from !== h2.length - 1) out.push(`its "## From other areas" section (line ${h2[from].line}) is not its last section`)
+  }
+  for (const s of sts) {
+    if (s.kind === 'table') { out.push(`line ${s.line} is a table row — a page holds no table rows: state the rule as a bullet, its rulings cited after it`); continue }
+    if (s.kind === 'heading') continue
+    if ([...s.text].length > STATEMENT_MAX) out.push(`the statement at line ${s.line} is ${[...s.text].length} characters — at most ${STATEMENT_MAX}: one statement a bullet, the detail in its full rows`)
+    if (capsText(s.text)) out.push(`the statement at line ${s.line} is written mostly in capitals — ordinary letters, capitals only where a name or a short form has them (D970)`)
+  }
+  return out
+}
+/* the "## " section a line of a page sits under, and a page's sections — where the recorder tells an edit to go */
+export const sectionsOf = text => statementsOf(text).filter(s => s.kind === 'heading' && /^##\s/.test(s.text))
+export const sectionAt = (text, line) => (sectionsOf(text).filter(s => s.line < line).pop() || {}).text || 'its head'
+
+/* WHAT THE PAGES STILL OWE (D1735; plan §3, §5) — read ONE way, so the gate (docsize.mjs, which fails on each) and the
+   recorder (backlog-archive.mjs --rulings, which prints each as the edit to make and writes nothing until it is made)
+   never disagree. `sources`: each page { f, text, homes: Set of its own area's stem, area } and each always-loaded
+   rules file { f, text, homes: the general area's stem once it is a page, else empty — such a file joins only the
+   stating, until then }; `live`: Map d -> { line, area } for every live full row; `archived`: Map d -> its cells. A debt:
+     { kind: 'mark', f, line, d, missing } — a statement of a ruling of a converted area, wherever it stands, without
+       the rulings whose marks in that ruling's full row change it (another area's included);
+     { kind: 'stale', f, line, d, by } — a citation of a ruling archived as replaced by `by` (D201);
+     { kind: 'none', f, line, d } — a number that is no ruling (a renumbered clash, a typo);
+     { kind: 'unstated', d, area, at, why } — a live ruling of a page's area no statement states (`at`: where it is only
+       cited; `why`: 'short' — a list, or too short to state anything; 'elsewhere' — a page or file that may only point to it).
+   WHERE A RULING IS STATED (plan §2; the step-1 reader's F1, 7 Nov 26): on its home page, or — a general ruling — in an
+   always-loaded rules file; a citation anywhere else only points to it, however many words it has, so a ruling can
+   neither leave its page nor never reach it while a pointer elsewhere keeps the gate green. THE CHANGE MARKS (F2): a line
+   with words enough to state a ruling of a converted area also cites the rulings that changed it, wherever it stands —
+   its page, another page's pointer, an always-loaded rules file even while the general area is still in short lines —
+   since a restatement out of date misleads wherever it loads, and in an always-loaded file in every chat (D201). */
+export function pageDebts(sources, live, archived) {
+  const out = [], stated = new Set(), pointed = new Map(), pages = new Set(sources.filter(s => s.area).map(s => s.area))
+  for (const { f, text, homes } of sources) for (const s of statementsOf(text)) {
+    for (const d of s.cites) {
+      if (s.states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
+      const why = s.states ? 'elsewhere' : 'short'
+      if (!pointed.has(d) || (why === 'elsewhere' && pointed.get(d).why === 'short')) pointed.set(d, { at: `${f} line ${s.line}`, why })
+    }
+    if (s.states) for (const d of s.cites) {
+      if (!live.has(d) || !pages.has(live.get(d).area)) continue
+      const missing = [...marksOf(cellsOf(live.get(d).line))].filter(m => live.has(m) && !s.cites.has(m))
+      if (missing.length) out.push({ kind: 'mark', f, line: s.line, d, missing })
+    }
+    if (!homes.size) continue
+    for (const d of s.cites) { const by = archived.has(d) && REPLACED_BY.exec(archived.get(d)[2] || ''); if (by) out.push({ kind: 'stale', f, line: s.line, d, by: by[1] }) }
+    for (const d of s.named) if (!live.has(d) && !archived.has(d)) out.push({ kind: 'none', f, line: s.line, d })
+  }
+  for (const [d, r] of live) if (pages.has(r.area) && !stated.has(d) && !isRetired(cellsOf(r.line))) out.push({ kind: 'unstated', d, area: r.area, at: pointed.get(d)?.at, why: pointed.get(d)?.why })
+  return out
+}
+
+/* The back-mark check:a later row that names an older one beside a change verb, where the older row's marks do not
    name the later. Returns [{ later, older }]. */
 const VERB = /\b(narrows|narrowed|amends|amended|sets aside|set aside|replaces|supersedes|widens|widened|extends|extended|refines|refined|settles|answers|corrects|reverses|overrides)\s+(?:(?:in part|the agent's reading of|his|the)\s+)?(D\d+)\b/gi
 export function backMarks(fullRows /* Map d -> cells */) {
