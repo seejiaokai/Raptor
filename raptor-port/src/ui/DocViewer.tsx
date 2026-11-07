@@ -24,6 +24,7 @@ import { clickedOutside } from './outside'
 import { useSheetFocus } from './sheetfocus'
 import { useBarFree } from './barfree'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- one window for a document and the entries beside it (turn, upchit, close), whose state and effects run in one order; split, that order would move
 export function DocViewer() {
   useVersion()
   const v = DOCVIEW
@@ -144,7 +145,8 @@ export function DocViewer() {
   const m = r ? inpMeta(r.type) : null
 
   return (
-    <div className="airpop" id="docViewPop" hidden={!r} ref={popRef}
+    /* role="presentation": the shade is nothing a screen reader should name; the keyboard's way out is Escape and the ✕ */
+    <div className="airpop" id="docViewPop" hidden={!r} ref={popRef} role="presentation"
       onClick={e => { if (clickedOutside(e, 'docViewPop')) close() }}>
       <div className="airpop-box docviewbox" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head">
@@ -171,6 +173,7 @@ export function DocViewer() {
           </div>}
           {doc && url
             ? (doc.mime === 'application/pdf'
+              /* eslint-disable-next-line react-doctor/iframe-missing-sandbox -- the browser's PDF viewer does not run in a sandboxed frame (it shows a blocked page); the frame shows only a PDF filed into the app's own store, from its own copy in memory */
               ? <iframe className="docview-frame" title={doc.name} src={url} />
               : <img className="docview-img" alt={doc.name} src={url} />)
             : <div className="docview-none">No document on file for this entry</div>}

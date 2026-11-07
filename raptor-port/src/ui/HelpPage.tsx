@@ -83,11 +83,11 @@ export function HelpPage() {
         <h3>Report a problem</h3>
         {/* "Send it here" went — the Send report button below says it (owner D959, the words pass, 17 Oct 26) */}
         <p className="adm-note help-lead">Spotted something wrong, or something that could work better? The schedulers see every report.</p>
-        <div className="mfield"><label>Category</label>
+        <div className="mfield"><label htmlFor="bugCat">Category</label>
           <select id="bugCat" ref={catRef} aria-label="What the report is about">
             {BUG_CATS.map(c => <option key={c} value={c}>{c}</option>)}
           </select></div>
-        <div className="mfield"><label>What happened</label>
+        <div className="mfield"><label htmlFor="bugText">What happened</label>
           <textarea id="bugText" ref={txtRef} rows={4} maxLength={1000}
             placeholder="What were you doing, and what went wrong?" /></div>
         <button className="abtn primary" id="bugSend" style={{ width: '100%' }} onClick={send}>Send report</button>

@@ -88,7 +88,8 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef)
   return (
-    <div className="airpop upconf-pop" data-testid="medclash"
+    /* role="presentation": the shade is nothing a screen reader should name; the sheet's ✕ and buttons take the keys */
+    <div className="airpop upconf-pop" data-testid="medclash" role="presentation"
       onClick={e => { if (clickedSurround(e, 'upconf-pop')) onCancel() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>{newType} — {who}, {span}</b>
@@ -103,6 +104,7 @@ export function MedClashConfirm({ who, newType, span, clashes, aOrd, bOrd, onSav
             const tl = leftover(c, i)
             const tchoice = tail[i] || 'remove'
             return (
+              /* eslint-disable-next-line react-doctor/no-array-index-as-key -- the clashes are worked out once when the sheet opens and never reorder; each choice is held by its place in that list (tail[i]) */
               <div key={i}>
                 <div className="upconf-left medclash-row" data-testid={`medclash-${i}`}>
                   <span>{c.row.type} {rowSpan(c.row)} · both cover <b>{win(c)}</b></span>

@@ -59,9 +59,10 @@ export function DayTplModal() {
   const save = () => { dayTplSave(); notify() }
 
   return (
-    <div className="modal" id="daytplModal" onClick={e => { if (clickedOutside(e, 'daytplModal')) close() }}>
+    /* role="presentation": the shade is nothing a screen reader should name; the keyboard's way out is Escape and the ✕ */
+    <div className="modal" id="daytplModal" role="presentation" onClick={e => { if (clickedOutside(e, 'daytplModal')) close() }}>
       <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
-        <div className="modal-head"><b>Day templates</b><button className="x" id="daytplClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Day templates</b><button className="x" id="daytplClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="modal-body">
           {DAYTPL_CFG.length
             ? <>

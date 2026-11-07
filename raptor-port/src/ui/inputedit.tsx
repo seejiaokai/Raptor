@@ -42,8 +42,8 @@ import { INPEDIT, setInpEdit, setOilAsk, setMedMove } from './pops'
 import { OILWAIT, type OilWaitKind } from '../state/view'
 import { holdForOil } from './oilwait'
 import { RangeCal } from './RangeCal'
-/* The Leave War seam (sync.ts is the one crossing point, CLAUDE.md §The Leave
-   War tab): retracting a synced row's war cells when it is edited or deleted
+/* The Leave War seam (sync.ts is the one crossing point, .claude/rules/seams/leave-war.md
+   §Architecture): retracting a synced row's war cells when it is edited or deleted
    here — not a new seam, a Raptor-side caller of the existing one. */
 
 /* THE ROSTER LIST, one place — the Inputs page's add form, its own row

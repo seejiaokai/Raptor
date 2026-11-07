@@ -126,8 +126,9 @@ function boardHTMLBody(di: number, pv?: boolean) {
      section"). #sbBoard now starts with the notes panel. */
   /* DAY TEMPLATES (owner ask, 15 Aug 26): a labelled button at the very top of
      the board's own content, ahead of every section — NOT on the top bar's
-     first line, which stays frozen (CLAUDE.md §phone board: nothing joins it
-     without something else leaving). It is the same "section-level control"
+     first line, which stays frozen (.claude/rules/decisions/scheduler.md
+     §Week navigation & cross-week continuity, "The phone board's top bar is ONE
+     row": nothing joins it without something else leaving). It is the same "section-level control"
      idiom + Wave uses below for the same reason: a control that can replace
      the WHOLE day belongs at the top of the day's own content, not squeezed
      onto an already-full 30px bar. Withheld on mvRO like every other write

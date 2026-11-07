@@ -419,9 +419,10 @@ export function applyDrop(el: any, x: any, y: any) {
       }
       if (!sentinelSeatOK(DRAG.key, b)) return refuse(b, DRAG.key)
       if (twice(a, targetKey, DRAG.key) || twice(b, DRAG.key, targetKey)) return false
-      /* …and a swap never carries a real man BACK onto a shared input's row: from one of its extras' places (a
-         placeholder, a man of the scheduler's) the puck simply moves, and the man it lands on comes off — put on that
-         row by a swap he would stand on it without being in the input, which D734 rules out */
+      /* …and a swap never carries a real man BACK onto an input's row (ui/reqdoor.ts onInputRow): from a place on such a
+         row the puck simply moves, and the man it lands on comes off — put on that row by a swap he would stand on it
+         without being in the input, which D755 rules out (a row that came from an input IS the input; first D734, for a
+         shared input's row alone) */
       const back = b && !isSpecial(b) && onInputRow(DRAG.key) ? '' : b
       setSlotVal(targetKey, a); setSlotVal(DRAG.key, back)
       asks = back ? [[a, targetKey], [back, DRAG.key]] : [[a, targetKey]]
@@ -446,8 +447,9 @@ export function applyDrop(el: any, x: any, y: any) {
   function onCell(fillKey0: any): boolean {
     let asks: any[][]
     const moving = DRAG.kind === 'roster' ? DRAG.id : slotVal(DRAG.key)
-    /* the one row of a shared input (the block above): a placeholder goes to the row's own "+ add" (the lead's — the
-       one drawn); a real man is ADDED to the input, the place he came from keeping him */
+    /* an input's row (the block above): from another input's row he MOVES (rowMove); otherwise a person or a placeholder
+       dropped on it JOINS the input, the place he came from keeping him (rowPut — D755, D753; before the one-rule build a
+       placeholder was re-aimed at the row's own "+ add") */
     const fillKey = fillKey0
     if (DRAG.kind === 'slot') {                      // from one input's row onto another's: a move (Fable F1)
       const mv = rowMove(DRAG.key, fillKey)
