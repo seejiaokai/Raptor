@@ -52,7 +52,7 @@ Then, before you execute anything:
   or persistence, when he calls them; and never another static review when what is missing is someone running the app — that one is called
   review pile-on.
 - **Who they are now:** Astra and Sol 6.1 are called only when he calls for them, each time — D1738 and D1739 call
-  Astra for the rules diet's reworded steps, D1761 for every working-guide change (beside a fresh, blind Opus reader),
+  Astra for the rules diet's reworded steps, D1761 for every working-guide change, the fresh Opus reader the second (his design-lesson lines excepted),
   and D1743 his readers for the work in hand until Mon 9 Nov 26 19:00 (Sol
   6.1 too where a second reader fits). When he calls them, for work Opus wrote Astra reviews and Sol 6.1 is the
   second reader where two are required. Fable is on call only — a bug Opus cannot crack, or a big open-ended plan — on

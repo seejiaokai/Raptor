@@ -859,7 +859,7 @@ animation recipes for another toolkit, translation rules, phone-app parts, and a
 download and run.
 
 **Changing this guide:** it is a working guide — a change is read before he approves it, one round each and never by
-its writer: by Astra and Sol 6.1 (D70, D590). This first draft: one fresh, blind Opus reader while the ChatGPT readers
+its writer: by Astra, beside a fresh, blind Opus reader (D70, D590, D1761 — Sol 6.1 only on his call). This first draft: one fresh, blind Opus reader while the ChatGPT readers
 are out (D812; D810's precedent), written on the list of jobs that went without a ChatGPT reader (D761) — its report:
 `superpowers/briefs/2026-10-13-design-guide-read.md`. **The writing guide (§1's additions, §1a, §1b — D832, D833,
 D834):** read three times, each time by a fresh Opus reader and by Fable on his word, each blind to the other — the first

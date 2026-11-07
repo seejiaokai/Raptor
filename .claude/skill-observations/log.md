@@ -3911,3 +3911,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The first reader's report was kept outside the working folder, but its findings were then summarised into the handoff note inside the working folder while the second reader was still running, and the second reader's brief told it to read the project's notes. It was caught and the note set aside until the second report came in; nothing showed the second reader had read it.
 **Suggested improvement:** While any blind reader is running, write nothing about another reader's findings anywhere in the folder it reads — the handoff note included; keep reports and notes on them in a scratch folder outside it until every reader has reported.
 **Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
+
+### Observation 859: A sweep for what a new ruling leaves behind missed the guides outside a hand-picked list
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 2 recording his answers D1760–D1762 (who reads a plan and a guide change) and bringing older text in step (D201); numbered past 857–858, which other open branches hold
+**Skill:** New skill candidate: ruling-sweep (the D201 step of recording a ruling)
+**Type:** open-source
+**Phase/Area:** finding every place an older rule is still stated
+
+**Issue:** the sweep for "who reads a guide change" searched a hand-picked list of files (the rule files, the project guide, the bug-check order, the Codex guide). Both blind readers then found four more guides still stating the old readers — two vendoring notes under the skills folder, the design guide, the agents' bridge file — and a backlog item. A chat following any of them would have called the wrong reader.
+**Suggested improvement:** the D201 sweep searches every Markdown file in the repo by the rule's subject (archives and full-text rulings excluded), not a list chosen from memory, and its brief to the readers names the search it ran so they can widen it.
+**Principle:** a search for stale statements of a rule must cover every place a rule can be written, chosen by the search itself, never by the writer's memory of where rules live.

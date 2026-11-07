@@ -8,7 +8,7 @@ root.
 
 **Who does what now (D67, D590, D601).** Opus 5.5, in Claude Code, plans and builds. Codex is called as the REVIEWER:
 Astra reviews what Opus wrote, and Sol 6.1 is the second reader where two are required (OIL, published records,
-permissions, saved data, an important plan, a changed working guide); each reads independently and never reads the
+permissions, saved data, an important plan); each reads independently and never reads the
 other's report first. Since D1734 both are called only on his call — save a changed working guide, which Astra reads every time, beside a fresh, blind Opus reader (D1761). **Codex BUILDS only on his word, each time** — the job on hold is the SANS availability
 calendar's new layout (`OUTSTANDING.md` `[SANS-CALENDAR-WIP]`, D610). For a build, follow his instruction for it and the
 current rulings; what Codex writes, Opus 5.5 reviews, and the writer never approves its own artifact (D67). The

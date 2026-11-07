@@ -53,15 +53,14 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   beside it, the two blind reads are compared to see which is better [D1732, D1735].
 - Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
   included [D1737].
-- His "auto merge live" for a night or a run covers everything that run produces, its closing records pull request
-  included, each merging once its checks are green; work outside that run still waits for his "merge live" [D1093].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
   the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
   fresh Opus reader holds the second seat, so no third reader is added; if Astra cannot run, he is told first, and the
-  step never goes on without that read [D1738, D1739, D1743].
+  step never goes on without that read [D1738, D1739, D1761, D1743].
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
-  widen it [D1739].
+  widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over
+  D1739 there, the agent's reading [D1739, D1761].
 - Stating once what both this page and an always-loaded checklist now state waits for a later step of the rules diet,
   not now; until then each keeps its statement with its rulings [D1762].
 - From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his;
@@ -73,11 +72,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 
 ## Models and readers
 - Opus 5.5 plans and builds; what Codex plans or builds, Opus reads; the chat that wrote a piece never reads it — a
-  fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903].
+  fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903, D1761].
 - Every job that needs a code read gets a fresh, blind Opus read of its finished code — an Opus that did not write it and
   has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing
   test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he
-  calls for it [D590, D601, D790, D903].
+  calls for it [D590, D601, D790, D903, D1761].
 - Astra and Sol 6.1 are called only when he calls for them, each time — he has called Astra for every reworded step of
   the rules diet, for every working-guide change and, until Mon 9 Nov 26 19:00, for the work in hand; a job that would
   otherwise have had one goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1734, D1738, D1739, D1761, D1743, D761].
@@ -95,14 +94,14 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   them; without his call a fresh, blind Opus reader red-teams it meanwhile, as since 13 Oct, and the plan goes on the
   reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D761].
 - A working-guide change is read before his approval, one round each, never by its writer: by Astra, his call for every
-  such change, beside a fresh, blind Opus reader, each blind to the other (the agent's reading, as for the rules diet);
-  Sol 6.1 only on his call; if Astra cannot run he is told first, and the change waits for that read [D70, D590, D601,
-  D790, D903, D811, D941, D1417, D1734, D1738, D1739, D1761].
+  such change; the agent's readings — beside a fresh, blind Opus reader, each blind to the other, as for the rules diet;
+  Sol 6.1 only on his call, his read not owed; if Astra cannot run, he is told first and the change waits [D70, D590,
+  D601, D790, D903, D811, D941, D1417, D1734, D1738, D1739, D1761].
 - His named exception: a line of his design lessons is read by one fresh reader and not put to him first [D941, D1417];
-  design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941].
+  design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941, D1761].
 - The read of a working-guide change has a narrow brief — does each change say what its note meant, does it contradict a
   guide or a ruling, does it drop a safeguard or add bulk; it is a read of documents and never replaces walking the app
-  for code changes [D70, D590, D601, D790, D903, D811, D941, D1417].
+  for code changes [D70, D590, D601, D790, D903, D811, D941, D1417, D1761].
 - Sonnet 5.5 walks the app, runs the checks and does document chores, the host checking the results — it never reads code
   for bugs; a cheaper-model trial stays small and the agent decides and tells him [D588, D595]. The walkers stay Sonnet:
   Opus never walks as a helper, not even one share for comparison; the host still opens their pictures, reproduces every

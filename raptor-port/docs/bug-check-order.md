@@ -294,7 +294,7 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
   owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
   design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
-  important plan, one otherwise), never a second scenarios-only run.
+  important plan when he calls them, otherwise the one fresh, blind Opus reader — D1734, D1760; one otherwise), never a second scenarios-only run.
 - Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
   the exact input it would run; the host runs every such case before dispositioning the finding.
 

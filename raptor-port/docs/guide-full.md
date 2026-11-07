@@ -237,7 +237,8 @@ barely more than one.
 ### Models
 
 - **NARROWED since — who is called now (D1734, 7 Nov 26; D1760 and D1761, 8 Nov 26):** Astra and Sol 6.1 read only when
-  he calls for them, each time; otherwise every code read is a fresh, blind Opus read (D790) and an important plan is
+  he calls for them, each time — two, blind to each other, on earned leave, published records, permissions, saved data
+  or an important plan; otherwise every code read is a fresh, blind Opus read (D790) and an important plan is
   red-teamed meanwhile by a fresh, blind Opus reader (D1760); a changed working guide is read by Astra every time, his
   call, beside a fresh, blind Opus reader (D1761). The page `../.claude/rules/decisions/how-we-work.md` §Models and
   readers states it as it stands; the bullets below are history where they differ.
