@@ -26,6 +26,15 @@ it (D1424, D1495); anything the drawing did not draw is drawn for him first (D16
 1. **The board's layout** — D1780 (a phone on its side: the head scrolls away, the bar stays; to look at on his iPhone,
    the real keyboard), D1781 (821–1099 wide: remarks on their own row, the times stacked). Items [BOARD-SIDEWAYS-KEYS],
    [BOARD-NARROW-DESKTOP-REMARKS]. Notes: `notes-board.md` Q1, Q2.
+   **Also, on his word of 8 Nov 26 (put into this build by the rules-diet chat, D1771 on its pull request 672):**
+   [BOARD-KEYS-LOOKS] — under the keys, an item of the board's or the week's ⋯ menu, "+ Block" and the day bar's
+   Templates wear the app's cyan keyboard ring, as the board's other menus and small buttons do (today the ⋯ item shows
+   its raised row plus the browser's ring, the two buttons the browser's white ring); D1772: Tab out of a menu stays as
+   built. Its tidy-up rides with it: the ⋯ menu's item list repeats the shared menus' list-maker (`SchedBoard.tsx`
+   `moreItems`, `sheetfocus.ts` `menuItems`). A look tier with a keyboard walk at a phone and a desktop width. Evidence
+   and pictures: `raptor-port/docs/handpass/2026-11-08-board-keys.md` §11,
+   `raptor-port/docs/img/handpass/2026-11-08-board-keys/walk/` (002, 003, 013, 021). D1771 must be live (pull
+   request 672) before this group starts.
 2. **OIL Earn on the board** — D1782 (the slider switch "No OIL earned"), D1783 (a tap on a puck that cannot earn says why),
    D1793 (the phone day bar's two marks). Items [OIL-EARN-DAY-SWITCH-WORDS], [OIL-INERT-TAP-SILENT], [UI-CONSISTENCY-LOOK]
    (its round-5 line). OIL: two readers. Notes: `notes-board.md` Q3, Q4 §(g); `notes-marks.md` (the day bar).
