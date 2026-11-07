@@ -51,17 +51,26 @@ export const TASK_READS = [
    Each read below is one stated case, for a measure that can be taken again: a different job opens other parts. */
 export const CHECK_READS = [
   { f: 'raptor-port/docs/bug-check-checklist.md', why: 'a bug check: the checklist first, which names each section of the order to open (D1735)' },
-  { f: 'raptor-port/docs/bug-check-order.md', sections: ['## 2a.', '## 2b.', '## 3.', '## 5.', '## 6.', '## 8.', '## 9.', '## 11.', '## 12.'],
-    spans: [{ from: '**Opus sizes the coverage', to: '**The owner\'s trigger rule' }, { from: '**7.0', to: '**7.11' }],
-    why: 'a WALK of a screen: each section the checklist names for it — the roll-call\'s and the door check\'s included — and §4\'s fan-out paragraphs; not the rest of §4 or §4a (FULL, or a code read), nor §7.11\'s lessons, each opened only when it applies' },
+  { f: 'raptor-port/docs/bug-check-order.md', sections: ['## 0a.', '## 2a.', '## 2b.', '## 3.', '## 4.', '## 5.', '## 6.', '## 8.', '## 9.', '## 10.', '## 11.', '## 12.'],
+    spans: [{ from: '**7.0', to: '**7.11' }, { from: '1. **A reading checked', to: '2. **A gesture' }, { from: '3. **Feedback never looked for', to: '4. **A press on the page behind' },
+      { from: '22. **A thing judged', to: '23. **A tap\'s window' }],
+    why: 'a WALK of a screen with a new control: each section the checklist names for it, whole (its head: a step\'s parentheses never narrow a section) — §0a, §2a, §2b, §3, §4, §5, §6, §7.0 to §7.10, §8, §9, §10, §11, §12 — and the three lessons a screen walk nearly always meets (1, 3, 22); not §4a (a code read: FULL) nor §7.11\'s other lessons, each opened only when it applies' },
   { f: 'raptor-port/docs/walk-ledger.md', sections: ['## Before any walk — the sizing step', '## The types of change'], why: 'a walk is sized first (D607) — its step 1 picks from the types of change' },
   { f: 'raptor-port/docs/walk-scripts.md', why: 'every walker\'s brief names it' },
-  { f: 'raptor-port/docs/design-practices.md', spans: [{ to: '## 0.' }, { from: '## 1.', to: '### 1a.' }], sections: ['## 0.', '## 3.', '## 6.', '## 9.'],
-    why: 'interface work, by section (ui-design.md): the head, §0 and §9, his lessons, for every design job; then words (§1\'s own text), placing (§3), polish before he sees it (§6)' },
+  { f: 'raptor-port/docs/design-practices.md', spans: [{ to: '## 0.' }, { from: '## 1.', to: '### 1a.' }], sections: ['## 0.', '### 1b.', '## 2.', '## 3.', '## 6.', '## 9.'],
+    paras: ['- **One mark, one look'],
+    why: 'interface work, by section (ui-design.md) — a new control and its words: the head, §0 and §9, his lessons, for every design job; §1\'s own text and §1b (words), §2 (a new control), §3 (placing), §4\'s "One mark, one look" (a new action, with §1\'s point on feedback), §6 (before he sees it)' },
   { f: 'raptor-port/docs/performance.md', sections: ['# Part 1'], why: 'interface work: Part 1, the guardrails' },
-  { f: 'raptor-port/docs/feature-impact.md', spans: [{ to: '**Schedule keyboard flow' }, { from: '## 1.', to: '| **Warnings**' }],
-    rows: ['| **Warnings**', '| **Undo / redo**', '| **Edit Schedule**', '| **Publishing / AL**'], sections: ['### Flow A', '## 3.', '### The single funnels'], grep: '^\\| \\*\\*[^*]*\\*\\*',
-    why: 'weigh the whole ecosystem, by section (its head note) — a schedule cell edit: the note, §3, the surface list its note\'s search prints, four §1 rows, Flow A, §4\'s funnels' },
+  { f: 'raptor-port/docs/feature-impact.md', spans: [{ to: '**How to read it' }, { from: '## 1.', to: '| **Warnings**' }],
+    paras: ['**How to read it', '**Schedule keyboard flow'],
+    rows: ['| **Warnings**', '| **The one changes window + the change history**', '| **Undo / redo**', '| **Scheduler board**', '| **Edit Schedule**',
+      '| **View-only Schedule**', '| **Post-render decoration**', '| **Publishing / AL**'],
+    sections: ['### Flow A', '## 3.', '### The single funnels', '#### A seat with hours and the same seat without', '#### One rule read in several places',
+      '#### Deliberate second copies'],
+    grep: [{ re: '^\\| \\*\\*[^*]*\\*\\*|^- \\*\\*[^*]*\\*\\*', from: '## 1.', to: '## 2.', name: 'the note\'s list of §1\'s surfaces' },
+      { re: '^###', n: true, name: 'the note\'s list of the headings, §4\'s among them' }, { re: '^## ', n: true, name: 'the note\'s list of the sections' },
+      { re: '^\\*\\*[^*]*\\*\\*', to: '## 1.', name: 'the titles of the dated parts under the title' }],
+    why: 'weigh the whole ecosystem, by section (its head note) — a schedule cell edit (a puck, a time, a note): the note, §3, the lists its searches print, the eight §1 rows Flow A names, Flow A, §4\'s funnels and the three drift-seams such an edit writes through or reads, and the one dated part in its subject (typing in a cell)' },
 ]
 export const START_NOTE = '.claude/hooks/task-observer-session-start.sh'
 /* since the rules diet's step 2 (D969, point F; D1740) the start hook prints the skill-notes short form, read from this
@@ -79,22 +88,40 @@ const dirOf = f => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
      upTo      the file up to that heading; alone, a missing heading counts the file whole (an upper bound);
      sections  each from its heading to the next heading of the same or a higher level;
      spans     [{ from, to }] — from the line that starts with from (with none, the file's first line) up to the line
-               before the next that starts with to: a part that is no heading of its own, such as a run of bold-led
-               paragraphs (the bug-check order's §7.0 to §7.10) or a section's own text above its first sub-heading;
+               before the next that starts with to (with none, the file's end): a part that is no heading of its own,
+               such as a run of bold-led paragraphs (the bug-check order's §7.0 to §7.10) or a section's own text above
+               its first sub-heading; with no from, to is looked for from the first line, as upTo is;
      rows      the one line that starts with each — a table row;
-     grep      a pattern: the text each line's matches give, as grep -o prints it (a list a rule says to print).
+     paras     the paragraph or list item that starts with each: its line and those after it, up to a blank line or a
+               line that starts a new block at the margin (a heading, a bold start, a list item, a table row, a fence)
+               — a bold-led paragraph among others, with no blank line between them, ends where the next begins;
+     grep      what a command a rule gives would print: a pattern (the text each line's matches give, as grep -o prints
+               it), or a list of { re, from, to, n, name } — the lines from..to as a span takes them (sed -n's range),
+               n for whole lines with their numbers (grep -n), name for the label in place of the pattern.
    Any of these together; a line two parts share is counted once, the parts kept in the file's order, and the grep's text
-   after them. A missing heading or line — a span's from or its to — is reported, and that part counted as nothing. Not a
-   fence's lines for any of them but the grep, which reads what the command would. Returns { text, missing, whole }. */
+   after them. A missing heading or line — a span's or a range's from or its to — is reported, and that part counted as
+   nothing. Not a fence's lines for any of them but the grep, which reads what the command would (its range's ends are
+   found as a span's are). Returns { text, missing, whole }. */
 const headed = (l, s) => l.startsWith(s) && !/^[\p{L}\p{N}]/u.test(l.slice(s.length))
-export function partOf(text, { upTo, sections, spans, rows, grep } = {}) {
+const BLOCK = /^(#{1,6}\s|\*\*|[-*+]\s|\d+\.\s|\||```|~~~)/
+export const grepsOf = grep => (grep == null ? [] : Array.isArray(grep) ? grep : [grep]).map(g => (typeof g === 'string' ? { re: g } : g))
+export function partOf(text, { upTo, sections, spans, rows, paras, grep } = {}) {
   const ls = linesOf(text), inF = RL.fencedFlags(ls), level = i => { const m = !inF[i] && /^(#{1,6})\s/.exec(ls[i]); return m ? m[1].length : 0 }
   const find = (s, after = 0) => ls.findIndex((l, i) => i >= after && !inF[i] && headed(l, s))
-  if (!upTo && !sections && !spans && !rows && grep == null) return { text: ls.join('\n'), missing: [], whole: true }
-  if (upTo && !sections && !spans && !rows && grep == null) {
+  const only = !sections && !spans && !rows && !paras && grep == null
+  if (!upTo && only) return { text: ls.join('\n'), missing: [], whole: true }
+  if (upTo && only) {
     const at = find(upTo); return at < 0 ? { text: ls.join('\n'), missing: [upTo], whole: true } : { text: ls.slice(0, at).join('\n'), missing: [], whole: false }
   }
   const take = ls.map(() => false), missing = [], mark = (a, b) => { for (let i = a; i < b; i++) take[i] = true }
+  /* the lines a span or a grep's range covers, or null with its missing end reported */
+  const range = (from, to, what) => {
+    const at = from == null ? 0 : find(from)
+    if (at < 0) { missing.push(from); return null }
+    const end = to == null ? ls.length : find(to, from == null ? 0 : at + 1)
+    if (end < 0) { missing.push(`${to}" (the end of the ${what} from "${from ?? 'the top'}`); return null }
+    return [at, end]
+  }
   if (upTo) { const at = find(upTo); if (at < 0) missing.push(upTo); else mark(0, at) }
   for (const s of sections || []) {
     const at = ls.findIndex((l, i) => level(i) && headed(l, s))
@@ -102,15 +129,21 @@ export function partOf(text, { upTo, sections, spans, rows, grep } = {}) {
     let end = at + 1; while (end < ls.length && !(level(end) && level(end) <= level(at))) end++
     mark(at, end)
   }
-  for (const { from, to } of spans || []) {
-    const at = from == null ? 0 : find(from)
-    if (at < 0) { missing.push(from); continue }
-    const end = find(to, at + 1)
-    if (end < 0) { missing.push(`${to}" (the end of the span from "${from ?? 'the top'}`); continue }
+  for (const { from, to } of spans || []) { const r = range(from, to, 'span'); if (r) mark(...r) }
+  for (const r of rows || []) { const at = find(r); if (at < 0) missing.push(r); else mark(at, at + 1) }
+  for (const p of paras || []) {
+    const at = find(p); if (at < 0) { missing.push(p); continue }
+    let end = at + 1; while (end < ls.length && ls[end].trim() && !BLOCK.test(ls[end])) end++
     mark(at, end)
   }
-  for (const r of rows || []) { const at = find(r); if (at < 0) missing.push(r); else mark(at, at + 1) }
-  const hits = grep == null ? [] : ls.flatMap(l => [...l.matchAll(new RegExp(grep, 'gu'))].map(m => m[0]).filter(Boolean))
+  const hits = []
+  for (const g of grepsOf(grep)) {
+    const r = range(g.from, g.to, 'grep\'s range'); if (!r) continue
+    for (let i = r[0]; i < r[1]; i++) {
+      if (g.n) { if (new RegExp(g.re, 'u').test(ls[i])) hits.push(`${i + 1}:${ls[i]}`) }
+      else hits.push(...[...ls[i].matchAll(new RegExp(g.re, 'gu'))].map(m => m[0]).filter(Boolean))
+    }
+  }
   return { text: [...ls.filter((_, i) => take[i]), ...hits].join('\n'), missing, whole: false }
 }
 /* a hook's note: the body of its first here-document (a comment line never opens one) */
@@ -149,8 +182,9 @@ export function measure({ files, read, est, jobs = JOBS, taskReads = TASK_READS,
   const take = (r, col) => {
     const t = read(r.f); if (t == null) { missing.push(`${r.f} (${col}) does not exist`); return null }
     const p = partOf(t, r); for (const m of p.missing) missing.push(`${r.f} has no heading or line "${m}" (${col}) — ${p.whole ? 'counted whole' : 'that part counted as nothing'}`)
-    const names = [...(r.upTo ? [`up to ${r.upTo}`] : []), ...(r.spans || []).map(s => `${s.from ?? 'the top'} … ${s.to}`), ...(r.sections || []),
-      ...(r.rows || []).map(x => `the row ${x}`), ...(r.grep != null ? [`grep -o ${r.grep}`] : [])]
+    const names = [...(r.upTo ? [`up to ${r.upTo}`] : []), ...(r.spans || []).map(s => `${s.from ?? 'the top'} … ${s.to ?? 'the end'}`), ...(r.sections || []),
+      ...(r.rows || []).map(x => `the row ${x}`), ...(r.paras || []).map(x => `the paragraph ${x}`),
+      ...grepsOf(r.grep).map(g => g.name ?? `grep ${g.n ? '-n' : '-o'} ${g.re}`)]
     return item(r.f, p.text, r.why, p.whole ? '' : names.join(' + '))
   }
   const rules = files.filter(f => /^\.claude\/rules\/.+\.md$/.test(f) && read(f) != null)

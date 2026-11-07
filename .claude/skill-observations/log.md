@@ -3840,3 +3840,18 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Issue:** To edit two lines under the ripple map's title, the chat opened three lines of it with the file reader. The project's scoped rules load a rulings file whenever a matching file is opened with that reader, and the ripple map is on the scheduler rulings' paths, so about 45,000 tokens loaded for three lines, taking the chat from about 50% to 84% and forcing a handoff before the step's reads could run. A shell read (sed, grep) loads nothing.
 **Suggested improvement:** In the handoff and context guidance: before opening a file only to edit or peek at a few lines, check whether it sits on a scoped rules file's paths (the measure's layer J lists the known ones); if it does and that rules file is not needed for the job, take the lines with a shell read and make the edit by a small script or the editor after a shell read.
 **Principle:** A tool that loads context as a side effect should be chosen deliberately: for a small peek late in a long session, use the read path with no side effects.
+
+Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple map's head note loaded the scheduler's rulings file again (~45,000 tokens) — the Edit tool needs the file read first and loads the same scoped rules; an edit script run from Bash would not have.
+
+### Observation 844: A saving promised for reading by section was estimated from a typical job, not from what the routing text names
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — the bug-check order, the design guide and the ripple map read by section, measured after drafting
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** sizing a plan's "after" figures
+
+**Issue:** The plan said the three documents would fall from about 120,000 tokens to about 29,000 when read by section. Measured once the routing texts were written, they fell to 67,949; after two readers made the routing texts say "every section a step names is read whole" (the plan's own condition), to 91,958 — a quarter saved, not three quarters. The estimate had assumed a typical job opens a few sections, while the condition that made the change safe requires a job to open every section that applies, and one section (the owner's design lessons, half of one guide) is read whole by every job.
+**Suggested improvement:** In writing-plans, where a plan promises a size or cost saving from reading less: write the routing text (the list of when to open what) first, or at least list the parts one stated case must open under the plan's own safety condition, and estimate the "after" figure from those parts — measured, not assumed; say in the plan which parts are always read whole.
+**Principle:** A saving estimated before the rule that bounds it is written tends to assume the lean case; estimate it from the parts the safety condition forces in, and state that case.

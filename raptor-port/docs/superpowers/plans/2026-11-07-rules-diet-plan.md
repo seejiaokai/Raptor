@@ -400,22 +400,24 @@ both shapes). Dry-run on the samples against the real rulings, each page given i
 
 ### Step 3 — reading by section, measured (7 Nov 26, `claude/rules-diet-step-3-f1a069`)
 
-`docsize --reads` now counts the three documents by part (`docsize-reads.mjs` `CHECK_READS`; `partOf` gained spans, rows
-and a search's output, each with a self-test case). Each figure is one stated case, so it can be taken again; a different
-job opens other parts. **Measured against `main` at `32ac5bd59` (step 2 live), in tokens:**
+`docsize --reads` now counts the three documents by part (`docsize-reads.mjs` `CHECK_READS`; `partOf` gained spans,
+rows, paragraphs and a command's output, each with self-test cases). Each figure is one stated case, so it can be taken
+again; a different job opens other parts. **Measured against `main` at `32ac5bd59` (step 2 live), in tokens, after the
+readers' fixes (the first measure, before them, said 67,949 for the three — the fixes put back what a step names):**
 
 | Read | Before | After | The plan said | The case counted |
 |---|---|---|---|---|
-| The bug-check order | 40,301 whole | 26,740 (the checklist 3,660 + the order's parts 23,080) | ~10,000 | a WALK of a screen: §2a, §2b, §3, §5, §6, §7.0–§7.10, §8, §9, §11, §12 and §4's fan-out paragraphs — every section the checklist names for a WALK, the roll-call's and the door check's included; not §4's readers or §4a (FULL, or a code read), nor §7.11's lessons (7,028 in all), each opened when it applies |
-| The design guide | 50,631 whole | 33,778 | ~12,000 | the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1's own text, §3, §6 |
-| The ripple map | 28,855 (§1 and §3) | 7,431 | ~7,000 | a schedule cell edit: the head note, §3, the surface list the note's search prints, four §1 rows (Warnings, Undo / redo, Edit Schedule, Publishing / AL), Flow A, §4's funnels |
-| **The three together** | **119,787** | **67,949 (−43%)** | ~29,000 | |
+| The bug-check order | 40,301 whole | 35,185 (the checklist 4,534 + the order's parts 30,651) | ~10,000 | a WALK of a screen with a new control: every section the checklist names for it, whole — §0a, §2a, §2b, §3, §4, §5, §6, §7.0–§7.10, §8, §9, §10, §11, §12 — and lessons 1, 3 and 22 of §7.11; not §4a (a code read: FULL) nor the rest of §7.11, its head and other lessons (6,359), each opened when it applies |
+| The design guide | 50,631 whole | 41,737 | ~12,000 | a new control and its words: the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1's own text and §1b, §2, §3, §4's "One mark, one look", §6 |
+| The ripple map | 28,855 (§1 and §3) | 15,036 | ~7,000 | a schedule cell edit: the head note, §3, the lists the note's three searches print, the eight §1 rows Flow A names, Flow A, §4's funnels and the three drift-seams such an edit writes through or reads, the one dated part in its subject |
+| **The three together** | **119,787** | **91,958 (−23%)** | ~29,000 | |
 
-**Why the first two save less than §4 and §6 said:** §4's ~10,000 assumed a typical walk opens a few sections; the
-checklist, written to keep every section that applies a required read (D1735's condition), names eleven parts of the
-order for a WALK. §6's ~12,000 left out that §9, his lessons, is half the guide and stays whole. **Each job's whole read**, before →
-after (the "check" column; start and task unchanged but for step 3's pointer lines): Leave War 347,553 → 295,701,
-scheduler 288,117 → 236,265, Inputs 313,096 → 261,244, Tracker 300,169 → 248,317; a notes job reads none of them.
+**Why it saves far less than §4 and §6 said:** §4's ~10,000 assumed a typical walk opens a few sections; the checklist,
+written to keep every section that applies a required read, read whole (D1735's condition), names fifteen parts of the
+order for a WALK. §6's ~12,000 left out that §9, his lessons, is half the guide and stays whole. The ripple map saves
+about half. **Each job's whole read**, before → after (start and task change only by step 3's pointer lines and the
+handoff's length): Leave War 347,553 → 320,289, scheduler 288,117 → 260,853, Inputs 313,096 → 285,832, Tracker
+300,169 → 272,905 — about 9% of each job; a notes job reads none of them.
 
 ### Review log
 
