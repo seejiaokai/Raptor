@@ -115,6 +115,7 @@ export function installProbeBridge() {
   w.afterSchedMutateRaw = () => { view.rawSchedEpilogue(); resyncSchedBaseline(); notify() }
   w.resyncSchedBaseline = () => resyncSchedBaseline()
   w.commandStreamLen = () => commandStream().length
+  // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- a test reads the last envelope as it is saved and sent, the JSON reading the store writes; a structuredClone would keep fields a saved envelope never holds
   w.lastEnvelope = () => { const s = commandStream(); return s.length ? JSON.parse(JSON.stringify(s[s.length - 1])) : null }
   w.schedBaselineClean = () => schedBaselineClean()
   /* week navigation — the per-week stash work (23 Aug 26) made cross-week

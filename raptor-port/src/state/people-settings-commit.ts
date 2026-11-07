@@ -233,6 +233,7 @@ export const peopleStore: EnlistableStore = {
       // [GLOBAL-UNDO] GU2-009 — clone-on-write: never alias the undo entry's recorded
       // image with the live roster record, or a later in-place edit would corrupt it.
       if (e.op === 'delete') delete (PEOPLE as any)[e.id]
+      // eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the roster record lands as saving stores it (keys set to undefined dropped), the same image a reload reads; structuredClone would keep them
       else (PEOPLE as any)[e.id] = e.value == null ? e.value : JSON.parse(JSON.stringify(e.value))
     }
     reorderPeople()

@@ -1,0 +1,190 @@
+{
+ "desk-save-failed": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-save-failed": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ }
+}

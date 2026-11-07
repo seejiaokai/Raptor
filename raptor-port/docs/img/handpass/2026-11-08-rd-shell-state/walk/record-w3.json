@@ -1,0 +1,52 @@
+{
+ "before": {
+  "w3": {
+   "planNote": "Monday — \"Plan B\" is now the live day, edit over it",
+   "planLabel": "Plan B\n▾",
+   "oilQuestion": "OIL: Saber, Duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add",
+   "oilAnswer": "Yes: credit FO",
+   "oilSave": "Add",
+   "inputNote": "",
+   "windowsLeft": [],
+   "undoTitle1": "Undo — Saber’s Duty",
+   "undoNote": "Undid: Saber’s Duty",
+   "redoTitle1": "Redo — Saber’s Duty",
+   "redoNote": "Redid: Saber’s Duty",
+   "undoTitle2": "Undo — Saber’s Duty",
+   "changes": "⠿\nChange  · week of 13/7\n4 change  thi  week\n✕\nNew to you 0\nAll change  4\nWeek\nMon\nTue\nWed\nThu\nFri\nSat\nSun\nGROUP BY\nItem\nWho\n▾\nSat · The day · 2\n09:30\nRedo — Saber’  Duty\nSaber · 14/7 09:30\nUndo — Saber’  Duty\nSaber · 14/7 09:30\nSat · Input · Saber · Duty\nSaber · 14/7 09:30\nDuty added · 18 Jul (on the programme)\nMon · The day\nSaber · 14/7 09:30\nPlan \"Plan B\" created — a copy of the day a  it  tood\nTap a change to go to it — the window  tay  open.",
+   "bell": "Nothing new",
+   "export": {
+    "name": "142-schedule.csv",
+    "bytes": 4506
+   },
+   "planLabelAfterReload": "Plan B\n▾",
+   "dayAfterReload": "⠿ Sat 18 Jul + Note ✕ + Input 1 INPUT LATE 06:00–18:00 SaberDUTY",
+   "errors": []
+  }
+ },
+ "after": {
+  "w3": {
+   "planNote": "Monday — \"Plan B\" is now the live day, edit over it",
+   "planLabel": "Plan B\n▾",
+   "oilQuestion": "OIL: Saber, Duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add",
+   "oilAnswer": "Yes: credit FO",
+   "oilSave": "Add",
+   "inputNote": "",
+   "windowsLeft": [],
+   "undoTitle1": "Undo — Saber’s Duty",
+   "undoNote": "Undid: Saber’s Duty",
+   "redoTitle1": "Redo — Saber’s Duty",
+   "redoNote": "Redid: Saber’s Duty",
+   "undoTitle2": "Undo — Saber’s Duty",
+   "changes": "⠿\nChange  · week of 13/7\n4 change  thi  week\n✕\nNew to you 0\nAll change  4\nWeek\nMon\nTue\nWed\nThu\nFri\nSat\nSun\nGROUP BY\nItem\nWho\n▾\nSat · The day · 2\n09:30\nRedo — Saber’  Duty\nSaber · 14/7 09:30\nUndo — Saber’  Duty\nSaber · 14/7 09:30\nSat · Input · Saber · Duty\nSaber · 14/7 09:30\nDuty added · 18 Jul (on the programme)\nMon · The day\nSaber · 14/7 09:30\nPlan \"Plan B\" created — a copy of the day a  it  tood\nTap a change to go to it — the window  tay  open.",
+   "bell": "Nothing new",
+   "export": {
+    "name": "142-schedule.csv",
+    "bytes": 4506
+   },
+   "planLabelAfterReload": "Plan B\n▾",
+   "dayAfterReload": "⠿ Sat 18 Jul + Note ✕ + Input 1 INPUT LATE 06:00–18:00 SaberDUTY",
+   "errors": []
+  }
+ }
+}

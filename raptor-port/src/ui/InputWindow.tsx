@@ -793,9 +793,10 @@ export function InputEditor() {
      "+ Commitment", nor on a pending upchit's own window: neither ever offered it. */
   const archivedHere = win && (!isNew || ctx === 'i') && canEditSched() && ctx !== 's' && !(draft && isSansAvail(draft.type)) ? archivedOptions() : []
   /* the first day whose OIL question nobody has answered, for the line that says so (below); '' where there is none */
-  /* …asked of EVERY record of the entry, not of the one the window happens to be opened on (walker C's find, 10 Oct 26 —
-     Astra's scenario 69: a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no
-     word that another man of it was still unanswered) */
+  /* …asked of the input's ONE record, which carries everyone in it (the one-rule build, D756). Before it, of EVERY record
+     of the entry, not of the one the window happened to be opened on (walker C's find, 10 Oct 26 — Astra's scenario 69:
+     a shared duty whose first man had answered from his own bell read "no OIL … Change…", with no word that another man
+     of it was still unanswered) */
   /* THE RECORD THE OIL LINES SPEAK FOR: the input's ONE record, wherever the window was opened from — its line states
      the input's one answer for everyone in it (`oilSummary`; owner D762, which changed D731 (4): `oilSummaryOf`'s
      "credited for 2 of 3" and a man's own line are gone, and since D748 the schedule's dialog on an input of several is
@@ -1099,9 +1100,10 @@ export function InputEditor() {
               §3.2; `oilUnansweredDay` — Fable F6, 22 Sep 26). The List's "OIL?" chip was the one sign, outside the bell
               of the man himself, that a weekend request's question was asked and put away unanswered; the phone's
               list is cards now and a card has no chips (D723), so the window says it — and answers it, by the same
-              forced question the chip opened. Only for a reader who may change the input. Said while ANY record of the
-              entry has a day nobody answered — a shared input names who — and beside an answered line too (one day
-              answered, another not): then that line's "Change…" is the one button, since both open the same question. */}
+              forced question the chip opened. Only for a reader who may change the input. Said while the input's one
+              record has a day nobody answered (one question for everyone in it, D762, so the line names nobody), and
+              beside an answered line too (one day answered, another not): then that line's "Change…" is the one button,
+              since both open the same question. */}
           {!isNew && r && unansweredDay && <div className="inped-f" data-testid="oil-unanswered">
             <span className="inped-k">OIL</span>
             <div className="inped-oil">

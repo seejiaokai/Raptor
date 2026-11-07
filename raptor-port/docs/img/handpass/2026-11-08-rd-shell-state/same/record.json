@@ -1,0 +1,1734 @@
+{
+ "desk-view": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-view-hl": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-view-dayinfo": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-drawer": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-search": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-weekcal": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-traffic": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-insights": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-insights-all": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-daytpl": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit-plans": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-save-failed": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-help": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-inputs-picker": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-docconf": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-oilconf": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-guest": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-view": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-view-hl": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-view-dayinfo": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#dayPop"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-drawer": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#drawer.open"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#drawer.open"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#drawer.open"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-search": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-weekcal": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#weekCal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-traffic": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#airpop"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-insights": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-insights-all": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#insightModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-daytpl": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#daytplModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit-plans": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#draftsModal"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-save-failed": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-help": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#page-help"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-inputs-picker": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".ic-pick"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-docconf": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"docconf\"]"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-oilconf": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "[data-testid=\"oilconf\"]"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-guest": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    "#guestApp"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ }
+}

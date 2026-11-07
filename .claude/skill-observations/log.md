@@ -2793,6 +2793,11 @@ passes a "kept after reload" step from it passes by accident when the value happ
 **Principle:** A test fixture's "clean start" switch can also switch off the very behaviour under test; check what a
 reset mode disables before reusing it.
 
+Met again 8 Nov 26 (`claude/rd-shell-state`, `scripts/handpass/rss1108-same.mjs`): the "Not saved" band's test switch
+`?savefail` (D1666) works only on the browser's store, so under `?fresh=1` the band never showed and the comparison pictured
+two identical screens with no band. Guard proposed: `scripts/drawcheck/lib.mjs` (or the walk's start helper) refuses a
+start address carrying both `fresh=1` and `savefail`, so the trap stops the script rather than passing in silence.
+
 ### Observation 746: A walk that checks a font-dependent measurement must reopen the surface after changing the letters
 
 **Status:** OPEN

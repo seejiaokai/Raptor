@@ -46,6 +46,7 @@ export function resetSeedWorld(seedDemo: boolean): void {
   ;(week ? week.days : JSON.parse(WEEK1_DAYS_SNAP)).forEach((d: any) => DAYS.push(d))
   DATES.splice(0, DATES.length, ...(week ? week.dates : WEEK1_DATES))
   INPUTS.length = 0
+  // eslint-disable-next-line react-doctor/no-unsafe-json-parse -- the demo's own inputs, a fixed text built into the app (never typed or stored), read once at a reset
   if (seedDemo) JSON.parse(WEEK1_INPUTS_SNAP).forEach((r: any) => INPUTS.push(r))
   const seed = JSON.parse(PEOPLE_SEED_SNAP)
   for (const id of Object.keys(PEOPLE)) delete (PEOPLE as any)[id]

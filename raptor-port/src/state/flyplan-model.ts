@@ -65,7 +65,7 @@ export function monthDates(y: number, m: number): string[] {
 /* ---- what may be stored — refused at the write, ignored at the read ---------------------------------------------- */
 const isObj = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const whole = (v: unknown): v is number => typeof v === 'number' && Number.isSafeInteger(v) && v >= 0
-const only = (v: Record<string, unknown>, keys: string[]) => Object.keys(v).every(k => keys.includes(k))
+const only = (v: Record<string, unknown>, keys: string[]) => { const may = new Set(keys); return Object.keys(v).every(k => may.has(k)) }
 export function validFlyDay(v: unknown): v is FlyDay {
   return isObj(v) && only(v, ['cls', 'p', 'w']) && (v.cls === undefined || CLASSES.includes(v.cls as string)) &&
     (v.p === undefined || whole(v.p)) && (v.w === undefined || whole(v.w))

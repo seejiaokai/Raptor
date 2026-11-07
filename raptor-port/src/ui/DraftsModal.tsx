@@ -26,6 +26,7 @@ import { CURPAGE } from '../state/view'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
 
+// eslint-disable-next-line react-doctor/no-high-complexity-react-function -- the day's saved plans, their rename, delete and bring-out share one set of state and one order of effects; split, that order would move
 export function DraftsModal() {
   useVersion()
   const [sel, setSel] = useState<string | null>(null)
@@ -88,9 +89,10 @@ export function DraftsModal() {
   }
 
   return (
-    <div className="modal" id="draftsModal" onClick={e => { if (clickedOutside(e, 'draftsModal')) close() }}>
+    /* role="presentation": the shade is nothing a screen reader should name; the keyboard's way out is Escape and the ✕ */
+    <div className="modal" id="draftsModal" role="presentation" onClick={e => { if (clickedOutside(e, 'draftsModal')) close() }}>
       <div className="modal-box" ref={boxRef} tabIndex={-1} style={{ width: 460, outline: 'none' }}>
-        <div className="modal-head"><b>Plans — {d ? d.dow : ''}</b><button className="x" id="draftsClose" onClick={close}>✕</button></div>
+        <div className="modal-head"><b>Plans — {d ? d.dow : ''}</b><button className="x" id="draftsClose" aria-label="Close" onClick={close}>✕</button></div>
         <div className="modal-body">
           {list.length
             ? <>

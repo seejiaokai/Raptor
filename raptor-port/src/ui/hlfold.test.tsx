@@ -13,7 +13,7 @@ import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { initStore, setSession, notify } from '../state/store'
 import * as view from '../state/view'
-import { HL_GROUPS } from './hlchips'
+import { HL_GROUPS } from './hlchips-model'
 
 ;(globalThis as any).IS_REACT_ACT_ENVIRONMENT = true
 
