@@ -51,8 +51,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   Preview deployment of the branch's head commit on GitHub (`gh api repos/<owner>/<repo>/deployments`, then its
   statuses — the URL rides the status). Hand it to him every time.
 - Vercel is his surface, never your drive target: it sits behind his Vercel sign-in, so he can open it and your
-  browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local `npm run build && npx
-  vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).
+  browser cannot (it answers with a 302 to `vercel.com/sso-api`). Your fast surface is the local
+  `npm run build && npx vite preview` — the same bundle, byte for byte (`raptor-port/CLAUDE.md` §Build & verify).
 - The preview is not a gate: `vercel.json` at the repo root builds `raptor-port` for every push, untested, so a red
   preview is still just a preview — correctness rides the gates.
 
@@ -68,7 +68,7 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - Tell him when you are done, with `PushNotification` — when the work is genuinely finished, and when you are blocked
   waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly watching, never twice
   for the same work.
-- Every stop that waits on him — the work done and his next step due, a question, an answer, a look or any other input
+- Since D1097, over the line above: every stop that waits on him — the work done and his next step due, a question, an answer, a look or any other input
   — gets its one notification, whether or not he seems to be watching; an unattended run keeps its one at the end
   (D1097, D596).
 - A green check is not done, and a merged pull request is not done. Once he has said "merge live" — never before —
@@ -94,7 +94,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - That run takes about 6 minutes (5m53s measured 20 Oct 26) and is the same set as his PC's: build, the original's 728,
   unit, browser, the Tracker's, the rule and document checks. Its slowest checks are split across more machines, every
   area still run (D1089).
-- On his PC run only the tests of what you change and the build the walk drives — no full gate run there (D1086).
+- While the repo is public, on his PC run only the tests of what you change and the build the walk drives — no full
+  gate run there (D1086).
 - Nothing merges until GitHub's run is green and he has said "merge live" (a notes-only pull request: D1407 — not a
   rules-diet step, D1737); a red run is fixed before his look is asked for (D1086).
 - GitHub's machines download the project without the walks' pictures, which no check reads (D1091).
@@ -113,8 +114,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out walk, take
   the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`). If it is held, wait — check
-  every few minutes, never start alongside. Release it the moment the run ends, pass or fail (`… gatelock.mjs
-  release`, or delete the folder) (D228).
+  every few minutes, never start alongside. Release it the moment the run ends, pass or fail
+  (`… gatelock.mjs release`, or delete the folder) (D228).
 - `… gatelock.mjs run` takes it, runs the whole gate set in order and releases when it ends — a run you stop does not:
   release it yourself at once. `… gatelock.mjs exec "<branch> — <what>" -- <command>` takes it, runs that one command
   and always releases it (D228, D976).

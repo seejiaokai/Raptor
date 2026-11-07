@@ -62,7 +62,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
   the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
   fresh Opus reader holds the second seat, so no third reader is added; if Astra cannot run, he is told first, and the
-  step never goes on without that read [D1738, D1739].
+  step never goes on without that read [D1738, D1739, D1743].
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
   widen it [D1739].
 - From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his;
@@ -91,10 +91,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   D1739].
 - The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
   to each other, Astra first and Sol 6.1 keeping the second seat, when he calls for them; otherwise the fresh, blind
-  Opus read alone, the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739].
+  Opus read alone, the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D761].
 - An important plan's red team: two readers, blind to each other, Astra first and Sol 6.1 second, when he calls for
   them — the one fresh Opus read stands in for finished code only, and a plan's read is as it was; a plan that goes
-  without them is on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739].
+  without them is on the reads-owed list, and whether a fresh, blind Opus reader red-teams it meanwhile is put to him
+  [D353, D590, D601, D790, D903, D1734, D1738, D1739].
 - A working-guide change is read before his approval, one round each, never by its writer, by Astra and Sol 6.1, called
   when he calls for them; a change read without them — by a fresh, blind Opus reader, the agent's reading, as D1495's
   wording was read — puts the reads it went without on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734, D1738,
@@ -306,8 +307,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   the tool's maker for its score, and the run with every outside connection off is no longer required [D1531, D1533].
 - React Doctor's findings are fixed with each area's batch, new and changed code following its rules [D1534]; it runs
   on every pull request, where a new finding fails the check, and at each session's end, where it only reports the
-  count and blocks nothing [D1539]; the 31 old errors outside the app were fixed as a job of their own (done) before
-  the next full run [D1572]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of
+  count and blocks nothing [D1539]; the 31 old errors outside the app were settled as a job of their own before the
+  next full run — 30 kept with written reasons, one in the read-only original left as it is [D1572]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of
   copying data the old way are left as they are [D1716].
 
 ## Long runs, compaction and handoff

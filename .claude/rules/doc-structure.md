@@ -50,8 +50,8 @@ tiers: `raptor-port/docs/doc-budget.md`; this file is its short, always-loaded f
 | a one-off handoff for a big job | not a new root file — this chat's block in `HANDOFF.md ## Now`, plus a tier-3 doc linked from its backlog item |
 
 ## When it leaves — moved whole, never deleted, never reworded
-- A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by `node raptor-port/scripts/backlog-archive.mjs <ID>
-  --homes <file>`, after its lasting facts have a pointer in a live doc (D29, D137).
+- A **finished backlog item** → `OUTSTANDING-ARCHIVE.md`, by
+  `node raptor-port/scripts/backlog-archive.mjs <ID> --homes <file>`, after its lasting facts have a pointer in a live doc (D29, D137).
 - A **replaced ruling, one a later ruling restates in full (D971, a fresh reader checking each), or a spent one-off
   permission** → `DECISIONS-ARCHIVE.md`, by `… backlog-archive.mjs --rulings` (D136, D137, D1735) — its mark
   written in its full row in `.claude/decisions-full/`; the command drops its short line, and on a page every line
@@ -61,8 +61,8 @@ tiers: `raptor-port/docs/doc-budget.md`; this file is its short, always-loaded f
   the same change, leaving the new rule and a one-line pointer (newest-instruction-wins says fix the stale text; this
   says where the old text goes).
 - **Anything no longer needed where it sits** → moved whole by `… backlog-archive.mjs --move` (exact anchors, byte for
-  byte, a one-line pointer naming the destination) to its home above (D141, D390, D1735). `node
-  raptor-port/scripts/docsize.mjs --moves` then lists what left and did not arrive — the rewrites a reviewer must read.
+  byte, a one-line pointer naming the destination) to its home above (D141, D390, D1735).
+  `node raptor-port/scripts/docsize.mjs --moves` then lists what left and did not arrive — the rewrites a reviewer must read.
 
 ## In his workflow
 - He works until the context is full, then hands off to a fresh chat; he seldom compacts; he merges only when happy, on

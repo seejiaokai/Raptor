@@ -42,7 +42,7 @@ rulings down at the moment (D1556).
 
 ## When a ruling overwrites another — fix what it leaves behind (D201)
 
-The later ruling wins (D90, D201) — but the older one lives on in every file that still states it, in the app that still
+When a new ruling overwrites or narrows an older one, the later wins (D90, D201) — but the older one lives on in every file that still states it, in the app that still
 does it, and by its absence from the lists that should carry the new one. So, in the same change that records the
 ruling:
 1. **The documents.** Search for the rule's subject (the thing it governs — "own row", "change history", "OIL award"),
