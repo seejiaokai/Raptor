@@ -43,6 +43,19 @@ that made it: `raptor-port/docs/guide-full.md` §Write his rulings down at the m
    runs `git merge --no-commit --no-ff origin/main`, then this with `--merge` (D390; the plan
    `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md` §2.4).
 
+**The steps for a converted area** — one whose file carries `<!-- shape: page -->` (D1735, the rules diet: a page of how
+it works now, each rule stated once with its rulings cited after it). Both routes stand until the last area converts;
+the command reads each file's marker. 1. **Write the full row at the top of the table in the area's full-text file**
+(`.claude/decisions-full/<area>.md`), as step 1 says; a page holds no rows (one left on the page is moved there by
+step 3). 2. **State it on the page:** rewrite the line it changes, citing its number beside the number it changes, or
+add a bullet under the section it belongs to — at least four words, and two for each number cited, at most 600
+characters, in ordinary letters; a ruling it replaces is marked in its full row as step 2 says, and every line citing
+that one is rewritten. 3. **Run the same command:** it writes no short line and keeps the map from the full-text file;
+until the page states every live ruling with the rulings that change it — and cites no replaced ruling and no number
+that is no ruling — it writes nothing and prints each edit owed, by page, line and section. `--move-rows` into a page
+drops the ruling's short line; out of one, it makes the short line from the full row's first bold sentence (or
+`--short-text`) and prints the page lines that state the ruling, to move.
+
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
 clashes, the later branch renumbers ITS OWN rows — never the ones already on `main`. So numbers

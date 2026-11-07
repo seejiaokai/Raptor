@@ -201,7 +201,10 @@ const FILES = [
   /* DECISIONS.md 92 -> 95 (27 Oct 26, the skill-notes review): three lines in the recording steps — the one command that
      finds the highest ruling number on every branch (observation 670); the file holds the steps every chat follows, so
      the line goes where the step is. Room, not a target. */
-  ['DECISIONS.md',                       1,   96],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
+  /* DECISIONS.md 96 -> 110 (7 Nov 26, D1735 — the rules diet, plan §3): the steps for an area converted to a page, beside
+     the three for an area still in short lines — both routes stand until the last area converts, and this file holds the
+     steps every chat follows. Room, not a target; the paragraph leaves when the last area converts. */
+  ['DECISIONS.md',                       1,  110],   // 95 -> 96 (1 Nov 26, D1554): the map gained ONE row - the screen-design rulings' own area file
 ]
 /* THE AREA RULINGS FILES — a tripwire in UTF-8 BYTES of the whole file, frontmatter and every section included (owner,
    D390 narrowing D141, 28 Sep 26): since each ruling became ONE short line, a line count cannot see a file growing
@@ -724,7 +727,7 @@ function rulings(allow) {
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
     else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
-    else if (isPageFile(r.file)) fails.push(`${r.d}'s full row is in ${r.file}, a page — a page holds no rows: move the row whole to ${FULL_DIR}/${RL.stem(r.file)}, then state the rule on the page, citing [${r.d}] (${DECISIONS}, the steps for a converted area)`)
+    else if (isPageFile(r.file)) fails.push(`${r.d}'s full row is in ${r.file}, a page — a page holds no rows: state the rule on the page, citing [${r.d}], then run ${MOVER_CMD}, which moves the row whole to ${FULL_DIR}/${RL.stem(r.file)} (${DECISIONS}, the steps for a converted area)`)
     else if (areas.has(r.file)) {
       /* a full row still in an area file: a new ruling not yet converted — say what the converter will do with it */
       const why = RL.headingProblem(r.d, RL.headingOf(RL.cellsOf(r.line)))
@@ -786,33 +789,18 @@ function rulings(allow) {
      check sees citations, not meaning: whether a line says what its rulings say is the fresh reader's, from the
      conversion's account. The always-loaded rules files join the last two checks once the general page converts. */
   if (pageOf.size) {
+    /* what the pages owe is read in docsize-rulings.mjs pageDebts — one reading, shared with the recorder, which prints
+       each debt as the edit to make (part 2 of the diet's step 1) */
     const archived = new Map(rowsNow.filter(r => r.file === RULINGS_ARCHIVE).map(r => [r.d, RL.cellsOf(r.line)]))
-    const homeOf = d => (fullLive.has(d) ? RL.stem(fullLive.get(d).file) : null)
+    const live = new Map([...fullLive].map(([d, r]) => [d, { line: r.line, area: RL.stem(r.file) }]))
     const generalPages = [...areas].filter(f => !RL.isScoped(readNow(f))).map(RL.stem).filter(s => pageOf.has(s))
-    const sources = [...[...pageOf].map(([s, f]) => ({ f, homes: new Set([s]) })), ...alwaysLoadedRules().map(f => ({ f, homes: new Set(generalPages) }))]
-    const stated = new Set(), listedOnly = new Map()
-    for (const { f, homes } of sources) {
-      const text = readNow(f)
-      if (isPageFile(f)) for (const p of RL.pageShapeProblems(text)) fails.push(`${f}, a page: ${p}`)
-      for (const s of RL.statementsOf(text)) {
-        for (const d of s.cites) if (s.states) stated.add(d); else if (!listedOnly.has(d)) listedOnly.set(d, `${f} line ${s.line}`)
-        if (!homes.size) continue
-        if (s.states) for (const d of s.cites) {
-          if (!homes.has(homeOf(d))) continue
-          const missing = [...RL.marksOf(RL.cellsOf(fullLive.get(d).line))].filter(m => fullLive.has(m) && !s.cites.has(m))
-          if (missing.length) fails.push(`${f} line ${s.line} states ${d} but does not cite ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it (the mark in ${d}'s full row) — write the line as it stands since then and cite [${[d, ...missing].join(', ')}] on it`)
-        }
-        for (const d of s.cites) {
-          const by = archived.has(d) && RL.REPLACED_BY.exec(archived.get(d)[2] || '')
-          if (by) fails.push(`${f} line ${s.line} cites ${d}, which ${by[1]} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`)
-        }
-        for (const d of s.named) if (!fullLive.has(d) && !archived.has(d)) fails.push(`${f} line ${s.line} cites ${d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`)
-      }
-    }
-    for (const [d, r] of fullLive) {
-      if (!pageOf.has(RL.stem(r.file)) || stated.has(d) || MARKED.test(rulingCell(r.line))) continue
-      fails.push(`${d} is a live ruling of ${pageOf.get(RL.stem(r.file))}, a page, and no statement states it${listedOnly.has(d) ? ` — it is cited only at ${listedOnly.get(d)}, which is a list or too short to state anything` : ''}: state the rule on its page, or in an always-loaded rules file, and cite [${d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
-    }
+    const sources = [...[...pageOf].map(([s, f]) => ({ f, text: readNow(f), homes: new Set([s]), area: s })), ...alwaysLoadedRules().map(f => ({ f, text: readNow(f), homes: new Set(generalPages) }))]
+    for (const [, f] of pageOf) for (const p of RL.pageShapeProblems(readNow(f))) fails.push(`${f}, a page: ${p}`)
+    for (const x of RL.pageDebts(sources, live, archived)) fails.push(
+      x.kind === 'mark' ? `${x.f} line ${x.line} states ${x.d} but does not cite ${x.missing.join(', ')}, which ${x.missing.length > 1 ? 'change' : 'changes'} it (the mark in ${x.d}'s full row) — write the line as it stands since then and cite [${[x.d, ...x.missing].join(', ')}] on it`
+      : x.kind === 'stale' ? `${x.f} line ${x.line} cites ${x.d}, which ${x.by} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`
+      : x.kind === 'none' ? `${x.f} line ${x.line} cites ${x.d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`
+      : `${x.d} is a live ruling of ${pageOf.get(x.area)}, a page, and no statement states it${x.at ? ` — it is cited only at ${x.at}, which is a list or too short to state anything` : ''}: state the rule on its page, or in an always-loaded rules file, and cite [${x.d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
   }
 
   const src = readNow(RULECHECK)

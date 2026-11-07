@@ -372,6 +372,11 @@ both shapes). Dry-run on the samples against the real rulings, each page given i
   after the sample). Once the general page converts, the five files join the change-mark and stale checks (§5): today
   37 of their lines state a ruling without the one that changed it, and two cite a replaced one (D1594 in
   `bug-check.md`, D368 in `doc-structure.md`) — all within step 4's rewrite of those files as checklists.
+- **Part 2 (the recorder by marker), a choice §3 left open:** "prints the page and section to edit" is built as a
+  refusal — the recorder prints every edit the page owes and writes nothing until they are made, since the gate would
+  fail the turn on each and put the run back anyway; so §3's order stands (the page line first, then the command). The
+  gate and the recorder read what a page owes from one function (`docsize-rulings.mjs` `pageDebts`). `--merge` keeps
+  writing past those debts (part 3 lists them "place on the page").
 
 ### Review log
 

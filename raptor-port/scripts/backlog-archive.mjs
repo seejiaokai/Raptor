@@ -56,7 +56,16 @@ const args = process.argv.slice(2)
      --merge               during a conflicted `git merge` (plan §2.4): starts from the side that has the full-text folder,
                            replays the OTHER side's ruling changes since the merge base, three-way per D-number, stops on
                            a row both sides changed, and prints — never writes — the other side's non-row lines
-     --dry-run             say what would happen, write nothing */
+     --dry-run             say what would happen, write nothing
+   AN AREA CONVERTED TO A PAGE (owner, D1735, 7 Nov 26 — the rules diet; plan
+   raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md §3, §5): its file carries `<!-- shape: page -->`
+   (docsize-rulings.mjs PAGE_MARK) and states each rule once, its rulings cited after it — no short lines. The marker is
+   read per file, so both routes stand while the areas convert one at a time: an unmarked area is handled exactly as
+   above; for a page, (1) a full row left on the page moves to the top of its full-text table and no short line is
+   made; (4) its map row lists its full-text file's rulings; --move-rows into a page drops the short line, and out of
+   one makes the short line from the full row's heading (or --short-text) and prints the page lines that state the
+   ruling, to move; and (5) what the pages still owe — read as the gate reads it, docsize-rulings.mjs pageDebts — is
+   printed as the edits to make, by page, line and section, and NOTHING is written until they are made. */
 if (args.includes('--rulings')) {
   const { DECISIONS: DEC, RULINGS_DIR: DIR, FULL_DIR, RULINGS_ARCHIVE: ARCHR } = RL
   const MARKED = RL.MARKED
@@ -78,7 +87,7 @@ if (args.includes('--rulings')) {
   const textOf = f => { const x = files.get(f); return x ? x.ls.join(x.eol) + (x.trail ? x.eol : '') : null }
   const before = new Map()
   const toArchive = [], moved = [], converted = []
-  const rewriteList = [], unread = [], reapply = [], classify = []
+  const rewriteList = [], unread = [], reapply = [], classify = [], pageMoves = []
   const given = new Map(), carried = new Set()
   /* a temporary copy left by a run that was killed between its renames is the only copy of what it was writing: never
      overwrite it (Astra's verification) — the chat looks at it, keeps what it needs, deletes it, and runs again */
@@ -222,6 +231,8 @@ if (args.includes('--rulings')) {
   }
   function rowsIn(f) { const x = files.get(f); if (!x) return []; const inF = RL.fencedFlags(x.ls); return x.ls.flatMap((l, i) => (!inF[i] && RL.isRow(l) ? [{ f, i, d: RL.idOf(l), kind: RL.kindOf(l), line: l }] : [])) }
   function allFiles() { return [...files.keys()].filter(f => f.startsWith(DIR + '/') || f.startsWith(FULL_DIR + '/')) }
+  /* an area file converted to a page (D1735) — read from its marker, which no run here writes or removes */
+  function isPageFile(f) { return f.startsWith(DIR + '/') && files.has(f) && RL.isPage(textOf(f)) }
   function findRow(d, kind) { for (const f of allFiles()) for (const r of rowsIn(f)) if (r.d === d && (kind === 'short' ? r.kind === 'short' : r.kind !== 'short') && (kind !== 'full' || f.startsWith(FULL_DIR + '/'))) return r; return null }
   function replaceRow(d, kind, line) { const r = findRow(d, kind); if (!r) die(`internal: no ${kind} row for ${d}`); files.get(r.f).ls[r.i] = line }
   function dropRow(d, kind) { const r = findRow(d, kind); if (r) files.get(r.f).ls.splice(r.i, 1) }
@@ -247,17 +258,28 @@ if (args.includes('--rulings')) {
   function moveRows(ds, to) {
     const area = to.endsWith('.md') ? to : to + '.md', target = `${DIR}/${area}`
     if (!files.has(target)) die(`--to ${to}: ${target} does not exist — create it first (its paths: header, its title and a short table "${RL.SHORT_HEADER}"), and add its row to the map in ${DEC}.`)
-    const fullT = ensureFull(area)
+    const fullT = ensureFull(area), toPage = isPageFile(target)
     /* in their SOURCE order, top of each file first, so rows of one date keep the order they had (newest first) */
-    const at = d => { const s = findRow(d, 'short'); return s ? [allFiles().indexOf(s.f), s.i] : [1e9, 0] }
+    const at = d => { const s = findRow(d, 'short') || findRow(d, 'full'); return s ? [allFiles().indexOf(s.f), s.i] : [1e9, 0] }
     ds = [...ds].sort((a, b) => { const x = at(a), y = at(b); return x[0] - y[0] || x[1] - y[1] })
     for (const d of ds) {
-      const s = findRow(d, 'short'), fl = findRow(d, 'full')
-      if (!s || !fl) die(`--move-rows ${d}: it needs its short line and its full row in the full-text folder (run --rulings first); found ${s ? 'the short line' : 'no short line'} and ${fl ? 'the full row' : 'no full row'}.`)
-      if (s.f === target && fl.f === fullT) continue
-      dropRow(d, 'short'); dropRow(d, 'full')
-      dateInsert(target, s.line); dateInsert(fullT, fl.line)
-      moved.push(`${d}: ${RL.stem(s.f)} → ${area}`)
+      /* a ruling of a page has no short line to carry (D1735): its full row alone moves, and its page lines are printed */
+      const s = findRow(d, 'short'), fl = findRow(d, 'full'), from = fl ? `${DIR}/${RL.stem(fl.f)}` : '', fromPage = !!fl && isPageFile(from)
+      if (!fl || (!s && !fromPage)) die(`--move-rows ${d}: it needs its short line and its full row in the full-text folder (run --rulings first); found ${s ? 'the short line' : 'no short line'} and ${fl ? 'the full row' : 'no full row'}.`)
+      if (fl.f === fullT && (toPage || s?.f === target)) continue
+      /* into an area still in short lines from a page: the short line is made as a conversion makes it (step 1) */
+      let line = s?.line
+      if (!line && !toPage) {
+        const cells = RL.cellsOf(fl.line), text = given.get(d) ?? RL.headingOf(cells)
+        const why = given.has(d) ? RL.shortTextProblem(d, text) : RL.headingProblem(d, text)
+        if (why) die(`--move-rows ${d}: ${area} still loads one short line a ruling, and ${why} — or give its short line with --short-text. Nothing written.`)
+        line = RL.shortLine(d, cells[1], text, RL.marksOf(cells)); if (!given.has(d)) unread.push(d)
+      }
+      if (fromPage) for (const st of RL.statementsOf(textOf(from))) if (st.cites.has(d)) pageMoves.push(`${from} line ${st.line} (${RL.sectionAt(textOf(from), st.line)}) states ${d}, now of ${area}: move the line ${toPage ? 'to that page' : 'off the page, or keep it there as a pointer under "## From other areas"'} — ${cut(st.text)}`)
+      if (s) dropRow(d, 'short'); dropRow(d, 'full')
+      if (!toPage) dateInsert(target, line)
+      dateInsert(fullT, fl.line)
+      moved.push(`${d}: ${RL.stem(s ? s.f : from)} → ${area}${toPage ? ` — a page: no short line${s ? ` (its line in ${RL.stem(s.f)} dropped)` : ''}; it must be stated there` : ''}`)
     }
   }
   const archivedLine = d => rowsIn(ARCHR).find(r => r.d === d)?.line ?? null
@@ -313,6 +335,8 @@ if (args.includes('--rulings')) {
         if (there.line === r.line) { files.get(f).ls.splice(r.i, 1); continue }
         refusals.push(`${r.d}'s full row is in ${f} AND, with different text, in ${there.f} — edit the full row in ${there.f} only${merging ? '' : ' (during a merge: --merge)'}`); continue
       }
+      /* a full row left on a page (D1735): it moves whole to its full-text table; a page has no short line to make */
+      if (isPageFile(f)) { news.unshift({ r, line: null }); files.get(f).ls.splice(r.i, 1); continue }
       const text = given.get(r.d) ?? RL.headingOf(cells)
       const why = given.has(r.d) ? RL.shortTextProblem(r.d, text) : RL.headingProblem(r.d, text)
       if (why) { refusals.push(`${why} (${f}; ${merging ? 'during --merge the row is read from git, not from the file on disk: give its short line with --short-text' : 'or give its short line with --short-text'})`); continue }
@@ -322,7 +346,7 @@ if (args.includes('--rulings')) {
     }
     if (!news.length) continue
     const area = RL.stem(f), fullT = ensureFull(area)
-    for (const n of news.slice().reverse()) { topInsert(fullT, n.r.line); topInsert(f, n.line); converted.push(`${n.r.d}: converted — full row to ${fullT}, short line to the top of ${f}${carried.has(n.r.d) ? ' (the other side\'s own short line)' : ''}`); if (!carried.has(n.r.d)) unread.push(n.r.d) }
+    for (const n of news.slice().reverse()) { topInsert(fullT, n.r.line); if (n.line == null) { converted.push(`${n.r.d}: its full row moved from the page ${f} to the top of ${fullT} — no short line; the page states it`); continue } topInsert(f, n.line); converted.push(`${n.r.d}: converted — full row to ${fullT}, short line to the top of ${f}${carried.has(n.r.d) ? ' (the other side\'s own short line)' : ''}`); if (!carried.has(n.r.d)) unread.push(n.r.d) }
   }
   if (refusals.length) die(`nothing written — ${refusals.length} row(s) refused:\n  - ${refusals.join('\n  - ')}`)
   const unused = [...given.keys()].filter(d => !used.has(d) && !carried.has(d))
@@ -385,7 +409,9 @@ if (args.includes('--rulings')) {
     dec.ls = dec.ls.map((l, i) => {
       const m = !inF[i] && MAP_ROW.exec(l)
       if (!m || !(m[2] === ARCHR || m[2].startsWith(DIR + '/')) || !files.has(m[2])) return l
-      const list = [...new Set(rowsIn(m[2]).map(r => r.d))].join(', ') || '—'
+      /* a page holds no rows: its row lists its full-text file's, as the gate reads it (D1735) */
+      const src = isPageFile(m[2]) ? `${FULL_DIR}/${RL.stem(m[2])}` : m[2]
+      const list = [...new Set(rowsIn(src).filter(r => src === m[2] || r.kind !== 'short').map(r => r.d))].join(', ') || '—'
       if (list === m[3]) return l
       mapChanged++
       return m[1] + list + m[4]
@@ -414,7 +440,34 @@ if (args.includes('--rulings')) {
   if (rewriteList.length) console.log(`\nREWRITE — short lines to read against a changed full row:\n  - ${rewriteList.join('\n  - ')}`)
   if (classify.length) console.log(`\nCLASSIFY — new in How we work from the other side; does any belong in another area (then --move-rows)? ${classify.join(', ')}`)
   if (reapply.length) console.log(`\nRE-APPLY BY HAND — lines the other side changed that are not ruling rows (never written by this command; keep every number range):\n  - ${reapply.join('\n  - ')}`)
+  if (pageMoves.length) console.log(`\nMOVE ON THE PAGES — lines that state a ruling which changed area:\n  - ${pageMoves.join('\n  - ')}`)
+
+  /* 5. THE PAGES (D1735): what each converted page still owes, read as the gate reads it (docsize-rulings.mjs pageDebts),
+     from the files as this run would leave them — printed as the edits to make (DECISIONS.md, the steps for a
+     converted area); while any is owed nothing is written, since the gate would fail the turn on each */
+  const pageSrc = allFiles().filter(isPageFile).map(f => ({ f, text: textOf(f), homes: new Set([RL.stem(f)]), area: RL.stem(f) }))
+  const owed = []
+  if (pageSrc.length) {
+    const live = new Map(), archived = new Map(rowsIn(ARCHR).map(r => [r.d, RL.cellsOf(r.line)]))
+    for (const f of allFiles().filter(f => f.startsWith(FULL_DIR + '/'))) for (const r of rowsIn(f)) if (r.kind !== 'short') live.set(r.d, { line: r.line, area: RL.stem(f) })
+    const general = pageSrc.filter(p => !RL.isScoped(p.text)).map(p => p.area)
+    const rules = listed('.claude/rules').filter(f => /^\.claude\/rules\/[^/]+\.md$/.test(f) && !RL.isScoped(disk(f))).map(f => ({ f, text: disk(f), homes: new Set(general) }))
+    const textAt = f => pageSrc.find(p => p.f === f)?.text ?? disk(f) ?? ''
+    const at = x => `${x.f} line ${x.line} (${RL.sectionAt(textAt(x.f), x.line)})`
+    const debts = RL.pageDebts([...pageSrc, ...rules], live, archived)
+    for (const x of debts) {
+      if (x.kind === 'mark') owed.push(`${at(x)} states ${x.d}: cite ${x.missing.join(', ')} on it too — ${x.missing.length > 1 ? 'they change' : 'it changes'} ${x.d} (the mark in ${x.d}'s full row) — and write the line as the rule stands since then`)
+      else if (x.kind === 'stale') owed.push(`${at(x)} cites ${x.d}, which ${x.by} replaced: rewrite the line as the rule stands now, citing the ruling that holds it (D201)`)
+      else if (x.kind === 'none') owed.push(`${at(x)} cites ${x.d}, which is no ruling — a renumbered clash (D78) or a typo: cite the number it has now`)
+      else if (!debts.some(y => y.kind === 'mark' && y.missing.includes(x.d))) {
+        const page = `${DIR}/${x.area}`, h = RL.headingOf(RL.cellsOf(live.get(x.d).line))
+        owed.push(`${x.d}${h ? ` ("${cut(h)}")` : ''}: no line of ${page} states it — rewrite the line it changes, citing it beside the ruling it changes, or add a bullet under the section it belongs to (${RL.sectionsOf(textAt(page)).map(s => s.text.replace(/^##\s+/, '')).join(' · ') || 'none yet'})${x.at ? `; it is only listed at ${x.at}` : ''}`)
+      }
+    }
+    if (owed.length) console.log(`\nSTATE ON THE PAGES — ${owed.length} edit(s) the gate requires (${DEC}, the steps for a converted area):\n  - ${owed.join('\n  - ')}`)
+  }
   if (dryRun) { console.log('--dry-run: nothing written.'); process.exit(0) }
+  if (owed.length && !merging) die(`nothing written — make the ${owed.length} edit(s) listed under STATE ON THE PAGES above, then run this again.`)
 
   /* written as one step (Astra's code read): every result to a temporary copy, read back, then renamed into place; any
      failure — a write, a rename, or the inventory afterwards — puts EVERY file back, removing any this run created */

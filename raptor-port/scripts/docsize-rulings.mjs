@@ -211,8 +211,38 @@ export function pageShapeProblems(text) {
   }
   return out
 }
+/* the "## " section a line of a page sits under, and a page's sections — where the recorder tells an edit to go */
+export const sectionsOf = text => statementsOf(text).filter(s => s.kind === 'heading' && /^##\s/.test(s.text))
+export const sectionAt = (text, line) => (sectionsOf(text).filter(s => s.line < line).pop() || {}).text || 'its head'
 
-/* The back-mark check: a later row that names an older one beside a change verb, where the older row's marks do not
+/* WHAT THE PAGES STILL OWE (D1735; plan §3, §5) — read ONE way, so the gate (docsize.mjs, which fails on each) and the
+   recorder (backlog-archive.mjs --rulings, which prints each as the edit to make and writes nothing until it is made)
+   never disagree. `sources`: each page { f, text, homes: Set of its own area's stem, area } and each always-loaded
+   rules file { f, text, homes: the general area's stem once it is a page, else empty — such a file joins only the
+   stating, until then }; `live`: Map d -> { line, area } for every live full row; `archived`: Map d -> its cells. A debt:
+     { kind: 'mark', f, line, d, missing } — a statement of a ruling of its own area without the rulings whose marks in
+       that ruling's full row change it (another area's included);
+     { kind: 'stale', f, line, d, by } — a citation of a ruling archived as replaced by `by` (D201);
+     { kind: 'none', f, line, d } — a number that is no ruling (a renumbered clash, a typo);
+     { kind: 'unstated', d, area, at } — a live ruling of a page's area no statement states (`at`: where it is only listed). */
+export function pageDebts(sources, live, archived) {
+  const out = [], stated = new Set(), listedOnly = new Map(), pages = new Set(sources.filter(s => s.area).map(s => s.area))
+  for (const { f, text, homes } of sources) for (const s of statementsOf(text)) {
+    for (const d of s.cites) if (s.states) stated.add(d); else if (!listedOnly.has(d)) listedOnly.set(d, `${f} line ${s.line}`)
+    if (!homes.size) continue
+    if (s.states) for (const d of s.cites) {
+      if (!live.has(d) || !homes.has(live.get(d).area)) continue
+      const missing = [...marksOf(cellsOf(live.get(d).line))].filter(m => live.has(m) && !s.cites.has(m))
+      if (missing.length) out.push({ kind: 'mark', f, line: s.line, d, missing })
+    }
+    for (const d of s.cites) { const by = archived.has(d) && REPLACED_BY.exec(archived.get(d)[2] || ''); if (by) out.push({ kind: 'stale', f, line: s.line, d, by: by[1] }) }
+    for (const d of s.named) if (!live.has(d) && !archived.has(d)) out.push({ kind: 'none', f, line: s.line, d })
+  }
+  for (const [d, r] of live) if (pages.has(r.area) && !stated.has(d) && !isRetired(cellsOf(r.line))) out.push({ kind: 'unstated', d, area: r.area, at: listedOnly.get(d) })
+  return out
+}
+
+/* The back-mark check:a later row that names an older one beside a change verb, where the older row's marks do not
    name the later. Returns [{ later, older }]. */
 const VERB = /\b(narrows|narrowed|amends|amended|sets aside|set aside|replaces|supersedes|widens|widened|extends|extended|refines|refined|settles|answers|corrects|reverses|overrides)\s+(?:(?:in part|the agent's reading of|his|the)\s+)?(D\d+)\b/gi
 export function backMarks(fullRows /* Map d -> cells */) {
