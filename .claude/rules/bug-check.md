@@ -25,7 +25,7 @@ order is in force:
    NONE / LOOK / WALK / FULL. If you cannot answer a question NO with a reason you could write
    down, the answer is YES.
 3. **Tell him, in one short block, what that tier means you are about to do** — the list of checks, the
-   SIZE of the walk and why (D607 — step 4), and roughly how long. He reads it; he does not have to choose it.
+   SIZE of the walk and why (D607, D608 — step 4), and roughly how long. He reads it; he does not have to choose it.
    If he wants less, he will say so, and that is his call to make, not yours to assume.
 4. **Then execute it**, in the order §5 gives (roll-call and door check → SIZE THE WALK, `raptor-port/docs/walk-ledger.md`
    → walk → gates → the model reads → fix → re-walk what the fixes touched → evidence sheet → his look).
@@ -34,8 +34,9 @@ order is in force:
 
 ## A fault he finds that the walk missed (D1297, 24 Oct 26)
 
-Learn from it by yourself, the same day, without asking him: fix it red-first, write why the walk missed it as a lesson
+Learn from it by yourself (D1297), the same day, without asking him: fix it red-first, write why the walk missed it as a lesson
 in the order's §7.11, and from then on every sizing step and walker's brief checks its scenarios against that list.
+Every closing report names the lessons added, and he may strike any (D1297).
 
 ## The three that get skipped under pressure — do not
 
@@ -54,9 +55,9 @@ in the order's §7.11, and from then on every sizing step and walker's brief che
 MISSING, not whether the code is wrong), **both of them reading the code** only on money, published
 records, permissions or persistence — and **never another static review when what is missing is
 someone running the app.** That last one has a name now: review pile-on.
-**Who they are now (D590, 5 Oct 26 — Astra and Sol 6.1 only on his call since D1734):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
+**Who they are now (D590, D601, 5 Oct 26 — Astra and Sol 6.1 only on his call since D1734, as D1738 and D1739 call Astra for the rules diet's reworded steps):** for work Opus wrote, Astra reviews and Sol 6.1 is the second reader where two are
 required; Fable is on call only (a bug Opus cannot crack, or a big open-ended plan, on his word). What Codex wrote, Opus reads.
-**Unless he calls for a ChatGPT reader (D790, 13 Oct 26 — "Yes option 2"; D1734, 7 Nov 26, replacing D1594: his subscription is back on a Pro plan with lower limits, and Astra or Sol 6.1 is called only when he calls for it, each time):** every job that needs a code read gets a FRESH, blind
+**Unless he calls for a ChatGPT reader (D790, 13 Oct 26 — "Yes option 2"; D1734, 7 Nov 26: his subscription is back on a Pro plan with lower limits, and Astra or Sol 6.1 is called only when he calls for it, each time):** every job that needs a code read gets a FRESH, blind
 Opus read of its finished code (never by the chat that wrote it). **Fable is used for nothing unless he calls for it (D903,
 15 Oct 26 — "don't include fable in anything anymore unless I call for it")** — the riskiest changes get the Opus read alone.
 
@@ -65,7 +66,7 @@ Opus read of its finished code (never by the chat that wrote it). **Fable is use
 *"Make sure the bug checks dont waste time catching these bugs in the future. It will not happen
 because ill clear all the demo data anyway before shiping this app into a real database."*
 
-**A problem that lives ONLY in data already stored is not a finding.** No reviewer, no walk step, no
+**A problem that lives ONLY in data already stored is not a finding (D56).** No reviewer, no walk step, no
 fix. The whole store is demo data and is CLEARED before the database step.
 
 **Both must be true or the rule does not apply:** the harm exists only in data already stored, AND

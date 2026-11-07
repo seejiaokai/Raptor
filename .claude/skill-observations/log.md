@@ -3873,6 +3873,19 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 
 **Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.
 
+### Observation 846: A Codex read-only run cannot open the app's shared notes folder
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** chat 1 — Astra's blind read of the plan for the M365 data package (D1743)
+**Skill:** claudex-loop
+**Type:** open-source
+**Phase/Area:** building a brief for the other provider (the files it is pointed at)
+
+**Issue:** The plan and the brief were written into the session-family's shared notes folder (under the user's roaming application-data folder), kept outside the public project on purpose. `codex exec -s read-only` read the package in the session's scratchpad (under the local temporary folder) but was refused the notes folder, and answered after a full run with "access to its private notes folder was denied" — about 5 minutes lost and a second run needed.
+**Suggested improvement:** In the brief-building step, add: every file the reviewer must open sits inside the repo or the session scratchpad; a file kept elsewhere (a notes folder, the home folder) is copied into the scratchpad first and the brief names the copy. A one-line read probe of each named path before the full run would catch it in seconds.
+**Principle:** Before a long run by another tool, check that its sandbox can read every file the brief names; a location your own tools can read is not proof that the other tool's sandbox can.
+
 ### Observation 850: A key held down was never pressed by a keyboard walk — the reader found it
 
 **Status:** OPEN

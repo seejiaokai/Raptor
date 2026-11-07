@@ -146,6 +146,10 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
    changes.
 3. When your schema is shared: the adapter behind the storage doorway, written
    to your tables, passing the doorway's existing contract tests; then sign-in.
+   **CHANGED 7 Nov 26 (his D1749, and your answer that you take no solution files):** at the database step your own
+   table-building kit builds the tables first in his test account, where the app is tested; then you get the tested
+   table list in the kit's format and build the same tables with the same kit. The 2 Nov 26 recommendation below is kept
+   as it was.
    **How the tables are built and handed over (the agent's recommendation of 2 Nov 26; its test held to the database step,
    his D1571):** a re-runnable setup script, written from `data-model.md`, builds every table in his own environment through
    Dataverse's Web API — each column's exact type and length, the links between tables, the unique keys — straight into a
