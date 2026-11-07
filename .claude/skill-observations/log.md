@@ -2929,6 +2929,8 @@ reset mode disables before reusing it.
 
 **Principle:** A standing setting that a tool re-applies per object is enforced per object, at the moment the object is made.
 
+Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switched Auto-fix on as the pull request opened; switched off at once (D1090).
+
 ### Observation 755: Walk checks that only read for what must not be drawn pass a blank screen
 
 **Status:** OPEN
@@ -3827,3 +3829,46 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In §Recommended activation setup, where the hook is described: if the hook prints text read from a file, strip control characters before escaping, and fall back to the short instruction when the text is empty or near the host's cap; test the hook on a missing, empty, oversized and control-character file, not only the normal one.
 
 **Principle:** A hook that feeds text to the agent fails silently at its edges — size caps and encoding — so it should fail open to a known-good minimal text, and its test cases must include those edges, not just the happy path.
+
+### Observation 843: A few lines of a reference doc read with the Read tool loaded a whole rulings file
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — editing pointer lines in the ripple map, the design guide and the project guide's full text
+**Skill:** session-handoff (context budgeting); New skill candidate: none
+**Type:** open-source
+**Phase/Area:** reading for an edit late in a long chat
+
+**Issue:** To edit two lines under the ripple map's title, the chat opened three lines of it with the file reader. The project's scoped rules load a rulings file whenever a matching file is opened with that reader, and the ripple map is on the scheduler rulings' paths, so about 45,000 tokens loaded for three lines, taking the chat from about 50% to 84% and forcing a handoff before the step's reads could run. A shell read (sed, grep) loads nothing.
+**Suggested improvement:** In the handoff and context guidance: before opening a file only to edit or peek at a few lines, check whether it sits on a scoped rules file's paths (the measure's layer J lists the known ones); if it does and that rules file is not needed for the job, take the lines with a shell read and make the edit by a small script or the editor after a shell read.
+**Principle:** A tool that loads context as a side effect should be chosen deliberately: for a small peek late in a long session, use the read path with no side effects.
+
+Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple map's head note loaded the scheduler's rulings file again (~45,000 tokens) — the Edit tool needs the file read first and loads the same scoped rules; an edit script run from Bash would not have.
+
+### Observation 844: A saving promised for reading by section was estimated from a typical job, not from what the routing text names
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — the bug-check order, the design guide and the ripple map read by section, measured after drafting
+**Skill:** writing-plans
+**Type:** open-source
+**Phase/Area:** sizing a plan's "after" figures
+
+**Issue:** The plan said the three documents would fall from about 120,000 tokens to about 29,000 when read by section. Measured once the routing texts were written, they fell to 67,949; after two readers made the routing texts say "every section a step names is read whole" (the plan's own condition), to 91,958 — a quarter saved, not three quarters. The estimate had assumed a typical job opens a few sections, while the condition that made the change safe requires a job to open every section that applies, and one section (the owner's design lessons, half of one guide) is read whole by every job.
+**Suggested improvement:** In writing-plans, where a plan promises a size or cost saving from reading less: write the routing text (the list of when to open what) first, or at least list the parts one stated case must open under the plan's own safety condition, and estimate the "after" figure from those parts — measured, not assumed; say in the plan which parts are always read whole.
+**Principle:** A saving estimated before the rule that bounds it is written tends to assume the lean case; estimate it from the parts the safety condition forces in, and state that case.
+
+### Observation 845: A saved report's head described how its read was run from memory, and was wrong twice
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — moving four readers' reports into the repo, each with a head saying how it was read
+**Skill:** claudex-loop (codex-review); requesting-code-review
+**Type:** open-source
+**Phase/Area:** saving a reviewer's report — the provenance line written above it
+
+**Issue:** two heads were drafted from memory and were wrong: one called the second script reader "blind to the first one's report" when its brief gave it those findings to check each fix against; one said Astra's first run "stopped on its usage limit before it read anything" when its log shows it read for a while (157,600 tokens) and stopped before reporting. The plan's review log compares the reads on exactly these facts. Both were caught only because the brief and the run log were opened before committing. Closed Observation 676 met the same lesson for a mock-up's caption about the app.
+
+**Suggested improvement:** where a review's report is saved, each claim in its head — who read, blind to what, which commit, how long, why an earlier run failed — is copied from the brief, the run command and the run log, opened at that moment; a claim not found there is left out.
+
+**Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.

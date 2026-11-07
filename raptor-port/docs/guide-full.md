@@ -93,7 +93,7 @@ you create, edit or change — before building and again before calling it done
 in front of you: which other surfaces read the same data or rule, what could
 break downstream, the drift-seams it might open (§Architecture, the
 robustness doctrine below), the edge cases and user errors it invites.
-`docs/feature-impact.md` is the map for that walk. Then TELL the owner what
+`docs/feature-impact.md` is the map for that walk, read by section as its head says (D1735, 7 Nov 26). Then TELL the owner what
 you found in your report — the ripple effects, the risks you are carrying,
 the assumptions you made — and ASK him wherever the change raises a genuine
 question that is his to answer (a product-direction fork, a behaviour that
@@ -146,7 +146,8 @@ the behaviour can.
 ### The bug-check standing order
 
 **THE BUG-CHECK STANDING ORDER IS `docs/bug-check-order.md` (adopted 21 Sep 26).** Read it before
-any bug check, and follow its tier rule. It absorbs and REPLACES the 16 Sep scenario rule, the
+any bug check — by its checklist, `docs/bug-check-checklist.md`, each section it names read whole when its step comes
+(D1735, 7 Nov 26) — and follow its tier rule. It absorbs and REPLACES the 16 Sep scenario rule, the
 20 Sep rules sweep above, and the 21 Sep "test like a human" rule — all three live inside it. The
 short form, because it is the one that keeps being broken: **a code review plus green tests is NOT
 a bug check.** Two frontier models reviewed the OIL build and passed it; the owner then found three

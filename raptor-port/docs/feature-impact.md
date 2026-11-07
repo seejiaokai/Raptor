@@ -8,6 +8,17 @@ things out."*
 This file is that record. It is not a list of features — it is the **map you
 check a feature against before you build it and again before you call it done.**
 
+**How to read it — by section (his D1735, 7 Nov 26):** first §3, the per-feature checklist, whole. Then go down §1's
+surfaces by name, out loud — `sed -n '/^## 1\./,/^## 2\./p' docs/feature-impact.md | grep -o '^| \*\*[^*]*\*\*\|^- \*\*[^*]*\*\*'`
+(from `raptor-port/`) lists every one, the table's rows and the two below it — and read in full the row of each surface
+the change touches, or that is fed by data or a rule the change writes or reads; where a name leaves it unclear, read
+the row. Then go down §2's flow headings and read whole each flow the change makes, alters, uses or could affect —
+navigation, loading and checks that save nothing included. Then go down §4's headings by name (`grep -n '^###\|^####'
+docs/feature-impact.md`, those after `## 4.`) and read each funnel or drift-seam the change writes through, reads,
+crosses or could copy — a new one is named under "A new drift-seam is named in this list". Then each dated part whose
+subject the change is in, or whose rule it reads: the bold starts under this title, and the sections after §4
+(`grep -n '^## ' docs/feature-impact.md`). Unsure whether one applies: read it.
+
 **Schedule keyboard flow,4 Oct26 (D550–D556):** week contenteditable and Board
 native/shared text boxes → gesture-time current-day DOM route → native blur/change
 → existing schedule/input command writers, validation, marks and persistence.
@@ -1284,6 +1295,8 @@ agree — name it here so the next session knows to check both.
   reach OIL entries only —
   a plain-pool credit is corrected with a negative entry
   (`docs/leavewar/known-gaps.md` §What balances do not yet do).
+
+#### Inside a pinch zoom, a list's pixels are not the screen's
 
 - **Inside a pinch zoom, a list's pixels are not the screen's** (`[BOARD-PHONE-PINCH-ZOOM]`, D1109, D1110, 21 Oct 26). The board's day in its desktop layout on a phone, and Quals' table, carry a CSS zoom; inside them `scrollTop` and a list's size are in the zoomed box's own pixels while every `getBoundingClientRect` is the screen's. Code that scrolls a list there by a distance measured on the screen divides by `ui/pinchzoom.ts scaleOf` (the keyboard lift, the drag's edge loop do); code that copies a measured width into another table (Quals' pinned row) writes it in that table's own pixels. A new scroller or mirror inside either is checked at a zoom other than 1.
 

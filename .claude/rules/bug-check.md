@@ -2,7 +2,8 @@
 
 Unscoped on purpose, like `plain-language.md`: this loads before any project file is read, so it is
 in force before anything else can talk you out of it. The full method is
-`raptor-port/docs/bug-check-order.md`. This file exists to make sure you OPEN that one.
+`raptor-port/docs/bug-check-order.md`. This file exists to make sure you OPEN that one — by its checklist,
+`raptor-port/docs/bug-check-checklist.md`, which names the section to open at each step (D1735).
 
 ## The trigger — you decide this, never the owner
 
@@ -18,7 +19,8 @@ order is in force:
 
 **Then, before you execute anything:**
 
-1. **READ `raptor-port/docs/bug-check-order.md`.** Not from memory — open it. It changes.
+1. **READ `raptor-port/docs/bug-check-checklist.md`, and at each step the section of the order it names** — whole,
+   whenever that step applies (D1735). Not from memory — open them. They change.
 2. **Answer its eight questions** (§5) against the actual change, and state the TIER out loud:
    NONE / LOOK / WALK / FULL. If you cannot answer a question NO with a reason you could write
    down, the answer is YES.

@@ -398,6 +398,79 @@ both shapes). Dry-run on the samples against the real rulings, each page given i
   the plan's figure was not re-derived); (4) a heading is matched to a boundary, so "## 1" never takes "## 10"; (5) a
   page's area gets a full-text header in the page's words.
 
+### Step 3 — reading by section, measured (7 Nov 26, `claude/rules-diet-step-3-f1a069`)
+
+`docsize --reads` now counts the three documents by part (`docsize-reads.mjs` `CHECK_READS`; `partOf` gained spans,
+rows, paragraphs and a command's output, each with self-test cases). Each figure is one stated case, so it can be taken
+again; a different job opens other parts. **Measured against `main` at `32ac5bd59` (step 2 live), in tokens, after the
+readers' fixes (the first measure, before them, said 67,949 for the three — the fixes put back what a step names, read whole):**
+
+| Read | Before | After | The plan said | The case counted |
+|---|---|---|---|---|
+| The bug-check order | 40,301 whole | 35,366 (the checklist 4,715 + the order's parts 30,651) | ~10,000 | a WALK of a screen with a new control: every section the checklist names for it, whole — §0a, §2a, §2b, §3, §4, §5, §6, §7.0–§7.10, §8, §9, §10, §11, §12 — and lessons 1, 3 and 22 of §7.11; not §4a (a code read: FULL) nor the rest of §7.11, its head and other lessons (6,359), each opened when it applies |
+| The design guide | 50,631 whole | 45,306 | ~12,000 | a new control and its words: the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1, §1a and §1b (the writing guide, for new or changed words — Astra's read), §2, §3, §4's "One mark, one look", §6, §8 (the mock-up put to him first, D1625) |
+| The ripple map | 28,855 (§1 and §3) | 17,875 | ~7,000 | a schedule cell edit: the head note, §3, the lists the note's three searches print, the eight §1 rows Flow A names, Flow A and Flow F, §4's funnels and the four drift-seams such an edit writes through or reads, the one dated part in its subject |
+| **The three together** | **119,787** | **98,547 (−18%)** | ~29,000 | |
+
+**Why it saves far less than §4 and §6 said:** §4's ~10,000 assumed a typical walk opens a few sections; the checklist,
+written to keep every section that applies a required read, read whole (D1735's condition), names fifteen parts of the
+order for a WALK. §6's ~12,000 left out that §9, his lessons, is half the guide and stays whole. The ripple map saves
+about two fifths. **Each job's whole read**, before → after (start and task change only by step 3's pointer lines and the
+handoff's length): Leave War 347,553 → 326,322, scheduler 288,117 → 266,886, Inputs 313,096 → 291,865, Tracker
+300,169 → 278,938 — about 7% of each job; a notes job reads none of them.
+
+#### Step 3's reads, and what was done (D1736, D1739)
+
+| What was read | Reader | Result | Folded in |
+|---|---|---|---|
+| The three routes' meaning — the checklist, `ui-design.md`'s list, the ripple map's note, the changed pointers — at `ab8598e70` | a fresh, blind Opus reader (`../briefs/2026-11-07-rules-diet-step3-read-opus.md`) | 16 findings: 8 medium, 8 low, none high | `6f9e2dbbc` — every finding, each checked against its source first |
+| The same, at `b1a5e682b` (already carrying the Opus read's fixes) | Astra (his call, D1739), on his PC, the Opus report out of its reach (`../briefs/2026-11-07-rules-diet-step3-read-astra.md`) | 8 findings: 6 medium, 2 low, none high | `d743a96b7` — every finding, each checked against its source first |
+| The reads measure taught the new reads (`docsize-reads.mjs`, its self-test cases) | a fresh Opus reader (`../briefs/2026-11-07-rules-diet-step3-reads-script-read-opus.md`) | 1 high, 2 medium, 6 low | `47cf3ef81` — every finding; the high before the commit |
+| The same, after those fixes | a second fresh Opus reader, given the first one's findings to check each fix against (`../briefs/2026-11-07-rules-diet-step3-reads-script-reread-opus.md`) | 1 medium, 4 low, none high | `b1a5e682b` — every finding |
+
+**What the meaning reads changed:**
+- **The checklist (Opus):** its head — a step's parentheses name what to mind, never the part to read; a section's rule that
+  applies by kind of change applies whatever the tier gating its step; §6's rows by kind of change read whatever the tier;
+  §2a's table at the sizing step; §4 whole at the walk, "before a brief leaves" included; the evidence sheet laid down at
+  the start (§9); §10's anti-pattern 21 at the walk; step 2's three questions in full; each ruling checked on the running
+  build, its unchanged half pinned first (§8 point 7); "proved by" cells checked and the security read (D1411); every
+  defect he finds costs the method a line (§11); §3 and §10 off the background line; lessons 6, 11, 18, 21, 23 and the
+  second 23 at their fuller lines.
+- **The checklist (Astra):** a daily-use surface's look or layout shown whole, before and after, before it is built (§11);
+  "rare … unless a scenario proves it rare" (§7.5–§7.6); the code read follows §4's current blind-reader arrangement
+  (D790) over §4a's hand-over of the walk's sheet; §9a's fortnightly scorecard out of the background line.
+- **`ui-design.md`'s list:** §2 for any new control (Opus); words written or changed (Opus, §1b), then for new as well
+  as old, §1, §1a and §1b (Astra, D833); a new action; mock-up pages to §8; changing the guide (Opus); §6 for designing,
+  drawing and looking over, and again before he sees it (Astra).
+- **The ripple map's note:** a tested search listing all 48 surfaces, the rows fed by what the change reads or writes,
+  §4's headings by name, the dated parts' titles (Opus); every §2 flow the change makes, alters, uses or could affect —
+  navigation, loading and checks that save nothing included; the pinch-zoom bullet given a heading of its own, moved,
+  not reworded (Astra).
+
+**What the script reads changed:** a self-test case left on the old wording, which would have turned the Docs guard red
+(the high); the bug-check order's case counts §0a, §4 and §10 whole and lessons 1, 3 and 22; the design case is "a new
+control and its words", counting §8 too (D1625); the ripple map's case counts the eight §1 rows Flow A names, the
+keyboard flow, the note's three searches and four drift-seams; a span with no start or no end; a part for paragraphs; a
+search whose range ends where `sed -n`'s does; two missing guards and four untested block starts. Every fault was shown to
+fail a self-test case on a copy with it put back; the full self-test passed (312) on `b1a5e682b`, and Astra's fixes
+changed only two case lists. Each round of fixes put back what a step names, read whole: the three reads, which the first
+measure put at 67,949, are 98,547 now.
+
+**The two meaning reads compared (D1732 — "see which is better").** Not like for like: Astra read the text with the Opus
+read's sixteen fixes already in, so it could not find those again.
+
+| | The fresh Opus reader | Astra |
+|---|---|---|
+| Size | 16 findings (8 medium, 8 low); 34 tool uses, about 10 minutes | 8 findings (6 medium, 2 low); about 10 minutes |
+| Found | where a route kept a section but a step's wording or a tier gate kept a rule of it out of reach — §6's rows by kind, §2a, §4, §9's timing, §10's anti-pattern 21, five lessons' wider clauses; the surfaces the search missed | where a route still said less than its source — the code read's blindness (D790), a daily-use layout change, "rare", §9a, §1a for every word, §6 at design time, flows that save nothing, a rule hidden under another heading |
+| Both found | the words route too narrow in the first draft (§1a only to shorten, §1b only for new words): Opus the §1b half, Astra the §1a half | |
+| Passed what the other caught | seven of Astra's eight were in the first draft, which it read and passed — among them the code read's reader, step 5, "rare", §9a and §6's timing, each named as checked; the eighth, the pinch-zoom rule, came with its own fix (§4 read by heading) | none of Opus's findings was still there to pass |
+
+**Verdict:** both mapped every section of the order to a step and compared every lesson. The Opus read found more —
+sixteen to eight, most where a step's wording or a tier gate kept part of a section out of reach. Astra's was sharper on
+what was left — every finding held when checked, seven in lines the Opus reader had passed. As in the plan's own reads,
+neither alone was enough.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
