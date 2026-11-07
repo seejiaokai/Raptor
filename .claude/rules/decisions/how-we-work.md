@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1747 | 7 Nov 26 | The pictures round of about twelve small questions is drawn on the night of 7 Nov 26, in a chat of its own beside the night's fixes, ahead of night 3's jobs; nothing of it is built before his answers, and night 3's jobs still run on a later night. |
 | D1746 | 7 Nov 26 | Chats may run side by side as long as they never clash in anything; above all, two never merge at once: a chat about to merge takes the merge lock, checks its branch is level with main — if not, brings main in, waits for that run and starts again — then merges and releases the lock at once; every chat is told so. |
 | D1744 | 7 Nov 26 | Every chat has a number at the start of its title — 1 for the M365 package chat, 2 for the rules diet's step 4, then counting on — so he can tell the chats apart; each chat says its number when it reports to him, and the handoff file keeps the next free number. |
 | D1743 | 7 Nov 26 | Until Mon 9 Nov 26 19:00 he wants both his allowances used up — his Claude plan, now Ultra, and his Codex plan, now $100: the work is planned to spend them, chats side by side where the work allows, and Astra's reads are called on the work in that time without asking him each time. |
@@ -31,7 +32,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 | D1732 | 7 Nov 26 | The rules diet — area rulings as short how-it-works pages, old rows archived but searched, the working rules and bug-check order one-page checklists — starts now on Opus; its plan and before-and-after sizes go to him before any change, read by Astra (on his call, D1734) and a fresh Opus reader, each blind, to see which is better. — changed by D1735 |
 | D1733 | 7 Nov 26 | The handoff file's gate baseline keeps only the newest count; each older one moves whole to its archive file, so a new chat no longer reads about 50 stale entries each headed "latest". |
 | D1671 | 7 Nov 26 | Every chat in this project compacts at about 400,000 tokens: the project's autoCompactWindow is 400,000, not 880,000, so the first reminder (about 300,000), the hold until the state is saved (from about 360,000) and the app's own compaction (about 384,000) all come with it. |
-| D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. |
+| D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. — changed by D1747 |
 | D1716 | 5 Nov 26 | React Doctor stops counting the mock-up pages and the original app, which are records nobody edits; the tests' and scripts' notes of copying data the old way are left as they are; the app's own findings are still fixed with each area's batch (D1534). |
 | D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |
 | D1662 | 5 Nov 26 | The database's tables, security roles and day-lock flow are not built on his own Microsoft 365 before the database step: D1571 and D473 stand; the hosting trial (D1532) stays the app with no database. |

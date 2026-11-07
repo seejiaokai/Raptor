@@ -53,7 +53,7 @@ Tracker's standalone tidy — [TRK-STANDALONE-LEFTOVERS]), 639 (the "not saved" 
 ## 3. What needs him first — one pictures round
 
 These are small to build but each shows something new or changes how a screen looks, so each goes to him as a picture
-first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night.
+first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night. **Drawn on the night of 7 Nov 26 in a chat of its own (chat 3), ahead of night 3, whose jobs still run on a later night (D1747, narrowing D1717 for that night).**
 
 [BOARD-SIDEWAYS-KEYS] (the board's top on a phone on its side with the keys up) · [BOARD-NARROW-DESKTOP-REMARKS] (the board
 821–1000 wide) · [LW-TWO-BOX-LETTERS] (two boxes on one day clip "FO*") · [SCHED-UNAV-PENDING-MARK] (no "waiting" mark on an

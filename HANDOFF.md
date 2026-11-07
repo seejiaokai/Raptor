@@ -31,13 +31,16 @@ the later merge keeps both (D78).
 - **Rulings:** D1741, D1742, D1743, D1744. **Compacted 7 Nov 26, 22:30** — the state above checked after it; chat 1 (the M365 package) running.
 <!-- /now -->
 <!-- now:claude/merge-one-at-a-time -->
-### `claude/merge-one-at-a-time` — chats side by side, never clashing, never two merging at once (D1746); written 7 Nov 26, 23:30 — verify before use
-- **Live:** pull request 660 (D1742–D1744) merged 7 Nov 26 at about 22:45 — the block above is its record, removed at the next handoff; this block carries what is still open.
-- **This branch:** D1746 — before merging, a chat takes the merge lock (the checks lock's script on a folder of its own), checks its branch is level with `main` (if not: brings `main` in, waits for that run, starts again), merges, and releases the lock at once. `.claude/rules/shipping.md` changed in its two merge lines; an always-loaded rule file, so it waits for his "merge live".
-- **Told:** chat 1 and chat 2, by message, 7 Nov 26 about 23:20.
-- **Chats (D1744):** 1 — the M365 package, done; its pull request 661 (D1745) waits for his "merge live". 2 — the rules diet's step 4, running; it rewrites `shipping.md` and the How we work rulings, so it folds D1745 and D1746 in when it brings `main` in. The next chat takes 3.
-- **Asked, not answered:** whether Astra goes back to standing reviewer of every code read (D590) after Monday — recommended yes.
-- **Rulings:** D1746.
+### THE NIGHT OF 7 Nov 26 — `claude/merge-one-at-a-time`, this chat coordinating (D1746, D1747); written 7 Nov 26, 23:35 — verify before use
+- **After a compaction:** re-read this block, the overnight guide and the files of the step in hand before the next change; note the compaction here with its time.
+- **His go (7 Nov 26, about 23:30), 9 hours, Medium.** In this chat, one after another, each built by one fresh helper in this checkout, its own branch from `main`, its pull request when its check closes: **(0)** D1746 finished on this branch (the fresh reader's points: every kind of merge, never `--auto`, the lock released whatever happens with its folder written out) and D1747 — his "merge live" (an always-loaded rule file); **(1)** the board and windows by the keys — [BOARD-KEYS-LEFT] (1)–(5), [WINDOWS-KEEP-KEYS]' three leftovers, [WEEK-GLIDE-TWO-PAGES] — WALK, about 2½ h; **(2)** React Doctor on the shell, state and windows (about 90) with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) — WALK, every screen pictured before and after, about 2½ h; **(3)** Insights — [STACK-LEFTOVERS] (1), (2), React Doctor's 3 — LOOK, about 1½ h; **(4)** [CI-SMOKE-TIMEOUT] — a time limit on the Tracker's smoke test on GitHub — about ½ h. Each job's code read by a fresh, blind Opus reader and by Astra (D790, D1743).
+- **Beside it, each in its own chat:** chat 2, the rules diet's step 4, runs the night (his yes); chat 3 draws the pictures round (D1747). Neither touches the app's code; this chat's jobs touch no rules file (D1746).
+- **Not tonight:** [SHELL-SCRIPT-GUARD] (a hook — done while he is awake); [MERGE-ONCE-RECORDS] and the documents job (chat 2 rewrites those files); [REPO-TIDY], [MAIN-CHECKOUT-STALE] (deleting old worktrees unattended).
+- **Waiting on him:** pull request 661 (chat 1 — its "merge live" there; chat 1 also put a question to him about the kit); this branch's pull request; whether Astra goes back to standing reviewer after Monday (D590) — recommended yes.
+- **Chats (D1744):** 1 the M365 package (done); 2 the rules diet's step 4 (overnight); 3 the pictures round (overnight); the next chat takes 4.
+- **Questions waiting for him:** none yet.
+- **Night log:** 23:35 the night written.
+- **Rulings:** D1746, D1747.
 <!-- /now -->
 
 ## Next, in order
