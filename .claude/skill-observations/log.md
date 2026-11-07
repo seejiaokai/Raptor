@@ -2929,6 +2929,8 @@ reset mode disables before reusing it.
 
 **Principle:** A standing setting that a tool re-applies per object is enforced per object, at the moment the object is made.
 
+Met again 7 Nov 26: the rules diet's step 3, pull request 658 — the app switched Auto-fix on as the pull request opened; switched off at once (D1090).
+
 ### Observation 755: Walk checks that only read for what must not be drawn pass a blank screen
 
 **Status:** OPEN
@@ -3855,3 +3857,18 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The plan said the three documents would fall from about 120,000 tokens to about 29,000 when read by section. Measured once the routing texts were written, they fell to 67,949; after two readers made the routing texts say "every section a step names is read whole" (the plan's own condition), to 91,958 — a quarter saved, not three quarters. The estimate had assumed a typical job opens a few sections, while the condition that made the change safe requires a job to open every section that applies, and one section (the owner's design lessons, half of one guide) is read whole by every job.
 **Suggested improvement:** In writing-plans, where a plan promises a size or cost saving from reading less: write the routing text (the list of when to open what) first, or at least list the parts one stated case must open under the plan's own safety condition, and estimate the "after" figure from those parts — measured, not assumed; say in the plan which parts are always read whole.
 **Principle:** A saving estimated before the rule that bounds it is written tends to assume the lean case; estimate it from the parts the safety condition forces in, and state that case.
+
+### Observation 845: A saved report's head described how its read was run from memory, and was wrong twice
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet's step 3 — moving four readers' reports into the repo, each with a head saying how it was read
+**Skill:** claudex-loop (codex-review); requesting-code-review
+**Type:** open-source
+**Phase/Area:** saving a reviewer's report — the provenance line written above it
+
+**Issue:** two heads were drafted from memory and were wrong: one called the second script reader "blind to the first one's report" when its brief gave it those findings to check each fix against; one said Astra's first run "stopped on its usage limit before it read anything" when its log shows it read for a while (157,600 tokens) and stopped before reporting. The plan's review log compares the reads on exactly these facts. Both were caught only because the brief and the run log were opened before committing. Closed Observation 676 met the same lesson for a mock-up's caption about the app.
+
+**Suggested improvement:** where a review's report is saved, each claim in its head — who read, blind to what, which commit, how long, why an earlier run failed — is copied from the brief, the run command and the run log, opened at that moment; a claim not found there is left out.
+
+**Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.
