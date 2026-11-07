@@ -7982,3 +7982,20 @@ the keys — the keyboard stays on the button and the menu is added at the page'
 menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
 (3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-M1-READ-LEFTOVERS]). Forward facts: `raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md`.*
+
+### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
+**ALL FOUR SETTLED — to archive once live (30 Oct 26).** (2) was built on 23 Oct 26 (M3's folded items — `inputgate.ts` hands the note to the command as a deferred effect; `memberclash.test.ts`) and was walked at its doors on 30 Oct 26 (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §5, S3): a filing that lands over another man's bid says it once, a refused one says nothing and the bid stays, Undo and Redo say nothing of it, the war's own filings never say it. (4) was built the same day (a Move onto a closed day reads "That day is closed for bidding. Pick an open day." — `Matrix.tsx moveReason`).
+From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).
+(1) — **FOUND NOT TO ARISE (27 Oct 26, M4's build — the spec's 9.8):** only a leave or a medical replaces a pending bid; a member files neither for another man (D655) and may not change a shared leave someone else filed (D763), so no command of his replaces another man's bid — pinned in `raptor-port/src/leavewar/memberclash.test.ts` and `m4ride.test.ts`; no permission was widened for it. **A member's SHARED input over another man's pending bid** (D660 — he files for others): the clash rule writes a notice
+on the other man's war row inside the member's command, and the commit refuses "another person's war row" — so his whole
+filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
+closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
+own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
+still shows it (Opus H1 step 4) — say it only once the command lands. (3) **— BUILT 23 Oct 26 on M1 (D1266, his word): `leavewar/ui/dayclock.ts`.** **Midnight with the page open:** a member's dim,
+lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
+scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
+closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
+for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
+

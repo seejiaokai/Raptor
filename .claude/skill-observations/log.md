@@ -4034,3 +4034,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** A change that makes a table give up room for a side window was drawn only at the owner's PC width (1536) and his phone. It looked fine there. Asked about a smaller screen, the same drawing at 1280, 1024 and 821 showed the table crushing one column to a single letter, because the table's other columns had fixed widths. Drawing it at the narrower widths also showed the table was already broken below about 950 wide with no window open at all. The recommendation shown to him had named only the cost at his own width.
 **Suggested improvement:** In the mock-up guide's rules for drawing a change that alters widths or makes room (a side panel, a window that pushes content, a column added or narrowed), draw it at the narrowest width that still gets the desktop layout and at one laptop width (about 1280), as well as at the owner's own sizes. Measure the narrowest column at each width. Put that cost in the recommendation, or draw a safe version, before the page goes to him.
 **Principle:** A layout option is judged at the edges of the range it will run in, not only at the size of the person reviewing it. A fixed-width table that fits one screen can collapse on the next size down, so draw and measure at the narrowest width each layout covers.
+### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** recording D1770 (one of two reviewers made standing again; the other left on call) across a rules page, two always-loaded rule files and a guide
+**Skill:** New skill candidate: recording a ruling (the steps at the head of DECISIONS.md)
+**Type:** open-source
+**Phase/Area:** step 2 — fixing what the older ruling left behind (D201)
+**Reference file:** raptor-port/docs/superpowers/briefs/2026-11-08-d1770-placed-read.md
+
+**Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
+**Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
+**Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
