@@ -6,7 +6,7 @@ section's pointer below), and `.claude/hooks/record-decisions.sh` fires this che
 
 ## The lapse this exists to stop
 
-The story behind this rule — two misses of one evening, 21 Sep 26 (D13), and why the lapse is misclassifying, not forgetting — is kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
+The story behind this rule — two misses of one evening, 21 Sep 26 (D13, D137), and why the lapse is misclassifying, not forgetting — is kept whole in `raptor-port/docs/guide-full.md` §Write his rulings down at the moment (D1556).
 
 ## The rule
 
@@ -26,7 +26,7 @@ beside the ruling there** (the gate fails a new row whose Markdown home never me
 The rulings list is an INDEX, never the only home. A ruling recorded only there is still lost,
 because nobody reads an index while building. The home is the document the next session will
 actually open: the behaviour register, `engine-rules.md`, `ui-contracts.md`, the standing order,
-the area file, or `raptor-port/CLAUDE.md` if EVERY task needs it (`doc-structure.md`). **Never `OUTSTANDING.md` alone** (D29 rule 2, 23 Sep 26): the backlog
+the area file, or `raptor-port/CLAUDE.md` if EVERY task needs it (`doc-structure.md`). **Never `OUTSTANDING.md` alone** (D29 rule 2, 23 Sep 26; D137): the backlog
 is where finished work leaves from, so a ruling homed only there is one archive pass from lost.
 
 **Put it where it BELONGS, not where you happen to be working.** That is the specific error both
@@ -49,7 +49,7 @@ misses shared.
 ## When a ruling overwrites another — fix what it leaves behind (D201, 26 Sep 26)
 
 **Owner:** *"every new ruling if it overwrites the old ones make sure u fix the things u mentioned."* The later ruling wins
-(D90) — but the older one lives on in every file that still states it, in the app that still does it, and by its absence
+(D90, D201) — but the older one lives on in every file that still states it, in the app that still does it, and by its absence
 from the lists that should carry the new one. Nobody reading those later knows the rule changed. So, **in the same change
 that records the ruling**:
 1. **The documents.** Search for the rule's SUBJECT (the thing it governs — "own row", "change history", "OIL award"), not
@@ -59,7 +59,7 @@ that records the ruling**:
 3. **The lists.** Add the ruling to every list it belongs in that does not carry it (the permissions table, a register).
 
 The new row's "Where it lives now" names what was fixed and what was filed. A change inside `raptor-port/src` still never
-trims a document (D29) — a correction is not a trim.
+trims a document (D29, D137) — a correction is not a trim.
 
 ## If you notice a ruling you never recorded
 
@@ -77,7 +77,7 @@ next job. Every one of those records was correct and current.
 open choice.** It answered from a CODE COMMENT that had gone stale the same afternoon. He had to
 ask three times before it searched the record.
 
-**Owner, 22 Sep 26 (D53):** *"God dam why u need me to tell u 3 times to find the mock up? Is it because
+**Owner, 22 Sep 26 (D53, D137):** *"God dam why u need me to tell u 3 times to find the mock up? Is it because
 u didn't save this to outstanding?"* — the answer was no. Saving was never the problem.
 
 ### The check
@@ -85,8 +85,8 @@ u didn't save this to outstanding?"* — the answer was no. Saving was never the
 **Before you tell him something is undecided, before you put ANY choice to him, and before you call
 anything missing or unbuilt: search the rulings and the backlog** — `.claude/rules/decisions/` (every
 area, not only the ones loaded: an area loads only when one of its files is READ, so a notes-only or
-design session has none of them), **the full rows in `.claude/decisions-full/`** (a short line is the rule; his
-words, its conditions and its readings are only there — D390), `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`. Not
+design session has none of them), **the full rows in `.claude/decisions-full/`** (a short line — or a page's line once its area converts — is the rule; his
+words, its conditions and its readings are only there — D390, D1735), `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`. Not
 the code. Not the specs folder. Those, by keyword, every time — with the SHELL's grep: the Grep tool prints
 "[Omitted long matching line]" for a full row, and a search that returned no text is not a read. It costs one search.
 
