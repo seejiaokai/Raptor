@@ -299,6 +299,12 @@ readers' cheaper path: the reads by section and the moves bring most of the savi
 | 5b | Inputs, scheduler, Leave War — **a few screens per chat**, each with its own account and its own fresh reader; for the scheduler, his choice first between a page and splitting its "Settled" sections by screen with `--move-rows` (D611's mark is crossed; D976 kept one file) | as 5a; Astra if he calls (recommended, §8) | Inputs 2, scheduler 4–5, Leave War 4–5 |
 | 6 | The final measure, before and after, to him | `docsize --reads`, and the status line's fullness on his PC | — |
 
+**Astra too, on every reworded step (his D1739, 7 Nov 26 — "for the risky parts u call Astra in as well"):** every step
+above that rewrites, shortens or summarises a rule — step 2's short texts, step 3's checklists, step 4's page and
+checklists, every page of step 5 — is read by Astra as well as by the fresh Opus reader, each blind to the other, for
+whether any meaning changed (it widens D1738 beyond 5b). Text moved whole and step 1's checks and scripts keep the one
+fresh Opus reader (D1736). If Astra cannot run, he is told before the step goes on.
+
 About 21 to 23 chats (v2: 17 to 19 — v3 adds the scripts' both-shape tests, OIL as a full trial and the accounts by
 requirement). Part 1's middle column is steps 1–4 in this order. Two to four steps share a branch where they touch one kind of file (D1087); **every step merges on
 his "merge live"** — the rulings files count as notes under D1407, so the approving ruling says they wait. **Parallel

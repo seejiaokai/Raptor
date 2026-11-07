@@ -16,7 +16,8 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
-| D1738 | 7 Nov 26 | Each converted page of the Inputs, scheduler and Leave War rulings is read by Astra as well as by the fresh Opus reader, each blind to the other — his call for those pages, made now (D1734). |
+| D1739 | 7 Nov 26 | Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page — is read by Astra as well as by the fresh Opus reader, each blind to the other, for whether any meaning changed; his call for those steps, made now (D1734). |
+| D1738 | 7 Nov 26 | Each converted page of the Inputs, scheduler and Leave War rulings is read by Astra as well as by the fresh Opus reader, each blind to the other — his call for those pages, made now (D1734). — changed by D1739 |
 | D1737 | 7 Nov 26 | Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes included. |
 | D1736 | 7 Nov 26 | His permission to change, for the rules diet, the document check, the ruling scripts, the per-message ruling hook and the skill-notes start hook — each tested, the check's self-test gaining a case for each new check, and read by one fresh reader before it is switched on. |
 | D1735 | 7 Nov 26 | The rules diet's plan v3 is approved: each area's rulings become a page of how it works now, every live ruling cited on a line of a file that loads, its full row kept whole and searched; the bug-check order, design guide and ripple map are read by section from checklists naming when; D141 stands. |
