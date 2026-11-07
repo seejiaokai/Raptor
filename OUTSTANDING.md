@@ -196,7 +196,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
-- [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
+- [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
+- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
@@ -215,7 +216,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
-- [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
+- [DOC-POINTERS-CODE] — four code comments still point at documents moved in the spring clean: in the rules engine and in pull request 664's files, each with its next change; one to read against D338.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -271,6 +272,19 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
+**What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code
+(not the rules engine, not tests). **(1) 13 import cycles**, every one through `raptor-port/src/state/people-settings-commit.ts`
+(with `accounts.ts`, `roster-add.ts`, `noticeseen.ts`, `flyplan.ts`, and `command/actor.ts` → `auth.ts` → `perms.ts` →
+`accounts.ts`). A cycle cannot be kept with a reason on a line, so it is broken or it stays counted. The app starts and every
+test passes, so none reads a value before it is set today; the risk is a later import that does. **To do:** find which of
+its functions each importer takes, and move those to a file with no app imports, as the save indicator's source was moved
+to `ui/savestatus-source.ts` — a change to saved data's path, so its own check (tier WALK at least). **(2) 18 in files outside
+that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `ui/DateCal.tsx` 2, `ui/MedicalView.tsx` 2,
+`ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
+lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
+D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -424,6 +438,14 @@ review placed before the database step; (6) the reader's test set from §7.11's 
 it once; (7) the way back: putting the previous live version back on Vercel, checked on his plan, written for him (the page's improvement 7 — not one of his five rulings; the agent's own step, as is its "circuit breaker", which is not built without his word).
 **For the full security review, from M4's security read (27 Oct 26 — `raptor-port/docs/handpass/parts/lw-m4/security-read.md` §Lower):** (a) older than M4 — on an open day of his own row a member's command may write a war record of ANY kind, an OIL credit (`{kind:'credit', code:'FO', oil:'auto'}`) among them, and the war adds such credits up (`dayview.ts earnsOil`); whether the schedule's credit pass rewrites a forged one was not confirmed; (b) one admin can write another admin's Approvals marker (`apprseen:`), the same pattern as the `reqseen:` row — no fix, a note; (c) a member's notice text is never compared with what his change did (a line about his own input that misdescribes it) — the war's line kinds are refused since M4.
 **For the full security review, from the Inputs batch's fix-round read (3 Nov 26 — [INPUTS-FIXES-1103], `raptor-port/docs/handpass/2026-11-03-inputs-batch-check.md` §13):** a member's new input counts as a piece of a record his same command changed when it carries that record's filer and filing time (`state/perms.ts inputBreach`), and a piece carries the record's scheduler marks; so a hand-made new input that copies them can wear a LATE drop or a cancel it was never given. Every record the app makes is held; the server should know a piece's lineage itself, not read it from those two fields.
+**For the full security review, from the security read of React Doctor on the shell and the state (8 Nov 26 —
+`raptor-port/docs/handpass/parts/rss1108/read-security.md`, both "before this change"):** (a) for any man whose posting the
+pass marks done, the posting pass may change his existing account row in every field but its person, role and name, or
+delete it, whatever the outcome — SANS and a posting with no outcome included, neither of which writes an account row
+(`state/perms.ts postingPassViolation`, the account branch); only the app's own `lw.postoutRun` reaches it, so it is the
+database rule's to narrow ([SERVER-SIDE-PASSES]); (b) the medical document's PDF frame (`ui/DocViewer.tsx`) is not
+sandboxed — true and safe today (filing takes only PDFs and pictures, and the frame shows the browser's own copy); once
+documents come from a shared store, the type the frame is served must be pinned to the kind stored.
 **For the full security review, from the posting-out bell line's reads (5 Nov 26 — `raptor-port/docs/handpass/parts/pb1105/read-security.md` 1 fix 2, 2; `read-fixes.md` 1, 2):** the posting pass's gate (`state/perms.ts postingPassViolation`) asks its people, settings, posting and notice rows but not its schedule, input or planning rows — allow those only where the pass deletes (exempting the id housekeeping's own `rid`/`iid`/`ord`-only changes, or a real pass is refused), and a line's `at` and unknown keys; and a stray schedule change in memory is taken in by the pass, not put back (`revertUnsavedSched`, the roster's twin). The browser route is closed by the pass's resync; these are the database rule's.
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
@@ -1492,6 +1514,16 @@ deliberately slow storage.
 
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
+**Narrowed 8 Nov 26** (`claude/rd-shell-state`, evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`): every pointer listed below now
+names its new home, and `raptor-port/src/ui/board.ts` and `inputedit.tsx` were re-pointed in that job. **Four are left**, in
+files that job could not touch: `raptor-port/src/engine/canonical.ts:35` ("CLAUDE.md §Drag-reordering" →
+`.claude/rules/decisions/scheduler.md` §Drag-reordering) — the engine changes only for a behaviour change (D1537), so with
+the next one; `raptor-port/src/ui/weekglide.ts:45` ("CLAUDE.md §Week navigation" → `scheduler.md` §Week navigation &
+cross-week continuity) and `raptor-port/src/ui/SchedBoard.tsx:607` ("CLAUDE.md §the phone board is ONE window" →
+`raptor-port/docs/ui-contracts.md` §The board on a phone is ONE window) — both files of pull request 664, with their next
+change; and `raptor-port/src/ui/pendlist.ts:16`, whose pointer still lands (`raptor-port/CLAUDE.md` §What actually persists)
+but which says the edit log is kept only while the page is open — read it against D338 (the change history outlives a
+reload) before changing a word.
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
 check run on his PC (D89, D151), which a docs pass must not do. Every one of these still LANDS today, through a
 signpost or an index left at the old place, so none is urgent; each should name the new home directly:
@@ -2152,7 +2184,7 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 ### [ONE-RULE-LEFTOVERS] Three housekeeping jobs the one-rule job’s last step did not reach (filed 13 Oct 26) — OPEN, low
 
-**Not faults — nothing a person sees.** Named in that job’s handoff as "step 8’s leftovers" and carried, not done, by the `[OIL-ASK-NOTIFY]` chat (its check was closing: a code change after the walked build would have been a change nobody walked). (1) The behaviour register’s 55 proposed ids (`raptor-port/docs/handpass/parts/or-step8-register.md`) are not wired into the tests’ names or `raptor-port/scripts/rulecheck.mjs`, so the rule check does not yet fail when one loses its test. (2) **DONE 13 Oct 26 with the Inputs batch** (`raptor-port/docs/handpass/2026-10-13-inputs-batch.md`): `PendItem.mates` and its three readers in `raptor-port/src/ui/pendlist.ts` are removed. (3) Four comments that name removed code — `raptor-port/src/ui/drag.ts` near "ONE OF A SHARED INPUT’S MEN" and the seat branch below it, `raptor-port/src/ui/inputedit.tsx` near the OIL ask’s reader and `askOilIfPending`’s callers (the handoff of 12 Oct 26 gave line numbers that have since moved: read each against the code beside it). **Place:** the agent’s — with the next Inputs / schedule batch (D490).
+**Not faults — nothing a person sees.** Named in that job’s handoff as "step 8’s leftovers" and carried, not done, by the `[OIL-ASK-NOTIFY]` chat (its check was closing: a code change after the walked build would have been a change nobody walked). (1) The behaviour register’s 55 proposed ids (`raptor-port/docs/handpass/parts/or-step8-register.md`) are not wired into the tests’ names or `raptor-port/scripts/rulecheck.mjs`, so the rule check does not yet fail when one loses its test. (2) **DONE 13 Oct 26 with the Inputs batch** (`raptor-port/docs/handpass/2026-10-13-inputs-batch.md`): `PendItem.mates` and its three readers in `raptor-port/src/ui/pendlist.ts` are removed. (3) **DONE 8 Nov 26 on `claude/rd-shell-state`** (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md` — each re-worded to the code beside it, and the job's blind read found each true): four comments that named removed code — `raptor-port/src/ui/drag.ts` near "ONE OF A SHARED INPUT’S MEN" and the seat branch below it, `raptor-port/src/ui/inputedit.tsx` near the OIL ask’s reader and `askOilIfPending`’s callers (the handoff of 12 Oct 26 gave line numbers that have since moved: read each against the code beside it). **Place:** the agent’s — with the next Inputs / schedule batch (D490).
 
 ### [IT-GUIDE-DATEBOX-SCRIPT] The IT flow guide's picture script still types into two date boxes that are buttons now (found 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`) — OPEN
 

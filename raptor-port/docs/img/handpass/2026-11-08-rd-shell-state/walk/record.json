@@ -1,0 +1,564 @@
+{
+ "before": {
+  "w1desk": {
+   "day details · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "day details · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "day details · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Traffic · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Traffic · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Traffic · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Insights · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Insights · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Insights · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Day templates · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Day templates · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Day templates · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Plans · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Plans · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Plans · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Jump to a date · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Jump to a date · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Jump to a date · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   }
+  },
+  "w2": {
+   "afterCategoryLabel": "BODY",
+   "afterWhatHappenedLabel": "BODY",
+   "sendNote": "Report sent — thank you",
+   "listed": "INPUTS & CALENDAR 14/7 09:30 · Saber The walk of 8 Nov 26: a report sent from Help.",
+   "errors": []
+  },
+  "w3": {
+   "planNote": "Monday — \"Plan B\" is now the live day, edit over it",
+   "planLabel": "Plan B\n▾",
+   "oilQuestion": "OIL: Saber, Duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add",
+   "oilAnswer": "Yes: credit FO",
+   "oilSave": "Add",
+   "inputNote": "",
+   "windowsLeft": [],
+   "undoTitle1": "Undo — Saber’s Duty",
+   "undoNote": "Undid: Saber’s Duty",
+   "redoTitle1": "Redo — Saber’s Duty",
+   "redoNote": "Redid: Saber’s Duty",
+   "undoTitle2": "Undo — Saber’s Duty",
+   "changes": "⠿ Changes · week of 13/7 4 changes this week ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sat · The day · 2 09:30 Redo — Saber’s Duty Saber · 14/7 09:30 Undo — Saber’s Duty Saber · 14/7 09:30 Sat · Input · Saber · Duty Saber · 14/7 09:30 Duty added · 18 Jul (on the programme) Mon · The day Saber · 14/7 09:30 Plan \"Plan B\" created — a copy of the day as it stood Tap a change to go to it — the window stays open.",
+   "bell": "Nothing new",
+   "export": {
+    "name": "142-schedule.csv",
+    "bytes": 4506
+   },
+   "planLabelAfterReload": "Plan B\n▾",
+   "dayAfterReload": "⠿ Sat 18 Jul + Note ✕ + Input 1 INPUT LATE 06:00–18:00 SaberDUTY",
+   "errors": []
+  },
+  "w4": {
+   "ATT B docconf": "No medical document — Hunter, ATT B ✕ THIS ATT B HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+   "medclashOpen": true,
+   "medclash": "ATT B — Hunter, 14 Oct ✕ A DAY HOLDS ONE STATUS: CHOOSE WHO HOLDS THESE DAYS ATT C 13 Oct – 15 Oct · both cover 14 Oct ATT B replaces Left over after it: ATT C 15 Oct — will be removed Remove those days Keep them Cancel Save",
+   "medclashClosedByX": true,
+   "Upchit docconf": "No medical document — Hunter, Upchit ✕ THIS UPCHIT HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+   "upconfOpen": true,
+   "upconf": "Upchit — Hunter, Oct 14 ✕ SAVING THIS UPCHIT WILL ATT C Oct 13 – Oct 15 → now ends Oct 13 Fit for full duty from Oct 14. STILL ON FILE AFTER IT — CHOOSE FOR EACH ATT B Oct 17 – Oct 18 Keep Remove Cancel Save upchit",
+   "upconfClosedByX": true,
+   "viewerOpen": true,
+   "viewer": "Saber · ATT C · Jul 15 ✕ medically down — cannot report to work Placed by Saber · 14 Jul 26, 09:30 Edit input Close",
+   "viewerClosedByEscape": true,
+   "viewerClosedByX": true,
+   "viewerOutside": "shade",
+   "viewerClosedOutside": true,
+   "errors": []
+  },
+  "w1phone": {
+   "day details · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "day details · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "day details · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Traffic · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Traffic · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Traffic · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Insights · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Insights · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Insights · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Day templates · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Day templates · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Day templates · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Plans · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Plans · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Plans · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Jump to a date · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Jump to a date · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Jump to a date · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "side menu · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "side menu · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   }
+  }
+ },
+ "after": {
+  "w1desk": {
+   "day details · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "day details · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "day details · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Traffic · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Traffic · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Traffic · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Insights · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Insights · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Insights · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Day templates · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Day templates · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Day templates · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Plans · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Plans · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Plans · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Jump to a date · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Jump to a date · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Jump to a date · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   }
+  },
+  "w2": {
+   "afterCategoryLabel": "bugCat",
+   "afterWhatHappenedLabel": "bugText",
+   "sendNote": "Report sent — thank you",
+   "listed": "INPUTS & CALENDAR 14/7 09:30 · Saber The walk of 8 Nov 26: a report sent from Help.",
+   "errors": []
+  },
+  "w3": {
+   "planNote": "Monday — \"Plan B\" is now the live day, edit over it",
+   "planLabel": "Plan B\n▾",
+   "oilQuestion": "OIL: Saber, Duty ✕ This input falls on Sat 18 Jul, a non-working day (weekend/PH). Does it deserve FO, a full day of OIL? Yes: credit FO No OIL Back Add",
+   "oilAnswer": "Yes: credit FO",
+   "oilSave": "Add",
+   "inputNote": "",
+   "windowsLeft": [],
+   "undoTitle1": "Undo — Saber’s Duty",
+   "undoNote": "Undid: Saber’s Duty",
+   "redoTitle1": "Redo — Saber’s Duty",
+   "redoNote": "Redid: Saber’s Duty",
+   "undoTitle2": "Undo — Saber’s Duty",
+   "changes": "⠿ Changes · week of 13/7 4 changes this week ✕ New to you 0 All changes 4 Week Mon Tue Wed Thu Fri Sat Sun GROUP BY Item Who ▾ Sat · The day · 2 09:30 Redo — Saber’s Duty Saber · 14/7 09:30 Undo — Saber’s Duty Saber · 14/7 09:30 Sat · Input · Saber · Duty Saber · 14/7 09:30 Duty added · 18 Jul (on the programme) Mon · The day Saber · 14/7 09:30 Plan \"Plan B\" created — a copy of the day as it stood Tap a change to go to it — the window stays open.",
+   "bell": "Nothing new",
+   "export": {
+    "name": "142-schedule.csv",
+    "bytes": 4506
+   },
+   "planLabelAfterReload": "Plan B\n▾",
+   "dayAfterReload": "⠿ Sat 18 Jul + Note ✕ + Input 1 INPUT LATE 06:00–18:00 SaberDUTY",
+   "errors": []
+  },
+  "w4": {
+   "ATT B docconf": "No medical document — Hunter, ATT B ✕ THIS ATT B HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+   "medclashOpen": true,
+   "medclash": "ATT B — Hunter, 14 Oct ✕ A DAY HOLDS ONE STATUS: CHOOSE WHO HOLDS THESE DAYS ATT C 13 Oct – 15 Oct · both cover 14 Oct ATT B replaces Left over after it: ATT C 15 Oct — will be removed Remove those days Keep them Cancel Save",
+   "medclashClosedByX": true,
+   "Upchit docconf": "No medical document — Hunter, Upchit ✕ THIS UPCHIT HAS NO CERTIFICATE ATTACHED. Attach one now, or file it without — for when the record genuinely isn’t available yet. No document Upload",
+   "upconfOpen": true,
+   "upconf": "Upchit — Hunter, Oct 14 ✕ SAVING THIS UPCHIT WILL ATT C Oct 13 – Oct 15 → now ends Oct 13 Fit for full duty from Oct 14. STILL ON FILE AFTER IT — CHOOSE FOR EACH ATT B Oct 17 – Oct 18 Keep Remove Cancel Save upchit",
+   "upconfClosedByX": true,
+   "viewerOpen": true,
+   "viewer": "Saber · ATT C · Jul 15 ✕ medically down — cannot report to work Placed by Saber · 14 Jul 26, 09:30 Edit input Close",
+   "viewerClosedByEscape": true,
+   "viewerClosedByX": true,
+   "viewerOutside": "shade",
+   "viewerClosedOutside": true,
+   "errors": []
+  },
+  "w1phone": {
+   "day details · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "day details · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "day details · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Traffic · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Traffic · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Traffic · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Insights · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Insights · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Insights · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Day templates · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Day templates · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Day templates · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Plans · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Plans · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Plans · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "Jump to a date · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "Jump to a date · x": {
+    "opened": true,
+    "closed": true,
+    "how": "x",
+    "errors": []
+   },
+   "Jump to a date · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   },
+   "side menu · Escape": {
+    "opened": true,
+    "closed": true,
+    "how": "Escape",
+    "errors": []
+   },
+   "side menu · outside": {
+    "opened": true,
+    "closed": true,
+    "how": "outside on shade",
+    "errors": []
+   }
+  }
+ }
+}

@@ -522,7 +522,7 @@ function keepIdsOnTheirDays(): void {
   for (const [id, days] of where) {
     if (days.size < 2) continue
     before ??= schedRecords()
-    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each day's own short list of people, read once for one man: a Set built for it would be read once too
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each day's own list of row ids, made fresh and searched once for one id (only for an id found on two days): a Set built for it would be read once too
     const keeper = [...days].find(di => idsOf(before!.get(`days/${CURWEEK}#${di}`)?.value).includes(id))
     if (keeper == null) continue                                  // no day held it before: the first-seen rule stands
     for (const di of days) {

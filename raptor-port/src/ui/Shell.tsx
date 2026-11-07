@@ -85,7 +85,7 @@ import { globalUndoEngine, trackerUndoEngine, useTrackerUndoVersion, fastSync } 
    a changed setting is not flagged on the schedule); the #vBanner/#eBanner holders
    went with it. The Logic page's own strip still says how many settings differ. */
 
-/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26) — one definition,
+/* The HL_CHIPS lists moved to ui/hlchips.tsx (23 Aug 26), and on 8 Nov 26 to ui/hlchips-model.ts — one definition,
    three surfaces (view week, edit week, board), the drift-seam doctrine. */
 
 // eslint-disable-next-line react-doctor/no-high-complexity-react-function, react-doctor/no-giant-component -- the app's frame: the top bar, its tabs, the two schedule pages and the windows over them share one set of state, refs and effects; split, the hooks and the order their effects run in would move, on the frame every page sits in

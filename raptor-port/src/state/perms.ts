@@ -1054,7 +1054,10 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
   for (const c of env.changes) {
     if (c.collection === 'people') {
       const outcome = posted.get(String(c.id))
-      const fields = outcome ? PASS_FIELDS[outcome] : undefined
+      /* only the three outcomes the app writes have a list: an outcome is any string its posting record carries, and one
+         named as something every object has ("toString", "constructor") found a function on the plain object, not a list
+         — the check threw instead of refusing (the reads of 8 Nov 26, `docs/handpass/parts/rss1108/read-security.md`) */
+      const fields = outcome && Object.prototype.hasOwnProperty.call(PASS_FIELDS, outcome) ? PASS_FIELDS[outcome] : undefined
       const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
       if (!fields || !b || !f) return refuse(c)
       const may = new Set(fields)

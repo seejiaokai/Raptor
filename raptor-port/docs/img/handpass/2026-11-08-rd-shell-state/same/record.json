@@ -537,19 +537,72 @@
   "before": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "before-again": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "after": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "self": {
@@ -917,36 +970,26 @@
    "errors": []
   },
   "self": {
-   "same": false,
-   "share": 9.487269981139307e-7,
-   "pixels": 3,
-   "where": [
-    164,
-    485,
-    543,
-    1448
-   ],
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
    "size": [
     1206,
     2622
    ]
   },
   "diff": {
-   "same": false,
-   "share": 9.487269981139307e-7,
-   "pixels": 3,
-   "where": [
-    164,
-    485,
-    543,
-    1448
-   ],
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
    "size": [
     1206,
     2622
    ]
   },
-  "verdict": "NOISE"
+  "verdict": "SAME"
  },
  "phone-drawer": {
   "before": {
@@ -1338,54 +1381,97 @@
    "errors": []
   },
   "self": {
-   "same": false,
-   "share": 3.1624233270464355e-7,
-   "pixels": 1,
-   "where": [
-    218,
-    1301,
-    218,
-    1301
-   ],
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
    "size": [
     1206,
     2622
    ]
   },
   "diff": {
-   "same": false,
-   "share": 3.1624233270464355e-7,
-   "pixels": 1,
-   "where": [
-    218,
-    1301,
-    218,
-    1301
-   ],
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
    "size": [
     1206,
     2622
    ]
   },
-  "verdict": "NOISE"
+  "verdict": "SAME"
  },
  "phone-save-failed": {
   "before": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "before-again": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "after": {
    "reached": true,
    "why": "",
-   "open": [],
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-save-failed-retry": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "open": [
+    ".savestat.failed"
+   ],
    "errors": []
   },
   "self": {
