@@ -52,8 +52,9 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
 ## Ship once per session, at the end (10 Aug 26) — moved whole to `raptor-port/docs/archive/rule-files-2026-11-02.md` (D1556); its live points are in "The loop" and "The checks" (D1086, D1087)
 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
-- **On his "merge live" (D1088, 20 Oct 26):** push the job's closing records, wait for that one GitHub run, merge once
-  it is green, then confirm the live app as below — nothing else is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
+- **On his "merge live" (D1742, 7 Nov 26, replacing D1088):** the job's closing records were pushed before his look was
+  asked for, written to be true once it is live; merge at once if the run on the last pushed commit is green, then
+  confirm the live app as below — nothing is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
   watching, never twice for the same work. **Since D1097 (21 Oct 26): every stop that waits on him** — the work done
