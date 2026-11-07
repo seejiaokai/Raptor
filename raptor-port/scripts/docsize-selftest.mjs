@@ -839,6 +839,36 @@ gitRulings('a ruling the short-line branch spent, merged into the page branch, i
 gitRulings('…the page merged into the short-line branch (F4)', true, pageVsOld('old', spendD6), (c, r) => placed(r, /D6[^\n]*retired on your branch[^\n]*take it off the page \(line \d+\)/) ? '' : 'not listed')
 gitRulings('a ruling the short-line branch moved out, the page merged into it, is listed to move (F4)', true, pageVsOld('old', moveD5), (c, r) => placed(r, /D5[^\n]*moved to general\.md on your branch[^\n]*\(line \d+\)/) ? '' : 'not listed')
 gitRulings('…the short-line branch merged into the page branch: MOVE ON THE PAGES names the line (F4)', true, pageVsOld('page', moveD5), (c, r) => /MOVE ON THE PAGES[\s\S]*other\.md line \d+ \(## The rules\) states D5, now of general\.md/.test(r.stdout) ? '' : 'not printed')
+/* the second reader's finding (7 Nov 26): a new area made a page on one side WITH A RULING MOVED ONTO IT, that ruling
+   changed on the other side since the base — merged each way, the change is listed to place on the page, never stopped
+   on for a short line the page side does not have, and never sent to REWRITE as if it had one */
+const movedOnto = (into, mainWork) => (c, g, run) => {
+  g('checkout', '-q', '-b', 'a'); withFourth(c, fourthPage({ topic: ['- Rule eleven holds on every screen of the fourth area [D11].', '- Rule a holds on every screen of the fourth area as well [D1].'], from: [] }))
+  const r0 = run('--rulings', '--move-rows', 'D1', '--to', 'fourth'); if (r0.status !== 0) throw new Error('the move onto the new page did not run clean: ' + r0.stdout + r0.stderr); c.commit('a: a new area made a page, D1 moved onto it')
+  g('checkout', '-q', 'main'); mainWork(c, run); c.commit('main changes D1')
+  mergeIn(g, into, into === 'a' ? 'main' : 'a'); return run('--rulings', '--merge')
+}
+const markD1r = (c, run) => { narrowD1(c); const r = run('--rulings'); if (r.status !== 0) throw new Error(r.stdout + r.stderr) }
+const rewordD1 = c => c.edit(FULL, t => t.replace('**Rule a.** a |', '**Rule a.** a, reworded on main |'))
+const rewordD1both = c => { c.edit(FULL, t => t.replace('**Rule a.** a |', '**Rule a, on main.** a |')); c.edit(AREA, t => t.replace(shortRow('D1', 'a'), shortRow('D1', 'a, on main'))) }
+const noShortD1 = c => has(c, AREA, '| D1 |') ? 'a short line for D1 came back to general.md' : ''
+const notStoppedOnShort = r => /short line was changed on both sides/.test(r.stderr) ? 'it stopped on a short line the page side does not have' : ''
+gitRulings('a ruling moved onto a new page, marked on main, main merged into the page branch: listed, the gate then names the mark', false, movedOnto('a', markD1r), (c, r) =>
+  notStoppedOnShort(r) || (!/WRITTEN/.test(r.stderr) ? 'the merge was not written' : !has(c, FOURTH_FULL, 'NARROWED 22 Sep 26 BY D2') ? 'main\'s mark did not reach D1\'s full row' : !placed(r, /fourth\.md: D1[^\n]*short line changed on the branch being merged in/) ? 'the short-line change was not listed to place on the page' : !/does not cite D2/.test(r.stdout + r.stderr) ? 'the missing change mark was not named' : noShortD1(c)))
+gitRulings('…its full row reworded on main: listed to read against, never sent to REWRITE', true, movedOnto('a', rewordD1), (c, r) =>
+  /REWRITE[\s\S]*D1 —/.test(r.stdout) ? 'it was sent to REWRITE, which reads a short line it does not have' : !placed(r, /fourth\.md: D1[^\n]*full row changed on the other side[^\n]*\(line \d+\)/) ? 'the reworded row was not listed with its page line' : !has(c, FOURTH_FULL, 'a, reworded on main') ? 'main\'s rewording was lost' : noShortD1(c))
+gitRulings('…its short line and full row reworded on main: listed, not stopped', true, movedOnto('a', rewordD1both), (c, r) =>
+  notStoppedOnShort(r) || (!placed(r, /fourth\.md: D1[^\n]*short line changed on the branch being merged in[^\n]*Rule a, on main/) ? 'the short-line change was not listed' : !has(c, FOURTH_FULL, '**Rule a, on main.**') ? 'main\'s rewording was lost' : noShortD1(c)))
+const changedHere = /fourth\.md: D1[^\n]*changed on your branch since the base, and moved onto this page on the branch being merged in[^\n]*\(line \d+\)/
+gitRulings('…the page branch merged into main, D1 marked on main: listed, the gate then names the mark', false, movedOnto('main', markD1r), (c, r) =>
+  !/WRITTEN/.test(r.stderr) ? 'the merge was not written' : !placed(r, changedHere) ? 'main\'s change was not listed against the page line' : !/does not cite D2/.test(r.stdout + r.stderr) ? 'the missing change mark was not named' : noShortD1(c))
+gitRulings('…the page branch merged into main, D1\'s full row reworded on main: listed against the page line', true, movedOnto('main', rewordD1), (c, r) =>
+  !placed(r, changedHere) ? 'main\'s rewording was not listed against the page line' : !has(c, FOURTH_FULL, 'a, reworded on main') ? 'main\'s rewording was lost' : noShortD1(c))
+gitRulings('…the page branch merged into main, D1\'s short line and full row reworded on main: listed', true, movedOnto('main', rewordD1both), (c, r) =>
+  !placed(r, changedHere) ? 'main\'s rewording was not listed against the page line' : !has(c, FOURTH_FULL, '**Rule a, on main.**') ? 'main\'s rewording was lost' : noShortD1(c))
+/* the second reader's side note: the map row of an area taken whole is inserted, so it is never offered again to re-apply */
+gitRulings('a new area\'s map row, carried by the merge, is not printed again under RE-APPLY BY HAND', true, newAreaPage('main'), (c, r) =>
+  /RE-APPLY BY HAND[\s\S]*fourth\.md/.test(r.stdout) ? 'the carried map row is offered again to re-apply' : newAreaOk(c))
 
 /* docsize --reads (owner, D1735 — the rules diet's step 1, part 3c; plan §1, §5): what a chat reads, followed through
    the rules files' paths: until nothing new loads, each file counted once, in the first column that loads it. Run on a

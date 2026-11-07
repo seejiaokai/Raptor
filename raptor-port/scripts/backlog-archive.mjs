@@ -95,6 +95,8 @@ if (args.includes('--rulings')) {
   const rewriteList = [], unread = [], reapply = [], classify = [], pageMoves = [], placeOnPage = [], byHand = []
   /* --merge: an area file that is a page on either side → 'theirs' | 'ours' | 'both' (read where it is set, below) */
   const pageMode = new Map()
+  /* --merge: a rulings file only the other side has (a new area it created), started from its own text — whole */
+  const takenWhole = new Set()
   const given = new Map(), carried = new Set()
   /* a temporary copy left by a run that was killed between its renames is the only copy of what it was writing: never
      overwrite it (Astra's verification) — the chat looks at it, keeps what it needs, deletes it, and runs again */
@@ -123,7 +125,6 @@ if (args.includes('--rulings')) {
     for (const f of paths(newRef)) setText(f, show(newRef, f))
     /* a rulings file only the other side has (a new area it created) starts from its own text — whole, so its rows and
        its prose are already here, never inserted or reported a second time (Astra and Fable's code reads) */
-    const takenWhole = new Set()
     const state = ref => {
       const full = new Map(), short = new Map(), arch = new Map(), prose = new Map()
       for (const f of paths(ref)) {
@@ -212,6 +213,10 @@ if (args.includes('--rulings')) {
       if (w != null && RL.isPage(w) && !/^(?:<{7}|>{7}|\|{7})(?: |\r?$)|^={7}\r?$/m.test(w)) { setText(f, w); byHand.push(f); continue }
       conflicts.push(converted2 ? `${f} was converted to a page on both sides since the base — keep one side's page in the file itself (${f}), write the other's statements into it, remove git's markers, then run this again` : m.conflict)
     }
+    /* an area file only one side holds that is a page — a new area made directly as a page, perhaps with rulings moved
+       onto it (the step-1 reader's F3 and the second reader's finding): taken whole from the other side it is that
+       side's page ('theirs'), held here only it is this side's ('ours'), so every route below reads it as a page */
+    for (const f of files.keys()) if (f.startsWith(DIR + '/') && !pageMode.has(f) && RL.isPage(textOf(f) || '')) pageMode.set(f, takenWhole.has(f) ? 'theirs' : 'ours')
     /* 'theirs': what this side changed in the area since the base — its rows already sit in the full-text file */
     const label = (d, s, l) => { const t = s ? RL.parseShort(s).text : l ? RL.headingOf(RL.cellsOf(l)) : null; return t ? `${d} ("${cut(t)}")` : d }
     for (const [f, mode] of pageMode) {
@@ -273,7 +278,8 @@ if (args.includes('--rulings')) {
       /* live on all three sides: its text and its area are each taken from the side that changed them (this branch
          moving a row to People & accounts and a parallel branch marking it are two different changes, not a clash) */
       if (o.line !== b.line) { if (n.line === b.line) merge.replaceFull.push({ d, line: o.line, was: n.line }); else if (n.line !== o.line) { clash('had its row changed on both sides'); continue } }
-      if (o.area !== b.area) { if (n.area === b.area) merge.moveArea.push({ d, to: o.area }); else if (n.area !== o.area) clash('was moved to different areas on the two sides') }
+      /* a move made there of a ruling changed here: if it lands on a page, that page states it as it was (second reader) */
+      if (o.area !== b.area) { if (n.area === b.area) merge.moveArea.push({ d, to: o.area, changed: n.line !== b.line || N.short.get(d)?.l !== B.short.get(d)?.l, here: newName, there: otherName }); else if (n.area !== o.area) clash('was moved to different areas on the two sides') }
     }
     /* a short line changed on the other side (both sides in the new layout): three-way too */
     for (const [d, os] of O.short) {
@@ -302,7 +308,9 @@ if (args.includes('--rulings')) {
       if (takenWhole.has(f)) continue
       /* a page is never re-applied as prose: the other side's lines in an area that is a page here are listed to place */
       if (pageMode.has(f)) { if (pageMode.get(f) === 'ours') listProse(f, otherName, proseDiff(B.prose.get(f)?.mine, o.mine)); continue }
-      const { added, removed } = proseDiff(B.prose.get(f)?.mine, o.mine)
+      const d0 = proseDiff(B.prose.get(f)?.mine, o.mine), removed = d0.removed
+      /* the map row of an area taken whole is already carried above: never offered again (the second reader's side note) */
+      const added = f === DEC ? d0.added.filter(l => ![...takenWhole].some(t => l.includes('`' + t + '`') && files.get(DEC).ls.some(x => x.includes('`' + t + '`')))) : d0.added
       if (added.length || removed.length) reapply.push(`${f} (its whole text on that side: git show ${otherRef.slice(0, 12)}:${f}):${removed.map(l => `\n      − ${l}`).join('')}${added.map(l => `\n      + ${l}`).join('')}`)
     }
   }
@@ -404,7 +412,11 @@ if (args.includes('--rulings')) {
     if (sh0 && RL.parseShort(sh0.line).text === hb && ho !== hb && !RL.headingProblem(r.d, ho)) { const p = RL.parseShort(sh0.line); replaceRow(r.d, 'short', RL.shortLine(r.d, p.date, ho, p.tail)); unread.push(r.d) }
     else rewriteList.push(`${r.d} — its full row changed on the other side; read its short line against it and rewrite the line if it no longer states the rule in force`)
   }
-  for (const m of merge.moveArea) moveRows([m.d], m.to.replace(/\.md$/, ''))
+  for (const m of merge.moveArea) {
+    moveRows([m.d], m.to.replace(/\.md$/, ''))
+    const pf = `${DIR}/${m.to}`, lines = RL.statementsOf(textOf(pf) || '').filter(s => s.cites.has(m.d)).map(s => s.line)
+    if (m.changed && isPageFile(pf)) placeOnPage.push(`${pf}: ${m.d} — changed on ${m.here} since the base, and moved onto this page on ${m.there}: read the page lines that state it against its full row${lines.length ? ` (line ${lines.join(', ')})` : ' (no line of it cites it now)'}`)
+  }
   for (const s of merge.shortTake) replaceRow(s.d, 'short', s.line)
   for (const r of merge.retire) { dropRow(r.d, 'full'); dropRow(r.d, 'short'); toArchive.push({ d: r.d, line: r.line, from: 'the other side' }) }
 
