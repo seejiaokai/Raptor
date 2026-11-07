@@ -3891,6 +3891,45 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** In the brief-building step, add: every file the reviewer must open sits inside the repo or the session scratchpad; a file kept elsewhere (a notes folder, the home folder) is copied into the scratchpad first and the brief names the copy. A one-line read probe of each named path before the full run would catch it in seconds.
 **Principle:** Before a long run by another tool, check that its sandbox can read every file the brief names; a location your own tools can read is not proof that the other tool's sandbox can.
 
+### Observation 847: A side chat's brief pointed at a handoff block that lives only on another branch
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** Chat 3 of the overnight run of 7–8 Nov 26 (the pictures round), started by the coordinating chat; numbered past 846, which another open branch holds.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** starting the side chats of a night (their opening briefs)
+
+**Issue:** The brief told the side chat to cut its branch from `main` and then read the handoff file's block for the night. That block had been written on the coordinating chat's own branch and was not on `main`, so the fresh branch did not have it; the side chat found it only by searching every remote branch's copy of the file.
+**Suggested improvement:** In the overnight guide's step that starts side chats, the brief names the branch that carries the night's block (or the block is pushed to `main` first, or pasted into the brief).
+**Principle:** A pointer handed to a fresh worker must resolve from where that worker starts; state written on one branch is invisible to a worker started from another.
+
+### Observation 848: A tag on a ringed part was cut off by a panel that hides overflow, and the script ran clean
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the board helper's drawings; numbered past 846, which another open branch holds.
+**Skill:** brainstorming (the reference `mockups-on-the-real-app.md`)
+**Type:** open-source
+**Phase/Area:** marking the place on a picture (the method's step 3)
+
+**Issue:** Twice in one night a plain-words tag drawn on a ringed part (its own `::before`) was clipped by a parent that hides what overflows it — the board's OIL Earn bar, and a flying wave's panel at 821 wide. The script reported no error; only looking at the picture showed the cut tag.
+**Suggested improvement:** In the method file's traps, and in the tag helper of the drawing scripts: before the picture, check that each tag's box lies inside every ancestor whose overflow is hidden or clipped, and refuse the picture (or move the tag) when it does not.
+**Principle:** A mark drawn inside a component inherits its clipping; a check that the mark is wholly visible belongs in the step that draws it, not in the eye afterwards.
+
+### Observation 849: Two headless-browser traps when picturing a scroll frame by frame
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), the Leave War helper capturing a one-frame blink of a frozen header.
+**Skill:** New skill candidate: a "frame-by-frame capture" note in the walk-scripts guide (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** capturing motion as a series of still frames
+
+**Issue:** (1) The browser's synthesized scroll gesture moved nothing on the page in headless mode; raw touch events did. (2) The developer-protocol screenshot's clip is in page coordinates, so on a scrolled page the scroll offset has to be added or the crop lands in the wrong place.
+**Suggested improvement:** Add both to the walk-scripts guide's traps, with the working recipe (raw touch events for a phone scroll; clip plus scroll offset).
+**Principle:** A capture tool's defaults are tuned for a page at rest; a scroll under test needs the gesture and the coordinates checked against what the picture shows.
+
 ### Observation 851: A replacement must be written before the old text is moved out
 
 **Status:** OPEN
@@ -3916,6 +3955,19 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The first reader's report was kept outside the working folder, but its findings were then summarised into the handoff note inside the working folder while the second reader was still running, and the second reader's brief told it to read the project's notes. It was caught and the note set aside until the second report came in; nothing showed the second reader had read it.
 **Suggested improvement:** While any blind reader is running, write nothing about another reader's findings anywhere in the folder it reads — the handoff note included; keep reports and notes on them in a scratch folder outside it until every reader has reported.
 **Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
+
+### Observation 853: A handoff block's times were written from memory and were wrong twice in one night
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 3's pictures round (D1747), run unattended overnight; numbered past 852, which other open branches hold.
+**Skill:** session-handoff (and the overnight guide's "save the state at every step")
+**Type:** open-source
+**Phase/Area:** writing the progress lines of a handoff block during a long run
+
+**Issue:** The block's progress lines carry a time each. Three were written as guesses and had to be corrected against the clock in a commit of their own; later the same night a fourth line said 01:50 for a commit the log shows at 01:35. Nothing failed, but a reader who times the run, or compares it with another chat's block, is misled, and nothing in the step catches it.
+**Suggested improvement:** In the handoff guide's step that writes a progress line: take the time from the clock in the same command that writes it (the shell's date, or the time of the commit the line describes), never typed; the line names which ("01:35, the page's commit").
+**Principle:** A time in a record is a measured fact; read it from the clock or the commit at the moment of writing, the same as any other number a later reader will rely on.
 
 ### Observation 854: A walk of a window that opens on a filtered view must press the view that shows everything
 
@@ -3970,6 +4022,18 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** in the walk's orders for any change that moves the keys when a control is pressed (a menu that opens on its first item, a window that takes the keys), add "the key held down" beside "the key pressed once"; and in the design guide's §2 keyboard rule, that a repeated key never presses what the first press moved the keys onto.
 **Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.
 
+### Observation 858: A layout drawing made only at the owner's own screen width missed that the option breaks on smaller desktops
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the pictures round (chat 3); his follow-up on question 8, "how would 8 look like for a smaller screen if i choose A". Numbered past 855–857, which other branches hold.
+**Skill:** brainstorming (`mockups-on-the-real-app.md`) and the pictures-round brief
+**Type:** open-source
+**Phase/Area:** drawing a layout change on the running app — which screen sizes to draw it at
+
+**Issue:** A change that makes a table give up room for a side window was drawn only at the owner's PC width (1536) and his phone. It looked fine there. Asked about a smaller screen, the same drawing at 1280, 1024 and 821 showed the table crushing one column to a single letter, because the table's other columns had fixed widths. Drawing it at the narrower widths also showed the table was already broken below about 950 wide with no window open at all. The recommendation shown to him had named only the cost at his own width.
+**Suggested improvement:** In the mock-up guide's rules for drawing a change that alters widths or makes room (a side panel, a window that pushes content, a column added or narrowed), draw it at the narrowest width that still gets the desktop layout and at one laptop width (about 1280), as well as at the owner's own sizes. Measure the narrowest column at each width. Put that cost in the recommendation, or draw a safe version, before the page goes to him.
+**Principle:** A layout option is judged at the edges of the range it will run in, not only at the size of the person reviewing it. A fixed-width table that fits one screen can collapse on the next size down, so draw and measure at the narrowest width each layout covers.
 ### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
 
 **Status:** OPEN

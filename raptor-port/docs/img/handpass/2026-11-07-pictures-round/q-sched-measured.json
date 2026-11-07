@@ -1,0 +1,536 @@
+{
+ "q1": {
+  "pc": {
+   "head": "2 pending",
+   "aln": 1,
+   "groundName": "MEETING",
+   "groundAln": "1",
+   "groundDeco": "underline dotted rgb(59, 198, 232)",
+   "unavName": "LL",
+   "unavTag": "BUTTON",
+   "unavAln": null,
+   "unavDeco": "none solid rgb(182, 192, 203)",
+   "unavRowText": "LL\nC\nBolt\nC\nLATE\ntill 15 Jul"
+  },
+  "board": {
+   "ground": {
+    "cls": "sb-arow c6r gr-frominput lateinp",
+    "aln": [
+     "TEXTAREA.ain=1"
+    ],
+    "nameOutline": "dotted 1px rgb(59, 198, 232)"
+   },
+   "unav": {
+    "cls": "sb-arow c6r inprow",
+    "aln": 0,
+    "name": "BUTTON LL",
+    "nameOutline": "none 3px rgb(221, 168, 245)",
+    "text": "LL LATE C Bolt C till 15 Jul"
+   }
+  },
+  "phone": {
+   "grow": true,
+   "gAln": "1",
+   "uAln": null
+  }
+ },
+ "q2": {
+  "pc": {
+   "notices": 7,
+   "days": 14,
+   "text": "This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it."
+  },
+  "toast": {
+   "text": "This week is locked. It was published by an older version of the app, so it can’t be edited.",
+   "cls": "",
+   "r": [
+    510,
+    800,
+    1026,
+    838
+   ]
+  },
+  "windowStillOpen": 1,
+  "phone": 7
+ },
+ "q3": {
+  "logic_pc": {
+   "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
+   "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
+   "value": "3h",
+   "kids": [
+    "#text"
+   ],
+   "drawnA": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.",
+   "drawnB": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's OIL counts from that time, but his long day and Insights hours count from step. The tight crew-rest advisory also checks his rest as if he reported at that time."
+  },
+  "board": {
+   "before": {
+    "Saint": "12h30",
+    "Echo": "21h25"
+   },
+   "today": {
+    "Saint": "16h30",
+    "Echo": "25h25"
+   },
+   "withRTypedAtDefault": {
+    "Saint": "18h30",
+    "Echo": "27h25"
+   },
+   "rbox": {
+    "value": "",
+    "ph": "09:00",
+    "cls": "tm sugbox"
+   },
+   "vconf": {
+    "step": 60,
+    "reportLead": 180,
+    "debrief": 120,
+    "longDay": 720
+   },
+   "warnsFri": [
+    ":"
+   ]
+  },
+  "logic_ph": {
+   "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
+   "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
+   "value": "3h",
+   "kids": [
+    "#text"
+   ],
+   "drawnA": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.",
+   "drawnB": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's OIL counts from that time, but his long day and Insights hours count from step. The tight crew-rest advisory also checks his rest as if he reported at that time."
+  },
+  "wholeWeekA": {
+   "moved": [
+    [
+     "Echo",
+     "25h25",
+     "27h25"
+    ],
+    [
+     "Saint",
+     "16h30",
+     "18h30"
+    ]
+   ],
+   "nDays": 2,
+   "lo": 120,
+   "hi": 120,
+   "longNew": [],
+   "mism": [],
+   "rows": 56,
+   "nFly": 66,
+   "nNone": 2,
+   "v": {
+    "step": 60,
+    "rl": 180,
+    "ld": 720
+   }
+  }
+ },
+ "q4": {
+  "pc": {
+   "listtools": [
+    12,
+    121,
+    1524,
+    174
+   ],
+   "inNew": [
+    12,
+    129,
+    78,
+    165
+   ],
+   "range": [
+    86,
+    129,
+    219,
+    165
+   ],
+   "table": [
+    32,
+    180,
+    1504,
+    956
+   ],
+   "display": "flex",
+   "window": [
+    1090,
+    96,
+    1520,
+    840
+   ],
+   "drawnOpen": {
+    "inNew": [
+     1458,
+     129,
+     1524,
+     165
+    ],
+    "table": [
+     32,
+     180,
+     1078,
+     1023
+    ],
+    "wrapPad": "446px"
+   },
+   "drawnClosed": {
+    "inNew": [
+     1458,
+     129,
+     1524,
+     165
+    ]
+   },
+   "medNew": [
+    1444,
+    131,
+    1524,
+    167
+   ],
+   "medHead": [
+    12,
+    121,
+    1524,
+    178
+   ],
+   "medWindow": [
+    1090,
+    96,
+    1520,
+    840
+   ],
+   "medPad": "446px"
+  },
+  "phone": {
+   "inNew": [
+    8,
+    102,
+    64,
+    138
+   ],
+   "medNew": [
+    8,
+    103,
+    88,
+    139
+   ]
+  }
+ },
+ "q4n": {
+  "821": {
+   "window": [
+    375,
+    96,
+    805,
+    744
+   ],
+   "table": [
+    32,
+    226,
+    907,
+    6459
+   ],
+   "wrap": [
+    12,
+    220,
+    809,
+    6499
+   ],
+   "drawn": {
+    "tableW": 875,
+    "scrolls": true,
+    "scrollW": 1341,
+    "clientW": 797,
+    "cols": [
+     [
+      "Name",
+      250
+     ],
+     [
+      "Start▲",
+      150
+     ],
+     [
+      "End",
+      115
+     ],
+     [
+      "Type",
+      160
+     ],
+     [
+      "Remarks",
+      0
+     ],
+     [
+      "Changed",
+      104
+     ],
+     [
+      "",
+      96
+     ]
+    ],
+    "rowH": [
+     435,
+     371,
+     243,
+     259,
+     243,
+     339,
+     659,
+     195
+    ]
+   }
+  },
+  "1024": {
+   "window": [
+    578,
+    111,
+    1008,
+    756
+   ],
+   "table": [
+    32,
+    270,
+    992,
+    1672
+   ],
+   "wrap": [
+    12,
+    264,
+    1012,
+    1712
+   ],
+   "drawn": {
+    "tableW": 875,
+    "scrolls": true,
+    "scrollW": 1341,
+    "clientW": 1000,
+    "cols": [
+     [
+      "Name",
+      250
+     ],
+     [
+      "Start▲",
+      150
+     ],
+     [
+      "End",
+      115
+     ],
+     [
+      "Type",
+      160
+     ],
+     [
+      "Remarks",
+      0
+     ],
+     [
+      "Changed",
+      104
+     ],
+     [
+      "",
+      96
+     ]
+    ],
+    "rowH": [
+     435,
+     371,
+     243,
+     259,
+     243,
+     339,
+     659,
+     195
+    ]
+   }
+  },
+  "1280": {
+   "window": [
+    834,
+    111,
+    1264,
+    788
+   ],
+   "table": [
+    32,
+    270,
+    1248,
+    1046
+   ],
+   "wrap": [
+    12,
+    264,
+    1268,
+    1086
+   ],
+   "drawn": {
+    "tableW": 875,
+    "scrolls": true,
+    "scrollW": 1341,
+    "clientW": 1256,
+    "cols": [
+     [
+      "Name",
+      250
+     ],
+     [
+      "Start▲",
+      150
+     ],
+     [
+      "End",
+      115
+     ],
+     [
+      "Type",
+      160
+     ],
+     [
+      "Remarks",
+      0
+     ],
+     [
+      "Changed",
+      104
+     ],
+     [
+      "",
+      96
+     ]
+    ],
+    "rowH": [
+     435,
+     371,
+     243,
+     259,
+     243,
+     339,
+     659,
+     195
+    ]
+   }
+  }
+ },
+ "q4f": {
+  "821": {
+   "inNew": [
+    743,
+    175,
+    809,
+    211
+   ],
+   "row": [
+    12,
+    167,
+    809,
+    220
+   ]
+  },
+  "1024": {
+   "inNew": [
+    946,
+    219,
+    1012,
+    255
+   ],
+   "row": [
+    12,
+    211,
+    1012,
+    264
+   ]
+  },
+  "1280": {
+   "cols": [
+    [
+     "Name",
+     110
+    ],
+    [
+     "Start▲",
+     140
+    ],
+    [
+     "End",
+     90
+    ],
+    [
+     "Type",
+     160
+    ],
+    [
+     "Remarks",
+     90
+    ],
+    [
+     "Changed",
+     104
+    ],
+    [
+     "",
+     96
+    ]
+   ],
+   "rowH": [
+    67,
+    67,
+    51,
+    67,
+    51,
+    67,
+    115,
+    51,
+    83,
+    99
+   ]
+  }
+ },
+ "q4t": {
+  "cols": [
+   [
+    "Name",
+    250
+   ],
+   [
+    "Start▲",
+    150
+   ],
+   [
+    "End",
+    115
+   ],
+   [
+    "Type",
+    160
+   ],
+   [
+    "Remarks",
+    0
+   ],
+   [
+    "Changed",
+    104
+   ],
+   [
+    "",
+    96
+   ]
+  ],
+  "firstRowH": 435
+ },
+ "q4m": {
+  "950": 11,
+  "1340": 150,
+  "1536": 346
+ }
+}

@@ -347,7 +347,8 @@ const RULING_BYTES = [
   /* scheduler 115000 -> 119000 (3 Nov 26, claude/inputs-small-fixes-2): 115,226 bytes with D1586, D1588, D1589 - his
      answers on the late mark, Make public and history names, live; none is trimmed (D136); the file stays one (D976).
      Room, not a target. */
-  ['.claude/rules/decisions/scheduler.md', 2, 119000],
+  /* 119000 -> 125000 (8 Nov 26, claude/pictures-round): 119,637 bytes with D1780–D1782 and D1784–D1786, his answers to the pictures round; a rulings file is never trimmed (D136), about a twentieth above again */
+  ['.claude/rules/decisions/scheduler.md', 2, 125000],
   /* inputs 32000 -> 37000 (16 Oct 26, the documents tidy after pull request 519): 35,026 bytes with the calendar's step
      two, the input window's and the Medical tab's rulings of 14-15 Oct (D900-D920, D927) - live; none is trimmed (D136). [RULINGS-SPENT-PASS]
      reads it for spent rows. Room, not a target. */
@@ -444,7 +445,7 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 21500],   // raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 23700],   // raised 8 Nov 26 from 21500: D1792–D1793, his pictures-round answers, took it 179 over; never trimmed (D136), a tenth above again. Before that, raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
