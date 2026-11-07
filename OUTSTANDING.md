@@ -178,9 +178,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
-- [WINDOWS-KEEP-KEYS] — his answer D1648 (5 Nov 26), building the night of 5 Nov 26 — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
-- [BOARD-KEYS-LEFT] — his answer D1646 (5 Nov 26), building the night of 5 Nov 26 — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
+- [BOARD-KEYS-LOOKS] — three looks under the keys on the Scheduler Board, parked by the night of 7–8 Nov 26 (D1625): the ⋯ menu's item and a menu button wear the browser's ring, not the app's cyan one; Tab out of a menu two ways — questions for him, with pictures; and one small tidy-up (low, the agent's).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -193,7 +192,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Checks and tooling**
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs built 8 Nov 26 (`claude/ci-smoke-timeout`, his "merge live"); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
-- [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -2242,21 +2240,17 @@ which carry such a mark, and either teach it the list with a test per kind or cl
 sees changes. **Place:** low, the agent's — with the next keyboard or windows job. Evidence:
 `raptor-port/docs/handpass/parts/kw1105/read-fixes2-opus.md`.
 
-### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
-**His answer, 5 Nov 26 ("Go" — the mock-up page's question 2): D1646** — the board's small menus, its day and week chips and Edit Schedule's day name reached and pressed by the keyboard, the app's cyan ring; (2) and (5) ride with it. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
-Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (`raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b), older than that job:
-(1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
-the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
-menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
-(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
-
-### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
-The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
-baseline per burst and restoring it on `lastRoot` only. A cross on Edit Schedule, a switch to View-only Sched and a cross there before
-the first slide ends (about half a second) restores only View-only Sched's week: Edit Schedule's keeps its touches off (older than
-3 Nov 26) and its scrolling off (since 3 Nov 26) until a reload. **Fix:** keep every week touched in a burst and restore each at the
-last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
-unreachable; with the next change to the slide.
+### [BOARD-KEYS-LOOKS] Three looks under the keys on the Scheduler Board, left by the board-keys job (the night of 7–8 Nov 26; low)
+Built that night on `claude/board-keys` ([BOARD-KEYS-LEFT]'s last two menus, [WEEK-GLIDE-TWO-PAGES]); what a person would SEE
+differently was not built (D1625) and waits as three questions, each with its pictures and a recommendation in
+`raptor-port/docs/handpass/2026-11-08-board-keys.md` §11: **Q1** an item of the board's ⋯ menu under the keys wears its raised
+row and the browser's own ring, where the board's other menus wear the app's cyan ring — recommended: the cyan ring, on the
+board's ⋯ and the week's alike; **Q2** a button that opens a board menu (+ Block, the day bar's Templates) wears the browser's
+white ring under the keys, as on `main` — recommended: the cyan ring, as D1646 reads; **Q3** Tab out of a menu works two ways
+(the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
+onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
+menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
+finding 4). **Place:** low — the questions wait until he says (D994); the tidy-up with the next change to the board's menus.
 
 ### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
@@ -2307,17 +2301,6 @@ Every window drawn on the `.airpop` veil covers the top bar (or the board's bar)
 
 ### [SCHED-CTRL-Z] The schedule pages have no Ctrl+Z (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s build)
 Only the Tracker answers Ctrl+Z and Ctrl+Y (`raptor-port/src/tracker/app/core.js`, D372). On Edit Schedule, View-only Sched, the Scheduler Board and the other pages of the app, Ctrl+Z inside a box is the browser's own undo of that box's typing, and anywhere else nothing — which is why the walk of 21 Oct 26 found "Ctrl+Z inside the Traffic window does nothing". **A question for him (D994 — not put until he says):** should Ctrl+Z / Ctrl+Y (⌘Z on a Mac) press the top bar's Undo / Redo everywhere, leaving a box's own typing undo to the box while it has the caret? Recommended: yes — the schedulers work mostly at a desktop and want to be as efficient as possible (D820), and the Tracker already does it. **Place:** with the next keyboard batch, on his answer.
-
-### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
-**His answer, 5 Nov 26 ("Go" — the mock-up page's question 4): D1648** — an unreadable clock explained once under the wave's lines. The other two leftovers (the keys back after the OIL question, the red note's refresh test) need no answer. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
-The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
-schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
-check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
-the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
-unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
-**The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
-works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
-Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

@@ -249,7 +249,14 @@ const menuItems = (box: HTMLElement) =>
 /** `box` hangs from `anchor`: the arrows move through its buttons, and opened by the keys the keys land on its first pick */
 export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
   const back = locate(anchor)
+  /* the button it hangs from, so ↓ on ANOTHER menu button never goes into this one (the two reads of 8 Nov 26 — Opus
+     finding 2, Astra finding 2; interactions.ts routeMenuKey) */
+  ;(box as any)._anchor = anchor
   box.addEventListener('keydown', e => {
+    /* A HELD ENTER OPENS THE MENU AND PICKS NOTHING (the Opus read's question 2, 8 Nov 26): Enter presses a button as it goes
+       down, so the first Enter opens the menu and puts the keys on its first pick — and the same key, still held, repeats
+       on that pick and pressed it (+ Block added a desk nobody chose). A repeat is never a press here; a fresh Enter is. */
+    if (e.key === 'Enter' && e.repeat) { e.preventDefault(); return }
     /* TAB OUT OF ITS END LEAVES THE MENU AS ESCAPE DOES (the fresh read's F3, 5 Nov 26): the menu stands at the page's end, so a
        Tab past its last item walked out of the page and then onto the top bar hidden under the Scheduler Board. Inside it Tab
        goes on as the browser's own (the stores menu's pencil turns it into a little form of names and buttons); past its last
@@ -275,9 +282,15 @@ export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {
     e.preventDefault()
     list[(i + (e.key === 'ArrowDown' ? 1 : -1) + list.length) % list.length]!.focus({ preventScroll: true })
   })
-  const by = !!keyOn && (keyOn === anchor || (keyOn instanceof Node && anchor.contains(keyOn)))
+  if (pressedByKeys(anchor)) menuFirst(box)?.focus({ preventScroll: true })
+}
+/** whether the press now landing on `el` came from the keys — Enter, Space or ↓ pressed on it, and no pointer since; read
+ *  and forgotten. A menu drawn by React (the board's ⋯, SchedBoard.tsx) asks it as it opens, and as one of its items is
+ *  picked, as menuKeys asks it for the string-drawn menus. */
+export function pressedByKeys(el: HTMLElement): boolean {
+  const by = !!keyOn && (keyOn === el || (keyOn instanceof Node && el.contains(keyOn)))
   keyOn = null
-  if (by) menuFirst(box)?.focus({ preventScroll: true })
+  return by
 }
 /** the item a menu opened by the keys puts them on: its first pick, else its first button */
 export function menuFirst(box: HTMLElement): HTMLElement | null {

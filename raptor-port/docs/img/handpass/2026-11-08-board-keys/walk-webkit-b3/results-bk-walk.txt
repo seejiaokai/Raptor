@@ -1,0 +1,9 @@
+[bk-walk v8]
+PASS B3.1 Enter on Wednesday's date opens its board, the keys on the board — saw {"f":{"tag":"DIV","id":"schedBoard","text":"CalendarWednesday Jul 15","data":{"kblayer":""},"ring":true,"outline":"rgb(241, 244, 247) none","bg":"rgb(11, 13, 16)","inMore":false,"inMenu":false,"inBoard":true},"day":2}
+PASS B3.2 + Block → Empty block by the keys: a block added on the board, the keys back on + Block — saw {"blocks0":1,"blocks1":2,"f":{"tag":"BUTTON","id":"","text":"+ Block","data":{"dwadd":"2"},"ring":true,"outline":"rgb(182, 192, 203) auto","bg":"rgb(32, 38, 46)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B3.Templates Templates opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.the plans selector the plans selector opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.3 ✓ Done by Enter: the board closes, the week is back — saw {"board":false}
+NOTE B3.3 — after ✓ Done the keys are on {"tag":"SPAN","id":"","text":"Jul 15","data":{"sbday":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(0, 0, 0, 0)","inMore":false,"inMenu":false,"inBoard":false}; Wednesday's week card carries 0 block parts
+PASS B3.4 the block added on the board is on the week's Wednesday — saw 2
+PASS B3.5 Undo by Enter takes the block back off — saw 1
