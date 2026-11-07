@@ -4473,7 +4473,7 @@ and the colour of that need. Every surface that shows any of them asks it throug
 `flyMonth(y, m)` — the Leave War's four rows and working box, the SANS month and its opened day, the Inputs month's
 tag, the window called "Calendar" — and none works one out itself (two stores hold a day's facts; a second join is
 how two screens come to show two answers). The records: `docs/data-schema.md` §The flying plan and the SANS
-calendar's colours. The war's half (a holiday, who is available): `.claude/rules/decisions/leave-war.md` §Architecture.
+calendar's colours. The war's half (a holiday, who is available): `.claude/rules/seams/leave-war.md` §Architecture.
 
 - **Class.** A public holiday or an Off day (the Leave War's record) has NO class. Otherwise: the class set for the
   date itself; else its weekday's rule — of the rules covering the date, the one that started latest (`ruleInForce`);

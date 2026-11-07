@@ -914,7 +914,7 @@ Listed in the order they would bite.
    were picked off that roster. Courses and syllabi are still keyed by
    typed name, and their storage keys are those names joined with `:`
    *(corrected 24 Sep 26: since 13 Sep 26 both are stable ids too — `COURSES`/`SYLS` entries `{id,name}`,
-   keys filed under the id; `.claude/rules/decisions/tracker.md` §Architecture)*. The
+   keys filed under the id; `.claude/rules/seams/tracker.md` §Architecture)*. The
    designed model (`data-model.md`) makes Enrolment (person × course ×
    syllabus) the row and the name an attribute.
 10. **Progression is a summary, not a history.** A Tracker mark holds the
