@@ -79,10 +79,12 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing
   test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he
   calls for it [D590, D601, D790, D903].
-- Astra is the standing reviewer, with no end date: called without asking him each time wherever a read below names him,
-  first of two where two are required; Sol 6.1 only when he calls for him (until Mon 9 Nov 26 19:00, where a second
-  reader fits), otherwise the fresh, blind Opus reader keeps the second seat — the agent's reading; a job Astra could
-  not read goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1743, D761].
+- Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside
+  the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1
+  only when he calls for him — and, until Mon 9 Nov 26 19:00, wherever a second reader fits (D1743) — otherwise the
+  fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without
+  Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1743,
+  D761].
 - The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to
   call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1770].
 - Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and
@@ -90,10 +92,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   D1738, D1739, D1770].
 - The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
   to each other, Astra first, and Sol 6.1 in the second seat when he calls for him, otherwise the fresh, blind Opus
-  reader (the agent's reading) [D353, D590, D601, D790, D903, D1734, D1738, D1739, D761, D1770].
+  reader (the agent's reading), the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D761,
+  D1770].
 - An important plan's red team: two readers, blind to each other, Astra first, and Sol 6.1 second when he calls for him,
-  otherwise a fresh, blind Opus reader (the agent's reading); a plan Astra could not read goes on the reads-owed list
-  [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1770].
+  otherwise a fresh, blind Opus reader (the agent's reading); a plan that went without Astra or Sol 6.1 goes on the
+  reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1770].
 - A working-guide change is read before his approval, one round each, never by its writer, by Astra and a second reader
   — Sol 6.1 when he calls for him, otherwise a fresh, blind Opus reader (the agent's reading, as D1495's wording was
   read); a read it went without goes on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734,
@@ -328,8 +331,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   at every step [D1415].
 - Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it;
   the agent still reads and reports the figure and saves the state before the limit can stop it; until Mon 9 Nov 26
-  19:00 his Codex allowance too — the work planned to spend both, chats side by side where the work allows; after then
-  Astra still reads as the standing reviewer [D1033, D1415, D1743, D1770].
+  19:00 his Codex allowance too — the work planned to spend both, chats side by side where the work allows; Astra
+  reads on after it [D1033, D1415, D1743, D1770].
 - Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
   one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667]. Before a
   compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it
