@@ -171,7 +171,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
-- [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
+- [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
@@ -191,7 +191,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [CI-SMOKE-TIMEOUT] — GitHub's Tracker smoke job has no time limit: on 5 Nov 26 one half hung 16 minutes and would have waited 6 hours (night 3, job 7).
+- [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
+- [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs built 8 Nov 26 (`claude/ci-smoke-timeout`, his "merge live"); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
@@ -1160,7 +1161,11 @@ its own after it (a change to how walks are run — its guide wording read by As
 
 ### [STACK-LEFTOVERS] Small loose ends named in the Codex stack's finished items, kept when those items went to the archive (filed 7 Oct 26)
 Each stood inside an item that is otherwise built, checked and live (PR #481), and none was settled in the stack's check
-(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. (1) **Insights, two edges never tried**
+(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. **(1) and (2) done 8 Nov 26** on
+`claude/insights-leftovers` (evidence `raptor-port/docs/handpass/2026-11-08-insights-leftovers.md`): (1)'s two edges tried
+and found no fault — the "pending" chip and the board's "Not yet signed" count the saved typing at once; Templates is never
+offered while a look is open — pinned by `raptor-port/src/ui/insights-leftovers.test.tsx`; (2) built as
+`roleAnswerName` / `roleSideWord`, the words unchanged. (1) **Insights, two edges never tried**
 (`[INSIGHTS-MISSION-MIX]`, the Opus interim read of 3 Oct 26): what a published day's "changes to go out" strip shows after
 "Choose mission role" is pressed with unsaved typing in the Remarks box; and the week's Templates button while a saved
 plan is being looked at. (2) **Insights, one tidy-up** (D489's note): the change history and Undo each work out the wording
@@ -1170,7 +1175,13 @@ moves, an issued key rewritten, where an input's Undo lands) — written down th
 again when that script is next run. (4) **Discard marks — not ruled, his to raise:** a button that puts a published day
 back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second cheaper-model trial — one small fix built
 by a Sonnet helper — ran 21 Oct 26 on `[OG-TAG-OVER-COUNT]` (archived; the verdict: `raptor-port/docs/handpass/2026-10-21-look-keys.md` §12). **Place (the agent's line):** (1) with the next change to Insights'
-role question; (2) and (3) with their own jobs; (4) only if he raises it.
+role question; (2) and (3) with their own jobs; (4) only if he raises it. **(5) Filed 8 Nov 26, D489's tidiness note from
+the fresh Opus read of job 6** (`raptor-port/docs/superpowers/briefs/2026-11-08-insights-leftovers-read-opus.md`, low 3):
+a line's callsign is still tidied for the Blue/Red answer in three bodies — the question's name
+(`src/state/mission-roles.ts`, no 80-letter cut), the history's name for a copied answer (`src/state/changelines.ts`
+`roleFormationName`) and `src/engine/mission-role.ts roleAnswerName`; they agree today, and one shared body would stop a
+later change to one making a copied answer's history line name the line differently from a typed one. Not a fault now.
+**Place:** with the next change to Insights' role question, or with `[CODE-TIDY-AUDIT]`. **Now open: (3), (4), (5).**
 **Seen 10 Oct 26, not corrected (a helper's scan of the backlog's own status lines):** `[INSIGHTS-CLOSE-STAYS-VISIBLE]`, `[LOGIC-STICKY-SEARCH-COMPACT]` and `[TRK-FLIGHT-LABEL-READABILITY]` still say "owner look and Claude reads pending" although the workflow UI pass is live (PR #481, 6 Oct 26) — read each, then archive it or say what is left; `[ITFLOW-OIL-RESHOOT]` waits on a merge that has happened (PR #469).
 
 ### [IMPECCABLE-UPDATE] Move Impeccable to v4.1.3, the last version built from readable scripts — AFTER the calendar job (D625; the newest version is not taken, D623 — 7 Oct 26)
@@ -2247,15 +2258,39 @@ the first slide ends (about half a second) restores only View-only Sched's week:
 last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
 unreachable; with the next change to the slide.
 
-### [CI-SMOKE-TIMEOUT] GitHub's Tracker smoke job has no time limit (found 5 Nov 26, the round-4 merge; the agent's)
+### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
 `4d13c06d8` half an hour before), `tracker (smoke 1/2)` ran 16 minutes with every other job finished; it was cancelled and
 re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
 others), so a hang waits for GitHub's default of 6 hours. **To do:** a `timeout-minutes` on each test job, set from its measured
 length on GitHub's machines with room to spare (the smoke halves about 3–4 min — measure first); if the smoke hangs again,
-find where (its own log), as D87 says. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
+find where (its own log), as D87 says. **The time limits: built 8 Nov 26 on `claude/ci-smoke-timeout`** (a workflow change —
+his "merge live"), from the 20 green runs before 8 Nov 26: build 10 minutes (0.9 at most), unit 20 (7.5), geometry 30
+(16.4), the Tracker smoke 30 a half (17.7) and the smoke's own step 12 (3.9 at most, over 40 halves). **Measured, not guessed: the 16 minutes
+of 5 Nov 26 were not a hang in the smoke** — that half's "Install Chromium" (the system packages it fetches) took 12.3 of
+them and the smoke 3.8; the same install took 8 to 16 minutes in 9 of the 20 green runs (10 jobs), while the browser tests
+themselves never passed 6.2. A slow install is the browser jobs' long tail, so their limits sit well above it. **Two real
+stalls did happen, both before the smoke, and only the job's limit catches them** (the fresh Opus read of the change):
+26 Oct 26, `claude/tracker-small-1021`, smoke 2/2's "Install Chromium" printed nothing for 62 minutes until cancelled; 5 Nov
+26, `claude/postout-bell-look`, smoke 2/2's Node set-up took 34 minutes and its install 9 more, cancelled. Each would now
+stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over about 1,000 halves, by that read's count). **Still open here:** the two points below, which are not workflow
+changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
 (a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
 `.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
+**Astra's read (8 Nov 26, the morning after — D1743; the night's helper had run only the fresh Opus read):** no finding in the
+change — it measured the same 20 green runs (build 0:54 at most, unit 7:29, geometry 16:26, the smoke half 17:41, the smoke
+step 3:53), found every test job covered and each limit where GitHub reads it, and nothing else in the workflow changed; one
+older gap, filed as [TESTS-REQUIRED-ON-MAIN] (`raptor-port/docs/superpowers/briefs/2026-11-08-ci-smoke-timeout-read-astra.md`).
+
+### [TESTS-REQUIRED-ON-MAIN] GitHub requires only the secrets scan before a merge to main, not the tests (found 8 Nov 26 by Astra; the agent's)
+**Seen:** Astra's read of [CI-SMOKE-TIMEOUT]'s change; checked by the host the same morning — the one ruleset on `main`
+("main: secrets scan", D1540) requires only `secrets scan`, and `main` has no branch protection. So a pull request whose test
+jobs failed or timed out can still be merged on GitHub; today only the merge steps keep it out (D1746 step 3: "its last run
+green", read by hand). **The fix, as Astra gives it:** one summary job in `deploy.yml` that runs on every pull request, passes a
+notes-only one (the gates skip those by `paths-ignore`) and otherwise passes only when every test job of the run passed; that
+one job then made a required check on `main` in the same ruleset — never the path-filtered jobs themselves, or a notes-only pull
+request could never merge. **Place:** with the checks batch (night 3); the workflow job his "merge live", the ruleset setting
+his own click, as D1540's was — the steps put to him with the build.
 
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit

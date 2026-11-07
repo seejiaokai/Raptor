@@ -35,7 +35,7 @@ import { onCommit } from '../command'
 import type { CommitEnvelope, Change } from '../command/types'
 import { logAction, keyLabel } from '../engine/editlog'
 import { parseHideDetail } from '../engine/hidedetail'
-import { decodeRoleId } from '../engine/mission-role'
+import { decodeRoleId, roleAnswerName, roleSideWord } from '../engine/mission-role'
 import type { RoleIdentity } from '../engine/mission-role'
 import { DAYS } from '../engine/data'
 import { CURWEEK } from '../engine/waves'
@@ -674,9 +674,10 @@ export function changeLinesFor(env: CommitEnvelope): void {
         /* a copy (a day template) rides the day's own command, which carries no name: read the formation's callsign off
            the loaded week, where the copy has just landed. A line with no callsign is "Line", the app's word for it
            everywhere else (D340) — never its row code ([ROLE-BLANK-CALLSIGN], 6 Oct 26). */
-        const name=(typeof detail?.name==='string'&&detail.name.replace(/\s+/g,' ').trim().slice(0,80))||roleFormationName(role)||'Line'
+        const name=roleAnswerName(env.detail)||roleFormationName(role)||'Line'
         const origin=typeof detail?.origin==='string'?detail.origin.slice(0,80):'copied with the day template'
-        const side=(value:any)=>value?.side==='blue'?'Blue':value?.side==='red'?'Red':'Unresolved'
+        /* the side's word from the one body Undo's words read too (engine/mission-role.ts roleSideWord) */
+        const side=(value:any)=>roleSideWord(value?.side)??'Unresolved'
         logAction(null,`${name} · mission role · ${origin}`,{date:role.dayISO,sect:'day',sub:role.formationRid,fld:'mission-role',from:side(c.before),to:side(c.after)})
       }
       if (c.collection === 'inputs' && c.id !== '__order') { if (!wi.said.has(c)) inputLines(c, env, war) }

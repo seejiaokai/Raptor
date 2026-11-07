@@ -15,7 +15,7 @@ import { missionTracking, missionTrackingEpoch } from '../engine/insights-config
 import { HOOKS } from '../engine/hooks'
 import { SESSION, canEditSched } from './auth'
 import { CURPAGE, SBDAY, DPREV, VIEW_RESET, navGen } from './view'
-// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- an answer held as it is saved and restored: JSON drops keys set to undefined, as saving does, which structuredClone would keep
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- an answer is held exactly as saving and a reload hold it: this store's capture and signature are JSON, and a structuredClone would keep a key set to undefined that the saved copy drops
 const clone = <T>(v: T): T => JSON.parse(JSON.stringify(v))
 let answers = new Map<string, unknown>()
 let generation = 0
