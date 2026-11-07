@@ -85,7 +85,8 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   that did not write them and sees none of the writing chat's reasoning — not by
   Fable; the two reads it goes without are on `OUTSTANDING.md` `[NO-ASTRA-LIST]`.)* *(D1414, 27 Oct 26 — the same for
   the review of 27 Oct 26 ONLY: one fresh, blind Opus reader, then the drafts put to him grouped by guide, in rounds of
-  at most four.)*
+  at most four.)* *(D1761, 8 Nov 26 — "call in Astra": every guide change, a skill's included, is read by Astra, beside a
+  fresh, blind Opus reader, each blind to the other; Sol 6.1 only on his call.)*
 - **Clean up when the review ends (owner, D69):** after installing, delete the
   holding folder (git keeps the drafts), move the resolved entries to
   `archive/` the same day, and delete the review's handoff note once merged.

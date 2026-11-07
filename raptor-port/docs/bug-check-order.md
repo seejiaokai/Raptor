@@ -234,7 +234,7 @@ jobs (D903, D1770 — the agent's reading).*
 neither the walk's report nor another reader's, given the same brief** — on the riskiest changes too (rank 2's list above): **Fable
 reads nothing unless he calls for it (D903, 15 Oct 26 — "don't include fable in anything anymore unless I call for it";
 it ends the standing Fable read of those changes D790 gave).** The chat that wrote the code never reads its own work. Every claim of either
-reader is written as a failing test before it is believed. A plan's read before a build follows the How we work page's rules for plans (D1770). A job that goes without
+reader is written as a failing test before it is believed. A plan's read before a build follows the How we work page's rules for plans (D1760, D1770). A changed working guide is read by Astra every time (D1761, 8 Nov 26: "call in Astra"), with a second reader beside him — Sol 6.1 on his call, otherwise a fresh, blind Opus reader. A job that goes without
 Astra's read, or without Sol 6.1's where two are required, is still written on the one list (`OUTSTANDING.md` `[NO-ASTRA-LIST]`), and the reads owed are put to him to
 call or drop — never called by the agent on its own (D761, D1734, D1770). *How it was reached:* a blind Opus read was tried beside Fable's on two jobs
 (D788, then once more by D789, both now in `DECISIONS-ARCHIVE.md`); on the second, same brief and blind to each other, Fable
@@ -297,7 +297,7 @@ an area the other found a defect in is the cheapest possible pointer to a real b
 - A plan's brief lists the builder's own readings as targets, each to be ruled supported / contradicted / the
   owner's to decide. Where the plan under review IS a test plan (a re-test, a walk), its red team and the scenario
   design are one round, with one brief — sent to as many readers as the plan's red team needs (D353: both for an
-  important plan, one otherwise), never a second scenarios-only run.
+  important plan when he calls them, otherwise the one fresh, blind Opus reader — D1734, D1760; one otherwise), never a second scenarios-only run.
 - Offer a reader only the checks its sandbox can perform. One that cannot run anything is told so, and asked to name
   the exact input it would run; the host runs every such case before dispositioning the finding.
 

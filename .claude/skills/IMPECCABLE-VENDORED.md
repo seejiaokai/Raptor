@@ -73,7 +73,7 @@ it could not run — not tested here. **So: v4.1.1 stays — and the NEXT update
 (his ruling D625, 7 Oct 26).** v4.1.3 (tag `skill-v4.1.3`, 2 Sep 26) is the last version built from readable scripts: it and
 v4.1.2 still ship `hook.mjs` and the script files; v4.2.0 (4 Sep 26) and every version since ship the launcher for the
 downloaded program (checked on the publisher's site, version by version, 7 Oct 26). Copy from that TAG, not from the head
-of the publisher's repo; merge the hook lines by hand; Astra and Sol 6.1 read the change before he approves it (D70)
+of the publisher's repo; merge the hook lines by hand; Astra reads the change, beside a fresh, blind Opus reader, before he approves it (D70, D1761; Sol 6.1 only on his call)
 (`OUTSTANDING.md` `[IMPECCABLE-UPDATE]`). **Never run the tool's own updater (`npx impeccable update`) in this
 repo** — the skill's start-up notice suggests it; the steps below are the way.
 
