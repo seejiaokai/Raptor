@@ -549,7 +549,8 @@ the readers): a choice put to him, not taken.
   plan meanwhile (D1760); "call in Astra" — every working-guide change is read by Astra, beside the fresh Opus reader
   (D1761); "later" — stating once what both the page and a checklist state is left for a later step (D1762). On the
   agent's reading that Sol 6.1 is not added as a third reader of the diet's reworded steps, he asked whether it is
-  important enough — answered in chat 2, his word awaited.
+  important enough — told it was not needed, then that adding Sol until Monday would use the Codex allowance, he
+  answered "keep two" (D1763): no third reader.
 
 **The two reads compared (D1732).** Astra checked 174 requirements and found the five files whole; the Opus reader
 checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The

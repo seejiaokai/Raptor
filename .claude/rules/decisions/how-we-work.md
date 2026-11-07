@@ -55,9 +55,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   included [D1737].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
-  the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
-  fresh Opus reader holds the second seat, so no third reader is added; if Astra cannot run, he is told first, and the
-  step never goes on without that read [D1738, D1739, D1761, D1743, D1770].
+  the other, for whether any meaning changed; Sol 6.1 is not called, not even inside D1743's window — the fresh Opus
+  reader holds the second seat and no third reader is added, his "keep two"; if Astra cannot run, he is told first, and
+  the step never goes on without that read [D1738, D1739, D1761, D1743, D1770, D1763].
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
   widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over
   D1739 there, the agent's reading [D1739, D1761].
