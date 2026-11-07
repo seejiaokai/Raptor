@@ -57,7 +57,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
   the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
   fresh Opus reader holds the second seat, so no third reader is added; if Astra cannot run, he is told first, and the
-  step never goes on without that read [D1738, D1739, D1761, D1743].
+  step never goes on without that read [D1738, D1739, D1761, D1743, D1770].
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
   widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over
   D1739 there, the agent's reading [D1739, D1761].
@@ -77,26 +77,29 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing
   test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he
   calls for it [D590, D601, D790, D903, D1761].
-- Astra and Sol 6.1 are called only when he calls for them, each time — he has called Astra for every reworded step of
-  the rules diet, for every working-guide change and, until Mon 9 Nov 26 19:00, for the work in hand; a job that would
-  otherwise have had one goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1734, D1738, D1739, D1761, D1743, D761].
+- Astra is the standing reviewer, with no end date: called without asking him each time for each job's code read, beside
+  the fresh, blind Opus read above, and wherever a read below names him, first of two where two are required; Sol 6.1
+  only when he calls for him — and, until Mon 9 Nov 26 19:00, wherever a second reader fits (D1743) — otherwise the
+  fresh, blind Opus reader keeps the second seat (the agent's reading); a job that went without Astra's read, or without
+  Sol 6.1's where two are required, goes on the reads-owed list, `[NO-ASTRA-LIST]` [D1770, D1734, D1738, D1739, D1761,
+  D1743, D761].
 - The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to
-  call or drop, never called by the agent on its own; until Mon 9 Nov 26 19:00 Sol 6.1 is called too where a second
-  reader fits, and whether Astra goes back to standing reviewer after then is his, not yet answered [D761, D1734, D1738,
-  D1739, D1761, D1743].
+  call or drop, never called by the agent on its own [D761, D1734, D1738, D1739, D1761, D1770].
 - Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and
-  side questions: one reader (a fresh Opus reader unless he calls Astra) [D353, D590, D601, D790, D903, D1734, D1738,
-  D1739, D1761].
+  side questions: one reader — Astra, or a fresh Opus reader when Astra cannot run [D353, D590, D601, D790, D903, D1734,
+  D1738, D1739, D1761, D1770].
 - The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
-  to each other, Astra first and Sol 6.1 keeping the second seat, when he calls for them; otherwise the fresh, blind
-  Opus read alone, the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D761].
-- An important plan's red team: two readers, blind to each other, Astra first and Sol 6.1 second, when he calls for
-  them; without his call a fresh, blind Opus reader red-teams it meanwhile, as since 13 Oct, and the plan goes on the
-  reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D761].
+  to each other, Astra first, and Sol 6.1 in the second seat when he calls for him, otherwise the fresh, blind Opus
+  reader (the agent's reading), the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761,
+  D761, D1770].
+- An important plan's red team: two readers, blind to each other, Astra first, and Sol 6.1 second when he calls for him,
+  otherwise a fresh, blind Opus reader, as plans have been read since 13 Oct; a plan that went without Astra or Sol 6.1
+  goes on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770].
 - A working-guide change is read before his approval, one round each, never by its writer: by Astra, his call for every
-  such change; the agent's readings — beside a fresh, blind Opus reader, each blind to the other, as for the rules diet;
-  Sol 6.1 only on his call, his read not owed; if Astra cannot run, he is told first and the change waits [D70, D590,
-  D601, D790, D903, D811, D941, D1417, D1734, D1738, D1739, D1761].
+  such change, and a second reader, each blind to the other — Sol 6.1 when he calls for him, otherwise a fresh, blind Opus
+  reader (the agent's reading); if Astra cannot run, he is told first and the change waits (the agent's reading); a read
+  it went without goes on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734, D1738, D1739,
+  D761, D1761, D1770].
 - His named exception: a line of his design lessons is read by one fresh reader and not put to him first [D941, D1417];
   design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941, D1761].
 - The read of a working-guide change has a narrow brief — does each change say what its note meant, does it contradict a
@@ -269,8 +272,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Guides and the tools that run by themselves stay readable by any model: what runs by itself here is text in the repo,
   a version that is not is never taken without his word, and an update never runs the tool's own updater [D623, D625].
   Impeccable stays on v4.1.1 until it moves to v4.1.3 by its vendoring note's steps, on its own branch, read as a guide
-  change is — by Astra, beside a fresh, blind Opus reader — and merged on his "merge live" [D625, D1734, D1738, D1739,
-  D1761].
+  change is — by Astra and a second reader — and merged on his "merge live" [D625, D1734, D1738, D1739, D1761, D1770].
 
 ## The platform and the database
 - The database comes at the end, once the features are built — after phase 7 no more database-readiness work until
@@ -328,8 +330,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   at every step [D1415].
 - Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it;
   the agent still reads and reports the figure and saves the state before the limit can stop it; until Mon 9 Nov 26
-  19:00 his Codex allowance too — the work planned to spend both, chats side by side where the work allows [D1033,
-  D1415, D1743].
+  19:00 his Codex allowance too — the work planned to spend both, chats side by side where the work allows; Astra
+  reads on after it [D1033, D1415, D1743, D1770].
 - Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
   one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667]. Before a
   compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it

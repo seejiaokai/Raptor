@@ -58,11 +58,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
   his page https://claude.ai/artifact/NthXwi7aV811LMmuC1ENmE).** Each job its own branch from `main`, its own check, live on
   his "merge live"; React Doctor's 183 findings in the app ride with their area's job (D1534, D490).
   - **Night 1:** (1) Leave War faults — [LW-NIGHT1025-OLDER] (a) first, then (c), (d), (f), (g); [CSS-WRAPPER-GUARD] — FULL.
-    (2) The board by the keys — [BOARD-KEYS-LEFT], [WINDOWS-KEEP-KEYS]' three leftovers, [WEEK-GLIDE-TWO-PAGES] — WALK.
-    (3) React Doctor on the shell, state and windows (about 90), with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) — WALK.
+    (2) The board by the keys — [BOARD-KEYS-LEFT], [WINDOWS-KEEP-KEYS]' three leftovers, [WEEK-GLIDE-TWO-PAGES] — WALK. Live 8 Nov 26 (pull request 664).
+    (3) React Doctor on the shell, state and windows (about 90), with [DOC-POINTERS-CODE] and [ONE-RULE-LEFTOVERS] (3) — WALK. Live 8 Nov 26 (667).
   - **Night 2:** (4) People and Quals — [QUALS-HEAD-FINGER-CAPTURE], [QUALS-PINCH-NOSDA-HEAD], [QUALS-ZOOM-EDGE-SLIVER], React
     Doctor's ~55 there. (5) Inputs — [INP-CARD-COLUMNS], [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor's ~35 there. (6) Insights —
-    [STACK-LEFTOVERS] (1), (2), React Doctor's 3; [LW-M1-READ-LEFTOVERS] archived.
+    [STACK-LEFTOVERS] (1), (2), React Doctor's 3; [LW-M1-READ-LEFTOVERS] archived. Live 8 Nov 26 (669).
   - **Night 3 (no app change):** (7) the checks — [CI-SMOKE-TIMEOUT], [SHELL-SCRIPT-GUARD], [MERGE-ONCE-RECORDS] (his "merge
     live"). (8) documents — [RULINGS-SPENT-PASS], [CAL-JOB-LEFT], [LW-READS-OWED-1024], [WORD-LIST]. (9) the folder —
     [REPO-TIDY] (1), [MAIN-CHECKOUT-STALE] (2).
@@ -78,7 +78,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
 - **At the end (D473):** the database step — the "Database step" group below.
-- **ChatGPT is back on a Pro plan, called only on his word (D1734, 7 Nov 26):** the reads owed in [NO-ASTRA-LIST], each his to call (D761).
+- **ChatGPT is back on a Pro plan (D1734, 7 Nov 26) — Astra the standing reviewer again (D1770, 8 Nov 26), Sol 6.1 on his word:** the reads owed in [NO-ASTRA-LIST], each his to call (D761).
 - **Before any collaborator is added:** the checks runner comes off this repo ([REPO-PRIVATE]).
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
@@ -145,7 +145,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-OIL-OPENING-AWARD] — at go-live: an opening OIL balance given as an award (D1255) shows on the grid as an FO / HO on its date and follows the OIL expiry rule — a question for him before the database step.
 - [LEAVE-YEAR] — yearly leave balances and carry-over — ruled (D1218, D1224, D1229, D1234, D1235, D1473, D1474, D1489 — the other kinds keep their figures on 1 Jan), built with the Leave War overhaul's M5a.
 - [LW-SORT-BY-FLIGHT] — sort the war by flight — his idea, not designed (D1001).
-- [LW-M1-READ-LEFTOVERS] — all four settled (two built 23 Oct 26, one found not to arise, the midnight one built); the replace note walked at its doors 30 Oct 26; archive once live.
 - [LW-UNDO-BLOCK-REOPEN] — with the database step: a member's Undo or Redo refused onto a day closed for him stays passed over until sign-out, even if an admin reopens the day from another device.
 
 **Tracker**
@@ -179,7 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
-- [BOARD-KEYS-LOOKS] — three looks under the keys on the Scheduler Board, parked by the night of 7–8 Nov 26 (D1625): the ⋯ menu's item and a menu button wear the browser's ring, not the app's cyan one; Tab out of a menu two ways — questions for him, with pictures; and one small tidy-up (low, the agent's).
+- [BOARD-KEYS-LOOKS] — his answers 8 Nov 26 (D1771): the ⋯ menu's item and the + Block and Templates buttons get the app's cyan keyboard ring — one small job, the look and a walk, with its small tidy-up, inside the pictures round's group 1; Tab out of a menu stays as built (D1772).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -191,7 +190,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Checks and tooling**
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
-- [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs built 8 Nov 26 (`claude/ci-smoke-timeout`, his "merge live"); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
+- [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
@@ -1644,20 +1643,6 @@ browser the admin's close sits on the shared timeline above the member's step, w
 view…". It becomes real once two people work on one database. **Fix then:** when the war's open dates change (an `lw.war`
 change arriving from elsewhere, in `ingest`), clear the blocks `refusedFor` set and the ones behind them. **Place:** the database step.
 
-### [LW-M1-READ-LEFTOVERS] Four small things M1's code read found, older than M1 or needing two live sessions (filed 22 Oct 26)
-**ALL FOUR SETTLED — to archive once live (30 Oct 26).** (2) was built on 23 Oct 26 (M3's folded items — `inputgate.ts` hands the note to the command as a deferred effect; `memberclash.test.ts`) and was walked at its doors on 30 Oct 26 (`raptor-port/docs/handpass/2026-10-30-lw-small-fixes.md` §5, S3): a filing that lands over another man's bid says it once, a refused one says nothing and the bid stays, Undo and Redo say nothing of it, the war's own filings never say it. (4) was built the same day (a Move onto a closed day reads "That day is closed for bidding. Pick an open day." — `Matrix.tsx moveReason`).
-From M1's two blind code reads (the evidence sheet `raptor-port/docs/handpass/2026-10-22-lw-m1-open-dates.md` §13).
-(1) — **FOUND NOT TO ARISE (27 Oct 26, M4's build — the spec's 9.8):** only a leave or a medical replaces a pending bid; a member files neither for another man (D655) and may not change a shared leave someone else filed (D763), so no command of his replaces another man's bid — pinned in `raptor-port/src/leavewar/memberclash.test.ts` and `m4ride.test.ts`; no permission was widened for it. **A member's SHARED input over another man's pending bid** (D660 — he files for others): the clash rule writes a notice
-on the other man's war row inside the member's command, and the commit refuses "another person's war row" — so his whole
-filing fails. Older than M1 (the check is the same on any day), more often met now that Inputs-page filing is the way on a
-closed day. Check in the running app first; if it fails, let a notice the clash rule writes for another man ride a member's
-own filing. (2) **The "This replaces your LL bid…" note is raised before the commit's check**, so a filing the check refuses
-still shows it (Opus H1 step 4) — say it only once the command lands. (3) **— BUILT 23 Oct 26 on M1 (D1266, his word): `leavewar/ui/dayclock.ts`.** **Midnight with the page open:** a member's dim,
-lock, outline and chip read his today when the store last changed, so they stay a day behind until the next change (Fable
-scenario 7, Opus 10) — re-read today on the page's next show or a timer at midnight. (4) **A member's Move refused on a
-closed landing** reads "That lands outside what you can edit — pick another day." — true but vague; "That day is closed
-for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
-
 ### [CI-FAIL-PICTURES] GitHub's browser-test jobs keep no pictures of a failure (filed 27 Sep 26)
 The `[LW-MOVE-CI-RED]` investigation found NO artifacts on any failed run: `.github/workflows/deploy.yml`'s geometry jobs
 upload no Playwright report, trace or error picture, so a red run on GitHub can only be read from its log. **Do, if he
@@ -2250,7 +2235,11 @@ white ring under the keys, as on `main` — recommended: the cyan ring, as D1646
 (the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
 onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
 menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
-finding 4). **Place:** low — the questions wait until he says (D994); the tidy-up with the next change to the board's menus.
+finding 4). **His answers, 8 Nov 26 — D1771, D1772 (all as recommended):** Q1 and Q2 the cyan ring, to build; Q3 stays
+as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it — built inside the pictures round's build,
+its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 26; chat 3 asked to add it to its plan. The
+same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
+there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
 
 ### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on

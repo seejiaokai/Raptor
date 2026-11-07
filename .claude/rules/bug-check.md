@@ -45,21 +45,23 @@ Then, before you execute anything:
 
 ## When to call in Fable and Codex
 
-- §4 of the order decides it, not habit (D353: scenarios and side questions one reader — a fresh Opus reader unless he calls
-  Astra; a plan's red team both, when he calls them, and a fresh, blind Opus reader meanwhile — who they are now,
-  below: D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760). Its short form: scenario design first — ask them what is
-  missing, not whether the code is wrong; both of them reading the code only on money, published records, permissions
-  or persistence, when he calls them; and never another static review when what is missing is someone running the app — that one is called
+- §4 of the order decides it, not habit (D353: scenarios and side questions one reader — Astra, the standing reviewer, or a
+  fresh Opus reader when Astra cannot run; a plan's red team two — who they are now, below: D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1760, D1770). Its short form:
+  scenario design first — ask them what is
+  missing, not whether the code is wrong; Sol 6.1's second read of the code only on money, published records,
+  permissions or persistence, and only on his call; and never another static review when what is missing is someone running the app — that one is called
   review pile-on.
-- **Who they are now:** Astra and Sol 6.1 are called only when he calls for them, each time — D1738 and D1739 call
-  Astra for the rules diet's reworded steps, D1761 for every working-guide change, the fresh Opus reader the second (his design-lesson lines excepted),
-  and D1743 his readers for the work in hand until Mon 9 Nov 26 19:00 (Sol
-  6.1 too where a second reader fits). When he calls them, for work Opus wrote Astra reviews and Sol 6.1 is the
-  second reader where two are required. Fable is on call only — a bug Opus cannot crack, or a big open-ended plan — on
-  his word. What Codex wrote, Opus reads (D590, D601, D790, D903, D1734, D1738, D1739, D1761, D1743).
-- **Unless he calls for a ChatGPT reader,** every job that needs a code read gets a fresh, blind Opus read of its
-  finished code, never by the chat that wrote it (D790, D903, D1734, D1738, D1739, D1761).
-- **Fable is used for nothing unless he calls for it** — the riskiest changes get the Opus read alone (D903).
+- **Who they are now:** Astra is the standing reviewer again, with no end date (D1770): for work Opus wrote Astra
+  reviews, called without asking him each time — the rules diet's reworded steps among them, which never go on without his
+  read (D1738, D1739), and every working-guide change (D1761). Sol 6.1 is called only when he calls for him — and until Mon 9 Nov 26 19:00 where a second reader fits (D1743); otherwise, where
+  two readers are required, the fresh, blind Opus reader keeps the second seat (the agent's reading). Fable is on call
+  only — a bug Opus cannot crack, or a big open-ended plan — on his word. What Codex wrote, Opus reads (D590, D601,
+  D790, D903, D1734, D1738, D1739, D1761, D1743, D1770).
+- **Beside Astra's read,** every job that needs a code read gets a fresh, blind Opus read of its finished code, never
+  by the chat that wrote it; a job that went without Astra's read, or without Sol 6.1's where two are required, goes on the reads-owed list (D790, D903, D1734, D1738,
+  D1739, D1761, D1770).
+- **Fable is used for nothing unless he calls for it** — the riskiest changes get no Fable read: Astra's and the fresh
+  Opus read (D903, D1770).
 
 ## What is not a finding (D56) — read this before you spend anything
 

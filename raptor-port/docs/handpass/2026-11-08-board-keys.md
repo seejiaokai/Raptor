@@ -186,6 +186,9 @@ Every fix touched the board's menus or the glide, and every part of both was wal
 
 ## 11. Parked for him — not built tonight (D1625), each with a recommendation
 
+**His answers, 8 Nov 26 ("Ok all as recommended"): D1771 (Q1 and Q2 — the cyan ring), D1772 (Q3 — leave as built).** Q1
+and Q2 are one small job of their own, filed under `[BOARD-KEYS-LOOKS]`.
+
 Filed in the backlog as `[BOARD-KEYS-LOOKS]`; the three items this job closed (`[BOARD-KEYS-LEFT]`, `[WINDOWS-KEEP-KEYS]`,
 `[WEEK-GLIDE-TWO-PAGES]`) left for the archive.
 

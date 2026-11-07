@@ -3982,3 +3982,17 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** the sweep for "who reads a guide change" searched a hand-picked list of files (the rule files, the project guide, the bug-check order, the Codex guide). Both blind readers then found four more guides still stating the old readers — two vendoring notes under the skills folder, the design guide, the agents' bridge file — and a backlog item. A chat following any of them would have called the wrong reader.
 **Suggested improvement:** the D201 sweep searches every Markdown file in the repo by the rule's subject (archives and full-text rulings excluded), not a list chosen from memory, and its brief to the readers names the search it ran so they can widen it.
 **Principle:** a search for stale statements of a rule must cover every place a rule can be written, chosen by the search itself, never by the writer's memory of where rules live.
+
+### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** recording D1770 (one of two reviewers made standing again; the other left on call) across a rules page, two always-loaded rule files and a guide
+**Skill:** New skill candidate: recording a ruling (the steps at the head of DECISIONS.md)
+**Type:** open-source
+**Phase/Area:** step 2 — fixing what the older ruling left behind (D201)
+**Reference file:** raptor-port/docs/superpowers/briefs/2026-11-08-d1770-placed-read.md
+
+**Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
+**Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
+**Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
