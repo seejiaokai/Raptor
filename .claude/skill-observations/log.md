@@ -3911,3 +3911,29 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The first reader's report was kept outside the working folder, but its findings were then summarised into the handoff note inside the working folder while the second reader was still running, and the second reader's brief told it to read the project's notes. It was caught and the note set aside until the second report came in; nothing showed the second reader had read it.
 **Suggested improvement:** While any blind reader is running, write nothing about another reader's findings anywhere in the folder it reads — the handoff note included; keep reports and notes on them in a scratch folder outside it until every reader has reported.
 **Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
+
+### Observation 854: A walk of a window that opens on a filtered view must press the view that shows everything
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the walk briefs
+
+**Issue:** Job 3's walk of the change history saw nothing at first: the window opens on "New to you", and the changes the walk made were not new to the walker; it had to press "All changes" to see them.
+**Suggested improvement:** Each walker's brief names the filter or tab a window opens on and the one to press to see the walk's own changes.
+**Principle:** A view that opens filtered can hide exactly what the test just did; name the unfiltered view in the walk's steps.
+
+### Observation 855: Measure the step times before calling a CI job hung
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the night of 7–8 Nov 26 (/overnight, 9 hours), reported by its job helpers
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — the jobs; any job about a slow or stuck check
+
+**Issue:** The backlog item said the Tracker's smoke test "hung 16 minutes" on 5 Nov 26; the job measured GitHub's step times over 20 runs and found 12.3 of the 16 minutes were the browser install's system download, slow in 9 of 20 runs, and two older stalls of 62 and 43 minutes before the smoke.
+**Suggested improvement:** A job about a slow or stuck check first reads the step times of recent runs (`gh run view <id> --json jobs`) and names the slow step before setting limits or blaming a test.
+**Principle:** A label from one failed run is a guess; the step times across many runs say where the time goes.
