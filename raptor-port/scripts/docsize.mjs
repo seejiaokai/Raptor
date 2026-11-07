@@ -47,6 +47,7 @@
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
  * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check);
  * --marks lists the rulings' back-marks, their drift since the base, and which short lines are extracts (D390).
+ * --reads [--verbose] prints what a chat reads, in tokens, by kind of job — docsize-reads.mjs (D1735; a report, never a gate).
  * The closing report copies the `Docs:` and `docsize:` lines this prints (bug-check-order §9). */
 import { readFileSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
@@ -1014,6 +1015,13 @@ function ceilingMovedWithCode(paths) {
    of the area files fit about 2.74 characters a token for ordinary text and 1.17 capital LETTERS a token (the old
    bytes / 3.7 under-read the scheduler's rulings by half). An estimate for the table, never a gate. */
 export const estTokens = text => { const caps = (text.match(/[A-Z]/g) || []).length; return Math.round((text.length - caps) / 2.74 + caps / 1.17) }
+/* --reads: what a chat reads, measured (D1735 — the rules diet's plan §1, §5). Here, after estTokens, which it is handed:
+   docsize-reads.mjs cannot import this file, which runs the gate as it loads. A report, never a gate (D141). */
+if (process.argv.includes('--reads')) {
+  const { printReads } = await import('./docsize-reads.mjs')
+  printReads(REPO, estTokens, process.argv.includes('--verbose'))
+  process.exit(0)
+}
 /* A short line written in capitals (D970: written in ordinary letters, capitals only where a name or a short form has
    them) — two letters in five of its rule text capitals, at least 20 letters to judge by, or three capital words to open it. */
 export const capsHeavy = line => RL.capsText(RL.parseShort(line).text || '')

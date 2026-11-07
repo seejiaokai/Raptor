@@ -3780,3 +3780,18 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Principle:** Work too big for one session is split where it is planned, not where the session happens to fill up; each slice ends at a point that is built, tested and committed.
 
 **Met again 7 Nov 26 (`claude/rules-diet-step1`, part 3):** the handoff named "part 3" as one slice though it held three builds (`--merge` in both shapes, the seam files, `docsize --reads`); the chat started at 41% from what loads at the start and reached 76% from reading the plan and the scripts alone, so it built the smallest (the seam files) and handed off with the other two designed in the block. Proposed guard: the outgoing chat sizes the next slice against what a fresh chat has left after its start-up load (measured, not guessed) and names one build per slice where a build needs its scripts read whole.
+
+### Observation 840: A helper that turns a failed command into empty output made a report read "nothing loads"
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** the rules diet, step 1 part 3c — `docsize --reads`, a report of what a chat reads
+**Skill:** New skill candidate: writing repo scripts (no skill covers it; the project guide's token-discipline rules are nearest)
+**Type:** open-source
+**Phase/Area:** a script's shell-out wrapper
+
+**Issue:** The new report listed files with `git ls-files` through the house wrapper `try { return execFileSync(...) } catch { return '' }`. In this repo the listing outgrows Node's default output buffer (1 MB), so the call threw and the wrapper returned an empty list; the report then printed every rules file as not loading — plausible-looking numbers, wrong by 300,000 tokens. Only comparing them with the plan's known figures caught it.
+
+**Suggested improvement:** In any repo script, a shell-out whose empty result is a meaningful answer ("no files", "nothing changed") must not swallow errors: let it throw, or return null and test for it. Narrow listings to the paths needed, and set `maxBuffer` on any listing of a whole repo.
+
+**Principle:** An error that becomes an empty value is indistinguishable from a true "none"; only swallow errors where "none" and "failed" lead to the same action — and check a new report's first numbers against an independent figure before trusting it.

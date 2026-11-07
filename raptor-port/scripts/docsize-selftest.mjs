@@ -15,6 +15,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
+import * as READS from './docsize-reads.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const GATE = join(HERE, 'docsize.mjs')
@@ -698,6 +699,102 @@ gitRulings('a merge whose result still owes hand work keeps it WRITTEN and names
   mergeIn(g, 'old', 'slim'); return run('--rulings', '--merge') }, (c, r) =>
   !/WRITTEN/.test(r.stderr) || !/carries no mark naming D9/.test(r.stderr) ? 'it did not say WRITTEN and name the missing mark'
   : !existsSync(join(c.dir, FULL)) || !has(c, FULL, '**Nine is the rule.**') || !has(c, AREA, '| D9 | 22 Sep 26 | Nine is the rule. |') ? 'the result was not left written' : '')
+
+/* --merge ACROSS THE PAGE SHAPE (owner, D1735 — the rules diet's step 1, part 3b; plan §5): a real `git merge` between a
+   branch that converted the area `other` to a page (recording D8, stated on it) and one still in short lines (D9 filed,
+   D5's short line, D6's full row and the "Also read" line edited), each way. The page is taken whole and keeps no row;
+   the old side's rows reach the full-text file; what the old side changed is listed PLACE ON THE PAGE and never written,
+   D8 not; the map lists the full-text file's rulings; the gate stays red for D9 until a line states it — so the result is
+   judged by the files and the output, and the command ends WRITTEN. Then a page changed on both sides. */
+const OTHER_SHORT0 = OTHER_HEAD.replace('# Rulings — other\n\n', '# Rulings — other\n\nAlso read — nothing yet.\n\n') + shortRow('D6', 'f') + '\n' + shortRow('D5', 'e') + '\n'
+const D8full = newFull('D8', '**Eight is the rule.**')
+const PAGE8 = otherPage({ topic: [p5, '- Rule eight holds on the other screens as well [D8].'] })
+const D6edit = fullRow('D6', 'f', 'this file').replace('**Rule f.** f', '**Rule f.** f, edited on the old branch')
+function pageMerge(name, { unconverted = false, into }) {
+  gitRulings(name, false, (c, g, run) => {
+    c.write(OTHER, OTHER_SHORT0); c.write(OTHER_FULL, OTHER_FULL0); addOther(c, 'D6, D5'); c.commit('the base: other in short lines')
+    g('checkout', '-q', '-b', 'page'); c.write(OTHER, PAGE8); c.edit(OTHER_FULL, t => topOf(t, D8full)); setMap(c, OTHER, 'D8, D6, D5')
+    const r0 = run('--rulings'); if (r0.status !== 0) throw new Error('the page branch is not clean: ' + r0.stdout + r0.stderr); c.commit('page: other converted, D8 recorded')
+    g('checkout', '-q', 'main'); g('checkout', '-q', '-b', 'old')
+    c.edit(OTHER, t => topOf(t, unconverted ? D9row : shortRow('D9', 'i', '', '22 Sep 26')).replace(shortRow('D5', 'e'), shortRow('D5', 'e').replace('Rule e.', 'Rule e, edited on the old branch.')).replace('Also read — nothing yet.', 'Also read — D1, added on the old branch.'))
+    c.edit(OTHER_FULL, t => (unconverted ? t : topOf(t, D9row)).replace(fullRow('D6', 'f', 'this file'), D6edit)); setMap(c, OTHER, 'D9, D6, D5'); c.commit('old: D9, D5, D6 and a line')
+    mergeIn(g, into, into === 'page' ? 'old' : 'page'); return run('--rulings', '--merge')
+  }, (c, r) => {
+    const full = c.read(OTHER_FULL), at = s => full.indexOf(s), place = (r.stdout.split('PLACE ON THE PAGE')[1] || '').split('\n\n')[0]
+    const map = (c.read('DECISIONS.md').split('\n').find(l => l.includes('`' + OTHER + '`')) || '').split('|').slice(-2)[0].trim()
+    return [OTHER, OTHER_FULL, 'DECISIONS.md'].some(f => /^(<{7}|>{7}|={7})/m.test(c.read(f))) ? 'conflict markers left'
+      : c.read(OTHER) !== PAGE8 ? 'the page was not taken whole, or a row was left on it'
+      : at(D9row) < 0 || at(D8full) < 0 || at(D6edit) < 0 || Math.max(at(D9row), at(D8full)) > at(D6edit) ? 'D9 and D8 are not both at the top of the full-text table, whole, with the old side\'s edit of D6'
+      : !/D9 \("[^"]*"\) — new on/.test(place) || !/D5 — its short line changed/.test(place) || !/D6 — its full row changed/.test(place) || !/\+ Also read — D1, added on the old branch\./.test(place) ? 'PLACE ON THE PAGE does not list D9, D5, D6 and the line'
+      : /D8/.test(place) ? 'D8, stated on the page, was listed to place'
+      : map.split(', ').sort().join() !== 'D5,D6,D8,D9' ? `the map lists ${map}, not the full-text file's rulings`
+      : !/WRITTEN/.test(r.stderr) || !/D9/.test(r.stderr) ? 'it did not end WRITTEN with the gate naming D9' : ''
+  })
+}
+pageMerge('a page merged with a branch still in short lines — the page branch merges the old one in', { into: 'page' })
+pageMerge('…the old branch merges the page in — the same result, the old shape never written back', { into: 'old' })
+pageMerge('…a ruling the old branch never ran the recorder on, merged into the page branch', { into: 'page', unconverted: true })
+pageMerge('…the same, merged into the old branch: its row leaves the page for the full-text table', { into: 'old', unconverted: true })
+const pageBoth = (c, g, run, a, m) => {
+  withPage(c); c.commit('the base: other a page')
+  g('checkout', '-q', '-b', 'a'); c.edit(OTHER, a); c.commit('a')
+  g('checkout', '-q', 'main'); c.edit(OTHER, m); c.commit('main')
+  mergeIn(g, 'a', 'main'); c.snap = c.read(OTHER); return run('--rulings', '--merge')
+}
+gitRulings('a page line both sides edited stops the command, naming it — nothing written', false, (c, g, run) => pageBoth(c, g, run, t => t.replace(p5, p5.replace('area', 'area, from a')), t => t.replace(p5, p5.replace('area', 'area, from main'))), (c, r) =>
+  !/both sides edited the same page line/.test(r.stderr) || !/from a/.test(r.stderr) || !/from main/.test(r.stderr) ? 'it did not name the line both sides edited' : c.read(OTHER) !== c.snap ? 'it wrote anyway' : '')
+gitRulings('different lines of one page edited on each side merge clean', true, (c, g, run) => pageBoth(c, g, run, t => t.replace(p5, p5.replace('area', 'area, from a')), t => t.replace('built with [D6]', 'built with, from main [D6]')), c =>
+  !has(c, OTHER, 'area, from a [D5]') || !has(c, OTHER, 'built with, from main [D6]') ? 'one side\'s line was lost' : '')
+gitRulings('an area converted to a page on both sides since the base stops the command', false, (c, g, run) => {
+  c.write(OTHER, OTHER_SHORT0); c.write(OTHER_FULL, OTHER_FULL0); addOther(c, 'D6, D5'); c.commit('the base: other in short lines')
+  g('checkout', '-q', '-b', 'a'); c.write(OTHER, otherPage()); c.commit('a converts')
+  g('checkout', '-q', 'main'); c.write(OTHER, otherPage({ settled: ['- The other screen keeps its first look, as built [D6].'] })); c.commit('main converts')
+  mergeIn(g, 'a', 'main'); c.snap = c.read(OTHER); return run('--rulings', '--merge') }, (c, r) =>
+  !/converted to a page on both sides/.test(r.stderr) ? 'it did not say so' : c.read(OTHER) !== c.snap ? 'it wrote anyway' : '')
+
+/* docsize --reads (owner, D1735 — the rules diet's step 1, part 3c; plan §1, §5): what a chat reads, followed through
+   the rules files' paths: until nothing new loads, each file counted once, in the first column that loads it. Run on a
+   small set held in memory; a report, so these cases check the arithmetic and the follow-through, never a ceiling. */
+function reads(name, fn) { const why = fn(); if (why) failed++; console.log(`${why ? 'MISS' : 'PASS'}  reads: ${name}${why ? ` (${why})` : ''}`) }
+const RFILES = {
+  '.claude/rules/always.md': '# Always\n\nLoaded in every chat.\n',
+  '.claude/rules/area-a.md': '---\npaths:\n  - app/a/**\n  # a comment line, skipped\n---\n\n# Area A\n',
+  '.claude/rules/area-b.md': '---\npaths:\n  - docs/guide.md\n  - .claude/rules/area-a.md\n---\n\n# Area B, read in turn\n',
+  '.claude/rules/area-c.md': '---\npaths:\n  - app/c/**\n---\n\n# Area C, never opened\n',
+  'app/CLAUDE.md': '# The app guide\n',
+  '.claude/hooks/task-observer-session-start.sh': '#!/usr/bin/env bash\n# a comment naming <<EOF, never a note\nread -r -d \'\' X <<\'EOF\' || true\nthe start note\nEOF\n',
+  '.claude/hooks/record-decisions.sh': 'cat <<\'NOTE\'\nthe message note\nNOTE\n',
+  '.claude/skills/s/SKILL.md': '---\nname: s\ndescription: >\n  a skill, described\n  over two lines\n---\n\nThe body, never listed.\n',
+  '.claude/agents/h.md': '---\nname: h\ndescription: a helper\n---\nbody\n',
+  'HANDOFF.md': '# Handoff\n', 'OUTSTANDING.md': '# Backlog\n\nthe priority list\n\n## Items\n\nnever read at the start\n',
+  'docs/guide.md': '# Guide\n\n## 1. One\n\nthe first part\n\n### 1a. Below it\n\nstill the first\n\n## 2. Two\n\nnot read\n',
+}
+const rRead = f => RFILES[f] ?? null, rEst = t => t.length
+const rRun = (over = {}) => READS.measure({ files: Object.keys(RFILES), read: rRead, est: rEst, jobs: [{ job: 'notes', opens: [], check: false }, { job: 'a', opens: ['app/a/x.ts'] }], taskReads: [{ f: 'HANDOFF.md' }, { f: 'OUTSTANDING.md', upTo: '## Items' }], checkReads: [{ f: 'docs/guide.md', sections: ['## 1.', '## 9.'] }], ...over })
+const fs_ = col => col.map(x => x.f + (x.part ? ` (${x.part})` : ''))
+reads('the start: rules with no paths:, the hook\'s note and each description — never a scoped rules file or a skill\'s body', () => {
+  const m = rRun(), s = fs_(m.start).join(' | ')
+  return s !== '.claude/rules/always.md | .claude/hooks/task-observer-session-start.sh (its note) | .claude/skills/s/SKILL.md (description) | .claude/agents/h.md (description)' ? `start was ${s}`
+    : m.start[1].tokens !== 'the start note'.length ? 'the hook\'s note was not read from its here-document' : m.start[2].tokens !== 'a skill, described over two lines'.length ? 'the folded description was not read whole' : ''
+})
+reads('the note on each message is the hook\'s here-document', () => rRun().message?.tokens === 'the message note'.length ? '' : 'wrong note')
+reads('a notes job reads its task files and loads nothing; no check', () => { const j = rRun().jobs[0]; return fs_(j.task).join(' | ') !== 'HANDOFF.md | OUTSTANDING.md (up to ## Items)' ? `task was ${fs_(j.task).join(' | ')}` : j.check.length ? 'a check was counted' : j.task[1].tokens !== '# Backlog\n\nthe priority list\n'.length ? 'the backlog was not cut at its items' : '' })
+reads('an opened file loads its area\'s rules and the CLAUDE.md of its folder, followed until nothing new loads; a file loaded once is not counted again', () => {
+  const j = rRun().jobs[1], t = j.task.map(x => x.f), c = j.check.map(x => x.f)
+  return !t.includes('.claude/rules/area-a.md') || !t.includes('app/CLAUDE.md') ? `task loaded ${t.join(', ')}`
+    : !t.includes('.claude/rules/area-b.md') ? 'area B, whose paths: name the loaded area A, was not followed'
+    : t.includes('.claude/rules/area-c.md') || c.includes('.claude/rules/area-c.md') ? 'area C, never opened, was counted'
+    : c.filter(f => f === '.claude/rules/area-b.md').length ? 'area B was counted again in the check' : ''
+})
+reads('a check read of named sections takes each to the next heading of its level; a missing heading is reported', () => {
+  const m = rRun(), x = m.jobs[1].check[0]
+  return x.tokens !== '## 1. One\n\nthe first part\n\n### 1a. Below it\n\nstill the first\n'.length ? `the section read ${x.tokens} characters` : !m.missing.some(s => /no heading "## 9\."/.test(s)) ? 'the missing heading was not reported' : ''
+})
+reads('…and a check read loads in turn what its paths: name (the plan\'s layer J)', () => {
+  const m = rRun({ jobs: [{ job: 'b', opens: ['HANDOFF.md'] }] }), c = m.jobs[0].check.map(x => x.f)
+  return c.includes('.claude/rules/area-b.md') ? '' : `check loaded ${c.join(', ')}`
+})
+reads('follow stops on a cycle', () => READS.follow(['x'], [{ f: 'p', globs: ['x', 'q'] }, { f: 'q', globs: ['p'] }], []).map(x => x.f).join() === 'p,q' ? '' : 'it did not stop once each had loaded')
 
 /* THE STOP HOOK (A8) — needs bash; skipped, and said so, where there is none. */
 const HOOK = join(HERE, '..', '..', '.claude', 'hooks', 'backlog-guard.sh')

@@ -54,7 +54,8 @@ that one is rewritten. 3. **Run the same command:** it writes no short line and 
 until the page states every live ruling with the rulings that change it — and cites no replaced ruling and no number
 that is no ruling — it writes nothing and prints each edit owed, by page, line and section. `--move-rows` into a page
 drops the ruling's short line; out of one, it makes the short line from the full row's first bold sentence (or
-`--short-text`) and prints the page lines that state the ruling, to move.
+`--short-text`) and prints the page lines that state the ruling, to move. During a merge, `--merge` takes a page whole from
+the side that has it, writes the other side's new rows to the full-text file, lists what the side still in short lines changed under PLACE ON THE PAGE (never written), and stops where both sides edited the same page line.
 
 **Parallel branches (owner, D78):** when several chats run at once, each reaches `main` only on his
 "merge live", ONE AT A TIME; whichever merges later merges `main` in first, and if a D-number
