@@ -28,7 +28,7 @@ the later merge keeps both (D78).
 - **Next, in his order:** (1) **the M365 data package** he was given, with its instructions for the tables — a fresh chat reads it first (he gives its folder or attaches it), copies nothing of it into the project while the project is public, and reports in plain words what it says about the tables, what it changes in `raptor-port/docs/data-model.md`, `raptor-port/docs/handover-dataverse.md` and the M365 move plan, what needs the IT side, and whether the app can be ready by February (his target; what "ready" means is his to say), with a week-by-week plan — his requirements already ruled: D473, D1099, D1100, D1101, D1536, D1695, D774. (2) **The rules diet's step 4** in another fresh chat; recommended after it: OIL alone, then the four small areas side by side, the pause, then 5b side by side — most likely stopping before 5b.
 - **Asked, not answered:** whether Astra goes back to standing reviewer of every code read (D590) after Monday — recommended yes.
 - **Chat numbers (D1744):** each chat's title starts with its number — 1, the M365 package; 2, the rules diet's step 4; the next chat takes 3, and whoever starts it writes the new number here.
-- **Rulings:** D1741, D1742, D1743, D1744.
+- **Rulings:** D1741, D1742, D1743, D1744. **Compacted 7 Nov 26, 22:30** — the state above checked after it; chat 1 (the M365 package) running.
 <!-- /now -->
 
 ## Next, in order
