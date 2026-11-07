@@ -72,7 +72,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); next: the plan's step 3 (§7), on a new branch from `main`.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 on `claude/rules-diet-step-3-f1a069`.
+    Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -271,6 +272,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
+**What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
+(every screen a walk pictures checked for the standing layout lessons — each pair of side-by-side boxes one height and one
+line) stands after §8, outside §7.11. An agent going through §7.11 "for each lesson" (D1297) can miss that one; meanwhile
+the checklist (`raptor-port/docs/bug-check-checklist.md`) names it "the second 23". **To do:** move the second 23 into
+§7.11, whole (D138), and put 7's text before 8's; lessons are cited by number elsewhere (the backlog, evidence sheets,
+briefs), so search for each number first and keep a number that is cited; then match the checklist's list. **Place:**
+low, the agent's — with the rules diet's step 4 or the next change to the order.
 
 ### [QUALS-PINNED-HEAD-NO-DRAG] A heading in Quals' pinned row cannot start a column drag (the night of 6 Nov 26)
 In Edit quals with the page scrolled down, a heading in the pinned row under the top bar cannot be pressed to start a column drag: the press listener is on the table alone. Scrolling up to the table's own heading row works. Older than the night's job (`raptor-port/docs/handpass/2026-11-06-people-quals.md`). **Place:** small, with the next Quals job.

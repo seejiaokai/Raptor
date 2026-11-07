@@ -38,21 +38,30 @@ export const JOBS = [
   { job: 'Inputs', opens: ['raptor-port/src/ui/InputsPage.tsx', 'raptor-port/src/ui/inputedit.tsx', 'raptor-port/src/ui/OilDayList.tsx'] },
   { job: 'Tracker', opens: ['raptor-port/src/tracker/app/core.js'] },
 ]
-/* a read is a whole file, the file up to a heading (upTo), or named sections (each from its heading to the next heading
-   of the same or a higher level) — a heading named here and missing from the file is reported, never counted as nothing
-   silently */
+/* a read is a whole file, the file up to a heading (upTo), or parts of it, any of these together (partOf, below): named
+   sections, spans, rows and a search's output — a heading or line named here and missing from the file is reported,
+   never counted as nothing silently */
 export const TASK_READS = [
   { f: '.claude/skills/task-observer/SKILL.md', why: 'the skill-notes guide, invoked at a task\'s start only when the start hook gives its fallback (D1740)' },
   { f: 'HANDOFF.md', why: 'read first in every chat' },
   { f: 'OUTSTANDING.md', upTo: '## Items', why: 'its head and priority list, before telling him anything is open (D53)' },
 ]
+/* Since the rules diet's step 3 (D1735, plan §4 and §6) the bug-check order, the design guide and the ripple map are
+   read by section, as the checklist, ui-design.md's "Which part of the guide to open" and the ripple map's head note name.
+   Each read below is one stated case, for a measure that can be taken again: a different job opens other parts. */
 export const CHECK_READS = [
-  { f: 'raptor-port/docs/bug-check-order.md', why: 'a bug check: "open it"' },
+  { f: 'raptor-port/docs/bug-check-checklist.md', why: 'a bug check: the checklist first, which names each section of the order to open (D1735)' },
+  { f: 'raptor-port/docs/bug-check-order.md', sections: ['## 2a.', '## 2b.', '## 3.', '## 5.', '## 6.', '## 8.', '## 9.', '## 11.', '## 12.'],
+    spans: [{ from: '**Opus sizes the coverage', to: '**The owner\'s trigger rule' }, { from: '**7.0', to: '**7.11' }],
+    why: 'a WALK of a screen: each section the checklist names for it — the roll-call\'s and the door check\'s included — and §4\'s fan-out paragraphs; not the rest of §4 or §4a (FULL, or a code read), nor §7.11\'s lessons, each opened only when it applies' },
   { f: 'raptor-port/docs/walk-ledger.md', sections: ['## Before any walk — the sizing step', '## The types of change'], why: 'a walk is sized first (D607) — its step 1 picks from the types of change' },
   { f: 'raptor-port/docs/walk-scripts.md', why: 'every walker\'s brief names it' },
-  { f: 'raptor-port/docs/design-practices.md', why: 'interface work: the one design guide (D812)' },
+  { f: 'raptor-port/docs/design-practices.md', spans: [{ to: '## 0.' }, { from: '## 1.', to: '### 1a.' }], sections: ['## 0.', '## 3.', '## 6.', '## 9.'],
+    why: 'interface work, by section (ui-design.md): the head, §0 and §9, his lessons, for every design job; then words (§1\'s own text), placing (§3), polish before he sees it (§6)' },
   { f: 'raptor-port/docs/performance.md', sections: ['# Part 1'], why: 'interface work: Part 1, the guardrails' },
-  { f: 'raptor-port/docs/feature-impact.md', sections: ['## 1.', '## 3.'], why: 'weigh the whole ecosystem: §1 and §3' },
+  { f: 'raptor-port/docs/feature-impact.md', spans: [{ to: '**Schedule keyboard flow' }, { from: '## 1.', to: '| **Warnings**' }],
+    rows: ['| **Warnings**', '| **Undo / redo**', '| **Edit Schedule**', '| **Publishing / AL**'], sections: ['### Flow A', '## 3.', '### The single funnels'], grep: '^\\| \\*\\*[^*]*\\*\\*',
+    why: 'weigh the whole ecosystem, by section (its head note) — a schedule cell edit: the note, §3, the surface list its note\'s search prints, four §1 rows, Flow A, §4\'s funnels' },
 ]
 export const START_NOTE = '.claude/hooks/task-observer-session-start.sh'
 /* since the rules diet's step 2 (D969, point F; D1740) the start hook prints the skill-notes short form, read from this
@@ -65,21 +74,44 @@ export const MESSAGE_NOTE = '.claude/hooks/record-decisions.sh'
 const linesOf = t => (t || '').split('\n').map(l => l.replace(/\r$/, ''))
 const dirOf = f => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
 
-/* the part of a file a read takes. A heading is matched by its start, then a boundary — never a letter or digit — so
-   "## 1." or "## 1" never takes "## 10." (the step-1 reader's question 4) */
+/* the part of a file a read takes. A heading or line is matched by its start, then a boundary — never a letter or digit —
+   so "## 1." or "## 1" never takes "## 10." (the step-1 reader's question 4), and "**7.0" never takes "**7.0a".
+     upTo      the file up to that heading; alone, a missing heading counts the file whole (an upper bound);
+     sections  each from its heading to the next heading of the same or a higher level;
+     spans     [{ from, to }] — from the line that starts with from (with none, the file's first line) up to the line
+               before the next that starts with to: a part that is no heading of its own, such as a run of bold-led
+               paragraphs (the bug-check order's §7.0 to §7.10) or a section's own text above its first sub-heading;
+     rows      the one line that starts with each — a table row;
+     grep      a pattern: the text each line's matches give, as grep -o prints it (a list a rule says to print).
+   Any of these together; a line two parts share is counted once, the parts kept in the file's order, and the grep's text
+   after them. A missing heading or line — a span's from or its to — is reported, and that part counted as nothing. Not a
+   fence's lines for any of them but the grep, which reads what the command would. Returns { text, missing, whole }. */
 const headed = (l, s) => l.startsWith(s) && !/^[\p{L}\p{N}]/u.test(l.slice(s.length))
-export function partOf(text, { upTo, sections } = {}) {
+export function partOf(text, { upTo, sections, spans, rows, grep } = {}) {
   const ls = linesOf(text), inF = RL.fencedFlags(ls), level = i => { const m = !inF[i] && /^(#{1,6})\s/.exec(ls[i]); return m ? m[1].length : 0 }
-  if (upTo) { const at = ls.findIndex((l, i) => !inF[i] && headed(l, upTo)); return at < 0 ? { text: ls.join('\n'), missing: [upTo] } : { text: ls.slice(0, at).join('\n'), missing: [] } }
-  if (!sections) return { text: ls.join('\n'), missing: [] }
-  const out = [], missing = []
-  for (const s of sections) {
+  const find = (s, after = 0) => ls.findIndex((l, i) => i >= after && !inF[i] && headed(l, s))
+  if (!upTo && !sections && !spans && !rows && grep == null) return { text: ls.join('\n'), missing: [], whole: true }
+  if (upTo && !sections && !spans && !rows && grep == null) {
+    const at = find(upTo); return at < 0 ? { text: ls.join('\n'), missing: [upTo], whole: true } : { text: ls.slice(0, at).join('\n'), missing: [], whole: false }
+  }
+  const take = ls.map(() => false), missing = [], mark = (a, b) => { for (let i = a; i < b; i++) take[i] = true }
+  if (upTo) { const at = find(upTo); if (at < 0) missing.push(upTo); else mark(0, at) }
+  for (const s of sections || []) {
     const at = ls.findIndex((l, i) => level(i) && headed(l, s))
     if (at < 0) { missing.push(s); continue }
     let end = at + 1; while (end < ls.length && !(level(end) && level(end) <= level(at))) end++
-    out.push(ls.slice(at, end).join('\n'))
+    mark(at, end)
   }
-  return { text: out.join('\n'), missing }
+  for (const { from, to } of spans || []) {
+    const at = from == null ? 0 : find(from)
+    if (at < 0) { missing.push(from); continue }
+    const end = find(to, at + 1)
+    if (end < 0) { missing.push(`${to}" (the end of the span from "${from ?? 'the top'}`); continue }
+    mark(at, end)
+  }
+  for (const r of rows || []) { const at = find(r); if (at < 0) missing.push(r); else mark(at, at + 1) }
+  const hits = grep == null ? [] : ls.flatMap(l => [...l.matchAll(new RegExp(grep, 'gu'))].map(m => m[0]).filter(Boolean))
+  return { text: [...ls.filter((_, i) => take[i]), ...hits].join('\n'), missing, whole: false }
 }
 /* a hook's note: the body of its first here-document (a comment line never opens one) */
 export function heredocOf(text) {
@@ -116,8 +148,10 @@ export function measure({ files, read, est, jobs = JOBS, taskReads = TASK_READS,
   const item = (f, text, why, part = '') => ({ f, part, tokens: est(text || ''), bytes: Buffer.byteLength(text || '', 'utf8'), why })
   const take = (r, col) => {
     const t = read(r.f); if (t == null) { missing.push(`${r.f} (${col}) does not exist`); return null }
-    const p = partOf(t, r); for (const m of p.missing) missing.push(`${r.f} has no heading "${m}" (${col}) — ${r.upTo ? 'counted whole' : 'that part counted as nothing'}`)
-    return item(r.f, p.text, r.why, r.upTo ? `up to ${r.upTo}` : r.sections ? r.sections.join(' + ') : '')
+    const p = partOf(t, r); for (const m of p.missing) missing.push(`${r.f} has no heading or line "${m}" (${col}) — ${p.whole ? 'counted whole' : 'that part counted as nothing'}`)
+    const names = [...(r.upTo ? [`up to ${r.upTo}`] : []), ...(r.spans || []).map(s => `${s.from ?? 'the top'} … ${s.to}`), ...(r.sections || []),
+      ...(r.rows || []).map(x => `the row ${x}`), ...(r.grep != null ? [`grep -o ${r.grep}`] : [])]
+    return item(r.f, p.text, r.why, p.whole ? '' : names.join(' + '))
   }
   const rules = files.filter(f => /^\.claude\/rules\/.+\.md$/.test(f) && read(f) != null)
   const scoped = rules.filter(f => RL.isScoped(read(f))).map(f => ({ f, globs: RL.pathsOf(read(f)) }))

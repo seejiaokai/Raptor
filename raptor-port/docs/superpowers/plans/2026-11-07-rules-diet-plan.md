@@ -398,6 +398,25 @@ both shapes). Dry-run on the samples against the real rulings, each page given i
   the plan's figure was not re-derived); (4) a heading is matched to a boundary, so "## 1" never takes "## 10"; (5) a
   page's area gets a full-text header in the page's words.
 
+### Step 3 — reading by section, measured (7 Nov 26, `claude/rules-diet-step-3-f1a069`)
+
+`docsize --reads` now counts the three documents by part (`docsize-reads.mjs` `CHECK_READS`; `partOf` gained spans, rows
+and a search's output, each with a self-test case). Each figure is one stated case, so it can be taken again; a different
+job opens other parts. **Measured against `main` at `32ac5bd59` (step 2 live), in tokens:**
+
+| Read | Before | After | The plan said | The case counted |
+|---|---|---|---|---|
+| The bug-check order | 40,301 whole | 26,740 (the checklist 3,660 + the order's parts 23,080) | ~10,000 | a WALK of a screen: §2a, §2b, §3, §5, §6, §7.0–§7.10, §8, §9, §11, §12 and §4's fan-out paragraphs — every section the checklist names for a WALK, the roll-call's and the door check's included; not §4's readers or §4a (FULL, or a code read), nor §7.11's lessons (7,028 in all), each opened when it applies |
+| The design guide | 50,631 whole | 33,778 | ~12,000 | the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1's own text, §3, §6 |
+| The ripple map | 28,855 (§1 and §3) | 7,431 | ~7,000 | a schedule cell edit: the head note, §3, the surface list the note's search prints, four §1 rows (Warnings, Undo / redo, Edit Schedule, Publishing / AL), Flow A, §4's funnels |
+| **The three together** | **119,787** | **67,949 (−43%)** | ~29,000 | |
+
+**Why the first two save less than §4 and §6 said:** §4's ~10,000 assumed a typical walk opens a few sections; the
+checklist, written to keep every section that applies a required read (D1735's condition), names eleven parts of the
+order for a WALK. §6's ~12,000 left out that §9, his lessons, is half the guide and stays whole. **Each job's whole read**, before →
+after (the "check" column; start and task unchanged but for step 3's pointer lines): Leave War 347,553 → 295,701,
+scheduler 288,117 → 236,265, Inputs 313,096 → 261,244, Tracker 300,169 → 248,317; a notes job reads none of them.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |
