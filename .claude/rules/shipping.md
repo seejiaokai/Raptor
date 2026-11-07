@@ -25,8 +25,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   request — the agent runs `npm run rulecheck` and the unit tests that read documents on his PC, until
   [REVIEW-LAYERS] builds the guard that does it, with the secrets scan (D1407, D1737).
 - Chats may run side by side as long as they never clash in anything, and above all two never merge at once: parallel
-  chats merge one at a time, each on his word, each under the merge lock and level check below; the later one merges
-  `main` in first and renumbers its own clashing rulings (D78, D1746).
+  chats merge one at a time — each on his word, or by itself where the next bullet allows — each under the merge lock
+  and level check below; the later one merges `main` in first and renumbers its own clashing rulings (D78, D1746).
 - Every merge into `main` — on his word, a notes-only pull request merging by itself (D1407, D1737), an "auto merge
   live" run (D1093) — is made in the Bash tool from the repo root, each command whole on one line (split, it runs without the
   folder setting and takes the checks lock), in four steps (D1746):
@@ -38,8 +38,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
      which goes back for his look (D1742, D1746).
   3. Level, its last run green: `gh pr merge <PR> --merge` — never `--auto`, which merges later, outside the lock
      (`main` does not make GitHub ask for an up-to-date branch, so this check is the only guard) (D1746).
-  4. Release a lock you took, whatever happened next — merged, refused or stopped — never after a `take` stopped while
-     it waited (release deletes the folder whoever holds it), and with its folder written out (a bare `release` deletes
+  4. Release a lock you took at once, whatever happened next — merged, refused or stopped — never after a `take` stopped
+     while it waited (release deletes the folder whoever holds it), and with its folder written out (a bare `release` deletes
      the checks lock, D228) (D1746):
      `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs release`
 
@@ -79,8 +79,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 - On his "merge live": the job's closing records were pushed before his look was asked for, written to be true once it
   is live; merge at once if the run on the last pushed commit is green and the branch is level with `main`, under the
   merge lock, then confirm the live app as below (a later Production deployment whose commit holds the merge counts) —
-  nothing is pushed between his word and the merge, except bringing `main` in when another chat merged first (D1742,
-  D78, D1746).
+  nothing is pushed between his word and the merge, except bringing `main` in when the branch is behind it (step 2
+  above) (D1742, D78, D1746).
 - If his look brings a change, the fix and its records are pushed together and his look is asked again — so too when
   bringing `main` in to settle a clash changed this branch's own app code (D1742, D1746).
 - His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
@@ -128,8 +128,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   his PC's runner stays stopped. Once it is private again (D106 ended — D1530 keeps it public until he says otherwise),
   the runner starts again and the full check is back on his PC; read first how they then run, moved whole to
   `raptor-port/docs/gates-and-deploy.md` §The checks run on HIS PC (D89, D106, D1530, D1556).
-- Parallel chats take turns through one lock on his PC; each parallel chat keeps its own branch, ports and rulings
-  range (D228).
+- Parallel chats' full checks take turns through one lock on his PC, the checks lock (merges have the merge lock of
+  their own, §"Push" and "merge live"); each parallel chat keeps its own branch, ports and rulings range (D228, D1746).
 - Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out walk, take
   the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`). If it is held, wait — check
