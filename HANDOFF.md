@@ -49,8 +49,8 @@ the later merge keeps both (D78).
 - **Rulings:** D1741, D1742, D1743, D1744. **Compacted 7 Nov 26, 22:30** — the state above checked after it; chat 1 (the M365 package) running.
 <!-- /now -->
 <!-- now:claude/merge-one-at-a-time -->
-### THE NIGHT OF 7 Nov 26 — done; the morning state — `claude/merge-one-at-a-time` (D1746, D1747); written 8 Nov 26, 04:55 — verify before use
-- **After a compaction:** re-read this block before the next change; note the compaction here with its time.
+### THE NIGHT OF 7 Nov 26 — done; the morning state — `claude/merge-one-at-a-time` (D1746, D1747); written 8 Nov 26, 04:20 — verify before use
+- **After a compaction:** re-read this block before the next change; note the compaction here with its time. Compacted 8 Nov 26, about 04:30, after this block was saved; re-read 04:33.
 - **Ready for his look — each its own pull request; this chat merged nothing:** 664, job 1 — the board and windows by the keys (two narrow-screen menus reached by the keys, the week glide fixed; three looks parked for him as [BOARD-KEYS-LOOKS], with pictures); 667, job 2 — React Doctor on the shell, the state and the windows (106 → 13 in its files, 38 of 38 screens identical; what is left filed as [RD-LEFT-1108]; the full unit suite not re-run after its last small fix — GitHub's run is the check); 669, job 3 — Insights' two edges pinned by tests, one shared wording body (nothing seen changes); 670, job 4 — a time limit on every GitHub test job (a workflow — his word); 668, this branch — D1746 and D1747 placed on the How we work page and the shipping checklist (always-loaded rules — his word).
 - **Merging them (D1746):** any order, one at a time, each through the merge lock; a later one brings `main` in first. 667 left the six files 664 changes alone.
 - **Beside it:** chat 2 — the rules diet's step 4, both parts live (663, 665, his "auto merge live"); its four questions and step 5a wait for him. Chat 3 — the pictures round, 14 questions, pull request 666, its page in chat 3. Chat 1 done (661 live); chat 4 waits for IT's reply.
