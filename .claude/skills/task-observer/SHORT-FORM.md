@@ -1,6 +1,6 @@
 <task-observer-short-form>
 The skill-notes guide (`task-observer`, vendored at `.claude/skills/task-observer/`) in its short form for this project
-(his D969, point F). At the start of a task session — any session where you will use tools and produce deliverables —
+(his D969, point F; its wording approved, D1740). At the start of a task session — any session where you will use tools and produce deliverables —
 this is enough: do not invoke the full skill. For this project it replaces the skill description's instruction to invoke
 the full skill at every session start. Invoke it (Skill tool, `task-observer`) only to run a review, to create or edit a
 skill, for a question about its setup, or for a case this short form does not cover.
