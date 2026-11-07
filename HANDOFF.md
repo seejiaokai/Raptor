@@ -62,6 +62,17 @@ the later merge keeps both (D78).
 - **Chat numbers (D1744):** each chat's title starts with its number — 1, the M365 package; 2, the rules diet's step 4; the next chat takes 3, and whoever starts it writes the new number here.
 - **Rulings:** D1741, D1742, D1743, D1744. **Compacted 7 Nov 26, 22:30** — the state above checked after it; chat 1 (the M365 package) running.
 <!-- /now -->
+<!-- now:claude/merge-one-at-a-time -->
+### THE NIGHT OF 7 Nov 26 — done; the morning state — `claude/merge-one-at-a-time` (D1746, D1747); written 8 Nov 26, 04:20 — verify before use
+- **After a compaction:** re-read this block before the next change; note the compaction here with its time. Compacted 8 Nov 26, about 04:30, after this block was saved; re-read 04:33.
+- **Ready for his look — each its own pull request; this chat merged nothing:** 664, job 1 — the board and windows by the keys (two narrow-screen menus reached by the keys, the week glide fixed; three looks parked for him as [BOARD-KEYS-LOOKS], with pictures; `main` brought in the morning of 8 Nov 26 — the skill-notes log only, its note 850 re-appended as 856 — green again); 667, job 2 — React Doctor on the shell, the state and the windows (106 → 13 in its files, 38 of 38 screens identical; what is left filed as [RD-LEFT-1108]; the full unit suite not re-run after its last small fix — GitHub's run is the check); 669, job 3 — Insights' two edges pinned by tests, one shared wording body (nothing seen changes); 670, job 4 — a time limit on every GitHub test job (a workflow — his word; its helper ran only the Opus read, so Astra read it in the morning: no finding in the change, one older gap filed as [TESTS-REQUIRED-ON-MAIN] — GitHub requires only the secrets scan before a merge, so the merge steps' "last run green" is the only guard on the tests; skill note 857); 668, this branch — D1746 and D1747 placed on the How we work page and the shipping checklist (always-loaded rules — his word).
+- **Merging them (D1746):** any order, one at a time, each through the merge lock; a later one brings `main` in first. 667 left the six files 664 changes alone.
+- **Beside it:** chat 2 — the rules diet's step 4, both parts live (663, 665, his "auto merge live"); its four questions and step 5a wait for him. Chat 3 — the pictures round, 14 questions, pull request 666, its page in chat 3. Chat 1 done (661 live); chat 4 waits for IT's reply.
+- **Small leftovers:** the sizing plan's job lines and the backlog's priority list still show tonight's jobs as to do — update them as 664, 667, 669 and 670 merge; [LW-M1-READ-LEFTOVERS] is still in the backlog though the plan calls it archived — check it.
+- **Asked, not answered:** whether Astra goes back to standing reviewer after Monday (D590) — recommended yes.
+- **Chats (D1744):** the next new chat takes 5.
+- **Rulings:** D1746, D1747.
+<!-- /now -->
 
 ## Next, in order
 
