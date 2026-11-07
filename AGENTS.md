@@ -18,14 +18,16 @@ or change anything.**
    (`scheduler.md`, `inputs.md`, `leave-war.md`, `oil.md`, `tracker.md`, `people-accounts.md`, `it-flow-guide.md`) — the `paths:`
    at the top of each says which source files it governs. Before any build: `.claude/rules/raptor-executor.md`. Before any interface work — anything
    a person sees: `.claude/rules/ui-design.md` and `raptor-port/docs/design-practices.md` (D812).
-5. A ruling there is ONE line. Before acting on its detail or asking him about it, open its full row:
+5. A ruling there is ONE line — or, in a file converted to a page (marked `<!-- shape: page -->`; the general rulings,
+   `how-we-work.md`, since 7 Nov 26 — D1735), a statement with its rulings cited after it. Before acting on its detail
+   or asking him about it, open its full row:
    `grep -h '^| D149 |' .claude/decisions-full/*.md`.
 6. `OUTSTANDING.md` — the one backlog — before telling him anything is undecided, missing or unbuilt (D53).
 
 ## What Claude gets from its hooks — you do these by hand
 
 - **Record his rulings the moment he makes them, BEFORE the work they imply** — the three steps at the head of
-  `DECISIONS.md`, then `node raptor-port/scripts/backlog-archive.mjs --rulings`. Ask yourself on EVERY message of his:
+  `DECISIONS.md` (for a file converted to a page, the steps for a converted area just below them), then `node raptor-port/scripts/backlog-archive.mjs --rulings`. Ask yourself on EVERY message of his:
   is this a decision, a preference, a correction, a "leave it", a no? Every closing report carries a `Rulings:` line.
   **Take the next free number after checking the live rulings, the archived numbers and the ranges held by parallel
   branches.** A number named in `HANDOFF.md` is a hint to verify, never permission to reuse one. D567–D585 stay
