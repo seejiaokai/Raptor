@@ -952,7 +952,9 @@ reads('a span\'s missing from or to, and a missing row, are reported and counted
 reads('a span\'s from and to are matched to a boundary with the near-miss first — "**7.1" never takes "**7.10", "**7.0" never "**7.0a"', () => {
   const a = READS.partOf('**7.10 a\n**7.1 b\nc\n**7.2 d\n', { spans: [{ from: '**7.1', to: '**7.2' }] }), b = READS.partOf('**7.0a a\n**7.0 b\nc\n**7.1 d\n', { spans: [{ from: '**7.0', to: '**7.1' }] })
   const c = READS.partOf('**7.0 a\n**7.10 x\n**7.1 b\n', { spans: [{ from: '**7.0', to: '**7.1' }] })
-  return a.text !== '**7.1 b\nc' ? `from **7.1 took ${JSON.stringify(a.text)}` : b.text !== '**7.0 b\nc' ? `from **7.0 took ${JSON.stringify(b.text)}` : c.text !== '**7.0 a\n**7.10 x' ? `to **7.1 stopped at ${JSON.stringify(c.text)}` : ''
+  /* the second script read's medium 1: to is looked for after the from-line — never from the top, nor on the from-line itself */
+  const d = READS.partOf('**B x\n**A a\nb\n**B c\n', { spans: [{ from: '**A', to: '**B' }] }), e = READS.partOf('**7.1 a\nb\n**7 c\n', { spans: [{ from: '**7.1', to: '**7' }] })
+  return a.text !== '**7.1 b\nc' ? `from **7.1 took ${JSON.stringify(a.text)}` : b.text !== '**7.0 b\nc' ? `from **7.0 took ${JSON.stringify(b.text)}` : c.text !== '**7.0 a\n**7.10 x' ? `to **7.1 stopped at ${JSON.stringify(c.text)}` : d.text !== '**A a\nb' ? `a to before the from took ${JSON.stringify(d.text)}` : e.text !== '**7.1 a\nb' ? `a to the from-line starts with took ${JSON.stringify(e.text)}` : ''
 })
 reads('a row is matched to a boundary with the near-miss first', () => { const p = READS.partOf('| **Undone** | x |\n| **Undo** / redo | y |\n', { rows: ['| **Undo'] }); return p.text === '| **Undo** / redo | y |' ? '' : `took ${JSON.stringify(p.text)}` })
 reads('a span with no from looks for its to from the first line, as upTo does; with no to it runs to the file\'s end', () => {
@@ -966,18 +968,21 @@ reads('upTo with other parts takes its part beside them; missing, it is reported
 reads('a paragraph runs to a blank line or the next block at the margin; a list item keeps its indented lines', () => {
   const D = '**A one.** a\nmore a\n**B two.** b\n\n- **C.** c\n  more c\n- **D.** d\n', p = o => READS.partOf(D, { paras: [o] })
   const m = READS.partOf(D, { paras: ['**Z'] })
-  return p('**A').text !== '**A one.** a\nmore a' ? `took ${JSON.stringify(p('**A').text)}` : p('**B').text !== '**B two.** b' ? `took ${JSON.stringify(p('**B').text)}` : p('- **C.').text !== '- **C.** c\n  more c' ? `took ${JSON.stringify(p('- **C.').text)}` : m.text !== '' || m.missing[0] !== '**Z' ? 'a missing paragraph was not reported' : ''
+  return p('**A').text !== '**A one.** a\nmore a' ? `took ${JSON.stringify(p('**A').text)}` : p('**B').text !== '**B two.** b' ? `took ${JSON.stringify(p('**B').text)}` : p('- **C.').text !== '- **C.** c\n  more c' ? `took ${JSON.stringify(p('- **C.').text)}` : m.text !== '' || m.missing[0] !== '**Z' ? 'a missing paragraph was not reported'
+    : ['## 2. b', '| x |', '```', '7. seven'].map(n => READS.partOf(`**A.** a\n${n}\n`, { paras: ['**A.'] }).text).find(t => t !== '**A.** a') ?? ''
 })
-reads('the grep drops empty matches and reads letters as letters (the u flag)', () => { const a = READS.partOf('aé\nb\n', { grep: 'x*' }), b = READS.partOf('café\n', { grep: '\\p{L}+' }); return a.text !== '' ? `empty matches gave ${JSON.stringify(a.text)}` : b.text !== 'café' ? `took ${JSON.stringify(b.text)}` : '' })
-reads('a grep\'s range takes only its lines, as sed -n\'s does; n gives whole lines with their numbers; a missing end is reported', () => {
+reads('the grep drops empty matches and reads letters as letters (the u flag)', () => { const a = READS.partOf('aé\nb\n', { grep: 'x*' }), b = READS.partOf('café\n', { grep: '\\p{L}+' }), n = READS.partOf('é\n1\n', { grep: [{ re: '^\\p{L}', n: true }] }); return a.text !== '' ? `empty matches gave ${JSON.stringify(a.text)}` : b.text !== 'café' ? `took ${JSON.stringify(b.text)}` : n.text !== '1:é' ? `-n took ${JSON.stringify(n.text)}` : '' })
+reads('a grep\'s range takes only its lines, both ends included as sed -n\'s does; n gives whole lines with their numbers; a missing end is reported', () => {
   const G = '# T\n## 1. A\n- **one** x\n| **two** | y |\n## 2. B\n| **three** | z |\n'
+  const end = READS.partOf('# T\n## 1. A\n- **one** x\n## 2. B\n## 3. C\n', { grep: [{ re: '^## [0-9]', from: '## 1.', to: '## 2.' }] })
+  if (end.text !== '## 1\n## 2') return `the range's end line was not printed: ${JSON.stringify(end.text)}`
   const a = READS.partOf(G, { grep: [{ re: '^\\| \\*\\*[^*]*\\*\\*|^- \\*\\*[^*]*\\*\\*', from: '## 1.', to: '## 2.' }] }), b = READS.partOf(G, { grep: [{ re: '^## ', n: true }] }), c = READS.partOf(G, { grep: [{ re: 'x', from: '## 1.', to: '## 9.' }] })
   return a.text !== '- **one**\n| **two**' ? `the range took ${JSON.stringify(a.text)}` : b.text !== '2:## 1. A\n5:## 2. B' ? `-n took ${JSON.stringify(b.text)}` : c.text !== '' || !/## 9\.[^\n]*grep's range/.test(c.missing[0] || '') ? 'a missing range end was not reported' : ''
 })
 reads('a read\'s label is empty when it is counted whole, and names every part — a paragraph, and a grep by its name or its pattern', () => {
-  const m = READS.measure({ files: [], read: f => (f === 'd.md' ? SPANDOC : null), est: rEst, jobs: [{ job: 'a', opens: [] }], taskReads: [], checkReads: [{ f: 'd.md' }, { f: 'd.md', spans: [{ from: '**7.1' }], sections: ['## 8.'], paras: ['**7.0a'], grep: [{ re: 'x', name: 'the list' }, '^a', { re: '^#', n: true }] }] })
-  const [w, p] = m.jobs[0].check
-  return w.part !== '' ? `the whole read was named "${w.part}"` : p.part !== '**7.1 … the end + ## 8. + the paragraph **7.0a + the list + grep -o ^a + grep -n ^#' ? `the part was named "${p.part}"` : ''
+  const m = READS.measure({ files: [], read: f => (f === 'd.md' ? SPANDOC : null), est: rEst, jobs: [{ job: 'a', opens: [] }], taskReads: [], checkReads: [{ f: 'd.md' }, { f: 'd.md', upTo: '## 99.' }, { f: 'd.md', spans: [{ from: '**7.1' }], sections: ['## 8.'], paras: ['**7.0a'], grep: [{ re: 'x', name: 'the list' }, '^a', { re: '^#', n: true }] }] })
+  const [w, u, p] = m.jobs[0].check
+  return w.part !== '' ? `the whole read was named "${w.part}"` : u.part !== '' ? `a missing upTo, counted whole, was named "${u.part}"` : p.part !== '**7.1 … the end + ## 8. + the paragraph **7.0a + the list + grep -o ^a + grep -n ^#' ? `the part was named "${p.part}"` : ''
 })
 reads('the start: rules with no paths:, the hook\'s note and each description — never a scoped rules file or a skill\'s body', () => {
   const m = rRun(), s = fs_(m.start).join(' | ')

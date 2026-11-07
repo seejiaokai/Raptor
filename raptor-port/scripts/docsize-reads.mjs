@@ -57,20 +57,20 @@ export const CHECK_READS = [
     why: 'a WALK of a screen with a new control: each section the checklist names for it, whole (its head: a step\'s parentheses never narrow a section) — §0a, §2a, §2b, §3, §4, §5, §6, §7.0 to §7.10, §8, §9, §10, §11, §12 — and the three lessons a screen walk nearly always meets (1, 3, 22); not §4a (a code read: FULL) nor §7.11\'s other lessons, each opened only when it applies' },
   { f: 'raptor-port/docs/walk-ledger.md', sections: ['## Before any walk — the sizing step', '## The types of change'], why: 'a walk is sized first (D607) — its step 1 picks from the types of change' },
   { f: 'raptor-port/docs/walk-scripts.md', why: 'every walker\'s brief names it' },
-  { f: 'raptor-port/docs/design-practices.md', spans: [{ to: '## 0.' }, { from: '## 1.', to: '### 1a.' }], sections: ['## 0.', '### 1b.', '## 2.', '## 3.', '## 6.', '## 9.'],
+  { f: 'raptor-port/docs/design-practices.md', spans: [{ to: '## 0.' }, { from: '## 1.', to: '### 1a.' }], sections: ['## 0.', '### 1b.', '## 2.', '## 3.', '## 6.', '## 8.', '## 9.'],
     paras: ['- **One mark, one look'],
-    why: 'interface work, by section (ui-design.md) — a new control and its words: the head, §0 and §9, his lessons, for every design job; §1\'s own text and §1b (words), §2 (a new control), §3 (placing), §4\'s "One mark, one look" (a new action, with §1\'s point on feedback), §6 (before he sees it)' },
+    why: 'interface work, by section (ui-design.md) — a new control and its words: the head, §0 and §9, his lessons, for every design job; §1\'s own text and §1b (words), §2 (a new control), §3 (placing), §4\'s "One mark, one look" (a new action, with §1\'s point on feedback), §6 (before he sees it), §8 (the mock-up put to him first, D1625)' },
   { f: 'raptor-port/docs/performance.md', sections: ['# Part 1'], why: 'interface work: Part 1, the guardrails' },
   { f: 'raptor-port/docs/feature-impact.md', spans: [{ to: '**How to read it' }, { from: '## 1.', to: '| **Warnings**' }],
     paras: ['**How to read it', '**Schedule keyboard flow'],
     rows: ['| **Warnings**', '| **The one changes window + the change history**', '| **Undo / redo**', '| **Scheduler board**', '| **Edit Schedule**',
       '| **View-only Schedule**', '| **Post-render decoration**', '| **Publishing / AL**'],
     sections: ['### Flow A', '## 3.', '### The single funnels', '#### A seat with hours and the same seat without', '#### One rule read in several places',
-      '#### Deliberate second copies'],
+      '#### Deliberate second copies', '#### Editors, snapshots'],
     grep: [{ re: '^\\| \\*\\*[^*]*\\*\\*|^- \\*\\*[^*]*\\*\\*', from: '## 1.', to: '## 2.', name: 'the note\'s list of §1\'s surfaces' },
       { re: '^###', n: true, name: 'the note\'s list of the headings, §4\'s among them' }, { re: '^## ', n: true, name: 'the note\'s list of the sections' },
       { re: '^\\*\\*[^*]*\\*\\*', to: '## 1.', name: 'the titles of the dated parts under the title' }],
-    why: 'weigh the whole ecosystem, by section (its head note) — a schedule cell edit (a puck, a time, a note): the note, §3, the lists its searches print, the eight §1 rows Flow A names, Flow A, §4\'s funnels and the three drift-seams such an edit writes through or reads, and the one dated part in its subject (typing in a cell)' },
+    why: 'weigh the whole ecosystem, by section (its head note) — a schedule cell edit (a puck, a time, a note): the note, §3, the lists its searches print, the eight §1 rows Flow A names, Flow A, §4\'s funnels and the four drift-seams such an edit writes through or reads, and the one dated part in its subject (typing in a cell)' },
 ]
 export const START_NOTE = '.claude/hooks/task-observer-session-start.sh'
 /* since the rules diet's step 2 (D969, point F; D1740) the start hook prints the skill-notes short form, read from this
@@ -96,7 +96,7 @@ const dirOf = f => (f.includes('/') ? f.slice(0, f.lastIndexOf('/')) : '')
                line that starts a new block at the margin (a heading, a bold start, a list item, a table row, a fence)
                — a bold-led paragraph among others, with no blank line between them, ends where the next begins;
      grep      what a command a rule gives would print: a pattern (the text each line's matches give, as grep -o prints
-               it), or a list of { re, from, to, n, name } — the lines from..to as a span takes them (sed -n's range),
+               it), or a list of { re, from, to, n, name } — the lines from..to, both ends included as sed -n's range takes them,
                n for whole lines with their numbers (grep -n), name for the label in place of the pattern.
    Any of these together; a line two parts share is counted once, the parts kept in the file's order, and the grep's text
    after them. A missing heading or line — a span's or a range's from or its to — is reported, and that part counted as
@@ -139,7 +139,8 @@ export function partOf(text, { upTo, sections, spans, rows, paras, grep } = {}) 
   const hits = []
   for (const g of grepsOf(grep)) {
     const r = range(g.from, g.to, 'grep\'s range'); if (!r) continue
-    for (let i = r[0]; i < r[1]; i++) {
+    const last = g.to == null ? r[1] : Math.min(r[1] + 1, ls.length)
+    for (let i = r[0]; i < last; i++) {
       if (g.n) { if (new RegExp(g.re, 'u').test(ls[i])) hits.push(`${i + 1}:${ls[i]}`) }
       else hits.push(...[...ls[i].matchAll(new RegExp(g.re, 'gu'))].map(m => m[0]).filter(Boolean))
     }
