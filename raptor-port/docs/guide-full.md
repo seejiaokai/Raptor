@@ -236,11 +236,13 @@ barely more than one.
 
 ### Models
 
-- **NARROWED since — who is called now (D1734, 7 Nov 26; D1760 and D1761, 8 Nov 26):** Astra and Sol 6.1 read only when
-  he calls for them, each time — two, blind to each other, on earned leave, published records, permissions, saved data
-  or an important plan; otherwise every code read is a fresh, blind Opus read (D790) and an important plan is
-  red-teamed meanwhile by a fresh, blind Opus reader (D1760); a changed working guide is read by Astra every time, his
-  call, beside a fresh, blind Opus reader (D1761). The page `../.claude/rules/decisions/how-we-work.md` §Models and
+- **NARROWED since — who is called now (D1734, 7 Nov 26; D1760, D1761 and D1770, 8 Nov 26):** Astra is the standing
+  reviewer again, with no end date — first of two on each job's code read and on every read that names him (D1770);
+  Sol 6.1 reads only when he calls for him (and, until Mon 9 Nov 26 19:00, where a second reader fits — D1743);
+  otherwise the fresh, blind Opus reader holds the second seat — on a code read (D790), an important plan's red team
+  (D1760) and a changed working guide (D1761); two readers, blind to each other, on earned leave, published records,
+  permissions, saved data or an important plan; a job that went without Astra's read, or without Sol 6.1's where two
+  are required, goes on the reads-owed list. The page `../.claude/rules/decisions/how-we-work.md` §Models and
   readers states it as it stands; the bullets below are history where they differ.
 - **NARROWED 5 Oct 26 by D590 — who reviews what Opus writes:** Astra reviews it, and Sol 6.1 is the second reader where
   two are required (the code reads on earned leave, published records, permissions or saved data; an important plan's red
