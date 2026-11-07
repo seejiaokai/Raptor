@@ -99,9 +99,12 @@ a job of their own, by a cheaper model, checked by a fresh reader (D972 — `[CA
   D78), every file a ruling names as its home must exist — and a NEW ruling's Markdown homes must mention its
   number (`[RULING-HOMES-AUDIT]`, 28 Sep 26; the frozen archives excepted) — and every ruling id in
   `scripts/rulecheck.mjs`'s map must still head an entry in a behaviour register. **A ruling's identity is its full
-  row, wherever it sits; since D390 every live full row has exactly one short line** — the same area and date, at most
+  row, wherever it sits; since D390 every live full row of an area still in short lines has exactly one short line** — the same area and date, at most
   350 characters, its " — changed by" tail naming exactly the rulings its full row's marks name — and a new row that
-  changes an older one fails until the older one's full row is marked. **The structure keeps
+  changes an older one fails until the older one's full row is marked. **In an area converted to a page (D1735)** a
+  ruling has no short line: every live ruling of it is cited on a statement of its page — a general ruling may be cited
+  in an always-loaded rules file instead — a statement citing a ruling cites every live ruling marked as changing it,
+  and none cites one archived as replaced; the gate checks each. **The structure keeps
   itself (D137):** it fails if the map in `DECISIONS.md` disagrees with the files, if a row marked
   replaced or spent is still in an area file, if an archived row lacks its mark, or if a row is written
   in `DECISIONS.md` itself instead of its area's file.
@@ -169,7 +172,7 @@ accounts — D390; since 2 Oct 26, the IT flow guide; since 13 Oct 26, the Input
   tripwire (`RULING_BYTES` in `docsize.mjs`); the converter makes its full-text file.
 
 **And as ONE LINE each (D390, 28 Sep 26 — his "Approve" to the slim-down).** An area file holds one short line per
-ruling — its number, its date, the rule as it stands (in ordinary letters, capitals only where a name or a short form has
+ruling while the area is in this shape — its number, its date, the rule as it stands (in ordinary letters, capitals only where a name or a short form has
 them — D970, 17 Oct 26), and a " — changed by D…" tail naming the later rulings that
 changed it; **the full row lives whole in `.claude/decisions-full/<same name>`, never loaded by itself. Open a ruling's
 full row before acting on its detail or putting a question to him about it** (`grep -h '^| D149 |'
@@ -178,3 +181,9 @@ and its short line is rewritten to state the rule as it now stands. In a full ro
 row" means its area's rulings. A tripwire in bytes guards each area file: crossing it means split the area (`--move-rows`)
 or raise it with its reason — never trim a ruling. The design, its red teams and the merge story:
 `raptor-port/docs/superpowers/plans/2026-09-28-rulings-slim-down-plan.md`.
+
+**Or as a page, once an area converts (D1735, 7 Nov 26 — the rules diet).** The area file is marked
+`<!-- shape: page -->` and states how the area works now — each rule once, the rulings behind it cited after it — with
+no short lines; the full rows stay whole in `.claude/decisions-full/`, searched as before. Recording a ruling there
+rewrites or adds the page's line instead of a short line (`DECISIONS.md`, the steps for a converted area); the gate's
+checks are in §5. How we work is the first page (the diet's step 4).
