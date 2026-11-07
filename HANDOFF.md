@@ -20,6 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/pictures-round -->
+### CHAT 3 — the pictures round, `claude/pictures-round` (D1747); written 7 Nov 26, 23:55 — verify before use
+- **His go (7 Nov 26, about 23:30), unattended:** draw the pictures round of the sizing plan's §3 (`raptor-port/docs/superpowers/plans/2026-11-05-backlog-sizing.md`) — each question pictured on the real app today and each fix drawn, one Artifact page he answers from his phone; nothing built in the app (D1625, D853, D1222, D1363, D1496, D1478).
+- **All 13 items checked open on `main` at `6e6c55667`** (none archived; round 4 of the consistency look live since pull request 643, so its round 5 leftovers are the ones drawn). One partly moved since filing: [READONLY-WEEK-WORDS] — the "device that created it" words went with D837; the week that cannot be read still blames "an older version of the app".
+- **How:** one build under the checks lock, served on port 4291; four fresh helpers, one per area (board, Leave War, schedule and words, Tracker and marks), on the shared brief `raptor-port/docs/superpowers/briefs/2026-11-07-pictures-round-brief.md`; their scripts `raptor-port/scripts/handpass/pr-*.mjs`, pictures and notes in `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`; the host checks each deciding picture and builds the page there (`index.html`).
+- **Touches only:** this block, the pictures folder, the brief, the helpers' scripts, and one "drawn 7–8 Nov 26, his answer next" line in each of its own backlog items. No app code, no rule file (D1746).
+- **After a compaction:** re-read this block, the brief and the helpers' `notes-*.md`; note the compaction here with its time.
+- **Rulings:** none yet.
+<!-- /now -->
 <!-- now:claude/merge-at-once -->
 ### `claude/merge-at-once` — merging at once on his word (D1742), and both his allowances used up by Mon 9 Nov 26 19:00 (D1743); written 7 Nov 26, 21:55 — verify before use
 - **Live today:** the rules diet's steps 1–3 (pull requests 656, 657, 658); the start-of-chat size item closed (D1741, pull request 659).
