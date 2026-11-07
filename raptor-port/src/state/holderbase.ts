@@ -42,6 +42,7 @@ let BASE_WEEK: string | null = null
 /* what the last pass left, per day — the yardstick for a change made outside every command */
 let LAST: string[] = []
 
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the day's image as it is saved, the yardstick a later pass is measured against: JSON drops keys set to undefined, as saving does, which structuredClone would keep
 const clone = (o: any) => (o == null ? o : JSON.parse(JSON.stringify(o)))
 const MARKS: Array<[keyof Marks, 'pending' | 'changes' | 'added']> = [['p', 'pending'], ['c', 'changes'], ['ad', 'added']]
 function marksOf(di: number): Marks {

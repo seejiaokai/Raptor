@@ -34,7 +34,8 @@ export function DocConfirm({ who, typeLabel, leave = false, onUpload, onNoDoc }:
   const boxRef = useRef<HTMLDivElement>(null)
   useSheetFocus(boxRef)
   return (
-    <div className="airpop upconf-pop docconf-pop" data-testid="docconf"
+    /* role="presentation": the shade is nothing a screen reader should name; the sheet's own buttons take the keys */
+    <div className="airpop upconf-pop docconf-pop" data-testid="docconf" role="presentation"
       onClick={e => { if (clickedSurround(e, 'docconf-pop')) onUpload() }}>
       <div className="airpop-box upconf-box" ref={boxRef} tabIndex={-1} style={{ outline: 'none' }}>
         <div className="airpop-head"><b>{leave ? 'No document' : 'No medical document'} — {who}, {typeLabel}</b>

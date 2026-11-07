@@ -41,6 +41,7 @@ export function csvText(rows: any[][]) {
    remove it." `inputRows`, the List's button and 142-inputs.csv went together; the Quals export and the schedule's stay.) */
 export function exportCSV(name: string, rows: any[][]) {
   const blob = new Blob([csvText(rows)], { type: 'text/csv;charset=utf-8' })
+  // eslint-disable-next-line react-doctor/no-create-object-url-without-revoke -- a phone's browser reads the file after the tap returns, so letting it go at once can break the download; one small file a press, freed when the page closes
   const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click()
 }
 

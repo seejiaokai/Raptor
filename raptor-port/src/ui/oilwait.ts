@@ -121,7 +121,7 @@ export function oilBarAgain(): void {
        finished code, F3; the Opus read, F6 — 13 Oct 26). A place that is gone resolves to nothing in `flash`. */
     /* (not for a mark taken off an input: its one place is the row's own button, addressed by POSITION, and its door
        has just found it afresh — the old one may now be another row's: the read of 14 Oct 26, F4) */
-    if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') for (const pl of w.places) if (!OILWAIT.places.includes(pl)) OILWAIT.places.push(pl)
+    if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') { const have = new Set(OILWAIT.places); for (const pl of w.places) if (!have.has(pl)) { have.add(pl); OILWAIT.places.push(pl) } }
   }
   else if (a === 'done') { if (w.post) w.post(pre, w.landed ?? null) }
   else if (a !== 'refused') HOOKS.toast(CHANGED[w.kind], 'warn')

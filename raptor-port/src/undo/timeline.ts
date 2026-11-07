@@ -816,8 +816,8 @@ function plainRestoreReason(reason?: string, entry?: UndoEntry): string {
    the change set must have a registered store, or applyRestore would refuse AFTER
    the view already moved. Returns the unregistered collections (empty = all fine). */
 function missingStores(changes: Change[]): string[] {
-  const out: string[] = []
-  for (const ch of changes) if (!storeOf.has(ch.collection) && !out.includes(ch.collection)) out.push(ch.collection)
+  const out: string[] = [], seen = new Set<string>()
+  for (const ch of changes) if (!storeOf.has(ch.collection) && !seen.has(ch.collection)) { seen.add(ch.collection); out.push(ch.collection) }
   return out
 }
 

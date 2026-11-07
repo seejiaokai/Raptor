@@ -685,6 +685,7 @@ function personFlagDays(id:any):number[]{
   for(let di=0;di<7;di++){
     const g=displayedByDay(di);
     const tr=displayedBundle(di).trace;
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each warning's own list of the one or two men it names, searched once for one man
     const hasWarn=!!(g&&g.warns&&g.warns.some((w:any)=>!w.off&&(w.who||[]).includes(id)));
     if(hasWarn||(tr&&tr[di]&&tr[di][id]))days.push(di);
   }

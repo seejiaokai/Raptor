@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, act, cleanup } from '@testing-library/react'
-import { SaveStatus, SaveBand, useSaveFailed, setSaveStatusSource } from './SaveStatus'
+import { SaveStatus, SaveBand, useSaveFailed } from './SaveStatus'
+import { setSaveStatusSource } from './savestatus-source'
 import { Postman } from '../storage/postman'
 import { Whiteboard } from '../storage/whiteboard'
 import { MemoryBackend } from '../storage/memory'

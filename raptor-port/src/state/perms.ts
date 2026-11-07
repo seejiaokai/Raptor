@@ -825,8 +825,8 @@ function stampForged(env: CommitEnvelope, c: Change, after: unknown, pid: string
      request of months ago, or the other half's bid, dropped beside a new one is not what it was re-typed from */
   const replaced = (Array.isArray(c.before) ? c.before as any[] : []).filter(r => r?.kind === 'request' && r.state !== 'refused' && !kept.has(String(r.id)))
   const firstFor = (r: any) => {
-    const mine = halvesOfCode(r.code)
-    return replaced.filter(x => typeof x.placedAt === 'number' && halvesOfCode(x.code).some(h => mine.includes(h))).sort((x, y) => x.placedAt - y.placedAt)[0]
+    const mine = new Set(halvesOfCode(r.code))
+    return replaced.filter(x => typeof x.placedAt === 'number' && halvesOfCode(x.code).some(h => mine.has(h))).sort((x, y) => x.placedAt - y.placedAt)[0]
   }
   for (const r of a) {
     if (r?.kind !== 'request') continue
@@ -1057,9 +1057,10 @@ export function postingPassViolation(env: CommitEnvelope): string | null {
       const fields = outcome ? PASS_FIELDS[outcome] : undefined
       const b: any = c.before, f: any = c.op === 'delete' ? null : c.after
       if (!fields || !b || !f) return refuse(c)
+      const may = new Set(fields)
       for (const k of new Set([...Object.keys(b), ...Object.keys(f)])) {
         if (JSON.stringify(b[k]) === JSON.stringify(f[k])) continue
-        if (!fields.includes(k)) return refuse(c)
+        if (!may.has(k)) return refuse(c)
       }
       if (outcome === 'sans') {
         const qb = b.quals || {}, qf = f.quals || {}

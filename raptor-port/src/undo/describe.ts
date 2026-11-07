@@ -375,7 +375,8 @@ function oneInputWords(entry: UndoEntry): string | null {
   const b: any = ch[0]!.before, a: any = ch[0]!.after
   if (!a || !b) return null
   const B = idsOf(b).map(String), A = idsOf(a).map(String)
-  const out = B.filter(p => !A.includes(p)), inn = A.filter(p => !B.includes(p))
+  const inA = new Set(A), inB = new Set(B)
+  const out = B.filter(p => !inA.has(p)), inn = A.filter(p => !inB.has(p))
   if (out.length === 1 && inn.length === 1) return `swapping ${nameOf(out[0]!) || out[0]} for ${nameOf(inn[0]!) || inn[0]}`
   /* who changed it and when (modBy / modAt — state/inputstamp.ts) ride along with an answer given in the input's own window
      (walker C, S3-02b: "Undid: a personal input" after "Change…"); they are not a change of the input */

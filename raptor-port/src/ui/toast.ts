@@ -43,6 +43,7 @@ export function toastBatch<T>(fn:()=>T):T{
       let last:ToastPart|null=null;
       for(const m of got){
         if(RANK(m.kind)>RANK(kind))kind=m.kind;
+        // eslint-disable-next-line react-doctor/js-set-map-lookups -- a batch says a few notes, and the last one said is rewritten in place when the next merges into it: a Set beside it would have to follow that rewrite
         if(!m.msg||said.includes(m.msg))continue;
         const a=last, b=m.part;
         if(a&&b&&a.day===b.day&&b.head.startsWith(a.head)){
