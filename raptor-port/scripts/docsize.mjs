@@ -273,7 +273,10 @@ const RULING_BYTES = [
   /* how-we-work 58000 -> 56000 (1 Nov 26, [START-LOAD-TRIM], owner D1554): 56,481 bytes down to about 50,800 - three
      rulings a later one restates in full archived (D1103, D1133, D1507 - D971, each read by a fresh reader) and nineteen
      screen-design rulings moved whole to their own area (design.md). Set about a tenth above - a tripwire, not a target. */
-  ['.claude/rules/decisions/how-we-work.md', 0, 57000],   // raised 7 Nov 26 from 56000: D1671 (compaction at 400,000) took it 398 over; a rulings file is never trimmed (D136)
+  /* how-we-work 57000 -> 59000 (7 Nov 26, claude/rules-diet-plan): 57,787 bytes with D1735-D1738 (his approval of the rules
+     diet's plan v3, and seven change tails it put on older rows). A rulings file is never trimmed (D136); the diet's step 4
+     turns this file into a page of about 17,500 bytes (D1735), and its tripwire is reset then. */
+  ['.claude/rules/decisions/how-we-work.md', 0, 59000],   // raised 7 Nov 26 from 57000 (above); earlier from 56000: D1671 (compaction at 400,000) took it 398 over; a rulings file is never trimmed (D136)
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

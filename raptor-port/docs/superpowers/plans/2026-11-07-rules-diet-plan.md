@@ -1,6 +1,8 @@
 # The rules diet — the plan, with sizes before and after (D1732, 7 Nov 26)
 
-**Status: v3, for his approval. Nothing in it is done; no rule changes until he approves (D1732).** v1 (commit `a294a09f`)
+**Status: v3, APPROVED 7 Nov 26 — "As recommended" to all four questions of §8: the shape (D1735), the permission for the
+hooks and the document check (D1736), every step on his "merge live" (D1737), Astra beside the fresh Opus reader on the
+Inputs, scheduler and Leave War pages (D1738). Nothing in it is done yet; step 1 starts on a new branch from `main`.** v1 (commit `a294a09f`)
 was read by a fresh Opus reader and by Astra (his call, D1734), each blind to the other — their reports, saved whole:
 `../briefs/2026-11-07-rules-diet-plan-read-opus.md` (folded into v2) and `../briefs/2026-11-07-rules-diet-plan-read-astra.md`
 (folded into v3); every finding, what was done with it and how the two reads compare: the review log at the end. The
@@ -303,7 +305,7 @@ his "merge live"** — the rulings files count as notes under D1407, so the appr
 chats:** a ruling recorded on `main` while its area converts is folded in when the converting branch brings `main` in —
 `--merge` lists it "place on the page" and the citation check stays red until it is placed (D78).
 
-### 8. What he is asked to rule — with the recommendation
+### 8. What he is asked to rule — with the recommendation (answered 7 Nov 26: "As recommended" — D1735, D1736, D1737, D1738, in that order)
 
 1. **The shape (§2–§6). Recommended: yes.** In plain terms it:
    - **replaces D136** ("every live ruling stays in the loaded list") with the stronger check that every live ruling is
