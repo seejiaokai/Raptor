@@ -1,0 +1,143 @@
+{
+  "base": "http://localhost:4187",
+  "out": "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before",
+  "results": [
+    {
+      "id": "desktop-setup",
+      "status": "PASS",
+      "facts": {
+        "published": {
+          "published": true,
+          "version": "ORIG",
+          "signSelects": 4
+        },
+        "callsign": "VL"
+      }
+    },
+    {
+      "id": "desktop-a-choose-with-typing",
+      "status": "PASS",
+      "facts": {
+        "saved": "DS FOR BRAVO",
+        "kept": true,
+        "chip": "1 pending",
+        "asked": "VL: Blue or Red?"
+      }
+    },
+    {
+      "id": "desktop-2-history-and-undo-words",
+      "status": "PASS",
+      "facts": {
+        "lines": [
+          "Unresolved",
+          "Red"
+        ],
+        "block": {
+          "line": "Mission roleWorking copy Unresolved → Red",
+          "heading": "Mon · Flying · VL ACM · 4"
+        },
+        "toast": "Undid: the mission role for VL — Red",
+        "callsign": "VL"
+      }
+    },
+    {
+      "id": "desktop-b-issued-look-no-templates",
+      "status": "PASS",
+      "facts": {
+        "previewBar": 1,
+        "templatesUnderLook": 0,
+        "templatesBefore": 1
+      }
+    },
+    {
+      "id": "phone-setup",
+      "status": "PASS",
+      "facts": {
+        "published": {
+          "published": true,
+          "version": "ORIG",
+          "signSelects": 4
+        },
+        "callsign": "VL"
+      }
+    },
+    {
+      "id": "phone-a-choose-with-typing",
+      "status": "PASS",
+      "facts": {
+        "saved": "DS FOR BRAVO",
+        "kept": true,
+        "chip": "1 pending",
+        "asked": "VL: Blue or Red?"
+      }
+    },
+    {
+      "id": "phone-2-history-and-undo-words",
+      "status": "PASS",
+      "facts": {
+        "lines": [
+          "Unresolved",
+          "Red"
+        ],
+        "block": {
+          "line": "Mission roleWorking copy Unresolved → Red",
+          "heading": "Mon · Flying · VL ACM · 4"
+        },
+        "toast": "Undid: the mission role for VL — Red",
+        "callsign": "VL"
+      }
+    },
+    {
+      "id": "phone-b-issued-look-no-templates",
+      "status": "PASS",
+      "facts": {
+        "previewBar": 1,
+        "templatesUnderLook": 0,
+        "templatesBefore": 1
+      }
+    }
+  ],
+  "words": {
+    "desktop-chip": "1 pending",
+    "desktop-question": "VL: Blue or Red?",
+    "desktop-history": {
+      "lines": [
+        "Unresolved",
+        "Red"
+      ],
+      "block": {
+        "line": "Mission roleWorking copy Unresolved → Red",
+        "heading": "Mon · Flying · VL ACM · 4"
+      }
+    },
+    "desktop-undo": "Undid: the mission role for VL — Red",
+    "phone-chip": "1 pending",
+    "phone-question": "VL: Blue or Red?",
+    "phone-history": {
+      "lines": [
+        "Unresolved",
+        "Red"
+      ],
+      "block": {
+        "line": "Mission roleWorking copy Unresolved → Red",
+        "heading": "Mon · Flying · VL ACM · 4"
+      }
+    },
+    "phone-undo": "Undid: the mission role for VL — Red"
+  },
+  "pictures": [
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/desktop-a-pending-chip-and-question.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/desktop-2-history-line.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/desktop-2-undo-words.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/desktop-b-issued-look.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/phone-a-right-after-tap.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/phone-a-pending-chip-and-question.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/phone-2-history-line.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/phone-2-undo-words.png",
+    "C:/Users/User/projects/Raptor/.claude/worktrees/dreamy-maxwell-a0acf7/raptor-port/docs/img/handpass/2026-11-08-insights-leftovers/before/phone-b-issued-look.png"
+  ],
+  "errors": [],
+  "limits": [
+    "Chromium touch emulation at 390x844, not his iPhone."
+  ]
+}

@@ -21,6 +21,7 @@ import { leadOf, idsOf, inpLabel } from '../engine/inputs'
 import type { UndoEntry } from './types'
 import type { Change } from '../command'
 import { parseHideDetail } from '../engine/hidedetail'
+import { roleAnswerName, roleSideWord } from '../engine/mission-role'
 import { REPORTING_LABEL } from '../engine/reporting'
 import { DAYS } from '../engine/data'
 import { posKey } from '../engine/rowids'
@@ -442,11 +443,11 @@ export function describeEntry(entry: UndoEntry): string {
   /* read only what the entry holds — a partial one (no closure yet, a test's) is still described */
   if (!Array.isArray(entry.forward)) entry = { ...entry, forward: [] }
   if (entry.type === 'insights.role.set') {
-    let name=''
-    try { const d=JSON.parse(entry.detail || 'null'); if(typeof d?.name==='string') name=d.name.trim().replace(/\s+/g,' ').slice(0,80) } catch { /* absent facts */ }
+    /* the line's name and the side's word from the one body the change history reads too (engine/mission-role.ts) */
+    const name=roleAnswerName(entry.detail)
     const change=entry.forward.find(c=>c.collection==='insights.role')
-    const side=(change?.after as any)?.side
-    return `the mission role${name ? ' for '+name : ''}${side==='blue' || side==='red' ? ' — '+(side==='blue'?'Blue':'Red') : ''}`
+    const word=roleSideWord((change?.after as any)?.side)
+    return `the mission role${name ? ' for '+name : ''}${word ? ' — '+word : ''}`
   }
   if (entry.type === 'sched.text') return textLabel(entry.detail) || TYPE_PHRASE['sched.text']
   /* a warning hidden, or flagged again — which of the two, from the command's own detail ([WARN-HIDE-KEPT], D469) */
