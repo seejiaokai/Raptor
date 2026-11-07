@@ -3795,3 +3795,19 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In any repo script, a shell-out whose empty result is a meaningful answer ("no files", "nothing changed") must not swallow errors: let it throw, or return null and test for it. Narrow listings to the paths needed, and set `maxBuffer` on any listing of a whole repo.
 
 **Principle:** An error that becomes an empty value is indistinguishable from a true "none"; only swallow errors where "none" and "failed" lead to the same action — and check a new report's first numbers against an independent figure before trusting it.
+
+
+### Observation 841: A reader's fix needs its own reader — and a red-first loop needs a way to run only the new cases
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** Rules diet step 1 — fixing a fresh reader's findings in the document-check scripts, red-first.
+**Skill:** receiving-code-review (and the project's self-test of its document checks)
+**Type:** open-source
+**Phase/Area:** acting on review findings; the fix → re-read loop
+
+**Issue:** Each fix round on a merge tool was read again by a fresh reader, and each read found a gap the fix had left beside it — first a whole neighbouring shape (a new file made in the new layout WITH an item moved into it), then a sibling shape (that item retired on the other side), a filter made too broad, and a false positive from comparing "absent" with a value. All were in the same family as the original finding: a branch that decided "is this the new shape?" from one source when two existed. The self-test suite had no way to run a subset, so seeing only the new cases fail first meant building a scratch copy with each case-runner patched to skip non-matching names (about 12 minutes saved per round over the full run).
+
+**Suggested improvement:** In receiving-code-review: when a finding says "X is decided from source A alone", search for EVERY place that decides X, not just the ones named, and write the case for each sibling state (created / changed / moved / retired) before fixing. For a long test suite used red-first, give it a name filter (an environment variable) so the new cases can be run alone.
+
+**Principle:** A finding names one instance of a decision made from too narrow a source; the fix is complete only when every reader of that decision and every sibling state of the data has a case — and a slow suite without a filter turns red-first into a scratch-copy chore.
