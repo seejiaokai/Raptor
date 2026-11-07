@@ -3702,3 +3702,64 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** add to the method: "when a drawing restyles a live element, clear what the app set on it for its old look (inline position, transform, a measured width) or re-run the app's own placing after the restyle; name in the drawing any element whose place the app works out from its size."
 
 **Principle:** A mock made by restyling a live element carries the app's adjustments for the old look; reset them, or the approved picture records an artefact the real build will never draw.
+
+### Observation 836: Measure what a chat reads with the project's calibrated estimate, never a stock tokenizer
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** [RULES-DIET] — measuring what a chat reads before code, for the rules-diet plan
+**Skill:** New skill candidate: context-load audit (measure what a session must read, by rule, per job profile)
+**Type:** open-source
+**Phase/Area:** measurement
+
+**Issue:** The first pass counted tokens with Anthropic's older public tokenizer package and got numbers about 30% lower
+than the project's own estimate (`docsize.mjs` `estTokens`, fitted on measured loads, 2.74 characters a token, capitals
+dearer). Only the calibrated estimate matched the app's own count of the every-chat layer (≈38,000). The 6 Nov brief had
+used 4 bytes a token and under-read the same way. A plan whose headline rests on "how full a chat gets" would have
+under-stated the problem by a third.
+
+**Suggested improvement:** a context-load audit (a skill, or `docsize --reads`) that (1) uses the calibration fitted on
+the app's own measured loads, (2) checks it against one fresh measured load before trusting it, (3) counts by layer —
+every chat, per message, per file opened, per job's required reads — and by job profile, (4) states each "read by rule"
+assumption beside its number.
+
+**Principle:** A size measure is only as good as its calibration against the system that actually pays the cost; check
+one known figure before trusting a tool's count, and prefer the project's measured fit over a generic counter.
+
+### Observation 837: Compressing a rule set needs mechanical checks for the links the old format carried
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** [RULES-DIET] — converting one-line rulings into "how it works now" pages; a fresh blind reader read plan v1
+**Skill:** New skill candidate: context-load audit / rules consolidation (with #836)
+**Type:** open-source
+**Phase/Area:** converting a list of rulings into a current-state page
+
+**Issue:** The first sample pages, written carefully by hand, still dropped six clauses of rulings they cited, "placed"
+46 rulings as a bare list of numbers, and lost the "changed by" links that told a reader a rule had been narrowed. The
+account also invented a disposition ("history") the project's archive rules do not allow. A blind reader found all of it;
+two small checks then found the same class mechanically — a citation counts only in a statement (enough words per cited
+number), and a line citing a rule must also cite every later rule its full record marks as changing it.
+
+**Suggested improvement:** when consolidating rules, write the checks first and run them on the first sample before
+writing more: (1) every live rule is cited on a statement line somewhere that loads; (2) no bare lists; (3) each rule's
+change marks travel with it; (4) dispositions use only the project's own archive categories, each confirmed against the
+full record.
+
+**Principle:** A compressed format must carry, as a check, every relationship the verbose format carried implicitly —
+otherwise the compression silently drops exactly the narrowings and clauses that mattered.
+
+### Observation 838: A blind second read of an older version needs a copy of that commit, not the live branch
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** Astra's blind read of the rules-diet plan v1, run after v2 (which folds in the first reader's report) was already on the branch
+**Skill:** claudex-loop:codex-review (and the project's reader briefs)
+**Type:** open-source
+**Phase/Area:** launching an independent reviewer
+
+**Issue:** The brief asked for a read "blind to the other reader" of commit a294a09f, but the branch by then held v2 of the plan, whose review log lists the first reader's findings, and the first reader's report itself. Pointing the reviewer at the live checkout would have shown it both. An old-commit worktree fails on this repo (very long picture names). What worked: `git archive <commit> -- . ':(exclude)<picture folders>' | tar -x -C <scratch>`, `git init` and one commit there so the repo's scripts run, then `codex exec -C <scratch> -s read-only`. 87 MB, seconds; the reviewer saw exactly the commit and nothing later.
+
+**Suggested improvement:** In the codex-review / claudex-loop review step: when the version under review is not the branch head, or the branch already holds another reviewer's report or a revision built from it, run the reviewer in an exported copy of that commit (picture or binary folders excluded), and say so in the saved report's header.
+
+**Principle:** Blindness is a property of what the reviewer can reach, not of what the brief tells it not to open; give it a tree that contains only what it should see.

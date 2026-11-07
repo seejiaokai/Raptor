@@ -4,6 +4,8 @@
 better". Opus with high thinking, in a fresh chat; the plan and the sizes before and after are put to him first, and nothing
 changes until he approves; the plan is read by Astra and by a fresh Opus reader, each blind, to see which is better
 (his ChatGPT subscription is back on a Pro plan, Astra called when he calls for it — D1734; he called for it here). Backlog item: [RULES-DIET].
+**The plan, 7 Nov 26:** `2026-11-07-rules-diet-plan.md` (v1, measured again with the project's calibrated estimate — it
+supersedes the figures below, which used about 4 bytes a token).
 
 _Before 7 Nov 26:_ **Waiting on:** Anthropic releasing Fable 5.5. **Not started before then** — his words: "3 we do it next time when anthropic
 comes up with fable 5.5" (D1718). Backlog item: [RULES-DIET].

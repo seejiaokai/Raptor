@@ -72,7 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan and sizes put to him first; Astra and a fresh Opus reader read the plan.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); next: the plan's step 1, the checks and scripts, on a new branch from `main`.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -199,7 +199,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
-- [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
+- [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
@@ -305,7 +305,7 @@ A refused change restores the war's records, and since 6 Nov 26 keeps the role a
 The 202 rules after the wrapper's close in the bid sheet's stylesheet (the counter form onward, since 19 Aug 26) are not deliberate — every war window draws inside the Leave War's page — and work only because their names are unique. **To do:** move them inside the wrapper as a walked job (their weight changes), lowering the guard's allowed count as they leave. **Place:** the next Leave War batch.
 
 ### [RULES-DIET] Cut what a chat must read before it touches code (D1718, 6 Nov 26; started now on Opus — D1732, 7 Nov 26)
-**What:** chats fill up and hallucinate; measured 6 Nov 26, a job reads about 250,000 tokens of rules, notes and records before any code, with 1,302 live ruling lines. Each area's rulings become a short page of how it works now, the old rows archived but searched; the working rules and the bug-check order become one-page checklists; rules become automatic checks where they can. **Started 7 Nov 26 on Opus with high thinking (D1732, replacing D1718); the plan is read by Astra and a fresh Opus reader, each blind.** Needs his word on the rulings that keep every live ruling in the list and set no size targets. The brief, with the measurements: `raptor-port/docs/superpowers/plans/2026-11-06-rules-diet.md`. **Place:** now, in a fresh chat — plan first, put to him, then build.
+**What:** chats fill up and hallucinate; measured 6 Nov 26, a job reads about 250,000 tokens of rules, notes and records before any code, with 1,302 live ruling lines. Each area's rulings become a short page of how it works now, the old rows archived but searched; the working rules and the bug-check order become one-page checklists; rules become automatic checks where they can. **Started 7 Nov 26 on Opus with high thinking (D1732, replacing D1718); the plan is read by Astra and a fresh Opus reader, each blind.** Needs his word on the rulings that keep every live ruling in the list and set no size targets. The brief, with the measurements: `raptor-port/docs/superpowers/plans/2026-11-06-rules-diet.md`. **Plan v1 drawn 7 Nov 26** on `claude/rules-diet-plan`: `raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md`, with two measured samples (`…-sample-how-we-work.md`, `…-sample-oil.md`) and the readers' brief `raptor-port/docs/superpowers/briefs/2026-11-07-rules-diet-plan-read.md`; v2 folds in the fresh Opus reader's report (`…/briefs/2026-11-07-rules-diet-plan-read-opus.md`); v3 folds in Astra's blind read of v1 (`…/briefs/2026-11-07-rules-diet-plan-read-astra.md`, 7 Nov 26 on his PC), with the two reads compared in the plan's review log; **approved 7 Nov 26 as recommended — D1735 (the shape), D1736 (permission for the hooks and the document check), D1737 (every step on his "merge live"), D1738 (Astra beside the fresh Opus reader on the Inputs, scheduler and Leave War pages).** **Place:** now — the plan's step 1 (the checks and scripts, about 3 chats), then its order (§7).
 
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
@@ -1657,8 +1657,10 @@ with its own tools; ~1.2 GB `raptor-port/docs/` — mostly the walks' screenshot
 **To do:** (1) clear the leftover worktrees — each checked first for unpushed or uncommitted work, only then removed
 (`git worktree list`, then per worktree `git status` and its branch against its remote); (2) before IT clones the repo,
 consider moving the walk screenshots out of it (and out of its history), or IT downloads ~1 GB of pictures with 14 MB of
-code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead. **Place:** (1) at any clean point, a short job;
-(2) before the go-ahead to IT.
+code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead; (3) the night of 6 Nov 26 left three temporary
+build folders outside the repo on his PC — `C:dw1106`, `C:db1106` (each with a link into the app's packages: delete the link
+before the folder) and `C:da1106` (from that night's handoff block, removed 7 Nov 26). **Place:** (1) and (3) at any clean
+point, a short job; (2) before the go-ahead to IT.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
