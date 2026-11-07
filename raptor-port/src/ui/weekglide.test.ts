@@ -232,6 +232,81 @@ describe('a fired glide leaves nothing behind', () => {
     expect(document.querySelectorAll('body > .week').length, 'all four clones cleaned up').toBe(1)
   })
 
+  /* [WEEK-GLIDE-TWO-PAGES] (the fourth read of 3 Nov 26, finding 2): Edit Schedule and View-only Sched each keep their own
+     week, both mounted, one shown. A cross on Edit Schedule, a switch to View-only Sched and a cross there before the first
+     slide ended put back only View-only Sched's week — the burst kept one baseline and restored it on the LAST week alone —
+     so Edit Schedule's week stayed untouchable and unscrollable until a reload. Every week a burst touched is put back. */
+  it('a burst over two pages puts back BOTH weeks — the first page\'s week is never left untouchable or unscrollable', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v')
+    edit.style.pointerEvents = 'auto'          // a baseline of its own, to prove each week gets its OWN back
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    expect(edit.style.pointerEvents).toBe('none')
+    expect(edit.style.overflowX).toBe('hidden')
+    // the page switch, then a cross on View-only Sched while Edit Schedule's slide is still running
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()
+    expect(viewWk.style.pointerEvents).toBe('none')
+    vi.runAllTimers()
+    expect(viewWk.style.pointerEvents, 'View-only Sched\'s week takes touches again').toBe('')
+    expect(viewWk.style.overflowX, 'and scrolls again').toBe('')
+    expect(edit.style.pointerEvents, 'Edit Schedule\'s week is given ITS OWN touches back, not left off').toBe('auto')
+    expect(edit.style.overflowX, 'and scrolls again, not stranded').toBe('')
+    expect(document.body.style.overflowX, 'the page clip is lifted').toBe('')
+    expect(clones().length, 'every copy cleaned up').toBe(0)
+    // and the next burst starts clean: a cross on Edit Schedule alone covers and uncovers only it
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    expect(viewWk.style.pointerEvents, 'the other page\'s week is not touched by a later cross').toBe('')
+    vi.runAllTimers()
+    expect(edit.style.pointerEvents).toBe('auto')
+  })
+
+  /* THE TWO READS OF 8 NOV 26 (Opus finding 1, Astra's question — docs/superpowers/briefs/2026-11-08-board-keys-read-*.md).
+     Each week's own landing, and only the week crossed LAST is landed at the burst's end: a week crossed earlier was landed
+     by its own repaint as it swapped, and if the person has switched back to its page inside the burst, the switch has
+     since put it on the day it carried — a cross on Edit Schedule (Monday), a cross back on View-only Sched (Sunday), back
+     to Edit Schedule (on Sunday, carried): the burst's end used to drag Edit Schedule's week back to Monday. */
+  const sized = (r: HTMLElement) => {
+    Object.defineProperty(r, 'scrollWidth', { value: 12 + 390 * 7, configurable: true })
+    Object.defineProperty(r, 'clientWidth', { value: 390, configurable: true })
+    Object.defineProperty(r, 'scrollLeft', { value: 0, configurable: true, writable: true })
+  }
+  it('a burst over two pages lands only the week crossed last — a week switched back to keeps the day it was given', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v'); sized(edit); sized(viewWk)
+    view.setWeekJump('mon'); beginGlide(edit)!()          // Edit Schedule crosses forward, onto Monday
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()        // View-only Sched crosses back, onto Sunday (2352, its end)
+    vi.advanceTimersByTime(100)
+    edit.scrollLeft = 2352                                 // back on Edit Schedule: the switch carried Sunday onto its week
+    vi.runAllTimers()
+    expect(viewWk.scrollLeft, 'the week crossed last stands on ITS landing, Sunday').toBe(2352)
+    expect(edit.scrollLeft, 'the week switched back to keeps the day it was given, not dragged back to Monday').toBe(2352)
+    expect([edit.style.pointerEvents, edit.style.overflowX, viewWk.style.pointerEvents, viewWk.style.overflowX], 'both take touches and scroll').toEqual(['', '', '', ''])
+  })
+  it('a burst over two pages whose later slide ends first: nothing is put back until the last one ends', () => {
+    vi.useFakeTimers()
+    setW(400)
+    const edit = mkRoot(390), viewWk = mkRoot(390)
+    fillWeek(edit, 'e'); fillWeek(viewWk, 'v'); sized(edit); sized(viewWk)
+    view.setWeekJump('mon'); beginGlide(edit)!()
+    vi.advanceTimersByTime(100)
+    view.setWeekJump('sun'); beginGlide(viewWk)!()
+    vi.advanceTimersByTime(40)                             // both slides under way
+    const incs = clones().filter(c => c.style.zIndex === '40')
+    expect(incs.length, 'two arriving copies').toBe(2)
+    incs[1]!.dispatchEvent(new Event('transitionend'))    // View-only Sched's ends first
+    expect([edit.style.pointerEvents, viewWk.style.pointerEvents], 'both weeks still covered while one slide runs').toEqual(['none', 'none'])
+    expect(document.body.style.overflowX).toBe('hidden')
+    vi.runAllTimers()
+    expect([edit.style.pointerEvents, edit.style.overflowX, viewWk.style.pointerEvents, viewWk.style.overflowX, document.body.style.overflowX]).toEqual(['', '', '', '', ''])
+    expect(clones().length).toBe(0)
+  })
+
   /* owner, 23 Aug 26 — "bleeding at the top bar when swiping". The clone is
      position:fixed from the week's rect.top, which is above the sticky top bar
      once the page is scrolled; at z-index 60 (the bar's own) it tied and, being

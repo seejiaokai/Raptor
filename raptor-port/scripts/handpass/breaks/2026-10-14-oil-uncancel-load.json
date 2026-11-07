@@ -306,8 +306,8 @@
   "n": 31,
   "name": "the read F4: \"Answer OIL\" carries the old place into the new wait",
   "file": "src/ui/oilwait.ts",
-  "find": "if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') for",
-  "put": "if (OILWAIT) for",
+  "find": "if (OILWAIT && w.kind !== 'uncx' && w.kind !== 'uninfo') {",
+  "put": "if (OILWAIT) {",
   "tests": [
    "src/ui/oilwait.test.tsx"
   ]

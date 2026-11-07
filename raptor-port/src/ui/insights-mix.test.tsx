@@ -13,7 +13,7 @@ import { roleTarget, setMissionRole } from '../state/mission-roles'
 import { allows, T } from '../state/perms'
 import { resetSched } from '../engine/publish'
 import { setInsights, setInsightsAll } from './pops'
-import { insightsHTML } from './Modals'
+import { insightsHTML } from './insights-html'
 const day=JSON.stringify(DAYS),people=JSON.stringify(PEOPLE)
 const html=()=>{const el=document.createElement('div');el.innerHTML=insightsHTML();return el}
 function flyers(n:number,msn='ACM'){

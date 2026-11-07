@@ -73,8 +73,9 @@ export function buildFoldGroups(snap: Snapshot, unfinished: Entry[] | null): Ent
   for (const name of REQUIRED_CONVERTERS) {
     const c = REGISTRY.get(name)!
     const mine: Entry[] = []
+    const own = new Set<string>(c.collections)
     for (const e of c.convert(snap)) {
-      if (!c.collections.includes(e.collection)) throw new Error(`fold: converter "${c.name}" wrote outside its collections (${e.collection}/${e.id})`)
+      if (!own.has(e.collection)) throw new Error(`fold: converter "${c.name}" wrote outside its collections (${e.collection}/${e.id})`)
       const k = recordKey(e.collection, e.id)
       const other = claimed.get(k)
       if (other) throw new Error(`fold: converters "${other}" and "${c.name}" both wrote ${k}`)
@@ -109,6 +110,7 @@ export async function runFold(backend: Backend, snap: Snapshot, unfinished: Entr
   const need = Math.max(...groups.map(g => JSON.stringify(g).length)) * 2
   if (backend.canHold && !backend.canHold(need)) throw new StoreFullError(need)
   for (const group of groups) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- the groups are written in their order, each whole before the next begins: the stamp is last so a crash part-way is found and finished at the next start
     await backend.putMany(group)
     applyGroup(snap, group)
   }

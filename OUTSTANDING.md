@@ -171,16 +171,15 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
-- [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
+- [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
-- [WINDOWS-KEEP-KEYS] — his answer D1648 (5 Nov 26), building the night of 5 Nov 26 — three low leftovers of the windows-keep-the-keyboard work (live, pull request 570): the caret on nothing after the OIL question, the red explanation refresh untested, an unreadable clock explained once per line.
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
-- [BOARD-KEYS-LEFT] — his answer D1646 (5 Nov 26), building the night of 5 Nov 26 — what the night of 3 Nov 26's keyboard job saw and left: a board menu's items not reached by the keys, Tab not kept inside the board, the board's day-head crew-day picker mouse-only, the board's day and week chips (low, the agent's).
+- [BOARD-KEYS-LOOKS] — three looks under the keys on the Scheduler Board, parked by the night of 7–8 Nov 26 (D1625): the ⋯ menu's item and a menu button wear the browser's ring, not the app's cyan one; Tab out of a menu two ways — questions for him, with pictures; and one small tidy-up (low, the agent's).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -193,11 +192,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 **Checks and tooling**
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs built 8 Nov 26 (`claude/ci-smoke-timeout`, his "merge live"); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
-- [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
-- [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check; a few comments to look at.
+- [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
+- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
@@ -216,7 +215,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Documents and guides**
 - [RULINGS-SPENT-PASS] — the rulings files' size markers were raised past their sizes (the Tracker's to 27,500 on 18 Oct 26): their spent and restated rulings archived after a fresh reader's check, the Tracker's D560 and D564 first; then the Tracker area split if still near its marker.
-- [DOC-POINTERS-CODE] — code comments point at documents moved in the spring clean — with the next code change.
+- [DOC-POINTERS-CODE] — four code comments still point at documents moved in the spring clean: in the rules engine and in pull request 664's files, each with its next change; one to read against D338.
 - [WORD-LIST] — the app's word list was drafted, never checked or filed — checked, then read before his approval.
 - [SKILL-FUSION] — the planning guide's harder questioning and three proposals — each read before his approval.
 - [CAL-JOB-LEFT] — the calendar job's leftovers: a stale line in the Codex guide, owed reads, looks never recorded.
@@ -272,6 +271,19 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
+**What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code
+(not the rules engine, not tests). **(1) 13 import cycles**, every one through `raptor-port/src/state/people-settings-commit.ts`
+(with `accounts.ts`, `roster-add.ts`, `noticeseen.ts`, `flyplan.ts`, and `command/actor.ts` → `auth.ts` → `perms.ts` →
+`accounts.ts`). A cycle cannot be kept with a reason on a line, so it is broken or it stays counted. The app starts and every
+test passes, so none reads a value before it is set today; the risk is a later import that does. **To do:** find which of
+its functions each importer takes, and move those to a file with no app imports, as the save indicator's source was moved
+to `ui/savestatus-source.ts` — a change to saved data's path, so its own check (tier WALK at least). **(2) 18 in files outside
+that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `ui/DateCal.tsx` 2, `ui/MedicalView.tsx` 2,
+`ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
+lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
+D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -426,6 +438,14 @@ review placed before the database step; (6) the reader's test set from §7.11's 
 it once; (7) the way back: putting the previous live version back on Vercel, checked on his plan, written for him (the page's improvement 7 — not one of his five rulings; the agent's own step, as is its "circuit breaker", which is not built without his word).
 **For the full security review, from M4's security read (27 Oct 26 — `raptor-port/docs/handpass/parts/lw-m4/security-read.md` §Lower):** (a) older than M4 — on an open day of his own row a member's command may write a war record of ANY kind, an OIL credit (`{kind:'credit', code:'FO', oil:'auto'}`) among them, and the war adds such credits up (`dayview.ts earnsOil`); whether the schedule's credit pass rewrites a forged one was not confirmed; (b) one admin can write another admin's Approvals marker (`apprseen:`), the same pattern as the `reqseen:` row — no fix, a note; (c) a member's notice text is never compared with what his change did (a line about his own input that misdescribes it) — the war's line kinds are refused since M4.
 **For the full security review, from the Inputs batch's fix-round read (3 Nov 26 — [INPUTS-FIXES-1103], `raptor-port/docs/handpass/2026-11-03-inputs-batch-check.md` §13):** a member's new input counts as a piece of a record his same command changed when it carries that record's filer and filing time (`state/perms.ts inputBreach`), and a piece carries the record's scheduler marks; so a hand-made new input that copies them can wear a LATE drop or a cancel it was never given. Every record the app makes is held; the server should know a piece's lineage itself, not read it from those two fields.
+**For the full security review, from the security read of React Doctor on the shell and the state (8 Nov 26 —
+`raptor-port/docs/handpass/parts/rss1108/read-security.md`, both "before this change"):** (a) for any man whose posting the
+pass marks done, the posting pass may change his existing account row in every field but its person, role and name, or
+delete it, whatever the outcome — SANS and a posting with no outcome included, neither of which writes an account row
+(`state/perms.ts postingPassViolation`, the account branch); only the app's own `lw.postoutRun` reaches it, so it is the
+database rule's to narrow ([SERVER-SIDE-PASSES]); (b) the medical document's PDF frame (`ui/DocViewer.tsx`) is not
+sandboxed — true and safe today (filing takes only PDFs and pictures, and the frame shows the browser's own copy); once
+documents come from a shared store, the type the frame is served must be pinned to the kind stored.
 **For the full security review, from the posting-out bell line's reads (5 Nov 26 — `raptor-port/docs/handpass/parts/pb1105/read-security.md` 1 fix 2, 2; `read-fixes.md` 1, 2):** the posting pass's gate (`state/perms.ts postingPassViolation`) asks its people, settings, posting and notice rows but not its schedule, input or planning rows — allow those only where the pass deletes (exempting the id housekeeping's own `rid`/`iid`/`ord`-only changes, or a real pass is refused), and a line's `at` and unknown keys; and a stray schedule change in memory is taken in by the pass, not put back (`revertUnsavedSched`, the roster's twin). The browser route is closed by the pass's resync; these are the database rule's.
 After four weeks, the scorecard against the baseline. **Place:** after the iPhone keyboard fault (D1366) and M4 (D1404)
 unless he says otherwise; Opus 5.5, high effort; a fresh chat.
@@ -1145,7 +1165,11 @@ its own after it (a change to how walks are run — its guide wording read by As
 
 ### [STACK-LEFTOVERS] Small loose ends named in the Codex stack's finished items, kept when those items went to the archive (filed 7 Oct 26)
 Each stood inside an item that is otherwise built, checked and live (PR #481), and none was settled in the stack's check
-(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. (1) **Insights, two edges never tried**
+(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. **(1) and (2) done 8 Nov 26** on
+`claude/insights-leftovers` (evidence `raptor-port/docs/handpass/2026-11-08-insights-leftovers.md`): (1)'s two edges tried
+and found no fault — the "pending" chip and the board's "Not yet signed" count the saved typing at once; Templates is never
+offered while a look is open — pinned by `raptor-port/src/ui/insights-leftovers.test.tsx`; (2) built as
+`roleAnswerName` / `roleSideWord`, the words unchanged. (1) **Insights, two edges never tried**
 (`[INSIGHTS-MISSION-MIX]`, the Opus interim read of 3 Oct 26): what a published day's "changes to go out" strip shows after
 "Choose mission role" is pressed with unsaved typing in the Remarks box; and the week's Templates button while a saved
 plan is being looked at. (2) **Insights, one tidy-up** (D489's note): the change history and Undo each work out the wording
@@ -1155,7 +1179,13 @@ moves, an issued key rewritten, where an input's Undo lands) — written down th
 again when that script is next run. (4) **Discard marks — not ruled, his to raise:** a button that puts a published day
 back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second cheaper-model trial — one small fix built
 by a Sonnet helper — ran 21 Oct 26 on `[OG-TAG-OVER-COUNT]` (archived; the verdict: `raptor-port/docs/handpass/2026-10-21-look-keys.md` §12). **Place (the agent's line):** (1) with the next change to Insights'
-role question; (2) and (3) with their own jobs; (4) only if he raises it.
+role question; (2) and (3) with their own jobs; (4) only if he raises it. **(5) Filed 8 Nov 26, D489's tidiness note from
+the fresh Opus read of job 6** (`raptor-port/docs/superpowers/briefs/2026-11-08-insights-leftovers-read-opus.md`, low 3):
+a line's callsign is still tidied for the Blue/Red answer in three bodies — the question's name
+(`src/state/mission-roles.ts`, no 80-letter cut), the history's name for a copied answer (`src/state/changelines.ts`
+`roleFormationName`) and `src/engine/mission-role.ts roleAnswerName`; they agree today, and one shared body would stop a
+later change to one making a copied answer's history line name the line differently from a typed one. Not a fault now.
+**Place:** with the next change to Insights' role question, or with `[CODE-TIDY-AUDIT]`. **Now open: (3), (4), (5).**
 **Seen 10 Oct 26, not corrected (a helper's scan of the backlog's own status lines):** `[INSIGHTS-CLOSE-STAYS-VISIBLE]`, `[LOGIC-STICKY-SEARCH-COMPACT]` and `[TRK-FLIGHT-LABEL-READABILITY]` still say "owner look and Claude reads pending" although the workflow UI pass is live (PR #481, 6 Oct 26) — read each, then archive it or say what is left; `[ITFLOW-OIL-RESHOOT]` waits on a merge that has happened (PR #469).
 
 ### [IMPECCABLE-UPDATE] Move Impeccable to v4.1.3, the last version built from readable scripts — AFTER the calendar job (D625; the newest version is not taken, D623 — 7 Oct 26)
@@ -1500,6 +1530,16 @@ deliberately slow storage.
 
 
 ### [DOC-POINTERS-CODE] Code comments that point at documentation moved in the spring clean (filed 24 Sep 26)
+**Narrowed 8 Nov 26** (`claude/rd-shell-state`, evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`): every pointer listed below now
+names its new home, and `raptor-port/src/ui/board.ts` and `inputedit.tsx` were re-pointed in that job. **Four are left**, in
+files that job could not touch: `raptor-port/src/engine/canonical.ts:35` ("CLAUDE.md §Drag-reordering" →
+`.claude/rules/decisions/scheduler.md` §Drag-reordering) — the engine changes only for a behaviour change (D1537), so with
+the next one; `raptor-port/src/ui/weekglide.ts:45` ("CLAUDE.md §Week navigation" → `scheduler.md` §Week navigation &
+cross-week continuity) and `raptor-port/src/ui/SchedBoard.tsx:607` ("CLAUDE.md §the phone board is ONE window" →
+`raptor-port/docs/ui-contracts.md` §The board on a phone is ONE window) — both files of pull request 664, with their next
+change; and `raptor-port/src/ui/pendlist.ts:16`, whose pointer still lands (`raptor-port/CLAUDE.md` §What actually persists)
+but which says the edit log is kept only while the page is open — read it against D338 (the change history outlives a
+reload) before changing a word.
 **Place:** ride the next change that touches `raptor-port/src` anyway — a pointer-only edit there starts the full
 check run on his PC (D89, D151), which a docs pass must not do. Every one of these still LANDS today, through a
 signpost or an index left at the old place, so none is urgent; each should name the new home directly:
@@ -2163,7 +2203,7 @@ short: `CLAUDE_CODE_RETRY_WATCHDOG_MAX_WAIT_MS`. The `/overnight` guide is not c
 
 ### [ONE-RULE-LEFTOVERS] Three housekeeping jobs the one-rule job’s last step did not reach (filed 13 Oct 26) — OPEN, low
 
-**Not faults — nothing a person sees.** Named in that job’s handoff as "step 8’s leftovers" and carried, not done, by the `[OIL-ASK-NOTIFY]` chat (its check was closing: a code change after the walked build would have been a change nobody walked). (1) The behaviour register’s 55 proposed ids (`raptor-port/docs/handpass/parts/or-step8-register.md`) are not wired into the tests’ names or `raptor-port/scripts/rulecheck.mjs`, so the rule check does not yet fail when one loses its test. (2) **DONE 13 Oct 26 with the Inputs batch** (`raptor-port/docs/handpass/2026-10-13-inputs-batch.md`): `PendItem.mates` and its three readers in `raptor-port/src/ui/pendlist.ts` are removed. (3) Four comments that name removed code — `raptor-port/src/ui/drag.ts` near "ONE OF A SHARED INPUT’S MEN" and the seat branch below it, `raptor-port/src/ui/inputedit.tsx` near the OIL ask’s reader and `askOilIfPending`’s callers (the handoff of 12 Oct 26 gave line numbers that have since moved: read each against the code beside it). **Place:** the agent’s — with the next Inputs / schedule batch (D490).
+**Not faults — nothing a person sees.** Named in that job’s handoff as "step 8’s leftovers" and carried, not done, by the `[OIL-ASK-NOTIFY]` chat (its check was closing: a code change after the walked build would have been a change nobody walked). (1) The behaviour register’s 55 proposed ids (`raptor-port/docs/handpass/parts/or-step8-register.md`) are not wired into the tests’ names or `raptor-port/scripts/rulecheck.mjs`, so the rule check does not yet fail when one loses its test. (2) **DONE 13 Oct 26 with the Inputs batch** (`raptor-port/docs/handpass/2026-10-13-inputs-batch.md`): `PendItem.mates` and its three readers in `raptor-port/src/ui/pendlist.ts` are removed. (3) **DONE 8 Nov 26 on `claude/rd-shell-state`** (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md` — each re-worded to the code beside it, and the job's blind read found each true): four comments that named removed code — `raptor-port/src/ui/drag.ts` near "ONE OF A SHARED INPUT’S MEN" and the seat branch below it, `raptor-port/src/ui/inputedit.tsx` near the OIL ask’s reader and `askOilIfPending`’s callers (the handoff of 12 Oct 26 gave line numbers that have since moved: read each against the code beside it). **Place:** the agent’s — with the next Inputs / schedule batch (D490).
 
 ### [IT-GUIDE-DATEBOX-SCRIPT] The IT flow guide's picture script still types into two date boxes that are buttons now (found 13 Oct 26 by the read of `[ONE-DATE-CALENDAR]`) — OPEN
 
@@ -2211,21 +2251,17 @@ which carry such a mark, and either teach it the list with a test per kind or cl
 sees changes. **Place:** low, the agent's — with the next keyboard or windows job. Evidence:
 `raptor-port/docs/handpass/parts/kw1105/read-fixes2-opus.md`.
 
-### [BOARD-KEYS-LEFT] What the keyboard job of the night of 3 Nov 26 saw and left on the Scheduler Board (filed 3 Nov 26; low, the agent's)
-**His answer, 5 Nov 26 ("Go" — the mock-up page's question 2): D1646** — the board's small menus, its day and week chips and Edit Schedule's day name reached and pressed by the keyboard, the app's cyan ring; (2) and (5) ride with it. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
-Seen by the builder of [BOARD-OPEN-BY-KEYS] and [VEILED-WINDOWS-BAR]'s Escape part (`raptor-port/docs/handpass/2026-11-03-week-swipe-keys.md` §1b), older than that job:
-(1) a board menu's items (+ Block, Templates, the plans selector, a jet's stores, + Wave, the duty role list) cannot be reached by
-the keys — the keyboard stays on the button and the menu is added at the page's end; the design guide wants Enter or ↓ to open a
-menu on its first item; (2) once the board is opened by the keys, Tab is not kept inside the board (the [WINDOWS-KEEP-KEYS] kind);
-(3) the board's day-head crew-day picker on the edit week (`.dow`) is mouse-only. (5) Escape does nothing on the Sort all dialog — Cancel, ✕ and a click outside close it (walker B, the sheet §6b; `main` the same). (4) the board's day and week chips take no keys — most felt on a desktop, where the ‹ › day buttons are not drawn (job 3's report, the sheet §1c). **Place:** low — with the next keyboard batch.
-
-### [WEEK-GLIDE-TWO-PAGES] Two crosses on two pages inside half a second leave Edit Schedule unscrollable (the fresh read of 3 Nov 26; low)
-The cross's slide covers the real week and, on a phone, stops it scrolling (`ui/weekglide.ts`) until the slide's end, keeping one
-baseline per burst and restoring it on `lastRoot` only. A cross on Edit Schedule, a switch to View-only Sched and a cross there before
-the first slide ends (about half a second) restores only View-only Sched's week: Edit Schedule's keeps its touches off (older than
-3 Nov 26) and its scrolling off (since 3 Nov 26) until a reload. **Fix:** keep every week touched in a burst and restore each at the
-last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
-unreachable; with the next change to the slide.
+### [BOARD-KEYS-LOOKS] Three looks under the keys on the Scheduler Board, left by the board-keys job (the night of 7–8 Nov 26; low)
+Built that night on `claude/board-keys` ([BOARD-KEYS-LEFT]'s last two menus, [WEEK-GLIDE-TWO-PAGES]); what a person would SEE
+differently was not built (D1625) and waits as three questions, each with its pictures and a recommendation in
+`raptor-port/docs/handpass/2026-11-08-board-keys.md` §11: **Q1** an item of the board's ⋯ menu under the keys wears its raised
+row and the browser's own ring, where the board's other menus wear the app's cyan ring — recommended: the cyan ring, on the
+board's ⋯ and the week's alike; **Q2** a button that opens a board menu (+ Block, the day bar's Templates) wears the browser's
+white ring under the keys, as on `main` — recommended: the cyan ring, as D1646 reads; **Q3** Tab out of a menu works two ways
+(the board's string-drawn menus close and give the keys back to their button; the ⋯ menu lets Tab move on, and Shift+Tab back
+onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
+menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
+finding 4). **Place:** low — the questions wait until he says (D994); the tidy-up with the next change to the board's menus.
 
 ### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
@@ -2276,17 +2312,6 @@ Every window drawn on the `.airpop` veil covers the top bar (or the board's bar)
 
 ### [SCHED-CTRL-Z] The schedule pages have no Ctrl+Z (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s build)
 Only the Tracker answers Ctrl+Z and Ctrl+Y (`raptor-port/src/tracker/app/core.js`, D372). On Edit Schedule, View-only Sched, the Scheduler Board and the other pages of the app, Ctrl+Z inside a box is the browser's own undo of that box's typing, and anywhere else nothing — which is why the walk of 21 Oct 26 found "Ctrl+Z inside the Traffic window does nothing". **A question for him (D994 — not put until he says):** should Ctrl+Z / Ctrl+Y (⌘Z on a Mac) press the top bar's Undo / Redo everywhere, leaving a box's own typing undo to the box while it has the caret? Recommended: yes — the schedulers work mostly at a desktop and want to be as efficient as possible (D820), and the Tracker already does it. **Place:** with the next keyboard batch, on his answer.
-
-### [WINDOWS-KEEP-KEYS] Only the six question sheets keep the keyboard; the larger windows let Tab walk into the page behind (reader D2's second pass, 6 Oct 26 — OLD)
-**His answer, 5 Nov 26 ("Go" — the mock-up page's question 4): D1648** — an unreadable clock explained once under the wave's lines. The other two leftovers (the keys back after the OIL question, the red note's refresh test) need no answer. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.
-The request's edit window, Insights, the document viewer and the template windows take no focus and hold none: Tab goes on into the
-schedule behind them (the Tab route stands down; a box there still saves on leaving). The same on `main`. The six sheets fixed in the
-check use `raptor-port/src/ui/sheetfocus.ts`; the same hook fits these. Also from that pass, low: after the OIL question is answered
-the caret is on nothing (his place in a Tab run is lost); the red explanation refresh (AB-F2) has no test of its own; with several
-unnamed lines an unreadable clock is explained once per line under the box. **Place:** low — with the next change to those windows.
-**The windows: BUILT 24 Oct 26 on `claude/windows-escape` (the night of 23–24 Oct 26, job 2; waiting for his look and "merge live"):** a request's window opened from the schedule (on the Inputs page it is a window the page behind
-works with, D641, and holds nothing), Week insights, the document viewer and the Flying waves window take and keep the keyboard;
-Insights and Flying waves close on Escape too (test `ui/windowkeys.test.tsx`). **The three low leftovers above stay open.**
 
 ### [REST-FIRST-CREW-HINT] Empty formation gives no predictive crew-rest hint for its first occupant (found 2 Oct 26)
 Rally runtime evidence: an empty Wednesday formation resolves reporting to Tuesday11:00, but Ranger gets no pre-placement rest hint. First assignment correctly raises9h crew rest against Monday's overnight endingTuesday02:00. A different remaining crew member supplies a sibling and Ranger's hypothetical placement then correctly gives clearance14:00. Removal restores the missing-first-hint condition. Baseline query contract and a dedicated test explicitly return null for an empty formation; this is existing behaviour, not a new Rally regression, and is not exempted as stored-demo-only harm. The broad guide claim that the query never disagrees has been qualified in `raptor-port/docs/engine-rules.md`.

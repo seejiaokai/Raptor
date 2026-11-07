@@ -172,6 +172,7 @@ const puckIdOf = (p: any) => p && p.id
    the recorded image and corrupt a re-undo (or the history line). Deep-clone at
    every assignment site so live state and the recorded image never share an object.
    Restore is not a hot path, so the clone costs nothing that matters. */
+// eslint-disable-next-line react-doctor/no-json-parse-stringify-clone -- the restored day lands as saving stores it (keys set to undefined dropped), the same image a reload reads; structuredClone would keep them
 const cw = <T>(v: T): T => (v == null ? v : JSON.parse(JSON.stringify(v)))
 
 /* the live SCHED field behind each of a day's book-slice fields (state/weekrows.ts) */
@@ -521,6 +522,7 @@ function keepIdsOnTheirDays(): void {
   for (const [id, days] of where) {
     if (days.size < 2) continue
     before ??= schedRecords()
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- each day's own list of row ids, made fresh and searched once for one id (only for an id found on two days): a Set built for it would be read once too
     const keeper = [...days].find(di => idsOf(before!.get(`days/${CURWEEK}#${di}`)?.value).includes(id))
     if (keeper == null) continue                                  // no day held it before: the first-seen rule stands
     for (const di of days) {
