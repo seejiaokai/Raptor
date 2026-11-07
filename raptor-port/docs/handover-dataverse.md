@@ -18,7 +18,7 @@ our own test tables, in his test account (his D1749), are for our testing only; 
 group with basic access, and who may do what is the app's own roles, controlled inside the app — database-level rights are
 yours; no outside connectors, only M365 services such as Power Automate and Teams; large files in SharePoint with a link;
 a flow runs by itself, owned by the unit's role-based account; auditing is on and managed by you. Still to ask: your short
-code early, what basic access allows on the app's tables, Dataverse Functions, SharePoint from the app and who may read it,
+code early, what basic access allows on the app's tables, SharePoint from the app and who may read it,
 how long the audit is kept, how the unit gets a role-based account, and the first admin (item 8).
 
 ## What we agreed
@@ -109,7 +109,7 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
   6. whether a day of the flying programme is split into its rows from the start or later — **a week is
      stored one record per DAY from the start (owner, D355, 29 Sep 26): a scheduler takes a day to edit it, and
      two schedulers on two days of one week must never write the same record** (`data-model.md` §9, the day
-     lock, with its own two questions for you, Open questions 8 and 9);
+     lock, with its own two questions for you, Open questions 8 and 9); *8 Nov 26: the lock is a simple mark the app holds (his D1751), so question 8 is gone;*
   7. whether the app calls the Dataverse Web API directly from the Code App,
      or a thin API sits in front of it; *8 Nov 26: directly — no plug-ins or outside connectors, so nothing can sit in
      front;*

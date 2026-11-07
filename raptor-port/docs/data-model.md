@@ -58,7 +58,7 @@ in his own test account — his D1749):** the table list goes to them as a `tabl
 same kit; they have ONE production environment for code apps, set the short code (prefix) themselves and build their tables
 exactly from the `tables.json` we finally send — our test tables are not carried over; access to the app is one user
 security group with basic access, and who may do what is the app's own roles, checked by the app — database-level rights are
-theirs (§11 and §9 rule 8 carry what this changes, put to him); no outside connectors, only M365 services (Power Automate,
+theirs (§11 carries what this changes; the day lock is now a simple mark the app holds — his D1751); no outside connectors, only M365 services (Power Automate,
 Teams); unique keys and change tracking not confirmed (§9's change log has the fallback); large files in SharePoint with a link
 (Attachment); a flow runs by itself, owned by the unit's role-based account; auditing is on, its keeping theirs.
 
@@ -444,6 +444,8 @@ by an older build, loads read-only and its rows are never rewritten.
 *The stage-1 whole-week snapshot this entry described before 29 Sep 26 is in `docs/archive/data-model-2026-09-29.md` (replaced for the day lock, D355).*
 
 ### ScheduleDay at stage 1 — the day, and its lock
+
+**8 Nov 26 — his D1751 replaces D450:** the lock is a simple mark on the day — who is editing it — set when he starts and cleared once his work is saved; the app holds it and the database refuses nobody. The two layers below (row ownership, the server check) are not built; they stay as the record of the earlier design. Taking a day, its idle release and a take-over (D355, D356, D454) are writes to the mark.
 
 **Revised 29 Sep 26 (D450 — the lock is firm; round 1 Fable 16, Astra 2; round 2 Fable 1, Astra 1):** the lock is
 columns of the day row, made firm by two layers together:
@@ -1330,7 +1332,7 @@ can do better.
 
 | Table | Unit of write | Policy | Stage |
 |---|---|---|---|
-| `ScheduleDay` (stage-1 snapshot) | one day (D355) | **the day lock below** — only the holder's current session writes a day (D450: the database refuses anyone else) — with **reject and reload** underneath, never replaced by it; a take, a take-over and a release are a change of the row's owner sent with the version read, so two people taking one free day cannot both win | 1 |
+| `ScheduleDay` (stage-1 snapshot) | one day (D355) | **the day lock below** — only the holder's current session writes a day (D450 — replaced 8 Nov 26 by D1751: the app holds it, the database refuses nobody) — with **reject and reload** underneath, never replaced by it; a take, a take-over and a release are a change of the row's owner sent with the version read, so two people taking one free day cannot both win | 1 |
 | `ScheduleWeek` (the week row) | the two format stamps only | reject and reload — written when the week is created and by a format upgrade, never by an edit to a day (section 3, ScheduleWeek) | 1 |
 | `PlanningPuck`, `DayRemark` | one row | reject and reload — no lock (rule 10) | 1 |
 | `ChangeBatch` | append-only | no conflict possible — one row per command, written in the command's own changeset | 1 |
@@ -1422,10 +1424,10 @@ D450–D452:
    but it cannot hand a day from one person to another (a take-over, an idle day) without a permission that would also
    let him save it, nor tell two tabs of one person apart — so the server check is required, not a fallback.* **The
    version check stays underneath:** a stale save is refused and reloaded, never silently overwritten.
-   *8 Nov 26 — the IT side's answers 3, 8 and 9: no plug-in, one basic access for everyone, and who may do what is the
-   app's own roles; database-level rights are theirs. So the database cannot itself refuse a save from someone who does
-   not hold the day; the app holds the lock, and the version check underneath is the database's own refusal only if a
-   code app's save can carry the row's version (to prove in his test account, D1749). Put to him 8 Nov 26.*
+   **REPLACED 8 Nov 26 by his D1751 (the IT side's answers 2, 3, 8 and 9):** the lock is a simple mark — who is editing
+   the day — set when he starts and cleared once his work is saved; the app holds it and the database refuses nobody.
+   The version check underneath stays: the database's own refusal if a code app's save can carry the row's version (to
+   prove in his test account, D1749), else the app's check before it saves.
 9. **Nothing but the holder writes a day; everything else that changes what a day shows is worked out on read from its
    own table** (Astra 4, Fable 4 and 7 — Open question 9's recommendation, now the design). The working-out is applied
    to the day's working copy when it loads and at every check, BEFORE the comparison with the issued version — that is
@@ -1576,7 +1578,7 @@ update, delete (delete is the soft delete throughout).
 giving basic access; who may do what is the app's own roles, controlled inside the app; database-level rights are the
 PP CoE's, beyond our control. So this table is held by the app's own checks (the page, the write path, the commit gate —
 `src/state/perms.ts`), not by Dataverse security roles, and "The server enforces, the browser mirrors" below does not hold
-as written. Put to him 8 Nov 26, with D1653.
+as written. The day lock follows: a simple mark (his D1751, 8 Nov 26); D1653 is put to him.
 
 | Table | Admin | Member | Guest | Pending | Own-row rule and notes |
 |---|---|---|---|---|---|
@@ -1608,7 +1610,7 @@ as written. Put to him 8 Nov 26, with D1653.
 | `LeaveSeen` | C R U **own** | C R U **own** | — | — | `personId` = my person — when I last opened my own person window on the Leave War: a line of my leave someone else changed since then wears the cyan dot (M5a — D1231, D1481); written when he opens it, by its one command `lw.seen`, never an Undo step (`state/lwseen.ts`) |
 | `Course`, `Syllabus`, `TrainingEvent`, `EventPrerequisite`, `Layout`, `CoursePlan`, `Enrolment`, `Attempt` | C R U D | C R U D | — | — | **everyone edits** the Tracker — owner, 7 Sep 26; since D121, 23 Sep 26, Import / Export too: admin and member have the same access — except the flex settings, a `Setting` (above), the admin's alone (D1014, 18 Oct 26) |
 
-**The day lock (29 Sep 26, D355, D450 — section 9):** the lock is columns of `ScheduleDay` (section 3), so it follows
+**The day lock (29 Sep 26, D355, D450 — section 9):** *(8 Nov 26, his D1751: a simple mark the app holds — none of the Dataverse privileges, team or server check in this paragraph is built.)* the lock is columns of `ScheduleDay` (section 3), so it follows
 the ScheduleWeek family's row — an admin takes, releases and takes over a day (every scheduler is an admin; in
 Dataverse: Read at Organization depth, Write and Assign at User depth, every scheduler a member of the free team, and
 the server check for every change of holder and every save — section 3); a member and a guest read it, so "<callsign> –
@@ -1644,7 +1646,7 @@ one). The app's commit gate holds it (`src/state/perms.ts`
 under a credential a browser holds (`[SERVER-SIDE-PASSES]`, with the war's and the inputs' own passes).
 
 **Who owns each table's rows — fixed when a table is created, and not changeable afterwards (29 Sep 26, round 2,
-Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock), and
+Fable 2).** **User- or team-owned** (the owner is a person's `User`, or the free team): `ScheduleDay` (the lock — organisation-owned since his D1751, 8 Nov 26, the lock a plain mark), and
 every table with an own-row rule — `Person` (owned by his linked `User`; a person with no sign-in — D217 — by an
 admin team; round 3, Astra 3: a member edits his own row, which an organisation-owned table cannot allow), `Input`,
 `Attachment`, `InputAttachment`, `QualMark`, `LeaveBid`, `EditLogSeen`, `AccessRequest`, `AccessRequestSeen`, `User`, and (M5a, 28 Oct 26) `LeaveBalance` and `LeaveSeen` — with the other own-row "seen" records, `NoticeSeen` and `LeaveApprovalsSeen`, which this list had not named. **Organisation-owned:** everything else —
@@ -1727,7 +1729,7 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    owner team with Read on `ScheduleDay`; run the check as SYSTEM; and switch
    change tracking on for `ChangeBatch`. **Overtaken 7–8 Nov 26:** no plug-ins (7 Nov), no database-level rights of ours
    — the app's own roles (8 Nov, answers 8 and 9) — and change tracking not confirmed (answer 5); so neither row
-   ownership nor a server check is ours to set, and the lock is held by the app (rule 8's note; put to him, D450).
+   ownership nor a server check is ours to set, and the lock is held by the app (rule 8; his D1751, 8 Nov 26: a simple mark, replacing D450).
 9. **A member's input, a deleted person, a request handed on — worked out on
    read (29 Sep 26; the design now, section 9 rule 9).** Nothing but a day's
    holder writes the day: a member writes only his `Input`, a delete only
