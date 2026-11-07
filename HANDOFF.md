@@ -20,6 +20,14 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/m365-package-d11230 -->
+### `claude/m365-package-d11230` — chat 1 (D1744): reading the M365 data package the IT side gave him; written 7 Nov 26, about 23:15 — verify before use
+- **Where it started:** `main` at `617e2d46e`. This branch carries only D1745 and this block — no app change.
+- **The package:** he attached it in the chat (about 40 files, from his PC's temporary folder). Read only, nothing of it run, and **nothing of it copied into this public project (D106)**; the findings are in the shared notes folder outside the project, `C:\Users\User\AppData\Roaming\Claude\side-session-notes\local_da2b7165-cd6a-4a3c-baa3-5fc7958c001e\chat1-m365-package-findings.md`. Ask him before writing any of its details into a file here.
+- **D1745 (his answer to "what does ready by February mean?"):** February 2027 is not a deadline — the plan is an order of steps with sizes, nothing rushed.
+- **Next:** the report to him (what the package says about the tables, what it changes in our table list and the M365 move plan, what needs the IT side, how detachments, several squadrons and the aircraft-type setting fit, what the platform cannot do, the order of steps), after Astra's blind read of the plan (D1743).
+- **Rulings:** D1745.
+<!-- /now -->
 <!-- now:claude/rules-diet-step-3-f1a069 -->
 ### `claude/rules-diet-step-3-f1a069` — [RULES-DIET] step 3, reading by section: MERGED on his "merge live", 7 Nov 26 (pull request 658) — this block goes at the next handoff; written 7 Nov 26, 21:05 (compacted at about 19:34 and 20:27) — verify before use
 - **Where it started:** `main` at `32ac5bd59` (step 2 live, pull request 657). Commits: `ab8598e70` (drafts), `cf81dc275` (measure), `6f9e2dbbc` (the Opus meaning read folded in), `47cf3ef81` and `b1a5e682b` (the two script reads' fixes), `d743a96b7` (Astra's read folded in), then the reports, the review log and this block.

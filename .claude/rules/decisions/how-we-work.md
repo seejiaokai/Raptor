@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1745 | 7 Nov 26 | February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date, and no step is rushed or its checks cut to meet one. |
 | D1741 | 7 Nov 26 | The start-of-chat size job ([CONTEXT-START-SIZE]) is closed: its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting, with nothing for the agent to do, and the item leaves the backlog for its archive. |
 | D1740 | 7 Nov 26 | The skill-notes short form's wording is approved as drafted and read: every chat gets `.claude/skills/task-observer/SHORT-FORM.md` from the start hook in place of invoking the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses. |
 | D1739 | 7 Nov 26 | Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page — is read by Astra and by the fresh Opus reader, each blind to the other, for whether any meaning changed; his call for those steps, made now (D1734); if Astra cannot run, he is told first, and the step never goes on without that read. |
