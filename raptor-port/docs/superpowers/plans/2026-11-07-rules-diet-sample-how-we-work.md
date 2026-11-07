@@ -1,4 +1,4 @@
-# DRAFT — the general rulings ("how we work") as a "how it works now" page (rules-diet sample, v2, 7 Nov 26)
+# DRAFT — the general rulings ("how we work") as a "how it works now" page (rules-diet sample, v3, 7 Nov 26)
 
 **Not in force.** A sample for the rules-diet plan (`2026-11-07-rules-diet-plan.md`, D1732), written to measure the method
 on the file every chat loads before he rules. The rules in force are `.claude/rules/decisions/how-we-work.md` and its full
@@ -6,7 +6,11 @@ rows. Below `=== THE PAGE ===` is what the new `how-we-work.md` would hold; afte
 replaces. **v2** folds in the fresh Opus reader's findings on v1 (`../briefs/2026-11-07-rules-diet-plan-read-opus.md`):
 no bare list of numbers (H1a), the clauses v1 dropped put back (H1c — D16, D874, D1530, D1536, D1554), every change mark
 cited beside the ruling it changes (H1b — checked by the trial script of the plan's §5), and the archive list cut from 23
-to 10 (H2).
+to 10 (H2). **v3** folds in Astra's blind read of v1 (`../briefs/2026-11-07-rules-diet-plan-read-astra.md`): D766 kept
+live with its compaction clause; four rulings stated with the parts v2 dropped or widened — D148 (the list clears at sign-out;
+another's change never undone; it says who), D493 (the Leave War's saved-data reading and its schedule link), D787 (Opus
+never walks as a helper; the host's own short look stands), D486 and D491 (the skills he sent, not every outside skill).
+This account is still by ruling; the real conversion's is by requirement (the plan's §2).
 
 === THE PAGE ===
 
@@ -51,7 +55,9 @@ never pay or money [D25, filed under OIL].
   the second seat when he calls the ChatGPT readers [D353, D590, D601, D790, D903, D1734]. A working-guide change is read before
   his approval, one round each, never by its writer [D70, D590, D811, D941, D1417].
 - Sonnet 5.5 walks the app, runs the checks and does document chores, the host checking the results — it never reads code
-  for bugs; Opus does not walk; a cheaper-model trial stays small and the agent decides and tells him [D588, D595, D787].
+  for bugs; a cheaper-model trial stays small and the agent decides and tells him [D588, D595]. The walkers stay Sonnet:
+  Opus never walks as a helper, not even one share for comparison; the host still opens their pictures, reproduces every
+  finding and may run a short look itself where the sizing step says a helper is not worth starting [D787].
 - The host opens every picture that decides something — a fault's cause, a fix's check, a finding — cropped to the area
   that matters; walkers look at the bulk [D1271, D1273].
 - A security read (an extra fresh reader looking only for holes) on any change to sign-in, permissions or what one person
@@ -134,9 +140,13 @@ never pay or money [D25, filed under OIL].
   D203, D453, D473]. No guide for bringing a third app in as a tab until one comes [D73]. No tidy-up deletes the SANS layout's
   branch, records or pictures [D610].
 - Not started until he says: the Tracker's progress graph [D774]; the M365 hosting trial (until his test account) [D1682];
-  the Tracker's and Leave War's tidy-ups are jobs of their own [D775, D493]. His go for the jobs the 13 Oct skill-notes
+  the Tracker's and Leave War's tidy-ups are jobs of their own [D775, D493]. Of the code-tidiness read's separations, the
+  Leave War's saved-data reading waits for the database step, and its link to the schedule stays whole — split only if a
+  later feature must work heavily inside it, a new question for him then; nothing is restructured outside an approved item
+  [D493, D486]. His go for the jobs the 13 Oct skill-notes
   review filed stands — the script guard (`[SHELL-SCRIPT-GUARD]`) among them, built with its fresh read [D811].
-- Outside skills are never installed whole — their practices are fused into our guides [D486, D491]; guides and automatic
+- The outside skills he has sent — the article's five, the mattpocock and jakubkrehel collections, the Apple design skill —
+  were not installed whole: their practices are fused into our own guides [D486, D491, D812]; guides and automatic
   tools stay readable by any model [D623]; Impeccable moves to v4.1.3 by its vendoring note's steps [D625]. Codex alone
   uses the proportional framework [D499].
 
@@ -163,7 +173,9 @@ never pay or money [D25, filed under OIL].
   the night's chat coordinating [D1416]; it goes on past 90% of the weekly allowance, saving at every step [D1415]; using up
   the allowance is his aim [D1033, D1415].
 - Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
-  one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667].
+  one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667]. Before a
+  compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it
+  touches, the open faults, the parked questions — and what to drop [D766].
 - Every chat compacts at about 400,000 tokens (first note about 300,000; held until saved from about 360,000) [D1671,
   D878]. The compaction set-up stands: the fullness on his screen, a guard that holds the app's compaction until the state
   is saved — off when he is away — and the saved note handed back after [D870, D872]. Idle compaction stays on [D884].
@@ -181,7 +193,8 @@ never pay or money [D25, filed under OIL].
   privacy sweep [D62]; the commander briefing deck stays [D57].
 
 ## App-wide product rules (to move to their area pages)
-- Undo reverses only the signed-in person's own changes, refusing where someone has since changed the same thing [D148];
+- Undo steps back through the signed-in person's own changes only, and the list clears when they sign out; it never undoes
+  another person's change, and where someone has since changed the very same thing it refuses and says who [D148];
   it does not take back adding a person, archive, restore, delete or a posting [D350]; "Clear edit history…" stays until the
   database step [D351]. A scheduler is always an admin [D785]. To the OIL page: an issued weekend carrying a placeholder
   raises the pending mark — leave it [D54].
@@ -191,14 +204,13 @@ never pay or money [D25, filed under OIL].
 ## The account — every ruling of today's `how-we-work.md` not cited on the page
 
 Every other ruling of the file is cited on a line that states it — on this page, or in one of the five always-loaded files.
-These 11 are not; each is **proposed** for
+These 10 are not; each is **proposed** for
 the archive by `DECISIONS.md` step 2 (a spent one-off permission, or a ruling a later one restates in full — D971), to be
 confirmed by the conversion's fresh reader against the full row, sentence by sentence:
 
 | Ruling | Proposed | Why |
 |---|---|---|
 | D602 | spent | the order after the Codex stack: each step done (the crew-rest fault, the start-load audit); its "never at the cost of the quality of the work" is D68's |
-| D766 | spent | the one-rule job's unattended run to its step 8 — done |
 | D832 | spent | the drafting of the writing guide — approved as D836 |
 | D972, D973 | spent | the capitals sweep — done, `[CAPS-SWEEP]` archived |
 | D974 | spent | the start-size job's commits left on `main` — a one-off |
@@ -211,10 +223,13 @@ confirmed by the conversion's fresh reader against the full row, sentence by sen
 loading shape and D136 only by the ruling that approves it); D969 (its points E and F are open — the skill-notes short form
 was approved on 17 Oct); D811 (its go for `[SHELL-SCRIPT-GUARD]` is unspent); D905 (widened by D906, not restated); D8,
 D10, D72 (no "history" category in step 2; D72 is a standing no); D870 (its standing design); D1531 (the package store);
-D1732 (live until the diet ends); D203 (kept rather than argued as restated).
+D1732 (live until the diet ends); D203 (kept rather than argued as restated). **Kept live in v3** (Astra's finding 3): D766 —
+its one-rule job is done, but its "smart compaction" (what to keep, what to drop) is the rule `doc-structure.md`,
+`doc-budget.md` §5 and `/overnight` apply to every unattended run, and no later ruling carries it.
 
 **Sizes** (the project's calibrated estimate, `docsize.mjs` `estTokens`): today's `how-we-work.md` 56,682 bytes, about
-21,236 tokens → this page 16,541 bytes, about 6,241 tokens (−71%; v1 was 4,873 with a bare list of numbers and six
-clauses dropped). The plan's two trial checks (§5) pass: no bare list of numbers, and every change mark of a general ruling
-cited beside it. With the five always-loaded files, every one of the 207 rulings is cited on a line that states it, except
-the 11 above.
+21,236 tokens → this page 17,524 bytes, about 6,602 tokens (−69%; v2 was 6,243, v1 4,873 with a bare list of numbers and
+six clauses dropped). The plan's two trial checks (§5) pass on v3 — rebuilt on his PC for it, since the cloud chat's
+scripts are gone, and reproducing v2's own figures first: no bare list of numbers, and every change mark of a general
+ruling cited beside it. With the five always-loaded files, every one of the 207 rulings is cited on a line that states
+it, except the 10 above.

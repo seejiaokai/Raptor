@@ -3748,3 +3748,18 @@ full record.
 
 **Principle:** A compressed format must carry, as a check, every relationship the verbose format carried implicitly —
 otherwise the compression silently drops exactly the narrowings and clauses that mattered.
+
+### Observation 838: A blind second read of an older version needs a copy of that commit, not the live branch
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** Astra's blind read of the rules-diet plan v1, run after v2 (which folds in the first reader's report) was already on the branch
+**Skill:** claudex-loop:codex-review (and the project's reader briefs)
+**Type:** open-source
+**Phase/Area:** launching an independent reviewer
+
+**Issue:** The brief asked for a read "blind to the other reader" of commit a294a09f, but the branch by then held v2 of the plan, whose review log lists the first reader's findings, and the first reader's report itself. Pointing the reviewer at the live checkout would have shown it both. An old-commit worktree fails on this repo (very long picture names). What worked: `git archive <commit> -- . ':(exclude)<picture folders>' | tar -x -C <scratch>`, `git init` and one commit there so the repo's scripts run, then `codex exec -C <scratch> -s read-only`. 87 MB, seconds; the reviewer saw exactly the commit and nothing later.
+
+**Suggested improvement:** In the codex-review / claudex-loop review step: when the version under review is not the branch head, or the branch already holds another reviewer's report or a revision built from it, run the reviewer in an exported copy of that commit (picture or binary folders excluded), and say so in the saved report's header.
+
+**Principle:** Blindness is a property of what the reviewer can reach, not of what the brief tells it not to open; give it a tree that contains only what it should see.

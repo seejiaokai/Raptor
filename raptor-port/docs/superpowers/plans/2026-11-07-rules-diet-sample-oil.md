@@ -1,11 +1,13 @@
-# DRAFT — the OIL rulings as a "how it works now" page (rules-diet sample, v2, 7 Nov 26)
+# DRAFT — the OIL rulings as a "how it works now" page (rules-diet sample, v3, 7 Nov 26)
 
 **Not in force.** A sample for the rules-diet plan (`2026-11-07-rules-diet-plan.md`, D1732), written to measure the method on one
 real area before he rules. The rules in force are `.claude/rules/decisions/oil.md` and its full rows. Below the line
 `=== THE PAGE ===` is what the new `oil.md` would hold (its `paths:` unchanged); after the page, the account of every ruling
 it replaces. **v2** folds in the fresh Opus reader's findings (`../briefs/2026-11-07-rules-diet-plan-read-opus.md`): D15's
 ⓘ rows put back, D163 and D470 kept live, D660 and the `[OIL-AUTO-REMOVE]` evidence pointer restored, the rulings homed in
-other areas reduced to pointers, every change mark of an OIL ruling cited beside it.
+other areas reduced to pointers, every change mark of an OIL ruling cited beside it. **v3** folds in Astra's blind read
+(`../briefs/2026-11-07-rules-diet-plan-read-astra.md`): D1094's three withdrawn-amendment wordings put back beside the
+same-time sentence v2 kept alone.
 
 === THE PAGE ===
 
@@ -49,8 +51,9 @@ on a rule's detail or asking him about it. A ruling of another area that bears o
 - A cancelled input, or an information-only one: never asked — not at a save, a put-back or a filing; no "OIL?" tag, not
   in the one list nor the bell [D814].
 - An ALL AVAIL / ALL row with a start and no end earns nobody — the scheduler page's [D360].
-- A worked weekend that earns nobody any OIL says so [D81]; the same-time line's "earns nobody any OIL" sentence stands as
-  built [D1094].
+- A worked weekend that earns nobody any OIL says so [D81].
+- The OIL batch's words stand as built: when an amendment is withdrawn, the Unpublish warning, its done note and the armed
+  button's title; and the same-time line's "earns nobody any OIL" sentence [D1094].
 
 ## How long a day counts
 - A flying line: from its earliest applicable entered in-time / rally for the formation — the nominal report time only
@@ -144,7 +147,7 @@ on a rule's detail or asking him about it. A ruling of another area that bears o
 | D52 | What earns | |
 | D79, D82 | What earns | |
 | D80, D400, D402, D261, D260, D1008, D1579 | Earned and awarded | |
-| D81, D1094 | What does not earn | D1094's "goes live on this merge live" is spent; the words standing are kept |
+| D81, D1094 | What does not earn | D1094's "goes live on this merge live" is spent; all four wordings standing are kept (v3) |
 | D142 | What earns | |
 | D163 | Settled | kept live (v2): a "leave it" |
 | D360 | — | a scheduler ruling: pointer only |
@@ -154,6 +157,6 @@ on a rule's detail or asking him about it. A ruling of another area that bears o
 | D781, D782, D783, D793, D804, D814, D816, D818, D862, D863, D865, D923, D978 | The OIL question | D978's "goes live on this merge live" spent; the look stays |
 
 **Sizes** (the project's calibrated estimate, `docsize.mjs` `estTokens`): today's `oil.md` 15,109 bytes, about 5,856 tokens →
-this page with the same `paths:` 10,253 bytes, about 3,927 tokens (−33%; v1 was 3,773 before the reader's findings). All 48
+this page with the same `paths:` 10,379 bytes, about 3,975 tokens (−32%; v2 was 3,926, v1 3,773 before the readers' findings). All 48
 of its rulings are cited on a line that states them; none is proposed for the archive. The plan's two trial checks (§5)
 pass: no bare list of numbers, and every change mark of an OIL ruling cited beside it.
