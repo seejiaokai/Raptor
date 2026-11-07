@@ -253,6 +253,12 @@ jobs:
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
+    # A TIME LIMIT ON EVERY TEST JOB ([CI-SMOKE-TIMEOUT], 8 Nov 26): with none, a job that hangs waits GitHub's default of
+    # six hours. Each limit is set from the job's length over the 20 green runs before 8 Nov 26, with room to spare - most
+    # of a browser job's slow tail is "Install Chromium" (the system packages it fetches took 8 to 16 minutes in 9 of those
+    # 20 runs, the browser tests themselves 6.2 at most), so the browser jobs get 30 minutes, the smoke's own step a closer one.
+    # build: under a minute (0.9 at most).
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
         with:
@@ -300,6 +306,8 @@ jobs:
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
+    # a time limit (see build's note): each part 3 to 6 minutes, 7.5 at most
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
@@ -359,8 +367,9 @@ jobs:
   # browser. The runner has no browser of its own; the dev container's
   # Chromium is not here. Cache the downloaded browser between runs, keyed on
   # the lockfile so a Playwright bump busts it. On a hit the ~20s Chromium
-  # download is skipped; `--with-deps` still runs (the apt step is quick) so
-  # the OS libraries are present on every fresh runner. Each leg builds and
+  # download is skipped; `--with-deps` still runs (usually seconds, but its
+  # download from Ubuntu's mirror is the browser jobs' slow tail - see build's
+  # time-limit note) so the OS libraries are present on every fresh runner. Each leg builds and
   # serves the port itself (playwright.config.ts webServer) and keeps the
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
@@ -371,6 +380,8 @@ jobs:
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
+    # a time limit (see build's note): each part 3.5 to 6 minutes, 16.4 at most - the slow ones in "Install Chromium"
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
@@ -435,6 +446,9 @@ jobs:
       || github.actor != github.repository_owner
       || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository)
     runs-on: ubuntu-latest
+    # a time limit (see build's note): each half 2 to 4.5 minutes, 17.7 at most. The half that ran 16 minutes on 5 Nov 26
+    # (pull request 643, cancelled) had not hung in the smoke: its "Install Chromium" took 12 of them, the smoke 3.8.
+    timeout-minutes: 30
     # two machines since the night of 20 Oct 26 (D1089, D1092): the suite's own clean slate cuts it in two — part 1 310
     # checks, part 2 143, the same 453 by name as the whole run (unset SMOKE_PART: the whole, as on his PC's runner)
     strategy:
@@ -471,6 +485,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Tracker smoke
         working-directory: raptor-port
+        # the smoke itself: 3.9 minutes at most on GitHub's machines (40 halves) - a hang here stops at 12, not at the job's 30
+        timeout-minutes: 12
         env:
           SMOKE_PART: ${{ matrix.part }}
         run: npm run smoke:tracker

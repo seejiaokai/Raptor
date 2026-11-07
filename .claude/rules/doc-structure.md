@@ -78,7 +78,8 @@ tiers: `raptor-port/docs/doc-budget.md`; this file is its short, always-loaded f
 - **Unattended runs** — when he leaves a job to run while he is asleep or away: moved whole to
   `raptor-port/docs/doc-budget.md` §5 (D596, D667, D766, D1556); the overnight guide carries the same rulings.
 - **Parallel chats** each touch only their own `## Now` block, their own backlog items and their own D-number range;
-  the later merge brings `main` in first (D78).
+  they never clash in anything and never merge at once — each merge under the merge lock, after a level check
+  (`shipping.md`) — and the later merge brings `main` in first (D78, D1746).
 - **The Claudex loop** (Opus 5.5 builds; the code read a fresh, blind Opus read, Astra and Sol 6.1 only on his call,
   Fable on his call only — D67, D353, D590, D601, D790, D903, D1734, D1738, D1739, D1761): plans and review logs are tier-3
   docs (the table above); the ripple walk reads `feature-impact.md`.

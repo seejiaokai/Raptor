@@ -241,8 +241,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Finished jobs that close together merge as one pull request, checked once, each keeping its own check and evidence,
   and the record files are to merge without clashing (`[MERGE-ONCE-RECORDS]`, open) [D822].
 - The backlog's priority list shows only what is open, one line an item, grouped by area; finished work leaves it for the
-  archive, the stories staying in git, the evidence sheets and the archive [D1024]; the sized plan's fix nights first,
-  the pictures round after, each night's jobs still starting on his word [D1717].
+  archive, the stories staying in git, the evidence sheets and the archive [D1024].
+- The sized plan's fix nights come first and the pictures round after, each night's jobs still starting on his word —
+  except that the round of about twelve small questions was drawn on the night of 7 Nov 26, in a chat of its own beside
+  the night's fixes, ahead of night 3's jobs, which still run on a later night; nothing of it is built before his
+  answers [D1717, D1747].
 - The original batch order stays the reference: work-hours, Insights, workflow UI, inputs, Tracker, caps and ops (started
   only on his word; its handoff stays cancelled, the SANS calendar in its place), the whole-app check [D495, D568, D569];
   the earlier builds' re-test as a person uses them has the Leave War links left, with the 7 Sep phone check [D4, D147,

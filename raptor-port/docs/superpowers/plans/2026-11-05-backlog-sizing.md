@@ -53,7 +53,7 @@ Tracker's standalone tidy — [TRK-STANDALONE-LEFTOVERS]), 639 (the "not saved" 
 ## 3. What needs him first — one pictures round
 
 These are small to build but each shows something new or changes how a screen looks, so each goes to him as a picture
-first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night.
+first (D1625, D853). One page, about 12 questions, about 2–3 hours to prepare; his answers then build in about one night. **Drawn on the night of 7 Nov 26 in a chat of its own (chat 3), ahead of night 3, whose jobs still run on a later night (D1747, narrowing D1717 for that night).**
 
 [BOARD-SIDEWAYS-KEYS] (the board's top on a phone on its side with the keys up) · [BOARD-NARROW-DESKTOP-REMARKS] (the board
 821–1000 wide) · [LW-TWO-BOX-LETTERS] (two boxes on one day clip "FO*") · [SCHED-UNAV-PENDING-MARK] (no "waiting" mark on an
@@ -63,7 +63,7 @@ on a phone) · [LOGIC-WORDS-WORKHOURS] · [OIL-EARN-DAY-SWITCH-WORDS] · [OIL-IN
 
 ## 4. His questions in this plan — ANSWERED 5 Nov 26
 
-**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round.
+**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round (for 7 Nov 26, narrowed by D1747 — §3).
 
 As they were put:
 
