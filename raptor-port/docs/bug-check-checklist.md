@@ -24,7 +24,8 @@ next. Never from memory — the order changes.
 4. **Lay down the evidence sheet now** (WALK and FULL) — open **§9**: every section it lists as an empty heading, the
    roll-call table drawn one row per surface, so a row nobody walked shows as a blank during the walk, not at the close.
 5. **Something new he will see** — a box, a message, a mark, a button, even inside a fix: drawn and shown to him before
-   it is built (§5, D1625; §11 for a look he uses daily).
+   it is built (§5, D1625). **A change to the look or layout of a surface he uses daily:** the whole screen, before and
+   after, shown to him before it is built, whoever filed it and even when it came as a defect (§11).
 6. **The rulings that apply** — listed for him in the app's words, any clash flagged and resolved (§12's second box;
    `raptor-port/CLAUDE.md`'s standing order "sweep the rules"); each checked against the running build, pass or fail;
    on FULL, swept one mark per surface (§5's table, §2a's "Rules and logic"). A ruling's "left as it is today" half is
@@ -62,13 +63,14 @@ next. Never from memory — the order changes.
     highlight asserted as PAINTED, by a computed style on each element it must cover; a mark of more than one colour per
     man, against his own item; every picture a step saves opened before the step counts as looked at.
 15. **Walked enough, and each MISSING disposed of** (**§7.5, §7.6**): fixed with a red-first test, ruled "leave it" by him
-    with its date, or filed with its place — "rare" is not a disposition.
+    with its date, or filed with its place — "rare" is not a disposition unless a scenario proves it rare.
 16. **The tests find rather than confirm** (**§8**): over the roll-call, on the everything day, written the way the app
     writes, red first, one break test per wired surface.
 17. **The reads, after the walk** (FULL, and any job that needs a code read) — open **§4** ("Who reads the finished code
-    now", the brief, "What to do with what they hand back") and **§4a**: readers get the evidence sheet and the roll-call
-    and are asked for what is missing; before the sheet goes to a reader, every test or file a "proved by" cell names is
-    checked to exist (§9). **Whatever the tier:** a change that touches sign-in, who may do or see what, or what one
+    now", the brief, "What to do with what they hand back") and **§4a**. §4's current arrangement wins: the fresh Opus
+    reader gets the same brief and the finished code, and has seen neither the walk's report nor another reader's (D790);
+    §4a's hand-over of the evidence sheet and the roll-call applies only where that allows. Readers are asked for what is
+    missing; before the sheet goes to anyone, every test or file a "proved by" cell names is checked to exist (§9). **Whatever the tier:** a change that touches sign-in, who may do or see what, or what one
     person can see of another gets the security read too (§5, D1411).
 18. **Fix, then re-walk what the fixes touched** (§5: the re-walk, a fix is new code, the touched suite between rounds).
 19. **The gates green on the last pushed commit** (§5; `.claude/rules/shipping.md` §The checks).
@@ -83,7 +85,8 @@ next. Never from memory — the order changes.
 
 **LOOK:** the gates, one before-and-after picture at phone and desktop, a two-line sheet (§5); a surface an earlier walk
 script already pictures re-runs that one step into a new folder (§5; `docs/walk-scripts.md` §6). **NONE:** nothing.
-**Background, opened when asked why or when changing the order:** §1, §2, §9a, §13.
+**Every two weeks:** the scorecard — §9a whole, and the comparison it asks for (D1409).
+**Background, opened when asked why or when changing the order:** §1, §2, §13.
 
 ## The lessons of §7.11 — one line each of what to check (his words and each case stay there)
 

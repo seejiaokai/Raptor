@@ -407,17 +407,17 @@ readers' fixes (the first measure, before them, said 67,949 for the three — th
 
 | Read | Before | After | The plan said | The case counted |
 |---|---|---|---|---|
-| The bug-check order | 40,301 whole | 35,185 (the checklist 4,534 + the order's parts 30,651) | ~10,000 | a WALK of a screen with a new control: every section the checklist names for it, whole — §0a, §2a, §2b, §3, §4, §5, §6, §7.0–§7.10, §8, §9, §10, §11, §12 — and lessons 1, 3 and 22 of §7.11; not §4a (a code read: FULL) nor the rest of §7.11, its head and other lessons (6,359), each opened when it applies |
-| The design guide | 50,631 whole | 42,895 | ~12,000 | a new control and its words: the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1's own text and §1b, §2, §3, §4's "One mark, one look", §6, §8 (the mock-up put to him first, D1625) |
-| The ripple map | 28,855 (§1 and §3) | 17,162 | ~7,000 | a schedule cell edit: the head note, §3, the lists the note's three searches print, the eight §1 rows Flow A names, Flow A, §4's funnels and the four drift-seams such an edit writes through or reads, the one dated part in its subject |
-| **The three together** | **119,787** | **95,242 (−20%)** | ~29,000 | |
+| The bug-check order | 40,301 whole | 35,366 (the checklist 4,715 + the order's parts 30,651) | ~10,000 | a WALK of a screen with a new control: every section the checklist names for it, whole — §0a, §2a, §2b, §3, §4, §5, §6, §7.0–§7.10, §8, §9, §10, §11, §12 — and lessons 1, 3 and 22 of §7.11; not §4a (a code read: FULL) nor the rest of §7.11, its head and other lessons (6,359), each opened when it applies |
+| The design guide | 50,631 whole | 45,306 | ~12,000 | a new control and its words: the head, §0 and §9 (his lessons, 24,511 — read whole for every design job, D941, D1417), §1, §1a and §1b (the writing guide, for new or changed words — Astra's read), §2, §3, §4's "One mark, one look", §6, §8 (the mock-up put to him first, D1625) |
+| The ripple map | 28,855 (§1 and §3) | 17,875 | ~7,000 | a schedule cell edit: the head note, §3, the lists the note's three searches print, the eight §1 rows Flow A names, Flow A and Flow F, §4's funnels and the four drift-seams such an edit writes through or reads, the one dated part in its subject |
+| **The three together** | **119,787** | **98,547 (−18%)** | ~29,000 | |
 
 **Why it saves far less than §4 and §6 said:** §4's ~10,000 assumed a typical walk opens a few sections; the checklist,
 written to keep every section that applies a required read, read whole (D1735's condition), names fifteen parts of the
 order for a WALK. §6's ~12,000 left out that §9, his lessons, is half the guide and stays whole. The ripple map saves
 about two fifths. **Each job's whole read**, before → after (start and task change only by step 3's pointer lines and the
-handoff's length): Leave War 347,553 → 322,989, scheduler 288,117 → 263,553, Inputs 313,096 → 288,532, Tracker
-300,169 → 275,605 — about 8% of each job; a notes job reads none of them.
+handoff's length): Leave War 347,553 → 326,322, scheduler 288,117 → 266,886, Inputs 313,096 → 291,865, Tracker
+300,169 → 278,938 — about 7% of each job; a notes job reads none of them.
 
 ### Review log
 

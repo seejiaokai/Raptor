@@ -27,10 +27,11 @@ fix to behaviour, a test, a comment) — the skill's detector already runs after
 ## Which part of the guide to open (his D1735, 7 Nov 26)
 
 Each section whole, when the job does that kind of work. **Every design job:** the guide's head, §0 (what wins) and §9,
-his design lessons, whole (D941, D1417). **Words** a person reads, written or changed: §1 and §1b; to shorten words
-already on screen, §1a too (D833). **Any new control, or anything a person opens, closes, presses, hovers, drags or
+his design lessons, whole (D941, D1417). **Words** a person reads, written or changed, new as well as old: §1, §1a and
+§1b, the writing guide (D833). **Any new control, or anything a person opens, closes, presses, hovers, drags or
 types in:** §2. **Placing or grouping:** §3. **A colour, mark or emphasis:** §4. **A new action:** §1's point on
-feedback and §4's "One mark, one look". **Motion:** §5; **a drag:** §5a. **Before anything built is shown to him:** §6.
+feedback and §4's "One mark, one look". **Motion:** §5; **a drag:** §5a. **Designing, restyling, drawing or looking over anything a person sees:** §6, and again
+before anything built is shown to him.
 **A look at one component:** §7. **A look or review, or any page of mock-ups put to him:** §8. **Changing the guide
 itself:** its last part, "Changing this guide". Unsure whether one applies: open it.
 
