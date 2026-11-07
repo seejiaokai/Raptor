@@ -612,6 +612,14 @@
   }
  },
  "q3": {
+  "words": {
+   "label": "No OIL earned",
+   "hover": "Anything added to this day later earns no OIL either.",
+   "noteSwitch": "Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.",
+   "bRest": "Stop OIL earning",
+   "bOn": "Earn OIL again",
+   "noteB": "Nothing on this day earns OIL. Press “Earn OIL again” and each man earns as he did before."
+  },
   "desk-today-off": {
    "words": "Nothing today earns",
    "title": "Nothing today earns — covers anything added later too",
@@ -622,6 +630,19 @@
     "y": 262,
     "w": 149,
     "h": 23
+   },
+   "fit": {
+    "free": 860,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "desk-puckBelowBar": 493,
@@ -635,6 +656,19 @@
     "y": 262,
     "w": 149,
     "h": 23
+   },
+   "fit": {
+    "free": 860,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "desk-a-off": {
@@ -643,10 +677,23 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 958,
+    "x": 963,
     "y": 262,
-    "w": 129,
+    "w": 124,
     "h": 23
+   },
+   "fit": {
+    "free": 876,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "desk-a-on": {
@@ -655,10 +702,23 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 958,
+    "x": 963,
     "y": 262,
-    "w": 129,
+    "w": 124,
     "h": 23
+   },
+   "fit": {
+    "free": 876,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "desk-b-off": {
@@ -667,10 +727,23 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 944,
+    "x": 968,
     "y": 262,
-    "w": 151,
+    "w": 127,
     "h": 23
+   },
+   "fit": {
+    "free": 882,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     127,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "desk-b-on": {
@@ -679,10 +752,73 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 928,
+    "x": 980,
     "y": 262,
-    "w": 167,
+    "w": 115,
     "h": 23
+   },
+   "fit": {
+    "free": 894,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     115,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-c-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 983,
+    "y": 262,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 897,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "desk-c-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 983,
+    "y": 262,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 897,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-today-off": {
@@ -695,6 +831,19 @@
     "y": 295,
     "w": 149,
     "h": 23
+   },
+   "fit": {
+    "free": 30,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-puckBelowBar": 551,
@@ -708,6 +857,19 @@
     "y": 347,
     "w": 149,
     "h": 23
+   },
+   "fit": {
+    "free": 30,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     149,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-a-off": {
@@ -716,10 +878,36 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 128,
+    "x": 133,
     "y": 295,
-    "w": 129,
+    "w": 124,
     "h": 23
+   },
+   "fit": {
+    "free": 46,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 18,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     135,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-a-on": {
@@ -728,10 +916,36 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 128,
+    "x": 133,
     "y": 347,
-    "w": 129,
+    "w": 124,
     "h": 23
+   },
+   "fit": {
+    "free": 46,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     124,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 18,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     135,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-b-off": {
@@ -740,10 +954,36 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 114,
+    "x": 138,
     "y": 295,
-    "w": 151,
+    "w": 127,
     "h": 23
+   },
+   "fit": {
+    "free": 52,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     127,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 19,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     142,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   },
   "phone-b-on": {
@@ -752,10 +992,112 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 98,
+    "x": 150,
     "y": 347,
-    "w": 167,
+    "w": 115,
     "h": 23
+   },
+   "fit": {
+    "free": 64,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     115,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 33,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     128,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-c-off": {
+   "words": "Nothing today earns",
+   "title": "Nothing today earns — covers anything added later too",
+   "lit": false,
+   "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
+   "control": {
+    "x": 153,
+    "y": 295,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 67,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 37,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     124,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
+   }
+  },
+  "phone-c-on": {
+   "words": "Nothing today earns",
+   "title": "Let this day earn again",
+   "lit": true,
+   "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
+   "control": {
+    "x": 153,
+    "y": 347,
+    "w": 112,
+    "h": 23
+   },
+   "fit": {
+    "free": 67,
+    "heights": [
+     23,
+     23
+    ],
+    "widths": [
+     112,
+     90
+    ],
+    "oneLine": true,
+    "overRight": 0
+   },
+   "wide": {
+    "free": 37,
+    "heights": [
+     24,
+     24
+    ],
+    "widths": [
+     124,
+     99
+    ],
+    "oneLine": true,
+    "overRight": 0
    }
   }
  },
@@ -765,21 +1107,47 @@
    "said": "",
    "picked": 2
   },
+  "phone-endTag": {
+   "moved": false,
+   "before": [
+    314,
+    604,
+    46
+   ],
+   "after": [
+    314,
+    604,
+    46
+   ]
+  },
   "phone-a": {
-   "said": "Fable: no OIL worked out — this row has no end time"
+   "said": "Nothing changed for Fable. No OIL worked out — this row has no end time."
   },
   "phone-b": {
-   "said": "Blocked: no OIL worked out — this row has no end time"
+   "said": "Blocked: nothing changed for Fable. No OIL worked out — this row has no end time."
   },
   "desk-today": {
    "said": "",
    "picked": 2
   },
+  "desk-endTag": {
+   "moved": false,
+   "before": [
+    456,
+    635,
+    52
+   ],
+   "after": [
+    456,
+    635,
+    52
+   ]
+  },
   "desk-a": {
-   "said": "Fable: no OIL worked out — this row has no end time"
+   "said": "Nothing changed for Fable. No OIL worked out — this row has no end time."
   },
   "desk-b": {
-   "said": "Blocked: no OIL worked out — this row has no end time"
+   "said": "Blocked: nothing changed for Fable. No OIL worked out — this row has no end time."
   }
  }
 }

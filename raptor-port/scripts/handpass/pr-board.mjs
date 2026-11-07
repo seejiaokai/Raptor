@@ -179,7 +179,7 @@ async function q1() {
     const { page } = w
     m.rest = await topItems(page)
     const t = m.rest
-    await mark(page, '.sb-top', `The board’s top: ${t.h} px of the 402`, { at: 'bottom', inside: true })
+    await mark(page, '.sb-top', `The board’s top: ${t.h} px of the 402, over a third of the screen`, { at: 'bottom', inside: true })
     await page.evaluate(() => { const e = document.querySelector('.sb-top'); e.style.overflow = 'visible' })
     await settle(page)
     await shot(page, 'q-sideways-today-rest', SIDE)
@@ -194,7 +194,7 @@ async function q1() {
     await keysUp(page)
     const li = await listInfo(page)
     m.keys = li
-    await keysBlock(page, `Today: the top keeps ${li.topBottom} px; ${li.listShown} px left to see the list`)
+    await keysBlock(page, `Today: the top keeps ${li.topBottom} px; ${li.listShown} px left for the list, under a third of one line`)
     await mark(page, '.sb-top', '', { inside: true })
     await page.evaluate(() => document.activeElement && document.activeElement.classList.add('zz-ring'))
     await shot(page, 'q-sideways-today-keys', SIDE)
@@ -215,7 +215,7 @@ async function q1() {
     await keysUp(page)
     const li = await listInfo(page)
     m.fold.keys = li
-    await keysBlock(page, `Drawn: the top folded to its one bar, ${li.topBottom} px; ${li.listShown} px left to see the list`)
+    await keysBlock(page, `Drawn: the top folded to its one bar, ${li.topBottom} px; ${li.listShown} px left for the list, most of one line`)
     await mark(page, '.sb-top', '', { inside: true })
     await page.evaluate(() => document.activeElement && document.activeElement.classList.add('zz-ring'))
     await shot(page, 'q-sideways-fold-keys', SIDE)
@@ -358,27 +358,73 @@ async function oilOn(w) {
   if (!(await page.evaluate(() => !!document.querySelector('#schedBoard .daybar.oilon')))) throw new Error('OIL Earn did not come on')
 }
 const SAT = 5
+/* The words of each option. Reworked 8 Nov 26 after a cold reader and a blind design read (notes-board.md, question 3):
+   "earned" in the label, so "No OIL" cannot be read as "no OIL taken off"; OIL and earning named in both of B's words; the
+   note says what to do and what comes back, with no "marks underneath". The longer words first tried ("No OIL earned this
+   day", "Stop this day earning OIL" / "Let this day earn OIL again") did not fit the phone's bar with an iPhone's letters
+   (the switch's words broke onto two lines; B's row ran 20 and 32 px past the bar). PRB_LABEL tries another label. */
+const W3 = {
+  label: process.env.PRB_LABEL || 'No OIL earned',
+  hover: 'Anything added to this day later earns no OIL either.',
+  noteSwitch: 'Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.',
+  bRest: 'Stop OIL earning',
+  bOn: 'Earn OIL again',
+  noteB: 'Nothing on this day earns OIL. Press “Earn OIL again” and each man earns as he did before.',
+}
+const setNote = (page, text) => page.evaluate(t => {
+  const n = document.querySelector('#schedBoard .daybar-note'); n.textContent = t; n.classList.add('zz-new-note')
+}, text)
 /* the one transform of each option, on the bar's "Nothing today earns" button (data-oilblank) */
-const drawSwitch = (page, on) => page.evaluate(on => {
+const drawSwitch = (page, on) => page.evaluate(([on, W]) => {
   const b = document.querySelector('#schedBoard [data-oilblank]')
   /* the Logic page's own switch (01-logic.css .lgmix — a label holding a checkbox drawn as a switch) */
-  const lab = document.createElement('label'); lab.className = 'lgmix zz-new'
+  const lab = document.createElement('label'); lab.className = 'lgmix zz-new'; lab.title = W.hover
   const inp = document.createElement('input'); inp.type = 'checkbox'; inp.setAttribute('role', 'switch'); inp.checked = on
-  lab.append(inp, document.createTextNode('No OIL this day'))
+  lab.append(inp, document.createTextNode(W.label))
   /* the Logic page's letters, measured there (Inter Tight 12px, regular, no capitals): inside the bar's heading row the
      label would otherwise take the heading's capitals and spacing */
   lab.style.cssText = 'margin-right:8px;font-family:"Inter Tight",system-ui,sans-serif;font-size:12px;font-weight:400;text-transform:none;letter-spacing:-0.065px'
   b.replaceWith(lab)
-}, on)
-const drawAction = (page, on) => page.evaluate(on => {
+}, [on, W3])
+const drawAction = (page, on) => page.evaluate(([on, W]) => {
   const b = document.querySelector('#schedBoard [data-oilblank]')
-  b.textContent = on ? 'Let this day earn again' : 'Stop OIL for this day'
-  if (on) { const n = document.querySelector('#schedBoard .daybar-note'); n.textContent = 'Nothing on this day earns OIL. The marks underneath are kept and come back when you let the day earn again.'; n.classList.add('zz-new-note') }
-}, on)
+  b.textContent = on ? W.bOn : W.bRest
+}, [on, W3])
+/* C — the design guide's own look for a new on/off control (§4, D882): the bar's own button, plain at rest, wearing the
+   filter chip's "on" when on (02-shell.css .fchip.on: a pale cyan fill, cyan words, a cyan edge), as the Leave War's
+   Rearrange and Show SANS buttons do (matrix.css .rtbtn.on) */
+const drawChip = (page, on) => page.evaluate(([on, W]) => {
+  const b = document.querySelector('#schedBoard [data-oilblank]')
+  b.classList.remove('blank', 'on'); b.textContent = W.label; b.title = W.hover; b.classList.add('zz-new')
+  /* at rest the chip's own plain look (.fchip: the panel's grey, a grey edge, grey words) — the bar's plain button is
+     already cyan-tinted with a cyan edge, which would leave on and off nearly alike */
+  if (on) { b.style.background = 'rgba(59,198,232,.16)'; b.style.color = 'var(--accent)'; b.style.borderColor = 'rgba(59,198,232,.6)' }
+  else { b.style.background = 'var(--panel-2)'; b.style.color = 'var(--ink-2)'; b.style.borderColor = 'var(--edge)' }
+}, [on, W3])
+/* the bar's heading row: the room between its name (OIL EARN) and the first of its buttons, and whether it is still one
+   row with every button one line tall */
+const rowFit = page => page.evaluate(() => {
+  const ph = document.querySelector('#schedBoard .daybar .sb-ph'), h = ph.querySelector('.daybar-h'), g = ph.querySelector('.gctl')
+  const kids = [...g.children].filter(e => e.getBoundingClientRect().width > 0)
+  const hr = h.getBoundingClientRect(), f = kids[0].getBoundingClientRect()
+  const tops = kids.map(e => e.getBoundingClientRect().top)
+  const hs = kids.map(e => Math.round(e.getBoundingClientRect().height))
+  const pr = ph.getBoundingClientRect(), last = kids[kids.length - 1].getBoundingClientRect()
+  return {
+    /* free: the room between the bar's name and its first button, the row's own 6 px gap included (spare = free - 6) */
+    free: Math.round(f.left - hr.right), heights: hs, widths: kids.map(e => Math.round(e.getBoundingClientRect().width)),
+    oneLine: Math.max(...tops) - Math.min(...tops) < 3 && Math.abs((f.top + f.bottom) / 2 - (hr.top + hr.bottom) / 2) < 6 && Math.max(...hs) <= 30,
+    overRight: Math.max(0, Math.round(last.right - (pr.right - parseFloat(getComputedStyle(ph).paddingRight)))),
+  }
+})
+/* an iPhone's letters, about a seventh wider than this browser's (as the marks helper drew q-r5e-ph-drawn-wide) */
+const widen = page => page.evaluate(() => {
+  for (const e of document.querySelectorAll('#schedBoard .daybar .sb-ph .gctl > *, #schedBoard .daybar .daybar-h')) e.style.fontSize = (parseFloat(getComputedStyle(e).fontSize) * 1.14).toFixed(2) + 'px'
+})
 async function q3() {
-  const m = measured.q3 = {}
+  const m = measured.q3 = { words: W3 }
   for (const [dev, vp, touch] of [['desk', PC, false], ['phone', PHONE, true]]) {
-    for (const opt of ['today', 'a', 'b']) for (const on of [false, true]) {
+    for (const opt of ['today', 'a', 'b', 'c']) for (const on of [false, true]) {
       const w = await world(vp, touch, { day: SAT })
       const { page } = w
       await oilOn(w)
@@ -386,20 +432,26 @@ async function q3() {
       const real = await page.evaluate(() => { const b = document.querySelector('#schedBoard [data-oilblank]'); const n = document.querySelector('#schedBoard .daybar-note'); return { words: b.textContent, title: b.title, lit: b.classList.contains('on'), note: n && n.textContent } })
       if (opt === 'a') await drawSwitch(page, on)
       if (opt === 'b') await drawAction(page, on)
+      if (opt === 'c') await drawChip(page, on)
+      if (on && opt !== 'today') await setNote(page, opt === 'b' ? W3.noteB : W3.noteSwitch)
       await sleep(200)
       const target = opt === 'a' ? '#schedBoard .daybar label.lgmix' : '#schedBoard [data-oilblank]'
       const tb = await boxOf(page, target)
-      m[`${dev}-${opt}-${on ? 'on' : 'off'}`] = { ...real, control: tb && { x: Math.round(tb.x), y: Math.round(tb.y), w: Math.round(tb.r - tb.x), h: Math.round(tb.b - tb.y) } }
+      const key = `${dev}-${opt}-${on ? 'on' : 'off'}`
+      m[key] = { ...real, control: tb && { x: Math.round(tb.x), y: Math.round(tb.y), w: Math.round(tb.r - tb.x), h: Math.round(tb.b - tb.y) }, fit: await rowFit(page) }
       const tag = {
         today: on ? 'Pressed: the same words, lit' : 'A switch that reads like the day’s state',
         a: on ? 'Drawn A: the switch on' : 'Drawn A: the app’s own switch, off',
         b: on ? 'Drawn B: pressed, the words turn round' : 'Drawn B: the button says what it does',
+        c: on ? 'Drawn C: on, the filter chip’s cyan' : 'Drawn C: the guide’s on/off look, at rest',
       }[opt]
       /* the bar is a panel that clips what overflows its rounded corners (.sb-panel overflow:hidden): let the tag out —
          nothing inside the bar overflows, so nothing else shows */
       await page.evaluate(() => { const b = document.querySelector('#schedBoard .daybar'); b.style.overflow = 'visible' })
       await mark(page, target, tag, { at: touch ? '' : 'right' })
-      if (opt === 'b' && on) await mark(page, '#schedBoard .daybar-note', '', { inside: true })
+      /* the switch's words end at its label's edge: the ring stands off them (the design read's (3)) */
+      if (opt === 'a') await page.evaluate(sel => document.querySelector(sel).style.setProperty('outline-offset', '5px', 'important'), target)
+      if (on && opt !== 'today') await mark(page, '#schedBoard .daybar-note', '', { inside: true })
       /* the man who plainly earns on this day: Fable on the SDO desk, FO — in the picture where it fits */
       if (touch) { const tb = await boxOf(page, '.sb-top'); await standAt(page, '#schedBoard .daybar', tb.b + 40); await sleep(300) }
       const bar = await boxOf(page, '#schedBoard .daybar')
@@ -413,6 +465,17 @@ async function q3() {
       if (!touch) { clip.x = Math.max(0, bar.x - 8); clip.w = Math.min(vp.width - clip.x, bar.r - bar.x + 16) }
       await settle(page)
       await shot(page, `q-oilswitch-${opt}-${on ? 'on' : 'off'}-${dev}`, vp, clip)
+      /* the same bar with an iPhone's wider letters: does every state still sit on one row (lesson 59, D1387; lesson 53)? */
+      if (touch && opt !== 'today') {
+        await widen(page); await sleep(200)
+        const fit = m[key].wide = await rowFit(page)
+        if (opt === 'b' && on) {
+          await mark(page, target, fit.oneLine && !fit.overRight ? `iPhone-wide letters: ${fit.free - 6} px to spare` : 'iPhone-wide letters: the row no longer fits', {})
+          await settle(page)
+          const bar2 = await boxOf(page, '#schedBoard .daybar')
+          await shot(page, `q-oilswitch-b-on-phone-wide`, vp, { x: 0, y: bar2.y - 34, w: vp.width, h: bar2.b - bar2.y + 34 + 12 })
+        }
+      }
       await w.ctx.close()
     }
   }
@@ -466,8 +529,12 @@ async function q4() {
         said = await page.evaluate(() => { const t = document.getElementById('toastEl'); return t && getComputedStyle(t).opacity !== '0' ? t.textContent : '' })
         m[`${dev}-today`] = { said, picked: await page.evaluate(() => [...document.querySelectorAll('#schedBoard .puck.sel, #schedBoard .sel')].filter(e => e.getBoundingClientRect().height > 0).length) }
       }
-      if (opt === 'a') { said = `${cs}: ${why}`; await page.evaluate(s => window.toast(s), said) }
-      if (opt === 'b') { said = `Blocked: ${why}`; await page.evaluate(s => window.toast(s, 'blocked'), said) }
+      /* the reworked words (the cold read of 8 Nov 26): the man as the subject, never a speaker's label; what the tap did
+         first; then D360's own sentence, kept whole as he ruled it — the hover's words today, the ALL AVAIL window's too */
+      if (why !== 'no OIL worked out — this row has no end time') throw new Error('not the open-end case: ' + why)
+      const d360 = 'No OIL worked out — this row has no end time.'
+      if (opt === 'a') { said = `Nothing changed for ${cs}. ${d360}`; await page.evaluate(s => window.toast(s), said) }
+      if (opt === 'b') { said = `Blocked: nothing changed for ${cs}. ${d360}`; await page.evaluate(s => window.toast(s, 'blocked'), said) }
       if (opt !== 'today') m[`${dev}-${opt}`] = { said }
       await sleep(300)
       const tag = {
@@ -477,7 +544,22 @@ async function q4() {
       }[opt]
       /* the tag below the puck, so the row above it (its END box, now empty) stays in sight */
       await mark(page, INERT, tag, { at: 'bottom' })
+      /* a box to type in draws no ::before, so its tag hangs from a holder of the box's own size, put round it in its
+         place (the row's grid slot copied onto the holder); the box must not move — measured, else no tag */
       await mark(page, '[data-bfld="dr:5.0.0.end"]', '', { inside: true })
+      m[`${dev}-endTag`] = await page.evaluate(() => {
+        const i = [...document.querySelectorAll('[data-bfld="dr:5.0.0.end"]')].find(e => e.getBoundingClientRect().height > 0)
+        const a = i.getBoundingClientRect(), cs = getComputedStyle(i)
+        const h = document.createElement('span'); h.className = 'zz-endhold'
+        h.style.cssText = `position:relative;display:block;width:${a.width}px;height:${a.height}px;grid-column:${cs.gridColumnStart} / ${cs.gridColumnEnd};grid-row:${cs.gridRowStart} / ${cs.gridRowEnd};align-self:${cs.alignSelf};justify-self:${cs.justifySelf === 'auto' || cs.justifySelf === 'normal' ? 'start' : cs.justifySelf};margin:${cs.marginTop} ${cs.marginRight} ${cs.marginBottom} ${cs.marginLeft};order:${cs.order}`
+        i.style.margin = '0'
+        i.parentElement.insertBefore(h, i); h.appendChild(i)
+        const b = i.getBoundingClientRect()
+        const moved = Math.abs(a.left - b.left) > 1 || Math.abs(a.top - b.top) > 1 || Math.abs(a.width - b.width) > 1
+        if (moved) { h.parentElement.insertBefore(i, h); h.remove(); i.style.margin = '' }
+        return { moved, before: [Math.round(a.left), Math.round(a.top), Math.round(a.width)], after: [Math.round(b.left), Math.round(b.top), Math.round(b.width)] }
+      })
+      if (!m[`${dev}-endTag`].moved) await mark(page, '.zz-endhold', 'No end time', { at: 'rbottom', ring: false })
       if (opt !== 'today') await mark(page, '#toastEl', '', {})
       await page.mouse.move(2, 2)
       const pb = await boxOf(page, INERT)
