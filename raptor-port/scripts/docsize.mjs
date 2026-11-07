@@ -39,6 +39,10 @@
  *
  * THE RULINGS SINCE D390 (28 Sep 26): each ruling is a short line in its area file and a full row, kept whole, in
  * .claude/decisions-full/ — the shape both this gate and the converter read is docsize-rulings.mjs.
+ * SINCE D1735 (7 Nov 26, the rules diet) an area may convert to a PAGE of how it works now, marked in its body by
+ * `<!-- shape: page -->`: its rulings then have no short lines, and the gate checks instead that each live ruling is
+ * cited on a statement that loads, beside every ruling that changed it, and that no line cites a replaced one (job 1c).
+ * Areas convert one at a time; until one does, it is checked exactly as before.
  *
  * Flags: --inventory runs job 1 only (the Stop hook .claude/hooks/backlog-guard.sh uses it); --moves lists
  * every line that left a Markdown file on this branch and arrived nowhere (the reading list of a D138 check);
@@ -463,6 +467,10 @@ const ROW_ID = /^\|\s*(D\d+)\s*\|/
 /* kind: 'short' (four `|` — an index line), 'full' (six — the ruling itself) or 'bad' (any other count, failed for it) */
 const rulingRowsIn = (f, text) => unfenced(splitLines(text)).filter(l => ROW_ID.test(l)).map(line => ({ d: ROW_ID.exec(line)[1], file: f, line, kind: RL.kindOf(line) }))
 const rulingRows = when => rulingFiles(when).flatMap(f => rulingRowsIn(f, when === 'base' ? readBase(f) : readNow(f)))
+/* the rules files every chat loads — directly under .claude/rules/, with no `paths:` (doc-structure.md); a page's ruling
+   may be stated in one of them instead of on its page (D1735, plan §2) */
+const alwaysLoadedRules = () => [...new Set([...(tryGit('ls-files', '--', '.claude/rules') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', '.claude/rules') || '').split('\n')])]
+  .filter(f => /^\.claude\/rules\/[^/]+\.md$/.test(f) && existsSync(join(REPO, f)) && !RL.isScoped(readNow(f)))
 /* a ruling's IDENTITY is its full row (a malformed one still counts, so it is failed for its shape, never as lost) */
 const identityRows = when => rulingRows(when).filter(r => r.kind !== 'short')
 /* A row whose ruling cell OPENS with a replaced or spent mark belongs in the archive (DECISIONS.md, step 2). */
@@ -700,6 +708,9 @@ function rulings(allow) {
      or spent does not stay live; the archive holds only marked rows; the map agrees with the files; and every live
      full row has exactly one short line in the area file of the same name, and every short line one full row. */
   const areas = new Set(areaFilesNow()), fulls = new Set(fullFilesNow())
+  /* the areas already converted to a page (D1735) — keyed by stem, the name an area file shares with its full-text file */
+  const pageOf = new Map([...areas].filter(f => RL.isPage(readNow(f))).map(f => [RL.stem(f), f]))
+  const isPageFile = f => pageOf.get(RL.stem(f)) === f
   for (const r of allNow) {
     /* the shape every tool here reads: `| D<n> | <d> Mon yy | …` — six `|` for a full row, four for a short line */
     if (!/^\| D\d+ \| \d{1,2} [A-Z][a-z]{2} \d{2} \| /.test(r.line)) fails.push(`${r.d}'s row in ${r.file} is not in the shape "| ${r.d} | <date, e.g. 24 Sep 26> | …" — fix its spacing and date cell`)
@@ -713,6 +724,7 @@ function rulings(allow) {
     if (r.file === DECISIONS) fails.push(`${r.d} is written in ${DECISIONS} — a ruling lives in its area's file under ${RULINGS_DIR}/ (the map in ${DECISIONS} names them); move the row there, then run: ${MOVER_CMD}`)
     else if ((areas.has(r.file) || fulls.has(r.file)) && MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is marked replaced/spent but is still in ${r.file} — move it to the archive: ${MOVER_CMD}`)
     else if (r.file === RULINGS_ARCHIVE && !MARKED.test(rulingCell(r.line))) fails.push(`${r.d} is in ${RULINGS_ARCHIVE} without its mark — an archived row opens its ruling cell with **REPLACED BY D<n>** or **SPENT <date>** (${DECISIONS}, step 2)`)
+    else if (isPageFile(r.file)) fails.push(`${r.d}'s full row is in ${r.file}, a page — a page holds no rows: move the row whole to ${FULL_DIR}/${RL.stem(r.file)}, then state the rule on the page, citing [${r.d}] (${DECISIONS}, the steps for a converted area)`)
     else if (areas.has(r.file)) {
       /* a full row still in an area file: a new ruling not yet converted — say what the converter will do with it */
       const why = RL.headingProblem(r.d, RL.headingOf(RL.cellsOf(r.line)))
@@ -736,7 +748,7 @@ function rulings(allow) {
     const marks = RL.marksOf(cells), missing = [...marks].filter(x => !p.tail.has(x)), extra = [...p.tail].filter(x => !marks.has(x))
     if (missing.length || extra.length) fails.push(`${s.d}'s short line ${missing.length ? `does not name ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it` : ''}${missing.length && extra.length ? ', and ' : ''}${extra.length ? `names ${extra.join(', ')}, which its full row carries no mark for` : ''} — write the mark in the full row (${DECISIONS} step 2), then: ${MOVER_CMD}`)
   }
-  for (const [d, f] of fullLive) if (!shortCount.has(d)) fails.push(`${d}'s full row (${f.file}) has no short line — every live ruling loads as one line: ${MOVER_CMD}`)
+  for (const [d, f] of fullLive) if (!shortCount.has(d) && !pageOf.has(RL.stem(f.file))) fails.push(`${d}'s full row (${f.file}) has no short line — every live ruling loads as one line: ${MOVER_CMD}`)
   /* every area file carries a byte tripwire (Astra's red team: an unregistered file could grow unseen) */
   const tripwired = new Set(RULING_BYTES.map(r => r[0]))
   for (const f of areas) if (!tripwired.has(f)) fails.push(`${f} has no byte tripwire in ${SELF}'s RULING_BYTES — add its row, with the reason, in a docs-only commit`)
@@ -755,10 +767,52 @@ function rulings(allow) {
       if (!existsSync(join(REPO, m.file))) fails.push(`the map in ${DECISIONS} names \`${m.file}\`, and no such file exists`)
     }
     for (const f of [...areas, RULINGS_ARCHIVE]) if (!byFile.has(f) && existsSync(join(REPO, f))) fails.push(`\`${f}\` holds rulings but is not in the map in ${DECISIONS} — add its row, then run: ${MOVER_CMD}`)
+    /* a converted area's row in the map lists the rulings of its full-text file, since its page holds no rows (D1735 —
+       the fresh Opus reader of the plan, H3: read from the page, the map would empty silently) */
+    const mapFileOf = rf => rf.startsWith(FULL_DIR + '/') && pageOf.has(RL.stem(rf)) ? pageOf.get(RL.stem(rf)) : rf
     const stale = []
-    for (const r of allNow) if (r.file !== DECISIONS && byFile.has(r.file) && !byFile.get(r.file).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`)
-    for (const [f, ids] of byFile) for (const d of ids) if (!allNow.some(r => r.d === d && r.file === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
+    for (const r of allNow) { const mf = mapFileOf(r.file); if (r.file !== DECISIONS && byFile.has(mf) && !byFile.get(mf).has(r.d)) stale.push(`${r.d} (in ${r.file.split('/').pop()})`) }
+    for (const [f, ids] of byFile) for (const d of ids) if (!allNow.some(r => r.d === d && mapFileOf(r.file) === f)) stale.push(`${d} (listed under ${f.split('/').pop()}, not in it)`)
     if (stale.length) fails.push(`the map in ${DECISIONS} does not match the files — ${stale.slice(0, 6).join(', ')}${stale.length > 6 ? ` and ${stale.length - 6} more` : ''}; run: ${MOVER_CMD}`)
+  }
+
+  /* THE PAGES (owner, D1735, 7 Nov 26 — the rules diet, plan raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
+     §2, §5). For each area converted to a page: its shape (docsize-rulings.mjs pageShapeProblems); every live ruling of
+     the area STATED — its number cited on a statement of its page or of an always-loaded rules file (D136 as D1735
+     narrows it: no longer a line of its own, but never out of what loads); every statement that cites a ruling of the
+     page's own area also cites each live ruling that ruling's full row marks as changing it, another area's included
+     (a narrowing is cited on the line it narrows — the plan's readers, H1b and Astra's finding 2); and no citation of a
+     ruling archived as replaced (D201: the line is rewritten in the same change), nor of a number that is no ruling. The
+     check sees citations, not meaning: whether a line says what its rulings say is the fresh reader's, from the
+     conversion's account. The always-loaded rules files join the last two checks once the general page converts. */
+  if (pageOf.size) {
+    const archived = new Map(rowsNow.filter(r => r.file === RULINGS_ARCHIVE).map(r => [r.d, RL.cellsOf(r.line)]))
+    const homeOf = d => (fullLive.has(d) ? RL.stem(fullLive.get(d).file) : null)
+    const generalPages = [...areas].filter(f => !RL.isScoped(readNow(f))).map(RL.stem).filter(s => pageOf.has(s))
+    const sources = [...[...pageOf].map(([s, f]) => ({ f, homes: new Set([s]) })), ...alwaysLoadedRules().map(f => ({ f, homes: new Set(generalPages) }))]
+    const stated = new Set(), listedOnly = new Map()
+    for (const { f, homes } of sources) {
+      const text = readNow(f)
+      if (isPageFile(f)) for (const p of RL.pageShapeProblems(text)) fails.push(`${f}, a page: ${p}`)
+      for (const s of RL.statementsOf(text)) {
+        for (const d of s.cites) if (s.states) stated.add(d); else if (!listedOnly.has(d)) listedOnly.set(d, `${f} line ${s.line}`)
+        if (!homes.size) continue
+        if (s.states) for (const d of s.cites) {
+          if (!homes.has(homeOf(d))) continue
+          const missing = [...RL.marksOf(RL.cellsOf(fullLive.get(d).line))].filter(m => fullLive.has(m) && !s.cites.has(m))
+          if (missing.length) fails.push(`${f} line ${s.line} states ${d} but does not cite ${missing.join(', ')}, which ${missing.length > 1 ? 'change' : 'changes'} it (the mark in ${d}'s full row) — write the line as it stands since then and cite [${[d, ...missing].join(', ')}] on it`)
+        }
+        for (const d of s.cites) {
+          const by = archived.has(d) && RL.REPLACED_BY.exec(archived.get(d)[2] || '')
+          if (by) fails.push(`${f} line ${s.line} cites ${d}, which ${by[1]} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`)
+        }
+        for (const d of s.named) if (!fullLive.has(d) && !archived.has(d)) fails.push(`${f} line ${s.line} cites ${d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`)
+      }
+    }
+    for (const [d, r] of fullLive) {
+      if (!pageOf.has(RL.stem(r.file)) || stated.has(d) || MARKED.test(rulingCell(r.line))) continue
+      fails.push(`${d} is a live ruling of ${pageOf.get(RL.stem(r.file))}, a page, and no statement states it${listedOnly.has(d) ? ` — it is cited only at ${listedOnly.get(d)}, which is a list or too short to state anything` : ''}: state the rule on its page, or in an always-loaded rules file, and cite [${d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)
+    }
   }
 
   const src = readNow(RULECHECK)
@@ -964,7 +1018,7 @@ function ceilingMovedWithCode(paths) {
 export const estTokens = text => { const caps = (text.match(/[A-Z]/g) || []).length; return Math.round((text.length - caps) / 2.74 + caps / 1.17) }
 /* A short line written in capitals (D970: written in ordinary letters, capitals only where a name or a short form has
    them) — two letters in five of its rule text capitals, at least 20 letters to judge by, or three capital words to open it. */
-export const capsHeavy = line => { const t = RL.parseShort(line).text || ''; const l = (t.match(/[A-Za-z]/g) || []).length, u = (t.match(/[A-Z]/g) || []).length; return (l >= 20 && u / l >= 0.4) || /^(?:[A-Z][A-Z'’-]*\s+){3}/.test(t) }
+export const capsHeavy = line => RL.capsText(RL.parseShort(line).text || '')
 
 function ceilings(codeChange) {
   const fails = [], deferred = [], caps = [], changedIds = []

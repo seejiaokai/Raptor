@@ -114,6 +114,104 @@ export function rowsOf(text) {
   return ls.flatMap((line, index) => !inF[index] && isRow(line) ? [{ d: idOf(line), kind: kindOf(line), line, index }] : [])
 }
 
+/* Text written in capitals (D970: ordinary letters, capitals only where a name or a short form has them) — two letters
+   in five capitals, at least 20 letters to judge by, or three capital words to open it. The short lines' check and the
+   pages' read it the same way. */
+export const capsText = t => { const s = t || '', l = (s.match(/[A-Za-z]/g) || []).length, u = (s.match(/[A-Z]/g) || []).length; return (l >= 20 && u / l >= 0.4) || /^(?:[A-Z][A-Z'’-]*\s+){3}/.test(s) }
+
+/* THE PAGE SHAPE (owner, D1735, 7 Nov 26 — the rules diet: raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
+   §2, §5). An area converts from one short line per ruling to a page of how it works now: each rule stated once, the
+   rulings behind it cited after it as [D12, D40]; the full rows stay whole in .claude/decisions-full/. The MARKER in a
+   file's body says which shape it is in — an HTML comment, not a frontmatter key, so the general file (no frontmatter)
+   keeps loading in every chat — and the gate and the recorder treat a marked file the new way and every other the old
+   way, so the areas convert one at a time and main stays green between them (Astra's read of the plan, finding 1). */
+export const PAGE_MARK = '<!-- shape: page -->'
+/* a statement's length, in characters — "one statement a bullet"; the detail stays in the full rows (plan §5) */
+export const STATEMENT_MAX = 600
+/* a range "D36–D41" cites each ruling in it; a wider span is read as its two ends (a typo must not cite a thousand) */
+const RANGE_MAX = 60
+const fmEnd = ls => { if (ls[0] !== '---') return 0; const e = ls.indexOf('---', 1); return e < 0 ? 0 : e + 1 }
+/* The body's lines, numbered from 1: frontmatter, code blocks and HTML comments blanked (each keeps its place, so a
+   line number names the file's own line); `comment` says a blanked line held a comment, for the marker's read. */
+function bodyOf(text) {
+  const ls = (text || '').split('\n').map(l => l.replace(/\r$/, ''))
+  const inF = fencedFlags(ls), fm = fmEnd(ls)
+  let inC = false
+  return ls.map((l, i) => {
+    if (i < fm || inF[i]) return { n: i + 1, t: '' }
+    let t = '', s = l, was = false
+    while (s) {
+      if (inC) { const e = s.indexOf('-->'); was = true; if (e < 0) { s = ''; break } inC = false; s = s.slice(e + 3); continue }
+      const o = s.indexOf('<!--'); if (o < 0) { t += s; break }
+      t += s.slice(0, o); s = s.slice(o + 4); inC = true; was = true
+    }
+    return { n: i + 1, t: was && !t.trim() ? '' : t, raw: l }
+  })
+}
+/* is this file a page? — the marker on a line of its own, outside code blocks and frontmatter */
+export const isPage = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), inF = fencedFlags(ls), fm = fmEnd(ls); return ls.some((l, i) => i >= fm && !inF[i] && l.trim() === PAGE_MARK) }
+/* does the file load only with its area (a `paths:` key in its frontmatter)? */
+export const isScoped = text => { const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fm = fmEnd(ls); return fm > 0 && ls.slice(1, fm - 1).some(l => /^paths:/.test(l)) }
+/* The rulings a text cites, outside code spans (a number in a code span is an example): every D-number, and every
+   ruling inside a range. `named` is only the numbers written out — a range's ends, never what lies between, since
+   numbers may skip (D78). */
+export function citesIn(text) {
+  const s = (text || '').replace(/(`+)[\s\S]*?\1/g, ' ')
+  const all = new Set(), named = new Set()
+  for (const m of s.matchAll(/\bD(\d+)(?:\s*[–-]\s*D?(\d+))?\b/g)) {
+    const lo = +m[1], hi = m[2] ? +m[2] : lo
+    named.add('D' + lo); named.add('D' + hi)
+    if (hi > lo && hi - lo <= RANGE_MAX) for (let k = lo; k <= hi; k++) all.add('D' + k)
+    else { all.add('D' + lo); all.add('D' + hi) }
+  }
+  return { all, named, words: (s.replace(/\bD\d+(?:\s*[–-]\s*D?\d+)?\b/g, ' ').match(/[\p{L}\p{N}][\p{L}\p{N}'’-]*/gu) || []).length }
+}
+/* THE STATEMENTS of a page or an always-loaded rules file: a heading or a table row is a unit of one line; a bullet
+   runs on through its continuation lines; any other run of lines is a paragraph. A unit STATES the rulings it cites
+   only when it has at least four words, and two for each ruling it cites — a list of numbers states nothing (the
+   fresh Opus reader of the plan, H1a: the first draft carried a 46-number "stated elsewhere" list). Returns
+   [{ line, kind: 'heading'|'table'|'bullet'|'para', text, cites, named, words, states }]. */
+export function statementsOf(text) {
+  const out = []
+  let cur = null
+  const close = () => { if (!cur) return; const c = citesIn(cur.text); out.push({ ...cur, cites: c.all, named: c.named, words: c.words, states: cur.kind !== 'heading' && c.words >= 4 && c.words >= 2 * c.all.size }); cur = null }
+  for (const { n, t } of bodyOf(text)) {
+    if (!t.trim()) { close(); continue }
+    if (/^#{1,6}\s/.test(t)) { close(); cur = { line: n, kind: 'heading', text: t.trim() }; close(); continue }
+    if (/^\s*\|/.test(t)) { close(); cur = { line: n, kind: 'table', text: t.trim() }; close(); continue }
+    if (/^\s*(?:[-*+]|\d+[.)])\s/.test(t)) { close(); cur = { line: n, kind: 'bullet', text: t.trim().replace(/^(?:[-*+]|\d+[.)])\s+/, '') }; continue }
+    if (cur) { cur.text += ' ' + t.trim(); continue }
+    cur = { line: n, kind: 'para', text: t.trim() }
+  }
+  close()
+  return out
+}
+/* What is wrong with a page's SHAPE — [] when nothing (plan §2, §5): one title; an area page (one with `paths:`) is
+   titled "<Area> — how it works now" and carries a "## Settled" section and a "## From other areas" section, the
+   latter last; the general page, which loads in every chat, has no other areas and no screens, so needs neither; no
+   table rows (a ruling is a statement now, not a row); each statement in ordinary letters and at most STATEMENT_MAX
+   characters. */
+export function pageShapeProblems(text) {
+  const out = [], sts = statementsOf(text)
+  const titles = sts.filter(s => s.kind === 'heading' && /^#\s/.test(s.text))
+  if (titles.length !== 1) out.push(`it has ${titles.length} title headings ("# …") — a page has one`)
+  if (isScoped(text)) {
+    if (titles[0] && !/—\s*how it works now\b/.test(titles[0].text)) out.push(`its title (line ${titles[0].line}) is not "# <Area> — how it works now"`)
+    const h2 = sts.filter(s => s.kind === 'heading' && /^##\s/.test(s.text))
+    if (!h2.some(s => /^##\s+Settled\b/.test(s.text))) out.push('it has no "## Settled …" section — the settled designs, one bullet a surface, each with its numbers')
+    const from = h2.findIndex(s => /^##\s+From other areas\b/.test(s.text))
+    if (from < 0) out.push('it has no "## From other areas" section — each ruling of another area that bears on this one, a few words and its number')
+    else if (from !== h2.length - 1) out.push(`its "## From other areas" section (line ${h2[from].line}) is not its last section`)
+  }
+  for (const s of sts) {
+    if (s.kind === 'table') { out.push(`line ${s.line} is a table row — a page holds no table rows: state the rule as a bullet, its rulings cited after it`); continue }
+    if (s.kind === 'heading') continue
+    if ([...s.text].length > STATEMENT_MAX) out.push(`the statement at line ${s.line} is ${[...s.text].length} characters — at most ${STATEMENT_MAX}: one statement a bullet, the detail in its full rows`)
+    if (capsText(s.text)) out.push(`the statement at line ${s.line} is written mostly in capitals — ordinary letters, capitals only where a name or a short form has them (D970)`)
+  }
+  return out
+}
+
 /* The back-mark check: a later row that names an older one beside a change verb, where the older row's marks do not
    name the later. Returns [{ later, older }]. */
 const VERB = /\b(narrows|narrowed|amends|amended|sets aside|set aside|replaces|supersedes|widens|widened|extends|extended|refines|refined|settles|answers|corrects|reverses|overrides)\s+(?:(?:in part|the agent's reading of|his|the)\s+)?(D\d+)\b/gi

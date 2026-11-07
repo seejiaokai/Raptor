@@ -214,6 +214,39 @@ scenario('a new ruling whose home names it inside a range (D1–D3)', false, c =
 scenario('a new ruling homed in the append-only archive needs no number there', false, c => { addRow(c, '`OUTSTANDING-ARCHIVE.md`'); c.edit('OUTSTANDING-ARCHIVE.md', t => t + '\nA note appended.\n') })
 scenario('a short line naming a path is not read as a home', false, c => c.edit(AREA, t => t.replace(shortRow('D1', 'a'), '| D1 | 21 Sep 26 | Rule a, built in `docs/nowhere.md`. |')))
 
+/* THE PAGES (owner, D1735, 7 Nov 26 — the rules diet, plan raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md
+   §5): an area converted to a page of how it works now, beside one still in short lines — both shapes in one repo, as
+   while the areas convert one at a time. Each check fails by name; the legitimate pages pass. */
+const PAGE_HEAD = '---\npaths:\n  - raptor-port/src/other/**\n---\n\n<!-- shape: page -->\n\n# Other — how it works now\n\nEach line states a rule as it stands, the rulings behind it after it; their full rows are searched.\n\n'
+const otherPage = ({ topic = ['- Rule five holds on every screen of the other area [D5].'], settled = ['- The other screen keeps the look it was built with [D6].'], from = ['- General: rule a bears on the other area too [D1].'], noFrom = false } = {}) =>
+  PAGE_HEAD + ['## The rules', ...topic, '', '## Settled designs, by screen', ...settled, '', ...(noFrom ? [] : ['## From other areas', ...from, ''])].join('\n')
+const OTHER_FULL0 = ['# Rulings — other: the full rows', '', '| # | Date | ruling | meaning | home |', '|---|---|---|---|---|', fullRow('D6', 'f', 'this file'), fullRow('D5', 'e', 'this file'), ''].join('\n')
+const withD7 = topOf(OTHER_FULL0, fullRow('D7', 'g', 'this file'))
+const withPage = (c, page = {}, { full = OTHER_FULL0, ids = 'D6, D5' } = {}) => { c.write(OTHER, typeof page === 'string' ? page : otherPage(page)); c.write(OTHER_FULL, full); addOther(c, ids) }
+const narrowD5 = full => full.replace('| D5 | 21 Sep 26 | e | **Rule e.** e |', '| D5 | 21 Sep 26 | e | **— NARROWED 22 Sep 26 BY D2: only on Mondays.** **Rule e.** e |')
+const RULE_FILE = '.claude/rules/shipping.md'
+const GENERAL_PAGE = '<!-- shape: page -->\n\n# General — how it works now\n\n- Rule a holds in every chat, whatever the area [D1].\n- Rule b holds in every chat, whatever the area [D2].\n'
+scenario('an area converted to a page beside one still in short lines (both shapes)', false, c => withPage(c))
+scenario('a page\'s live ruling stated nowhere', true, c => withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling of .claude/rules/decisions/other.md, a page, and no statement states it' })
+scenario('…cited only in a list of numbers', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- See [D5, D7].'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'cited only at .claude/rules/decisions/other.md line' })
+scenario('…cited only in a code span (an example, not a citation)', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- A citation written in code, as `[D7]`, is an example only.'] }, { full: withD7, ids: 'D7, D6, D5' }), { mustSay: 'D7 is a live ruling' })
+scenario('…stated in an always-loaded rules file instead', false, c => { withPage(c, {}, { full: withD7, ids: 'D7, D6, D5' }); c.write(RULE_FILE, '# Shipping\n\n- Rule seven holds in every chat, whatever the area [D7].\n') })
+scenario('a line stating a ruling as it was, beside a separate line citing the ruling that narrowed it (D43 / D755)', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- Rule b bears on the other area on Mondays only [D2].'] }, { full: narrowD5(OTHER_FULL0) }), { mustSay: 'states D5 but does not cite D2' })
+scenario('…and with the narrowing cited on the line it narrows, it passes', false, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area, on Mondays only [D5, D2].'] }, { full: narrowD5(OTHER_FULL0) }))
+scenario('a page citing a ruling archived as replaced', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- Rule zero holds on the other screen as before [D0].'] }), { mustSay: 'cites D0, which D1 replaced' })
+scenario('a page citing a number that is no ruling', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '- Rule four hundred holds on the other screen [D400].'] }), { mustSay: 'cites D400, which is no ruling' })
+scenario('a range on a page cites each ruling inside it', false, c => withPage(c, { topic: ['- Rules five and six hold on every screen of the other area, settled designs included [D5–D6].'], settled: ['- The other screen keeps the look it was built with, as the rules above say.'] }))
+scenario('a page holding a table row', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '', '| D6 | 21 Sep 26 | Rule f. |'] }), { mustSay: 'a page holds no table rows' })
+scenario('a full row left on a page', true, c => withPage(c, { topic: ['- Rule five holds on every screen of the other area [D5].', '', fullRow('D7', 'g', 'this file')] }, { full: OTHER_FULL0 }), { mustSay: 'a page holds no rows' })
+scenario('an area page without its "From other areas" section', true, c => withPage(c, { noFrom: true }), { mustSay: 'no "## From other areas" section' })
+scenario('a statement over the cap', true, c => withPage(c, { topic: ['- Rule five holds ' + 'and holds '.repeat(70) + 'on every screen [D5].'] }), { mustSay: 'at most 600' })
+scenario('a statement written in capitals', true, c => withPage(c, { topic: ['- RULE FIVE HOLDS ON EVERY SCREEN OF THE OTHER AREA [D5].'] }), { mustSay: 'mostly in capitals' })
+scenario('the map of a converted area naming a ruling its full-text file does not hold', true, c => withPage(c, {}, { ids: 'D7, D6, D5' }), { mustSay: 'does not match the files' })
+scenario('the map of a converted area missing a ruling of its full-text file', true, c => withPage(c, {}, { ids: 'D6' }), { mustSay: 'does not match the files' })
+scenario('the general area converted — loaded in every chat, it needs no Settled or From other areas section', false, c => c.write(AREA, GENERAL_PAGE))
+scenario('once the general page converts, an always-loaded rules file stating a ruling without its change fails', true, c => { narrowD1(c); c.write(AREA, GENERAL_PAGE.replace('[D1].', 'on Mondays only [D1, D2].')); c.write(RULE_FILE, '# Shipping\n\n- Rule a holds in every chat, as it was first ruled [D1].\n') }, { mustSay: '.claude/rules/shipping.md line 3 states D1 but does not cite D2' })
+scenario('…while the general area is still in short lines, that file is not judged', false, c => { narrowD1(c); c.edit(AREA, t => t.replace(shortRow('D1', 'a'), shortRow('D1', 'a', ' — changed by D2'))); withPage(c); c.write(RULE_FILE, '# Shipping\n\n- Rule a holds in every chat, as it was first ruled [D1].\n') })
+
 /* THE GUIDE AND ITS FULL TEXT (D391): every short form names one ### heading of guide-full.md, every heading is named
    exactly once, its ## sections mirror the guide's, a short form stays within the cap. */
 const GUIDE = 'raptor-port/CLAUDE.md', GFULL = 'raptor-port/docs/guide-full.md'

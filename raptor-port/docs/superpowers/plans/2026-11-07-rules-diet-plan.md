@@ -357,6 +357,22 @@ The big reference documents a job opens in part (`ui-contracts.md` 1.08 MB, `fil
 path, D490, D775); handing off by about 40% full (point 1 of 6 Nov, still put to him); his connectors (point 2, his
 setting, D969 point E). The skill-notes log's overdue review (86 notes open, last review 27 Oct 26) is a job of its own.
 
+### Step 1 — what the built checks found in the samples (7 Nov 26, `claude/rules-diet-step1`)
+
+The page checks of §5 are built (`docsize.mjs` job 1c, the page reading in `docsize-rulings.mjs`, 20 self-test cases in
+both shapes). Dry-run on the samples against the real rulings, each page given its `paths:` and the marker:
+- **OIL:** every live ruling stated, every change mark cited, nothing stale; two statements over the 600-character cap
+  (sample lines 30 and 112: "Every seat can earn…", the scheduler pointer of "From other areas") — **step 5a splits each
+  in two.** The cap stays at the plan's 600.
+- **General:** three statements over the cap (the page's head paragraph, the Tracker-graph line of "Order of work", the
+  platform line) — **step 4 splits them.** Not stated: D1735–D1738 (made after the sample) and the seven spent rulings
+  the sample proposes to archive (D1659, D1566, D974, D973, D972, D602, D86); and D1297, D201 and D56, which the five
+  always-loaded files name **only in a heading** — a heading states nothing (§5), so step 4's checklists cite each on a
+  statement. The page's own lines lack D1735 beside D390, D68, D1554, D1732 and D1738 beside D1734 (marks written
+  after the sample). Once the general page converts, the five files join the change-mark and stale checks (§5): today
+  37 of their lines state a ruling without the one that changed it, and two cite a replaced one (D1594 in
+  `bug-check.md`, D368 in `doc-structure.md`) — all within step 4's rewrite of those files as checklists.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

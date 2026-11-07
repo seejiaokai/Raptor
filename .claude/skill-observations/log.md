@@ -3763,3 +3763,18 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In the codex-review / claudex-loop review step: when the version under review is not the branch head, or the branch already holds another reviewer's report or a revision built from it, run the reviewer in an exported copy of that commit (picture or binary folders excluded), and say so in the saved report's header.
 
 **Principle:** Blindness is a property of what the reviewer can reach, not of what the brief tells it not to open; give it a tree that contains only what it should see.
+
+### Observation 839: A plan step sized at several chats should name where each chat stops
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** the rules diet, step 1 (the checks and scripts), started from a handoff that said "start step 1" for a step the plan sizes at three chats
+**Skill:** writing-plans; session-handoff
+**Type:** open-source
+**Phase/Area:** writing-plans — the task list; session-handoff — "Pick up here"
+
+**Issue:** The chat opened at about half full from what loads at the start, and the step it was handed was sized at three chats with no split named. It had to choose its own slice mid-way (the checks first, then the recorder, then merging and the report), and the next two chats depend on that choice being written down.
+
+**Suggested improvement:** writing-plans: when a task is sized at more than one session, list each session's slice and the clean stopping point after it (what is built, tested and committed). session-handoff: when the work in hand spans sessions, the "Pick up here" line names the next slice by its parts, not the whole step.
+
+**Principle:** Work too big for one session is split where it is planned, not where the session happens to fill up; each slice ends at a point that is built, tested and committed.
