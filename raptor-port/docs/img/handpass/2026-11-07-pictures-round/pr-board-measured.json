@@ -643,9 +643,9 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 925,
+    "x": 958,
     "y": 262,
-    "w": 162,
+    "w": 129,
     "h": 23
    }
   },
@@ -655,9 +655,9 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 925,
+    "x": 958,
     "y": 262,
-    "w": 162,
+    "w": 129,
     "h": 23
    }
   },
@@ -716,9 +716,9 @@
    "lit": false,
    "note": "Tap a puck to take a man off that event · tap an item to stop the whole item earning",
    "control": {
-    "x": 95,
+    "x": 128,
     "y": 295,
-    "w": 162,
+    "w": 129,
     "h": 23
    }
   },
@@ -728,9 +728,9 @@
    "lit": true,
    "note": "Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.",
    "control": {
-    "x": 95,
+    "x": 128,
     "y": 347,
-    "w": 162,
+    "w": 129,
     "h": 23
    }
   },

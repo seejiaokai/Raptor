@@ -125,13 +125,138 @@ is refused with "Blocked: this week's saved copy could not be read, so it can't 
 
 ## Q3 [LOGIC-WORDS-WORKHOURS] — where a flyer's day starts when nothing is entered
 
-Q3_PLACEHOLDER
+**(a) The question.** When a flyer's line has nothing entered (no in-time, no rally), should his long day and his
+Insights work hours start at the default rally, 3 hours before take-off, as his OIL already does and as the Logic page
+says, or at the step, 1 hour before take-off, as the app does today?
+
+**(b) Still open — yes, measured today.** The Logic page's "Default rally before take-off" (3h) says: "With no in-time or
+rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it." The app does not do that
+for the long day and Insights. Case: Fri 17 Jul, a new line VL on the first wave, take-off 12:00, landing 13:00, Saint in
+the front seat and Echo in the back, nothing else typed (settings as shipped: step 1h, default rally 3h, debrief 2h, long
+day 12h). The R box shows a faint 09:00, the time it suggests (B suggests 09:40). Insights' "Work hours · report to
+debrief, this week": Saint 12h30 before the line, **16h30** with it — his Friday counted 11:00 (take-off less the step) to
+15:00 (landing plus debrief), 4 hours. Typing **09:00 into the R box, the very time it suggests**, makes him **18h30**:
+2 hours more. Echo the same: 21h25, 25h25, 27h25. OIL already counts a line with nothing entered from the default rally
+(D592). In this case neither a 4-hour nor a 6-hour Friday reaches the 12-hour long-day note, so no note either way. The
+phone's Logic page says the same words.
+
+**(c) The pictures.**
+- `q-logic-pc-today.png` — real: the Logic page's "Default rally before take-off", its sentence ringed, "Not so today".
+- `q-logic-ph-today.png` — real, the same on the phone.
+- `q-logic-pc-board.png` — real: the Scheduler Board, Fri 17 Jul, line VL, the empty R box suggesting 09:00 — "but
+  Insights counts Saint from 11:00".
+- `q-logic-pc-insights.png` — real: Insights' work hours, Saint 16h30, his Friday from 11:00.
+- `q-logic-pc-insights-A.png` — drawn A: Saint 18h30 and Echo 27h25, each moved to his place in the list (it runs
+  longest first). Only these two are redrawn: any other line in the week with nothing entered would move the same way;
+  the demo week's lines were not counted one by one.
+- `q-logic-pc-B.png` — drawn B: the default rally's sentence reworded, and one sentence added to "Step before take-off".
+- `q-logic-ph-B.png`, `q-logic-ph-B-step.png` — drawn B on the phone, the two rows.
+
+**(d) The options.**
+- **A — the app changes: the long day and Insights count from the default rally (recommended).** A line with nothing
+  entered starts the man's day at take-off less the default rally, for his long day and his Insights hours as for his
+  OIL; the Logic page's words stay as they are, now true. Picture: `q-logic-pc-insights-A.png` (there is nothing new to
+  draw on the Logic page: its words stand). What changes: a flying day with nothing entered counts 2 hours longer in
+  Insights with today's settings (the gap between the 3-hour rally and the 1-hour step), and the long-day note shows on
+  such a day 2 hours sooner; changing the default rally on the Logic page then moves Insights at once (D482), where today
+  it moves nothing. Rulings: none of his changed. It carries out **D1032** (he said yes to "an empty box counts as its
+  default" for the day's start, the long-day warning and work hours named in that question) and **D592** (1) (one clock
+  for OIL, the work-hours bar and the long-day warning), and makes the words of **D928 / D932** true; **D1031** (the one
+  setting) and **D482** stand. It ends the engine's own note that the report and the work hours keep separate
+  definitions (a note in the code, not a ruling of his).
+- **B — the words change: the app stays as it is.** The Logic page says what the app does. "Default rally before
+  take-off" reads: "An empty R box suggests take-off less this time, and "+ In-time" fills in the same time. With no
+  in-time or rally entered, a flyer's OIL counts from here. His long day and Insights hours count from step. It also sets
+  when the tight crew-rest advisory shows." — and "Step before take-off" gains one sentence at its end: "With no in-time or
+  rally entered, a flyer's long day and Insights hours count from it too." (Either sentence alone would do; both are drawn
+  so a reader of either row finds it.) Pictures: the three "-B" files. Rulings: it narrows **D1032** for the long day and
+  work hours (they keep counting from the step when the box is empty) and leaves **D592** (1)'s "one clock" untrue for a
+  line with nothing entered; the Logic words of **D928 / D932** change.
+
+**(e) Recommendation: A.** One start for a day with nothing entered, the same for OIL, the long day and the hours, as
+the Logic page already says and as he answered for the R box (D1032). The faint 09:00 in the R box is what the scheduler
+sees as the start of the day; today typing that very time adds 2 hours to the man's week, which nobody would expect from
+accepting a suggestion. With A, typing the suggested time changes nothing, and two starts become one, which leaves fewer
+places for a bug. B is cheaper but keeps a flyer's day starting at two different times depending on what is counted. The
+cost of A: more long-day notes, about 2 more hours a flying day in Insights where nothing is entered, and it is a change
+to the rules engine (see g).
+
+**(f) Worked example.** Saber puts Saint and Echo on a new line VL on Fri 17 Jul, take-off 12:00, landing 13:00, and types
+nothing else; the R box shows a faint 09:00. Today: Insights counts Saint's Friday from 11:00, 16h30 for the week; if
+Saber then types 09:00, the time the box suggested, Saint jumps to 18h30. With A: Saint reads 18h30 whether or not Saber
+types it, and his OIL already counts from 09:00. With B: Saint stays 16h30, and the Logic page now says the hours count
+from the step.
+
+**(g) For the build.**
+- A is a change to the rules engine: `src/engine/validate.ts` `workSpan` (about line 168; the long day and Insights both
+  read it) takes its start from the report, and the report with nothing entered is `in-time ?? step` in
+  `src/engine/events.ts`; it would take take-off less `VCONF.reportLead`, as OIL does. `src/engine/rules.ts` (about line
+  112) already titles the setting "a day with nothing entered starts at it". The robustness doctrine applies (the five
+  gotcha families) and the original's 728 checks must stay green — whether one of them pins the step start is not known
+  without running them. A long-day note that newly appears on a day already published must be checked against the
+  published-day rule (D179 freezes the face; its exceptions are named); Insights moves at once there (D482).
+- SC, AVALON and BB lines are not in this question: their B (in-time) rules are their own (D606, D1041, D1045).
+- B is words only: `src/ui/logic-html.ts`, the default rally's row (about line 43) and the step's (about line 47); the
+  Logic tests that pin those words (`logic.test.tsx`) follow.
+- What the drawing touched that the item did not name: the step row (option B), and Echo, the second man on the line.
 
 ---
 
 ## Q4 [INP-ADD-RIGHT] — "+ Input" on the desktop Inputs list
 
-Q4_PLACEHOLDER
+**(a) The question.** On a desktop, should "+ Input" on the Inputs list move to the right end of its row, with the list
+making room while its window is open, as "+ Medical" already does on the Medical tab?
+
+**(b) Still open — yes, measured today at his PC's size (1536 × 864).** "+ Input" stands first at the left of its row,
+the dates button ("13 Jul → 27 Jul") beside it. Its "New input" window opens at the right (about 430 wide, from 1090 to
+1520 across) and covers the list's right columns — the end of Remarks, the documents column and Changed; the list does
+not make room. On the Medical tab "+ Medical" stands at the right end of its row (his D1300), its window opens there and
+the cards make room for it (they stop short of the window), the window then covering "+ Medical" itself. On the phone
+"+ Input" and "+ Medical" both stand first at the left of their row; a window there stands in the middle (D997), so
+neither option changes the phone.
+
+**(c) The pictures.**
+- `q-addright-pc-list.png` — real: "+ Input" at the row's left, beside the dates button.
+- `q-addright-pc-listopen.png` — real: its window open, covering the list's right columns.
+- `q-addright-pc-med.png` — real: the Medical tab, "+ Medical" at the right (D1300).
+- `q-addright-pc-medopen.png` — real: the Medical window open, the cards making room for it.
+- `q-addright-pc-list-A.png` — drawn A: "+ Input" at the right end of its row, as "+ Medical" stands.
+- `q-addright-pc-listopen-A.png` — drawn A: the window open, the list pulled in so every column stays in view, "+ Input"
+  under the window as "+ Medical" is.
+- `q-addright-ph-list.png`, `q-addright-ph-med.png` — real, on the phone: both buttons first at the left; unchanged.
+
+**(d) The options.**
+- **A — move it, as the Medical tab (recommended).** On a desktop "+ Input" stands at the right end of its row (the
+  dates button stays at the left); while its window is open the list makes room on the right, so every column stays in
+  view and a new input's row is seen arriving with the just-added ring (the app already rings it). The phone is unchanged.
+  No new words and no new look: it copies the Medical tab. Pictures: the two "-A" files. Rulings: it carries out design
+  lesson 47 (D1300), which names "+ Input" as the next place; it keeps D1137's pairing ("+ Medical" stands where "+ Input"
+  stands) on the desktop too; it narrows D729's drawing (the button "beside the dates button") for the desktop; and it
+  sets design lesson 28 (D1188: a button stands in the same place on a phone as on a desktop) aside for this button, as
+  D1300 already did for "+ Medical". D1139 (the buttons 36 tall) stands.
+- **B — leave it as it is.** "+ Input" stays at the left; its window keeps covering the list's right columns; the two
+  "+" buttons of the Inputs page stand on opposite sides on a desktop. Lesson 28 is kept for this button.
+
+**(e) Recommendation: A.** The window opens at the right, so the button that opens it stands there, and the list moves
+aside so what is added is seen landing, which is the point of lesson 47 and of his D1300. The Inputs page's two "+"
+buttons then behave alike on a desktop, as D1137 had them alike. The cost is lesson 28 for this one button, which he
+already accepted for "+ Medical"; a desktop user used to the left finds it at the right.
+
+**(f) Worked example.** On his PC Saber opens the Inputs list (13 Jul → 27 Jul) and presses "+ Input" to file OL for
+Cobra on 15 Jul. Today: the button is at the left, the window opens at the right and hides the end of the remarks, the
+documents column and the Changed dates, so Cobra's new row arrives with half its line under the window. With A: the
+button is at the right end, the list pulls in beside the window, and Cobra's new row shows whole, ringed for a few
+seconds.
+
+**(g) For the build.**
+- The button: `src/ui/InputsPage.tsx` about line 666 (`#inNew`, inside `listTools`, first before the dates button
+  `.inrange`; its comment cites D729 and D910). On a desktop it moves to the row's right end; on a phone it stays first in
+  the switch's row (D910).
+- The room: copy the Medical tab's — `src/ui/MedicalView.tsx` line 226 adds `med-room` while the window is open on a
+  desktop, and `src/ui/scheduler/16-medical.css` line 82 pads the cards by the window's width
+  (`padding-right: calc(min(430px, 100vw - 24px) + 16px)`); the Inputs list's style is `src/ui/scheduler/06-inputs.css`.
+  The drawing gave the list's table the same padding. Its test is `medicalview.test.tsx` line 264 for Medical's.
+- The Inputs calendar's own top row is a different row (D1702, D1708) and is not touched.
 
 ---
 

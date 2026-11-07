@@ -58,6 +58,39 @@
    "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
    "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
    "value": "3h"
+  },
+  "board": {
+   "before": {
+    "Saint": "12h30",
+    "Echo": "21h25"
+   },
+   "today": {
+    "Saint": "16h30",
+    "Echo": "25h25"
+   },
+   "withRTypedAtDefault": {
+    "Saint": "18h30",
+    "Echo": "27h25"
+   },
+   "rbox": {
+    "value": "",
+    "ph": "09:00",
+    "cls": "tm sugbox"
+   },
+   "vconf": {
+    "step": 60,
+    "reportLead": 180,
+    "debrief": 120,
+    "longDay": 720
+   },
+   "warnsFri": [
+    ":"
+   ]
+  },
+  "logic_ph": {
+   "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
+   "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
+   "value": "3h"
   }
  },
  "q4": {
