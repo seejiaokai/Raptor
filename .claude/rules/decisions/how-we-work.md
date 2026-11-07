@@ -1,234 +1,376 @@
-# Rulings — How we work (loaded in every session)
+# How we work — the general rulings as they stand (loaded in every chat)
 
-The general rulings: how his rulings are recorded, models and reviews, bug checks, merging and pushing, the
-PC that runs the checks, the repo and privacy, the docs. Every session carries these. Each other area loads
-by itself when a file in that area is read — the map, and how to add or retire a ruling: `DECISIONS.md`.
-**One line per ruling — its number, its date, the rule as it stands (D390). Its full row** — his words, the readings he
-was told, where it lives — **is in `.claude/decisions-full/how-we-work.md`, never loaded by itself: open it before acting on a
-ruling's detail or asking him about it** (`grep -h '^| D… |' .claude/decisions-full/*.md` — the shell; the Grep tool
-hides a long row). A "— changed by" tail names the later rulings that changed it. Newest first.
-**Also read** — filed under OIL, but it governs every report: **D25** (OIL is earned leave, time off banked —
-never pay or money).
-**And the screen-design rulings** — how a screen looks and behaves: the one gear, the one pencil, the top bar and its
-Undo / Redo, search boxes, arrows that keep their place, nothing pinned leaks, the failed-save band, one mark one look,
-no glow, the drag rules, a page's controls one row, screens not wordy — are an area of their own since 1 Nov 26 (D1554),
-`.claude/rules/decisions/design.md`, loaded with any screen work; how the agent works on design stays here.
+<!-- shape: page -->
 
-| # | Date | The rule |
-|---|---|---|
-| D1744 | 7 Nov 26 | Every chat has a number at the start of its title — 1 for the M365 package chat, 2 for the rules diet's step 4, then counting on — so he can tell the chats apart; each chat says its number when it reports to him, and the handoff file keeps the next free number. |
-| D1743 | 7 Nov 26 | Until Mon 9 Nov 26 19:00 he wants both his allowances used up — his Claude plan, now Ultra, and his Codex plan, now $100: the work is planned to spend them, chats side by side where the work allows, and Astra's reads are called on the work in that time without asking him each time. |
-| D1742 | 7 Nov 26 | A job's closing records are pushed before his look is asked for, written to be true once it is live; on his "merge live" the agent merges at once if the run on its last pushed commit is green, pushes nothing between his word and the merge, and confirms the live app. |
-| D1741 | 7 Nov 26 | The start-of-chat size job ([CONTEXT-START-SIZE]) is closed: its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting, with nothing for the agent to do, and the item leaves the backlog for its archive. |
-| D1740 | 7 Nov 26 | The skill-notes short form's wording is approved as drafted and read: every chat gets `.claude/skills/task-observer/SHORT-FORM.md` from the start hook in place of invoking the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses. |
-| D1739 | 7 Nov 26 | Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page — is read by Astra and by the fresh Opus reader, each blind to the other, for whether any meaning changed; his call for those steps, made now (D1734); if Astra cannot run, he is told first, and the step never goes on without that read. |
-| D1738 | 7 Nov 26 | Each converted page of the Inputs, scheduler and Leave War rulings is read by Astra as well as by the fresh Opus reader, each blind to the other — his call for those pages, made now (D1734); if Astra cannot run, he is told first, and the page never goes on without that read. — changed by D1739 |
-| D1737 | 7 Nov 26 | Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes included. |
-| D1736 | 7 Nov 26 | His permission to change, for the rules diet, the document check, the ruling scripts, the per-message ruling hook and the skill-notes start hook — each tested, the check's self-test gaining a case for each new check, and read by one fresh reader before it is switched on. |
-| D1735 | 7 Nov 26 | The rules diet's plan v3 is approved: each area's rulings become a page of how it works now, every live ruling cited on a line of a file that loads, its full row kept whole and searched; the bug-check order, design guide and ripple map are read by section from checklists naming when; D141 stands. |
-| D1734 | 7 Nov 26 | His ChatGPT subscription is back on a Pro plan with lower limits: Astra and Sol 6.1 are called only when he calls for them, each time; otherwise every code read stays the fresh, blind Opus read (D790), a scenario design a fresh Opus reader's, and each such job goes on the list of reads owed ([NO-ASTRA-LIST], D761). — changed by D1739, D1738 |
-| D1732 | 7 Nov 26 | The rules diet — area rulings as short how-it-works pages, old rows archived but searched, the working rules and bug-check order one-page checklists — starts now on Opus; its plan and before-and-after sizes go to him before any change, read by Astra (on his call, D1734) and a fresh Opus reader, each blind, to see which is better. — changed by D1735 |
-| D1733 | 7 Nov 26 | The handoff file's gate baseline keeps only the newest count; each older one moves whole to its archive file, so a new chat no longer reads about 50 stale entries each headed "latest". |
-| D1671 | 7 Nov 26 | Every chat in this project compacts at about 400,000 tokens: the project's autoCompactWindow is 400,000, not 880,000, so the first reminder (about 300,000), the hold until the state is saved (from about 360,000) and the app's own compaction (about 384,000) all come with it. |
-| D1717 | 5 Nov 26 | The backlog's sized plan runs its three nights of fixes first, and the pictures round of about twelve small questions comes after them. |
-| D1716 | 5 Nov 26 | React Doctor stops counting the mock-up pages and the original app, which are records nobody edits; the tests' and scripts' notes of copying data the old way are left as they are; the app's own findings are still fixed with each area's batch (D1534). |
-| D1682 | 5 Nov 26 | The M365 hosting trial (D1532) waits until he has his test account and says he is ready: no chat starts it, plans it or asks him about it before then. |
-| D1662 | 5 Nov 26 | The database's tables, security roles and day-lock flow are not built on his own Microsoft 365 before the database step: D1571 and D473 stand; the hosting trial (D1532) stays the app with no database. |
-| D1659 | 5 Nov 26 | For the keyboard and windows batch (pull request 636) the built screens compared with the mock-up side by side by eye stand in place of the drawing-check tool, as D1566 did for the year build; the tool stays a standing step for every other build with a drawing (D1495). |
-| D1640 | 4 Nov 26 | When he says "merge live" (or "merge now"), his own look is already done: the agent does not ask about it again, and carries the merge through once GitHub's run is green. |
-| D1625 | 3 Nov 26 | Anything new a person will see — a question box, a message, a mark, a button — is drawn and shown to him as a mock-up before it is built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of a fix asks "does this add something he will see?", and if so the mock-up comes first. |
-| D1613 | 3 Nov 26 | When he offers a different solution, or a new idea for the thing being built, while the agent is building, the agent stops at once and answers it — what it would do, its cost, a recommendation — before building any further; it never carries on with the earlier plan past his newer idea. |
-| D1587 | 3 Nov 26 | The check's places that do not read the one table are filed as one item for the database step: Quals ticks homed in QualMark alone, holidays a table of their own by date, a posted-out man and a Tracker student read from the person, medical documents shared, and the four smaller ones; nothing of it is built before then (D473). |
-| D1580 | 3 Nov 26 | The database tables are the one master of the app's saved data: every screen and area reads from them and writes to them, so everything stays in step; only what makes no sense in a table stays out, each named with its reason. The agent checks the app for what does not follow this and reports it to him. |
-| D1572 | 2 Nov 26 | Before the next full React Doctor run, the 31 errors it still finds — all in old walk scripts, none in the app — are fixed as a job of their own; the app's remaining warnings keep riding with each area's next batch (D1534, D490); the full run is made after. |
-| D1571 | 2 Nov 26 | The Dataverse table setup script, and the small test of whether it may sign in as him on his PC, wait for the database step (D473): neither is written nor tried before then. |
-| D1570 | 2 Nov 26 | Every person in the squadron who will use the app holds a Power Apps Premium licence, so a code app on Dataverse can run for all of them, each with 40,000 Power Platform requests a day; no licence stands in the way of the move. |
-| D1566 | 2 Nov 26 | For the year build (pull request 611) the comparison with its approved drawings by measure and by eye, side by side, stands in place of the drawing-check tool, for its three small parts — the corner's year, the calendars' title with its ▾, the month-and-year card; the tool stays a standing step for every other build with a drawing (D1495). |
-| D1557 | 2 Nov 26 | Every walk of a screen includes a plain-user round: the area's everyday tasks done start to finish as a user would, pressing every control that opens or closes something, then every other place that should show the result looked at — the Inputs page, the schedule, the bell, the person window, another year or period — with pictures. |
-| D1556 | 2 Nov 26 | The three drafts of the start-load trim are approved as written: the shorter AGENTS.md with its detail in a Codex-only guide, the seven passages of the always-loaded rule files moved whole to the homes named, and the two lines naming the new screen-design rulings area — each move read by one fresh reader for meaning, live on his "merge live". |
-| D1554 | 1 Nov 26 | What a chat loads at its start is trimmed again, never anything a job reads (D68): the every-chat rulings a later one restates in full archived, the screen-design rulings moved to a file loaded only for screen work, the Codex guide shortened; and after an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff. — changed by D1735 |
-| D1551 | 31 Oct 26 | Whenever he asks for a feature or one is designed, the agent says at once if it cannot be done — or only differently, or with a paid licence or the IT side — on the platform the app is moving to (a Power Apps code app on Dataverse, on his M365 — D1532, D1536), so he can skip it before work is spent. |
-| D1540 | 31 Oct 26 | The project's own secrets scan becomes a required check on `main`: a pull request cannot merge until the scan has passed; he switches it on himself in GitHub's settings, from the steps the agent gives him. |
-| D1539 | 31 Oct 26 | React Doctor's "no new finding" check is built to run by itself as D1536 says — a GitHub check on every pull request, and a run at the end of every working session — in a fresh chat; this is his permission to change the project's hooks and settings for the session run, read by one fresh reader before it is switched on. |
-| D1537 | 31 Oct 26 | The app's code moves to strict checking of every value's kind — new code strict from the start, the screens, saved data and the Leave War fixed area by area as each is next worked on — but the rules engine stays word for word, its checks switched off, protected by the original app's 728 tests. |
-| D1536 | 31 Oct 26 | On the M365 plan: each aircraft type's deployment is set to its type by a setting, not by code (D1101); the code check runs by itself every session and on every change; a medical change stays shown in full in the change history; words on screen stay with his design rulings; the PPCoE gets a clean copy, this project kept whole. — changed by D1537 |
-| D1535 | 31 Oct 26 | GitHub's own secret scanning is switched on for the project, beside the project's own secrets scan. — changed by D1540 |
-| D1534 | 31 Oct 26 | React Doctor's findings are cleaned up as one batch before new feature work: the 60 errors and the 42 missed-update warnings across the app, and every finding in the Tracker; from now on new and changed code follows the code check's rules; the other areas' remaining findings ride with each area's next batch (D490). |
-| D1533 | 31 Oct 26 | React Doctor may be run on Raptor the kit's way, sending its findings to the tool's maker (Million Software, Inc., react.doctor) for its score; the night's run with every outside connection off is no longer required. |
-| D1532 | 31 Oct 26 | Building goes on and the database step stays at the end (D473); at a good stopping point in the Tracker's work the app is first put on his own M365 subscription with no database — a hosting trial: it runs inside Power Apps and still saves in the browser as today, so he can test it there himself. |
-| D1531 | 31 Oct 26 | React Doctor — the free React code check the SWiFT kit runs and the PPCoE's own scan is based on — may be downloaded and run on Raptor to count its findings for the M365 move plan; it changes nothing in the app, runs with its tracking off, and comes from the same public package store as the app's other building tools. — changed by D1533 |
-| D1530 | 31 Oct 26 | Three points of the SWiFT build-and-deploy kit are set aside for now, on his order: all its red flags (among them whether the flying schedule or the Tracker count as operational information), its rule against hosting on Vercel, and its rule that the GitHub project be private; Vercel and the public project stay as they are until he says otherwise. |
-| D1508 | 29 Oct 26 | Every calendar icon in the app is Edit Schedule's line calendar, drawn by the app — never the 📅 symbol; and the whole app is looked over again for anything else drawn differently where it should match, icons included, each put to him with pictures before it changes (D1124). |
-| D1496 | 29 Oct 26 | Every mock-up's design is standardised to the rest of the app: each part drawn the way the app already draws that kind of part, so a design is the app's own, not a new look. |
-| D1495 | 29 Oct 26 | The drawing check is a standing step of every build that has an approved drawing: run while the screen is built and after every fix, red until each difference is put back or he has ruled to keep it, beside the look by eye and the walk, never instead of them — the wording approved as drafted. |
-| D1494 | 29 Oct 26 | A drawing check is built as its own job: a script that measures a built screen against its approved drawing — where each part sits, its size, colour and text alignment — at his iPhone's and a desktop's size, lists every difference over about 2px with marked pictures side by side, and fails until each is fixed or put to him. — changed by D1495 |
-| D1478 | 28 Oct 26 | Any part of a screen he has already approved in a drawing is drawn again from that drawing and checked beside it before a page goes to him — in a later mock-up round as in a build; the approved drawing is the sole source, and only what a later ruling requires is added, named and shown beside it. |
-| D1443 | 28 Oct 26 | When his overnight message names the work, the agent still tells him the night's jobs before it starts — numbered, in order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what waits for him — then starts without waiting for a reply. |
-| D1426 | 27 Oct 26 | Where a built screen differs from its approved drawing, the differences are shown to him first, side by side with each one highlighted, and he chooses which go back to the drawing — some built ones may be the better design; an outright fault (words breaking, something covered or off screen, a wrong behaviour) is fixed without asking. |
-| D1424 | 27 Oct 26 | A screen with an approved drawing is built to that drawing and checked beside it as it is built and after every fix, not only at the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its reason — never left for him to find. — changed by D1478, D1426 |
-| D1417 | 27 Oct 26 | A line in the design guide's list of his design lessons keeps to his words — it covers no case he did not correct, gives no reason he did not give, and marks anything of the agent's own as its reading; and a branch that will add lessons takes a range of lesson numbers first, any renumber told to him old and new. |
-| D1416 | 27 Oct 26 | On an overnight run each job goes to one fresh helper inside the night's chat, with its own walker and reader, and the night's chat only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the night's message in the desktop app, all of them started together. |
-| D1415 | 27 Oct 26 | An overnight run goes on starting jobs past 90% of the weekly allowance, whenever the reset falls, until the limit stops it; it saves at every step so the limit strands nothing. |
-| D1411 | 27 Oct 26 | A security read is added to every change that touches sign-in, who may do or see what, or what one person can see of another — an extra fresh reader looking only for holes; and one full security review of the whole app is held before the database step; most changes need neither. |
-| D1410 | 27 Oct 26 | Every fault he found that a check missed becomes a case in a test set for the code reader, and whenever the reader's instructions or model change, the reader is run on the set and scored on how many it catches; a change that catches fewer is not kept. |
-| D1409 | 27 Oct 26 | Every two weeks the agent puts a one-page scorecard to him with three numbers — the faults he found after a change went live, the changes undone or redone within two weeks, and the merges in those two weeks — each beside the two weeks before; speed counts only while the first two hold. |
-| D1408 | 27 Oct 26 | GitHub's checks gain a secrets scan that stops a pull request from merging when a password, key or access code is found in its files, and the project's whole history is scanned once; a key found in the history is changed, not only deleted. |
-| D1407 | 27 Oct 26 | A pull request that changes only notes goes live by itself once its checks are green, without his "merge live"; anything that changes the app still waits for his word. — changed by D1737 |
-| D1363 | 25 Oct 26 | Every questions page put to him shows only what is still open, newest first; answered and replaced questions leave the page and are kept in the project. |
-| D1297 | 24 Oct 26 | Every fault he finds that a bug check's walk missed is learned from by itself, the same day, without asking him: why the walk missed it is written as a lesson in the bug-check order's list of missed faults (§7.11), every later walk's sizing step and brief check their scenarios against that list, and the fault is fixed red-first as usual. |
-| D1104 | 21 Oct 26 | An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged by the weekly usage figure, not a token count, and no work is cut to save allowance (D1033). |
-| D1281 | 23 Oct 26 | Every bug check of a screen adds two checks: on a phone a picture right after each tap, holding the touched state an iPhone keeps, besides the settled one; and a standing test that pressing each dense screen's controls on a phone never turns a pinned cell see-through. |
-| D1273 | 23 Oct 26 | Pictures are split as they are: the Sonnet walkers take them and look at the bulk, the host opens every picture that decides something (D1271); and the host saves tokens by cropping a picture to the area that matters before opening it, never by handing a deciding picture to Sonnet. |
-| D1271 | 23 Oct 26 | Saving tokens never costs the quality of finding a fault or of checking one: the host keeps every look at a picture that decides whether something is wrong or right — a fault's cause, a fix's check, a finding before it enters the evidence sheet — and hands Sonnet only the looks whose answer the host does not rely on alone. |
-| D1237 | 22 Oct 26 | On every mock-up page put to him, what he should look at now stands at the very top, in one short list: each open question or answer in one line with its recommendation, a link to its pictures, and the newest first; answered and older rounds go below it. — changed by D1363 |
-| D1222 | 22 Oct 26 | A picture put to him for a question shows only what that question is about — cut to that area, or everything else dimmed — with the change named in plain words on the picture, so he sees at a glance what he is asked; a whole screen is shown only when the question is about the whole screen. |
-| D1195 | 21 Oct 26 | A session he starts from a handoff — the button or a pasted opening line — has Remote Control on by default. |
-| D1124 | 21 Oct 26 | The whole app is looked over, on a desktop and on a phone, for the same kind of thing drawn differently on pages or windows that should match — a top row, a month's name and its arrows, tabs, a gear, a title bar — and each mismatch found is put to him with pictures, the place marked and a recommended way to match, before anything changes. — changed by D1508 |
-| D1097 | 21 Oct 26 | The agent sends him a phone notification whenever it stops and needs him — the work finished and waiting on his next step, or a question, an answer, a look or any other input from him — and not for progress. |
-| D1093 | 20 Oct 26 | When he gives "auto merge live" for a night or a run, it covers everything that run produces, its closing records pull request included: each merges once its checks are green, with nothing held back for a second word; work outside that run still waits for his "merge live". |
-| D1091 | 20 Oct 26 | GitHub's check machines download the project without the walks' pictures and saved looks (the four picture folders), since no check reads them — 4.7 GB down to 79 MB a machine, 2 to 4 minutes saved on each; the pictures stay in the project and its history, nothing deleted. |
-| D1090 | 20 Oct 26 | "Auto-fix" stays off on this project's pull requests — the app does not watch them for him — and where it is found switched on, the agent switches it off and says so; his standing rule not to watch pull requests stands. |
-| D1089 | 20 Oct 26 | GitHub's slowest checks are split across more machines while the repo is public — the Leave War desktop browser set into two, the scheduler's browser and unit sets and the Tracker's into more parts — every area still checked on every run; the time is measured after, and areas are not skipped. |
-| D1087 | 20 Oct 26 | Work is not held for one merge at the end: two to four related jobs of one area share one branch, one check and one merge on his "merge live"; a job he wants live at once goes on its own. |
-| D1086 | 20 Oct 26 | While the repo is public, GitHub's run of the pull request is a job's full check: the agent opens the pull request as soon as the job is built, so that run goes while the app is walked, and on his PC runs only the tests of what it changes and the build its walk drives; once the repo is private again, the full check is back on his PC (D89). |
-| D1033 | 19 Oct 26 | Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save allowance that would reset anyway; the agent still reads and reports the figure, and commits, pushes and writes the state into the repo before the limit can stop it. — changed by D1743, D1415 |
-| D1024 | 18 Oct 26 | The backlog's priority list shows only what is really open, one line an item, grouped by area; finished work leaves it for the archive, and the stories of how work went live stay in git, the evidence sheets and the archive. |
-| D994 | 18 Oct 26 | The questions the backlog keeps for him are not put to him until he says so; meanwhile the agent goes on with work that needs no answer or look from him. |
-| D991 | 18 Oct 26 | Speed is part of how good the app feels — for motion, its frame rate: a scroll, and what a finger moves with it, should run as smoothly as the phone and browser allow, and a new design is judged by that as well as by how it looks. |
-| D976 | 17 Oct 26 | As recommended: the handoff guides' D975 wording is approved as read; the scheduler's rulings are not split, D611's mark standing; and the push-and-lock guard is built as proposed, read by one fresh reader before it is switched on — his permission to change the project's hooks and settings for it. |
-| D975 | 17 Oct 26 | No handoff asks him to pick a branch or tick a worktree, since the new-chat screen has neither: the outgoing chat releases its branch as its last step once everything is pushed, and the opening line he pastes makes the new chat switch to that branch itself, with what to do if the switch is still refused. |
-| D974 | 17 Oct 26 | The start-size job's commits that reached main by mistake stay on main, as his "merge live" for that job; nothing is taken off, and the rule that main needs his "merge live" stands for everything else. |
-| D973 | 17 Oct 26 | The capitals sweep (D972) covers only the backlog, the screen rules and the engine rules — the files a chat reads in part; the archives, which are only searched, are left as they are. |
-| D972 | 17 Oct 26 | After the start-size job, the other places written in capitals for emphasis are found and turned into ordinary letters the same way as the rulings (D970), word for word, with the work done by a cheaper model and checked by a fresh reader. — changed by D973 |
-| D971 | 17 Oct 26 | A ruling that a later ruling restates in full leaves the loaded list for the archive, as a replaced one does, still searched before he is asked anything; one fresh reader checks each before it moves, and a ruling the later one only narrows stays. |
-| D970 | 17 Oct 26 | A ruling's one-line rule, and the bold sentence it is taken from, is written in ordinary letters, with capitals only where a name or a short form such as OIL or SANS has them; no word is changed for it, and the rulings already written are turned into ordinary letters the same way. |
-| D969 | 17 Oct 26 | As recommended on the start-size page: A, B, C and G are done now (ordinary letters, D970; spent permissions and rulings restated in full archived, D971; the document check shows real cost); his settings to switch off are listed; the skill-notes guide gets a short form, read before he approves it; the scheduler split is not done (D976). — changed by D1740, D976 |
-| D942 | 16 Oct 26 | His first design lesson is struck from the design guide: the guide again never deletes an instruction for a gesture nothing on screen suggests, with no exception for how a row is edited; the editing hint already removed (D938) stays removed, as its own one-off ruling. |
-| D941 | 16 Oct 26 | His design corrections are written into the design guide by themselves, the same day, as a line in its list of his design lessons, keeping to his words (D1417) — one fresh reader checks that the line says what he meant; he is not asked each time; every closing report names the lessons added, and he may strike any. — changed by D1417 |
-| D921 | 15 Oct 26 | Whenever the agent and he talk about anything a person sees — a change, a question, a finding, or only what a backlog item or leftover is and where it sits — pictures of the real app, the place marked, come with the words, the first time it is raised; never words alone. |
-| D906 | 15 Oct 26 | The preview link and the pictures come whenever the agent needs him to review something, and when the work is done — with the look or the question they are for; the ready-to-paste handoff prompt comes whenever a handoff is due; no extra lines are added to the closing report. |
-| D905 | 15 Oct 26 | No preview link while the work is still in progress: the link is sent once the work is ready for his look — built and checked — not after every push of unfinished work. — changed by D906 |
-| D904 | 15 Oct 26 | When the agent stops to wait for him, its message says so in plain words — that it is waiting, and for what — and gives its own recommendation; never only in the app's next-step box. |
-| D903 | 15 Oct 26 | Fable is not used for anything — no code read, no review, no plan read, no walk — unless he calls for it, each time; the riskiest changes get the fresh, blind Opus read alone. |
-| D902 | 15 Oct 26 | A small follow-up fix on an open pull request whose whole check set has already passed runs only the tests it touches before it is pushed; GitHub's run of the pull request is its full check, and nothing merges until that run is green. A job's first push keeps the whole set on his PC, except while the repo is public (D1086). — changed by D1086 |
-| D886 | 15 Oct 26 | He runs the guide check (/doctor prompt-audit) himself, in a terminal, next time; its list comes back to a chat as findings put to him, and no guide changes because of it without his word and its read (D70). |
-| D885 | 15 Oct 26 | Two changelog items are adopted: the compaction set-up's hand-back note gains one line — if a working guide seems missing after a compaction, ask him to type /reload-skills; and the next /overnight run tries the overloaded-retry setting for one night, checked the next morning before it is kept. — changed by D886 |
-| D884 | 15 Oct 26 | The app's idle compaction stays on, at its default: a chat of 200,000 tokens or more left alone for about an hour is compacted by the app, and the project's compaction guard lets it through; nothing in his settings is changed. |
-| D878 | 15 Oct 26 | The compaction set-up's notes are fixed to come in time: they count the chat against the app's own room (the autoCompactWindow — 400,000 since D1671) and the first comes well before the app compacts; this is his permission to change the project's hooks for that fix, which is tested and read by one fresh reader before it is switched on. — changed by D1671 |
-| D874 | 15 Oct 26 | In the day the agent goes on suggesting a handoff to a fresh chat whenever it judges the work is at a suitable point — clean, committed, little lost — as it always has, whether or not a job has ended; the compaction set-up is for a big job that would otherwise fill the chat before such a point comes. |
-| D872 | 15 Oct 26 | The compaction set-up is approved, with the guard off whenever he is away — an /overnight run, or his word that he is leaving a job unattended: then the app compacts at about 85% whenever it gets there, the state saved at every commit; in the day the guard holds it for a clean point. |
-| D871 | 15 Oct 26 | At about 80% full the agent first judges whether the job is nearly done: if it is and he is using the chat, it does not compact but asks him whether to hand off to a fresh chat instead; when he has said he is away for a big job, or on an /overnight run, it compacts at a clean point by itself. — changed by D874, D873 |
-| D870 | 15 Oct 26 | The compaction set-up is built now, in this chat, with the check-run fix: the app's compaction point lowered to about 85%, a guard that holds it until the state is saved, the saved note handed back after, the fullness on his screen — tested, read by one fresh reader and approved by him before it is switched on. |
-| D869 | 15 Oct 26 | The overnight command is approved as drafted and goes live as `/overnight`; this ruling is its standing permission each night — his selection of the night's jobs is not recorded as a ruling, only a new decision of his is. |
-| D868 | 15 Oct 26 | Compaction is not at a fixed point: from about 80% full the agent chooses a good moment itself, without asking him — a clean point, the work committed and the state written into the repo as a handoff would — so that a big job does not compact twice; it holds for day work and for the overnight command. — changed by D884, D874, D873, D871 |
-| D867 | 15 Oct 26 | The overnight command sizes the night to the hours he gives, recommends the jobs that fit, and he selects them; it asks its questions before it starts; then it runs unattended in one chat, compacting smartly by how full the chat is so its work stays accurate; a roadblock that needs him waits until he wakes. |
-| D853 | 14 Oct 26 | Whenever a design or interface change is put to him — a question, a suggestion, a finding, a recommendation to delete — it comes with a picture or a mock-up in which the area being talked about is marked; never words alone. |
-| D852 | 14 Oct 26 | When he corrects a design, the agent does three things without being asked: it notes what the correction says about the app he intends — clean, intuitive; it writes the lesson into the design guide's list of his design lessons (D941 — no longer asking him); and it names other places in the app the same improvement would apply. — changed by D941 |
-| D847 | 14 Oct 26 | The design guide's rule for text that only explains what the screen already makes plain (D846) is approved as written — its three tests, its "never a delete candidate" list, and that a look lists its candidates and puts each to him, deleting nothing itself. — changed by D941, D938 |
-| D846 | 14 Oct 26 | Text that only explains what the screen already makes plain is deleted, and the design guide says so: wherever the agent looks at a screen it names such text and recommends deleting it. His two examples go from the OIL question now — the small print under its answers and "Choose an option above". |
-| D835 | 13 Oct 26 | Once the writing guide is approved it is adopted for how the agent writes to him and for what it writes for him to read, not only for the app's text — as a step of its own after the guide, its wording put to him first; and the guide is read again with the tool he sent beside it before he approves it. |
-| D832 | 13 Oct 26 | The checks for shortening words without losing facts — taken from the outside writing guides read on 13 Oct 26 and from that day's own lessons — are drafted into our own guides; the draft is read by a fresh Opus reader and by Fable, each blind to the other, before he approves its wording. Nothing outside is installed. — changed by D836 |
-| D822 | 13 Oct 26 | The checks on GitHub are made faster: the slow unit check is split across four free machines and the slowest browser check across two; a documents-and-settings change no longer starts the full run; work that finishes together is merged as one pull request, checked once; and the record files are made to merge without clashing. |
-| D821 | 13 Oct 26 | The look he wants: the Raptor style, made cleaner in the way Apple's interfaces are — and intuitive enough that a screen needs few instructions, because where its buttons and everything else sit just makes sense. |
-| D820 | 13 Oct 26 | What the app is, in his words: an all-in-one that makes information flow seamlessly and, with some automation, lightens the workload by cross-checking; its schedulers work mostly at a desktop and only occasionally on a phone, for minor changes, and want to be as efficient as possible; its members are mostly on their phones. |
-| D819 | 13 Oct 26 | The combined design guide is approved as drafted and goes live; and for a design job — a new screen or control, a restyle, a look over something built, a pass over a page's words, a mock-up — the design skill (Impeccable) is used without being asked for, on top of the guide, his rulings winning where they meet. |
-| D813 | 13 Oct 26 | The combined design guide (D812) is written first, and the interface jobs come after it and are judged against it — the calendar's design included. |
-| D812 | 13 Oct 26 | The good interface practices taken from outside design skills are combined into one design guide of our own, used automatically whenever interface work is done and whenever the design guide (Impeccable) is asked for — no outside skill is installed whole. |
-| D808 | 13 Oct 26 | The whole app's notes and text are gone over for clear, concise wording and less clutter — a note that only says what the screen already shows may be removed, and help still wanted may sit under one short "How it works" fold — as a job of its own, later, not inside the jobs in hand. |
-| D802 | 13 Oct 26 | The inputs pages get a rulings file of their own — the Inputs list and calendar, the SANS calendar, the Calendar window, an input's own window and card — moved out of the scheduler's file, every line whole and unreworded; the rest of the scheduler's rulings stay one file. |
-| D811 | 13 Oct 26 | The skill-notes review of 13 Oct 26 is approved as put to him — its guide changes, two new guides, memory notes, two filed jobs and six closures; the two guide lines from his own finds go in on the one Opus read. |
-| D790 | 13 Oct 26 | Every job that needs a code read gets a fresh, blind Opus read of its finished code; Fable reads nothing unless he calls for it (D903). — changed by D1594, D1593, D903 |
-| D787 | 13 Oct 26 | The walkers stay Sonnet 5.5: Opus does not walk the app as a helper — not even one share for comparison — because an Opus walk costs too many tokens to keep up. |
-| D785 | 13 Oct 26 | A scheduler is always an admin: the app is not built for, and no check tests, a scheduler who is not one. |
-| D775 | 12 Oct 26 | The Tracker's and the Leave War's approved tidy-ups — the Tracker's file save and load out of its main file, the Leave War's row drawing out of its grid file — are done after the one-rule job, as jobs of their own; neither is started before it is finished. |
-| D774 | 12 Oct 26 | The Tracker's progress graph is not started yet: no chat begins it — its questions, its design or its build — until he says so. |
-| D766 | 12 Oct 26 | The one-rule job runs on unattended through its step 8 in the same chat — the stop before step 4 is lifted; the chat compacts when it nears its limit and carries on, keeping only what the remaining work needs, named specifically; whatever needs his answer is left until he is awake. No merge, no main. |
-| D765 | 12 Oct 26 | The app's interface is to become more minimal, intuitive and sleek — few words that people still understand, where buttons sit, how things move, what each colour means, icons, the flow of a task — with the Raptor look kept and never at a cost of speed; it is designed as its own job after the one-rule build, not during it. |
-| D761 | 11 Oct 26 | Every job that goes ahead without a ChatGPT reader (Astra or Sol 6.1) is written into one list in the backlog — the job, who did read it, and which read it went without — so those reads can be put to him when his ChatGPT subscription is back, which may not be before 1 Nov 26. |
-| D754 | 11 Oct 26 | A design is recommended to him for being intuitive, fitting the workflow, behaving the same everywhere and leaving fewer places for a bug — never for being the easiest to build or the closest to how the app is today; an earlier ruling is not by itself a reason to keep a worse design. |
-| D667 | 8 Oct 26 | When he is not there to hand off, the agent does not stop at a full chat: it writes where things stand into the repo, lets the chat compact by itself, and carries on with the work. |
-| D625 | 7 Oct 26 | Impeccable moves to v4.1.3 — the last version built from readable scripts — after the inputs / SANS calendar job, not before: by the vendoring note's own steps, on its own branch from `main`, read by Astra and Sol 6.1 (D70), then his "merge live". Until then v4.1.1 stays. |
-| D623 | 7 Oct 26 | Working guides and the tools that run automatically in this project stay in a form different models can read and review — he wants that flexibility; a version that moves its checks into a downloaded program nobody can read is not taken without his word. — changed by D625 |
-| D611 | 7 Oct 26 | The scheduler's rulings are not split by screen — but, since it grew to the size at which he said to look again, the inputs pages' rulings have a file of their own (D802); the rest stay one file. — changed by D802 |
-| D610 | 7 Oct 26 | The SANS availability calendar's new layout is work in progress: only the chat he starts for it reviews, rebuilds or merges it (he called it back on 7 Oct 26 — D614). No tidy-up deletes its branch, records, pictures, backlog items or rulings. — changed by D614 |
-| D608 | 7 Oct 26 | The approved version 2 of the walk-sizing wording, corrected after Astra and Sol read version 1, goes into the checking guide: the walk is sized for each change before it starts; a WALK or FULL change never has no walk; a test that changes the data directly never stands in for pressing a control on screen; D607's two readings are confirmed. |
-| D607 | 7 Oct 26 | Before any walk is run, the agent says what type of change it is and Opus decides what kind of walk it needs — how wide, or only a short one; and a record is kept of every walk — the type of change, the walk's size and cost, what it found — so the figures show which types of change a walk is useful for. — changed by D608 |
-| D602 | 6 Oct 26 | After the Codex stack: the crew-rest fault (a man on a flying line with no take-off loses his crew-rest warning) is fixed first, in a new chat; then what a new chat loads at its start is measured and put to him as options with their savings and risks — nothing is trimmed before he rules, never at the cost of the quality of the work. |
-| D601 | 6 Oct 26 | Sol 6.1 keeps the second reviewer's seat: for work Opus wrote, Astra reviews and Sol 6.1 reads second and blind where two are required; the one side-by-side with Fable is done and is not repeated; Fable stays on call, on his word each time, but for the code read of the riskiest changes (D790). — changed by D790 |
-| D596 | 5 Oct 26 | When he leaves a job to run while he is asleep or away, a question never stops the run: search the rulings first, decide technical points yourself, park a choice truly his in one list (app words, a recommended answer, what waits on it), leave only that piece undone; one notification at the end or when truly blocked; no merge, no main. |
-| D595 | 5 Oct 26 | A trial of a cheaper model is kept small — never a full share walked twice — and the agent decides from the comparison what that model takes, then tells him what it decided and why; he can overrule. |
-| D590 | 5 Oct 26 | When Opus plans or builds, Astra reviews it, Sol 6.1 second and blind where two are required (risky code, an important plan, a guide change); Fable on his word each time — a bug Opus cannot crack, a big open-ended plan — and, standing, for the code read of the riskiest changes (D790); Sol keeps the second seat (D601). — changed by D1414, D790, D601 |
-| D588 | 5 Oct 26 | Sonnet 5.5 walks the app, runs the checks, does document chores (the host checks the results) and never reads code for bugs; one small blind comparison with an Opus walker on the pre-fix rally build; it builds one small low-risk fix to a precise spec, read by Opus; the agent decides from each and tells him (D595). — changed by D595 |
-| D568 | 5 Oct 26 | The CAPS and OPS new-chat handoff stays cancelled; the replacement task is SANS calendar design (D569), in this chat. CAPS and OPS remains unbuilt. — changed by D569 |
-| D541 | 3 Oct 26 | The stylesheet split changes nothing visible. After it, walk every screen at phone and desktop size and open every picture. Later workflow UI changes require product questions in small rounds with recommendations and a picture before any visual build. — changed by D853 |
-| D499 | 2 Oct 26 | In Codex only, use the recommended proportional checking framework and Playwright support: keep required risk-tier gates and distinct coverage, avoid duplicate shared flows and unnecessary pictures. Claude's workflow stays unchanged. |
-| D495 | 2 Oct 26 | The original batch order remains the reference: work-hours, Insights, workflow UI, inputs, Tracker, CAPS/OPS, whole-app check. D568 cancels D567's CAPS/OPS handoff; D569 starts SANS calendar design. — changed by D568, D567 |
-| D493 | 2 Oct 26 | Of Astra's five tidy-ups three are approved, each built with its area's feature batch — the Leave War's row drawing out of its grid file, the scheduler's look file split by screen (first in the UI pass), the Tracker's file save and load out of its core; the Leave War's saved-data reading waits for the database step; its schedule link stays whole. — changed by D775 |
-| D491 | 3 Oct 26 | The `mattpocock/skills` collection is not installed whole; three pieces of it go into our own guides with `[SKILL-FUSION]` — a word list (screen name, meaning, code name), two lines in the debugging guide, one line in the tidiness audit's brief — and Astra drafts the word list and runs its tidiness read before the reset. |
-| D490 | 2 Oct 26 | New features are built first, grouped by area; an area's open small finds and its code tidy-up ride with the feature batch that touches that area, not before it; and one whole-app check is run at the end, once the features are in and before the database step. |
-| D489 | 2 Oct 26 | The three proposals are approved as Astra changed them: the tidiness note in the final code read (three questions of the changed lines, no size number, never the rules engine, filed not fixed); the narrowed look-and-feel checks beside Impeccable; and "a reviewer's claim is a finding only with a concrete failure, its cause and its fix". |
-| D487 | 2 Oct 26 | The size of the app's buttons stays as it is: no look-and-feel check or polish pass makes a button bigger or smaller without his word. |
-| D486 | 2 Oct 26 | Of the five skills the article recommends none is installed whole: their best practices, read at the source, are fused into our own guides — the harder questioning into the planning step, and a one-off code-tidiness audit before the database step, delivered as a report for him to rule on. |
-| D485 | 2 Oct 26 | Related features are built together on one branch and get one bug check for the lot, sized by the riskiest change in the batch — not a dedicated check per feature. |
-| D473 | 1 Oct 26 | The app goes into the database at the end, once its features are built — not now: after phase 7 no more database-readiness work until then; the table list is kept up to date as each feature is added; and he, with his AI, writes the table format and schema for the IT side to enter into Dataverse. |
-| D466 | 30 Sep 26 | Work that needs the IT team's confirmation is held until it comes, and he is told; work that does not goes ahead. Phase 6 (c) does not (only the hand-over of the day and request tables does), so D465 stands. |
-| D465 | 30 Sep 26 | [DB-READINESS] phase 6's build permission is spent (built and merged). The final hand-over of the day and request tables waits for the IT side's written answer; if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then — nothing built is undone. — changed by D609, D467 |
-| D453 | 29 Sep 26 | The order to the database: the day-lock design fixed with the red team's findings; then group A — what decides the tables' shape (built, phases 0–7); then group B — what is tuned against the real database — after the app is connected, which is at the end, once the features are built (D473); the lock's screens last. — changed by D473 |
-| D353 | 28 Sep 26 | Scenarios and side questions one reviewer (Astra first, Sol 6.1 if Astra is unavailable); important plans and risky code two — Astra and Sol 6.1 for what Opus wrote (D590), Fable on call only. — changed by D590, D496 |
-| D351 | 28 Sep 26 | Admin → Data → "Clear edit history…" stays as it is until the database step, where the organisation's retention rule decides how long the change history is kept. |
-| D350 | 28 Sep 26 | In this build the one undo does not take back adding a person (with or without his sign-in), archive, Restore / Restore as, delete, or a posting (post out / post in and their sheet's undos). |
-| D390 | 28 Sep 26 | Every ruling loads as one short line — its number, its date, the rule — with its full row kept whole beside it in .claude/decisions-full/, searched, never loaded; a chat opens the full row before acting on its detail or asking him; the project guide gets the same treatment, now (D391). — changed by D1735, D391 |
-| D343 | 28 Sep 26 | No public GitHub web address — D341 is withdrawn the same hour. |
-| D302 | 27 Sep 26 | Parallel chats coordinate directly, so they do not clash. |
-| D228 | 26 Sep 26 | Both parallel chats run, and the full checks take turns through one lock on his PC. |
-| D203 | 26 Sep 26 | The order to the database: [ACCOUNTS], then [POST-OUT-OUTCOMES] (D291), then the one changes window ([DRAFT-PENDING]), talking to the IT side; then the database-readiness batch with the OIL award fix; then [DB-STEP] — at the end, once the features are built, the table format written on his side (D473). Narrows D147 in part. — changed by D473, D453, D354, D291 |
-| D201 | 26 Sep 26 | When a new ruling overwrites or narrows an older one, fix everything the old one left behind — in the same change that records it. |
-| D106 | 25 Sep 26 | The repo goes public for GitHub's faster free machines, and stays public until he says otherwise (D1530): while it is public his PC's check runner stays stopped (never a self-hosted runner on a public repo); when it goes private again the runner restarts. Sets D89 aside for that period. — changed by D1530 |
-| D90 | 24 Sep 26 | Where two of his rulings conflict, the later one wins: name the ruling followed and the one set aside; an undated rule loses to a dated one; fix what the old one left behind in the same change — the documents, the app, the lists (D201); where the newer one does not clearly cover the case, ask him. — changed by D201 |
-| D162 | 24 Sep 26 | Add the background-command guard ([BG-CWD-GUARD]): a hook refuses a backgrounded npm command that does not move into raptor-port — his go for this standing configuration. |
-| D148 | 24 Sep 26 | Undo reverses only the signed-in person's own changes (the list clears at sign-out); it never undoes another person's change, and if someone has since changed the same thing it refuses and says who. |
-| D147 | 24 Sep 26 | The order after the amendment re-test: (1) the absence record with [S4-HUNT-REST]; (2) change-recording; (3) the Leave War links last, with the 7 Sep phone check; (4) [OIL-AWARD-IS-A-GRANT] (with [OIL-EARNED-VS-GRANTED]) before [DB-STEP], timed with the readiness batch (D203), and the small OIL follow-ups as one batch. — changed by D203 |
-| D144 | 24 Sep 26 | Fix the architecture first, then the individual bugs. |
-| D143 | 24 Sep 26 | "Done" after "merge live" means live on Vercel. |
-| D141 | 24 Sep 26 | No line targets: the test is whether each piece of information is needed where it sits, organised and written clearly; a size ceiling is a tripwire — move what does not belong, or raise it with its reason — never a number to cut to; for a loaded rulings file it counts bytes, not lines. — changed by D390 |
-| D140 | 24 Sep 26 | The whole repo reads by relevance and keeps itself tidy: a small general layer every chat reads; each area's context loads by itself; every new fact has one home; what is finished leaves for an archive; the gate enforces it with tripwires, never targets (D141); the rulings' full text is a searched tier (D390). — changed by D390, D141 |
-| D138 | 24 Sep 26 | A summary must never change what the original meant. |
-| D137 | 24 Sep 26 | The rulings are read by relevance, not all at once — and the structure keeps itself. |
-| D136 | 24 Sep 26 | The rulings list is never shrunk by moving a live ruling out: every live ruling stays in the list chats read — one file per area, loaded by relevance (D137), each ruling as one short line with its full row beside it (D390); only replaced rulings, rulings a later one restates in full (D971) and spent permissions leave, for DECISIONS-ARCHIVE.md. — changed by D1735, D971, D390, D137 |
-| D151 | 23 Sep 26 | Never push to a branch while its pull request's checks are running. |
-| D89 | 23 Sep 26 | The repo stays private and GitHub's checks run on his PC (a self-hosted runner he registers himself; reverses D88) — set aside for a short period by D106: public for GitHub's faster machines, his runner stopped, private again afterwards. — changed by D106 |
-| D87 | 23 Sep 26 | A browser test that fails on a slow machine is fixed by making it wait on what it needs, not on a fixed time. |
-| D86 | 23 Sep 26 | [HUMAN-RETEST] runs two chats in parallel — the Tracker and the amendment system — on three conditions: separate ports (4173 / 4180), never two full gate runs at once (now one lock every chat takes, D228), separate ruling-number ranges. — changed by D228 |
-| D84 | 23 Sep 26 | A Leave War desktop E2E timeout on GitHub gets one re-run of the failed group, not an investigation. |
-| D78 | 23 Sep 26 | Parallel chats merge one at a time, and the later one adapts. |
-| D73 | 23 Sep 26 | No guide yet for bringing a whole separate app in as a new tab — write it only if a third app is brought in; notes #120 and #122 stay open for that job. |
-| D72 | 23 Sep 26 | The bug-testing list is retired. |
-| D70 | 23 Sep 26 | Working-guide changes are read before owner approval, one round each, never by their writer: by Astra and Sol 6.1 (D590 — Fable's round went to Sol); the 13 Oct 26 and 27 Oct 26 skill-notes reviews' by one fresh, blind Opus reader (D810, D1414). — changed by D1414, D941, D811, D810, D590, D496 |
-| D69 | 23 Sep 26 | Write the state into the repo as you go (D68); when the work closes, condense what it wrote in its own docs-only commit, never inside a fix — a saved context is a summary (decisions, state, next step), never the conversation. |
-| D68 | 23 Sep 26 | Correctness beats context economy: never skip or shrink a read to save context. — changed by D1735 |
-| D67 | 23 Sep 26 | Opus 5.5 plans and builds; Astra reviews it, Sol 6.1 second where two readers are required, Fable on call (D590); when Codex plans or builds, Opus reviews; never their own artifact — but a fresh, blind Opus reader may read code Opus wrote (D790). — changed by D790, D590, D496, D353 |
-| D63 | 23 Sep 26 | The country-specific aircraft type goes: where a sentence describes the squadron or him it reads "fighter squadron"; where it names the aircraft or its documents, the bare "F-15" — the Tracker's event-box hint too (D64); its syllabus data is left (D62). — changed by D64 |
-| D62 | 23 Sep 26 | The Tracker's syllabus data is out of scope for every privacy or "what can a stranger read" sweep. Leave it; do not flag it again. |
-| D60 | 23 Sep 26 | Pushing a branch needs no permission; `main` does, except a pull request of notes only, which merges by itself once green (D1407). — changed by D1407 |
-| D59 | 23 Sep 26 | The repo went private on 23 Sep 26 (done by him): GitHub Pages is gone, the publish job is off, the app is viewed on Vercel — made public again for a short period by D106, private again afterwards. — changed by D106 |
-| D58 | 23 Sep 26 | The bare number stays; the squadron abbreviation and the service abbreviation go, everywhere. |
-| D57 | 23 Sep 26 | The commander briefing deck (RAPTOR-Command-Brief.pptx, in the history) is his and stays — not a concern; never propose wiping it. |
-| D56 | 23 Sep 26 | A problem that lives only in data already stored is not a finding — no reviewer, walk step or fix — but only when the code is already correct going forward (both must be true); say so in every reviewer's brief. |
-| D54 | 23 Sep 26 | An issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending mark once [OIL-SEATS-CAN-EARN] ships — leave it (he republishes it once); the demo data is wiped before the database, so harm that lives only in stored demo data and is prevented going forward is not worth building around. |
-| D53 | 22 Sep 26 | Before telling him anything is undecided, putting a choice to him, or calling something missing: search every rulings file (short lines and full text), DECISIONS-ARCHIVE.md and OUTSTANDING.md first — a code comment is never evidence that something is unruled. — changed by D137 |
-| D29 | 22 Sep 26 | Three standing rules for the backlog: finished work leaves OUTSTANDING.md for its archive, only by the script; a ruling never lives only in the backlog — it gets a D-number in its area's rulings file and a real home; never trim documents in the same change as a fix. — changed by D137 |
-| D23 | 22 Sep 26 | A reviewer's open findings outrank the planned job list. |
-| D22 | 22 Sep 26 | Clearing the demo data is APPROVED whenever it is the simpler path |
-| D17 | 21 Sep 26 | For a long hand pass, drive the app with a SCRIPTED real browser from the start |
-| D16 | 21 Sep 26 | A long hand-test pass is FANNED OUT across parallel helpers — Sonnet 5.5 walkers since D588 — each in its own world, returning pictures and a filled table, the host opening the pictures and reproducing every finding; not walked serially. — changed by D588, D476 |
-| D14 | 21 Sep 26 | Records state the decision, not the transcript: quote him only where the exact words matter; otherwise one line, the date and a pointer — and a condensed record never changes what the original meant (D138). — changed by D141, D138 |
-| D13 | 21 Sep 26 | Record a ruling the moment it is made, before doing the work it implies — a hook on every message and a Rulings: line in every report enforce it. — changed by D137 |
-| D12 | 21 Sep 26 | The bug-check order adapts to any kind of work (interface, rules, cross-platform…), not only the OIL feature. |
-| D11 | 21 Sep 26 | Claudex owns the plan and the code read; the bug-check order owns the running app — the walk goes before Claudex's final inspection, and money work needs both providers. |
-| D10 | 21 Sep 26 | The bug-check order supersedes the 16 Sep scenario rule, the 20 Sep rules sweep and the 21 Sep test-like-a-human rule — one method, not four. |
-| D9 | 21 Sep 26 | The bug-check order fires itself: the agent states the tier and the checks; he never has to pick them. |
-| D8 | 21 Sep 26 | The bug-check order is the merged result of Fable's and Codex's independent proposals. |
-| D7 | 21 Sep 26 | Run all three kinds of check — code read, automated tests, a hand pass — scaled by what the change touches. — changed by D607 |
-| D6 | 21 Sep 26 | The other providers design the test scenarios; Opus executes them in the running app. |
-| D5 | 21 Sep 26 | Driving the running app IS the bug test; a code review plus green tests is not one. |
-| D4 | 21 Sep 26 | Every earlier feature checked the review-plus-tests way is likely carrying the same class of defect — sweep them ([HUMAN-RETEST]) after OIL closes. |
+Each line is a rule as it stands today; the numbers after it are the rulings that set it. His words, the readings he was
+told, each ruling's date and the history are in the full rows, `.claude/decisions-full/how-we-work.md` — open the row
+before acting on a rule's detail or asking him about it (`grep -h '^| D1735 |' .claude/decisions-full/*.md`, the shell)
+[D390, D1735].
+
+Before telling him anything is undecided or missing, search the full rows, `DECISIONS-ARCHIVE.md` and `OUTSTANDING.md`
+too [D53, D137]. The map of every area, and how to record or retire a ruling: `DECISIONS.md`.
+
+The rules for recording his rulings, shipping, speaking to him, the bug check and where each fact goes are stated in the
+other always-loaded files — `record-decisions.md`, `shipping.md`, `plain-language.md`, `bug-check.md` and
+`doc-structure.md` — each line there citing its rulings; they are not repeated here.
+
+In every report, OIL is earned leave — time off banked, never pay or money [D25, filed under OIL].
+
+## Records
+- Records state the decision, not the transcript: his words only where the exact words matter, otherwise one line, the
+  date and a pointer; a condensed record never changes what the original meant [D14, D138, D141, D390, D1735].
+- Where two of his rulings conflict, the later one wins: every clash is named — the ruling followed and the one set
+  aside, both dates; a rule with no date loses to a dated one; what the old one left behind is fixed in the same change —
+  the documents, the app (the build filed), the lists; where the newer one does not clearly cover the case, it goes to
+  him as a question [D90, D201].
+- A ruling's rule is written in ordinary letters — capitals only where a name or a short form such as OIL has them — and
+  no word is changed for it [D970].
+- No size targets: the test is whether each piece is needed where it sits, organised and written clearly; a size ceiling
+  is a tripwire — move what does not belong, or raise it with its reason; for a loaded rulings file it counts bytes; the
+  rules diet does not set this aside [D141, D390, D1735].
+- Each ruling's full row is kept whole in `.claude/decisions-full/`, searched, never loaded, and opened before acting on
+  a ruling's detail or asking him about it [D390, D1735]. The repo reads by relevance — a small general layer every
+  chat, each area by itself — and keeps itself tidy, each new fact to its one home, what is finished leaving for an
+  archive [D140, D141].
+- The rulings are read by relevance, not all at once, and the structure keeps itself [D137]. The list is never shrunk
+  by moving a live ruling out: each stays stated in a file that loads — a short line while its area is in that shape, a
+  statement on its page once the area converts, the gate checking it; only replaced rulings, rulings a later one restates
+  in full (a fresh reader checking each; one it only narrows stays) and spent permissions leave, for
+  `DECISIONS-ARCHIVE.md` [D136, D137, D390, D971, D1735].
+- The scheduler's rulings stay one file, the Inputs pages' rulings in a file of their own; the split question came back
+  when the file passed D611's mark, and he kept one file, D611's mark still standing [D611, D802, D976].
+- What a chat loads at its start is trimmed, never anything a job reads (D68) — the bug-check order, the design guide and
+  the ripple map read by section from checklists naming when: the every-chat rulings a later one restates in full are
+  archived, the screen-design rulings load only for screen work, the Codex guide is short; after an hour away from a chat
+  past about 30% full, the agent suggests a fresh chat from the handoff [D1554, D1735].
+- The rules diet: each area's rulings become a page of how it works now — each rule stated once, the rulings behind it
+  cited after it, every live ruling cited on a statement of a file that loads — with the full rows kept whole and
+  searched; the working rules and the bug-check order become one-page checklists; until an area converts, it works as
+  today [D1732, D1735].
+- The diet runs on Opus in the plan's order — the checks and scripts, the moves, reading by section, the every-chat
+  layer, OIL first as a full trial, the smaller areas, then a measure and a report to him before the Inputs, scheduler
+  and Leave War pages; every rewritten page is accounted part by part and read by a fresh reader; where Astra reads
+  beside it, the two blind reads are compared to see which is better [D1732, D1735].
+- Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
+  included [D1737].
+- Step 4, run unattended in chat 2 overnight 7–8 Nov 26, has his "auto merge live": each part merges into main by itself
+  once both blind reads' findings are fixed and its run is green, through the merge lock (its steps in chat 2's handoff
+  block until the branch that adds the lock merges); a part whose Astra read cannot run is parked, not merged; the chat
+  continues and compacts by itself; the morning report says what merged and that the live app was confirmed; step 5a
+  waits for his word again [D1750, D1737, D1093].
+- Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
+  Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
+  the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
+  fresh Opus reader holds the second seat, so no third reader is added; if Astra cannot run, he is told first, and the
+  step never goes on without that read [D1738, D1739].
+- What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may
+  widen it [D1739].
+- From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his;
+  every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a
+  review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
+- The start-of-chat size job is closed: its last point, his documents connector, stays his own setting with nothing for
+  the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
+- The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
+
+## Models and readers
+- Opus 5.5 plans and builds; what Codex plans or builds, Opus reads; the chat that wrote a piece never reads it — a
+  fresh, blind Opus reader may read code Opus wrote [D67, D353, D590, D601, D790, D903].
+- Every job that needs a code read gets a fresh, blind Opus read of its finished code — an Opus that did not write it and
+  has seen neither the walk's nor any other reader's report, given the same brief; every claim is written as a failing
+  test before it is believed, and the host reproduces every finding before it counts; Fable reads nothing unless he
+  calls for it [D590, D601, D790, D903].
+- Astra and Sol 6.1 are called only when he calls for them, each time — he has called Astra for every reworded step of
+  the rules diet and, until Mon 9 Nov 26 19:00, for the work in hand; a job that would otherwise have had one goes on the
+  reads-owed list, `[NO-ASTRA-LIST]` [D1734, D1738, D1739, D1743, D761].
+- The reads-owed list names each job, who did read it and which read it went without; the reads owed are put to him to
+  call or drop, never called by the agent on its own; until Mon 9 Nov 26 19:00 Sol 6.1 is called too where a second
+  reader fits, and whether Astra goes back to standing reviewer after then is his, not yet answered [D761, D1734, D1738,
+  D1739, D1743].
+- Scenarios are designed by a reader other than the builder, and Opus runs them in the app [D6]. Scenario design and
+  side questions: one reader (a fresh Opus reader unless he calls Astra) [D353, D590, D601, D790, D903, D1734, D1738,
+  D1739].
+- The final code reads on risky work — earned leave, permissions, the published record, saved data: two readers, blind
+  to each other, Astra first and Sol 6.1 keeping the second seat, when he calls for them; otherwise the fresh, blind
+  Opus read alone, the job on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739].
+- An important plan's red team: two readers, blind to each other, Astra first and Sol 6.1 second, when he calls for
+  them — the one fresh Opus read stands in for finished code only, and a plan's read is as it was; a plan that goes
+  without them is on the reads-owed list [D353, D590, D601, D790, D903, D1734, D1738, D1739].
+- A working-guide change is read before his approval, one round each, never by its writer, by Astra and Sol 6.1, called
+  when he calls for them; a change read without them — by a fresh, blind Opus reader, the agent's reading, as D1495's
+  wording was read — puts the reads it went without on the reads-owed list [D70, D590, D601, D790, D903, D811, D941, D1417, D1734, D1738,
+  D1739, D761].
+- His named exception: a line of his design lessons is read by one fresh reader and not put to him first [D941, D1417];
+  design red-team loops keep their cap of about three rounds [D70, D590, D601, D790, D903, D811, D941].
+- The read of a working-guide change has a narrow brief — does each change say what its note meant, does it contradict a
+  guide or a ruling, does it drop a safeguard or add bulk; it is a read of documents and never replaces walking the app
+  for code changes [D70, D590, D601, D790, D903, D811, D941, D1417].
+- Sonnet 5.5 walks the app, runs the checks and does document chores, the host checking the results — it never reads code
+  for bugs; a cheaper-model trial stays small and the agent decides and tells him [D588, D595]. The walkers stay Sonnet:
+  Opus never walks as a helper, not even one share for comparison; the host still opens their pictures, reproduces every
+  finding and may run a short look itself where the sizing step says a helper is not worth starting [D787].
+- What stays off Sonnet: plans, every other build or fix, anything touching earned leave, permissions, the published
+  record, saved data or the rules engine, reading code to find bugs, deciding whether a finding is real, and the
+  roll-call; Haiku is not opened [D588, D595].
+- Saving tokens never costs the quality of finding a fault or of checking one: the host opens every picture that decides
+  something — a fault's cause, a fix's check, a finding — cropped to the area that matters; walkers look at the bulk
+  [D1271, D1273].
+- A security read (an extra fresh reader looking only for holes) on any change to sign-in, permissions or what one person
+  sees of another; one full security review of the app before the database step [D1411].
+- Every fault he found that a check missed becomes a case in the code reader's test set; a changed reader is scored on
+  it and kept only if it catches as many [D1410].
+- A reviewer's open findings outrank the planned job list [D23]; a reviewer's claim is a finding only with a concrete
+  failure, its cause and its fix; the final code read carries a tidiness note — three questions of the changed lines, no
+  size number, never the rules engine, filed not fixed [D489].
+- Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
+  and the ripple map are read by section from the checklists that name when, every section that applies a required read
+  [D68, D1735].
+
+## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
+- Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a
+  code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of
+  change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the
+  figures show which types of change a walk is useful for [D7, D607, D608].
+- The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one
+  method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the
+  walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72].
+- Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes
+  pressed, every other place that should show the result looked at, with pictures — on top of the change's own
+  scenarios, never instead of them [D1557]. On a phone, a picture right
+  after each tap as well as the settled one; a standing test that a dense screen's controls never turn a pinned cell
+  see-through [D1281].
+- A long hand pass is fanned out across Sonnet walkers, each in its own world, driving a scripted real browser; the host
+  opens their pictures and reproduces every finding before it enters the evidence sheet [D16, D17, D588, D595].
+- A slow-machine browser failure is fixed by waiting on what the test needs, never a fixed time [D87]; a Leave War desktop
+  timeout on GitHub gets one re-run of the failed group [D84].
+- A screen with an approved drawing is built to it and checked beside it as it is built and after every fix, not only at
+  the walk; a departure is made only on purpose, for a better design, and is named to him with its picture and its
+  reason — never left for him to find [D1424, D1426, D1478].
+- The drawing check — a script measuring each part's place, size, colour and text alignment against the approved drawing
+  at his iPhone's and a desktop's size, listing every difference over about 2px with marked pictures side by side — is a
+  standing step of every build with a drawing: run as the screen is built and after every fix, red until each
+  difference is fixed or he rules to keep it, beside the look by eye and the walk, never instead of them [D1494, D1495].
+- Differences found after the build go to him side by side, each marked, and he chooses which go back — an outright
+  fault is fixed without asking [D1426]. Any part he approved in a drawing is drawn again from that drawing — the sole
+  source — and checked beside it before a page goes to him, in a later mock-up round as in a build; only what a later
+  ruling requires is added, named and shown beside it [D1478].
+- Clearing the demo data is approved whenever it is the simpler path [D22].
+- Every two weeks a one-page scorecard: faults he found after a change went live, changes undone or redone within two
+  weeks, merges — each beside the two weeks before; speed counts only while the first two hold [D1409].
+
+## Secrets and the repo
+- The project's secrets scan is a required check on `main` (he switches it on from the steps given) and GitHub's own
+  scanning is on, with its push protection; the project's whole history is scanned once, and a key found in the history
+  is changed, not only deleted [D1408, D1535, D1540].
+- The repo is public until he says otherwise; his PC's runner stays stopped meanwhile; private again, it restarts and the
+  checks return to his PC — he installs and registers the runner himself, its token never given to the agent, and the
+  agent keeps a way back to GitHub's machines [D106, D89, D1530]. No public GitHub web address [D343]; the app is viewed
+  on Vercel [D59].
+- Three points of the SWiFT build-and-deploy kit are set aside on his order: all its red flags (whether the flying schedule
+  or the Tracker count as operational information among them), its rule against hosting on Vercel and its rule that the
+  project be private; Vercel and the public project stay until he says otherwise, and none is put back to him unasked
+  [D1530].
+- The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading
+  of keeping the project public, not checked with him [D1530].
+- Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
+
+## Showing him, asking him
+- Anything new a person will see — a box, a message, a mark, a button — is drawn as a mock-up and shown before it is
+  built, even when it is only one part of a fault fix or copies a look the app already has; the check before any build of
+  a fix asks "does this add something he will see?", and if so the mock-up comes first [D1625].
+- A picture for a question shows only what it is about — cut to it, or the rest dimmed — the change named on it in plain
+  words; a whole screen only when the question is about the whole screen [D1222].
+- Every mock-up or questions page put to him has what he should look at now at the very top — each open question in one
+  line with its recommendation and a link to its pictures, newest first; answered and replaced ones leave the page and
+  are kept in the project [D1237, D1363]; product questions come in small rounds, each with a recommendation and a
+  picture [D541, D853].
+- No preview link while work is in progress: the link comes when the work is ready for his look, whenever his review is
+  needed, and when the work is done; no extra lines are added to the closing report [D905, D906].
+- When he offers a different solution, or a new idea for the thing being built, while the agent is building: stop at
+  once and answer it — what it would do, its cost, a recommendation — before building any further, never carrying on
+  with the earlier plan past his newer idea; the build resumes only on his answer [D1613].
+- Say at once when a feature he asks for, or one being designed, cannot be done, or only differently, with a licence or
+  the IT side, on a Power Apps code app on Dataverse; where unsure, say so and how it will be found out, never a guess
+  given as fact [D1551].
+- Recommend the right design — intuitive, fits the workflow, the same everywhere, fewer places for a bug — never for
+  being the easiest to build or the closest to how the app is today; an earlier ruling is not by itself a reason to keep
+  a worse design; say its cost and which rulings it changes [D754].
+- The questions the backlog keeps for him are not put until he says so; meanwhile the agent goes on with work that needs
+  no answer or look from him [D994].
+
+## Design (the guide: `raptor-port/docs/design-practices.md`)
+- What the app is: an all-in-one that makes information flow and cross-checks; schedulers mostly at a desk, only
+  occasionally on a phone for minor changes, and wanting to be as efficient as possible; members mostly on phones [D820]. The look: the Raptor style made cleaner the way
+  Apple's are, intuitive enough to need few instructions [D821]; smooth motion counts as part of quality, a new design
+  judged by it as well as by how it looks [D991]; button sizes do not change without his word [D487].
+- The screen-design rulings — how a screen looks and behaves: the one gear, the one pencil, the top bar and its Undo /
+  Redo, search boxes, arrows that keep their place, nothing pinned leaks, the failed-save band, one mark one look, no
+  glow, the drag rules, a page's controls one row, screens not wordy — are an area of their own,
+  `.claude/rules/decisions/design.md`, loaded with any screen work; how the agent works on design stays here [D1554,
+  D1735].
+- One combined design guide for all interface work, the design skill (Impeccable) on top for a design job; his rulings
+  win [D812, D813, D819]; a mock-up uses the app's own parts [D1496].
+- Every calendar icon in the app is Edit Schedule's line calendar, drawn by the app — never the 📅 symbol [D1508].
+- Text that only says what the screen already makes plain is named in every look and recommended for deletion, by the
+  guide's three tests; what the guide's "never a delete candidate" list names stays — an instruction for a gesture
+  nothing on screen suggests among them, with no exception for how a row is edited; a look lists its candidates and puts
+  each to him, deleting nothing itself; the editing hint once on Edit Schedule's panels stays deleted [D846, D847, D938,
+  D941, D942, D1417].
+- His design corrections become lessons in the guide the same day, as a line in its list of his design lessons, read by
+  one fresh reader and named in the closing report; he may strike any [D852, D941, D1417]; his first lesson stays struck
+  [D942].
+- A lesson line keeps to his words — it covers no case he did not correct, gives no reason he did not give, and marks
+  anything of the agent's own as its reading; a branch that will add lessons takes a range of lesson numbers first, any
+  renumber told to him old and new [D1417]. A lesson that narrows a rule already in the guide says so, and that rule
+  gets a pointer to it [D941, D1417].
+- On a design correction the agent also notes what it says about the app he intends — clean, intuitive — and names other
+  places in the app the same improvement would apply, each suggested with what would change and its picture, never
+  changed unasked [D852, D941, D1417].
+- Jobs of their own, later: the wording pass — a note that only says what the screen shows may go, help still wanted under
+  one short "How it works" fold, no warning or instruction a person needs dropped — not inside the jobs in hand [D808]; the minimal-interface design, the Raptor look kept
+  and never at a cost of speed [D765].
+- The consistency look goes on in rounds (1–4 live): the whole app, on a desktop and on a phone, looked over for the same
+  thing drawn differently, icons included, each mismatch put to him with pictures, the place marked and a recommended way
+  to match, before it changes [D1124, D1508].
+- Adopting the approved writing guide for how the agent writes to him, and for what it writes for him to read, is a step
+  of its own, not yet taken: the part that fits prose drafted into the plain-language rule, read, and its wording put to
+  him first; until then the plain-language rule governs every message to him [D835].
+
+## Order of work
+- Features first, grouped by area; an area's small finds and tidy-up ride with its batch; related features share one
+  branch and one bug check for the lot, sized by its riskiest change; one whole-app check at the end [D490, D485];
+  architecture before individual bugs [D144]. A fault that harms people now — a wrong published record, wrong OIL, lost
+  data — is still fixed at once, not held for a batch (the agent's reading of D490).
+- Finished jobs that close together merge as one pull request, checked once, each keeping its own check and evidence,
+  and the record files are to merge without clashing (`[MERGE-ONCE-RECORDS]`, open) [D822].
+- The backlog's priority list shows only what is open, one line an item, grouped by area; finished work leaves it for the
+  archive, the stories staying in git, the evidence sheets and the archive [D1024]; the sized plan's fix nights first,
+  the pictures round after, each night's jobs still starting on his word [D1717].
+- The original batch order stays the reference: work-hours, Insights, workflow UI, inputs, Tracker, caps and ops (started
+  only on his word; its handoff stays cancelled, the SANS calendar in its place), the whole-app check [D495, D568, D569];
+  the earlier builds' re-test as a person uses them has the Leave War links left, with the 7 Sep phone check [D4, D147,
+  D203, D453, D473].
+- No guide for bringing a third app in as a tab until one comes [D73]. The SANS availability calendar's new layout is
+  work in progress: only the chat he starts for it reviews, rebuilds or merges it, and no tidy-up deletes its branch,
+  records, pictures, backlog items or rulings [D610].
+- Not started until he says: the Tracker's progress graph [D774]; the M365 hosting trial, which waits until he has his
+  test account and says he is ready — no chat starts it, plans it or asks him about it, nor proposes it again until he
+  raises it [D1682].
+- Of the code-tidiness read's separations, the Leave War's saved-data reading waits for the database step, and its link to
+  the schedule stays whole — split only if a later feature must work heavily inside it, a new question for him then;
+  nothing is restructured outside an approved item [D493, D486].
+- One tidiness audit of the code before the database step, delivered as a report for him to rule on [D486].
+- His go for the jobs the 13 Oct skill-notes review filed stands — the script guard (`[SHELL-SCRIPT-GUARD]`) among them,
+  built with its fresh read [D811].
+- An outside skill or guide he sends is read at its source and its good practices fused into our own guides, never
+  installed whole without his word — the article's five, the mattpocock and jakubkrehel collections, the Apple design
+  skill and the humanizer tool so far, the fusion still with open jobs (`[SKILL-FUSION]`, `[WORD-LIST]`) [D486, D491,
+  D812, D835]. Codex alone uses the proportional framework [D499].
+- Guides and the tools that run by themselves stay readable by any model: what runs by itself here is text in the repo,
+  a version that is not is never taken without his word, and an update never runs the tool's own updater [D623, D625].
+  Impeccable stays on v4.1.1 until it moves to v4.1.3 by its vendoring note's steps, on its own branch, read by Astra and
+  Sol 6.1 as a guide change is — on his call since D1734 — and merged on his "merge live" [D625, D1734, D1738, D1739].
+
+## The platform and the database
+- The database comes at the end, once the features are built — after phase 7 no more database-readiness work until
+  then; the table list is kept true as each feature is added; he writes the table format with his AI for the IT side
+  [D473, D203, D453].
+- Work needing IT's confirmation waits for it, and he is told; the day and request tables' hand-over waits for IT's
+  written answer, and if IT's reports cannot reproduce the worked-out picture, a reportable piece is added then —
+  nothing built is undone [D466, D465]. After the connection, group B is tuned against the real database, the lock's
+  screens last [D453, D473].
+- The target: a Power Apps code app on Dataverse on his M365; every user holds Power Apps Premium, with 40,000 Power
+  Platform requests a day each, so no licence stands in the way [D1570].
+- The tables are the one master of saved data: every screen and area reads from them and writes to them, so everything
+  stays in step; only what makes no sense in a table stays out, each named with its reason [D1580]; what does not read
+  the one table is one item for the database step, nothing of it built before then [D1587, D473].
+- No tables, roles or day-lock flow on his M365 before the database step, and the table setup — now the IT side's own
+  kit — and the test of whether it may sign in as him on his PC wait for it: nothing of either written or tried before
+  then [D1571, D1662, D1749, D473]; the hosting trial is the app without a database, run inside Power Apps and still saving in the browser, for him to test
+  himself [D1532].
+- At the database step the app and its tables go first into his own premium M365 test account: the tables built there
+  with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side,
+  who build the same tables with the same kit; nothing of the database is built there before that step [D1749, D473].
+- That test account is set up to match the IT side's restrictions — no plug-ins, no outside connectors, the same roles —
+  or a pass there proves nothing, the match put to them as a question; only the app's made-up demo data goes there
+  [D1749, D1532].
+- February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date,
+  and no step is rushed or its checks cut to meet one [D1745].
+- At the move: each aircraft type set by a setting, the code check every session and on every change, a medical change
+  shown whole in the change history, words on screen kept to his design rulings, a clean copy for the PPCoE with this
+  project kept whole [D1536, D1537].
+- Strict checking of every value's kind — new code strict from the start, the screens, saved data and the Leave War
+  fixed area by area as each is next worked on — but the rules engine stays word for word, its strict checks switched
+  off, protected by the original app's 728 tests [D1537].
+- React Doctor — the free code check the SWiFT kit runs — comes from the same public package store as the app's other
+  building tools and changes nothing in the app; it runs the kit's way, its usage tracking off, sending its findings to
+  the tool's maker for its score, and the run with every outside connection off is no longer required [D1531, D1533].
+- React Doctor's findings are fixed with each area's batch, new and changed code following its rules [D1534]; it runs
+  on every pull request, where a new finding fails the check, and at each session's end, where it only reports the
+  count and blocks nothing [D1539]; the 31 old errors outside the app were fixed as a job of their own (done) before
+  the next full run [D1572]; mock-up pages and the original app are not counted, and the tests' and scripts' notes of
+  copying data the old way are left as they are [D1716].
+
+## Long runs, compaction and handoff
+- `/overnight` sizes the night to his hours and recommends the jobs that fit, he selects, its questions come first, then
+  it runs unattended in one chat; its approval is its standing permission each night — his selection of the night's
+  jobs is not recorded as a ruling, only a new decision of his is [D867, D869].
+- When his overnight message names the work, the agent still lists the night's jobs before it starts — numbered, in
+  order, each with what he will have in the morning, its check and its rough time, how many fit in his hours, and what
+  waits for him — then starts without waiting for a reply [D1443].
+- An overnight run asks "Low or Medium?" first: Low, with plenty of time, runs the fewest helpers the checks need, one
+  after another, caches kept warm; Medium, with less time, uses helpers as needed, several at once; efficiency is judged
+  by the weekly usage figure, not a token count [D1104].
+- Each overnight job goes to one fresh helper inside the night's chat, with its own walker and reader; the night's chat
+  only coordinates, checks each result and keeps the records; a separate session per job is used only when he types the
+  night's message in the desktop app, all started together [D1416]. It goes on past 90% of the weekly allowance, saving
+  at every step [D1415].
+- Using up his weekly allowance before it resets is his aim: work is not held back, cut down or stopped early to save it;
+  the agent still reads and reports the figure and saves the state before the limit can stop it; until Mon 9 Nov 26
+  19:00 his Codex allowance too — the work planned to spend both, chats side by side where the work allows [D1033,
+  D1415, D1743].
+- Unattended: a question never stops the run — search the rulings, decide technical points, park his choices in one list;
+  one notification at the end; no merge, no `main` [D596]; at a full chat, write the state and carry on [D667]. Before a
+  compaction the state is in the repo and the compaction is told exactly what to keep — the step in hand, the files it
+  touches, the open faults, the parked questions — and what to drop [D766].
+- Every chat compacts at about 400,000 tokens — the project's compaction window 400,000, not 880,000: the first note at
+  about 300,000, held until saved from about 360,000, the app's own compaction at about 384,000 [D1671, D878].
+- The compaction set-up stands: the fullness shown in the status line (which the desktop app does not draw, so it changes
+  nothing he sees), a guard that holds the app's compaction until the state is saved — never past about 408,000 tokens
+  (102% of the window) nor past 900,000; off when he is away, an `/overnight` run or his word that a job is left
+  unattended, the app then compacting at its own point, the state saved at every commit — and the saved note handed
+  back after [D870, D872, D878, D1671].
+- The app's idle compaction stays on at its default — a chat of 200,000 tokens or more left alone about an hour is
+  compacted by the app — and the guard lets it through; nothing in his settings is changed [D884].
+- In the day the agent suggests a handoff to a fresh chat whenever the work is at a suitable point — clean, committed,
+  little lost — mid-job included; the compaction set-up is for a big job that would fill the chat first [D874]. From
+  about 80% full it picks that clean point itself — the work committed, the state written into the repo as a handoff
+  would — so a big job compacts once; near a job's end while he is using the chat it offers a handoff instead [D868,
+  D871, D874, D884].
+- After any compaction the agent re-reads the saved state and the files in hand before the next change, and every
+  report gives him the context % [D868, D871, D874, D884].
+- A guide missing after compaction → ask him to type `/reload-skills`; the next `/overnight` run tries the
+  overloaded-retry setting for one night, checked the next morning and kept only on his word [D885, D886].
+- He runs the guide check himself; its list comes back to a chat as findings put to him, and no guide changes because of
+  it without his word and its read [D886]. A chat started from a handoff has Remote Control on [D1195].
+- Write the state into the repo as you go; when the work closes, condense it in its own docs-only commit, never inside a
+  fix — a saved context is a summary (decisions, state, next step), never the conversation [D69].
+- Every chat's title starts with its number — 1 the M365 package chat, 2 the rules diet's step 4, then counting on — and
+  each chat says its number when it reports to him; the handoff file keeps the next free number [D1744].
+
+## Names and privacy
+- The bare squadron number only; never the squadron or service abbreviation [D58]; "a fighter squadron", the bare
+  "F-15", the Tracker's event-box hint reading the bare type [D63, D64]; the Tracker's syllabus data is outside every
+  privacy sweep [D62]; the commander briefing deck is his and stays — never propose wiping it [D57].
+
+## App-wide product rules (to move to their area pages)
+- Undo steps back through the signed-in person's own changes only, and the list clears when they sign out; it never undoes
+  another person's change, and where someone has since changed the very same thing it refuses and says who [D148];
+  in this build it does not take back adding a person, archive, restore, delete or a posting, and the greyed button says
+  why [D350].
+- "Clear edit history…" stays until the database step, where the organisation's retention rule decides how long the
+  change history is kept [D351].
+- A scheduler is always an admin: nothing is built, tested or walked for a scheduler who is not one, no walker's or
+  reader's brief sets one up, and a finding of that shape is not a finding; a member, a guest and a person with no
+  sign-in stay in scope as people who are not schedulers [D785].
+- To the OIL page: an issued weekend carrying a placeholder on a duty desk, sim seat or extras line raises the pending
+  mark once `[OIL-SEATS-CAN-EARN]` ships — leave it; he republishes it once [D54].
