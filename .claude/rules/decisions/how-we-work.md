@@ -54,10 +54,10 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
   included [D1737].
 - Step 4, run unattended in chat 2 overnight 7–8 Nov 26, has his "auto merge live": each part merges into main by itself
-  once both blind reads' findings are fixed and its run is green, through the merge lock (its steps in chat 2's handoff
-  block until the branch that adds the lock merges); a part whose Astra read cannot run is parked, not merged; the chat
-  continues and compacts by itself; the morning report says what merged and that the live app was confirmed; step 5a
-  waits for his word again [D1750, D1737, D1093].
+  once both blind reads' findings are fixed and its run is green, through the merge lock (its steps now on the shipping
+  checklist); a part whose Astra read cannot run is parked, not merged; the chat continues and compacts by itself; the
+  morning report says what merged and that the live app was confirmed; step 5a waits for his word again [D1750, D1737,
+  D1093, D1746].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
   the other, for whether any meaning changed; Sol 6.1 is not called — beside D1743's window, the agent's reading: the
@@ -244,8 +244,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Finished jobs that close together merge as one pull request, checked once, each keeping its own check and evidence,
   and the record files are to merge without clashing (`[MERGE-ONCE-RECORDS]`, open) [D822].
 - The backlog's priority list shows only what is open, one line an item, grouped by area; finished work leaves it for the
-  archive, the stories staying in git, the evidence sheets and the archive [D1024]; the sized plan's fix nights first,
-  the pictures round after, each night's jobs still starting on his word [D1717].
+  archive, the stories staying in git, the evidence sheets and the archive [D1024].
+- The sized plan's fix nights come first and the pictures round after, each night's jobs still starting on his word —
+  except that the round of about twelve small questions was drawn on the night of 7 Nov 26, in a chat of its own beside
+  the night's fixes, ahead of night 3's jobs, which still run on a later night; nothing of it is built before his
+  answers [D1717, D1747].
 - The original batch order stays the reference: work-hours, Insights, workflow UI, inputs, Tracker, caps and ops (started
   only on his word; its handoff stays cancelled, the SANS calendar in its place), the whole-app check [D495, D568, D569];
   the earlier builds' re-test as a person uses them has the Leave War links left, with the 7 Sep phone check [D4, D147,

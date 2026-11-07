@@ -134,7 +134,7 @@ const FILES = [
   /* NEW 24 Sep 26 (owner, D140 + D143): the two rule files every chat carries so the structure and the way a
      change ships are in force before any project file is read. Ceilings set at what they hold plus room. */
   ['.claude/rules/doc-structure.md',     0,  106],   // 100 -> 106 (8 Nov 26): a checklist of 96 lines, wrapped (D1735) - the head of the bug-check row above
-  ['.claude/rules/shipping.md',          0,  172],   // 135 -> 172 (8 Nov 26): a checklist of 156 lines, wrapped, fewer bytes (D1735) - the head of the bug-check row above; 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
+  ['.claude/rules/shipping.md',          0,  185],   // 172 -> 185 (8 Nov 26, claude/merge-one-at-a-time): D1746 - every merge into main under the merge lock and a level check, its four steps, each command whole on one line; a live rule every chat ships by, none moved out; 135 -> 172 (8 Nov 26): a checklist of 156 lines, wrapped, fewer bytes (D1735) - the head of the bug-check row above; 130 → 135 (21 Oct 26): D1093 (his "auto merge live" covers a run) and D1097 (a notification at every stop that waits on him) — live rules every chat ships by, none moved out; 115 → 130 (20 Oct 26): D1086–D1088 — which machine runs the full check, batches by area, the one run after "merge live"; rules every chat ships by
   /* 961 -> 1000, 23 Sep 26 ([DOCS-GUARD] step 1). Already at 969: the two OIL merges (#424, #425)
      added lines inside code changes, which is exactly what F3 now allows and defers. HANDOFF must
      accept a known-issue entry during a fix (CLAUDE.md), so it carries declared headroom. */
@@ -298,7 +298,10 @@ const RULING_BYTES = [
      always-loaded rule files, ten spent permissions archived. Reset about a sixth above, room for the next rulings - a
      tripwire, not a target (D141). Raised 25000 -> 36000 the same night: the step's account by requirement found 66
      gaps, parts of rulings the first page had dropped or narrowed, and restoring them took it to 31,022 bytes (D138). */
-  ['.claude/rules/decisions/how-we-work.md', 0, 36000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138)
+  /* how-we-work 36000 -> 38000 (8 Nov 26, claude/merge-one-at-a-time): 36,091 bytes once main was brought in with D1746 and
+     D1747 stated on the page (the pictures round's night, the step-4 line pointing at the merge lock's steps); live
+     rulings every chat reads, none spent or replaced - a rulings file is never trimmed (D136). */
+  ['.claude/rules/decisions/how-we-work.md', 0, 38000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138); 36000 -> 38000 (8 Nov 26): D1746, D1747 (above)
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,

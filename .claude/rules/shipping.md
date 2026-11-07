@@ -24,8 +24,24 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   §11, `engine-rules.md`, `remarks-vocabulary.md`, the behaviour registers) and the gates skip a notes-only pull
   request — the agent runs `npm run rulecheck` and the unit tests that read documents on his PC, until
   [REVIEW-LAYERS] builds the guard that does it, with the secrets scan (D1407, D1737).
-- Parallel chats merge one at a time, each on his word; the later one merges `main` in first and renumbers its own
-  clashing rulings (D78).
+- Chats may run side by side as long as they never clash in anything, and above all two never merge at once: parallel
+  chats merge one at a time — each on his word, or by itself where the next bullet allows — each under the merge lock
+  and level check below; the later one merges `main` in first and renumbers its own clashing rulings (D78, D1746).
+- Every merge into `main` — on his word, a notes-only pull request merging by itself (D1407, D1737), an "auto merge
+  live" run (D1093) — is made in the Bash tool from the repo root, each command whole on one line (split, it runs without the
+  folder setting and takes the checks lock), in four steps (D1746):
+  1. Take the merge lock — the Bash call's timeout 600000 — and go on only once it prints `gatelock: taken`:
+     `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs take "<branch> — merge <PR>"`
+  2. `git fetch origin main <branch>`, then `git merge-base --is-ancestor origin/main origin/<branch> && echo level || echo behind`.
+     Behind: release the lock; once no run of the branch is queued or in progress (D151), bring `main` in, wait for that
+     run to pass and start again at 1. His word still stands unless settling a clash changed this branch's own app code,
+     which goes back for his look (D1742, D1746).
+  3. Level, its last run green: `gh pr merge <PR> --merge` — never `--auto`, which merges later, outside the lock
+     (`main` does not make GitHub ask for an up-to-date branch, so this check is the only guard) (D1746).
+  4. Release a lock you took at once, whatever happened next — merged, refused or stopped — never after a `take` stopped
+     while it waited (release deletes the folder whoever holds it), and with its folder written out (a bare `release` deletes
+     the checks lock, D228) (D1746):
+     `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs release`
 
 ## The loop, change by change
 
@@ -61,9 +77,12 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
 ## "Done" means LIVE — and live means ON VERCEL
 
 - On his "merge live": the job's closing records were pushed before his look was asked for, written to be true once it
-  is live; merge at once if the run on the last pushed commit is green, then confirm the live app as below — nothing is
-  pushed between his word and the merge (D1742).
-- If his look brings a change, the fix and its records are pushed together and his look is asked again (D1742).
+  is live; merge at once if the run on the last pushed commit is green and the branch is level with `main`, under the
+  merge lock, then confirm the live app as below (a later Production deployment whose commit holds the merge counts) —
+  nothing is pushed between his word and the merge, except bringing `main` in when the branch is behind it (step 2
+  above) (D1742, D78, D1746).
+- If his look brings a change, the fix and its records are pushed together and his look is asked again — so too when
+  bringing `main` in to settle a clash changed this branch's own app code (D1742, D1746).
 - His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - Tell him when you are done, with `PushNotification` — when the work is genuinely finished, and when you are blocked
   waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly watching, never twice
@@ -109,8 +128,8 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   his PC's runner stays stopped. Once it is private again (D106 ended — D1530 keeps it public until he says otherwise),
   the runner starts again and the full check is back on his PC; read first how they then run, moved whole to
   `raptor-port/docs/gates-and-deploy.md` §The checks run on HIS PC (D89, D106, D1530, D1556).
-- Parallel chats take turns through one lock on his PC; each parallel chat keeps its own branch, ports and rulings
-  range (D228).
+- Parallel chats' full checks take turns through one lock on his PC, the checks lock (merges have the merge lock of
+  their own, §"Push" and "merge live"); each parallel chat keeps its own branch, ports and rulings range (D228, D1746).
 - Before the full unit suite, any browser-test run of more than one file, the Tracker smoke or a fanned-out walk, take
   the lock: `node raptor-port/scripts/gatelock.mjs take "<branch> — <what>"` (or by hand: make the folder
   `C:\Users\User\.raptor-gates-lock` — it fails if it exists — and write `owner.txt`). If it is held, wait — check
@@ -130,12 +149,12 @@ the Pages-era wording and the full story behind each rule, in `raptor-port/docs/
   checks run — its refusal says what to run instead (`raptor-port/docs/gates-and-deploy.md`). The guard is a backstop,
   not the rule: it lets a push through when it cannot reach GitHub, and Codex has no hooks — so every rule above is
   kept by hand all the same.
-- Parallel chats talk to each other so they do not clash: before changing a file or function another open chat's
-  branch also changes (compare the branches: `git diff --name-only $(git merge-base origin/main <branch>) <branch>`),
+- Parallel chats talk to each other so they never clash in anything: before changing a file or function another open
+  chat's branch also changes (compare the branches: `git diff --name-only $(git merge-base origin/main <branch>) <branch>`),
   message that chat (`ListAgents`, then `SendMessage`) — what you will change there and what you will leave; answer
   the same when asked; settle an overlap between you at once; repeat what you promised in your own `HANDOFF.md` block.
-  The merge order and "merge live" stay his — a chat never merges for another (D302, D60, D78; notes only: D1407,
-  D1737).
+  The merge order and "merge live" stay his — a chat never merges for another, and two never merge at once (the merge
+  lock, §"Push" and "merge live") (D302, D60, D78, D1746; notes only: D1407, D1737).
 - Docs-only changes skip the gates (`paths-ignore` in `deploy.yml`: `**.md`, `.claude/**`, the document-gate scripts
   `raptor-port/scripts/docsize*.mjs` and `backlog-archive.mjs`, and `docs-guard.yml`), but the Docs guard
   (`docs-guard.yml`, two to three billed minutes) still runs on every pull request and every push to `main`.
