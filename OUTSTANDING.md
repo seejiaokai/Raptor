@@ -2215,7 +2215,7 @@ the first slide ends (about half a second) restores only View-only Sched's week:
 last finish. Read: `raptor-port/docs/handpass/parts/ws-read-pull.md` (the fourth read, finding 2). **Place:** low — practically
 unreachable; with the next change to the slide.
 
-### [CI-SMOKE-TIMEOUT] GitHub's Tracker smoke job has no time limit (found 5 Nov 26, the round-4 merge; the agent's)
+### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
 `4d13c06d8` half an hour before), `tracker (smoke 1/2)` ran 16 minutes with every other job finished; it was cancelled and
 re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
@@ -2226,7 +2226,11 @@ his "merge live"), from the 20 green runs before 8 Nov 26: build 10 minutes (0.9
 (16.4), the Tracker smoke 30 a half (17.7) and the smoke's own step 12 (3.9 at most, over 40 halves). **Measured, not guessed: the 16 minutes
 of 5 Nov 26 were not a hang in the smoke** — that half's "Install Chromium" (the system packages it fetches) took 12.3 of
 them and the smoke 3.8; the same install took 8 to 16 minutes in 9 of the 20 green runs (10 jobs), while the browser tests
-themselves never passed 6.2. A slow install is the browser jobs' long tail, so their limits sit well above it. **Still open here:** the two points below, which are not workflow
+themselves never passed 6.2. A slow install is the browser jobs' long tail, so their limits sit well above it. **Two real
+stalls did happen, both before the smoke, and only the job's limit catches them** (the fresh Opus read of the change):
+26 Oct 26, `claude/tracker-small-1021`, smoke 2/2's "Install Chromium" printed nothing for 62 minutes until cancelled; 5 Nov
+26, `claude/postout-bell-look`, smoke 2/2's Node set-up took 34 minutes and its install 9 more, cancelled. Each would now
+stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over about 1,000 halves, by that read's count). **Still open here:** the two points below, which are not workflow
 changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
 (a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
 `.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".

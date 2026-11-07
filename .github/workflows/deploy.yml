@@ -367,8 +367,9 @@ jobs:
   # browser. The runner has no browser of its own; the dev container's
   # Chromium is not here. Cache the downloaded browser between runs, keyed on
   # the lockfile so a Playwright bump busts it. On a hit the ~20s Chromium
-  # download is skipped; `--with-deps` still runs (the apt step is quick) so
-  # the OS libraries are present on every fresh runner. Each leg builds and
+  # download is skipped; `--with-deps` still runs (usually seconds, but its
+  # download from Ubuntu's mirror is the browser jobs' slow tail - see build's
+  # time-limit note) so the OS libraries are present on every fresh runner. Each leg builds and
   # serves the port itself (playwright.config.ts webServer) and keeps the
   # 3-worker / one-retry CI settings from 15 Aug 26.
   geometry:
