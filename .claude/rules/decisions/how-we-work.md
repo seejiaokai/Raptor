@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1741 | 7 Nov 26 | The start-of-chat size job ([CONTEXT-START-SIZE]) is closed: its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting, with nothing for the agent to do, and the item leaves the backlog for its archive. |
 | D1740 | 7 Nov 26 | The skill-notes short form's wording is approved as drafted and read: every chat gets `.claude/skills/task-observer/SHORT-FORM.md` from the start hook in place of invoking the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses. |
 | D1739 | 7 Nov 26 | Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page — is read by Astra and by the fresh Opus reader, each blind to the other, for whether any meaning changed; his call for those steps, made now (D1734); if Astra cannot run, he is told first, and the step never goes on without that read. |
 | D1738 | 7 Nov 26 | Each converted page of the Inputs, scheduler and Leave War rulings is read by Astra as well as by the fresh Opus reader, each blind to the other — his call for those pages, made now (D1734); if Astra cannot run, he is told first, and the page never goes on without that read. — changed by D1739 |
