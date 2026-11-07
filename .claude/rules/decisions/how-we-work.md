@@ -16,9 +16,10 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1746 | 7 Nov 26 | Chats may run side by side as long as they never clash in anything; above all, two never merge at once: a chat about to merge takes the merge lock, checks its branch is level with main — if not, brings main in, waits for that run and starts again — then merges and releases the lock at once; every chat is told so. |
 | D1744 | 7 Nov 26 | Every chat has a number at the start of its title — 1 for the M365 package chat, 2 for the rules diet's step 4, then counting on — so he can tell the chats apart; each chat says its number when it reports to him, and the handoff file keeps the next free number. |
 | D1743 | 7 Nov 26 | Until Mon 9 Nov 26 19:00 he wants both his allowances used up — his Claude plan, now Ultra, and his Codex plan, now $100: the work is planned to spend them, chats side by side where the work allows, and Astra's reads are called on the work in that time without asking him each time. |
-| D1742 | 7 Nov 26 | A job's closing records are pushed before his look is asked for, written to be true once it is live; on his "merge live" the agent merges at once if the run on its last pushed commit is green, pushes nothing between his word and the merge, and confirms the live app. |
+| D1742 | 7 Nov 26 | A job's closing records are pushed before his look is asked for, written to be true once it is live; on his "merge live" the agent merges at once if the run on its last pushed commit is green, pushes nothing between his word and the merge, and confirms the live app. — changed by D1746 |
 | D1741 | 7 Nov 26 | The start-of-chat size job ([CONTEXT-START-SIZE]) is closed: its last point, E — his documents connector, about 0.3 points of a chat's room — stays his own setting, with nothing for the agent to do, and the item leaves the backlog for its archive. |
 | D1740 | 7 Nov 26 | The skill-notes short form's wording is approved as drafted and read: every chat gets `.claude/skills/task-observer/SHORT-FORM.md` from the start hook in place of invoking the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses. |
 | D1739 | 7 Nov 26 | Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page — is read by Astra and by the fresh Opus reader, each blind to the other, for whether any meaning changed; his call for those steps, made now (D1734); if Astra cannot run, he is told first, and the step never goes on without that read. |
@@ -200,7 +201,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 | D87 | 23 Sep 26 | A browser test that fails on a slow machine is fixed by making it wait on what it needs, not on a fixed time. |
 | D86 | 23 Sep 26 | [HUMAN-RETEST] runs two chats in parallel — the Tracker and the amendment system — on three conditions: separate ports (4173 / 4180), never two full gate runs at once (now one lock every chat takes, D228), separate ruling-number ranges. — changed by D228 |
 | D84 | 23 Sep 26 | A Leave War desktop E2E timeout on GitHub gets one re-run of the failed group, not an investigation. |
-| D78 | 23 Sep 26 | Parallel chats merge one at a time, and the later one adapts. |
+| D78 | 23 Sep 26 | Parallel chats merge one at a time, and the later one adapts. — changed by D1746 |
 | D73 | 23 Sep 26 | No guide yet for bringing a whole separate app in as a new tab — write it only if a third app is brought in; notes #120 and #122 stay open for that job. |
 | D72 | 23 Sep 26 | The bug-testing list is retired. |
 | D70 | 23 Sep 26 | Working-guide changes are read before owner approval, one round each, never by their writer: by Astra and Sol 6.1 (D590 — Fable's round went to Sol); the 13 Oct 26 and 27 Oct 26 skill-notes reviews' by one fresh, blind Opus reader (D810, D1414). — changed by D1414, D941, D811, D810, D590, D496 |

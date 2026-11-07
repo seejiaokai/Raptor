@@ -30,6 +30,15 @@ the later merge keeps both (D78).
 - **Chat numbers (D1744):** each chat's title starts with its number — 1, the M365 package; 2, the rules diet's step 4; the next chat takes 3, and whoever starts it writes the new number here.
 - **Rulings:** D1741, D1742, D1743, D1744. **Compacted 7 Nov 26, 22:30** — the state above checked after it; chat 1 (the M365 package) running.
 <!-- /now -->
+<!-- now:claude/merge-one-at-a-time -->
+### `claude/merge-one-at-a-time` — chats side by side, never clashing, never two merging at once (D1746); written 7 Nov 26, 23:30 — verify before use
+- **Live:** pull request 660 (D1742–D1744) merged 7 Nov 26 at about 22:45 — the block above is its record, removed at the next handoff; this block carries what is still open.
+- **This branch:** D1746 — before merging, a chat takes the merge lock (the checks lock's script on a folder of its own), checks its branch is level with `main` (if not: brings `main` in, waits for that run, starts again), merges, and releases the lock at once. `.claude/rules/shipping.md` changed in its two merge lines; an always-loaded rule file, so it waits for his "merge live".
+- **Told:** chat 1 and chat 2, by message, 7 Nov 26 about 23:20.
+- **Chats (D1744):** 1 — the M365 package, done; its pull request 661 (D1745) waits for his "merge live". 2 — the rules diet's step 4, running; it rewrites `shipping.md` and the How we work rulings, so it folds D1745 and D1746 in when it brings `main` in. The next chat takes 3.
+- **Asked, not answered:** whether Astra goes back to standing reviewer of every code read (D590) after Monday — recommended yes.
+- **Rulings:** D1746.
+<!-- /now -->
 
 ## Next, in order
 

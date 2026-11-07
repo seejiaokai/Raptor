@@ -17,7 +17,11 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   (27 Oct 26 — "All as recommended"): a pull request that changes only notes** (the rulings files (`.claude/rules/decisions/`, `.claude/decisions-full/`, `DECISIONS*.md`), `HANDOFF.md`, `OUTSTANDING*.md`, evidence sheets and their pictures (`raptor-port/docs/handpass/`, the picture folders) and the other reference documents under `raptor-port/docs/` — never the unscoped `.claude/rules/*.md` (this merge rule among them), `.claude/hooks/`, `.claude/settings*.json`, `.claude/skills/`, `.claude/agents/`, `.claude/launch.json`, `AGENTS.md`, `raptor-port/CLAUDE.md` or anything under `.github/`) **goes live by itself once its run is green** — the agent
   checks the file list, merges and says so in its report, and since a few checks read documents (the permissions table in `raptor-port/docs/data-model.md` §11, `engine-rules.md`, `remarks-vocabulary.md`, the behaviour registers) and the gates skip a notes-only pull request, the agent runs `npm run rulecheck` and the unit tests that read documents on his PC before such a merge until [REVIEW-LAYERS] builds the guard that does it, with the secrets scan. The 2 Sep 26 rule ended
   the old "auto-merge is the default" rule of 24 Aug 26. Parallel chats merge ONE AT A TIME, each on his word;
-  the later one merges `main` in first and renumbers its own clashing rulings (D78).
+  the later one merges `main` in first and renumbers its own clashing rulings (D78) — chats may run side by side as long as they never clash in anything, and above all two never merge at once (D1746, 7 Nov 26):
+  a chat about to merge takes the merge lock (`RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs
+  take "<branch> — merge <PR>"`, which waits while another chat holds it), checks its branch is level with `main` (`git fetch
+  origin main`, then `git merge-base --is-ancestor origin/main origin/<branch>`) — if not, releases the lock, brings `main` in,
+  waits for that run to pass and starts again — then merges and releases the lock at once (`… gatelock.mjs release`, the same folder).
 
 ## The loop, change by change (owner, 2 Sep 26 and 24 Aug 26)
 - **Not held to the end (D1087, 20 Oct 26 — "Yes agreed"):** two to four related jobs of one area share one branch, one
@@ -53,8 +57,8 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
 
 ## "Done" means LIVE — and live means ON VERCEL (owner, 10 and 12 Aug 26; D143, 24 Sep 26)
 - **On his "merge live" (D1742, 7 Nov 26, replacing D1088):** the job's closing records were pushed before his look was
-  asked for, written to be true once it is live; merge at once if the run on the last pushed commit is green, then
-  confirm the live app as below — nothing is pushed between his word and the merge. His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
+  asked for, written to be true once it is live; merge at once if the run on the last pushed commit is green and the branch
+  is level with `main`, under the merge lock (D1746), then confirm the live app as below — nothing is pushed between his word and the merge, except bringing `main` in when another chat merged first (D78, D1746). His "auto merge live" for a run covers all it produces, its records pull request too (D1093).
 - **Tell him when you are done, with `PushNotification`** — when the work is genuinely finished, and when you
   are BLOCKED waiting on his answer. One line, plainly. Not for progress, not for a quick reply he is clearly
   watching, never twice for the same work. **Since D1097 (21 Oct 26): every stop that waits on him** — the work done
