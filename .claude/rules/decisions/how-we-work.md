@@ -46,6 +46,10 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   and Leave War pages [D1732, D1735].
 - Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes
   included [D1737].
+- Step 4, run unattended in chat 2 overnight 7–8 Nov 26, has his "auto merge live": each part merges into main by itself
+  once both blind reads' findings are fixed and its run is green, through the merge lock; a part whose Astra read cannot
+  run is parked, not merged; the chat continues and compacts by itself; step 5a waits for his word again [D1748, D1737,
+  D1093].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the
   Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to
   the other, for whether any meaning changed; Sol 6.1 is not called; if Astra cannot run, he is told first, and the step
