@@ -513,6 +513,43 @@ reader had passed; every one of its eight held. The Opus read was wider: about 3
 and the documents left in the old shape, which Astra did not look for. Four overlapped (D785, D1537, D884, D1749). As in
 step 3, neither alone was enough.
 
+### Step 4, part 2 — the five always-loaded files as checklists (8 Nov 26, the same branch)
+
+Each of `shipping.md`, `doc-structure.md`, `record-decisions.md`, `plain-language.md` and `bug-check.md` is a checklist:
+every rule one statement with its numbers, the headings other files point at kept. **A departure from §3, with its
+reason:** §3 sends the stories to `guide-full.md`, but that file's `##` headings must mirror `raptor-port/CLAUDE.md`'s
+sections and each `###` must be named by one short form there, so the five files' own headings would fail its check;
+each file's whole old text went instead, byte for byte by `--move`, to `raptor-port/docs/archive/rule-files-2026-11-08.md`
+(D138), a pointer left. The checklist was written above the old text before the move, since the move's own check puts a
+file back if a live ruling stops being stated in a file that loads. Account: `../briefs/2026-11-08-rules-diet-step4b-account.md`
+(147 rows; the same ruling numbers in each file before and after).
+
+| Measure | Before part 2 | After |
+|---|---|---|
+| The five files (tokens) | 16,214 | about 15,200 |
+| Start of every chat (`--reads`) | 34,335 | 33,423 |
+
+The saving is small — §3 estimated about 6,600: the old text was mostly rules, its stories about a tenth. More would
+come only from stating once what both the page and a checklist state now (the unattended-run and public-repo lines,
+the readers): a choice put to him, not taken.
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step4b-read-astra.md`) | 1 low (part 1's D1572 line) | fixed |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step4b-read-opus.md`) | 3 medium, 6 low | all fixed; one put to him |
+
+- **Fixed:** shipping's "no full gate run on his PC" kept to while the repo is public (D1086); the notification line
+  marked as narrowed by D1097; bug-check's readers — one fresh Opus reader unless he calls Astra, "both" on his call,
+  D1743's window; record-decisions' "overwrites or narrows" (D201); four commands kept on one line; part 1's D1572 line
+  (30 kept with reasons, one left), D1743 and D761 cited.
+- **Put to him (parked):** who red-teams an important plan when he has not called Astra and Sol 6.1 — D790 kept a plan's
+  read as it was, D1734 names a stand-in only for code and scenarios; recommended: a fresh, blind Opus reader meanwhile,
+  as plans have been read since 13 Oct.
+
+**The two reads compared (D1732).** Astra checked 174 requirements and found the five files whole; the Opus reader
+checked about 194 and found the two shipping conditions that a split bullet had loosened, which Astra passed. The
+Opus read was the better of the two on this part; on part 1 Astra caught the two most serious.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

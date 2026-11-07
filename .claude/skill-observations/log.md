@@ -3886,9 +3886,36 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** In the brief-building step, add: every file the reviewer must open sits inside the repo or the session scratchpad; a file kept elsewhere (a notes folder, the home folder) is copied into the scratchpad first and the brief names the copy. A one-line read probe of each named path before the full run would catch it in seconds.
 **Principle:** Before a long run by another tool, check that its sandbox can read every file the brief names; a location your own tools can read is not proof that the other tool's sandbox can.
 
-### Observation 850: A key held down was never pressed by a keyboard walk — the reader found it
+### Observation 851: A replacement must be written before the old text is moved out
 
 **Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 2, the rules diet's step 4 part 2 (the five always-loaded rule files as checklists); numbered past 850, the highest on any branch
+**Skill:** New skill candidate: rewriting a loaded rules file (the move script `backlog-archive.mjs --move` and the briefs that use it)
+**Type:** internal
+**Phase/Area:** the build brief's order of steps
+
+**Issue:** The build brief said to move each file's old text whole to the archive first, then write the checklist in its place. The move script checks the whole record after every move and puts both files back when a live ruling is no longer stated in a file that loads, so moving first failed every time; the helper wrote each checklist above the old text first, then moved the old text, which passed.
+**Suggested improvement:** In any brief or guide step that replaces loaded text by moving the old text out, say "write the replacement above the old text, then move the old text whole".
+**Principle:** When a tool verifies the whole state after each step, order the steps so every intermediate state is valid: add the new thing before you remove the old one.
+
+### Observation 852: A blind reader's findings leaked into a file the other reader could open
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 2, the rules diet's step 4 part 1 (two blind reads running at once, D1739)
+**Skill:** claudex-loop (blind cross-reads) and the bug-check order §4 (fresh, blind readers)
+**Type:** open-source
+**Phase/Area:** keeping two parallel readers blind to each other
+
+**Issue:** The first reader's report was kept outside the working folder, but its findings were then summarised into the handoff note inside the working folder while the second reader was still running, and the second reader's brief told it to read the project's notes. It was caught and the note set aside until the second report came in; nothing showed the second reader had read it.
+**Suggested improvement:** While any blind reader is running, write nothing about another reader's findings anywhere in the folder it reads — the handoff note included; keep reports and notes on them in a scratch folder outside it until every reader has reported.
+**Principle:** Blindness covers every copy and summary of a report, not only the report file; anything the reader can open is visible.
+
+### Observation 856: A key held down was never pressed by a keyboard walk — the reader found it
+
+**Status:** OPEN
+**Renumbered:** written as 850 on the board-keys branch; renumbered 856 when main came in on 8 Nov 26 (851 and 852 were live, 853 to 855 held by other branches)
 **Date:** 8 Nov 26
 **Session context:** the board-keys job of the night of 7–8 Nov 26 (`claude/board-keys`); numbered past the 849 another open branch holds
 **Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`) — the walk of a keyboard change
