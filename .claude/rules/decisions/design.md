@@ -27,6 +27,8 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1771 | 8 Nov 26 | Under the keys, an item of the board's or the week's ⋯ menu and the board's + Block and Templates buttons wear the app's cyan keyboard ring in place of the browser's own; the ⋯ item keeps its raised row. |
+| D1772 | 8 Nov 26 | Tab and Shift+Tab out of a board menu stay exactly as built, each case listed in the full row — nothing to change. |
 | D1670 | 7 Nov 26 | The Leave War's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, as built; the approved drawing's phone tag, 53px to the right, is not kept. |
 | D1669 | 7 Nov 26 | The schedule's refusal of a change that carries its own reason takes the grey "Blocked" note too — "Blocked: <reason>. Nothing was saved…" — like every other refusal of one change (D1667, D1668). |
 | D1707 | 5 Nov 26 | The one gear (D1509) is drawn in its button's own colour, as every other drawn icon in the app is — white on the Inputs, SANS, Tracker, OIL tracker and board rows, grey on the Leave War as today — the SANS calendar's gear included; the OIL tracker's 📅 becomes Edit Schedule's line calendar (D1508). |

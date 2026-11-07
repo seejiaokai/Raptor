@@ -3969,3 +3969,17 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** Two keyboard walks (5 Nov and 7 Nov) pressed Enter, Space and the arrows once each and passed. The fresh code reader then asked what a HELD Enter does: a button pressed by Enter's key-down opens a menu and moves the keys onto its first pick, and the same key, still down, repeats on that pick and presses it — on the live app a held Enter on + Block added a duty block nobody chose. The walk could have found it in one step (Playwright's `keyboard.down` twice sends a repeat) but no list of orders named it.
 **Suggested improvement:** in the walk's orders for any change that moves the keys when a control is pressed (a menu that opens on its first item, a window that takes the keys), add "the key held down" beside "the key pressed once"; and in the design guide's §2 keyboard rule, that a repeated key never presses what the first press moved the keys onto.
 **Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.
+
+### Observation 860: A ruling that changes the rule for one of two named parties dropped a safeguard for the other
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** recording D1770 (one of two reviewers made standing again; the other left on call) across a rules page, two always-loaded rule files and a guide
+**Skill:** New skill candidate: recording a ruling (the steps at the head of DECISIONS.md)
+**Type:** open-source
+**Phase/Area:** step 2 — fixing what the older ruling left behind (D201)
+**Reference file:** raptor-port/docs/superpowers/briefs/2026-11-08-d1770-placed-read.md
+
+**Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
+**Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
+**Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
