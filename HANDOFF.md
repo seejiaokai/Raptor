@@ -20,15 +20,15 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/rules-diet-step-3-f1a069 -->
-### `claude/rules-diet-step-3-f1a069` — [RULES-DIET] step 3, reading by section: MERGED on his "merge live", 7 Nov 26 (pull request 658) — this block goes at the next handoff; written 7 Nov 26, 21:05 (compacted at about 19:34 and 20:27) — verify before use
-- **Where it started:** `main` at `32ac5bd59` (step 2 live, pull request 657). Commits: `ab8598e70` (drafts), `cf81dc275` (measure), `6f9e2dbbc` (the Opus meaning read folded in), `47cf3ef81` and `b1a5e682b` (the two script reads' fixes), `d743a96b7` (Astra's read folded in), then the reports, the review log and this block.
-- **What it does:** the bug-check order is read through its checklist, `raptor-port/docs/bug-check-checklist.md`, step by step, each section a step names read whole; the design guide by the section list in `.claude/rules/ui-design.md`; the ripple map by the note at its head; `docsize --reads` counts each by part (D1736). The pointers to them (`bug-check.md`, the order's §0a, the project guide's map rows, `guide-full.md`) say "by section".
-- **The four reads, all folded in:** the meaning of the three routes, by a fresh blind Opus reader (16 findings) and by Astra (8, his call — D1739); the reads measure, by two fresh Opus readers (D1736). Reports: `raptor-port/docs/superpowers/briefs/2026-11-07-rules-diet-step3-read-opus.md`, `…-read-astra.md`, `…-reads-script-read-opus.md`, `…-reads-script-reread-opus.md`; what each found, what was done, and the two meaning reads compared: the plan's §Step 3, "Step 3's reads". The full self-test passed 312 on `b1a5e682b`; `npm run docsize` passes.
-- **Measured** (the plan's §Step 3, against `main`): the three reads 119,787 → 98,547 tokens (−18%; the plan said ~29,000); each job about 7% less. Far less than planned because every section a step names stays a whole read (D1735's own condition) and his design lessons are half the guide.
-- **Next:** (1) done — his "merge live" came 7 Nov 26 at about 21:04, and this block went with the merge (D1088). (2) The plan's §7: the re-measure is in §Step 3; step 4, the every-chat layer, in a fresh chat, read by Astra and a fresh Opus reader, each blind (D1739).
-- **Rulings:** D1741, after step 3 went live (below). **The open question carried from step 2, answered 7 Nov 26 (D1741 — "2 as recommended"):** [CONTEXT-START-SIZE] closed, E staying his own setting; the item archived by script.
-- **Opening line (once merged):** "Start the rules diet's step 4, the every-chat layer: `git fetch origin`, then a new branch from `origin/main`. Read `HANDOFF.md`, `OUTSTANDING.md` [RULES-DIET] and the plan (`raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md` §3, §5, §7 and §Step 3), then do step 4."
+<!-- now:claude/merge-at-once -->
+### `claude/merge-at-once` — merging at once on his word (D1742), and both his allowances used up by Mon 9 Nov 26 19:00 (D1743); written 7 Nov 26, 21:55 — verify before use
+- **Live today:** the rules diet's steps 1–3 (pull requests 656, 657, 658); the start-of-chat size item closed (D1741, pull request 659).
+- **This branch:** D1742 recorded — a job's closing records go before his look is asked for, and his "merge live" merges at once (`.claude/rules/shipping.md` changed; D1088 archived) — and D1743. It changes an always-loaded rule file, so it waits for his "merge live".
+- **D1743:** until Mon 9 Nov 26 19:00 both allowances are spent (Claude Ultra, Codex $100) — chats side by side where the work allows; Astra's reads called on the work without asking him each time.
+- **Next, in his order:** (1) **the M365 data package** he was given, with its instructions for the tables — a fresh chat reads it first (he gives its folder or attaches it), copies nothing of it into the project while the project is public, and reports in plain words what it says about the tables, what it changes in `raptor-port/docs/data-model.md`, `raptor-port/docs/handover-dataverse.md` and the M365 move plan, what needs the IT side, and whether the app can be ready by February (his target; what "ready" means is his to say), with a week-by-week plan — his requirements already ruled: D473, D1099, D1100, D1101, D1536, D1695, D774. (2) **The rules diet's step 4** in another fresh chat; recommended after it: OIL alone, then the four small areas side by side, the pause, then 5b side by side — most likely stopping before 5b.
+- **Asked, not answered:** whether Astra goes back to standing reviewer of every code read (D590) after Monday — recommended yes.
+- **Chat numbers (D1744):** each chat's title starts with its number — 1, the M365 package; 2, the rules diet's step 4; the next chat takes 3, and whoever starts it writes the new number here.
+- **Rulings:** D1741, D1742, D1743, D1744.
 <!-- /now -->
 
 ## Next, in order
