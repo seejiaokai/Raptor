@@ -340,7 +340,7 @@ const RULING_BYTES = [
   /* inputs 42000 -> 46000 (26 Oct 26, pull request 560 on his D1402): 42,909 bytes on main with the Inputs pages' rulings
      of the Leave War's M3 (D1367-D1396 - Other's two sections, Attach, the calendar's colours, widths and expand), merged
      with code while the size check was deferred (D29); live, none trimmed (D136). Room, not a target. */
-  ['.claude/rules/decisions/inputs.md', 2, 50500],   // raised 5 Nov 26 from 46000: D1702 (round 4's Inputs top row) took it 230 over; never trimmed (D136), a tenth above
+  ['.claude/rules/decisions/inputs.md', 2, 55500],   // raised 7 Nov 26 from 50500 (rules diet step 2): the pointer list to the Leave War's rulings that govern the Inputs pages (plan §2) took it to 50,569; never trimmed (D136), a tenth above. Before: raised 5 Nov 26 from 46000 for D1702
   /* 12000 until 12 Oct 26: raised for D780–D782 (the OIL question a holiday or a swap leaves open) — three live
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
@@ -410,8 +410,8 @@ const RULING_BYTES = [
      the Leave War's and the Tracker's "## Architecture" sections into them whole — 13,077 and 10,988 bytes measured
      that day), each a tenth above its section and its paths: header. Registered with their probe files in
      docsize-rulings.mjs SEAMS; until step 2 writes them they are not there, and not reported missing. */
-  ['.claude/rules/seams/leave-war.md', 2, 15000],
-  ['.claude/rules/seams/tracker.md', 2, 12500],
+  ['.claude/rules/seams/leave-war.md', 2, 19500],   // raised 7 Nov 26 from 15000 (step 2): the project guide's Leave War map row and the qual catalogue bullet moved in whole beside the architecture — 17,582 bytes
+  ['.claude/rules/seams/tracker.md', 2, 14500],   // raised 7 Nov 26 from 12500 (step 2): the project guide's Tracker map row moved in whole beside the architecture — 13,015 bytes
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */

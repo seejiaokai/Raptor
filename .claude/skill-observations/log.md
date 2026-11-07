@@ -686,6 +686,7 @@ Met again 15 Oct 26 (`[LW-LANDING-LINE-FIGURES]`): a `python - <<'EOF'` edit scr
 **Met again 17 Oct 26 ([TRK-SCROLL-GLIDE], round 1):** a `cat >> file <<EOF` holding the question page (prose full of apostrophes) failed the same way; redone through the file tool. The guard stays unbuilt: an unconditional default (pages and scripts always go through the file tool) would have cost nothing here.
 
 Met again 23 Oct 26: the Leave War M2 afternoon round — a here-document writing the evidence sheet's new section (prose full of apostrophes) failed the same way; redone through the file tool. The guard proposed above (scripts always written to a file) still stands.
+Met again 7 Nov 26 (the rules diet's step 2, on `claude/rules-diet-step2`): a node edit script written by a `cat <<'EOF'` here-document whose body held apostrophes ("war's") — and, in the same command, a stray `cat > file` with no input, which waited on its input until the two-minute limit sent it to the background. Rewritten with the Write tool and run as a file, it worked at once. The memory note was loaded and still not applied: the guard proposed above (scripts always written to a file) remains the fix.
 
 **Met again 24 Oct 26:** building [LW-ROUND3-BUILD] (round 3 of the Leave War's bid windows) — twice more, a Python here-document of test edits holding apostrophes; redone through the file tool each time. Still the conditional habit; the unconditional default proposed above stands.
 
@@ -3811,3 +3812,18 @@ otherwise the compression silently drops exactly the narrowings and clauses that
 **Suggested improvement:** In receiving-code-review: when a finding says "X is decided from source A alone", search for EVERY place that decides X, not just the ones named, and write the case for each sibling state (created / changed / moved / retired) before fixing. For a long test suite used red-first, give it a name filter (an environment variable) so the new cases can be run alone.
 
 **Principle:** A finding names one instance of a decision made from too narrow a source; the fix is complete only when every reader of that decision and every sibling state of the data has a case — and a slow suite without a filter turns red-first into a scratch-copy chore.
+
+### Observation 842: A text a start hook injects must stay under the host's size cap and free of control characters, or the session silently gets less or nothing
+
+**Status:** OPEN
+**Date:** 2026-11-07
+**Session context:** Switching on a project's short form of this skill through its session-start hook (the hook now prints a ~7,400-character file instead of a ~870-character instruction).
+**Skill:** task-observer
+**Type:** open-source
+**Phase/Area:** `references/environments.md` §Recommended activation setup (the session-start hook)
+
+**Issue:** The recommended hook injects a short instruction, which is far from any limit. Once a project made the hook print a longer text read from a file, a fresh reader found two silent failures: Claude Code caps a hook's `additionalContext` at 10,000 characters (past it, the chat gets a 2,000-character preview and a file path it is not asked to read), and the hook's JSON escaping covered only backslash, quote, newline, carriage return and tab — one stray control character in the file makes the output invalid JSON, and the session then starts with no note at all. Neither showed in a normal run.
+
+**Suggested improvement:** In §Recommended activation setup, where the hook is described: if the hook prints text read from a file, strip control characters before escaping, and fall back to the short instruction when the text is empty or near the host's cap; test the hook on a missing, empty, oversized and control-character file, not only the normal one.
+
+**Principle:** A hook that feeds text to the agent fails silently at its edges — size caps and encoding — so it should fail open to a known-good minimal text, and its test cases must include those edges, not just the happy path.

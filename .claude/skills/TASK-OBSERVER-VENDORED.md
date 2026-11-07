@@ -38,7 +38,8 @@ session-start hook. Both were added:
 1. **SessionStart hook** — `.claude/hooks/task-observer-session-start.sh`, wired
    into `.claude/settings.json` under `hooks.SessionStart` (matcher
    `startup|clear|compact`, so it re-fires on compaction/resume). It injects a
-   short activation instruction, not the whole SKILL.md. This merged ALONGSIDE
+   short activation instruction, not the whole SKILL.md — since 7 Nov 26 the skill's
+   short form, `task-observer/SHORT-FORM.md` (§Local changes). This merged ALONGSIDE
    impeccable's existing `PostToolUse`/`Stop` hooks — that file now carries all
    three events; a future edit must preserve all of them.
 2. **CLAUDE.md instruction** — a "Task-observer activation" paragraph in
@@ -117,6 +118,15 @@ where that procedure's defaults do not fit a git repo with vendored skills:
   and Delivering the rehearsal that restores only the live paths. This review's notes also landed in two places settled
   before: the project's method documents (`raptor-port/docs/bug-check-order.md`, `walk-scripts.md`,
   `gates-and-deploy.md`, `design-practices.md`) and the vendoring notes' own caveats.
+
+- **7 Nov 26 — the rules diet's step 2 (his D969, point F; its wording approved, D1740; read blind by Astra and a
+  fresh Opus reader, D1739):** a new file, `task-observer/SHORT-FORM.md` — this guide's short form for this project —
+  and the start hook (`.claude/hooks/task-observer-session-start.sh`) now prints it in place of the instruction to
+  invoke the whole skill, falling back to that instruction if the file cannot be read; the full skill is invoked only
+  for a review, a skill's creation or edit, its setup, or a case the short form misses. One behaviour changes with it:
+  resolved notes are archived at each review's clean-up (§Reviews in this repo), not on every write as `SKILL.md`'s
+  "Archival on Write" says. An upstream refresh leaves `SHORT-FORM.md` in place but may change what it summarises:
+  read it again against the new `SKILL.md`.
 
 ## Known caveats (not bugs)
 

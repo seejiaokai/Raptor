@@ -9,14 +9,21 @@
 # and it re-fires on compact/resume so a compacted session re-activates.
 #
 # WIRED IN via .claude/settings.json → hooks.SessionStart (owner chose full
-# activation, 15 Aug 26). It injects a short instruction, NOT the whole
-# SKILL.md — the Skill tool loads the body on invoke. Provenance and the
-# opt-out: .claude/skills/TASK-OBSERVER-VENDORED.md.
+# activation, 15 Aug 26). Since 7 Nov 26 (his D969, point F; D1740 — the rules
+# diet's step 2) it injects the skill's SHORT FORM, `.claude/skills/task-observer/
+# SHORT-FORM.md`, in place of the instruction to invoke the whole SKILL.md (about
+# 10,200 tokens a chat); the full skill is invoked only for a review, a skill's
+# creation or edit, a question about its setup, or a case the short form does not
+# cover. If the short form
+# cannot be read, it prints the old instruction, unchanged (it fails open).
+# Provenance and the opt-out: .claude/skills/TASK-OBSERVER-VENDORED.md.
 
 set -euo pipefail
 
-# The activation instruction (adapted from the skill's recommended block).
-read -r -d '' CONTEXT <<'EOF' || true
+SHORT="${CLAUDE_PROJECT_DIR:-.}/.claude/skills/task-observer/SHORT-FORM.md"
+
+# The instruction used before the short form, kept as the fallback.
+read -r -d '' FALLBACK <<'EOF' || true
 <task-observer-activation>
 At the start of this task-oriented session — any interaction where you will use
 tools and produce deliverables — invoke the `task-observer` skill (Skill tool,
@@ -33,6 +40,15 @@ ever sees it. How reviews run here, and provenance/opt-out:
 .claude/skills/TASK-OBSERVER-VENDORED.md.
 </task-observer-activation>
 EOF
+
+CONTEXT=""
+if [ -r "$SHORT" ]; then CONTEXT="$(cat "$SHORT" 2>/dev/null || true)"; fi
+# A control character other than tab, newline or carriage return would break the JSON below, and the session would
+# get no note at all, so any is stripped; and the app cuts a note past 10,000 characters to a 2,000-character preview
+# it does not ask the chat to read (its hooks guide), so a short form that long, or an empty one, prints the old
+# instruction instead (a fresh reader's F3 and F4, 7 Nov 26).
+CONTEXT="$(printf '%s' "$CONTEXT" | tr -d '\000-\010\013\014\016-\037\177' || true)"
+if [ -z "${CONTEXT//[[:space:]]/}" ] || [ "${#CONTEXT}" -gt 9500 ]; then CONTEXT="$FALLBACK"; fi
 
 # Escape for JSON embedding (one C-level pass each).
 escape_for_json() {
