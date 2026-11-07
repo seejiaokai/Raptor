@@ -13,12 +13,12 @@ import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { App } from './App'
 import { DAYS } from '../engine/data'
-import { SCHED, signOf, setDayApproved, dayCurVer } from '../engine/publish'
+import { SCHED, signOf, setDayApproved } from '../engine/publish'
 import { storeBackend } from '../engine/hooks'
 import { setMissionTracking } from '../engine/insights-config'
 import { initStore, writeText, notify } from '../state/store'
 import { setSession } from '../state/auth'
-import { setPage, DPREV, setDayPreview } from '../state/view'
+import { setPage, DPREV } from '../state/view'
 import { dayDrafts, draftDup } from '../engine/drafts'
 import { hydrateRoles } from '../state/mission-roles'
 import { schedBaselineClean, commitPublishALDay } from '../state/sched-commit'
@@ -47,6 +47,14 @@ beforeEach(async()=>{
   await act(async()=>root.render(<App/>));await settle()
 })
 afterEach(async()=>{await act(async()=>root.unmount());host.remove();resetMissionRoleOffer();DPREV.clear();storeBackend.impl=null;hydrateRoles([]);DAYS.splice(0,DAYS.length,...JSON.parse(baseline))})
+
+/* the plans selector pressed, then its first issued row: the version the row looks at */
+async function lookIssued(menu:string){
+  await click(q(menu)!);await settle()
+  const row=q('.wavemenu [data-planpv]')!,v=row.dataset.planpv!
+  await click(row);await settle()
+  return v
+}
 
 /* Monday published at AL1 with a Remarks cue (so its Remarks box offers Choose), nothing waiting to go out */
 async function publishedWithCue(){
@@ -104,29 +112,36 @@ it('(a) the Scheduler Board: the same press marks the day "Not yet signed" in it
 it('(b) Edit Schedule looking at an issued version: no Templates on the week, the board’s Templates greyed',async()=>{
   await publishedWithCue()
   expect(q('#eWeek [data-daytplopen="0"]'),'the working copy of a published day offers Templates (refused inside, D96)').toBeTruthy()
-  const issued=String(dayCurVer(0))
-  await act(async()=>{setDayPreview(0,issued);notify()});await settle()
+  /* the week: the day's own plans selector, then an issued row (ORIG or AL1) — the route a person takes */
+  let issued=await lookIssued('#eWeek .day[data-day="0"] [data-planmenu="0"]')
+  expect(issued,'a published version of the day').toMatch(/#[0-9]+$/)
   expect(DPREV.get(0)).toBe(issued)
   expect(q('#eWeek .day[data-day="0"] .dprev-bar'),'the day shows the version it is looking at').toBeTruthy()
   expect(q('#eWeek [data-daytplopen="0"]'),'no Templates while the issued version is looked at').toBeNull()
-  /* the board: opened on the working copy, then looking at the issued version from its own plans selector — its
-     top-bar Templates is drawn greyed and the day's own is not drawn */
-  await act(async()=>{setDayPreview(0,null);notify()});await settle()
+  /* back to the live copy from the same menu, then the board: opened on the working copy, its Templates live; its own
+     plans selector and issued row start the look there — its top-bar Templates greyed, the day's own not drawn */
+  await click(q('#eWeek .day[data-day="0"] [data-planmenu="0"]')!);await settle()
+  await click(q('.wavemenu [data-plangolive]')!);await settle()
+  expect(DPREV.has(0)).toBe(false)
   await click(q('#eWeek .sb-open[data-sbday="0"]')!);await settle()
   expect((q('#sbTpl') as HTMLButtonElement|null)?.disabled,'the board’s Templates is live on the working copy').toBe(false)
-  await act(async()=>{setDayPreview(0,issued);notify()});await settle()
+  issued=await lookIssued('#sbSign [data-planmenu="0"]')
   expect(DPREV.get(0)).toBe(issued)
   expect((q('#sbTpl') as HTMLButtonElement|null)?.disabled,'the board’s Templates is greyed under the look').toBe(true)
   expect(q('#sbBoard [data-daytpladd="0"]')).toBeNull()
 })
 
 it('(b) View-only Sched looking at a saved plan: no Templates anywhere, and the look is dropped on the way to Edit Schedule',async()=>{
-  await act(async()=>{draftDup(0);setPage('viewsched');notify()});await settle()
+  /* the plan is made by code (its making is not what is tried); the page changes and the look go through the controls */
+  await act(async()=>{draftDup(0);notify()});await settle()
+  await click(q('.topbar a[data-page="viewsched"]')!);await settle()
   const plan=dayDrafts(0)[0]!.id
-  await act(async()=>{setDayPreview(0,'d:'+plan);notify()});await settle()
+  const sel=q('#vWeek select[data-dver="0"]') as unknown as HTMLSelectElement
+  await act(async()=>{sel.value='d:'+plan;sel.dispatchEvent(new Event('change',{bubbles:true}))});await settle()
   expect(DPREV.get(0)).toBe('d:'+plan)
+  expect(q('#vWeek .day[data-day="0"] .dprev-bar'),'the day shows the plan it is looking at').toBeTruthy()
   expect(document.querySelector('#vWeek [data-daytplopen], #vWeek [data-daytpladd], #sbTpl'),'View-only Sched draws no Templates').toBeNull()
-  await act(async()=>{setPage('editsched');notify()});await settle()
+  await click(q('.topbar a[data-page="editsched"]')!);await settle()
   expect(DPREV.has(0),'Edit Schedule never keeps a saved plan’s look').toBe(false)
   expect(q('#eWeek [data-daytplopen="0"]'),'the draft day’s Templates is back, on its live working copy').toBeTruthy()
 })

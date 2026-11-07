@@ -186,7 +186,7 @@ export function reconcileMissionRoleOffer():void {
 /* every open question is checked by ITSELF (D598): one that has ended never takes another with it */
 function reconcileAsking():void {
   for(const open of [...asking]) {
-    // eslint-disable-next-line react-doctor/js-set-map-lookups -- the open questions are one or two (one a formation, each asked by his own edit, D598); this asks whether the one in hand is still open after the last one's step changed the list, and a Set kept beside the list would be a second record to keep in step
+    // eslint-disable-next-line react-doctor/js-set-map-lookups -- the open questions are few: at most one a formation, each raised by his own typed edit (D598 sets no cap, only that each needs its edit); this asks whether the one in hand is still in the list after an earlier step changed it, and a Set kept beside the list would be a second record to keep in step
     if(!asking.includes(open))continue
     if(!targetIsCurrent(open.target)) {
       /* D535 (3 Oct 26): an open QUESTION stays through an unrelated edit on the same day. It continues on a freshly

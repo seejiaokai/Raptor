@@ -109,10 +109,13 @@ try {
       assert.match(block.line, /Mission role.*Unresolved.*→.*Red/i, 'the line reads Unresolved → Red: ' + JSON.stringify(block))
       report.words[view + '-history'] = { lines, block }
       await press(page, page.locator('#histBtn:visible')); await settle(page, 400)
-      await press(page, page.locator('#undoBtn:visible')); await settle(page, 300)
+      await press(page, page.locator('#undoBtn:visible'))
+      /* the note read only once it is painted in view (shown, not faded, inside the screen): its text stays in the page
+         after it fades, so a read of the text alone could pass on a note nobody saw (Astra's read, low 2) */
+      await page.waitForFunction(() => { const t = document.getElementById('toastEl'); if (!t) return false; const r = t.getBoundingClientRect(), st = getComputedStyle(t); return /the mission role/.test(t.textContent || '') && Number(st.opacity) > 0.9 && st.visibility !== 'hidden' && st.display !== 'none' && r.width > 0 && r.bottom > 0 && r.top < innerHeight }, null, { timeout: 4000 })
       const toast = ((await page.locator('#toastEl').textContent()) || '').replace(/\s+/g, ' ').trim()
       await shot(page, view + '-2-undo-words')
-      assert.ok(toast.includes('the mission role'), 'Undo names the mission role: ' + toast)
+      assert.equal(toast, `Undid: the mission role for ${cs} — Red`, 'Undo names the line and the side')
       report.words[view + '-undo'] = toast
       await press(page, page.locator('#redoBtn:visible')); await settle(page, 400)
       return { lines, block, toast, callsign: cs }
@@ -133,7 +136,30 @@ try {
       await press(page, page.locator('.wavemenu [data-plangolive]').first()); await settle(page, 500)
       return { previewBar: bar, templatesUnderLook: tpl, templatesBefore: tplBefore }
     })
+    /* the board's own plans selector starts the look there too (the fresh Opus read, low 2) */
+    await check(page, view + '-b-board-issued-look-templates-greyed', async () => {
+      await press(page, page.locator('#eWeek .sb-open[data-sbday="0"]:visible').first())
+      await page.waitForSelector('#schedBoard'); await settle(page, 500)
+      const tplBtn = page.locator('#sbTpl')
+      const liveBefore = await tplBtn.isEnabled()
+      assert.equal(liveBefore, true, 'the board offers Templates on the working copy')
+      await press(page, page.locator('#sbSign [data-planmenu="0"]:visible').first())
+      await press(page, page.locator('.wavemenu [data-planpv]').first()); await settle(page, 500)
+      const bar = await page.locator('#schedBoard .dprev-bar:visible').count()
+      const greyed = await tplBtn.isDisabled()
+      const dayTpl = await page.locator('#sbBoard [data-daytpladd="0"]').count()
+      await shot(page, view + '-b-board-issued-look')
+      assert.ok(bar >= 1, 'the board shows the issued version')
+      assert.equal(greyed, true, "the board's Templates greyed under the look")
+      assert.equal(dayTpl, 0, "the day's own Templates not drawn under the look")
+      await press(page, page.locator('#sbSign [data-planmenu="0"]:visible').first())
+      await press(page, page.locator('.wavemenu [data-plangolive]').first()); await settle(page, 500)
+      await closeBoard(page)
+      return { templatesBefore: liveBefore, previewBar: bar, templatesGreyed: greyed, dayTemplates: dayTpl }
+    })
     await ctx.close(); blocked = ''
   }
 } finally { await browser.close(); save() }
 console.log('folder', OUT, 'errors', report.errors.length)
+/* a walk with any step not PASS, or any page error, ends with a failing exit status (Astra's read, low 1) */
+if (report.errors.length || report.results.some(r => r.status !== 'PASS')) process.exitCode = 1
