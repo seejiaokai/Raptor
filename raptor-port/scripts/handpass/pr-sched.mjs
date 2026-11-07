@@ -44,14 +44,15 @@ const STYLE = `*{scroll-behavior:auto!important}
 .zz-tagged[data-zz-pos=left]::before{bottom:auto;left:auto;right:calc(100% + 12px);top:50%;transform:translateY(-50%)}
 .zz-tagged[data-zz-pos=inTop]::before{bottom:auto;top:6px;left:auto;right:8px}
 .zz-tagged[data-zz-wrap]::before{white-space:normal!important}
+.zz-new{text-decoration:underline 2px #ffb020!important;text-underline-offset:3px!important}
 .zz-tagged[data-zz-pos=headR]::before{bottom:auto;left:auto;right:0;top:50%;transform:translateY(-50%)}
 .zz-tagged[data-zz-pos=belowAt]::before{bottom:auto;top:calc(100% + 6px);left:var(--zz-x,0)}
-.zz-tagged[data-zz-pos=aboveAt]::before{left:var(--zz-x,0);bottom:calc(100% + var(--zz-y,9px))}
+.zz-tagged[data-zz-pos=aboveAt]::before{left:var(--zz-x,0)!important;bottom:calc(100% + var(--zz-y,9px))!important;top:auto!important;right:auto!important}
 .zz-tagged[data-zz-pos=rightAt]::before{bottom:auto;left:calc(100% + var(--zz-x,12px));top:50%;transform:translateY(-50%)}`
 const HIDE_TOASTS = '.toast,.snack{display:none!important}'
 
-async function world(vp, touch, { state = null, toasts = false, init = null } = {}) {
-  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: 2, ...(touch ? { isMobile: true, hasTouch: true } : {}), ...(state ? { storageState: state } : {}) })
+async function world(vp, touch, { state = null, toasts = false, init = null, dsf = 2 } = {}) {
+  const ctx = await browser.newContext({ viewport: vp, deviceScaleFactor: dsf, ...(touch ? { isMobile: true, hasTouch: true } : {}), ...(state ? { storageState: state } : {}) })
   await ctx.clock.install({ time: new Date('2026-07-13T09:00:00') })
   if (init) await ctx.addInitScript(init.fn, init.arg)
   const page = await ctx.newPage()
@@ -190,6 +191,67 @@ const insHours = (p, names) => p.evaluate(names => {
 }, names)
 const closeInsights = async p => { await p.keyboard.press('Escape'); await sleep(400) }
 
+/* the name's own letters in a span of their own, so a ring fits round "LL" and not round the whole wide button */
+const wrapLbl = (page, from, id) => page.evaluate(([from, id]) => {
+  const u = document.querySelector(`[data-zz="${from}"]`); if (!u || u.querySelector(`[data-zz="${id}"]`)) return false
+  const w = document.createTreeWalker(u, NodeFilter.SHOW_TEXT); let t = null
+  while (w.nextNode()) if (w.currentNode.nodeValue.trim()) { t = w.currentNode; break }
+  if (!t) return false
+  const sp = document.createElement('span'); sp.setAttribute('data-zz', id); t.parentNode.insertBefore(sp, t); sp.appendChild(t); return true
+}, [from, id])
+/* the tag in the free room right of its section's title, so it covers no row and no column heading; the title is named
+   `tid` so the crop can reach up to it */
+const tagByTitle = (page, elSel, scopeSel, title, tid) => page.evaluate(([elSel, scopeSel, title, tid]) => {
+  const el = document.querySelector(elSel), sc = document.querySelector(scopeSel); if (!el || !sc) return null
+  /* the title's own words (a text node: the heading also holds its grip), measured by a range */
+  const w = document.createTreeWalker(sc, NodeFilter.SHOW_TEXT); let tn = null
+  while (w.nextNode()) { const v = w.currentNode.nodeValue.trim().toLowerCase(); if (v === title || v.startsWith(title)) { const rg = document.createRange(); rg.selectNodeContents(w.currentNode); const rr = rg.getBoundingClientRect(); if (rr.height > 0) { tn = w.currentNode; break } } }
+  if (!tn) return null
+  tn.parentElement.setAttribute('data-zz', tid)
+  const rg = document.createRange(); rg.selectNodeContents(tn)
+  const er = el.getBoundingClientRect(), tr = rg.getBoundingClientRect()
+  el.style.setProperty('--zz-x', Math.round(tr.right - er.left + 22) + 'px')
+  el.style.setProperty('--zz-y', Math.round(er.top - (tr.top + tr.bottom) / 2 - 12) + 'px')
+  return [Math.round(tr.left), Math.round(tr.top), Math.round(tr.right), Math.round(tr.bottom)]
+}, [elSel, scopeSel, title, tid])
+/* drawn A on the week: the ground row's own dotted underline, read off its computed style, put on the LL name */
+const drawUnavA = page => page.evaluate(() => {
+  const g = document.querySelector('[data-zz="gname"]'), u = document.querySelector('[data-zz="uname"]'); const cs = getComputedStyle(g)
+  u.setAttribute('data-aln', g.dataset.aln || '1')
+  u.style.textDecorationLine = 'underline'; u.style.textDecorationStyle = 'dotted'; u.style.textDecorationColor = cs.textDecorationColor
+  u.style.textDecorationThickness = cs.textDecorationThickness; u.style.textUnderlineOffset = cs.textUnderlineOffset
+})
+/* two pictures side by side on a plain page at one device pixel per picture pixel, so nothing is scaled */
+async function sideBySide(nm, items, label) {
+  const ctx = await browser.newContext({ viewport: { width: 1800, height: 900 }, deviceScaleFactor: 1 })
+  const p = await ctx.newPage()
+  const fig = it => `<figure style="margin:0;display:flex;flex-direction:column;gap:10px"><figcaption>${it.cap}</figcaption><img src="data:image/png;base64,${it.png.toString('base64')}" style="display:block;border:2px solid #2a3240;border-radius:8px"></figure>`
+  await p.setContent(`<!doctype html><html><body style="margin:0;background:#0b0e13"><div id="zzwrap" style="display:inline-flex;flex-direction:column;gap:16px;padding:20px 24px;background:#0b0e13;font:700 26px/1.25 system-ui,'Segoe UI',Arial,sans-serif;color:#ffb020">
+    <div style="align-self:flex-start;border:2px solid #ffb020;border-radius:9px;padding:4px 14px;background:#14181f">${label}</div>
+    <div style="display:flex;gap:34px;align-items:flex-end">${items.map(fig).join('')}</div></div></body></html>`)
+  await p.locator('#zzwrap').screenshot({ path: `${OUT}/${nm}.png` }); made.push(nm); console.log('  ->', nm)
+  await ctx.close()
+}
+/* the LL cell enlarged: the same world drawn at six device pixels a point, today and with A's mark */
+async function unavZoom(state, vp, touch, nm) {
+  const Zm = await world(vp, touch, { state, dsf: 6 })
+  const zp = Zm.page
+  await goEdit(zp)
+  const D2 = '#eWeek section.day[data-day="2"]'
+  await name(zp, 'grow', '.pl-row.gr-frominput', 'Safety brief', D2)
+  await name(zp, 'gname', '[data-zz="grow"] .ntx[data-aln]')
+  await name(zp, 'urow', '.sec-unav .pl-row', 'Bolt', D2)
+  await name(zp, 'uname', '[data-zz="urow"] .nm .ntx')
+  await wrapLbl(zp, 'uname', 'ulbl')
+  await center(zp, Z('urow')); await sleep(900); await center(zp, Z('urow')); await sleep(500)
+  const shot = async () => { const b = await boxOf(zp, [Z('ulbl')]); const px = 14, py = 9; return zp.screenshot({ clip: { x: Math.max(0, b.x - px), y: Math.max(0, b.y - py), width: b.r - b.x + px * 2, height: b.b - b.y + py * 2 } }) }
+  const before = await shot()
+  await drawUnavA(zp); await sleep(200)
+  const after = await shot()
+  await Zm.ctx.close()
+  await sideBySide(nm, [{ cap: 'Today', png: before }, { cap: 'Drawn: A', png: after }], 'Enlarged: the dotted line under LL')
+}
+
 /* ==== q1 [SCHED-UNAV-PENDING-MARK] ==== */
 if (want('q1')) await tryQ('q1', async () => {
   const A = await world(PC, false)
@@ -206,6 +268,7 @@ if (want('q1')) await tryQ('q1', async () => {
   await name(page, 'urow', '.sec-unav .pl-row', 'Bolt', D2)
   await name(page, 'uname', '[data-zz="urow"] .nm .ntx')
   await name(page, 'pend', '.dpend', '', D2)
+  await wrapLbl(page, 'gname', 'glbl'); await wrapLbl(page, 'uname', 'ulbl')
   const m = await page.evaluate(([D2]) => {
     const s = document.querySelector(D2); const g = document.querySelector('[data-zz="gname"]'), u = document.querySelector('[data-zz="uname"]')
     const td = e => e ? getComputedStyle(e).textDecorationLine + ' ' + getComputedStyle(e).textDecorationStyle + ' ' + getComputedStyle(e).textDecorationColor : null
@@ -221,20 +284,17 @@ if (want('q1')) await tryQ('q1', async () => {
   { const b = await boxOf(page, [D2]); const pb = await boxOf(page, [Z('pend')]); await strip(page, 'q-unavmark-pc-head', b.y - 6, pb.b - b.y + 52, PC, b.x - 10, b.r - b.x + 20) }
   // the Ground Programme row: its name underlined, dotted, in AL1's cyan
   await center(page, Z('grow')); await sleep(400)
-  await ring(page, [{ sel: Z('gname'), tag: 'Waiting to go out: name underlined', pos: 'above' }])
-  await around(page, 'q-unavmark-pc-ground', [Z('grow')], PC, { top: 46, pad: 14 })
+  console.log('q1 ground title', JSON.stringify(await tagByTitle(page, Z('gname'), D2, 'ground programme', 'gtitle')))
+  await ring(page, [{ sel: Z('glbl') }, { sel: Z('gname'), noring: true, tag: 'Waiting to go out: name underlined', pos: 'aboveAt' }])
+  await around(page, 'q-unavmark-pc-ground', [Z('gtitle'), Z('grow')], PC, { top: 12, bottom: 14, pad: 14 })
   // the Unavailable row: nothing on it
   await center(page, Z('urow')); await sleep(400)
-  await ring(page, [{ sel: Z('uname'), tag: "No 'waiting' mark here", pos: 'above' }])
+  console.log('q1 unav title', JSON.stringify(await tagByTitle(page, Z('uname'), Z('unav'), 'unavailable', 'utitle')))
+  await ring(page, [{ sel: Z('ulbl') }, { sel: Z('uname'), noring: true, tag: "No 'waiting' mark here", pos: 'aboveAt' }])
   await around(page, 'q-unavmark-pc-unav', [Z('unav')], PC, { top: 18, pad: 14 })
   // drawn A: the same underline the ground row's name wears (copied from its computed style)
-  await page.evaluate(() => {
-    const g = document.querySelector('[data-zz="gname"]'), u = document.querySelector('[data-zz="uname"]'); const cs = getComputedStyle(g)
-    u.setAttribute('data-aln', g.dataset.aln || '1')
-    u.style.textDecorationLine = 'underline'; u.style.textDecorationStyle = 'dotted'; u.style.textDecorationColor = cs.textDecorationColor
-    u.style.textDecorationThickness = cs.textDecorationThickness; u.style.textUnderlineOffset = cs.textUnderlineOffset
-  })
-  await ring(page, [{ sel: Z('uname'), tag: 'Drawn: A, underlined as waiting', pos: 'above' }])
+  await drawUnavA(page)
+  await ring(page, [{ sel: Z('ulbl') }, { sel: Z('uname'), noring: true, tag: 'Drawn: A, underlined as waiting', pos: 'aboveAt' }])
   await around(page, 'q-unavmark-pc-unav-A', [Z('unav')], PC, { top: 18, pad: 14 })
   // the Scheduler Board: the same two rows
   await tryQ('q1 board', async () => {
@@ -253,19 +313,21 @@ if (want('q1')) await tryQ('q1', async () => {
         unav: u && { cls: u.className, aln: [...u.querySelectorAll('[data-aln]')].length, name: un && un.tagName + ' ' + un.textContent.trim(), nameOutline: ol(un), text: u.innerText.replace(/\s+/g, ' ').slice(0, 80) } }
     })
     console.log('q1 board', JSON.stringify(bm)); measured.q1.board = bm
-    const cropRow = async (nm, sel) => { const b = await boxOf(page, [sel]); await strip(page, nm, b.y - 46, b.b - b.y + 60, PC, b.x - 14, 940) }
+    const cropRow = async (nm, sel) => { const r = await boxOf(page, [sel]); const b = await boxOf(page, [Z('bgtitle'), sel]); await strip(page, nm, b.y - 12, b.b - b.y + 26, PC, r.x - 14, 940) }
     await center(page, Z('bgrow')); await sleep(400)
-    await ring(page, [{ sel: Z('bgrow') }, { sel: Z('bgppl'), noring: true, tag: 'Waiting to go out: its name box dotted', pos: 'above' }])
-    await cropRow('q-unavmark-pc-board-ground', Z('bgrow'))
+    console.log('q1 board ground title', JSON.stringify(await tagByTitle(page, Z('bgrow'), '#schedBoard', 'ground programme', 'bgtitle')))
+    await ring(page, [{ sel: Z('bgrow'), tag: 'Waiting to go out: its name box dotted', pos: 'aboveAt' }])
+    await around(page, 'q-unavmark-pc-board-ground', [Z('bgtitle'), Z('bgrow')], PC, { top: 12, bottom: 14, pad: 14 })
     await center(page, Z('burow')); await sleep(400)
-    await ring(page, [{ sel: Z('burow') }, { sel: Z('buppl'), noring: true, tag: "No 'waiting' mark here", pos: 'above' }])
+    console.log('q1 board unav title', JSON.stringify(await tagByTitle(page, Z('burow'), Z('bunav'), 'unavailable', 'butitle')))
+    await ring(page, [{ sel: Z('burow'), tag: "No 'waiting' mark here", pos: 'aboveAt' }])
     await around(page, 'q-unavmark-pc-board-unav', [Z('bunav')], PC, { top: 18, pad: 14 })
     // drawn A on the board: the name box's own dotted outline, as the Ground Programme row's name box wears it
     await page.evaluate(() => {
       const g = document.querySelector('[data-zz="bgname"]'), u = document.querySelector('[data-zz="buname"]'); const cs = getComputedStyle(g)
       u.style.outline =`${cs.outlineWidth} dotted ${cs.outlineColor}`; u.style.outlineOffset = cs.outlineOffset
     })
-    await ring(page, [{ sel: Z('burow') }, { sel: Z('buppl'), noring: true, tag: 'Drawn: A, its name box dotted as waiting', pos: 'above' }])
+    await ring(page, [{ sel: Z('burow'), tag: 'Drawn: A, its name box dotted as waiting', pos: 'aboveAt' }])
     await around(page, 'q-unavmark-pc-board-unav-A', [Z('bunav')], PC, { top: 18, pad: 14 })
     await unring(page); await closeBoard(page)
   })
@@ -279,29 +341,30 @@ if (want('q1')) await tryQ('q1', async () => {
   await name(pp, 'unav', '.sec-unav', '', D2)
   await name(pp, 'urow', '.sec-unav .pl-row', 'Bolt', D2)
   await name(pp, 'uname', '[data-zz="urow"] .nm .ntx')
+  await wrapLbl(pp, 'gname', 'glbl'); await wrapLbl(pp, 'uname', 'ulbl')
   await center(pp, Z('grow')); await sleep(900); await center(pp, Z('grow')); await sleep(600)
   measured.q1.phone = await pp.evaluate(() => ({ grow: !!document.querySelector('[data-zz="grow"]'), gAln: (document.querySelector('[data-zz="gname"]') || {}).dataset?.aln, uAln: (document.querySelector('[data-zz="uname"]') || {}).dataset?.aln || null }))
   console.log('q1 phone', JSON.stringify(measured.q1.phone))
-  await ring(pp, [{ sel: Z('gname'), tag: 'Waiting: name underlined', pos: 'above' }])
-  await around(pp, 'q-unavmark-ph-ground', [Z('grow')], PHONE, { top: 46, wide: true })
+  console.log('q1 phone ground title', JSON.stringify(await tagByTitle(pp, Z('gname'), D2, 'ground programme', 'gtitle')))
+  await ring(pp, [{ sel: Z('glbl') }, { sel: Z('gname'), noring: true, tag: 'Waiting: name underlined', pos: 'aboveAt' }])
+  await around(pp, 'q-unavmark-ph-ground', [Z('gtitle'), Z('grow')], PHONE, { top: 12, bottom: 14, wide: true })
   await center(pp, Z('urow')); await sleep(700)
-  await ring(pp, [{ sel: Z('uname'), tag: "No 'waiting' mark here", pos: 'above' }])
+  console.log('q1 phone unav title', JSON.stringify(await tagByTitle(pp, Z('uname'), Z('unav'), 'unavailable', 'utitle')))
+  await ring(pp, [{ sel: Z('ulbl') }, { sel: Z('uname'), noring: true, tag: "No 'waiting' mark here", pos: 'aboveAt' }])
   await around(pp, 'q-unavmark-ph-unav', [Z('unav')], PHONE, { top: 18, wide: true })
-  await pp.evaluate(() => {
-    const g = document.querySelector('[data-zz="gname"]'), u = document.querySelector('[data-zz="uname"]'); const cs = getComputedStyle(g)
-    u.setAttribute('data-aln', g.dataset.aln || '1')
-    u.style.textDecorationLine = 'underline'; u.style.textDecorationStyle = 'dotted'; u.style.textDecorationColor = cs.textDecorationColor
-    u.style.textDecorationThickness = cs.textDecorationThickness; u.style.textUnderlineOffset = cs.textUnderlineOffset
-  })
-  await ring(pp, [{ sel: Z('uname'), tag: 'Drawn: A, underlined as waiting', pos: 'above' }])
+  await drawUnavA(pp)
+  await ring(pp, [{ sel: Z('ulbl') }, { sel: Z('uname'), noring: true, tag: 'Drawn: A, underlined as waiting', pos: 'aboveAt' }])
   await around(pp, 'q-unavmark-ph-unav-A', [Z('unav')], PHONE, { top: 18, wide: true })
   await P.ctx.close()
+  // the LL cell enlarged, today beside A, at each size
+  await unavZoom(state, PC, false, 'q-unavmark-pc-unav-zoom')
+  await unavZoom(state, PHONE, true, 'q-unavmark-ph-unav-zoom')
 })
 
 /* ==== q2 [READONLY-WEEK-WORDS] ==== */
-const NOTE_A = "This week's saved copy could not be read, so it can't be shown here. It is kept as it was saved. Report it on the Help page."
-const NOTE_B = "This week's saved copy could not be read, so it can't be shown here. It is kept as it was saved."
-const REFUSE_A = 'Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved.'
+const NOTE_A = 'This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was. Report it with “Report a problem” on the Help page.'
+const NOTE_B = 'This week’s saved copy could not be read, so it can’t be shown. The saved copy is kept as it was.'
+const REFUSE_A = 'Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.'
 /* drawn: the refusal in the app's own grey "Blocked" note (D1667–D1669), built as ui/toast.ts blockedFace builds it */
 const blockedNote = (page, msg) => page.evaluate(msg => {
   const t = document.querySelector('#toastEl'); if (!t) return false
@@ -361,7 +424,7 @@ if (want('q2')) await tryQ('q2', async () => {
   }
   await shot('q-readonly-pc-refusal', 'Same wrong reason when you file an input', null)
   await sleep(4500)
-  await shot('q-readonly-pc-refusal-A', 'Drawn: A and B', REFUSE_A)
+  await shot('q-readonly-pc-refusal-A', 'Drawn: A', REFUSE_A)
   measured.q2.windowStillOpen = await page.locator(T('win-inputedit')).count()
   await D.ctx.close()
   // the phone: the same damaged week
@@ -371,7 +434,8 @@ if (want('q2')) await tryQ('q2', async () => {
   await P.page.evaluate(() => { document.querySelector('#eWeek section.day[data-day="2"]').style.paddingBottom = '38px' })
   await center(P.page, Z('note')); await sleep(900); await center(P.page, Z('note')); await sleep(500)
   measured.q2.phone = await P.page.evaluate(() => document.querySelectorAll('#eWeek .dprev-bar').length)
-  const pcrop = async nm => { const nb = await boxOf(P.page, [Z('note')]); await strip(P.page, nm, nb.y - 150, nb.b - nb.y + 200, PHONE) }
+  /* the cut starts under the top bar, never through it */
+  const pcrop = async nm => { const nb = await boxOf(P.page, [Z('note')]); const tb = await boxOf(P.page, ['.topbar']); const y0 = Math.max(nb.y - 150, tb ? tb.b + 2 : 0); await strip(P.page, nm, y0, nb.b - y0 + 50, PHONE) }
   await ring(P.page, [{ sel: Z('note'), tag: 'Wrong reason: its saved copy will not read', pos: 'below' }])
   await pcrop('q-readonly-ph-notice')
   await swapText(P.page, Z('note'), 'older version', NOTE_A)
@@ -381,31 +445,51 @@ if (want('q2')) await tryQ('q2', async () => {
 })
 
 /* ==== q3 [LOGIC-WORDS-WORKHOURS] ==== */
-const RALLY_B = 'An empty R box suggests take-off less this time, and "+ In-time" fills in the same time. With no in-time or rally entered, a flyer\'s OIL counts from here. His long day and Insights hours count from step. It also sets when the tight crew-rest advisory shows.'
-const STEP_B_ADD = ' With no in-time or rally entered, a flyer\'s long day and Insights hours count from it too.'
+/* the default rally's sentence, reworded for a cold reader (every fact kept; the page's own names: "R box", "a
+   formation's rally" as the page's In-time check line says it, "step", "the tight crew-rest advisory"); the new words
+   underlined in amber so he sees what changed */
+const NEWW = t => `<u class="zz-new">${t}</u>`
+const RALLY_HEAD = `An empty R box, ${NEWW("a formation's rally")}, suggests ${NEWW('a time this long before take-off')}, and "+ In-time" fills in ${NEWW('that')} same time. ${NEWW('When no in-time or rally is entered')}, a flyer's `
+const RALLY_TAIL = ` ${NEWW('The tight crew-rest advisory also checks his rest as if he reported at that time.')}`
+const RALLY_A = RALLY_HEAD + `day starts ${NEWW('at that time')}: his long day, OIL and Insights hours count from it.` + RALLY_TAIL
+const RALLY_B = RALLY_HEAD + `${NEWW('OIL counts from that time, but his long day and Insights hours count from step')}.` + RALLY_TAIL
+const STEP_ADD = ` ${NEWW("When no in-time or rally is entered, a flyer's long day and Insights hours also count from step.")}`
+const plain = h => h.replace(/<[^>]+>/g, '')
 async function logicShots(page, vp, tag) {
   await go(page, 'logic'); await sleep(600)
   const R = '.lgset[data-lgkey="reportLead"]', S = '.lgset[data-lgkey="step"]'
-  /* room under each sentence for its tag, so the tag never covers the setting's own name */
-  const room = q => page.evaluate(([q, px]) => { const e = document.querySelector(q); if (e) e.style.paddingBottom = px }, [q, vp === PC ? '40px' : '60px'])
+  const PCv = vp === PC
+  /* room under each row for its tag, so the tag never covers the next setting's name; on a PC the whole row is
+     ringed (a ring on the sentence alone cut through the row's name), so the room goes outside it */
+  const room = q => page.evaluate(([q, pc]) => { const e = document.querySelector(q); if (e) { if (pc) e.style.marginBottom = '46px'; else { e.style.paddingBottom = '60px'; const w = e.querySelector('.lgwhy'); if (w) w.style.marginTop = '5px' } } }, [q, PCv])
+  const tgt = q => PCv ? q : q + ' .lgwhy'
   await room(R)
-  await center(page, R + ' .lgwhy'); await sleep(400)
-  const words = await page.evaluate(([R, S]) => ({ rally: document.querySelector(R + ' .lgwhy')?.innerText, step: document.querySelector(S + ' .lgwhy')?.innerText, value: document.querySelector(R + ' .lgv')?.innerText }), [R, S])
+  await center(page, R); await sleep(400)
+  const words = await page.evaluate(([R, S]) => ({ rally: document.querySelector(R + ' .lgwhy')?.innerText, step: document.querySelector(S + ' .lgwhy')?.innerText, value: document.querySelector(R + ' .lgv')?.innerText, kids: [...(document.querySelector(R + ' .lgwhy')?.childNodes || [])].map(n => n.nodeType === 3 ? '#text' : n.nodeName + '.' + n.className) }), [R, S])
   console.log('q3 logic', tag, JSON.stringify(words)); (measured.q3 ||= {})['logic_' + tag] = words
-  const crop = async nm => { if (vp === PC) await around(page, nm, [R, S], vp, { top: 34, pad: 12 }); else { const b = await boxOf(page, [R]); await strip(page, nm, b.y - 34, b.b - b.y + 50, vp) } }
-  const cropStep = async nm => { const b = await boxOf(page, [S]); await strip(page, nm, b.y - 34, b.b - b.y + 50, vp) }
-  const W = vp !== PC
-  await ring(page, [{ sel: R + ' .lgwhy', tag: 'Not so today: the long day and Insights hours count from step', pos: 'below', wrap: W }])
-  await crop(`q-logic-${tag}-today`)
-  await page.evaluate(([R, S, rb, sa]) => {
-    const r = document.querySelector(R + ' .lgwhy'); const mark = r.querySelector('.lgstd'); r.firstChild.nodeValue !== undefined && (r.childNodes[0].nodeValue = rb); if (mark) r.appendChild(mark)
-    const s = document.querySelector(S + ' .lgwhy'); s.childNodes[0].nodeValue = s.childNodes[0].nodeValue + sa
-  }, [R, S, RALLY_B, STEP_B_ADD])
-  await room(S)
-  await ring(page, [{ sel: R + ' .lgwhy', tag: 'Drawn: B, the words say what the app does', pos: 'below', wrap: W }, { sel: S + ' .lgwhy', tag: vp === PC ? 'Drawn: B, one sentence added' : '', pos: 'below' }])
-  await center(page, R + ' .lgwhy'); await sleep(300)
-  await crop(`q-logic-${tag}-B`)
-  if (vp !== PC) { await center(page, S + ' .lgwhy'); await sleep(300); await ring(page, [{ sel: S + ' .lgwhy', tag: 'Drawn: B, one sentence added', pos: 'below' }]); await cropStep(`q-logic-${tag}-B-step`) }
+  const orig = await page.evaluate(q => document.querySelector(q + ' .lgwhy').innerHTML, R)
+  const crop = async (nm, q) => { const b = await boxOf(page, [q]); if (PCv) await strip(page, nm, b.y - 9, b.b - b.y + 9 + 46, vp, b.x - 12, b.r - b.x + 24); else await strip(page, nm, b.y - 8, b.b - b.y + 24, vp) }
+  const setWhy = (q, html, append = false) => page.evaluate(([q, html, append, orig]) => {
+    const r = document.querySelector(q + ' .lgwhy')
+    if (append) { const t = document.createElement('span'); t.innerHTML = html; const mark = r.querySelector('.lgstd'); r.insertBefore(t, mark || null) }
+    else { const keep = r.querySelector('.lgstd'); r.innerHTML = html; if (keep) r.appendChild(keep) }
+  }, [q, html, append, orig])
+  const W = !PCv
+  await ring(page, [{ sel: tgt(R), tag: 'Not so today: the long day and Insights hours count from step', pos: 'below', wrap: W }])
+  await crop(`q-logic-${tag}-today`, R)
+  await setWhy(R, RALLY_A); await sleep(150)
+  await ring(page, [{ sel: tgt(R), tag: 'Drawn: A, the same facts in clearer words; new words underlined', pos: 'below', wrap: W }])
+  await center(page, R); await sleep(300)
+  await crop(`q-logic-${tag}-A`, R)
+  await setWhy(R, RALLY_B); await sleep(150)
+  await ring(page, [{ sel: tgt(R), tag: 'Drawn: B, the words say what the app does; new words underlined', pos: 'below', wrap: W }])
+  await center(page, R); await sleep(300)
+  await crop(`q-logic-${tag}-B`, R)
+  measured.q3['logic_' + tag].drawnA = plain(RALLY_A); measured.q3['logic_' + tag].drawnB = plain(RALLY_B)
+  await room(S); await setWhy(S, STEP_ADD, true)
+  await center(page, S); await sleep(300)
+  await ring(page, [{ sel: tgt(S), tag: 'Drawn: B, only if you also want it said on the step row', pos: 'below', wrap: W }])
+  await crop(`q-logic-${tag}-B-step`, S)
   await unring(page)
 }
 if (want('q3')) await tryQ('q3', async () => {
@@ -439,43 +523,83 @@ if (want('q3')) await tryQ('q3', async () => {
   await unring(page)
   await openInsights(page)
   const today = await insHours(page, ['Saint', 'Echo'])
-  // Saint's row in Work hours: the .ibar rows after the "Work hours" heading, up to the next heading
-  await page.evaluate(() => {
-    const head = [...document.querySelectorAll('#insightBody .isec-h')].find(h => /^work hours/i.test(h.textContent.trim())); if (!head) return
-    head.setAttribute('data-zz', 'whhead')
-    let e = head.nextElementSibling
+  const markRows = () => page.evaluate(() => {
+    const head = [...document.querySelectorAll('#insightBody .isec-h')].find(h => /^work hours/i.test(h.textContent.trim())); if (!head) return 0
+    head.setAttribute('data-zz', 'whhead'); let e = head.nextElementSibling, n = 0
     while (e && !e.classList.contains('isec-h')) {
-      if (e.classList.contains('ibar') && (e.querySelector('.nm') || {}).textContent?.trim() === 'Saint') {
-        e.setAttribute('data-zz', 'whrow'); const v = e.querySelector('.v'); if (v) v.setAttribute('data-zz', 'whval'); break
-      }
+      if (e.classList.contains('ibar')) { n++; const nm = (e.querySelector('.nm') || {}).textContent?.trim(); if (nm === 'Saint') e.setAttribute('data-zz', 'whrow'); if (nm === 'Echo') e.setAttribute('data-zz', 'whrow2') }
       e = e.nextElementSibling
     }
+    /* the list scrolled so its heading stands a little under the window's top, with room above it for the tag */
+    let sc = head.parentElement; while (sc && !(sc.scrollHeight > sc.clientHeight + 4 && /auto|scroll/.test(getComputedStyle(sc).overflowY))) sc = sc.parentElement
+    if (sc) sc.scrollTop += head.getBoundingClientRect().top - sc.getBoundingClientRect().top - 70
+    return n
   })
-  const ins = await page.evaluate(() => { const r = document.querySelector('[data-zz="whrow"]'); return r ? { html: r.outerHTML.slice(0, 700), bars: [...r.querySelectorAll('[style*="width"]')].map(e => e.getAttribute('style')) } : null })
-  console.log('q3 insights row', JSON.stringify(ins))
-  await center(page, Z('whrow')); await sleep(300)
-  /* the tag hangs at the right of the list's heading, so it covers no other man's row */
-  await ring(page, [{ sel: Z('whrow') }, { sel: Z('whhead'), noring: true, tag: `Saint ${today.Saint} today: his Friday counts from 11:00, take-off less step`, pos: 'headR' }])
-  await around(page, 'q-logic-pc-insights', [Z('whhead'), Z('whrow')], PC, { top: 16, bottom: 30, pad: 30 })
-  // drawn A: Friday from 09:00, the default rally: +2h for both men on the line, each row moved to its place in the
-  // list (it runs longest first), so the drawing reads as the app would draw it
-  await page.evaluate(([vals]) => {
-    const hm = s => { const m = /^(\d+)h(\d\d)?$/.exec(s.trim()); return m ? +m[1] * 60 + +(m[2] || 0) : 0 }
-    const head = document.querySelector('[data-zz="whhead"]')
-    const rows = () => { const out = []; let e = head.nextElementSibling; while (e && !e.classList.contains('isec-h')) { if (e.classList.contains('ibar')) out.push(e); e = e.nextElementSibling } return out }
-    for (const [name, from, to, tagz] of vals) {
-      const r = rows().find(e => (e.querySelector('.nm') || {}).textContent?.trim() === name); if (!r) continue
-      r.setAttribute('data-zz', tagz)
-      const v = r.querySelector('.v'); if (v) v.textContent = to
-      for (const b of r.querySelectorAll('[style*="width"]')) { const w = b.style.width; if (/%$/.test(w)) b.style.width = (parseFloat(w) * hm(to) / hm(from)).toFixed(2) + '%'; else if (/px$/.test(w)) b.style.width = (parseFloat(w) * hm(to) / hm(from)).toFixed(1) + 'px' }
-      const others = rows().filter(e => e !== r)
-      const before = others.find(e => hm((e.querySelector('.v') || {}).textContent || '0h') < hm(to))
-      if (before) before.parentNode.insertBefore(r, before)
-    }
-  }, [[['Saint', today.Saint, '18h30', 'whrow'], ['Echo', today.Echo, '27h25', 'whrow2']]])
-  await ring(page, [{ sel: Z('whrow') }, { sel: Z('whrow2') }, { sel: Z('whhead'), noring: true, tag: 'Drawn: A, Saint and Echo from 09:00 on Friday: +2h each', pos: 'headR' }])
-  await around(page, 'q-logic-pc-insights-A', [Z('whhead'), Z('whrow'), Z('whrow2')], PC, { top: 16, bottom: 30, pad: 30 })
+  console.log('q3 insights rows', await markRows())
+  await sleep(300)
+  await ring(page, [{ sel: Z('whrow') }, { sel: Z('whrow2') }, { sel: Z('whhead'), noring: true, tag: `Today: Saint ${today.Saint}, Echo ${today.Echo}. Their Friday counts from 11:00, take-off less step`, pos: 'above' }])
+  await around(page, 'q-logic-pc-insights', [Z('whhead'), Z('whrow'), Z('whrow2')], PC, { top: 33, bottom: 22, pad: 30 })
+  const todayNames = await page.evaluate(() => { const rs = [...document.querySelectorAll('[data-zz="whrow"],[data-zz="whrow2"]')]; const low = rs.sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top)[0]; let n = low && low.nextElementSibling; while (n && !n.classList.contains('ibar')) n = n.nextElementSibling; return n ? [(n.querySelector('.nm') || {}).textContent?.trim()] : [] })
+  console.log('q3 today last row', JSON.stringify(todayNames))
   await unring(page); await closeInsights(page)
+  /* drawn A, the whole week: every flying line with nothing entered starts at take-off less the default rally, for the
+     work span Insights sums (validate.ts workSpan's own body, read off each day's events; a line's report equal to its
+     step is a line with no in-time or rally). Each man's figure moves by what A adds, the list re-sorted longest first
+     and its bars redrawn against the new longest, as Modals.tsx draws them. A tall window so the whole list shows. */
+  const TALL = { width: 1536, height: 2600 }
+  await page.setViewportSize(TALL); await sleep(400)
+  await openInsights(page); await markRows(); await sleep(300)
+  const sim = await page.evaluate(() => {
+    if (window.validate) window.validate()
+    const V = window.VCONF, EVD = window.EVD || {}, P = window.PEOPLE || {}
+    const span = (evs, a) => { let s = null, e = null
+      for (const o0 of evs || []) {
+        const o = (a && o0.kind === 'fly' && o0.report === o0.s) ? { ...o0, report: o0.to - V.reportLead } : o0
+        const os = o.kind === 'fly' ? (o.report != null ? o.report : o.to - V.reportLead) : (o.kind === 'shift' && o.report != null ? Math.min(o.report, o.s) : o.s)
+        const oe = o.kind === 'fly' ? o.ld + V.debrief : o.e
+        if ((typeof os === 'number' && isNaN(os)) || (typeof oe === 'number' && isNaN(oe))) continue
+        if (os != null && (s == null || os < s)) s = os
+        if (oe != null && (e == null || oe > e)) e = oe
+      }
+      return s == null || e == null ? null : e - s }
+    const per = {}, days = [], longNew = []; let nFly = 0, nNone = 0
+    for (const di of Object.keys(EVD)) for (const id of Object.keys(EVD[di] || {})) for (const o of EVD[di][id] || []) if (o.kind === 'fly') { nFly++; if (o.report === o.s) nNone++ }
+    Object.keys(EVD).forEach(di => { const m = EVD[di]; if (!m) return; di = +di; Object.keys(m).forEach(id => {
+      const t = span(m[id], false), a = span(m[id], true); if (t == null) return
+      const cs = P[id] ? P[id].cs : String(id); const r = per[cs] || (per[cs] = { t: 0, a: 0 })
+      r.t += t; r.a += a; if (a !== t) days.push([cs, di, a - t]); if (a > V.longDay && !(t > V.longDay)) longNew.push([cs, di, t, a])
+    }) })
+    const hm = s => { const m = /^(\d+)h(\d\d)?$/.exec((s || '').trim()); if (m) return +m[1] * 60 + +(m[2] || 0); const k = /^(\d+) min$/.exec((s || '').trim()); return k ? +k[1] : 0 }
+    const lgT = m => { const h = Math.floor(m / 60), x = m % 60; return h && x ? `${h}h${String(x).padStart(2, '0')}` : h ? `${h}h` : `${x} min` }
+    const head = document.querySelector('[data-zz="whhead"]')
+    const rows = []; let e = head.nextElementSibling; while (e && !e.classList.contains('isec-h')) { if (e.classList.contains('ibar')) rows.push(e); e = e.nextElementSibling }
+    const after = e
+    const mism = []
+    const list = rows.map(r => { const cs = (r.querySelector('.nm') || {}).textContent?.trim(); const shown = hm((r.querySelector('.v') || {}).textContent); const p = per[cs]
+      if (p && p.t !== shown) mism.push([cs, shown, p.t]); const add = p ? p.a - p.t : 0; return { r, cs, shown, mins: shown + add, add } })
+    list.sort((a, b) => b.mins - a.mins || a.cs.localeCompare(b.cs))
+    const max = list.length ? list[0].mins : 1
+    for (const it of list) { head.parentNode.insertBefore(it.r, after); const f = it.r.querySelector('.fill'); if (f) f.style.width = Math.round(it.mins / max * 100) + '%'; const v = it.r.querySelector('.v'); if (v) v.textContent = lgT(it.mins); if (it.add) it.r.setAttribute('data-zzmv', '1') }
+    const adds = days.map(d => d[2]); const lo = Math.min(...adds), hi = Math.max(...adds)
+    return { moved: list.filter(x => x.add).map(x => [x.cs, lgT(x.shown), lgT(x.mins)]), nDays: days.length, lo, hi, longNew, mism, rows: rows.length, nFly, nNone, v: { step: V.step, rl: V.reportLead, ld: V.longDay } }
+  })
+  console.log('q3 A whole week', JSON.stringify(sim))
+  measured.q3.wholeWeekA = sim
+  const fmtAdd = m => m % 60 ? `${Math.floor(m / 60)}h${String(m % 60).padStart(2, '0')}` : `${m / 60}h`
+  const rng = sim.lo === sim.hi ? `+${fmtAdd(sim.hi)}` : `+${fmtAdd(sim.lo)} to +${fmtAdd(sim.hi)}`
+  await markRows(); await sleep(300)
+  const who = sim.moved.map(m => m[0]).sort((a, b) => a === 'Saint' ? -1 : b === 'Saint' ? 1 : a.localeCompare(b))
+  const whoTxt = who.length === 2 ? `only ${who[0]} and ${who[1]} move` : `${who.length} men move`
+  await ring(page, [{ sel: '[data-zzmv="1"]' }, { sel: Z('whhead'), noring: true, tag: `Drawn: A, whole week checked: ${whoTxt}, ${rng} each`, pos: 'above' }])
+  { const b = await boxOf(page, [Z('whhead'), '#insightBody .ibar']); const hb = await boxOf(page, [Z('whhead')])
+    /* only the Work hours rows: from the heading down to the last of its rows */
+    /* down to the same last row as today's picture (the row after the lower of the two rings there) */
+    const last = await page.evaluate(names => { const head = document.querySelector('[data-zz="whhead"]'); let e = head.nextElementSibling, l = null, lr = null; while (e && !e.classList.contains('isec-h')) { if (e.classList.contains('ibar')) { lr = e; if (names.includes((e.querySelector('.nm') || {}).textContent?.trim())) l = e } e = e.nextElementSibling } return (l || lr).getBoundingClientRect().bottom }, todayNames)
+    /* the flyers' list above the heading is hidden in this picture, so no half-cut button shows over the tag */
+    await page.evaluate(() => { let e = document.querySelector('[data-zz="whhead"]').previousElementSibling; while (e) { e.style.visibility = 'hidden'; e = e.previousElementSibling } })
+    await strip(page, 'q-logic-pc-insights-A', hb.y - 34, last - hb.y + 34 + 2, TALL, hb.x - 30, b.r - hb.x + 60) }
+  await unring(page); await closeInsights(page)
+  await page.setViewportSize(PC); await sleep(300)
   // what A would count: the R box typed at the default rally
   await bType(page, bf(4, 0, 0, 'rl'), '09:00'); await sleep(300)
   await openInsights(page); const withR = await insHours(page, ['Saint', 'Echo']); await closeInsights(page)
@@ -531,12 +655,13 @@ if (want('q4')) await tryQ('q4', async () => {
   // the Medical tab today
   await page.locator('#inMedBtn').click(); await sleep(900)
   m.medNew = await rect(page, '#medNew'); m.medHead = await rect(page, '.medview .ic-head')
-  await ring(page, [{ sel: '#medNew', tag: 'Medical: + Medical at the right (his D1300)', pos: 'left' }])
+  await ring(page, [{ sel: '#medNew', tag: 'Medical: + Medical at the right, as you ruled', pos: 'left' }])
   await strip(page, 'q-addright-pc-med', 56, H, PC)
   await unring(page)
   await page.locator('#medNew').click(); await sleep(900)
   m.medWindow = await rect(page, T('win-inputedit')); m.medPad = await page.evaluate(() => getComputedStyle(document.querySelector('.med-body')).paddingRight)
-  await ring(page, [{ sel: '.med-body', tag: 'The cards make room for the window', pos: 'inTop' }])
+  await page.evaluate(() => { document.querySelector('.med-body').style.setProperty('--zz-x', '420px') })
+  await ring(page, [{ sel: '.med-body', tag: 'The cards make room for the window', pos: 'aboveAt' }])
   await strip(page, 'q-addright-pc-medopen', 56, 808, PC)
   await unring(page)
   measured.q4 = { pc: m }; console.log('q4 pc', JSON.stringify(m))

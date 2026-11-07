@@ -57,7 +57,12 @@
   "logic_pc": {
    "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
    "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
-   "value": "3h"
+   "value": "3h",
+   "kids": [
+    "#text"
+   ],
+   "drawnA": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.",
+   "drawnB": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's OIL counts from that time, but his long day and Insights hours count from step. The tight crew-rest advisory also checks his rest as if he reported at that time."
   },
   "board": {
    "before": {
@@ -90,7 +95,39 @@
   "logic_ph": {
    "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
    "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
-   "value": "3h"
+   "value": "3h",
+   "kids": [
+    "#text"
+   ],
+   "drawnA": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's day starts at that time: his long day, OIL and Insights hours count from it. The tight crew-rest advisory also checks his rest as if he reported at that time.",
+   "drawnB": "An empty R box, a formation's rally, suggests a time this long before take-off, and \"+ In-time\" fills in that same time. When no in-time or rally is entered, a flyer's OIL counts from that time, but his long day and Insights hours count from step. The tight crew-rest advisory also checks his rest as if he reported at that time."
+  },
+  "wholeWeekA": {
+   "moved": [
+    [
+     "Echo",
+     "25h25",
+     "27h25"
+    ],
+    [
+     "Saint",
+     "16h30",
+     "18h30"
+    ]
+   ],
+   "nDays": 2,
+   "lo": 120,
+   "hi": 120,
+   "longNew": [],
+   "mism": [],
+   "rows": 56,
+   "nFly": 66,
+   "nNone": 2,
+   "v": {
+    "step": 60,
+    "rl": 180,
+    "ld": 720
+   }
   }
  },
  "q4": {
