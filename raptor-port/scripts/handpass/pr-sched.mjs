@@ -152,7 +152,8 @@ async function fileInput(page, o) {
   }
   const after = await page.evaluate(() => (window.INPUTS || []).map(r => r.iid))
   const fresh = after.filter(i => !before.includes(i))
-  return fresh.length ? await page.evaluate(id => JSON.parse(JSON.stringify((window.INPUTS || []).find(r => r.iid === id))), fresh[0]) : null
+  // page.evaluate already hands back a copy of what the page returns, so no clone is needed here
+  return fresh.length ? await page.evaluate(id => (window.INPUTS || []).find(r => r.iid === id), fresh[0]) : null
 }
 async function goEdit(page) {
   if (await page.evaluate(() => window.CURPAGE === 'editsched')) { await page.evaluate(() => window.go('viewsched')); await sleep(400) }
