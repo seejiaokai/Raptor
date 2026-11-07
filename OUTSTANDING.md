@@ -178,7 +178,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
-- [BOARD-KEYS-LOOKS] — his answers 8 Nov 26 (D1771): the ⋯ menu's item and the + Block and Templates buttons get the app's cyan keyboard ring — one small job, the look and a walk, with its small tidy-up; Tab out of a menu stays as built (D1772).
+- [BOARD-KEYS-LOOKS] — his answers 8 Nov 26 (D1771): the ⋯ menu's item and the + Block and Templates buttons get the app's cyan keyboard ring — one small job, the look and a walk, with its small tidy-up, inside the pictures round's group 1; Tab out of a menu stays as built (D1772).
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -2236,7 +2236,8 @@ white ring under the keys, as on `main` — recommended: the cyan ring, as D1646
 onto ⋯ leaves it open) — recommended: leave as built. Also, the agent's: the ⋯ menu's list of its items repeats the shared
 menus' own list-maker (`SchedBoard.tsx moreItems`, `sheetfocus.ts menuItems`) — one could serve both (the Opus read of 8 Nov 26,
 finding 4). **His answers, 8 Nov 26 — D1771, D1772 (all as recommended):** Q1 and Q2 the cyan ring, to build; Q3 stays
-as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it.
+as built. **Place:** Q1 and Q2 one small job — the look, a walk; the tidy-up with it — built inside the pictures round's build,
+its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 26; chat 3 asked to add it to its plan.
 
 ### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
