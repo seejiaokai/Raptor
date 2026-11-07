@@ -8,8 +8,10 @@
      morebelow [LW-MORE-BELOW-CUE] — his D1295: the day panel "Away · 19" on Mon 30 Nov says nothing about the rest below.
                19 leaves placed on Mon 30 Nov through the drag window (as his own preview had); the panel today on his
                iPhone's size and a desktop's; drawn: A the bell's own foot ("↓ N more", built as this very cue's model —
-               ui/topbits.tsx), B the History bubble's "more" button look; each at the top, part way, after one tap
-               (measured) and at the end (gone); then where the same cue would go on the Inputs calendar's day.
+               ui/topbits.tsx — not pressable, as the bell's), B the History bubble's "more" button look (pressable); each
+               at the top, part way, (B) after one tap (measured) and at the end (gone); then where the same cue would go on
+               the Inputs calendar's day. One counting rule for all (the lines not wholly in view), counted in the page and
+               checked against what is measured out of view — a wrong number stops the run (the design read, 8 Nov 26).
      blink     [LW-FROZEN-BAR-GAP] — the frozen dates bar one painted frame late: an in-page frame log (each frame's
                requestAnimationFrame, before its paint) of where the real dates header stands against the top bar and
                whether the frozen copy is there, while the page is scrolled down past it — on a desktop by the mouse
@@ -87,6 +89,7 @@ async function toMonth(w, mon, probeIso) {
 const settle = page => page.evaluate(() => { const a = document.activeElement; if (a && a.blur) a.blur() })
 const unmark = page => page.evaluate(() => {
   document.querySelectorAll('.zz-ring,.zz-ring-in').forEach(e => e.classList.remove('zz-ring', 'zz-ring-in'))
+  document.querySelectorAll('.zz-ftag').forEach(e => e.remove())
   document.querySelectorAll('[data-zz-tag]').forEach(e => { e.removeAttribute('data-zz-tag'); e.removeAttribute('data-zz-at'); if (e.dataset.zzPos) { e.style.position = ''; delete e.dataset.zzPos } })
 })
 /* ring the n-th VISIBLE match of sel; tag it (the tag needs a positioned box: a static one is made relative, said back) */
@@ -224,56 +227,100 @@ async function twobox(state, tag, vp, touch) {
 
 /* ================= Q2 — the day panel says when more is below ================= */
 /* A: the bell's own foot, copied whole (02-shell.css .bl-foot / .bl-more: a hairline over it, "↓ N more" 12px in the
-   third ink, at the left), outside the list that scrolls, so it covers no line. B: the History bubble's "more" button
-   (10-board-history.css .hb-more: the second panel colour, a hairline border, the accent's words, 10.5px bold), across the
-   foot. Each counts the lines not wholly in view below — the bell's own rule, so it goes exactly at the list's end. */
+   third ink, at the left), outside the list that scrolls, so it covers no line — and, like the bell's, NOT pressable: it
+   only says how many (the design read of 8 Nov 26: a line that acts on a tap must look tappable, lesson 27, D1185; the tap
+   is the agent's reading in D1295, not his words). B: the History bubble's "more" button (10-board-history.css .hb-more:
+   the second panel colour, a hairline border, the accent's words, 10.5px bold), across the foot, pressable: a tap scrolls
+   the list down by what is in view, less one line.
+   THE ONE COUNTING RULE — A and B, both sizes, the Inputs day too: the entries NOT WHOLLY IN VIEW, every line whose bottom
+   is past the scroller's bottom + 1px (the line cut at the foot and every line wholly below) — the bell's own rule
+   (ui/topbits.tsx countBelow), so the cue goes exactly at the list's end. It is counted in the page from what is out of
+   view once the cue itself stands in its place — its words change its height (B's most), and so how much of the list
+   shows — recounted until the number no longer changes; never typed. checkCue() then fails the run when the printed
+   number is not the cut + below measured on its own (the first drawing printed B's count from before B's words were in:
+   "↓ 8 more" where 9 were out of view on the phone, "↓ 2 more" where 3 were on the desktop). */
 const CUE_CSS = `
-.zz-cue{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 12px;padding:6px 7px 6px;border-top:1px solid var(--edge);cursor:pointer;background:var(--panel)}
+.zz-cue{flex:none;display:flex;align-items:center;justify-content:flex-end;gap:10px;margin:0 12px;padding:6px 7px 6px;border-top:1px solid var(--edge);background:var(--panel)}
 .zz-cue .zz-more{margin-right:auto;padding-left:4px;font-size:12px;color:var(--ink-3);white-space:nowrap}
 .zz-cueb{flex:none;margin:4px 12px 10px;width:auto;display:block;background:var(--panel-2);border:1px solid var(--edge);border-radius:7px;
   color:var(--accent);font:inherit;font-size:10.5px;font-weight:700;padding:7px 8px;cursor:pointer;text-align:center}
 .zz-cue[hidden],.zz-cueb[hidden]{display:none}
+.zz-ftag{position:fixed;z-index:99999;background:#0E141B;color:#ffb020;border:1.5px solid #ffb020;font:700 12.5px/1.25 -apple-system,system-ui,Segoe UI,sans-serif;
+  padding:2px 6px;border-radius:5px;white-space:nowrap;pointer-events:none}
 `
-/* draw the cue into the open window `win` whose list scrolls in `.win-body`, its lines `lineSel`; kept up to date on scroll */
-const drawCue = (page, win, lineSel, look) => page.evaluate(([win, lineSel, look]) => {
+/* draw the cue at the foot of the open window `win` (after its `.win-body`); the list scrolls in `scroll` (`.win-body` on
+   the Leave War's day, `.sd-list` on the Inputs day), its entries `lineSel`; recounted on every scroll */
+const drawCue = (page, win, scroll, lineSel, look) => page.evaluate(([win, scroll, lineSel, look]) => {
   const wn = [...document.querySelectorAll(win)].find(e => e.getBoundingClientRect().height); if (!wn) throw new Error('no window ' + win)
   wn.querySelectorAll('.zz-cue,.zz-cueb').forEach(e => e.remove())
-  const body = wn.querySelector('.win-body')
+  const body = wn.querySelector('.win-body'), sc = wn.querySelector(scroll)
+  if (!sc) throw new Error('no scroller ' + scroll)
   const cue = document.createElement(look === 'A' ? 'div' : 'button')
   cue.className = look === 'A' ? 'zz-cue' : 'zz-cueb'
-  cue.setAttribute('role', 'button'); cue.setAttribute('data-zz-new', 'the cue (drawn)')
-  if (look === 'A') cue.innerHTML = '<span class="zz-more"></span>'
+  cue.setAttribute('data-zz-new', 'the cue (drawn)')
+  if (look === 'A') cue.innerHTML = '<span class="zz-more"></span>'; else cue.type = 'button'
   body.after(cue)
-  const count = () => {
-    const bottom = body.getBoundingClientRect().bottom + 1
+  const notWhollyInView = () => {
+    const bottom = sc.getBoundingClientRect().bottom + 1
     let n = 0
-    for (const l of body.querySelectorAll(lineSel)) if (l.getBoundingClientRect().bottom > bottom) n++
-    const words = `↓ ${n} more`
-    if (look === 'A') cue.querySelector('.zz-more').textContent = words; else cue.textContent = words
-    cue.hidden = n === 0
+    for (const l of sc.querySelectorAll(lineSel)) if (l.getBoundingClientRect().bottom > bottom) n++
     return n
   }
-  /* a tap scrolls the list down by what is in view, less one line, so the last line seen stays in sight */
-  cue.addEventListener('click', () => { body.scrollBy({ top: body.clientHeight - 30 }); setTimeout(count, 30) })
-  body.addEventListener('scroll', count)
+  /* write the words, then count again with them in place (reading a box's place makes the browser lay the page out
+     first), until the count stands */
+  const count = () => {
+    let n = -1
+    for (let i = 0; i < 6; i++) {
+      const m = notWhollyInView()
+      if (m === n) break
+      n = m
+      const words = `↓ ${n} more`
+      if (look === 'A') cue.querySelector('.zz-more').textContent = words; else cue.textContent = words
+      cue.hidden = n === 0
+    }
+    return n
+  }
+  if (look === 'B') cue.addEventListener('click', () => { sc.scrollBy({ top: sc.clientHeight - 30 }); setTimeout(count, 30) })
+  sc.addEventListener('scroll', count)
   window.__zzCount = count
   return count()
-}, [win, lineSel, look])
-const panelFacts = (page, win, lineSel) => page.evaluate(([win, lineSel]) => {
+}, [win, scroll, lineSel, look])
+/* what is in view, measured on its own: whole, cut at the foot, wholly below */
+const panelFacts = (page, win, scroll, lineSel) => page.evaluate(([win, scroll, lineSel]) => {
   const wn = [...document.querySelectorAll(win)].find(e => e.getBoundingClientRect().height); if (!wn) return null
-  const body = wn.querySelector('.win-body'), br = body.getBoundingClientRect(), lines = [...body.querySelectorAll(lineSel)]
+  const sc = wn.querySelector(scroll), br = sc.getBoundingClientRect(), lines = [...sc.querySelectorAll(lineSel)]
   const whole = lines.filter(l => { const r = l.getBoundingClientRect(); return r.top >= br.top - .5 && r.bottom <= br.bottom + 1 }).length
   const partly = lines.filter(l => { const r = l.getBoundingClientRect(); return r.bottom > br.bottom + 1 && r.top < br.bottom }).length
   const below = lines.filter(l => l.getBoundingClientRect().top >= br.bottom).length
   const wr = wn.getBoundingClientRect()
   return { title: wn.querySelector('.win-ttl')?.textContent, lines: lines.length, wholeInView: whole, cutAtFoot: partly, whollyBelow: below,
-    winTop: Math.round(wr.top), winH: Math.round(wr.height), bodyH: Math.round(body.clientHeight), bodyScrollH: body.scrollHeight, scrollTop: Math.round(body.scrollTop),
+    winTop: Math.round(wr.top), winH: Math.round(wr.height), listH: Math.round(sc.clientHeight), listScrollH: sc.scrollHeight, scrollTop: Math.round(sc.scrollTop),
     head: wn.querySelector('[data-testid="lwday-away-h"], [data-testid="idy-count"]')?.textContent || null }
-}, [win, lineSel])
-const scrollBody = (page, win, to) => page.evaluate(([win, to]) => {
-  const wn = [...document.querySelectorAll(win)].find(e => e.getBoundingClientRect().height); const b = wn.querySelector('.win-body')
+}, [win, scroll, lineSel])
+const scrollBody = (page, win, scroll, to) => page.evaluate(([win, scroll, to]) => {
+  const wn = [...document.querySelectorAll(win)].find(e => e.getBoundingClientRect().height); const b = wn.querySelector(scroll)
   b.scrollTop = to === 'end' ? b.scrollHeight : to; return Math.round(b.scrollTop)
-}, [win, to])
+}, [win, scroll, to])
+/* the design read's check (8 Nov 26): the number printed on the cue IS the lines not wholly in view, measured on its own
+   (cut at the foot + wholly below); no cue shown must mean none. Anything else stops the run. */
+async function checkCue(P, win, scroll, lineSel, sel, label) {
+  await P.evaluate(() => window.__zzCount && window.__zzCount())
+  const f = await panelFacts(P, win, scroll, lineSel)
+  const out = f.cutAtFoot + f.whollyBelow
+  const shown = await vis(P, sel)
+  const words = shown ? await txt(P, sel) : null
+  const printed = shown ? +(((words || '').match(/^↓ (\d+) more$/) || [])[1]) : 0
+  if (printed !== out) throw new Error(`COUNT CHECK FAILED (${label}): the cue reads ${shown ? '“' + words + '”' : 'nothing'}, but ${out} are not wholly in view (cut ${f.cutAtFoot}, below ${f.whollyBelow})`)
+  console.log('count check', label, '—', shown ? words : 'no cue', '= cut', f.cutAtFoot, '+ below', f.whollyBelow)
+  return { ...f, cue: words, notWhollyInView: out }
+}
+/* a tag of its own, standing just above the window's top edge, so it covers no line of the list */
+const tagAbove = (page, win, text) => page.evaluate(([win, text]) => {
+  const wn = [...document.querySelectorAll(win)].find(e => e.getBoundingClientRect().height); const r = wn.getBoundingClientRect()
+  const t = document.createElement('div'); t.className = 'zz-ftag'; t.textContent = text
+  document.body.appendChild(t)
+  t.style.left = Math.max(4, r.left) + 'px'; t.style.top = Math.max(2, r.top - t.offsetHeight - 7) + 'px'
+}, [win, text])
 
 async function morebelow(state, tag, vp, touch) {
   const w = await world(vp, touch, { state })
@@ -284,50 +331,53 @@ async function morebelow(state, tag, vp, touch) {
   await P.locator(T('head-' + PANEL_DAY)).first().evaluate(e => e.scrollIntoView({ block: 'nearest', inline: 'center' })); await sleep(300)
   await tap(w, T('head-' + PANEL_DAY)); await sleep(700)
   if (!(await vis(P, T('win-lwday')))) throw new Error('the day panel did not open')
-  const WIN = '.floatwin.lwday', LINE = '.lwday-away .ll-row'
+  const WIN = '.floatwin.lwday', SCROLL = '.win-body', LINE = '.lwday-away .ll-row'
   await settle(P)
-  const today = await panelFacts(P, WIN, LINE)
+  const today = await panelFacts(P, WIN, SCROLL, LINE)
   measured[`morebelow-${tag}-today`] = today
   console.log('panel', tag, JSON.stringify(today))
   const wb = await boxOf(P, WIN)
-  const frame = async name => { await clip(w, name, 0, Math.max(0, wb.y - (touch ? 64 : 40)), vp.width, (wb.b - wb.y) + (touch ? 64 : 80)) }
+  /* the frame: the phone's full width from just above the window to just under its foot (the ring's foot in); the
+     desktop's around the window */
+  const frame = async name => { await clip(w, name, 0, Math.max(0, wb.y - 64), vp.width, (wb.b - wb.y) + 64 + 8) }
   const frameD = async name => { await clip(w, name, wb.x - 30, wb.y - 40, wb.r - wb.x + 60, wb.b - wb.y + 80) }
   const shoot = touch ? frame : frameD
-  // today: the window ringed, the point named on its "Away" heading
+  // today: the window ringed, the point named on its "Away" heading — the same rule, the lines not wholly in view
+  const out0 = today.cutAtFoot + today.whollyBelow
   await mark(P, WIN)
-  const n0 = today.lines - today.wholeInView
-  await tagOnly(P, '[data-testid="lwday-away-h"]', today.cutAtFoot + today.whollyBelow > 0 ? `${today.wholeInView} of ${today.lines} in view, no sign of ${n0} more` : `all ${today.lines} in view`, 'inright')
+  await tagOnly(P, '[data-testid="lwday-away-h"]', out0 > 0 ? `${today.wholeInView} of ${today.lines} in view, no sign of ${out0} more` : `all ${today.lines} in view`, 'inright')
   await shoot(`q-morebelow-${tag}-today`); await unmark(P)
-  if (today.cutAtFoot + today.whollyBelow === 0) { console.log('morebelow', tag, ': the whole list fits — no cue would show'); await w.ctx.close(); return }
+  if (out0 === 0) { console.log('morebelow', tag, ': the whole list fits — no cue would show'); await w.ctx.close(); return }
   // today, at the list's end — what he sees once he scrolls: the same, with no sign before
-  await scrollBody(P, WIN, 'end'); await settle(P)
-  await mark(P, WIN); await tagOnly(P, `${WIN} .win-bar`, 'Today, at the end: found only by scrolling', 'bottom')
+  await scrollBody(P, WIN, SCROLL, 'end'); await settle(P)
+  await mark(P, WIN); await tagAbove(P, WIN, 'Today, at the end: found only by scrolling')
   await shoot(`q-morebelow-${tag}-today-end`); await unmark(P)
-  // A and B: at the top, after one tap on the cue, and at the end
+  // A and B: at the top, part way, (B) after one tap, and at the end
   for (const look of ['A', 'B']) {
-    await scrollBody(P, WIN, 0)
-    const n = await drawCue(P, WIN, LINE, look); await sleep(150); await settle(P)
+    await scrollBody(P, WIN, SCROLL, 0)
+    await drawCue(P, WIN, SCROLL, LINE, look); await sleep(150); await settle(P)
     const sel = look === 'A' ? '.zz-cue' : '.zz-cueb'
-    const atTop = await panelFacts(P, WIN, LINE)
     const name = look === 'A' ? 'the bell’s own foot' : 'History’s “more” button'
-    measured[`morebelow-${tag}-${look}-top`] = { ...atTop, cue: await txt(P, sel) }
+    measured[`morebelow-${tag}-${look}-top`] = await checkCue(P, WIN, SCROLL, LINE, sel, `${tag} ${look} at the top`)
     await mark(P, sel, '', '', look === 'A'); await tagOnly(P, '[data-testid="lwday-away-h"]', `Drawn ${look}: ${name}`, 'inright')
     await shoot(`q-morebelow-${tag}-${look}-top`); await unmark(P)
     // part way: the list moved up by a finger's short push (about three lines)
-    await scrollBody(P, WIN, 3 * 30); await sleep(100); await P.evaluate(() => window.__zzCount && window.__zzCount()); await settle(P)
-    measured[`morebelow-${tag}-${look}-mid`] = { ...(await panelFacts(P, WIN, LINE)), cue: await txt(P, sel) }
-    if (await vis(P, sel)) { await mark(P, sel, '', '', look === 'A'); await tagOnly(P, `${WIN} .win-bar`, `Drawn ${look}: part way down, “${await txt(P, sel)}”`, 'bottom'); await shoot(`q-morebelow-${tag}-${look}-mid`); await unmark(P) }
-    // one tap on the cue, from the top
-    await scrollBody(P, WIN, 0); await sleep(100); await P.evaluate(() => window.__zzCount && window.__zzCount())
-    await tap(w, sel); await sleep(300); await P.evaluate(() => window.__zzCount && window.__zzCount()); await settle(P)
-    measured[`morebelow-${tag}-${look}-tapped`] = { ...(await panelFacts(P, WIN, LINE)), cueShown: await vis(P, sel), cue: await txt(P, sel) }
+    await scrollBody(P, WIN, SCROLL, 3 * 30); await sleep(100)
+    const mid = await checkCue(P, WIN, SCROLL, LINE, sel, `${tag} ${look} part way`); await settle(P)
+    measured[`morebelow-${tag}-${look}-mid`] = mid
+    if (mid.cue) { await mark(P, sel, '', '', look === 'A'); await tagAbove(P, WIN, `Drawn ${look}, part way down: “${mid.cue}”`); await shoot(`q-morebelow-${tag}-${look}-mid`); await unmark(P) }
+    // B only — A is not pressable: one tap on the cue, from the top
+    if (look === 'B') {
+      await scrollBody(P, WIN, SCROLL, 0); await sleep(100); await checkCue(P, WIN, SCROLL, LINE, sel, `${tag} B before the tap`)
+      await tap(w, sel); await sleep(300); await settle(P)
+      measured[`morebelow-${tag}-B-tapped`] = await checkCue(P, WIN, SCROLL, LINE, sel, `${tag} B after one tap`)
+    }
     // the end: gone
-    await scrollBody(P, WIN, 'end'); await sleep(100); await P.evaluate(() => window.__zzCount && window.__zzCount()); await settle(P)
-    measured[`morebelow-${tag}-${look}-end`] = { ...(await panelFacts(P, WIN, LINE)), cueShown: await vis(P, sel) }
-    await mark(P, WIN); await tagOnly(P, `${WIN} .win-bar`, `Drawn ${look}: at the list’s end the cue is gone`, 'bottom')
+    await scrollBody(P, WIN, SCROLL, 'end'); await sleep(100)
+    measured[`morebelow-${tag}-${look}-end`] = await checkCue(P, WIN, SCROLL, LINE, sel, `${tag} ${look} at the end`); await settle(P)
+    await mark(P, WIN); await tagAbove(P, WIN, `Drawn ${look}, at the list’s end: the cue is gone`)
     await shoot(`q-morebelow-${tag}-${look}-end`); await unmark(P)
     await P.evaluate(() => document.querySelectorAll('.zz-cue,.zz-cueb').forEach(e => e.remove()))
-    console.log('cue', tag, look, n)
   }
   await w.ctx.close()
 }
@@ -368,22 +418,26 @@ async function others(state, tag, vp, touch) {
   const c = P.locator(`#inpCal [data-icday="${ISO}"]`).first(); await c.scrollIntoViewIfNeeded()
   if (touch) await c.tap({ position: { x: 8, y: 8 } }); else await c.click({ position: { x: 8, y: 8 } })
   await sleep(900)
-  const WIN = '.floatwin.inputsday', LINE = '.sd-list .icard'
+  /* its list scrolls in .sd-list, under the pinned title box and "+ Input" (.sd-top), not in the window's .win-body */
+  const WIN = '.floatwin.inputsday', SCROLL = '.sd-list', LINE = '.sd-list .icard'
   if (!(await vis(P, T('win-inputsday')))) throw new Error('the Inputs day did not open')
   await settle(P)
-  const f0 = await panelFacts(P, WIN, LINE)
+  const f0 = await panelFacts(P, WIN, SCROLL, LINE)
   measured[`others-${tag}-inputsday`] = f0
   console.log('inputs day', JSON.stringify(f0))
   if (f0 && f0.cutAtFoot + f0.whollyBelow > 0) {
     const wb0 = await boxOf(P, WIN)
-    await mark(P, WIN); await tagOnly(P, `${WIN} .win-bar`, `Today: ${f0.wholeInView} of ${f0.lines} cards in view, nothing says more are below`, 'bottom')
-    await clip(w, `q-morebelow-${tag}-inputsday-today`, 0, wb0.y - 10, vp.width, wb0.b - wb0.y + 10); await unmark(P)
-    await drawCue(P, WIN, LINE, 'A'); await sleep(150); await settle(P)
-    measured[`others-${tag}-inputsday-cue`] = await txt(P, '.zz-cue')
+    /* the window spans the phone's width and nearly its height: ringed INSIDE its edge, so all four sides show, and the
+       picture runs to just under its foot */
+    await mark(P, WIN, '', '', true); await tagOnly(P, `${WIN} .win-bar`, `Today: ${f0.wholeInView} of ${f0.lines} cards in view, nothing says ${f0.cutAtFoot + f0.whollyBelow} more are below`, 'bottom')
+    await clip(w, `q-morebelow-${tag}-inputsday-today`, 0, wb0.y - 6, vp.width, wb0.b - wb0.y + 12); await unmark(P)
+    await drawCue(P, WIN, SCROLL, LINE, 'A'); await sleep(150); await settle(P)
+    const fA = await checkCue(P, WIN, SCROLL, LINE, '.zz-cue', `${tag} Inputs day A`)
+    measured[`others-${tag}-inputsday-A`] = fA
     await mark(P, '.zz-cue', '', '', true)
-    await tagOnly(P, `${WIN} .win-bar`, `Drawn A: the same cue, “${await txt(P, '.zz-cue')}”`, 'bottom')
+    await tagOnly(P, `${WIN} .win-bar`, `Drawn A: the same cue, “${fA.cue}”`, 'bottom')
     const wb = await boxOf(P, WIN)
-    await clip(w, `q-morebelow-${tag}-inputsday-A`, 0, wb.y - 10, vp.width, wb.b - wb.y + 10)
+    await clip(w, `q-morebelow-${tag}-inputsday-A`, 0, wb.y - 6, vp.width, wb.b - wb.y + 12)
     await unmark(P)
   } else console.log('inputs day: the list fits — no cue would show')
   await w.ctx.close()
@@ -511,17 +565,19 @@ async function blinkPhone() {
   console.log('phone screencast frames', frames.length, JSON.stringify(measured['blink-phone-screencast-log']))
   await w.ctx.close()
 }
-/* lay the chosen painted frames side by side on one sheet, each named, cut to the band under the top bar */
+/* lay the chosen painted frames side by side on one sheet, each named, cut to the band under the top bar; band.z enlarges
+   the cut (the design read, 8 Nov 26: the phone's frames were small at his phone's width) */
 async function sheet(name, items, band) {
+  const z = band.z || 1
   const ctx = await browser.newContext({ viewport: { width: 1000, height: 400 }, deviceScaleFactor: 2 })
   const p = await ctx.newPage()
   const html = `<html><body style="margin:0;background:#0b0f14;color:#e8edf2;font:600 15px system-ui">${items.map(it => `
     <div style="padding:8px 10px 2px;color:${it.bad ? '#ffb020' : '#e8edf2'}">${it.label}</div>
-    <div style="margin:0 10px 6px;border:${it.bad ? '3px solid #ffb020' : '1px solid #2a323b'};width:${band.w}px;height:${band.h}px;overflow:hidden;position:relative">
-      <img src="data:image/png;base64,${it.data}" style="position:absolute;left:${-band.x}px;top:${-band.y}px"></div>`).join('')}</body></html>`
+    <div style="margin:0 10px 6px;border:${it.bad ? '3px solid #ffb020' : '1px solid #2a323b'};width:${band.w * z}px;height:${band.h * z}px;overflow:hidden;position:relative">
+      <img src="data:image/png;base64,${it.data}" style="position:absolute;left:0;top:0;transform-origin:0 0;transform:translate(${-band.x * z}px,${-band.y * z}px) scale(${z})"></div>`).join('')}</body></html>`
   await p.setContent(html); await sleep(300)
   const h = await p.evaluate(() => document.body.scrollHeight)
-  await p.setViewportSize({ width: band.w + 26, height: h })
+  await p.setViewportSize({ width: band.w * z + 26, height: h })
   await p.screenshot({ path: `${OUT}/${name}.png`, fullPage: true }); made.push(name)
   await ctx.close()
 }
@@ -555,7 +611,7 @@ if (want('blinksheet')) {
     const d = pick('frames-desk', process.env.PR_DESK)
     await sheet('q-blink-desk-today', [
       { data: d[0], label: 'Desktop today, frame 1: the dates header in its place' },
-      { data: d[1], label: 'Frame 2, 1/60 s later: the header half under the top bar, its weekday names gone, no frozen bar yet', bad: true },
+      { data: d[1], label: 'Frame 2, the very next frame: the header half under the top bar, its weekday names gone, no frozen bar yet', bad: true },
       { data: d[2], label: 'Frame 3: the frozen dates bar drawn, whole' },
     ], { x: 0, y: 0, w: 760, h: 200 })
   }
@@ -566,12 +622,30 @@ if (want('blinksheet')) {
       { data: d[1], label: 'Frame 2: the header cut, no frozen bar yet', bad: true },
       { data: d[2], label: 'Frame 3: no dates header at all', bad: true },
       { data: d[3], label: 'Frame 4: the frozen dates bar drawn' },
-    ], { x: 0, y: 0, w: 402, h: 130 })
+    ], { x: 0, y: 0, w: 268, h: 125, z: 1.5 }) // the top bar's left and the dates row's first days, half as large again
+  }
+  /* the old frames of 23 Sep 26, tagged on the picture itself (the design read, 8 Nov 26): when they were taken, and that
+     frame 1 has no dates row — ringed */
+  const OLD = 'docs/img/handpass/2026-09-23-lw-monthjump/fixed-desktop-frozen-bar-first-frames.png'
+  if (existsSync(OLD)) {
+    const ctx = await browser.newContext({ viewport: { width: 1440, height: 640 }, deviceScaleFactor: 1 })
+    const p = await ctx.newPage()
+    await p.setContent(`<html><body style="margin:0;background:#0b0f14"><div style="position:relative;width:1440px">
+      <img src="data:image/png;base64,${readFileSync(OLD).toString('base64')}" style="display:block">
+      <div style="position:absolute;left:3px;top:199px;width:1428px;height:186px;outline:4px solid #ffb020"></div>
+      <div style="position:absolute;left:560px;top:304px;background:#0E141B;color:#ffb020;border:2px solid #ffb020;border-radius:6px;padding:3px 9px;font:700 19px/1.25 system-ui">23 Sep 26, before the rename, a member’s view: frame 1 has no dates row</div>
+    </div></body></html>`); await sleep(300)
+    await p.screenshot({ path: `${OUT}/q-blink-desk-old-2026-09-23.png`, clip: { x: 0, y: 0, width: 1440, height: 579 } }); made.push('q-blink-desk-old-2026-09-23')
+    await ctx.close()
   }
 }
 /* a run of some questions keeps the others' measures: merged into what the last runs wrote */
 const MJ = `${OUT}/q-lw-measured.json`
 const prev = existsSync(MJ) ? JSON.parse(readFileSync(MJ, 'utf8')) : { made: [], measured: {} }
-writeFileSync(MJ, JSON.stringify({ made: [...new Set([...(prev.made || []), ...made])], measured: { ...(prev.measured || {}), ...measured } }, null, 1))
+/* a question run again drops ALL its old measures first, so none from an earlier drawing lingers beside the new */
+const OWN = { twobox: ['twobox-'], morebelow: ['morebelow-', 'others-', 'bell-'], blink: ['blink-'] }
+const drop = Object.keys(OWN).filter(q => ONLY && want(q)).flatMap(q => OWN[q])
+const kept = Object.fromEntries(Object.entries(prev.measured || {}).filter(([k]) => !drop.some(p => k.startsWith(p))))
+writeFileSync(MJ, JSON.stringify({ made: [...new Set([...(prev.made || []), ...made])], measured: { ...kept, ...measured } }, null, 1))
 console.log('made', made.length, made.join(' '))
 await browser.close()

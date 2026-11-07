@@ -46,76 +46,102 @@ was), and drop it from the pictures-round list in the backlog's priority lines.
 ## 2. [LW-MORE-BELOW-CUE] The day panel says when more is below its foot (his D1295)
 
 **(a) The question.** Which look should the "↓ 8 more" line at the foot of the Leave War's day window take: the bell's own
-"more" line (A) or the History bubble's "more" button (B)?
+"more" line (A), which only says how many, or the History bubble's "more" button (B), which can be tapped?
 
 **(b) Still open? Yes.** Nothing on the day window says more is below. Measured, Mon 30 Nov, "AWAY · 19":
 - iPhone size: the window stands 577 px tall at the screen's foot, its list area 518 px; 12 lines show whole, a 13th is
   cut at the foot, 6 are wholly below. Nothing says so; the rest is found only by scrolling.
-- His PC: 18 whole, the 19th hidden at the foot (the window is 744 px tall), again with no sign.
+- His PC: 18 whole, the 19th (Trident) cut at the foot (the window is 744 px tall), again with no sign.
 - The same window on the Inputs calendar's day (Mon 30 Nov, "19 inputs"), iPhone size: 12 cards whole, 1 cut, 6 below,
   no sign.
 - The bell already has this cue, built 27 Oct 26 as a copy of D1295 ("↓ 3 more" at the foot of a long bell list).
   It counts every line not wholly in view and is not pressable.
 
-**(c) Pictures** (each tagged on the picture itself; the window ringed):
-- `q-morebelow-ph-today.png` — real, iPhone size: "12 of 19 in view, no sign of 7 more".
+**The one counting rule, used for every number below:** the cue counts the lines **not wholly in view** — the line cut at
+the foot plus every line wholly below — the bell's own rule. The number is worked out on the page from what is out of view
+after the cue is in place, because the cue's own height hides part of the list. It is never typed in. Before each picture
+the script checks the printed number against the cut and below lines it measures separately, and stops on any
+difference. (The first drawing counted B before its button's words were in, so B printed one too few: "↓ 8 more" on the
+phone, "↓ 2 more" on the PC. That is fixed and redrawn.)
+- **D1295's reading.** The agent's reading in D1295's full row (and lesson 46's note) says the count is of the lines
+  "wholly out of view". The drawing counts "not wholly in view" instead. Counted the reading's way, the cue would say
+  "↓ 0 more" while the last line still shows half, then go before the list's end. His words say it goes once the list
+  is at its end, so the drawing follows his words and the bell's rule. The page should say this reading changes.
+
+**(c) Pictures** (each tagged on the picture itself; the window ringed; on the part-way and end pictures the tag stands
+above the window, so it covers no line):
+- `q-morebelow-ph-today.png` — real, iPhone size: "12 of 19 in view, no sign of 7 more" (12 whole, 1 cut, 6 below).
 - `q-morebelow-ph-today-end.png` — real: scrolled to the end, the rest found only by scrolling.
-- `q-morebelow-ph-A-top.png` — drawn A: the bell's foot under the list, "↓ 8 more" (the cue takes one line's room, so
-  8, not 7).
-- `q-morebelow-ph-A-mid.png` — drawn A: part way down, "↓ 5 more" (the count follows the scroll).
+- `q-morebelow-ph-A-top.png` — drawn A: the bell's foot under the list, **"↓ 8 more"**. The foot takes about a line's
+  room, so 11 lines show whole, 1 is cut, 7 are below.
+- `q-morebelow-ph-A-mid.png` — drawn A: part way down, **"↓ 5 more"** (14 whole, 1 cut, 4 below). The count follows the scroll.
 - `q-morebelow-ph-A-end.png` — drawn A: at the list's end the cue is gone. This matches the "today, at the end" picture,
   because at the end nothing is left to say.
-- `q-morebelow-ph-B-top.png`, `q-morebelow-ph-B-mid.png`, `q-morebelow-ph-B-end.png` — drawn B: the same three moments
-  with the History button: "↓ 9 more", then "↓ 6 more", then gone. The button is taller, so it hides one more line.
-- `q-morebelow-pc-today.png`, `-pc-today-end.png`, `-pc-A-top.png`, `-pc-A-end.png`, `-pc-B-top.png`, `-pc-B-end.png` —
-  the same at his PC's size: real "18 of 19 in view, no sign of 1 more"; drawn A and B read "↓ 2 more". On a desktop only
-  one or two lines are hidden, so it matters most on the phone.
-- `q-morebelow-ph-inputsday-today.png` (real) and `q-morebelow-ph-inputsday-A.png` (drawn A, "↓ 8 more") — the Inputs
+- `q-morebelow-ph-B-top.png` — drawn B: the History button, **"↓ 9 more"** (10 whole, Basher cut, 8 below). The button is
+  taller, so one fewer line shows whole than with A.
+- `q-morebelow-ph-B-mid.png` — drawn B: part way down, **"↓ 6 more"** (13 whole, Cobra cut, 5 below).
+- `q-morebelow-ph-B-end.png` — drawn B: at the list's end the cue is gone.
+- `q-morebelow-pc-today.png` — real, his PC: "18 of 19 in view, no sign of 1 more" (Trident cut at the foot).
+- `q-morebelow-pc-today-end.png` — real: scrolled to the end.
+- `q-morebelow-pc-A-top.png` — drawn A: **"↓ 2 more"** (17 whole, Hunter cut, Trident below).
+- `q-morebelow-pc-B-top.png` — drawn B: **"↓ 3 more"** (16 whole, Havoc cut, Hunter and Trident below).
+- `q-morebelow-pc-A-end.png`, `q-morebelow-pc-B-end.png` — drawn A and B at the end: gone. On the desktop there is no
+  part-way picture: a push of three lines already reaches the end, because only two or three lines are hidden. So it
+  matters most on the phone.
+- `q-morebelow-ph-inputsday-today.png` (real, the whole window ringed: "12 of 19 cards in view, nothing says 7 more are
+  below") and `q-morebelow-ph-inputsday-A.png` (drawn A, **"↓ 8 more"**: 11 whole, Piston cut, 7 below) — the Inputs
   calendar's day of the same date, iPhone size: the same gap, and the same cue answers it.
 
 **(d) The options.**
 - **A — the bell's own foot (recommended).** Under the list, outside it, so it covers no line: a hairline above it, and
-  "↓ 8 more" in small grey letters at the left. It is copied whole from the bell (the same line, colour, size and words), so
-  nothing about its look is new. Its words: "↓ N more", the number counting the lines not wholly in view. It disappears
-  at the list's end. A tap moves the list down by what is in view, less one line. Measured: one tap from the top reaches the end on
-  the phone, and on the desktop.
+  "↓ 8 more" in small grey letters at the left. It is copied whole from the bell (the same line, colour, size and words),
+  so nothing about its look is new. It **only says how many**, as the bell does today: it is not pressable, so it has
+  nothing to look pressable. A grey line that a tap moved would break lesson 27 (D1185), which says something that acts
+  when tapped must look tappable, so A is drawn without the tap. It disappears at the list's end; he scrolls the list as
+  he does today.
 - **B — the History bubble's "more" button.** A full-width button across the window's foot, the words in the accent
-  blue, bold: "↓ 9 more". It is copied from the History bubble's "more" button. It looks plainly pressable, but it is a
-  second look for the same cue the bell already shows as A. It also takes more height, so one fewer line shows.
+  blue, bold: "↓ 9 more". It is copied from the History bubble's "more" button. It is pressable and looks it: a tap
+  moves the list down by what is in view, less one line. Measured, one tap from the top reaches the end, on the phone
+  and on the desktop. It takes more height, so one fewer line shows, and it is a second look for a cue the bell already
+  shows as A.
 
 Rulings each would change. Neither changes his words in D1295. Both settle two of the agent's readings in D1295's full
 row (and lesson 46's note):
-- **The count.** The reading says the count is of the lines "wholly out of view". The drawing counts the lines "not wholly
-  in view", as the bell does. Counted the other way, the cue would say "↓ 0 more" while the last line still shows half,
-  then go before the list's end; his words say it goes once the list is at its end. So the drawing follows his words and
-  the bell's rule.
-- **The tap.** A tap scrolls down: the reading stands, drawn and measured. The bell's own cue is not pressable today, so
-  with either option the bell's would be made pressable too, to behave the same everywhere.
+- **The count.** Both use the one rule above ("not wholly in view"), not the reading's "wholly out of view".
+- **The tap.** "A tap on the cue scrolls the list down" is the agent's reading, not his words. A drops it (the cue only
+  says how many, as the bell's does). B keeps it, and the button looks pressable. Whichever he picks, the bell's own cue
+  follows it, so the two stay alike: with A the bell stays as it is; with B the bell's line becomes the same button.
 
 **(e) Recommendation: A.** It is already the app's look for this exact cue, in the bell, so the app has one cue that
-reads and behaves the same everywhere (D754's test). It sits outside the list and hides the least, and it says only
-what the screen does not. B shouts louder, but it adds a second look for the same thing.
+reads and behaves the same everywhere (D754's test). It sits outside the list and hides the least, and it says only what
+the screen does not. On a phone, scrolling the list is what he already does; the cue only tells him to. B is the
+choice if he wants a tap to do the scrolling for him.
 
 **Should he answer once for all?** Yes, recommended: one answer for every list in a window that runs past its foot,
 the windows lesson 46 names. The Leave War's day and the Inputs calendar's day are pictured; the others are the SANS
 calendar's day, the ALL AVAIL window and the changes window, and the bell already has A.
 
 **(f) Worked example.** Saber taps Mon 30 Nov's date on his iPhone, a day 19 men are away. Today the window lists twelve,
-the thirteenth cut at its foot, and nothing tells him seven more are below. With A, the foot reads "↓ 8 more"; one push
-of the list makes it "↓ 5 more"; a tap on it takes him to the end, Trident's line last, and the cue is gone. The Inputs
-calendar's 30 Nov reads the same.
+the thirteenth cut at its foot, and nothing tells him seven more are below. With A, the foot reads "↓ 8 more"; one push of
+the list makes it "↓ 5 more"; at the end, Trident's line last, the cue is gone. With B, the foot reads "↓ 9 more", and a
+tap on it takes him to the end. The Inputs calendar's 30 Nov reads "↓ 8 more" with A.
 
 **(g) For the build.**
 - **The Leave War day.** `src/leavewar/ui/DayPanel.tsx` (the window `lwday`, a `FloatWin` with `rests`). The list scrolls in
   the window's own `.win-body`; the cue goes after it, outside the scroller, as the bell's `.bl-foot` / `.bl-more`
-  (`src/ui/topbits.tsx` lines 85–125, its look in `src/ui/scheduler/02-shell.css`; option B’s button is `.hb-more` in `10-board-history.css`).
+  (`src/ui/topbits.tsx` lines 85–125, its look in `src/ui/scheduler/02-shell.css`; option B's button is `.hb-more` in `10-board-history.css`).
 - **One counter for every window.** Make the bell's `countBelow` (lines whose bottom is past the scroller's bottom + 1 px)
   one shared helper, say a hook taking the scroller and the line selector. Recount on scroll, on open, when the list
   changes (a decision on the day), on the window's resize, and on a phone's two heights (`rests`: 66 dvh and tall).
-- **The tap.** Scroll by the view less one line, and make the bell's cue pressable the same way.
+  **Count after the cue is drawn**, since its words change its height and so how much of the list shows. The bell's
+  layout effect already recounts after every render; the drawing's first count, taken before, printed one too few. A
+  test should pin the printed number to the cut and below lines at the top, part way and at the end.
+- **The tap — only with B.** Scroll by the view less one line, and make the bell's cue the same button. With A, the
+  bell's cue stays as built.
 - **The Inputs and SANS days.** They scroll in `.sd-list` under a pinned `.sd-top` (`25-inputs-calendar.css` line 317,
-  `24-sans-calendar.css` line 17), not in `.win-body`; the cue goes after `.sd-list`. Their list is `overflow:visible` on
-  a phone below some width (lines 324 and 24), so check there which box scrolls.
+  `24-sans-calendar.css` line 17), not in `.win-body` (measured on the Inputs day: the list area 692 px with 1061 px of
+  cards). The cue goes after the list, at the window's foot. Their list is `overflow:visible` on a phone below some width
+  (lines 324 and 24), so check there which box scrolls.
 - **Lines that are cards.** On the Inputs day a "line" is a card (`.icard`); the count's unit must be one entry there too.
 - **The drawing touched only the window.** It added a block after the scroller; nothing in the list changed.
 
@@ -129,7 +155,7 @@ late, so for that frame the dates are cut or missing. Should this be fixed, or l
 **(b) Still open? Yes; the code is unchanged since 23 Sep 26.** Measured tonight. Before each frame was drawn, a timer
 noted where the real dates row stood and whether the pinned copy was there. The browser's own painted frames were also
 recorded.
-- **One frame is 1/60 of a second (16.7 ms)**, measured.
+- **One frame lasts about a sixtieth of a second**, measured.
 - **His PC, the mouse wheel.** 3 runs: in every run 1 frame has the dates row half under the top bar (20 of its 45 px
   still showing, the weekday names gone) and no pinned copy. An earlier run of the same 3 had 2 such frames in two of
   them, so the blink is 1 to 2 frames.
@@ -145,19 +171,22 @@ recorded.
 - **The Quals page** pins its header the same way (the same code shape). Not pictured.
 
 **(c) Pictures:**
-- `q-blink-desk-old-2026-09-23.png` — real, the old frames of 23 Sep 26: a copy of
-  `docs/img/handpass/2026-09-23-lw-monthjump/fixed-desktop-frozen-bar-first-frames.png`, from before the rename and the
-  newer look. Its frame 1 has no dates row at all.
+- `q-blink-desk-old-2026-09-23.png` — real, the old frames of 23 Sep 26, from
+  `docs/img/handpass/2026-09-23-lw-monthjump/fixed-desktop-frozen-bar-first-frames.png`, now tagged on the picture
+  "23 Sep 26, before the rename, a member's view: frame 1 has no dates row", frame 1 ringed. It shows the old name and
+  a member's view, so it is history only; leave it off his page unless the host wants the "it has been there since
+  September" point.
 - `q-blink-desk-today.png` — real, today, his PC: three painted frames in order. Frame 1 has the dates row in its place.
-  Frame 2, ringed in amber, has the row half under the top bar, its weekday names gone, and no pinned copy. Frame 3 has
+  Frame 2, the very next frame, ringed in amber, has the row half under the top bar, its weekday names gone, and no pinned copy. Frame 3 has
   the pinned dates bar drawn, whole.
-- `q-blink-phone-today.png` — real, today, iPhone size, a quick push: frame 1 the row just under the top bar; frames 2
-  and 3, both ringed, the row cut and then none at all; frame 4 the pinned bar drawn.
+- `q-blink-phone-today.png` — real, today, iPhone size, a quick push, each frame cut to the top bar and the dates
+  row's first days and drawn half as large again: frame 1 the row just under the top bar; frames 2 and 3, both ringed,
+  the row cut and then none at all; frame 4 the pinned bar drawn.
 
 **(d) Options:**
 - **A — fix it (recommended).** The pinned bar takes the row's place in the same frame the row reaches the top bar, on
   a desktop and on a phone, and Quals' header the same. No new words; nothing new to see except the blink gone.
-- **B — leave it.** A flash of 17 to 33 thousandths of a second; the item closes.
+- **B — leave it.** A flash of one or two frames, under a twentieth of a second; the item closes.
 
 Neither changes a ruling. A follows D991, which judges a scroll by how smoothly it runs, and D1518's spirit, that a
 pinned bar shows the right thing at every scroll position.
@@ -196,8 +225,8 @@ then the bar. With A, the dates stay in place throughout.
   overflows. Its look and rule are read from its code and copied whole into drawing A.
 - **The SANS calendar's day, the ALL AVAIL window and the changes window**, the rest of lesson 46's places: the brief
   allowed at most two windows; the Inputs calendar's day stands for them.
-- **The cue's tap from part way.** One tap from the top already reaches the end, on the phone and the desktop (measured),
-  so the "part way" pictures were made by a short push of the list instead.
+- **B's tap from part way.** One tap from the top already reaches the end, on the phone and the desktop (measured),
+  so the "part way" pictures were made by a short push of the list instead. A has no tap.
 - **An FO* beside a three-letter code** (the item's own example): it needs a published weekend duty, which is not quick to
   make tonight. CCL beside FO stands for it, and the cell-combos check measured every code.
 - **His own iPhone**: the blink was measured in Chrome at his phone's size, not in Safari on his phone, and his phone's
