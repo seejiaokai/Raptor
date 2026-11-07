@@ -199,7 +199,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
-- [REPO-TIDY] — clear the old worktrees (47 today) after safety checks; moving the walk pictures out is his call.
+- [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
 - [OVERNIGHT-RETRY-TRIAL] — the next /overnight night tries the keep-retrying setting (D885).
 - [PROMPT-AUDIT] — he runs the guide check in a terminal and brings its list back (D886).
@@ -1657,8 +1657,10 @@ with its own tools; ~1.2 GB `raptor-port/docs/` — mostly the walks' screenshot
 **To do:** (1) clear the leftover worktrees — each checked first for unpushed or uncommitted work, only then removed
 (`git worktree list`, then per worktree `git status` and its branch against its remote); (2) before IT clones the repo,
 consider moving the walk screenshots out of it (and out of its history), or IT downloads ~1 GB of pictures with 14 MB of
-code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead. **Place:** (1) at any clean point, a short job;
-(2) before the go-ahead to IT.
+code — put the choice to him with `[RESTRICTED-ENV-WORKFLOW]`'s go-ahead; (3) the night of 6 Nov 26 left three temporary
+build folders outside the repo on his PC — `C:dw1106`, `C:db1106` (each with a link into the app's packages: delete the link
+before the folder) and `C:da1106` (from that night's handoff block, removed 7 Nov 26). **Place:** (1) and (3) at any clean
+point, a short job; (2) before the go-ahead to IT.
 
 ### [GUIDE-MAP-ROWS] The guide's map table: its long rows to the full text too? — OPEN (the guide step, D391, 28 Sep 26)
 **What:** after the guide step the project guide is ~9.5k tokens, not the plan's ~6k. Of what is left, the map table
