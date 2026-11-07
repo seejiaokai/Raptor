@@ -1,0 +1,9 @@
+[bk-walk v8]
+FAIL B5.1 with + Block's menu up, ↓ on ⋯: + Block's menu goes and ⋯'s opens on its first item — one menu — saw {"blockUp":1,"menus":1,"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B5.2 one Escape closes ⋯'s menu, the keys back on ⋯, the board still open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+FAIL B5.3 with + Block's menu up, ↓ on Templates: Templates' own menu opens, the keys in it — one menu — saw {"menus":1,"its":false,"f":{"tag":"BUTTON","id":"","text":"Templates","data":{"daytpladd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"color(srgb 0.231373 0.776471 0.909804 / 0.14)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B5.4 Escape closes it, the keys back on Templates — saw {"tag":"BUTTON","id":"","text":"Templates","data":{"daytpladd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"color(srgb 0.231373 0.776471 0.909804 / 0.14)","inMore":false,"inMenu":false,"inBoard":true}
+FAIL B5.5 a held Enter on + Block: its menu opens on its first pick, nothing added — saw {"menus":1,"f":{"tag":"BUTTON","id":"","text":"Standard3 roles","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":true,"inBoard":false},"b0":1,"b1":2}
+FAIL B5.6 a held Enter on ⋯: its menu opens on Insights, and Insights is not opened — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true},"ins":false}
+FAIL B5.7 widened past 820 with ⋯'s menu up: the menu is gone with its ⋯ — saw true
+FAIL B5.8 the next Escape closes the board, as ✓ Done does — saw true

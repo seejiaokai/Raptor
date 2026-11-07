@@ -3872,3 +3872,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** where a review's report is saved, each claim in its head — who read, blind to what, which commit, how long, why an earlier run failed — is copied from the brief, the run command and the run log, opened at that moment; a claim not found there is left out.
 
 **Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.
+
+### Observation 850: A key held down was never pressed by a keyboard walk — the reader found it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the board-keys job of the night of 7–8 Nov 26 (`claude/board-keys`); numbered past the 849 another open branch holds
+**Skill:** bug-check order (`raptor-port/docs/bug-check-order.md`) — the walk of a keyboard change
+**Type:** open-source
+**Phase/Area:** §7 the walk; §7.11 lessons — the orders a keyboard walk presses
+
+**Issue:** Two keyboard walks (5 Nov and 7 Nov) pressed Enter, Space and the arrows once each and passed. The fresh code reader then asked what a HELD Enter does: a button pressed by Enter's key-down opens a menu and moves the keys onto its first pick, and the same key, still down, repeats on that pick and presses it — on the live app a held Enter on + Block added a duty block nobody chose. The walk could have found it in one step (Playwright's `keyboard.down` twice sends a repeat) but no list of orders named it.
+**Suggested improvement:** in the walk's orders for any change that moves the keys when a control is pressed (a menu that opens on its first item, a window that takes the keys), add "the key held down" beside "the key pressed once"; and in the design guide's §2 keyboard rule, that a repeated key never presses what the first press moved the keys onto.
+**Principle:** When a press moves the focus, the key that pressed is still down: a held key's repeat lands on the new focus. Walk the held key as an order of its own.

@@ -3,7 +3,7 @@
 // build first, the ⋯ and day-bar parts and the glide over two pages FAIL there — the calibration that the walk can see the fault.
 // Every step presses the app's own controls with real keys, a real mouse or a real finger (Chromium's touch pipeline, CDP);
 // the probe bridge (window.CURPAGE / CURWEEK / SBDAY / DAYS / go) is only READ, and `go` switches the page as the nav does.
-//   from raptor-port:  WALK_DIR=<frozen dist> BK_OUT=<pictures folder> [ONLY=b1,b2,b3,b4,g1,g2,g3] [BROWSER=webkit] node scripts/handpass/bk-walk.mjs
+//   from raptor-port:  WALK_DIR=<frozen dist> BK_OUT=<pictures folder> [ONLY=b1,b2,b5,b3,b4,g1,g2,g3] [BROWSER=webkit] node scripts/handpass/bk-walk.mjs
 // BROWSER=webkit walks the menus and the phone's taps in Safari's engine (lessons 10 and 19); the glide's finger needs
 // Chromium's own touch pipeline, so the G parts are Chromium's alone.
 // The build is served from WALK_DIR inside the test browser (isr-serve.mjs) — no server holds a port. Each run empties its folder.
@@ -13,7 +13,7 @@ import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { serveFrozen } from './isr-serve.mjs'
 
-const VERSION = 'bk-walk v7'
+const VERSION = 'bk-walk v8'
 const HERE = dirname(fileURLToPath(import.meta.url))
 const OUT = process.env.BK_OUT || join(HERE, '../../docs/img/handpass/2026-11-08-board-keys/walk')
 const URL = 'http://localhost:4394/'
@@ -205,6 +205,62 @@ async function b2(w) {
   await key(w, 'Escape', 250)
 }
 
+/* ---------- B5 the two blind reads' fixes (8 Nov 26), on the same narrow window: one board menu at a time by the keys
+   (Astra's finding 1; Astra's finding 2 and Opus's finding 2), a held Enter picks nothing (Opus's question 2), a window
+   widened past 820 with the ⋯ menu up (Opus's question 3) ---------- */
+async function b5(w) {
+  const P = w.page
+  if (!(await boardUp(w))) await openBoard(w)
+  const menus = () => P.evaluate(() => [...document.querySelectorAll('.wavemenu')].filter(m => m.getBoundingClientRect().width > 0).length)
+  const blocks = () => P.evaluate(() => (window.DAYS[window.SBDAY].dutywaves || []).length)
+  const heldEnter = async () => { await P.keyboard.down('Enter'); await P.waitForTimeout(120); await P.keyboard.down('Enter'); await P.waitForTimeout(60); await P.keyboard.down('Enter'); await P.keyboard.up('Enter'); await P.waitForTimeout(300) }
+  /* + Block's menu up by the mouse; the keys reach ⋯ as a keyboard user's do; ↓ */
+  await press(w, '#sbBoard [data-dwadd]'); await P.waitForTimeout(150)
+  const blockUp = await menus()
+  await P.locator('#sbMore').focus(); await key(w, 'ArrowDown', 300)
+  let f = await focusAt(w)
+  await shot(w, 'b5-more-over-block')
+  check('B5.1', 'with + Block\'s menu up, ↓ on ⋯: + Block\'s menu goes and ⋯\'s opens on its first item — one menu', blockUp === 1 && (await menus()) === 0 && (await moreOpen(w)) && f?.id === 'sbMoreInsights', { blockUp, menus: await menus(), f })
+  await key(w, 'Escape', 300)
+  f = await focusAt(w)
+  check('B5.2', 'one Escape closes ⋯\'s menu, the keys back on ⋯, the board still open', !(await moreOpen(w)) && f?.id === 'sbMore' && (await boardUp(w)), { f, board: await boardUp(w) })
+  /* + Block's menu up by the mouse; the keys reach the day bar's Templates; ↓ */
+  const tpl = P.locator('#sbBoard [data-daytpladd]').filter({ visible: true }).first()
+  if (await tpl.count()) {
+    await press(w, '#sbBoard [data-dwadd]'); await P.waitForTimeout(150)
+    await tpl.focus(); await key(w, 'ArrowDown', 300)
+    f = await focusAt(w)
+    const its = await P.evaluate(() => !!document.querySelector('.wavemenu [data-daytplsave]'))
+    await shot(w, 'b5-templates-over-block')
+    check('B5.3', 'with + Block\'s menu up, ↓ on Templates: Templates\' own menu opens, the keys in it — one menu', (await menus()) === 1 && its && !!f?.inMenu, { menus: await menus(), its, f })
+    await key(w, 'Escape', 250)
+    f = await focusAt(w)
+    check('B5.4', 'Escape closes it, the keys back on Templates', (await menus()) === 0 && f?.data?.daytpladd != null, f)
+  } else notWalked('B5.3–4', 'the day bar\'s Templates is not drawn at this width')
+  /* a held Enter: the key down, two repeats, then up */
+  const b0 = await blocks()
+  await P.locator('#sbBoard [data-dwadd]').filter({ visible: true }).first().focus()
+  await heldEnter()
+  f = await focusAt(w)
+  await shot(w, 'b5-block-held-enter')
+  check('B5.5', 'a held Enter on + Block: its menu opens on its first pick, nothing added', (await menus()) === 1 && !!f?.inMenu && (await blocks()) === b0, { menus: await menus(), f, b0, b1: await blocks() })
+  await key(w, 'Escape', 250)
+  await P.locator('#sbMore').focus()
+  await heldEnter()
+  f = await focusAt(w)
+  const ins = await P.evaluate(() => { const m = document.getElementById('insightModal'); return !!m && !m.hidden })
+  await shot(w, 'b5-more-held-enter')
+  check('B5.6', 'a held Enter on ⋯: its menu opens on Insights, and Insights is not opened', (await moreOpen(w)) && f?.id === 'sbMoreInsights' && !ins, { f, ins })
+  /* the window widened past 820 with the menu up: the menu goes with its ⋯, and the next Escape is the board's */
+  await P.setViewportSize({ width: 1100, height: 760 }); await P.waitForTimeout(400)
+  const still = await P.evaluate(() => !!document.getElementById('sbMoreMenu'))
+  await shot(w, 'b5-widened')
+  check('B5.7', 'widened past 820 with ⋯\'s menu up: the menu is gone with its ⋯', !still, still)
+  await key(w, 'Escape', 500)
+  check('B5.8', 'the next Escape closes the board, as ✓ Done does', !(await boardUp(w)), await boardUp(w))
+  await P.setViewportSize(SIZES.narrow.viewport); await P.waitForTimeout(300)
+}
+
 /* ---------- B3 a plain user's round at his PC, by the keys (D1557): open a day's board, add a block, look in the menus,
    leave by ✓ Done, see the block on the week, undo it ---------- */
 async function b3(w) {
@@ -225,7 +281,10 @@ async function b3(w) {
   check('B3.2', '+ Block → Empty block by the keys: a block added on the board, the keys back on + Block', blocks1 === blocks0 + 1 && f?.data?.dwadd != null, { blocks0, blocks1, f })
   /* Q2's picture: how a button that opens a board menu is drawn under the keys (as on main — not changed tonight) */
   const clip = await P.evaluate(() => { const r = document.activeElement.getBoundingClientRect(); return { x: Math.max(0, r.left - 60), y: Math.max(0, r.top - 30), width: r.width + 120, height: r.height + 60 } })
+  /* WebKit refused this clip on 8 Nov 26 ("clipped area … outside the resulting image") though the button stood ringed in
+     view — the picture is Chromium's (the question is how the app draws it, not the engine), so a refusal is noted, not fatal */
   await P.screenshot({ path: join(OUT, `${String(++n).padStart(3, '0')}-desktop-q2-block-button-under-keys.png`), clip })
+    .catch(e => note('B3.Q2', `the button's picture was not taken here: ${String(e.message).split('\n')[0]} — clip ${JSON.stringify(clip)}`))
   /* Templates and the plans selector looked into and left by Escape: nothing changes */
   for (const [nm, s] of [['Templates', '#sbTpl'], ['the plans selector', '#schedBoard [data-planmenu]']]) {
     const b = P.locator(s).filter({ visible: true }).first()
@@ -390,9 +449,9 @@ async function g3(w) {
 }
 
 /* ---------- run ---------- */
-if (run('b1') || run('b2')) {
+if (run('b1') || run('b2') || run('b5')) {
   const w = await session('narrow')
-  for (const [id, f] of [['b1', b1], ['b2', b2]]) {
+  for (const [id, f] of [['b1', b1], ['b2', b2], ['b5', b5]]) {
     if (!run(id)) continue
     try { await f(w) } catch (e) { say(`FAIL ${id}.ERROR [narrow] the script stopped: ${String(e.message).split('\n')[0]}`); await shot(w, `${id}-error`).catch(() => {}) }
   }

@@ -1,0 +1,58 @@
+[bk-walk v8]
+PASS B1.1 Enter on ⋯ opens its menu, the keys on its first item (Insights), drawn as under the keys — saw {"tag":"BUTTON","id":"sbMoreInsights","text":"Insights","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true}
+NOTE B1.1 — the ⋯ item under the keys is drawn with outline rgb(16, 16, 16) auto and background rgb(32, 38, 46) — the other board menus: a rgb(59, 198, 232) solid ring
+PASS B1.2 ↓ walks the menu and comes round to its first item (sbMoreInsights, sbMoreSort, sbMoreWide) — saw ["sbMoreInsights","sbMoreSort","sbMoreWide","sbMoreInsights"]
+PASS B1.3 ↑ from the first item comes round to the last — saw {"tag":"BUTTON","id":"sbMoreWide","text":"Desktop layout","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true}
+PASS B1.4 Escape closes the menu, the keys back on ⋯ (ringed), the board still open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+PASS B1.5 ↓ on the closed ⋯ opens it on its first item — saw {"tag":"BUTTON","id":"sbMoreInsights","text":"Insights","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true}
+PASS B1.6 opened by the mouse: the menu open, the keys not in it, no item ringed — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true},"ringed":false}
+PASS B1.7 then ↓ on ⋯: the keys go into the open menu, on its first item — saw {"tag":"BUTTON","id":"sbMoreInsights","text":"Insights","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true}
+PASS B1.8.1 the layout switch picked by Enter (to the desktop layout): the layout changes, the menu closes, the keys on ⋯ — saw {"wide":true,"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B1.8.2 the layout switch picked by Enter (back): the layout changes, the menu closes, the keys on ⋯ — saw {"wide":false,"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B1.9 Insights picked by Enter: its window opens — saw true
+PASS B1.10 Escape closes Insights, the keys back on ⋯, the board still open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+PASS B1.11 Sort all picked by Enter: its question opens — saw true
+PASS B1.12 Escape closes Sort all's question, nothing sorted, the keys back on ⋯, the board open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+PASS B1.13 Tab past the last item: the menu closes, the keys on the board — saw {"tag":"INPUT","id":"searchB","text":"","data":{},"ring":true,"outline":"rgb(241, 244, 247) none","bg":"rgba(0, 0, 0, 0)","inMore":false,"inMenu":false,"inBoard":true}
+PASS B1.14 a click outside closes the menu opened by the mouse — saw false
+PASS B2.1 ↓ on the day bar's Templates opens its menu, the keys on its first item — saw {"tag":"BUTTON","id":"","text":"+ Save this day as a tem","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":true,"inBoard":false}
+PASS B2.2 Escape closes it, the keys back on Templates — saw {"tag":"BUTTON","id":"","text":"Templates","data":{"daytpladd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"color(srgb 0.231373 0.776471 0.909804 / 0.14)","inMore":false,"inMenu":false,"inBoard":true}
+PASS B2.3 Enter opens it the same way (as built before tonight) — saw {"tag":"BUTTON","id":"","text":"+ Save this day as a tem","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":true,"inBoard":false}
+PASS B5.1 with + Block's menu up, ↓ on ⋯: + Block's menu goes and ⋯'s opens on its first item — one menu — saw {"blockUp":1,"menus":0,"f":{"tag":"BUTTON","id":"sbMoreInsights","text":"Insights","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true}}
+PASS B5.2 one Escape closes ⋯'s menu, the keys back on ⋯, the board still open — saw {"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":false,"inBoard":true},"board":true}
+PASS B5.3 with + Block's menu up, ↓ on Templates: Templates' own menu opens, the keys in it — one menu — saw {"menus":1,"its":true,"f":{"tag":"BUTTON","id":"","text":"+ Save this day as a tem","data":{"daytplsave":"1"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":true,"inBoard":false}}
+PASS B5.4 Escape closes it, the keys back on Templates — saw {"tag":"BUTTON","id":"","text":"Templates","data":{"daytpladd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"color(srgb 0.231373 0.776471 0.909804 / 0.14)","inMore":false,"inMenu":false,"inBoard":true}
+PASS B5.5 a held Enter on + Block: its menu opens on its first pick, nothing added — saw {"menus":1,"f":{"tag":"BUTTON","id":"","text":"Standard3 roles","data":{"blktpl":"std"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgb(26, 31, 38)","inMore":false,"inMenu":true,"inBoard":false},"b0":1,"b1":1}
+PASS B5.6 a held Enter on ⋯: its menu opens on Insights, and Insights is not opened — saw {"f":{"tag":"BUTTON","id":"sbMoreInsights","text":"Insights","data":{},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":true,"inMenu":false,"inBoard":true},"ins":false}
+PASS B5.7 widened past 820 with ⋯'s menu up: the menu is gone with its ⋯ — saw false
+PASS B5.8 the next Escape closes the board, as ✓ Done does — saw false
+PASS B3.1 Enter on Wednesday's date opens its board, the keys on the board — saw {"f":{"tag":"DIV","id":"schedBoard","text":"CalendarWednesday Jul 15","data":{"kblayer":""},"ring":true,"outline":"rgb(241, 244, 247) none","bg":"rgb(11, 13, 16)","inMore":false,"inMenu":false,"inBoard":true},"day":2}
+PASS B3.2 + Block → Empty block by the keys: a block added on the board, the keys back on + Block — saw {"blocks0":1,"blocks1":2,"f":{"tag":"BUTTON","id":"","text":"+ Block","data":{"dwadd":"2"},"ring":true,"outline":"rgb(16, 16, 16) auto","bg":"rgb(32, 38, 46)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B3.Templates Templates opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.the plans selector the plans selector opened by Enter and left by Escape: the block still there, the board open — saw true
+PASS B3.3 ✓ Done by Enter: the board closes, the week is back — saw {"board":false}
+NOTE B3.3 — after ✓ Done the keys are on {"tag":"SPAN","id":"","text":"Jul 15","data":{"sbday":"2"},"ring":true,"outline":"rgb(59, 198, 232) solid","bg":"rgba(0, 0, 0, 0)","inMore":false,"inMenu":false,"inBoard":false}; Wednesday's week card carries 0 block parts
+PASS B3.4 the block added on the board is on the week's Wednesday — saw 2
+PASS B3.5 Undo by Enter takes the block back off — saw 1
+PASS B4.1 a tap on ⋯ opens its menu; no item takes the keys or a ring — saw {"op":true,"f":{"tag":"BUTTON","id":"sbMore","text":"⋯","data":{},"ring":false,"outline":"rgb(59, 198, 232) none","bg":"rgba(59, 198, 232, 0.16)","inMore":false,"inMenu":false,"inBoard":true}}
+PASS B4.2 a tap on Insights opens its window, the menu gone — saw true
+PASS B4.3 Insights closed: the board still open — saw true
+PASS B4.4 a tap on the layout switch changes the layout, the menu gone — saw true
+PASS B4.5 and back — saw false
+PASS B4.6 ✓ Done closes the board — saw false
+NOTE G1 — attempt 1: editsched crossed 13/07/2026→20/07/2026; viewsched shown 402px wide at its scroll 12, flicked, now on 13/07/2026; covered (ms) Edit 553→940, View 1020→1417; frames with BOTH weeks covered: 0, most copies at once: 2, copies up after the flick: 2
+NOTE G1 — attempt 1: the second cross did not land inside the first slide — tried again
+NOTE G1 — attempt 2: editsched crossed 13/07/2026→20/07/2026; viewsched shown 402px wide at its scroll 2340, flicked, now on 27/07/2026; covered (ms) Edit 557→1330, View 952→1330; frames with BOTH weeks covered: 22, most copies at once: 4, copies up after the flick: 4
+PASS G1.1 a cross on editsched, then one on viewsched begun inside its slide: afterwards neither week is left covered or unscrollable, the page not clipped — saw {"e":{"pe":"","ox":"","cpe":"none"},"v":{"pe":"","ox":"","cpe":"auto"},"body":""}
+PASS G1.2 and no glide copy is left on screen — saw 0
+PASS G1.swipe.editsched afterwards a finger swipe on Edit Schedule's week moves it a day, in the same week — saw {"from":12,"to":402}
+PASS G1.swipe.viewsched afterwards a finger swipe on View-only Sched's week moves it a day, in the same week — saw {"from":402,"to":12}
+NOTE G2 — attempt 1: viewsched crossed 27/07/2026→03/08/2026; editsched shown 402px wide at its scroll 402, flicked, now on 03/08/2026; covered (ms) Edit null→null, View 433→832; frames with BOTH weeks covered: 0, most copies at once: 2, copies up after the flick: 2
+NOTE G2 — attempt 1: the second cross did not land inside the first slide — tried again
+NOTE G2 — attempt 2: viewsched crossed 03/08/2026→10/08/2026; editsched shown 402px wide at its scroll 12, flicked, now on 03/08/2026; covered (ms) Edit 737→1133, View 438→1133; frames with BOTH weeks covered: 20, most copies at once: 4, copies up after the flick: 4
+PASS G2.1 a cross on viewsched, then one on editsched begun inside its slide: afterwards neither week is left covered or unscrollable, the page not clipped — saw {"e":{"pe":"","ox":"","cpe":"auto"},"v":{"pe":"","ox":"","cpe":"auto"},"body":""}
+PASS G2.2 and no glide copy is left on screen — saw 0
+PASS G2.swipe.viewsched afterwards a finger swipe on View-only Sched's week moves it a day, in the same week — saw {"from":2340,"to":1962}
+PASS G2.swipe.editsched afterwards a finger swipe on Edit Schedule's week moves it a day, in the same week — saw {"from":1962,"to":1572}
+PASS G3.1 one cross on View-only Sched (Sunday → next Monday): it crosses, the week takes touches and scrolls again — saw {"wk0":"03/08/2026","wk":"10/08/2026","st":{"e":{"pe":"","ox":"","cpe":"none"},"v":{"pe":"","ox":"","cpe":"auto"},"body":""}}
+PASS G3.swipe.viewsched afterwards a finger swipe on View-only Sched's week moves it a day, in the same week — saw {"from":12,"to":402}
