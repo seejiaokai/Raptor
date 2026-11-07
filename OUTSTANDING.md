@@ -171,7 +171,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [LOGIC-WORDS-WORKHOURS] — the Logic page says the long day and Insights hours of a line with nothing entered count from the default rally; they count from take-off less the step — his question, which is right (older; found 19 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
-- [STACK-LEFTOVERS] — four small loose ends from the Codex stack: two Insights edges (with the next change to its role question), a shared wording helper and an old audit script's three checks (with their own jobs), a "back to last published" button (only if he raises it).
+- [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
@@ -1139,7 +1139,11 @@ its own after it (a change to how walks are run — its guide wording read by As
 
 ### [STACK-LEFTOVERS] Small loose ends named in the Codex stack's finished items, kept when those items went to the archive (filed 7 Oct 26)
 Each stood inside an item that is otherwise built, checked and live (PR #481), and none was settled in the stack's check
-(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. (1) **Insights, two edges never tried**
+(`raptor-port/docs/handpass/2026-10-05-codex-stack-check.md`). All low. **(1) and (2) done 8 Nov 26** on
+`claude/insights-leftovers` (evidence `raptor-port/docs/handpass/2026-11-08-insights-leftovers.md`): (1)'s two edges tried
+and found no fault — the "pending" chip and the board's "Not yet signed" count the saved typing at once; Templates is never
+offered while a look is open — pinned by `raptor-port/src/ui/insights-leftovers.test.tsx`; (2) built as
+`roleAnswerName` / `roleSideWord`, the words unchanged. (1) **Insights, two edges never tried**
 (`[INSIGHTS-MISSION-MIX]`, the Opus interim read of 3 Oct 26): what a published day's "changes to go out" strip shows after
 "Choose mission role" is pressed with unsaved typing in the Remarks box; and the week's Templates button while a saved
 plan is being looked at. (2) **Insights, one tidy-up** (D489's note): the change history and Undo each work out the wording
@@ -1149,7 +1153,13 @@ moves, an issued key rewritten, where an input's Undo lands) — written down th
 again when that script is next run. (4) **Discard marks — not ruled, his to raise:** a button that puts a published day
 back to its last published version (`[DISCARD-MARKS-REMOVE]`, D488). The second cheaper-model trial — one small fix built
 by a Sonnet helper — ran 21 Oct 26 on `[OG-TAG-OVER-COUNT]` (archived; the verdict: `raptor-port/docs/handpass/2026-10-21-look-keys.md` §12). **Place (the agent's line):** (1) with the next change to Insights'
-role question; (2) and (3) with their own jobs; (4) only if he raises it.
+role question; (2) and (3) with their own jobs; (4) only if he raises it. **(5) Filed 8 Nov 26, D489's tidiness note from
+the fresh Opus read of job 6** (`raptor-port/docs/superpowers/briefs/2026-11-08-insights-leftovers-read-opus.md`, low 3):
+a line's callsign is still tidied for the Blue/Red answer in three bodies — the question's name
+(`src/state/mission-roles.ts`, no 80-letter cut), the history's name for a copied answer (`src/state/changelines.ts`
+`roleFormationName`) and `src/engine/mission-role.ts roleAnswerName`; they agree today, and one shared body would stop a
+later change to one making a copied answer's history line name the line differently from a typed one. Not a fault now.
+**Place:** with the next change to Insights' role question, or with `[CODE-TIDY-AUDIT]`. **Now open: (3), (4), (5).**
 **Seen 10 Oct 26, not corrected (a helper's scan of the backlog's own status lines):** `[INSIGHTS-CLOSE-STAYS-VISIBLE]`, `[LOGIC-STICKY-SEARCH-COMPACT]` and `[TRK-FLIGHT-LABEL-READABILITY]` still say "owner look and Claude reads pending" although the workflow UI pass is live (PR #481, 6 Oct 26) — read each, then archive it or say what is left; `[ITFLOW-OIL-RESHOOT]` waits on a merge that has happened (PR #469).
 
 ### [IMPECCABLE-UPDATE] Move Impeccable to v4.1.3, the last version built from readable scripts — AFTER the calendar job (D625; the newest version is not taken, D623 — 7 Oct 26)
