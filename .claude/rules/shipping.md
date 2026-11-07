@@ -19,14 +19,17 @@ whole in `raptor-port/docs/archive/raptor-claude-md-2026-09-24.md`. The rulings 
   the old "auto-merge is the default" rule of 24 Aug 26. Parallel chats merge ONE AT A TIME, each on his word;
   the later one merges `main` in first and renumbers its own clashing rulings (D78) — chats may run side by side as long as they never clash in anything, and above all two never merge at once (D1746, 7 Nov 26):
   **every merge into `main`** — on his word, a notes-only pull request merging by itself (D1407), an "auto merge live" run (D1093) —
-  is made in the Bash tool from the repo root: (1) take the merge lock, `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node
-  raptor-port/scripts/gatelock.mjs take "<branch> — merge <PR>"` (it waits while another chat holds it); (2) `git fetch origin main
-  <branch>`, then `git merge-base --is-ancestor origin/main origin/<branch> && echo level || echo behind` — behind: release the
-  lock, bring `main` in, wait for that run to pass and start again at (1); his word still stands unless bringing `main` in changed
-  the app's code, which goes back for his look (D1742); (3) level, its last run green: `gh pr merge <PR> --merge` — never `--auto`,
-  which merges later, outside the lock (`main` does not make GitHub ask for an up-to-date branch, so this check is the only guard);
-  (4) release the lock whatever happened — merged, refused or stopped — with its folder written out:
-  `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs release` (a bare `release` deletes the checks lock, D228).
+  is made in the Bash tool from the repo root, each command whole on ONE line (split, it runs without the folder setting and takes the checks lock):
+  (1) take the merge lock — the Bash call's timeout 600000 — and go on only once it prints `gatelock: taken`:
+  `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs take "<branch> — merge <PR>"`
+  (2) `git fetch origin main <branch>`, then `git merge-base --is-ancestor origin/main origin/<branch> && echo level || echo behind` —
+  behind: release the lock; once no run of the branch is queued or in progress (D151) bring `main` in, wait for that run to pass and
+  start again at (1); his word still stands unless settling a clash changed this branch's own app code, which goes back for his look
+  (D1742); (3) level, its last run green: `gh pr merge <PR> --merge` — never `--auto`, which merges later, outside the lock (`main`
+  does not make GitHub ask for an up-to-date branch, so this check is the only guard); (4) release a lock you took, whatever happened
+  next — merged, refused or stopped — never after a `take` stopped while it waited (release deletes the folder whoever holds it), and
+  with its folder written out (a bare `release` deletes the checks lock, D228):
+  `RAPTOR_GATE_LOCK='C:/Users/User/.raptor-merge-lock' node raptor-port/scripts/gatelock.mjs release`
 
 ## The loop, change by change (owner, 2 Sep 26 and 24 Aug 26)
 - **Not held to the end (D1087, 20 Oct 26 — "Yes agreed"):** two to four related jobs of one area share one branch, one

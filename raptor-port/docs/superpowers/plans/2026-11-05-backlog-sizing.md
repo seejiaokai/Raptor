@@ -63,7 +63,7 @@ on a phone) · [LOGIC-WORDS-WORKHOURS] · [OIL-EARN-DAY-SWITCH-WORDS] · [OIL-IN
 
 ## 4. His questions in this plan — ANSWERED 5 Nov 26
 
-**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round.
+**D1716: "Skip records, leave rest"** — React Doctor is set to skip `docs/mock/`, `docs/img/` and `reference/` (night 3, job 7 — [CI-SMOKE-TIMEOUT]); the tests' and scripts' 165 copy notes are left. **D1717: "Fixes first"** — nights 1–3, then the pictures round (for 7 Nov 26, narrowed by D1747 — §3).
 
 As they were put:
 

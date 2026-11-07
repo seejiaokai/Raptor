@@ -37,9 +37,9 @@ the later merge keeps both (D78).
 - **Beside it, each in its own chat:** chat 2, the rules diet's step 4, runs the night (his yes); chat 3 draws the pictures round (D1747). Neither touches the app's code; this chat's jobs touch no rules file (D1746).
 - **Not tonight:** [SHELL-SCRIPT-GUARD] (a hook — done while he is awake); [MERGE-ONCE-RECORDS] and the documents job (chat 2 rewrites those files); [REPO-TIDY], [MAIN-CHECKOUT-STALE] (deleting old worktrees unattended).
 - **Waiting on him:** pull request 661 (chat 1 — its "merge live" there; chat 1 also put a question to him about the kit); this branch's pull request; whether Astra goes back to standing reviewer after Monday (D590) — recommended yes.
-- **Chats (D1744):** 1 the M365 package (done); 2 the rules diet's step 4 (overnight); 3 the pictures round (overnight); the next chat takes 4.
+- **Chats (D1744):** 1 the M365 package (done; pull request 661 live, its D1745 and D1749); 2 the rules diet's step 4 (overnight, with his "auto merge live" for it — its own ruling, renumbered from D1748 when it brings `main` in; part one live, pull request 663); 3 the pictures round (overnight); 4 the M365 follow-up, started by chat 1, waiting for IT's reply; the next chat takes 5.
 - **Questions waiting for him:** none yet.
-- **Night log:** 23:35 the night written.
+- **Night log:** 23:35 the night written. 00:50 job 1 done — pull request 664 opened (Auto-fix switched off); it clashes with `main` (661, 663 went live after it was cut), so `main` is brought in next. Job 0: the second fresh reader's points applied (the take with a long timeout, a lock released only by its taker, each command on one line, D151 before bringing `main` in) and both reads saved (`raptor-port/docs/superpowers/briefs/2026-11-07-merge-lock-reads.md`); **still owed on this branch:** bring `main` in — the How we work rulings are a page since pull request 663, so D1746 and D1747 go onto the page by its route — then open its pull request.
 - **Rulings:** D1746, D1747.
 <!-- /now -->
 
