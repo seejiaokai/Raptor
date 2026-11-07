@@ -3872,3 +3872,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** where a review's report is saved, each claim in its head — who read, blind to what, which commit, how long, why an earlier run failed — is copied from the brief, the run command and the run log, opened at that moment; a claim not found there is left out.
 
 **Principle:** A provenance line is a record later comparisons rely on; take each of its facts from the brief and the run log, never from the memory of setting the run up.
+
+### Observation 847: A side chat's brief pointed at a handoff block that lives only on another branch
+
+**Status:** OPEN
+**Date:** 7 Nov 26
+**Session context:** Chat 3 of the overnight run of 7–8 Nov 26 (the pictures round), started by the coordinating chat; numbered past 846, which another open branch holds.
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** starting the side chats of a night (their opening briefs)
+
+**Issue:** The brief told the side chat to cut its branch from `main` and then read the handoff file's block for the night. That block had been written on the coordinating chat's own branch and was not on `main`, so the fresh branch did not have it; the side chat found it only by searching every remote branch's copy of the file.
+**Suggested improvement:** In the overnight guide's step that starts side chats, the brief names the branch that carries the night's block (or the block is pushed to `main` first, or pasted into the brief).
+**Principle:** A pointer handed to a fresh worker must resolve from where that worker starts; state written on one branch is invisible to a worker started from another.

@@ -1,0 +1,154 @@
+{
+ "q1": {
+  "pc": {
+   "head": "2 pending",
+   "aln": 1,
+   "groundName": "MEETING",
+   "groundAln": "1",
+   "groundDeco": "underline dotted rgb(59, 198, 232)",
+   "unavName": "LL",
+   "unavTag": "BUTTON",
+   "unavAln": null,
+   "unavDeco": "none solid rgb(182, 192, 203)",
+   "unavRowText": "LL\nC\nBolt\nC\nLATE\ntill 15 Jul"
+  },
+  "board": {
+   "ground": {
+    "cls": "sb-arow c6r gr-frominput lateinp",
+    "aln": [
+     "TEXTAREA.ain=1"
+    ],
+    "nameOutline": "dotted 1px rgb(59, 198, 232)"
+   },
+   "unav": {
+    "cls": "sb-arow c6r inprow",
+    "aln": 0,
+    "name": "BUTTON LL",
+    "nameOutline": "none 3px rgb(221, 168, 245)",
+    "text": "LL LATE C Bolt C till 15 Jul"
+   }
+  },
+  "phone": {
+   "grow": true,
+   "gAln": "1",
+   "uAln": null
+  }
+ },
+ "q2": {
+  "pc": {
+   "notices": 7,
+   "days": 14,
+   "text": "This day's published schedule was created by an older version of the app and can't be shown here. It has not changed — open it on the device that created it."
+  },
+  "toast": {
+   "text": "This week is locked. It was published by an older version of the app, so it can’t be edited.",
+   "cls": "",
+   "r": [
+    510,
+    800,
+    1026,
+    838
+   ]
+  },
+  "windowStillOpen": 1,
+  "phone": 7
+ },
+ "q3": {
+  "logic_pc": {
+   "rally": "An empty R box suggests take-off less this time, and \"+ In-time\" fills in the same time. With no in-time or rally entered, a flyer's day starts here: his long day, OIL and Insights hours count from it. It also sets when the tight crew-rest advisory shows.",
+   "step": "A man counts as busy from step: clashes and the crew list follow it. It and dekit set the shortest tight turn. It also decides when a LATE SHOW crew-rest ring turns from dashed to solid.",
+   "value": "3h"
+  }
+ },
+ "q4": {
+  "pc": {
+   "listtools": [
+    12,
+    121,
+    1524,
+    174
+   ],
+   "inNew": [
+    12,
+    129,
+    78,
+    165
+   ],
+   "range": [
+    86,
+    129,
+    219,
+    165
+   ],
+   "table": [
+    32,
+    180,
+    1504,
+    956
+   ],
+   "display": "flex",
+   "window": [
+    1090,
+    96,
+    1520,
+    840
+   ],
+   "drawnOpen": {
+    "inNew": [
+     1458,
+     129,
+     1524,
+     165
+    ],
+    "table": [
+     32,
+     180,
+     1078,
+     1023
+    ],
+    "wrapPad": "446px"
+   },
+   "drawnClosed": {
+    "inNew": [
+     1458,
+     129,
+     1524,
+     165
+    ]
+   },
+   "medNew": [
+    1444,
+    131,
+    1524,
+    167
+   ],
+   "medHead": [
+    12,
+    121,
+    1524,
+    178
+   ],
+   "medWindow": [
+    1090,
+    96,
+    1520,
+    840
+   ],
+   "medPad": "446px"
+  },
+  "phone": {
+   "inNew": [
+    8,
+    102,
+    64,
+    138
+   ],
+   "medNew": [
+    8,
+    103,
+    88,
+    139
+   ]
+  }
+ }
+}
