@@ -191,6 +191,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs built 8 Nov 26 (`claude/ci-smoke-timeout`, his "merge live"); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [WEEK-GLIDE-TWO-PAGES] — a cross on Edit Schedule, a switch to View-only and a cross there all inside half a second would leave Edit Schedule unable to scroll until a reload (the fresh read of 3 Nov 26; practically unreachable); low — watch.
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
@@ -2234,6 +2235,20 @@ stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over ab
 changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
 (a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
 `.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
+**Astra's read (8 Nov 26, the morning after — D1743; the night's helper had run only the fresh Opus read):** no finding in the
+change — it measured the same 20 green runs (build 0:54 at most, unit 7:29, geometry 16:26, the smoke half 17:41, the smoke
+step 3:53), found every test job covered and each limit where GitHub reads it, and nothing else in the workflow changed; one
+older gap, filed as [TESTS-REQUIRED-ON-MAIN] (`raptor-port/docs/superpowers/briefs/2026-11-08-ci-smoke-timeout-read-astra.md`).
+
+### [TESTS-REQUIRED-ON-MAIN] GitHub requires only the secrets scan before a merge to main, not the tests (found 8 Nov 26 by Astra; the agent's)
+**Seen:** Astra's read of [CI-SMOKE-TIMEOUT]'s change; checked by the host the same morning — the one ruleset on `main`
+("main: secrets scan", D1540) requires only `secrets scan`, and `main` has no branch protection. So a pull request whose test
+jobs failed or timed out can still be merged on GitHub; today only the merge steps keep it out (D1746 step 3: "its last run
+green", read by hand). **The fix, as Astra gives it:** one summary job in `deploy.yml` that runs on every pull request, passes a
+notes-only one (the gates skip those by `paths-ignore`) and otherwise passes only when every test job of the run passed; that
+one job then made a required check on `main` in the same ruleset — never the path-filtered jobs themselves, or a notes-only pull
+request could never merge. **Place:** with the checks batch (night 3); the workflow job his "merge live", the ruleset setting
+his own click, as D1540's was — the steps put to him with the build.
 
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
