@@ -288,8 +288,9 @@ const RULING_BYTES = [
   /* how-we-work 61000 -> 25000 (7 Nov 26, claude/rules-diet-step-4-7b92cb, owner D1735): the rules diet's step 4 turned
      the file into a page of how it works now - 21,430 bytes, every live general ruling stated on it or in the five
      always-loaded rule files, ten spent permissions archived. Reset about a sixth above, room for the next rulings - a
-     tripwire, not a target (D141). */
-  ['.claude/rules/decisions/how-we-work.md', 0, 25000],   // reset 7 Nov 26 from 61000 (above): the file became a page (D1735)
+     tripwire, not a target (D141). Raised 25000 -> 36000 the same night: the step's account by requirement found 66
+     gaps, parts of rulings the first page had dropped or narrowed, and restoring them took it to 31,022 bytes (D138). */
+  ['.claude/rules/decisions/how-we-work.md', 0, 36000],   // reset 7 Nov 26 from 61000, raised to 36000 (above): the file became a page (D1735), its dropped parts restored (D138)
   ['.claude/rules/decisions/people-accounts.md', 2, 22000],
   /* scheduler 62000 -> 69000 and Tracker 18000 -> 19000 (7 Oct 26, D609 - the documents pass he ordered): every row
      that was spent or replaced went to the archive first (the scheduler's D515, D549, D556, D559; the Tracker's D190,
