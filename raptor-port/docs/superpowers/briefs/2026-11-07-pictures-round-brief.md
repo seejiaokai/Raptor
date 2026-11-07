@@ -70,3 +70,27 @@ one page he reads. The plan's list: `raptor-port/docs/superpowers/plans/2026-11-
   could not picture, and why.
 - Your final message to the host: two or three lines — the questions done, any gone stale, anything you are unsure of.
   Do not paste the notes; the host reads the file.
+
+## The page (built after the fixes, by a fresh helper; checked by the host)
+
+- **File:** `raptor-port/docs/img/handpass/2026-11-07-pictures-round/index.html`, pictures referenced by their bare file
+  names. **Look:** round 4's page, `raptor-port/docs/img/handpass/2026-11-05-consistency-round4/index.html` — copy its
+  style block (tokens, light and dark, the zoom-on-tap, `.pair`, `.phones`, `.rec`, `.tag` / `.tag.drawn`, `.top`) so he
+  reads it as the same series — but in the Artifact form: no `<!DOCTYPE>`, `<html>`, `<head>` or `<body>` of its own; a
+  `<title>Pictures Round 7 Nov</title>`, `<meta name="claude:viewport-fit-sides" content="cover">`, the side gutter with
+  the two `max(16px, env(safe-area-inset-…))` paddings, `body` given its token background. No outside scripts or fonts.
+- **At the very top (D1237, D1363):** "Your questions" — one line each: the number linking to its section, the question
+  in a few plain words, and **the recommendation in bold**; then one line saying "All as recommended" answers every one,
+  and that nothing is changed in the app until he answers. Then one short line on what went stale ("Two letters on one
+  Leave War day: already fixed by your 6 Nov pick — nothing to ask").
+- **Order:** open questions only, newest first — all are of tonight, so group by where he meets them: the Scheduler Board
+  (4), the schedule and Logic (3), the Inputs list (1), the Leave War (2), the Tracker (2), the typed marks (2).
+- **Each question's section:** its number and short title; the question in one or two plain sentences; the worked example
+  with its named case; the "Today" pictures (real), then each option's pictures ("Drawn", lettered A, B, C), each caption
+  one line of what it shows; the recommendation box first-lettered option, why, and every earlier ruling it changes,
+  named in plain words with its date (a D-number may follow in brackets). Phone pictures go in `.phones` (smaller tiles),
+  desktop pictures in `.pair`.
+- **Words:** plain, short, the app's own names; no file, code, class or function names, no measurements a person would not
+  judge by (a height that decides the question is fine: "56 px left to scroll in, 151 drawn"). Every new wording shown
+  exactly as drawn, in quotes. Where his own ruled wording is kept despite a reader's catch, say so.
+- **Not on the page:** the helpers' "for the build" parts, the review files, the stale question's pictures beyond one.
