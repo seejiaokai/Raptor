@@ -117,7 +117,7 @@ rulings that govern them, each named in a few words — open its line in `leave-
 - Which commitments under Unavailable count a man out on the war [D1357, D1390, D1381, D1374, D1372]
 - A member's own approved leave: its Remarks window on the war [D1354]
 - Tap on a day holding a half-day Other under Unavailable [D1353, D1371, D1356]
-- An Other under Unavailable lowering Available and the SANS calendar's need [D1352, D1356]
+- An Other under Unavailable lowering Available and raising the SANS calendar's need [D1352, D1356]
 - An overseas duty or course filed from the war: whole days [D1350]
 - Day list's words beside an entry, and where it is changed [D1328]
 - A kind of entry named anywhere: shown as its coloured box [D1327, D1328]
@@ -137,8 +137,9 @@ rulings that govern them, each named in a few words — open its line in `leave-
 - Closed dates never stop leave filed or changed on Inputs [D1166, D1177]
 - The one Document button, for leave filed on Inputs too [D1159]
 - Public holidays brought in by file [D1155, D1501, D1500]
+- What the Available P and W rows count, which the SANS calendar's need follows, and the screen saying how [D1154]
 - Photos and PDFs on every input, the war's and Inputs' [D1150]
-- What lowers the war's manning, by kind of input [D998, D1381, D1357, D1356, D1338]
+- What lowers the war's manning, by kind of input [D998, D1381, D1357, D1356]
 - Approved leave reaching inputs; a member's leave changed on Inputs [D418, D1177]
 
 **Where the detail lives:** how each surface renders and edits — `raptor-port/docs/ui-contracts.md` (§The Inputs month

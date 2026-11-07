@@ -10,7 +10,7 @@ the reads are done and he approves.
 
 ---
 
-## A. The note on each of his messages (`.claude/hooks/record-decisions.sh`) — 1,188 bytes → about 560
+## A. The note on each of his messages (`.claude/hooks/record-decisions.sh`) — 1,188 bytes → 625
 
 **Today** (the whole note):
 
@@ -43,10 +43,11 @@ Either way, the closing report carries a `Rulings:` line.
 <decision-check>
 Before acting on this message: does it hold a decision, ruling, preference, correction,
 "leave it", explicit no, or a change to something earlier — anything that outlives the
-task in front of you? If yes, record it first, before the work it implies
-(`.claude/rules/record-decisions.md`; the steps are at the head of `DECISIONS.md`): the
-work absorbing a ruling is not the record keeping it. If no, carry on. Either way, the
-closing report carries a `Rulings:` line.
+task in front of you? If yes, record it first, in its area's rulings file, before the
+work it implies (the rule: `.claude/rules/record-decisions.md`; the steps: the head of
+`DECISIONS.md`); if it changes an earlier ruling, fix what that one left behind in the
+same change (D201). The work absorbing a ruling is not the record keeping it. If no,
+carry on. Either way, the closing report carries a `Rulings:` line.
 </decision-check>
 ```
 
@@ -62,13 +63,15 @@ note points to:**
 | before acting on a ruling's detail, open its full row | `doc-structure.md` §What a chat reads ("A ruling loads as one line; its full row does not (D390)") and the head of `how-we-work.md` — both always loaded |
 | then make sure the named file actually carries it | `record-decisions.md` §The rule (as above) |
 | if it overwrites or narrows an earlier ruling, fix what the old one left behind (D201) | `record-decisions.md` §When a ruling overwrites another; `DECISIONS.md` step 2's last sentence |
+| the rulings whose full rows name this hook as a home — D13 (the check at the moment he speaks), D137 (each ruling filed in its area's file), D201 (fix what the old one left behind) | the note itself, still: it asks the question, names the area's file and states D201 (the fresh Opus reader's A1) |
+| the rulings whose full rows name this hook as a home — D13 (the check at the moment he speaks), D137 (each ruling filed in its area's file), D201 (fix what the old one left behind) | the note itself, still: it asks the question, names the area's file and states D201 (the fresh Opus reader's A1) |
 | the capitals (DECISION, FIRST, AREA, FULL, OVERWRITES) | none — ordinary letters (D970) |
 
 The hook script changes only its printed text; its comment block stays.
 
 ---
 
-## B. The skill-notes guide's short form (his D969, point F) — 27,191 bytes (about 10,200 tokens) a chat → 5,889 (about 2,200)
+## B. The skill-notes guide's short form (his D969, point F) — 27,191 bytes (about 10,200 tokens) a chat → 7,373 bytes (about 2700 tokens)
 
 **The text:** `.claude/skills/task-observer/SHORT-FORM.md` (on the branch; nothing loads it yet). It is drawn from the
 vendored guide `.claude/skills/task-observer/SKILL.md` and the project's own notes on it,
@@ -78,16 +81,20 @@ vendored guide `.claude/skills/task-observer/SKILL.md` and the project's own not
 1. `.claude/hooks/task-observer-session-start.sh` prints the short form's text (read from that file) in place of today's
    instruction to invoke the skill; if the file cannot be read, it prints today's instruction unchanged (it fails open).
 2. `raptor-port/CLAUDE.md` §How to work here, its "Task-observer activation" line, becomes:
-   > **Task-observer activation** (owner, 15 Aug 26; D969): the start hook gives the skill-notes short form (`../.claude/skills/task-observer/SHORT-FORM.md`); the full skill only for a review, a skill's creation or edit, or a case it misses; the one log: `../.claude/skill-observations/log.md` · full text: docs/guide-full.md §Task-observer activation
+   > **Task-observer activation** (owner, 15 Aug 26; D969): the start hook gives the skill-notes short form (`../.claude/skills/task-observer/SHORT-FORM.md`) — a session it did not reach reads that file; the full skill only for a review, a skill's creation or edit, its setup, or a case it misses; the log: `../.claude/skill-observations/log.md` · full text: docs/guide-full.md §Task-observer activation
    (Within the guide's 350-character limit for a one-line rule; "apply the log's OPEN notes to any skill you load" stays
    in the short form and the full text.)
 3. `raptor-port/docs/guide-full.md` §Task-observer activation gains, after its paragraph (which stays):
    > *Since 7 Nov 26 (D969, point F — the rules diet's step 2):* the start hook gives the short form,
    > `.claude/skills/task-observer/SHORT-FORM.md`, in place of the instruction above to invoke the skill before beginning
    > work; the full skill is invoked only to run a review, to create or edit a skill, for a question about its setup, or
-   > for a case the short form does not cover. What the paragraph above says of the log and of the OPEN notes stands.
+   > for a case the short form does not cover. For this project the short form replaces the skill description's
+   > instruction to invoke the full skill at every session start; if the hook cannot read the short form, it prints the
+   > old instruction, and the full skill is invoked as before. What the paragraph above says of the log and of the OPEN
+   > notes stands.
 4. `.claude/skills/TASK-OBSERVER-VENDORED.md` §Local changes gains a line naming `SHORT-FORM.md` and the hook change, so
-   an upstream refresh keeps them.
+   an upstream refresh keeps them — and the one behaviour change: resolved notes are archived at each review's clean-up,
+   not on every write as the guide's "Archival on Write" says.
 
 **What it leaves to the full skill, on purpose:**
 - Reviews (the weekly procedure), creating or editing a skill, the taxonomy's licensing and attribution, setup and
@@ -95,10 +102,12 @@ vendored guide `.claude/skills/task-observer/SKILL.md` and the project's own not
 - **One behaviour changes:** the full guide's "Archival on Write" moves resolved notes to the archive on *every* write.
   The short form appends only; resolved notes are archived at each review, which is what this project's notes already
   say happens (`TASK-OBSERVER-VENDORED.md` §Reviews in this repo, "Clean up when the review ends"). Any write beyond an
-  append still follows the full skill's two sections.
+  append follows the full skill's "Log-write safety"; the archive at the review keeps "Archival on Write"'s date rule and
+  count check.
 - The skill's own description, listed to every chat, still says to invoke it at the start of every session. The short
   form, given by the project's hook, says otherwise for this project. The vendored description is left as it is (an edit
-  to a vendored skill belongs to a review).
+  to a vendored skill belongs to a review); the short form and the guide's paragraph say that for this project the short
+  form replaces that instruction (both readers).
 
 ---
 
@@ -112,7 +121,7 @@ vendored guide `.claude/skills/task-observer/SKILL.md` and the project's own not
    restate the rule. **Check each against its short line in `.claude/rules/decisions/leave-war.md`** (and, where it
    ends "— changed by", that its later rulings are cited), and whether any Leave War ruling that governs those pages
    is missing (a helper judged all 373 short lines; its exclusions: D1720, D1727–D1730, D1544, D1550, D1543, D1375, D1308,
-   D1681, D1254, D1143, D1210, D1142, D1154, D1309, D1291, D1330, D1346, D1448, D1461, D1466, D1467, D1692, D1697, D1698,
+   D1681, D1254, D1143, D1210, D1142, D1309, D1291, D1330, D1346, D1448, D1461, D1466, D1467, D1692, D1697, D1698,
    D1711, D1229, D1234, D1203, D1220, D1242, D1326, D1319, D1446, D1173 — the war's own look and controls).
 2. **The two seam files' heads** — `.claude/rules/seams/leave-war.md` and `seams/tracker.md`: their `paths:` (the area's
    own paths and the seam paths, copied line for line from the area files) and a three-line note of what the file is.
@@ -133,3 +142,21 @@ posting sheets and stints: `.claude/rules/seams/leave-war.md`", and its "Also re
 pointer list now follows); `raptor-port/docs/data-schema.md` and `engine-rules.md` (one path each). Historical records
 (briefs, plans, evidence sheets, full rows, a code comment in `src/tracker/app/core.js`) keep "§Architecture": each area
 file's pointer line sends a reader on.
+
+## E. The two blind reads, and what was done (7 Nov 26)
+
+Astra (`2026-11-07-rules-diet-step2-read-astra.md`) and a fresh Opus reader (`…-read-opus.md`), each blind to the
+other, both on the texts as first drafted. **A:** Astra no change; the Opus reader one medium — the hook is a named home
+of D13, D137 and D201, so the note keeps the area's file and D201 (taken; the table gains its row). **B:** twelve
+findings from Astra, seven from the Opus reader, none high; every one taken into `SHORT-FORM.md` — the scan of OPEN notes
+at the start; the review date's file; the full list of what to watch; the internal-note exception; the collision notes;
+the backup and heading count on a script's write; the flush on presenting a deliverable; the trap's "costs nothing extra";
+the citing check; the end-of-session checks; the archival sentence made consistent (both); the merge keeps the reviewed
+side and corrects cross-references (both); and the short form says it replaces the description's instruction (Astra).
+The switch-on wording above changed with them (the Opus reader's B1 and B7, Astra's 12). **C1:** all 62 bullets checked by
+both; fixed — D1352's bullet said the SANS calendar's need is lowered, it is raised (Astra); D1154 added and taken off
+the exclusions (Astra); D1338, replaced by D1356, dropped from D998's bullet (Opus); `engine/qualcols.ts` added to
+`people-accounts.md`'s paths and named in its head, so the Quals column rulings load with the column list (Opus); D1215
+and D1221 added to the People list (Opus). **C5:** the handoff's shortened paths written out (Astra) and its pointer to
+the older archive corrected (Opus). Not read a second time, by the agent's call: each fix takes the reader's own words or
+a fact checked against the file.

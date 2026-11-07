@@ -23,6 +23,7 @@ paths:
   - raptor-port/src/**/*posting*
   - raptor-port/src/**/*postout*
   - raptor-port/src/engine/people.ts
+  - raptor-port/src/engine/qualcols.ts
   - raptor-port/src/engine/slots.ts
   - raptor-port/src/engine/schema.ts
   - raptor-port/src/leavewar/sync.ts
@@ -67,7 +68,7 @@ when a man is deleted or archived: `scheduler.md` (D44, D45); a Quals column hea
 scrolls it sideways: `inputs.md` (D893).
 
 **From the Leave War** — since 7 Nov 26 `leave-war.md` loads only with the Leave War's own files, no longer with
-the Quals page, `engine/people.ts` or `state/store.ts` (its architecture still does: `.claude/rules/seams/leave-war.md` — the rules-diet plan §2). Its
+the Quals page, its column list (`engine/qualcols.ts`), `engine/people.ts` or `state/store.ts` (its architecture still does: `.claude/rules/seams/leave-war.md` — the rules-diet plan §2). Its
 rulings that govern them, each named in a few words — open its line in `leave-war.md`, and its full row, before acting on it:
 - Delete-outcome posting: moving his already approved leave [D1555]
 - Delete-outcome posting refusing his leave from its date [D1545]
@@ -76,6 +77,7 @@ rulings that govern them, each named in a few words — open its line in `leave-
 - The Management tick column already on Quals [D1502]
 - The M4 readings, among them a deleted man's leftover pending leave [D1447, D1541, D1460]
 - The Leave War's runner an admin; no Leave-War-only role [D1223]
+- SANS men on the war only by "+ SANS", in place of Show SANS [D1215, D1221]
 - The war's Management group from a Quals tick column [D1200, D1502]
 - A Management group on the war, filled from Quals [D1149, D1200]
 - No Edit person on the war: seat, band, SXO on Quals [D461]
