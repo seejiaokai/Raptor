@@ -1542,3 +1542,62 @@ for (const width of [390, 402]) {
     await context.close()
   })
 }
+
+/* "+ INPUT" AT THE RIGHT, THE LIST MAKING ROOM FOR ITS WINDOW (owner D1787, 8 Nov 26 — the pictures round's question 8 and
+   its "On a smaller screen" part; drawn by scripts/handpass/pr-sched.mjs q4, q4f). What only a real browser can say: where
+   the button stands, where the window stands against the list, and what each column is given — at his PC's 1536, at the
+   1340 where the room starts, and at 1280, 1024 and 821, where it is not made; and the phone, unchanged (D910). */
+const colW = (p: Page) => p.evaluate(() => [...document.querySelectorAll('#intbl thead th')].map(th => Math.round(th.getBoundingClientRect().width)))
+async function listAt(p: Page, width: number) {
+  await p.setViewportSize({ width, height: 800 })
+  await go(p, 'inputs')
+  await p.locator('#inListBtn').click()
+  await expect(p.locator('#intbl')).toBeVisible()
+}
+for (const width of [1536, 1340, 1280, 1024, 821]) {
+  test(`D1787 at ${width} wide: + Input at the row's right end; the list makes room only from 1340; Remarks never squeezed`, async ({ page }) => {
+    await login(page)
+    await listAt(page, width)
+    const row = (await page.locator('.inputs-listtools').boundingBox())!
+    const btn = (await page.locator('#inNew').boundingBox())!
+    const dates = (await page.locator('#inRangeBtn').boundingBox())!
+    expect(row.x + row.width - (btn.x + btn.width), '+ Input at the row\'s right end').toBeLessThan(2)
+    expect(dates.x, 'the dates button keeps the left').toBeLessThan(btn.x)
+    expect(btn.height, 'still 36 tall (D1139)').toBeGreaterThanOrEqual(35.5)
+    /* no window: below 1100 Name, Start and End give up room so Remarks keeps some (the older fault) */
+    const closed = await colW(page)
+    if (width < 1100) expect(closed.slice(0, 3), 'Name, Start, End narrowed').toEqual([110, 140, 90])
+    else expect(closed.slice(0, 3), 'the full widths').toEqual([250, 150, 115])
+    expect(closed[4], 'Remarks keeps a width (it was a letter)').toBeGreaterThanOrEqual(50)
+    /* the window open */
+    await page.locator('#inNew').click()
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    const w = (await win.boundingBox())!
+    const tbl = (await page.locator('#intbl').boundingBox())!
+    const open = await colW(page)
+    if (width >= 1340) {
+      expect(tbl.x + tbl.width, 'the list stops short of the window').toBeLessThanOrEqual(w.x)
+      expect(open.slice(0, 3), 'Name, Start, End narrowed first').toEqual([110, 140, 90])
+      expect(open[4], 'Remarks keeps a usable width').toBeGreaterThanOrEqual(145)
+    } else {
+      expect(tbl.x + tbl.width, 'narrower: the window covers the list as before').toBeGreaterThan(w.x)
+      expect(open, 'the columns are as with no window').toEqual(closed)
+    }
+    await page.keyboard.press('Escape')
+    await expect(win).toHaveCount(0)
+    expect(await colW(page), 'the room goes with the window').toEqual(closed)
+  })
+}
+test('D1787 on a phone: + Input still first in its row; a window makes no room (D910, D997)', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
+  const page = await context.newPage()
+  await login(page)
+  await go(page, 'inputs')
+  await page.locator('#inListBtn').tap()
+  const btn = (await page.locator('#inNew').boundingBox())!
+  const dates = (await page.locator('#inRangeBtn').boundingBox())!
+  expect(btn.x, 'first, before the dates button').toBeLessThan(dates.x)
+  await expect(page.locator('.inputs-workspace.in-room')).toHaveCount(0)
+  await context.close()
+})

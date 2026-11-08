@@ -12397,11 +12397,16 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
-  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
+  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
+  `claude/pr-inputs-add-right-5b2653`):* the button after the dates button and a spring (`ui/InputsPage.tsx` `listTools`);
+  `in-room` on the page while any input's window is open on the desktop list, the room and the narrowing at 1340 and up
+  (`scheduler/06-inputs.css`); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
+  from 1100 the full widths leave Remarks 160 or more. Pins: `ui/inputs.test.tsx`, `e2e/inputs-calendar.spec.ts` "D1787".
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after.
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
-  hidden warning's ↺; the ✕ stays typed.
+  hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
+  (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
 - **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.
