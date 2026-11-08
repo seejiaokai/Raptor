@@ -78,10 +78,19 @@ describe('the app’s boot plugs the doorway in before the Tracker can be drawn'
      line out turned no test red — this one was added for it, red with the line out.) */
   it('main.tsx hands the saver (the postman the boot returned) to the Tracker’s doorway', () => {
     const main = readFileSync(join(__dirname, '../main.tsx'), 'utf8')
-    const imp = main.match(/import \{ setSaveHealth as (\w+) \} from '\.\/tracker\/storage\.js'/)
+    const imp = main.match(/import \{ setSaveHealth as (\w+)[^}]*\} from '\.\/tracker\/storage\.js'/)
     expect(imp, 'main.tsx imports the doorway’s setter').not.toBeNull()
     const call = main.indexOf(imp![1] + '(postman)'), booted = main.indexOf('const { postman } = await bootApp(')
     expect(booted, 'the postman is the one the boot returned').toBeGreaterThan(-1)
     expect(call, 'and is handed to the doorway after the boot').toBeGreaterThan(booted)
+  })
+  /* D1901 — a browser that keeps nothing: the boot's answer reaches the doorway after the backend was chosen */
+  it('main.tsx hands the doorway whether the browser keeps anything, after the boot chose its backend', () => {
+    const main = readFileSync(join(__dirname, '../main.tsx'), 'utf8')
+    const imp = main.match(/setStorageKept as (\w+) \} from '\.\/tracker\/storage\.js'/)
+    expect(imp, 'main.tsx imports the doorway’s kept setter').not.toBeNull()
+    const call = main.indexOf(imp![1] + '(!storageRefused())'), booted = main.indexOf('const { postman } = await bootApp(chooseBackend()')
+    expect(booted).toBeGreaterThan(-1)
+    expect(call, 'handed over after the backend was chosen').toBeGreaterThan(booted)
   })
 })

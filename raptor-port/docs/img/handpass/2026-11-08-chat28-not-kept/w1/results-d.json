@@ -1,0 +1,29 @@
+{
+ "R": [
+  {
+   "step": "5 medical document view: band above it, not covered",
+   "res": "PASS",
+   "said": "{\"band\":[56,92],\"viewer\":[0,93,1536,864],\"probeAtBand\":\"band on top (topbar)\",\"barBottom\":93}",
+   "pics": "w1/05-medical-viewer.png"
+  },
+  {
+   "step": "5 which surface",
+   "res": "RECORD",
+   "said": "the opened document viewer (#docViewPop): from Inputs → Medical → the Zenith card (2 documents); it stands below the top bar and the band, grey over the page behind; the band is the top bar's own (no separate band under a viewer bar)",
+   "pics": ""
+  },
+  {
+   "step": "7 input window: what is at the top",
+   "res": "RECORD",
+   "said": "{\"fixedSurfaces\":\".floatwin inpedwin front 1090,96,1520,840\",\"probe\":{\"atBand\":\"SPAN.savestat nokeep\",\"topbarClickable\":true,\"atBarMid\":\"A.\"},\"bandStillInDom\":true}",
+   "pics": "w1/07-input-window.png"
+  },
+  {
+   "step": "7 question box (\"Close it and lose them?\")",
+   "res": "RECORD",
+   "said": "{\"text\":\"no question text found\",\"surfaces\":\"\"}",
+   "pics": "w1/07-question-box.png"
+  }
+ ],
+ "errors": []
+}

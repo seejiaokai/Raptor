@@ -184,6 +184,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
 - [BATCH-14OCT-LEFTOVERS] — older small faults found by the three builds' check (not caused by them): the Cancel-item sheet's chips wear the browser's ring, notes a screen reader is not told, stale comments, a test on the real clock. **Checked 6 Nov 26: pull requests 558 and 556 are both live, so by its own line this item is ready to archive whole.**
 - [VEILED-WINDOWS-BAR] — his answers D1645, D1647 (5 Nov 26), building the night of 5 Nov 26 — the other veiled windows keep the bar covered, and the Traffic and day-details windows and the board's small menus do not close on Escape (found 30 Oct 26; low, the agent's). **The Escape part BUILT the night of 3 Nov 26** (`claude/week-swipe-pdf-print`); the bar part stays open.
+- [CHGWIN-ESCAPE] — Escape does not close the changes window (its ✕ and a tap outside do); older, found by chat 28's walk.
 - [SCHED-CTRL-Z] — the schedule pages have no Ctrl+Z (only the Tracker has one): a question for him, not put until he says (D994).
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
@@ -425,7 +426,14 @@ written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now
 ("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
 `tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
 "Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
-wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+wrapper is #detailBubble". **(4) DONE 8 Nov 26 (chat 28, `claude/chat28-not-kept`)** — the four comments corrected,
+`Glyphs.jsx`'s header naming the magnifier among the app's own marks (D1900); (1)–(3) stay open: each reworks a
+test's recording or an icon's drawing, more than a band's branch should carry after its walk. **Added 8 Nov 26 (chat 28's code reads, D489):** (5) two "keeps
+nothing" flags set from one answer (`ui/savestatus-source.ts setStorageKept`, `tracker/storage.js`); (6) the
+`.failed` / `.nokeep` pair written out in four rules of `17-save-status.css`; (7) the test switches' address pattern
+written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a band is up"; three head comments of
+`SaveStatus.tsx` and its CSS describe only the failed band; the Tracker's new setter guards a call with no value.
+**Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
@@ -2290,6 +2298,17 @@ whole grid down and back, within its limits" ran out of time at 31.8s and again 
 `f5c1b0046`, passed it with everything else. D84: a Leave War desktop timeout gets one re-run, not an investigation — the next run
 was that. **To do:** if it fails again, make it wait on what it needs, not on time (D87), and measure its length on GitHub's machines.
 **Place:** low — watch.
+
+### [CHGWIN-ESCAPE] Escape does not close the changes window (found 8 Nov 26 by chat 28's walk; older; low)
+**What:** with the changes window open on Edit Schedule (the clock icon), Escape leaves it open, on his PC and his
+iPhone's size, with or without a click inside it first; its ✕ and a tap outside close it. Reproduced by the host in a plain
+browser, so nothing of the "Not kept" band (`raptor-port/scripts/handpass/nk28-esc.mjs`; W2's pictures
+`raptor-port/docs/img/handpass/2026-11-08-chat28-not-kept/w2/S14-changes-*.png`). The design guide's keyboard rule says
+Escape closes what opened last; the window floats beside the schedule without blocking it (D167), and no ruling says
+whether Escape should reach it while the keyboard is on the schedule behind. **The case to put to him:** Escape closes the
+changes window when it is the last thing opened — recommended. Also seen, not filed: a moved changes window comes back at
+its first place when closed and reopened (no ruling either way). **Place:** low — with the next job on the changes window
+or the keyboard leftovers.
 
 ### [VEILED-WINDOWS-BAR] The other veiled windows keep the bar covered; three things do not close on Escape (found 30 Oct 26 by [TRAFFIC-WIN-COVERS-UNDO]'s roll-call; older; low)
 **His answers, 5 Nov 26 ("Go" — the mock-up page's questions 1 and 3): D1645** — the bar stays pressable over "Jump to a date", the day-details window and the document viewer (the input window and the question boxes keep it covered); **D1647** — on View-only Sched the Traffic window is the read-only list for everyone. Building the night of 5 Nov 26 on `claude/keyboard-windows-batch-5eff45`.

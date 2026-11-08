@@ -65,6 +65,15 @@ export function saveHealth() {
 }
 export function onSaveHealth(f) { healthSubs.add(f); return () => healthSubs.delete(f) }
 
+/* …AND WHETHER THE BROWSER KEEPS ANYTHING AT ALL (owner D1901, 8 Nov 26 — [TRK-NOSTORE-SAVED]). Where the browser refuses
+   its storage, Raptor runs on memory alone: every write lands and "saves", yet a reload loses it, so the corner's
+   "● saved" was untrue. main.tsx hands over the answer once (storage/boot.ts storageRefused); while it is false every
+   page carries Raptor's "Not kept" band and the corner says nothing of saving (core.js saveWords). With none, the
+   records are kept, as before. */
+let kept = true
+export function setStorageKept(k) { kept = k !== false }
+export const storageKept = () => kept
+
 /* The two sync verbs the app still calls around a syllabus write. Every write
    above lands synchronously, so there is nothing to flush and nothing newer to
    pull — kept as no-ops so the call sites in core.js stay byte-identical for

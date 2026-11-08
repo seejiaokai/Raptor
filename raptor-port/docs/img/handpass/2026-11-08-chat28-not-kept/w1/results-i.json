@@ -1,0 +1,11 @@
+{
+ "R": [
+  {
+   "step": "8 access screen after sending: band across the top, not \"Not sent yet\"",
+   "res": "PASS",
+   "said": "{\"bandT\":0,\"bandB\":36,\"bandW\":1536,\"words\":[\"Not kept\",\"this browser loses your work on a reload\"],\"preBandB\":36,\"text\":\"Not kept — this browser loses your work on a reload TALON Waiting for an admin WALKER INITIALS WK SEAT Pilot CAT OCU Request sent An admin approves You're on the schedule Sign out Signed in as zz\",\"accOutCardTopBottom\":[480,662]}",
+   "pics": "w1/08-access-sent.png"
+  }
+ ],
+ "errors": []
+}

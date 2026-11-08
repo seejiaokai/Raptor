@@ -1,0 +1,179 @@
+{
+ "R": [
+  {
+   "step": "1 sign-in band words/no button",
+   "res": "PASS",
+   "said": "{\"vwords\":[\"Not kept\",\"this browser loses your work on a reload\"],\"btn\":false,\"h\":36,\"w\":1536,\"t\":0}",
+   "pics": "w1/01-signin.png"
+  },
+  {
+   "step": "1 card below band; one line",
+   "res": "PASS",
+   "said": "{\"bandT\":0,\"bandB\":36,\"h\":36,\"cardT\":36,\"cardCls\":\"login band-up\"}",
+   "pics": "w1/01-signin.png"
+  },
+  {
+   "step": "2 editsched band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":57,\"b\":93,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":94,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-editsched-top.png"
+  },
+  {
+   "step": "2 editsched not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":93,\"first\":{\"t\":102,\"tag\":\"wk-cal (week bar first button)\"}}",
+   "pics": "w1/02-editsched-top.png"
+  },
+  {
+   "step": "2 editsched scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":57,\"bandB\":93,\"offenders\":[]}",
+   "pics": "w1/02-editsched-scrolled.png"
+  },
+  {
+   "step": "2 viewsched band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-viewsched-top.png"
+  },
+  {
+   "step": "2 viewsched not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":181,\"tag\":\"SPAN\",\"cls\":\"dow di-open\",\"txt\":\"Monday\"}}",
+   "pics": "w1/02-viewsched-top.png"
+  },
+  {
+   "step": "2 viewsched scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-viewsched-scrolled.png"
+  },
+  {
+   "step": "2 inputs band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-inputs-top.png"
+  },
+  {
+   "step": "2 inputs not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":93,\"tag\":\"H1\",\"cls\":\"\",\"txt\":\"Inputs\"}}",
+   "pics": "w1/02-inputs-top.png"
+  },
+  {
+   "step": "2 inputs scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"ASIDE#eRoster.sb-roster eroster\",\"from\":0,\"to\":215},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-inputs-scrolled.png"
+  },
+  {
+   "step": "2 quals band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-quals-top.png"
+  },
+  {
+   "step": "2 quals not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":101,\"tag\":\"BUTTON\",\"cls\":\"abtn\",\"txt\":\"Edit\"}}",
+   "pics": "w1/02-quals-top.png"
+  },
+  {
+   "step": "2 quals scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":450},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-quals-scrolled.png"
+  },
+  {
+   "step": "2 logic band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-logic-top.png"
+  },
+  {
+   "step": "2 logic not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":101,\"tag\":\"BUTTON\",\"cls\":\"abtn\",\"txt\":\"Filter\"}}",
+   "pics": "w1/02-logic-top.png"
+  },
+  {
+   "step": "2 logic scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-logic-scrolled.png"
+  },
+  {
+   "step": "2 leavewar band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-leavewar-top.png"
+  },
+  {
+   "step": "2 leavewar not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":103,\"tag\":\"BUTTON\",\"cls\":\"myleave\",\"txt\":\"My leaveLVE 17.5 · O\"}}",
+   "pics": "w1/02-leavewar-top.png"
+  },
+  {
+   "step": "2 leavewar scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-leavewar-scrolled.png"
+  },
+  {
+   "step": "2 tracker band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-tracker-top.png"
+  },
+  {
+   "step": "2 tracker not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":103,\"tag\":\"SELECT\",\"cls\":\"\",\"txt\":\"STUDENT ASTUDENT B\"}}",
+   "pics": "w1/02-tracker-top.png"
+  },
+  {
+   "step": "2 tracker scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"DIV#board.board\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-tracker-scrolled.png"
+  },
+  {
+   "step": "2 help band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-help-top.png"
+  },
+  {
+   "step": "2 help not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":111,\"tag\":\"H2\",\"cls\":\"\",\"txt\":\"Help\"}}",
+   "pics": "w1/02-help-top.png"
+  },
+  {
+   "step": "2 help scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"DIV#board.board\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-help-scrolled.png"
+  },
+  {
+   "step": "2 admin band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-admin-top.png"
+  },
+  {
+   "step": "2 admin not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":111,\"tag\":\"H2\",\"cls\":\"\",\"txt\":\"Admin\"}}",
+   "pics": "w1/02-admin-top.png"
+  },
+  {
+   "step": "2 admin scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"DIV#board.board\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-admin-scrolled.png"
+  }
+ ],
+ "errors": []
+}

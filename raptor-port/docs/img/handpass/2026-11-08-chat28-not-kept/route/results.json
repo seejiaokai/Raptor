@@ -1,0 +1,152 @@
+[
+ {
+  "step": "pc-locked sign-in",
+  "res": "PASS",
+  "said": "{\"t\":0,\"b\":36,\"l\":0,\"r\":1536,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}"
+ },
+ {
+  "step": "pc-locked Edit Schedule band",
+  "res": "PASS",
+  "said": "{\"band\":{\"t\":57,\"b\":93,\"l\":0,\"r\":1536,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},\"barB\":94}"
+ },
+ {
+  "step": "pc-locked no \"Saving…\" beside it",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-locked Tracker corner",
+  "res": "PASS",
+  "said": "{\"hidden\":true,\"text\":\"\"}"
+ },
+ {
+  "step": "pc-locked Tracker band",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-locked errors",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "phone-locked sign-in",
+  "res": "PASS",
+  "said": "{\"t\":0,\"b\":36,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}"
+ },
+ {
+  "step": "phone-locked Edit Schedule band",
+  "res": "PASS",
+  "said": "{\"band\":{\"t\":48,\"b\":84,\"l\":0,\"r\":402,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},\"barB\":85}"
+ },
+ {
+  "step": "phone-locked no \"Saving…\" beside it",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "phone-locked Tracker corner",
+  "res": "PASS",
+  "said": "{\"hidden\":true,\"text\":\"\"}"
+ },
+ {
+  "step": "phone-locked Tracker band",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "phone-locked errors",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-nostore sign-in",
+  "res": "PASS",
+  "said": "{\"t\":0,\"b\":36,\"l\":0,\"r\":1536,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false}"
+ },
+ {
+  "step": "pc-nostore Edit Schedule band",
+  "res": "PASS",
+  "said": "{\"band\":{\"t\":57,\"b\":93,\"l\":0,\"r\":1536,\"text\":\"Not kept — this browser loses your work on a reload\",\"btn\":false},\"barB\":94}"
+ },
+ {
+  "step": "pc-nostore no \"Saving…\" beside it",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-nostore Tracker corner",
+  "res": "PASS",
+  "said": "{\"hidden\":true,\"text\":\"\"}"
+ },
+ {
+  "step": "pc-nostore Tracker band",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-nostore errors",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-plain sign-in",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-plain Edit Schedule band",
+  "res": "PASS",
+  "said": "{\"band\":null,\"barB\":58}"
+ },
+ {
+  "step": "pc-plain no \"Saving…\" beside it",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-plain Tracker corner",
+  "res": "PASS",
+  "said": "{\"hidden\":false,\"text\":\"● saved\"}"
+ },
+ {
+  "step": "pc-plain Tracker band",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-plain errors",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-fresh sign-in",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-fresh Edit Schedule band",
+  "res": "PASS",
+  "said": "{\"band\":null,\"barB\":58}"
+ },
+ {
+  "step": "pc-fresh no \"Saving…\" beside it",
+  "res": "PASS",
+  "said": "null"
+ },
+ {
+  "step": "pc-fresh Tracker corner",
+  "res": "PASS",
+  "said": "{\"hidden\":false,\"text\":\"● saved\"}"
+ },
+ {
+  "step": "pc-fresh Tracker band",
+  "res": "PASS",
+  "said": ""
+ },
+ {
+  "step": "pc-fresh errors",
+  "res": "PASS",
+  "said": ""
+ }
+]
