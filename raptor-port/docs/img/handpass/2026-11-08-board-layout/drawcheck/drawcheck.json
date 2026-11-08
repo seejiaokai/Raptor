@@ -1,0 +1,553 @@
+{
+ "rows": [
+  {
+   "where": "821 wide",
+   "what": "lineH",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "lineW",
+   "built": 469,
+   "drawn": 469,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "rmkW",
+   "built": 323,
+   "drawn": 323,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "rmkSeen",
+   "built": 323,
+   "drawn": 323,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "ctlInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "rcpInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "cutPx",
+   "built": 0,
+   "drawn": 0,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "sideL",
+   "built": 501,
+   "drawn": 501,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 1 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 2 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 3 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 4 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 5 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "821 wide",
+   "what": "line 6 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "lineH",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "lineW",
+   "built": 522,
+   "drawn": 522,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "rmkW",
+   "built": 355,
+   "drawn": 355,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "rmkSeen",
+   "built": 355,
+   "drawn": 355,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "ctlInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "rcpInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "cutPx",
+   "built": 0,
+   "drawn": 0,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "sideL",
+   "built": 554,
+   "drawn": 554,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 1 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 2 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 3 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 4 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 5 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "874 wide",
+   "what": "line 6 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "lineH",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "lineW",
+   "built": 548,
+   "drawn": 548,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "rmkW",
+   "built": 368,
+   "drawn": 368,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "rmkSeen",
+   "built": 368,
+   "drawn": 368,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "ctlInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "rcpInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "cutPx",
+   "built": 0,
+   "drawn": 0,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "sideL",
+   "built": 580,
+   "drawn": 580,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 1 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 2 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 3 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 4 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 5 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "900 wide",
+   "what": "line 6 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "lineH",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "lineW",
+   "built": 648,
+   "drawn": 648,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "rmkW",
+   "built": 418,
+   "drawn": 418,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "rmkSeen",
+   "built": 418,
+   "drawn": 418,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "ctlInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "rcpInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "cutPx",
+   "built": 0,
+   "drawn": 0,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "sideL",
+   "built": 680,
+   "drawn": 680,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 1 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 2 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 3 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 4 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 5 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1000 wide",
+   "what": "line 6 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "lineH",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "lineW",
+   "built": 747,
+   "drawn": 747,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "rmkW",
+   "built": 468,
+   "drawn": 468,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "rmkSeen",
+   "built": 468,
+   "drawn": 468,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "ctlInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "rcpInside",
+   "built": true,
+   "drawn": true,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "cutPx",
+   "built": 0,
+   "drawn": 0,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "sideL",
+   "built": 779,
+   "drawn": 779,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 1 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 2 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 3 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 4 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 5 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "1099 wide",
+   "what": "line 6 height",
+   "built": 111,
+   "drawn": 111,
+   "ok": true
+  },
+  {
+   "where": "sideways at rest",
+   "what": "top height",
+   "built": 146,
+   "drawn": 146,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "bar on screen (its foot)",
+   "built": 51,
+   "drawn": 51,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "the buttons' l",
+   "built": 301,
+   "drawn": 301,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "the chips' l",
+   "built": 16,
+   "drawn": 16,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "the buttons' w",
+   "built": 557,
+   "drawn": 557,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "the chips' w",
+   "built": 251,
+   "drawn": 251,
+   "ok": true
+  },
+  {
+   "where": "sideways scrolled",
+   "what": "the buttons' top on screen",
+   "built": 10,
+   "drawn": 10,
+   "ok": true
+  },
+  {
+   "where": "sideways, keys up",
+   "what": "list shown above the keys",
+   "built": 56,
+   "drawn": 151,
+   "ok": false
+  }
+ ],
+ "diffs": [
+  "sideways, keys up list shown above the keys: built 56, drawn 151"
+ ]
+}

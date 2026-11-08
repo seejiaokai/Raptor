@@ -62,7 +62,7 @@ import { landOn, markLand, paintLand } from './lift'
 import { edgeAutoScroll, findScroller } from './edgescroll'
 import { bringRowOnScreen, rowOnScreen } from './onscreen'
 import { useVersion } from './useStore'
-import { PenIcon } from './icons'
+import { PenIcon, ExpandIcon, CompactIcon } from './icons'
 import { useMedia } from './usemedia'
 import { MonthJump } from './MonthJump'
 import { KEYBOARD_MIN, screenBox } from './kbscroll'
@@ -1337,7 +1337,8 @@ export function InputsCal({ fPerson, fType, fSearch, seedIso, lit = NONE_LIT, li
           </span>
           <button type="button" className="abtn ib-expand" data-testid="ib-expand" aria-pressed={expanded}
             aria-label={expanded ? 'Show the month compact' : 'Show every input'} title={expanded ? 'Show the month compact' : 'Show every input'}
-            onClick={toggleExpanded}>{expanded ? '⤡' : '⤢'}</button>
+            onClick={toggleExpanded}>{/* drawn, never typed (D1792 (b)): arrows in while every input shows, out while compact */}
+            {expanded ? <CompactIcon /> : <ExpandIcon />}</button>
         </div>
         {how && (
           <ol className="sc-how-list" id="ibHowList" data-testid="ib-how-list">

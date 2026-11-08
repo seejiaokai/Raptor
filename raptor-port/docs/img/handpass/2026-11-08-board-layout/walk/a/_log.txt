@@ -1,0 +1,136 @@
+-- 821x900 chromium dsf1 
+   crew column left 501 (width 320), board list right 501; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 111, width 469, remarks 323px, rcell top 784 times foot 778
+PASS A1/A2/A4 821 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-31.7) RCP(L5.4/C-31.2)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-31.7) RCP(L5.4/C-31.2)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-31.7) RCP(L5.4/C-31.2)
+   in-time rows 4, cut/over: 0
+-- 874x900 chromium dsf1 
+   crew column left 554 (width 320), board list right 554; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 111, width 522, remarks 355px, rcell top 765 times foot 759
+PASS A1/A2/A4 874 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-47.7) RCP(L0/C-47.2)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-47.7) RCP(L0/C-47.2)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-47.7) RCP(L0/C-47.2)
+   in-time rows 4, cut/over: 0
+-- 900x900 chromium dsf1 
+   crew column left 580 (width 320), board list right 580; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 111, width 548, remarks 368px, rcell top 737 times foot 731
+PASS A1/A2/A4 900 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-54.2) RCP(L0/C-53.7)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-54.2) RCP(L0/C-53.7)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-54.2) RCP(L0/C-53.7)
+   in-time rows 4, cut/over: 0
+-- 1000x900 chromium dsf1 
+   crew column left 680 (width 320), board list right 680; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 111, width 648, remarks 418px, rcell top 736 times foot 730
+PASS A1/A2/A4 1000 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   in-time rows 4, cut/over: 0
+-- 1099x900 chromium dsf1 
+   crew column left 779 (width 320), board list right 779; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 111, width 747, remarks 467px, rcell top 736 times foot 730
+PASS A1/A2/A4 1099 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-103.9) RCP(L0/C-103.4)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-103.9) RCP(L0/C-103.4)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-103.9) RCP(L0/C-103.4)
+   in-time rows 4, cut/over: 0
+-- 1100x900 chromium dsf1 
+   crew column left 780 (width 320), board list right 780; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 65, width 748, remarks 91px, rcell top 664 times foot 703
+PASS A1/A2/A4 1100 — 16 of 16 lines judged one-row fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-28.3) RCP(L0/C-27.8) Notes(L0/C-28.9)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-28.3) RCP(L0/C-27.8) Notes(L0/C-28.9)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-28.3) RCP(L0/C-27.8) Notes(L0/C-28.9)
+   in-time rows 4, cut/over: 0
+-- 1536x900 chromium dsf1 
+   crew column left 1216 (width 320), board list right 1216; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 51, width 1184, remarks 234px, rcell top 1033 times foot 1065
+PASS A1/A2/A4 1536 — 16 of 16 lines judged one-row fine
+   heads 1st wave: CS(L0/C-25.2) MSN(L0/C-26.2) R(L0/C-22.5) B(L0/C-22.5) TO(L0/C-19.3) LD(L0/C-19.5) FCP(L0/C-88) RCP(L0/C-87.5) Notes(L0/C-100.5)
+   heads Night wave: CS(L0/C-25.2) MSN(L0/C-26.2) R(L0/C-22.5) B(L0/C-22.5) TO(L0/C-19.3) LD(L0/C-19.5) FCP(L0/C-88) RCP(L0/C-87.5) Notes(L0/C-100.5)
+   heads SC: CS(L0/C-25.2) MSN(L0/C-26.2) R(L0/C-22.5) B(L0/C-22.5) START(L0/C-10) END(L0/C-15.7) FCP(L0/C-88) RCP(L0/C-87.5) Notes(L0/C-100.5)
+   in-time rows 4, cut/over: 0
+   (page reports innerWidth 1000, devicePixelRatio 1.25)
+-- 1000x800 chromium dsf1.25 -125pc
+   crew column left 680 (width 320), board list right 680; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 108, width 648, remarks 418px, rcell top 681 times foot 675
+PASS A1/A2/A4 1000 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.4) RCP(L0/C-78.9)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.4) RCP(L0/C-78.9)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-79.4) RCP(L0/C-78.9)
+   in-time rows 4, cut/over: 0
+-- 1000x900 webkit dsf1 -webkit
+   crew column left 680 (width 320), board list right 680; 3 waves: 1st wave:4 Night wave:4 SC:8
+   sample line (1st wave, line 0): height 109, width 648, remarks 418px, rcell top 742 times foot 736
+PASS A1/A2/A4 1000 — 16 of 16 lines judged stacked fine
+   heads 1st wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   heads Night wave: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) TO(L0/C-17.3) LD(L0/C-17.5) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   heads SC: CS(L0/C-21.2) MSN(L0/C-21.2) R(L0/C-20.5) B(L0/C-20.5) START(L0/C-8) END(L0/C-13.7) FCP(L0/C-79.2) RCP(L0/C-78.7)
+   in-time rows 4, cut/over: 0
+-- 820 desktop mouse: line height 140, rb tops 1719,1748 tl tops 1719,1748 rcell 154x40 at top 1781; wide-class? false
+-- 402 phone: line height 140, width 354, rb tops 1742,1771 tl tops 1742,1771 rcell 154x40; wide look? false
+   ⋯ items: Insights|166 ; Sort all|166 ; Desktop layout|166
+   after the switch: .sb-wide true; line height 65 width 812; rb tops 1164,1164 tl tops 1164,1164 rcell 92
+   switched back: .sb-wide false
+-- A3 1000: in-time rows 2 -> 3
+PASS A3 1000 — 3 in-time rows, 0 faulty
+   the first line below the in-times still stacked: rcell 418px, R/B left 184,184
+-- A3 874: in-time rows 2 -> 3
+PASS A3 874 — 3 in-time rows, 0 faulty
+   the first line below the in-times still stacked: rcell 355px, R/B left 184,184
+-- A7 Edit Schedule week at 1000: first day box 0,258,552,3630, pucks 92, any board line markup inside the week: false
+   week row classes: 
+   View-only Sched first day height 2348
+-- A9 TO now reads 12:55
+   dot-like parts in the line: none by class
+   boxes: rl 184,268-232,293 [tm sugbox] | br 184,297-232,322 [tm sugbox] | to 238,268-286,293 [tm] | ld 238,297-286,322 [tm]
+-- A8 published Monday through its own controls: four sign-off names chosen, then Publish day
+   look at Original: 2 waves; board still open true; plan button reads: 👁 Original ▾
+   look DOM: waves 2, lines per wave 4,4, first line has rcell true, rb 2
+   line 0 of 1st wave: no box for lctl (read only)
+   line 1 of 1st wave: no box for lctl (read only)
+   line 2 of 1st wave: no box for lctl (read only)
+   line 3 of 1st wave: no box for lctl (read only)
+   line 0 of Night wave: no box for lctl (read only)
+   line 1 of Night wave: no box for lctl (read only)
+   line 2 of Night wave: no box for lctl (read only)
+   line 3 of Night wave: no box for lctl (read only)
+PASS A8 1000 look — 8 of 8 lines stacked fine in the read-only look
+   inputs in the look: 56, read-only/disabled: 56
+-- round: opened from Edit Schedule's date button for Monday
+   typed: {"lin":"ZQ","msn":"INTERCEPT-LONG","rl":"09:05","br":"09:45","to":"11:10","ld":"12:30","nts":211}
+PASS round typing — the line kept what was typed
+   (a mission long enough to wrap makes its own box taller than the callsign box: CS 24 MSN 36, typed data)
+   the typed line after a long remark: height 135, remarks 418x64; faults: none
+PASS round typed line still stacked — height 135
+PASS round + Line — lines 4 -> 5
+   delete question buttons: none seen (deleted at once?)
+PASS round delete — lines 5 -> 4
+   delete of a line with crew: question buttons: none seen
+   lines after deleting a crewed line: 4 -> 3
+   Undo: lines 4 -> 4; the list's scroll 928 -> 928 (the changed line in view: it should stay)
+   Redo: lines 4 -> 3; scroll 928
+   more-menu button (#sbMore) on this desktop look: width 0 (0 = not drawn here, a phone-only control)
+   + Wave / escape: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 552:7
+   + Wave / outside: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 552:7
+   + Wave / item: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 552:8
+   Templates / escape: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   Templates / outside: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   Templates / item: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   Insights / escape: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   Insights / outside: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   Insights / item: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   History and its changes window / escape: board open after true; still showing {"chg":true,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   History and its changes window / outside: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   History and its changes window / item: board open after true; still showing {"chg":false,"ins":false,"tpl":false,"wm":false}; wave1 top:lines before 1072:7, after 1072:7
+   issues box before: {"h":287,"items":42,"text":"⚠ 14 issues"}
+   issues box after pressing its heading: {"h":287,"items":42,"text":"⚠ 14 issues"}
+   issues box after pressing it again: {"h":287,"items":42,"text":"⚠ 14 issues"}
+   a warning line tapped: the board stays open true
+   Done: board open true; on page editsched
+   Edit Schedule shows the edits (as input values): []; text has ZQ: true
+   View-only Sched shows ZQ/11:10: true:true

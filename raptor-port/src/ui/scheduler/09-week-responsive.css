@@ -6,6 +6,10 @@
 .schedule-moreitem{display:flex;align-items:center;min-height:38px;padding:8px 11px;background:none;border:0;border-radius:7px;
   color:var(--ink);font:inherit;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap}
 .schedule-moreitem:hover,.schedule-moreitem:focus-visible{background:var(--raised)}
+/* under the keys: the raised row and the app's cyan ring inside its edge, as the board's ⋯ item (owner D1771, 8 Nov 26 —
+   18-oil-board.css .sb-moreitem). The keys only. */
+.schedule-moreitem:focus{outline:none}
+.schedule-moreitem:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
 /* MENU01 measured Edit popup right356 at320; anchor to the opener's right on narrow phones. */
 @media (max-width:355px){#page-editsched .schedule-moremenu{left:auto;right:0}}
 @media (max-width:820px){
