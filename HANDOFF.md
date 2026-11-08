@@ -65,6 +65,14 @@ the later merge keeps both (D78).
 - **Chats (D1744):** the next new chat takes 5.
 - **Rulings:** D1770, D1771, D1772.
 <!-- /now -->
+<!-- now:claude/pr-day-start-7b064c -->
+### `claude/pr-day-start-7b064c` — CHAT 6: the pictures round's group 4, where a day with nothing entered starts (D1786); written 8 Nov 26, 08:30 — verify before use
+- **After a compaction:** re-read this block, the plan's group 4 and the notes' Q3 §(g) before the next change.
+- **Built (committed):** `raptor-port/src/engine/events.ts` — a sortie's EVENT carries only the report entered for it (in-time or rally), null when none, so `validate.ts workSpan` (the long day and Insights' hours, its one definition) falls to its own take-off less `VCONF.reportLead`, as OIL's `oil.ts fltOilWin` does. `day.fly` keeps report-or-step (the SANS window), crew rest reads `intime` (unchanged), a shift unchanged. Engine, state and the html/Insights UI tests: 217 files, 3618 passed; parity with the original green (the seed week has no sortie with nothing entered — Friday has no flying).
+- **D179 as read:** the long-day note is a FROZEN warning on a published face (not in `LIVE_ON_FACE`), so a published day keeps the note it went out with until its next amendment; the day does not read pending for it; Insights moves at once (D482, `issuedWorld` evd by today's code).
+- **Next, in order:** (1) the pinning test file `raptor-port/src/engine/daystart-default-rally.test.ts` (nothing entered → T/O − rally; typing the suggested rally changes nothing; a typed in-time later than the default still wins; unreadable clock = nothing entered; reportLead moves it; `fly` and shift unchanged; workSpan start == fltOilWin start; a new LONGDAY; Insights +2h with the notes' Friday example — no flying on Friday in the seed, so add the VL line: Saint `salsa`, Echo `freak`); (2) the Logic page's words — `src/ui/logic-html.ts` row `reportLead` (option A's drawn words, `notes-sched.md` Q3 §(d)) and `logic.test.tsx`; `rules.ts` title already true; (3) docs: `engine-rules.md` §Where a day with nothing entered starts (built), the stale "absence of both retains step" line (~line 409), `feature-impact.md` if a line is needed, the register; `OUTSTANDING.md` [LOGIC-WORDS-WORKHOURS]; (4) push (`git push origin claude/pr-day-start-7b064c:refs/heads/claude/pr-day-start-7b064c` — the branch has no upstream), open the pull request into `main`, unsubscribe, Auto-fix off; (5) the bug check (HEAVY: roll-call, Sonnet walk with pictures and the plain-user round, Astra + Sol 6.1 until Mon 9 Nov 19:00 + a fresh blind Opus read); (6) his look with the preview link.
+- **Ruling range D1830–D1839** (none used yet). **Chat number 6.**
+<!-- /now -->
 
 ## Next, in order
 
