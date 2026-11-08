@@ -170,7 +170,7 @@ slow CPU, a scripted finger) the page's frames run at about half rate while a fi
 scroll took about 0.8 s longer to follow the finger — by D1789's own test ("stops if scrolling gets slower") a stop.
 What his iPhone (WebKit) does is not measured here. **The job is PARKED at this point** (D1796: a question for him is
 open), before the walk and the code reads, so neither is spent on a build whose way may change; the question is his
-(D765, "never at a cost of speed", against D1870's blink).
+(D765, "never at a cost of speed", against D1870's blink). **Answered 8 Nov 26 (D1871):** on his iPhone the build's preview "doesn't feel slow" — kept as built; the job goes on to the walk.
 
 ## The orders walked
 
