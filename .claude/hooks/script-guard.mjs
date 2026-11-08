@@ -11,7 +11,10 @@
 //       so do `\'` and `\"`. The Write tool keeps `\\` byte for byte (the same text written by it read back `\\`). The
 //       PowerShell tool keeps `\\` too — so this guard reads Bash commands only.
 //   M2  The Bash tool's shell input is an open pipe that never ends: a bare `cat > f` waited until killed (5 s) and left
-//       `f` EMPTY; `node` reading its input waited the same; `cat < /dev/null` ended at once.
+//       `f` EMPTY; `node` reading its input waited the same; `cat < /dev/null` ended at once. NOT TRUE OF EVERY CHAT
+//       (chat 27, 8 Nov 26, the same PC): there the shell's input was `/dev/null` itself — `cat > f` ended at once, `f`
+//       still EMPTY, and Python still saw a keyboard (M3). Either way the command gets nothing, so refusal 3 stands;
+//       its message names both.
 //   M3  Python takes `/dev/null` for a keyboard here (`sys.stdin.isatty()` is True): `python - < /dev/null` opened its
 //       interactive prompt, which loops on a console error until stopped (it hung a chat two minutes on 15 and 23 Oct
 //       26, and this guard's own measuring once). `node - < /dev/null` ends at once. So "add `< /dev/null`" — the
@@ -308,7 +311,7 @@ function judge(st, docs, here, deps, depth) {
   }
   if (readsInput && !fed) {
     const what = isInterp ? `${name} reads its program from its input` : `${name} reads its input`;
-    return `${HEAD}\n${what}, and none is given: this shell's input never ends (measured 8 Nov 26), so it waits until stopped` +
+    return `${HEAD}\n${what}, and none is given: this shell's input either never ends, so it waits until stopped, or is empty, so it gets nothing (both measured 8 Nov 26, in two chats)` +
       `${name === 'cat' && outFiles.length ? ' — and leaves the file it writes EMPTY' : ''}. ` +
       (isInterp ? 'Write the script to a file with the Write tool and run that file.' : `${FIX_WRITE} (Or give it its input: ${name} < /dev/null.)`);
   }
