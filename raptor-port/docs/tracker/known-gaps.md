@@ -11,10 +11,10 @@
 > `Student callsign:` prompt with nobody to offer (Raptor's roster offers aircrew only, so a store whose one person is
 > ground crew hands over nobody); `role.js`'s and `people.js`'s no-import shape (Raptor's logout must not pull in the
 > chart engine, and the Tracker reads nothing of Raptor's store — the three seams); the answers each bridge gives with
-> nothing wired (only a unit test reaches them). **Still copies, not yet taken back to Raptor's own:** the Tracker's own
-> drawings of the app's glyphs and pencil (`components/Glyphs.jsx`, `SrchGlyph.jsx`) and its own palette for a page
-> with no `:root` (`trk-palette.test.ts`) — a change a person could see if a copy has drifted, so left for a job of its
-> own. The notes below that "a standalone export must carry" a file are history only.
+> nothing wired (only a unit test reaches them). **Taken back to Raptor's own ([TRK-KEPT-COPIES], 8 Nov 26):** the
+> Tracker's pencil, Reorder, gear, Reset and list are the app's own icons, and its page colours link to Raptor's tokens
+> (`trk-palette.test.ts`); still its own: the magnifier (`SrchGlyph.jsx`, drifted from the app's — put to him with a
+> picture) and the chart's SVG colours in `core.js` (an SVG attribute cannot read a variable everywhere; pinned). The notes below that "a standalone export must carry" a file are history only.
 
 > **The route to the database (owner, 23 Sep 26 — D120).** Before the database step he EXPORTS
 > his hand-drawn charts (the balls, their positions and lines, and every event detail), WIPES the

@@ -157,7 +157,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
+- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier, put to him.
+- [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
+- [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
+- [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
 - [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
 - [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
 - *(The Tracker's database-step items are in that group below.)*
@@ -373,6 +376,44 @@ with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/k
 app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
 should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
 `raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
+**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
+are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
+nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
+(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
+to him with a picture (D1625); archive this item once that is answered and the job is live.
+
+### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
+**What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
+its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
+the import's "Set them again in ⚙." (about 7292), and the "No details yet" hints with ☰ and ⓘ (about 234–236 and 4878);
+a ✎ in help text stays (D1134). Separately, the Tracker's Export and Import drawings (its own, D1135) differ from the
+download and upload marks Admin and the input window wear. **The case to put to him:** the same treatment as D1860 (the
+words alone) for the four messages, and whether the Tracker's two marks should match Admin's — with pictures, in a
+consistency-look round. Not asked yet (D994). **Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-MENU-KEYS] The Tracker's menus under the keys (filed 8 Nov 26 — chat 20)
+**What:** chat 20's walk pressed the Tracker's course, syllabus and File menus with the keyboard on a desktop: a row with
+the keys on it wears the browser's own white rounded ring, not the app's cyan keyboard ring, and the down arrow does not
+move to the next row — only Tab does. The board's ⋯ menus have both (D1646 the arrows, D1771 the cyan ring); D1706 gave
+the Tracker's menus the board's look but said nothing of the keys. Not caused by chat 20's change (the menus' code was not
+touched). Pictures: `raptor-port/docs/img/handpass/2026-11-08-chat20-tracker/walk/s4-desktop-*-keyboard-crop.png`.
+**The case to put to him:** the same keys and ring as the board's menus, with a picture. Not asked yet (D994).
+**Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-COPIES-TIDY] The code reads' tidiness notes on the Tracker's copies taken back (D489 — filed, not fixed; 8 Nov 26 — chat 20)
+**What:** the fresh Opus read of [TRK-KEPT-COPIES] (`raptor-port/docs/superpowers/briefs/2026-11-08-chat20-tracker-read-opus.md`,
+its tidiness note; Astra had none): (1) `tracker.css`'s `#ordList .ordrow.dragging` keeps a fallback that repeats
+Raptor's `--lift-box` value for value — the sheet's last copy; dropping it changes nothing on screen; (2)
+`src/ui/icons-markup.test.tsx`'s recording switch (`PRINT_ICON_MARKUP`) makes its six checks pass without comparing —
+a separate script, or the checks marked skipped while it is set; (3) `ListIcon` (`ui/icons.tsx`) still writes its own
+`<svg>` — a `LIST_INNER` drawn through `Drawn` would make it one source (its recorded markup then re-recorded), and the
+Tracker's own wrapper `G` (`components/Glyphs.jsx`) repeats `Drawn`'s attributes; the `shapes()` test helper is
+written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now overstated: `Glyphs.jsx`'s header
+("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
+`tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
+"Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
+wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the

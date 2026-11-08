@@ -5902,7 +5902,9 @@ export function deletedCourses() { return DELCOURSES.slice(); }
 export async function delCourse() {
   if (COURSES.length <= 1) { await uiAlert('Keep at least one course.'); return; }
   if (!await leaveFlowEdits('Discard them and delete the course?')) return;
-  if (!await uiConfirm('Delete course ' + curCourseName() + '?\n\nIts students and marks are kept: ↺ Restore in ⇅ Reorder courses brings it back in this browser.')) return;   /* "in this browser": a backup does not carry a deleted course (D131) */
+  /* "in this browser": a backup does not carry a deleted course (D131). Restore and Reorder by their words alone: a
+     message box cannot draw the app's marks, so the typed ↺ and ⇅ went (D1860, 8 Nov 26) */
+  if (!await uiConfirm('Delete course ' + curCourseName() + '?\n\nIts students and marks are kept: Restore in Reorder courses brings it back in this browser.')) return;
   const gone = COURSES.find(c => c.id === course);
   trkGesture(() => {
     COURSES = COURSES.filter(c => c.id !== course); saveCourses();
@@ -7287,7 +7289,8 @@ export async function importClick() {
   const what = [done.length ? 'brought in ' + done.join(', ') : null, people ? 'students & marks restored' : null, flexIn === 'restored' ? 'flex settings restored' : null].filter(Boolean).join(' · ');
   if (what) setSaveStatus(what, 'ok');
   const skip = (skipped.length ? '\n\nSkipped, left as they are here: ' + skipped.join(', ') + '.' : '')
-    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (↺ Restore in ⇅ Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '')
+    /* Restore and Reorder by their words alone, as the course delete's question (D1860) */
+    + (keptDeleted.length ? '\n\nDeleted, as in the backup: ' + keptDeleted.join(', ') + ' (Restore in Reorder brings ' + (keptDeleted.length === 1 ? 'it' : 'them') + ' back).' : '')
     + (flexIn === 'refused' ? '\n\nFlex settings not brought in: only an admin can change them.' : '')
     + (flexIn === 'failed' ? '\n\nFlex settings not brought in: they could not be saved. Set them again in ⚙.' : '');
   await uiAlert((what
