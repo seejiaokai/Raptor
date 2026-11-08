@@ -4061,3 +4061,29 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 864: A side session's auto-loaded rulings filled most of its context before the build began
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, a side session started from chat 3 to build one small Inputs-page group (D1787, D1792 b); numbered past 863, the highest on any branch
+**Skill:** New skill candidate: side-session-brief (or doc-budget §the every-chat layer)
+**Type:** internal
+**Phase/Area:** what a chat loads at its start, and the brief a parent session writes for a child
+
+**Issue:** Opening the first source files of the Inputs page loaded the inputs, scheduler and design rulings files, the seam file and the guides by themselves; with the brief, the plan and the drawings read, the chat stood at about 78% full before a line was built, and had to compact twice in a small job. The scheduler file alone is long and governs only its tail of rulings here.
+**Suggested improvement:** The rules diet's measure step counts what a small one-area job loads before its first edit; a brief from a parent session names the rulings the job needs by number, so the child can work from those full rows; the scheduler's page conversion goes ahead of the Inputs page's, as the larger cost.
+**Principle:** What loads by itself must be sized against the smallest job that triggers it, not the largest: a small job that pays the whole area's reading cost loses most of its room to it.
+
+### Observation 865: A browser test on today's clock found an empty list and failed its own setup
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, the Inputs list's new browser test for a dragged input window (D1787)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing a browser test's setup
+
+**Issue:** The new test opened a row of the Inputs list to reopen the window. The list shows a date window starting today; the test ran on the real clock, whose fortnight held no demo inputs, so the row was missing and the test failed on its setup, not on the app. The first green run was lost to it. Earlier tests of the same file had widened the dates or set the clock; the new one copied a neighbour that did not need rows.
+**Suggested improvement:** In the skill's "write the failing test" step: before a test acts on rows of a date-windowed list, it fixes the dates (sets the clock, or widens the list's range) and asserts a row exists, so a red run means the app, not the fixture.
+**Principle:** A test whose setup depends on today's date is a different test every day; pin the date or widen the window, and assert the premise before the check.
