@@ -79,6 +79,10 @@ letter touching its box's own edge line counts too) against today's live app bui
 of the whole (his D1727) is about as tall as its capitals — a property of the drawn design, not a cut letter. Recorded, not
 changed: shrinking it is a design change, his to rule.
 
+The older [LW-TWO-BOX-LETTERS] (25 Oct 26: two whole-day boxes side by side clipped a three-letter code, "FO*" beside
+"TRG" read "O*", "RG") is answered by this build — D1727's codes read bottom to top, measured whole above — and left the
+backlog on 8 Nov 26 (`OUTSTANDING-ARCHIVE.md`).
+
 ## 6. The pictures
 The walk's folder: the three weeks of each man at both sizes (`S-*`), each made day close (`C-*`; the phone's at three times
 the pixels — the desktop's at its own, the browser kept its 1.25), every tap's window on both men (`T-*`, on the phone a

@@ -59,7 +59,7 @@ import { placeToast } from './toast'
 /* how far the bar must be dragged for the panel to go to its other height — less is a wobble, and it stays put */
 const PULL = 40
 
-export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, children }: {
+export function FloatWin({ id, title, sub, onClose, testid, className, rests, tallFirst, tools, mark, foot, children }: {
   /** which window this is — its remembered place and its turn in front are kept by it; one window per id at a time */
   id: string
   title: string
@@ -78,6 +78,9 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
   tools?: ReactNode
   /** what the window says about what it holds, straight after its title — a mark, never a control */
   mark?: ReactNode
+  /** drawn under the window's scrolling body, outside it, so it never covers a line of it nor scrolls away — the Leave
+      War day window's "↓ N more" (D1788) */
+  foot?: ReactNode
   children: ReactNode
 }) {
   useVersion()                                         // which window is in front is said through the app's own signal
@@ -266,6 +269,7 @@ export function FloatWin({ id, title, sub, onClose, testid, className, rests, ta
         <button type="button" className="win-x" data-testid={testid ? `${testid}-x` : undefined} onClick={onClose} title="Close" aria-label={`Close ${title}`}>&#10005;</button>
       </div>
       <div className="win-body">{children}</div>
+      {foot}
     </div>
   )
 }

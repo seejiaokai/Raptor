@@ -1958,6 +1958,30 @@ test('the date header freezes on desktop when the page scrolls down', async ({ p
   await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)   // thaws back
 })
 
+/* THE PINNED DATES ROW ARRIVES IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]). He filmed the dates
+   blinking cut, or missing, for a frame or two as the row reached the top bar. A check after a wait never sees that, so
+   this reads the page inside the very frame that paints the scroll: a frame runs its scroll events before its animation
+   callbacks and paints after both. Both widths — the phone's finger scroll is the browser's own and may still lag a
+   frame on a real iPhone (measured apart, not here). */
+test('the pinned dates row is up in the same frame the row reaches the top bar (D1789)', async ({ page }) => {
+  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  const seen = await page.evaluate(() => new Promise<{ under: boolean; up: boolean }>(done => {
+    window.scrollTo(0, 1400)
+    requestAnimationFrame(() => {
+      const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+      const row = document.querySelector('#page-leavewar tbody.mxhead')!.getBoundingClientRect().top
+      done({ under: row < bar, up: !!document.querySelector('[data-testid="sticky-head"]') })
+    })
+  }))
+  expect(seen.under, 'the scroll really sent the dates row under the top bar').toBe(true)
+  expect(seen.up, 'the pinned copy is painted in that same frame, not a frame later').toBe(true)
+  const back = await page.evaluate(() => new Promise<boolean>(done => {
+    window.scrollTo(0, 0)
+    requestAnimationFrame(() => done(!document.querySelector('[data-testid="sticky-head"]')))
+  }))
+  expect(back, 'and let go in the frame the row comes back down').toBe(true)
+})
+
 // THE FROZEN BAR IS IN STEP THE MOMENT IT APPEARS, at both widths (owner's
 // video, 23 Sep 26 — "the frozen bar scrolling rapidly horizontally when they
 // scroll the page down. Looks untidy too"). The bar is mounted afresh every time

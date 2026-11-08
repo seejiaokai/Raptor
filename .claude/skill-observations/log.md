@@ -4101,7 +4101,34 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
 **Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
 
-### Observation 864: A chat number given in a starting brief was already taken
+### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — measuring D1789's fix (the Leave War's pinned dates row and Quals' heading drawn in the same frame as the scroll) before and after; numbered past 865, the highest on any branch at 10:00, 866–869 left for the sibling chats writing tonight
+**Skill:** walk-scripts (project guide, not a skill file) — measuring a visual change's frames; verification-before-completion
+**Type:** open-source
+**Phase/Area:** measuring frames before and after a change to what is drawn while scrolling
+**Reference file:** raptor-port/docs/handpass/2026-11-08-lw-group6.md §The frames
+
+**Issue:** The speed helper counted the frames in which the pinned row was missing from a log the page's own code kept, read on each animation frame. Before the fix it counted 2, after it 0, and the evidence sheet and the speed ledger said "the blink is gone". The walker's painted-frame sheets (a screencast of what the browser actually painted) showed one frame still missing after the fix — the desktop wheel 2 → 1, a phone flick 1. The browser moves and paints a scroll before the page's code hears of it, so a log kept by that code can never see that frame. The walker itself also judged the desktop case a PASS; the host's own look at the painted frames overturned it.
+**Suggested improvement:** In the walk-scripts guide's part on measuring frames, say that a glitch tied to scrolling or the compositor is counted on PAINTED frames (a screencast or a recording), never only on a frame log kept by the page's own code; the page's log may stand beside it for timing, not for "is it on screen". Name the frame the decision rests on in the evidence sheet, and have the host open it.
+**Principle:** A measurement taken by the code under test can only see what that code sees. When what matters is what the screen showed, measure the screen's own output, and treat a count of zero from inside the page as unproven.
+
+### Observation 871: Code that runs only when a box has a size was never run by tests drawn without layout
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — D1789's fix to the Leave War's pinned dates row and Quals' heading; Astra's code read found the setup path broken
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test for a change behind a layout guard
+
+**Issue:** The fix added an "instant" flag for calls from the scroll listener and a comment that the effect's own call keeps the old route. The effect's last line called the listener itself, so it took the instant route too, and React refused it on every setup. The unit tests never saw it: the test environment has no layout, every box measures 0, and the code returns early on a 0-height box — so the pinning code never ran in any unit test. Only the browser tests ran it, and they do not fail on a warning. A reader running the effect with given box sizes found it at once.
+**Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
+**Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
+
+### Observation 872: A chat number given in a starting brief was already taken
 
 **Status:** OPEN
 **Date:** 8 Nov 26
@@ -4110,6 +4137,6 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Type:** open-source
 **Phase/Area:** the opening line / a started session's brief — naming the next chat's number
 
-**Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 and 863 were taken by other branches; this note was renumbered 863 → 864 at the merge.)
+**Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 to 871 were taken by other branches; this note was renumbered 863 → 864 → 872 at the merges.)
 **Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
 **Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.
