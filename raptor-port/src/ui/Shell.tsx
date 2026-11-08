@@ -133,9 +133,9 @@ export function Shell() {
      The section still only DOZES while hidden; the flag just adds "pre-warmed"
      to the same "ever visited" mount gate below. */
   const [prewarmed, setPrewarmed] = useState(false)
-  /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
+  /* D1873: reserve the fixed bar's room before paint; D1116's readers share the same live height. */
   const topbarRef = useRef<HTMLDivElement>(null)
-  useEffect(() => wireTopbarVar(topbarRef.current), [])
+  useLayoutEffect(() => wireTopbarVar(topbarRef.current), [])
   /* the page names beside TALON where they all fit, else folded into the ☰ side menu (D1641–D1643 — ui/navfold.ts);
      a layout effect, so the first frame already shows the bar as it stays */
   const [navFold, setNavFold] = useState(false)

@@ -63,6 +63,35 @@ afterAll(async () => {
 })
 beforeEach(async () => { await act(async () => { resetSession(null); notify() }) })
 
+describe('D1873 — the fixed bar reserves space in both app trees and leaves none at sign-in', () => {
+  it('measures the guest bar on entry, then the main bar, and clears the height on sign-out', async () => {
+    const rect = HTMLElement.prototype.getBoundingClientRect
+    const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('#guestApp > .topbar')) return { height: 52.375, top: 0, bottom: 52.375 } as DOMRect
+      if (this.matches('#shell > .topbar')) return { height: 86.375, top: 0, bottom: 86.375 } as DOMRect
+      return rect.call(this)
+    })
+    const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
+    try {
+      await signInAs('bar1873@mail'); ask('Bar1873')
+      await signInAs('ad', 'a'); setGuestView(true)
+      await signInAs('bar1873@mail')
+      expect($('#guestApp')).toBeTruthy()
+      expect(height()).toBe('52.375px')
+      await signInAs('ad', 'a')
+      expect($('#shell')).toBeTruthy()
+      expect(height()).toBe('86.375px')
+      await click($('#logout'))
+      expect($('#login')).toBeTruthy()
+      expect(height()).toBe('')
+    } finally {
+      measured.mockRestore()
+      await signInAs('ad', 'a'); setGuestView(false)
+      await act(async () => { resetSession(null); notify() })
+    }
+  })
+})
+
 /* D292 (27 Sep 26) REPLACED D166 (3)'s "no preview as a member": an admin's badge is the switch to the member view and
    back again (its tests: ui/memberview.test.tsx, PO11); "View as" another PERSON stays gone */
 describe('AC10 — no "View as"; the badge names the signed-in person (D166 (3), D292)', () => {

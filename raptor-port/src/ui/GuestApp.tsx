@@ -16,7 +16,8 @@
    other day, and shows a medical input in full as members see it (D211, D213 — asked of
    perms.ts mayReadMedicalOf). The day swipe / arrows (ui/pan.ts) move the week — reading
    is not editing. Every write refuses him anyway, at the command gate (perms.ts). */
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import { wireTopbarVar } from './topbarvar'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { SESSION } from '../state/auth'
@@ -30,6 +31,9 @@ import { TalonMark } from './icons'
 
 export function GuestApp() {
   useVersion()
+  // D1873: the guest has its own bar and warning band, so measure its own space before paint too.
+  const topbarRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => wireTopbarVar(topbarRef.current), [])
   useEffect(() => initPan(), [])
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
   const name = String((SESSION && SESSION.name) || '')
@@ -37,7 +41,7 @@ export function GuestApp() {
   const failed = useSaveFailed()
   return (
     <div id="guestApp">
-      <div className={'topbar guestbar' + (failed ? ' save-failed' : '')}>
+      <div ref={topbarRef} className={'topbar guestbar' + (failed ? ' save-failed' : '')}>
         <TalonMark />
         <span className="guest-note" id="guestNote" title={name ? `Signed in as ${name}` : undefined}>Waiting for access — view only</span>
         <div className="right">

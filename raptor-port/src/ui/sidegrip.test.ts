@@ -73,7 +73,8 @@ describe('the top bar\'s height, for what is held under it (D1116)', () => {
     const bar = document.createElement('div')
     bar.getBoundingClientRect = () => ({ height: 58.4 }) as DOMRect
     const stop = wireTopbarVar(bar)
-    expect(document.documentElement.style.getPropertyValue('--topbar-h')).toBe('58px')
+    // D1873: this now reserves the fixed bar's space too; rounding would move the page by 0.4px.
+    expect(document.documentElement.style.getPropertyValue('--topbar-h')).toBe('58.4px')
     /* the bar grows (a band under it) — re-measured, here on the window's resize (the blind read, F1) */
     bar.getBoundingClientRect = () => ({ height: 88 }) as DOMRect
     window.dispatchEvent(new Event('resize'))
