@@ -1,0 +1,1572 @@
+{
+ "e.initial": {
+  "open": true,
+  "bar": "⚠ 4 issues · 2 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   }
+  ]
+ },
+ "e.hide0": {
+  "open": true,
+  "bar": "⚠ 3 issues · 1 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   }
+  ]
+ },
+ "e.hide1": {
+  "open": true,
+  "bar": "⚠ 2 issues ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   }
+  ]
+ },
+ "e.hide2": {
+  "open": true,
+  "bar": "⚠ 1 issue ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   }
+  ]
+ },
+ "e.hide3": {
+  "open": true,
+  "bar": "✓ No issues ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "e.allhidden": {
+  "open": true,
+  "bar": "✓ No issues ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "e.flag0": {
+  "open": true,
+  "bar": "⚠ 1 issue · 1 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "e.flag1": {
+  "open": true,
+  "bar": "⚠ 2 issues · 2 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "e.flag2": {
+  "open": true,
+  "bar": "⚠ 3 issues · 2 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "e.flag3": {
+  "open": true,
+  "bar": "⚠ 4 issues · 2 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   }
+  ]
+ },
+ "e.pucks": 7,
+ "e.hide-last": {
+  "open": true,
+  "bar": "⚠ 3 issues · 2 warning ▲",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "txt": "Conflict — two events at onceSaint — VL SAT & APPO",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "txt": "Crew rest (<12h)Outlaw — Crew rest breach — Monday",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "txt": "No time for the flight briefSaint — No time for th",
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null,
+    "btnColor": "rgb(241, 244, 247)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "txt": "Long work dayStatic — Static has a long work day: ",
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)",
+    "btnColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.initial": {
+  "head": "▸⚠ 3 issues · 2 warnings",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.allflagged": {
+  "head": "▸⚠ 4 issues · 2 warnings",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null
+   }
+  ]
+ },
+ "b.hide0": {
+  "head": "▸⚠ 3 issues · 1 warning",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null
+   }
+  ]
+ },
+ "b.hide1": {
+  "head": "▸⚠ 2 issues",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null
+   }
+  ]
+ },
+ "b.hide2": {
+  "head": "▸⚠ 1 issue",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null
+   }
+  ]
+ },
+ "b.hide3": {
+  "head": "▸No conflicts flagged for Tuesday ✓",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.allhidden": {
+  "head": "▸No conflicts flagged for Tuesday ✓",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.0",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.flag0": {
+  "head": "▸⚠ 1 issue · 1 warning",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.1",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.flag1": {
+  "head": "▸⚠ 2 issues · 2 warnings",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.2",
+    "svgColor": "rgb(182, 192, 203)"
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.flag2": {
+  "head": "▸⚠ 3 issues · 2 warnings",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": true,
+    "struck": true,
+    "btn": "reset",
+    "title": "Flag this again",
+    "svg": [
+     13,
+     13
+    ],
+    "btnBox": [
+     19,
+     18
+    ],
+    "woff": "1.3",
+    "svgColor": "rgb(182, 192, 203)"
+   }
+  ]
+ },
+ "b.flag3": {
+  "head": "▸⚠ 4 issues · 2 warnings",
+  "lines": [
+   {
+    "ix": "0",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.0",
+    "svgColor": null
+   },
+   {
+    "ix": "1",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.1",
+    "svgColor": null
+   },
+   {
+    "ix": "2",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.2",
+    "svgColor": null
+   },
+   {
+    "ix": "3",
+    "hid": false,
+    "struck": false,
+    "btn": "✕",
+    "title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+    "svg": null,
+    "btnBox": [
+     16,
+     16
+    ],
+    "woff": "1.3",
+    "svgColor": null
+   }
+  ]
+ },
+ "b.active-title": "Hide this warning — it flags no puck and is not counted; it comes back if the situation changes",
+ "errs": []
+}
