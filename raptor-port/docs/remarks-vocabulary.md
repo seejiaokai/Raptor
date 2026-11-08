@@ -105,9 +105,13 @@ means the immediately **previous day**, at most one day back. For take-off01:00,
 `2200 RALLY` means22:00 the previous evening. Each formation resolves against
 its own take-off before duplicate minima are compared. The earliest applicable
 IN TIME/RALLY supplies report; an earlier qualifying commitment can still start
-that person's working day/rest anchor. With neither instruction, the existing
-step fallback stays. Crew rest, actual work hours and long-day notes read that
-report; busy windows and nominal OIL retain their separate timing meanings.
+that person's working day/rest anchor. Crew rest, actual work hours, long-day
+notes and OIL read that report; busy windows retain their separate timing
+meaning. With neither instruction, actual work hours and long-day notes start
+at take-off less the default rally (`VCONF.reportLead`), as OIL does (D1786,
+8 Nov 26 — until then they kept the step); crew rest then measures from the
+brief, and busy windows keep the step (`engine-rules.md` §Where a day with
+nothing entered starts).
 Typed qualifying commitments count, but Personal/SANS offers, leave, medical
 and all-day inputs do not become earlier rest commitments through these words.
 

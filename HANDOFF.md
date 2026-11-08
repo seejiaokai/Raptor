@@ -58,7 +58,6 @@ the later merge keeps both (D78).
 - **Chats (D1744):** before numbering a new chat, read the open chats' titles — numbers went twice on 8 Nov 26. At 08:50 that day the highest in use was 12 (chat 2's rules diet step 5a, renumbered from 5); chat 3's builds are 5 to 9 and it holds 10 and 11 for its second wave; so the next new chat takes 13. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26.
 - **Rulings:** D1770, D1771, D1772.
 <!-- /now -->
-
 ## Next, in order
 
 **RIGHT NOW (7 Nov 26):** the rules diet (`[RULES-DIET]`, plan `raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md` §7) — step 1 LIVE (pull request 656) → step 2 LIVE (pull request 657) → step 3, reading by section, LIVE (pull request 658; re-measured: about 7% of a job's read) → step 4, the every-chat layer → step 5a, the small areas, OIL first → re-measure and report to him → step 5b, the big three; each step on his "merge live" (D1737).
