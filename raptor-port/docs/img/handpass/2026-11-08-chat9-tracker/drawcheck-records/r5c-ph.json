@@ -1,0 +1,143 @@
+{
+ "state": "r5c-ph",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5c-ph-restore-drawn"
+ },
+ "recorded": "2026-11-08T02:04:07.186Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "28c4c25e2",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "restore": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 278.6,
+    "y": 517,
+    "w": 77.4,
+    "h": 21
+   },
+   "ink": {
+    "x": 302.6,
+    "y": 521,
+    "w": 45.4,
+    "h": 14
+   },
+   "text": "Restore",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.zz-ring.zz-tb.zz-x"
+  },
+  "arrow": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 286.6,
+    "y": 520,
+    "w": 15,
+    "h": 15
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "svg"
+  },
+  "word": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 278.6,
+    "y": 517,
+    "w": 77.4,
+    "h": 21
+   },
+   "ink": {
+    "x": 302.6,
+    "y": 521,
+    "w": 45.4,
+    "h": 14
+   },
+   "text": "Restore",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.zz-ring.zz-tb.zz-x"
+  }
+ },
+ "approved": {
+  "picture": "q-r5c-ph-restore-drawn.png",
+  "identical": true
+ }
+}

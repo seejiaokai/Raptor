@@ -3,6 +3,8 @@ import * as core from '../app/core.js';
 import { isComposing } from './keys.js';
 import { DateBox } from './DateBox.jsx';
 import { SrchGlyph } from './SrchGlyph.jsx';
+/* Restore wears the app's drawn Reset arrow in place of its typed one, as Reset layout does (owner D1792 (c), 8 Nov 26 — "put back") */
+import { ResetGlyph } from './Glyphs.jsx';
 import { edgeAutoScroll } from '../../ui/edgescroll';
 import { markLand, paintLand } from '../../ui/lift';
 
@@ -548,7 +550,7 @@ function OrdModalInner({ mode }) {
               {hid.map(item => (
                 <div key={item.id} className="ordrow">
                   <span className="onm">{item.name}</span><span className="otag">deleted</span>
-                  <button title={mode === 'course' ? 'Restore this course' : 'Restore this built-in syllabus'} onClick={() => restore(item)}>↺ Restore</button>
+                  <button title={mode === 'course' ? 'Restore this course' : 'Restore this built-in syllabus'} onClick={() => restore(item)}><ResetGlyph /> Restore</button>
                 </div>
               ))}
             </div>

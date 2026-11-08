@@ -1,0 +1,82 @@
+[
+ [
+  "R1 double-click, 20ms, processor 1/1",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 80ms, processor 1/1",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 150ms, processor 1/1",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 20ms, processor 1/2",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 80ms, processor 1/2",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 150ms, processor 1/2",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 20ms, processor 1/3",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 80ms, processor 1/3",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R1 double-click, 150ms, processor 1/3",
+  "PASS",
+  "chart 624 → 971; 1 window, ACG-09  ·  STUDENT A, its top 4px under the event; chart takes presses again: true"
+ ],
+ [
+  "R2 one click on ACG-09",
+  "PASS",
+  "ACG-09  ·  STUDENT A, 4px under"
+ ],
+ [
+  "R3 at rest, a click on another event in view opens its window",
+  "PASS",
+  "pressed ST-03; window ST-03  ·  STUDENT A"
+ ],
+ [
+  "R4 a press on the Tracker bar during the slide closes the window",
+  "PASS",
+  "windows 0; chart takes presses again: true"
+ ],
+ [
+  "R5 a wheel turn during the slide: one window for ACG-09, beside the event",
+  "PASS",
+  "ACG-09  ·  STUDENT A, 4px under"
+ ],
+ [
+  "R6 desktop: no page or console errors",
+  "PASS",
+  "none"
+ ],
+ [
+  "R7 phone: a second tap during the slide — one window for ACG-09, 4px under it",
+  "PASS",
+  "chart 339 → 574; 1 window, ACG-09  ·  STUDENT A, 4px under"
+ ],
+ [
+  "R8 phone: no page or console errors",
+  "PASS",
+  "none"
+ ]
+]

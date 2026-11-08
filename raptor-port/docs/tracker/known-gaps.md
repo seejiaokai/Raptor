@@ -41,7 +41,7 @@
 > were typed on, never every chart with that code (D126 — so an export carries each chart's own details
 > and an import writes only the imported charts'); the export file remembers a deleted built-in chart,
 > which stays deleted after the import (D127); a deleted course is listed in the course ⇅ Reorder
-> window with ↺ Restore, students and marks intact (D128); logging out with unsaved chart edits asks
+> window with Restore (its drawn Reset arrow since D1792), students and marks intact (D128); logging out with unsaved chart edits asks
 > Save / Discard / Stay first (D129).
 > **Three more (owner, 23 Sep 26, BUILT):** deleting a ball also deletes the details typed on it (D130);
 > a backup does not carry a deleted course — restore it before exporting; the delete question says "in this
@@ -111,7 +111,7 @@
 >   and records untouched — 10 Sep 26) and may contain a colon. Nothing
 >   flows back to Raptor yet (no pucks, no quals) — `pid` is the hook for
 >   that. Deleting a course leaves its records in storage **and lists the course
->   in ⇅ Reorder courses under "Deleted courses", whose ↺ Restore brings it back
+>   in ⇅ Reorder courses under "Deleted courses", whose Restore (its drawn Reset arrow since D1792) brings it back
 >   under its own id, students and marks intact** (owner, 23 Sep 26 — D128;
 >   [HUMAN-RETEST] F12 found the old "(marks remain in storage)" with no door
 >   since course ids, 13 Sep 26). A course re-created under the same name is a

@@ -20,6 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
+<!-- now:claude/pr-tracker-787259 -->
+### CHAT 10 (took over chat 9's job) — the pictures round's group 7, the Tracker — MERGED 8 Nov 26 (pull request 687, on his "merge live" typed in chat 10; chat 9's, passed on in a brief, was refused by the app's safety check — skill note 877)
+- **Live:** D1790 (the marking window: where it would not fit under the event, the chart slides the event up under the tabs and the window opens whole 4px under it; at the chart's end, where it cannot slide, the page's option B), D1791 (on a phone Find's ✕ empties the box and puts Find away; a pick puts it away), D1792 (c) (Restore wears the drawn Reset arrow); and chat 10's fix — while the chart slides, no part of it takes a press (each event's invisible press circle did, so a double-click opened a second window from mid-slide; `components/Pop.jsx`, `tracker.css`). Evidence `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`; the drawing check's one difference (the window 6.3px lower than drawn) and the phone-on-its-side placement were shown to him 8 Nov 26.
+- **Filed, open:** [TRK-POP-ASKED] (the two questions put to him 8 Nov 26 — the typed marks in two messages, F8, and the short-screen placement, Astra's reading 6), [TRK-KEPT-COPIES], [TRK-NOSTORE-SAVED].
+- **Rulings:** none (chats 9 and 10). Skill notes 876–878 (renumbered when `main` was brought in).
+- **Remove this block at the next handoff** — nothing else is open from chat 10.
+<!-- /now -->
 <!-- now:claude/m365-it-answers -->
 ### `claude/m365-it-answers` — chat 4 (D1744): the IT side's written answers folded into the database plans — MERGED 8 Nov 26 (pull request 662, on his "merge live"); written 8 Nov 26 — verify before use
 - **Where it started:** `main` at `9b42a96b6` (chat 1's pull request 661 merged). Notes only, no app change: the IT side's written reply of 8 Nov 26 to the 12 questions (no names, on D1748) in `OUTSTANDING.md` [IT-QUESTIONS] — with pointers in [DB-SECURITY-ROLES], [AIRCRAFT-TYPE-SETTING], [MULTI-SQN-DESIGN] — and folded into `raptor-port/docs/data-model.md` (head note, Attachment, Squadrons, §9 rule 8 and the change log, §11, §12), `raptor-port/docs/handover-dataverse.md` and the M365 move plan (head, points 2, 19, 24, 35, 36, §4, §5, §Platform flags). Chat 1's block was removed (its work merged); its open points are below and in [IT-QUESTIONS].

@@ -116,7 +116,17 @@ export default function App({ active = true }) {
        (9 Sep 26). Bound only while the tab is up, like Escape and Delete, so a
        shortcut on a Raptor page never undoes a Tracker mark. */
     const undo = e => core.handleUndoKey(e);
-    const clickAway = e => { if (core.pop && !e.target.closest('#pop') && !e.target.closest('.ball')) core.closePop(); };
+    const clickAway = e => {
+      if (!core.pop || e.target.closest('#pop') || e.target.closest('.ball')) return;
+      /* While the chart slides for the marking window it takes no press (Pop.jsx, D1790), so a press on it lands on the
+         box behind the chart — not a press outside the window: the second click of a double-click on the event closed
+         the window it was opening (8 Nov 26, the Tracker smoke's pin). A press anywhere else still closes it. */
+      if (core.popSliding) {
+        const b = document.getElementById('board')?.getBoundingClientRect();
+        if (b && e.clientX >= b.left && e.clientX < b.right && e.clientY >= b.top && e.clientY < b.bottom) return;
+      }
+      core.closePop();
+    };
     const unload = e => { if (core.sylDirty) { e.preventDefault(); e.returnValue = ''; } };
     document.addEventListener('keydown', esc);
     document.addEventListener('keydown', del);
