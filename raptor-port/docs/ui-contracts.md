@@ -12410,7 +12410,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   safety for smaller screens is part of his D1787 answer (below 1340 the window covers the list, no room made), and
   the window over "+ Input" while open stays as drawn, as over "+ Medical".
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
-- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after.
+- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
