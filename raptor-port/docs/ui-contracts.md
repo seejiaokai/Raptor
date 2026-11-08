@@ -12434,7 +12434,20 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1785** — an unreadable week's notice and refusal words, the refusal in the grey "Blocked:" note.
 - **D1787** — the desktop Inputs list's "+ Input" at its row's right end; the list makes room for the window from about
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
-  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
+  (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing. *Built 8 Nov 26 (chat 7,
+  `claude/pr-inputs-add-right-5b2653`):* the button after the dates button and a spring (`ui/InputsPage.tsx` `listTools`);
+  `in-room` on the page while any input's window is open on the desktop list, the room and the narrowing at 1340 and up
+  (`scheduler/06-inputs.css`); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
+  from 1100 the full widths leave Remarks 160 or more. Pins: `ui/inputs.test.tsx`, `e2e/inputs-calendar.spec.ts` "D1787".
+  **D1840** (8 Nov 26, his "all as recommended" to chat 7's look): from 821 to 1099 wide with no window Type narrows
+  to 124 as well, so Remarks keeps about 93 at 821 with every word whole; from 1100 Type keeps 160. **D1841**: the
+  safety for smaller screens is part of his D1787 answer (below 1340 the window covers the list, no room made), and
+  the window over "+ Input" while open stays as drawn, as over "+ Medical".
+  **D1842** (8 Nov 26, his correction on the 821-wide picture): the list's right end must not look as if it runs on — the rows'
+  left line has no match on the right and "No document" sits at the very end, so he tried to scroll sideways; the fix is
+  drawn for him first (filed as [INP-LIST-RIGHT-EDGE]).
+  **D1843** (8 Nov 26, his "A, as recommended"): the list is closed by a thin line round it in the colour of the lines between its rows,
+  and "No document" stands inside its column (about 14px from the end as drawn, the agent's measurement); no column changes width; the phone's cards unchanged.
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
@@ -12462,7 +12475,8 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   "Clear the search and close Find"; pressed from the keyboard, the keys go back to 🔍; wider, ✕ clears and keeps the
   box focused, its words "Clear the search", as before. A pick from the list puts the strip away. Pins: the smoke suite.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
-  hidden warning's ↺; the ✕ stays typed.
+  hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
+  (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
   **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
   Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
   the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.

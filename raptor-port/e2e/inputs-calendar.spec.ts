@@ -1313,14 +1313,16 @@ test('the month: a timed bar is painted lighter than an all-day one, with a soli
   await expect(page.locator('.ib-bar', { hasText: /\+\d/ }), 'no bar hides people behind "+N"').toHaveCount(0)
   await expect(page.locator('[data-testid="ib-legend"]')).toHaveText(/absence\s*duty$/)
 })
-test('the desktop list: "+ Input" first in its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729)', async ({ page }) => {
+/* "+ Input" stood first in its row here until D1787 (8 Nov 26) moved it, on a desktop, to the row's right end after the dates
+   button, as "+ Medical" stands (D1300); the rest of this test is D727's and D729's, unchanged. */
+test('the desktop list: "+ Input" at the right end of its row and the table straight under it; nine names wrap inside the Name column; "By" shares the remark’s line (D727, D729, D1787)', async ({ page }) => {
   await login(page); await go(page, 'inputs'); await month(page, 2026, 10)
   await vetWorld(page)
   await page.click('#inListBtn'); await page.click('#inRangeBtn'); await page.click('#inRangeAll')
   await expect(page.locator('.inbar'), 'no form over the list').toHaveCount(0)
   const m = await page.evaluate(() => {
     const box = (sel: string) => document.querySelector(sel)!.getBoundingClientRect()
-    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl')
+    const add = box('#inNew'), range = box('#inRangeBtn'), table = box('#intbl'), tools = box('.inputs-listtools')
     const row = [...document.querySelectorAll('#inBody tr')].find(tr => /Squadron photo/.test(tr.textContent || ''))!
     const name = row.querySelector('[data-label="Name"]')!, btn = name.querySelector('.in-open')!
     const rmk = row.querySelector('[data-label="Remarks"]')!, by = rmk.querySelector('.in-placed')!
@@ -1330,7 +1332,7 @@ test('the desktop list: "+ Input" first in its row and the table straight under 
     const tr = document.createRange(); tr.selectNodeContents(text)
     const one = [...document.querySelectorAll('#inBody tr')].find(tr => !tr.querySelector('.intitle') && !/,/.test(tr.querySelector('[data-label="Name"]')!.textContent || ''))!
     return {
-      addLeft: add.right <= range.left + 1, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
+      addRight: add.left >= range.right - 1 && Math.abs(add.right - tools.right) <= 2, sameRow: Math.abs((add.top + add.height / 2) - (range.top + range.height / 2)) <= 6,
       tableTop: table.top - add.bottom, names: btn.textContent, lines, inCol: btn.getBoundingClientRect().right <= name.getBoundingClientRect().right + 0.5,
       nameW: Math.round(name.getBoundingClientRect().width), by: by.textContent,
       bySameLine: Math.abs(by.getBoundingClientRect().top - tr.getBoundingClientRect().top) <= 6, byAfter: by.getBoundingClientRect().left >= tr.getBoundingClientRect().right + 8,
@@ -1338,7 +1340,7 @@ test('the desktop list: "+ Input" first in its row and the table straight under 
       wide: document.documentElement.scrollWidth <= innerWidth,
     }
   })
-  expect(m.addLeft && m.sameRow, '"+ Input" stands at the left of the dates button, on its line').toBe(true)
+  expect(m.addRight && m.sameRow, '"+ Input" stands at the right end of the row, after the dates button, on its line (D1787)').toBe(true)
   expect(m.tableTop, 'the table starts straight under the tools — no form between').toBeLessThan(40)
   expect(m.names!.split(', '), 'every name').toHaveLength(9)
   expect(m.lines, 'wrapping in its column').toBeGreaterThanOrEqual(2)
@@ -1542,3 +1544,185 @@ for (const width of [390, 402]) {
     await context.close()
   })
 }
+
+/* "+ INPUT" AT THE RIGHT, THE LIST MAKING ROOM FOR ITS WINDOW (owner D1787, 8 Nov 26 — the pictures round's question 8 and
+   its "On a smaller screen" part; drawn by scripts/handpass/pr-sched.mjs q4, q4f). What only a real browser can say: where
+   the button stands, where the window stands against the list, and what each column is given — at his PC's 1536, at the
+   1340 where the room starts, and at 1280, 1024 and 821, where it is not made; and the phone, unchanged (D910). */
+const colW = (p: Page) => p.evaluate(() => [...document.querySelectorAll('#intbl thead th')].map(th => Math.round(th.getBoundingClientRect().width)))
+async function listAt(p: Page, width: number) {
+  await p.setViewportSize({ width, height: 800 })
+  await go(p, 'inputs')
+  await p.locator('#inListBtn').click()
+  await expect(p.locator('#intbl')).toBeVisible()
+}
+for (const width of [1536, 1340, 1280, 1024, 821]) {
+  test(`D1787 at ${width} wide: + Input at the row's right end; the list makes room only from 1340; Remarks never squeezed`, async ({ page }) => {
+    await login(page)
+    await listAt(page, width)
+    const row = (await page.locator('.inputs-listtools').boundingBox())!
+    const btn = (await page.locator('#inNew').boundingBox())!
+    const dates = (await page.locator('#inRangeBtn').boundingBox())!
+    expect(row.x + row.width - (btn.x + btn.width), '+ Input at the row\'s right end').toBeLessThan(2)
+    expect(dates.x, 'the dates button keeps the left').toBeLessThan(btn.x)
+    expect(btn.height, 'still 36 tall (D1139)').toBeGreaterThanOrEqual(35.5)
+    /* no window: below 1100 Name, Start and End give up room so Remarks keeps some (the older fault) */
+    const closed = await colW(page)
+    /* and Type gives up 36 there too (owner D1840, 8 Nov 26), so at 821 Remarks keeps every word whole */
+    if (width < 1100) expect(closed.slice(0, 4), 'Name, Start, End and Type narrowed').toEqual([110, 140, 90, 124])
+    else expect(closed.slice(0, 4), 'the full widths').toEqual([250, 150, 115, 160])
+    expect(closed[4], 'Remarks keeps a width (it was a letter)').toBeGreaterThanOrEqual(90)
+    /* every kind's pill on one line in the narrowed Type, and inside its cell (a pill under a title never wraps, so it
+       would spill instead) — every date shown, since the test's own clock is today's and its fortnight may be empty */
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inBody tr .in-open').first()).toBeVisible()
+    const pills = await page.locator('#inBody td:nth-child(4) .intag').evaluateAll(els => els.map(e => {
+      const b = e.getBoundingClientRect(), td = e.closest('td')!, c = td.getBoundingClientRect()
+      return { h: Math.round(b.height), spill: Math.round(b.right - (c.right - parseFloat(getComputedStyle(td).paddingRight))) }
+    }))
+    expect(pills.length, 'the list shows inputs to measure').toBeGreaterThan(0)
+    expect(Math.max(...pills.map(p => p.h)) - Math.min(...pills.map(p => p.h)), 'no pill wraps').toBeLessThanOrEqual(1)
+    expect(Math.max(...pills.map(p => p.spill)), 'no pill spills out of its cell').toBeLessThanOrEqual(0)
+    /* the window open */
+    await page.locator('#inNew').click()
+    const win = page.locator('[data-testid="win-inputedit"]')
+    await expect(win).toBeVisible()
+    const w = (await win.boundingBox())!
+    const tbl = (await page.locator('#intbl').boundingBox())!
+    const open = await colW(page)
+    if (width >= 1340) {
+      expect(tbl.x + tbl.width, 'the list stops short of the window').toBeLessThanOrEqual(w.x)
+      expect(open.slice(0, 3), 'Name, Start, End narrowed first').toEqual([110, 140, 90])
+      expect(open[4], 'Remarks keeps a usable width').toBeGreaterThanOrEqual(145)
+    } else {
+      expect(tbl.x + tbl.width, 'narrower: the window covers the list as before').toBeGreaterThan(w.x)
+      expect(open, 'the columns are as with no window').toEqual(closed)
+    }
+    await page.keyboard.press('Escape')
+    await expect(win).toHaveCount(0)
+    expect(await colW(page), 'the room goes with the window').toEqual(closed)
+  })
+}
+/* THE LIST'S RIGHT END IS CLOSED (owner D1842, D1843 — 8 Nov 26, option A of his look page): its rows carried a coloured
+   line on the left and nothing on the right, and "No document" ended 3px from the list's end, so the list read as if it
+   ran on and he tried to scroll sideways. Now a thin line goes round the whole list, in the rows' own line colour, and
+   "No document" ends inside its column. What only a real browser can say: the line as DRAWN (the screen's own pixels
+   just past the list's right edge, not only its style), where "No document" ends against its cell and the list's end,
+   and that nothing scrolls sideways — at his PC's 1536, a wide 2560, 1024 and the 821 where the desktop list begins,
+   and at 1536 with the input window open, where the list makes room for it (D1787). */
+const rightEnd = (p: Page) => p.evaluate(() => {
+  const tbl = document.querySelector('#intbl')!, t = tbl.getBoundingClientRect(), wrap = document.querySelector('.inwrap')!
+  const nodoc = [...document.querySelectorAll('#inBody .in-nodoc')].map(s => {
+    const b = s.getBoundingClientRect(), td = s.closest('td')!, c = td.getBoundingClientRect()
+    return { spill: b.right - (c.right - parseFloat(getComputedStyle(td).paddingRight)), toEnd: t.right - b.right,
+      midY: (c.top + c.bottom) / 2 }
+  })
+  return { right: t.right, nodoc, sideways: wrap.scrollWidth > wrap.clientWidth,
+    pageSideways: document.documentElement.scrollWidth > innerWidth }
+})
+/* the colours of a one-pixel-high strip of the screen, left to right — decoded in a blank page of its own, so nothing the
+   app sets (its content rules, its scripts) has a say */
+async function strip(p: Page, x: number, y: number, w: number): Promise<number[][]> {
+  const png = await p.screenshot({ clip: { x, y, width: w, height: 1 } })
+  const dec = await p.context().newPage()
+  try {
+    return await dec.evaluate(async b64 => {
+      const img = new Image(); img.src = 'data:image/png;base64,' + b64; await img.decode()
+      const c = document.createElement('canvas'); c.width = img.width; c.height = 1
+      const g = c.getContext('2d')!; g.drawImage(img, 0, 0)
+      const d = g.getImageData(0, 0, img.width, 1).data, out: number[][] = []
+      for (let i = 0; i < d.length; i += 4) out.push([d[i], d[i + 1], d[i + 2]])
+      return out
+    }, png.toString('base64'))
+  } finally { await dec.close() }
+}
+const EDGE = [0x2a, 0x31, 0x3a]   // var(--edge), the rows' own lines
+const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) <= 10)
+/* ARIAL'S LETTERS ON EVERY MACHINE (GitHub's first run of this test, 8 Nov 26): the app loads no font, so each machine
+   draws its own, and Linux's own letters set "No document" wider than this PC's Segoe UI — on GitHub it ended 3.25px
+   past its column's padding, 8.75px from the list's end, at every width, where this PC holds it about 14px in. Those
+   letters are no device of his. Arial is close to Apple's on his iPhone and the same on this PC and on GitHub's machines
+   (Liberation Sans, its metric twin), as the Leave War's whole-leave and input-range tests use; on the old look (the
+   controls' 11px side margins) it still fails every check of "No document". Laid on from the first paint
+   (docs/gates-and-deploy.md §A geometry test red on GitHub's Linux machines only). */
+const ARIAL_LIST = '#intbl, #intbl * { font-family: Arial, "Liberation Sans", sans-serif !important }'
+for (const [width, withWin] of [[2560, false], [1536, false], [1536, true], [1024, false], [821, false]] as const) {
+  test(`D1843 at ${width} wide${withWin ? ', the input window open' : ''}: a line closes the list's right end; "No document" inside its column`, async ({ page }) => {
+    await page.addInitScript(css => {
+      const add = () => { const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s) }
+      if (document.head) add()
+      else document.addEventListener('DOMContentLoaded', add)
+    }, ARIAL_LIST)
+    await login(page)
+    await listAt(page, width)
+    /* every date shown, so the leaves and medicals with no document are on the list whatever today is */
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inBody .in-nodoc').first()).toBeVisible()
+    if (withWin) {
+      await page.locator('#inNew').click()
+      await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+    }
+    const m = await rightEnd(page)
+    /* each check reports on its own (soft), so the old look shows every one of them failing, not only the first */
+    expect(m.nodoc.length, 'rows with "No document" to measure').toBeGreaterThan(0)
+    expect.soft(Math.max(...m.nodoc.map(n => n.spill)), '"No document" ends inside its column\'s padding').toBeLessThanOrEqual(0.5)
+    expect.soft(Math.min(...m.nodoc.map(n => n.toEnd)), '"No document" stands clear of the list\'s end').toBeGreaterThanOrEqual(12)
+    expect.soft(m.sideways, 'the list does not scroll sideways').toBe(false)
+    expect.soft(m.pageSideways, 'the page does not scroll sideways').toBe(false)
+    /* the line, as drawn: halfway down a row (clear of the rows' own lines), from 3px inside the list to 4px past it —
+       one pixel there wears the rows' line colour, and the page beyond it does not */
+    const x0 = Math.floor(m.right) - 3, px = await strip(page, x0, Math.round(m.nodoc[0].midY), 8)
+    /* found by how much brighter it is than the page past it: the line's colour sums 141 against the page's 34 — and
+       under the veil an open window lays over the page (about four fifths of each colour, measured 8 Nov 26) 121
+       against 27; its exact colour is checked where no window is open */
+    const lum = (c: number[]) => c[0] + c[1] + c[2], beyond = lum(px[7])
+    const hit = px.findIndex(c => lum(c) - beyond >= 60)
+    expect.soft(hit, `a line at the list's right edge, brighter than the page past it (${JSON.stringify(px)})`).toBeGreaterThanOrEqual(2)
+    expect.soft(hit, 'the line stands at the list\'s edge, not inside it').toBeLessThanOrEqual(4)
+    if (!withWin) expect.soft(hit >= 0 && near(px[hit], EDGE), `the line wears the rows' line colour (${JSON.stringify(px[hit])})`).toBe(true)
+    expect.soft(near(px[7], EDGE), 'the page past the line is not the line').toBe(false)
+  })
+}
+/* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT (both code reads of 8 Nov 26, Astra's and the fresh Opus reader's): a window
+   keeps the place it was dragged to for the session (winorder.ts), so a list that kept its room at the right for it was
+   squeezed AND covered. The room is made only while the window stands where it opens, as the calendar's opened day
+   already gives its room back once dragged (25-inputs-calendar.css, `:not([data-placed])`). */
+test('D1787: the input window dragged away gives the list its room back, and reopened where he left it, makes none', async ({ page }) => {
+  await login(page)
+  await listAt(page, 1536)
+  // every date, so the list holds rows to reopen (the test's own clock is today's, whose fortnight may be empty)
+  await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+  await expect(page.locator('#inBody tr .in-open').first()).toBeVisible()
+  const closed = await colW(page)
+  await page.locator('#inNew').click()
+  const win = page.locator('[data-testid="win-inputedit"]')
+  await expect(win).toBeVisible()
+  expect((await colW(page)).slice(0, 3), 'at its own place the room is made').toEqual([110, 140, 90])
+  const t = (await win.locator('.win-ttl').boundingBox())!
+  await page.mouse.move(t.x + 10, t.y + t.height / 2); await page.mouse.down()
+  await page.mouse.move(t.x - 800, t.y + 150, { steps: 10 }); await page.mouse.up()
+  await expect.poll(() => colW(page), 'dragged away: the full widths back').toEqual(closed)
+  await page.keyboard.press('Escape')
+  await expect(win).toHaveCount(0)
+  await page.locator('#inBody tr .in-open').first().click()
+  await expect(win).toBeVisible()
+  expect(await colW(page), 'reopened where he left it: no room').toEqual(closed)
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight), 'no strip kept at the right').not.toBe('446px')
+})
+test('D1787 on a phone: + Input still first in its row; a window makes no room (D910, D997)', async ({ browser }) => {
+  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true })
+  const page = await context.newPage()
+  await login(page)
+  await go(page, 'inputs')
+  await page.locator('#inListBtn').tap()
+  const btn = (await page.locator('#inNew').boundingBox())!
+  const dates = (await page.locator('#inRangeBtn').boundingBox())!
+  expect(btn.x, 'first, before the dates button').toBeLessThan(dates.x)
+  const pad0 = await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight)
+  /* with its window open, as the claim says (the Opus code read: the test never opened one) */
+  await page.locator('#inNew').tap()
+  await expect(page.locator('[data-testid="win-inputedit"]')).toBeVisible()
+  await expect(page.locator('.inputs-workspace.in-room')).toHaveCount(0)
+  expect(await page.evaluate(() => getComputedStyle(document.querySelector('.inwrap')!).paddingRight), 'no room made on a phone').toBe(pad0)
+  await context.close()
+})

@@ -1,0 +1,317 @@
+{
+ "state": "safe-821",
+ "drawing": {
+  "script": "scripts/handpass/pr-sched.mjs",
+  "shot": "q-addright-821-A-safe"
+ },
+ "recorded": "2026-11-08T00:36:21.657Z",
+ "drawnOn": "ead868ee9 (the drawings commit; its Inputs code that of 549482bd5 but for three small lines)",
+ "checkout": "2a3e01a7f",
+ "viewport": {
+  "w": 821,
+  "h": 768
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "inNew": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 743.3,
+    "y": 175,
+    "w": 65.7,
+    "h": 36
+   },
+   "ink": {
+    "x": 756.3,
+    "y": 186,
+    "w": 39.7,
+    "h": 14
+   },
+   "text": "+ Input",
+   "typed": false,
+   "look": {
+    "fill": "rgb(59, 198, 232)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(5, 42, 52)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn.primary.in-new.zz-ring"
+  },
+  "range": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 175,
+    "w": 133.7,
+    "h": 36
+   },
+   "ink": {
+    "x": 46,
+    "y": 186,
+    "w": 86.7,
+    "h": 14
+   },
+   "text": "13 Jul → 27 Jul",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "9px",
+     "9px",
+     "9px",
+     "9px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "600 12px",
+    "spacing": "normal"
+   },
+   "tag": "button.abtn"
+  },
+  "table": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 32,
+    "y": 226,
+    "w": 875,
+    "h": 6233.3
+   },
+   "ink": {
+    "x": 44,
+    "y": 235,
+    "w": 859.1,
+    "h": 6214.1
+   },
+   "text": "Name Start ▲ End Type Changed Vector 13 Jul OML 12 Jul 26 Grit 13 Jul 17 Jul ATT C 12 Jul 26 Gambit 13 Jul Attach 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE 6 Jul 26 Quill 14 Jul LL LATE 30 Jun 26 No document Wisp 14 Jul OIL LATE 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE 9 Jul 26 Cobra 15 Jul OL By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD 18 Jun 26 Gambit 15 Jul OIL 1 Jan 26 No document Gambit 16 Jul OIL 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event By Saber 26 Jun 26 Gambit 23 Jul OML 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting By Saber 25 Jun 26 Tally 24 Jul LL LATE By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty By Saber 26 Jun 26 OIL",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 12px",
+    "spacing": "-0.065px"
+   },
+   "tag": "table.intbl"
+  },
+  "name": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 32,
+    "y": 226,
+    "w": 250,
+    "h": 30.8
+   },
+   "ink": {
+    "x": 44,
+    "y": 235.1,
+    "w": 32.6,
+    "h": 12
+   },
+   "text": "Name",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort"
+  },
+  "start": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 282,
+    "y": 226,
+    "w": 150,
+    "h": 30.8
+   },
+   "ink": {
+    "x": 294,
+    "y": 235,
+    "w": 49.2,
+    "h": 12.3
+   },
+   "text": "Start ▲",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(59, 198, 232)",
+     "0px none rgb(59, 198, 232)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(59, 198, 232)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort.on"
+  },
+  "end": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 432,
+    "y": 226,
+    "w": 115,
+    "h": 30.8
+   },
+   "ink": {
+    "x": 444,
+    "y": 235.1,
+    "w": 23.4,
+    "h": 12
+   },
+   "text": "End",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort"
+  },
+  "type": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 547,
+    "y": 226,
+    "w": 160,
+    "h": 30.8
+   },
+   "ink": {
+    "x": 559,
+    "y": 235.1,
+    "w": 29.1,
+    "h": 12
+   },
+   "text": "Type",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "left",
+    "justify": "normal",
+    "font": "700 10.5px",
+    "spacing": "0.42px"
+   },
+   "tag": "th.insort"
+  },
+  "remarks": {
+   "found": false,
+   "count": 0,
+   "why": "no visible match (0 visible) for #intbl thead th:nth-child(5)"
+  }
+ },
+ "approved": {
+  "picture": "q-addright-821-A-safe.png",
+  "identical": true
+ }
+}

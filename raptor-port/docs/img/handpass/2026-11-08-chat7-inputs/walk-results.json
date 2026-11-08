@@ -1,0 +1,1306 @@
+{
+ "results": [
+  {
+   "width": 1536,
+   "step": "a: row of + Input and dates",
+   "expected": "+ Input at the row's right end (<2px), dates button at the left, 36 tall",
+   "saw": {
+    "row": {
+     "x": 12,
+     "y": 121,
+     "width": 1512,
+     "height": 53
+    },
+    "btn": {
+     "x": 1458.3,
+     "y": 129,
+     "width": 65.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 12,
+     "y": 129,
+     "width": 133.7,
+     "height": 36
+    },
+    "rightEdgeGap": 0,
+    "closedCols": [
+     250,
+     150,
+     115,
+     160,
+     597,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "w1536-a-row.png"
+  },
+  {
+   "width": 1536,
+   "step": "a2: no window columns",
+   "expected": "Name/Start/End = 250,150,115",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    597,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": "w1536-a-viewport.png"
+  },
+  {
+   "width": 1536,
+   "step": "b: press + Input",
+   "expected": "list stops short of the window (gap>=0); Name/Start/End 110/140/90; Remarks>=145",
+   "saw": {
+    "winLeft": 1090,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 1078,
+    "gap": 12,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     346,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "446px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1536-b-newwindow.png"
+  },
+  {
+   "width": 1536,
+   "step": "d: dates pop-up with window open",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1536-d-dates-withwindow.png"
+  },
+  {
+   "width": 1536,
+   "step": "f: Filters button",
+   "expected": "n/a on desktop (fields inline)",
+   "saw": {
+    "filtersBtnVisible": false,
+    "fieldsVisible": true
+   },
+   "pass": true,
+   "pic": "w1536-f-nofiltersbutton-withwindow.png"
+  },
+  {
+   "width": 1536,
+   "step": "c: close by X, Escape, Cancel",
+   "expected": "window gone and the list back as before each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      597,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "esc",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      597,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "cancel",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      597,
+      104,
+      96
+     ],
+     "same": true
+    }
+   ],
+   "pass": true,
+   "pic": "w1536-c-after-x.png"
+  },
+  {
+   "width": 1536,
+   "step": "d: dates pop-up, no window",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1536-d-dates-nowindow.png"
+  },
+  {
+   "width": 1536,
+   "step": "e: click a row",
+   "expected": "same room as (b)",
+   "saw": {
+    "winLeft": 1090,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 1078,
+    "gap": 12,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     346,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "446px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1536-e-rowwindow.png"
+  },
+  {
+   "width": 1536,
+   "step": "e2: row window closed",
+   "expected": "list as before",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    597,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": 1340,
+   "step": "a: row of + Input and dates",
+   "expected": "+ Input at the row's right end (<2px), dates button at the left, 36 tall",
+   "saw": {
+    "row": {
+     "x": 12,
+     "y": 165,
+     "width": 1316,
+     "height": 53
+    },
+    "btn": {
+     "x": 1262.3,
+     "y": 173,
+     "width": 65.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 12,
+     "y": 173,
+     "width": 133.7,
+     "height": 36
+    },
+    "rightEdgeGap": 0,
+    "closedCols": [
+     250,
+     150,
+     115,
+     160,
+     401,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "w1340-a-row.png"
+  },
+  {
+   "width": 1340,
+   "step": "a2: no window columns",
+   "expected": "Name/Start/End = 250,150,115",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    401,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": "w1340-a-viewport.png"
+  },
+  {
+   "width": 1340,
+   "step": "b: press + Input",
+   "expected": "list stops short of the window (gap>=0); Name/Start/End 110/140/90; Remarks>=145",
+   "saw": {
+    "winLeft": 894,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 882,
+    "gap": 12,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     150,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "446px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1340-b-newwindow.png"
+  },
+  {
+   "width": 1340,
+   "step": "d: dates pop-up with window open",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1340-d-dates-withwindow.png"
+  },
+  {
+   "width": 1340,
+   "step": "f: Filters button",
+   "expected": "n/a on desktop (fields inline)",
+   "saw": {
+    "filtersBtnVisible": false,
+    "fieldsVisible": true
+   },
+   "pass": true,
+   "pic": "w1340-f-nofiltersbutton-withwindow.png"
+  },
+  {
+   "width": 1340,
+   "step": "c: close by X, Escape, Cancel",
+   "expected": "window gone and the list back as before each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      401,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "esc",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      401,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "cancel",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      401,
+      104,
+      96
+     ],
+     "same": true
+    }
+   ],
+   "pass": true,
+   "pic": "w1340-c-after-x.png"
+  },
+  {
+   "width": 1340,
+   "step": "d: dates pop-up, no window",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1340-d-dates-nowindow.png"
+  },
+  {
+   "width": 1340,
+   "step": "e: click a row",
+   "expected": "same room as (b)",
+   "saw": {
+    "winLeft": 894,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 882,
+    "gap": 12,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     150,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "446px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1340-e-rowwindow.png"
+  },
+  {
+   "width": 1340,
+   "step": "e2: row window closed",
+   "expected": "list as before",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    401,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": 1280,
+   "step": "a: row of + Input and dates",
+   "expected": "+ Input at the row's right end (<2px), dates button at the left, 36 tall",
+   "saw": {
+    "row": {
+     "x": 12,
+     "y": 211,
+     "width": 1256,
+     "height": 53
+    },
+    "btn": {
+     "x": 1202.3,
+     "y": 219,
+     "width": 65.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 12,
+     "y": 219,
+     "width": 133.7,
+     "height": 36
+    },
+    "rightEdgeGap": 0,
+    "closedCols": [
+     250,
+     150,
+     115,
+     160,
+     341,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "w1280-a-row.png"
+  },
+  {
+   "width": 1280,
+   "step": "a2: no window columns",
+   "expected": "Name/Start/End = 250,150,115",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    341,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": "w1280-a-viewport.png"
+  },
+  {
+   "width": 1280,
+   "step": "b: press + Input",
+   "expected": "window covers the list (gap<0), columns same as with no window",
+   "saw": {
+    "winLeft": 834,
+    "winTop": 111,
+    "winW": 430,
+    "listRight": 1248,
+    "gap": -414,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     341,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1280-b-newwindow.png"
+  },
+  {
+   "width": 1280,
+   "step": "d: dates pop-up with window open",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1280-d-dates-withwindow.png"
+  },
+  {
+   "width": 1280,
+   "step": "f: Filters button",
+   "expected": "n/a on desktop (fields inline)",
+   "saw": {
+    "filtersBtnVisible": false,
+    "fieldsVisible": true
+   },
+   "pass": true,
+   "pic": "w1280-f-nofiltersbutton-withwindow.png"
+  },
+  {
+   "width": 1280,
+   "step": "c: close by X, Escape, Cancel",
+   "expected": "window gone and the list back as before each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      341,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "esc",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      341,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "cancel",
+     "gone": true,
+     "cols": [
+      250,
+      150,
+      115,
+      160,
+      341,
+      104,
+      96
+     ],
+     "same": true
+    }
+   ],
+   "pass": true,
+   "pic": "w1280-c-after-x.png"
+  },
+  {
+   "width": 1280,
+   "step": "d: dates pop-up, no window",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1280-d-dates-nowindow.png"
+  },
+  {
+   "width": 1280,
+   "step": "e: click a row",
+   "expected": "same room as (b)",
+   "saw": {
+    "winLeft": 834,
+    "winTop": 111,
+    "winW": 430,
+    "listRight": 1248,
+    "gap": -414,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     341,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1280-e-rowwindow.png"
+  },
+  {
+   "width": 1280,
+   "step": "e2: row window closed",
+   "expected": "list as before",
+   "saw": [
+    250,
+    150,
+    115,
+    160,
+    341,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": 1024,
+   "step": "a: row of + Input and dates",
+   "expected": "+ Input at the row's right end (<2px), dates button at the left, 36 tall",
+   "saw": {
+    "row": {
+     "x": 12,
+     "y": 211,
+     "width": 1000,
+     "height": 53
+    },
+    "btn": {
+     "x": 946.3,
+     "y": 219,
+     "width": 65.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 12,
+     "y": 219,
+     "width": 133.7,
+     "height": 36
+    },
+    "rightEdgeGap": 0,
+    "closedCols": [
+     110,
+     140,
+     90,
+     160,
+     260,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "w1024-a-row.png"
+  },
+  {
+   "width": 1024,
+   "step": "a2: no window columns",
+   "expected": "Name/Start/End = 110,140,90",
+   "saw": [
+    110,
+    140,
+    90,
+    160,
+    260,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": "w1024-a-viewport.png"
+  },
+  {
+   "width": 1024,
+   "step": "b: press + Input",
+   "expected": "window covers the list (gap<0), columns same as with no window",
+   "saw": {
+    "winLeft": 578,
+    "winTop": 111,
+    "winW": 430,
+    "listRight": 992,
+    "gap": -414,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     260,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1024-b-newwindow.png"
+  },
+  {
+   "width": 1024,
+   "step": "d: dates pop-up with window open",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1024-d-dates-withwindow.png"
+  },
+  {
+   "width": 1024,
+   "step": "f: Filters button",
+   "expected": "n/a on desktop (fields inline)",
+   "saw": {
+    "filtersBtnVisible": false,
+    "fieldsVisible": true
+   },
+   "pass": true,
+   "pic": "w1024-f-nofiltersbutton-withwindow.png"
+  },
+  {
+   "width": 1024,
+   "step": "c: close by X, Escape, Cancel",
+   "expected": "window gone and the list back as before each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      260,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "esc",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      260,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "cancel",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      260,
+      104,
+      96
+     ],
+     "same": true
+    }
+   ],
+   "pass": true,
+   "pic": "w1024-c-after-x.png"
+  },
+  {
+   "width": 1024,
+   "step": "d: dates pop-up, no window",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w1024-d-dates-nowindow.png"
+  },
+  {
+   "width": 1024,
+   "step": "e: click a row",
+   "expected": "same room as (b)",
+   "saw": {
+    "winLeft": 578,
+    "winTop": 111,
+    "winW": 430,
+    "listRight": 992,
+    "gap": -414,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     260,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w1024-e-rowwindow.png"
+  },
+  {
+   "width": 1024,
+   "step": "e2: row window closed",
+   "expected": "list as before",
+   "saw": [
+    110,
+    140,
+    90,
+    160,
+    260,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": 821,
+   "step": "a: row of + Input and dates",
+   "expected": "+ Input at the row's right end (<2px), dates button at the left, 36 tall",
+   "saw": {
+    "row": {
+     "x": 12,
+     "y": 167,
+     "width": 797,
+     "height": 53
+    },
+    "btn": {
+     "x": 743.3,
+     "y": 175,
+     "width": 65.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 12,
+     "y": 175,
+     "width": 133.7,
+     "height": 36
+    },
+    "rightEdgeGap": 0,
+    "closedCols": [
+     110,
+     140,
+     90,
+     160,
+     57,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "w821-a-row.png"
+  },
+  {
+   "width": 821,
+   "step": "a2: no window columns",
+   "expected": "Name/Start/End = 110,140,90",
+   "saw": [
+    110,
+    140,
+    90,
+    160,
+    57,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": "w821-a-viewport.png"
+  },
+  {
+   "width": 821,
+   "step": "b: press + Input",
+   "expected": "window covers the list (gap<0), columns same as with no window",
+   "saw": {
+    "winLeft": 375,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 789,
+    "gap": -414,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     57,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w821-b-newwindow.png"
+  },
+  {
+   "width": 821,
+   "step": "d: dates pop-up with window open",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w821-d-dates-withwindow.png"
+  },
+  {
+   "width": 821,
+   "step": "f: Filters button",
+   "expected": "n/a on desktop (fields inline)",
+   "saw": {
+    "filtersBtnVisible": false,
+    "fieldsVisible": true
+   },
+   "pass": true,
+   "pic": "w821-f-nofiltersbutton-withwindow.png"
+  },
+  {
+   "width": 821,
+   "step": "c: close by X, Escape, Cancel",
+   "expected": "window gone and the list back as before each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      57,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "esc",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      57,
+      104,
+      96
+     ],
+     "same": true
+    },
+    {
+     "how": "cancel",
+     "gone": true,
+     "cols": [
+      110,
+      140,
+      90,
+      160,
+      57,
+      104,
+      96
+     ],
+     "same": true
+    }
+   ],
+   "pass": true,
+   "pic": "w821-c-after-x.png"
+  },
+  {
+   "width": 821,
+   "step": "d: dates pop-up, no window",
+   "expected": "opens then closes",
+   "saw": {
+    "popOpen": true,
+    "popClosed": true
+   },
+   "pass": true,
+   "pic": "w821-d-dates-nowindow.png"
+  },
+  {
+   "width": 821,
+   "step": "e: click a row",
+   "expected": "same room as (b)",
+   "saw": {
+    "winLeft": 375,
+    "winTop": 96,
+    "winW": 430,
+    "listRight": 789,
+    "gap": -414,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     57,
+     104,
+     96
+    ],
+    "wrap": {
+     "pr": "20px",
+     "cls": "inputs-workspace tab-inputs in-room"
+    }
+   },
+   "pass": true,
+   "pic": "w821-e-rowwindow.png"
+  },
+  {
+   "width": 821,
+   "step": "e2: row window closed",
+   "expected": "list as before",
+   "saw": [
+    110,
+    140,
+    90,
+    160,
+    57,
+    104,
+    96
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": "phone",
+   "step": "a: row",
+   "expected": "+ Input first (before dates button)",
+   "saw": {
+    "row": {
+     "x": 8,
+     "y": 53,
+     "width": 374,
+     "height": 85
+    },
+    "btn": {
+     "x": 8,
+     "y": 102,
+     "width": 55.7,
+     "height": 36
+    },
+    "dates": {
+     "x": 71.7,
+     "y": 102,
+     "width": 123.7,
+     "height": 36
+    }
+   },
+   "pass": true,
+   "pic": "ph-a-row.png"
+  },
+  {
+   "width": "phone",
+   "step": "b: + Input window",
+   "expected": "no room made (no .in-room); window in the middle",
+   "saw": {
+    "inRoom": 0,
+    "win": {
+     "x": 12,
+     "y": 12,
+     "width": 366,
+     "height": 820
+    }
+   },
+   "pass": true,
+   "pic": "ph-b-newwindow.png"
+  },
+  {
+   "width": "phone",
+   "step": "d: dates button with window open",
+   "expected": "window covers the whole screen; button not reachable (as D909/D996 built)",
+   "saw": {
+    "topIsButton": false,
+    "top": "inpEditPerson"
+   },
+   "pass": true,
+   "pic": "ph-b-newwindow.png"
+  },
+  {
+   "width": "phone",
+   "step": "c: close X/Esc/Cancel",
+   "expected": "gone each time",
+   "saw": [
+    {
+     "how": "x",
+     "gone": true
+    },
+    {
+     "how": "esc",
+     "gone": true
+    },
+    {
+     "how": "cancel",
+     "gone": true
+    }
+   ],
+   "pass": true,
+   "pic": ""
+  },
+  {
+   "width": "phone",
+   "step": "d: dates pop-up, no window",
+   "expected": "opens/closes",
+   "saw": {
+    "open": true,
+    "closed": true
+   },
+   "pass": true,
+   "pic": "ph-d-dates-nowindow.png"
+  },
+  {
+   "width": 390,
+   "step": "plain: file OL via + Input, Add",
+   "expected": "new row appears with the ring",
+   "saw": {
+    "type": "OL",
+    "personOpts": 61,
+    "pickedDay": "2026-07-16",
+    "before": 19,
+    "after": 20,
+    "ringed": 1,
+    "iid": "imriimk4l9lta04",
+    "windowStillOpenAfterAdd": 0
+   },
+   "pass": true,
+   "pic": "ph-p3-added-viewport.png"
+  },
+  {
+   "width": 390,
+   "step": "plain: reopen by row, change remark, Save",
+   "expected": "row shows the new remark",
+   "saw": {
+    "remarkBefore": "walker remark one",
+    "rowText": "LATE No document All day AnvilOL walker remark TWO By Saber",
+    "windowOpenAfterSave": 0
+   },
+   "pass": true,
+   "pic": "ph-p5-saved-viewport.png"
+  },
+  {
+   "width": 390,
+   "step": "plain: delete from its window",
+   "expected": "row gone, nothing left behind",
+   "saw": {
+    "gone": true,
+    "endCount": 19,
+    "before": 19,
+    "windowOpen": 0
+   },
+   "pass": true,
+   "pic": "ph-p7-deleted.png"
+  },
+  {
+   "width": 1536,
+   "step": "plain: file OL via + Input, Add",
+   "expected": "new row appears with the ring",
+   "saw": {
+    "type": "OL",
+    "personOpts": 61,
+    "pickedDay": "2026-07-16",
+    "before": 19,
+    "after": 20,
+    "ringed": 1,
+    "iid": "imriimfeaoo04kj",
+    "windowStillOpenAfterAdd": 0
+   },
+   "pass": true,
+   "pic": "w1536-p3-added-viewport.png"
+  },
+  {
+   "width": 1536,
+   "step": "plain: reopen by row, change remark, Save",
+   "expected": "row shows the new remark",
+   "saw": {
+    "remarkBefore": "walker remark one",
+    "rowText": "Anvil 16 Jul OL LATEwalker remark TWO till 16 JulBy Saber now No document",
+    "windowOpenAfterSave": 0
+   },
+   "pass": true,
+   "pic": "w1536-p5-saved-viewport.png"
+  },
+  {
+   "width": 1536,
+   "step": "plain: delete from its window",
+   "expected": "row gone, nothing left behind",
+   "saw": {
+    "gone": true,
+    "endCount": 19,
+    "before": 19,
+    "windowOpen": 0
+   },
+   "pass": true,
+   "pic": "w1536-p7-deleted.png"
+  },
+  {
+   "width": 1536,
+   "step": "calendar expand button rest / pressed / pressed again",
+   "expected": "arrows out at rest (aria-pressed false), arrows in when pressed (true) with no \"+N more\"; back to compact after 2nd press with \"+N more\"",
+   "saw": {
+    "rest": {
+     "pressed": "false",
+     "label": "Show every input",
+     "text": "",
+     "svgPaths": "<polyline points=\"15 3 21 3 21 9\"></polyline><polyline points=\"9 21 3 21 3 15\"></polyline><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"></line><line x1=\"3\" x2=\"10\" y1=\"2",
+     "w": 34,
+     "h": 28,
+     "x": 1490,
+     "y": 121,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 864
+    },
+    "pressed": {
+     "pressed": "true",
+     "label": "Show the month compact",
+     "text": "",
+     "svgPaths": "<polyline points=\"4 14 10 14 10 20\"></polyline><polyline points=\"20 10 14 10 14 4\"></polyline><line x1=\"14\" x2=\"21\" y1=\"10\" y2=\"3\"></line><line x1=\"3\" x2=\"10\" y",
+     "w": 34,
+     "h": 28,
+     "x": 1490,
+     "y": 121,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 864
+    },
+    "again": {
+     "pressed": "false",
+     "label": "Show every input",
+     "text": "",
+     "svgPaths": "<polyline points=\"15 3 21 3 21 9\"></polyline><polyline points=\"9 21 3 21 3 15\"></polyline><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"></line><line x1=\"3\" x2=\"10\" y1=\"2",
+     "w": 34,
+     "h": 28,
+     "x": 1490,
+     "y": 121,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 864
+    }
+   },
+   "pass": true,
+   "pic": "w1536-cal-2-pressed-closeup.png"
+  },
+  {
+   "width": "phone",
+   "step": "calendar expand button rest / pressed / pressed again",
+   "expected": "arrows out at rest (aria-pressed false), arrows in when pressed (true) with no \"+N more\"; back to compact after 2nd press with \"+N more\"",
+   "saw": {
+    "rest": {
+     "pressed": "false",
+     "label": "Show every input",
+     "text": "",
+     "svgPaths": "<polyline points=\"15 3 21 3 21 9\"></polyline><polyline points=\"9 21 3 21 3 15\"></polyline><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"></line><line x1=\"3\" x2=\"10\" y1=\"2",
+     "w": 34,
+     "h": 28,
+     "x": 348,
+     "y": 144,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 844
+    },
+    "pressed": {
+     "pressed": "true",
+     "label": "Show the month compact",
+     "text": "",
+     "svgPaths": "<polyline points=\"4 14 10 14 10 20\"></polyline><polyline points=\"20 10 14 10 14 4\"></polyline><line x1=\"14\" x2=\"21\" y1=\"10\" y2=\"3\"></line><line x1=\"3\" x2=\"10\" y",
+     "w": 34,
+     "h": 28,
+     "x": 348,
+     "y": 144,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 844
+    },
+    "again": {
+     "pressed": "false",
+     "label": "Show every input",
+     "text": "",
+     "svgPaths": "<polyline points=\"15 3 21 3 21 9\"></polyline><polyline points=\"9 21 3 21 3 15\"></polyline><line x1=\"21\" x2=\"14\" y1=\"3\" y2=\"10\"></line><line x1=\"3\" x2=\"10\" y1=\"2",
+     "w": 34,
+     "h": 28,
+     "x": 348,
+     "y": 144,
+     "bg": "rgb(26, 31, 38)",
+     "more": 0,
+     "scrollH": 844
+    }
+   },
+   "pass": true,
+   "pic": "ph-cal-2-pressed-closeup.png"
+  }
+ ],
+ "errors": []
+}
