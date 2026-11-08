@@ -4234,3 +4234,18 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Suggested improvement:** In the handoff skill's block-writing step: every time or date written into the block is read from the clock (`date -u`) or from the file or commit it names, at the moment of writing, never carried from memory or a summary.
 **Principle:** After a compaction, a time is a fact to look up, not to remember; read it from the clock or the artifact it describes.
 Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" written from memory for what the clock and the files put at 03:45Z and 03:42Z — a guard is wanted (the block's writer reads `date -u` itself), not more care.
+
+### Observation 884: A frame count at a threshold hid the change; the raw intervals and a switch-off run told it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 16, [LW-PIN-LAST-FRAME] (D1870) — re-measuring a pinned row after a CSS scroll-timeline change (numbered past 883, held on another branch)
+**Skill:** New skill candidate: measuring-scroll-performance
+**Type:** open-source
+**Phase/Area:** the before/after frame measure
+
+**Issue:** The measure counted frames "over 33.4 ms" — the exact edge of two screen refreshes — so a frame landing a tenth of a millisecond either side flipped the count, and the before/after medians looked like noise (4 → 17). Pooling every run's raw intervals into buckets (under 20, one refresh skipped, 34.5–50, over 50) showed a fivefold rise in skipped refreshes; a second run with only the suspect style switched off (injected CSS) showed the cost was that one rule, and three cheaper variants were ruled out in minutes. One run's "the page works a third less" did not repeat.
+
+**Suggested improvement:** A frame measure records every raw interval, reports buckets around each refresh multiple rather than one threshold count, repeats the run before believing a total, and diagnoses by switching the suspect rule off for one run before any fix is written.
+
+**Principle:** A threshold placed on a quantised value measures rounding; bucket around the quanta, repeat the run, and isolate a suspected cause by removing it alone.
