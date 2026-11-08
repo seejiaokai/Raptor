@@ -10625,6 +10625,9 @@ own rows are unchanged.
   **A fit lesson, from the comp that was drawn before this was built:** at 390px
   "✓ Done with OIL" ran off the right edge; it is "✓ Done". Re-draw the comp before
   lengthening any label on this bar.
+  *[AMENDED 8 Nov 26 by D1793 (round 5 (e) of `[UI-CONSISTENCY-LOOK]`, pull request 679): on a phone the bar's
+  Templates and OIL Earn carry the desktop's marks before their words — the page of blocks and the ticket — on one row,
+  the buttons keeping their height.]*
 - **Pressed, it lights and the board goes read-only for schedule editing.** In the mode
   a tap on a puck means "take this man off this event" and a tap on an item's name means
   "stop the whole item earning"; leaving the ordinary write controls live beside that
@@ -10640,12 +10643,34 @@ own rows are unchanged.
 - **A man the day measures NOTHING for is drawn inert** — no glow, no tap target, a
   plain puck and a title saying why (a blank-times row, a cancelled one, a spare,
   AVALON/BB, an ⓘ row, a dormant claim).
+  *[AMENDED 8 Nov 26 by D1783 (`[OIL-INERT-TAP-SILENT]`, pull request 679): a tap on an inert puck now picks nothing
+  and says why in the plain passing note — "Nothing changed for <callsign>." and then the reason it carries
+  (`data-oilsay`; `oilmode.ts inertSays`; `board.ts boardArmClick`, before `routeClick` can pick him). The reason is
+  the row's own (no end time: D360's "No OIL worked out — this row has no end time."; a cancelled or ⓘ row; a spare,
+  AVALON / BB; a desk with no usable times), or, on a request that never asks the OIL question, its kind's: "Leave earns
+  no OIL.", "A medical request earns no OIL.", "A personal request earns no OIL." — and a SANS Avail card's man, "A SANS
+  availability request earns no OIL." (the card's puck is inert only inside the mode; outside it the card still opens
+  its editor). A man who could earn but is masked (`data-oilmask`) is told the mask's refusal instead: the day's switch
+  on, D845's "Nothing on this day earns. Turn off the switch first."; his event switched off, "This event earns nobody
+  any OIL. Turn the event back on first." An inert puck keeps its own reason under the day's switch — the switch's
+  refusal is only for a man who could earn. A placeholder's body (ALL / ALL AVAIL) picks nothing either: on a row that
+  cannot earn it says that row's reason (no end, the request's kind, its event switched off — `oilmode.ts
+  placeholderWhy`), under the switch D845's words, otherwise "The people behind it are switched in the window its count
+  opens."; its count still opens the window. The ALL AVAIL window keeps its own foot (D65). Pins: `oilmode.test.tsx`.]*
 - **An item's NAME is its own switch**, tinted green when it earns and struck through
   when it does not. It replaces the row's editable name box while the mode is on.
 - **"Nothing today earns"** is the day blanket, offered only inside the mode. It masks
   every row and person mark rather than deleting them, and the bar's own line says so in
   words. It fills AMBER while it is on — amber is "look at this", which a day switched
   off deserves — while the marked states below stay neutral.
+  *[AMENDED 8 Nov 26 by D1782 (`[OIL-EARN-DAY-SWITCH-WORDS]`, pull request 679) — the amber button is gone: the blanket
+  is the app's own switch, as on the Logic page, a small slider with the words "No OIL earned", grey when off and lit in
+  the switch's cyan when on (`label.lgmix.daysw`, `oilmode.ts`; `18-oil-board.css`). A press on its words or its
+  slider, or Space, flips it once; turning it on says "Nothing on this day earns OIL, including anything added later",
+  off "This day can earn OIL again, and the marks underneath are back"; the bar's line under it, while on, "Nothing on
+  this day earns OIL. Turn off the switch and each man earns as he did before." A press on it keeps the board's pick,
+  search and highlights (`.lgmix` is among `routeClick`'s controls, `interactions.ts`); under the keys it wears the
+  cyan ring (D1646). D845's refusal under it is unchanged.]*
 - **A sentinel opens into REAL pucks inside the mode**, or its people could not be
   tapped at all.
 - **Colour:** the marked state is NEUTRAL. Amber means "look at this" and red means a

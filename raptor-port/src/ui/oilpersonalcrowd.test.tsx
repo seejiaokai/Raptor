@@ -201,7 +201,7 @@ describe('inside OIL Earn, on a Saturday: counted, and nobody earns — said wit
     for (const s of seats) {
       expect(s.classList.contains('inert'), 'no switch: there is nothing to switch').toBe(true)
       expect(s.title).toContain('a personal request earns no OIL')
-      expect(s.title).not.toContain('nothing measurable')
+      expect(s.title, 'not the generic reason (D1783 reworded it; F4 of the code read, 8 Nov 26)').not.toContain('no working hours')
     }
     await click($('.availwin').querySelector('.seat.oilpk .puck'))
     expect((DAYS[SAT] as any).oild, 'a tap on a man who cannot earn writes nothing').toBeUndefined()

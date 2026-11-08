@@ -2116,7 +2116,10 @@ export function routeClick(e: MouseEvent) {
     /* the side column's two grips — its width (D1113) and the issues / crew split — are controls, not blank space: letting
        go of a drag on them must not drop the seat being planned or the selection (the walk of 21 Oct 26 —
        [BOARD-SIDE-WIDTH]; the split's grip had the same gap since it was built) */
-    + '[data-crewday],[data-dayinfo],.sgn,[data-sidegrip],[data-wsplit]')) {
+    /* the app's switch (`.lgmix` — the Logic page's, and the board's "No OIL earned", D1782): a press on its words is a press
+       on the switch, as `.sgn` is for the sign-off pills; without it the words' own click dropped the picked man, the
+       search and the highlights while a press on the slider kept them (F2 of the Opus code read, 8 Nov 26) */
+    + '[data-crewday],[data-dayinfo],.sgn,.lgmix,[data-sidegrip],[data-wsplit]')) {
     let any = false
     if (view.ARM) { view.disarmSlot(); any = true }
     if (view.SELID || view.WFOCUS || view.PFOCUS || view.DWOPEN.size) {
