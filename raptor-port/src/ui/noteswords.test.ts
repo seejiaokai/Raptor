@@ -44,7 +44,7 @@ const BUILT: [string, string, string, number][] = [
      it D844, "What is turn ‘that’ off mean"), and it has ONE source, beside the switch — said from a man's puck, an
      event's own OIL mark and the ALL AVAIL window alike (D843: the two a person can see are worded as the puck's is) */
   ['N12 — the sentence under the day’s switch, its one source', 'ui/oilmode.ts', "export const DAY_EARNS_NOTHING = 'Nothing on this day earns. Turn off the switch first.'", 1],
-  ['N12 — a puck under the day’s switch, and the event’s own OIL mark', 'ui/board.ts', 'DAY_EARNS_NOTHING', 3],
+  ['N12 — a puck under the day’s switch, and the event’s own OIL mark', 'ui/board.ts', 'DAY_EARNS_NOTHING', 6],   // + a man's inert puck under the switch (D1783); + a placeholder's body under it, two doors (Astra's scenario 2, 8 Nov 26)
   ['N12 — a man in the ALL AVAIL window', 'ui/AvailWindow.tsx', 'DAY_EARNS_NOTHING', 2],
   ['N12 — the ALL AVAIL window’s hint says it the same way', 'ui/AvailWindow.tsx', "'Nothing on this day earns. Turn off the switch to change men one by one.'", 1],
   ['N12 — the event’s refusal in the ALL AVAIL window, as approved', 'ui/AvailWindow.tsx', "'This event earns nobody any OIL. Turn the event back on first.'", 1],
@@ -132,7 +132,7 @@ const LEFT: [string, string, string, number][] = [
   ['"… now sits on published work — …"', 'leavewar/sync.ts', "`${said.join(', ')} now sits on published work — the day is flagged, the bid is still live`", 1],
   ['…and the dot that joins those lines', 'leavewar/sync.ts', "lines.join(' · ')", 1],
   ['the names a blind place goes by (the day’s own warning reads them too)', 'engine/oil.ts', "add('the common programme');", 1],
-  ['the day bar under "Nothing today earns"', 'ui/oilmode.ts', "'Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.'", 1],
+  ['the day bar under the "No OIL earned" switch (D1782)', 'ui/oilmode.ts', "'Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.'", 1],
   ['"That is not a time" in an input’s own editors', 'ui/inputedit.tsx', "'That is not a time — try 0900 or 09:00'", 2],
   ['N32’s twin on the Holidays list', 'ui/HolidaysPanel.tsx', '`A leave period already covers part of ${year} — open the Leave War and extend it instead.`', 1],
   ['N10’s words in a hover title — the tag', 'ui/board-html.ts', 'title="Info only — not checked against the rules, and earns no OIL"', 2],
