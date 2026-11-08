@@ -363,7 +363,7 @@ const RULING_BYTES = [
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
      none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/oil.md',     2, 20500],   // raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735), and the account by requirement put back 30 parts of rulings the sample had cut (18,643 bytes); a ruling is never cut to fit (D141), a tenth above again
+  ['.claude/rules/decisions/oil.md',     2, 22600],   // raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
   /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers

@@ -4074,3 +4074,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The app refused all five starts three times: first on a turn a finished background wait had woken (as Observation 715 found overnight), then on his own reply "Start them" sent from his phone — over Remote Control the app opens no chat at all. He had to go to his PC and type the go there; the five started at once. Nothing was lost, but he was asked twice and had to move.
 **Suggested improvement:** Guard: when a plan proposes parallel chats, say in the same message that the app can open them only on a message he types at the PC, and offer the other way at once — helpers inside this chat (D1416) — so he chooses before the work that precedes the starts. Never put the start on a turn that a background wait or timer will wake.
 **Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
+
+### Observation 863: A chat number given in a starting brief was already taken
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the rules diet's step 5a (OIL as a page), a session started by another session with "this chat is number 5"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line / a started session's brief — naming the next chat's number
+
+**Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Number 862 is taken on another branch; this note is numbered past it.)
+**Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
+**Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.

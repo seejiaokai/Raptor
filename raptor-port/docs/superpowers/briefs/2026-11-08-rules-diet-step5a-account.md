@@ -1,5 +1,7 @@
 # Rules diet step 5a — the account of the OIL rulings, by requirement (8 Nov 26)
 
+**After the two blind reads (8 Nov 26, commit after `5f08575bf`):** Astra and a fresh Opus reader found 18 more parts this account had marked **detail** or **stated** though the page did not carry them — among them D783's question buttons and the bar's two, the holiday list's words and controls, D261's "how many days", D21's leave charging, D43's seat default, D327's gaps, D606's readings and D1041, D1045, D1046 — all fixed on the page; this table still describes `a9b873022`, and the plan's step-5a section lists each fix. Astra's lesson, taken: **detail** is not a mark for a wording on screen, a control or a scope — only for an example, a figure or a reason.
+
 **What it is.** The account the plan asks of every conversion (`raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md`
 §2 "The account — by requirement", §7 step 5a — OIL is the full trial of the method): every ruling of the old
 `.claude/rules/decisions/oil.md`, split into its parts, each part → the page line that states it now, or marked spent,

@@ -579,6 +579,33 @@ page claims neither); whether a BB duty desk offers the switch (not ruled — th
 default"); D592's readings 8 and 9, stated "as built, and put to him as readings"; D43's full row, cut off mid-sentence
 ("it inherits the seat's") since it was first written — filed, not guessed at.
 
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `5f08575bf`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-read-astra.md`) | 6: 1 high, 5 medium | all taken, each checked against its full row first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-read-opus.md`) | 12: 2 medium, 10 low | all taken, each checked against its full row first |
+
+- **Astra:** D783's approved controls — the question's "Don't swap" and "Swap", Swap greyed until Yes or No; "Answer OIL"
+  opens the question again, "OK" only closes the bar; the holiday list's heading, "Yes · FO" / "Yes · HO", the grey No,
+  "Later" and "Save", no "OIL?" tag inside (high); D592's fallback for a time that cannot be read, as a reading; D606's
+  readings stated as rules; D327's gaps between an archive and a restore; D261's "how many days"; D21's leave charging.
+- **The Opus reader:** D43's placeholder takes the seat's default — off on the off-by-default seats, which D33 lets it
+  land on (medium); D606 beside the later D1041, D1045, D1046 (medium); D606's readings (with Astra); D682's clause
+  stale since D762; the head's "pointed to at the end" and D277, D1209 added; the flash only on a swap; D592's two
+  scopes; D48's demo-data clause; D400's "accepted duty input" since D804; D783's pictures of record; D755's No note;
+  D163's wording.
+- **Both found:** D606's readings stated as his rule; D783 (Astra the controls, the Opus reader the flash and the
+  pictures). The page after both: 20,564 bytes (about 7,870 tokens); the tripwire set at 22,600, its reason beside it.
+
+**The two reads compared (D1732).** Astra found the most serious — D783's controls, which the account had marked as
+detail — and five more, every one holding when checked; it also judged the account, rightly: "detail" was hiding
+requirements. The Opus reader read wider — about 40 rows of other areas beside the 49 — and found the two cross-area
+bends (D43's seat default against D24 and D33, D606 against the standby rulings of 19 Oct 26) that Astra passed, and
+ten small ones. Neither alone was enough, as in steps 3 and 4. **For the rest of step 5:** the account marks a wording
+on screen, a control or a scope as a part, never as detail; and each reader reads the pointers' rulings in their own
+areas, where both of this step's medium bends sat.
+
 **The trial of the whole route (§7), run on a scratch copy of the branch, never pushed, then deleted** — made-up
 rulings D1794 and D1795, the page as first drafted:
 - **A ruling recorded:** its full row written at the top of the full-text file, the page not yet edited — the command
