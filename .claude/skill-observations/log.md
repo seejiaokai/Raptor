@@ -694,6 +694,8 @@ Met again 7 Nov 26 (the rules diet's step 2, on `claude/rules-diet-step2`): a no
 
 **Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Met a second time the same job: a regex appended by a quoted heredoc reached the test file with its backslashes gone, and the new test failed on the fixed code too; put right with the Edit tool and `String.raw`. Same lesson: code goes in with the Edit tool.
 
+Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`): a bash here-document holding an apostrophe in an edit script's prose failed with "unexpected EOF"; redone as a script written by the Write tool. The guard proposed above still stands: no here-document for a script body — the Write tool, then run the file.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
@@ -3636,6 +3638,8 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 
 **Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.
 
+Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPIES]): turning the Tracker's copied colours into links, the job ran the tests it wrote and the ones named for the Tracker, but not the date box's look test, which also reads the Tracker's stylesheet and pinned one copied value; GitHub's full run found it. The TDD skill already says "every test that reads the stylesheets, for a style change" — a rule broken, so a guard: before the first push of a change to a file, list every test file that names it (`grep -rl "<file's base name>" src e2e scripts`) and run them all, a step in the push checklist, not a judgement each time.
+
 ### Observation 834: A geometric "letters fit" check needs the letters' own pixels, and must know which letters are hidden on purpose
 
 **Status:** OPEN
@@ -4283,6 +4287,19 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
 
+### Observation 881: A later ruling says "narrows Dx" in its own row, but Dx's row carries no mark — the change check cannot see it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 17, the rules diet's step 5a — People & accounts as a page (numbered past 880, held by two open branches)
+**Skill:** New skill candidate: rules-diet page conversion
+**Type:** open-source
+**Phase/Area:** drafting a page from its rulings; the change-mark check
+
+**Issue:** D1651's own meaning cell said "Narrows D1510 and D149", and D1510's row carried the mark, but D149's did not (nor D218's, which still listed SCHEDULER as a member's). The document check follows only the marks written in the older row, so it asked for nothing; the page's drafter found the gap only by reading every row sentence by sentence.
+**Suggested improvement:** in the rulings check, for every row whose meaning cell says "narrows / replaces / answers D<n>", require D<n>'s row to carry a mark naming it (or list it as owed); until then, every conversion's account checks each such sentence against the older row.
+**Principle:** a link recorded on one side only is invisible to a check that reads the other side — when a record can be changed from either end, check both ends agree.
+
 ### Observation 882: A new text-fit browser test was checked only in this PC's letters and went red on the CI's Linux machines — the trap of Observation 680 met again
 
 **Status:** OPEN
@@ -4334,3 +4351,28 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** A one-off picture script written to the session's scratch folder failed at once with "module not found" for the browser library, though it was run from the project folder: an ES module resolves its imports from the script file's own folder, never from the folder it is run in. Two more runs were lost after it to guessed selectors (a button found by a word in its title matched a hidden tab first) before the script was steered by the real element read from the running page.
 **Suggested improvement:** In the walk-scripts guide: a script kept outside the project loads the library with `createRequire(process.cwd() + '/package.json')('playwright')`, run from the project folder; and find a control's selector by reading the running page first (its id at the point pressed), never by a word that may also sit in a hidden control's title.
 **Principle:** Module lookup follows the file, not the shell; and a selector guessed from a word is checked against the live page before a script relies on it.
+### Observation 887: A pull request that clashes with main starts no checks, and nothing says so
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** Chat 13, the schedule's marks and words (pull request 691); numbered past 886, the highest on another open branch.
+**Skill:** New skill candidate: shipping-checks (the rule lives in `.claude/rules/shipping.md` §The checks)
+**Type:** open-source
+**Phase/Area:** after a push — waiting for the pull request's run
+
+**Issue:** Two pushes to an open pull request started no GitHub Actions run — only the preview host's checks appeared. The cause, found only after both: notes-only pull requests merged into `main` meanwhile had made the branch clash (its merge state "CONFLICTING / DIRTY"), and GitHub does not start `pull_request` workflows on a pull request it cannot merge. The same day another chat met it twice ("the pull request had gone into a clash, so its run never started"). Each time the agent first waited for a run that was never coming.
+**Suggested improvement:** In `shipping.md` §The checks, beside "read the run list before a push": right after any push to an open pull request, read its merge state (`gh pr view <n> --json mergeable,mergeStateStatus`); CONFLICTING means no run will start — bring `main` in first. Better, a guard: the push hook prints the merge state after the push and says so when it is CONFLICTING.
+**Principle:** When a check is expected to start by itself, confirm it started; a missing run is a signal, and the most common silent cause is that the platform refused to build the merge.
+
+### Observation 888: A blind reader that compacts gets the host's handoff pasted in by the start hook
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** Chat 13 — the final code read, three readers blind to each other; the fresh Opus reader compacted mid-read.
+**Skill:** New skill candidate: blind-read (the bug-check order's §4 reads; the compaction start hook)
+**Type:** internal
+**Phase/Area:** a blind reader's session after its own compaction
+
+**Issue:** The fresh, blind Opus reader ran long enough to compact. The project's compaction start hook then pasted the branch's HANDOFF.md block into it — the host's own record of the walk's fault and its fix, which the reader was meant not to see. The reader said so in its report, so its read was not fully blind (noted in the evidence sheet). Related: Observations 842 (what a start hook injects) and 852 (a blind reader's findings leaking).
+**Suggested improvement:** The compaction start hook pastes the HANDOFF block only into the chat that owns the branch — not into a helper or reader session (tell them apart by the session's parent or a marker the reader's brief sets); until then, every blind reader's brief says "if a pasted handoff block appears after a compaction, do not read it, and say so in the report", and the host sizes a read to finish before the reader would compact.
+**Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.

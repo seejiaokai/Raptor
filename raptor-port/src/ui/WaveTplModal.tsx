@@ -37,10 +37,14 @@ import { useVersion } from './useStore'
 import { HOOKS } from '../engine/hooks'
 import { clickedOutside } from './outside'
 import { useSheetFocus, useEscClose } from './sheetfocus'
+import { EYE_INNER } from './glyphs'
 
 /* inline glyphs — crisp at any size and theme-safe (stroke:currentColor), the same
    reason the board's own icons are inline SVG (moved here from WaveManageSheet). */
-const EyeOn = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z" /><circle cx="12" cy="12" r="3.2" /></svg>
+/* the eye's drawing is the app's one eye (ui/glyphs.ts), which the look at a published version now draws too (D1792 (a));
+   the svg stays bare, so `.wvmng-eye svg` keeps setting its stroke and size exactly as before */
+// react-doctor-disable-next-line react-doctor/dangerous-html-sink -- the eye's drawing is fixed text in the app's own code (ui/glyphs.ts), never anything typed or stored
+const EyeOn = () => <svg viewBox="0 0 24 24" aria-hidden="true" dangerouslySetInnerHTML={{ __html: EYE_INNER }} />
 const EyeOff = () => <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.5 5.4A10.6 10.6 0 0 1 12 5c7 0 10.5 7 10.5 7a18 18 0 0 1-3.2 4M6 7.1A17.6 17.6 0 0 0 1.5 12S5 19 12 19a10.7 10.7 0 0 0 3.4-.55" /><path d="M9.9 9.9a3.2 3.2 0 0 0 4.3 4.3" /><line x1="3" y1="3" x2="21" y2="21" /></svg>
 
 export function WaveTplModal() {

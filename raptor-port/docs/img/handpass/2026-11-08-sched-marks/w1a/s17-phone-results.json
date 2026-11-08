@@ -1,0 +1,400 @@
+{
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "5 changes",
+  "week": [
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "file.LL": {
+  "iid": "imriimrciamxtkj",
+  "type": "LL",
+  "who": [
+   {
+    "p": "yeti",
+    "by": "stiff",
+    "at": 1783904419314
+   }
+  ]
+ },
+ "file.ATT C": {
+  "iid": "imriimvgqoo7rz0",
+  "type": "ATT C",
+  "who": [
+   {
+    "p": "salsa",
+    "by": "stiff",
+    "at": 1783904424650
+   }
+  ]
+ },
+ "file.HL": {
+  "iid": "imriimzq56ykpa9",
+  "type": "HL",
+  "who": [
+   {
+    "p": "bane",
+    "by": "stiff",
+    "at": 1783904430173
+   }
+  ]
+ },
+ "file.OD": {
+  "iid": "imriin2wdcxcksi",
+  "type": "OD",
+  "who": [
+   {
+    "p": "nact",
+    "by": "stiff",
+    "at": 1783904434285
+   }
+  ]
+ },
+ "file.Training-U": {
+  "iid": "imriin658wn19k6",
+  "type": "Training",
+  "who": [
+   {
+    "p": "prowler",
+    "by": "stiff",
+    "at": 1783904438492
+   }
+  ]
+ },
+ "file.Other-U": {
+  "iid": "imriin9rl42cxdo",
+  "type": "Other",
+  "who": [
+   {
+    "p": "pump",
+    "by": "stiff",
+    "at": 1783904443185
+   }
+  ]
+ },
+ "file.Shared-U": {
+  "iid": "imriineqwyfndog",
+  "type": "Other",
+  "who": [
+   {
+    "p": "beams",
+    "by": "stiff",
+    "at": 1783904449640
+   },
+   {
+    "p": "chaps",
+    "by": "stiff",
+    "at": 1783904449640
+   }
+  ]
+ },
+ "file.Personal": {
+  "iid": "imriinik115mgl0",
+  "type": "Personal",
+  "who": [
+   {
+    "p": "split",
+    "by": "stiff",
+    "at": 1783904454577
+   }
+  ]
+ },
+ "file.Meeting-G": {
+  "iid": "imriinltxgdcibp",
+  "type": "Meeting",
+  "who": [
+   {
+    "p": "mamba",
+    "by": "stiff",
+    "at": 1783904458821
+   }
+  ]
+ },
+ "week": {
+  "pending": "9 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "CometIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "ForgeIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "PistonIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OD",
+    "who": "WardenIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "HL",
+    "who": "RangerIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "ATT C",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "LL",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [
+   {
+    "text": "TRAINING06:0018:00HunterIP+ addLATE",
+    "marked": true
+   },
+   {
+    "text": "PERSONAL06:0018:00VandalIP+ addLATE",
+    "marked": true
+   },
+   {
+    "text": "MEETING06:0018:00CSidewinderIP+ addLATE",
+    "marked": true
+   }
+  ],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 9 changes waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 14 To go out · AL1 9 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 9 changes Sidewinder · Meeting Saber 13/7 09:00 not on the programme → on the programme Vandal · Personal Saber 13/7 09:00 not on the programme → on the programme Other · 2 people Saber 13/7 09:00 Comet, Forge not on the programme → under Unavailable Piston · Other Saber 13/7 09:00 not on the programme → under Unavailable Hunter · Training Saber 13/7 09:00 not on the programme → on the programme Warden · OD Saber 13/7 09:00 filed Ranger · HL Saber 13/7 09:00 filed"
+ },
+ "personal.where": [
+  {
+   "cls": "ntx txed",
+   "text": "TRAINING",
+   "sec": "sub plist one sec sec-grnd",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx txed",
+   "text": "PERSONAL",
+   "sec": "sub plist one sec sec-grnd",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx txed",
+   "text": "MEETING",
+   "sec": "sub plist one sec sec-grnd",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "Other",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "Other",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "Other",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "OD",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "HL",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "ATT C",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  },
+  {
+   "cls": "ntx inpedit",
+   "text": "LL",
+   "sec": "sub plist one sec sec-unav",
+   "deco": "dotted"
+  }
+ ],
+ "board": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CometIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "ForgeIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "PistonIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "WardenIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "HL",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "RangerIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "SaintB",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "LL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CBoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "errs": []
+}

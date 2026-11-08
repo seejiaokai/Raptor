@@ -23,7 +23,7 @@ import { DAYS } from '../engine/data'
 import { PEOPLE, isSpecial } from '../engine/people'
 import { hhmm, parseHM, hmOK } from '../engine/time'
 import { HOOKS } from '../engine/hooks'
-import { LOCKED_WEEK_NOTE } from '../engine/publish'
+import { lockedWeekNote } from '../engine/publish'
 import { logAction, elogSweep, todayIso } from '../engine/editlog'
 import { elogReason } from '../state/changelines'
 import { stampPlaced, stampChanged } from '../state/inputstamp'
@@ -860,8 +860,10 @@ export function protectedInput(...rows: any[]): boolean {
   const dates = protectedDates()
   if (!dates.length) return false
   const hit = rows.some(r => r && dates.some((dt: any) => inputCoversDate(r, dt)))
-  /* (the locked week's one sentence — engine/publish.ts LOCKED_WEEK_NOTE, owner D837: said by all four doors of this file) */
-  if (hit) HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
+  /* (the read-only week's one sentence — engine/publish.ts lockedWeekNote, owner D837: said by all four doors of this file,
+     in the grey "Blocked:" note, saying why the week is read-only — its saved copy will not read, or an older version
+     published it — D1785, D1667–D1669) */
+  if (hit) HOOKS.toast(lockedWeekNote(), 'blocked')
   return hit
 }
 /* a row-like {date,endDate,yr} built from a NORMALIZED draft, for the protection
@@ -881,7 +883,7 @@ export const medPlanProtected = (plan: any[]) => (plan || []).some((p: any) =>
   (p.action === 'grow' && p.row && p.newEndOrd != null && inputProtected({ date: p.row.date, endDate: ordLabel(p.newEndOrd, p.row.yr), yr: p.row.yr })) ||
   (p.tail && inputProtected({ date: ordLabel(p.tail.startOrd, p.row?.yr), endDate: p.tail.endOrd > p.tail.startOrd ? ordLabel(p.tail.endOrd, p.row?.yr) : undefined, yr: p.row?.yr })))
 
-export const medicalLocked = () => HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
+export const medicalLocked = () => HOOKS.toast(lockedWeekNote(), 'blocked')
 
 /* Check every kept segment and its cascade against the unchanged model. Forms
    run this before committing segment one; the sibling writer also guards itself. */
@@ -999,7 +1001,7 @@ export function commitNewInput(draft: any, toGround?: boolean, keepTail?: any, e
       ? upchitTrimPlan(draft.person, dateOrd(date, row.yr), row).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
       : null
   if (medPlan && medPlanProtected(medPlan)) {
-    HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
+    HOOKS.toast(lockedWeekNote(), 'blocked')
     return false
   }
   const ok = writeInputsBatch(() => {
@@ -1137,7 +1139,7 @@ export function commitInputEdit(r: any, draft: any, keepTail?: any, entryEnd?: a
       ? upchitTrimPlan(draft.person, dateOrd(date, baseYear()), r).map((p: any) => ({ ...p, why: 'closed by the upchit' }))
       : null
   if (medPlan && medPlanProtected(medPlan)) {
-    HOOKS.toast(LOCKED_WEEK_NOTE, 'warn')
+    HOOKS.toast(lockedWeekNote(), 'blocked')
     return false
   }
   /* A HAND-OVER WRITES THE REQUEST ALONE ([DB-READINESS] group A, phase 6 (a)). Until phase 6 the week stash joined this

@@ -358,7 +358,7 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 /* THE PLANS SELECTOR (owner, 15 Sep 26) — the ONE white button per day. It reads
    as a quiet PANEL control, not the accent primary the Templates button is: it is
    a picker/navigation, not the day's primary action. Amber (.pv) while previewing
-   an issued version, matching the "👁 AL2" label. The label is clamped so a long
+   an issued version, matching the eye-and-"AL2" label. The label is clamped so a long
    plan name can't wrap the day head (A8 — MAX_DRAFT_NAME is 24 chars); the full
    name is in the button's title. Shared by the week head (.dhtpl) and the board
    sign strip (.sb-pub), one look. */
@@ -368,6 +368,13 @@ body.ros-open .eroster .ros-tab{background:var(--accent);color:var(--accent-ink)
 .day-head .dhtpl .planselbtn:hover,.sb-pub .planselbtn:hover{border-color:var(--accent);color:var(--accent)}
 .planselbtn .psl{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .planselbtn .psc{font-size:8px;color:var(--ink-3)}
+/* THE LOOK'S EYE (owner D1792 (a), 8 Nov 26 — "All as recommended"): the wave templates window's own line eye
+   (ui/glyphs.ts EYE_INNER) in place of the typed eye an iPhone draws as a coloured emoji, in the words' own colour, at
+   the sizes drawn: 11px in the selector — at 12px "Original" wrapped on the phone, the label being clamped above — and
+   12px in the look's banner on the week and the board. In the banner (a flex row) the eye stands as its own item, as
+   the drawing set it. */
+.pveye{display:inline-block;flex:0 0 auto;width:12px;height:12px;vertical-align:-2px}
+.planselbtn .psl .pveye{width:11px;height:11px;vertical-align:-1.5px}
 .planselbtn.pv{color:#F2D699;background:rgba(229,194,74,.12);border-color:rgba(229,194,74,.5)}
 .planselbtn.pv:hover{color:#F2D699;border-color:rgba(229,194,74,.85)}
 /* THE GREEN TITLE TAG (owner, 15 Sep 26) — names the issued version beside the

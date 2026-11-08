@@ -1,0 +1,138 @@
+[
+ {
+  "id": "S19.0 LL published as AL1 {\"published\":true,\"label\":\"Publish AL1\",\"version\":\"AL1\",\"signSelects\":4}",
+  "size": "phone",
+  "exp": "row, plain, no pending",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-0-clean.png"
+ },
+ {
+  "id": "S19.1 fields the LL window offers",
+  "size": "phone",
+  "exp": "RECORD",
+  "got": "burger:submit undoBtn:submit redoBtn:submit histBtn:submit fastSync:submit notifyBell:submit :submit exportSched:submit exportPdf:submit :submit editSchedMore:button searchE:text Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit CPTallyOFPM:submit OML:submit ATT C:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ZuluOF/O/Aal:submit RebelBFall d:submit LL:submit OIL:submit ATT C:submit Templates:submit Live working:submit 11 changes:submit i:submit Unpublish:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ScribeDOAM:submit ZenithCFall :submit CPKrakenDFal:submit LL:submit OL:submit ATT C:submit OD:submit Reject:submit OIL:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Traffic:submit + In-time:submit ✕:submit ✕:submit C:submit C:submit C:submit C:submit Make public:submit Make public:submit Make public:submit ZenithCFall :submit ATT C:submit OD:submit Reject:submit OIL:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit ATT C:submit OD:submit Reject:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit Templates:submit Live working:submit i:submit Publish day:submit — name —AceA:select-one — name —Anvi:select-one — name —Anvi:select-one — name —Anvi:select-one Make public:submit Make public:submit Make public:submit Make public:submit ‹:submit ›:submit inpEditClose:submit inpEditPerson:select-one inpEditType:select-one All day:button AM:button PM:button Custom:button Document:button inpEditRmk:text inpEditTill:checkbox inpEditDel:submit inpEditCancel:submit inpEditSave:submit",
+  "verdict": "RECORDED",
+  "pic": "phone-s19-1-window.png"
+ },
+ {
+  "id": "S19.2 remarks changed to Dentist (window left open=1)",
+  "size": "phone",
+  "exp": "marked, 1 pending",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-2-changed.png"
+ },
+ {
+  "id": "S19.3 remarks restored (empty)",
+  "size": "phone",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-3-restored.png"
+ },
+ {
+  "id": "S19.4 remarks \"  Dentist  \" (spaces)",
+  "size": "phone",
+  "exp": "RECORD (changed)",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "RECORDED",
+  "pic": "phone-s19-4-spaces.png"
+ },
+ {
+  "id": "S19.5 restored again",
+  "size": "phone",
+  "exp": "clean",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-5-restored2.png"
+ },
+ {
+  "id": "S19.6 board after remarks change",
+  "size": "phone",
+  "exp": "Bolt box dotted outline",
+  "got": "[{\"name\":\"LL\",\"tag\":\"BUTTON\",\"aln\":\"2\",\"outline\":\"dotted 1px rgb(229, 194, 74)\",\"bg\":\"rgba(178, 77, 234, 0.12)\",\"color\":\"rgb(221, 168, 245)\"}]",
+  "verdict": "PASS",
+  "pic": "phone-s19-6-board.png"
+ },
+ {
+  "id": "S19.7a clean again before the inline time test",
+  "size": "phone",
+  "exp": "clean",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": ""
+ },
+ {
+  "id": "S19.7b start time typed inline 0800",
+  "size": "phone",
+  "exp": "RECORD: marked + 1 pending if the time counts as a change",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain] startText=08:00",
+  "verdict": "RECORDED",
+  "pic": "phone-s19-7b-inline-time.png"
+ },
+ {
+  "id": "S19.7c start time cleared inline (back to the issued all-day)",
+  "size": "phone",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] startText=",
+  "verdict": "PASS",
+  "pic": "phone-s19-7c-inline-cleared.png"
+ },
+ {
+  "id": "S19.8a Duration AM set in the window",
+  "size": "phone",
+  "exp": "marked + pending",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-8a-am.png"
+ },
+ {
+  "id": "S19.8b Duration back to ALL DAY",
+  "size": "phone",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-8b-allday.png"
+ },
+ {
+  "id": "S19.9a till-date tick switched off",
+  "size": "phone",
+  "exp": "RECORD",
+  "got": "pend=1 pending ver=AL1 rows=LL[DOTTED rgb(229, 194, 74)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "RECORDED",
+  "pic": "phone-s19-9a-till-off.png"
+ },
+ {
+  "id": "S19.9b till-date tick switched back on",
+  "size": "phone",
+  "exp": "pending and mark leave together",
+  "got": "pend=null ver=AL1 rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "phone-s19-9b-till-on.png"
+ },
+ {
+  "id": "S19 errors",
+  "size": "phone",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S20.0 start: LL on Wed only; Wed+Thu published, Fri draft",
+  "size": "phone",
+  "exp": "Wed row plain",
+  "got": "D2 pend=null ver=ORIG rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // D3 pend=null ver=ORIG rows=ATT C[plain];OD[plain];OIL[plain] // D4 pend=null ver=DRAFT rows=ATT C[plain];OD[plain]",
+  "verdict": "RECORDED",
+  "pic": "phone-s20-0-start.png"
+ },
+ {
+  "id": "s20.CRASH",
+  "size": "phone",
+  "exp": "",
+  "got": "input not found in the list @ at openFromList (file:///C:/Users/User/projects/Raptor/.claude/worktrees/pr-day-start-7b064c/raptor-port/scripts/handpass/sm-w1b-main.mjs:48:9)",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ }
+]

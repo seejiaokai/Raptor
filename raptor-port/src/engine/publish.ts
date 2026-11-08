@@ -14,7 +14,7 @@ import { groundOrder } from './order'
 import { dayIso, verId, parseVerId, verSeq, verSeqLabel, isValidVerId } from './verid'
 import { isPreservedWeek, rowElsewhere } from './weekstash'
 import { standsOn } from './overlay'   // functions only both ways
-import { inputProtected } from './quarantine'   // functions only both ways, so the import loop is safe
+import { inputProtected, weekLockReason, anyUnreadableWeek } from './quarantine'   // functions only both ways, so the import loop is safe
 import { rosterIds } from './faceattrs'
 import { oilEvidence, oilEvidenceKey, oilSignKey, oilKeyNoMem, oilDecisionsKey, oilKeyBeforeStand, oilUpgradeMovedMoney, oilMovedInputsOnly, oilRuleShift, oilShiftKey, oilKeptVals } from './oilev'
 import { oilRuleValsNow } from './oil'
@@ -131,9 +131,22 @@ export function protectedWeek(){return amFormatOf(SCHED,CURWEEK)==='unsupported'
    row that cannot be changed; "amended here" is the day's — a publish refused. The words of record, with what changed
    and why ("of the app": "an older version" was read as an older version of the SCHEDULE — the Original, AL1; "so": the
    week is locked BECAUSE its saved format is an older version's): docs/superpowers/briefs/2026-10-13-wording-recheck.md.
-   Pinned at every door by engine/lockednote.test.ts. */
-export const LOCKED_WEEK_NOTE='This week is locked. It was published by an older version of the app, so it can’t be edited.';
-export const lockedDayNote=(dow:any)=>`${dow||'This day'} is locked. It was published by an older version of the app, so it can’t be amended here.`;
+   Pinned at every door by engine/lockednote.test.ts.
+   SINCE D1785 (8 Nov 26 — "All as recommended", the pictures round's question 6) a week whose saved copy cannot be read
+   says so — the older-version words were not what happened there — and every refusal of one change opens with
+   "Blocked:" and ends "Nothing was saved." in the grey note (D1667–D1669, the toast's 'blocked' face): the week's
+   sentence the later D1667 form of D837's reason. Why a week is read-only: engine/quarantine.ts weekLockReason. */
+export const UNREADABLE_WEEK_NOTE='Blocked: this week’s saved copy could not be read, so it can’t be edited. Nothing was saved. Report it with “Report a problem” on the Help page.';
+export const LOCKED_WEEK_NOTE='Blocked: this week was published by an older version of the app, so it can’t be edited. Nothing was saved.';
+/* the words every door says, in the grey note: the unreadable ones whenever ANY week is unreadable — a refusal only comes
+   from a read-only week, and the one case it can misname (an unreadable week elsewhere, the change touching only an
+   older-format one) needs an older-format week, which only data already stored can hold (D56; quarantine.ts) */
+export const lockedWeekNote=()=>anyUnreadableWeek()?UNREADABLE_WEEK_NOTE:LOCKED_WEEK_NOTE;
+/* the publish refusal acts on the LOADED day, so it reads the loaded week alone: unreadable → the unreadable refusal; an
+   older book → its own words, as before */
+export const lockedDayNote=(dow:any)=>weekLockReason(CURWEEK)==='unreadable'?UNREADABLE_WEEK_NOTE:`${dow||'This day'} is locked. It was published by an older version of the app, so it can’t be amended here.`;
+/* …said in the grey note when the week will not read (D1785 with D1668); an older book's refusal keeps its look */
+const refuseLockedDay=(dow:any)=>weekLockReason(CURWEEK)==='unreadable'?toast(lockedDayNote(dow),'blocked'):toast(lockedDayNote(dow));
 /* Phase 2 (P2-IMPL-04): a PRE-Phase-2 book saved EMPTY (a parked draft with no
    publication content) classifies as 'current' and stays editable — but it has no
    amV stamp, so the instant it gains content (its first approve/AL) it would
@@ -424,6 +437,34 @@ function requestRowUnit(units:any[],id:string,was:string,now:string,issuedD:any,
     (u.kind==='delete'&&was==='g'&&now!=='g'&&(requestRow(u,issuedD)||{}).src===id)||
     (u.kind==='add'&&now==='g'&&was!=='g'&&(requestRow(u,liveD)||{}).src===id)))||null;}
 export function dayPendingItems(di:any):PendItem[]{di=+di;return passMemo('pi',di,()=>dayPendingItemsIn(SCHED,di,CURWEEK));}
+/* the input a pending item belongs to, by its address: the details axis (`inv:`), a request's filing paired to its row
+   (`inp:` on `.inp`), or the filing axis itself. Moved here whole from ui/pendlist.ts so the list's tap and the
+   Unavailable row's waiting mark (below) read one answer. */
+export function inputIdOf(it:any):string|null{
+  for(const e of [it&&it.val,it&&it.inp,(it&&it.kind==='input'?it.entry:null)] as any[]){
+    const a=String((e&&e.addr)||''); if(!/^in[pv]:/.test(a))continue;
+    const id=decodeURIComponent(a.split('.').slice(1).join('.')); if(id)return id;}
+  return null;}
+/* EVERY INPUT A PUBLISHED DAY'S PENDING LIST NAMES (owner D1784, 8 Nov 26 — "An input filed, changed or moved after its
+   day was published wears the same waiting mark on its Unavailable row as on a Ground Programme row"). The mark and the
+   day's count read this ONE list, so a row is marked exactly when the count names its input — never a second test that
+   could drift from it. Beside the item's own input, the records the list folds into that one change (Astra's scenario
+   design, 8 Nov 26 — "every input the pending list names wears the mark"):
+   · a man's record replaced by another of his (inputs.ts frozenInputMatch, step 4): the item is addressed by the gone
+     record's id, and its `now` is the new one on the day;
+   · a man moved between two inputs (D109): one item, the input he joined, its `pp.from` the input he left;
+   · a man split out of a shared input (D736, D737 — one row a man under Unavailable): his own new record is no filing
+     of its own (frozenInputMatch, step 3b, `pieces`) but part of the input's one change, so his row is marked too.
+   An unpublished day lists nothing here (dayPendingItemsIn returns [] unless the day is published), so a draft day
+   wears no mark, as the Ground Programme's (alAttr). */
+export function pendingInputIds(di:any):Set<string>{di=+di;return passMemo('pin',di,()=>{
+  const out=new Set<string>(), add=(x:any)=>{if(x!=null&&String(x)!=='')out.add(String(x));};
+  dayPendingItems(di).forEach((it:any)=>{const id=inputIdOf(it); if(id==null)return; add(id);
+    if(it.now&&it.now.iid)add(it.now.iid);
+    if(it.pp&&it.pp.from&&it.pp.from.iid)add(it.pp.from.iid);});
+  if(out.size){const ver=dayCurVer(di), snap=ver!=null?daySnapOf(di,ver):null;
+    if(snap&&snap.inp)(frozenInputMatch(snap.inp,(DAYS[di]||{}).dt).pieces||[]).forEach(add);}
+  return out;});}
 /* the per-kind split of a day's items, the shape diffCounts gives a stored diff — for the
    Amendments panel's "N changes · N removals · N reorders · N input changes" */
 export function itemCounts(items:any){const d=items||[];const by=(k:any)=>d.filter((e:any)=>e.kind===k).length;
@@ -441,7 +482,7 @@ export function setDayApproved(di:any,on:any){
      at the entry, before the signed/no-op checks below, so the quarantine is the
      first word. Unsupported ≠ unresolvable: this is checked by the WEEK key
      (protectedWeek → amFormatOf(SCHED,CURWEEK)), not by whether verIds resolve. */
-  if(on&&protectedWeek())return toast(lockedDayNote((DAYS[di]||{}).dow));
+  if(on&&protectedWeek())return refuseLockedDay((DAYS[di]||{}).dow);
   /* Phase 2 (§9): a published day can NEVER be un-approved — the reopen "beak"
      lost its un-publish job. This path only ever FIRST-approves a draft day;
      changing a published day means editing its working draft and publishing the
@@ -1362,7 +1403,7 @@ export function publishALDay(di:any){
      book FIRST — before the draft/changes/signature checks — so it cannot slip
      through on a book whose verIds merely happen to resolve. The preserved-blob
      writeback would otherwise discard the issue on reload (a silent lost AL). */
-  if(protectedWeek())return toast(lockedDayNote((DAYS[di]||{}).dow));
+  if(protectedWeek())return refuseLockedDay((DAYS[di]||{}).dow);
   /* (owner D838 + D839, 14 Oct 26 — N6: "publish the day before publishing its changes" was read as "publish Sunday") */
   if(!dayApproved(di))return toast(`${DAYS[di].dow} is still a draft. Publish the day first, then its changes.`);
   /* the same mint as the first publish above, for the same reason: every read

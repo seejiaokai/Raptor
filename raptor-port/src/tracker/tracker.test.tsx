@@ -152,7 +152,7 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
     expect($('#fileMenuBtn')!.textContent!.replace(/\s+/g, ' ').trim()).toBe('File ▾')
     /* D1134 (21 Oct 26 — his solid pencil, tip at the bottom right, D1133): the Tracker's pencil is the app's one pencil,
        a filled drawing turned -45° (cap up-left, tip down-right) — the same shapes as ui/pen.ts PEN_INNER, which the
-       Tracker copies so a standalone export carries it */
+       Tracker draws through the app's PenIcon ([TRK-KEPT-COPIES], 8 Nov 26 — no copy of its own any more) */
     const g = $('#courseMenuBtn')!.querySelector('svg.trkpen g')!
     expect(g.getAttribute('transform'), 'turned so the tip points to the bottom right').toBe('rotate(-45 12 12)')
     expect(g.getAttribute('fill'), 'solid, not a line drawing').toBe('currentColor')
@@ -211,7 +211,7 @@ describe('the header: one bar for every login (D121 — it hid the File menu fro
       expect(named(w), w).toBeTruthy()
       expect(named(w)!.querySelector('svg'), `${w} is its words alone`).toBeNull()
     }
-    /* the marks the app draws too are the same drawings (ui/glyphs.ts — the Tracker keeps copies for a standalone export) */
+    /* the marks the app draws too are the same drawings (ui/glyphs.ts — the app's own icons since [TRK-KEPT-COPIES]) */
     expect(drawnAs(named('Reset layout')!.querySelector('svg'), RESET_INNER), 'Reset layout is the app’s arrow turning back').toBe(true)
     expect(drawnAs($('#flexBtn')!.querySelector('svg'), GEAR_INNER), 'the flex gear is the app’s one gear').toBe(true)
     const side = readFileSync(join(__dirname, 'components/SidePanel.jsx'), 'utf8')

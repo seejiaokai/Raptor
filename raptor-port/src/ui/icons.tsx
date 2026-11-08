@@ -10,23 +10,27 @@ import { GEAR_INNER, REORDER_INNER, TEMPLATES_INNER, RESET_INNER, PHONE_INNER, D
 
 /* ROUND 4'S DRAWN MARKS (owner D1703, D1704, D1707, 5 Nov 26): each drawn from its one source, `ui/glyphs.ts`, which the
    builders that print a button as text share. Sized and coloured where each stands — `.btnglyph`'s own grey is for a bare
-   icon button; inside a button that says something, the mark takes the button's colour (the CSS beside each). */
-function Drawn({ inner }: { inner: string }) {
+   icon button; inside a button that says something, the mark takes the button's colour (the CSS beside each).
+   A class may be passed where a page sizes its marks its own way — the Tracker's `trkglyph` ([TRK-KEPT-COPIES], 8 Nov 26:
+   it kept copies of these drawings for a standalone export, gone since D1538); with none, the markup is as before
+   (`icons-markup.test.tsx`). */
+type Cls = { className?: string }
+function Drawn({ inner, className = 'btnglyph' }: { inner: string } & Cls) {
   return (
-    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none"
       stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
       // react-doctor-disable-next-line react-doctor/dangerous-html-sink -- the marks' drawings are fixed text in the app's own code (ui/glyphs.ts), never anything typed or stored
       dangerouslySetInnerHTML={{ __html: inner }} />
   )
 }
 /** The one settings gear (D1509, D1707). */
-export const GearIcon = () => <Drawn inner={GEAR_INNER} />
+export const GearIcon = ({ className }: Cls = {}) => <Drawn inner={GEAR_INNER} className={className} />
 /** Reorder — every ⇅ (D1703). */
-export const ReorderIcon = () => <Drawn inner={REORDER_INNER} />
+export const ReorderIcon = ({ className }: Cls = {}) => <Drawn inner={REORDER_INNER} className={className} />
 /** Templates — a page of blocks (D1703). */
 export const TemplatesIcon = () => <Drawn inner={TEMPLATES_INNER} />
 /** Reset — an arrow turning back (D1703). */
-export const ResetIcon = () => <Drawn inner={RESET_INNER} />
+export const ResetIcon = ({ className }: Cls = {}) => <Drawn inner={RESET_INNER} className={className} />
 /** The phone board's layout switch (D1703). */
 export const PhoneIcon = () => <Drawn inner={PHONE_INNER} />
 export const DesktopIcon = () => <Drawn inner={DESKTOP_INNER} />
@@ -223,9 +227,9 @@ export function MedIcon() {
 }
 
 /** Lines of a list — the Inputs tab's List, beside the calendar glyph of its switch (owner D620, D626, 7 Oct 26). */
-export function ListIcon() {
+export function ListIcon({ className = 'btnglyph' }: Cls = {}) {
   return (
-    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none"
       stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
     </svg>
@@ -244,10 +248,11 @@ export function FilterIcon() {
 
 /** The app's one pencil (owner D1134, 21 Oct 26 — his solid pencil, tip at the bottom right, D1133; the drawing and
  *  why it is drawn, never typed: `ui/pen.ts`). Used on every button that edits, and inside an input's title box (D919:
- *  inside the box at its right end — there sized by `.inped-pen svg`). `solo` where it is the button's only mark. */
-export function PenIcon({ solo = false }: { solo?: boolean } = {}) {
+ *  inside the box at its right end — there sized by `.inped-pen svg`). `solo` where it is the button's only mark; the
+ *  Tracker passes its own class, `trkglyph trkpen` (Drawn's note, above). */
+export function PenIcon({ solo = false, className = 'pen-ic' }: { solo?: boolean } & Cls = {}) {
   return (
-    <svg className={'pen-ic' + (solo ? ' solo' : '')} viewBox="0 0 24 24" aria-hidden="true"
+    <svg className={className + (solo ? ' solo' : '')} viewBox="0 0 24 24" aria-hidden="true"
       dangerouslySetInnerHTML={{ __html: PEN_INNER }} />
   )
 }

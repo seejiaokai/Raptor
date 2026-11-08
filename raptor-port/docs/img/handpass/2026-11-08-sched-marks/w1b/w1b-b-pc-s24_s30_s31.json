@@ -1,0 +1,218 @@
+[
+ {
+  "id": "S24.0 admin Edit Schedule (reference)",
+  "size": "pc",
+  "exp": "2 pending, Ground name and LL name both dotted",
+  "got": "pend=2 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain] // Ground: MEETING dotted aln=1; Safety brief solid aln=undefined",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-0-admin-edit.png"
+ },
+ {
+  "id": "S24.1 View-only Sched (admin) default face",
+  "size": "pc",
+  "exp": "follows the Ground name on the same face",
+  "got": "{\"n\":0,\"items\":[],\"aln\":0,\"mute\":0} selects=|issued=Original — as issued,working=Working draft — not issued",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-1-viewonly-admin.png"
+ },
+ {
+  "id": "S24.2.0 View-only face \"Original — as issued\"",
+  "size": "pc",
+  "exp": "Unavailable name follows Ground name",
+  "got": "{\"n\":0,\"items\":[],\"aln\":0,\"mute\":0} {\"ground\":\"\",\"unav\":\"OL:solid|Overseas lea:solid|ATT C:solid|Medically do:solid\"}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-2-face0.png"
+ },
+ {
+  "id": "S24.2.1 View-only face \"Working draft — not issued\"",
+  "size": "pc",
+  "exp": "Unavailable name follows Ground name",
+  "got": "{\"n\":0,\"items\":[],\"aln\":2,\"mute\":0} {\"ground\":\"MEETING:solid|Safety brief:solid\",\"unav\":\"LL:solid|till 15 Jul:solid|OL:solid|Overseas lea:solid\"}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-2-face1.png"
+ },
+ {
+  "id": "S24.3 member on View-only Sched (page=viewsched)",
+  "size": "pc",
+  "exp": "same as Ground; no x / Reset",
+  "got": "{\"n\":0,\"items\":[],\"aln\":2,\"mute\":0}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-3-member.png"
+ },
+ {
+  "id": "S24.4.0 member face \"Original — as issued\"",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "{\"n\":0,\"items\":[],\"aln\":0,\"mute\":0}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-4-member-face0.png"
+ },
+ {
+  "id": "S24.4.1 member face \"Working draft — not issued\"",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "{\"n\":0,\"items\":[],\"aln\":2,\"mute\":0}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-4-member-face1.png"
+ },
+ {
+  "id": "S24.5 board as a member",
+  "size": "pc",
+  "exp": "read-only; Unavailable box follows Ground; no x / Reset",
+  "got": "{\"open\":true,\"unav\":\"\",\"mute\":0,\"ro\":\"schedboard\"} {\"warn\":0,\"menu\":\"function\"}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-5-board-member.png"
+ },
+ {
+  "id": "S24.6 guest",
+  "size": "pc",
+  "exp": "RECORD; guest medical info protected; no x / Reset",
+  "got": "{\"page\":\"viewsched\",\"body\":\"142 TALON View-only Sched Inputs Quals Logic Leave War Tracker Help Sync · slow Insights Logout SABER · MEMBER Jul 06 Ju\"} {\"n\":0,\"items\":[],\"aln\":2,\"mute\":0}",
+  "verdict": "RECORDED",
+  "pic": "pc-s24-6-guest.png"
+ },
+ {
+  "id": "S24 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S30.0 changes window opened from the day",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "{\"btns\":[\"|✕\",\"|New to you 0\",\"|All changes 6\",\"|To go out · AL1 1\",\"|Week\",\"|Mon\",\"|Tue\",\"|Wed\",\"|Thu\",\"|Fri\",\"|Sat\",\"|Sun\"],\"lines\":[]}",
+  "verdict": "RECORDED",
+  "pic": "pc-s30-0-window.png"
+ },
+ {
+  "id": "S30.1 tap line \"Bolt LL\" grouped by item",
+  "size": "pc",
+  "exp": "row brought into view, identifiable, still dotted",
+  "got": "scrollBefore=0 {\"rowFound\":true,\"top\":2492,\"bottom\":2544,\"vh\":864,\"visible\":false,\"atMid\":null,\"covered\":null,\"dotted\":\"dotted\",\"winOpen\":true,\"board\":true,\"input\":false,\"y\":0}",
+  "verdict": "FAIL",
+  "pic": "pc-s30-1_tap_line_Bolt_LL_grouped_by_item.png"
+ },
+ {
+  "id": "S30.1b window after the jump",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "changes window still open=true",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S30.2 press the page behind the open changes window (Friday plans menu)",
+  "size": "pc",
+  "exp": "RECORD: page behind works",
+  "got": "{\"menu\":true,\"win\":true}",
+  "verdict": "RECORDED",
+  "pic": "pc-s30-2-behind.png"
+ },
+ {
+  "id": "S30.3 closing the window: Escape, then ✕",
+  "size": "pc",
+  "exp": "window closes each way",
+  "got": "after Escape open=true; after ✕ open=false",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S30.4 window tabs / groupings offered",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "✕ | New to you 0 | All changes 6 | To go out · AL1 1 | Week | Mon | Tue | Wed | Thu | Fri | Sat | Sun",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S30.5 group by Who",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "no Who grouping control found",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S30.6 board: is a changes-window opener drawn",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "1 pending",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S30.7 tap line with the board open",
+  "size": "pc",
+  "exp": "row brought into view, identifiable, still dotted",
+  "got": "scrollBefore=0 {\"rowFound\":true,\"top\":2492,\"bottom\":2544,\"vh\":864,\"visible\":false,\"atMid\":null,\"covered\":null,\"dotted\":\"dotted\",\"winOpen\":true,\"board\":true,\"input\":false,\"y\":0}",
+  "verdict": "FAIL",
+  "pic": "pc-s30-7_tap_line_with_the_board_open.png"
+ },
+ {
+  "id": "S30 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ },
+ {
+  "id": "S31.1 filed on Inputs, away 16 s, back to Edit Schedule (go)",
+  "size": "pc",
+  "exp": "first frame already marked + 1 pending",
+  "got": "away=18s first: pend=1 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain] // settled: pend=1 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s31-filed-first.png"
+ },
+ {
+  "id": "S31.2 return by the page-name button",
+  "size": "pc",
+  "exp": "marked at the first frame",
+  "got": "pend=1 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s31-nav-first.png"
+ },
+ {
+  "id": "S31.3 Undo on Inputs, away 16 s, back",
+  "size": "pc",
+  "exp": "first frame: no LL row, no pending",
+  "got": "first: pend=null rows=OL[plain];ATT C[plain];OD[plain];OIL[plain] // settled: pend=null rows=OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s31-undone-first.png"
+ },
+ {
+  "id": "S31.4 Redo on Inputs, away 16 s, back",
+  "size": "pc",
+  "exp": "first frame marked, 1 pending",
+  "got": "first: pend=1 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain] // settled: pend=1 pending rows=LL[DOTTED rgb(59, 198, 232)];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s31-redone-first.png"
+ },
+ {
+  "id": "S31.5 Publish AL1, away on View-only 16 s, back",
+  "size": "pc",
+  "exp": "first frame clean: LL plain, no pending",
+  "got": "first: pend=null rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain] // settled: pend=null rows=LL[plain];OL[plain];ATT C[plain];OD[plain];OIL[plain]",
+  "verdict": "PASS",
+  "pic": "pc-s31-published-first.png"
+ },
+ {
+  "id": "S31.6 Leave War as the hidden page",
+  "size": "pc",
+  "exp": "RECORD",
+  "got": "not driven: the route to the Leave War was not proven in this world",
+  "verdict": "NOT DRIVEN",
+  "pic": ""
+ },
+ {
+  "id": "S31 errors",
+  "size": "pc",
+  "exp": "none",
+  "got": "none",
+  "verdict": "RECORDED",
+  "pic": ""
+ }
+]

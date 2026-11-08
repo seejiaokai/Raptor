@@ -72,8 +72,8 @@ describe('D1018 — the defaults and the ⚙ in the bar', () => {
   it('the ⚙ sits after Find event, right before the bar\'s Hide, for everyone (as drawn)', async () => {
     const cog = $('#page-tracker header .controls #flexBtn')
     expect(cog, 'the cog in the bar').toBeTruthy()
-    /* WAS the typed ⚙ (D635). CHANGED by D1509 and D1707 (5 Nov 26): the app's one drawn gear, the Tracker's own copy of it
-       (Glyphs.jsx — a standalone export carries it), in the button's colour */
+    /* WAS the typed ⚙ (D635). CHANGED by D1509 and D1707 (5 Nov 26): the app's one drawn gear — since [TRK-KEPT-COPIES]
+       (8 Nov 26) the app's GearIcon itself, no Tracker copy — in the button's colour */
     expect(cog!.textContent).toBe('')
     expect(drawnAs(cog!.querySelector('svg.trkglyph'), GEAR_INNER), 'the app’s one gear').toBe(true)
     expect($('#barHideBtn')!.previousElementSibling, 'right before Hide').toBe(cog)

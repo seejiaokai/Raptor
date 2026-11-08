@@ -72,8 +72,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; next people, design and the Tracker, each on his word, and a re-measure before 5b.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; next design and the Tracker, each on his word, and a re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
+    Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
 - **Then (D495, D585):** the Tracker's progress graph once he releases it (D774), then caps and ops limits
   ([CAPS-OPS-LIMITS] — started only on his word, D568; its questions wait under D994), then one whole-app check.
@@ -83,6 +84,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
+- [SCHED-MARKS-WALK-ODDS] — four small older things chat 13's walk saw: the changes window's foot says "Tap a change to go to it." over a line that cannot be tapped; the look banner on two lines on the phone board; "2 warning" beside the board's "2 warnings"; a day's "N changes" chip beside "N pending".
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [IPHONE-CARET-CHECKS] — two checks only his iPhone can make, carried from the one-tap time boxes (D1047): dragging the caret with the space bar, and a long press (the loupe).
@@ -154,9 +157,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's).
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
-- [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
+- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier: he ruled it matched to the app's (D1900) — to build.
+- [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
+- [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
+- [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
+- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -279,6 +284,33 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [SCHED-MARKS-WALK-ODDS] Four small older things the schedule-marks walk saw (found 8 Nov 26, chat 13's walk)
+**What:** seen by the walk of chat 13's job (D1784, D1785, D1792 a, d — branch `claude/pr-sched-marks-3205d7`, evidence
+`raptor-port/docs/handpass/2026-11-08-sched-marks.md` §15), each older than that job, none losing anything: (1) the changes window's
+foot on "To go out" always reads "Tap a change to go to it." — fixed words since the window was built — even when every line on it
+stands still (a SANS availability; a man taken out of a shared input), pictures `…/2026-11-08-sched-marks/host/f3-fix3-list.png`,
+`…/w4/s4-pc-week-1-list.png`; the old pending list's foot said it only where a line could be tapped (`raptor-port/src/ui/ChangesWindow.tsx`);
+(2) a look at a published version on the phone board: the banner's words take two lines and it sits under the Aircrew tab
+(`…/w3/s28-phone-b-look0.png` — the same on `main`, the drawing check matching `main`'s drawing pixel for pixel); (3) Edit Schedule's
+issues bar reads "2 issues · 2 warning" where the board reads "2 warnings" (`…/w3/s26-pc-e-hide1.png`); (4) a published day's
+chip reads "N changes" (what the issued versions changed) beside "N pending", which a person may read as changes not yet sent
+(W1a, W3). **To do:** (1) the foot only where a line can be tapped; (3) the plural; (2) and (4) drawn for him before anything
+changes (D1625). **Place:** Schedule and amendments, small — with the next job on the changes window or the words pass.
+
+### [DAMAGED-WEEK-LEFTOVERS] What a week whose saved copy cannot be read still gets wrong (found 8 Nov 26, chat 13's walk)
+**What:** found by the walk of chat 13's job (D1785, the unreadable week's words — branch `claude/pr-sched-marks-3205d7`, evidence
+`raptor-port/docs/handpass/2026-11-08-sched-marks.md`, walker W2's report `…/parts/2026-11-08-sched-marks-w2.md`), each older than that
+job (the builder found the first three in the code, the walk saw them): (1) the desktop next-week preview draws a damaged next week as
+the demo days, with no notice (`raptor-port/src/ui/peek.ts`); (2) print and the spreadsheet export of a damaged week give the demo
+days, headed "WORKING DRAFT — NOT YET SIGNED" (`Shell.tsx`, `export.ts`, `printpdf.ts`); (3) deleting a person while the week is
+damaged refuses in the AMBER note, "The week of 13/07/2026 can't be changed — the delete was not made" — not the grey "Blocked:" note
+every other refusal of one change takes (D1667, D1668), nor D1785's words; (4) a week read-only because its records belong to another
+week says it was "published by an older version"; (5) the Leave War lets a pending bid be placed, refused or deleted on a date in such a week with no words at all, while Approve and "send back" say "is on a locked week" (W2's S2 — the war's own record; its code untouched by that job). Nothing is lost in any of them — each draws or refuses, none saves. **To do:** (1),
+(2) draw D1785's notice where the days would be, as Edit Schedule does; (3) the grey "Blocked:" note in D1785's words — put to him
+first only if it needs words of its own; (4) its own reason; (5) the war says why, as its Approve does — put to him first, with its words. **Place:** Schedule and amendments, small — with the next job on saved
+weeks, or the database step's read of saved data.
+
+
 ### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
 **What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
 snap back to where the drag started". After a drag along the board's day dots the browser fires a click naming the dot the finger went
@@ -316,6 +348,17 @@ the checklist (`raptor-port/docs/bug-check-checklist.md`) names it "the second 2
 §7.11, whole (D138), and put 7's text before 8's; lessons are cited by number elsewhere (the backlog, evidence sheets,
 briefs), so search for each number first and keep a number that is cited; then match the checklist's list. **Place:**
 low, the agent's — with the rules diet's step 4 or the next change to the order.
+
+### [DOCSIZE-PATHS-OPEN] A rules file whose `paths:` list is never closed passes the document check (found 8 Nov 26, the rules diet's step 5a, chat 17)
+**What:** the People & accounts page's first draft lost the `---` line that closes its `paths:` list. With it open, the
+file would not load by itself with the files it names, and `npm run docsize` and `backlog-archive.mjs --rulings` both
+passed it — the check read the page as unscoped (the general page's shape), so the area-page checks (the "Settled" and
+"From other areas" sections, statement sizes, no table rows) never ran on it. Found only by the account's helper reading
+the file; fixed on the branch `claude/rules-diet-step-5a-people-1288c3` before the reads. **To do:** in
+`raptor-port/scripts/docsize-rulings.mjs` (and the self-test, `docsize-selftest.mjs`), fail a rules file under
+`.claude/rules/` that opens a frontmatter block (`---` on its first line) and never closes it, and fail a page whose
+`paths:` list cannot be parsed; a self-test case for each. A script change — goes live on his "merge live" (D1407).
+**Place:** medium, the agent's — before the next area converts (design, the Tracker), or with it.
 
 ### [QUALS-PINNED-HEAD-NO-DRAG] A heading in Quals' pinned row cannot start a column drag (the night of 6 Nov 26)
 In Edit quals with the page scrolled down, a heading in the pinned row under the top bar cannot be pressed to start a column drag: the press listener is on the table alone. Scrolling up to the table's own heading row works. Older than the night's job (`raptor-port/docs/handpass/2026-11-06-people-quals.md`). **Place:** small, with the next Quals job.
@@ -364,16 +407,61 @@ with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/k
 app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
 should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
 `raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
+**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
+are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
+nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
+(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
+to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
+in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
+**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
+
+### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
+**What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
+its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
+the import's "Set them again in ⚙." (about 7292), and the "No details yet" hints with ☰ and ⓘ (about 234–236 and 4878);
+a ✎ in help text stays (D1134). Separately, the Tracker's Export and Import drawings (its own, D1135) differ from the
+download and upload marks Admin and the input window wear. **The case to put to him:** the same treatment as D1860 (the
+words alone) for the four messages, and whether the Tracker's two marks should match Admin's — with pictures, in a
+consistency-look round. Not asked yet (D994). **Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-MENU-KEYS] The Tracker's menus under the keys (filed 8 Nov 26 — chat 20)
+**What:** chat 20's walk pressed the Tracker's course, syllabus and File menus with the keyboard on a desktop: a row with
+the keys on it wears the browser's own white rounded ring, not the app's cyan keyboard ring, and the down arrow does not
+move to the next row — only Tab does. The board's ⋯ menus have both (D1646 the arrows, D1771 the cyan ring); D1706 gave
+the Tracker's menus the board's look but said nothing of the keys. Not caused by chat 20's change (the menus' code was not
+touched). Pictures: `raptor-port/docs/img/handpass/2026-11-08-chat20-tracker/walk/s4-desktop-*-keyboard-crop.png`.
+**The case to put to him:** the same keys and ring as the board's menus, with a picture. Not asked yet (D994).
+**Place:** low, with the Tracker's next batch or the consistency look.
+
+### [TRK-COPIES-TIDY] The code reads' tidiness notes on the Tracker's copies taken back (D489 — filed, not fixed; 8 Nov 26 — chat 20)
+**What:** the fresh Opus read of [TRK-KEPT-COPIES] (`raptor-port/docs/superpowers/briefs/2026-11-08-chat20-tracker-read-opus.md`,
+its tidiness note; Astra had none): (1) `tracker.css`'s `#ordList .ordrow.dragging` keeps a fallback that repeats
+Raptor's `--lift-box` value for value — the sheet's last copy; dropping it changes nothing on screen; (2)
+`src/ui/icons-markup.test.tsx`'s recording switch (`PRINT_ICON_MARKUP`) makes its six checks pass without comparing —
+a separate script, or the checks marked skipped while it is set; (3) `ListIcon` (`ui/icons.tsx`) still writes its own
+`<svg>` — a `LIST_INNER` drawn through `Drawn` would make it one source (its recorded markup then re-recorded), and the
+Tracker's own wrapper `G` (`components/Glyphs.jsx`) repeats `Drawn`'s attributes; the `shapes()` test helper is
+written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now overstated: `Glyphs.jsx`'s header
+("the marks only the Tracker wears" — Export, Import and the magnifier are the app's marks too, drawn differently),
+`tracker.css`'s palette block's last line ("the copy here kept…" → "the copy that stood here…"), `ui/pen.ts`'s
+"Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
+wrapper is #detailBubble". **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
 top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
 the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.** Evidence:
+app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
+**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
+his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
+storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
+strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
+weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
+every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
+next Tracker / app job, with D1900's magnifier, one branch. Evidence:
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
-### [TRK-POP-ASKED] Two questions from the Tracker's marking-window round (filed 8 Nov 26 — chat 10, put to him that day)
-**What:** (1) **F8** (the fresh Opus code read of chat 9's job): two messages carry the old typed marks in their words — the "Delete course …?" question and the import's note on a deleted course (`src/tracker/app/core.js`, the course delete and the import) read "↺ Restore in ⇅ Reorder courses brings it back…"; the app draws those marks everywhere else and a message box cannot. Recommended: drop the two marks ("Restore in Reorder courses brings it back…"), a two-line change for the Tracker's next batch. Pictures before and after: `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/f8/`. (2) **The short-screen placement** (Astra's reading 6, "his to decide"): on a phone held on its side the chart lifts the event as high as it may go and the window opens under it, scrolling inside itself, as the drawings do not show; picture `…/2026-11-08-chat9-tracker/s10-open-window.png`. Also recorded by the walk, as before this change and not faults: S9 (the window neither follows nor closes when the chart is wheel-scrolled under it) and S30 (Restore's keyboard ring is the browser's own). Evidence: `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`. **His answer, 8 Nov 26: "Yes to both"** — (1) D1860, drop the marks; (2) D1861, the short-screen placement stays as built, nothing to build. **To do:** build (1) with the Tracker's next batch — the two messages' words only, their tests with them; then archive this item.
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
 **What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11

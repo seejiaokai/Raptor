@@ -184,8 +184,9 @@ describe('the Tracker’s date boxes (L15, L16)', () => {
   it('L15 — a date no mark carries yet wears the dim colour an empty box’s words wear', () => {
     /* the app's box: an empty box's words are the quiet ink … */
     expect(decl(one(CAL, 'button.datebox.is-empty .datebox-txt'), 'color')).toBe('var(--ink-3)')
-    /* … and the Tracker's name for that same colour is --muted (tracker/trk-palette.test.ts pins the copy) */
-    expect(trk).toContain('--muted:#8A96A3;')
+    /* … and the Tracker's name for that same colour is --muted — since [TRK-KEPT-COPIES] (8 Nov 26) a link to Raptor's
+       --ink-3, no longer a copy of its value (tracker/trk-palette.test.ts pins the link) */
+    expect(trk).toContain('--muted:var(--ink-3);')
     expect(TOKENS['ink-3']!.toUpperCase()).toBe('#8A96A3')
     expect(decl(one(TRK, 'button.datebox.trpopdate.is-notyet .datebox-txt'), 'color')).toBe('var(--muted)')
   })
