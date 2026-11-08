@@ -500,6 +500,10 @@ const SKLOG0 = '# Skill Observation Log\n\n' + obs(7, 'seven') + obs(8, 'eight')
 scenario('skill log: every note number once', false, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three')) })
 scenario('skill log: one number heading two notes', true, c => c.write(SKLOG, SKLOG0 + obs(8, 'a different eight')), { mustSay: 'Observation 8 heads 2 entries' })
 scenario('skill log: a live number that also heads an archived note', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(7, 'an older seven')) }, { mustSay: 'Observation 7 heads an entry in the log and one in .claude/skill-observations/archive/log-2026-10-27.md' })
+/* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example, not a note — backtick and tilde fences,
+   their numbers colliding with real notes */
+const FENCED = obs(7, 'explaining a heading').replace("the note's body", "the note's body\n\n```md\n### Observation 7: an example\n```\n\n~~~\n### Observation 8: another\n~~~")
+scenario('skill log: a fenced example heading is not a note', false, c => c.write(SKLOG, '# Skill Observation Log\n\n' + FENCED + obs(8, 'eight')))
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))

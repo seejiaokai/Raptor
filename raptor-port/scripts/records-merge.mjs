@@ -64,6 +64,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
+import { fenceStep, fencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const args = process.argv.slice(2)
@@ -78,7 +79,9 @@ const INSERT_ONLY = ['raptor-port/docs/walk-ledger.md', 'raptor-port/docs/file-m
 const isRulings = f => f === 'DECISIONS.md' || f.startsWith('.claude/rules/decisions/') || f.startsWith('.claude/decisions-full/')
 const RULINGS_CMD = 'node raptor-port/scripts/backlog-archive.mjs --rulings --merge'
 const TMP = '.records-merge-tmp'
-const NOW_MARK = /^<!-- now:(\S+) -->\s*$/, OBS_HEAD = /^### Observation (\d+):(.*)$/
+/* a skill note's heading is OBS_HEAD, outside a code block — the one definition the document gate and the replay share
+   (docsize-rulings.mjs, Astra 5 of the code read) */
+const NOW_MARK = /^<!-- now:(\S+) -->\s*$/
 
 /* ---------- git's staged copies, byte for byte ----------
    A blob is read as a Buffer and decoded only if it round-trips: a file this step cannot hold exactly is left to the
@@ -120,12 +123,6 @@ const sameConflict = (a, b) => a === b || markless(a) === markless(b)
 /* lines with their endings kept, so a record is its exact bytes */
 const linesOf = t => t.match(/[^\n]*\n|[^\n]+$/g) || []
 const nl = t => (t && !t.endsWith('\n') ? t + '\n' : t)
-function fenceStep(fence, line) {
-  const f = /^ {0,3}(`{3,}|~{3,})(.*)$/.exec(line)
-  if (!f) return fence
-  if (fence) return f[1][0] === fence.ch && f[1].length >= fence.len && !f[2].trim() ? null : fence
-  return { ch: f[1][0], len: f[1].length }
-}
 
 /* ---------- cutting a file into its records ---------- */
 function cut(text, keyOf, fenced) {
@@ -198,13 +195,26 @@ function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false }) {
 
 /* ---------- the skill log's numbers ---------- */
 function highestNumber(refs) {
-  let max = 0
-  const take = s => { for (const m of (s || '').matchAll(/^### Observation (\d+)/gm)) max = Math.max(max, +m[1]) }
-  /* the short form's grep, over the two sides of the merge and every remote branch, in batches (a long ref list
-     overflows a Windows command line) */
+  /* the short form's grep finds every copy of the log and its archive that holds a heading, over the two sides of the
+     merge and every branch, in batches (a long ref list overflows a Windows command line); each distinct copy is then
+     read whole and its headings taken by the shared definition, so a heading inside a code block is not a number
+     (Astra 5) */
+  const specs = []
   for (let i = 0; i < refs.length; i += 60) {
-    const r = spawnSync('git', ['grep', '-h', '-o', '-E', '^### Observation [0-9]+', ...refs.slice(i, i + 60), '--', SKILL_LOG, SKILL_ARCHIVE], { cwd: REPO, encoding: 'utf8', maxBuffer: 256 << 20 })
-    take(r.stdout)
+    const r = spawnSync('git', ['grep', '-l', '-E', '^### Observation [0-9]+', ...refs.slice(i, i + 60), '--', SKILL_LOG, SKILL_ARCHIVE], { cwd: REPO, encoding: 'utf8', maxBuffer: 256 << 20 })
+    specs.push(...(r.stdout || '').split('\n').filter(Boolean))
+  }
+  if (!specs.length) return 0
+  const ids = spawnSync('git', ['cat-file', '--batch-check=%(objectname)'], { cwd: REPO, input: specs.join('\n') + '\n', encoding: 'utf8', maxBuffer: 256 << 20 })
+  const oids = [...new Set((ids.stdout || '').split('\n').filter(l => /^[0-9a-f]{40,64}$/.test(l)))]
+  const all = spawnSync('git', ['cat-file', '--batch'], { cwd: REPO, input: oids.join('\n') + '\n', maxBuffer: 1 << 30 })
+  const buf = all.stdout
+  let max = 0, at = 0
+  while (at < buf.length) {
+    const eol = buf.indexOf(10, at), head = buf.subarray(at, eol).toString('utf8').split(' ')
+    const size = +head[2]; if (!(size >= 0)) break
+    for (const { n } of observationHeads(buf.subarray(eol + 1, eol + 1 + size).toString('utf8'))) max = Math.max(max, +n)
+    at = eol + 1 + size + 1
   }
   return max
 }
@@ -219,9 +229,10 @@ function renumber(B, O, T, ctx) {
   const cite = new RegExp(`\\bObservation (${[...map.keys()].join('|')})(?!\\d)`, 'g')
   const O2 = O.map(r => {
     const own = r.key.startsWith('obs:') && map.has(r.key.slice(4))
-    const text = linesOf(r.text).map((l, i) => {
+    const ls = linesOf(r.text), fenced = fencedFlags(ls)
+    const text = ls.map((l, i) => {
       if (own && i === 0) return l.replace(/^### Observation \d+:/, `### Observation ${map.get(r.key.slice(4))}:`)
-      return baseLines.has(l) ? l : l.replace(cite, (s, n) => { ctx.cites.push(`Observation ${n} → ${map.get(n)} in a line of yours: ${l.trim().slice(0, 100)}`); return `Observation ${map.get(n)}` })
+      return baseLines.has(l) || fenced[i] ? l : l.replace(cite, (s, n) => { ctx.cites.push(`Observation ${n} → ${map.get(n)} in a line of yours: ${l.trim().slice(0, 100)}`); return `Observation ${map.get(n)}` })
     }).join('')
     return { key: own ? `obs:${map.get(r.key.slice(4))}` : r.key, text }
   })
@@ -272,7 +283,7 @@ function settle(f, st, labels, ctx) {
     return mergeRecords(B, O, T, { labels, first: 'ours', alwaysLeave: k => k === 'sec:## Gate baseline' })
   }
   if (f === SKILL_LOG) {
-    const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, false))
+    const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))
     const { O } = renumber(B, O0, T, ctx)
     return mergeRecords(B, O, T, { labels, first: 'theirs' })
   }

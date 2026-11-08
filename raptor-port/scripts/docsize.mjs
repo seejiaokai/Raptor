@@ -957,20 +957,19 @@ function designCheckerCopies() {
    would have put both numbers on main with nothing going red — nothing here read the log. So: every `### Observation N:`
    number heads exactly one entry in the log, and no number in the log also heads an entry in the archive folder (a note
    archived on one branch and written anew under its number on another). The archive's own older history is not judged:
-   an archived number is never reused, but what was filed there before this check is the store as it stands (D56). The
-   log is read whole, fences included — the merge step (records-merge.mjs) cuts entries the same way. */
+   an archived number is never reused, but what was filed there before this check is the store as it stands (D56). A
+   heading is read by the one shared definition (docsize-rulings.mjs observationHeads — outside code blocks, Astra 5 of the
+   code read): the merge step (records-merge.mjs) cuts entries and finds the next number the same way. */
 const SKILL_LOG = '.claude/skill-observations/log.md', SKILL_ARCHIVE = '.claude/skill-observations/archive'
-const OBS_HEAD = /^### Observation (\d+):/
 function skillLogNumbers() {
   const log = readNow(SKILL_LOG)
   if (!log) return []
   const fails = [], count = new Map()
-  for (const l of splitLines(log)) { const m = OBS_HEAD.exec(l); if (m) count.set(m[1], (count.get(m[1]) || 0) + 1) }
+  for (const { n } of RL.observationHeads(log)) count.set(n, (count.get(n) || 0) + 1)
   for (const [n, k] of count) if (k > 1) fails.push(`${SKILL_LOG}: Observation ${n} heads ${k} entries — each note has its own number; renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
   const archived = [...new Set([...(tryGit('ls-files', '--', SKILL_ARCHIVE) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', SKILL_ARCHIVE) || '').split('\n')])].filter(a => a.endsWith('.md'))
-  for (const a of archived) for (const l of splitLines(readNow(a))) {
-    const m = OBS_HEAD.exec(l)
-    if (m && count.has(m[1])) fails.push(`${SKILL_LOG}: Observation ${m[1]} heads an entry in the log and one in ${a} — an archived number is never used again; renumber the live one past the highest on every branch`)
+  for (const a of archived) for (const { n } of RL.observationHeads(readNow(a))) {
+    if (count.has(n)) fails.push(`${SKILL_LOG}: Observation ${n} heads an entry in the log and one in ${a} — an archived number is never used again; renumber the live one past the highest on every branch`)
   }
   return fails
 }

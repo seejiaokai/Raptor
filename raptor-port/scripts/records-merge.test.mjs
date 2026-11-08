@@ -36,6 +36,7 @@ function makeRepo(files) {
   const w = (f, t) => { mkdirSync(dirname(join(dir, f)), { recursive: true }); writeFileSync(join(dir, f), t) }
   g('init', '-q', '-b', 'main'); g('config', 'user.email', 't@example.invalid'); g('config', 'user.name', 't'); g('config', 'core.autocrlf', 'false')
   w('raptor-port/scripts/records-merge.mjs', readFileSync(SCRIPT, 'utf8'))
+  w('raptor-port/scripts/docsize-rulings.mjs', readFileSync(join(HERE, 'docsize-rulings.mjs'), 'utf8'))
   w('raptor-port/scripts/fake-check.mjs', FAKE); w('raptor-port/package.json', PKG); w('.gitignore', 'CHECK-RAN\n')
   for (const [f, t] of Object.entries(files)) w(f, t)
   g('add', '-A'); g('commit', '-q', '-m', 'base')
@@ -192,6 +193,17 @@ test('skill log: a doubled number is renumbered past every branch\'s highest; on
   assert.match(c.read('.claude/skill-observations/log.md'), /carriage return\r\n/, 'a carriage return in a line is kept')
   /* and a second run changes nothing */
   const again = c.run(); assert.equal(again.code, 0, again.out); assert.match(again.out, /already settled by an earlier run/)
+}))
+
+/* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example — never cut as a note, never counted
+   for the next number, never renumbered */
+test('skill log: a fenced example heading is text — not a note, not a number, not renumbered (Astra 5)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  const ours = obs(11, 'ours eleven', 'body', '~~~', '### Observation 99: an example', '### Observation 11: an example of mine', '~~~', '```', '### Observation 10: another', '```')
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + ours), x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'm')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.match(r.out, /Observation 11 → 12 "ours eleven"/)
+  assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + obs(11, 'main eleven', 'm') + ours.replace('### Observation 11: ours eleven', '### Observation 12: ours eleven'))
 }))
 
 /* the replay's finding (7c3b3afe1 and its like): the log's last note ends with no blank line, so two notes added after it

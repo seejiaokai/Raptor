@@ -33,6 +33,18 @@ export function fenceStep(fence, line) {
 /* for each line, whether it sits inside (or opens / closes) a code block */
 export const fencedFlags = lines => { let fence = null; return lines.map(l => { const was = fence; fence = fenceStep(fence, l.replace(/\r?\n$/, '')); return !!(was || fence) }) }
 
+/* A SKILL NOTE'S HEADING, read one way ([MERGE-ONCE-RECORDS], Astra 5 of the code read, 8 Nov 26): `### Observation N:`
+   at the start of a line OUTSIDE a code block — a heading inside a fence is an example, not a note. The document gate
+   counts with it, the merge step (records-merge.mjs) cuts the log and finds the highest number with it, and its replay
+   counts identities with it, so the three can never disagree about what a note is. */
+export const OBS_HEAD = /^### Observation (\d+):(.*)$/
+/* every note heading in a text: { n, title, line } (line: its index among the text's lines) */
+export function observationHeads(text) {
+  const ls = (text || '').split('\n').map(l => l.replace(/\r$/, '')), fenced = fencedFlags(ls), out = []
+  ls.forEach((l, i) => { const m = !fenced[i] && OBS_HEAD.exec(l); if (m) out.push({ n: m[1], title: m[2].trim(), line: i }) })
+  return out
+}
+
 export const pipes = line => { let n = 0; for (let i = 0; i < line.length; i++) if (line[i] === '|' && line[i - 1] !== '\\') n++; return n }
 export const kindOf = line => { const n = pipes(line.replace(/\r?\n$/, '').trimEnd()); return n === 4 ? 'short' : n === 6 ? 'full' : 'bad' }
 export const cellsOf = line => line.replace(/\r?\n$/, '').trim().replace(/^\|/, '').replace(/\|$/, '').split(/(?<!\\)\|/).map(s => s.trim())

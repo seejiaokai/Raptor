@@ -24,6 +24,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
+import { observationHeads } from './docsize-rulings.mjs'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const REPO = join(HERE, '..', '..')
@@ -70,7 +71,7 @@ spawnSync('git', ['remote', 'remove', 'origin'], { cwd: clone })
 
 const IDS = {
   'now markers': t => t.match(/^<!-- now:\S+ -->/gm) || [],
-  'Observation numbers': t => (t.match(/^### Observation \d+/gm) || []),
+  'Observation numbers': t => observationHeads(t).map(h => `Observation ${h.n}`), // the shared definition (Astra 5)
   'ledger rows': t => { const a = t.indexOf('<!-- ledger:rows -->'), b = t.indexOf('<!-- /ledger:rows -->'); return a < 0 || b < 0 ? [] : t.slice(a, b).split('\n').filter(l => l.startsWith('|')) },
   '[ID] headings': t => t.match(/^#{2,3} \[[A-Z0-9-]+\]/gm) || [],
   'D-numbers': t => t.match(/\bD\d{1,4}\b/g) || [],
@@ -104,6 +105,7 @@ function replay(m) {
   const st = spawnSync('git', ['merge', '--no-commit', '--no-ff', m.p2], { cwd: clone, encoding: 'utf8' })
   mkdirSync(join(clone, 'raptor-port', 'scripts'), { recursive: true })
   copyFileSync(STEP, join(clone, 'raptor-port', 'scripts', 'records-merge.mjs'))
+  copyFileSync(join(HERE, 'docsize-rulings.mjs'), join(clone, 'raptor-port', 'scripts', 'docsize-rulings.mjs'))
   const unmerged = [...new Set((tryGit(clone, 'diff', '--name-only', '--diff-filter=U') || '').split('\n').filter(Boolean))]
   const r = spawnSync(process.execPath, ['raptor-port/scripts/records-merge.mjs', '--no-checks'], { cwd: clone, encoding: 'utf8', maxBuffer: 256 << 20 })
   const out = r.stdout + r.stderr
