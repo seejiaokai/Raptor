@@ -4287,6 +4287,19 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
 
+### Observation 881: A later ruling says "narrows Dx" in its own row, but Dx's row carries no mark — the change check cannot see it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 17, the rules diet's step 5a — People & accounts as a page (numbered past 880, held by two open branches)
+**Skill:** New skill candidate: rules-diet page conversion
+**Type:** open-source
+**Phase/Area:** drafting a page from its rulings; the change-mark check
+
+**Issue:** D1651's own meaning cell said "Narrows D1510 and D149", and D1510's row carried the mark, but D149's did not (nor D218's, which still listed SCHEDULER as a member's). The document check follows only the marks written in the older row, so it asked for nothing; the page's drafter found the gap only by reading every row sentence by sentence.
+**Suggested improvement:** in the rulings check, for every row whose meaning cell says "narrows / replaces / answers D<n>", require D<n>'s row to carry a mark naming it (or list it as owed); until then, every conversion's account checks each such sentence against the older row.
+**Principle:** a link recorded on one side only is invisible to a check that reads the other side — when a record can be changed from either end, check both ends agree.
+
 ### Observation 882: A new text-fit browser test was checked only in this PC's letters and went red on the CI's Linux machines — the trap of Observation 680 met again
 
 **Status:** OPEN
