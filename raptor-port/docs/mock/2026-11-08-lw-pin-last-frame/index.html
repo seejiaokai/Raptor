@@ -1,0 +1,187 @@
+<title>Pinned Dates Row Blink</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<style>
+/* Layout: one reading column; the questions on top, then each screen's pair of frames — today beside the trial — phone first. */
+:root {
+  color-scheme: dark;
+  --bg: #0b1016;        /* the app's own dark */
+  --card: #121a23;
+  --edge: #233041;
+  --fg: #e8edf2;
+  --muted: #94a3b4;
+  --cyan: #3bc6e8;      /* the Leave War's cyan */
+  --amber: #ffb020;     /* the outline drawn on the pictures */
+  --red: #ff6b6b;
+  --green: #5fd38d;
+  --body: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box }
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 48px }
+main { max-width: 900px; margin: 0 auto; display: grid; gap: 28px }
+h1 { font-size: 22px; line-height: 1.25; margin: 0; text-wrap: balance }
+h2 { font-size: 17px; margin: 0 0 10px; text-wrap: balance }
+p { margin: 0 }
+.sub { color: var(--muted); font-size: 14px }
+.now { background: var(--card); border: 1px solid var(--edge); border-radius: 10px; padding: 14px 16px; display: grid; gap: 12px }
+.now .tag { font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--cyan); font-weight: 700 }
+.q { display: grid; grid-template-columns: 26px 1fr; gap: 2px 8px }
+.q b.n { color: var(--cyan) }
+.q .rec { grid-column: 2; color: var(--muted); font-size: 14px }
+.q .rec strong { color: var(--fg); font-weight: 600 }
+a { color: var(--cyan) }
+.link { display: inline-block; background: #0e2a35; border: 1px solid #2a6b80; border-radius: 8px; padding: 8px 12px; font-weight: 600; word-break: break-all }
+.steps { margin: 0; padding-left: 20px; display: grid; gap: 6px }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; align-items: start }
+.pair.wide { grid-template-columns: 1fr }
+@media (max-width: 860px) { .pair { grid-template-columns: 1fr } }
+figure { margin: 0; display: grid; gap: 6px; min-width: 0 }
+figcaption { font-size: 14px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap }
+figcaption .who { font-weight: 700 }
+figcaption .who.bad { color: var(--red) }
+figcaption .who.good { color: var(--green) }
+figcaption .what { color: var(--muted) }
+.shot { display: block; border: 1px solid var(--edge); border-radius: 6px; overflow: hidden; background: #000; cursor: zoom-in; padding: 0; width: 100%; max-width: 100% }
+.shot img { display: block; width: 100%; height: auto }
+.phone .shot { max-width: 402px }
+section { display: grid; gap: 12px }
+.note { color: var(--muted); font-size: 14px }
+.nums { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 14px }
+.nums th, .nums td { text-align: left; padding: 7px 8px; border-bottom: 1px solid var(--edge); vertical-align: top }
+.nums th { color: var(--muted); font-weight: 600 }
+.nums td.b { color: var(--red); font-weight: 700 }
+.nums td.g { color: var(--green); font-weight: 700 }
+.tbl { overflow-x: auto }
+details { background: var(--card); border: 1px solid var(--edge); border-radius: 10px; padding: 10px 14px }
+details summary { cursor: pointer; font-weight: 600 }
+details[open] summary { margin-bottom: 10px }
+.strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px }
+@media (max-width: 560px) { .strip { grid-template-columns: 1fr } }
+.strip figcaption { font-size: 13px }
+ul.cost { margin: 0; padding-left: 20px; display: grid; gap: 4px }
+#zoom { position: fixed; inset: 0; background: rgba(0,0,0,.92); z-index: 20; overflow: auto; display: grid; place-items: center;
+  padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); cursor: zoom-out }
+#zoom img { width: auto; max-width: none; image-rendering: auto }
+button:focus-visible, a:focus-visible, summary:focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px }
+</style>
+
+<main>
+  <header style="display:grid;gap:6px">
+    <h1>The dates row's one-frame blink — try it on your iPhone</h1>
+    <p class="sub">Leave War grid and Quals · chat 14 · 8 Nov 26 · nothing built for keeps</p>
+  </header>
+
+  <div class="now">
+    <span class="tag">Look at this now</span>
+    <div class="q"><b class="n">1</b><span>On your iPhone, on the live app: do you see the Leave War's dates row (or Quals' heading) blink when you flick the grid up fast?</span>
+      <span class="rec">My recommendation: <strong>try it before anything else</strong> — it decides whether this is worth doing. How: steps below.</span></div>
+    <div class="q"><b class="n">2</b><span>If you do: the same flick on the trial link — is the blink gone?</span>
+      <span class="rec"><a class="link" href="https://raptor-56qrvo8b3-kai-e2f5.vercel.app">raptor-56qrvo8b3-kai-e2f5.vercel.app</a></span></div>
+    <div class="q"><b class="n">3</b><span>Build it for keeps?</span>
+      <span class="rec">My recommendation: <strong>yes only if you see the blink on the live app and it is gone on the trial link.</strong> If you never notice it, close this item and leave the app as it is.</span></div>
+  </div>
+
+  <section>
+    <h2>What the blink is</h2>
+    <p>When you flick the grid up quickly, the dates row reaches the top bar and should stay pinned there. For one picture on screen (a sixtieth of a second) it is missing, and the next picture has it back. The browser moves the page before the app hears about the scroll, so today's app is always one picture late.</p>
+    <p class="note">These are real pictures the test browser drew during a quick scroll, the same scroll in both builds. The pinned row's place is outlined in amber. Tap a picture to see it full size.</p>
+  </section>
+
+  <section>
+    <h2>Leave War, phone</h2>
+    <div class="pair phone">
+      <figure><figcaption><span class="who bad">Today</span><span class="what">dates row missing under the top bar</span></figcaption>
+        <button class="shot" data-z><img src="img/before-lw-ph-1.png" alt="Today's build, Leave War on a phone: under the top bar the Event rows show where the dates row should be pinned" width="402" height="243"></button></figure>
+      <figure><figcaption><span class="who good">Trial</span><span class="what">same moment, dates row pinned</span></figcaption>
+        <button class="shot" data-z><img src="img/after-lw-ph-1.png" alt="The trial build at the same moment: the pinned dates row with 2026 and the dates sits under the top bar" width="402" height="243"></button></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Quals, phone</h2>
+    <div class="pair phone">
+      <figure><figcaption><span class="who bad">Today</span><span class="what">heading missing</span></figcaption>
+        <button class="shot" data-z><img src="img/before-qu-ph-1.png" alt="Today's build, Quals on a phone: under the top bar the Assigned Pilots line shows where the column heading should be" width="402" height="222"></button></figure>
+      <figure><figcaption><span class="who good">Trial</span><span class="what">heading pinned</span></figcaption>
+        <button class="shot" data-z><img src="img/after-qu-ph-1.png" alt="The trial build at the same moment: the Callsign, Initials, Flight and CAT heading sits under the top bar" width="402" height="222"></button></figure>
+    </div>
+  </section>
+
+  <section>
+    <h2>Leave War, desktop</h2>
+    <div class="pair wide">
+      <figure><figcaption><span class="who bad">Today</span><span class="what">dates row cut, Crew Sets showing through</span></figcaption>
+        <button class="shot" data-z><img src="img/before-lw-pc-1.png" alt="Today's build, Leave War on a desktop: the dates row is cut off and the Crew Sets row shows under the top bar" width="900" height="222"></button></figure>
+      <figure><figcaption><span class="who good">Trial</span><span class="what">same moment, dates row pinned</span></figcaption>
+        <button class="shot" data-z><img src="img/after-lw-pc-1.png" alt="The trial build at the same moment: the whole dates row pinned under the top bar" width="900" height="222"></button></figure>
+    </div>
+  </section>
+
+  <details>
+    <summary>Quals on a desktop, and the frames either side</summary>
+    <div style="display:grid;gap:18px">
+      <div class="pair wide">
+        <figure><figcaption><span class="who bad">Today</span><span class="what">Quals, desktop</span></figcaption>
+          <button class="shot" data-z><img src="img/before-qu-pc-1.png" alt="Today's build, Quals on a desktop, the frame the heading is missing" width="900" height="200"></button></figure>
+        <figure><figcaption><span class="who good">Trial</span><span class="what">Quals, desktop</span></figcaption>
+          <button class="shot" data-z><img src="img/after-qu-pc-1.png" alt="The trial build, Quals on a desktop, heading pinned" width="900" height="200"></button></figure>
+      </div>
+      <p class="note">Leave War on a phone, three pictures in a row: just before the dates row reaches the top bar, the next picture, and the one after. Today only the middle one is wrong.</p>
+      <div class="strip">
+        <figure><figcaption><span class="what">Today · before</span></figcaption><button class="shot" data-z><img src="img/before-lw-ph--1.png" alt="Today, the picture before: fine" width="402" height="243"></button></figure>
+        <figure><figcaption><span class="who bad">Today · next</span></figcaption><button class="shot" data-z><img src="img/before-lw-ph-1.png" alt="Today, the next picture: dates row missing" width="402" height="243"></button></figure>
+        <figure><figcaption><span class="what">Today · after</span></figcaption><button class="shot" data-z><img src="img/before-lw-ph-2.png" alt="Today, the picture after: pinned again" width="402" height="243"></button></figure>
+        <figure><figcaption><span class="what">Trial · before</span></figcaption><button class="shot" data-z><img src="img/after-lw-ph--1.png" alt="Trial, the picture before: fine" width="402" height="243"></button></figure>
+        <figure><figcaption><span class="who good">Trial · next</span></figcaption><button class="shot" data-z><img src="img/after-lw-ph-1.png" alt="Trial, the next picture: pinned" width="402" height="243"></button></figure>
+        <figure><figcaption><span class="what">Trial · after</span></figcaption><button class="shot" data-z><img src="img/after-lw-ph-2.png" alt="Trial, the picture after: pinned" width="402" height="243"></button></figure>
+      </div>
+    </div>
+  </details>
+
+  <section>
+    <h2>How to try it (questions 1 and 2)</h2>
+    <ol class="steps">
+      <li>On your iPhone, open the app as usual, go to the Leave War, Grid tab, and scroll to the very top.</li>
+      <li>Flick the grid up once, quickly, so the dates row runs into the top bar. Watch the strip just under the top bar. Do it three or four times.</li>
+      <li>Do the same on Quals with its column heading.</li>
+      <li>Then open the trial link above, sign in, and repeat. It opens with the demo data and touches nothing on the live app.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>What I measured</h2>
+    <div class="tbl"><table class="nums">
+      <tr><th>Quick scrolls, counted picture by picture</th><th>Today</th><th>Trial</th></tr>
+      <tr><td>Scrolls with a blink (desktop and phone size, Leave War and Quals, up and down)</td><td class="b">40 of 40</td><td class="g">0 of 40</td></tr>
+      <tr><td>Usual time between pictures</td><td>16.7 ms</td><td>16.7 ms</td></tr>
+      <tr><td>Slowest pictures</td><td colspan="2">no slower with the trial</td></tr>
+      <tr><td>Browser work for a long scroll, Leave War, desktop, on a computer slowed 4 times</td><td>2.4 s</td><td>1.7 s</td></tr>
+    </table></div>
+    <p class="note">One reading to check again if it is built: on the phone-size Leave War, pictures that took just over a thirtieth of a second went from 6 to 20 in a long scroll, all right at that mark; the slowest were no slower. The test browser is the Chrome engine. Your iPhone's Safari draws differently, which is why only your iPhone can answer questions 1 and 2. The trial uses the same browser feature that already moves these rows sideways on your iPhone; where a browser lacks it, the app keeps today's way.</p>
+  </section>
+
+  <section>
+    <h2>If you say build it (question 3)</h2>
+    <p>The change is to how the pinned row is layered over the grid, so it is checked everywhere that layering shows:</p>
+    <ul class="cost">
+      <li>the pinned names column, zoom by pinch, Rearrange, the month strip, and the windows that open over the grid;</li>
+      <li>the trial's loose ends: a screen reader must not read the hidden pinned row, a pinch must still hide it, and the pinned row must move if something above the grid changes height;</li>
+      <li>the full check: a walk of the Leave War and Quals with pictures, the everyday tasks end to end, and two separate code readers.</li>
+    </ul>
+    <p class="note">Nothing goes live without your "merge live".</p>
+  </section>
+</main>
+
+<div id="zoom" hidden></div>
+<script>
+(() => {
+  const z = document.getElementById('zoom'), zi = z.appendChild(document.createElement('img'))
+  let from = null
+  document.querySelectorAll('[data-z]').forEach(b => b.addEventListener('click', () => {
+    const i = b.querySelector('img'); zi.src = i.src; zi.alt = i.alt; from = b; z.hidden = false; z.tabIndex = -1; z.focus()
+  }))
+  const close = () => { z.hidden = true; if (from) from.focus() }
+  z.addEventListener('click', close)
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !z.hidden) close() })
+})()
+</script>

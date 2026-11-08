@@ -4127,3 +4127,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The fix added an "instant" flag for calls from the scroll listener and a comment that the effect's own call keeps the old route. The effect's last line called the listener itself, so it took the instant route too, and React refused it on every setup. The unit tests never saw it: the test environment has no layout, every box measures 0, and the code returns early on a 0-height box — so the pinning code never ran in any unit test. Only the browser tests ran it, and they do not fail on a warning. A reader running the effect with given box sizes found it at once.
 **Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
 **Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
+
+### Observation 874: Times written into a handoff after a compaction came from the summary, not the clock
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch)
+**Skill:** session-handoff (writing the block's times)
+**Type:** open-source
+**Phase/Area:** the state written into the handoff block
+
+**Issue:** The block said the measure ran "~03:40–04:05Z" and the preview was looked for "at 04:06Z"; the clock read 03:36Z and the results files were written 03:29Z and 03:33Z. The times were carried from the compaction summary's guesses, and a next chat reading them would have mis-ordered the work against other chats' commits.
+**Suggested improvement:** In the handoff skill's block-writing step: every time or date written into the block is read from the clock (`date -u`) or from the file or commit it names, at the moment of writing, never carried from memory or a summary.
+**Principle:** After a compaction, a time is a fact to look up, not to remember; read it from the clock or the artifact it describes.
