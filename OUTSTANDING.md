@@ -67,7 +67,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     live"). (8) documents — [RULINGS-SPENT-PASS], [CAL-JOB-LEFT], [LW-READS-OWED-1024], [WORD-LIST]. (9) the folder —
     [REPO-TIDY] (1), [MAIN-CHECKOUT-STALE] (2).
   - **Then one pictures round for him** (about 12 questions, each drawn first — D1625): [BOARD-SIDEWAYS-KEYS],
-    [BOARD-NARROW-DESKTOP-REMARKS], [LW-TWO-BOX-LETTERS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
+    [BOARD-NARROW-DESKTOP-REMARKS], [SCHED-UNAV-PENDING-MARK], [READONLY-WEEK-WORDS], [TRK-ROUND-SEEN]
     (2), (3), [LOGIC-WORDS-WORKHOURS], [OIL-EARN-DAY-SWITCH-WORDS], [OIL-INERT-TAP-SILENT], [INP-ADD-RIGHT], [LW-MORE-BELOW-CUE],
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
@@ -118,7 +118,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOAD-MOVES-ROW-DAY] — a load of one day can move a several-day course's row onto another published day (its start day) — a question for him with pictures (D994), older.
 - [LOGIN-OPENS-TODAY] — his D1383: before the app goes out for testing, signing in always opens on today's date; not now (demo data).
 - [LOGIN-NOT-AT-TOP] — after signing in on a phone the page now opens at its top (live, pull request 569); his iPhone look owed, then archive.
-- [LW-TWO-BOX-LETTERS] — two whole-day boxes side by side (D1167) clip three-letter codes ("FO*" beside "TRG"); common now that a weekend duty under Unavailable shows its FO* beside it — how to draw it, a question for him with pictures.
 - [SCHED-UNAV-PENDING-MARK] — on a published day an input under the Unavailable list carries no "waiting to go out" mark on its row, where a Ground Programme row does (the count and the changes window do say it) — older than the M3 build; found by its FULL check.
 - [LW-NIGHT1025-OLDER] — only (b) is left, with the database step: (d), (f) LIVE 6 Nov 26 (pull request 646); (c) LIVE as his D1720, D1722; (a), (g) done earlier.
 - [LW-PICK-HELD-MARK] — the tapped day's cyan mark (D1289) BUILT 28 Oct 26 with [LW-WHOLE-LEAVE-WINDOW], and the phone's scroll (D1290) built in M3; left: whether the one-day window can be shorter — pictures to him first.
@@ -135,7 +134,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
 - [INP-ADD-RIGHT] — the Inputs list's "+ Input" on a desktop at the right where its window opens, as "+ Medical" now is (D1300's reading, lesson 47) — his choice, with a picture.
-- [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295); its look drawn first.
+- [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295) — built as the bell's grey foot (D1788) on `claude/pr-leave-war-4988a8`, pull request 680; walk, reads and his look to come.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
 - [NOTIFY-REGISTER] — the register of notifications (D1151) is written; its six proposed lines (P1–P6) wait for him to keep or strike.
@@ -143,7 +142,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
-- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — shown to him first.
+- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
+- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; a design question for him, after his look on his iPhone.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
@@ -506,16 +506,6 @@ windows (the phone carries the sheet; its body scrolls a covered box), drawn for
 ### [LOAD-MOVES-ROW-DAY] A load of one day can move a course's row onto another published day (found 26 Oct 26 — [LW-LOAD-RELAND-RID]'s code read, F3)
 
 **Found** by the fresh Opus code read of [LW-LOAD-RELAND-RID] (reproduced in a unit probe), older than that change. **To reproduce:** a course Wed 15 – Fri 17 Jul under Unavailable; Wednesday and Thursday published; on **Thursday** Reject, then → Ground (its row on Thursday); load Thursday's Original. **What happens:** the version holds no row for it, so the load's reconcile takes it off the programme; it covers other days, so the load cannot put its filing back; the working-out then lands it again on its START day — Wednesday, a published day the load was never meant to change (AM1, D175) — and the load's note said it was "off Wednesday and Friday too" (that sentence is now true to the state after the working-out, [LW-LOAD-RELAND-RID]'s F2 fix, so it no longer says "off"). **What it costs:** Wednesday gains a pending change no one made there. **A question for him (D994 — not put until he says):** when a day's load cannot put a several-day course back as published, should the course (a) stay on that day's programme as it is (the load leaves it), (b) go back under Unavailable on every day it covers (the load says so, as an overseas duty's does), or (c) be parked as rejected (Personal Inputs) — with pictures of each. Recommended: (b), as the overseas duty already behaves.
-
-### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
-
-A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
-a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
-`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
-leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
-to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
-entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
-**Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
 
 ### [SCHED-UNAV-PENDING-MARK] No pending mark on an Unavailable row of a published day (found 25 Oct 26, W2 15)
 
@@ -983,6 +973,20 @@ show/hide it outside React; either needs a speed check (the re-render would land
 frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
 after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
+
+Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
+pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
+`ph-chromium-s11-painted-frames.png` frame 5). D1789's build commits the pinned row in the same frame the PAGE'S CODE
+hears of the scroll — that took the blink from two painted frames to one on the desktop wheel, and leaves one on a phone
+flick (the Leave War and Quals). The last frame is the browser's own: it moves the page and paints it before the page's
+code hears of the scroll, so a pinned row drawn by the code is always one frame late there. **To remove it:** the browser
+must keep the row pinned itself — a pinned copy always there, laid under what scrolls above it so it shows only once the
+real row has gone under the bar, or the browser's own pinning — a change to the grid's layering (its pinned names
+column, zoom, Rearrange, the month strip and the windows over it), with its own walk. **His question, with the pictures
+(lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
+built. **Place:** after his look at pull request 680.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
 **18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.

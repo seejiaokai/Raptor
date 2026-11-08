@@ -8049,3 +8049,15 @@ a placeholder's body. Contract: `raptor-port/docs/ui-contracts.md` §The mode (t
 `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`. Left, filed: [OIL-INERT-WHY-CX-INFO], [OIL-WINDOW-FOOT-SHAPE],
 [OIL-ROSTER-TAP-SELECTS], [OIL-EARN-BOARD-TIDY].
 
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-TWO-BOX-LETTERS] Two boxes side by side clip three letters (found 25 Oct 26, the M3 build's FULL check, W2 30)
+
+A day holding two whole-day entries draws them side by side, each the full height (his D1167), each half about 10 px wide on
+a 26 px day; a three-letter code there ("FO*", "TRG", "CSE", "DTY") is clipped by its box ("O*", "RG" — picture
+`raptor-port/docs/img/handpass/2026-10-25-lw-m3-build/w2/f-30-cell-zoom.png`). Older than the M3 build (a course beside a
+leave did it), but common now: a weekend duty under Unavailable that earns OIL always shows its FO* beside it (D1357). How
+to draw it is his: options to draw for him — letters a step smaller and closer set; the letters stacked; the day's second
+entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
+**Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
+

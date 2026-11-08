@@ -11904,7 +11904,10 @@ Built to the approved drawings (`docs/mock/lw-overhaul/full/r7-04-cells-*`, `r7-
   D1728 — [LW-CELL-COMBOS]: two whole days stand side by side, codes turned to read bottom to top (`bx-tilt`); a whole day
   beside a half keeps the cell, the half over its own half (`bx-floor` / `bx-roof`, `matrixrowparts.ts pairLook`); three
   or more entries are a stack of cards (`bx-pile`, the "+n" tile kept hidden for its words); the "!" a small outlined amber
-  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`.]*
+  tag the boxes make room for (`bx-alarm`); every combination measured, `scripts/handpass/lw-cell-combos-measure.mjs`. This
+  answers [LW-TWO-BOX-LETTERS] (25 Oct 26 — two whole days side by side, each about 10px wide on a 26px day, clipped a
+  three-letter code such as "FO*" beside "TRG"): the codes turned to read bottom to top fit whole, so the item left the
+  backlog on 8 Nov 26 (`OUTSTANDING-ARCHIVE.md`).]*
   The Inputs-page edge and the moved
   edge are drawn inside the box (`::before`), above a pending box's dashed outline. One element a box — no node added
   per cell (`docs/performance.md` §E).
