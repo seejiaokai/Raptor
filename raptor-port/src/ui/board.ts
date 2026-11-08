@@ -49,7 +49,7 @@ import { esc } from '../state/view'
 import { notify, notifyBoard, loadWeek } from '../state/store'
 import { CURWEEK } from '../engine/waves'
 import { shiftWeek } from './weeknav'
-import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING, inertSays, PLACEHOLDER_WHY } from './oilmode'
+import { oilModeOn, dayBarHTML, toggleOilMode, toggleOilItem, toggleOilPerson, setOilBlanket, oilBlanketOn, oilItemMasked, oilItemCellHTML, oilItemHistName, oilPersonSays, DAY_EARNS_NOTHING, inertSays, placeholderWhy } from './oilmode'
 import { rowItemKey } from '../engine/oil'
 import { oilReadPass } from '../engine/oilev'
 import { sbNotesPanel, sbProgPanel, sbSlot, sbDutyPanel, sbSimRowsPanel, sbGroundPanel, sbInputsGroupPanel, sbSansPanel, sbUnavailPanel, labelToTitle, titleToLabel, titleToKind, sbGrip, sbNudge, rowMove, sbSortBtn, boxHTML } from './board-html'
@@ -1504,8 +1504,13 @@ export function boardArmClick(e: MouseEvent) {
   if (phb && !phb.closest('#sbRoster, .rpuck, .availwin') && view.SBDAY != null && oilModeOn(view.SBDAY)) {
     e.stopPropagation()
     if (oilBlanketOn(view.SBDAY)) return toast(DAY_EARNS_NOTHING)
+    /* its row, read off its count (F3 of the Opus code read): an event switched off says its refusal (the host's reading 2),
+       a row nobody behind it can earn from says that row's reason (placeholderWhy) */
+    const cnt = (phb.querySelector('[data-oilsent]') || phb.parentElement?.querySelector('[data-oilsent]')) as HTMLElement | null
+    const item = cnt?.dataset.oilsent || ''
+    if (item && oilItemMasked(view.SBDAY, item)) return toast(EVENT_EARNS_NOBODY)
     const cs = (PEOPLE[phb.dataset.person || ''] || {}).cs || phb.textContent || ''
-    return toast(inertSays(cs, PLACEHOLDER_WHY))
+    return toast(inertSays(cs, placeholderWhy(view.SBDAY, item)))
   }
   const oit = t.closest('[data-oilitem]') as HTMLElement | null
   if (oit) {

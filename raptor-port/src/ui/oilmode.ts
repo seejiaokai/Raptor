@@ -695,13 +695,23 @@ export function inputEarnsNoOilWhy(type: any): string {
 /** What a tap on a placeholder's body says in the mode (the host's reading 1, put to him at his look): it is nobody, and
  *  the men behind it are switched in the window its count opens. */
 export const PLACEHOLDER_WHY = 'the people behind it are switched in the window its count opens'
+/** The placeholder's reason on its row (F3 of the Opus code read, 8 Nov 26): where nobody behind it can earn there, the
+ *  window switches nobody, so it says the row's own reason in words already ruled — D360's for a row with no end, the
+ *  kind's for a request that never asks (D804, D778) — and only otherwise where its men are switched. The day's switch
+ *  and an event switched off say their own refusals before this (board.ts boardArmClick). */
+export function placeholderWhy(di: any, item: string): string {
+  if (item && openEndRows(DAYS[+di] || {}).some(r => r.item === item)) return inertWhy(di, item)
+  return (item && oilNoAskWhy(di, item)) || PLACEHOLDER_WHY
+}
 /** A puck drawn elsewhere than oilSeatHTML that cannot earn on its row — a request that never asks (D804) — made inert
  *  in the mode as oilSeatHTML's are (D1783, D65): the same markup, its own puck kept as drawn, so nothing it looks like
  *  changes; only the tap now says why and picks nobody. */
 export function oilInertWrap(person: any, why: string, inner: string): string {
   const p = (PEOPLE as any)[person]
   if (!p) return inner
-  const w = isSpecial(person) ? PLACEHOLDER_WHY : why
+  /* a placeholder here stands on a request that never asks, so nobody behind it earns: the kind's reason is true of it
+     too, where "switched in the window" sent him to a window that switches nobody (F3 of the Opus code read) */
+  const w = why
   return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(w)}" data-oilsay="${esc(inertSays(p.cs, w))}">${inner}</span>`
 }
 /** What a tap on an inert puck says (owner D1783): what the tap did, the man its subject, then the reason as a sentence. */

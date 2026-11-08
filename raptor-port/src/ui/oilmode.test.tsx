@@ -988,6 +988,40 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     expect(view.SELID).toBeFalsy()
   })
 
+  /* F3 OF THE OPUS CODE READ (8 Nov 26): the body's note sent him to the window on every row, where on a row nobody
+     behind it can earn the window switches nobody. Where that is so, the row's own reason, in words already ruled. */
+  it('D360, D1783 — a placeholder on a row with no end says the row has no end time', async () => {
+    addRow(SAT, { prog: 'DINNER', str: '1830', end: '', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. No OIL worked out — this row has no end time.`])
+    expect($$('#sbBoard .puck.sel').length).toBe(0)
+  })
+
+  it('the host’s reading 2 — a placeholder on an event switched off says to turn the event back on', async () => {
+    addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
+    await open(SAT)
+    await click(oilBtn())
+    await click(groundRowEl(0).querySelector('[data-oilitem]'))
+    said.length = 0
+    await click(groundRowEl(0).querySelector('.puck.allavail'))
+    expect(said).toEqual(['This event earns nobody any OIL. Turn the event back on first.'])
+  })
+
+  it('D778, D1783 — ALL AVAIL on a personal request says the kind’s reason, not the window', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    request({ person: 'allavail', type: 'Personal', s: 10 * 60, e: 12 * 60 })
+    await open(SAT)
+    await click(oilBtn())
+    said.length = 0
+    const ph = inputPuck('allavail')
+    expect(ph, 'drawn under Personal Inputs').toBeTruthy()
+    await click(ph)
+    expect(said).toEqual([`Nothing changed for ${(PEOPLE as any).allavail.cs}. A personal request earns no OIL.`])
+  })
+
   it('D1783 — a placeholder’s count still opens its window', async () => {
     addRow(SAT, { prog: 'ALL HANDS', str: '1000', end: '1600', who: 'allavail' })
     await open(SAT)
