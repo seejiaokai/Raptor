@@ -12421,7 +12421,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1780** — the Scheduler Board on a phone on its side: Calendar, the title, the day strip and search scroll away with the
   list; the bar of buttons stays. How (`10-board-history.css`, the sideways block): the board scrolls as one page, its top
   sticky at minus the head's height (`--sb-headH`, published by `SchedBoard.tsx`), the crew column sticky under the bar, a
-  jump's scroll padding the bar's height; the app's own sideways query from 821 wide; `.sb-wide` as it was.
+  jump's scroll padding the bar's height; the app's own sideways query from 821 wide; `.sb-wide` as it was. His iPhone look, 8 Nov 26 (D1800): on its side, with the keys up, the bar stays at the top.
 - **D1781** — the desktop board from 821 to 1099 wide: the remarks on a row of their own, R over B and TO over LD as on a
   phone (D1029 and D1026 narrowed). How: `13-board-rows-responsive.css`, the band after the 821–1439 one, the drawing's
   own rules, on `.schedboard:not(.sb-wide)` only.
