@@ -591,7 +591,9 @@ test('the replay compares the records of a file settled in part, and fails on a 
     c.git('add', '-A'); c.git('commit', '-q', '-m', 'the replay and a stand-in step')
     const bad = run()
     assert.equal(bad.status, 1, bad.stdout + bad.stderr)
-    assert.match(bad.stderr, /FAILED — 1 identity/)
+    /* the marker as an identity, and its three lines that are not blank by the every-line guard (round 3) */
+    assert.match(bad.stderr, /FAILED — 4 failure\(s\)/)
+    assert.match(bad.stderr, /every line — "- n1" stands 2 times in the step's file; the chat's 1/)
     assert.match(bad.stderr, /now markers — "<!-- now:claude\/n1 -->" stands 2 times in the step's file; the chat's 1, the first parent's 1, the second's 0/)
     assert.match(readFileSync(sheet, 'utf8'), /HANDOFF\.md \(part: \d+ =, 1 ≠, 1 left\)/)
     assert.match(readFileSync(join(c.dir, 'sheet-diffs.md'), 'utf8'), /Record "now:claude\/n1 \(2\)"/)
@@ -601,4 +603,46 @@ test('the replay compares the records of a file settled in part, and fails on a 
     assert.equal(good.status, 0, good.stdout + good.stderr)
     assert.match(readFileSync(sheet, 'utf8'), /HANDOFF\.md \(part: \d+ =, 0 ≠, 1 left\)/)
   } finally { c.done() }
+})
+
+/* the narrow re-read (Astra re-read 3, Opus re-read 6, 8 Nov 26): the replay's fail rule could not see a step that
+   crashed, a doubled walk-ledger row (no ledger identity), nor a doubled line with no identity at all (a file-map row).
+   Round 3: a crash fails the run; the ledger rows are an identity again; and every line that is not blank, held by the
+   step's file more often than by the chat's AND by each parent, fails it (only a renumbered heading line is exempt). */
+function replayOne(f, base, ours, theirs, chat, stepText, stepCode = 0) {
+  const c = makeRepo({ [f]: base })
+  try {
+    c.sides(x => x.write(f, ours), x => x.write(f, theirs))
+    const p1 = c.git('rev-parse', 'HEAD').trim(), p2 = c.git('rev-parse', 'main').trim()
+    c.write(f, chat); c.git('add', '-A'); c.git('commit', '-q', '-m', 'the chat\'s merge')
+    const merge = c.git('rev-parse', 'HEAD').trim()
+    c.write('raptor-port/scripts/records-merge-replay.mjs', readFileSync(join(HERE, 'records-merge-replay.mjs'), 'utf8'))
+    c.write('raptor-port/scripts/records-merge-replay.json', JSON.stringify({ window: { since: '2026-11-08T00:00:00+08:00', until: '2099-01-01T00:00:00+08:00', by: 'a test' }, merges: [{ merge, p1, p2, committed: 'x', clashed: [f] }] }))
+    c.write('raptor-port/scripts/records-merge.mjs', stepCode === 1
+      ? `console.error('records-merge: something broke'); process.exit(1)\n`
+      : `import { writeFileSync } from 'node:fs'\nwriteFileSync(${JSON.stringify(f)}, ${JSON.stringify(stepText)})\nconsole.log('records-merge: 1 unmerged path(s)\\n  settled: ${f}')\n`)
+    c.git('add', '-A'); c.git('commit', '-q', '-m', 'the replay and a stand-in step')
+    const r = spawnSync(process.execPath, ['raptor-port/scripts/records-merge-replay.mjs', '--out', join(c.dir, 'sheet.md')], { cwd: c.dir, encoding: 'utf8' })
+    return { code: r.status, out: r.stdout + r.stderr }
+  } finally { c.done() }
+}
+const L2 = LEDGER0.replace('<!-- /ledger', '| 8 Nov | ours | found 0 |\n<!-- /ledger'), L3 = LEDGER0.replace('<!-- /ledger', '| 8 Nov | theirs | found 2 |\n<!-- /ledger')
+const LBOTH = LEDGER0.replace('<!-- /ledger', '| 8 Nov | ours | found 0 |\n| 8 Nov | theirs | found 2 |\n<!-- /ledger')
+test('the replay fails when a replayed merge crashed (Astra re-read 3, Opus re-read 6)', () => {
+  const r = replayOne('raptor-port/docs/walk-ledger.md', LEDGER0, L2, L3, LBOTH, '', 1)
+  assert.equal(r.code, 1, r.out)
+  assert.match(r.out, /FAILED[\s\S]*stopped with an error/)
+})
+test('the replay fails on a doubled walk-ledger row (the ledger rows identity, restored — Opus re-read 6)', () => {
+  const r = replayOne('raptor-port/docs/walk-ledger.md', LEDGER0, L2, L3, LBOTH, LBOTH.replace('<!-- /ledger', '| 8 Nov | ours | found 0 |\n<!-- /ledger'))
+  assert.equal(r.code, 1, r.out)
+  assert.match(r.out, /ledger rows — "\| 8 Nov \| ours \| found 0 \|" stands 2 times in the step's file; the chat's 1/)
+  const ok = replayOne('raptor-port/docs/walk-ledger.md', LEDGER0, L2, L3, LBOTH, LBOTH)
+  assert.equal(ok.code, 0, ok.out)
+})
+test('the replay fails on any doubled line, one with no identity among them — a file-map row (Opus re-read 6)', () => {
+  const F2 = FMAP0 + '| o.ts | o |\n', F3 = FMAP0 + '| t.ts | t |\n', FBOTH = FMAP0 + '| o.ts | o |\n| t.ts | t |\n'
+  const r = replayOne('raptor-port/docs/file-map.md', FMAP0, F2, F3, FBOTH, FBOTH + '| o.ts | o |\n')
+  assert.equal(r.code, 1, r.out)
+  assert.match(r.out, /every line — "\| o\.ts \| o \|" stands 2 times in the step's file; the chat's 1, the first parent's 1, the second's 0/)
 })

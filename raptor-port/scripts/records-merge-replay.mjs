@@ -109,7 +109,12 @@ const IDS = {
   '[ID] headings': t => t.match(/^#{2,3} \[[A-Z0-9-]+\]/gm) || [],
   'ruling rows': t => (t.match(/^\|\s*D\d+\s*\|/gm) || []).map(s => s.replace(/\s+/g, '')),
   '## headings': t => (t.match(/^## .*$/gm) || []).map(s => s.replace(/\r$/, '').trim()),
+  /* round 3 (Opus re-read 6): the plan's "before it is trusted" named the ledger rows among the identities */
+  'ledger rows': t => { const a = t.indexOf('<!-- ledger:rows -->'), b = t.indexOf('<!-- /ledger:rows -->'); return a < 0 || b < 0 ? [] : t.slice(a, b).split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.startsWith('|')) },
 }
+/* round 3 (Astra re-read 3, Opus re-read 6): the generic guard — every line that is not blank is counted, so a doubled
+   line with no identity (a file-map row, a line moved into a second entry) is seen too */
+const everyLine = t => t.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim())
 const tally = a => a.reduce((m, x) => m.set(x, (m.get(x) || 0) + 1), new Map())
 /* counts that differ from the chat's (listed), and counts above the chat's AND both parents' (a failure) */
 function identities(mine, chat, p1Text, p2Text, renumbered = new Set()) {
@@ -123,6 +128,15 @@ function identities(mine, chat, p1Text, p2Text, renumbered = new Set()) {
       if (s > Math.max(c, x.get(k) || 0, y.get(k) || 0) && !(s === 1 && renumbered.has(k))) doubled.push(`${name} — "${k}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
     }
     if (diffs.length) differ.push(`${name} — ${diffs.join('; ')}`)
+  }
+  {
+    const a = tally(everyLine(mine)), b = tally(everyLine(chat)), x = tally(everyLine(p1Text)), y = tally(everyLine(p2Text))
+    /* exempt only the heading line of a note the step renumbered: it stands once, under a number no parent gave it */
+    const renumberedHead = l => { const m = OBS_HEAD.exec(l); return !!m && renumbered.has(`Observation ${m[1]}`) }
+    for (const [k, s] of a) {
+      const c = b.get(k) || 0
+      if (s > c && s > (x.get(k) || 0) && s > (y.get(k) || 0) && !renumberedHead(k)) doubled.push(`every line — "${k.slice(0, 120)}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
+    }
   }
   return { differ, doubled }
 }
@@ -217,6 +231,8 @@ function section(title, rs, C) {
   const recs = parts.flatMap(f => f.recs)
   const doubled = rs.flatMap(r => r.files.flatMap(f => f.doubled.map(d => `${short(r.merge)} ${f.f}: ${d}`)))
   failures.push(...doubled)
+  /* round 3 (Astra re-read 3, Opus re-read 6): a replayed merge whose step stopped with an error fails the run */
+  failures.push(...rs.filter(r => r.crashed).map(r => `${short(r.merge)}: the step stopped with an error — ${r.crashed}`))
   L.push(`- merges replayed: **${rs.length}**`)
   L.push(`- the step settled EVERYTHING git left (nothing for the chat): **${all.length}**`)
   L.push(`- the step settled part, the rest left for the chat (rulings files, app code or a record it leaves): **${part.length}**`)
@@ -256,7 +272,7 @@ if (outFile) {
   console.log(`records-merge-replay: the report → ${outFile}; every difference whole → ${diffsFile}`)
 } else console.log(report.join('\n'))
 if (failures.length) {
-  console.error(`\nrecords-merge-replay: FAILED — ${failures.length} identity(ies) the step's file holds more often than the chat's and both parents' (a doubled record):`)
+  console.error(`\nrecords-merge-replay: FAILED — ${failures.length} failure(s): an identity or a line the step's file holds more often than the chat's and both parents' (a doubled record), or a step that stopped with an error:`)
   for (const f of failures) console.error(`  ${f}`)
   process.exit(1)
 }
