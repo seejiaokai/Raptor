@@ -223,7 +223,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   one named in (1) — not merely that a deployment appeared — after he says it is done, then send the one "it is live"
   notification (D143). If it is some other commit, say so at once: the wrong thing is live.
 - **Docs-only changes skip the gates** (the list: `**.md`, `.claude/**`, `.impeccable/**`,
-  `raptor-port/scripts/docsize*.mjs`, `backlog-archive.mjs`, `docs-guard.yml`). A push to `main` skips them by the
+  `raptor-port/scripts/docsize*.mjs`, `backlog-archive.mjs`, `records-merge*`, `docs-guard.yml`). A push to `main` skips them by the
   trigger's `paths-ignore`; a pull request, since 8 Nov 26 ([TESTS-REQUIRED-ON-MAIN], chat 19), always starts the
   workflow, and its first job, "what changed" (`raptor-port/scripts/ci/checks-passed.mjs`, a test holding its list
   equal to the push list), skips every gate job when only notes changed — so the last job, **"checks passed"**, always
@@ -233,6 +233,17 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`; since D1407 (27 Oct 26) a
   change of notes only merges by itself once its run is green, and any other docs change still waits for his "merge
   live" (`.claude/rules/shipping.md`).
+- **Bringing `main` in: the settle step for the record files** ([MERGE-ONCE-RECORDS], 8 Nov 26, his D1930). After
+  `git merge --no-commit --no-ff origin/main`, clashed or not, `node raptor-port/scripts/records-merge.mjs` settles
+  `HANDOFF.md` block by block, the skill log note by note (a number both sides used renumbered on this branch's side),
+  and in the walk ledger, the file map, the backlog and the two archives the places where both sides only added text. It
+  reads git's own three copies, never the files on disk; it refuses a file already edited by hand, stages nothing and
+  never aborts the merge. It leaves for the chat, in git's marks, whatever both sides changed — the gate baseline always —
+  and the rulings files, whose own merge (`backlog-archive.mjs --rulings --merge`) it names; with nothing left it runs
+  `npm run docsize` and `npm run rulecheck`, counting only a failure the merged-in commit does not have. **Trap — why
+  there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
+  lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
+  anyway — a pull request still shows a clash, and runs no checks, until `main` is brought in on the PC.
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
