@@ -43,6 +43,32 @@
 .intbl thead th:nth-child(4){width:160px}  /* Type — SANS AVAILABILITY, the widest chip, measures 129px + the cell's 24px padding, and must not wrap */
 .intbl thead th:nth-child(6){width:104px}  /* Changed ("Last modified" until D729) */
 .intbl thead th:nth-child(7){width:96px}   /* actions */
+/* NAME, START AND END GIVE UP ROOM BEFORE REMARKS DOES (owner D1787, 8 Nov 26 — the pictures round's question 8 and its
+   "On a smaller screen" part; drawn by scripts/handpass/pr-sched.mjs q4f, q-addright-1280-open-A-fit.png). The six fixed
+   columns above take 875px and Remarks only what is left: Remarks = the table's width less 875, the table being the
+   screen less 64 (the page's 12 + the list's 20 on each side). So:
+   · NO WINDOW OPEN, 821 TO 1099 WIDE (the older fault found drawing it: below about 950 wide Remarks was squeezed to a
+     letter or two, every row hundreds of pixels tall — q-addright-821-today.png). Name 110, Start 140, End 90 here give
+     Remarks 175 more: at 1099, 335 instead of 160; at 821, 57 instead of nothing. From 1100 the full widths leave Remarks
+     160 and up, and a shared input's names keep their room on one line (D727).
+   · THE LIST MAKING ROOM FOR AN INPUT'S WINDOW, 1340 WIDE AND UP (`.in-room`, ui/InputsPage.tsx): the table stops short
+     of the window — its 430px, its 16px from the screen's edge, as the Medical tab's cards do (16-medical.css
+     `.med-room`) — and the same three narrow, so Remarks keeps 150 at 1340 and 346 at his PC's 1536 (measured by the
+     drawing, q-sched-measured.json q4m). Narrower than 1340 the room is not made: the window covers the list as it
+     always has, since making room there would leave Remarks too narrow to read.
+   Type keeps 160, so its widest pill never wraps; Changed and the last column keep theirs. The phone draws cards, not
+   this table (below). */
+@media (min-width:821px) and (max-width:1099px){
+  .intbl thead th:nth-child(1){width:110px}
+  .intbl thead th:nth-child(2){width:140px}
+  .intbl thead th:nth-child(3){width:90px}
+}
+@media (min-width:1340px){
+  .in-room .inwrap{padding-right:calc(min(430px, 100vw - 24px) + 16px)}
+  .in-room .intbl thead th:nth-child(1){width:110px}
+  .in-room .intbl thead th:nth-child(2){width:140px}
+  .in-room .intbl thead th:nth-child(3){width:90px}
+}
 .intbl tbody tr:hover{background:rgba(255,255,255,.02)}
 /* the row stripe, coloured from inputTone (ui/inputedit.tsx) — one source
    feeding this table and the month calendar's chips alike. Same precedent

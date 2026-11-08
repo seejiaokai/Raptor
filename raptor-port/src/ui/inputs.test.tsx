@@ -108,8 +108,11 @@ describe('the Inputs page (tfin)', () => {
     expect($$('#inBody tr').length).toBeGreaterThanOrEqual(4)
   })
 
-  /* the form is gone, and one button stands in its place — at the left of the dates button (D729 — V1) */
-  it('the list has no add form of its own: one "+ Input" button, first in its row of tools', async () => {
+  /* the form is gone, and one button stands in its place (D729 — V1) — on a desktop at the RIGHT END of its row, after the
+     dates button, where its window opens (owner D1787, 8 Nov 26, as "+ Medical" stands — D1300); and while the window is
+     open the list makes room for it (`in-room`; the widths it needs are the stylesheet's, 06-inputs.css — checked in a
+     real browser by e2e/inputs-add-right.spec.ts). A phone keeps it first (D910): that layout is the browser test's. */
+  it('the list has no add form of its own: one "+ Input" button, at the right end of its row of tools', async () => {
     for (const gone of ['.inbar', '.ingrid', '#inAdd', '#inType', '#inRemarks', '#inCal', '#inStartT', '#inEndT', '#inSpan', '#inAllday', '#inPerson', '#inPersonFixed', '#inTitle', '#inDates'])
       expect($(gone), gone + ' went with the form').toBeFalsy()
     const btn = $('#inNew')
@@ -117,16 +120,21 @@ describe('the Inputs page (tfin)', () => {
     expect(btn.textContent).toBe('+ Input')
     expect(btn.classList.contains('primary'), 'the page’s one filled button').toBe(true)
     const tools = [...btn.parentElement!.children].filter(c => !(c as HTMLElement).hidden)
-    expect(tools[0], 'it comes first').toBe(btn)
-    expect(tools[1].contains($('#inRangeBtn')), 'the dates button is next').toBe(true)
+    expect(tools[0].contains($('#inRangeBtn')), 'the dates button comes first').toBe(true)
+    expect(tools[tools.length - 1], 'it comes last, at the row’s right end').toBe(btn)
+    expect(tools[tools.length - 2].classList.contains('inputs-spring'), 'a spring between them pushes it right').toBe(true)
     expect(W(), 'nothing is open until it is pressed').toBeFalsy()
+    const ws = () => $('.inputs-workspace')!
+    expect(ws().classList.contains('in-room'), 'no room while no window is open').toBe(false)
     await openNew()
+    expect(ws().classList.contains('in-room'), 'the list makes room for the window, on a desktop').toBe(true)
     expect(D('[data-testid="win-inputedit"] .fw-title, [data-testid="win-inputedit"] .win-title, [data-testid="win-inputedit"]')!.textContent).toContain('New input')
     expect(D('#inpEdCal'), 'the window carries the date calendar').toBeTruthy()
     expect(D('#inpEditPop .rc-read')!.textContent, 'and no date is picked for him').toBe('pick a start date')
     expect((D('#inpEditPerson') as unknown as HTMLSelectElement).value, 'filed for whoever is signed in, until he picks').toBe(ME)
     await cancelNew()
     expect(W()).toBeFalsy()
+    expect(ws().classList.contains('in-room'), 'the room goes with the window').toBe(false)
   })
 
   it('no TDY, and the retired types are gone', async () => {

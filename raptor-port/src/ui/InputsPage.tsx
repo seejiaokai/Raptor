@@ -23,7 +23,7 @@ import { me, isAdmin, mayEditInput } from '../state/perms'
 import { notify } from '../state/store'
 import { INPVIEW, setInpView, INPMODE, setInpMode, INPREVEAL, clearInpReveal } from '../state/view'
 import { inputsInMode } from './sans-calendar-model'
-import { setDocView, setInpSet, setInpEdit } from './pops'
+import { INPEDIT, setDocView, setInpSet, setInpEdit } from './pops'
 import { CalIcon, ClipIcon, FilterIcon, GearIcon, ListIcon, MedIcon, PenIcon, SrchIcon, UsersIcon } from './icons'
 import { MedicalView } from './MedicalView'
 import { medDownAsOf, pendingUpchits } from '../engine/medical'
@@ -659,11 +659,17 @@ export function InputsPage() {
      the Calendar's month arrows, month and Today stand (D705), at the row's button height (D698), so the List has one
      row of controls, not two, and the list and the date pop-up start a row higher. The pop-up then hangs under that row
      (25-inputs-calendar.css). A desktop keeps them on a row of their own under the tabs, as before (D910). */
+  /* ONE WAY TO ADD AN INPUT (D729 — V1; the drawing docs/mock/img/inputs-vet/desk-list-drawn.png, phone-list-drawn.png):
+     the page's one filled button, as "+ Input" is in a day opened on the calendar.
+     WHERE IT STANDS (owner D1787, 8 Nov 26 — the pictures round's question 8, "All as recommended"; drawn by
+     scripts/handpass/pr-sched.mjs q4, q-addright-pc-list-A.png): on a desktop at the RIGHT END of its row, after the dates
+     button, because its window opens at the right — as "+ Medical" stands on the Medical tab (D1300; D1137 kept them
+     alike); the list then makes room for that window (`in-room`, below). On a phone it stays first in the row of the
+     switch, the filter and the gear (D910), where a window stands in the middle (D997) — as "+ Medical" does there. The
+     page order follows the drawn order, so the keyboard meets the dates button first on a desktop. */
+  const newBtn = <button type="button" className="abtn primary in-new" id="inNew" data-testid="in-new" hidden={!listUp} onClick={openNew}>+ Input</button>
   const listTools = (<>
-    {/* ONE WAY TO ADD AN INPUT (D729 — V1; the drawing docs/mock/img/inputs-vet/desk-list-drawn.png,
-        phone-list-drawn.png): the button stands first in the row, at the left of the dates button — the page's one
-        filled button, as "+ Input" is in a day opened on the calendar. */}
-    <button type="button" className="abtn primary in-new" id="inNew" data-testid="in-new" hidden={!listUp} onClick={openNew}>+ Input</button>
+    {phone && newBtn}
     {/* the window of dates, picked on a two-click calendar: first click is the from-date, second the to-date */}
     <div className="inrange" hidden={!listUp} ref={rangeRef}>
       <button className={'abtn' + (calOpen ? ' primary' : '')} id="inRangeBtn"
@@ -723,9 +729,18 @@ export function InputsPage() {
         </div>
       )}
     </div>
+    {!phone && <span className="inputs-spring" />}
+    {!phone && newBtn}
   </>)
+  /* THE LIST MAKES ROOM FOR THE INPUT'S WINDOW (owner D1787, 8 Nov 26 — as the Medical tab does, D1300, `med-room`):
+     while an input's window is open over the desktop list, the list stops short of it, so the row just added or changed
+     is seen arriving whole. Only where Remarks still keeps a usable width — 1340 wide and up, Name, Start and End
+     narrowing first — the width test being the stylesheet's (06-inputs.css); narrower, the window covers the list as
+     before. Any input's window, a row's as well as "+ Input"'s: it is the one window, opened in the one place (the
+     agent's reading of "its window", as Medical's `med-room` does). A phone's window stands in the middle (D997). */
+  const room = !phone && listUp && !!INPEDIT
   return (
-    <div className={'inputs-workspace tab-' + tab}>
+    <div className={'inputs-workspace tab-' + tab + (room ? ' in-room' : '')}>
       <div className="title"><h1>Inputs</h1></div>
       {/* the Inputs calendar draws the tabs and the tools in its OWN top row, beside the month's arrows — one row of
           controls above the month on a desktop, the tabs and ONE tools row on a phone (the plan §3.6: "four rows of
