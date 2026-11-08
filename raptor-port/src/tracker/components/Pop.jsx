@@ -1,6 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PenGlyph } from './Glyphs.jsx';
 import * as core from '../app/core.js';
+import { placePop } from '../app/popPlace.js';
 import { DateBox as AppDateBox } from '../../ui/DateBox';
 
 
@@ -84,19 +85,46 @@ export default function Pop() {
 
   useLayoutEffect(() => {
     if (!p || !ref.current) { setPosn(null); return; }
-    const r = ref.current.getBoundingClientRect();
-    /* Never past the screen's edges. On a phone turned sideways (844×390) the
-       pop-up is taller than the screen: flipped above the ball it opened 73px
-       above the top, its title, Not done and DCO out of reach and nothing to
-       scroll ([HUMAN-RETEST] w3-F3). It is held on screen and, when taller
-       than the screen, scrolls inside itself. */
-    const maxH = Math.max(120, innerHeight - 16), h = Math.min(r.height, maxH);
-    let x = p.x, y = p.y + 12;
-    if (x + r.width > innerWidth - 8) x = innerWidth - r.width - 8;
-    if (y + h > innerHeight - 8) y = p.y - h - 12;
-    y = Math.max(8, Math.min(y, innerHeight - 8 - h));
-    x = Math.max(8, x);
-    setPosn({ x, y, maxH });
+    const el = ref.current, r = el.getBoundingClientRect();
+    /* its whole height, even while a window opened before it on another event still clips it (its maxHeight) */
+    const h = Math.max(r.height, el.scrollHeight + (el.offsetHeight - el.clientHeight));
+    /* WHERE IT OPENS (owner D1790, app/popPlace.js): under the event; where it would not fit there, the chart slides the
+       event up and it opens whole under it; the bars and the tabs are never covered, nor the event. (Before, it flipped
+       above the event, held 8px from the screen's top. Kept from then: on a screen too short for it — a phone on its
+       side, 844×390 — it is held on screen and scrolls inside itself, [HUMAN-RETEST] w3-F3.) */
+    const bd = document.getElementById('board');
+    const geo = room => {
+      const g = [...document.querySelectorAll('#flowSvg .ball')].find(n => n.dataset.id === p.id);
+      const b = g ? g.getBoundingClientRect() : null;
+      return { ball: b && b.height ? { top: b.top, bottom: b.bottom } : null, tap: { x: p.x, y: p.y }, w: r.width, h,
+        vw: innerWidth, vh: innerHeight, top: bd ? bd.getBoundingClientRect().top : 0, room };
+    };
+    const room = bd ? Math.max(0, bd.scrollHeight - bd.clientHeight - bd.scrollTop) : 0;
+    const plan = placePop(geo(room));
+    if (!plan.slide || !bd) { setPosn(plan); return undefined; }
+    /* THE SLIDE — the chart's own smooth scroll (D991), counted as the app moving the chart, which stops a finger's glide
+       first (D989). The window waits, unseen, and opens under the event once the chart has come to rest, so it never
+       passes over the event on the way; it is placed from where the event really landed (a finger that stopped the
+       slide early, a chart that could not go so far). Less motion asked for: the chart jumps there at once. */
+    setPosn(null);
+    core.stopGlide(bd);
+    const target = bd.scrollTop + plan.slide;
+    const settle = () => setPosn(placePop(geo(0)));
+    let still = false;
+    try { still = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { still = false; }
+    if (still || typeof bd.scrollTo !== 'function' || typeof requestAnimationFrame === 'undefined') { bd.scrollTop = target; settle(); return undefined; }
+    bd.scrollTo({ top: target, behavior: 'smooth' });
+    /* at rest: at the place asked for, or no movement for 150ms (stopped short), or a second gone (never stuck unseen) */
+    const t0 = performance.now();
+    let raf = 0, last = bd.scrollTop, movedAt = t0;
+    const tick = now => {
+      const y = bd.scrollTop;
+      if (y !== last) { last = y; movedAt = now; }
+      if (Math.abs(y - target) < 1 || now - movedAt > 150 || now - t0 > 1000) { raf = 0; settle(); return; }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { if (raf) cancelAnimationFrame(raf); };
   }, [p]);
   /* OPENED FROM THE KEYBOARD, IT TAKES THE KEYBOARD (owner D980, 17 Oct 26): the keyboard lands on the grade the event
      has now (Not done when it has none), so a second Enter changes nothing; the pop-up's own Escape (core.handleEscapeKey)
