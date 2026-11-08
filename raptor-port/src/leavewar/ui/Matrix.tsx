@@ -1294,6 +1294,7 @@ export function Matrix() {
         outer.classList.remove('lw-pinching')
         pinchingRef.current = false
         repinRef.current()
+        holdShown(fixedRow)
       },
       /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
          the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
@@ -2161,7 +2162,10 @@ export function Matrix() {
   // (e2e/leavewar.spec.ts).
   useLayoutEffect(() => {
     /* the freshly mounted (or re-measured) copy learns where the page's scroll turns it on before its first frame (D1870) */
-    if (pinSda && stuck && mirrorRef.current && headRef.current) placeY(mirrorRef.current.parentElement, headRef.current.getBoundingClientRect().top, stuck.top)
+    if (pinSda && stuck && mirrorRef.current && headRef.current) {
+      placeY(mirrorRef.current.parentElement, headRef.current.getBoundingClientRect().top, stuck.top)
+      holdShown(mirrorRef.current.parentElement)
+    }
     if (stuck && mirrorRef.current && wrapRef.current) {
       const w = wrapRef.current
       if (sdaActive) {
@@ -4767,6 +4771,22 @@ function barFoot() { return document.querySelector('.topbar')?.getBoundingClient
    again, which the browser takes as no change. So a forced re-measure (a resize, a turn, a height change) that finds
    the value unchanged writes it a hundredth of a pixel off, and the next one writes it back: the browser works it out
    afresh each time, and nobody can see a hundredth of a pixel. A scroll's own re-measure writes only a change. */
+/* A COPY THAT IS UP IS HELD SHOWN UNTIL THE BROWSER RUNS ITS SHOWING STEP (the fresh Opus code read of 8 Nov 26, finding 1 —
+   [LW-PIN-LAST-FRAME]): a step the browser makes afresh — at a pinch's lift, when the pinching rule's `animation: none`
+   comes off, or when the copy is mounted afresh — is not applied in the frame it is made in (the sideways follow's
+   lesson, the `[stuck]` layout effect below), so the copy stood at its hidden opacity for one to four frames with the row already under the
+   bar. The hold is an inline opacity that follows whether the copy is up — the measure keeps it so while the hold
+   lasts, since a desktop zoom's lift measures the row before the page has moved to it — and the running step outranks
+   it; it is dropped once the step runs. */
+function holdShown(box: HTMLElement | null | undefined) {
+  if (!box) return
+  const step = box.getAnimations?.().find(a => (a as CSSAnimation).animationName === 'lwy-show')
+  if (!step || (!step.pending && step.currentTime !== null)) return
+  box.dataset.hold = '1'
+  box.style.opacity = box.classList.contains('up') ? '1' : ''
+  const free = () => { delete box.dataset.hold; box.style.opacity = '' }
+  step.ready.then(free, free)
+}
 function placeY(box: HTMLElement | null, rowTop: number, topEdge: number, force = false) {
   if (!box) return
   const v = Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10)
@@ -4774,6 +4794,7 @@ function placeY(box: HTMLElement | null, rowTop: number, topEdge: number, force 
   if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
   const up = rowTop < topEdge
   box.classList.toggle('up', up)
+  if (box.dataset.hold) box.style.opacity = up ? '1' : ''
   if (box.inert === up) box.inert = !up
 }
 /* WHILE THE FINGERS PINCH, the pinned copy is shown by the pinch's own rule, not the page's scroll (D1287): hidden while

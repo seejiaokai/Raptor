@@ -727,6 +727,7 @@ export function QualsPage() {
         if (fixedRow) { fixedRow.classList.remove('q-pinching'); fixedRow.style.visibility = '' }
         qPinchingRef.current = false
         qRepinRef.current()
+        qHoldShown(fixedRow)
       },
       /* THE HEADING ROW AND THE NAME COLUMN STAY PINNED AND LINED UP WHILE THE FINGERS MOVE (D1110; [QUALS-PINCH-MID], the
          pinch walk of 30 Oct 26 — part-way down, a pinch out opened an empty band between the pinned heading row and the
@@ -936,7 +937,7 @@ export function QualsPage() {
     if (!stuck || !m || !w) return
     /* the freshly mounted copy learns where the page's scroll turns it on before its first frame (D1870) */
     const qbox = m.parentElement, qhead = tblRef.current?.tHead
-    if (pinSda && qbox && qhead) placeQ(qbox, qhead.getBoundingClientRect().top, stuck.top)
+    if (pinSda && qbox && qhead) { placeQ(qbox, qhead.getBoundingClientRect().top, stuck.top); qHoldShown(qbox) }
     if (sdaActive) {
       /* the browser's follow (D993): the row's table runs from 0 to minus the table's whole sideways travel across the
          scroll's range, so the travel is told it here, measured whenever the row is pinned or re-measured (a rotate) */
@@ -1167,12 +1168,29 @@ function barFoot() { return document.querySelector('.topbar')?.getBoundingClient
    again, which the browser takes as no change. So a forced re-measure (a resize, a turn, a height change) that finds
    the value unchanged writes it a hundredth of a pixel off, and the next one writes it back: the browser works it out
    afresh each time, and nobody can see a hundredth of a pixel. A scroll's own re-measure writes only a change. */
+/* A COPY THAT IS UP IS HELD SHOWN UNTIL THE BROWSER RUNS ITS SHOWING STEP (the fresh Opus code read of 8 Nov 26, finding 1 —
+   [LW-PIN-LAST-FRAME]): a step the browser makes afresh — at a pinch's lift, when the pinching rule's `animation: none`
+   comes off, or when the copy is mounted afresh — is not applied in the frame it is made in (the sideways follow's
+   lesson, its twin in the Leave War's Matrix), so the copy stood at its hidden opacity for one to four frames with the row already under the
+   bar. The hold is an inline opacity that follows whether the copy is up — the measure keeps it so while the hold
+   lasts, since a desktop zoom's lift measures the row before the page has moved to it — and the running step outranks
+   it; it is dropped once the step runs. */
+function qHoldShown(box: HTMLElement | null | undefined) {
+  if (!box) return
+  const step = box.getAnimations?.().find(a => (a as CSSAnimation).animationName === 'qy-show')
+  if (!step || (!step.pending && step.currentTime !== null)) return
+  box.dataset.hold = '1'
+  box.style.opacity = box.classList.contains('up') ? '1' : ''
+  const free = () => { delete box.dataset.hold; box.style.opacity = '' }
+  step.ready.then(free, free)
+}
 function placeQ(box: HTMLElement, rowTop: number, topEdge: number, force = false) {
   const v = Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10)
   const s = String(force && box.dataset.s === String(v) ? Math.round((v + 0.01) * 100) / 100 : v)
   if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
   const up = rowTop < topEdge
   box.classList.toggle('up', up)
+  if (box.dataset.hold) box.style.opacity = up ? '1' : ''
   if (box.inert === up) box.inert = !up
 }
 /* WHILE THE FINGERS PINCH the copy is shown by the pinch's own rule (D1110; `pin` below): hidden while the table's own

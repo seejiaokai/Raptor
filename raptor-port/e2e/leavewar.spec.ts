@@ -2150,13 +2150,15 @@ test('at the lift of a zoom made part-way down, the pinned dates row shows in ev
 test('back on the grid from Balances while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
   await page.evaluate(() => window.scrollTo(0, 1400))
   await expectPinned(page, 'sticky-head', true)
-  await page.locator('[data-testid="lw-tab-balances"]').click()
+  /* pressed where it stands: a real press scrolls the page up to the tab row first. Scrolled down, the grid is shown again
+     this way from Approvals (a request's dates); Balances is the plainest way to hide it and show it again */
+  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-balances"]') as HTMLElement).click())
   await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
   await page.waitForTimeout(300)
   await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-grid"]') as HTMLElement).click())
   await lwFrames(page, 30)
   const f = await lwFramesRead(page, 30)
-  expect(f.some(x => x.under), 'the grid came back scrolled down').toBe(true)
+  expect(f.some(x => x.under), 'the grid came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
   expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
 })
 /* its question 1: a zoom changes the page's height with no scroll — is the turn-on point worked out again? One forced
