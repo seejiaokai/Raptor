@@ -1,0 +1,112 @@
+{
+ "label": "after",
+ "base": "http://localhost:4382",
+ "at": "2026-11-08T03:41:47.467Z",
+ "cases": {
+  "lw-ph": {
+   "S": 180.5,
+   "tb": 49,
+   "headH": 44.1875,
+   "crop": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 243
+   },
+   "tries": 1,
+   "frames": {
+    "1": {
+     "y": 210,
+     "pastMeeting": 29.5
+    },
+    "2": {
+     "y": 255,
+     "pastMeeting": 74.5
+    },
+    "-1": {
+     "y": 165,
+     "pastMeeting": -15.5
+    }
+   }
+  },
+  "qu-ph": {
+   "S": 151.5,
+   "tb": 49,
+   "headH": 23.28125,
+   "crop": {
+    "x": 0,
+    "y": 0,
+    "w": 402,
+    "h": 222
+   },
+   "tries": 1,
+   "frames": {
+    "1": {
+     "y": 165,
+     "pastMeeting": 13.5
+    },
+    "2": {
+     "y": 210,
+     "pastMeeting": 58.5
+    },
+    "-1": {
+     "y": 120,
+     "pastMeeting": -31.5
+    }
+   }
+  },
+  "lw-pc": {
+   "S": 175,
+   "tb": 57,
+   "headH": 45,
+   "crop": {
+    "x": 0,
+    "y": 0,
+    "w": 900,
+    "h": 222
+   },
+   "tries": 1,
+   "frames": {
+    "1": {
+     "y": 200,
+     "pastMeeting": 25
+    },
+    "2": {
+     "y": 300,
+     "pastMeeting": 125
+    },
+    "-1": {
+     "y": 100,
+     "pastMeeting": -75
+    }
+   }
+  },
+  "qu-pc": {
+   "S": 113.5,
+   "tb": 57,
+   "headH": 23.28125,
+   "crop": {
+    "x": 0,
+    "y": 0,
+    "w": 900,
+    "h": 200
+   },
+   "tries": 1,
+   "frames": {
+    "1": {
+     "y": 200,
+     "pastMeeting": 86.5
+    },
+    "2": {
+     "y": 300,
+     "pastMeeting": 186.5
+    },
+    "-1": {
+     "y": 100,
+     "pastMeeting": -13.5
+    }
+   }
+  }
+ },
+ "errors": []
+}

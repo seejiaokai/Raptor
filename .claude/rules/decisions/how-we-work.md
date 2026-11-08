@@ -26,14 +26,14 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The scheduler's rulings stay one file, the Inputs pages' rulings in a file of their own; the split question came back when the file passed D611's mark, and he kept one file, D611's mark still standing [D611, D802, D976].
 - What a chat loads at its start is trimmed, never anything a job reads (D68) — the bug-check order, the design guide and the ripple map read by section from checklists naming when: the every-chat rulings a later one restates in full are archived, the screen-design rulings load only for screen work, the Codex guide is short; after an hour away from a chat past about 30% full, the agent suggests a fresh chat from the handoff [D1554, D1735].
 - The rules diet: each area's rulings become a page of how it works now — each rule stated once, the rulings behind it cited after it, every live ruling cited on a statement of a file that loads — with the full rows kept whole and searched; the working rules and the bug-check order become one-page checklists; until an area converts, it works as today [D1732, D1735].
-- The diet ran on Opus and stopped 8 Nov 26, its five area pages twice their old lists; Fable 5.1 on his call, or Opus on his later word, brings each under its old list's size, no rule dropped, People's listed conditions back to the rows; a page's tripwire is a hard limit, never raised without his word; no area converts until all six are under; Fable and Astra review 8 Nov 26's Opus jobs, a fresh chat [D1732, D1735, D1932, D1938, D1941, D1933, D903, D1770, D141, D390].
+- The diet ran on Opus and stopped 8 Nov 26, its five area pages twice their old lists; Fable 5.1 on his call, or Opus on his later word, brings each under its old list's size, no rule dropped, People's listed conditions back to the rows; a page's tripwire is a hard limit, never raised without his word; no area converts until all six are under; Fable and Astra review 8 Nov 26's Opus jobs, a handful first, a fresh chat [D1732, D1735, D1932, D1938, D1941, D1933, D1934, D903, D1770, D141, D390].
 - A rulings page states his standing rules and likes, and what a fresh model would get wrong untold; built detail lives in the app and its tests, his words and the readings in the rows; a new ruling rewrites the old line; a Tracker trial first, shown to him [D1939, D1941].
 - Every step of the rules diet goes live only on his "merge live", a step that changes only rulings files or other notes included [D1737].
 - Every step of the rules diet that rewrites, shortens or summarises a rule — a new short text, a checklist, a page, the Inputs, scheduler and Leave War pages among them — is read by Astra as well as by the fresh Opus reader, each blind to the other, for whether any meaning changed; Sol 6.1 is not called, not even inside D1743's window — the fresh Opus reader holds the second seat and no third reader is added, his "keep two"; if Astra cannot run, he is told first, and the step never goes on without that read [D1738, D1739, D1761, D1743, D1770, D1763].
 - What rewords nothing in the diet — text moved whole, the checks and scripts — keeps the one fresh Opus reader; he may widen it; text moved whole out of a working guide is a guide change, so Astra reads it too — the later D1761 over D1739 there, the agent's reading [D1739, D1761].
 - Stating once what both this page and an always-loaded checklist now state waits for a later step of the rules diet, not now; until then each keeps its statement with its rulings [D1762].
 - From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his; every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
-- The start-of-chat size job is closed: its last point, his documents connector, stays his own setting with nothing for the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
+- The start-of-chat size job is closed: his documents connector stays his own setting, nothing for the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
@@ -91,23 +91,13 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
   and the ripple map are read by section from the checklists that name when, every section that applies a required read
   [D68, D1735].
+- A review of a day's merged work starts with a handful of checks; Fable reads wider only on his word [D1934].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
-- Walks run in the cloud instead of on his PC, adopted by every chat if a chat could start one on its own and it built
-  the app and left pictures, was tried on 8 Nov 26 and dropped: a helper sent to the cloud ran on his PC instead, and only
-  he can open a cloud chat, so each cloud walk would need him; walks stay on his PC, one at a time [D1797].
-- Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a
-  code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of
-  change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the
-  figures show which types of change a walk is useful for [D7, D607, D608].
-- The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one
-  method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the
-  walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72].
-- Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes
-  pressed, every other place that should show the result looked at, with pictures — on top of the change's own
-  scenarios, never instead of them [D1557]. On a phone, a picture right
-  after each tap as well as the settled one; a standing test that a dense screen's controls never turn a pinned cell
-  see-through [D1281].
+- Walks stay on his PC, one at a time: cloud walks, tried on 8 Nov 26, were dropped — a helper sent there ran on his PC, and only he can open a cloud chat, so each would need him [D1797].
+- Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the figures show which types of change a walk is useful for [D7, D607, D608].
+- The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72]. Its checklist is to route a walk to the order's §2a whole [D1937].
+- Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes pressed, every other place that should show the result looked at, with pictures — on top of the change's own scenarios, never instead of them [D1557]. On a phone, a picture right after each tap as well as the settled one; a standing test that a dense screen's controls never turn a pinned cell see-through [D1281].
 - A long hand pass is fanned out across Sonnet walkers, each in its own world, driving a scripted real browser; the host
   opens their pictures and reproduces every finding before it enters the evidence sheet [D16, D17, D588, D595].
 - A slow-machine browser failure is fixed by waiting on what the test needs, never a fixed time [D87]; a Leave War desktop

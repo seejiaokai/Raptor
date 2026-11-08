@@ -23,6 +23,7 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - Undo and Redo, everywhere, leave the screen where it is when what they change is in view, moving to the change only when it is out of view [D672].
 - The top bar stays pressable over "Jump to a date", the day-details window and the document viewer, as over the Traffic window: the grey starts at the bar's foot, Undo and Redo work with the window open, any other bar button closes it first; an input's own window and the question boxes keep the bar covered [D1645].
 - Help's and Admin's titles take the size and weight of Logic's page name and keep their place; the pages without a title stay without one [D1138].
+- On his iPhone the top bar stays on screen on every page when a flick reaches a page's foot and the page springs past its end [D1873].
 - The board covers the top bar, so its own bar carries the same group laid out as Edit Schedule's — Undo · Redo · History · Sync · the bell — then one way out, ✓ Done, no ✕ Close; Done raises no "Schedule updated" note, nothing in its place; on a desktop Sort all stays a button, before Undo, and Insights stands beside the bell; on a phone Sort all, the Phone / Desktop layout switch and Insights sit behind one ⋯ button in the bar's second row, beside the highlighter [D349, D854, D481].
 - The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's buttons after them or on a row of their own to the right; where they do not all fit they go into the side menu, unchanged, and the bar is one row, as the mock-up of 4 Nov 26 draws them [D1641, D1642, D1643].
 - On a phone held sideways the names always go into the side menu and the bar is one row, for everyone, even where a member's fewer names would fit [D1643, D1642].
@@ -98,5 +99,5 @@ Loads by itself with any file of screen work (the `paths:` above). Each line is 
 - OIL's: D1783.
 - The Inputs pages' (notes, ✕, pencil, gear, drags): D851, D854, D1622, D919, D1134, D635, D1702, D1708, D893, D897, D900.
 - The Leave War's (scroll, undo, leaks, pinch, glows, icon): D892, D670, D672, D1519, D1789, D1850, D1282, D1285, D1286, D881, D882, D1221, D1172.
-- The Tracker's (icons, pencils, marks, ✕, magnifier — D1900 built): D1132, D1135, D1705, D1134, D1860, D1791, D1900, D1127.
+- The Tracker's (icons, pencils, marks, ✕, magnifier — D1900 built): D1132, D1135, D1705, D1134, D1860, D1791, D1935, D1900, D1127.
 - People & accounts' (guest switch, ring): D221, D204, D1694.

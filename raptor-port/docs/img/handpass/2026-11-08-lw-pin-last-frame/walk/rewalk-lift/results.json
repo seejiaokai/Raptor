@@ -1,0 +1,80 @@
+{
+ "base": "http://localhost:4393",
+ "results": [
+  {
+   "id": "leavewar pc1536 the zoom's lift part-way down",
+   "verdict": "PASS",
+   "note": "lift seen at frame 14 of 240; frames after it with the row under the bar and no copy shown: none; copy off the page in 0 frames; settled shown=true under=true",
+   "pics": [
+    "leavewar-pc1536-0-before.png",
+    "leavewar-pc1536-1-right-after-the-lift.png",
+    "leavewar-pc1536-2-settled.png"
+   ]
+  },
+  {
+   "id": "leavewar pc1536 back on the grid from Balances, scrolled down",
+   "verdict": "PASS",
+   "note": "grid on screen from frame 0 of 40; row under the bar in 40 of them; frames with it under and no copy shown: none; scrollY 1268",
+   "pics": [
+    "leavewar-pc1536-balances-0-scrolled-down.png",
+    "leavewar-pc1536-balances-1-on-balances.png",
+    "leavewar-pc1536-balances-2-grid-right-after.png",
+    "leavewar-pc1536-balances-3-settled.png"
+   ]
+  },
+  {
+   "id": "leavewar pc1536 back on the Leave War from Quals, scrolled down",
+   "verdict": "PASS",
+   "note": "grid on screen from frame 0 of 60; row under the bar in 60 of them; frames with it under and no copy shown: none; scrollY 1268",
+   "pics": [
+    "leavewar-pc1536-page-0-scrolled-down.png",
+    "leavewar-pc1536-page-1-on-quals.png",
+    "leavewar-pc1536-page-2-back-right-after.png",
+    "leavewar-pc1536-page-3-settled.png"
+   ]
+  },
+  {
+   "id": "leavewar ph402 the zoom's lift part-way down",
+   "verdict": "PASS",
+   "note": "lift seen at frame 39 of 240; frames after it with the row under the bar and no copy shown: none; copy off the page in 0 frames; settled shown=true under=true",
+   "pics": [
+    "leavewar-ph402-0-before.png",
+    "leavewar-ph402-1-right-after-the-lift.png",
+    "leavewar-ph402-2-settled.png"
+   ]
+  },
+  {
+   "id": "leavewar ph402 back on the grid from Balances, scrolled down",
+   "verdict": "PASS",
+   "note": "grid on screen from frame 0 of 40; row under the bar in 40 of them; frames with it under and no copy shown: none; scrollY 629",
+   "pics": [
+    "leavewar-ph402-balances-0-scrolled-down.png",
+    "leavewar-ph402-balances-1-on-balances.png",
+    "leavewar-ph402-balances-2-grid-right-after.png",
+    "leavewar-ph402-balances-3-settled.png"
+   ]
+  },
+  {
+   "id": "leavewar ph402 back on the Leave War from Quals, scrolled down",
+   "verdict": "PASS",
+   "note": "grid on screen from frame 0 of 60; row under the bar in 60 of them; frames with it under and no copy shown: none; scrollY 629",
+   "pics": [
+    "leavewar-ph402-page-0-scrolled-down.png",
+    "leavewar-ph402-page-1-on-quals.png",
+    "leavewar-ph402-page-2-back-right-after.png",
+    "leavewar-ph402-page-3-settled.png"
+   ]
+  },
+  {
+   "id": "quals ph402 the zoom's lift part-way down",
+   "verdict": "PASS",
+   "note": "lift seen at frame 39 of 240; frames after it with the row under the bar and no copy shown: none; copy off the page in 0 frames; settled shown=true under=true",
+   "pics": [
+    "quals-ph402-0-before.png",
+    "quals-ph402-1-right-after-the-lift.png",
+    "quals-ph402-2-settled.png"
+   ]
+  }
+ ],
+ "errors": []
+}

@@ -144,8 +144,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [BACKLOG-ORDER] — his order of 21 Sep 26 for after the re-test: [LW-LOCKMARK] (done 31 Oct 26), then [LW-WEEKDAY-WORK], then the database.
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
-- [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
-- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; it went live so (D1850), and this is the job: a new way of pinning, measured first.
+- [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
+- [REDUCE-MOTION-SIDEWAYS] — with "reduce motion" switched on in the phone or computer, the pinned dates row (and Quals' heading) may stop following a sideways scroll — read in the code, not yet seen on screen.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
 - [LW-WEEKDAY-WORK] — the war cannot see ordinary weekday work — talk to him before building any of it.
 - [LW-COMMIT-MANNING] — duty and commitments lowering the war's manning: parked "for now" (D998), his to raise.
@@ -202,6 +202,8 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [CHK-ROUTE-2A] — the bug-check checklist sends a walk to the order's §2a table only; route it to §2a whole (D1937) — a guide change: Astra and a fresh Opus read, then his "merge live".
+- [E2E-BOARD-KEYS-SKIP] — the board-layout keyboard test skips itself when its box already sits above the keys; put the box under them first so it never skips (D1936).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
@@ -279,6 +281,12 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [CHK-ROUTE-2A] The bug-check checklist sends a walk to §2a's table only (found 8 Nov 26, chat 37's review)
+**What:** steps 6, 8 and 10 of `raptor-port/docs/bug-check-checklist.md` route to the bug-check order's §2a table only; §2a's own words — what "the day that has everything on it" means for the Tracker and the Leave War, and that a new area writes its own everything-case once — are reached only when a change adds a new gesture, and §7.1 describes the scheduler's day alone, so a Leave War or Tracker walk can build the convenient day §7.1 forbids. **Fix (his go, D1937):** route "§2a whole" at step 10, or move the two area sentences into §7.1 — a working-guide change: Astra and a fresh, blind Opus reader, then his "merge live". **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §2, F-CHK-1.
+
+### [E2E-BOARD-KEYS-SKIP] The board-layout keyboard test can skip itself (found 8 Nov 26, Astra's read in chat 37's review)
+**What:** the browser test pull request 689 added for the keyboard-clearance case (`raptor-port/e2e/board-layout.spec.ts`) skips itself when its chosen box already sits above the simulated keyboard, so it does not prove the case on every run; neither reader found it hiding a failure. **Fix (his go, D1936):** a fixture that puts the box under the keys first, then drop the skip — a test change only. **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §4, F-689-1.
 
 ### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
 **What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
@@ -1043,21 +1051,28 @@ decision about which of the six types count (a two-hour Appointment is not a day
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
 
-### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
+### [REDUCE-MOTION-SIDEWAYS] With reduce motion on, the pinned rows may not follow a sideways scroll (8 Nov 26)
 
-**His answer, 8 Nov 26 (D1850):** "Merge live" — the fix went live with this frame left, and this item is the job of its own: the fresh code reader's idea, a pinned row the browser moves by itself (a scroll-driven timeline, the pinned copy always drawn), tried and its frames measured before anything is built.
+Found by chat 16 while building [LW-PIN-LAST-FRAME] (D1870), by reading the code — **not yet seen on screen**, and the
+same on `main` today, so not that job's fault. The app switches every animation off for a person who has asked their
+phone or computer for less motion (`src/ui/scheduler/09-week-responsive.css`, `*{animation:none!important}`). The
+pinned dates row of the Leave War (`lwx-follow` on `.lw-sda .mxfixed-anim`, `src/leavewar/ui/matrix.css`) and Quals'
+pinned heading (D993) follow a
+sideways scroll by a browser-driven animation, so with reduce motion on they would stay put while the grid slides
+under them: the pinned row would show its first columns' dates over the wrong columns. [LW-PIN-LAST-FRAME] exempted only
+its own showing step (it moves nothing). **To do:** see it on screen first (reduce motion on, a wide grid, scroll
+sideways, then down until the row pins); if it shows, exempt the two sideways-follow animations the same way — they
+move the row with the finger, which is not the motion the setting is for. **Place:** with the Leave War's next batch.
 
-Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
-pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
-`ph-chromium-s11-painted-frames.png` frame 5). D1789's build commits the pinned row in the same frame the PAGE'S CODE
-hears of the scroll — that took the blink from two painted frames to one on the desktop wheel, and leaves one on a phone
-flick (the Leave War and Quals). The last frame is the browser's own: it moves the page and paints it before the page's
-code hears of the scroll, so a pinned row drawn by the code is always one frame late there. **To remove it:** the browser
-must keep the row pinned itself — a pinned copy always there, laid under what scrolls above it so it shows only once the
-real row has gone under the bar, or the browser's own pinning — a change to the grid's layering (its pinned names
-column, zoom, Rearrange, the month strip and the windows over it), with its own walk. **His question, with the pictures
-(lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
-built. **Place:** after his look at pull request 680.
+### [TOPBAR-BAND-ANCHOR] On a scrolled desktop page the "Not saved" band covers the page's first 36px (8 Nov 26)
+
+Found by the fresh, blind Opus read of the top bar's code (its I1 — `raptor-port/docs/superpowers/briefs/2026-11-08-topbar-bounce-code-read-opus.md`),
+present in the old build too: on a desktop Chromium page scrolled down, when the "Not saved" (or "Not kept") band comes,
+the page's room under the bar grows by the band's line but the browser's scroll anchoring moves the window with it, so
+the band covers the first 36px of what he was looking at; at the page's top, and on his iPhone (Safari has no scroll
+anchoring), nothing is covered. Not a fault of the D1873 change. With it, the read's minor notes: the stylesheet guard
+(`src/ui/topbar-css.test.ts`) misses `will-change: transform` and `filter` on the bar's ancestors; comments still call the
+bar "sticky". A job of its own, small; walk a scrolled desktop page with `?savefail`.
 
 ### [REPO-PRIVATE] Make the repo private and share it with developers — half done 23 Sep 26 (D59)
 **18 Oct 26 (the backlog tidy):** the repo is PUBLIC today (GitHub says so) — made public for a short period under D106, for GitHub's faster machines. Making it private again, and restarting his PC's check runner (D89), is still open and his step.
@@ -1920,7 +1935,10 @@ Each line is a place where a tool allowed a mistake that a guide now only warns 
   not two hours of age, and not the process id of the command that took it (342). `run` records its own process, so
   the next taker can tell a stopped run from a live one (391). `run` checks its `--from` folder holds a
   `package.json` before taking the lock, and its usage line shows the form that works from both folders (504). Its
-  header still says "one test file needs no lock" — bring it in step with the corrected rule (444).
+  header still says "one test file needs no lock" — bring it in step with the corrected rule (444). `take` crashes
+  (ENOENT, reading the lock folder's status) when the lock is released between two of its tries, so a waiting `exec`
+  dies instead of taking the freed lock — found 8 Nov 26 by chat 16 ([LW-PIN-LAST-FRAME]); treat a lock gone mid-read
+  as free and try again.
 - **The break-test runners (`scripts/handpass/breaks.mjs`, `breaks-browser.mjs`).** Check every entry of a list
   before the first break, and restore the true build on every way out, an error included (471). A subset chosen by
   a pattern, and the result written as a table into the evidence folder (540).
@@ -2109,6 +2127,7 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The top bar held through the page's spring (D1873, [TOPBAR-BOUNCE-AWAY]) — Astra wrote the code (rounds 1 and 2) on `claude/lw-pin-last-frame`, pull request 694; the host's two fixes of the read's F1 and F2 (chat 39, 8 Nov 26) | the fresh, blind Opus read of the finished code (0 High, 0 Medium, 2 Low — both fixed) | Astra's read (he wrote it); Sol 6.1's second read |
 | The night of 5 Nov 26 (his "Go"): the keyboard and windows batch (D1645–D1648 — `claude/keyboard-windows-batch-5eff45`); [TRK-STANDALONE-LEFTOVERS] with the Tracker's React Doctor warnings (saved data: the Tracker's storage path); [MEMBER-EDITPAGE-CHECK] with [GUEST-SAVE-WARNING] (who may do what) | a fresh, blind Opus reader each (D790), and for the last a security read (D1411) | Astra and Sol 6.1 |
 | The Inputs batch [INPUTS-FIXES-1103] — the October finds and his answers (saved data: the LATE drop and Make public; the published record: To go out, Make public on a published day; D1594) — on `claude/inputs-small-fixes-2`, pull request 625 | a fresh, blind Opus reader (D790), its scenarios a fresh Opus reader's (D1594) | Astra's scenario design and code read; Sol 6.1's second read |
 | The night of 31 Oct 26 (D1531) — the M365 move plan page (`claude/m365-move-plan`); [SYSTEM-PASS-SAVES-ROSTER] with [LW-DELETED-RESTORE-OVERREFUSE] (saved data, who may write it — `claude/lw-roster-restore-fixes`); the secrets scan and scorecard (D1408, D1409 — `claude/secrets-scan-scorecard`); the pinch fixes (`claude/pinch-fixes-1031`) | each: one fresh, blind Opus reader (D790, D903); job 2 also the security read (D1411) | Astra's and Sol 6.1's reads (job 2's two, D590) |
@@ -2181,6 +2200,7 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 | The night of 6 Nov 26, job 1 (`claude/lw-faults-1106`): [LW-NIGHT1025-OLDER] (a), (c), (d), (f), (g), [CSS-WRAPPER-GUARD] — bids are saved data | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The night of 6 Nov 26, job 2 (`claude/inputs-batch-1106`): [INP-CARD-COLUMNS], [BATCH-14OCT-LEFTOVERS] (a)–(f), React Doctor on the Inputs pages | a fresh, blind Opus read (D790) | Astra and Sol 6.1 |
 | The night of 6 Nov 26, job 3 (`claude/people-quals-1106`): the three Quals touch faults, React Doctor on People, Quals, Holidays and sign-in | a fresh, blind Opus read; a security read if sign-in is touched (D790, D1411) | Astra and Sol 6.1 |
+| [LW-PIN-LAST-FRAME]'s last fix (D1870; `claude/lw-pin-last-frame`, pull request 694 — the pinned dates row held shown when the grid is shown again from a tab or another page), made after Astra's read of the job | a fresh, blind Opus read (D790), its one inferred case probed and not reproduced | Astra |
 
 ### [WEEK-ADD-TAP-PHONE] On a phone, a tap on a row's "+ add" on Edit Schedule's week arms nothing when the row already holds someone (found 11 Oct 26 by `[GROUP-INPUT-ONE-ROW]`'s walk — older than that job; his to place)
 **Found, NOT fixed, NOT reproduced by the host on `main`.** Walker W2, scenario 3 (`raptor-port/docs/handpass/parts/gi-w2.md`; pictures `raptor-port/docs/img/handpass/2026-10-11-group-input-one-row/w2/s3-week-tap-add.png`, `s3-board-armed.png`): on a 390-wide phone, on the WEEK, a tap on a ground row's "+ add" arms nothing — no ring, no drawer — where the row's first place is filled; the same on an ordinary one-man row, so it is not the shared row's. The same tap on the Scheduler Board arms the row and the crew drawer opens. The walker read that the week's "+ add" label takes no taps and the people cell arms only an empty first place. **As filed:** low — the board's tap and a held-finger drag both add a man (walked, passing); to reproduce on `main` first, then either make the week's cell arm as the board's does or leave it by his word.

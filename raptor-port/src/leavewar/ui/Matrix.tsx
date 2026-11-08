@@ -1278,7 +1278,10 @@ export function Matrix() {
         setQualPop(null); setEvPeek(null)
         window.dispatchEvent(new Event('lw-zoomstart'))
         const a = anim(); if (a) a.style.animationPlayState = 'paused'
-        outer.querySelector('.mxfixed')?.classList.add('lw-pinching')
+        /* the pinned copy takes the pinch's rule from the pinch's first frame (`pinchShow`, D1870) */
+        const fixedRow = outer.querySelector<HTMLElement>('.mxfixed')
+        fixedRow?.classList.add('lw-pinching')
+        pinchShow(fixedRow, headRef.current)
         outer.classList.add('lw-pinching')
         pinchingRef.current = true
       },
@@ -1291,6 +1294,7 @@ export function Matrix() {
         outer.classList.remove('lw-pinching')
         pinchingRef.current = false
         repinRef.current()
+        holdShown(fixedRow)
       },
       /* WHILE THE FINGERS ARE DOWN THE PINNED PARTS STAY PINNED (owner D1287, 23 Oct 26 — his iPhone pictures mid-pinch:
          the names column and the corner had stood in from the grid's left edge with days on their left, the date row had
@@ -1919,7 +1923,6 @@ export function Matrix() {
   // would slide under, at every width. No width gate any more.
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
-
   // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
   // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
   // catching up to the horizontal scroll … glue it, keep the feel")? When yes,
@@ -1935,6 +1938,17 @@ export function Matrix() {
     try {
       return typeof CSS !== 'undefined' && typeof CSS.supports === 'function' &&
         CSS.supports('scroll-timeline: --x x') && CSS.supports('timeline-scope: --x')
+    } catch { return false }
+  })
+  /* THE PINNED DATES ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]; measured first, D1850): the
+     pinned copy is always mounted and the BROWSER shows it, by an opacity animation on the page's own scroll that turns
+     it on at the scroll where the real row meets the top bar (`--lwy-s`, matrix.css `lwy-show`) — so it shows in the very
+     frame the browser moves the page, before this code hears of the scroll (the one painted frame D1789's build could
+     not reach: 40 of 40 runs blinked before, 0 of 40 after). Taps, the shadow and `inert` follow the `up` class, set by
+     the scroll listener a frame late, which nobody can see. Off where the browser cannot run it: the old way, unchanged. */
+  const [pinSda] = useState(() => {
+    try {
+      return sdaActive && CSS.supports('animation-timeline: scroll(root block)') && CSS.supports('animation-range: 0px 1px')
     } catch { return false }
   })
 
@@ -1977,7 +1991,11 @@ export function Matrix() {
   const avgDayWRef = useRef<{ key: string; avg: number; frozen: number; zoom: number } | null>(null)
 
   useEffect(() => {
-    setStuck(null)
+    /* WHERE THE BROWSER SHOWS IT (D1870) THE COPY IS KEPT ACROSS A ZOOM OR A REDRAW and measured afresh (the setup's
+       `pin(true)` below — the fresh Opus code read of 8 Nov 26, finding 1 and question 1): taken off the page here, a
+       desktop zoom made part-way down left one to three frames with no pinned row while the real row stood under the bar,
+       and its showing step had to be made afresh. The old way still lets it go and pins it again. */
+    if (!pinSda) setStuck(null)
     // jsdom has no layout — the mirror is a browser-only creature, and a
     // 0-height header (jsdom, or not yet laid out) never activates.
     if (typeof window.matchMedia !== 'function') return
@@ -1996,7 +2014,7 @@ export function Matrix() {
       // The app top bar stays pinned (sticky, both widths), so "the top" is its
       // LOWER edge: the mirror freezes there the instant the real header would
       // slide under it. Both phone and desktop now (owner, 27 Aug 26).
-      const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+      const topEdge = barFoot()
       /* WHILE THE FINGERS ARE DOWN THE FROZEN DATE ROW STAYS AS IT WAS AT THE PINCH'S START (D1287: the pinned parts stay
          pinned; the code read of 31 Oct 26, finding 1, and the fix rounds 2–3). Since D1288 a pinch out scrolls the page up
          with the pinch and a pinch that turns scrolls it down again: re-pinned mid-gesture the row stood at rest over the
@@ -2007,12 +2025,24 @@ export function Matrix() {
          the top bar (his D1288 picture: never a second date row), shown again the moment that row would pass under it. A
          row not frozen at the start never needs one: the grid's date row, held from rising, never passes under the top
          bar. The lift settles it once, from rest (`repinRef`, from the pinch's onEnd). */
-      if (pinchingRef.current) {
-        const fixedRow = mirrorRef.current?.parentElement
-        if (fixedRow) {
-          const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? r.top
-          fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
-        }
+      if (pinchingRef.current) { pinchShow(mirrorRef.current?.parentElement, headRef.current); return }
+      /* THE BROWSER SHOWS IT (his D1870): the copy is measured and mounted wherever the row is, and told where the page's
+         scroll turns it on (`placeY`); the browser shows it in the very frame it moves the page past that point */
+      if (pinSda) {
+        placeY(mirrorRef.current?.parentElement ?? null, r.top, topEdge, force)
+        // eslint-disable-next-line react-doctor/no-impure-state-updater -- the same measure as `pinUp` below, only when the copy is not yet mounted or is forced
+        setStuck(prev => {
+          if (prev && !force) return prev
+          if (wrapRef.current?.querySelector<HTMLElement>(':scope > table.mx')?.style.transform) return prev
+          const wrap = wrapRef.current
+          if (!wrap) return prev
+          const wr = wrap.getBoundingClientRect()
+          const cells = Array.from(head.querySelectorAll('tr:last-child > th')) as HTMLElement[]
+          const cols = cells.map(c => c.getBoundingClientRect().width)
+          if (cols.length === 0 || cols.some(w => !w)) return prev
+          const next = { top: topEdge, left: wr.left, width: wr.width, cols }
+          return prev && sameStuck(prev, next) ? prev : next
+        })
         return
       }
       /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
@@ -2061,10 +2091,53 @@ export function Matrix() {
     window.addEventListener('resize', remeasure)
     window.addEventListener('orientationchange', remeasure)
     window.visualViewport?.addEventListener('resize', remeasure)
-    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
-    pin(false)
+    /* THE ROW MOVED WITH NO SCROLL (his D1870's loose ends — [LW-PIN-LAST-FRAME]): something above the grid grew or shrank,
+       or the top bar did (a failed save's "Not saved" band along its foot, D587, moves the page down under it). The real
+       row then stands somewhere else at the same scroll: the copy the browser shows would turn on at the old point, over a
+       row still in sight or a beat after the row went under, and stand at the bar's old foot. The page's height and the
+       bar's are watched, and a change of either re-pins at once — a fresh turn-on point and the bar's new foot (in the
+       old way too, where a pinned copy kept the bar's old foot until it was let go). Only a HEIGHT that changed counts:
+       a width alone (a resize, which `remeasure` already takes) does nothing. The first height is read as the watch is
+       set up, not at its first report a frame later: set up afresh by a redraw (more months drawn, a group folded), a
+       watch whose first report already held a block put in that same frame would never see it as a change. */
+    const heights = new Map<Element, number>()
+    const hOf = (el: Element) => el.getBoundingClientRect().height
+    const moved = typeof ResizeObserver === 'function' ? new ResizeObserver(entries => {
+      let changed = false
+      for (const e of entries) {
+        const h = hOf(e.target)
+        if (heights.get(e.target) !== h) changed = true
+        heights.set(e.target, h)
+      }
+      if (changed) pin(true)
+    }) : null
+    const bar = document.querySelector('.topbar')
+    if (moved) {
+      heights.set(document.body, hOf(document.body)); moved.observe(document.body)
+      if (bar) { heights.set(bar, hOf(bar)); moved.observe(bar) }
+    }
+    /* SHOWN AGAIN, WHERE THE BROWSER SHOWS THE COPY (D1870 — the re-walk of 8 Nov 26, the fresh Opus code read's finding 2):
+       the grid hidden by another of the Leave War's tabs (Balances, Approvals) or the whole page left for another, then
+       shown again scrolled down — the browser makes the copy's showing step afresh, and a step is not applied in the frame
+       it is made in, so the first frame stood with the real row under the top bar and no copy. The two switches that hide
+       the grid are watched; the moment either changes, before that frame, the copy is measured afresh and held shown.
+       Hidden, the copy has no step, so the hold does nothing. */
+    const shownAgain = pinSda && typeof MutationObserver === 'function' ? new MutationObserver(() => {
+      const box = mirrorRef.current?.parentElement
+      if (!box) return
+      pin(true)
+      holdShown(box)
+    }) : null
+    const hostEl = wrapRef.current?.closest('.lw-gridhost'), pageEl = wrapRef.current?.closest('.page')
+    if (shownAgain && hostEl) shownAgain.observe(hostEl, { attributes: true, attributeFilter: ['hidden'] })
+    if (shownAgain && pageEl) shownAgain.observe(pageEl, { attributes: true, attributeFilter: ['class'] })
+    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26);
+       where the browser shows the copy it is kept, so it is forced to measure afresh (above) */
+    pin(pinSda)
     return () => {
       repinRef.current = () => {}
+      moved?.disconnect()
+      shownAgain?.disconnect()
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)
       window.removeEventListener('orientationchange', remeasure)
@@ -2081,7 +2154,7 @@ export function Matrix() {
     // and the pinned widths would be the wrong months'. `arranging` (6 Sep 26):
     // Rearrange widens the frozen name column (`.mx-arranging`), so a stuck
     // mirror pinned at the old width would sit a grip's width off the grid.
-  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging])
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging, pinSda])
 
   // ...and RE-PIN on any change that can widen a column while the bar is up
   // (Astra LW-102, 23 Sep 26): a wider chip or an event written by anyone, the
@@ -2109,6 +2182,11 @@ export function Matrix() {
   // Pinned by "the frozen bar is in step with the grid the moment it appears"
   // (e2e/leavewar.spec.ts).
   useLayoutEffect(() => {
+    /* the freshly mounted (or re-measured) copy learns where the page's scroll turns it on before its first frame (D1870) */
+    if (pinSda && stuck && mirrorRef.current && headRef.current) {
+      placeY(mirrorRef.current.parentElement, headRef.current.getBoundingClientRect().top, stuck.top)
+      holdShown(mirrorRef.current.parentElement)
+    }
     if (stuck && mirrorRef.current && wrapRef.current) {
       const w = wrapRef.current
       if (sdaActive) {
@@ -3711,7 +3789,7 @@ export function Matrix() {
             wrapper, like `mx-banded`, which the same tap already toggles on a
             phone — one restyle per mode change, never per frame. */}
         <div
-          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
+          className={`mx-outer${bandActive && bandTop != null ? ' mx-banded' : ''}${sdaActive ? ' lw-sda' : ''}${pinSda ? ' lw-pinsda' : ''}${arranging && role === 'admin' ? ' mx-arranging' : ''}`}
           ref={mxOuterRef}
         >
         <div
@@ -4692,3 +4770,63 @@ export function Matrix() {
     </div>
   )
 }
+
+/* WHERE THE TOP BAR'S FOOT STANDS (his recording of 8 Nov 26, 14:31 — [LW-PIN-LAST-FRAME]): the app's top bar is pinned to
+   the top of the screen (sticky, top 0), so its foot is its own height — and that is what is read, never where the bar
+   happens to stand. A flick to the page's foot on his iPhone bounced the page, the bounce carried the bar off screen for a
+   moment, and a re-measure in that moment (Safari's toolbar folding away sends a screen-size change) put the pinned row
+   up where the bar then stood: under the bar, the row missing until a later re-measure. A taller bar (it wraps, or the
+   "Not saved" band along its foot, D587) is still read, as its height. */
+function barFoot() { return document.querySelector('.topbar')?.getBoundingClientRect().height ?? 0 }
+/* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
+/* THE PINNED ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]; Matrix's `pinSda`): where the page's
+   scroll turns the always-mounted copy on (`--lwy-s`, the scroll at which the real row's top meets the top bar's foot),
+   and whether it is up now. `up` gives it taps and its shadow; while it is not up it is also `inert` — out of the focus
+   order and of what a screen reader reads, since nobody can see it (the build's loose end 1). Written on the copy's own
+   box only, never an ancestor (a custom property on the grid's ancestor restyles the whole grid), and only when it
+   changes.
+   A FORCED RE-MEASURE ALWAYS HANDS THE BROWSER A NEW POINT (the walk of 8 Nov 26, walker L's scenario 22): a desktop
+   window made narrower, or a phone turned sideways and back, and the copy showed about 37px early, over the buttons above
+   the grid, until a reload. The browser works the point out against the page as it stands when the value changes —
+   during a resize, a page still settling — and the re-measure 300 ms later, once it had settled, wrote the same value
+   again, which the browser takes as no change. So a forced re-measure (a resize, a turn, a height change) that finds
+   the value unchanged writes it a hundredth of a pixel off, and the next one writes it back: the browser works it out
+   afresh each time, and nobody can see a hundredth of a pixel. A scroll's own re-measure writes only a change. */
+/* A COPY THAT IS UP IS HELD SHOWN UNTIL THE BROWSER RUNS ITS SHOWING STEP (the fresh Opus code read of 8 Nov 26, finding 1 —
+   [LW-PIN-LAST-FRAME]): a step the browser makes afresh — at a pinch's lift, when the pinching rule's `animation: none`
+   comes off, or when the copy is mounted afresh — is not applied in the frame it is made in (the sideways follow's
+   lesson, the `[stuck]` layout effect below), so the copy stood at its hidden opacity for one to four frames with the row already under the
+   bar. The hold is an inline opacity that follows whether the copy is up — the measure keeps it so while the hold
+   lasts, since a desktop zoom's lift measures the row before the page has moved to it — and the running step outranks
+   it; it is dropped once the step runs. */
+function holdShown(box: HTMLElement | null | undefined) {
+  if (!box) return
+  const step = box.getAnimations?.().find(a => (a as CSSAnimation).animationName === 'lwy-show')
+  if (!step || (!step.pending && step.currentTime !== null)) return
+  box.dataset.hold = '1'
+  box.style.opacity = box.classList.contains('up') ? '1' : ''
+  const free = () => { delete box.dataset.hold; box.style.opacity = '' }
+  step.ready.then(free, free)
+}
+function placeY(box: HTMLElement | null, rowTop: number, topEdge: number, force = false) {
+  if (!box) return
+  const v = Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10)
+  const s = String(force && box.dataset.s === String(v) ? Math.round((v + 0.01) * 100) / 100 : v)
+  if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+  const up = rowTop < topEdge
+  box.classList.toggle('up', up)
+  if (box.dataset.hold) box.style.opacity = up ? '1' : ''
+  if (box.inert === up) box.inert = !up
+}
+/* WHILE THE FINGERS PINCH, the pinned copy is shown by the pinch's own rule, not the page's scroll (D1287): hidden while
+   the grid's own date row — held from rising — is in sight below the top bar, shown the moment it would pass under it.
+   `pin` applies it on each scroll of the pinch, and the pinch's start applies it at once: the always-mounted copy is off
+   the scroll's animation while pinching (matrix.css `.lw-pinsda .mxfixed.lw-pinching` — `--lwy-s` cannot follow a row
+   the pinch is stretching), so a copy not up would otherwise stand over the grid until the first scroll. */
+function pinchShow(fixedRow: HTMLElement | null | undefined, head: HTMLElement | null) {
+  if (!fixedRow || !head) return
+  const topEdge = barFoot()
+  const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
+  fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+}
+

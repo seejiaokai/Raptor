@@ -44,6 +44,45 @@ async function holdsTheRule(page: Page, what: string) {
 
 const errorsOf = (page: Page) => { const errs: string[] = []; page.on('console', m => { if (m.type() === 'error') errs.push(m.text()) }); page.on('pageerror', e => errs.push(String(e))); return errs }
 
+/* D1873: these check the structural cure, not Safari's physical spring (only his iPhone can show that).
+   No stand-in overscroll, transformed page or synthetic scroll event is evidence of the spring being cured. */
+for (const phone of [false, true]) test.describe(`D1873 — fixed app bar, ${phone ? 'phone' : 'desktop'}`, () => {
+  test.use({ isMobile: phone, hasTouch: phone })
+  test('the bar stays at the screen top and its exact height stays in the page flow across resizing and page changes', async ({ page }) => {
+    const errs = errorsOf(page)
+    await page.setViewportSize(phone ? { width: 402, height: 874 } : { width: 1536, height: 900 })
+    await login(page)
+    const sizes = phone
+      ? [{ width: 402, height: 874 }, { width: 874, height: 402 }, { width: 402, height: 874 }]
+      : [{ width: 1536, height: 900 }, { width: 1024, height: 800 }, { width: 830, height: 800 }, { width: 1536, height: 900 }]
+    for (const size of sizes) {
+      await page.setViewportSize(size)
+      for (const p of ['viewsched', 'editsched', 'quals', 'leavewar'] as const) {
+        await go(page, p)
+        await page.evaluate(() => window.scrollTo(0, 0))
+        await expect(page.locator(TOPBAR)).toHaveCSS('position', 'fixed')
+        await expect.poll(() => page.evaluate(sel => {
+          const bar = document.querySelector(sel)!.getBoundingClientRect()
+          const shell = document.getElementById('shell')!
+          const space = getComputedStyle(shell, '::before')
+          const content = shell.querySelector(':scope > .page.on')!.getBoundingClientRect()
+          return space.display === 'block' && Math.abs(parseFloat(space.height) - bar.height) < 0.05
+            && Math.abs(content.top - bar.bottom) < 0.5
+        }, TOPBAR), { message: `${p} at ${size.width}: the page reserves exactly the bar's height` }).toBe(true)
+      }
+    }
+    // A long page, at its foot. This proves normal scrolling only, never the iPhone's elastic overscroll.
+    await page.waitForSelector('#page-leavewar .mx')
+    await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+    await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+    await expect.poll(() => page.locator(TOPBAR).evaluate(el => Math.abs(el.getBoundingClientRect().top))).toBeLessThan(0.05)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.locator(TOPBAR)).toHaveCSS('position', 'sticky')
+    expect(await page.locator('#shell').evaluate(el => getComputedStyle(el, '::before').content)).toBe('none')
+    expect(errs, 'no page errors or resize loops').toEqual([])
+  })
+})
+
 test.describe('on a desktop the names stand beside TALON where they fit, and fold into ☰ where they do not (D1641, D1642)', () => {
   test('a wide desktop: the names beside TALON, no ☰, the whole bar one row; every page and a member alike', async ({ page }) => {
     const errs = errorsOf(page)

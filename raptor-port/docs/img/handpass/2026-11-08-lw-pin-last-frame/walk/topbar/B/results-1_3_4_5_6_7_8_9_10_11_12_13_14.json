@@ -1,0 +1,406 @@
+{
+ "rows": [
+  {
+   "id": "S1.desk.edit",
+   "verdict": "PASS",
+   "what": "scrollY=3138 of 3138; bar top=0, height 58 (at rest 58), position fixed",
+   "pic": "s1-desk-edit-foot.png"
+  },
+  {
+   "id": "S2.desk.edit",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (941,1726,2510) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-edit-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.inputs",
+   "verdict": "NOT REACHED",
+   "what": "page is not scrollable here (scroll room 43px)",
+   "pic": ""
+  },
+  {
+   "id": "S1.desk.quals",
+   "verdict": "PASS",
+   "what": "scrollY=918 of 918; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-quals-foot.png"
+  },
+  {
+   "id": "S2.desk.quals",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (275,505,734) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-quals-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.lwgrid",
+   "verdict": "PASS",
+   "what": "scrollY=1772 of 1772; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-lwgrid-foot.png"
+  },
+  {
+   "id": "S2.desk.lwgrid",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (532,975,1418) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-lwgrid-mid-top300.png"
+  },
+  {
+   "id": "S1.desk.admin",
+   "verdict": "PASS",
+   "what": "scrollY=3575 of 3575; bar top=0, height 57 (at rest 57), position fixed",
+   "pic": "s1-desk-admin-foot.png"
+  },
+  {
+   "id": "S2.desk.admin",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (1073,1966,2860) differs by 0/0 px; bar top 0, bar width 1536 vs page width 1536; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-desk-admin-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.edit",
+   "verdict": "PASS",
+   "what": "scrollY=3044 of 3044; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-edit-foot.png"
+  },
+  {
+   "id": "S2.phone.edit",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (913,1674,2435) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-edit-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.inputs",
+   "verdict": "NOT REACHED",
+   "what": "page is not scrollable here (scroll room 4px)",
+   "pic": ""
+  },
+  {
+   "id": "S1.phone.quals",
+   "verdict": "PASS",
+   "what": "scrollY=981 of 981; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-quals-foot.png"
+  },
+  {
+   "id": "S2.phone.quals",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (294,540,785) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-quals-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.lwgrid",
+   "verdict": "PASS",
+   "what": "scrollY=1141 of 1141; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-lwgrid-foot.png"
+  },
+  {
+   "id": "S2.phone.lwgrid",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (342,628,913) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-lwgrid-mid-top300.png"
+  },
+  {
+   "id": "S1.phone.admin",
+   "verdict": "PASS",
+   "what": "scrollY=73 of 73; bar top=0, height 49 (at rest 49), position fixed",
+   "pic": "s1-phone-admin-foot.png"
+  },
+  {
+   "id": "S2.phone.admin",
+   "verdict": "PASS",
+   "what": "bar picture at 3 scrolls (22,40,58) differs by 0/0 px; bar top 0, bar width 402 vs page width 402; background linear-gradient(rgb(14, 17, 22), rgb(9, 11, 14)) | rgba(0, 0, 0, 0)",
+   "pic": "s2-phone-admin-mid-top300.png"
+  },
+  {
+   "id": "S2.desk.board",
+   "verdict": "PASS",
+   "what": "top 300px of the board mid-scroll, before vs after: 0 px differ; scroller {\"id\":\"\",\"cls\":\"sb-boardwrap\",\"h\":2892}; board bar before {\"top\":0,\"h\":106,\"pos\":\"static\"} after {\"top\":0,\"h\":106,\"pos\":\"static\"}",
+   "pic": "s2-board-after.png (and s2-board-before.png)"
+  },
+  {
+   "id": "S3.1536",
+   "verdict": "PASS",
+   "what": "every page: Edit Schedule gap 0/0 barH 58 names beside the logo; View-only Sched gap 0/0 barH 57 names beside the logo; Inputs gap 0/0 barH 57 names beside the logo; Quals gap 0/0 barH 57 names beside the logo; Leave War gap 0/0 barH 57 names beside the logo; Tracker gap 0/0 barH 57 names beside the logo; Logic gap 0/0 barH 57 names beside the logo; Admin gap 0/0 barH 57 names beside the logo; Help gap 0/0 barH 57 names beside the logo",
+   "pic": "s3-1536-editsched.png"
+  },
+  {
+   "id": "S3.1024",
+   "verdict": "PASS",
+   "what": "every page: Edit Schedule gap 0/0 barH 104 names beside the logo (bar wrapped); View-only Sched gap 0/0 barH 103 names beside the logo (bar wrapped); Inputs gap 0/0 barH 103 names beside the logo (bar wrapped); Quals gap 0/0 barH 103 names beside the logo (bar wrapped); Leave War gap 0/0 barH 103 names beside the logo (bar wrapped); Tracker gap 0/0 barH 103 names beside the logo (bar wrapped); Logic gap 0/0 barH 103 names beside the logo (bar wrapped); Admin gap 0/0 barH 103 names beside the logo (bar wrapped); Help gap 0/0 barH 103 names beside the logo (bar wrapped)",
+   "pic": "s3-1024-editsched.png"
+  },
+  {
+   "id": "S3.830",
+   "verdict": "PASS",
+   "what": "every page: Edit Schedule gap 0/0 barH 59 names folded into the menu; View-only Sched gap 0/0 barH 59 names folded into the menu; Inputs gap 0/0 barH 59 names folded into the menu; Quals gap 0/0 barH 59 names folded into the menu; Leave War gap 0/0 barH 59 names folded into the menu; Tracker gap 0/0 barH 59 names folded into the menu; Logic gap 0/0 barH 59 names folded into the menu; Admin gap 0/0 barH 59 names folded into the menu; Help gap 0/0 barH 59 names folded into the menu",
+   "pic": "s3-830-editsched.png"
+  },
+  {
+   "id": "S3.402",
+   "verdict": "PASS",
+   "what": "every page: Edit Schedule gap 0/0 barH 49 names folded into the menu; View-only Sched gap 0/0 barH 49 names folded into the menu; Inputs gap 0/0 barH 49 names folded into the menu; Quals gap 0/0 barH 49 names folded into the menu; Leave War gap 0/0 barH 49 names folded into the menu; Tracker gap 0/0 barH 49 names folded into the menu; Logic gap 0/0 barH 49 names folded into the menu; Admin gap 0/0 barH 49 names folded into the menu; Help gap 0/0 barH 49 names folded into the menu",
+   "pic": "s3-402-editsched.png"
+  },
+  {
+   "id": "S3.874x402",
+   "verdict": "PASS",
+   "what": "every page: Edit Schedule gap 0/0 barH 104 names beside the logo (bar wrapped); View-only Sched gap 0/0 barH 103 names beside the logo (bar wrapped); Inputs gap 0/0 barH 103 names beside the logo (bar wrapped); Quals gap 0/0 barH 103 names beside the logo (bar wrapped); Leave War gap 0/0 barH 103 names beside the logo (bar wrapped); Tracker gap 0/0 barH 103 names beside the logo (bar wrapped); Logic gap 0/0 barH 103 names beside the logo (bar wrapped); Admin gap 0/0 barH 103 names beside the logo (bar wrapped); Help gap 0/0 barH 103 names beside the logo (bar wrapped)",
+   "pic": "s3-874x402-editsched.png"
+  },
+  {
+   "id": "S4.desk.band-up",
+   "verdict": "FAIL",
+   "what": "band {\"top\":57,\"bottom\":93,\"h\":36,\"text\":\"Not saved — keep this page openRetry\"}; bar 94 -> 94 (grew 0); page top moved 0, first content moved 0; first content minus bar bottom 0 (before change 0.00); --topbar-h 94px",
+   "pic": "s4-desk-1-band-up.png"
+  },
+  {
+   "id": "S4.desk.retry-with-switch-on",
+   "verdict": "PASS",
+   "what": "Retry pressed with ?savefail still on (saves refused again): bar 94; band stays as the switch says",
+   "pic": "s4-desk-2-after-retry.png"
+  },
+  {
+   "id": "S4.desk.band-gone",
+   "verdict": "FAIL",
+   "what": "reopened without ?savefail: band present=false; bar 58 (originally 94); first content minus bar bottom 0.00",
+   "pic": "s4-desk-3-reopened-without-switch.png"
+  },
+  {
+   "id": "S4.phone.band-up",
+   "verdict": "FAIL",
+   "what": "band {\"top\":48,\"bottom\":84,\"h\":36,\"text\":\"Not saved — keep this page openRetry\"}; bar 85 -> 85 (grew 0); page top moved 0, first content moved 0; first content minus bar bottom 0 (before change 0.00); --topbar-h 85px",
+   "pic": "s4-phone-1-band-up.png"
+  },
+  {
+   "id": "S4.phone.retry-with-switch-on",
+   "verdict": "PASS",
+   "what": "Retry pressed with ?savefail still on (saves refused again): bar 85; band stays as the switch says",
+   "pic": "s4-phone-2-after-retry.png"
+  },
+  {
+   "id": "S4.phone.band-gone",
+   "verdict": "FAIL",
+   "what": "reopened without ?savefail: band present=false; bar 49 (originally 85); first content minus bar bottom 0.00",
+   "pic": "s4-phone-3-reopened-without-switch.png"
+  },
+  {
+   "id": "S5.desk.lw-grid-dates@30%",
+   "verdict": "PASS",
+   "what": "scrollY 380; bar bottom 57; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":57,\"h\":45,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-desk-lwgrid-0.3.png"
+  },
+  {
+   "id": "S5.desk.lw-grid-dates@60%",
+   "verdict": "PASS",
+   "what": "scrollY 761; bar bottom 57; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":57,\"h\":45,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-desk-lwgrid-0.6.png"
+  },
+  {
+   "id": "S5.desk.quals-heading",
+   "verdict": "PASS",
+   "what": "scrollY 207; bar bottom 57; pinned heading(s) shown: [{\"cls\":\"qfixed q-psda up\",\"top\":57,\"h\":24.28,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}]",
+   "pic": "s5-desk-quals.png"
+  },
+  {
+   "id": "S5.desk.balances",
+   "verdict": "PASS",
+   "what": "scrollY 0 of room 0; bar bottom 57; pinned/sticky parts near the top: [{\"c\":\"l\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"span sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"span sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"l\",\"pos\":\"sticky\",\"top\":216,\"h\":26},{\"c\":\"l\",\"pos\":\"sticky\",\"top\":216,\"h\":26},{\"c\":\"sep\",\"pos\":\"sticky\",\"top\":216,\"h\":26}]; of them behind the bar: []",
+   "pic": "s5-desk-balances.png"
+  },
+  {
+   "id": "S5.phone.lw-grid-dates@30%",
+   "verdict": "PASS",
+   "what": "scrollY 188; bar bottom 49; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":49,\"h\":43.84,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-phone-lwgrid-0.3.png"
+  },
+  {
+   "id": "S5.phone.lw-grid-dates@60%",
+   "verdict": "PASS",
+   "what": "scrollY 376; bar bottom 49; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":49,\"h\":43.84,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-phone-lwgrid-0.6.png"
+  },
+  {
+   "id": "S5.phone.quals-heading",
+   "verdict": "PASS",
+   "what": "scrollY 234; bar bottom 49; pinned heading(s) shown: [{\"cls\":\"qfixed q-psda up\",\"top\":49,\"h\":23.58,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}]",
+   "pic": "s5-phone-quals.png"
+  },
+  {
+   "id": "S5.phone.balances",
+   "verdict": "PASS",
+   "what": "scrollY 0 of room 0; bar bottom 49; pinned/sticky parts near the top: [{\"c\":\"bp-cols\",\"pos\":\"sticky\",\"top\":193.8,\"h\":28},{\"c\":\"\",\"pos\":\"sticky\",\"top\":193.8,\"h\":27},{\"c\":\"gl\",\"pos\":\"sticky\",\"top\":221.8,\"h\":29},{\"c\":\"bp-who\",\"pos\":\"sticky\",\"top\":251.8,\"h\":49}]; of them behind the bar: []",
+   "pic": "s5-phone-balances.png"
+  },
+  {
+   "id": "S6.0.make-a-change",
+   "verdict": "PASS",
+   "what": "pressed \"+ In-time\" on day 1; Undo is now enabled",
+   "pic": ""
+  },
+  {
+   "id": "S6.jump",
+   "verdict": "PASS",
+   "what": "\"Jump to a date\": window top 58, its box top 245.5, bar bottom 58; the bar's Undo/Redo/bell are what a press at their centre reaches: {\"undoBtn\":true,\"redoBtn\":true,\"notifyBell\":true}; Undo pressed: in-time boxes 17 -> 16, Redo enabled=true; Redo pressed, put back",
+   "pic": "s6-jump-after-undo.png"
+  },
+  {
+   "id": "S6.day",
+   "verdict": "PASS",
+   "what": "the day window: window top 58, its box top 142.2, bar bottom 58; the bar's Undo/Redo/bell are what a press at their centre reaches: {\"undoBtn\":true,\"redoBtn\":true,\"notifyBell\":true}; Undo pressed: in-time boxes 17 -> 16, Redo enabled=true; Redo pressed, put back",
+   "pic": "s6-day-after-undo.png"
+  },
+  {
+   "id": "S6.bell",
+   "verdict": "FAIL",
+   "what": "bell list parts after opening [{\"id\":\"\",\"c\":\"bell-list\",\"top\":51,\"h\":62}] (bar bottom 58); after pressing the bell again, 0 such parts left",
+   "pic": "s6-bell-open.png"
+  },
+  {
+   "id": "S6.docviewer",
+   "verdict": "PASS",
+   "what": "document viewer box top 123, bar bottom 58",
+   "pic": "s6-docviewer.png"
+  },
+  {
+   "id": "S7.1536.page-switches",
+   "verdict": "PASS",
+   "what": "after each switch (page first scrolled to 250): bar top 0, page starts at the bar foot, bar height equals --topbar-h [gaps: Edit Schedule:0, View-only Sched:0, Inputs:0, Quals:0, Leave War:0, Tracker:0, Logic:0, Admin:0, Help:0, Edit Schedule:0, View-only Sched:0, Inputs:0]",
+   "pic": "s7-1536-switched.png"
+  },
+  {
+   "id": "S7.402.page-switches",
+   "verdict": "PASS",
+   "what": "after each switch (page first scrolled to 250): bar top 0, page starts at the bar foot, bar height equals --topbar-h [gaps: Edit Schedule:0, View-only Sched:0, Inputs:0, Quals:0, Leave War:0, Tracker:0, Logic:0, Admin:0, Help:0, Edit Schedule:0, View-only Sched:0, Inputs:0]",
+   "pic": "s7-402-switched.png"
+  },
+  {
+   "id": "S7.resize",
+   "verdict": "PASS",
+   "what": "1536 -> 830 -> 1536 -> 1024 -> 402 -> 1536 with the page scrolled: 1536: bar 58 (--topbar-h 58), gap 0, scrolled bar top 0, names | 830: bar 59 (--topbar-h 59), gap 0, scrolled bar top 0, names | 1536: bar 58 (--topbar-h 58), gap 0, scrolled bar top 0, names | 1024: bar 104 (--topbar-h 104), gap 0, scrolled bar top 0, names | 402: bar 49 (--topbar-h 49), gap 0, scrolled bar top 0, folded | 1536: bar 58 (--topbar-h 58), gap 0, scrolled bar top 0, names",
+   "pic": "s7-resize-back.png"
+  },
+  {
+   "id": "S8.edit",
+   "verdict": "NOT REACHED",
+   "what": "no sideways-scrolling part in the bar at 402 (found {\"sc\":null,\"room\":0,\"sl\":0,\"burger\":14,\"undo\":213,\"bell\":354,\"mark\":null})",
+   "pic": "s8-edit-0.png"
+  },
+  {
+   "id": "S8.lw",
+   "verdict": "NOT REACHED",
+   "what": "no sideways-scrolling part in the bar at 402 (found {\"sc\":null,\"room\":0,\"sl\":0,\"burger\":14,\"undo\":249,\"bell\":354,\"mark\":null})",
+   "pic": "s8-lw-0.png"
+  },
+  {
+   "id": "S9.desk",
+   "verdict": "PASS",
+   "what": "grid opened; bar bottom 57; ringed element(s) [{\"c\":\"spring\",\"top\":12,\"left\":1071.4,\"h\":32},{\"c\":\"act hasc lw-ring\",\"top\":749,\"left\":211.1,\"h\":23}]; slim Back bar top 798; scrollY 719",
+   "pic": "s9-desk-ring.png"
+  },
+  {
+   "id": "S9.phone",
+   "verdict": "PASS",
+   "what": "grid opened; bar bottom 49; ringed element(s) [{\"c\":\"spring\",\"top\":8,\"left\":249,\"h\":32},{\"c\":\"act hasc lw-ring\",\"top\":763.8,\"left\":107.8,\"h\":18.3}]; slim Back bar top 818; scrollY 218",
+   "pic": "s9-phone-ring.png"
+  },
+  {
+   "id": "S10",
+   "verdict": "PASS",
+   "what": "print emulation: ::before {\"display\":\"inline\",\"h\":\"auto\",\"content\":\"none\"}, bar position sticky, display flex; page top 57 (before build: 57, bar sticky/flex); screen bar height 57",
+   "pic": "s10-print-top.png"
+  },
+  {
+   "id": "S11.desk",
+   "verdict": "PASS",
+   "what": "guest bar position fixed, top 0, height 57; first content under it starts 0 from the bar foot; scroll room 1701; at the foot bar top 0",
+   "pic": "s11-desk-guest-top.png"
+  },
+  {
+   "id": "S11.phone",
+   "verdict": "PASS",
+   "what": "guest bar position fixed, top 0, height 43.5; first content under it starts 0 from the bar foot; scroll room 1709; at the foot bar top 0",
+   "pic": "s11-phone-guest-top.png"
+  },
+  {
+   "id": "R12.bell-open",
+   "verdict": "PASS",
+   "what": "bell list parts visible=1; bar top 0, height 58, scrollY 1569",
+   "pic": "R12-bell-open-a.png , R12-bell-open-b.png"
+  },
+  {
+   "id": "R12.bell-close",
+   "verdict": "PASS",
+   "what": "bell list parts visible after second press=0; bar top 0, height 58, scrollY 1569",
+   "pic": "R12-bell-close-a.png , R12-bell-close-b.png"
+  },
+  {
+   "id": "R12.page-name",
+   "verdict": "PASS",
+   "what": "went to page-inputs; bar top 0, height 57, scrollY 0; page starts 0.00 below the bar foot",
+   "pic": "R12-pagename-a.png , R12-pagename-b.png"
+  },
+  {
+   "id": "R12.undo",
+   "verdict": "PASS",
+   "what": "Undo was enabled=true; after pressing it Redo enabled=true; bar top 0, height 58, scrollY 854",
+   "pic": "R12-undo-a.png , R12-undo-b.png"
+  },
+  {
+   "id": "R12.redo",
+   "verdict": "PASS",
+   "what": "Redo pressed; bar top 0, height 58, scrollY 854",
+   "pic": "R12-redo-a.png , R12-redo-b.png"
+  },
+  {
+   "id": "R13.burger-open",
+   "verdict": "PASS",
+   "what": "menu open=true; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-burger-open-a.png , R13-burger-open-b.png"
+  },
+  {
+   "id": "R13.burger-close-by-x",
+   "verdict": "NOT REACHED",
+   "what": "the menu has no ✕ button (no close-looking button in the panel); not pressed",
+   "pic": ""
+  },
+  {
+   "id": "S13.crash",
+   "verdict": "NOT REACHED",
+   "what": "script stopped: locator.tap: Timeout 30000ms exceeded.",
+   "pic": ""
+  },
+  {
+   "id": "R14.burger-open",
+   "verdict": "PASS",
+   "what": "menu open=true; bar top 0, height 49, scrollY 314",
+   "pic": "R14-burger-open-a.png , R14-burger-open-b.png"
+  },
+  {
+   "id": "R14.burger-close-by-x",
+   "verdict": "NOT REACHED",
+   "what": "the menu has no ✕ button (no close-looking button in the panel); not pressed",
+   "pic": ""
+  },
+  {
+   "id": "S14.crash",
+   "verdict": "NOT REACHED",
+   "what": "script stopped: locator.tap: Timeout 30000ms exceeded.",
+   "pic": ""
+  }
+ ],
+ "errors": [
+  "S3 874x402 after: pageerror: ResizeObserver loop completed with undelivered notifications."
+ ],
+ "seconds": {
+  "1": 72,
+  "3": 259,
+  "4": 29,
+  "5": 34,
+  "6": 19,
+  "7": 118,
+  "8": 7,
+  "9": 16,
+  "10": 8,
+  "11": 24,
+  "12": 13,
+  "13": 36,
+  "14": 37
+ }
+}
