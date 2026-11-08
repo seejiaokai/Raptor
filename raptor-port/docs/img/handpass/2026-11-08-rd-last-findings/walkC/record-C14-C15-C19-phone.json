@@ -1,0 +1,1266 @@
+{
+ "main": {
+  "c-S14-P-roster-cat": {
+   "id": "c-S14-P-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-roster-cat.png"
+  },
+  "c-S14-P-roster-back": {
+   "id": "c-S14-P-roster-back",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; phone: the category back button, then Users again",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-roster-back.png"
+  },
+  "c-S14-P-roster-quals": {
+   "id": "c-S14-P-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "main-c-S14-P-roster-quals.png"
+  },
+  "c-S14-P-roster-search": {
+   "id": "c-S14-P-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-roster-search.png"
+  },
+  "c-S14-P-roster-fold": {
+   "id": "c-S14-P-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-roster-fold.png"
+  },
+  "c-S14-P-arch-cat": {
+   "id": "c-S14-P-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-arch-cat.png"
+  },
+  "c-S14-P-arch-back": {
+   "id": "c-S14-P-arch-back",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; phone: the category back button, then Users again",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-arch-back.png"
+  },
+  "c-S14-P-arch-quals": {
+   "id": "c-S14-P-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "main-c-S14-P-arch-quals.png"
+  },
+  "c-S14-P-arch-search": {
+   "id": "c-S14-P-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    }
+   },
+   "pic": "main-c-S14-P-arch-search.png"
+  },
+  "c-S14-P-arch-fold": {
+   "id": "c-S14-P-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-P-arch-fold.png"
+  },
+  "C14-P-errors": {
+   "id": "C14-P-errors",
+   "v": []
+  },
+  "c-S15-P-1-draft-open": {
+   "id": "c-S15-P-1-draft-open",
+   "scen": "S15",
+   "desc": "open RDACTIVE editor, type a draft sign-in",
+   "v": {
+    "row": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editor": {
+     "open": true,
+     "name": "draft-typed@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-1-draft-open.png"
+  },
+  "c-S15-P-2-quals-rename": {
+   "id": "c-S15-P-2-quals-rename",
+   "scen": "S15",
+   "desc": "go to Quals, rename RDACTIVE to RDACTIVX (callsign cell)",
+   "v": {
+    "renamed": true,
+    "toast": "Quals saved"
+   },
+   "pic": "main-c-S15-P-2-quals-rename.png"
+  },
+  "c-S15-P-3-back-to-users": {
+   "id": "c-S15-P-3-back-to-users",
+   "scen": "S15",
+   "desc": "come back to Users: row heading, editor open?, what it holds",
+   "v": {
+    "old": null,
+    "renamed": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": ""
+   },
+   "pic": "main-c-S15-P-3-back-to-users.png"
+  },
+  "c-S15-P-4-save": {
+   "id": "c-S15-P-4-save",
+   "scen": "S15",
+   "desc": "Save the editor (if open): what was saved",
+   "v": {
+    "had": false,
+    "renamed": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "old": null,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-4-save.png"
+  },
+  "c-S15-P-5-suspend": {
+   "id": "c-S15-P-5-suspend",
+   "scen": "S15",
+   "desc": "Suspend that person (editor button)",
+   "v": {
+    "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDACTIVX’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-5-suspend.png"
+  },
+  "c-S15-P-6-undo-while-open": {
+   "id": "c-S15-P-6-undo-while-open",
+   "scen": "S15",
+   "desc": "open the editor again, type a draft, press Undo (top bar) while it is open",
+   "v": {
+    "pre": {
+     "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — suspending RDACTIVX’s sign-in"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     }
+    },
+    "after": {
+     "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "Undid: suspending RDACTIVX’s sign-in",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDACTIVE’s callsign"
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — suspending RDACTIVX’s sign-in"
+      }
+     }
+    }
+   },
+   "pic": "main-c-S15-P-6-undo-while-open.png"
+  },
+  "c-S15-P-7-after-undo-save": {
+   "id": "c-S15-P-7-after-undo-save",
+   "scen": "S15",
+   "desc": "Save after the Undo (if the editor is open)",
+   "v": {
+    "had": true,
+    "row": "RDACTIVX draft-before-undo@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-7-after-undo-save.png"
+  },
+  "c-S15-P-8-nav-away-back": {
+   "id": "c-S15-P-8-nav-away-back",
+   "scen": "S15",
+   "desc": "type a draft, go to Quals, come back: editor and draft",
+   "v": {
+    "row": "RDACTIVX draft-before-undo@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-8-nav-away-back.png"
+  },
+  "c-S15-P-9-arch-draft": {
+   "id": "c-S15-P-9-arch-draft",
+   "scen": "S15",
+   "desc": "archived editor: type a callsign draft",
+   "v": {
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore as RDARCHDRAFT"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-P-9-arch-draft.png"
+  },
+  "C15-P-errors": {
+   "id": "C15-P-errors",
+   "v": []
+  },
+  "c-S19-P-0-fixture": {
+   "id": "c-S19-P-0-fixture",
+   "scen": "S19",
+   "desc": "notes on 3, 5, 6, 7 and 9 Nov and a day title on 5 Nov, through the Inputs calendar; the loaded week",
+   "v": {
+    "loadedWeek": "13/07/2026",
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-P-0-fixture.png"
+  },
+  "c-S19-P-6-range-first-press": {
+   "id": "c-S19-P-6-range-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: A date range 5-7 Nov, first press",
+   "v": {
+    "foot": "Thu 5 Nov 26 to Sat 7 Nov 26",
+    "btn": "Tap again to clear 4 items",
+    "toast": ""
+   },
+   "pic": "main-c-S19-P-6-range-first-press.png"
+  },
+  "c-S19-P-7-range-confirm": {
+   "id": "c-S19-P-7-range-confirm",
+   "scen": "S19",
+   "desc": "confirm the range clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 4 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S19-P-7-range-confirm.png"
+  },
+  "c-S19-P-8-calendar-after-range": {
+   "id": "c-S19-P-8-calendar-after-range",
+   "scen": "S19",
+   "desc": "Inputs calendar after the range clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "main-c-S19-P-8-calendar-after-range.png"
+  },
+  "C19-P-errors": {
+   "id": "C19-P-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "c-S14-P-roster-cat": {
+   "id": "c-S14-P-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-roster-cat.png"
+  },
+  "c-S14-P-roster-back": {
+   "id": "c-S14-P-roster-back",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; phone: the category back button, then Users again",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-roster-back.png"
+  },
+  "c-S14-P-roster-quals": {
+   "id": "c-S14-P-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "branch-c-S14-P-roster-quals.png"
+  },
+  "c-S14-P-roster-search": {
+   "id": "c-S14-P-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-roster-search.png"
+  },
+  "c-S14-P-roster-fold": {
+   "id": "c-S14-P-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-roster-fold.png"
+  },
+  "c-S14-P-arch-cat": {
+   "id": "c-S14-P-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-arch-cat.png"
+  },
+  "c-S14-P-arch-back": {
+   "id": "c-S14-P-arch-back",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; phone: the category back button, then Users again",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-arch-back.png"
+  },
+  "c-S14-P-arch-quals": {
+   "id": "c-S14-P-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "branch-c-S14-P-arch-quals.png"
+  },
+  "c-S14-P-arch-search": {
+   "id": "c-S14-P-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    }
+   },
+   "pic": "branch-c-S14-P-arch-search.png"
+  },
+  "c-S14-P-arch-fold": {
+   "id": "c-S14-P-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-P-arch-fold.png"
+  },
+  "C14-P-errors": {
+   "id": "C14-P-errors",
+   "v": []
+  },
+  "c-S15-P-1-draft-open": {
+   "id": "c-S15-P-1-draft-open",
+   "scen": "S15",
+   "desc": "open RDACTIVE editor, type a draft sign-in",
+   "v": {
+    "row": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editor": {
+     "open": true,
+     "name": "draft-typed@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-1-draft-open.png"
+  },
+  "c-S15-P-2-quals-rename": {
+   "id": "c-S15-P-2-quals-rename",
+   "scen": "S15",
+   "desc": "go to Quals, rename RDACTIVE to RDACTIVX (callsign cell)",
+   "v": {
+    "renamed": true,
+    "toast": "Quals saved"
+   },
+   "pic": "branch-c-S15-P-2-quals-rename.png"
+  },
+  "c-S15-P-3-back-to-users": {
+   "id": "c-S15-P-3-back-to-users",
+   "scen": "S15",
+   "desc": "come back to Users: row heading, editor open?, what it holds",
+   "v": {
+    "old": null,
+    "renamed": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": ""
+   },
+   "pic": "branch-c-S15-P-3-back-to-users.png"
+  },
+  "c-S15-P-4-save": {
+   "id": "c-S15-P-4-save",
+   "scen": "S15",
+   "desc": "Save the editor (if open): what was saved",
+   "v": {
+    "had": false,
+    "renamed": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "old": null,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-4-save.png"
+  },
+  "c-S15-P-5-suspend": {
+   "id": "c-S15-P-5-suspend",
+   "scen": "S15",
+   "desc": "Suspend that person (editor button)",
+   "v": {
+    "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDACTIVX’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-5-suspend.png"
+  },
+  "c-S15-P-6-undo-while-open": {
+   "id": "c-S15-P-6-undo-while-open",
+   "scen": "S15",
+   "desc": "open the editor again, type a draft, press Undo (top bar) while it is open",
+   "v": {
+    "pre": {
+     "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — suspending RDACTIVX’s sign-in"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     }
+    },
+    "after": {
+     "row": "RDACTIVX rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "Undid: suspending RDACTIVX’s sign-in",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDACTIVE’s callsign"
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — suspending RDACTIVX’s sign-in"
+      }
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-6-undo-while-open.png"
+  },
+  "c-S15-P-7-after-undo-save": {
+   "id": "c-S15-P-7-after-undo-save",
+   "scen": "S15",
+   "desc": "Save after the Undo (if the editor is open)",
+   "v": {
+    "had": true,
+    "row": "RDACTIVX draft-before-undo@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-7-after-undo-save.png"
+  },
+  "c-S15-P-8-nav-away-back": {
+   "id": "c-S15-P-8-nav-away-back",
+   "scen": "S15",
+   "desc": "type a draft, go to Quals, come back: editor and draft",
+   "v": {
+    "row": "RDACTIVX draft-before-undo@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-8-nav-away-back.png"
+  },
+  "c-S15-P-9-arch-draft": {
+   "id": "c-S15-P-9-arch-draft",
+   "scen": "S15",
+   "desc": "archived editor: type a callsign draft",
+   "v": {
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore as RDARCHDRAFT"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-P-9-arch-draft.png"
+  },
+  "C15-P-errors": {
+   "id": "C15-P-errors",
+   "v": []
+  },
+  "c-S19-P-0-fixture": {
+   "id": "c-S19-P-0-fixture",
+   "scen": "S19",
+   "desc": "notes on 3, 5, 6, 7 and 9 Nov and a day title on 5 Nov, through the Inputs calendar; the loaded week",
+   "v": {
+    "loadedWeek": "13/07/2026",
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [
+       "RD note 5 Nov"
+      ],
+      "title": "RD title 5 Nov"
+     },
+     "2026-11-06": {
+      "notes": [
+       "RD note 6 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [
+       "RD note 7 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-P-0-fixture.png"
+  },
+  "c-S19-P-6-range-first-press": {
+   "id": "c-S19-P-6-range-first-press",
+   "scen": "S19",
+   "desc": "Clear old clutter: A date range 5-7 Nov, first press",
+   "v": {
+    "foot": "Thu 5 Nov 26 to Sat 7 Nov 26",
+    "btn": "Tap again to clear 4 items",
+    "toast": ""
+   },
+   "pic": "branch-c-S19-P-6-range-first-press.png"
+  },
+  "c-S19-P-7-range-confirm": {
+   "id": "c-S19-P-7-range-confirm",
+   "scen": "S19",
+   "desc": "confirm the range clear",
+   "v": {
+    "btn": "Clear old clutter…",
+    "toast": "Cleared 4 items",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — a change to the calendar"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S19-P-7-range-confirm.png"
+  },
+  "c-S19-P-8-calendar-after-range": {
+   "id": "c-S19-P-8-calendar-after-range",
+   "scen": "S19",
+   "desc": "Inputs calendar after the range clear: each day",
+   "v": {
+    "cal": {
+     "2026-11-03": {
+      "notes": [
+       "RD note 3 Nov"
+      ],
+      "title": ""
+     },
+     "2026-11-05": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-06": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-07": {
+      "notes": [],
+      "title": ""
+     },
+     "2026-11-09": {
+      "notes": [
+       "RD note 9 Nov"
+      ],
+      "title": ""
+     }
+    }
+   },
+   "pic": "branch-c-S19-P-8-calendar-after-range.png"
+  },
+  "C19-P-errors": {
+   "id": "C19-P-errors",
+   "v": []
+  }
+ }
+}

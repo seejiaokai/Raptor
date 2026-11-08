@@ -90,6 +90,8 @@ Success is a week planned, checked and published with less effort and nothing mi
    was pressed hangs from that control, where the hand already is; never at the window's foot.
    Narrowed by D1627 (4 Nov 26): beyond the ✕ question, only the input window's swap, Delete and Take me out questions and
    the Leave War posting's delete (Delete chip, PO from date) are built so; the app's other questions stay as they are.
+   Widened by D1628 (4 Nov 26): the posting's delete from the Post out button, in the one-day sheet and the drag sheet,
+   and the Delete key's "Delete this input for all N people?" on an input's card in the opened day are cards too.
 
 ## Accessibility & Inclusion
 

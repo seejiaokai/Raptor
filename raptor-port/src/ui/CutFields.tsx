@@ -12,15 +12,12 @@
    A WORKED DATE sits under the fields — "For the week of Mon 19 Oct, inputs are due by the end of Mon 5 Oct." — from
    the draft, so he sees what a choice means before he saves it (the calendars' "How this works" states the rule only,
    D646). `prefix` names the fields for each window's own tests; the look is one (`sset-…`, 24-sans-calendar.css). */
-import { cutExample, cutProblem, type CutRule, type CutSet } from '../state/cutoff'
+import { cutExample, cutProblem, type CutSet } from '../state/cutoff'
+import { type CutDraft, cutRuleOf } from './cutdraft'
 import { WD_LONG, isoToday } from './daysfmt'
 import { dayWord } from './sanscal-model'
 
-export interface CutDraft { mode: 0 | 1; lead: string; wd: number; weeks: number }
-/* a typed figure: a whole number, or NaN for anything that is not one */
-const num = (v: string): number => (/^\d+$/.test(v.trim()) ? +v.trim() : NaN)
-export const cutDraftOf = (c: CutRule): CutDraft => ({ mode: c.mode, lead: String(c.lead), wd: c.wd, weeks: c.weeks })
-export const cutRuleOf = (d: CutDraft): CutRule => ({ mode: d.mode, lead: num(d.lead), wd: d.wd, weeks: d.weeks })
+/* the draft and its two readings (cutDraftOf, cutRuleOf) live in ./cutdraft, so this file exports only components */
 
 export function CutFields({ set, prefix, draft, onChange, noun }: {
   set: CutSet

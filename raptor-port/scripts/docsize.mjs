@@ -445,7 +445,7 @@ const RULING_BYTES = [
      target (D141). */
   /* design 11500 -> 14000 (4 Nov 26, claude/ask-at-the-control): 11,694 bytes with D1627, D1628 (which questions hang from
      their button); live rulings, never trimmed (D136). Room, not a target (D141). */
-  ['.claude/rules/decisions/design.md',  2, 23700],   // raised 8 Nov 26 from 21500: D1792–D1793, his pictures-round answers, took it 179 over; never trimmed (D136), a tenth above again. Before that, raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
+  ['.claude/rules/decisions/design.md',  2, 46300],   // raised 8 Nov 26 from 23700: the rules diet's step 5a made it a page (D1735) stating each ruling's full requirements, which the short lines had cut; the account by requirement corrected 17 places where the first draft bent or dropped a part, the two blind reads 17 more (the design guide's wording of the drag, one-row, feedback, one-mark and no-glow rules among them), D1901 was stated at the merge of main, and about 35 pointers to other areas were found by subject (42,087 bytes); a ruling is never cut to fit (D141), a tenth above again. Before that, raised 8 Nov 26 from 21500: D1792–D1793, his pictures-round answers, took it 179 over; never trimmed (D136), a tenth above again. Before that, raised 7 Nov 26 from 19000: D1667–D1670 (the grey "Blocked" refusal, his answers) took it 2085 over once main and the branch met; a rulings file is never trimmed (D136). Before that, raised 5 Nov 26 from 17000: round 4's answers D1701–D1707 took it 266 over. Before that, raised 5 Nov 26 from 15500: D1700 (one icon, one thing — his OIL Earn / History catch) took it 266 over; never trimmed (D136), a tenth above again. Before that, raised 4 Nov 26 from 14000: D1641–D1643 (the top bar) took it 350 over; a rulings file is never trimmed (D136), a tenth above again
 ]
 const RULING_CEILING = f => f === DECISIONS || f.startsWith(RULINGS_DIR + '/')
 
@@ -938,8 +938,21 @@ function guidePairing() {
   }
   return fails
 }
+/* THE DESIGN CHECKER'S SETTINGS, TWO COPIES THAT MUST AGREE ([CI-SMOKE-TIMEOUT], chat 19, 8 Nov 26). The design skill's
+   hook reads `.impeccable/config.json` from the chat's CURRENT folder, never a folder above it — so a chat whose shell has
+   moved into raptor-port/ read no settings at all: every skip was lost (the engine, the tests) and the side stripes he
+   ruled to keep (D1025, D729) were flagged for removal (measured: silent from the top folder, flagged from raptor-port/).
+   So raptor-port/.impeccable/config.json is a byte-for-byte copy of the top one, its globs written to match from either
+   folder. This check lives here because the Docs guard runs on every pull request; the gates skip `.impeccable/**`. */
+const DESIGN_CFG = '.impeccable/config.json', DESIGN_CFG_COPY = 'raptor-port/.impeccable/config.json'
+function designCheckerCopies() {
+  const a = readNow(DESIGN_CFG), b = readNow(DESIGN_CFG_COPY)
+  if (!a && !b) return []
+  if (a !== b) return [`${DESIGN_CFG_COPY} must be the same as ${DESIGN_CFG}, byte for byte — the design checker reads the copy in whichever folder the chat is in; copy the changed one over the other`]
+  return []
+}
 function structure() {
-  const fails = [...guidePairing()], warns = []
+  const fails = [...guidePairing(), ...designCheckerCopies()], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)

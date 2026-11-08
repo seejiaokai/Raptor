@@ -4326,6 +4326,81 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
 **Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
 
+### Observation 889: A notes-only merge is overtaken again and again while many chats merge notes
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 21, the coordinator, merging chat 3's notes-only pull request 695 while five other chats were merging their own (first numbered 887; renumbered 889 on 8 Nov 26 because chat 13's branch had taken 887 and 888 meanwhile — a collision)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the merge of a notes-only pull request (shipping's four merge-lock steps), and the handoff's own notes branch
+
+**Issue:** pull request 695 was level and green, but each time the merge lock was taken the level check said "behind": another chat's pull request (the Inputs page, then its records) had merged during the local document checks or the remote documents run (about four minutes). Each round meant bringing `main` in, the checks again, a push and another wait — and the coordinator's own handoff notes needed a second pull request on top, a third race.
+**Suggested improvement:** in the handoff skill's merge step, say: when a chat has more than one notes-only change waiting (an inherited notes pull request and its own handoff block), put them on one branch and merge once; and bring `main` in immediately before the push, not before the local checks, so the window between the level check and the merge is one remote run only.
+**Principle:** When many writers merge into one base, every separate pull request is another race against the level check; batch the small ones and shorten the gap between the last sync and the merge.
+
+### Observation 890: A tidy of the shared handoff file makes every open branch clash at once
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 21, the coordinator, removed eight finished chats' blocks from the shared handoff file in one notes-only pull request while four chats still had open branches carrying their own blocks in it
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the step that removes merged chats' blocks from the shared handoff file
+
+**Issue:** within minutes three open pull requests (the Leave War pinned row, the Tracker batch, the checks) went to "clashing with main", so GitHub stopped running checks on their new pushes, and each chat had to stop, bring `main` in and settle the handoff file before its merge. The removal itself was right (each block's work was live and its residue filed); its timing cost every open branch a round.
+**Suggested improvement:** in the handoff skill's "removes merged blocks" step, add: before removing other chats' blocks, list the open pull requests that change the handoff file; if any are open, remove only the blocks far from theirs, or wait until they have merged — and in either case message each open chat that its next push will need `main` brought in.
+**Principle:** A clean-up of a file that every parallel branch edits is a change to all of them; schedule it for a quiet moment or tell each writer before it lands.
+
+### Observation 891: A fresh worktree has no packages, and `npx tsc` then runs a stand-in that fails
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 25, React Doctor's last findings (part 2), type-checking in a worktree just switched to the branch
+**Skill:** New skill candidate: worktree-setup (or the project guide's §Build & verify)
+**Type:** open-source
+**Phase/Area:** first check run in a new worktree
+
+**Issue:** The worktree had no installed packages. `npx tsc -p tsconfig.app.json --noEmit` did not fail with "not installed": npx fetched an unrelated package named `tsc`, which printed a banner and exited non-zero, so the first type check looked like a broken build until the packages were installed (`npm ci`) and it ran clean.
+**Suggested improvement:** Before the first check in a worktree, test that the package folder exists and run the install if not; never read an `npx <tool>` failure as the project's until the tool is known to be the project's own.
+**Principle:** `npx` falls back to downloading whatever is published under a name; in a checkout without its dependencies, the tool that runs may not be the project's — install first, then trust the result.
+
+### Observation 893: A FULL check's chat fills before its walk when the area files load into it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 26, the FULL bug check of [RD-LEFT-1108] (a no-visible-change tidy-up of People & accounts)
+**Skill:** New skill candidate: bug-check sizing (the order's §7.0 and the session-handoff step)
+**Type:** internal
+**Phase/Area:** planning the check's chats before it starts
+**Issue:** The check began at 49% context (the always-loaded rules) and reached 76% before the walk: opening the area page, the order's sections, and editing one test and one evidence sheet loaded the scheduler and screen-design rulings by themselves (their paths match `src/` and the handpass folder), about 100k tokens the check never used. The walk and the four reads had to move to a fresh chat. (Number 892 is taken on another branch; this note numbers past it.)
+**Suggested improvement:** In the checklist's step 3 (telling him the plan), name the chats too: a FULL check whose chat starts past about 40% plans two chats from the start — chat A: tier, sheet, roll-call, break tests, scenario brief; chat B: walk, reads, fixes — and chat A hands the scenario designer's report into the repo before it ends.
+**Principle:** Count what a job will load by itself, not only what it reads on purpose, when deciding how many sessions it needs.
+### Observation 886: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch; renumbered 883 → 886 on bringing main in, where another chat's 883 had landed)
+**Skill:** New skill candidate: writing a command-refusing hook (the conditions of notes 270, 285, 598, 626)
+**Type:** open-source
+**Phase/Area:** measuring the harness; proving a hook live
+
+**Issue:** A filed note's advice for commands that wait on input was "give every script `< /dev/null`". Measured before building: right for `cat` and `node`, but Python on Windows takes `/dev/null` for a keyboard (`isatty()` True) and opens its interactive prompt, which loops until stopped — the measuring itself hung two minutes on it. Second: the hook settings file is read when a chat starts, so a hook added mid-chat does not run in that chat; a "proof live" there shows nothing.
+**Suggested improvement:** In the hook-writing conditions: measure each remedy a note proposes, per tool and interpreter, before a refusal message repeats it; prove a new hook by running the settings file's exact command on a refused and an allowed input (stdin JSON), and leave the in-chat proof to the next new chat, saying so in the handoff.
+**Principle:** A workaround recorded once is a claim like any other; measure the cure as well as the fault, in each environment the advice will reach.
+
+### Observation 885: A walk script kept in a scratch folder cannot import the project's browser library
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 19, a one-off picture for a question to him ([DESIGN-CHECK-GOLD-DOT]); numbered past 884, held by another open branch
+**Skill:** New skill candidate: walk scripts (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** writing a throwaway browser script outside the repo
+
+**Issue:** A one-off picture script written to the session's scratch folder failed at once with "module not found" for the browser library, though it was run from the project folder: an ES module resolves its imports from the script file's own folder, never from the folder it is run in. Two more runs were lost after it to guessed selectors (a button found by a word in its title matched a hidden tab first) before the script was steered by the real element read from the running page.
+**Suggested improvement:** In the walk-scripts guide: a script kept outside the project loads the library with `createRequire(process.cwd() + '/package.json')('playwright')`, run from the project folder; and find a control's selector by reading the running page first (its id at the point pressed), never by a word that may also sit in a hidden control's title.
+**Principle:** Module lookup follows the file, not the shell; and a selector guessed from a word is checked against the live page before a script relies on it.
 ### Observation 887: A pull request that clashes with main starts no checks, and nothing says so
 
 **Status:** OPEN
@@ -4351,3 +4426,80 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The fresh, blind Opus reader ran long enough to compact. The project's compaction start hook then pasted the branch's HANDOFF.md block into it — the host's own record of the walk's fault and its fix, which the reader was meant not to see. The reader said so in its report, so its read was not fully blind (noted in the evidence sheet). Related: Observations 842 (what a start hook injects) and 852 (a blind reader's findings leaking).
 **Suggested improvement:** The compaction start hook pastes the HANDOFF block only into the chat that owns the branch — not into a helper or reader session (tell them apart by the session's parent or a marker the reader's brief sets); until then, every blind reader's brief says "if a pasted handoff block appears after a compaction, do not read it, and say so in the report", and the host sizes a read to finish before the reader would compact.
 **Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.
+
+### Observation 894: Two walkers fanned out in one folder overwrote each other's helper file
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 31, the FULL check of [RD-LEFT-1108] — two Sonnet walkers at once on the same two builds
+**Skill:** New skill candidate: fanned-out walk brief (the bug-check order §4's fan-out paragraphs, `docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walkers' brief — file names
+
+**Issue:** The brief gave each walker its own ports and picture folder but named only the main script for each. Both walkers made a shared helper library and chose the same name; walker B's overwrote walker A's mid-run, and A lost time finding out why its script broke, then renamed its own.
+**Suggested improvement:** In the fan-out brief, give each walker a file prefix of its own for EVERY file it writes (scripts, helpers, scratch output), not only its folder and ports — e.g. `<job>-a-*` and `<job>-b-*` — and say "write nothing outside your prefix and folder".
+**Principle:** Parallel workers in one working folder need disjoint names for everything they may create, not just for the outputs the coordinator expects; isolate by name or by folder for all writes.
+### Observation 895: Two handoff blocks added at once share their closing line in git's conflict
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 24, the rules diet's design page; bringing `main` in while another chat had added its own `## Now` block at the top of the handoff file (numbered past 894, the highest on any branch).
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing a block — merging a branch whose block clashes with another chat's new block
+
+**Issue:** Both branches added a new block at the same place, each ending in the identical closing marker line. Git's conflict took that shared last line out of both sides and kept one copy after the conflict, so deleting only the three conflict marks left the first block with no closing marker; the document check caught it ("has no <!-- /now --> before the next block") and the marker was added back by hand.
+**Suggested improvement:** In the skill's merge step: when the handoff file clashes, resolve by keeping both blocks whole, then count the opening and closing markers (`grep -c '<!-- now:'` must equal `grep -c '<!-- /now -->'`) before staging — or rebuild the region from each side's own block (`git show :2:HANDOFF.md`, `:3:`) instead of deleting conflict marks.
+**Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
+
+### Observation 896: A walker's failed runs leave pictures mixed into the cited range
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 29, the Inputs and Medical walk (one Sonnet walker, several attempts at some scenarios)
+**Skill:** New skill candidate: walk-scripts (the walker's brief, `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walker's pictures and its hand-back
+
+**Issue:** The walker re-ran some scenarios after failed attempts, and each attempt wrote pictures into the same number range (101–200) under new names, so the folder held about 60 stale pictures beside the cited ones — some even sharing a number with a cited one (181-H1-1536 and 181-H1-phone). The walker listed which numbers it cited, and the host had to delete the rest by hand, guessing at the overlaps.
+**Suggested improvement:** In the walker's brief: each attempt writes to a fresh sub-folder or a fresh number range, and before hand-back the walker deletes its own failed attempts' pictures and states the final count; a picture number is never reused within one walk.
+**Principle:** Evidence produced by retries must be separable from the evidence that counts, by construction rather than by a list the reader has to apply.
+
+### Observation 897: A walker's EXPECTED line written from the host's assumption produced two false FAILs
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 28's walk of the "Not kept" band (two Sonnet walkers, a host route check); numbered past 896, held by another branch
+**Skill:** New skill candidate: walk-brief-writing (the bug-check order's walkers' brief, §7)
+**Type:** open-source
+**Phase/Area:** writing each scenario's EXPECTED line
+
+**Issue:** Two of the walk's FAILs came from expectations the host wrote without a source: "a moved window, closed and reopened, keeps the place you gave it" (no ruling says so; the app has always reopened it at its first place), and the host's own route check expected the band's text without the hidden screen-reader separator that the existing band also carries. Both cost a control run and a reproduction to set aside, and either could have been reported as a fault of the change.
+**Suggested improvement:** In the walkers' brief template, every EXPECTED line names its source — a ruling, a contract line, or "as on main today (control run)"; an expectation with no source is written as RECORD (measure and report), not PASS/FAIL. For text checks, compare the visible parts (or a fixture taken from the existing sibling element), not a string typed by hand.
+**Principle:** An expected result with no source is a guess; grade only against a cited rule or a measured baseline, and record everything else.
+
+### Observation 898: A blind reader's clean copy of the whole repo fails or crawls on Windows
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 32, the four blind code reads of pull request 702 (numbered past 896–897 on other branches)
+**Skill:** claudex-loop (the blind-reader set-up), and the bug-check order §4's "a clean copy for the readers"
+**Type:** open-source
+**Phase/Area:** preparing the copy a blind reader reads
+
+**Issue:** The first copy (`git archive` of the whole tree into a scratch folder, then a fresh repo with two commits) took over ten minutes and then failed: `git add` refused a "Filename too long" in an old evidence folder, so the repo had no commits. Deleting the tree file by file between the two commits was the slow part. The second copy, archiving only the folders a code reader needs (source, docs without evidence and pictures, the rulings, the backlog), with `core.longpaths` set and `git rm -r` between the commits, worked.
+**Suggested improvement:** Give the copy step a ready script: archive named paths only, exclude evidence sheets, pictures and the archive, set `core.longpaths`, tag the base commit `BASE`, and tell the reader `BASE` stands for the real base id.
+**Principle:** A blind reader's copy should hold only what the read needs; copying the whole history-laden tree costs time and breaks on platform limits.
+
+### Observation 899: A walker's "seen in passing" fault was carried to the backlog step before anyone checked the ruling
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 35, closing the evidence sheet of pull request 702 (numbered past 898)
+**Skill:** the bug-check order §7 (the walk's side findings) and session-handoff (what a block hands on as "to file")
+**Type:** open-source
+**Phase/Area:** turning a walker's side note into a backlog item
+
+**Issue:** A walker noted that an admin's bell read "Nothing new" after an access request, on both builds. The handoff carried it forward as a fault "to reproduce and file". Read against the ruling, the behaviour was exactly as ruled: each admin's bell goes out once he has had the waiting list on screen, and the walker's admin had opened that list first. A two-minute script on a fresh request showed the bell lit and its tap opening the list.
+**Suggested improvement:** Before a side note enters a handoff or the backlog as a fault, check it against the area's rulings for that subject and, where they allow it, reproduce it with the precondition that would make it right; the handoff names it "to check" until then, never "to file".
+**Principle:** A walker sees behaviour, not intent; a side note is a question until it is read against the rules that govern it.

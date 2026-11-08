@@ -380,7 +380,9 @@ if (!files.length) {
 }
 const haystack = files.map((f) => readFileSync(f, 'utf8')).join('\n')
 
-const unnamed = Object.keys(RULES).filter((id) => !new RegExp(`\\b${id}\\b`).test(haystack))
+/* `(?!\.\d)`: a drawing's path ("Q11.5 35.8") is not a test naming Q11 (Astra's read, 8 Nov 26 — Q11 had left the
+   baseline on that coincidence and a review note's "Q11") */
+const unnamed = Object.keys(RULES).filter((id) => !new RegExp(`\\b${id}\\b(?!\\.\\d)`).test(haystack))
 
 const added = unnamed.filter((id) => !BASELINE.has(id))
 const cleared = [...BASELINE].filter((id) => !unnamed.includes(id))

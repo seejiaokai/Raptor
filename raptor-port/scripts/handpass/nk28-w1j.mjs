@@ -1,0 +1,30 @@
+// W1 part J: scenario 9 (guest view under the band). Version: nk28-w1j v1
+console.log('nk28-w1j v1')
+const H = await import('./nk28-w1-lib.mjs')
+const { L, world, sleep, tab, shot, vis, ok, note, finish } = H
+const w = await world({}); const p = w.page
+await p.waitForSelector('#luser'); await L.login(p, 'a'); await tab(p, 'admin'); await sleep(900)
+console.log(await p.evaluate(() => { const h = [...document.querySelectorAll('h4.adm-sub')].find(e => /guest view/i.test(e.textContent)); const c = h.parentElement; return c.outerHTML.replace(/\s+/g, ' ').slice(0, 900) }))
+const sw = p.locator('h4.adm-sub:has-text("Guest view") ~ * input[type=checkbox], h4.adm-sub:has-text("Guest view") ~ * button, h4.adm-sub:has-text("Guest view") ~ button, h4.adm-sub:has-text("Guest view") ~ label').first()
+await sw.scrollIntoViewIfNeeded().catch(() => {}); await sw.click({ timeout: 5000 }).catch(e => console.log('switch click fail', String(e.message).split('\n')[0])); await sleep(700)
+const pa = await shot(p, '09-guest-switch')
+await p.locator('button', { hasText: 'Logout' }).first().click(); await sleep(1200)
+await p.waitForSelector('#luser')
+await p.fill('#luser', 'zz'); await p.fill('#lpass', 'zz'); await p.click('#loginForm button[type=submit]'); await sleep(1500)
+await p.fill('#accCs', 'Walker'); await p.fill('#accIni', 'WK')
+const sels = p.locator('select:visible'); const n = await sels.count()
+for (let i = 0; i < n; i++) await sels.nth(i).selectOption({ index: 1 }).catch(() => {})
+await p.click('#accSend'); await sleep(1500)
+const v = p.locator('button, a', { hasText: 'View the schedule' }).first()
+const has = await v.count()
+const pb = await shot(p, '09-wait-with-view')
+if (!has) { ok('9 guest page', null, 'no "View the schedule" button on the waiting screen (switch maybe not turned on)', pb) } else {
+  await v.click(); await sleep(1500)
+  const band = await vis(p, '.savestat.nokeep, .saveband')
+  const info = await p.evaluate(() => { const b = document.querySelector('.savestat.nokeep, .saveband'); const r = b && b.getBoundingClientRect(); const bar = [...document.querySelectorAll('header, .topbar, .guestbar, [class*=guest]')].filter(e => e.getBoundingClientRect().width > 300 && e.getBoundingClientRect().top < 5).map(e => String(e.className).slice(0, 25) + ' ' + Math.round(e.getBoundingClientRect().top) + '-' + Math.round(e.getBoundingClientRect().bottom)); const e = r && document.elementFromPoint(r.left + r.width / 3, r.top + r.height / 2); return { cls: b && String(b.className), bandT: r && Math.round(r.top), bandB: r && Math.round(r.bottom), bars: bar, atBand: e ? e.tagName + '.' + String(e.className).slice(0, 25) : null, text: document.body.innerText.replace(/\s+/g, ' ').slice(0, 200) } })
+  const pc = await shot(p, '09-guest-page')
+  ok('9 guest page: band under its bar, not covered', !!band && !!info.atBand && /savestat|saveband/.test(info.atBand) , JSON.stringify(info), pc)
+}
+if (w.errors.length) note('9 page errors', w.errors.join(' | '))
+finish('results-j.json')
+await L.closeAll()

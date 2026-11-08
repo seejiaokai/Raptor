@@ -116,10 +116,11 @@ export function HlIcon() {
 
 /** A search magnifier — the Lucide line glyph, so the phone search boxes read
  *  as one of the toolbar's own muted line icons instead of the glossy full-
- *  colour native 🔍 emoji they used to print (owner, 23 Aug 26). */
-export function SrchIcon() {
+ *  colour native 🔍 emoji they used to print (owner, 23 Aug 26). The Tracker's
+ *  three search boxes wear it too, with their own class (owner D1900, 8 Nov 26). */
+export function SrchIcon({ className = 'btnglyph' }: Cls = {}) {
   return (
-    <svg className="btnglyph" viewBox="0 0 24 24" aria-hidden="true" fill="none"
+    <svg className={className} viewBox="0 0 24 24" aria-hidden="true" fill="none"
       stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="11" cy="11" r="7" />
       <path d="m21 21-4.3-4.3" />

@@ -28,7 +28,7 @@ import { SEATS, catsFor, seatLabel, MAX_CS, MAX_INITIALS, SIGNUP_CALLSIGN_LABEL,
 import { notify, resetSession } from '../state/store'
 import { logOut } from './logout'
 import { useVersion } from './useStore'
-import { SaveBand, useSaveFailed } from './SaveStatus'
+import { SaveBand, useBandUp, useSaveFailed } from './SaveStatus'
 
 const CLAWS = 'M3 8 Q4.9 38.3 24 62 Q11.5 35.8 3 8 Z M16 0 Q17.4 35.0 42 60 Q26.6 31.0 16 0 Z M31 -2 Q36.4 23.5 58 38 Q42.9 19.1 31 -2 Z'
 
@@ -129,8 +129,11 @@ export function AccessScreen() {
   /* a save that failed shows on these screens too, across the top, the screen moved down under it (owner D1657): his
      request may be the very thing that did not save, and the waiting screen must not read as if it had gone */
   const failed = useSaveFailed()
+  /* …and a browser that keeps nothing shows its "Not kept" band there too, in the same room (D1901); the pass still reads
+     "Not sent yet" only for a save that failed (D1664) */
+  const bandUp = useBandUp()
   const screen = (id: string, card: React.ReactNode) => (
-    <div className={'login' + (failed ? ' band-up' : '')} id={id}>
+    <div className={'login' + (bandUp ? ' band-up' : '')} id={id}>
       <SaveBand screen />
       <div className="login-wrap"><Mark />{card}</div>
     </div>
@@ -173,6 +176,7 @@ export function AccessScreen() {
           <p className="acc-p">You're not on the squadron's list yet. Tell the admins who you are and they'll give you access.</p>
           {/* no maxLength on this box (D226): a longer name is SAID, never quietly cut */}
           <label htmlFor="accCs">{SIGNUP_CALLSIGN_LABEL}</label>
+          {/* eslint-disable-next-line react-doctor/no-autofocus -- the request card is the whole page a newcomer meets after signing in, and the callsign its first box: the caret waits there so he types straight away, as the sign-in card's username does (Login.tsx) */}
           <input id="accCs" autoComplete="off" placeholder="callsign or name" autoFocus
             value={cs} onChange={e => setCs(e.target.value)} />
           {cs.trim().length > MAX_CS && <div className="cs-long" id="accCsLong">{CS_TOO_LONG}</div>}
