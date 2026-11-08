@@ -146,7 +146,6 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
-- [LW-PIN-LAST-FRAME] — the pinned dates row (and Quals' heading) still blinks for one painted frame: the browser's own; it went live so (D1850), and this is the job: a new way of pinning, measured first. **Built on `claude/lw-pin-last-frame` (pull request 694), PARKED 8 Nov 26 by chat 16:** its show-on-scroll step halves a slow phone's page frames while a finger scrolls, in Chromium; a question for him (the evidence sheet `raptor-port/docs/handpass/2026-11-08-lw-pin-last-frame.md` §The diagnosis) — **answered D1871: on his iPhone it does not feel slow; kept as built, the walk next.** Found with it (his recording 8 Nov 26 14:31): scrolled all the way to the bottom of the Leave War on his iPhone, the top bar goes out of view, then the pinned dates row is missing until he scrolls back up — the missing row FIXED here, red-first (it was placed from where the bar stood mid-bounce; now from the bar's height); the bar itself is [TOPBAR-BOUNCE-AWAY].
 - [TOPBAR-BOUNCE-AWAY] — on his iPhone, a flick to the foot of a page bounces it and the bounce carries the top bar off screen for a moment (every page, the live app too); the PC cannot show it — a trial on his iPhone, and his say on the page no longer bouncing.
 - [REDUCE-MOTION-SIDEWAYS] — with "reduce motion" switched on in the phone or computer, the pinned dates row (and Quals' heading) may stop following a sideways scroll — read in the code, not yet seen on screen.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
@@ -1030,22 +1029,6 @@ decision about which of the six types count (a two-hour Appointment is not a day
 and the projection is a new seam into the war. Not a line. **Priority: his call — raised with him on
 21 Sep and filed at his word.**
 
-### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
-
-**His answer, 8 Nov 26 (D1850):** "Merge live" — the fix went live with this frame left, and this item is the job of its own: the fresh code reader's idea, a pinned row the browser moves by itself (a scroll-driven timeline, the pinned copy always drawn), tried and its frames measured before anything is built.
-
-Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
-pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
-`ph-chromium-s11-painted-frames.png` frame 5). D1789's build commits the pinned row in the same frame the PAGE'S CODE
-hears of the scroll — that took the blink from two painted frames to one on the desktop wheel, and leaves one on a phone
-flick (the Leave War and Quals). The last frame is the browser's own: it moves the page and paints it before the page's
-code hears of the scroll, so a pinned row drawn by the code is always one frame late there. **To remove it:** the browser
-must keep the row pinned itself — a pinned copy always there, laid under what scrolls above it so it shows only once the
-real row has gone under the bar, or the browser's own pinning — a change to the grid's layering (its pinned names
-column, zoom, Rearrange, the month strip and the windows over it), with its own walk. **His question, with the pictures
-(lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
-built. **Place:** after his look at pull request 680. **Measured, chat 14, 8 Nov 26 (branch `claude/lw-pin-last-frame`, a prototype, not for keeps):** the pinned copy kept mounted and shown by the browser on the page's own scroll (a scroll-driven fade at the point the row meets the top bar) — painted frames, 5 runs each way, desktop 1536×864 wheel and phone 402×874 flick, the Leave War and Quals: today 1 blink frame in every one of 40 runs; the prototype 0 in 40. Frame times at 4× CPU: median 16.7 ms both; p95 no worse; main-thread work lower on the Leave War (desktop 2390 → 1665 ms a scroll); phone frames over 33 ms 6 → 20 on the Leave War, at the 33 ms mark — to re-measure in the build. Results and sheets: `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/`; script `raptor-port/scripts/handpass/lwpin-frames.mjs`. **His answer (D1870, 8 Nov 26):** he sees the blink on his iPhone on the live app and the trial cures it — built for keeps, with the full check (the steps: chat 14's handoff block).
-
 ### [REDUCE-MOTION-SIDEWAYS] With reduce motion on, the pinned rows may not follow a sideways scroll (8 Nov 26)
 
 Found by chat 16 while building [LW-PIN-LAST-FRAME] (D1870), by reading the code — **not yet seen on screen**, and the
@@ -1061,7 +1044,7 @@ move the row with the finger, which is not the motion the setting is for. **Plac
 
 ### [TOPBAR-BOUNCE-AWAY] A flick to a page's foot on his iPhone carries the top bar off screen (8 Nov 26)
 
-**His words (8 Nov 26, to chat 16):** "I found an existing bug, when in scroll all the way to the bottom, the top bar goes
+**His words (8 Nov 26, to chat 16, with D1871 — the same message kept the pinned row as built):** "I found an existing bug, when in scroll all the way to the bottom, the top bar goes
 out of view" — his recording `C:/Users/User/.claude/uploads/bfddd1cb-8b24-453c-b9e5-f54c2d5dd233/94560df1-ScreenRecording_11-08-2026_14-31-42_1.mp4`
 (the Leave War, Safari on his iPhone; frames tiled in `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/his-recording-bottom.png`).
 **What the frames show (chat 16's reading, not proven):** a hard flick reaches the page's foot, Safari folds its toolbar
@@ -1941,7 +1924,10 @@ Each line is a place where a tool allowed a mistake that a guide now only warns 
   not two hours of age, and not the process id of the command that took it (342). `run` records its own process, so
   the next taker can tell a stopped run from a live one (391). `run` checks its `--from` folder holds a
   `package.json` before taking the lock, and its usage line shows the form that works from both folders (504). Its
-  header still says "one test file needs no lock" — bring it in step with the corrected rule (444).
+  header still says "one test file needs no lock" — bring it in step with the corrected rule (444). `take` crashes
+  (ENOENT, reading the lock folder's status) when the lock is released between two of its tries, so a waiting `exec`
+  dies instead of taking the freed lock — found 8 Nov 26 by chat 16 ([LW-PIN-LAST-FRAME]); treat a lock gone mid-read
+  as free and try again.
 - **The break-test runners (`scripts/handpass/breaks.mjs`, `breaks-browser.mjs`).** Check every entry of a list
   before the first break, and restore the true build on every way out, an error included (471). A subset chosen by
   a pattern, and the result written as a table into the evidence folder (540).

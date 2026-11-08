@@ -267,3 +267,46 @@ None: 0 console errors, page errors or 4xx responses in either walk or the re-wa
    0.003 — no seam; Q11 the same.
 
 ## The reads
+
+- **Astra (Codex), the standing reviewer:** no fault in the app; his finding 1 was in the tests and is fixed there.
+- **The fresh, blind Opus reader** (of 8dfa5dec0; its report kept in the chat's scratchpad, summarised here):
+  - **F1 — a frame with no pinned row at the lift of a zoom made part-way down: REAL.** Fixed red-first in four rounds:
+    `holdShown` / `qHoldShown` hold a freshly made showing step shown by an inline opacity that follows `.up` until the
+    step runs, called at each pinch's lift and in each `[stuck]` layout effect; round 4 (b0809f551) keeps the Leave War's
+    copy across a zoom or a redraw instead of taking it off the page.
+  - **F2 — the first frame back on the grid from Balances: REAL, and missed once.** Its browser test passed after F1's
+    fix only because it started reading frames in a second call, after the first frame had painted. The re-walk below
+    read from the press itself and caught it — and the same frame coming back to the Leave War page from another page —
+    at both sizes. **Fixed red-first (110267a33):** the frame reader makes the press in the task that starts it (the
+    Balances test, and a new page-return test: 4 failed on "frame 0" before, 4 passed after); the grid watches the two
+    switches that hide it (the tab's `hidden`, the page's class) and, as either changes, measures the copy afresh and holds
+    it shown. Quals' page return lands at the top (the app scrolls to the top on a page change), so it has no such frame —
+    read from the code, not walked.
+  - **Q1 — the turn-on point after a zoom: not reproduced** (the test "after a zoom … still turns on where the row meets
+    the bar" green); round 4 is also its fix.
+  - **Tidiness — filed, not fixed (D489):** the two pages measure the copy in two near-copies of one routine; untrue
+    comments at the Leave War's `[stuck]` layout effect and at two places in Quals' pin code; no D1870 entry in
+    `performance.md`; cheaper measures not taken — the frozen corner drawing only its columns, `@property --lwy-s` not
+    inherited, no `translateZ(0)`.
+- **Reads owed:** the F2 fix (110267a33) changed the app after both reads; a short fresh read of that diff is owed, or the
+  job goes on the reads-owed list — put to him.
+
+### The re-walk after the reads (8 Nov 26, `scripts/handpass/lwpin-rewalk-lift.mjs`, a build of 39d1f4ca0)
+
+Every frame read — is the real row under the top bar, is the copy shown — from the press itself, with a picture right
+after and one settled (`docs/img/handpass/2026-11-08-lw-pin-last-frame/walk/rewalk-lift/`, `results.json`):
+
+| Check | Size | Frames with the row under the bar and no copy |
+|---|---|---|
+| The Leave War, a zoom's lift part-way down (Ctrl+scroll) | desktop 1536 | none (of 226 after the lift) |
+| The Leave War, a zoom's lift part-way down (pinch) | phone 402 | none (of 201 after the lift) |
+| Quals, a pinch's lift part-way down | phone 402 | none (of 202 after the lift) |
+| Back on the grid from Balances, scrolled down | desktop / phone | none of 40 / none of 40 (frame 0 on the build before 110267a33) |
+| Back on the Leave War from Quals, scrolled down | desktop / phone | none of 60 / none of 60 (frame 0 on the build before 110267a33) |
+
+No page error, no failed request. The host opened the pictures right after each return, phone and desktop: the pinned
+dates row in place under the top bar, nothing of the rows showing through. **Lesson kept here:** a frame reader started in
+a call of its own after the press can miss the very frame it is meant to catch — start it in the same task as the press.
+
+Walk: re-walk, 7 checks at desktop 1536 and phone 402, each frame read from the press, 7 PASS after the fix (2 FAIL before
+it, fixed red-first); pictures in `walk/rewalk-lift/`.
