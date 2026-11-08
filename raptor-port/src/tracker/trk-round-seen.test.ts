@@ -52,6 +52,27 @@ describe('D1790 — where the marking window opens', () => {
     expect(p.y).toBeGreaterThanOrEqual(150)
     expect(p.y + p.maxH).toBeLessThanOrEqual(390 - POP_EDGE)
   })
+  /* Astra's read, finding 3 (8 Nov 26): sideways, a slide stopped short (the chart's end, or a slide cut off) left the
+     window a forced 120 tall under the event, its foot past the screen's (333 + 120 = 453 on a 390 screen), while 142
+     stood free above the event */
+  it('a phone on its side with the chart unable to slide: never past the screen\'s foot — held above the event, scrolling inside', () => {
+    for (const room of [0, 50]) {
+      const p = placePop({ w: 210, h: 429, vw: 844, vh: 390, top: 150, ball: { top: 300, bottom: 329 }, tap: { x: 400, y: 314 }, room })
+      expect(p.y, `room ${room}: not over the bars`).toBeGreaterThanOrEqual(150)
+      expect(p.y + p.maxH, `room ${room}: not past the screen's foot`).toBeLessThanOrEqual(390 - POP_EDGE)
+      expect(p, `room ${room}`).toMatchObject({ slide: 0, how: 'above' })
+      expect(p.y + p.maxH, `room ${room}: not over the event`).toBeLessThanOrEqual(300 - POP_GAP)
+    }
+  })
+  it('wherever it opens, its foot never passes the screen\'s and its top never the chart box\'s', () => {
+    for (let vh = 300; vh <= 900; vh += 50) for (let bt = 160; bt < vh - 30; bt += 37) for (const room of [0, 30, 120, 5000]) {
+      const p = placePop({ w: 210, h: 429, vw: 402, vh, top: 150, ball: { top: bt, bottom: bt + 29 }, tap: { x: 100, y: bt + 14 }, room })
+      const at = `vh ${vh}, event ${bt}, room ${room}`
+      expect(p.y, at).toBeGreaterThanOrEqual(150)
+      expect(p.y + p.maxH, at).toBeLessThanOrEqual(vh - POP_EDGE)
+      expect(p.slide, at).toBeLessThanOrEqual(room)
+    }
+  })
   it('never past the screen\'s right edge', () => {
     expect(placePop({ ...at(200), tap: { x: 380, y: 214 } }).x).toBe(PH.vw - PH.w - POP_EDGE)
   })

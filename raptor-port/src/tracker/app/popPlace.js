@@ -3,8 +3,9 @@
    top — over the top bar, the Tracker bar and the Flow chart / Info / Show All tabs, and over the event itself, on every
    Find and every crew pick (each lands its event in the middle of the chart, D984). Now:
      1. it opens under the event when it fits there whole;
-     2. else the chart slides the event up — only as far as needed, never past the chart box's top (the tabs' foot on a
-        phone, the Tracker bar's on a desktop) — and the window opens whole under it (A);
+     2. else the chart slides the event up to the drawing's place, its top 22px under the chart box's top (the tabs'
+        foot on a phone, the Tracker bar's on a desktop) — "only as far as needed" read as the approved drawing's 232px
+        for ACG-09, the fresh reader's Q1 and Astra's read agreeing — and the window opens whole under it (A);
      3. an event too near the chart's end to slide that far: nothing moves, and the window is held between the chart
         box's top and the event, scrolling inside itself where it is taller than that room (the page's B);
      4. a screen too short for the window anywhere (a phone on its side): the event slides as high as it may and the
@@ -39,12 +40,15 @@ export function placePop(g) {
   const upTo = Math.max(0, Math.floor(bTop - (top + POP_TOP_ROOM)));
   const can = Math.min(upTo, room);
   if (need <= can) return { slide: can, x, y: below - can, maxH: foot - (below - can), how: 'slide' };
-  /* 3. B: held above the event, nothing moving — whole where it fits there; scrolling inside where the chart's end
-     stopped the slide that the room under the tabs would have allowed */
+  /* 3. B: held above the event, nothing moving — whole where it fits there; scrolling inside where the chart's end is
+     what stopped the slide (less room left than the slide would use — a slide cut short included: Pop.jsx places
+     again at rest with no room), Astra's read, finding 3 (8 Nov 26) */
   const aboveRoom = Math.floor(bTop - POP_GAP - ceil);
   if (aboveRoom >= h) return { slide: 0, x, y: bTop - POP_GAP - h, maxH: h, how: 'above' };
-  if (upTo >= need && room < need && aboveRoom >= POP_MIN) return { slide: 0, x, y: ceil, maxH: aboveRoom, how: 'above' };
-  /* 4. too short a screen for it anywhere: the event as high as it may go, the window under it, scrolling inside */
-  const y = below - can;
-  return { slide: can, x, y, maxH: Math.max(POP_MIN, foot - y), how: 'short' };
+  if (room < Math.min(upTo, need) && aboveRoom >= POP_MIN) return { slide: 0, x, y: ceil, maxH: aboveRoom, how: 'above' };
+  /* 4. too short a screen for it anywhere: the event as high as it may go, the window under it, scrolling inside —
+     never past the screen's foot: where less than POP_MIN is left under it and more stands above, it goes above */
+  const y = below - can, belowRoom = foot - y;
+  if (belowRoom < POP_MIN && aboveRoom > belowRoom) return { slide: 0, x, y: ceil, maxH: Math.max(0, aboveRoom), how: 'above' };
+  return { slide: can, x, y: Math.min(y, foot), maxH: Math.max(0, belowRoom), how: 'short' };
 }

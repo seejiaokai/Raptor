@@ -3954,7 +3954,7 @@ function enableHScroll(el) {
   /* a mouse press that gives the chart the focus takes the ring away at once (the fresh code read's finding 3) */
   /* never in Edit chart layout: there the board's scroll is the editing canvas's place (the Tracker suite's "Done editing
      keeps the middle" check caught a focus scrolling it, 17 Oct 26) */
-  el.addEventListener('focus', () => { if (arrangeMode) { kbdShown = false; return; } let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) kbdLand(); paintKbdRing(); if (fv) kbdKeepInView(); });
+  el.addEventListener('focus', () => { if (arrangeMode) { kbdShown = false; return; } let fv = true; try { fv = el.matches(':focus-visible'); } catch (_) {} kbdShown = fv; if (fv) kbdLand(); paintKbdRing(); if (fv && !kbdHoldView) kbdKeepInView(); });
   /* the keyboard leaving for the pop-up it opened keeps the ring on, so the event being marked stays marked */
   el.addEventListener('blur', () => { if (pop && popByKey) return; kbdShown = false; paintKbdRing(); });
 }
@@ -3972,6 +3972,10 @@ function enableHScroll(el) {
    runs there. */
 export let kbdId = null;
 let kbdShown = false;
+/* set only while kbdBack hands the keyboard back from the marking window: the chart stays where that window left it
+   (D1790, "stays there after Close"), so the focus does not pull the ringed event its 28px clear of the edge — the
+   window's slide puts it 22px under the top, as drawn (Astra's read, finding 2, 8 Nov 26) */
+let kbdHoldView = false;
 const KBD_RING = '#1E86FF';
 function kbdBall(id) { return id ? [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id) || null : null; }
 function kbdLand() {
@@ -4075,10 +4079,11 @@ function chartKey(e) {
 /* any Tracker window, question or list that sits over the chart */
 function windowUp() { return !!(dlg || infoId != null || editId != null || showAllOpen || ordMode || copyOpen || sylModalOpen || failLog || downLog || lullPick || lullCopy); }
 /* the keyboard goes back to the chart, on the same event, when the pop-up it was in closes (Escape, a grade, Close) */
-function kbdBack() {
+function kbdBack(holdView) {
   const bd = document.getElementById('board'); if (!bd) return;
   kbdShown = true;
-  try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); }
+  kbdHoldView = !!holdView;
+  try { try { bd.focus({ preventScroll: true }); } catch (_) { bd.focus(); } } finally { kbdHoldView = false; }
   kbdShown = true; paintKbdRing();
 }
 /* Stop the phone's own glide before the app moves the box itself (D989, kept by D992): dragScroll hangs the stop on the box. */
@@ -4835,7 +4840,7 @@ export function closePop(toWindow) {
   let keys = popByKey; if (inside && !keys) { try { keys = a.matches(':focus-visible'); } catch (_) {} }
   pop = null; popMsg = null; popByKey = false; notify();
   if (toWindow) { infoByKey = inside && keys; return; }
-  if (inside && keys) { kbdBack(); return; }
+  if (inside && keys) { kbdBack(true); return; }
   /* closed some other way — a press outside it, another tab: the keyboard is not on the chart, so its ring goes */
   if (kbdShown && !(typeof document !== 'undefined' && document.activeElement && document.activeElement.id === 'board')) { kbdShown = false; paintKbdRing(); }
 }

@@ -126,6 +126,34 @@ export default function Pop() {
     raf = requestAnimationFrame(tick);
     return () => { if (raf) cancelAnimationFrame(raf); };
   }, [p]);
+  /* TURNED OR RESIZED WHILE OPEN (Astra's read, finding 1, 8 Nov 26 — older than D1790, kept from before): placed again,
+     nothing sliding, two frames after the change so the chart's own refit has landed, beside the event where it now
+     stands. Only a change of WIDTH — a phone turned, a desktop window resized: the phone's keyboard opening over a date
+     box changes the height alone, and the window must not move under a finger typing in it. A slide still running
+     places it again at rest, from what it measures then. */
+  useEffect(() => {
+    if (!p || typeof window === 'undefined' || typeof requestAnimationFrame === 'undefined') return undefined;
+    let w0 = innerWidth, raf = 0;
+    const again = () => {
+      /* still sliding (drawn unseen until placed): the slide places it at rest */
+      const el = ref.current; if (!el || el.style.visibility === 'hidden') return;
+      const bd = document.getElementById('board'), r = el.getBoundingClientRect();
+      const g = [...document.querySelectorAll('#flowSvg .ball')].find(n => n.dataset.id === p.id);
+      const b = g ? g.getBoundingClientRect() : null;
+      setPosn(placePop({ ball: b && b.height ? { top: b.top, bottom: b.bottom } : null,
+        tap: { x: b && b.width ? b.left + b.width / 2 : p.x, y: p.y }, w: r.width,
+        h: el.scrollHeight + (el.offsetHeight - el.clientHeight), vw: innerWidth, vh: innerHeight,
+        top: bd ? bd.getBoundingClientRect().top : 0, room: 0 }));
+    };
+    const onResize = () => {
+      if (innerWidth === w0) return;
+      w0 = innerWidth;
+      if (raf) cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => { raf = requestAnimationFrame(() => { raf = 0; again(); }); });
+    };
+    addEventListener('resize', onResize);
+    return () => { removeEventListener('resize', onResize); if (raf) cancelAnimationFrame(raf); };
+  }, [p]);
   /* OPENED FROM THE KEYBOARD, IT TAKES THE KEYBOARD (owner D980, 17 Oct 26): the keyboard lands on the grade the event
      has now (Not done when it has none), so a second Enter changes nothing; the pop-up's own Escape (core.handleEscapeKey)
      and every grade and Close hand the keyboard back to the same event on the chart (core.closePop). Opened by a mouse or
