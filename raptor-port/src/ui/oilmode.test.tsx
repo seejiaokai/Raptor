@@ -812,6 +812,22 @@ describe('the pictures round: the day switch, a tap that cannot earn, the phone 
     expect((DAYS[SAT] as any).oild.blanket, 'on, once').toBe(1)
   })
 
+  /* F2 OF THE OPUS CODE READ (8 Nov 26): the words' own click reached the page's blank-space clear — a label was not in
+     its list of controls — so a press on "No OIL earned" also dropped the picked man, the search and the highlights; a
+     press on its slider did not. One control, one behaviour. */
+  it('D1782 — a press on the switch’s words keeps the picked man, as a press on its slider does', async () => {
+    addRow(SAT, { prog: 'FAMILY DAY', str: '0900', end: '1700', who: 'bane' })
+    await open(SAT)
+    await click(oilBtn())
+    await act(async () => { view.selectPerson('bane'); notify() })
+    expect(view.SELID).toBe('bane')
+    const lab = sw().closest('label') as HTMLElement
+    await act(async () => { lab.click() })
+    expect((DAYS[SAT] as any).oild.blanket, 'on, once').toBe(1)
+    expect(view.SELID, 'the picked man stays picked').toBe('bane')
+    await act(async () => { view.selDrop(); notify() })   // the pick is module state: never hand it to the next test
+  })
+
   it('D1783 — a tap on a man with no working hours on his row picks nothing and says why', async () => {
     addRow(SAT, { prog: 'NO TIMES', str: '', end: '', who: 'plasma' })
     await open(SAT)
