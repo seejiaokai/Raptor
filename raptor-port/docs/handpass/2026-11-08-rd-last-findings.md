@@ -147,4 +147,25 @@ Each wire cut by hand in the source, the named tests run, the source put back (`
 
 ## 11. Not walked, and why
 
+Chat 32 sized what walker B did not reach (B's report, its "not walked"). S14, S15 and S19 with real clutter went to a
+third walker (§5, walker C). The rest, each with its reason (§7.0's rule on a designer's scenario set aside):
+
+- **S09, the bell's take-back for a second admin** — on both builds the second admin's bell drew no posting lines at
+  all, so there was nothing to read or take back on either; B's bell steps (H03 a tap, H04 Mark all read and a reload)
+  ran on that empty bell, the same on both, and the change history's Mark all as seen (H05) with lines. The bell's read
+  marks with real lines are carried by `people-settings-wire-real.test.ts` groups 1–3 (a read kept through an Undo and
+  a Redo, landing for a member and an admin, put back after a failed change) — data changed directly, so they prove
+  the wire, not the screen. The missing bell line is a
+  fault of `main` as well, seen in passing (§10), not of this change.
+- **S10, the 12 settings B did not drive** — the eleven settings keys' command types, their loaders and the order the
+  loaders run in are byte for byte `main`'s (the diff touches only the four module loaders now handed in); every setting
+  rolls back and undoes through the one loader list, which B drove through three settings of different shapes (a
+  switch, an ordered list with Reset, a window's Save) on both builds — Undo, Redo, reload, all the same. A wrong
+  module loader would show on any of them, and the break tests (§7) cut each.
+- **S22's downstream readings (Leave War, Tracker, availability)** — no file those pages read was touched, and the
+  archive, restore, posting and delete commands are the same commands with the same types; A and B walked each journey
+  to its Users, Quals and sign-in result on both builds, the same. What could differ — which loaders a rollback re-runs
+  — the Leave War and the Tracker do not use (their own stores).
+- **S06 and the J variants** — carried by tests (`people-settings-wire-real.test.ts` group 3), as the sizing said.
+
 ## 12. Gate counts

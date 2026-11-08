@@ -319,6 +319,34 @@ describe('a row closed and opened again starts from his saved values', () => {
     expect($('#accArDelNote')).toBeNull()
   })
 
+  /* the other half (chat 32's reads, 8 Nov 26 — Astra's and Sol 6.1's host check): while the row stays open, a redraw
+     caused by something else keeps what is typed and the armed Delete — the editor is only re-made when the row closes */
+  it('on the roster: a redraw from elsewhere keeps the typed sign-in, the role and the armed Delete', async () => {
+    await users()
+    await click($('#accList [data-person="rocky"] .acc-tap'))
+    await type($('#accEdName') as HTMLInputElement, 'typed@not.saved')
+    await type($('#accEdRole') as HTMLSelectElement, 'admin')
+    await click($('#accEdDel'))
+    await act(async () => { notify() })
+    expect(($('#accEdName') as HTMLInputElement).value).toBe('typed@not.saved')
+    expect(($('#accEdRole') as HTMLSelectElement).value).toBe('admin')
+    expect($('#accEdDel').textContent).toBe(`Tap again to delete ${P('rocky').cs}`)
+  })
+
+  it('archived: after a refused Save name and a redraw from elsewhere, the typed callsign and the error stay', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    await type($('#accArCs') as HTMLInputElement, P('bane').cs)
+    await click($('#accArSave'))
+    expect($('#accArErr')).toBeTruthy()
+    await act(async () => { notify() })
+    expect(($('#accArCs') as HTMLInputElement).value).toBe(P('bane').cs)
+    expect($('#accArErr')).toBeTruthy()
+    expect(P('casper').archived).toBe(true)
+  })
+
   /* the break test of chat 26's check (8 Nov 26): an archived row's editor exists only while the row is open — drawn on
      a closed row, every archived man would show his callsign box and buttons in the folded list */
   it('archived: a closed row shows no editor, before it is opened and after Cancel', async () => {

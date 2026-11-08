@@ -102,8 +102,10 @@ function settingsRecordKeys(): string[] {
 }
 /* the loaders of the four files that save through this layer and keep a copy in memory — the accounts, the change
    history's and the bell's seen marks, the flying plan — handed in at registration (see the imports' note). Until then
-   none of their commands can run (each type is registered in the same call, and the registry refuses an unregistered
-   type), so no rollback needs them. */
+   a signed-in person's command of theirs is refused (each type is registered in the same call, and the gate refuses an
+   unregistered type); the app's own headless actor is not checked by type, but every way into the app loads
+   state/store.ts, whose wireStore() registers before anything runs — so no rollback in the app meets these empty ones
+   (chat 32's reads, 8 Nov 26). */
 export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void }
 const noLoad = () => {}
 let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad }

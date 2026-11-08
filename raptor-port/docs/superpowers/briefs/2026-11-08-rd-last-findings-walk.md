@@ -90,3 +90,35 @@ after the save, after Undo, after Redo, after a reload, and after a failed save'
 step for step. A second tab is opened BEFORE the tested write. `?savefail` is the address switch that makes every save
 in that one tab fail (the "Not saved" band and its Retry show). Record the counts and refusals `main` shows; never
 invent an expected number from the branch.
+
+## Walker C — what walker B did not reach (chat 32, 8 Nov 26; folder `walkC`)
+
+One Sonnet walker, alone, on the same two frozen builds and with everything above in force (read first, the builds, the
+set-up, the clock, the sizes, sign-in, your output — your report `parts/2026-11-08-rd-last-findings-walkC.md`). Ports
+**4411 and 4412** (walker B's — B has finished; check they are free). Add your parts as
+`scripts/handpass/rdl1108-parts3.mjs` and import them into `rdl1108-walk.mjs` beside the other two; run it with
+`docs/img/handpass/2026-11-08-rd-last-findings/walkC` as the out folder and only your parts named, so B's record is not
+overwritten. Your file names start `c-` (two walkers' pictures once collided). The host holds no lock: you run one script
+on builds already made — never build anything.
+
+1. **S14 — hidden is different from closed** (her text, whole). In a roster row's editor (an active person with sign-in)
+   and an archived row's editor: type an unsaved sign-in (or callsign) and arm Delete; then, one route at a time,
+   reopening the editor's row after each: change Admin's category and come back; on the phone the category back button;
+   leave Admin for Quals and come back; hide the row by typing in Users' search, then clear the search; fold Archived,
+   unfold it. Record after each return: is the editor open, what each box holds, is Delete armed. Desktop and phone.
+2. **S15 — changes elsewhere while an editor is open** (her text). Open a roster row's editor and type a draft sign-in;
+   in the same tab go to Quals and rename that person (his callsign cell); come back to Users — record the row's heading,
+   whether the editor is open and what it holds; then Save and record what was saved (the row line, the toast). Then:
+   change something of his account (Suspend), open the editor again, type a draft, press Undo in the top bar while it is
+   open — record the row and the editor. Then the archived editor: type a callsign, open a second tab, rename on Quals in
+   the second tab, return to the first WITHOUT reloading and Save name — record what each tab shows, then reload both.
+   Desktop and phone (the second-tab part desktop only).
+3. **S19 with real clutter** (her text). Through the Inputs calendar put notes on at least three days inside the chosen
+   period, one outside it, and one across its edge; put a day title on one day inside. Then in Admin → Data's "Clear old
+   clutter…": "Older than" a choice that covers them, record the count the first press names; change the Period mode
+   while armed — record that it disarms; arm again and confirm — record the count, then look on the Inputs calendar at
+   each day (inside gone, outside and the loaded week kept, as `main` does — compare, do not assume). Then "A date range"
+   over two of the days, the same. Then "Clear edit history…" once with entries on known dates, and record that the
+   schedule did not change and whether Undo offers it. Desktop only, then the phone for the "A date range" pass.
+
+EXPECTED everywhere: the same as `main`'s build. Your finishing line: `Walk: <n> steps, <n> SAME, <n> DIFF, <n> FAIL, <n> pictures`.
