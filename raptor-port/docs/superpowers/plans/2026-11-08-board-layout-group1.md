@@ -63,6 +63,23 @@ and the phone day bar's Templates (oilmode.ts dayBarHTML — CSS only). Also che
 the plans selector, a jet's stores, the duty role box. Tidy-up: `SchedBoard.tsx moreItems` reuses `sheetfocus.ts
 menuItems`. Evidence `docs/handpass/2026-11-08-board-keys.md` §11.
 
+## Progress (keep current)
+
+- **Done, committed locally on the branch while 679 was still open (not pushed; rebase onto `origin/main` once it
+  merges — 679 touches `board.ts`, `board-html.ts`, `18-oil-board.css`, not these):** D1781's band in
+  `13-board-rows-responsive.css` (verbatim C_CSS); D1780's sideways block in `10-board-history.css` and the published
+  `--sb-headH` / `--sb-boardH` in `SchedBoard.tsx`'s ResizeObserver effect. Neither yet run in a browser.
+- **Next:** (a) rebase; (b) D1771's ring — `.sb-moreitem:focus-visible` in `18-oil-board.css` (~line 138, chat 5's file:
+  after the rebase) and the week's `.schedule-moreitem` (`ScheduleInsightsMenu.tsx`), outline 2px `var(--accent)`,
+  offset −2px to hug the raised row as picture 003 draws; + Block's and Templates' (`.abtn.sb-daybtn`, 18-oil-board.css:89,
+  and the phone day bar's) `:focus-visible` the same at offset 2px; find + Block's class in board.ts (~line 380, CSS only);
+  + Wave, the plans selector, a jet's stores, the duty role box checked; (c) the tidy-up `moreItems` → `menuItems`
+  (read `sheetfocus.ts` first); (d) read kbscroll.ts's board path (`keepAboveKeyboard`, which scroller it scrolls) and
+  every place that resets or reads `.sb-boardwrap`'s scroll (day change, D672, a warning's tap, the just-added ring, the
+  drag's edge scroll) — in the sideways look the scroller is `.schedboard`; (e) `--sb-topH` users (the drawer, D1106's
+  windows) with the head scrolled away; (f) build, a quick Playwright look at 874×402 touch and 821/1000/1099/1100, the
+  drawing check; then the Order below from step 5.
+
 ## Order
 
 1. Cut the branch; the evidence sheet's skeleton (`docs/handpass/2026-11-08-board-layout.md`, §9's headings).
