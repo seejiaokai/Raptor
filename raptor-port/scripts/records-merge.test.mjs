@@ -47,11 +47,11 @@ function makeRepo(files) {
     edit: (f, fn) => w(f, fn(readFileSync(join(dir, f), 'utf8'))),
     commit: msg => { g('add', '-A'); g('commit', '-q', '-m', msg) },
     /* the branch's side and main's side, then the merge the step runs after */
-    sides(ours, theirs) {
+    sides(ours, theirs, before = []) {
       g('checkout', '-q', '-b', 'feature'); ours(c); c.commit('ours')
       g('checkout', '-q', 'main'); theirs(c); c.commit('theirs')
       g('checkout', '-q', 'feature')
-      return spawnSync('git', ['merge', '--no-commit', '--no-ff', 'main'], { cwd: dir, encoding: 'utf8' }).status
+      return spawnSync('git', [...before, 'merge', '--no-commit', '--no-ff', 'main'], { cwd: dir, encoding: 'utf8' }).status
     },
     run(...a) {
       rmSync(join(dir, 'CHECK-RAN'), { force: true })
@@ -144,6 +144,22 @@ test('a hand-edited working copy is refused by name and left byte for byte (Opus
   assert.match(r.out, /HANDOFF\.md:\n\s+- its working copy is not what git wrote/)
   assert.equal(c.read('HANDOFF.md'), before)
 }))
+
+/* Opus 4 (the code read, 8 Nov 26): a conflict style given on the command line only (git -c merge.conflictStyle=…)
+   made git's own output look hand-edited, and every record file was refused */
+for (const style of ['diff3', 'zdiff3']) {
+  test(`a merge run with the ${style} conflict style on the command line only is still recognised as git's own (Opus 4)`, withRepo({ 'HANDOFF.md': H0 }, c => {
+    const st = c.sides(x => x.write('HANDOFF.md', handoff([block('claude/n1', '- n1'), block('claude/a', '- a, ours'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])),
+      x => x.write('HANDOFF.md', handoff([block('claude/n2', '- n2'), block('claude/a', '- a, theirs'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])), ['-c', `merge.conflictStyle=${style}`])
+    assert.equal(st, 1, 'the merge must clash')
+    const r = c.run()
+    assert.equal(r.code, 2, r.out)
+    assert.doesNotMatch(r.out, /not what git wrote/)
+    assert.match(r.out, /settled: HANDOFF\.md \(in part\)/)
+    assert.match(c.read('HANDOFF.md'), /claude\/n1[\s\S]*claude\/n2/)
+    assert.match(c.read('HANDOFF.md'), /^\|{7} /m, `the block left keeps git's ${style} marks`)
+  }))
+}
 
 test('a second run on the same input changes nothing; --dry-run writes nothing', withRepo({ 'HANDOFF.md': H0 }, c => {
   c.sides(x => x.write('HANDOFF.md', handoff([block('claude/new1', '- n1'), block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])),

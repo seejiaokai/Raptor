@@ -103,8 +103,13 @@ class Leave extends Error {}
 
 /* the conflict style and the diff git's merge used: ort merges with the histogram diff, and its marks follow
    merge.conflictStyle — so `git merge-file` with both is git's own output for the same three copies */
-const STYLE = (tryGit('config', '--get', 'merge.conflictStyle') || 'merge').trim()
-const STYLE_ARGS = STYLE === 'diff3' ? ['--diff3'] : STYLE === 'zdiff3' ? ['--zdiff3'] : []
+const CONFIG_STYLE = (tryGit('config', '--get', 'merge.conflictStyle') || 'merge').trim()
+let STYLE, STYLE_ARGS
+const useStyle = s => { STYLE = s; STYLE_ARGS = s === 'diff3' ? ['--diff3'] : s === 'zdiff3' ? ['--zdiff3'] : [] }
+useStyle(CONFIG_STYLE)
+/* a merge typed with `git -c merge.conflictStyle=…` used a style the config does not hold: the config's is tried first,
+   then git's other two, before a working copy is called edited (Opus 4 of the code read) */
+const STYLES = [CONFIG_STYLE, ...['merge', 'diff3', 'zdiff3'].filter(s => s !== CONFIG_STYLE)]
 const scratch = mkdtempSync(join(tmpdir(), 'records-merge-'))
 process.on('exit', () => rmSync(scratch, { recursive: true, force: true }))
 let scratchN = 0
@@ -218,7 +223,12 @@ function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false }) {
 }
 
 /* ---------- the skill log's numbers ---------- */
+let highestSeen = null // read once a run: each conflict style tried settles the log again
 function highestNumber(refs) {
+  if (highestSeen === null) highestSeen = readHighest(refs)
+  return highestSeen
+}
+function readHighest(refs) {
   /* the short form's grep finds every copy of the log and its archive that holds a heading, over the two sides of the
      merge and every branch, in batches (a long ref list overflows a Windows command line); each distinct copy is then
      read whole and its headings taken by the shared definition, so a heading inside a code block is not a number
@@ -381,13 +391,19 @@ for (const [f, ids] of stages) {
     const labels = labelsOf(disk || '')
     /* this file's own renumbers and citations, reported only once the file is written or found settled by an earlier
        run — a refused or left file reports none (the tidiness notes 2 of the code read) */
-    const fctx = { refs: ctx.refs, renumbers: [], cites: [], unsure: [], disk }
-    const res = settle(f, st, labels, fctx)
-    const gitsOwn = mergeFile(st[2], st[1] ?? '', st[3], labels, STYLE_ARGS).text
+    let fctx, res, match = null
+    for (const s of STYLES) {
+      useStyle(s)
+      fctx = { refs: ctx.refs, renumbers: [], cites: [], unsure: [], disk }
+      res = settle(f, st, labels, fctx)
+      if (disk === res.text) { match = 'already'; break }
+      if (disk !== null && sameConflict(disk, mergeFile(st[2], st[1] ?? '', st[3], labels, STYLE_ARGS).text)) { match = 'gits'; break }
+    }
+    useStyle(CONFIG_STYLE)
     const report = () => { ctx.renumbers.push(...fctx.renumbers); ctx.cites.push(...fctx.cites); ctx.unsure.push(...fctx.unsure); if (res.settled.length) settledBy.set(f, res.settled) }
-    if (res.left.length) leftBy.set(f, res.left)
-    if (disk === res.text) { if (res.settled.length) { already.push(f); report() } continue }
-    if (disk === null || !sameConflict(disk, gitsOwn)) { leftBy.set(f, ['its working copy is not what git wrote when the merge stopped — edited since; left to you, untouched']); continue }
+    if (match && res.left.length) leftBy.set(f, res.left)
+    if (match === 'already') { if (res.settled.length) { already.push(f); report() } continue }
+    if (!match) { leftBy.set(f, [`its working copy is not what git wrote when the merge stopped, in any of git's three conflict styles (merge.conflictStyle here: ${CONFIG_STYLE}) — edited since; left to you, untouched`]); continue }
     if (!res.settled.length) continue // nothing a rule could settle: git's own marks stay exactly as git wrote them
     plan.push({ f, text: res.text, before: disk }); report()
   } catch (e) {
