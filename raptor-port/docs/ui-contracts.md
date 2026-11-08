@@ -12437,6 +12437,8 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   **D1842** (8 Nov 26, his correction on the 821-wide picture): the list's right end must not look as if it runs on — the rows'
   left line has no match on the right and "No document" sits at the very end, so he tried to scroll sideways; the fix is
   drawn for him first (filed as [INP-LIST-RIGHT-EDGE]).
+  **D1843** (8 Nov 26, his "A, as recommended"): the list is closed by a thin line round it in the rows' own line colour,
+  and "No document" stands inside its column (about 14px from the end); no column changes width; the phone's cards unchanged.
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
