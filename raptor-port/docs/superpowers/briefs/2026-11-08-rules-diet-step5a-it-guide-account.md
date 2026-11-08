@@ -1,5 +1,7 @@
 # Rules diet step 5a — the account of the IT flow guide's rulings, by requirement (8 Nov 26)
 
+**After the two blind reads (8 Nov 26, at `23874fe07`):** Astra and a fresh Opus reader found 15 points between them, every one holding when checked against its full row — among them the Leave War's later rulings the pointers missed (D1724's full editing, D1208's "close the bids, then approve", D1166's verbal approval and its leave landing approved), the agent's readings of D1177 stated as his rules, three agent's calls of D412 and D415 stated as his, one slide per journey against several, the deck's Settled line silent on what it pictures out of date, and the README's two lines left unmarked — all fixed on the page, the README and the backlog line; the plan's step-5a section on the IT guide lists each. **This table still describes `23874fe07`**, except the count and the two D418 marks below, corrected after the reads. The search of other areas by the guide's name was the account's blind spot: a ruling that changes what the guide pictures does not name the guide (Astra's finding 1).
+
 **What it is.** The account the plan asks of every conversion (`raptor-port/docs/superpowers/plans/2026-11-07-rules-diet-plan.md`
 §2 "The account — by requirement", §7 step 5a, and §Step 5a's lessons for the rest of the step): every ruling of the old
 `.claude/rules/decisions/it-flow-guide.md`, split into its parts, each part → the page line that states it now, or marked
@@ -154,17 +156,18 @@ re-shoot"), to be fixed with the re-shoot he asks for.
 | Pointer | Its own area's short line and full row | Mark |
 |---|---|---|
 | P-From "The Leave War's: its stages (draft, open for bidding, bidding closed, published) go…" [D1177, D1225] | D1177's short line and full row (`leave-war.md`): the stages go; members bid only on the open dates the admin sets in the "Open for bidding" window; nothing is open until he opens it; with nothing open the chip reads "Bidding closed"; a member may still delete his own pending bid on a closed day (D1225, which narrows it) | stated — the chip's "Bidding closed" left to the Leave War's page (a pointer names the rule the guide needs, not its every screen word); D1177's readings (the outline, the lock, the notes) are the Leave War's |
-| P-From "The Leave War's, checked by the guide against his description: it stays as built on three counts…" [D418, D1177, D1166] | D418's short line (as D1177 narrowed it): an approved leave reaches inputs at approve; the admin decides bids at any time once the stages go; a member's approved leave offers only its remarks, at any time, the leave itself changed on the Inputs page (D1166); a drag that goes below zero must ask first, as a one-day bid does | stated — the drag's ask is built (29 Sep 26, `[LW-DRAG-BELOW-ZERO]`), so the pointer says "asks first"; D418's two things "found by the same check and drawn as they are" (a member keeps the war he last opened; a new war's chip read "THE WHOLE YEAR") are the app as found on 29 Sep 26, before D1177 changed the chip — detail, the Leave War's |
+| P-From "The Leave War's, checked by the guide against his description: it stays as built on three counts…" [D418, D1177, D1166] | D418's short line (as D1177 narrowed it): an approved leave reaches inputs at approve; the admin decides bids at any time once the stages go; a member's approved leave offers only its remarks, at any time, the leave itself changed on the Inputs page (D1166); a drag that goes below zero must ask first, as a one-day bid does | stated — the drag's ask is built (29 Sep 26, `[LW-DRAG-BELOW-ZERO]`), so the pointer says "asks first"; D418's two things "found by the same check and drawn as they are" — a member keeps the war he last opened; a new war's chip read "THE WHOLE YEAR" — **superseded** by D1177's readings (the page opens on the first open date from today; with nothing open the chip reads "Bidding closed") — first marked detail, corrected after the reads (the Opus reader's finding 9) |
 
 ## Count
 
 - **Rulings accounted: 9** — all live; none proposed for the archive: D410's only one-off part (the sample) is spent, but its
   format stands; every other ruling holds a part still stated.
-- **Parts accounted: 91** across the 9 rulings: 81 stated on a line, 1 spent (D410's sample), 7 detail (his words or
-  history behind a stated part, or the sample's questions), 2 superseded by D1177 (21 Oct 26) — plus 9 pieces of the old
-  head and 2 new pointers to the Leave War's rulings.
+- **Parts accounted: 92** across the 9 rulings (first written as 91 — miscounted; both readers recounted the table): 86
+  stated on a line, 1 spent (D410's sample), 3 detail (his words or history behind a stated part, or the sample's
+  questions), 2 superseded by D1177 (21 Oct 26) — plus 9 pieces of the old head and 2 new pointers to the Leave War's
+  rulings (after the reads: 5 pointers, D1177, D1225, D418, D1724 and D1208, and D1166 stated beside D413).
 - **Gaps: 0 open** — 2 corrected in the draft before this account closed (D412's agent's call; D410 on the style line).
 - **Found, not fixed — filed:** the deck and README still show the Leave War's stages (D1177) — on `[ITFLOW-OIL-RESHOOT]`.
-- **After the page:** `backlog-archive.mjs --rulings` says "done; the inventory is clean"; `npm run docsize` fails on one
-  thing only — the page is about 7,700 bytes against its 5,000 tripwire. No part was cut to fit (D141): the table's short
+- **After the page:** `backlog-archive.mjs --rulings` says "done; the inventory is clean"; `npm run docsize` failed on one
+  thing only — the page was about 7,700 bytes (9,330 after the reads' fixes) against its 5,000 tripwire, now 10,300. No part was cut to fit (D141): the table's short
   lines (4,028 bytes) had cut the slide parts and the agent's calls the page now carries.

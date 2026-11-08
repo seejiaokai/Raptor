@@ -20,13 +20,13 @@ its work merged and its open residue is filed in `OUTSTANDING.md`. Two parallel 
 the later merge keeps both (D78).
 
 ## Now
-<!-- now:claude/rules-diet-step-5a-oil -->
-### CHAT 12 — the rules diet's step 5a, OIL as a page (the full trial) — MERGED 8 Nov 26 (pull request 684, on his "merge live")
-- **Live:** `.claude/rules/decisions/oil.md` is a page of how OIL works now, each rule stated once with its rulings cited (D1735); its tripwire in `docsize.mjs` raised 15,500 → 22,600 bytes with his "merge live". The account by requirement (`raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-account.md`) and the two blind reads (Astra, a fresh Opus reader — `…-step5a-read-astra.md`, `…-read-opus.md`) found 48 parts in all, each fixed against its full row; the trial of the whole route and the lessons for the rest of step 5: the plan's §Step 5a. The page saves nothing for OIL (20,564 bytes against the table's 14,525) — said in the plan, measured again before 5b.
-- **Left open, each named in the account and the plan:** D43's full row stops mid-sentence — filed in [RULES-DIET], not guessed at; whether a typed B starts a flying SPARE's own span (D606 against D1044 — the page claims neither); whether a BB duty desk offers the switch (not ruled); D592's readings 8 and 9, stated as readings put to him. No reads owed — Astra and a fresh Opus reader both read it.
-- **Its number:** started as "chat 5", already taken, so **12** (D1744). Compacted once, 8 Nov 26 about 11:10, during the merge — nothing lost.
-- **Next for the diet:** step 5a's next areas (the IT guide, people, design, the Tracker), each on his word, and the re-measure before 5b (the plan's §7).
-- **Remove this block at the next handoff** — nothing else is open from chat 12.
+<!-- now:claude/rules-diet-step-5a-it-guide-8b561f -->
+### CHAT 15 — the rules diet's step 5a, the IT flow guide as a page — built, read blind; waiting for his "merge live"; written 8 Nov 26 — verify before use
+- **Built:** `.claude/rules/decisions/it-flow-guide.md` is a page, "The IT flow guide — how it works now" (D1735; its `paths:` unchanged): its 9 rulings (D403, D410–D417) stated once each, D413 with D1177, two pointers to the Leave War's D1177 and D418. The account by requirement: `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-it-guide-account.md` (91 parts); the readers' brief beside it. The map lines (`DECISIONS.md`, `AGENTS.md` item 5, the project guide's map row, the full-text file's head) say the IT guide is a page since 8 Nov 26. Filed, not fixed: the deck and its README still show the Leave War's stages (D1177) — a line on `[ITFLOW-OIL-RESHOOT]`, done with the re-shoot he asks for (D403).
+- **Reads:** Astra (6 findings, 1 high) and a fresh Opus reader (9, 1 medium), blind to each other — all 15 checked against the full rows and fixed; their reports beside the account, the comparison in the plan's step-5a section on the IT guide. No reads owed. The page after the fixes: 9,330 bytes.
+- **Left for the Leave War:** D418's full row has no mark from D1724 (which replaces the reading D418's mark states); the page's pointer says so; the mark rides with `[LW-FULL-EDITING]` or the Leave War's page in step 5b.
+- **His word owed:** "merge live" for the page and its size tripwire in `raptor-port/scripts/docsize.mjs` (raised 5,000 → 10,300 bytes) — a script change (D1737). Then a notes-only records follow-up marking it merged, as chat 12 did.
+- **Next for the diet:** people, design, the Tracker, each on his word (batching on one branch only if he says), then the re-measure before 5b (the plan's §7).
 <!-- /now -->
 <!-- now:claude/pr-leave-war-4988a8 -->
 ### CHAT 8 — the pictures round's group 6, the Leave War — MERGED 8 Nov 26 (pull request 680, on his "merge live")

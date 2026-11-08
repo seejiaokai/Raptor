@@ -17,6 +17,10 @@ limit), a slide shows each way side by side, each with its steps and what to tes
 **The Leave War has its own work flow slide (D413):** the admin creates the period → opens it for bidding → members bid →
 closed for the admin's decisions → published → members edit their remarks; later changes mainly by the member through
 Inputs, while the admin may edit directly on the war. Each stage is checked in the running app before it is drawn.
+*(The deck as drawn on 29 Sep 26. The stages went on 21 Oct 26 (D1177): the flow is now create → open the dates → members bid →
+close the dates and decide — his best order closes first, then approves (D1208) — → text the squadron, members' remarks at any
+time; a later change by a member comes after management's verbal approval, on the Inputs page, landing approved (D1166). The deck
+and PDF keep the stages until he asks for the rebuild, D403 — noted on `[ITFLOW-OIL-RESHOOT]`.)*
 **The Tracker in full (D414):** how a flow chart is made (each tool, joining events, editing an event), how a member
 updates it and what he sees, the other ways to update, what it refuses (an NA cannot have fails), students and courses,
 export and import — and whatever else the app has; his list is not the limit.
@@ -30,7 +34,10 @@ removing one, what the grid shows after. His list closes there ("All I can think
 Inputs at Approve; the admin decides in every stage but Draft; a published war's approved leave offers only its remarks —
 and filed one change (a drag below zero must ask). The guide draws the app as it is. *(That change is built — `[LW-DRAG-BELOW-ZERO]`, 29 Sep 26: the
 drag now asks once, naming each man, as a one-day bid does. The words in `scripts/itflow/content.mjs` are corrected; the deck and
-PDF keep the old line until he asks for the rebuild, D403 — noted on `[ITFLOW-OIL-RESHOOT]`.)*
+PDF keep the old line until he asks for the rebuild, D403 — noted on `[ITFLOW-OIL-RESHOOT]`.)* *(Since the stages went (D1177) the
+admin decides bids at any time and an approved leave offers its remarks at any time, the leave itself changed on the Inputs page —
+the agent's readings; his later direction, full editing of every entry on the war (D1724), is filed as `[LW-FULL-EDITING]`, not yet
+built.)*
 
 ## Remaking it after a screen changes
 
