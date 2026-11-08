@@ -187,7 +187,8 @@ record now differ, or a reading was stated as his word — not that the app or h
   page and his ruling's record now disagree (D606 host-reproduced; D1790, D1791 reader's comparison), one checklist gap
   (F-CHK-1), one visible Insights change he was not told of (F-678-1), one conditional test skip (F-689-1), and a
   handful of low wording points — each his word or a one-line fix, none a fault in the app.
-- **Limits:** Fable did not read thirteen of the sixteen app pull requests (stopped under D1934); Astra's read of them
+- **Limits:** Fable did not read thirteen of the sixteen app pull requests (stopped under D1934; asked whether Fable
+  should read them, he answered "No, enough" on 8 Nov 26 about 23:50 — they stay unread by Fable); Astra's read of them
   is a source read, not a walk; no walk of the running app was made by this chat; the readers' comparisons marked
   "reader's comparison" are not yet host-reproduced. Widening Fable's read is his call (D1934).
 
