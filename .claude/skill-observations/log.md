@@ -4309,11 +4309,11 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
 **Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
 
-### Observation 883: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
+### Observation 886: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
 
 **Status:** OPEN
 **Date:** 8 Nov 26
-**Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch)
+**Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch; renumbered 883 → 886 on bringing main in, where another chat's 883 had landed)
 **Skill:** New skill candidate: writing a command-refusing hook (the conditions of notes 270, 285, 598, 626)
 **Type:** open-source
 **Phase/Area:** measuring the harness; proving a hook live
