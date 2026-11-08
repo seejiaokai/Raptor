@@ -4347,3 +4347,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** within minutes three open pull requests (the Leave War pinned row, the Tracker batch, the checks) went to "clashing with main", so GitHub stopped running checks on their new pushes, and each chat had to stop, bring `main` in and settle the handoff file before its merge. The removal itself was right (each block's work was live and its residue filed); its timing cost every open branch a round.
 **Suggested improvement:** in the handoff skill's "removes merged blocks" step, add: before removing other chats' blocks, list the open pull requests that change the handoff file; if any are open, remove only the blocks far from theirs, or wait until they have merged — and in either case message each open chat that its next push will need `main` brought in.
 **Principle:** A clean-up of a file that every parallel branch edits is a change to all of them; schedule it for a quiet moment or tell each writer before it lands.
+
+### Observation 891: A fresh worktree has no packages, and `npx tsc` then runs a stand-in that fails
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 25, React Doctor's last findings (part 2), type-checking in a worktree just switched to the branch
+**Skill:** New skill candidate: worktree-setup (or the project guide's §Build & verify)
+**Type:** open-source
+**Phase/Area:** first check run in a new worktree
+
+**Issue:** The worktree had no installed packages. `npx tsc -p tsconfig.app.json --noEmit` did not fail with "not installed": npx fetched an unrelated package named `tsc`, which printed a banner and exited non-zero, so the first type check looked like a broken build until the packages were installed (`npm ci`) and it ran clean.
+**Suggested improvement:** Before the first check in a worktree, test that the package folder exists and run the install if not; never read an `npx <tool>` failure as the project's until the tool is known to be the project's own.
+**Principle:** `npx` falls back to downloading whatever is published under a name; in a checkout without its dependencies, the tool that runs may not be the project's — install first, then trust the result.
