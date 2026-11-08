@@ -733,11 +733,14 @@ export function InputsPage() {
     {!phone && newBtn}
   </>)
   /* THE LIST MAKES ROOM FOR THE INPUT'S WINDOW (owner D1787, 8 Nov 26 — as the Medical tab does, D1300, `med-room`):
-     while an input's window is open over the desktop list, the list stops short of it, so the row just added or changed
-     is seen arriving whole. Only where Remarks still keeps a usable width — 1340 wide and up, Name, Start and End
-     narrowing first — the width test being the stylesheet's (06-inputs.css); narrower, the window covers the list as
-     before. Any input's window, a row's as well as "+ Input"'s: it is the one window, opened in the one place (the
-     agent's reading of "its window", as Medical's `med-room` does). A phone's window stands in the middle (D997). */
+     while an input's window is open over the desktop list, the list stops short of it, so the rows stay in view while
+     the input is filled in; the room goes when the window closes (Add, Save, Cancel, ✕, Escape), as Medical's does.
+     Only where Remarks still keeps a usable width — 1340 wide and up, Name, Start and End narrowing first — the width
+     test being the stylesheet's (06-inputs.css); narrower, the window covers the list as before. Any input's window, a
+     row's as well as "+ Input"'s (the agent's reading of "its window", as Medical's `med-room` does). A window he has
+     dragged keeps its place for the session (`winorder.ts`), so the stylesheet makes the room only while the window
+     stands where it opens (`:not([data-placed])`, as the calendar's day windows do) — dragged away, the list has its
+     width back. A phone makes no room. */
   const room = !phone && listUp && !!INPEDIT
   return (
     <div className={'inputs-workspace tab-' + tab + (room ? ' in-room' : '')}>
