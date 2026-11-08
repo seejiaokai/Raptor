@@ -6,7 +6,8 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { PARTS as P1 } from './rdl1108-parts.mjs'
 import { PARTS2 } from './rdl1108-parts2.mjs'
-const PARTS = { ...P1, ...PARTS2 }
+import { PARTS3 } from './rdl1108-parts3.mjs'
+const PARTS = { ...P1, ...PARTS2, ...PARTS3 }
 console.log('[rdl1108-walk v2]')
 const [before, after, out = 'docs/img/handpass/2026-11-08-rd-last-findings/walkB', onlyArg = '', sizeArg = ''] = process.argv.slice(2)
 const ONLY = onlyArg.split(',').filter(Boolean), run = part => !ONLY.length || ONLY.includes(part)
