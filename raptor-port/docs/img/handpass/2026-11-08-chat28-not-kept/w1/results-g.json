@@ -1,0 +1,23 @@
+{
+ "R": [
+  {
+   "step": "15 magnifier close-ups (4x pictures to be read side by side)",
+   "res": "RECORD",
+   "said": "{\"editSchedBox\":{\"x\":1355,\"y\":109,\"width\":150,\"height\":16},\"trackerBox\":{\"x\":879.84375,\"y\":111,\"width\":112,\"height\":14},\"glyphsOnTrackerPage\":[\"srchglyph 15 15 71\"]}",
+   "pics": "w1/15-editsched-search.png ; w1/15-tracker-find.png"
+  },
+  {
+   "step": "10 Tracker: corner empty, band up, before and after a mark",
+   "res": "PASS",
+   "said": "{\"cornerBefore\":\"\",\"cornerAfter\":\"\",\"how\":\"clicked first ball\",\"bandUpBefore\":true,\"bandUpAfter\":true}",
+   "pics": "w1/10-tracker-corner.png"
+  },
+  {
+   "step": "14 plain-user round (abridged): band stays through windows",
+   "res": "PASS",
+   "said": "[[\"changes open\",true],[\"changes Escape\",true,1],[\"changes toggled shut\",true,1],[\"bell open\",true],[\"bell shut by outside tap\",true],[\"undo\",\"not pressable (nothing to undo)\"],[\"viewer open\",true],[\"viewer Close\",true,0],[\"viewer Escape\",true,0]]",
+   "pics": "w1/14-after-round.png"
+  }
+ ],
+ "errors": []
+}

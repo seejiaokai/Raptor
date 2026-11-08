@@ -71,7 +71,7 @@ import { AdminPage } from './AdminPage'
 import { HelpPage } from './HelpPage'
 import { DownloadedPage } from './pageload'
 import { pageDownload } from './pagedownload'
-import { SaveStatus, useSaveFailed } from './SaveStatus'
+import { SaveStatus, useBandUp } from './SaveStatus'
 import { OilBar, useOilBarTop } from './OilWaitSheet'
 import { bugAlert } from '../state/reports'
 import { UndoPair, SyncChip, BellButton, BellList } from './topbits'
@@ -342,8 +342,9 @@ export function Shell() {
   const oilPend = mine ? oilPendingFor(mine).length : 0
   /* D216, D227 — an access request this admin has not had on screen yet (his own bell) */
   const accAlert = accessAlert()
-  /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room */
-  const saveFailed = useSaveFailed()
+  /* a failed save's warning has a line of its own along the bar's bottom ([SAVE-NOTE-COVERS], D587): the bar makes room —
+     and the same room for a browser's "Not kept" band (D1901), so `.save-failed` below names the room, either band in it */
+  const saveFailed = useBandUp()
   /* THE ROOM UNDER THE BAR HAS JUST CHANGED BY ONE LINE WITH NO WINDOW RESIZE (Astra's read, F3 and F4). Whatever on a
      page measured itself against the bar keeps its old figure unless told: a Quals or Leave War header ALREADY frozen
      sat 36px off (under the band, or a gap above it); the Tracker's full-height column kept its old height, its foot

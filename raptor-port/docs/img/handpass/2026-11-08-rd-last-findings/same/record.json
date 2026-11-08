@@ -1,0 +1,4364 @@
+{
+ "desk-users-top": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-users-rd": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDACTIVE": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDWSO": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 667
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 667
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 667
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDGROUND": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 514
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 514
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 514
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDNOSIGN": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDSUSP": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 616
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 616
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 616
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDADMIN2": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 412
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 412
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 412
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDACTIVE-armed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 361
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDNOSIGN-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 565
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-ed-RDACTIVE-cancelled": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 291
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-own-row": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-torch-row": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-torch-open": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-arch-RDARCH": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-arch-RDARCHF": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-arch-RDARCHN": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 459
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-arch-RDARCH-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 478
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-arch-RDARCHF-armed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-give-roster": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-give-new": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-give-new-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 209
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-add-person": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3505
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3505
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3505
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-add-person-filled": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3568
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3568
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3568
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-data-default": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 177
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 177
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 177
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-wipe-before": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-log-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-log-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 251
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 251
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 251
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-data-both-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-help-form": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-inputs-window": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-errs": {
+  "before": {
+   "page": [],
+   "http": []
+  },
+  "before-access": {
+   "page": [],
+   "http": []
+  },
+  "before-again": {
+   "page": [],
+   "http": []
+  },
+  "before-again-access": {
+   "page": [],
+   "http": []
+  },
+  "after": {
+   "page": [],
+   "http": []
+  },
+  "after-access": {
+   "page": [],
+   "http": []
+  }
+ },
+ "desk-signin": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-form": {
+  "before": {
+   "active": "accCs"
+  },
+  "before-again": {
+   "active": "accCs"
+  },
+  "after": {
+   "active": "accCs"
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-filled": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-long": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-access-sent": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1080
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-users-top": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-users-rd": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDACTIVE": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDWSO": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 747
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 747
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 747
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDGROUND": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 577
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 577
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 577
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDNOSIGN": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDSUSP": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 685
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 685
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 685
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDADMIN2": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 485
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDACTIVE-armed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 423
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDNOSIGN-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 623
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-ed-RDACTIVE-cancelled": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 345
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-own-row": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-torch-row": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-torch-open": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 290
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 290
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Sign-in (defence mail)Ro",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 290
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-arch-RDARCH": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-arch-RDARCHF": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 510
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 510
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 510
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-arch-RDARCHN": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 498
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 498
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 498
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-arch-RDARCH-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 536
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-arch-RDARCHF-armed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 587
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 587
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "acc-edit:Callsign/NamePost inSun ",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 587
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-give-roster": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-give-new": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-give-new-typed": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "acc-edit:PersonOn the rosterNew p",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 204
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-add-person": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3324
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3324
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3324
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-add-person-filled": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3392
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3392
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Users",
+     "adm-sub:Waiting for access",
+     "adm-sub:People · 68",
+     "adm-sub:Add a person",
+     "adm-sub:Guest view"
+    ],
+    "sy": 3392
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-data-default": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 174
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 174
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 174
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-wipe-before": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-log-on": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-log-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 279
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 279
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 279
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-data-both-range": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [
+     "H3:Data",
+     "adm-sub:Old clutter",
+     "adm-sub:Edit history"
+    ],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-help-form": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-inputs-window": {
+  "before": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "before-again": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "after": {
+   "why": "",
+   "stands": {
+    "h": [],
+    "sy": 0
+   }
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-errs": {
+  "before": {
+   "page": [],
+   "http": []
+  },
+  "before-access": {
+   "page": [],
+   "http": []
+  },
+  "before-again": {
+   "page": [],
+   "http": []
+  },
+  "before-again-access": {
+   "page": [],
+   "http": []
+  },
+  "after": {
+   "page": [],
+   "http": []
+  },
+  "after-access": {
+   "page": [],
+   "http": []
+  }
+ },
+ "phone-signin": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-form": {
+  "before": {
+   "active": "accCs"
+  },
+  "before-again": {
+   "active": "accCs"
+  },
+  "after": {
+   "active": "accCs"
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-filled": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-long": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-access-sent": {
+  "before": {},
+  "before-again": {},
+  "after": {},
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ }
+}

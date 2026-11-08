@@ -1,0 +1,225 @@
+{
+ "state": "nokeep-desk",
+ "drawing": {
+  "script": "scripts/handpass/trk-chat20-questions.mjs",
+  "shot": "q2-d-es-A"
+ },
+ "recorded": "2026-11-08T10:24:26.930Z",
+ "drawnOn": "fb5d18c21 (chat 20)",
+ "checkout": "",
+ "viewport": {
+  "w": 1536,
+  "h": 864
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "bar": {
+   "found": true,
+   "count": 2,
+   "box": {
+    "x": 0,
+    "y": 0,
+    "w": 1536,
+    "h": 94
+   },
+   "ink": {
+    "x": 45,
+    "y": 10.5,
+    "w": 1458,
+    "h": 73
+   },
+   "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin Not kept this browser loses your work on a reload ↶ ↷ Insights Logout Saber · Admin",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "linear-gradient(rgb(21, 56, 76), rgb(11, 28, 39))",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.topbar.editing.has-undo.save-failed"
+  },
+  "band": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 57,
+    "w": 1536,
+    "h": 36
+   },
+   "ink": {
+    "x": 45,
+    "y": 67.5,
+    "w": 287,
+    "h": 16
+   },
+   "text": "Not kept this browser loses your work on a reload",
+   "typed": false,
+   "look": {
+    "fill": "rgb(11, 13, 16)",
+    "image": "linear-gradient(90deg, rgba(229, 194, 74, 0.2), rgba(229, 194, 74, 0.06) 55%, rgba(229, 194, 74, 0.03)), none",
+    "edge": [
+     "1px solid rgba(229, 194, 74, 0.5)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "space-between",
+    "font": "600 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.savestat.failed"
+  },
+  "sign": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 20,
+    "y": 67.5,
+    "w": 16,
+    "h": 16
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M8 1.6 15 14H1z' fill",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-sign"
+  },
+  "lead": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 45,
+    "y": 67.5,
+    "w": 51.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 45,
+    "y": 67.5,
+    "w": 51.5,
+    "h": 16
+   },
+   "text": "Not kept",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)",
+     "0px none rgb(242, 212, 107)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(242, 212, 107)",
+    "align": "start",
+    "justify": "normal",
+    "font": "700 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "b"
+  },
+  "rest": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 105.5,
+    "y": 67.5,
+    "w": 226.5,
+    "h": 16
+   },
+   "ink": {
+    "x": 105.5,
+    "y": 67.5,
+    "w": 226.5,
+    "h": 16
+   },
+   "text": "this browser loses your work on a reload",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)",
+     "0px none rgb(182, 192, 203)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(182, 192, 203)",
+    "align": "start",
+    "justify": "normal",
+    "font": "500 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.sv-rest"
+  }
+ },
+ "approved": {
+  "picture": "q2-d-es-A.png",
+  "identical": true
+ }
+}

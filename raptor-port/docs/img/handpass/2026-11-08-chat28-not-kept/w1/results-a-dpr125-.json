@@ -1,0 +1,41 @@
+{
+ "R": [
+  {
+   "step": "2 dpr125-editsched band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":57,\"b\":93,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":94,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-dpr125-editsched-top.png"
+  },
+  {
+   "step": "2 dpr125-editsched not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":93,\"first\":{\"t\":102,\"tag\":\"wk-cal (week bar first button)\"}}",
+   "pics": "w1/02-dpr125-editsched-top.png"
+  },
+  {
+   "step": "2 dpr125-editsched scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":57,\"bandB\":93,\"offenders\":[]}",
+   "pics": "w1/02-dpr125-editsched-scrolled.png"
+  },
+  {
+   "step": "2 dpr125-leavewar band",
+   "res": "PASS",
+   "said": "{\"band\":{\"t\":56,\"b\":92,\"l\":0,\"r\":1536,\"h\":36},\"lines\":{\"lines\":1,\"b\":\"rgb(242, 212, 107)\",\"rest\":\"rgb(182, 192, 203)\",\"edge\":\"rgb(241, 244, 247)\",\"words\":[\"Not kept\",\"this browser loses your work on a reload\"]},\"bar\":{\"t\":0,\"b\":93,\"bbc\":\"rgba(229, 194, 74, 0.5)\",\"bbw\":\"1px\"}}",
+   "pics": "w1/02-dpr125-leavewar-top.png"
+  },
+  {
+   "step": "2 dpr125-leavewar not covered",
+   "res": "PASS",
+   "said": "{\"bandB\":92,\"first\":{\"t\":103,\"tag\":\"BUTTON\",\"cls\":\"myleave\",\"txt\":\"My leaveLVE 17.5 · O\"}}",
+   "pics": "w1/02-dpr125-leavewar-top.png"
+  },
+  {
+   "step": "2 dpr125-leavewar scrolled: band stays, nothing shows through",
+   "res": "PASS",
+   "said": "{\"scrolled\":{\"el\":\"HTML#.\",\"from\":0,\"to\":700},\"bandT\":56,\"bandB\":92,\"offenders\":[]}",
+   "pics": "w1/02-dpr125-leavewar-scrolled.png"
+  }
+ ],
+ "errors": []
+}

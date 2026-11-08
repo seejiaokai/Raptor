@@ -202,7 +202,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning
   sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the "Not saved" strip's
   look; the page moves down under it, and the Tracker's corner shows nothing while it is up; "Not saved" stays the
-  failed-save band's own words; its words measured to fit one line at his iPhone's width; not built yet (filed) [D1901,
+  failed-save band's own words; its words measured to fit one line at his iPhone's width; built (chat 28) [D1901,
   D1655, D1667].
 - A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
   its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
@@ -445,7 +445,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
 - The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
 - The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
-  of its own shorter one; to build [D1900, D1127].
+  of its own shorter one; built (chat 28) [D1900, D1127].
 - People and accounts': the waiting screen's "View the schedule", and its line that he can look read only meanwhile, show
   only while the admins' guest switch is on, off by default [D221, D204].
 - People and accounts': on Admin → Users the blue ring on a row a bell's posting line lands on stands 8px outside the row,

@@ -1,0 +1,598 @@
+{
+ "main": {
+  "c-S15-D-1-draft-open": {
+   "id": "c-S15-D-1-draft-open",
+   "scen": "S15",
+   "desc": "open RDACTIVE editor, type a draft sign-in",
+   "v": {
+    "row": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editor": {
+     "open": true,
+     "name": "draft-typed@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-1-draft-open.png"
+  },
+  "c-S15-D-2-quals-rename": {
+   "id": "c-S15-D-2-quals-rename",
+   "scen": "S15",
+   "desc": "go to Quals, rename RDACTIVE to RDACTIVX (callsign cell)",
+   "v": {
+    "renamed": true,
+    "toast": "Quals saved"
+   },
+   "pic": "main-c-S15-D-2-quals-rename.png"
+  },
+  "c-S15-D-3-back-to-users": {
+   "id": "c-S15-D-3-back-to-users",
+   "scen": "S15",
+   "desc": "come back to Users: row heading, editor open?, what it holds",
+   "v": {
+    "old": null,
+    "renamed": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": ""
+   },
+   "pic": "main-c-S15-D-3-back-to-users.png"
+  },
+  "c-S15-D-4-save": {
+   "id": "c-S15-D-4-save",
+   "scen": "S15",
+   "desc": "Save the editor (if open): what was saved",
+   "v": {
+    "had": false,
+    "renamed": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "old": null,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-4-save.png"
+  },
+  "c-S15-D-5-suspend": {
+   "id": "c-S15-D-5-suspend",
+   "scen": "S15",
+   "desc": "Suspend that person (editor button)",
+   "v": {
+    "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDACTIVX’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-5-suspend.png"
+  },
+  "c-S15-D-6-undo-while-open": {
+   "id": "c-S15-D-6-undo-while-open",
+   "scen": "S15",
+   "desc": "open the editor again, type a draft, press Undo (top bar) while it is open",
+   "v": {
+    "pre": {
+     "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — suspending RDACTIVX’s sign-in"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     }
+    },
+    "after": {
+     "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "Undid: suspending RDACTIVX’s sign-in",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDACTIVE’s callsign"
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — suspending RDACTIVX’s sign-in"
+      }
+     }
+    }
+   },
+   "pic": "main-c-S15-D-6-undo-while-open.png"
+  },
+  "c-S15-D-7-after-undo-save": {
+   "id": "c-S15-D-7-after-undo-save",
+   "scen": "S15",
+   "desc": "Save after the Undo (if the editor is open)",
+   "v": {
+    "had": true,
+    "row": "RDACTIVX draft-before-undo@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-7-after-undo-save.png"
+  },
+  "c-S15-D-8-nav-away-back": {
+   "id": "c-S15-D-8-nav-away-back",
+   "scen": "S15",
+   "desc": "type a draft, go to Quals, come back: editor and draft",
+   "v": {
+    "row": "RDACTIVX draft-before-undo@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-8-nav-away-back.png"
+  },
+  "c-S15-D-9-arch-draft": {
+   "id": "c-S15-D-9-arch-draft",
+   "scen": "S15",
+   "desc": "archived editor: type a callsign draft",
+   "v": {
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore as RDARCHDRAFT"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-c-S15-D-9-arch-draft.png"
+  },
+  "c-S15-D-10-tab2-rename": {
+   "id": "c-S15-D-10-tab2-rename",
+   "scen": "S15",
+   "desc": "second tab: rename the archived person on Quals (or where it can be renamed)",
+   "v": {
+    "via": "tab 2 archived editor Save name (not on Quals)",
+    "quals": {
+     "renamed": false,
+     "why": "no callsign cell holds RDARCHQ",
+     "boxes": 35
+    },
+    "row": "RDARCHQ2 no sign-in · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ No sign-in/Archived ¦ EDITOR OPEN"
+   },
+   "pic": "main-c-S15-D-10-tab2-rename.png"
+  },
+  "c-S15-D-11-tab1-save-name": {
+   "id": "c-S15-D-11-tab1-save-name",
+   "scen": "S15",
+   "desc": "first tab, no reload: Save name on the stale archived editor",
+   "v": {
+    "before": {
+     "st": {
+      "listOpen": true,
+      "open": true,
+      "cs": "RDARCHDRAFT",
+      "del": "Delete",
+      "restore": "Restore as RDARCHDRAFT"
+     }
+    },
+    "had": true,
+    "old": null,
+    "draft": "RDARCHDRAFT no sign-in · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ No sign-in/Archived ¦ EDITOR OPEN",
+    "renamed2": null,
+    "toast": "Renamed RDARCHDRAFT",
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "main-c-S15-D-11-tab1-save-name.png"
+  },
+  "c-S15-D-12-reload-both": {
+   "id": "c-S15-D-12-reload-both",
+   "scen": "S15",
+   "desc": "reload both tabs: the archived people",
+   "v": {
+    "tab1": [
+     "RDARCHDRAFT"
+    ],
+    "tab2": [
+     "RDARCHDRAFT"
+    ]
+   },
+   "pic": "main-c-S15-D-12-reload-both.png"
+  },
+  "C15-D-errors": {
+   "id": "C15-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "c-S15-D-1-draft-open": {
+   "id": "c-S15-D-1-draft-open",
+   "scen": "S15",
+   "desc": "open RDACTIVE editor, type a draft sign-in",
+   "v": {
+    "row": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editor": {
+     "open": true,
+     "name": "draft-typed@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-1-draft-open.png"
+  },
+  "c-S15-D-2-quals-rename": {
+   "id": "c-S15-D-2-quals-rename",
+   "scen": "S15",
+   "desc": "go to Quals, rename RDACTIVE to RDACTIVX (callsign cell)",
+   "v": {
+    "renamed": true,
+    "toast": "Quals saved"
+   },
+   "pic": "branch-c-S15-D-2-quals-rename.png"
+  },
+  "c-S15-D-3-back-to-users": {
+   "id": "c-S15-D-3-back-to-users",
+   "scen": "S15",
+   "desc": "come back to Users: row heading, editor open?, what it holds",
+   "v": {
+    "old": null,
+    "renamed": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": ""
+   },
+   "pic": "branch-c-S15-D-3-back-to-users.png"
+  },
+  "c-S15-D-4-save": {
+   "id": "c-S15-D-4-save",
+   "scen": "S15",
+   "desc": "Save the editor (if open): what was saved",
+   "v": {
+    "had": false,
+    "renamed": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "old": null,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-4-save.png"
+  },
+  "c-S15-D-5-suspend": {
+   "id": "c-S15-D-5-suspend",
+   "scen": "S15",
+   "desc": "Suspend that person (editor button)",
+   "v": {
+    "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDACTIVX’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-5-suspend.png"
+  },
+  "c-S15-D-6-undo-while-open": {
+   "id": "c-S15-D-6-undo-while-open",
+   "scen": "S15",
+   "desc": "open the editor again, type a draft, press Undo (top bar) while it is open",
+   "v": {
+    "pre": {
+     "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — suspending RDACTIVX’s sign-in"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     }
+    },
+    "after": {
+     "row": "RDACTIVX rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+     "editor": {
+      "open": true,
+      "name": "draft-before-undo@example.test",
+      "role": "main",
+      "del": "Delete",
+      "note": false
+     },
+     "toast": "Undid: suspending RDACTIVX’s sign-in",
+     "undo": {
+      "undo": {
+       "dis": false,
+       "t": "Undo — RDACTIVE’s callsign"
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — suspending RDACTIVX’s sign-in"
+      }
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-6-undo-while-open.png"
+  },
+  "c-S15-D-7-after-undo-save": {
+   "id": "c-S15-D-7-after-undo-save",
+   "scen": "S15",
+   "desc": "Save after the Undo (if the editor is open)",
+   "v": {
+    "had": true,
+    "row": "RDACTIVX draft-before-undo@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-7-after-undo-save.png"
+  },
+  "c-S15-D-8-nav-away-back": {
+   "id": "c-S15-D-8-nav-away-back",
+   "scen": "S15",
+   "desc": "type a draft, go to Quals, come back: editor and draft",
+   "v": {
+    "row": "RDACTIVX draft-before-undo@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "editor": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-8-nav-away-back.png"
+  },
+  "c-S15-D-9-arch-draft": {
+   "id": "c-S15-D-9-arch-draft",
+   "scen": "S15",
+   "desc": "archived editor: type a callsign draft",
+   "v": {
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore as RDARCHDRAFT"
+    },
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVX’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-c-S15-D-9-arch-draft.png"
+  },
+  "c-S15-D-10-tab2-rename": {
+   "id": "c-S15-D-10-tab2-rename",
+   "scen": "S15",
+   "desc": "second tab: rename the archived person on Quals (or where it can be renamed)",
+   "v": {
+    "via": "tab 2 archived editor Save name (not on Quals)",
+    "quals": {
+     "renamed": false,
+     "why": "no callsign cell holds RDARCHQ",
+     "boxes": 35
+    },
+    "row": "RDARCHQ2 no sign-in · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ No sign-in/Archived ¦ EDITOR OPEN"
+   },
+   "pic": "branch-c-S15-D-10-tab2-rename.png"
+  },
+  "c-S15-D-11-tab1-save-name": {
+   "id": "c-S15-D-11-tab1-save-name",
+   "scen": "S15",
+   "desc": "first tab, no reload: Save name on the stale archived editor",
+   "v": {
+    "before": {
+     "st": {
+      "listOpen": true,
+      "open": true,
+      "cs": "RDARCHDRAFT",
+      "del": "Delete",
+      "restore": "Restore as RDARCHDRAFT"
+     }
+    },
+    "had": true,
+    "old": null,
+    "draft": "RDARCHDRAFT no sign-in · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ No sign-in/Archived ¦ EDITOR OPEN",
+    "renamed2": null,
+    "toast": "Renamed RDARCHDRAFT",
+    "st": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCHDRAFT",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "branch-c-S15-D-11-tab1-save-name.png"
+  },
+  "c-S15-D-12-reload-both": {
+   "id": "c-S15-D-12-reload-both",
+   "scen": "S15",
+   "desc": "reload both tabs: the archived people",
+   "v": {
+    "tab1": [
+     "RDARCHDRAFT"
+    ],
+    "tab2": [
+     "RDARCHDRAFT"
+    ]
+   },
+   "pic": "branch-c-S15-D-12-reload-both.png"
+  },
+  "C15-D-errors": {
+   "id": "C15-D-errors",
+   "v": []
+  }
+ }
+}

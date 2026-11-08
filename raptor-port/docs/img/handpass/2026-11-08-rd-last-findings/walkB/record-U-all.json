@@ -1,0 +1,4742 @@
+{
+ "main": {
+  "U01-D-start": {
+   "id": "U01-D-start",
+   "scen": "S03",
+   "desc": "Admin → Users opened",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 61",
+     "arch": null,
+     "waiting": 0
+    },
+    "row Saber": "Saber ad · Pilot · CAT IP YOU ¦ Can sign in/On the roster ¦ Admin",
+    "row Ranger": "Ranger us · Pilot · CAT IP ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U01-D-start.png"
+  },
+  "U02a-D-add": {
+   "id": "U02a-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDACTIVE",
+   "v": {
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "bar": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02a-D-add.png"
+  },
+  "U02b-D-add": {
+   "id": "U02b-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDWSO",
+   "v": {
+    "toast": "RDWSO added — rdwso@example.test can sign in now",
+    "bar": "RDWSO added — rdwso@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02b-D-add.png"
+  },
+  "U02c-D-add": {
+   "id": "U02c-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDGROUND",
+   "v": {
+    "toast": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "bar": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U02c-D-add.png"
+  },
+  "U02d-D-add": {
+   "id": "U02d-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDNOSIGN",
+   "v": {
+    "toast": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "bar": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 65",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN no sign-in · Pilot · CAT C ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U02d-D-add.png"
+  },
+  "U02e-D-add": {
+   "id": "U02e-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDSUSP",
+   "v": {
+    "toast": "RDSUSP added — rdsusp@example.test can sign in now",
+    "bar": "RDSUSP added — rdsusp@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 66",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02e-D-add.png"
+  },
+  "U02f-D-add": {
+   "id": "U02f-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDARCH",
+   "v": {
+    "toast": "RDARCH added — rdarch@example.test can sign in now",
+    "bar": "RDARCH added — rdarch@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02f-D-add.png"
+  },
+  "U02g-D-add": {
+   "id": "U02g-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDADMIN2",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U02g-D-add.png"
+  },
+  "U03-D-undo-after-add": {
+   "id": "U03-D-undo-after-add",
+   "scen": "S04",
+   "desc": "Undo after the adds",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    }
+   },
+   "pic": "main-U03-D-undo-after-add.png"
+  },
+  "U04a-D-edit-open": {
+   "id": "U04a-D-edit-open",
+   "scen": "S05",
+   "desc": "open RDACTIVE editor",
+   "v": {
+    "name": "rdactive@example.test",
+    "role": "main",
+    "buttons": [
+     "Save",
+     "Suspend",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ]
+   },
+   "pic": "main-U04a-D-edit-open.png"
+  },
+  "U04b-D-edit-save": {
+   "id": "U04b-D-edit-save",
+   "scen": "S05",
+   "desc": "change sign-in and role, Save",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04b-D-edit-save.png"
+  },
+  "U04c-D-edit-undo": {
+   "id": "U04c-D-edit-undo",
+   "scen": "S05",
+   "desc": "Undo",
+   "v": {
+    "toast": "Undid: RDACTIVE’s role",
+    "bar": "Undid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — RDACTIVE’s role"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U04c-D-edit-undo.png"
+  },
+  "U04d-D-edit-redo": {
+   "id": "U04d-D-edit-redo",
+   "scen": "S05",
+   "desc": "Redo",
+   "v": {
+    "toast": "Redid: RDACTIVE’s role",
+    "bar": "Redid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04d-D-edit-redo.png"
+  },
+  "U04e-D-edit-undo2": {
+   "id": "U04e-D-edit-undo2",
+   "scen": "S05",
+   "desc": "Undo again then reload (R)",
+   "v": {
+    "a": {
+     "toast": "Undid: RDACTIVE’s role",
+     "bar": "Undid: RDACTIVE’s role",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — RDACTIVE’s role"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "afterReload": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "main-U04e-D-edit-undo2.png"
+  },
+  "U04f-D-edit-save-reload": {
+   "id": "U04f-D-edit-save-reload",
+   "scen": "S05",
+   "desc": "Save again then reload",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04f-D-edit-save-reload.png"
+  },
+  "U05a-D-suspend": {
+   "id": "U05a-D-suspend",
+   "scen": "S05",
+   "desc": "Suspend RDSUSP",
+   "v": {
+    "toast": "RDSUSP suspended",
+    "bar": "RDSUSP suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "main-U05a-D-suspend.png"
+  },
+  "U05b-D-suspend-undo": {
+   "id": "U05b-D-suspend-undo",
+   "scen": "S05",
+   "desc": "Undo suspend",
+   "v": {
+    "toast": "Undid: suspending RDSUSP’s sign-in",
+    "bar": "Undid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — suspending RDSUSP’s sign-in"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05b-D-suspend-undo.png"
+  },
+  "U05c-D-suspend-redo": {
+   "id": "U05c-D-suspend-redo",
+   "scen": "S05",
+   "desc": "Redo suspend",
+   "v": {
+    "toast": "Redid: suspending RDSUSP’s sign-in",
+    "bar": "Redid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "main-U05c-D-suspend-redo.png"
+  },
+  "U05d-D-enable": {
+   "id": "U05d-D-enable",
+   "scen": "S05",
+   "desc": "Enable RDSUSP",
+   "v": {
+    "toast": "RDSUSP can sign in again",
+    "bar": "RDSUSP can sign in again",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — enabling RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05d-D-enable.png"
+  },
+  "U05e-D-give-signin": {
+   "id": "U05e-D-give-signin",
+   "scen": "S05",
+   "desc": "Give sign-in to RDNOSIGN",
+   "v": {
+    "b": [
+     "Give sign-in",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ],
+    "toast": "RDNOSIGN can sign in now",
+    "bar": "RDNOSIGN can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN rdnosign@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05e-D-give-signin.png"
+  },
+  "U06a-D-editor-draft": {
+   "id": "U06a-D-editor-draft",
+   "scen": "S12",
+   "desc": "open RDWSO, type sign-in, change role, arm Delete",
+   "v": {
+    "del": "Tap again to delete RDWSO",
+    "note": 1
+   },
+   "pic": "main-U06a-D-editor-draft.png"
+  },
+  "U06b-D-editor-cancel": {
+   "id": "U06b-D-editor-cancel",
+   "scen": "S12",
+   "desc": "Cancel, reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test",
+    "role": "main",
+    "del": "Delete"
+   },
+   "pic": "main-U06b-D-editor-cancel.png"
+  },
+  "U06c-D-editor-sameRow": {
+   "id": "U06c-D-editor-sameRow",
+   "scen": "S12",
+   "desc": "type, press same row (close), reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test"
+   },
+   "pic": "main-U06c-D-editor-sameRow.png"
+  },
+  "U06d-D-editor-otherRow": {
+   "id": "U06d-D-editor-otherRow",
+   "scen": "S12",
+   "desc": "type, arm delete, open another row, back",
+   "v": {
+    "editors": 1,
+    "name": "rdwso@example.test",
+    "del": "Delete"
+   },
+   "pic": "main-U06d-D-editor-otherRow.png"
+  },
+  "U06e-D-own-row": {
+   "id": "U06e-D-own-row",
+   "scen": "S12",
+   "desc": "own row stays closed",
+   "v": {
+    "dis": true
+   },
+   "pic": "main-U06e-D-own-row.png"
+  },
+  "U07a-D-refuse-dup": {
+   "id": "U07a-D-refuse-dup",
+   "scen": "S16",
+   "desc": "type a sign-in already held, Save: refused",
+   "v": {
+    "toast": "rdactive2@example.test already has an account",
+    "bar": "rdactive2@example.test already has an account",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editorStillOpen": true,
+    "val": "rdactive2@example.test"
+   },
+   "pic": "main-U07a-D-refuse-dup.png"
+  },
+  "U07b-D-refuse-retype": {
+   "id": "U07b-D-refuse-retype",
+   "scen": "S16",
+   "desc": "tap away, tap the row afresh, type, correct it",
+   "v": {
+    "shown": "rdwso@example.test",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso3@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U07b-D-refuse-retype.png"
+  },
+  "U07c-D-noop-save": {
+   "id": "U07c-D-noop-save",
+   "scen": "S16",
+   "desc": "Save unchanged: no extra Undo step",
+   "v": {
+    "u0": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "u1": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "editorClosed": true
+   },
+   "pic": "main-U07c-D-noop-save.png"
+  },
+  "U08a-D-archive": {
+   "id": "U08a-D-archive",
+   "scen": "S13",
+   "desc": "Archive RDARCH",
+   "v": {
+    "toast": "RDARCH archived — his sign-in is suspended",
+    "bar": "RDARCH archived — his sign-in is suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": null
+   },
+   "pic": "main-U08a-D-archive.png"
+  },
+  "U08b-D-add-collision": {
+   "id": "U08b-D-add-collision",
+   "scen": "S13",
+   "desc": "add a different active RDARCH",
+   "v": {
+    "toast": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "bar": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U08b-D-add-collision.png"
+  },
+  "U08c-D-arch-open": {
+   "id": "U08c-D-arch-open",
+   "scen": "S13",
+   "desc": "open the archived list and the archived editor (taken name)",
+   "v": {
+    "cs": "RDARCH 2",
+    "taken": "RDARCH is taken on the roster — give him another callsign.",
+    "restoreBtn": "Restore as RDARCH 2"
+   },
+   "pic": "main-U08c-D-arch-open.png"
+  },
+  "U08d-D-arch-refuse": {
+   "id": "U08d-D-arch-refuse",
+   "scen": "S13",
+   "desc": "type a taken callsign, Save name: refused; error clears on typing",
+   "v": {
+    "saveShown": 1,
+    "err": "RDACTIVE is already taken — callsigns must be unique",
+    "errAfter": 0,
+    "btn": "Restore as RDARCHB"
+   },
+   "pic": "main-U08d-D-arch-refuse.png"
+  },
+  "U08e-D-arch-savename": {
+   "id": "U08e-D-arch-savename",
+   "scen": "S13",
+   "desc": "Save name without restoring",
+   "v": {
+    "toast": "Renamed RDARCHB",
+    "bar": "Renamed RDARCHB",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▾ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ Sign-in suspended/Archived ¦ Member ¦ EDITOR OPEN",
+    "editor": 1
+   },
+   "pic": "main-U08e-D-arch-savename.png"
+  },
+  "U08f-D-arch-cancel-reopen": {
+   "id": "U08f-D-arch-cancel-reopen",
+   "scen": "S13",
+   "desc": "arm delete, Cancel, reopen",
+   "v": {
+    "armed": "Tap again to delete RDARCHB",
+    "after": "Delete",
+    "cs": "RDARCHB"
+   },
+   "pic": "main-U08f-D-arch-cancel-reopen.png"
+  },
+  "U08g-D-restore": {
+   "id": "U08g-D-restore",
+   "scen": "S13",
+   "desc": "Restore RDARCHB",
+   "v": {
+    "toast": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "bar": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 69",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U08g-D-restore.png"
+  },
+  "U09a-D-delete-arm": {
+   "id": "U09a-D-delete-arm",
+   "scen": "S22",
+   "desc": "RDNOSIGN delete first tap",
+   "v": {
+    "del": "Tap again to delete RDNOSIGN",
+    "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone."
+   },
+   "pic": "main-U09a-D-delete-arm.png"
+  },
+  "U09b-D-delete-go": {
+   "id": "U09b-D-delete-go",
+   "scen": "S22",
+   "desc": "second tap",
+   "v": {
+    "toast": "RDNOSIGN deleted",
+    "bar": "RDNOSIGN deleted",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": null
+   },
+   "pic": "main-U09b-D-delete-go.png"
+  },
+  "U09c-D-reload": {
+   "id": "U09c-D-reload",
+   "scen": "S03",
+   "desc": "reload: rows kept",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin",
+    "row RDWSO": "RDWSO rdwso3@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member",
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster",
+    "row RDNOSIGN": null,
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster",
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U09c-D-reload.png"
+  },
+  "U09d-D-store": {
+   "id": "U09d-D-store",
+   "scen": "S03",
+   "desc": "what the browser store holds (key shapes)",
+   "v": {
+    "ID/ID": 15,
+    "ID/account:ID": 6,
+    "ID/account:acad": 1,
+    "ID/account:achex": 1,
+    "ID/account:acus": 1,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/elog:ID.000001": 2,
+    "ID/elog:ID.000002": 2,
+    "ID/elog:ID.000003": 2,
+    "ID/elog:ID.000004": 2,
+    "ID/elog:ID.000005": 2,
+    "ID/elog:ID.000006": 2,
+    "ID/elog:ID.000007": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ID": 7,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 3,
+    "changes/ID-1": 2,
+    "changes/ID-10": 2,
+    "changes/ID-11": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 2,
+    "changes/ID-5": 2,
+    "changes/ID-6": 2,
+    "changes/ID-7": 2,
+    "changes/ID-8": 2,
+    "changes/ID-9": 2,
+    "inputs/ID": 52,
+    "people/ID": 10,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "main-U09d-D-store.png"
+  },
+  "U-D-errors": {
+   "id": "U-D-errors",
+   "v": []
+  },
+  "U01-P-start": {
+   "id": "U01-P-start",
+   "scen": "S03",
+   "desc": "Admin → Users opened",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 61",
+     "arch": null,
+     "waiting": 0
+    },
+    "row Saber": "Saber ad · Admin · Pilot · CAT IP YOU ¦ Can sign in/On the roster ¦ Admin",
+    "row Ranger": "Ranger us · Member · Pilot · CAT IP ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U01-P-start.png"
+  },
+  "U02a-P-add": {
+   "id": "U02a-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDACTIVE",
+   "v": {
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "bar": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02a-P-add.png"
+  },
+  "U02b-P-add": {
+   "id": "U02b-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDWSO",
+   "v": {
+    "toast": "RDWSO added — rdwso@example.test can sign in now",
+    "bar": "RDWSO added — rdwso@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02b-P-add.png"
+  },
+  "U02c-P-add": {
+   "id": "U02c-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDGROUND",
+   "v": {
+    "toast": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "bar": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U02c-P-add.png"
+  },
+  "U02d-P-add": {
+   "id": "U02d-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDNOSIGN",
+   "v": {
+    "toast": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "bar": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 65",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN no sign-in · Pilot · CAT C ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U02d-P-add.png"
+  },
+  "U02e-P-add": {
+   "id": "U02e-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDSUSP",
+   "v": {
+    "toast": "RDSUSP added — rdsusp@example.test can sign in now",
+    "bar": "RDSUSP added — rdsusp@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 66",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02e-P-add.png"
+  },
+  "U02f-P-add": {
+   "id": "U02f-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDARCH",
+   "v": {
+    "toast": "RDARCH added — rdarch@example.test can sign in now",
+    "bar": "RDARCH added — rdarch@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U02f-P-add.png"
+  },
+  "U02g-P-add": {
+   "id": "U02g-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDADMIN2",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U02g-P-add.png"
+  },
+  "U03-P-undo-after-add": {
+   "id": "U03-P-undo-after-add",
+   "scen": "S04",
+   "desc": "Undo after the adds",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    }
+   },
+   "pic": "main-U03-P-undo-after-add.png"
+  },
+  "U04a-P-edit-open": {
+   "id": "U04a-P-edit-open",
+   "scen": "S05",
+   "desc": "open RDACTIVE editor",
+   "v": {
+    "name": "rdactive@example.test",
+    "role": "main",
+    "buttons": [
+     "Save",
+     "Suspend",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ]
+   },
+   "pic": "main-U04a-P-edit-open.png"
+  },
+  "U04b-P-edit-save": {
+   "id": "U04b-P-edit-save",
+   "scen": "S05",
+   "desc": "change sign-in and role, Save",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04b-P-edit-save.png"
+  },
+  "U04c-P-edit-undo": {
+   "id": "U04c-P-edit-undo",
+   "scen": "S05",
+   "desc": "Undo",
+   "v": {
+    "toast": "Undid: RDACTIVE’s role",
+    "bar": "Undid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — RDACTIVE’s role"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U04c-P-edit-undo.png"
+  },
+  "U04d-P-edit-redo": {
+   "id": "U04d-P-edit-redo",
+   "scen": "S05",
+   "desc": "Redo",
+   "v": {
+    "toast": "Redid: RDACTIVE’s role",
+    "bar": "Redid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04d-P-edit-redo.png"
+  },
+  "U04e-P-edit-undo2": {
+   "id": "U04e-P-edit-undo2",
+   "scen": "S05",
+   "desc": "Undo again then reload (R)",
+   "v": {
+    "a": {
+     "toast": "Undid: RDACTIVE’s role",
+     "bar": "Undid: RDACTIVE’s role",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — RDACTIVE’s role"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "afterReload": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "main-U04e-P-edit-undo2.png"
+  },
+  "U04f-P-edit-save-reload": {
+   "id": "U04f-P-edit-save-reload",
+   "scen": "S05",
+   "desc": "Save again then reload",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U04f-P-edit-save-reload.png"
+  },
+  "U05a-P-suspend": {
+   "id": "U05a-P-suspend",
+   "scen": "S05",
+   "desc": "Suspend RDSUSP",
+   "v": {
+    "toast": "RDSUSP suspended",
+    "bar": "RDSUSP suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "main-U05a-P-suspend.png"
+  },
+  "U05b-P-suspend-undo": {
+   "id": "U05b-P-suspend-undo",
+   "scen": "S05",
+   "desc": "Undo suspend",
+   "v": {
+    "toast": "Undid: suspending RDSUSP’s sign-in",
+    "bar": "Undid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — suspending RDSUSP’s sign-in"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05b-P-suspend-undo.png"
+  },
+  "U05c-P-suspend-redo": {
+   "id": "U05c-P-suspend-redo",
+   "scen": "S05",
+   "desc": "Redo suspend",
+   "v": {
+    "toast": "Redid: suspending RDSUSP’s sign-in",
+    "bar": "Redid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "main-U05c-P-suspend-redo.png"
+  },
+  "U05d-P-enable": {
+   "id": "U05d-P-enable",
+   "scen": "S05",
+   "desc": "Enable RDSUSP",
+   "v": {
+    "toast": "RDSUSP can sign in again",
+    "bar": "RDSUSP can sign in again",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — enabling RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05d-P-enable.png"
+  },
+  "U05e-P-give-signin": {
+   "id": "U05e-P-give-signin",
+   "scen": "S05",
+   "desc": "Give sign-in to RDNOSIGN",
+   "v": {
+    "b": [
+     "Give sign-in",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ],
+    "toast": "RDNOSIGN can sign in now",
+    "bar": "RDNOSIGN can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN rdnosign@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U05e-P-give-signin.png"
+  },
+  "U06a-P-editor-draft": {
+   "id": "U06a-P-editor-draft",
+   "scen": "S12",
+   "desc": "open RDWSO, type sign-in, change role, arm Delete",
+   "v": {
+    "del": "Tap again to delete RDWSO",
+    "note": 1
+   },
+   "pic": "main-U06a-P-editor-draft.png"
+  },
+  "U06b-P-editor-cancel": {
+   "id": "U06b-P-editor-cancel",
+   "scen": "S12",
+   "desc": "Cancel, reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test",
+    "role": "main",
+    "del": "Delete"
+   },
+   "pic": "main-U06b-P-editor-cancel.png"
+  },
+  "U06c-P-editor-sameRow": {
+   "id": "U06c-P-editor-sameRow",
+   "scen": "S12",
+   "desc": "type, press same row (close), reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test"
+   },
+   "pic": "main-U06c-P-editor-sameRow.png"
+  },
+  "U06d-P-editor-otherRow": {
+   "id": "U06d-P-editor-otherRow",
+   "scen": "S12",
+   "desc": "type, arm delete, open another row, back",
+   "v": {
+    "editors": 1,
+    "name": "rdwso@example.test",
+    "del": "Delete"
+   },
+   "pic": "main-U06d-P-editor-otherRow.png"
+  },
+  "U06e-P-own-row": {
+   "id": "U06e-P-own-row",
+   "scen": "S12",
+   "desc": "own row stays closed",
+   "v": {
+    "dis": true
+   },
+   "pic": "main-U06e-P-own-row.png"
+  },
+  "U07a-P-refuse-dup": {
+   "id": "U07a-P-refuse-dup",
+   "scen": "S16",
+   "desc": "type a sign-in already held, Save: refused",
+   "v": {
+    "toast": "rdactive2@example.test already has an account",
+    "bar": "rdactive2@example.test already has an account",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editorStillOpen": true,
+    "val": "rdactive2@example.test"
+   },
+   "pic": "main-U07a-P-refuse-dup.png"
+  },
+  "U07b-P-refuse-retype": {
+   "id": "U07b-P-refuse-retype",
+   "scen": "S16",
+   "desc": "tap away, tap the row afresh, type, correct it",
+   "v": {
+    "shown": "rdwso@example.test",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso3@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U07b-P-refuse-retype.png"
+  },
+  "U07c-P-noop-save": {
+   "id": "U07c-P-noop-save",
+   "scen": "S16",
+   "desc": "Save unchanged: no extra Undo step",
+   "v": {
+    "u0": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "u1": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "editorClosed": true
+   },
+   "pic": "main-U07c-P-noop-save.png"
+  },
+  "U08a-P-archive": {
+   "id": "U08a-P-archive",
+   "scen": "S13",
+   "desc": "Archive RDARCH",
+   "v": {
+    "toast": "RDARCH archived — his sign-in is suspended",
+    "bar": "RDARCH archived — his sign-in is suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": null
+   },
+   "pic": "main-U08a-P-archive.png"
+  },
+  "U08b-P-add-collision": {
+   "id": "U08b-P-add-collision",
+   "scen": "S13",
+   "desc": "add a different active RDARCH",
+   "v": {
+    "toast": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "bar": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster"
+   },
+   "pic": "main-U08b-P-add-collision.png"
+  },
+  "U08c-P-arch-open": {
+   "id": "U08c-P-arch-open",
+   "scen": "S13",
+   "desc": "open the archived list and the archived editor (taken name)",
+   "v": {
+    "cs": "RDARCH 2",
+    "taken": "RDARCH is taken on the roster — give him another callsign.",
+    "restoreBtn": "Restore as RDARCH 2"
+   },
+   "pic": "main-U08c-P-arch-open.png"
+  },
+  "U08d-P-arch-refuse": {
+   "id": "U08d-P-arch-refuse",
+   "scen": "S13",
+   "desc": "type a taken callsign, Save name: refused; error clears on typing",
+   "v": {
+    "saveShown": 1,
+    "err": "RDACTIVE is already taken — callsigns must be unique",
+    "errAfter": 0,
+    "btn": "Restore as RDARCHB"
+   },
+   "pic": "main-U08d-P-arch-refuse.png"
+  },
+  "U08e-P-arch-savename": {
+   "id": "U08e-P-arch-savename",
+   "scen": "S13",
+   "desc": "Save name without restoring",
+   "v": {
+    "toast": "Renamed RDARCHB",
+    "bar": "Renamed RDARCHB",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▾ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ Sign-in suspended/Archived ¦ Member ¦ EDITOR OPEN",
+    "editor": 1
+   },
+   "pic": "main-U08e-P-arch-savename.png"
+  },
+  "U08f-P-arch-cancel-reopen": {
+   "id": "U08f-P-arch-cancel-reopen",
+   "scen": "S13",
+   "desc": "arm delete, Cancel, reopen",
+   "v": {
+    "armed": "Tap again to delete RDARCHB",
+    "after": "Delete",
+    "cs": "RDARCHB"
+   },
+   "pic": "main-U08f-P-arch-cancel-reopen.png"
+  },
+  "U08g-P-restore": {
+   "id": "U08g-P-restore",
+   "scen": "S13",
+   "desc": "Restore RDARCHB",
+   "v": {
+    "toast": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "bar": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 69",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "main-U08g-P-restore.png"
+  },
+  "U09a-P-delete-arm": {
+   "id": "U09a-P-delete-arm",
+   "scen": "S22",
+   "desc": "RDNOSIGN delete first tap",
+   "v": {
+    "del": "Tap again to delete RDNOSIGN",
+    "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone."
+   },
+   "pic": "main-U09a-P-delete-arm.png"
+  },
+  "U09b-P-delete-go": {
+   "id": "U09b-P-delete-go",
+   "scen": "S22",
+   "desc": "second tap",
+   "v": {
+    "toast": "RDNOSIGN deleted",
+    "bar": "RDNOSIGN deleted",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": null
+   },
+   "pic": "main-U09b-P-delete-go.png"
+  },
+  "U09c-P-reload": {
+   "id": "U09c-P-reload",
+   "scen": "S03",
+   "desc": "reload: rows kept",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin",
+    "row RDWSO": "RDWSO rdwso3@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member",
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster",
+    "row RDNOSIGN": null,
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCHB": "RDARCHB rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster",
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "main-U09c-P-reload.png"
+  },
+  "U09d-P-store": {
+   "id": "U09d-P-store",
+   "scen": "S03",
+   "desc": "what the browser store holds (key shapes)",
+   "v": {
+    "ID/ID": 15,
+    "ID/account:ID": 6,
+    "ID/account:acad": 1,
+    "ID/account:achex": 1,
+    "ID/account:acus": 1,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/elog:ID.000001": 2,
+    "ID/elog:ID.000002": 2,
+    "ID/elog:ID.000003": 2,
+    "ID/elog:ID.000004": 2,
+    "ID/elog:ID.000005": 2,
+    "ID/elog:ID.000006": 2,
+    "ID/elog:ID.000007": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ID": 7,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 3,
+    "changes/ID-1": 2,
+    "changes/ID-10": 2,
+    "changes/ID-11": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 2,
+    "changes/ID-5": 2,
+    "changes/ID-6": 2,
+    "changes/ID-7": 2,
+    "changes/ID-8": 2,
+    "changes/ID-9": 2,
+    "inputs/ID": 52,
+    "people/ID": 10,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "main-U09d-P-store.png"
+  },
+  "U-P-errors": {
+   "id": "U-P-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "U01-D-start": {
+   "id": "U01-D-start",
+   "scen": "S03",
+   "desc": "Admin → Users opened",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 61",
+     "arch": null,
+     "waiting": 0
+    },
+    "row Saber": "Saber ad · Pilot · CAT IP YOU ¦ Can sign in/On the roster ¦ Admin",
+    "row Ranger": "Ranger us · Pilot · CAT IP ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U01-D-start.png"
+  },
+  "U02a-D-add": {
+   "id": "U02a-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDACTIVE",
+   "v": {
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "bar": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02a-D-add.png"
+  },
+  "U02b-D-add": {
+   "id": "U02b-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDWSO",
+   "v": {
+    "toast": "RDWSO added — rdwso@example.test can sign in now",
+    "bar": "RDWSO added — rdwso@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02b-D-add.png"
+  },
+  "U02c-D-add": {
+   "id": "U02c-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDGROUND",
+   "v": {
+    "toast": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "bar": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U02c-D-add.png"
+  },
+  "U02d-D-add": {
+   "id": "U02d-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDNOSIGN",
+   "v": {
+    "toast": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "bar": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 65",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN no sign-in · Pilot · CAT C ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U02d-D-add.png"
+  },
+  "U02e-D-add": {
+   "id": "U02e-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDSUSP",
+   "v": {
+    "toast": "RDSUSP added — rdsusp@example.test can sign in now",
+    "bar": "RDSUSP added — rdsusp@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 66",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02e-D-add.png"
+  },
+  "U02f-D-add": {
+   "id": "U02f-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDARCH",
+   "v": {
+    "toast": "RDARCH added — rdarch@example.test can sign in now",
+    "bar": "RDARCH added — rdarch@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02f-D-add.png"
+  },
+  "U02g-D-add": {
+   "id": "U02g-D-add",
+   "scen": "S04",
+   "desc": "Add a person RDADMIN2",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U02g-D-add.png"
+  },
+  "U03-D-undo-after-add": {
+   "id": "U03-D-undo-after-add",
+   "scen": "S04",
+   "desc": "Undo after the adds",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    }
+   },
+   "pic": "branch-U03-D-undo-after-add.png"
+  },
+  "U04a-D-edit-open": {
+   "id": "U04a-D-edit-open",
+   "scen": "S05",
+   "desc": "open RDACTIVE editor",
+   "v": {
+    "name": "rdactive@example.test",
+    "role": "main",
+    "buttons": [
+     "Save",
+     "Suspend",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ]
+   },
+   "pic": "branch-U04a-D-edit-open.png"
+  },
+  "U04b-D-edit-save": {
+   "id": "U04b-D-edit-save",
+   "scen": "S05",
+   "desc": "change sign-in and role, Save",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04b-D-edit-save.png"
+  },
+  "U04c-D-edit-undo": {
+   "id": "U04c-D-edit-undo",
+   "scen": "S05",
+   "desc": "Undo",
+   "v": {
+    "toast": "Undid: RDACTIVE’s role",
+    "bar": "Undid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — RDACTIVE’s role"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U04c-D-edit-undo.png"
+  },
+  "U04d-D-edit-redo": {
+   "id": "U04d-D-edit-redo",
+   "scen": "S05",
+   "desc": "Redo",
+   "v": {
+    "toast": "Redid: RDACTIVE’s role",
+    "bar": "Redid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04d-D-edit-redo.png"
+  },
+  "U04e-D-edit-undo2": {
+   "id": "U04e-D-edit-undo2",
+   "scen": "S05",
+   "desc": "Undo again then reload (R)",
+   "v": {
+    "a": {
+     "toast": "Undid: RDACTIVE’s role",
+     "bar": "Undid: RDACTIVE’s role",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — RDACTIVE’s role"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "afterReload": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "branch-U04e-D-edit-undo2.png"
+  },
+  "U04f-D-edit-save-reload": {
+   "id": "U04f-D-edit-save-reload",
+   "scen": "S05",
+   "desc": "Save again then reload",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04f-D-edit-save-reload.png"
+  },
+  "U05a-D-suspend": {
+   "id": "U05a-D-suspend",
+   "scen": "S05",
+   "desc": "Suspend RDSUSP",
+   "v": {
+    "toast": "RDSUSP suspended",
+    "bar": "RDSUSP suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "branch-U05a-D-suspend.png"
+  },
+  "U05b-D-suspend-undo": {
+   "id": "U05b-D-suspend-undo",
+   "scen": "S05",
+   "desc": "Undo suspend",
+   "v": {
+    "toast": "Undid: suspending RDSUSP’s sign-in",
+    "bar": "Undid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — suspending RDSUSP’s sign-in"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05b-D-suspend-undo.png"
+  },
+  "U05c-D-suspend-redo": {
+   "id": "U05c-D-suspend-redo",
+   "scen": "S05",
+   "desc": "Redo suspend",
+   "v": {
+    "toast": "Redid: suspending RDSUSP’s sign-in",
+    "bar": "Redid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "branch-U05c-D-suspend-redo.png"
+  },
+  "U05d-D-enable": {
+   "id": "U05d-D-enable",
+   "scen": "S05",
+   "desc": "Enable RDSUSP",
+   "v": {
+    "toast": "RDSUSP can sign in again",
+    "bar": "RDSUSP can sign in again",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — enabling RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05d-D-enable.png"
+  },
+  "U05e-D-give-signin": {
+   "id": "U05e-D-give-signin",
+   "scen": "S05",
+   "desc": "Give sign-in to RDNOSIGN",
+   "v": {
+    "b": [
+     "Give sign-in",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ],
+    "toast": "RDNOSIGN can sign in now",
+    "bar": "RDNOSIGN can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN rdnosign@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05e-D-give-signin.png"
+  },
+  "U06a-D-editor-draft": {
+   "id": "U06a-D-editor-draft",
+   "scen": "S12",
+   "desc": "open RDWSO, type sign-in, change role, arm Delete",
+   "v": {
+    "del": "Tap again to delete RDWSO",
+    "note": 1
+   },
+   "pic": "branch-U06a-D-editor-draft.png"
+  },
+  "U06b-D-editor-cancel": {
+   "id": "U06b-D-editor-cancel",
+   "scen": "S12",
+   "desc": "Cancel, reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test",
+    "role": "main",
+    "del": "Delete"
+   },
+   "pic": "branch-U06b-D-editor-cancel.png"
+  },
+  "U06c-D-editor-sameRow": {
+   "id": "U06c-D-editor-sameRow",
+   "scen": "S12",
+   "desc": "type, press same row (close), reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test"
+   },
+   "pic": "branch-U06c-D-editor-sameRow.png"
+  },
+  "U06d-D-editor-otherRow": {
+   "id": "U06d-D-editor-otherRow",
+   "scen": "S12",
+   "desc": "type, arm delete, open another row, back",
+   "v": {
+    "editors": 1,
+    "name": "rdwso@example.test",
+    "del": "Delete"
+   },
+   "pic": "branch-U06d-D-editor-otherRow.png"
+  },
+  "U06e-D-own-row": {
+   "id": "U06e-D-own-row",
+   "scen": "S12",
+   "desc": "own row stays closed",
+   "v": {
+    "dis": true
+   },
+   "pic": "branch-U06e-D-own-row.png"
+  },
+  "U07a-D-refuse-dup": {
+   "id": "U07a-D-refuse-dup",
+   "scen": "S16",
+   "desc": "type a sign-in already held, Save: refused",
+   "v": {
+    "toast": "rdactive2@example.test already has an account",
+    "bar": "rdactive2@example.test already has an account",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editorStillOpen": true,
+    "val": "rdactive2@example.test"
+   },
+   "pic": "branch-U07a-D-refuse-dup.png"
+  },
+  "U07b-D-refuse-retype": {
+   "id": "U07b-D-refuse-retype",
+   "scen": "S16",
+   "desc": "tap away, tap the row afresh, type, correct it",
+   "v": {
+    "shown": "rdwso@example.test",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso3@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U07b-D-refuse-retype.png"
+  },
+  "U07c-D-noop-save": {
+   "id": "U07c-D-noop-save",
+   "scen": "S16",
+   "desc": "Save unchanged: no extra Undo step",
+   "v": {
+    "u0": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "u1": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "editorClosed": true
+   },
+   "pic": "branch-U07c-D-noop-save.png"
+  },
+  "U08a-D-archive": {
+   "id": "U08a-D-archive",
+   "scen": "S13",
+   "desc": "Archive RDARCH",
+   "v": {
+    "toast": "RDARCH archived — his sign-in is suspended",
+    "bar": "RDARCH archived — his sign-in is suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": null
+   },
+   "pic": "branch-U08a-D-archive.png"
+  },
+  "U08b-D-add-collision": {
+   "id": "U08b-D-add-collision",
+   "scen": "S13",
+   "desc": "add a different active RDARCH",
+   "v": {
+    "toast": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "bar": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U08b-D-add-collision.png"
+  },
+  "U08c-D-arch-open": {
+   "id": "U08c-D-arch-open",
+   "scen": "S13",
+   "desc": "open the archived list and the archived editor (taken name)",
+   "v": {
+    "cs": "RDARCH 2",
+    "taken": "RDARCH is taken on the roster — give him another callsign.",
+    "restoreBtn": "Restore as RDARCH 2"
+   },
+   "pic": "branch-U08c-D-arch-open.png"
+  },
+  "U08d-D-arch-refuse": {
+   "id": "U08d-D-arch-refuse",
+   "scen": "S13",
+   "desc": "type a taken callsign, Save name: refused; error clears on typing",
+   "v": {
+    "saveShown": 1,
+    "err": "RDACTIVE is already taken — callsigns must be unique",
+    "errAfter": 0,
+    "btn": "Restore as RDARCHB"
+   },
+   "pic": "branch-U08d-D-arch-refuse.png"
+  },
+  "U08e-D-arch-savename": {
+   "id": "U08e-D-arch-savename",
+   "scen": "S13",
+   "desc": "Save name without restoring",
+   "v": {
+    "toast": "Renamed RDARCHB",
+    "bar": "Renamed RDARCHB",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▾ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ Sign-in suspended/Archived ¦ Member ¦ EDITOR OPEN",
+    "editor": 1
+   },
+   "pic": "branch-U08e-D-arch-savename.png"
+  },
+  "U08f-D-arch-cancel-reopen": {
+   "id": "U08f-D-arch-cancel-reopen",
+   "scen": "S13",
+   "desc": "arm delete, Cancel, reopen",
+   "v": {
+    "armed": "Tap again to delete RDARCHB",
+    "after": "Delete",
+    "cs": "RDARCHB"
+   },
+   "pic": "branch-U08f-D-arch-cancel-reopen.png"
+  },
+  "U08g-D-restore": {
+   "id": "U08g-D-restore",
+   "scen": "S13",
+   "desc": "Restore RDARCHB",
+   "v": {
+    "toast": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "bar": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 69",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U08g-D-restore.png"
+  },
+  "U09a-D-delete-arm": {
+   "id": "U09a-D-delete-arm",
+   "scen": "S22",
+   "desc": "RDNOSIGN delete first tap",
+   "v": {
+    "del": "Tap again to delete RDNOSIGN",
+    "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone."
+   },
+   "pic": "branch-U09a-D-delete-arm.png"
+  },
+  "U09b-D-delete-go": {
+   "id": "U09b-D-delete-go",
+   "scen": "S22",
+   "desc": "second tap",
+   "v": {
+    "toast": "RDNOSIGN deleted",
+    "bar": "RDNOSIGN deleted",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": null
+   },
+   "pic": "branch-U09b-D-delete-go.png"
+  },
+  "U09c-D-reload": {
+   "id": "U09c-D-reload",
+   "scen": "S03",
+   "desc": "reload: rows kept",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin",
+    "row RDWSO": "RDWSO rdwso3@example.test · WSO · CAT B ¦ Can sign in/On the roster ¦ Member",
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster",
+    "row RDNOSIGN": null,
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster",
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U09c-D-reload.png"
+  },
+  "U09d-D-store": {
+   "id": "U09d-D-store",
+   "scen": "S03",
+   "desc": "what the browser store holds (key shapes)",
+   "v": {
+    "ID/ID": 15,
+    "ID/account:ID": 6,
+    "ID/account:acad": 1,
+    "ID/account:achex": 1,
+    "ID/account:acus": 1,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/elog:ID.000001": 2,
+    "ID/elog:ID.000002": 2,
+    "ID/elog:ID.000003": 2,
+    "ID/elog:ID.000004": 2,
+    "ID/elog:ID.000005": 2,
+    "ID/elog:ID.000006": 2,
+    "ID/elog:ID.000007": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ID": 7,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 3,
+    "changes/ID-1": 2,
+    "changes/ID-10": 2,
+    "changes/ID-11": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 2,
+    "changes/ID-5": 2,
+    "changes/ID-6": 2,
+    "changes/ID-7": 2,
+    "changes/ID-8": 2,
+    "changes/ID-9": 2,
+    "inputs/ID": 52,
+    "people/ID": 10,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "branch-U09d-D-store.png"
+  },
+  "U-D-errors": {
+   "id": "U-D-errors",
+   "v": []
+  },
+  "U01-P-start": {
+   "id": "U01-P-start",
+   "scen": "S03",
+   "desc": "Admin → Users opened",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 61",
+     "arch": null,
+     "waiting": 0
+    },
+    "row Saber": "Saber ad · Admin · Pilot · CAT IP YOU ¦ Can sign in/On the roster ¦ Admin",
+    "row Ranger": "Ranger us · Member · Pilot · CAT IP ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U01-P-start.png"
+  },
+  "U02a-P-add": {
+   "id": "U02a-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDACTIVE",
+   "v": {
+    "toast": "RDACTIVE added — rdactive@example.test can sign in now",
+    "bar": "RDACTIVE added — rdactive@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 62",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02a-P-add.png"
+  },
+  "U02b-P-add": {
+   "id": "U02b-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDWSO",
+   "v": {
+    "toast": "RDWSO added — rdwso@example.test can sign in now",
+    "bar": "RDWSO added — rdwso@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 63",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02b-P-add.png"
+  },
+  "U02c-P-add": {
+   "id": "U02c-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDGROUND",
+   "v": {
+    "toast": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "bar": "RDGROUND added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 64",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U02c-P-add.png"
+  },
+  "U02d-P-add": {
+   "id": "U02d-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDNOSIGN",
+   "v": {
+    "toast": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "bar": "RDNOSIGN added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 65",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN no sign-in · Pilot · CAT C ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U02d-P-add.png"
+  },
+  "U02e-P-add": {
+   "id": "U02e-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDSUSP",
+   "v": {
+    "toast": "RDSUSP added — rdsusp@example.test can sign in now",
+    "bar": "RDSUSP added — rdsusp@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 66",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02e-P-add.png"
+  },
+  "U02f-P-add": {
+   "id": "U02f-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDARCH",
+   "v": {
+    "toast": "RDARCH added — rdarch@example.test can sign in now",
+    "bar": "RDARCH added — rdarch@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U02f-P-add.png"
+  },
+  "U02g-P-add": {
+   "id": "U02g-P-add",
+   "scen": "S04",
+   "desc": "Add a person RDADMIN2",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U02g-P-add.png"
+  },
+  "U03-P-undo-after-add": {
+   "id": "U03-P-undo-after-add",
+   "scen": "S04",
+   "desc": "Undo after the adds",
+   "v": {
+    "toast": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "bar": "RDADMIN2 added — rdadmin2@example.test can sign in now",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    }
+   },
+   "pic": "branch-U03-P-undo-after-add.png"
+  },
+  "U04a-P-edit-open": {
+   "id": "U04a-P-edit-open",
+   "scen": "S05",
+   "desc": "open RDACTIVE editor",
+   "v": {
+    "name": "rdactive@example.test",
+    "role": "main",
+    "buttons": [
+     "Save",
+     "Suspend",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ]
+   },
+   "pic": "branch-U04a-P-edit-open.png"
+  },
+  "U04b-P-edit-save": {
+   "id": "U04b-P-edit-save",
+   "scen": "S05",
+   "desc": "change sign-in and role, Save",
+   "v": {
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04b-P-edit-save.png"
+  },
+  "U04c-P-edit-undo": {
+   "id": "U04c-P-edit-undo",
+   "scen": "S05",
+   "desc": "Undo",
+   "v": {
+    "toast": "Undid: RDACTIVE’s role",
+    "bar": "Undid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — RDACTIVE’s role"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U04c-P-edit-undo.png"
+  },
+  "U04d-P-edit-redo": {
+   "id": "U04d-P-edit-redo",
+   "scen": "S05",
+   "desc": "Redo",
+   "v": {
+    "toast": "Redid: RDACTIVE’s role",
+    "bar": "Redid: RDACTIVE’s role",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDACTIVE’s role"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04d-P-edit-redo.png"
+  },
+  "U04e-P-edit-undo2": {
+   "id": "U04e-P-edit-undo2",
+   "scen": "S05",
+   "desc": "Undo again then reload (R)",
+   "v": {
+    "a": {
+     "toast": "Undid: RDACTIVE’s role",
+     "bar": "Undid: RDACTIVE’s role",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Adding, archiving or restoring a person, and a posting, aren’t undone here — use Restore, Delete or the posting sheet’s own Undo. A delete is final."
+      },
+      "redo": {
+       "dis": false,
+       "t": "Redo — RDACTIVE’s role"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    },
+    "afterReload": {
+     "toast": "",
+     "bar": "",
+     "undo": {
+      "undo": {
+       "dis": true,
+       "t": "Undo"
+      },
+      "redo": {
+       "dis": true,
+       "t": "Redo"
+      }
+     },
+     "counts": {
+      "people": "People · 68",
+      "arch": null,
+      "waiting": 0
+     },
+     "row RDACTIVE": "RDACTIVE rdactive@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+    }
+   },
+   "pic": "branch-U04e-P-edit-undo2.png"
+  },
+  "U04f-P-edit-save-reload": {
+   "id": "U04f-P-edit-save-reload",
+   "scen": "S05",
+   "desc": "Save again then reload",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U04f-P-edit-save-reload.png"
+  },
+  "U05a-P-suspend": {
+   "id": "U05a-P-suspend",
+   "scen": "S05",
+   "desc": "Suspend RDSUSP",
+   "v": {
+    "toast": "RDSUSP suspended",
+    "bar": "RDSUSP suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "branch-U05a-P-suspend.png"
+  },
+  "U05b-P-suspend-undo": {
+   "id": "U05b-P-suspend-undo",
+   "scen": "S05",
+   "desc": "Undo suspend",
+   "v": {
+    "toast": "Undid: suspending RDSUSP’s sign-in",
+    "bar": "Undid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": false,
+      "t": "Redo — suspending RDSUSP’s sign-in"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05b-P-suspend-undo.png"
+  },
+  "U05c-P-suspend-redo": {
+   "id": "U05c-P-suspend-redo",
+   "scen": "S05",
+   "desc": "Redo suspend",
+   "v": {
+    "toast": "Redid: suspending RDSUSP’s sign-in",
+    "bar": "Redid: suspending RDSUSP’s sign-in",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — suspending RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Sign-in suspended/On the roster ¦ Member"
+   },
+   "pic": "branch-U05c-P-suspend-redo.png"
+  },
+  "U05d-P-enable": {
+   "id": "U05d-P-enable",
+   "scen": "S05",
+   "desc": "Enable RDSUSP",
+   "v": {
+    "toast": "RDSUSP can sign in again",
+    "bar": "RDSUSP can sign in again",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — enabling RDSUSP’s sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05d-P-enable.png"
+  },
+  "U05e-P-give-signin": {
+   "id": "U05e-P-give-signin",
+   "scen": "S05",
+   "desc": "Give sign-in to RDNOSIGN",
+   "v": {
+    "b": [
+     "Give sign-in",
+     "Archive",
+     "Delete",
+     "Cancel"
+    ],
+    "toast": "RDNOSIGN can sign in now",
+    "bar": "RDNOSIGN can sign in now",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": "RDNOSIGN rdnosign@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U05e-P-give-signin.png"
+  },
+  "U06a-P-editor-draft": {
+   "id": "U06a-P-editor-draft",
+   "scen": "S12",
+   "desc": "open RDWSO, type sign-in, change role, arm Delete",
+   "v": {
+    "del": "Tap again to delete RDWSO",
+    "note": 1
+   },
+   "pic": "branch-U06a-P-editor-draft.png"
+  },
+  "U06b-P-editor-cancel": {
+   "id": "U06b-P-editor-cancel",
+   "scen": "S12",
+   "desc": "Cancel, reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test",
+    "role": "main",
+    "del": "Delete"
+   },
+   "pic": "branch-U06b-P-editor-cancel.png"
+  },
+  "U06c-P-editor-sameRow": {
+   "id": "U06c-P-editor-sameRow",
+   "scen": "S12",
+   "desc": "type, press same row (close), reopen",
+   "v": {
+    "closed": true,
+    "name": "rdwso@example.test"
+   },
+   "pic": "branch-U06c-P-editor-sameRow.png"
+  },
+  "U06d-P-editor-otherRow": {
+   "id": "U06d-P-editor-otherRow",
+   "scen": "S12",
+   "desc": "type, arm delete, open another row, back",
+   "v": {
+    "editors": 1,
+    "name": "rdwso@example.test",
+    "del": "Delete"
+   },
+   "pic": "branch-U06d-P-editor-otherRow.png"
+  },
+  "U06e-P-own-row": {
+   "id": "U06e-P-own-row",
+   "scen": "S12",
+   "desc": "own row stays closed",
+   "v": {
+    "dis": true
+   },
+   "pic": "branch-U06e-P-own-row.png"
+  },
+  "U07a-P-refuse-dup": {
+   "id": "U07a-P-refuse-dup",
+   "scen": "S16",
+   "desc": "type a sign-in already held, Save: refused",
+   "v": {
+    "toast": "rdactive2@example.test already has an account",
+    "bar": "rdactive2@example.test already has an account",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — giving a sign-in"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member ¦ EDITOR OPEN",
+    "editorStillOpen": true,
+    "val": "rdactive2@example.test"
+   },
+   "pic": "branch-U07a-P-refuse-dup.png"
+  },
+  "U07b-P-refuse-retype": {
+   "id": "U07b-P-refuse-retype",
+   "scen": "S16",
+   "desc": "tap away, tap the row afresh, type, correct it",
+   "v": {
+    "shown": "rdwso@example.test",
+    "toast": "Saved",
+    "bar": "Saved",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDWSO": "RDWSO rdwso3@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U07b-P-refuse-retype.png"
+  },
+  "U07c-P-noop-save": {
+   "id": "U07c-P-noop-save",
+   "scen": "S16",
+   "desc": "Save unchanged: no extra Undo step",
+   "v": {
+    "u0": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "u1": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "editorClosed": true
+   },
+   "pic": "branch-U07c-P-noop-save.png"
+  },
+  "U08a-P-archive": {
+   "id": "U08a-P-archive",
+   "scen": "S13",
+   "desc": "Archive RDARCH",
+   "v": {
+    "toast": "RDARCH archived — his sign-in is suspended",
+    "bar": "RDARCH archived — his sign-in is suspended",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 67",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": null
+   },
+   "pic": "branch-U08a-P-archive.png"
+  },
+  "U08b-P-add-collision": {
+   "id": "U08b-P-add-collision",
+   "scen": "S13",
+   "desc": "add a different active RDARCH",
+   "v": {
+    "toast": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "bar": "RDARCH added to the roster — set flight and quals on the Quals page",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDWSO’s sign-in name"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▸ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster"
+   },
+   "pic": "branch-U08b-P-add-collision.png"
+  },
+  "U08c-P-arch-open": {
+   "id": "U08c-P-arch-open",
+   "scen": "S13",
+   "desc": "open the archived list and the archived editor (taken name)",
+   "v": {
+    "cs": "RDARCH 2",
+    "taken": "RDARCH is taken on the roster — give him another callsign.",
+    "restoreBtn": "Restore as RDARCH 2"
+   },
+   "pic": "branch-U08c-P-arch-open.png"
+  },
+  "U08d-P-arch-refuse": {
+   "id": "U08d-P-arch-refuse",
+   "scen": "S13",
+   "desc": "type a taken callsign, Save name: refused; error clears on typing",
+   "v": {
+    "saveShown": 1,
+    "err": "RDACTIVE is already taken — callsigns must be unique",
+    "errAfter": 0,
+    "btn": "Restore as RDARCHB"
+   },
+   "pic": "branch-U08d-P-arch-refuse.png"
+  },
+  "U08e-P-arch-savename": {
+   "id": "U08e-P-arch-savename",
+   "scen": "S13",
+   "desc": "Save name without restoring",
+   "v": {
+    "toast": "Renamed RDARCHB",
+    "bar": "Renamed RDARCHB",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": "▾ Archived · 1",
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Pilot · CAT C Archived 8 Nov 26 by Saber ¦ Sign-in suspended/Archived ¦ Member ¦ EDITOR OPEN",
+    "editor": 1
+   },
+   "pic": "branch-U08e-P-arch-savename.png"
+  },
+  "U08f-P-arch-cancel-reopen": {
+   "id": "U08f-P-arch-cancel-reopen",
+   "scen": "S13",
+   "desc": "arm delete, Cancel, reopen",
+   "v": {
+    "armed": "Tap again to delete RDARCHB",
+    "after": "Delete",
+    "cs": "RDARCHB"
+   },
+   "pic": "branch-U08f-P-arch-cancel-reopen.png"
+  },
+  "U08g-P-restore": {
+   "id": "U08g-P-restore",
+   "scen": "S13",
+   "desc": "Restore RDARCHB",
+   "v": {
+    "toast": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "bar": "RDARCHB restored — he can sign in, and he'll be asked to check his quals and CAT",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 69",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDARCHB": "RDARCHB rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member"
+   },
+   "pic": "branch-U08g-P-restore.png"
+  },
+  "U09a-P-delete-arm": {
+   "id": "U09a-P-delete-arm",
+   "scen": "S22",
+   "desc": "RDNOSIGN delete first tap",
+   "v": {
+    "del": "Tap again to delete RDNOSIGN",
+    "note": "Goes: his account, his Quals row, every day still to come. Days he flew keep his puck. Can’t be undone."
+   },
+   "pic": "branch-U09a-P-delete-arm.png"
+  },
+  "U09b-P-delete-go": {
+   "id": "U09b-P-delete-go",
+   "scen": "S22",
+   "desc": "second tap",
+   "v": {
+    "toast": "RDNOSIGN deleted",
+    "bar": "RDNOSIGN deleted",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — RDARCH’s callsign"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDNOSIGN": null
+   },
+   "pic": "branch-U09b-P-delete-go.png"
+  },
+  "U09c-P-reload": {
+   "id": "U09c-P-reload",
+   "scen": "S03",
+   "desc": "reload: rows kept",
+   "v": {
+    "toast": "",
+    "bar": "",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    },
+    "counts": {
+     "people": "People · 68",
+     "arch": null,
+     "waiting": 0
+    },
+    "row RDACTIVE": "RDACTIVE rdactive2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin",
+    "row RDWSO": "RDWSO rdwso3@example.test · Member · WSO · CAT B ¦ Can sign in/On the roster ¦ Member",
+    "row RDGROUND": "RDGROUND no sign-in · Personnel ¦ No sign-in/On the roster",
+    "row RDNOSIGN": null,
+    "row RDSUSP": "RDSUSP rdsusp@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCHB": "RDARCHB rdarch@example.test · Member · Pilot · CAT C ¦ Can sign in/On the roster ¦ Member",
+    "row RDARCH": "RDARCH no sign-in · Pilot · CAT D ¦ No sign-in/On the roster",
+    "row RDADMIN2": "RDADMIN2 rdadmin2@example.test · Admin · Pilot · CAT C ¦ Can sign in/On the roster ¦ Admin"
+   },
+   "pic": "branch-U09c-P-reload.png"
+  },
+  "U09d-P-store": {
+   "id": "U09d-P-store",
+   "scen": "S03",
+   "desc": "what the browser store holds (key shapes)",
+   "v": {
+    "ID/ID": 15,
+    "ID/account:ID": 6,
+    "ID/account:acad": 1,
+    "ID/account:achex": 1,
+    "ID/account:acus": 1,
+    "ID/bal:ID:LVE": 1,
+    "ID/bal:ammo:LVE": 1,
+    "ID/bal:bane:CCL": 1,
+    "ID/bal:bane:CL": 1,
+    "ID/bal:bane:EL": 1,
+    "ID/bal:bane:FCL": 1,
+    "ID/bal:bane:LVE": 1,
+    "ID/bal:bane:PL": 1,
+    "ID/bal:bapster:LVE": 1,
+    "ID/bal:beams:CCL": 1,
+    "ID/bal:beams:LVE": 1,
+    "ID/bal:boosh:LVE": 1,
+    "ID/bal:bruise:LVE": 1,
+    "ID/bal:dice:LVE": 1,
+    "ID/bal:dirty:CCL": 1,
+    "ID/bal:dirty:LVE": 1,
+    "ID/bal:divot:CCL": 1,
+    "ID/bal:divot:LVE": 1,
+    "ID/bal:dj:CCL": 1,
+    "ID/bal:dj:LVE": 1,
+    "ID/bal:fantom:CCL": 1,
+    "ID/bal:fantom:LVE": 1,
+    "ID/bal:freak:LVE": 1,
+    "ID/bal:gizmo:LVE": 1,
+    "ID/bal:glass:CCL": 1,
+    "ID/bal:glass:LVE": 1,
+    "ID/bal:harpoon:LVE": 1,
+    "ID/bal:ignite:CCL": 1,
+    "ID/bal:ignite:LVE": 1,
+    "ID/bal:mamba:LVE": 1,
+    "ID/bal:nact:LVE": 1,
+    "ID/bal:nasty:LVE": 1,
+    "ID/bal:pain:CCL": 1,
+    "ID/bal:pain:LVE": 1,
+    "ID/bal:pike:LVE": 1,
+    "ID/bal:plasma:CCL": 1,
+    "ID/bal:plasma:LVE": 1,
+    "ID/bal:prism:LVE": 1,
+    "ID/bal:prowler:LVE": 1,
+    "ID/bal:psy:LVE": 1,
+    "ID/bal:razer:CCL": 1,
+    "ID/bal:razer:LVE": 1,
+    "ID/bal:rocky:LVE": 1,
+    "ID/bal:salsa:LVE": 1,
+    "ID/bal:shaft:CCL": 1,
+    "ID/bal:shaft:LVE": 1,
+    "ID/bal:shrek:CCL": 1,
+    "ID/bal:shrek:LVE": 1,
+    "ID/bal:slash:LVE": 1,
+    "ID/bal:slipway:LVE": 1,
+    "ID/bal:snap:CCL": 1,
+    "ID/bal:snap:LVE": 1,
+    "ID/bal:split:LVE": 1,
+    "ID/bal:stiff:LVE": 1,
+    "ID/bal:stuff:LVE": 1,
+    "ID/bal:sufa:LVE": 1,
+    "ID/bal:taipan:LVE": 1,
+    "ID/bal:torque:LVE": 1,
+    "ID/bal:vegas:LVE": 1,
+    "ID/bal:wolf:CCL": 1,
+    "ID/bal:wolf:LVE": 1,
+    "ID/bal:xray:LVE": 1,
+    "ID/ballock": 1,
+    "ID/current": 1,
+    "ID/elog:ID.000001": 2,
+    "ID/elog:ID.000002": 2,
+    "ID/elog:ID.000003": 2,
+    "ID/elog:ID.000004": 2,
+    "ID/elog:ID.000005": 2,
+    "ID/elog:ID.000006": 2,
+    "ID/elog:ID.000007": 1,
+    "ID/grade:ID": 1,
+    "ID/grade:ammo": 1,
+    "ID/grade:bane": 1,
+    "ID/grade:bapster": 1,
+    "ID/grade:beams": 1,
+    "ID/grade:boosh": 1,
+    "ID/grade:bruise": 1,
+    "ID/grade:casper": 1,
+    "ID/grade:chaps": 1,
+    "ID/grade:dice": 1,
+    "ID/grade:dirty": 1,
+    "ID/grade:divot": 1,
+    "ID/grade:dj": 1,
+    "ID/grade:drill": 1,
+    "ID/grade:fantom": 1,
+    "ID/grade:freak": 1,
+    "ID/grade:gizmo": 1,
+    "ID/grade:glass": 1,
+    "ID/grade:haowen": 1,
+    "ID/grade:harpoon": 1,
+    "ID/grade:ignite": 1,
+    "ID/grade:mamba": 1,
+    "ID/grade:nact": 1,
+    "ID/grade:nasty": 1,
+    "ID/grade:pain": 1,
+    "ID/grade:pike": 1,
+    "ID/grade:plasma": 1,
+    "ID/grade:prism": 1,
+    "ID/grade:prowler": 1,
+    "ID/grade:psy": 1,
+    "ID/grade:pump": 1,
+    "ID/grade:razer": 1,
+    "ID/grade:riddler": 1,
+    "ID/grade:rocky": 1,
+    "ID/grade:salsa": 1,
+    "ID/grade:shaft": 1,
+    "ID/grade:shrek": 1,
+    "ID/grade:slash": 1,
+    "ID/grade:slipway": 1,
+    "ID/grade:snap": 1,
+    "ID/grade:spanner": 1,
+    "ID/grade:split": 1,
+    "ID/grade:stiff": 1,
+    "ID/grade:stuff": 1,
+    "ID/grade:sufa": 1,
+    "ID/grade:taipan": 1,
+    "ID/grade:torque": 1,
+    "ID/grade:vegas": 1,
+    "ID/grade:wolf": 1,
+    "ID/grade:xray": 1,
+    "ID/ledger:dol-1": 1,
+    "ID/ledger:dol-10": 1,
+    "ID/ledger:dol-11": 1,
+    "ID/ledger:dol-12": 1,
+    "ID/ledger:dol-13": 1,
+    "ID/ledger:dol-2": 1,
+    "ID/ledger:dol-3": 1,
+    "ID/ledger:dol-4": 1,
+    "ID/ledger:dol-5": 1,
+    "ID/ledger:dol-6": 1,
+    "ID/ledger:dol-7": 1,
+    "ID/ledger:dol-8": 1,
+    "ID/ledger:dol-9": 1,
+    "ID/ledger:l1": 1,
+    "ID/ledger:l10": 1,
+    "ID/ledger:l2": 1,
+    "ID/ledger:l3": 1,
+    "ID/ledger:l4": 1,
+    "ID/ledger:l5": 1,
+    "ID/ledger:l6": 1,
+    "ID/ledger:l7": 1,
+    "ID/ledger:l8": 1,
+    "ID/ledger:l9": 1,
+    "ID/ledger:walk-2": 1,
+    "ID/ledger:walk-3": 1,
+    "ID/opening:ID:annual": 1,
+    "ID/opening:ID:oil": 1,
+    "ID/opening:ammo:annual": 1,
+    "ID/opening:ammo:ccl": 1,
+    "ID/opening:ammo:oil": 1,
+    "ID/opening:bruise:annual": 1,
+    "ID/opening:bruise:oil": 1,
+    "ID/opening:casper:annual": 1,
+    "ID/opening:casper:oil": 1,
+    "ID/opening:dirty:annual": 1,
+    "ID/opening:dirty:ccl": 1,
+    "ID/opening:dirty:fcl": 1,
+    "ID/opening:divot:annual": 1,
+    "ID/opening:divot:oil": 1,
+    "ID/opening:dj:annual": 1,
+    "ID/opening:dj:oil": 1,
+    "ID/opening:harpoon:annual": 1,
+    "ID/opening:harpoon:oil": 1,
+    "ID/opening:ignite:annual": 1,
+    "ID/opening:ignite:el": 1,
+    "ID/opening:pain:annual": 1,
+    "ID/opening:pain:oil": 1,
+    "ID/opening:pike:annual": 1,
+    "ID/opening:pike:oil": 1,
+    "ID/opening:prowler:annual": 1,
+    "ID/opening:prowler:oil": 1,
+    "ID/opening:rocky:annual": 1,
+    "ID/opening:rocky:oil": 1,
+    "ID/opening:slash:annual": 1,
+    "ID/opening:slash:oil": 1,
+    "ID/opening:slipway:annual": 1,
+    "ID/opening:slipway:ccl": 1,
+    "ID/opening:slipway:oil": 1,
+    "ID/opening:wolf:annual": 1,
+    "ID/opening:wolf:oil": 1,
+    "ID/opening:wolf:pl": 1,
+    "ID/profile:ID": 7,
+    "ID/profile:ignite": 1,
+    "ID/rec:y2026:seed1": 1,
+    "ID/rec:y2026:seed2": 1,
+    "ID/rec:y2026:seed3": 1,
+    "ID/rec:y2026:seed4": 1,
+    "ID/rec:y2026:seed5": 1,
+    "ID/rec:y2026:seed6": 1,
+    "ID/rec:y2026:seed7": 1,
+    "ID/rec:y2026:seed8": 1,
+    "ID/rec:y2026:seed9": 1,
+    "ID/rec:y2026:walk-1": 1,
+    "ID/rec:y2026:walk-m5a-1": 1,
+    "ID/rec:y2026:walk-m5a-2": 1,
+    "ID/rec:y2026:walk-m5a-3": 1,
+    "ID/rec:y2026:walk-m5a-4": 1,
+    "ID/rec:y2026:walk-m5a-5": 1,
+    "ID/rec:y2026:walk-m5a-6": 1,
+    "ID/rec:y2026:walk-m5a-7": 1,
+    "ID/rec:y2027:seed10": 1,
+    "ID/rec:y2027:seed11": 1,
+    "ID/rec:y2027:seed12": 1,
+    "ID/rec:y2027:seed13": 1,
+    "ID/rec:y2027:seed14": 1,
+    "ID/schema": 1,
+    "ID/war:y2026": 1,
+    "ID/war:y2027": 1,
+    "__legacy__/done": 1,
+    "__legacy__/started": 1,
+    "changes/ID-0": 3,
+    "changes/ID-1": 2,
+    "changes/ID-10": 2,
+    "changes/ID-11": 1,
+    "changes/ID-2": 2,
+    "changes/ID-3": 2,
+    "changes/ID-4": 2,
+    "changes/ID-5": 2,
+    "changes/ID-6": 2,
+    "changes/ID-7": 2,
+    "changes/ID-8": 2,
+    "changes/ID-9": 2,
+    "inputs/ID": 52,
+    "people/ID": 10,
+    "people/ammo": 1,
+    "people/badger": 1,
+    "people/bane": 1,
+    "people/bapster": 1,
+    "people/beams": 1,
+    "people/boosh": 1,
+    "people/bruise": 1,
+    "people/bullet": 1,
+    "people/cards": 1,
+    "people/casper": 1,
+    "people/chaps": 1,
+    "people/dice": 1,
+    "people/dirty": 1,
+    "people/divot": 1,
+    "people/dj": 1,
+    "people/drill": 1,
+    "people/fantom": 1,
+    "people/freak": 1,
+    "people/gizmo": 1,
+    "people/glass": 1,
+    "people/haowen": 1,
+    "people/harpoon": 1,
+    "people/ignite": 1,
+    "people/ipman": 1,
+    "people/krait": 1,
+    "people/mamba": 1,
+    "people/nact": 1,
+    "people/nasty": 1,
+    "people/nick": 1,
+    "people/pain": 1,
+    "people/pike": 1,
+    "people/plasma": 1,
+    "people/prism": 1,
+    "people/prowler": 1,
+    "people/psy": 1,
+    "people/pump": 1,
+    "people/razer": 1,
+    "people/riddler": 1,
+    "people/rocky": 1,
+    "people/romeo": 1,
+    "people/salsa": 1,
+    "people/shaft": 1,
+    "people/shrek": 1,
+    "people/slash": 1,
+    "people/slipway": 1,
+    "people/snap": 1,
+    "people/spanner": 1,
+    "people/split": 1,
+    "people/stiff": 1,
+    "people/stuff": 1,
+    "people/sufa": 1,
+    "people/taipan": 1,
+    "people/torque": 1,
+    "people/vegas": 1,
+    "people/vinci": 1,
+    "people/waldo": 1,
+    "people/wolf": 1,
+    "people/xray": 1,
+    "people/yeti": 1
+   },
+   "pic": "branch-U09d-P-store.png"
+  },
+  "U-P-errors": {
+   "id": "U-P-errors",
+   "v": []
+  }
+ }
+}
