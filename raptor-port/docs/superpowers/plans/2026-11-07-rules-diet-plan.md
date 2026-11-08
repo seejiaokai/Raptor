@@ -675,6 +675,59 @@ pointer and each rule — here "Inputs page", "approve", "close the bids", "edit
 ruling that changes what an area shows rarely names it (`record-decisions.md`: search for a claim's subject, never its
 phrasing). The small area's account cost one chat, not a helper.
 
+### Step 5a — People & accounts as a page (8 Nov 26, chat 17, `claude/rules-diet-step-5a-people-1288c3` — merged 8 Nov 26 on his "merge live", pull request 700)
+
+`.claude/rules/decisions/people-accounts.md` is a page, "People & accounts — how it works now" (`<!-- shape: page -->`,
+its `paths:` unchanged): its 80 rulings (D149–D1709) stated by topic — accounts and signing in, how a person joins,
+roles, Admin → Users (the one door), Quals, posting in, posting out and the admins' bells, archive and restore, delete,
+many squadrons (not built) — with a "Settled" section and about 40 pointers to other areas, found by subject.
+`DECISIONS.md`, `AGENTS.md`, the project guide's map row and the head of the full-text file name it as a page. D149 and
+D218 were marked NARROWED by D1651 (D218 also by D1510 and the scheduler's D1589): the later rulings said so in their
+own rows, the older rows were never marked (D201). No ruling archived: the drafter proposed four; the account kept three
+live (D1546 and D309 hold parts no later ruling carries, D224's design of record stands) and judged D1108 restated in
+full by D1110 — left live, for a later pass with a fresh reader's check (D971).
+
+**How it was made — three fresh Opus helpers and the host (the chat began at 49% of its window):** one drafted the page
+from every full row; a second, who had not written it, wrote the account by requirement
+(`../briefs/2026-11-08-rules-diet-step5a-people-account.md`) — 80 rulings, 553 parts (424 stated, 31 spent, 41
+detail, 20 superseded, 37 in a gap): **35 gaps, 8 that bent or dropped a rule** — the draft's `paths:` list left
+unclosed, so the page would not have loaded and the document check passed it (filed as `[DOCSIZE-PATHS-OPEN]`); the one
+door's dated posting sheets, which stay on the Leave War; D1100's own rule stated as a reading; D1101 against D1695,
+left open; D300's example line against what the app writes since the one door; D321's SANS move against D283; the
+scheduler's D337 and D710 (what a delete lists), pointed to nowhere; D219's reading stated as his rule — and 10 rules
+stated twice, merged; a third applied the two reads' findings, each checked against its row first.
+
+**The two blind reads (D1739, D1763 "keep two"), each of the page at `3f84658cd`, each blind to the other:**
+
+| Read | Findings | What was done |
+|---|---|---|
+| Astra (`../briefs/2026-11-08-rules-diet-step5a-people-read-astra.md`) | 6: 3 high, 1 medium, 2 low | all taken, each checked against its row, the mock-up or the app first |
+| A fresh Opus reader (`../briefs/2026-11-08-rules-diet-step5a-people-read-opus.md`) | 9: 1 medium, 8 low | all taken, each checked against its full row first; D218's row marked by D1589, D285's by D322 |
+
+- **Astra:** the signed-in admin's own row on Admin → Users cannot be opened — in the one-door mock-up and the app, not
+  in the row (high); the member view's "his own inputs only", set aside by the Inputs pages' D655, D658, D763 (high);
+  D204's defence mail taken from the sign-in, never typed (high); D1101's "a man who leaves the whole system starts
+  fresh"; "Delete", not "Delete account", since the one door; D224's "On the roster / New person" and D322's "Restore
+  as …".
+- **The Opus reader:** the scheduler's D1589 — the history keeps a name as it was at the time — against the page's "the
+  history follows a rename" (D218, medium); the hosting trial (D1532) beside the sign-in; D211's medical change in full,
+  his rule since D1536, not a reading; D204's Teams message, his rule; D350's "in this build"; D1710's detail; D320,
+  D289 and D1101, his parts first; the new-person mock-up's add against the one door; D1654 and D1656 cited, not stated.
+- **Both found:** the new-person mock-up's "On the roster" against the one door's "Add a person". Nothing else in common.
+
+**The two reads compared (D1732).** Astra found the most serious again — three rules a chat would break, each a part
+the account had marked stated or detail: the own-row lock (in the design of record and the app, not in the row), a
+later Inputs ruling that widens what a member files (found by subject, as step 5a's lesson asked) and D204's identity
+check. The Opus reader read wider — about 28 rows of other areas — and found the one cross-area ruling that changes a
+stated rule (D1589, named only by its subject: a rename and the history) and eight places where his rule and the
+agent's reading were mixed. Neither alone was enough, for the fifth step running. **For the rest of step 5:** a design
+of record holds parts its row does not — where a row names a mock-up, the account reads the mock-up's words; the drafter
+checks the `paths:` list still closes (until `[DOCSIZE-PATHS-OPEN]` is built); and a helper-drafted page goes to an
+account by a second helper — this one found 35 gaps the drafter missed. **Size:** the table was 21,160 bytes; the
+draft 44,148; after the account 47,201; after the reads 50,466 (about 19,000 tokens; the tripwire raised from 22,000 to 55,500, its reason beside it) — the page states what the short lines cut, as OIL's
+and the IT guide's did, but this one loads with files most jobs open (the board's and the week's builders, the store,
+the view state, the shell), so the re-measure before 5b must count it; narrowing its `paths:` is a question for him.
+
 ### Review log
 
 | Version | Reader | Result | Folded in |

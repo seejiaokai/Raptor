@@ -4283,34 +4283,18 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
 
-### Observation 881: Times written into a handoff after a compaction came from the summary, not the clock
-
-**Status:** OPEN
-**Date:** 2026-11-08
-**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch; renumbered 874 → 881 when `main` was brought in, 8 Nov 26 — 874 is also used on another branch)
-**Skill:** session-handoff (writing the block's times)
-**Type:** open-source
-**Phase/Area:** the state written into the handoff block
-
-**Issue:** The block said the measure ran "~03:40–04:05Z" and the preview was looked for "at 04:06Z"; the clock read 03:36Z and the results files were written 03:29Z and 03:33Z. The times were carried from the compaction summary's guesses, and a next chat reading them would have mis-ordered the work against other chats' commits.
-**Suggested improvement:** In the handoff skill's block-writing step: every time or date written into the block is read from the clock (`date -u`) or from the file or commit it names, at the moment of writing, never carried from memory or a summary.
-**Principle:** After a compaction, a time is a fact to look up, not to remember; read it from the clock or the artifact it describes.
-Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" written from memory for what the clock and the files put at 03:45Z and 03:42Z — a guard is wanted (the block's writer reads `date -u` itself), not more care.
-
-### Observation 884: A frame count at a threshold hid the change; the raw intervals and a switch-off run told it
+### Observation 881: A later ruling says "narrows Dx" in its own row, but Dx's row carries no mark — the change check cannot see it
 
 **Status:** OPEN
 **Date:** 8 Nov 26
-**Session context:** chat 16, [LW-PIN-LAST-FRAME] (D1870) — re-measuring a pinned row after a CSS scroll-timeline change (numbered past 883, held on another branch)
-**Skill:** New skill candidate: measuring-scroll-performance
+**Session context:** chat 17, the rules diet's step 5a — People & accounts as a page (numbered past 880, held by two open branches)
+**Skill:** New skill candidate: rules-diet page conversion
 **Type:** open-source
-**Phase/Area:** the before/after frame measure
+**Phase/Area:** drafting a page from its rulings; the change-mark check
 
-**Issue:** The measure counted frames "over 33.4 ms" — the exact edge of two screen refreshes — so a frame landing a tenth of a millisecond either side flipped the count, and the before/after medians looked like noise (4 → 17). Pooling every run's raw intervals into buckets (under 20, one refresh skipped, 34.5–50, over 50) showed a fivefold rise in skipped refreshes; a second run with only the suspect style switched off (injected CSS) showed the cost was that one rule, and three cheaper variants were ruled out in minutes. One run's "the page works a third less" did not repeat.
-
-**Suggested improvement:** A frame measure records every raw interval, reports buckets around each refresh multiple rather than one threshold count, repeats the run before believing a total, and diagnoses by switching the suspect rule off for one run before any fix is written.
-
-**Principle:** A threshold placed on a quantised value measures rounding; bucket around the quanta, repeat the run, and isolate a suspected cause by removing it alone.
+**Issue:** D1651's own meaning cell said "Narrows D1510 and D149", and D1510's row carried the mark, but D149's did not (nor D218's, which still listed SCHEDULER as a member's). The document check follows only the marks written in the older row, so it asked for nothing; the page's drafter found the gap only by reading every row sentence by sentence.
+**Suggested improvement:** in the rulings check, for every row whose meaning cell says "narrows / replaces / answers D<n>", require D<n>'s row to carry a mark naming it (or list it as owed); until then, every conversion's account checks each such sentence against the older row.
+**Principle:** a link recorded on one side only is invisible to a check that reads the other side — when a record can be changed from either end, check both ends agree.
 
 ### Observation 882: A new text-fit browser test was checked only in this PC's letters and went red on the CI's Linux machines — the trap of Observation 680 met again
 
@@ -4350,3 +4334,34 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.
 **Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.
 **Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.
+
+### Observation 892: Times written into a handoff after a compaction came from the summary, not the clock
+
+*Numbered 881 on `claude/lw-pin-last-frame`; renumbered 892 when `main` was brought in on 8 Nov 26 — `main` holds its own 881.*
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch; renumbered 874 → 881 when `main` was brought in, 8 Nov 26 — 874 is also used on another branch)
+**Skill:** session-handoff (writing the block's times)
+**Type:** open-source
+**Phase/Area:** the state written into the handoff block
+
+**Issue:** The block said the measure ran "~03:40–04:05Z" and the preview was looked for "at 04:06Z"; the clock read 03:36Z and the results files were written 03:29Z and 03:33Z. The times were carried from the compaction summary's guesses, and a next chat reading them would have mis-ordered the work against other chats' commits.
+**Suggested improvement:** In the handoff skill's block-writing step: every time or date written into the block is read from the clock (`date -u`) or from the file or commit it names, at the moment of writing, never carried from memory or a summary.
+**Principle:** After a compaction, a time is a fact to look up, not to remember; read it from the clock or the artifact it describes.
+Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" written from memory for what the clock and the files put at 03:45Z and 03:42Z — a guard is wanted (the block's writer reads `date -u` itself), not more care.
+
+### Observation 884: A frame count at a threshold hid the change; the raw intervals and a switch-off run told it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 16, [LW-PIN-LAST-FRAME] (D1870) — re-measuring a pinned row after a CSS scroll-timeline change (numbered past 883, held on another branch)
+**Skill:** New skill candidate: measuring-scroll-performance
+**Type:** open-source
+**Phase/Area:** the before/after frame measure
+
+**Issue:** The measure counted frames "over 33.4 ms" — the exact edge of two screen refreshes — so a frame landing a tenth of a millisecond either side flipped the count, and the before/after medians looked like noise (4 → 17). Pooling every run's raw intervals into buckets (under 20, one refresh skipped, 34.5–50, over 50) showed a fivefold rise in skipped refreshes; a second run with only the suspect style switched off (injected CSS) showed the cost was that one rule, and three cheaper variants were ruled out in minutes. One run's "the page works a third less" did not repeat.
+
+**Suggested improvement:** A frame measure records every raw interval, reports buckets around each refresh multiple rather than one threshold count, repeats the run before believing a total, and diagnoses by switching the suspect rule off for one run before any fix is written.
+
+**Principle:** A threshold placed on a quantised value measures rounding; bucket around the quanta, repeat the run, and isolate a suspected cause by removing it alone.
