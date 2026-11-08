@@ -302,6 +302,10 @@ function settleInsertions(o, b, t, labels) {
   const m = mergeFile(o, b, t, ['RM-OURS', 'RM-BASE', 'RM-THEIRS'], ['--diff3', `--marker-size=${MK}`])
   const L = linesOf(m.text), out = [], left = [], settled = []
   const is = (l, ch, lab) => l.replace(/\r?\n$/, '') === ch.repeat(MK) + (lab ? ' ' + lab : '')
+  /* the `## ` headings that stand outside every region: a region holding one of them again would double it when joined
+     (the replay's finding, ab43e7413: main opened the day above a base row, so git kept main's heading outside the clash
+     and this branch's same heading inside it) */
+  const outside = new Set(); { let inR = false; for (const l of L) { if (is(l, '<', 'RM-OURS')) inR = true; else if (is(l, '>', 'RM-THEIRS')) inR = false; else if (!inR && isHeading(l)) outside.add(l.replace(/\r?\n$/, '')) } }
   for (let i = 0; i < L.length; i++) {
     if (!is(L[i], '<', 'RM-OURS')) { out.push(L[i]); continue }
     const part = { o: [], b: [], t: [] }; let at = 'o'; i++
@@ -310,7 +314,8 @@ function settleInsertions(o, b, t, labels) {
       if (at === 'b' && is(L[i], '=')) { at = 't'; continue }
       part[at].push(L[i])
     }
-    const joined = part.b.length === 0 ? joinInsertions(part.o, part.t) : null
+    const again = [...part.o, ...part.t].some(l => isHeading(l) && outside.has(l.replace(/\r?\n$/, '')))
+    const joined = part.b.length === 0 && !again ? joinInsertions(part.o, part.t) : null
     if (joined) { out.push(...joined); settled.push(`text both sides inserted at one place (${part.o.length} line(s) of this branch's, then ${part.t.length} of main's)`); continue }
     if (part.b.length === 0) { left.push(`a place where both sides inserted text under new headings — which goes first, and which entries go under which heading, is yours to judge; near: ${(part.o.find(l => /^## /.test(l)) || '').trim().slice(0, 80)}`); out.push(renderConflict(part.o.join(''), '', part.t.join(''), labels)); continue }
     left.push(`a place where ${part.o.length && part.t.length ? 'both sides changed the same lines' : 'one side changed lines the other removed'}, near: ${(part.b.find(l => l.trim()) || '').trim().slice(0, 80)}`)

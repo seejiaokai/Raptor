@@ -391,6 +391,18 @@ test('rulings archive: both sides opening different new days at one place is lef
   assert.equal(r.code, 2, r.out)
   assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
 }))
+/* the replay's finding after the fixes (ab43e7413, 8 Nov 26): main opened "## Moved 8 Nov 26" ABOVE a base row it then
+   counted under the new day, so git kept main's heading outside the clash and this branch's same heading inside it —
+   joined, the day stood twice. A heading in the region that already stands outside it: the region is left */
+test('rulings archive: a day heading inside the clash that already stands outside it is left, never doubled', withRepo({ 'DECISIONS-ARCHIVE.md': DARCH0 + '| D9 | 7 Nov 26 | nine |\n' }, c => {
+  const st = c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + day(8, 'D2')),
+    x => x.edit('DECISIONS-ARCHIVE.md', t => t.replace('| D9 |', '| D3 | 7 Nov 26 | three |\n' + day(8).slice(0) + '| D9 |') + '| D4 | 8 Nov 26 | four |\n'))
+  assert.equal(st, 1, 'the merge must clash')
+  const r = c.run()
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in DECISIONS-ARCHIVE\.md/)
+  assert.ok((c.read('DECISIONS-ARCHIVE.md').match(/^## Moved 8 Nov 26$/gm) || []).length <= 1 || /^<{7} /m.test(c.read('DECISIONS-ARCHIVE.md')), 'never two day headings outside git\'s marks')
+}))
 test('backlog archive: main\'s item after this branch\'s keeps a blank line before its heading (Opus 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n' }, c => {
   c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n## Moved 7 Nov 26\n\n### [C] c\n\nbody c\n'))
   const r = c.run()
