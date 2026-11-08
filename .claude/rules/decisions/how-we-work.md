@@ -16,6 +16,7 @@ no glow, the drag rules, a page's controls one row, screens not wordy — are an
 
 | # | Date | The rule |
 |---|---|---|
+| D1753 | 8 Nov 26 | His own test tables use the short code "talon" for now; if the IT side later sets a different one for their tables, the app's table names are changed once to match theirs. |
 | D1752 | 8 Nov 26 | At the database step Admin → Data's "Clear edit history…" button is removed, so nobody can erase the app's change history by hand; until then it stays as built; how long the app keeps that history is still set by the IT side's rule on how long their audit is kept. |
 | D1749 | 7 Nov 26 | At the database step the app and its tables go first into his own premium M365 test account: the tables built there with the IT side's own table-building kit, the app tested on them, then the tested table list handed to the IT side, who build the same tables with the same kit; nothing of the database is built there before that step. |
 | D1745 | 7 Nov 26 | February 2027 is not a deadline: the M365 and database work is planned by what it needs, never squeezed to a date, and no step is rushed or its checks cut to meet one. |

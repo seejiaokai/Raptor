@@ -1671,7 +1671,8 @@ are kept for a period the squadron sets, then purged by a scheduled job;
    are logical. What prefix? (The platform's own `createdby` / `modifiedby`
    / `versionnumber` columns are used as-is — section 2.) **ANSWERED 8 Nov 26:** the PP CoE sets the short code when it
    creates the tables from our `tables.json`; names are lowercase letters and digits in their kit's format. To ask: the
-   code early, so his test tables use the same one and the app's link to the tables does not change.
+   code early, so his test tables use the same one and the app's link to the tables does not change. **D1753 (8 Nov 26):**
+   his test tables use "talon" for now; a different code of theirs means the app's table names are changed once.
 2. **File store** — SharePoint document library, Dataverse file column, or
    Azure Blob? It decides what `Attachment.storeRef` holds and who enforces
    the 8 MB cap. **ANSWERED 8 Nov 26:** Dataverse by default, but space is limited — large files in SharePoint, the

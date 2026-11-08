@@ -83,7 +83,8 @@ Tracker's work the app is first put on his own M365 with no database — a hosti
 - Your answers to the open questions in `data-model.md` §12, in one line
   each:
   1. the publisher prefix and naming convention; **answered 8 Nov 26: the PP CoE sets it when it creates the tables —
-     please tell us early, so his test tables match;**
+     please tell us early, so his test tables match;** *(owner, D1753, 8 Nov 26): his test tables use "talon" for now —
+     if yours differs, the app's table names are changed once to match;*
   2. where files live (SharePoint library, Dataverse file column, or Blob); **answered 8 Nov 26: SharePoint for large
      files, a link saved in the table — who may read them there still to settle;**
   3. how a signed-in person is matched to a `Person` row the first time — **answered by the owner, 25 Sep 26
