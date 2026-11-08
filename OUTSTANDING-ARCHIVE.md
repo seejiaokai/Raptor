@@ -8408,3 +8408,9 @@ screen instead of sticky, with room kept under it — every page's layout, a big
 this case. **To do:** build (a) on a branch, he tries it on his iPhone (does the bar stay, and is a page that no longer
 bounces all right); (b) only if (a) fails. **Place:** the whole app's look and phone group, on his word.
 
+
+*Moved here 2026-11-09 by backlog-archive.mjs ([E2E-BOARD-KEYS-SKIP]). Forward facts: `raptor-port/e2e/board-layout.spec.ts`.*
+
+### [E2E-BOARD-KEYS-SKIP] The board-layout keyboard test can skip itself (found 8 Nov 26, Astra's read in chat 37's review)
+**What:** the browser test pull request 689 added for the keyboard-clearance case (`raptor-port/e2e/board-layout.spec.ts`) skips itself when its chosen box already sits above the simulated keyboard, so it does not prove the case on every run; neither reader found it hiding a failure. **Fix (his go, D1936):** a fixture that puts the box under the keys first, then drop the skip — a test change only. **Source:** `raptor-port/docs/superpowers/briefs/2026-11-08-review-8nov-jobs-fable.md` §4, F-689-1.
+
