@@ -91,6 +91,14 @@ routes: `docs/handpass/parts/2026-11-08-sched-marks-scenarios.md` §Objects, sur
    older weeks (S1–S5, S10–S16, rows 11–21, the plain-user round on the Inputs page and the input window); desktop 1536 and
    his iPhone's size; the host opens every deciding picture and reproduces every finding. Repeated pending kinds beyond one
    each are carried by `ui/unavmark.test.tsx` (it calls the app's own commands, so each kind is also walked once).
+   **Resized before the start (8 Nov 26, ~13:45):** the same scenarios over FOUR Sonnet walkers so they run side by
+   side — W1a the mark's kinds and identities (S18, S17, S25, S6–S9), W1b its orders, faces and returns (S21, S19, S20,
+   S22–S24, S30, S31), W2 the unreadable and older weeks (S10–S14, S1–S5, S15), W3 the drawn marks and the plain-user
+   round on the schedule (S26–S29, S32) — no scenario added, only the time shortened. The host's own short walk first
+   (`scripts/handpass/sm-host.mjs`, pictures `…/host/`): the mark painted on the week, the board and the phone, the
+   unreadable notice on 7 of 7 days and its grey refusal, the drawn eye in a look; the warning-hide route by
+   `e2e/warnhide.spec.ts` (8 of 8 on this build). The walkers' brief: `docs/superpowers/briefs/2026-11-08-sched-marks-walk.md`;
+   the frozen build: `dist-sm1` in the host's scratch folder, built from `b8011e768`.
 5. **After the walk:** its row goes into `docs/walk-ledger.md`.
 
 ## 6. The orders walked
