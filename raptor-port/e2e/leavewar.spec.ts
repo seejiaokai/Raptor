@@ -2100,6 +2100,9 @@ test('while the fingers pinch part-way down, the pinned dates row shows by the p
   for (let i = 1; i <= 10; i++) {
     await touch('touchMove', at(200 - 12 * i)); await page.waitForTimeout(16)
     const p = await lwPin(page)
+    // it started pinned, so the copy must stay in the page the whole pinch — a copy gone is a fault, never a skipped step
+    // (Astra's code read of 8 Nov 26, finding 1)
+    if (!p) seen.push(`step ${i}: no pinned copy in the page`)
     if (p && p.anim !== 'none') seen.push(`step ${i}: still on the scroll's animation (${p.anim})`)
     if (p && p.shown !== p.under) seen.push(`step ${i}: shown ${p.shown}, the row ${p.under ? 'under' : 'below'} the bar`)
   }

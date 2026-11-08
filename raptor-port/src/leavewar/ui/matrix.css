@@ -2300,8 +2300,10 @@ touch-action: pan-x pan-y;
      a frame behind. Promoting the whole bar to its own compositor layer makes
      that repaint cheap enough to land every frame. `translateZ(0)` (no offset —
      it does not move the bar, only lifts it onto GPU) is the reliable promoter;
-     the layer lives only while the mirror is mounted (freeze state), so it is
-     not a standing cost. This does not touch the JS sync or the sticky columns
+     in the old way the layer lives only while the mirror is mounted (freeze
+     state); where the browser shows the copy itself (D1870, `.lw-pinsda`) the
+     copy is always mounted, so the layer stands while the grid is open — part of
+     the cost his iPhone judged (D1871). This does not touch the JS sync or the sticky columns
      inside — it only changes how the bar is painted. */
   transform: translateZ(0);
 }

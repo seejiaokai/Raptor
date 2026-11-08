@@ -204,12 +204,16 @@ test.describe('Quals on a phone pinches (D1110)', () => {
         const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
         return { inert: el.inert, shown: Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under: row < bar - 0.5, anim: cs.animationName, shadow: cs.boxShadow }
       })())
+      // it started pinned, so the copy must stay in the page the whole pinch (Astra's code read of 8 Nov 26, finding 1)
+      if (!q) seen.push(`step ${i}: no pinned copy in the page`)
       if (q && q.anim !== 'none') seen.push(`step ${i}: still on the scroll's animation (${q.anim})`)
       if (q && q.shadow !== 'none') seen.push(`step ${i}: a shadow (${q.shadow})`)
       if (q && q.shown !== q.under) seen.push(`step ${i}: shown ${q.shown}, the heading ${q.under ? 'under' : 'below'} the bar`)
     }
     await touch(cdp, 'touchEnd', []); await sleep(500)
     expect(seen, 'mid-pinch').toEqual([])
+    // and after the lift, settled from rest: still pinned, still shown (the Leave War's twin checks the same)
+    await expectPinned(page, 'qsticky-head', true, 'after the lift')
     expect(errs).toEqual([])
     await context.close()
   })
