@@ -8143,3 +8143,17 @@ its group 1 (the board's layout, wave 2, the same board files), his word 8 Nov 2
 same job checks + Wave, the plans selector, a jet's stores and the duty role box under the keys — D1646 asks the cyan ring
 there too, and a fresh reader found none in the stylesheet (8 Nov 26, not looked at on screen).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([CLOUD-WALKS]). Forward facts: `.claude/rules/decisions/how-we-work.md`.*
+
+### [CLOUD-WALKS] Walks run in the cloud instead of on his PC (filed 8 Nov 26, D1797)
+
+**What:** the walks queue for his PC's one checks lock while several chats build at once. His D1797: try running them on
+Anthropic's cloud machines; if it works, every chat adopts it. **Steps:** (1) the trial — a walker started by a chat on its
+own (a helper in the cloud, not a new chat, which the app refuses on another chat's word) builds the app, runs one walk
+script with pictures, and leaves them where the host can open them; today's walk scripts name folders on his PC, so a
+script that runs anywhere is part of the trial; (2) if it works, chat 3 tells the open chats (walks not yet started move)
+and writes the walking-instructions change for D1761's two readers and his approval; (3) if each cloud walk needs his
+click, or the cloud cannot build or show the app, the way is dropped and he is told. **Place:** chat 3, 8 Nov 26.
+
+**DROPPED (8 Nov 26, the trial's result, under D1797's own terms):** a helper sent to the cloud (the Agent tool's remote isolation) ran on his PC instead — the app fell back without a word; the walk itself worked (built, signed in, six pictures at a desktop and a phone size, no errors, pushed to `claude/cloud-walk-trial` with a walk script that names no folder on his PC, `raptor-port/scripts/handpass/cloud-walk-trial.mjs` on that branch). A cloud chat is the only cloud way left, and only he can open one, so each walk would need him. Kept for later: that script, if cloud helpers are switched on for his account.

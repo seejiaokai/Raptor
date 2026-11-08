@@ -2398,12 +2398,3 @@ inside a ternary — a named `inner` would read straighter; the switch's keys pu
 and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
 before the database step (D486).
 
-### [CLOUD-WALKS] Walks run in the cloud instead of on his PC (filed 8 Nov 26, D1797)
-
-**What:** the walks queue for his PC's one checks lock while several chats build at once. His D1797: try running them on
-Anthropic's cloud machines; if it works, every chat adopts it. **Steps:** (1) the trial — a walker started by a chat on its
-own (a helper in the cloud, not a new chat, which the app refuses on another chat's word) builds the app, runs one walk
-script with pictures, and leaves them where the host can open them; today's walk scripts name folders on his PC, so a
-script that runs anywhere is part of the trial; (2) if it works, chat 3 tells the open chats (walks not yet started move)
-and writes the walking-instructions change for D1761's two readers and his approval; (3) if each cloud walk needs his
-click, or the cloud cannot build or show the app, the way is dropped and he is told. **Place:** chat 3, 8 Nov 26.
