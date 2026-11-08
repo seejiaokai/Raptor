@@ -83,6 +83,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - **His step:** the repo is public today for a short period (D106); making it private again, and restarting his PC's check runner, is his ([REPO-PRIVATE]).
 
 **Schedule and amendments**
+- [DAMAGED-WEEK-LEFTOVERS] — a week whose saved copy cannot be read still prints and exports the demo days, shows them in the next-week preview, and refuses a person's delete in the amber note, not the grey "Blocked:" one (older; found 8 Nov 26, chat 13's walk).
 - [SINGLE-SEAT] — a line with only its front seat filled must work fully, for F-16 and F-35 squadrons (D1099): the check is done (21 Oct 26); his answers to its 8 questions next, then the build.
 - [CREW-REASON-TWICE] — a crossed-out man's reason says each fact once, not the kind's meaning and his remark both (D1121) — a later job of its own, its words put to him first.
 - [BOARD-SIDEWAYS-KEYS] — a phone on its side with the keys up: the Scheduler Board's heading fills the 200px left, so no box can show (found by the D1048 walk; older layout, low).
@@ -276,6 +277,20 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [DAMAGED-WEEK-LEFTOVERS] What a week whose saved copy cannot be read still gets wrong (found 8 Nov 26, chat 13's walk)
+**What:** found by the walk of chat 13's job (D1785, the unreadable week's words — branch `claude/pr-sched-marks-3205d7`, evidence
+`raptor-port/docs/handpass/2026-11-08-sched-marks.md`, walker W2's report `…/parts/2026-11-08-sched-marks-w2.md`), each older than that
+job (the builder found the first three in the code, the walk saw them): (1) the desktop next-week preview draws a damaged next week as
+the demo days, with no notice (`raptor-port/src/ui/peek.ts`); (2) print and the spreadsheet export of a damaged week give the demo
+days, headed "WORKING DRAFT — NOT YET SIGNED" (`Shell.tsx`, `export.ts`, `printpdf.ts`); (3) deleting a person while the week is
+damaged refuses in the AMBER note, "The week of 13/07/2026 can't be changed — the delete was not made" — not the grey "Blocked:" note
+every other refusal of one change takes (D1667, D1668), nor D1785's words; (4) a week read-only because its records belong to another
+week says it was "published by an older version". Nothing is lost in any of them — each draws or refuses, none saves. **To do:** (1),
+(2) draw D1785's notice where the days would be, as Edit Schedule does; (3) the grey "Blocked:" note in D1785's words — put to him
+first only if it needs words of its own; (4) its own reason. **Place:** Schedule and amendments, small — with the next job on saved
+weeks, or the database step's read of saved data.
+
 
 ### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
 **What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
