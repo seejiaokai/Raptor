@@ -15,7 +15,11 @@ D1735, approving the plan `raptor-port/docs/superpowers/plans/2026-11-07-rules-d
 Leave War's posting and people files — so what it says is what every chat working there will act on. The old file:
 `git show 97eaa5251:.claude/rules/decisions/people-accounts.md`. The account — every part of every ruling mapped to the
 page line that states it — is `raptor-port/docs/superpowers/briefs/2026-11-08-rules-diet-step5a-people-account.md`:
-use it as a map, and check it; do not trust it. Four small edits name People & accounts as a page: `DECISIONS.md` (its
+use it as a map, and check it; do not trust it (a fresh helper wrote it against the first draft, `c9bcf22fa`, and fixed
+the page; its table still describes that draft, each gap with its **Fixed:** note). Two full rows gained marks in this
+change, found missing by the draft: D149's and D218's, NARROWED by D1651 (the Scheduler tick an admin's) and D218's by
+D1510 (Management). The scheduler's D212 keeps a stale clause on the same point, left for the scheduler's own page —
+not a finding here. Four small edits name People & accounts as a page: `DECISIONS.md` (its
 head), `AGENTS.md` (item 5), `raptor-port/CLAUDE.md` (the map row on rulings) and the head of
 `.claude/decisions-full/people-accounts.md`.
 
