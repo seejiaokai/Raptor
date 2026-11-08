@@ -109,6 +109,10 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
 - [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
 - [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
+- [OIL-WINDOW-FOOT-SHAPE] — in OIL Earn the ALL AVAIL window's foot gives an inert man's reason as "<callsign> — <reason>", where the board now says "Nothing changed for <callsign>. <Reason>." — older; his question.
+- [OIL-ROSTER-TAP-SELECTS] — in OIL Earn a tap on a man in the board's crew list still picks him; D65's "no tap selects" read literally reaches it, D1783's "row" does not — his question.
+- [OIL-SWITCH-NOSAVE-SHOW] — "No OIL earned" is a box the browser ticks itself; a press that saves nothing would leave it showing the opposite of the day (not reachable today) — a one-line guard, with the database step's failed saves.
+- [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -2390,3 +2394,34 @@ on `main` at 650–818 on a 402-wide screen (this branch 616–818, the marks' w
 button, so in that layout they are reached only by panning sideways. Older than D1793. **To do, if he wants it:** keep the
 two buttons in view (at the bar's left, or stuck to the screen's right) — drawn for him first. **Place:** low — with the
 next phone-board change.
+
+### [OIL-WINDOW-FOOT-SHAPE] The ALL AVAIL window's foot keeps the old shape for an inert man (code read, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+F6 of the fresh Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): in OIL Earn a tap on a man who cannot earn in the window's OIL half sets its foot to
+"<callsign> — <reason>" (`AvailWindow.tsx onBody`, from the seat's title); the board's own tap now says "Nothing changed for
+<callsign>. <Reason>." (D1783). D1783 is worded as carrying the rule to the board; Astra's scenario 3 saw the same and did not
+call it a fault. **To do, if he wants the window too:** set the foot from the seat's `data-oilsay`, the title as the fallback.
+**Place:** low — his question with a picture, with the next OIL Earn change.
+
+### [OIL-ROSTER-TAP-SELECTS] In OIL Earn the crew list still picks a man (code read, 8 Nov 26 — chat 5)
+The Opus read's negatives (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): a tap on a man in the board's crew list (`#sbRoster`) in the mode still picks him — the
+new placeholder guard leaves the list out on purpose. D65's "inside the mode no tap selects" read literally would reach it;
+D1783 speaks of a man's puck "on its row". **To do, if he wants it:** his answer first — the crew list is how a seat is
+planned, so picking there may be wanted in the mode. **Place:** low — his question.
+
+### [OIL-SWITCH-NOSAVE-SHOW] "No OIL earned" could show the opposite of the day after a press that saves nothing (code read, 8 Nov 26 — chat 5)
+F5 of the Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): the switch is a checkbox the browser ticks before the board's handler runs; the screen comes right
+only because the bar is drawn again. A press the handler drops before the switch's branch (a stale preview, not in edit mode),
+or a save the store refuses (`toastFail`, which never fires today), would leave the box showing the opposite of the day. Not
+reachable today. **To do:** `e.preventDefault()` as soon as `boardMbtn` finds the switch, so the box always shows the day
+after the redraw — with a test that a refused press leaves it as it was. **Place:** with the database step's failed-save work.
+
+### [OIL-EARN-BOARD-TIDY] The code reads' tidiness notes on the OIL Earn board change (D489 — filed, not fixed; 8 Nov 26 — chat 5)
+From the three reads (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-{astra,sol,opus}.md`): the inert
+wrap is built in two places (`oilInertWrap` and `oilSeatHTML`), and `oilSeatHTML` calls `inertWhy` twice for one puck;
+`EVENT_EARNS_NOBODY` is a constant in `board.ts` while `AvailWindow.tsx` keeps its own copy — one export beside
+`DAY_EARNS_NOTHING` would serve both; `.mbtn.daybtn` has two rules in `18-oil-board.css`; the placeholder's day-switch
+refusal is reached by two branches of `boardArmClick`; `sbInpRow`'s puck line nests two arrow functions called on the spot
+inside a ternary — a named `inner` would read straighter; the switch's keys put-back hand-rolls what `sheetfocus.ts`
+`locate` / `keysBack` do; `inert.dataset.oilsay || ''` would toast an empty note if the attribute were missing; `.mbtn.oilblank.on`
+and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
+before the database step (D486).
