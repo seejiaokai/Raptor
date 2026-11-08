@@ -12470,7 +12470,14 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
 - **D1860** — the Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅
   marks ("Restore in Reorder courses brings it back…"), every other word kept; to build with the Tracker's next batch
-  ([TRK-POP-ASKED]).
+  ([TRK-POP-ASKED]). **Built 8 Nov 26 (chat 20, pull request 696).**
+- **D1900** — the Tracker's search magnifier is the app's own (`ui/icons.tsx`), its handle as long as every other
+  search box's (D1127), in place of `components/SrchGlyph.jsx`'s shorter one; to build ([TRK-KEPT-COPIES]).
+- **D1901** — in a browser that refuses to store anything, every page shows a "Not kept" band under the top bar (the
+  drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry), in the "Not saved" strip's look
+  (D1655), the page moved down under it; the Tracker's corner shows nothing while it is up; "Not saved" stays the
+  failed-save band's words (D1667). The drawing: chat 20's questions page (`docs/mock/2026-11-08-chat20-tracker-questions.html`);
+  to build ([TRK-NOSTORE-SAVED]).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
   **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
   own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words

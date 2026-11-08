@@ -157,12 +157,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier, put to him.
+- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier: he ruled it matched to the app's (D1900) — to build.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work; older; drawn for him with the Tracker's next batch (D1660).
-- [TRK-POP-ASKED] — drop the typed ↺ and ⇅ marks in two Tracker messages (D1860, answered 8 Nov 26); built with the Tracker's next batch.
+- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
@@ -407,7 +406,9 @@ should change. **Place:** low, the agent's — with the Tracker's next batch (D4
 are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
 nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
 (`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
-to him with a picture (D1625); archive this item once that is answered and the job is live.
+to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
+in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
+**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
 
 ### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
 **What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
@@ -446,11 +447,16 @@ the tidiness audit ([CODE-TIDY-AUDIT]).
 **What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
 top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
 the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.** Evidence:
+app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
+**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
+his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
+storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
+strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
+weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
+every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
+next Tracker / app job, with D1900's magnifier, one branch. Evidence:
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
-### [TRK-POP-ASKED] Two questions from the Tracker's marking-window round (filed 8 Nov 26 — chat 10, put to him that day)
-**What:** (1) **F8** (the fresh Opus code read of chat 9's job): two messages carry the old typed marks in their words — the "Delete course …?" question and the import's note on a deleted course (`src/tracker/app/core.js`, the course delete and the import) read "↺ Restore in ⇅ Reorder courses brings it back…"; the app draws those marks everywhere else and a message box cannot. Recommended: drop the two marks ("Restore in Reorder courses brings it back…"), a two-line change for the Tracker's next batch. Pictures before and after: `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/f8/`. (2) **The short-screen placement** (Astra's reading 6, "his to decide"): on a phone held on its side the chart lifts the event as high as it may go and the window opens under it, scrolling inside itself, as the drawings do not show; picture `…/2026-11-08-chat9-tracker/s10-open-window.png`. Also recorded by the walk, as before this change and not faults: S9 (the window neither follows nor closes when the chart is wheel-scrolled under it) and S30 (Restore's keyboard ring is the browser's own). Evidence: `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`. **His answer, 8 Nov 26: "Yes to both"** — (1) D1860, drop the marks; (2) D1861, the short-screen placement stays as built, nothing to build. **To do:** build (1) with the Tracker's next batch — the two messages' words only, their tests with them; then archive this item.
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
 **8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
 **What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
