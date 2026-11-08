@@ -4168,3 +4168,23 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** Each line the chat added to its handoff block carried a time ("~11:20", "~12:30", "~12:45"), written from a feel for how long the work had taken. After the sixth compaction the clock read 11:16 and the commits showed the lines had run ahead by 20 minutes to two hours. A later chat that orders events by these times, or a person told "merged at 12:45", is misled; the error grew with each compaction, since a compacted chat has no sense of the time that passed.
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
+
+### Observation 875: A drawing with recorded figures but no part list — measure the build with the drawing script's own measure
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 11, the board's layout (D1780, D1781) — the drawing check; numbered past 873, held on another branch (Numbered 875 at the rebase on 8 Nov 26: 874 is held by the open branch claude/lw-pin-last-frame.)
+**Skill:** New skill candidate: drawing-check-from-figures (or a section of `raptor-port/docs/walk-scripts.md` §10)
+**Type:** open-source
+**Phase/Area:** the drawing check before the walk (bug-check order §7.0, §7.10)
+
+**Issue:** The approved drawings had been made by a script that measured each drawn option and saved the figures (line
+heights, widths, what was cut) to a file, but no part list existed for the standing drawing-check tool. Writing a part
+list first would have cost a separate job; instead the build was measured with the drawing script's own measuring
+function, copied whole, and compared figure by figure (78 figures, 2px). It caught nothing false and named the one real
+difference — a state the drawing showed scrolled while the build, rightly, does not scroll.
+**Suggested improvement:** In the walk-scripts guide's drawing-check section, add: where a drawing was produced by a
+script that saved its measured figures, the drawing check may reuse that script's measure (copied whole, never
+rewritten) against the saved figures, in place of building a part list first; each difference is still named.
+**Principle:** When a design was drawn by code that measured itself, compare the build with the same measuring code —
+the same ruler on both sides removes a whole class of false differences.
