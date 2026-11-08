@@ -289,7 +289,8 @@ except where named here.
 - **Put to him (both his):** the Leave War STAGE (Fable: keep, with its own words — `lw.stage`, "Undid: closing
   bidding"; Astra: never, the stage buttons only); and **Admin → Data → "Clear edit history…"**, the one control that
   ERASES the squadron's change history (Fable M2) — against the transparency of D169 / D338 (1). **ANSWERED — D351: it
-  stays as it is until the database step (IT's retention rule); never undoable. Nothing to build.**
+  stays as it is until the database step (IT's retention rule); never undoable. Nothing to build.** *8 Nov 26 — D1752
+  replaces D351: the button is removed at the database step.*
 
 ## 11. Round 1 red team — dispositions (Fable + Astra, 28 Sep 26) — THESE WIN over §3–§6 where they differ
 
