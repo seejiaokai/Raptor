@@ -12476,11 +12476,20 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   ([TRK-POP-ASKED]). **Built 8 Nov 26 (chat 20, pull request 696).**
 - **D1900** — the Tracker's search magnifier is the app's own (`ui/icons.tsx`), its handle as long as every other
   search box's (D1127), in place of `components/SrchGlyph.jsx`'s shorter one; to build ([TRK-KEPT-COPIES]).
+  **Built 8 Nov 26 (chat 28):** `components/Glyphs.jsx SrchGlyph` is `ui/icons.tsx SrchIcon` with the Tracker's
+  `srchglyph` class; `SrchGlyph.jsx` deleted.
 - **D1901** — in a browser that refuses to store anything, every page shows a "Not kept" band under the top bar (the
   drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry), in the "Not saved" strip's look
   (D1655), the page moved down under it; the Tracker's corner shows nothing while it is up; "Not saved" stays the
   failed-save band's words (D1667). The drawing: chat 20's questions page (`docs/mock/2026-11-08-chat20-tracker-questions.html`);
-  to build ([TRK-NOSTORE-SAVED]).
+  to build ([TRK-NOSTORE-SAVED]). **Built 8 Nov 26 (chat 28):** `storage/boot.ts` marks a built site whose
+  browser refused its storage (`storageRefused`; the test switch `?nostore` runs a tab as such a browser); `main.tsx`
+  hands it to `ui/savestatus-source.ts` (`readBand`: a failed save first, else "nokeep") and to the Tracker's doorway
+  (`tracker/storage.js storageKept`). `ui/SaveStatus.tsx` draws the band in the bar (`.savestat.nokeep`) and under a
+  full-screen surface or across a screen with no bar (`SaveBand`), the room made by `useBandUp` wherever the failed
+  save's is (`.save-failed` names the room, either band in it); no "Saving…" note beside it; the access screen's pass
+  still reads "Not sent yet" for a failed save only (D1664). The Tracker's corner (`core.js saveWords`) shows no
+  "saved" or "saving" while it is up; an error still shows.
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
   **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
   own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words

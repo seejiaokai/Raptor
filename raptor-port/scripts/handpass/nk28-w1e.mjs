@@ -1,0 +1,23 @@
+// W1 part E: scenario 7 question box (retry), then 8 access screen. Version: nk28-w1e v2
+console.log('nk28-w1e v2')
+const H = await import('./nk28-w1-lib.mjs')
+const { L, world, sleep, tab, shot, vis, ok, note, finish } = H
+const w = await world({}); const p = w.page
+await p.waitForSelector('#luser'); await L.login(p, 'a'); await tab(p, 'inputs')
+await p.click('#inMedBtn'); await sleep(800)
+await p.locator('.medcard', { hasText: 'Zenith' }).first().click(); await sleep(900)
+await p.locator('button', { hasText: 'Edit input' }).first().click(); await sleep(1100)
+const inputs = await p.evaluate(() => [...document.querySelectorAll('.inpedwin input, .inpedwin textarea')].filter(e => e.getBoundingClientRect().width > 0).map(e => e.tagName + '#' + e.id + '.' + String(e.className).slice(0, 20) + ' type=' + e.type + ' v=' + String(e.value).slice(0, 20)))
+console.log('inputs in window', JSON.stringify(inputs))
+const rem = p.locator('#inpEditRmk')
+await rem.click(); await p.keyboard.type(' x'); await sleep(300)
+const btns = await p.evaluate(() => [...document.querySelectorAll('.inpedwin button')].filter(e => e.getBoundingClientRect().width > 0).map(e => (e.getAttribute('aria-label') || e.title || e.textContent).trim().slice(0, 14) + '@' + Math.round(e.getBoundingClientRect().left) + ',' + Math.round(e.getBoundingClientRect().top)).join(' | '))
+console.log('buttons', btns)
+const x = p.locator('.inpedwin button[aria-label*="lose" i], .inpedwin .fwx, .inpedwin button:has-text("✕")').first()
+await x.click().catch(e => console.log('x click fail', String(e.message).split('\n')[0])); await sleep(900)
+const pic = await shot(p, '07-question-box')
+const q = await p.evaluate(() => { const t = document.body.innerText; const m = t.match(/[^\n]*lose them[^\n]*/i); const el = [...document.querySelectorAll('body *')].filter(e => e.children.length < 8 && /lose them/i.test(e.textContent) && e.textContent.length < 300 && e.getBoundingClientRect().width > 0).pop(); const r = el && el.getBoundingClientRect(); return { text: m && m[0], box: r && [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)], atBar: (() => { const e = document.elementFromPoint(700, 20); return e ? e.tagName + '.' + String(e.className).slice(0, 25) : 'none' })() } })
+note('7 question box', JSON.stringify(q), pic)
+if (w.errors.length) note('page errors', w.errors.join(' | '))
+finish('results-e.json')
+await L.closeAll()

@@ -7,18 +7,25 @@
    the bar's right end like "Saving…" does, over whatever each page keeps there: the name search box on both schedule
    pages (a phone tap on the box pressed Retry), the Tracker's ✓ Save changes (a click on it pressed Retry), Quals'
    filter, the Leave War's "+ New". Now the top bar grows by one line while a save has failed (`.topbar.save-failed`,
-   set by Shell from `useSaveFailed`) and the warning fills that line, so the page moves down and nothing is covered.
+   set by Shell from `useBandUp`) and the warning fills that line, so the page moves down and nothing is covered.
    A full-screen surface that lies over the top bar — the scheduler board, the Leave War's OIL tracker — carries the same
    warning under its own bar (`SaveBand`), because there the bar's cannot be seen. (The Inputs calendar and the Medical
    view were such surfaces once; both are part of the Inputs page now — D620, D626 — under the top bar, which carries the
    warning for them. MedicalView.tsx keeps its band only for a full-screen opening with its own ✕, which no screen makes
    today — [BATCH-14OCT-LEFTOVERS] (d), 21 Oct 26.) A window, a sheet
    or the phone's menu is a short visit and has none: the bar's is there when it closes (D587).
-   Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning. */
+   Pinned by e2e/save-note.spec.ts; the contract: docs/ui-contracts.md §The failed-save warning.
+
+   A BROWSER THAT KEEPS NOTHING HAS THE SAME BAND (owner D1901, 8 Nov 26 — [TRK-NOSTORE-SAVED]): where the browser refuses
+   its storage, the app runs on memory alone and a reload loses the work, on every page. The same strip stands in the
+   same room — the drawn sign, "Not kept" in bold, "this browser loses your work on a reload" quieter — with no Retry, as
+   there is nothing to retry; and the passing "Saving…" note is not shown beside it, since nothing is being kept. A failed
+   save speaks first where both could (it never happens: the memory store does not fail). Everything that makes room for
+   the one makes it for the other (`useBandUp`), so the page moves down under it, as under "Not saved". */
 import { useEffect, useLayoutEffect, useRef, useSyncExternalStore } from 'react'
 import type { SaveStatus as Status } from '../storage/postman'
 import { fixedOrigin } from './kbscroll'
-import { subscribe, read, readFailed, retrySaves } from './savestatus-source'
+import { subscribe, read, readFailed, readBand, readBandUp, retrySaves, type Band } from './savestatus-source'
 
 /* ONE WARNING AT A TIME FOR A SCREEN READER AND THE KEYBOARD (Astra's read, F5). While a full-screen surface shows the
    warning under its own bar, the top bar's copy is still in the page beneath it — painted over, but a second
@@ -30,11 +37,16 @@ const subscribeCover = (fn: () => void) => { coverSubs.add(fn); return () => { c
 const readCover = (): boolean => covering > 0
 const cover = (d: 1 | -1) => { covering += d; for (const f of [...coverSubs]) f() }
 
-/** Has a save failed (and not yet landed)? Shell and the guest page ask, to make room for the band in their bar; the sign-in
-    and the access screens, to move the screen down under it (D1657). */
+/** Has a save failed (and not yet landed)? The access screen's pass asks, to read "Not sent yet" (D1664). */
 export function useSaveFailed(): boolean {
   return useSyncExternalStore(subscribe, readFailed, readFailed)
 }
+/** Is a band up — a failed save's "Not saved", or a browser's "Not kept" (D1901)? Shell and the guest page ask, to make
+    room for it in their bar; the sign-in and the access screens, to move the screen down under it (D1657). */
+export function useBandUp(): boolean {
+  return useSyncExternalStore(subscribe, readBandUp, readBandUp)
+}
+const useBand = (): Band => useSyncExternalStore(subscribe, readBand, readBand)
 
 /* WHERE IT SITS IS MEASURED, because the bar is one line or two by page and width, and on a phone the bar is a sideways
    scroll box (so the note is `position:fixed`, or the box would clip it or carry it sideways):
@@ -45,7 +57,7 @@ export function useSaveFailed(): boolean {
    Measured when it comes up, on a window resize, AND whenever the bar's own height changes — a page change takes the
    bar from one line to two with no resize, and the note used to stay at the old height, on top of the bar's second line
    (at 1366 wide: over the account button and Logout). */
-function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
+function useFollowTheBar(el: { current: HTMLElement | null }, s: Status | Band) {
   useLayoutEffect(() => {
     const n = el.current
     if (!n) return
@@ -57,7 +69,7 @@ function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
       /* …and where the bar that waits on an OIL answer has the bar's last line (ui/OilWaitSheet.tsx — D831, D840), the
          failed-save warning is the line ABOVE it: losing work is the graver of the two */
       const under = bar.querySelector<HTMLElement>('.oilband.is-top')
-      n.style.top = s === 'failed'
+      n.style.top = s === 'failed' || s === 'nokeep'
         ? `${Math.max(0, bottom - n.offsetHeight - (under ? under.offsetHeight : 0) - (parseFloat(getComputedStyle(bar).borderBottomWidth) || 0))}px`
         : `${Math.max(6, bottom + 6)}px`
     }
@@ -78,7 +90,8 @@ function useFollowTheBar(el: { current: HTMLElement | null }, s: Status) {
 export function SplitWords({ lead, rest }: { lead: string, rest: string }) {
   return <><span className="sv-sign" aria-hidden="true" /><b>{lead}</b><span className="sv-sep"> — </span><span className="sv-rest">{rest}</span></>
 }
-function Warning() {
+function Warning({ band }: { band: Exclude<Band, null> }) {
+  if (band === 'nokeep') return <span className="sv-msg"><SplitWords lead="Not kept" rest="this browser loses your work on a reload" /></span>
   return (
     <>
       <span className="sv-msg"><SplitWords lead="Not saved" rest="keep this page open" /></span>
@@ -89,11 +102,12 @@ function Warning() {
 
 export function SaveStatus() {
   const s = useSyncExternalStore(subscribe, read, read)
+  const band = useBand()
   const covered = useSyncExternalStore(subscribeCover, readCover, readCover)
   const ref = useRef<HTMLSpanElement>(null)
-  useFollowTheBar(ref, s)
+  useFollowTheBar(ref, band ?? s)
+  if (band) return <span className={'savestat ' + band} role="status" ref={ref} aria-hidden={covered || undefined} inert={covered || undefined}><Warning band={band} /></span>
   if (s === 'saved') return null
-  if (s === 'failed') return <span className="savestat failed" role="status" ref={ref} aria-hidden={covered || undefined} inert={covered || undefined}><Warning /></span>
   return <span className="savestat" role="status" ref={ref}>Saving…</span>
 }
 
@@ -101,14 +115,14 @@ export function SaveStatus() {
     `active` is false while its surface is closed but still drawn (the board stays in the page, hidden).
     `screen`: ACROSS THE TOP OF A SCREEN WITH NO TOP BAR — the sign-in and the access screens (owner D1657, 5 Nov 26 —
     [GUEST-SAVE-WARNING]: a stranger whose request was not saved was told it was "with the admins"). The screen moves down
-    under it (`.login.band-up`, set by the screen from `useSaveFailed`), so nothing is covered. */
+    under it (`.login.band-up`, set by the screen from `useBandUp`), so nothing is covered. */
 export function SaveBand({ active = true, screen = false }: { active?: boolean, screen?: boolean }) {
-  const failed = useSaveFailed()
+  const band = useBand()
   useEffect(() => {
-    if (!failed || !active) return
+    if (!band || !active) return
     cover(1)
     return () => cover(-1)
-  }, [failed, active])
-  if (!failed) return null
-  return <div className={'saveband' + (screen ? ' is-screen' : '')} role="status"><Warning /></div>
+  }, [band, active])
+  if (!band) return null
+  return <div className={'saveband' + (screen ? ' is-screen' : '')} role="status"><Warning band={band} /></div>
 }

@@ -11,7 +11,7 @@ import { DEFAULT_LAYOUTS } from '../data/layouts.js';
 import { EVENT_INFO, EVENT_INFO_BY_SYL } from '../data/eventInfo.js';
 import { shippedDetails, diffDetails, scrubBlock, mergeBlock, realFlatEdits, blockFromFlat, isDetailsTable } from './eventDetails.js';
 import { SEED_STATE, SEED_STAMP } from '../data/seedState.js';
-import { storage, flushNow, loadLatest, saveHealth, onSaveHealth } from '../storage.js';
+import { storage, flushNow, loadLatest, saveHealth, onSaveHealth, storageKept } from '../storage.js';
 import * as FMT from './fileFormat.js';
 import * as FS from './fileStore.js';
 import { normalizeImport as normalizeFile, STUDENT_GUARD_MSG, STUDENT_CHART_MSG, sameDef, remapStudentsSyl } from './fileTransfer.js';
@@ -6563,6 +6563,10 @@ export function saveWords() {
      Raptor's "Not saved — keep this page open · Retry". While a save has failed the corner says nothing — the top bar's
      warning is the one that speaks — and once Retry lands the last words come back, true again. An error stays. */
   if (saveStat.cls === 'ok' && saveFailed) return { text: '', title: '', cls: '' };
+  /* ...and none at all in a browser that keeps nothing (owner D1901, 8 Nov 26): "● saved" and "● saving…" would claim
+     what a reload takes back, and Raptor's "Not kept" band under the top bar is the one that speaks. An error still shows:
+     it is not a claim of saving. */
+  if ((saveStat.cls === 'ok' || saveStat.cls === 'saving') && !storageKept()) return { text: '', title: '', cls: '' };
   return { text: saveStat.text, title: saveStat.text, cls: saveStat.cls };
 }
 /* whether the saver behind the storage doorway has failed — redrawn only when that flips, so a save elsewhere in the app

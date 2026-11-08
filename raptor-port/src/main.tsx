@@ -6,11 +6,11 @@ import { HOOKS } from './engine/hooks'
 import { toast, toastBatch } from './ui/toast'
 import { App } from './ui/App'
 import { installProbeBridge, isLocalHost } from './probe-bridge'
-import { armSaveFail, chooseBackend, guardUnload } from './storage/boot'
+import { armSaveFail, chooseBackend, guardUnload, storageRefused } from './storage/boot'
 import { watchSaves } from './storage/savewait'
 import { StoreAheadError } from './storage/schema'
-import { setSaveStatusSource } from './ui/savestatus-source'
-import { setSaveHealth as trackerSaveHealth } from './tracker/storage.js'
+import { setSaveStatusSource, setStorageKept } from './ui/savestatus-source'
+import { setSaveHealth as trackerSaveHealth, setStorageKept as trackerStorageKept } from './tracker/storage.js'
 import { bootApp, BootConfigError } from './boot'
 import { bootPolicyFrom } from './bootpolicy'
 import { installDotRing } from './ui/dotring'
@@ -44,6 +44,10 @@ async function boot(): Promise<void> {
   /* the Tracker's "saved" corner follows the same saver ([TRK-SAVE-FAIL-SAYS-SAVED]) — through its storage doorway, the
      door boot.ts already plugged the whiteboard into */
   trackerSaveHealth(postman)
+  /* a browser that refuses its storage keeps the work only while the page is open: every page says so in its "Not kept"
+     band, and the Tracker's corner stops saying "● saved" (owner D1901 — [TRK-NOSTORE-SAVED]) */
+  setStorageKept(!storageRefused())
+  trackerStorageKept(!storageRefused())
 
   /* THE PROBE BRIDGE IS INSTALLED ON THIS PC ONLY ([ACCOUNTS], 26 Sep 26 — Astra R1-1,
      Fable R1-3): it puts the app's data and writers (PEOPLE, INPUTS, setSlotVal, the

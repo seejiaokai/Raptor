@@ -1,0 +1,54 @@
+{
+ "tag": "before",
+ "build": "C:/Users/User/AppData/Local/Temp/claude/f4202d016722bdbc/604f85bd-4fb7-4805-92a8-2a269b3d5a15/scratchpad/c20draw/raptor-port/dist",
+ "errors": {
+  "desktop": [],
+  "phone": []
+ },
+ "dTrk": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m20 20-3.5-3.5",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 4.95,
+  "handlePx": 3.09
+ },
+ "pBtn": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m20 20-3.5-3.5",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(241, 244, 247)",
+  "handleUnits": 4.95,
+  "handlePx": 3.09
+ },
+ "pScale": 1,
+ "pTrk": {
+  "w": 15,
+  "h": 15,
+  "viewBox": "0 0 24 24",
+  "d": "m20 20-3.5-3.5",
+  "circle": {
+   "cx": "11",
+   "cy": "11",
+   "r": "7"
+  },
+  "stroke": "2px",
+  "color": "rgb(138, 150, 163)",
+  "handleUnits": 4.95,
+  "handlePx": 3.09
+ }
+}

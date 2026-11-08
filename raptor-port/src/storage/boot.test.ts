@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { armSaveFail, bootStorage, chooseBackend, guardUnload } from './boot'
+import { armSaveFail, bootStorage, chooseBackend, guardUnload, storageRefused } from './boot'
 import { MemoryBackend } from './memory'
 import { BrowserBackend } from './browser'
 import { SCHEMA_VERSION } from './reset'
@@ -179,6 +179,30 @@ describe('chooseBackend', () => {
     expect(chooseBackend({ MODE: 'production', DEV: false }, '', fake)).toBeInstanceOf(BrowserBackend)
     const broken = { get length() { throw new Error('denied') } } as unknown as Storage
     expect(chooseBackend({ MODE: 'production', DEV: false }, '', broken)).toBeInstanceOf(MemoryBackend)
+  })
+  /* D1901: only a browser's refusal counts as "keeps nothing" — the memory store chosen on purpose does not; ?nostore is
+     the test switch that runs a tab as such a browser, reading and writing nothing */
+  it('says the browser keeps nothing only where its storage was refused, or under ?nostore', () => {
+    const broken = { get length() { throw new Error('denied') } } as unknown as Storage
+    chooseBackend({ MODE: 'production', DEV: false }, '', broken)
+    expect(storageRefused(), 'storage refused').toBe(true)
+    chooseBackend({ MODE: 'production', DEV: false }, '', fake)
+    expect(storageRefused(), 'a browser that keeps').toBe(false)
+    for (const [env, q] of [[{ MODE: 'production', DEV: false }, '?fresh=1'], [{ MODE: 'test', DEV: false }, ''], [{ MODE: 'development', DEV: true }, '']] as const) {
+      chooseBackend(env, q, broken)
+      expect(storageRefused(), `${env.MODE} ${q}: memory on purpose`).toBe(false)
+    }
+    let touched = 0
+    const watched = { get length() { touched++; return 0 }, key: () => { touched++; return null }, getItem: () => { touched++; return null }, setItem: () => { touched++ }, removeItem: () => { touched++ }, clear: () => { touched++ } } as unknown as Storage
+    /* Astra's read (chat 28): ?nostore beside ?savefail chose the browser's store, and even ?nostore alone read its length
+       — the switch now comes first, before the store is touched, and wins over ?savefail */
+    for (const q of ['?nostore', '?nostore=1', '?x=1&nostore', '?nostore&savefail', '?savefail&nostore']) {
+      expect(chooseBackend({ MODE: 'production', DEV: false }, q, watched), q).toBeInstanceOf(MemoryBackend)
+      expect(storageRefused(), q).toBe(true)
+    }
+    expect(touched, 'nothing read or written under ?nostore').toBe(0)
+    chooseBackend({ MODE: 'production', DEV: false }, '?nostorex', fake)
+    expect(storageRefused(), 'a longer word is not the switch').toBe(false)
   })
   /* D1666 (5 Nov 26, "Ok test switch"): ?savefail makes this tab refuse every save, so the "Not saved" band can be seen on
      a real phone; reading still works, and without the switch nothing changes */

@@ -1,13 +1,50 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { render, screen, act, cleanup } from '@testing-library/react'
-import { SaveStatus, SaveBand, useSaveFailed } from './SaveStatus'
-import { setSaveStatusSource } from './savestatus-source'
+import { SaveStatus, SaveBand, useSaveFailed, useBandUp } from './SaveStatus'
+import { setSaveStatusSource, setStorageKept } from './savestatus-source'
 import { Postman } from '../storage/postman'
 import { Whiteboard } from '../storage/whiteboard'
 import { MemoryBackend } from '../storage/memory'
 
-afterEach(() => { cleanup(); vi.useRealTimers() })
+afterEach(() => { cleanup(); vi.useRealTimers(); setStorageKept(true) })
+
+/* D1901 (8 Nov 26): a browser that keeps nothing — the "Not kept" band, in the failed-save band's place and look, with no
+   Retry; the room made for it as for "Not saved"; no "Saving…" beside it; a failed save speaks first */
+describe('the "Not kept" band', () => {
+  it('stands in the bar and under a full-screen surface, without Retry, the room made, "Saving…" never beside it', async () => {
+    vi.useFakeTimers()
+    const be = new MemoryBackend()
+    const wb = new Whiteboard()
+    const pm = new Postman(be); pm.attach(wb)
+    setSaveStatusSource(pm)
+    const Flags = () => <><i data-testid="up">{String(useBandUp())}</i><i data-testid="failed">{String(useSaveFailed())}</i></>
+    render(<><SaveStatus /><SaveBand /><Flags /></>)
+    expect(screen.getByTestId('up').textContent, 'a browser that keeps: no band').toBe('false')
+    act(() => setStorageKept(false))
+    expect(screen.getByTestId('up').textContent).toBe('true')
+    expect(screen.getByTestId('failed').textContent, 'not a failed save').toBe('false')
+    const bar = document.querySelector('.savestat.nokeep') as HTMLElement, band = document.querySelector('.saveband') as HTMLElement
+    for (const n of [bar, band]) {
+      expect(n.textContent).toBe('Not kept — this browser loses your work on a reload')
+      expect(n.querySelector('.sv-msg b')!.textContent, '"Not kept" leads, in bold').toBe('Not kept')
+      expect(n.querySelector('.sv-sign')!.getAttribute('aria-hidden')).toBe('true')
+      expect(n.querySelector('button'), 'no Retry: nothing to retry').toBeNull()
+    }
+    expect(bar.classList.contains('failed'), 'never the failed-save class').toBe(false)
+    /* a save while it is up: no "Saving…" note beside it */
+    act(() => { wb.set('inputs', 'all', '[]') })
+    expect(document.querySelectorAll('.savestat').length).toBe(1)
+    expect(document.querySelector('.savestat')!.textContent).toContain('Not kept')
+    await act(async () => { await vi.advanceTimersByTimeAsync(400) })
+    /* a failed save speaks first, with its Retry */
+    be.failNext(1)
+    act(() => { wb.set('inputs', 'all', '[1]') })
+    await act(async () => { await vi.advanceTimersByTimeAsync(300) })
+    expect(document.querySelector('.savestat')!.className).toBe('savestat failed')
+    expect(document.querySelector('.saveband')!.textContent).toContain('Not saved')
+  })
+})
 
 describe('SaveStatus', () => {
   it('renders nothing while saved, "Saving…" while a letter is queued or in flight, and Retry when failed', async () => {
