@@ -350,10 +350,20 @@ export function SchedBoard() {
   useEffect(() => {
     const root = rootRef.current, top = topRef.current
     if (!root || !top || typeof ResizeObserver === 'undefined') return
-    const publish = () => root.style.setProperty('--sb-topH', top.offsetHeight + 'px')
+    /* …and, for a phone on its side (owner D1780, 8 Nov 26 — 10-board-history.css), the head's height: the rows above the
+       bar's own line (Calendar, the title, the day strip, search), which scroll away there while the bar stays, less
+       the bar's 10px top padding, so the line keeps its padding once stuck; and the board's own height, which the crew
+       column under the bar is sized from. The bar's line is the highlighter chips and the action buttons — a hidden one
+       has no offsetParent and is left out. */
+    const publish = () => {
+      root.style.setProperty('--sb-topH', top.offsetHeight + 'px')
+      const line = [...top.querySelectorAll<HTMLElement>(':scope > .sb-hl, :scope > .sb-actions')].filter(el => el.offsetParent)
+      root.style.setProperty('--sb-headH', (line.length ? Math.max(0, Math.min(...line.map(el => el.offsetTop)) - 10) : 0) + 'px')
+      root.style.setProperty('--sb-boardH', root.clientHeight + 'px')
+    }
     publish()
     const ro = new ResizeObserver(publish)
-    ro.observe(top)
+    ro.observe(top); ro.observe(root)
     return () => ro.disconnect()
   }, [])
 

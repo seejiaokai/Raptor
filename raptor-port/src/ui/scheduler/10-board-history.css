@@ -155,6 +155,28 @@ body.dw-lock{overflow:hidden}
   .sb-hl{flex:0 0 auto;order:6;padding:0}
   .sb-actions{order:7}
 }
+/* A PHONE ON ITS SIDE: THE HEAD SCROLLS AWAY, THE BAR STAYS (owner D1780, 8 Nov 26 — the pictures round's question 1,
+   option B, "All as recommended"). His iPhone on its side is 874 × 402: the desktop board, whose top (Calendar and the
+   title; the day strip and search; the bar) took 146px, so with the keys up the list had 56px. Here the board scrolls
+   as one page, as any page does: at rest exactly as before; scrolled, or a box low on the screen tapped with the keys up
+   (kbscroll.ts scrolls its nearest scroller, now the board itself), the head goes up and away and the bar's own line —
+   the highlighter chips, Templates, Sort all, Undo, Redo, History, sync, the bell, Insights, Done, and any warning band
+   under them — stays at the top, about 51px, so the list gets about 151px with the keys up. Nothing moves by itself
+   when the keys open (D1081, D1412): no fold watches the keyboard; the phone's own scroll does it all.
+   How: the whole top is sticky at minus the head's height (--sb-headH, SchedBoard.tsx), so it rides up until only its
+   last line is left and stays there, its own fill in front (D1518); the board column is no scroller of its own here;
+   the crew column stays under the bar (sticky at the bar's height), as tall as the board less the bar, its own lists
+   scrolling inside it as before. The same query as the app's own (navfold.ts SIDEWAYS_PHONE), from 821 wide — below
+   that a phone on its side has the phone board's one-row bar. The desktop layout (.sb-wide, its own pinch-zoom
+   scroller — D1107, D1109) is left as it was. */
+@media (min-width:821px) and (pointer:coarse) and (orientation:landscape) and (max-height:500px){
+  .schedboard:not(.sb-wide){overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain}
+  .schedboard:not(.sb-wide) .sb-top{position:sticky;top:calc(-1 * var(--sb-headH,0px));z-index:30;flex:none}
+  .schedboard:not(.sb-wide) .sb-main{flex:none}
+  .schedboard:not(.sb-wide) .sb-boardwrap{overflow:visible}
+  .schedboard:not(.sb-wide) .sb-side{position:sticky;top:calc(var(--sb-topH,0px) - var(--sb-headH,0px));align-self:flex-start;
+    height:calc(var(--sb-boardH,100vh) - var(--sb-topH,0px) + var(--sb-headH,0px))}
+}
 /* ---- inputs panel: every personal input for the open day, morning → late ---- */
 .sb-inputs{flex:0 0 auto;max-height:36%;overflow:auto;padding:9px 14px 12px;
   border-top:1px solid var(--edge);background:var(--panel-2)}
