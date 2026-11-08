@@ -324,8 +324,8 @@ test.describe('the medical view renders and fits', () => {
   /* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT ([MED-ROOM-DRAGGED] — both code reads of 8 Nov 26, Astra's and the fresh
      Opus reader's): a window keeps the place it was dragged to for the session (winorder.ts), so sections that kept their
      room at the right for it were squeezed AND covered. As the Inputs list's (D1787, 06-inputs.css): the room is made only
-     while the window stands where it opens, at his PC's 1536 and at the D1300 test's 1500. */
-  for (const vp of [{ width: 1536, height: 864 }, DESK])
+     while the window stands where it opens, at 1536, at his PC's page (1229 × 600, 1536 at 125%) and at the D1300 test's 1500. */
+  for (const vp of [{ width: 1536, height: 864 }, { width: 1229, height: 600 }, DESK])
     test(`[MED-ROOM-DRAGGED] the window of "+ Medical" dragged away gives the cards their room back, and reopened where he left it, makes none — ${vp.width}×${vp.height}`, async ({ page }) => {
       await page.setViewportSize(vp)
       await login(page)

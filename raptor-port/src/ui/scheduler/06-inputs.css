@@ -66,7 +66,7 @@
      drawing, q-sched-measured.json q4m). Narrower than 1340 the room is not made: the window covers the list as it
      always has, since making room there would leave Remarks too narrow to read. The room is made only while the window
      stands where it opens: one he has dragged keeps its place for the session (`winorder.ts`; floatwin.ts marks it
-     `data-placed` from the drag's first moment), and the list then has its full width back — not squeezed beside a gap
+     `data-placed` from the drag's first movement), and the list then has its full width back — not squeezed beside a gap
      with the window over it (both code reads of 8 Nov 26). The calendar's day windows give their room back the same way
      (25-inputs-calendar.css). The window is drawn outside the page (a sibling of the shell), so the test is on `body`.
    Elsewhere Type keeps 160; Changed and the last column keep theirs everywhere. The phone draws cards, not this table

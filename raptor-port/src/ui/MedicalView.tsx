@@ -264,7 +264,7 @@ export function MedicalView({ onClose }: { onClose?: () => void }) {
         {calOpen && <>
           <button type="button" className="med-cal-scrim" aria-label="Close the date picker"
             onClick={() => setCalOpen(false)} />
-          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- a <dialog> opens in the browser's top layer, above the input window and the app's own stacking order, with its own backdrop and focus rules; the as-of picker hangs from its button over its own scrim, layered on purpose */}
+          {/* eslint-disable-next-line react-doctor/prefer-html-dialog -- the as-of picker hangs from its button over its own scrim, layered in the app's own order on purpose: a <dialog> opened modally would lift it into the browser's top layer above the input window, with its own backdrop and focus trap, and one left open only brings the browser's own dialog look (centred, bordered, white) to undo, adding nothing this panel lacks */}
           <div className="med-cal" role="dialog" aria-label="Pick the as-of date" style={{ left: calLeft }}>
             <div className="med-cal-head">
               <button type="button" className="abtn" id="medCalPrev" aria-label="Previous month"

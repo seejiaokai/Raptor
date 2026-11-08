@@ -80,7 +80,7 @@
    added lands in sight. A phone's window stands in the middle (D997) and is left as it is.
    THE ROOM ONLY WHILE THE WINDOW STANDS WHERE IT OPENS ([MED-ROOM-DRAGGED], both code reads of 8 Nov 26): a window he has
    dragged keeps its place for the session (winorder.ts; floatwin.ts marks it `data-placed` from the drag's first
-   moment), so the sections take their full width back rather than staying squeezed beside a gap with the window over
+   movement), so the sections take their full width back rather than staying squeezed beside a gap with the window over
    them — as the Inputs list's room does (06-inputs.css). The window is drawn outside the page, so the test is on `body`.
    The room's size is the window's own, `--inpwin-room` (25-inputs-calendar.css), one value for both rooms. */
 @media (min-width:821px){
