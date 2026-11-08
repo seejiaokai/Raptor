@@ -172,6 +172,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
   [D1530].
 - The kit's own files, marked for use inside the service only, are not put into the public project — the agent's reading
   of keeping the project public, not checked with him [D1530].
+- Vercel is on its Pro plan from 8 Nov 26, and he spends no more on it than the plan he subscribed to, US$20 a month,
+  its included usage with it [D1794].
 - Two guards stand: a backgrounded npm command must move into `raptor-port` [D162]; the push-and-lock guard [D976].
 
 ## Showing him, asking him
