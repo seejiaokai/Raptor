@@ -20,7 +20,7 @@
    unchanged because the map preserves seat and band and the mapped
    people's own SXO flags match the seed's. */
 import { expect, test, type Locator, type Page } from '@playwright/test'
-import { elevenCounters, login, openManning, pressMore, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths } from './app'
+import { elevenCounters, login, openManning, pressMore, rearrangeOn, go, gridAtRest, lwRole, lwView, moveOneTo, openLeaveWar, raptorRole, scrollTo, calendarOnTop, dateBoxValue, pickDate, tapCalendarDate, openChip, datesWindow, openDatesWindow, closeDatesWindow, tapMonths, closeBidding, openMonths, expectPinned } from './app'
 
 /** Open the figure picker. The whole column header is the control — the two
  *  arrows it replaced were 13px glyphs the owner could not hit on a phone. */
@@ -1951,11 +1951,11 @@ test('a held finger dragged to the frozen columns\' edge auto-scrolls the grid l
 // scrolled up under the bar.
 test('the date header freezes on desktop when the page scrolls down', async ({ page }) => {
   desktopOnly()
-  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await expectPinned(page, 'sticky-head', false)
   await page.evaluate(() => window.scrollTo(0, 1400))
-  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await expectPinned(page, 'sticky-head', true)
   await page.evaluate(() => window.scrollTo(0, 0))
-  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)   // thaws back
+  await expectPinned(page, 'sticky-head', false)   // thaws back
 })
 
 /* THE PINNED DATES ROW ARRIVES IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]). He filmed the dates
@@ -1964,22 +1964,250 @@ test('the date header freezes on desktop when the page scrolls down', async ({ p
    callbacks and paints after both. Both widths — the phone's finger scroll is the browser's own and may still lag a
    frame on a real iPhone (measured apart, not here). */
 test('the pinned dates row is up in the same frame the row reaches the top bar (D1789)', async ({ page }) => {
-  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await expectPinned(page, 'sticky-head', false)
   const seen = await page.evaluate(() => new Promise<{ under: boolean; up: boolean }>(done => {
     window.scrollTo(0, 1400)
     requestAnimationFrame(() => {
       const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
       const row = document.querySelector('#page-leavewar tbody.mxhead')!.getBoundingClientRect().top
-      done({ under: row < bar, up: !!document.querySelector('[data-testid="sticky-head"]') })
+      done({ under: row < bar, up: (el => !!el && Number(getComputedStyle(el).opacity) > 0.5 && getComputedStyle(el).visibility !== 'hidden')(document.querySelector('[data-testid="sticky-head"]'))   /* shown, not merely there (D1870) */ })
     })
   }))
   expect(seen.under, 'the scroll really sent the dates row under the top bar').toBe(true)
   expect(seen.up, 'the pinned copy is painted in that same frame, not a frame later').toBe(true)
   const back = await page.evaluate(() => new Promise<boolean>(done => {
     window.scrollTo(0, 0)
-    requestAnimationFrame(() => done(!document.querySelector('[data-testid="sticky-head"]')))
+    requestAnimationFrame(() => done(!(el => !!el && Number(getComputedStyle(el).opacity) > 0.5 && getComputedStyle(el).visibility !== 'hidden')(document.querySelector('[data-testid="sticky-head"]'))))
   }))
   expect(back, 'and let go in the frame the row comes back down').toBe(true)
+})
+
+/* THE PINNED ROW THE BROWSER SHOWS ITSELF — the build's loose ends (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]). The copy
+   is always in the page and hidden by its opacity, so what it does while hidden, and what moves its turn-on point without
+   a scroll, are checked here; each was red on the trial's build. */
+const lwPin = (page: Page) => page.evaluate(() => {
+  const el = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')
+  if (!el) return null
+  const cs = getComputedStyle(el)
+  const row = document.querySelector('#page-leavewar tbody.mxhead th')!.getBoundingClientRect().top
+  const bar = document.querySelector('.topbar')!.getBoundingClientRect().bottom
+  return { inert: el.inert, shown: Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under: row < bar - 0.5, anim: cs.animationName }
+})
+test('a hidden pinned dates row is out of the keys and of what a screen reader reads (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect.poll(async () => { const p = await lwPin(page); return p === null || (p.inert && !p.shown) }, { message: 'at rest the hidden copy is inert' }).toBe(true)
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expect.poll(async () => { const p = await lwPin(page); return !!p && p.shown && !p.inert }, { message: 'pinned, it can be reached' }).toBe(true)
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expect.poll(async () => { const p = await lwPin(page); return p === null || (p.inert && !p.shown) }, { message: 'and inert again once the row is back' }).toBe(true)
+})
+test('the pinned dates row follows when something above the grid grows or shrinks with no scroll (D1870)', async ({ page }) => {
+  /* the iPhone's Safari keeps the page's scroll when something above grows (it has no scroll anchoring), so the row moves
+     down the screen with no scroll event: the test browser is made to do the same */
+  await page.addStyleTag({ content: '* { overflow-anchor: none !important; }' })
+  const y = await page.evaluate(() => {
+    const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect()
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect()
+    return Math.round(window.scrollY + head.top - bar.bottom + 30)
+  })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true, '30px past the bar, the row is pinned')
+  await page.evaluate(() => {
+    const d = document.createElement('div'); d.id = '__above'; d.style.cssText = 'display:block;height:100px'
+    document.querySelector('#page-leavewar')!.prepend(d)
+  })
+  await expect.poll(async () => (await lwPin(page))?.under, { message: 'the block pushed the row back below the bar' }).toBe(false)
+  // GitHub's phone run of 8 Nov 26 failed here and the PC never has: if it fails again, the copy's state is printed
+  await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the page did not scroll').catch(async e => {
+    console.log('D1870 state', JSON.stringify(await page.evaluate(() => {
+      const el = document.querySelector('[data-testid="sticky-head"]') as HTMLElement
+      const cs = getComputedStyle(el)
+      return { s: el.style.getPropertyValue('--lwy-s'), up: el.classList.contains('up'), opacity: cs.opacity, anim: cs.animationName, range: cs.getPropertyValue('animation-range'),
+        sda: !!document.querySelector('.lw-pinsda'), y: window.scrollY, row: document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect().top,
+        bar: document.querySelector('.topbar')!.getBoundingClientRect().bottom, body: document.body.getBoundingClientRect().height }
+    })))
+    throw e
+  })
+  await page.evaluate(() => document.getElementById('__above')!.remove())
+  await expect.poll(async () => (await lwPin(page))?.under).toBe(true)
+  await expectPinned(page, 'sticky-head', true, 'and pins again when the block goes')
+})
+/* GitHub's phone run of 8 Nov 26 (chat 16): the block went in while the grid was redrawing, so the height watch, set up
+   afresh by the redraw, took its first reading with the block already there and never saw a change. Forced here: a
+   group folded (the grid redraws, the watch is set up again) and the block put above the grid in the same moment. */
+test('the pinned dates row follows a block put above the grid in the very moment the grid redraws (D1870)', async ({ page }) => {
+  await page.addStyleTag({ content: '* { overflow-anchor: none !important; }' })
+  const y = await page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); const bar = document.querySelector('.topbar')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - bar.bottom + 30) })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true, '30px past the bar, the row is pinned')
+  await page.evaluate(() => {
+    (document.querySelector('#page-leavewar [data-testid^="groupfold-"]') as HTMLElement).click()
+    const d = document.createElement('div'); d.id = '__above'; d.style.cssText = 'display:block;height:100px'; document.querySelector('#page-leavewar')!.prepend(d)
+  })
+  await expect.poll(async () => (await lwPin(page))?.under, { message: 'the block pushed the row back below the bar' }).toBe(false)
+  await expectPinned(page, 'sticky-head', false, 'so the copy lets go, though the watch was set up again in that moment')
+})
+/* HIS RECORDING OF 8 NOV 26, 14:31 (chat 16 — [LW-PIN-LAST-FRAME]): a flick to the page's foot on his iPhone, and the
+   page's bounce carried the top bar off screen for a moment; the screen-size change Safari's folding toolbar sends in that
+   moment re-measured the pinned row, which took its place from where the bar then stood — and stayed up there, under the
+   bar, the dates row missing until a later re-measure. The bounce is the iPhone's own: here the bar is carried off by
+   hand, the screen-size change sent, and the bar put back. */
+test('the pinned dates row keeps its place when it is re-measured while the top bar is carried off for a moment (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
+  await expectPinned(page, 'sticky-head', true, 'at the page’s foot the row is pinned')
+  await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = 'translateY(-90px)'; window.dispatchEvent(new Event('resize')) })
+  await page.waitForTimeout(600)   // the page's own re-measure: two frames, then once more 300 ms later
+  await page.evaluate(() => { (document.querySelector('.topbar') as HTMLElement).style.transform = '' })
+  const gap = () => page.evaluate(() => Math.round(document.querySelector('[data-testid="sticky-head"]')!.getBoundingClientRect().top - document.querySelector('.topbar')!.getBoundingClientRect().bottom))
+  await expect.poll(gap, { message: 'the copy stands at the bar’s foot, not where the bar was carried' }).toBe(0)
+  await expectPinned(page, 'sticky-head', true, 'and it is shown')
+})
+/* THE WALK OF 8 NOV 26 (chat 16's walker L, scenario 22 — [LW-PIN-LAST-FRAME]): a desktop window made narrower, or a phone
+   turned sideways and back, and the copy then showed about 37px before the real row reached the bar — over the month
+   buttons, two date rows on screen — until a reload. The browser had worked out where the page's scroll turns the copy
+   on while the page was still settling, and the page's later re-measure wrote the same value again, so it never worked
+   it out afresh. */
+test('after the screen changes width the pinned dates row shows only once the row reaches the bar (D1870)', async ({ page }) => {
+  const check = async (what: string) => {
+    await page.waitForTimeout(900)   // the page's own re-measure: two frames, then once more 300 ms later
+    const meet = await page.evaluate(() => { window.scrollTo(0, 0); const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom) })
+    await page.evaluate(y => window.scrollTo(0, y), meet - 30)
+    await expectPinned(page, 'sticky-head', false, `${what}: 30px before the row meets the bar, no copy over the month buttons`)
+    await page.evaluate(y => window.scrollTo(0, y), meet + 5)
+    await expectPinned(page, 'sticky-head', true, `${what}: past it, the row is pinned`)
+  }
+  const size = page.viewportSize()!
+  await page.setViewportSize(isPhone() ? { width: size.height, height: size.width } : { width: 420, height: size.height })
+  await check(isPhone() ? 'turned sideways' : 'made 420 wide')
+  await page.setViewportSize(size)
+  await check(isPhone() ? 'turned back' : 'made wide again')
+})
+test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
+  test.skip(!isPhone(), 'a two-finger pinch')
+  const y = await page.evaluate(() => {
+    const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect()
+    const bar = document.querySelector('.topbar')!.getBoundingClientRect()
+    return Math.round(window.scrollY + head.top - bar.bottom + 40)
+  })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true)
+  const cdp = await page.context().newCDPSession(page)
+  const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
+  const at = (d: number) => [[200 - d / 2, 520], [200 + d / 2, 520]]
+  const seen: string[] = []
+  await touch('touchStart', [at(200)[0]!]); await page.waitForTimeout(30)
+  await touch('touchStart', at(200)); await page.waitForTimeout(30)
+  for (let i = 1; i <= 10; i++) {
+    await touch('touchMove', at(200 - 12 * i)); await page.waitForTimeout(16)
+    const p = await lwPin(page)
+    // it started pinned, so the copy must stay in the page the whole pinch — a copy gone is a fault, never a skipped step
+    // (Astra's code read of 8 Nov 26, finding 1)
+    if (!p) seen.push(`step ${i}: no pinned copy in the page`)
+    if (p && p.anim !== 'none') seen.push(`step ${i}: still on the scroll's animation (${p.anim})`)
+    if (p && p.shown !== p.under) seen.push(`step ${i}: shown ${p.shown}, the row ${p.under ? 'under' : 'below'} the bar`)
+  }
+  await touch('touchEnd', []); await page.waitForTimeout(600)
+  await cdp.detach()
+  expect(seen, 'mid-pinch the copy shows exactly while the row is under the bar').toEqual([])
+  const after = await lwPin(page)
+  expect(after && after.shown === after.under, 'and after the lift').toBe(true)
+})
+/* THE FRESH OPUS CODE READ OF 8 NOV 26 (chat 16 — [LW-PIN-LAST-FRAME]). A showing step the browser makes afresh is not
+   applied in the frame it is made in, so the copy would stand at its hidden opacity for that one frame though the row is
+   under the bar. Read in every frame, before each frame paints: from before the change to well after it. */
+/* `act`, where named, is made in the very task that starts the reading, so the first frame after it is always read — made
+   in a call of its own, a frame could be painted between the two and never read (the re-walk of 8 Nov 26, finding 2) */
+const lwFrames = (page: Page, n: number, act?: 'grid' | 'leavewar') => page.evaluate(([n, act]) => {
+  const w = window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[]; go: (p: string) => void }
+  w.__f = []
+  const tick = () => {
+    const el = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')
+    const th = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead th')
+    const cs = el ? getComputedStyle(el) : null
+    const under = !!th && th.getBoundingClientRect().height > 0 && th.getBoundingClientRect().top < document.querySelector('.topbar')!.getBoundingClientRect().bottom - 0.5
+    w.__f.push({ pinching: !!el?.classList.contains('lw-pinching'), shown: !!cs && Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under })
+    if (w.__f.length < (n as number)) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+  if (act === 'grid') (document.querySelector('[data-testid="lw-tab-grid"]') as HTMLElement).click()
+  if (act === 'leavewar') w.go('leavewar')
+}, [n, act] as const)
+const lwFramesRead = async (page: Page, n: number) => {
+  await page.waitForFunction(n => (window as unknown as { __f: unknown[] }).__f.length >= n, n, { timeout: 15000 })
+  return page.evaluate(() => (window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }).__f)
+}
+/* its finding 1: the pinch takes the copy off its showing step, and the lift makes the step afresh */
+test('at the lift of a zoom made part-way down, the pinned dates row shows in every frame (D1870)', async ({ page }) => {
+  const y = await page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom + 300) })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true)
+  await lwFrames(page, 240)
+  if (isPhone()) await lwPinch(page, 200, 520, 200, 240)
+  else await lwCtrlScroll(page, 600, 500, -Math.log(1.2) / 0.002)
+  const f = await lwFramesRead(page, 240)
+  const lift = f.findIndex((x, i) => i > 0 && f[i - 1]!.pinching && !x.pinching)
+  expect(lift, 'the zoom was seen in the frames').toBeGreaterThan(0)
+  const gaps = f.slice(lift).map((x, i) => (x.under && !x.shown ? `frame ${i} after the lift` : '')).filter(Boolean)
+  expect(gaps, 'no frame after the lift with the real row under the bar and no copy shown').toEqual([])
+})
+/* its finding 2: the grid is hidden while Balances is up, which ends the copy's steps, and coming back makes them afresh */
+test('back on the grid from Balances while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true)
+  /* pressed where it stands: a real press scrolls the page up to the tab row first. Scrolled down, the grid is shown again
+     this way from Approvals (a request's dates); Balances is the plainest way to hide it and show it again */
+  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-balances"]') as HTMLElement).click())
+  await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
+  await page.waitForTimeout(300)
+  await lwFrames(page, 30, 'grid')
+  const f = await lwFramesRead(page, 30)
+  expect(f.some(x => x.under), 'the grid came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
+  expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+  /* and the hold never over-shows: no frame with the copy up while the real row is in view (the fresh read of the fix, gap a) */
+  expect(f.map((x, i) => (x.shown && !x.under ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown and the row not under the bar').toEqual([])
+})
+/* the same tab return made at the page's top: the real row is in view, so the copy must stay hidden in every frame */
+test('back on the grid from Balances at the top, the pinned dates row never shows (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false)
+  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-balances"]') as HTMLElement).click())
+  await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
+  await page.waitForTimeout(300)
+  await lwFrames(page, 30, 'grid')
+  const f = await lwFramesRead(page, 30)
+  expect(f.map((x, i) => (x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown').toEqual([])
+})
+/* the same, the whole page left for another and come back to: it returns where it was on the grid (the re-walk of 8 Nov 26) */
+test('back on the Leave War from another page while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true)
+  await page.evaluate(() => (window as unknown as { go: (p: string) => void }).go('quals'))
+  await page.waitForFunction(() => (window as unknown as { CURPAGE: string }).CURPAGE === 'quals')
+  await page.waitForTimeout(300)
+  await lwFrames(page, 40, 'leavewar')
+  const f = await lwFramesRead(page, 40)
+  expect(f.some(x => x.under), 'the page came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
+  expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+  expect(f.map((x, i) => (x.shown && !x.under ? `frame ${i}` : '')).filter(Boolean), 'no frame with the copy shown and the row not under the bar').toEqual([])
+})
+/* its question 1: a zoom changes the page's height with no scroll — is the turn-on point worked out again? One forced
+   re-measure with nothing moved first (a line at the page's foot), so the hundredth-off writes fall the unlucky way. */
+test('after a zoom the pinned dates row still turns on where the row meets the bar (D1870)', async ({ page }) => {
+  const meetAt = () => page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom) })
+  const check = async (what: string) => {
+    const m = await meetAt()
+    for (const d of [-15, -6, 6, 15]) {
+      await page.evaluate(y => window.scrollTo(0, y), m + d)
+      await expectPinned(page, 'sticky-head', d > 0, `${what}: ${d}px from where the row meets the bar`)
+    }
+  }
+  await check('before')
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+  await page.evaluate(() => { const d = document.createElement('div'); d.style.height = '1px'; document.body.append(d) })
+  await page.waitForTimeout(300)
+  if (isPhone()) await lwPinch(page, 200, 520, 200, 280)
+  else await lwCtrlScroll(page, 600, 500, -Math.log(1.4) / 0.002)
+  await check('after zooming in')
 })
 
 // THE FROZEN BAR IS IN STEP THE MOMENT IT APPEARS, at both widths (owner's
@@ -2007,9 +2235,15 @@ test('the frozen bar is in step with the grid the moment it appears', async ({ p
     await page.evaluate(() => {
       const w = window as any
       w.__barAt = undefined
-      const mo = new MutationObserver(() => {
+      /* the first moment the bar SHOWS: where the browser shows it itself (D1870) it is already in the page, hidden, and
+         its first shown frame is read in that frame's animation callbacks; the old way mounts it, read as it is inserted */
+      let seen = false
+      const look = (fromFrame: boolean) => {
+        if (seen) return
         const bar = document.querySelector('[data-testid="sticky-head"]')
-        if (!bar) return
+        const cs = bar && getComputedStyle(bar)
+        if (!bar || !cs || Number(cs.opacity) <= 0.5 || cs.visibility === 'hidden') { if (fromFrame) requestAnimationFrame(() => look(true)); return }
+        seen = true
         mo.disconnect()
         // the scrolling layer's own day cells, by position (the copy carries no
         // test ids); the frozen overlay beside it holds no day cells at all
@@ -2017,16 +2251,19 @@ test('the frozen bar is in step with the grid the moment it appears', async ({ p
         const copy = [...bar.querySelectorAll<HTMLElement>('.mxfixed-scroll tr:last-child th.day')]
         const i = real.findIndex(e => e.dataset.testid === 'head-2026-08-01')
         w.__barAt = i < 0 || !copy[i] ? null : copy[i].getBoundingClientRect().x - real[i].getBoundingClientRect().x
-      })
+      }
+      const mo = new MutationObserver(() => look(false))
       mo.observe(document.body, { childList: true, subtree: true })
+      requestAnimationFrame(() => look(true))
     })
     await page.evaluate(y => window.scrollTo(0, y), down)
-    await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+    await expectPinned(page, 'sticky-head', true)
     const off = await page.evaluate(() => (window as any).__barAt)
     expect(off, `round ${round}: the bar was seen as it appeared`).not.toBeNull()
+    expect(off, `round ${round}: …and measured`).not.toBeUndefined()
     expect(Math.abs(off), `round ${round}: the bar's 1 August sits over the grid's`).toBeLessThan(2)
     await page.evaluate(() => window.scrollTo(0, 0))
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+    await expectPinned(page, 'sticky-head', false)
   }
 })
 
@@ -2057,7 +2294,7 @@ test.skip('a column that widens while the dates are frozen re-measures the froze
     return Math.round(window.scrollY + head.top - bar.bottom + 60)
   })
   await page.evaluate(y => window.scrollTo(0, y), down)
-  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await expectPinned(page, 'sticky-head', true)
   // how far the bar's copy of a date sits from the grid's own column (0 = in step)
   const off = (d: string) => page.evaluate(dd => {
     const real = [...document.querySelectorAll<HTMLElement>('#page-leavewar .mx-wrap tbody.mxhead tr:last-child th.day')]
@@ -2076,7 +2313,7 @@ test.skip('a column that widens while the dates are frozen re-measures the froze
   const before = await width()
   expect(await page.evaluate(() => (window as any).lwSetCell('slipway', '2026-03-17', '*OIL'))).toBe(true)
   await expect.poll(width).toBeGreaterThan(before + 5)
-  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await expectPinned(page, 'sticky-head', true)
   expect(await offOf('2026-03-24'), 'the frozen 24 March still sits over the grid\'s').toBeLessThan(2)
 })
 
@@ -2333,7 +2570,14 @@ test('a page opened from the Leave War scrolled down opens at its own top, and t
     return row ? { id: row.dataset.testid!, top: Math.round(row.getBoundingClientRect().top) } : null
   })
   const at = (id: string) => page.evaluate(i => Math.round(document.querySelector(`[data-testid="${i}"]`)!.getBoundingClientRect().top), id)
-  for (const p of ['editsched', 'viewsched', 'logic', 'help', 'admin']) {
+  /* D1873's fixed bar (the fresh Opus read, F1): Edit Schedule's bar is a row taller than the war's where its changes
+     clock wraps it, so coming back the page's room under the bar must shrink before the war is painted, or the browser
+     keeps the row where it stood under the old room — 47px low. At 1440 that wrap shows only with Linux's wider
+     letters (GitHub's run), at 1360 with Windows' too, so the last pass repeats Edit Schedule there. */
+  const passes: [string, number][] = [['editsched', 0], ['viewsched', 0], ['logic', 0], ['help', 0], ['admin', 0]]
+  if (!isPhone()) passes.push(['editsched', 1360])
+  for (const [p, w] of passes) {
+    if (w) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(300) }
     await page.evaluate(() => window.scrollTo(0, 500))
     await page.waitForTimeout(300)
     expect(await winY(), 'the war scrolled down first').toBeGreaterThan(200)
@@ -2343,7 +2587,7 @@ test('a page opened from the Leave War scrolled down opens at its own top, and t
     expect(await winY(), `${p} opens at its own top`).toBe(0)
     await open('leavewar')
     const now = await at(was.id)
-    expect(Math.abs(now - was.top), `back on the war from ${p}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
+    expect(Math.abs(now - was.top), `back on the war from ${p}${w ? ` at ${w}` : ''}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
   }
 })
 
@@ -5428,7 +5672,7 @@ test('the grid reads counts, months, header, events, roster — top to bottom', 
   // and the order is PAINTED that way, not merely in the DOM
   const strip = (await page.locator('[data-testid="month-strip"]').boundingBox())!
   const counts = (await page.locator('[data-testid="count-sets"]').boundingBox())!
-  const head = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const head = (await page.locator('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')   /* the grid's own (the pinned copy stays in the page, D1870) */.boundingBox())!
   const event = (await page.locator('[data-testid="event-row-1"]').boundingBox())!
   const firstRow = (await page.locator('[data-testid="group-SXO"]').boundingBox())!
   expect(strip.y).toBeLessThan(head.y)
@@ -5529,7 +5773,7 @@ test('the month strip fits its wrapped rows and clears the bracket bar below', a
   for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
   await expect(page.locator('[data-testid="month-bracket"]')).toHaveCount(0)
   const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
-  const dates = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const dates = (await page.locator('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')   /* the grid's own (the pinned copy stays in the page, D1870) */.boundingBox())!
   expect(dec.y + dec.height).toBeLessThanOrEqual(dates.y + 1)
 })
 
@@ -5580,7 +5824,7 @@ test('the blocked exercise week prints its reason across the event row', async (
 test('on a phone the header freezes under the top bar and thaws on the way back', async ({ page }, testInfo) => {
   test.skip(testInfo.project.name !== 'lw-phone', 'the mirror is phone-only')
   // above the fold: no mirror
-  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await expectPinned(page, 'sticky-head', false)
   await page.evaluate(() => window.scrollTo(0, 700))
   await page.waitForTimeout(250)
   const mirror = page.locator('[data-testid="sticky-head"]')
@@ -5654,7 +5898,7 @@ test('on a phone the header freezes under the top bar and thaws on the way back'
   // scrolling back up thaws it
   await page.evaluate(() => window.scrollTo(0, 0))
   await page.waitForTimeout(250)
-  await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(0)
+  await expectPinned(page, 'sticky-head', false)
 })
 
 /* WAS "the zoom steps the whole grid down and back" (the − / +, 6 Sep 26). CHANGED by D1228, D1276, D1282–D1284
@@ -5722,7 +5966,7 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
   test('while the fingers move the frozen dates stretch with the grid, over the same columns; after the lift the lit month is the one in view and the strip no taller than its buttons need', async ({ page }) => {
     await page.locator('[data-testid="month-OCT"]').click(); await page.waitForTimeout(500)
     await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const cdp = await page.context().newCDPSession(page)
     const touch = (type: string, pts: number[][]) => cdp.send('Input.dispatchTouchEvent', { type: type as 'touchStart', touchPoints: pts.map(([x, y], i) => ({ x: Math.round(x!), y: Math.round(y!), id: i + 1 })) })
     await touch('touchStart', [[170, 500]]); await page.waitForTimeout(30)
@@ -5832,7 +6076,7 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     expect(inn.offStrip, 'pinching in, nothing but the strip between the month buttons').toBe(0)
     /* the page scrolled, the dates frozen under the top bar: the frozen row's corner stays at its left */
     await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const fr = await midPinch(230, 520, 220, 130)
     expect(fr.mirrorFrozenL === null || fr.mirrorL === null ? 0 : Math.abs(fr.mirrorFrozenL - fr.mirrorL), `the frozen dates' corner stays at the left (${JSON.stringify(fr)})`).toBeLessThan(1.5)
     expect(fr.bandL === null ? 0 : Math.abs(fr.bandL - fr.wrapL), 'the names stay at the left edge').toBeLessThan(1.5)
@@ -5885,9 +6129,11 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
        group heading or another pinned row's name cell — never a day cell of the grid showing through. */
     const namesShown = (yTo: number) => page.evaluate(yTo => {
       const wrapL = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left
-      /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+      /* (a frozen row kept but hidden — while the fingers are down, fix round 3, or at rest by its opacity where the
+         browser shows it itself, D1870 — counts as absent) */
       const fixedRow = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
-      const sticky = fixedRow && getComputedStyle(fixedRow).visibility !== 'hidden' ? fixedRow.querySelector('.mxfixed-frozen') : null
+      const fcs = fixedRow && getComputedStyle(fixedRow)
+      const sticky = fixedRow && fcs && fcs.visibility !== 'hidden' && Number(fcs.opacity) > 0.5 ? fixedRow.querySelector('.mxfixed-frozen') : null
       const head = (sticky ?? document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!).getBoundingClientRect().bottom
       const band = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')!
       const was = band.style.pointerEvents
@@ -5907,7 +6153,7 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
        zoom a pinch out moves nothing — the first draft of this step passed for that reason alone): the frozen case first */
     const zoomNow = () => page.evaluate(() => parseFloat((document.querySelector('#page-leavewar .mx-wrap > table.mx') as HTMLElement).style.zoom || '1'))
     await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const zf = await zoomNow()
     const frRest = await namesShown(500)
     expect(frRest.blank, `at rest, the dates frozen, the names column is all names (the reading is sound) (${JSON.stringify(frRest)})`).toEqual([])
@@ -5954,7 +6200,7 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
     await lwPinch(page, 220, 560, 100, 150)
     await page.setViewportSize({ width: 844, height: 390 }); await page.waitForTimeout(800)
     await page.evaluate(() => window.scrollTo(0, 500)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     expect(await frozenOffColumns(page), 'sideways').toEqual([])
     await lwPinch(page, 420, 250, 120, 80)
     expect(await frozenOffColumns(page), 'sideways, after a pinch').toEqual([])
@@ -6041,7 +6287,7 @@ test.describe('mid-pinch, the page moves with the grid and the pinned parts stay
      stretched cells and kept after a lift at the zoom the pinch began at. */
   test('with the dates frozen, a pinch out that turns back to a pinch in leaves the frozen date row over its columns, mid-gesture and after the lift (the code read, finding 1)', async ({ page }) => {
     await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const lineUp = () => page.evaluate(() => {
       const m = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
       const real = [...document.querySelectorAll('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th')].map(t => t.getBoundingClientRect())
@@ -6093,7 +6339,7 @@ test.describe('mid-pinch, the page moves with the grid and the pinned parts stay
 
   test('with the dates frozen under the top bar, a pinch out shows no second date row with a band above it (his picture)', async ({ page }) => {
     await page.evaluate(() => window.scrollTo(0, 260)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const bare = await lwMidPinch(page, 230, 620, 220, 120, () => lwBandHits(page, 300, 600))
     expect(bare, 'mid-pinch, nothing bare between the top bar and the fingers').toEqual([])
   })
@@ -6164,7 +6410,7 @@ test.describe('where the browser cannot move the frozen dates by itself (the fix
     await page.evaluate(() => (window as any).go('leavewar')); await page.waitForSelector('#page-leavewar .mx-wrap [data-testid^="head-"]')
     expect(await page.evaluate(() => document.querySelector('#page-leavewar .mx-outer')!.classList.contains('lw-sda')), 'the older browsers\' path').toBe(false)
     await page.evaluate(() => window.scrollTo(0, 700)); await page.waitForTimeout(400)
-    await expect(page.locator('[data-testid="sticky-head"]')).toHaveCount(1)
+    await expectPinned(page, 'sticky-head', true)
     const m = await lwMidPinch(page, 230, 520, 220, 130, () => page.evaluate(() => {
       const head = document.querySelector('#page-leavewar [data-testid="sticky-head"]')!
       const box = head.getBoundingClientRect(), copy = head.querySelector('.mxfixed-frozen')?.getBoundingClientRect() ?? null
@@ -8635,4 +8881,17 @@ test('M5a drawing F (D1497): on a phone a read-only figure ends where a box’s 
   }))
   expect(inset.length, 'his row is read only, its figures drawn as words').toBeGreaterThan(3)
   for (const f of inset) expect(Math.abs(f.gap - 10), `the figure ${f.text} ends ${f.gap}px in from its edge, not 10`).toBeLessThanOrEqual(0.5)
+})
+
+/* REDUCE MOTION (his D1870 — Astra's scenario 1): the copy is shown by a step on the page's scroll, and the app switches
+   every animation off for a reader who asked for less motion — so this one is kept, or the copy would sit over the month
+   buttons at rest (shown by default) or never show (hidden by default). */
+test('with reduce motion on, the pinned dates row is hidden at rest and shown once pinned (D1870)', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false, 'at rest, no copy over the month buttons')
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true, 'pinned once the dates are under the top bar')
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await expectPinned(page, 'sticky-head', false, 'hidden again back at the top')
 })

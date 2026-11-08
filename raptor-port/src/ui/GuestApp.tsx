@@ -16,7 +16,8 @@
    other day, and shows a medical input in full as members see it (D211, D213 — asked of
    perms.ts mayReadMedicalOf). The day swipe / arrows (ui/pan.ts) move the week — reading
    is not editing. Every write refuses him anyway, at the command gate (perms.ts). */
-import { useEffect } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
+import { syncTopbarVar, wireTopbarVar } from './topbarvar'
 import { CURWEEK } from '../engine/waves'
 import { weekWindow } from './weeknav'
 import { SESSION } from '../state/auth'
@@ -30,14 +31,19 @@ import { TalonMark } from './icons'
 
 export function GuestApp() {
   useVersion()
+  // D1873: the guest has its own bar and warning band, so measure its own space before paint too.
+  const topbarRef = useRef<HTMLDivElement>(null)
+  useLayoutEffect(() => wireTopbarVar(topbarRef.current), [])
   useEffect(() => initPan(), [])
   useEffect(() => { const t = setTimeout(updateWeekNav, 0); return () => clearTimeout(t) })
   const name = String((SESSION && SESSION.name) || '')
   /* a failed save's band is the bar's last line here as on every page (D587) — his request may be what did not save (D1657); a browser's "Not kept" band the same (D1901) */
   const bandUp = useBandUp()
+  // the band's first frame moves the page down too: written before paint, not by the bar's watch a frame later (D1873)
+  useLayoutEffect(() => syncTopbarVar(topbarRef.current), [bandUp])
   return (
     <div id="guestApp">
-      <div className={'topbar guestbar' + (bandUp ? ' save-failed' : '')}>
+      <div ref={topbarRef} className={'topbar guestbar' + (bandUp ? ' save-failed' : '')}>
         <TalonMark />
         <span className="guest-note" id="guestNote" title={name ? `Signed in as ${name}` : undefined}>Waiting for access — view only</span>
         <div className="right">

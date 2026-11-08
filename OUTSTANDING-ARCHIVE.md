@@ -8358,3 +8358,22 @@ the access screens and the guest page, the page moved down under it, the Tracker
 switch `?nostore` (the agent's call beside D1666). WALK tier — evidence `raptor-port/docs/handpass/2026-11-08-chat28-not-kept.md`.
 Where it lives now: `raptor-port/docs/ui-contracts.md` (D1901), `.claude/rules/decisions/design.md` (D1901).
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-PIN-LAST-FRAME]). Forward facts: `raptor-port/docs/handpass/2026-11-08-lw-pin-last-frame.md`, `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-PIN-LAST-FRAME] The pinned dates row still blinks for one painted frame (8 Nov 26)
+
+**His answer, 8 Nov 26 (D1850):** "Merge live" — the fix went live with this frame left, and this item is the job of its own: the fresh code reader's idea, a pinned row the browser moves by itself (a scroll-driven timeline, the pinned copy always drawn), tried and its frames measured before anything is built.
+
+Found by the walk of [LW-FROZEN-BAR-GAP]'s build (chat 8, `raptor-port/docs/handpass/2026-11-08-lw-group6.md` finding A;
+pictures `raptor-port/docs/img/handpass/2026-11-08-lw-group6/pc-s10-painted-frames.png` frame 3,
+`ph-chromium-s11-painted-frames.png` frame 5). D1789's build commits the pinned row in the same frame the PAGE'S CODE
+hears of the scroll — that took the blink from two painted frames to one on the desktop wheel, and leaves one on a phone
+flick (the Leave War and Quals). The last frame is the browser's own: it moves the page and paints it before the page's
+code hears of the scroll, so a pinned row drawn by the code is always one frame late there. **To remove it:** the browser
+must keep the row pinned itself — a pinned copy always there, laid under what scrolls above it so it shows only once the
+real row has gone under the bar, or the browser's own pinning — a change to the grid's layering (its pinned names
+column, zoom, Rearrange, the month strip and the windows over it), with its own walk. **His question, with the pictures
+(lesson 7 — his iPhone first):** does he still see the blink on his iPhone, and if so, is it worth that change? Nothing
+built. **Place:** after his look at pull request 680. **Measured, chat 14, 8 Nov 26 (branch `claude/lw-pin-last-frame`, a prototype, not for keeps):** the pinned copy kept mounted and shown by the browser on the page's own scroll (a scroll-driven fade at the point the row meets the top bar) — painted frames, 5 runs each way, desktop 1536×864 wheel and phone 402×874 flick, the Leave War and Quals: today 1 blink frame in every one of 40 runs; the prototype 0 in 40. Frame times at 4× CPU: median 16.7 ms both; p95 no worse; main-thread work lower on the Leave War (desktop 2390 → 1665 ms a scroll); phone frames over 33 ms 6 → 20 on the Leave War, at the 33 ms mark — to re-measure in the build. Results and sheets: `raptor-port/docs/img/handpass/2026-11-08-lw-pin-last-frame/`; script `raptor-port/scripts/handpass/lwpin-frames.mjs`. **His answer (D1870, 8 Nov 26):** he sees the blink on his iPhone on the live app and the trial cures it — built for keeps, with the full check (the steps: chat 14's handoff block).
+

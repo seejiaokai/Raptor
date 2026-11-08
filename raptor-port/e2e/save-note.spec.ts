@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test'
-import { login, go } from './app'
+import { login, go, expectPinned, pinShown } from './app'
 
 /* THE FAILED-SAVE WARNING COVERS NOTHING, AND CAN BE SEEN ([SAVE-NOTE-COVERS], D586, D587 — 5 Oct 26).
    "Not saved — Retry" used to FLOAT under the top bar's right end, over whatever each page keeps there: the name search
@@ -455,10 +455,11 @@ for (const [label, viewport, touch] of SIZES) {
     test('a header already frozen, and the Tracker’s column, follow the bar when the warning comes and when it goes', async ({ page }) => {
       test.setTimeout(90_000)
       await login(page)
-      for (const [pg, head] of [['quals', '[data-testid="qsticky-head"]'], ['leavewar', '[data-testid="sticky-head"]']] as const) {
+      for (const [pg, id] of [['quals', 'qsticky-head'], ['leavewar', 'sticky-head']] as const) {
+        const head = `[data-testid="${id}"]`
         await go(page, pg)
-        for (const y of [500, 900, 1400]) { await page.evaluate(y => window.scrollTo(0, y), y); await page.waitForTimeout(250); if (await page.locator(head).count()) break }
-        await expect(page.locator(head), `${pg}: its header is frozen`).toBeVisible()
+        for (const y of [500, 900, 1400]) { await page.evaluate(y => window.scrollTo(0, y), y); await page.waitForTimeout(250); if (await pinShown(page, id)) break }
+        await expectPinned(page, id, true, `${pg}: its header is frozen`)
         const gap = () => page.evaluate(sel => { const h = document.querySelector(sel)?.getBoundingClientRect(), b = document.querySelector('.topbar')!.getBoundingClientRect(); return h ? Math.round(h.top - b.bottom) : -999 }, head)
         const g0 = await gap()
         await failSaves(page)

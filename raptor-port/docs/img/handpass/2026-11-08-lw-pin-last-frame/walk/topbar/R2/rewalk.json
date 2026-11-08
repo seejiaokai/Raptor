@@ -1,0 +1,480 @@
+{
+  "rest": {
+    "desk-lw-oil": {
+      "before": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      }
+    },
+    "desk-lw-balances": {
+      "before": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Hel",
+          "bar": true
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      },
+      "change": {
+        "same": false,
+        "share": 0.00000787037037037037,
+        "pixels": 17,
+        "where": [
+          1354,
+          31,
+          1416,
+          35
+        ],
+        "size": [
+          1920,
+          1125
+        ]
+      }
+    },
+    "desk-signin": {
+      "before": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in build ",
+          "bar": false
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in build ",
+          "bar": false
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in build ",
+          "bar": false
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      }
+    },
+    "desk-access": {
+      "before": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1920,
+          1125
+        ]
+      }
+    },
+    "phone-lw-oil": {
+      "before": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      }
+    },
+    "phone-lw-balances": {
+      "before": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "142 TALON ↶ ↷ Grid Approvals 13 Balances OIL VIEW MY LEA",
+          "bar": true
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      }
+    },
+    "phone-signin": {
+      "before": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in buil",
+          "bar": false
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in buil",
+          "bar": false
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "TALON TRAINING · AVAILABILITY LEAVE & OPS NEXUS USERNAME PASSWORD Sign in buil",
+          "bar": false
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      }
+    },
+    "phone-access": {
+      "before": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "before-again": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "after": {
+        "st": {
+          "text": "TALON Request access Signed in as newcomer1873 You're not on the squadron's li",
+          "bar": false
+        },
+        "errs": []
+      },
+      "noise": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      },
+      "change": {
+        "same": true,
+        "share": 0,
+        "pixels": 0,
+        "where": null,
+        "size": [
+          1206,
+          2622
+        ]
+      }
+    }
+  },
+  "band": {
+    "desk": {
+      "ok": true,
+      "already": true,
+      "frames": [
+        {
+          "when": "change",
+          "cls": false,
+          "barH": 57,
+          "spacer": 57,
+          "v": "57px"
+        },
+        {
+          "when": "first-frame",
+          "cls": false,
+          "barH": 57,
+          "spacer": 57,
+          "v": "57px"
+        },
+        {
+          "when": "second-frame",
+          "cls": false,
+          "barH": 57,
+          "spacer": 57,
+          "v": "57px"
+        },
+        {
+          "when": "change",
+          "cls": true,
+          "barH": 93,
+          "spacer": 93,
+          "v": "93px"
+        },
+        {
+          "when": "first-frame",
+          "cls": true,
+          "barH": 93,
+          "spacer": 93,
+          "v": "93px"
+        },
+        {
+          "when": "second-frame",
+          "cls": true,
+          "barH": 93,
+          "spacer": 93,
+          "v": "93px"
+        }
+      ],
+      "errs": []
+    },
+    "phone": {
+      "ok": true,
+      "already": true,
+      "frames": [
+        {
+          "when": "change",
+          "cls": true,
+          "barH": 85,
+          "spacer": 85,
+          "v": "85px"
+        },
+        {
+          "when": "first-frame",
+          "cls": true,
+          "barH": 85,
+          "spacer": 85,
+          "v": "85px"
+        },
+        {
+          "when": "second-frame",
+          "cls": true,
+          "barH": 85,
+          "spacer": 85,
+          "v": "85px"
+        }
+      ],
+      "errs": []
+    }
+  },
+  "sideways": {
+    "editsched": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "viewsched": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "inputs": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "quals": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "logic": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "leavewar": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "tracker": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "help": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "admin": {
+      "top": 0,
+      "h": 59,
+      "v": "59px"
+    },
+    "errors": []
+  }
+}

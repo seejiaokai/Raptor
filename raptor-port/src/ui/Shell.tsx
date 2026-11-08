@@ -3,7 +3,7 @@
    page is live in this slice; the other pages are placeholders that arrive
    surface by surface. */
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
-import { wireTopbarVar } from './topbarvar'
+import { syncTopbarVar, wireTopbarVar } from './topbarvar'
 import { wireNavFold } from './navfold'
 import { DAYS } from '../engine/data'
 import { PEOPLE } from '../engine/people'
@@ -133,9 +133,9 @@ export function Shell() {
      The section still only DOZES while hidden; the flag just adds "pre-warmed"
      to the same "ever visited" mount gate below. */
   const [prewarmed, setPrewarmed] = useState(false)
-  /* the top bar's live height for what is held under it as the page scrolls (D1116 — ui/topbarvar.ts) */
+  /* D1873: reserve the fixed bar's room before paint; D1116's readers share the same live height. */
   const topbarRef = useRef<HTMLDivElement>(null)
-  useEffect(() => wireTopbarVar(topbarRef.current), [])
+  useLayoutEffect(() => wireTopbarVar(topbarRef.current), [])
   /* the page names beside TALON where they all fit, else folded into the ☰ side menu (D1641–D1643 — ui/navfold.ts);
      a layout effect, so the first frame already shows the bar as it stays */
   const [navFold, setNavFold] = useState(false)
@@ -367,6 +367,13 @@ export function Shell() {
   /* the top bar's other signals, read once here so its memo's list names plain values: the sync pill's fast mode, the
      bell's two lights and whether the changes window is up (each drawn by a child that reads it itself, or below) */
   const fastOn = fastSync(), bellOn = bellLit(), bugOn = bugAlert(), chgOpen = !!CHGWIN
+  /* D1873: the bar is fixed, so the page moves down or up only when --topbar-h changes — written before paint, so a band
+     never covers the page's first line for a frame (the bar's own watch writes a frame later). The same for everything
+     the Shell itself draws that can change the bar's height: a page change (Edit Schedule's changes clock wraps its bar
+     to two rows where the Leave War's fits one — written a frame late, the war came back 47px low: the fresh Opus read,
+     F1), the role switch, the Admin badge, the sync label. Not the bar's memo list: that changes on every edit. */
+  useLayoutEffect(() => syncTopbarVar(topbarRef.current),
+    [page, admin, pairOn, waiting, clockNew, mineCs, canSwitch, fastOn, saveFailed, oilTop, navFold])
   const topbar = useMemo(() => (
       /* The top bar wears a blue-tinted gradient while on Edit Schedule (owner,
          22 Aug 26) so it is unmistakable from the near-identical View-only mode
