@@ -185,6 +185,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOCATE-ITEM-MARKS] — the way the app finds a redrawn button again trusts the button's first mark; a short list of the marks that name an item would be surer (the keyboard batch's second fix read, 5 Nov 26; low, the agent's).
 - [BOARD-KEYS-LOOKS] — his answers 8 Nov 26 (D1771): the ⋯ menu's item and the + Block and Templates buttons get the app's cyan keyboard ring — one small job, the look and a walk, with its small tidy-up, inside the pictures round's group 1; Tab out of a menu stays as built (D1772).
 - [BOARD-OTHER-RINGS] — most other Scheduler Board buttons and its time boxes still wear the browser's own ring under the keys, not the app's cyan one: a question for him with pictures, not built (D1625).
+- [BOARD-TAB-MENU-BUTTONS] — a walker found Tab never stops on the board's + Block, + Wave or a jet's stores, which D1646 says the keys reach: to reproduce, then fix or put to him.
 - [VH-SHEETS-IPHONE] — some phone pop-ups may be cut off by the browser's own bars — only after his iPhone look.
 - [COUNT-CHIP-PHONE-TAP] — a finger tap on an ALL AVAIL count: fixed in the test browser; his iPhone look owed.
 - [WEEK-ADD-TAP-PHONE] — on a phone, "+ add" on the week arms nothing when the row already holds someone — left out of the phone batch, his choice.
@@ -2246,6 +2247,15 @@ bar's buttons now wear the app's cyan ring (D1771, D1646). D1771 named only its 
 put to him (D1625), with pictures of each (the walk's keyboard pictures: `raptor-port/docs/img/handpass/2026-11-08-board-layout/walk/c/`)
 and a recommendation — the agent's: the cyan ring on every board control, by one rule, as D1646's "the board's small menus"
 began. Nothing is built before his answer. Where: the board's rules, `raptor-port/src/ui/scheduler/10-board-history.css`.
+
+### [BOARD-TAB-MENU-BUTTONS] Tab never reaches + Block, + Wave or a jet's stores on the Scheduler Board (found 8 Nov 26 by chat 11's walk; to check)
+Walker C of the board-layout walk (`raptor-port/docs/handpass/2026-11-08-board-layout.md` §9, script `raptor-port/scripts/handpass/bl-walk-c.mjs`) pressed Tab,
+either way, through about 331 stops on the board at 1536 and never landed on + Block, + Wave or a jet's stores "C" — the board's
+own Tab route goes box to box (D550–D556). D1646 says the board's small menus, + Block, + Wave and the stores among them, are
+reached and pressed by the keyboard. Not this change's (pull request 689 touches no Tab route), and not yet reproduced by the host:
+first reproduce on `main`, then read D1646's and D553's full rows — whether "reached" means by Tab — and fix, or put the reading
+to him. Also seen: Enter on the AMT section's + Block adds a block at once and the keys drop to the page, so a following Escape
+would close the board. Where: the board's Tab route (`raptor-port/src/ui/` — search `D554`).
 
 ### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
 **Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on

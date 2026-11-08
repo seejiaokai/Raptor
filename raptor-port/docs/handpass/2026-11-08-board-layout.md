@@ -50,12 +50,12 @@ SHOW = drawn as it should be · USABLE = the gesture works · PAINTED = what els
 | B11 | A desktop with a mouse, any size | must not change, because the query needs a coarse pointer | — | — | — |
 | B12 | A tablet on its side (taller than 500) | must not change, because the query needs a short screen | — | — | — |
 | B13 | The desktop layout switch on a phone on its side (`.sb-wide`) | must not change (its own pinch-zoom scroller, D1107, D1109) — filed | — | — | — |
-| C1 | The board's ⋯ menu, an item under the keys | raised row + cyan ring (D1771) | — | — | — |
-| C2 | The week's ⋯ menu (Edit Schedule, View-only Sched), an item under the keys | raised row + cyan ring (D1771) | — | — | — |
-| C3 | + Block (a duty section; the AMT section) | cyan ring (D1771) | — | — | — |
-| C4 | Templates — the desktop bar's, the phone day bar's | cyan ring (D1771) | — | — | — |
-| C5 | + Wave, the plans selector, a jet's stores, the duty role box | cyan ring (D1646 — D1771's side note) | — | — | — |
-| C6 | Any of the above pressed by a mouse or a finger | no ring | — | — | — |
+| C1 | The board's ⋯ menu, an item under the keys | raised row + cyan ring (D1771) | YES — 402 (the ⋯ is drawn only at 820 and narrower): Enter and ↓ put the keys on Insights, raised row + 2px cyan ring inside (`walk/c/chromium/051`, host opened); arrows walk the three items; Escape back to ⋯, ringed | YES — Enter, ↓, arrows, Escape; WebKit the same | nothing over it |
+| C2 | The week's ⋯ menu (Edit Schedule, View-only Sched), an item under the keys | raised row + cyan ring (D1771) | YES — 402, Edit Schedule and View-only Sched (one item, Insights), as C1 (`walk/c/chromium/001–008`) | YES; WebKit's Edit Schedule NOT WALKED (the walker's script did not find it — its limit) | nothing over it |
+| C3 | + Block (a duty section; the AMT section) | cyan ring (D1771) | YES — duty and AMT + Block, cyan ring just outside (`walk/c/chromium/004`, host opened; `006`) | YES — Enter opens the duty menu, Escape back; the AMT one adds a block at once (no menu) and the keys drop to the page — met in passing, older | — |
+| C4 | Templates — the desktop bar's, the phone day bar's | cyan ring (D1771) | YES — `#sbTpl` at 1536 (`walk/c/chromium/002`) and the day bar's at 402 (`016`): cyan ring | YES — Enter opens, Escape back | — |
+| C5 | + Wave, the plans selector, a jet's stores, the duty role box | cyan ring (D1646 — D1771's side note) | YES — + Wave, the plans selector, stores "C" (`walk/c/chromium/008, 010, 012`); the duty role box is a text box: cyan border, no browser ring (`013`) | YES — Enter opens each, Escape back; Tab does NOT reach + Block, + Wave or "C" (filed, older) | — |
+| C6 | Any of the above pressed by a mouse or a finger | no ring | YES — a click or a tap: no ring on any of them (`walk/c/chromium/009/010, 011/012, 074`) | YES | "C" and the opened plans selector keep their own cyan border, their own look |
 
 ## 3. The five sizing lines (§7.0)
 
@@ -130,6 +130,8 @@ the list, as any page does"); the drawing's 151 is the scrolled state.
 ## 8. Cases carried by a test
 
 ## 9. The keyboard walk
+
+Walker C (Sonnet), 8 Nov 26, Chromium and WebKit, 1536 × 900 and 402 × 874 by the keys; script `scripts/handpass/bl-walk-c.mjs`, pictures `docs/img/handpass/2026-11-08-board-layout/walk/c/` (89 + about 85, each line's computed ring in `run-chromium.txt` / `run-webkit.txt`). Rows C1–C6 above. The plain-user round by the keys (1536): Enter on a date opens the board; Templates, + Wave, the plans selector and + Block each opened by Enter and closed by Escape, the keys back on their button each time; a template saved, applied by the keys and undone by the top bar's Undo; ✓ Done by Enter, the keys back on the date. No page errors. **Met in passing, older (not this change — it touches no Tab route), the walker's, not yet reproduced by the host — filed `[BOARD-TAB-MENU-BUTTONS]`:** Tab, either way through about 331 stops, never stops on + Block, + Wave or a jet's "C", which D1646 says the keys reach; Enter on the AMT section's + Block adds a block and drops the keys to the page.
 
 ## 10. Break tests
 
