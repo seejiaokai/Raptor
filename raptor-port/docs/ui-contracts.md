@@ -6378,7 +6378,8 @@ The three category panels:
     War tab is withdrawn from the war for real and does NOT come back
     with Undo (the war has no shared undo — same as deleting such a row
     by hand).
-  - **Clear edit history** (`#admLog` → `clearEditHistory` →
+  - **Clear edit history** — *removed at the database step (owner, D1752, 8 Nov 26, replacing D351); as built until then:*
+    (`#admLog` → `clearEditHistory` →
     `elogSweep`, `engine/editlog.ts`) clears ELOG rows by the LOCAL
     calendar date the edit was MADE (the date the History list prints),
     never touching the schedule. Permanent for real — the edit log was
@@ -10268,7 +10269,10 @@ screen:
   ↓ ↑ move the ring and the light together; Enter still walks forward; a
   click on a row rings that event, keeps the typed text, shuts the list and
   drops focus (the phone's keyboard goes away); clicking back into the box
-  brings it back; Escape and ✕ clear it. The list is always in the DOM
+  brings it back; Escape and ✕ clear it. Where Find is the strip (a phone, or
+  any width up to 1050, tracker.css's own break), ✕ also puts the strip away,
+  as Escape does, and a pick from the list puts it away too (D1791, 8 Nov 26);
+  from the keyboard the keys then go back to 🔍. The list is always in the DOM
   (`.on` shows it). Pins: `tracker.test.tsx`, the smoke suite (desktop and
   phone, hit-tested).
 - **`+ Add` in the Students card offers the squadron roster (9 Sep 26).** The
@@ -10409,7 +10413,7 @@ screen:
     (D132). ↶ ↷ keep the chart's view. A lull period's × asks first;
     Copy to… has a Select all row.
   - **Courses and the session.** A deleted course waits in ⇅ Reorder courses
-    under "Deleted courses" with ↺ Restore — back under its own id, students and
+    under "Deleted courses" with Restore (its drawn Reset arrow since D1792) — back under its own id, students and
     marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
     function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
     chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
@@ -10624,6 +10628,9 @@ own rows are unchanged.
   **A fit lesson, from the comp that was drawn before this was built:** at 390px
   "✓ Done with OIL" ran off the right edge; it is "✓ Done". Re-draw the comp before
   lengthening any label on this bar.
+  *[AMENDED 8 Nov 26 by D1793 (round 5 (e) of `[UI-CONSISTENCY-LOOK]`, pull request 679): on a phone the bar's
+  Templates and OIL Earn carry the desktop's marks before their words — the page of blocks and the ticket — on one row,
+  the buttons keeping their height.]*
 - **Pressed, it lights and the board goes read-only for schedule editing.** In the mode
   a tap on a puck means "take this man off this event" and a tap on an item's name means
   "stop the whole item earning"; leaving the ordinary write controls live beside that
@@ -10639,12 +10646,34 @@ own rows are unchanged.
 - **A man the day measures NOTHING for is drawn inert** — no glow, no tap target, a
   plain puck and a title saying why (a blank-times row, a cancelled one, a spare,
   AVALON/BB, an ⓘ row, a dormant claim).
+  *[AMENDED 8 Nov 26 by D1783 (`[OIL-INERT-TAP-SILENT]`, pull request 679): a tap on an inert puck now picks nothing
+  and says why in the plain passing note — "Nothing changed for <callsign>." and then the reason it carries
+  (`data-oilsay`; `oilmode.ts inertSays`; `board.ts boardArmClick`, before `routeClick` can pick him). The reason is
+  the row's own (no end time: D360's "No OIL worked out — this row has no end time."; a cancelled or ⓘ row; a spare,
+  AVALON / BB; a desk with no usable times), or, on a request that never asks the OIL question, its kind's: "Leave earns
+  no OIL.", "A medical request earns no OIL.", "A personal request earns no OIL." — and a SANS Avail card's man, "A SANS
+  availability request earns no OIL." (the card's puck is inert only inside the mode; outside it the card still opens
+  its editor). A man who could earn but is masked (`data-oilmask`) is told the mask's refusal instead: the day's switch
+  on, D845's "Nothing on this day earns. Turn off the switch first."; his event switched off, "This event earns nobody
+  any OIL. Turn the event back on first." An inert puck keeps its own reason under the day's switch — the switch's
+  refusal is only for a man who could earn. A placeholder's body (ALL / ALL AVAIL) picks nothing either: on a row that
+  cannot earn it says that row's reason (no end, the request's kind, its event switched off — `oilmode.ts
+  placeholderWhy`), under the switch D845's words, otherwise "The people behind it are switched in the window its count
+  opens."; its count still opens the window. The ALL AVAIL window keeps its own foot (D65). Pins: `oilmode.test.tsx`.]*
 - **An item's NAME is its own switch**, tinted green when it earns and struck through
   when it does not. It replaces the row's editable name box while the mode is on.
 - **"Nothing today earns"** is the day blanket, offered only inside the mode. It masks
   every row and person mark rather than deleting them, and the bar's own line says so in
   words. It fills AMBER while it is on — amber is "look at this", which a day switched
   off deserves — while the marked states below stay neutral.
+  *[AMENDED 8 Nov 26 by D1782 (`[OIL-EARN-DAY-SWITCH-WORDS]`, pull request 679) — the amber button is gone: the blanket
+  is the app's own switch, as on the Logic page, a small slider with the words "No OIL earned", grey when off and lit in
+  the switch's cyan when on (`label.lgmix.daysw`, `oilmode.ts`; `18-oil-board.css`). A press on its words or its
+  slider, or Space, flips it once; turning it on says "Nothing on this day earns OIL, including anything added later",
+  off "This day can earn OIL again, and the marks underneath are back"; the bar's line under it, while on, "Nothing on
+  this day earns OIL. Turn off the switch and each man earns as he did before." A press on it keeps the board's pick,
+  search and highlights (`.lgmix` is among `routeClick`'s controls, `interactions.ts`); under the keys it wears the
+  cyan ring (D1646). D845's refusal under it is unchanged.]*
 - **A sentinel opens into REAL pucks inside the mode**, or its people could not be
   tapped at all.
 - **Colour:** the marked state is NEUTRAL. Amber means "look at this" and red means a
@@ -12404,7 +12433,32 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME]. **D1870:** he sees that frame on his iPhone and the trial cures it — the pinned row shown by the browser itself, on the page's own scroll (a scroll-driven fade where the row meets the top bar; today's way where a browser lacks it), is built for keeps, with the full check. **As built (8 Nov 26, [LW-PIN-LAST-FRAME]):** each screen's copy (the Leave War's `.mxfixed`, Quals' `.qfixed`) stays in the page; it is hidden by default (`opacity:0` — a page too short to scroll has no scroll timeline) and shown by a 1px opacity step on the page's own scroll at `--lwy-s`, the scroll where the real row meets the top bar's foot, written on the copy's own box (Matrix.tsx `placeY`, QualsPage.tsx `placeQ`); taps, the shadow and `inert` follow `.up`, a frame late, so a hidden copy is out of the keys and of what a screen reader reads; the step is kept for a reader who asked for less motion (it moves nothing — an `!important` exemption from the app's `*{animation:none!important}`); while the fingers pinch the copy is off the step and shown by the pinch's own rule (hidden while the real row's top is at or below the bar's foot), with no shadow; anything above the grid that changes height re-places it (a height watch on the page and the top bar). Where the browser lacks the scroll timeline, the old way, unchanged.
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
+  **Built 8 Nov 26 (chat 9, `claude/pr-tracker-787259`):** the rule is `src/tracker/app/popPlace.js`, pure: the window
+  opens 4px under the event where it fits whole; else the chart slides the event up until its top is 22px under the
+  chart box's top (the tabs' foot on a phone, the Tracker bar's on a desktop), as drawn (232px for the drawing's ACG-09),
+  the chart's end allowed to stop it short while the window still fits; else, at the chart's end, nothing moves and the
+  window stands above the event (whole where it fits, else between the chart box's top and the event, scrolling inside);
+  a screen too short for it anywhere (a phone on its side) slides the event as high as it may and the window scrolls
+  inside — his ruling, D1861, as built. `components/Pop.jsx` measures, stops a finger's glide (D989), slides with the chart's own smooth scroll and
+  keeps the window unseen until the chart rests (at the target, 150ms still, or 1s), then opens it under the event; less
+  motion asked for, the chart jumps. The chart stays where it slid after Close and after a grade. Pins:
+  `src/tracker/trk-round-seen.test.ts`, the smoke suite's phone checks.
+  **While it slides the chart takes no press and no key but Escape and Tab** (the fresh Opus read's F1, F2): `#board`
+  wears `is-sliding`, and `tracker.css` turns presses off for it and everything inside it — the chart's own
+  `pointer-events:none` alone never reached each event's invisible press circle, drawn with `pointer-events="all"`, so a
+  double-click's second click still opened a window from mid-slide, another event's or the same one's in the wrong
+  place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
+- **D1860** — the Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅
+  marks ("Restore in Reorder courses brings it back…"), every other word kept; to build with the Tracker's next batch
+  ([TRK-POP-ASKED]).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
+  **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
+  own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words
+  "Clear the search and close Find"; pressed from the keyboard, the keys go back to 🔍; wider, ✕ clears and keeps the
+  box focused, its words "Clear the search", as before. A pick from the list puts the strip away. Pins: the smoke suite.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
   hidden warning's ↺; the ✕ stays typed.
+  **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
+  Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
+  the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.
 - **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.

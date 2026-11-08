@@ -363,7 +363,7 @@ const RULING_BYTES = [
      rulings of this area, none replaced; a rulings file is never trimmed (D136, D390) */
   /* oil 14000 -> 15500 (15 Oct 26): 14,617 bytes with D862, D863 and D865 - his answers on the small OIL job, live;
      none is trimmed (D136). Room for the next rulings, not a target. */
-  ['.claude/rules/decisions/oil.md',     2, 15500],
+  ['.claude/rules/decisions/oil.md',     2, 22600],   // raised 8 Nov 26 from 15500: the rules diet's step 5a made it a page (D1735); the account by requirement put back 30 parts of rulings the sample had cut, and the two blind reads 18 more (20,560 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* leave-war 37000 -> 39000 (15 Oct 26, night): 37,040 bytes with D890-D892 (one landing line a gap, the other lists,
      a drag held at the edge scrolls - his finds on his iPhone) - live; none is trimmed (D136). Room, not a target. */
   /* leave-war 39000 -> 44000 (21 Oct 26): 39,630 bytes with D1140-D1143 (the Leave War overhaul, D1140, and his answers
@@ -433,7 +433,7 @@ const RULING_BYTES = [
   /* 2 Oct 26 ([DOCS-SIZE-PASS]): a new area — the nine rulings on what the IT flow guide shows and when it is rebuilt
      (D403, D410-D417) moved here from How we work, which had crossed its tripwire carrying them into every chat; only
      a chat working on the guide needs them (D137, D141). Set about 1.5 kB above what it holds. */
-  ['.claude/rules/decisions/it-flow-guide.md', 2, 5000],
+  ['.claude/rules/decisions/it-flow-guide.md', 2, 10300],   // raised 8 Nov 26 from 5000: the rules diet's step 5a made it a page (D1735); the account by requirement put back the slide parts and the agent's calls the short lines had cut, and the two blind reads the Leave War's later rulings the guide draws (D1166, D1208, D1724 — 9,330 bytes); a ruling is never cut to fit (D141), a tenth above again
   /* NEW 1 Nov 26 ([START-LOAD-TRIM], owner D1554): the screen-design rulings - how a screen looks and behaves (the gear,
      the pencils, the top bar, search boxes, arrows, pinned bars, the failed-save band, rings, glows, drag) - moved here
      whole by the script from How we work, which carried them into every chat; they load with the design guide's paths

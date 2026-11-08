@@ -1204,6 +1204,14 @@ ok('the spacer falls after the search, with only the Save slot to its right',
   await pg.click('#hSearchClear'); await pg.waitForTimeout(400);
   ok('clearing the box takes the ring off',
     await pg.evaluate(() => document.querySelectorAll('#flowSvg circle.found').length) === 0);
+  /* Owner D1791 (8 Nov 26) changed the ✕ only where Find is the strip over the tabs (1050 wide or less — the phone
+     checks below): on a desktop Find is the bar's own box, and its ✕ still only empties it and keeps the keyboard in
+     it, ready for the next search, its hover words "Clear the search". The box held "ZZZZ" and the ✕ took the press
+     (Chromium focuses a pressed button), so the keyboard in the box after it is the ✕ putting it back. */
+  const dskX = await pg.evaluate(() => ({ q: document.getElementById('hSearch').value, w: innerWidth,
+    focus: document.activeElement && document.activeElement.id, title: document.getElementById('hSearchClear').title }));
+  ok('desktop: Find\'s ✕ empties the box and keeps the keyboard in it, its words "Clear the search" (D1791 — unchanged here)',
+    dskX.w > 1050 && dskX.q === '' && dskX.focus === 'hSearch' && dskX.title === 'Clear the search', JSON.stringify(dskX));
 
   /* THE PREDICTIONS UNDER THE BOX (owner, 9 Sep 26: "a drop down menu on the
      prediction of the syllabus related to the typed text and it changes as
@@ -2526,7 +2534,13 @@ if (two.length >= 2) {
   ok("the same wedge again — now the selected crew member's — opens the details",
     await pg.locator('#pop:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
-  await pg.mouse.click(spot.cx, spot.cy); await pg.waitForTimeout(400);
+  /* the window just opened may have slid the chart (D1790, 8 Nov 26), and the chart stays where it slid after a close:
+     the ball's centre is read again where it stands now, not where it stood before the slide */
+  const centre = await pg.evaluate(id => {
+    const r = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id).querySelector('circle').getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+  }, deep.id);
+  await pg.mouse.click(centre.x, centre.y); await pg.waitForTimeout(700);
   ok('the centre of the ball opens the details too', await pg.locator('#pop:visible').count() === 1);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(300);
 
@@ -2551,17 +2565,23 @@ if (two.length >= 2) {
     }
     return best;
   });
-  const beforeGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
+  const beforeOpen = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
   await pg.evaluate(id => {
     const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === id);
     g.dispatchEvent(new MouseEvent('click', { bubbles: true }));
   }, gradeTarget);
   await pg.waitForSelector('#pop');
+  /* Since owner D1790 (8 Nov 26) OPENING the marking window may slide the chart a little, on purpose, so the window
+     fits whole under a ball in the middle of a 950-tall screen — and the window shows only once the chart rests, which
+     the wait above waits for. What this check guards is the GRADE: its redraw must not move the view the person is
+     looking at. So "before" is read with the window open, not before the click (the old reset still reads as a jump
+     to the chart's top). */
+  const beforeGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
   await pg.locator('#pop .opts button', { hasText: 'DCO' }).click();
   await pg.waitForTimeout(700);
   const afterGrade = await pg.evaluate(() => Math.round(document.getElementById('board').scrollTop));
   ok('grading a ball leaves the view where it is', gradeTarget && Math.abs(afterGrade - beforeGrade) <= 4,
-    `graded ${gradeTarget}: ${beforeGrade}px → ${afterGrade}px`);
+    `graded ${gradeTarget}: ${beforeGrade}px → ${afterGrade}px (opening the window: ${beforeOpen}px → ${beforeGrade}px)`);
   await pg.keyboard.press('Escape'); await pg.waitForTimeout(200);
 }
 
@@ -4147,6 +4167,375 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
     return { h: Math.round(h.getBoundingClientRect().height), text: h.innerText.trim() }; });
   ok('phone: the Show All title is one short line', ttl.h < 30 && ttl.text === 'All events', JSON.stringify(ttl));
   await pp.close();
+}
+
+/* ---- where the marking window opens, and Find's ✕, on a phone (owner D1790, D1791, 8 Nov 26) ----
+   D1790: the window used to flip above an event it could not fit under, held 8px from the screen's top — over the top
+   bar, the Tracker bar, the Flow chart / Info / Show All tabs and the event itself — on every Find and every crew pick,
+   since each lands its event in the middle of the chart (D984). Now the chart slides the event up, only as far as
+   needed and never past the chart box's top (the tabs' foot on a phone), the window opens whole under it, and the chart
+   stays where it slid after Close. ACG-09 found by Find is his own case (the pictures round's question 11): on a 390×844
+   phone the window, about 430 tall, does not fit under it as it lands.
+   D1791: Find on a phone is a strip over the tabs. Its ✕ emptied the box and left the strip up with the keyboard in it,
+   the tabs still covered; now it puts Find away, as Escape does. A pick from the list puts Find away on purpose — it
+   closed by accident before (the picked row was gone before the "tap outside" check ran).
+   Real taps; the box typed into by its own setter and an input event, as a phone's keys do (docs/walk-scripts.md). */
+{
+  const pp = await b.newPage({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await openTracker(pp); await pp.waitForTimeout(400);
+  const findType = q => pp.evaluate(q => {
+    const i = document.getElementById('hSearch');
+    Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value').set.call(i, q);
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+  }, q);
+  const findNow = () => pp.evaluate(() => ({ q: document.getElementById('hSearch').value,
+    strip: document.getElementById('hSearchPanel').classList.contains('on'),
+    focus: document.activeElement ? (document.activeElement.id || document.activeElement.tagName) : '',
+    rings: document.querySelectorAll('#flowSvg circle.found').length, title: document.getElementById('hSearchClear').title }));
+  /* Find's landing scrolls the chart smoothly: the chart is at rest when three reads 100ms apart agree — waited on,
+     never a fixed time, since the event's place is measured for the tap that follows (docs/walk-scripts.md §4) */
+  const boardStill = async () => {
+    let last = -1, same = 0;
+    for (let i = 0; i < 50 && same < 3; i++) {
+      const y = await pp.evaluate(() => document.getElementById('board').scrollTop);
+      same = y === last ? same + 1 : 0; last = y; await pp.waitForTimeout(100);
+    }
+    return last;
+  };
+  const geo = () => pp.evaluate(() => {
+    const R = e => { if (!e) return null; const r = e.getBoundingClientRect(); return { t: Math.round(r.top), b: Math.round(r.bottom), h: Math.round(r.height), x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2) }; };
+    const bd = document.getElementById('board'), p = document.getElementById('pop');
+    const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ACG-09');
+    const shown = !!p && getComputedStyle(p).visibility !== 'hidden' && getComputedStyle(p).display !== 'none';
+    return { st: Math.round(bd.scrollTop), tabs: R(document.getElementById('viewtabs')), board: R(bd), ball: R(g), vh: innerHeight,
+      pop: shown ? { ...R(p), whole: p.scrollHeight <= p.clientHeight + 1 } : null,
+      /* unrounded, for the drawing's 22px: the event's top under the chart box's top, and how far the chart can still
+         scroll down (the slide's room) */
+      under: g ? g.getBoundingClientRect().top - bd.getBoundingClientRect().top : null,
+      room: bd.scrollHeight - bd.clientHeight - bd.scrollTop };
+  });
+
+  /* THE PICK'S OWN CLOSE, BY ITSELF (Astra's read of D1791, 8 Nov 26). A real tap puts Find away twice over: the pick
+     closes it, and the press then reaches the page's "pressed outside Find" check after the picked row has already
+     gone (the old accident). So the tap check below passes with the pick's own close removed. Here the row's press is
+     dispatched in one go: the "outside" check hears it while the row is still inside Find and leaves Find open, so
+     only the pick's own close can put Find away — this check goes red if that close is lost (proved on a copy of the
+     app with it removed). */
+  await pp.tap('#hSearchBtn'); await pp.waitForTimeout(400);
+  await findType('ACG-09'); await pp.waitForTimeout(500);
+  const p0 = await findNow(), prow = pp.locator('#hSearchList .findrow[data-id="ACG-09"]'), prows = await prow.count();
+  if (prows) await prow.dispatchEvent('mousedown');
+  await boardStill();
+  const p1 = await findNow();
+  ok('phone: a pick from Find\'s list puts Find away by itself, not only by the press reaching "outside Find" (D1791)',
+    p0.strip && prows === 1 && !p1.strip && p1.focus !== 'hSearch' && p1.rings === 1,
+    JSON.stringify({ before: p0, rowsForACG09: prows, after: p1 }));
+  /* left up (the close lost): put away as Escape does, so the tap check below starts from a closed Find */
+  if (p1.strip) { await pp.focus('#hSearch'); await pp.keyboard.press('Escape'); await pp.waitForTimeout(300); }
+
+  /* a pick from the list puts Find away (D1791) */
+  await pp.tap('#hSearchBtn'); await pp.waitForTimeout(400);
+  await findType('ACG-09'); await pp.waitForTimeout(500);
+  const f0 = await findNow(), row = pp.locator('#hSearchList .findrow[data-id="ACG-09"]'), rows = await row.count();
+  if (rows) await row.tap();
+  await boardStill();
+  const f1 = await findNow();
+  ok('phone: a pick from Find\'s list puts Find away — the strip gone, the keyboard down (D1791)',
+    f0.strip && rows === 1 && !f1.strip && f1.focus !== 'hSearch' && f1.rings === 1,
+    JSON.stringify({ before: f0, rowsForACG09: rows, after: f1 }));
+
+  /* the event in the middle of the chart, the window not yet open: a tap on its centre opens it (a tap on the ring
+     would pick a student instead), so the centre is proved to be the event before it is tapped */
+  const g0 = await geo();
+  const onBall = !!g0.ball && await pp.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest('.ball'); return !!g && g.dataset.id === 'ACG-09'; }, g0.ball || { x: 0, y: 0 });
+  if (onBall) await pp.touchscreen.tap(g0.ball.x, g0.ball.y);
+  /* the window is drawn unseen while the chart slides and shows once the chart rests — waited on, never a fixed time */
+  const shown = onBall && await pp.locator('#pop').waitFor({ state: 'visible', timeout: 3000 }).then(() => true, () => false);
+  const g1 = await geo();
+  /* the premise, in the note: as the chart stood, the window (4px under the event, 8px off the screen's foot) did not fit */
+  const needed = !!(g0.ball && g1.pop) && g0.ball.b + 4 + g1.pop.h > g0.vh - 8;
+  ok('phone: an event the window cannot fit under slides up — the chart moved, and the window opens whole under the event, clear of the tabs and the screen\'s foot (D1790)',
+    shown && !!g1.pop && !!g1.ball && g1.st > g0.st && g1.ball.t >= g1.board.t && g1.pop.t >= g1.tabs.b && g1.pop.t >= g1.ball.b && g1.pop.b <= g1.vh && g1.pop.whole,
+    JSON.stringify({ tappedTheEvent: onBall, neededToSlide: needed, chart: `${g0.st} → ${g1.st}`, tabsFoot: g1.tabs && g1.tabs.b,
+      event: g1.ball && [g1.ball.t, g1.ball.b], window: g1.pop && [g1.pop.t, g1.pop.b, g1.pop.whole ? 'whole' : 'scrolls inside'], screen: g1.vh }));
+  /* WHERE THE SLIDE RESTS (Astra's read): the approved drawing's place — the event's top 22px under the chart box's top
+     (the tabs' foot), ACG-09's slide the notes' 232px — not merely "somewhere clear of the tabs". Only where the chart
+     had the room to slide that far (its end can stop it short, which is the page's B); that room is asserted too, so a
+     case that could not test the place never passes in silence. */
+  const slideWant = g0.under == null ? null : g0.under - 22, hadRoom = slideWant != null && g0.room >= slideWant;
+  ok('phone: the slide rests the event 22px under the chart box\'s top, as drawn (D1790)',
+    shown && !!g1.pop && g1.st > g0.st && hadRoom && g1.under != null && Math.abs(g1.under - 22) <= 1.5,
+    JSON.stringify({ eventUnderTheBoxTop: g0.under == null ? null : `${g0.under.toFixed(1)} → ${g1.under == null ? null : g1.under.toFixed(1)}`,
+      slideWanted: slideWant == null ? null : Math.round(slideWant), roomToSlide: Math.round(g0.room), slid: g1.st - g0.st }));
+  if (g1.pop) await pp.locator('#pop .opts button', { hasText: 'Close' }).tap();
+  const closed = await pp.locator('#pop').waitFor({ state: 'hidden', timeout: 3000 }).then(() => true, () => false);
+  /* "stays" is an absence: what could move it back is a smooth scroll of half a second, so it is read after a second —
+     and only of a chart that DID slide (g1.st > g0.st), or a chart that never moved would pass it */
+  await pp.waitForTimeout(1000);
+  const g2 = await geo();
+  ok('phone: after Close the chart stays where it slid (D1790)', !!g1.pop && g1.st > g0.st && closed && !g2.pop && g2.st === g1.st,
+    JSON.stringify({ closed, before: g0.st, slidTo: g1.st, afterClose: g2.st }));
+
+  /* TURNED WITH THE WINDOW OPEN (Astra's read, finding 1, 8 Nov 26): the window is placed again beside the event where
+     the turn left it — inside the screen, under the chart box's top, off the event — never left where it stood on the
+     upright phone, its foot past a 390-tall screen's. Opened by a tap on ACG-09 where Close left it, at rest, then the
+     phone turned (844×390, the size Pop.jsx names); the window's place is read once it stops moving (two frames for the
+     chart's refit, then three like reads 100ms apart, at most a second), never at a fixed time. Turned back after. */
+  const t0 = await geo();
+  const onBall2 = !!t0.ball && await pp.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest('.ball'); return !!g && g.dataset.id === 'ACG-09'; }, t0.ball || { x: 0, y: 0 });
+  if (onBall2) await pp.touchscreen.tap(t0.ball.x, t0.ball.y);
+  const shown2 = onBall2 && await pp.locator('#pop').waitFor({ state: 'visible', timeout: 3000 }).then(() => true, () => false);
+  await boardStill();
+  const turnRects = () => pp.evaluate(() => {
+    const R = e => { if (!e) return null; const r = e.getBoundingClientRect(); return { t: r.top, b: r.bottom, l: r.left, r: r.right }; };
+    const p = document.getElementById('pop'), shown = !!p && getComputedStyle(p).visibility !== 'hidden' && getComputedStyle(p).display !== 'none';
+    return { pop: shown ? R(p) : null, board: R(document.getElementById('board')), vw: innerWidth, vh: innerHeight,
+      ball: R([...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ACG-09')) };
+  });
+  const t1 = await turnRects();
+  await pp.setViewportSize({ width: 844, height: 390 });
+  await pp.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r()))));
+  let t2 = await turnRects();
+  for (let i = 0, same = 0, last = ''; i < 10 && same < 2; i++) {
+    await pp.waitForTimeout(100); t2 = await turnRects();
+    const k = JSON.stringify(t2.pop); same = k === last ? same + 1 : 0; last = k;
+  }
+  const r1 = n => n == null ? null : Math.round(n * 10) / 10;
+  const overEvent = !!(t2.pop && t2.ball) && t2.pop.t < t2.ball.b && t2.pop.b > t2.ball.t && t2.pop.l < t2.ball.r && t2.pop.r > t2.ball.l;
+  ok('phone: turned on its side with the marking window open, the window is placed again — inside the screen, under the chart box\'s top, off the event (D1790)',
+    shown2 && !!t1.pop && !!t2.pop && t2.vw === 844 && t2.pop.t >= t2.board.t - 0.5 && t2.pop.b <= t2.vh - 8 + 1 && !overEvent,
+    JSON.stringify({ tappedTheEvent: onBall2, upright: t1.pop && [r1(t1.pop.t), r1(t1.pop.b)], turned: t2.pop && [r1(t2.pop.t), r1(t2.pop.b)],
+      boxTop: r1(t2.board && t2.board.t), screen: `${t2.vw}×${t2.vh}`, event: t2.ball && [r1(t2.ball.t), r1(t2.ball.b)], overTheEvent: overEvent }));
+  await pp.setViewportSize({ width: 390, height: 844 }); await pp.waitForTimeout(300);
+  if (await pp.locator('#pop').isVisible()) await pp.locator('#pop .opts button', { hasText: 'Close' }).tap();
+  await pp.locator('#pop').waitFor({ state: 'hidden', timeout: 3000 }).catch(() => {});
+
+  /* the ✕ in the strip, after a search the keyboard's Enter ran: it empties the box and puts Find away (D1791) */
+  await pp.tap('#hSearchBtn'); await pp.waitForTimeout(400);
+  await findType('ST-1'); await pp.waitForTimeout(300);
+  await pp.keyboard.press('Enter'); await pp.waitForTimeout(500);
+  const x0 = await findNow();
+  await pp.tap('#hSearchClear'); await pp.waitForTimeout(400);
+  const x1 = await findNow();
+  ok('phone: Find\'s ✕ empties the box and puts Find away — the strip gone, the keyboard down, the ring off (D1791)',
+    x0.strip && x0.q === 'ST-1' && x0.focus === 'hSearch' && x0.rings === 1 && x1.q === '' && !x1.strip && x1.focus !== 'hSearch' && x1.rings === 0,
+    JSON.stringify({ before: x0, after: x1 }));
+  ok('phone: Find\'s ✕ says what it does — "Clear the search and close Find" (D1791)',
+    x0.title === 'Clear the search and close Find', x0.title);
+  /* pressed from the keyboard, the keys go back to 🔍, the button that opened the strip (the design guide §2) */
+  await pp.tap('#hSearchBtn'); await pp.waitForTimeout(400);
+  await findType('ST-1'); await pp.waitForTimeout(300);
+  const k0 = await findNow();
+  await pp.focus('#hSearchClear'); await pp.keyboard.press('Enter'); await pp.waitForTimeout(400);
+  const k1 = await findNow();
+  ok('phone: Find\'s ✕ pressed from the keyboard puts Find away and hands the keys to 🔍 (D1791)',
+    k0.strip && k0.q === 'ST-1' && k1.q === '' && !k1.strip && k1.focus === 'hSearchBtn', JSON.stringify({ before: k0, after: k1 }));
+  await pp.close();
+}
+
+/* ---- the marking window on a desktop: the keyboard's way back, and a second key during the slide (owner D1790,
+   D980, 8 Nov 26 — Astra's read, finding 2; the fresh Opus read's F2; the walk's S8 c1, c2) ----
+   Opened from the keyboard (one Tab to the chart, Enter on its event), the window slides the chart until the event sits
+   22px under the chart box's top, as drawn. Escape — or a grade pressed from the keyboard — hands the keys back to the
+   chart, and the chart's focus used to pull the ringed event 28px clear of the box's edge: a jump of about 5px at every
+   close, where D1790 says the chart "stays there after Close". And a second Enter or Space while the chart slid opened
+   the window again mid-slide, where it fitted for a moment, and the chart slid on without it — 103px under its event in
+   the walk, 261px here. Now the chart takes no key but Escape and Tab until it rests.
+   The suite's desktop, 1500×950: ACG-09, landed in the middle by Find, has not quite the room for the window under it,
+   so the chart must slide — asserted each time (the chart moved), or a check would prove nothing — and it slides all the
+   way to the drawing's place, about 350px, so a second key 80ms in meets a window that would fit mid-way (on a 700-tall
+   screen it would not, and the fault hides). The chart is at rest when three reads 100ms apart agree
+   (docs/walk-scripts.md §4), never at a fixed time; the slide starts two frames after the open.
+   ITS OWN BROWSER, with smooth scrolling on: the test browser draws every smooth scroll the app asks for as one jump
+   (scripts/handpass/trk-chat9-lib.mjs, probed 8 Nov 26), so in the suite's own browser the slide is over before a
+   second key can reach it. Closed at the block's end, whatever happens. */
+{
+  const sb = await chromium.launch({ ...(execPath ? { executablePath: execPath } : {}), args: ['--enable-smooth-scrolling'] });
+  try {
+    const dp = await sb.newPage({ viewport: { width: 1500, height: 950 } });
+    await openTracker(dp); await dp.waitForTimeout(300);
+    const st = () => dp.evaluate(() => document.getElementById('board').scrollTop);
+    const still = async () => {
+      let last = -1, same = 0;
+      for (let i = 0; i < 50 && same < 3; i++) { const y = await st(); same = y === last ? same + 1 : 0; last = y; await dp.waitForTimeout(100); }
+      return last;
+    };
+    const frames = () => dp.evaluate(() => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(() => r()))));
+    const now = () => dp.evaluate(() => {
+      const bd = document.getElementById('board'), pops = document.querySelectorAll('#pop'), p = pops[0], a = document.activeElement;
+      const g = [...document.querySelectorAll('#flowSvg .ball')].find(x => x.dataset.id === 'ACG-09');
+      const gr = g && g.getBoundingClientRect(), br = bd.getBoundingClientRect(), k = document.querySelector('#flowSvg .kbdring');
+      const shown = !!p && getComputedStyle(p).visibility !== 'hidden' && getComputedStyle(p).display !== 'none', pr = shown && p.getBoundingClientRect();
+      return { st: bd.scrollTop, under: gr ? gr.top - br.top : null, foot: gr ? gr.bottom : null,
+        ball: gr ? { x: gr.left + gr.width / 2, y: gr.top + gr.height / 2 } : null,
+        pops: pops.length, pop: pr ? { t: pr.top, b: pr.bottom, title: ((document.getElementById('popTitle') || {}).textContent || '').trim() } : null,
+        keys: !a ? '' : a.id === 'board' ? 'board' : (a.closest && a.closest('#pop')) ? 'pop' : (a.id || a.tagName), ring: k ? k.dataset.id : null,
+        g: a && a.dataset ? a.dataset.g || null : null };
+    });
+    const shownNow = () => dp.waitForFunction(() => { const p = document.getElementById('pop'); return !!p && getComputedStyle(p).visibility !== 'hidden'; },
+      null, { timeout: 3000 }).then(() => true, () => false);
+    const r1 = n => n == null ? null : Math.round(n * 10) / 10;
+    const say = (a, b) => `chart ${r1(a.st)} → ${r1(b.st)}, ACG-09 ${r1(b.under)}px under the box's top`;
+    /* ACG-09 landed in the middle by Find — its box, Enter — then the chart given the keys by Tab, as a person does: the
+       ring is on ACG-09 (Find's landing moves the keyboard's place to the event it brings in, D980) */
+    const landByFind = async () => {
+      await dp.click('#hSearch'); await dp.fill('#hSearch', ''); await dp.fill('#hSearch', 'ACG-09'); await dp.waitForTimeout(300);
+      const stat = await dp.evaluate(() => document.getElementById('hSearchStat').textContent);
+      await dp.keyboard.press('Enter'); await still();
+      return stat;
+    };
+    const tabToChart = async () => {
+      for (let i = 0; i < 80; i++) { await dp.keyboard.press('Tab'); if (await dp.evaluate(() => (document.activeElement || {}).id === 'board')) break; }
+      await still();
+      const n = await now(); return n.keys === 'board' && n.ring === 'ACG-09';
+    };
+    const closeIt = async () => {
+      if ((await now()).pops) { await dp.keyboard.press('Escape'); await dp.locator('#pop').waitFor({ state: 'detached', timeout: 3000 }).catch(() => {}); }
+      await still();
+    };
+
+    /* 1. Escape: the chart stays where the window slid it */
+    const stat = await landByFind(), keyed = await tabToChart();
+    const a0 = await now();
+    await dp.keyboard.press('Enter');
+    const shown = await shownNow(); await still();
+    const a1 = await now();
+    await dp.keyboard.press('Escape'); await frames();
+    const a2 = await now(); await still(); const a3 = await now();
+    ok('desktop: the marking window opened from the keyboard slides the chart, and Escape leaves the chart where it slid — no jump as the keys come back to ACG-09 (D1790)',
+      keyed && shown && a1.st > a0.st && a2.pops === 0 && a2.keys === 'board' && a2.ring === 'ACG-09' && Math.abs(a2.st - a1.st) <= 0.5 && Math.abs(a3.st - a1.st) <= 0.5,
+      JSON.stringify({ find: stat, keysOnACG09: keyed, opened: say(a0, a1),
+        afterEscape: `${r1(a2.st)} two frames on, ${r1(a3.st)} at rest — ACG-09 ${r1(a3.under)}px under`, keys: a2.keys, ring: a2.ring }));
+
+    /* 2, 3. a second Enter, or a Space, about 80ms after the Enter that opened it — while the chart slides: still one
+       window, for ACG-09, its top 4px under the event's foot (2–6) once at rest (the walk's S8 c1, c2: 103px under) */
+    for (const [label, key] of [['Enter', 'Enter'], ['Space', 'Space']]) {
+      await closeIt(); await landByFind(); const k = await tabToChart();
+      const e0 = await now();
+      await dp.keyboard.press('Enter'); await dp.waitForTimeout(80); await dp.keyboard.press(key);
+      const s = await shownNow(); await still(); const e1 = await now();
+      const gap = e1.pop && e1.foot != null ? e1.pop.t - e1.foot : null;
+      ok(`desktop: Enter, then ${label} about 80ms later while the chart slides, leaves one marking window, for ACG-09, just under it (D1790)`,
+        k && s && e1.st > e0.st && e1.pops === 1 && !!e1.pop && e1.pop.title.startsWith('ACG-09') && gap != null && gap >= 2 && gap <= 6,
+        JSON.stringify({ keysOnACG09: k, windows: e1.pops, title: e1.pop && e1.pop.title, windowTopUnderTheEventsFoot: r1(gap), opened: say(e0, e1) }));
+    }
+
+    /* 4. a double-click on ACG-09 — its second click about 80ms after the first, while the chart slides: the same, one
+       window, for ACG-09, just under it (the host's pin, 8 Nov 26 — the fresh Opus read's F1). Two faults seen: before
+       the chart took no press while it slid, the second click landed on the moving chart and opened whatever event was
+       then under the pointer (CFT-01, its window 89px from it); since, it lands on the box behind the chart, which the
+       Tracker reads as a press outside the window and closes it — no window at all. The third (chat 10, 8 Nov 26): each
+       event's invisible press circle is drawn with its own "takes presses" (core.js ballSvg, pointer-events="all"),
+       which the chart's "no press" did not reach — so a second click that met an event's circle mid-slide still opened
+       a window from there: CFT-01's (218px from it), or ACG-09's again, placed mid-slide (261px under it once the chart
+       rested). Which one depended on how far the slide had got at the second click, so the suite's own pace decided
+       whether this check went red; it is run again with the page's processor at half speed, where it met CFT-01 each
+       time on the broken build, and 3b below proves the cause whatever the pace. */
+    const cdp = await dp.context().newCDPSession(dp);
+
+    /* 3b. while the chart slides, no event on it takes a press — each event in view, hit-tested at its centre mid-slide */
+    await closeIt(); await landByFind();
+    const h0 = await now();
+    let held = null;
+    if (h0.ball) {
+      await dp.mouse.click(h0.ball.x, h0.ball.y);
+      await dp.waitForFunction(s0 => document.getElementById('board').scrollTop > s0 + 5, h0.st, { timeout: 3000 }).catch(() => {});
+      held = await dp.evaluate(() => {
+        const bd = document.getElementById('board'), br = bd.getBoundingClientRect(), hit = [];
+        let tried = 0;
+        for (const g of document.querySelectorAll('#flowSvg .ball')) {
+          const r = g.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+          if (!r.width || x < br.left || x >= br.right || y < br.top || y >= br.bottom) continue;
+          tried++;
+          const e = document.elementFromPoint(x, y), b = e && e.closest && e.closest('#board .ball');
+          if (b) hit.push(b.dataset.id);
+        }
+        return { st: bd.scrollTop, tried, hit: hit.slice(0, 8), hits: hit.length };
+      });
+    }
+    const h1 = await still();
+    ok('desktop: while the chart slides under the marking window, no event on it takes a press — its invisible press circle included (D1790)',
+      !!held && held.st > h0.st && held.st < h1 - 5 && held.tried > 5 && held.hits === 0,
+      JSON.stringify({ measuredAt: held && `chart ${r1(h0.st)} → ${r1(held.st)} (rests at ${r1(h1)})`, eventsTried: held && held.tried,
+        eventsTakingAPress: held && held.hits, first: held && held.hit }));
+
+    for (const rate of [1, 2]) {
+      await closeIt(); await landByFind();
+      const d0 = await now();
+      const onBall = !!d0.ball && await dp.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest('.ball'); return !!g && g.dataset.id === 'ACG-09'; }, d0.ball || { x: 0, y: 0 });
+      if (rate !== 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate });
+      if (onBall) {
+        await dp.mouse.move(d0.ball.x, d0.ball.y);
+        await dp.mouse.down({ clickCount: 1 }); await dp.mouse.up({ clickCount: 1 });
+        await dp.waitForTimeout(80);
+        await dp.mouse.down({ clickCount: 2 }); await dp.mouse.up({ clickCount: 2 });
+      }
+      const ds = onBall && await shownNow(); await still();
+      if (rate !== 1) await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
+      const d1 = await now();
+      const dgap = d1.pop && d1.foot != null ? d1.pop.t - d1.foot : null;
+      ok(`desktop: a double-click on ACG-09, its second click about 80ms on while the chart slides, leaves one marking window, for ACG-09, just under it${rate === 1 ? '' : ' — the processor at half speed'} (D1790)`,
+        onBall && ds && d1.st > d0.st && d1.pops === 1 && !!d1.pop && d1.pop.title.startsWith('ACG-09') && dgap != null && dgap >= 2 && dgap <= 6,
+        JSON.stringify({ pressedTheEvent: onBall, windows: d1.pops, title: d1.pop && d1.pop.title, windowTopUnderTheEventsFoot: r1(dgap), opened: say(d0, d1) }));
+    }
+
+    /* 5. a grade pressed from the keyboard (→ to DCO, Enter) hands the keys back the same way: the chart stays. Last on
+       this page — it marks ACG-09 */
+    await closeIt(); await landByFind(); const keyed5 = await tabToChart();
+    const c0 = await now();
+    await dp.keyboard.press('Enter');
+    const shown5 = await shownNow(); await still();
+    const c1 = await now();
+    await dp.keyboard.press('ArrowRight');
+    const picked = (await now()).g;
+    await dp.keyboard.press('Enter');
+    const gone = await dp.locator('#pop').waitFor({ state: 'detached', timeout: 3000 }).then(() => true, () => false);
+    await frames(); const c2 = await now(); await still(); const c3 = await now();
+    ok('desktop: a grade pressed from the keyboard in that window leaves the chart where it slid, too (D1790)',
+      keyed5 && shown5 && c1.st > c0.st && picked === 'dco' && gone && c2.keys === 'board' && c2.ring === 'ACG-09' && Math.abs(c2.st - c1.st) <= 0.5 && Math.abs(c3.st - c1.st) <= 0.5,
+      JSON.stringify({ keysOnACG09: keyed5, opened: say(c0, c1), grade: picked, closed: gone,
+        afterTheGrade: `${r1(c2.st)} two frames on, ${r1(c3.st)} at rest — ACG-09 ${r1(c3.under)}px under`, keys: c2.keys, ring: c2.ring }));
+  } finally { await sb.close(); }
+}
+
+/* ---- the order windows' Restore wears the drawn Reset arrow (owner D1792 (c), 8 Nov 26) ----
+   A deleted built-in syllabus is restored from ⇅ Reorder; its button read "↺ Restore", the ↺ typed, and now wears the
+   app's drawn Reset arrow (the Tracker's own copy, `.trkglyph`) before the word. One line draws the Course window's
+   button too. Asserted by PLACE as well as presence — the icon before the word on one line, the button no taller than
+   the row's ▲ beside it — since a drawn icon once passed "wears the icon" stacked above its words (docs/walk-scripts.md
+   §4). A page of its own, so the deleted syllabus never reaches the suite's main page; restored at the end, as a
+   check that the button still does its job. */
+{
+  const dp = await b.newPage({ viewport: { width: 1500, height: 950 } });
+  await openTracker(dp); await dp.waitForTimeout(300);
+  const sylNames = () => dp.evaluate(() => [...document.querySelectorAll('#sylSel option')].map(o => o.textContent));
+  const cur = await dp.evaluate(() => document.getElementById('sylSel').selectedOptions[0].textContent);
+  await dp.click('#sylMenuBtn'); await dp.waitForTimeout(120); await dp.click('#delSyl');
+  await dp.waitForSelector('#dlgModal'); await dp.click('#dlgOk');
+  await dp.waitForFunction(n => ![...document.querySelectorAll('#sylSel option')].some(o => o.textContent === n), cur, { timeout: 10000 }).catch(() => {});
+  const gone = !(await sylNames()).includes(cur);
+  await dp.click('#sylMenuBtn'); await dp.waitForTimeout(120); await dp.click('#ordSyl'); await dp.waitForSelector('#ordModal');
+  const rs = await dp.evaluate(() => {
+    const rows = [...document.querySelectorAll('#ordHidden .ordrow')];
+    const btn = rows[0] && rows[0].querySelector('button'); if (!btn) return { rows: rows.length };
+    const svg = btn.querySelector('svg'), s = svg && svg.getBoundingClientRect();
+    const tn = [...btn.childNodes].find(n => n.nodeType === 3 && n.nodeValue.trim()); let w = null;
+    if (tn) { const r = document.createRange(); r.selectNodeContents(tn); w = r.getBoundingClientRect(); }
+    const up = document.querySelector('#ordList .ordrow button[title="Move up"]');
+    return { rows: rows.length, name: (rows[0].querySelector('.onm') || {}).textContent, text: btn.textContent,
+      glyph: svg ? svg.getAttribute('class') : null,
+      iconRight: s && Math.round(s.right), wordsLeft: w && Math.round(w.left),
+      midGap: s && w ? Math.round(Math.abs((s.top + s.bottom) / 2 - (w.top + w.bottom) / 2)) : null,
+      h: Math.round(btn.getBoundingClientRect().height), upH: up ? Math.round(up.getBoundingClientRect().height) : null };
+  });
+  ok('the Reorder window\'s Restore wears the drawn Reset arrow before its word, no typed ↺ (D1792 (c))',
+    gone && rs.rows === 1 && rs.name === cur && /\btrkglyph\b/.test(rs.glyph || '') && !(rs.text || '').includes('↺') && (rs.text || '').trim() === 'Restore'
+      && rs.iconRight <= rs.wordsLeft + 1 && rs.midGap <= 3 && rs.upH && rs.h <= rs.upH + 2,
+    JSON.stringify({ deleted: cur, gone, ...rs }));
+  if (rs.rows) await dp.locator('#ordHidden .ordrow button').first().click();
+  await dp.waitForFunction(n => [...document.querySelectorAll('#sylSel option')].some(o => o.textContent === n), cur, { timeout: 10000 }).catch(() => {});
+  ok('the Restore button still brings the deleted syllabus back (D1792 (c))', (await sylNames()).includes(cur), (await sylNames()).join(', '));
+  await dp.close();
 }
 
 /* ---- the most recent flight always wins (user's rule, 2 Sep) ----

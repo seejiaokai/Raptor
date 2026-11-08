@@ -1,0 +1,107 @@
+{
+ "state": "inert-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-board.mjs",
+  "shot": "q-inert-a-phone"
+ },
+ "recorded": "2026-11-08T00:36:44.323Z",
+ "drawnOn": "main at 549482bd5",
+ "checkout": "67bacc1c6",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "puck": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 28,
+    "y": 640.3,
+    "w": 74,
+    "h": 15
+   },
+   "ink": {
+    "x": 33,
+    "y": 641,
+    "w": 63.5,
+    "h": 12.3
+   },
+   "text": "Fable C",
+   "typed": false,
+   "look": {
+    "fill": "rgb(31, 110, 82)",
+    "image": "",
+    "edge": [
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)",
+     "1px solid rgba(0, 0, 0, 0)"
+    ],
+    "corners": [
+     "3px",
+     "3px",
+     "3px",
+     "3px"
+    ],
+    "shadow": "none",
+    "color": "rgb(234, 251, 243)",
+    "align": "start",
+    "justify": "normal",
+    "font": "600 9px",
+    "spacing": "-0.065px"
+   },
+   "tag": "span.puck.r.sm"
+  },
+  "note": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 12,
+    "y": 794,
+    "w": 378,
+    "h": 54
+   },
+   "ink": {
+    "x": 30.8,
+    "y": 805,
+    "w": 340.4,
+    "h": 32
+   },
+   "text": "Nothing changed for Fable. No OIL worked out — this row has no end time.",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)",
+     "1px solid rgb(57, 66, 77)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "rgba(0, 0, 0, 0.8) 0px 20px 50px -20px",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 12.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.zz-ring"
+  }
+ },
+ "approved": {
+  "picture": "q-inert-a-phone.png",
+  "identical": true
+ }
+}

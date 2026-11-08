@@ -4101,6 +4101,21 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Two guards, both unconditional: (1) every code reader's brief says where proof tests go — a name the repo ignores (for example `*.reader-tmp.test.*` in `.gitignore`) or the reader's own scratch folder — never a plain test name under the source folder; (2) while any helper works in the checkout, the builder stages by named paths only and reads `git show --stat HEAD` before pushing.
 **Principle:** A helper sharing the checkout writes files the builder did not make; a whole-folder stage turns them into the builder's commit. Give helpers' throwaway files a name the repository ignores, and stage by name while they work.
 
+### Observation 866: A "nothing happened" check that reads a value which is never set passes whatever the app does
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — OIL Earn on the Scheduler Board (D1783: a tap on a puck that cannot earn picks nothing). Numbered past 865, the highest on the other branches.
+**Skill:** New skill candidate: none — the walk-script and drawing-check method (`raptor-port/docs/walk-scripts.md`, `raptor-port/scripts/drawcheck/`), and the bug-check order's §8 (tests find rather than confirm)
+**Type:** open-source
+**Phase/Area:** writing an assertion that something did NOT happen (nobody picked, no window opened)
+
+**Issue:** Two checks in one job proved "nothing happened" by reading something that never changes. (1) The drawing check's "the tap picked nobody" step read `window.SELID`, a name that does not exist in the built app; it was always undefined, so the step passed even on the build where the tap visibly picked the man blue. The same name had been written into the walkers' brief. (2) Two unit tests proved "the ALL AVAIL window opened" by finding its frame on the page; the frame is always there, hidden, so "opened" was always true. Both were found only because a reproduction on screen disagreed with a green check. They were fixed by reading the mark the app draws (`.puck.sel` on the board) and the frame's shown state (`.availwin:not([hidden])`).
+**Suggested improvement:** In `walk-scripts.md`'s rules for a step's assertion, and in the bug-check order §8: every assertion of absence ("nothing picked", "no note", "not opened") is first run once against a state where the thing DID happen (a positive control: tap an ordinary puck and see the same read report it picked), and the step names that control. A read of a global, a frame or an attribute that never changes value across the two states fails the step.
+**Principle:** A check that something did not happen is only evidence if the same check, run where it did happen, says so; run the positive case once before trusting the negative.
+Met again 8 Nov 26 (chat 5, the host's re-walk): a press made by screen position on a switch scrolled off screen landed on nothing, so the check failed on the fixed build and the old build alike — the calibration run caught it only because the row also printed the switch's state ("switch off"). Guard: a press by position first brings its target into view, and the row prints the press's own effect beside the result it measures.
+Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked for the ALL AVAIL window's frame, which is always on the page and only hidden, so it read "open" whatever the app did. Guard: a check that something appeared reads whether it is shown (its size, or the property that hides it), never whether it exists.
+
 ### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
 
 **Status:** OPEN
@@ -4128,11 +4143,89 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
 **Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.
 
-### Observation 874: Times written into a handoff after a compaction came from the summary, not the clock
+### Observation 872: A chat number given in a starting brief was already taken
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** the rules diet's step 5a (OIL as a page), a session started by another session with "this chat is number 5"
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the opening line / a started session's brief — naming the next chat's number
+
+**Issue:** the starting session wrote "this chat is number 5" from its own reading of the handoff, but a parallel session had already given 5 to a build chat (and held 10 and 11) in a commit made minutes before; the started chat found the clash only by reading the newest handoff on the main branch. (Numbers 862 to 871 were taken by other branches; this note was renumbered 863 → 864 → 872 at the merges.)
+**Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
+**Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.
+
+### Observation 873: Time stamps written into a handoff from the agent's sense of elapsed time ran up to two hours ahead of the clock
 
 **Status:** OPEN
 **Date:** 2026-11-08
-**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch)
+**Session context:** chat 5, `claude/pr-oil-earn-ffbf07` — the close of OIL Earn on the board, across five compactions
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** writing the "where it stands" lines of a handoff block as the work goes on
+
+**Issue:** Each line the chat added to its handoff block carried a time ("~11:20", "~12:30", "~12:45"), written from a feel for how long the work had taken. After the sixth compaction the clock read 11:16 and the commits showed the lines had run ahead by 20 minutes to two hours. A later chat that orders events by these times, or a person told "merged at 12:45", is misled; the error grew with each compaction, since a compacted chat has no sense of the time that passed.
+**Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
+**Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
+
+### Observation 876: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 10, the Tracker's group 7 — fixing the one red browser check chat 9 left (a double-click during the chart's slide); 872 is taken on another branch, so this one is 873 (was 873. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** reproducing a timing-dependent fault before guessing at a cause
+
+**Issue:** The check was red in the previous chat's full run and green in this chat's first probes at every click gap tried, so it looked fixed or flaky. Slowing the page's processor to half speed (the browser's own CPU throttling) made it fail every time, and a per-frame log then showed the real cause in one run: a child element with its own "takes presses" setting ignored the parent's "no presses" — neither of the two suspects handed over. The suite's pace alone had decided whether the fault showed.
+**Suggested improvement:** In the reproduce phase: when a fault involves a press, key or frame during an animation or scroll and does not reproduce, re-run it at two or three slowed processor speeds before calling it flaky or fixed; once found, add a check that proves the cause whatever the pace (here, hit-testing every element mid-animation), beside the end-to-end check run at a slowed pace.
+**Principle:** A timing fault that a test catches only on some machines is still a fault; slow the clock down to make it certain, then pin the cause with a check that does not depend on timing.
+
+### Observation 877: A merge approval relayed in another session's brief is refused by the safety check — the merging chat needs his word typed there
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 10, a side session started by chat 9 to fix the Tracker's last red check and carry chat 9's "merge live" through to the live app (was 874. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, and 874 is taken on `claude/lw-pin-last-frame`.)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** handing a job that already holds the owner's merge approval to another chat (a side session's brief, or the next chat's opening line)
+
+**Issue:** The owner typed "merge live" in chat 9. Chat 9 started chat 10 as a side session and wrote the approval into its brief, with the time and his words. Chat 10 fixed the red check, got the run green, took the merge lock and found the branch level — and the merge command was refused by the app's auto-mode safety check ("merge without review"): a brief written by another session is not the owner's message, so the approval did not count. The lock was released and the job stopped to ask him again, a round-trip the plan had not allowed for.
+**Suggested improvement:** In session-handoff (and wherever a job is passed on with an approval attached): say plainly that an approval does not travel in another agent's text. Either the chat that received the approval does the merge itself, or the new chat starts from an opening line the owner pastes himself (his own message), with the approval in it — never from a side session's brief alone. If a side session must merge, say so in the brief and warn the owner that he will be asked once more there.
+**Principle:** A permission given to one agent is not carried by that agent's message to another; automated guards judge the speaker, not the quoted words. Plan the step that needs the approval to run where the person gave it, or have the person repeat it where it will run.
+
+### Observation 878: A helper's "the code is unchanged since commit X" must be checked before its build label is believed
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 9, the Tracker's group 7 — the drawing check run by a background helper while the host fixed the readers' findings (numbered past 865, the highest on any branch) (was 866, then 875. Renumbered by chat 10 at bringing `main` in, 8 Nov 26: chat 5's 866 and 873 reached `main` first, 874 is taken on `claude/lw-pin-last-frame` and 875 on `claude/pr-board-layout-62eb71`; moved to the end.)
+**Skill:** subagent-driven-development
+**Type:** open-source
+**Phase/Area:** taking a helper's result — what build it measured
+
+**Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
+**Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
+**Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
+
+### Observation 879: A blind reader told to find related rules "by name" misses the ones that change the subject
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 15, the rules diet's step 5a on the IT flow guide — two blind readers checked that a rewritten rules page still carried every part of its rulings and pointed to every other area's ruling that bears on it (first written as 878 past 873–877 on other open branches; renumbered 879 when `main` was brought in, where chat 10 had taken 876–878)
+**Skill:** requesting-code-review
+**Type:** open-source
+**Phase/Area:** writing the reviewer's brief — what the reviewer searches beyond the change itself
+
+**Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
+**Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
+**Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
+
+### Observation 881: Times written into a handoff after a compaction came from the summary, not the clock
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch; renumbered 874 → 881 when `main` was brought in, 8 Nov 26 — 874 is also used on another branch)
 **Skill:** session-handoff (writing the block's times)
 **Type:** open-source
 **Phase/Area:** the state written into the handoff block

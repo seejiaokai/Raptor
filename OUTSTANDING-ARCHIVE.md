@@ -8000,6 +8000,19 @@ closed landing** reads "That lands outside what you can edit — pick another da
 for bidding. Pick an open day." (Opus, words read cold). **Place:** with the Leave War's next batch, each small — M2 went live on 23 Oct 26 without (1), (2) and (4), so M3.
 
 
+*Moved here 2026-11-08 by backlog-archive.mjs ([TRK-ROUND-SEEN]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-ROUND-SEEN] Older things the Tracker's plain-user round saw, none caused by the clean-up (2 Nov 26)
+From `raptor-port/docs/handpass/2026-11-02-tracker-user-round.md` (the same on the code before pull request 603): (1) in the iPhone-size
+test browser (WebKit) the bar's dropdowns draw their words cut in half — Chromium draws them whole, so likely the test browser:
+his iPhone look decides (`docs/img/handpass/2026-11-02-tracker-user-round/selects/tracker-bar-webkit.png`); (2) on a phone the marking
+pop-up for a top event covers the bar and the Flow / Info / Show All tabs (it still works and closes); (3) on a phone Find covers those
+tabs while open, and its ✕ only clears the box — 🔍 again, Escape or a tap outside put it away; (4) the ⚙ drawn as WebKit's picture
+gear — already D1507 / D1509. Not checked: a real iPhone, pinch, Edit chart layout, adding / renaming / deleting a course or syllabus,
+Duplicate, the chart's arrow keys, sideways, his PC's 125%. **(1) CLOSED 2 Nov 26 by his iPhone look — D1564: the words show whole on his phone.** **Place:** (2) and (3) with the Tracker's next batch.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1790, D1791) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, questions "The Tracker's marking pop-up" ((2)) and "The Tracker's Find ✕" ((3)) (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 on `claude/pr-tracker-787259` (chat 9, the plan's group 7):** (2) D1790 — where the window would not fit under the event, the chart slides the event up under the tabs (to the drawing's place) and the window opens whole under it; at the chart's end it opens above the event, nothing moving; (3) D1791 — on a phone Find's ✕ empties the box and puts Find away, a pick puts it away too. Walked (`raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`), read by Astra and a fresh Opus reader, the drawing check one difference made on purpose (the window 4px under the event) — put to him at his look. How each now behaves: `raptor-port/docs/ui-contracts.md` §The pictures round's answers and §The Tracker tab (Find).
+
 *Moved here 2026-11-08 by backlog-archive.mjs ([LOGIC-WORDS-WORKHOURS]). Forward facts: `raptor-port/docs/engine-rules.md`.*
 
 ### [LOGIC-WORDS-WORKHOURS] The Logic page says a line with nothing entered starts its long day and Insights hours at the default rally; the app starts them at take-off less the step (found 19 Oct 26, the rally box walk, walker A — OLDER than that job; a question for him)
@@ -8013,6 +8026,41 @@ workSpan`, RT8 — "report/work hours … keep separate definitions"). Walker A'
 as the Logic page already says and OIL already does; it makes more long-day notes appear. Until he answers, the words are left as they are.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1786) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "Where a day starts when nothing is entered" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 **Built 8 Nov 26 by chat 6 on `claude/pr-day-start-7b064c`** — the engine (`engine/events.ts`) and the Logic page's drawn words; `engine-rules.md` §Where a day with nothing entered starts. Waits for its bug check, readers and his "merge live"; leaves for the archive once live.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([OIL-EARN-DAY-SWITCH-WORDS]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.*
+
+### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
+On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
+makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
+day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
+without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
+picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
+as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
+**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1782) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "OIL Earn's day switch" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 (chat 5, `claude/pr-oil-earn-ffbf07`, pull request 679), FULL bug check:** the day button is the app's own switch,
+"No OIL earned", grey off and cyan on; a press on its words keeps the pick; the cyan ring under the keys. Contract:
+`raptor-port/docs/ui-contracts.md` §The mode (the D1782 note); evidence `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.
+Left for his look, filed: [OIL-EARN-WORDS-LEFT], [OIL-SWITCH-NOSAVE-SHOW].
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([OIL-INERT-TAP-SILENT]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.*
+
+### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
+Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
+(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
+selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
+The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
+mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
+puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
+a question for him first.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1783) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A tap on a puck that cannot earn" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+**BUILT 8 Nov 26 (chat 5, `claude/pr-oil-earn-ffbf07`, pull request 679), FULL bug check:** a tap on a puck that cannot earn picks
+nothing and says "Nothing changed for <callsign>." and its reason — every drawer, a leave, medical, Personal or SANS request's man,
+a placeholder's body. Contract: `raptor-port/docs/ui-contracts.md` §The mode (the D1783 note); evidence
+`raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`. Left, filed: [OIL-INERT-WHY-CX-INFO], [OIL-WINDOW-FOOT-SHAPE],
+[OIL-ROSTER-TAP-SELECTS], [OIL-EARN-BOARD-TIDY].
 
 *Moved here 2026-11-08 by backlog-archive.mjs ([LW-TWO-BOX-LETTERS]). Forward facts: `raptor-port/docs/handpass/2026-11-06-lw-cell-combos.md`, `raptor-port/docs/ui-contracts.md`.*
 

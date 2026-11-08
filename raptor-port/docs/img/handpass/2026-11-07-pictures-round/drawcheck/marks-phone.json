@@ -1,0 +1,220 @@
+{
+ "state": "marks-phone",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-r5e-ph-drawn"
+ },
+ "recorded": "2026-11-08T00:37:16.248Z",
+ "drawnOn": "main at 549482bd5",
+ "checkout": "67bacc1c6",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "bar": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 14,
+    "y": 287,
+    "w": 358,
+    "h": 41
+   },
+   "ink": {
+    "x": 26,
+    "y": 298.8,
+    "w": 323,
+    "h": 15
+   },
+   "text": "THIS DAY Templates OIL Earn",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "10px",
+     "10px",
+     "10px",
+     "10px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.sb-panel.daybar.zz-tb.zz-up"
+  },
+  "tpl": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 158.1,
+    "y": 295,
+    "w": 103.6,
+    "h": 24
+   },
+   "ink": {
+    "x": 186.1,
+    "y": 298.8,
+    "w": 64.6,
+    "h": 15
+   },
+   "text": "Templates",
+   "typed": false,
+   "look": {
+    "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.14)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 10.5px",
+    "spacing": "0.525px"
+   },
+   "tag": "button.mbtn.daybtn"
+  },
+  "tplmark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 169.1,
+    "y": 301,
+    "w": 12,
+    "h": 12
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 10.5px",
+    "spacing": "0.525px"
+   },
+   "tag": "svg"
+  },
+  "oil": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 266.7,
+    "y": 295,
+    "w": 93.3,
+    "h": 24
+   },
+   "ink": {
+    "x": 294.7,
+    "y": 298.8,
+    "w": 54.3,
+    "h": 15
+   },
+   "text": "OIL Earn",
+   "typed": false,
+   "look": {
+    "fill": "color(srgb 0.231373 0.776471 0.909804 / 0.14)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)",
+     "1px solid rgb(59, 198, 232)"
+    ],
+    "corners": [
+     "5px",
+     "5px",
+     "5px",
+     "5px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 10.5px",
+    "spacing": "0.525px"
+   },
+   "tag": "button.mbtn.daybtn"
+  },
+  "oilmark": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 277.7,
+    "y": 301,
+    "w": 12,
+    "h": 12
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgba(0, 0, 0, 0)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "0px",
+     "0px",
+     "0px",
+     "0px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "800 10.5px",
+    "spacing": "0.525px"
+   },
+   "tag": "svg"
+  }
+ },
+ "approved": {
+  "picture": "q-r5e-ph-drawn.png",
+  "identical": true
+ }
+}
