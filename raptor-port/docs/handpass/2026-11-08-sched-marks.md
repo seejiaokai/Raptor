@@ -115,6 +115,19 @@ routes: `docs/handpass/parts/2026-11-08-sched-marks-scenarios.md` §Objects, sur
 
 ## 12. The drawing check
 
+Part list `scripts/drawcheck/specs/sched-marks.mjs`, 15 states: the waiting mark (Edit Schedule desktop and phone, the
+board desktop), the unreadable notice (desktop, phone) and its grey refusal, the drawn eye (the week's selector and
+banner, the board's selector and banner, desktop and phone), the Reset arrow (board and week, desktop and phone). The
+drawings recorded by replaying their own scripts (`scripts/handpass/pr-sched.mjs` q1, q2; `pr-marks.mjs` r5a, r5d) on
+a build of `main` at `6e6c55667`, where they were drawn — **every replay identical to its approved picture, pixel for
+pixel** (records `docs/img/handpass/2026-11-08-sched-marks/drawcheck-records/`). **The build (`dist-sm1`, from
+`b8011e768`): GREEN — 15 of 15 states reached, 0 differences, 0 kept** (`…/drawcheck/report.md`). One fix to the part
+list, none to the app: the phone board folds its warning list, so the reach opens it by its head as the drawing did.
+What the check does not measure — the dotted underline and outline themselves — was looked at by eye beside drawing A:
+the host's pictures `…/host/r1-pc-week-unav.png` (a dotted cyan line under "LL") and `r1-pc-board-unav.png` (the "LL"
+box outlined dotted, its purple tint kept), the computed styles "underline dotted rgb(59, 198, 232)" and "dotted 1px
+rgb(59, 198, 232)" on the PC and the phone.
+
 ## 13. The code reads
 
 ## 14. The gate counts
