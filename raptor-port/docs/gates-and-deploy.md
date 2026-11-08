@@ -227,7 +227,7 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   trigger's `paths-ignore`; a pull request, since 8 Nov 26 ([TESTS-REQUIRED-ON-MAIN], chat 19), always starts the
   workflow, and its first job, "what changed" (`raptor-port/scripts/ci/checks-passed.mjs`, a test holding its list
   equal to the push list), skips every gate job when only notes changed — so the last job, **"checks passed"**, always
-  reports, and is the one check GitHub can require (a workflow `paths-ignore` skips reports nothing, and a required
+  reports, and is the one check GitHub can require — required on `main` since 8 Nov 26, his click adding it to the ruleset "main: secrets scan" beside the secrets scan (a workflow `paths-ignore` skips reports nothing, and a required
   check that never reports leaves a pull request waiting for ever). "checks passed" fails if any gate failed or was
   cancelled, or if code changed and no whole gate run passed (a skipped gate reports success, so it is never taken as
   a pass). The Docs guard (`docs-guard.yml`) still runs on every PR and every push to `main`; since D1407 (27 Oct 26) a
