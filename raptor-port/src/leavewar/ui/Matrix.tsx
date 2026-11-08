@@ -1281,7 +1281,7 @@ export function Matrix() {
         /* the pinned copy takes the pinch's rule from the pinch's first frame (`pinchShow`, D1870) */
         const fixedRow = outer.querySelector<HTMLElement>('.mxfixed')
         fixedRow?.classList.add('lw-pinching')
-        pinchShow(fixedRow)
+        pinchShow(fixedRow, headRef.current)
         outer.classList.add('lw-pinching')
         pinchingRef.current = true
       },
@@ -1922,33 +1922,6 @@ export function Matrix() {
   // would slide under, at every width. No width gate any more.
   const mirrorRef = useRef<HTMLDivElement>(null)
   const [stuck, setStuck] = useState<{ top: number; left: number; width: number; cols: number[] } | null>(null)
-  /* THE PINNED ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]; `pinSda` below): where the page's
-     scroll turns the always-mounted copy on (`--lwy-s`, the scroll at which the real row's top meets the top bar's foot),
-     and whether it is up now. `up` gives it taps and its shadow; while it is not up it is also `inert` — out of the focus
-     order and of what a screen reader reads, since nobody can see it (the build's loose end 1). Written on the copy's own
-     box only, never an ancestor (a custom property on the grid's ancestor restyles the whole grid), and only when it
-     changes. */
-  const placeY = (box: HTMLElement | null, rowTop: number, topEdge: number) => {
-    if (!box) return
-    const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
-    if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
-    const up = rowTop < topEdge
-    box.classList.toggle('up', up)
-    if (box.inert === up) box.inert = !up
-  }
-  /* WHILE THE FINGERS PINCH, the pinned copy is shown by the pinch's own rule, not the page's scroll (D1287): hidden while
-     the grid's own date row — held from rising — is in sight below the top bar, shown the moment it would pass under it.
-     `pin` applies it on each scroll of the pinch, and the pinch's start applies it at once: the always-mounted copy is off
-     the scroll's animation while pinching (matrix.css `.lw-pinsda .mxfixed.lw-pinching` — `--lwy-s` cannot follow a row
-     the pinch is stretching), so a copy not up would otherwise stand over the grid until the first scroll. */
-  const pinchShow = (fixedRow: HTMLElement | null | undefined) => {
-    const head = headRef.current
-    if (!fixedRow || !head) return
-    const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
-    const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
-    fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
-  }
-
   // Can this browser drive the frozen bar's horizontal follow on the COMPOSITOR
   // via a CSS scroll-driven animation (owner, 28 Aug 26 — "the top bar not
   // catching up to the horizontal scroll … glue it, keep the feel")? When yes,
@@ -2047,7 +2020,7 @@ export function Matrix() {
          the top bar (his D1288 picture: never a second date row), shown again the moment that row would pass under it. A
          row not frozen at the start never needs one: the grid's date row, held from rising, never passes under the top
          bar. The lift settles it once, from rest (`repinRef`, from the pinch's onEnd). */
-      if (pinchingRef.current) { pinchShow(mirrorRef.current?.parentElement); return }
+      if (pinchingRef.current) { pinchShow(mirrorRef.current?.parentElement, headRef.current); return }
       /* THE BROWSER SHOWS IT (his D1870): the copy is measured and mounted wherever the row is, and told where the page's
          scroll turns it on (`placeY`); the browser shows it in the very frame it moves the page past that point */
       if (pinSda) {
@@ -4766,3 +4739,31 @@ export function Matrix() {
     </div>
   )
 }
+
+/* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
+/* THE PINNED ROW THE BROWSER SHOWS ITSELF (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]; Matrix's `pinSda`): where the page's
+   scroll turns the always-mounted copy on (`--lwy-s`, the scroll at which the real row's top meets the top bar's foot),
+   and whether it is up now. `up` gives it taps and its shadow; while it is not up it is also `inert` — out of the focus
+   order and of what a screen reader reads, since nobody can see it (the build's loose end 1). Written on the copy's own
+   box only, never an ancestor (a custom property on the grid's ancestor restyles the whole grid), and only when it
+   changes. */
+function placeY(box: HTMLElement | null, rowTop: number, topEdge: number) {
+  if (!box) return
+  const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+  if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+  const up = rowTop < topEdge
+  box.classList.toggle('up', up)
+  if (box.inert === up) box.inert = !up
+}
+/* WHILE THE FINGERS PINCH, the pinned copy is shown by the pinch's own rule, not the page's scroll (D1287): hidden while
+   the grid's own date row — held from rising — is in sight below the top bar, shown the moment it would pass under it.
+   `pin` applies it on each scroll of the pinch, and the pinch's start applies it at once: the always-mounted copy is off
+   the scroll's animation while pinching (matrix.css `.lw-pinsda .mxfixed.lw-pinching` — `--lwy-s` cannot follow a row
+   the pinch is stretching), so a copy not up would otherwise stand over the grid until the first scroll. */
+function pinchShow(fixedRow: HTMLElement | null | undefined, head: HTMLElement | null) {
+  if (!fixedRow || !head) return
+  const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
+  fixedRow.style.visibility = ownTop >= topEdge ? 'hidden' : ''
+}
+

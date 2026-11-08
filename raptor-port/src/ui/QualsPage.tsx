@@ -417,27 +417,6 @@ export function QualsPage() {
       return sdaActive && CSS.supports('animation-timeline: scroll(root block)') && CSS.supports('animation-range: 0px 1px')
     } catch { return false }
   })
-  /* where the page's scroll turns the copy on (`--lwy-s`) and whether it is up — `up` gives it taps and its shadow, and a
-     copy not up is `inert`, out of the focus order and of what a screen reader reads (D1870's loose end 1); on the copy's
-     own box only, and only when it changes */
-  const placeQ = (box: HTMLElement, rowTop: number, topEdge: number) => {
-    const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
-    if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
-    const up = rowTop < topEdge
-    box.classList.toggle('up', up)
-    if (box.inert === up) box.inert = !up
-  }
-  /* WHILE THE FINGERS PINCH the copy is shown by the pinch's own rule (D1110; `pin` below): hidden while the table's own
-     heading — held from rising — is in sight below the top bar. The pinch's start applies it at once: the always-mounted
-     copy is off the scroll's animation while pinching (05-quals.css `.qfixed.q-psda.q-pinching`), so a copy not up would
-     otherwise stand over the table until the first scroll. */
-  const qPinchShow = () => {
-    const box = document.querySelector<HTMLElement>('#page-quals .qfixed'), head = tblRef.current?.tHead
-    if (!box || !head) return
-    const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
-    const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
-    box.style.visibility = ownTop >= topEdge ? 'hidden' : ''
-  }
   const admin = isAdmin()
 
   /* WHO MAY EDIT WHAT HERE (owner, 5 Aug 26). `Enable editing` is open to a
@@ -736,7 +715,7 @@ export function QualsPage() {
         const a = document.querySelector<HTMLElement>('#page-quals .qfixed-anim')
         if (a) a.style.animationPlayState = 'paused'
         document.querySelector('#page-quals .qfixed')?.classList.add('q-pinching')
-        qPinchShow()   /* the pinned copy takes the pinch's rule from the pinch's first frame (D1870) */
+        qPinchShow(tblRef.current?.tHead)   /* the pinned copy takes the pinch's rule from the pinch's first frame (D1870) */
         qPinchingRef.current = true
       },
       /* (called with the stretch already taken off, before the zoom is written: the row is measured at rest; a new zoom
@@ -831,7 +810,7 @@ export function QualsPage() {
          its place or lower — is in sight below the top bar (two heading rows, never: the Leave War's D1288 picture), shown
          again the moment that row would pass under it. A row not frozen at the start never needs one: its own heading row,
          held from rising, never passes under the top bar. The lift settles it once, from rest (`qRepinRef`). */
-      if (qPinchingRef.current) { qPinchShow(); return }
+      if (qPinchingRef.current) { qPinchShow(tblRef.current?.tHead); return }
       /* IN THE SAME FRAME (his D1789, 8 Nov 26 — [LW-FROZEN-BAR-GAP]): set as React state from this passive scroll listener,
        the change was drawn in a later task, after the browser had painted the scroll — for one or two frames the row stood
        half under the top bar with no pinned copy (or none at all). So when the row FLIPS — pinned or let go — the change is
@@ -1162,4 +1141,27 @@ export function QualsPage() {
           ([ONE-DOOR], owner D310, 27 Sep 26 — one door for a person's whole state; ui/UsersPanel.tsx ArchivedRow). */}
     </>
   )
+}
+
+/* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
+/* where the page's scroll turns the copy on (`--lwy-s`) and whether it is up — `up` gives it taps and its shadow, and a
+   copy not up is `inert`, out of the focus order and of what a screen reader reads (D1870's loose end 1); on the copy's
+   own box only, and only when it changes */
+function placeQ(box: HTMLElement, rowTop: number, topEdge: number) {
+  const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+  if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
+  const up = rowTop < topEdge
+  box.classList.toggle('up', up)
+  if (box.inert === up) box.inert = !up
+}
+/* WHILE THE FINGERS PINCH the copy is shown by the pinch's own rule (D1110; `pin` below): hidden while the table's own
+   heading — held from rising — is in sight below the top bar. The pinch's start applies it at once: the always-mounted
+   copy is off the scroll's animation while pinching (05-quals.css `.qfixed.q-psda.q-pinching`), so a copy not up would
+   otherwise stand over the table until the first scroll. */
+function qPinchShow(head: HTMLTableSectionElement | null | undefined) {
+  const box = document.querySelector<HTMLElement>('#page-quals .qfixed')
+  if (!box || !head) return
+  const topEdge = document.querySelector('.topbar')?.getBoundingClientRect().bottom ?? 0
+  const ownTop = head.querySelector('th')?.getBoundingClientRect().top ?? head.getBoundingClientRect().top
+  box.style.visibility = ownTop >= topEdge ? 'hidden' : ''
 }
