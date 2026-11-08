@@ -34,6 +34,13 @@ the later merge keeps both (D78).
 - **Next for the diet:** step 5a's next areas (the IT guide, people, design, the Tracker), each on his word, and the re-measure before 5b (the plan's §7).
 - **Remove this block at the next handoff** — nothing else is open from chat 12.
 <!-- /now -->
+<!-- now:claude/pr-board-layout-62eb71 -->
+### CHAT 11 — the pictures round's group 1, the board's layout (D1780, D1781, [BOARD-KEYS-LOOKS] D1771/D1772); written 8 Nov 26 — verify before use
+- **State:** planning done, nothing built. Waiting for pull request 679 (chat 5, the board's OIL Earn) to merge — a background check watches it; then the branch is re-cut from `origin/main` (`git switch --no-track -C claude/pr-board-layout-62eb71 origin/main`, then this commit re-applied). Worktree folder `pr-leave-war-4988a8` (its old name; the branch is this one).
+- **The plan, with the design of each part and the order:** `raptor-port/docs/superpowers/plans/2026-11-08-board-layout-group1.md` — re-read it first after any compaction. Tier WALK (told to him 8 Nov 26): a shared drawer (the ⋯ ring on the week too) and a new mode (the sideways board scrolls as one page).
+- **Chat 13 (group 3, `claude/pr-sched-marks-3205d7`) settled, 8 Nov 26 (D302):** it keeps clear of `SchedBoard.tsx`'s `.sb-top` block and ⋯ menu, `sheetfocus.ts`, `kbscroll.ts`, `10-board-history.css`, `13-board-rows-responsive.css`; this chat keeps clear of the published-version banner (`SchedBoard.tsx` ~437–442), the Unavailable row (`board-html.ts`), `QUARANTINE_NOTE` / `.wln-mute` (`board.ts`), `04-pucks-sections.css`, `03-week.css`. Whoever merges second brings `main` in first.
+- **Rulings:** none yet (range D1800–D1809). Reports to chat 3.
+<!-- /now -->
 <!-- now:claude/pr-leave-war-4988a8 -->
 ### CHAT 8 — the pictures round's group 6, the Leave War — MERGED 8 Nov 26 (pull request 680, on his "merge live")
 - **Live:** the day window's grey foot "↓ N more" (D1788) and the pinned dates row and Quals' header in the frame of the scroll (D1789), with the code readers' two fixes (a phone pull of the day window kept under the finger; the pinned rows' setup by the ordinary route). Evidence: `raptor-port/docs/handpass/2026-11-08-lw-group6.md`; [LW-MORE-BELOW-CUE], [LW-FROZEN-BAR-GAP] and [LW-TWO-BOX-LETTERS] archived.
@@ -76,7 +83,7 @@ the later merge keeps both (D78).
 - **Chat 2's overlap settled:** its pull request 671 merged 8 Nov 26, D1770's reader lines kept and D1760 marked NARROWED BY D1770.
 - **[BOARD-KEYS-LOOKS] answered 8 Nov 26 ("Ok all as recommended"):** D1771 — the ⋯ menu's item and the + Block and Templates buttons wear the cyan keyboard ring under the keys; D1772 — Tab out of a menu stays as built. D1771 is built inside the pictures round's build, its group 1 (his word; chat 3 asked to add it to its plan).
 - **Elsewhere:** chat 3's 14 questions (pull request 666) and chat 2's questions wait in their own chats.
-- **Chats (D1744):** before numbering a new chat, read the open chats' titles — numbers went twice on 8 Nov 26. At 08:50 that day the highest in use was 12 (chat 2's rules diet step 5a, renumbered from 5); chat 3's builds are 5 to 9 and it holds 10 and 11 for its second wave; so the next new chat takes 13. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26.
+- **Chats (D1744):** before numbering a new chat, read the open chats' titles — numbers went twice on 8 Nov 26. At 08:50 that day the highest in use was 12 (chat 2's rules diet step 5a, renumbered from 5); chat 3's builds are 5 to 9 and it holds 10 and 11 for its second wave; so the next new chat takes 13. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26. **Later that day:** 10 went to the Tracker's merge chat, 11 to the board's layout (group 1), 13 to the schedule's marks and words (group 3), 14 to the Leave War's pinned row — the next new chat takes 15.
 - **Rulings:** D1770, D1771, D1772.
 <!-- /now -->
 ## Next, in order
