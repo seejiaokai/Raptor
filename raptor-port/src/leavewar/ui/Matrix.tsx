@@ -2116,12 +2116,28 @@ export function Matrix() {
       heights.set(document.body, hOf(document.body)); moved.observe(document.body)
       if (bar) { heights.set(bar, hOf(bar)); moved.observe(bar) }
     }
+    /* SHOWN AGAIN, WHERE THE BROWSER SHOWS THE COPY (D1870 — the re-walk of 8 Nov 26, the fresh Opus code read's finding 2):
+       the grid hidden by another of the Leave War's tabs (Balances, Approvals) or the whole page left for another, then
+       shown again scrolled down — the browser makes the copy's showing step afresh, and a step is not applied in the frame
+       it is made in, so the first frame stood with the real row under the top bar and no copy. The two switches that hide
+       the grid are watched; the moment either changes, before that frame, the copy is measured afresh and held shown.
+       Hidden, the copy has no step, so the hold does nothing. */
+    const shownAgain = pinSda && typeof MutationObserver === 'function' ? new MutationObserver(() => {
+      const box = mirrorRef.current?.parentElement
+      if (!box) return
+      pin(true)
+      holdShown(box)
+    }) : null
+    const hostEl = wrapRef.current?.closest('.lw-gridhost'), pageEl = wrapRef.current?.closest('.page')
+    if (shownAgain && hostEl) shownAgain.observe(hostEl, { attributes: true, attributeFilter: ['hidden'] })
+    if (shownAgain && pageEl) shownAgain.observe(pageEl, { attributes: true, attributeFilter: ['class'] })
     /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26);
        where the browser shows the copy it is kept, so it is forced to measure afresh (above) */
     pin(pinSda)
     return () => {
       repinRef.current = () => {}
       moved?.disconnect()
+      shownAgain?.disconnect()
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)
       window.removeEventListener('orientationchange', remeasure)

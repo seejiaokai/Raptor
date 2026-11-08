@@ -2115,8 +2115,10 @@ test('while the fingers pinch part-way down, the pinned dates row shows by the p
 /* THE FRESH OPUS CODE READ OF 8 NOV 26 (chat 16 — [LW-PIN-LAST-FRAME]). A showing step the browser makes afresh is not
    applied in the frame it is made in, so the copy would stand at its hidden opacity for that one frame though the row is
    under the bar. Read in every frame, before each frame paints: from before the change to well after it. */
-const lwFrames = (page: Page, n: number) => page.evaluate(n => {
-  const w = window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }
+/* `act`, where named, is made in the very task that starts the reading, so the first frame after it is always read — made
+   in a call of its own, a frame could be painted between the two and never read (the re-walk of 8 Nov 26, finding 2) */
+const lwFrames = (page: Page, n: number, act?: 'grid' | 'leavewar') => page.evaluate(([n, act]) => {
+  const w = window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[]; go: (p: string) => void }
   w.__f = []
   const tick = () => {
     const el = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')
@@ -2124,10 +2126,12 @@ const lwFrames = (page: Page, n: number) => page.evaluate(n => {
     const cs = el ? getComputedStyle(el) : null
     const under = !!th && th.getBoundingClientRect().height > 0 && th.getBoundingClientRect().top < document.querySelector('.topbar')!.getBoundingClientRect().bottom - 0.5
     w.__f.push({ pinching: !!el?.classList.contains('lw-pinching'), shown: !!cs && Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under })
-    if (w.__f.length < n) requestAnimationFrame(tick)
+    if (w.__f.length < (n as number)) requestAnimationFrame(tick)
   }
   requestAnimationFrame(tick)
-}, n)
+  if (act === 'grid') (document.querySelector('[data-testid="lw-tab-grid"]') as HTMLElement).click()
+  if (act === 'leavewar') w.go('leavewar')
+}, [n, act] as const)
 const lwFramesRead = async (page: Page, n: number) => {
   await page.waitForFunction(n => (window as unknown as { __f: unknown[] }).__f.length >= n, n, { timeout: 15000 })
   return page.evaluate(() => (window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }).__f)
@@ -2155,10 +2159,21 @@ test('back on the grid from Balances while scrolled down, the pinned dates row s
   await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-balances"]') as HTMLElement).click())
   await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
   await page.waitForTimeout(300)
-  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-grid"]') as HTMLElement).click())
-  await lwFrames(page, 30)
+  await lwFrames(page, 30, 'grid')
   const f = await lwFramesRead(page, 30)
   expect(f.some(x => x.under), 'the grid came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
+  expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+})
+/* the same, the whole page left for another and come back to: it returns where it was on the grid (the re-walk of 8 Nov 26) */
+test('back on the Leave War from another page while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true)
+  await page.evaluate(() => (window as unknown as { go: (p: string) => void }).go('quals'))
+  await page.waitForFunction(() => (window as unknown as { CURPAGE: string }).CURPAGE === 'quals')
+  await page.waitForTimeout(300)
+  await lwFrames(page, 40, 'leavewar')
+  const f = await lwFramesRead(page, 40)
+  expect(f.some(x => x.under), 'the page came back scrolled down, at ' + await page.evaluate(() => window.scrollY)).toBe(true)
   expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
 })
 /* its question 1: a zoom changes the page's height with no scroll — is the turn-on point worked out again? One forced
