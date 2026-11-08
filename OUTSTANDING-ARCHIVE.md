@@ -8188,6 +8188,115 @@ picture first (D853). **Place:** with the next Inputs batch.
 ### [TRK-POP-ASKED] Two questions from the Tracker's marking-window round (filed 8 Nov 26 — chat 10, put to him that day)
 **What:** (1) **F8** (the fresh Opus code read of chat 9's job): two messages carry the old typed marks in their words — the "Delete course …?" question and the import's note on a deleted course (`src/tracker/app/core.js`, the course delete and the import) read "↺ Restore in ⇅ Reorder courses brings it back…"; the app draws those marks everywhere else and a message box cannot. Recommended: drop the two marks ("Restore in Reorder courses brings it back…"), a two-line change for the Tracker's next batch. Pictures before and after: `raptor-port/docs/img/handpass/2026-11-08-chat9-tracker/f8/`. (2) **The short-screen placement** (Astra's reading 6, "his to decide"): on a phone held on its side the chart lifts the event as high as it may go and the window opens under it, scrolling inside itself, as the drawings do not show; picture `…/2026-11-08-chat9-tracker/s10-open-window.png`. Also recorded by the walk, as before this change and not faults: S9 (the window neither follows nor closes when the chart is wheel-scrolled under it) and S30 (Restore's keyboard ring is the browser's own). Evidence: `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`. **His answer, 8 Nov 26: "Yes to both"** — (1) D1860, drop the marks; (2) D1861, the short-screen placement stays as built, nothing to build. **To do:** build (1) with the Tracker's next batch — the two messages' words only, their tests with them; then archive this item.
 
+*Moved here 2026-11-08 by backlog-archive.mjs ([TESTS-REQUIRED-ON-MAIN]). Forward facts: `raptor-port/docs/gates-and-deploy.md`.*
+
+### [TESTS-REQUIRED-ON-MAIN] GitHub requires only the secrets scan before a merge to main, not the tests (found 8 Nov 26 by Astra; the agent's)
+**Seen:** Astra's read of [CI-SMOKE-TIMEOUT]'s change; checked by the host the same morning — the one ruleset on `main`
+("main: secrets scan", D1540) requires only `secrets scan`, and `main` has no branch protection. So a pull request whose test
+jobs failed or timed out can still be merged on GitHub; today only the merge steps keep it out (D1746 step 3: "its last run
+green", read by hand). **The fix, as Astra gives it:** one summary job in `deploy.yml` that runs on every pull request, passes a
+notes-only one (the gates skip those by `paths-ignore`) and otherwise passes only when every test job of the run passed; that
+one job then made a required check on `main` in the same ruleset — never the path-filtered jobs themselves, or a notes-only pull
+request could never merge. **Place:** with the checks batch (night 3); the workflow job his "merge live", the ruleset setting
+his own click, as D1540's was — the steps put to him with the build.
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the "checks passed" job and its script (8 tests). The notes-only skip for pull requests moved from the trigger into a first job, "what changed" — left on the trigger, a required check would never report on a notes-only pull request, which could then never merge (`raptor-port/docs/gates-and-deploy.md` §Now). **Left:** his click in the ruleset, once one notes-only pull request after the merge has shown "checks passed" green.
+**Done 8 Nov 26 (chat 27):** pull request 698 merged live; notes-only pull request 709 showed "checks passed" green with every gate skipped; he then added "checks passed" to `main`'s ruleset himself, and GitHub reports both checks required, the ruleset active (`raptor-port/docs/gates-and-deploy.md` §Docs-only changes).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([BOARDNAV-SCRUB-CLICK-TIMER]). Forward facts: `raptor-port/docs/handpass/2026-11-08-oil-earn-board.md`.*
+
+### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
+**What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
+snap back to where the drag started". After a drag along the board's day dots the browser fires a click naming the dot the finger went
+down on; `src/ui/board.ts` eats that one click for 350 ms (`setTimeout(…, 350)`). The test releases, then dispatches the click in a
+second `act` — on a crowded machine that gap passed 350 ms: in chat 5's run of 86 OIL, board and SANS files at once (8 Nov 26, branch
+`claude/pr-oil-earn-ffbf07` with `main` at `4d5b3828a` merged in) the test took 3009 ms and the click moved the day back (expected 6,
+got 2); alone it passed three times out of three. The code is untouched by that branch. The app is not wrong — a real click follows the
+release within a few milliseconds. **To do:** make the test hold the window open while it clicks (a fake timer around the release and
+the click), never widen the app's 350 ms. **Place:** Checks and tooling, small — with the next board-navigation change, or sooner if
+GitHub's run trips on it.
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the test's clock stands still from the release to the
+click (only `setTimeout` faked, restored in a `finally`); the app's 350 ms untouched. Red first: a real 400 ms wait put between
+the release and the click failed it exactly as chat 5 saw (expected 6, got 2); with the fake clock it passed with the wait still
+in; the wait then taken out — the file 41/41. Chats 11 and 13 asked first (D302): chat 11's work is merged and leaves the file
+alone, chat 13 confirmed by message that its branch changes `board.ts` in three other places only (the unreadable-week notice, its import, the hidden warning's Reset arrow). Leaves for the archive once merged.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([CI-SMOKE-TIMEOUT]). Forward facts: `raptor-port/docs/file-map.md`, `raptor-port/docs/gates-and-deploy.md`.*
+
+### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
+**Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
+`4d13c06d8` half an hour before), `tracker (smoke 1/2)` ran 16 minutes with every other job finished; it was cancelled and
+re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
+others), so a hang waits for GitHub's default of 6 hours. **To do:** a `timeout-minutes` on each test job, set from its measured
+length on GitHub's machines with room to spare (the smoke halves about 3–4 min — measure first); if the smoke hangs again,
+find where (its own log), as D87 says. **The time limits: built 8 Nov 26 on `claude/ci-smoke-timeout`** (a workflow change —
+his "merge live"), from the 20 green runs before 8 Nov 26: build 10 minutes (0.9 at most), unit 20 (7.5), geometry 30
+(16.4), the Tracker smoke 30 a half (17.7) and the smoke's own step 12 (3.9 at most, over 40 halves). **Measured, not guessed: the 16 minutes
+of 5 Nov 26 were not a hang in the smoke** — that half's "Install Chromium" (the system packages it fetches) took 12.3 of
+them and the smoke 3.8; the same install took 8 to 16 minutes in 9 of the 20 green runs (10 jobs), while the browser tests
+themselves never passed 6.2. A slow install is the browser jobs' long tail, so their limits sit well above it. **Two real
+stalls did happen, both before the smoke, and only the job's limit catches them** (the fresh Opus read of the change):
+26 Oct 26, `claude/tracker-small-1021`, smoke 2/2's "Install Chromium" printed nothing for 62 minutes until cancelled; 5 Nov
+26, `claude/postout-bell-look`, smoke 2/2's Node set-up took 34 minutes and its install 9 more, cancelled. Each would now
+stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over about 1,000 halves, by that read's count). **Still open here:** the two points below, which are not workflow
+changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
+(a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
+`.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
+**Both points built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** React Doctor's three skips — its full check 421 findings → 236, none left in those folders. The design check's "false alarm" was not the test file: the checker reads its settings only from the chat's current folder, so a chat whose shell had moved into `raptor-port/` had no skip list at all (his ruled side stripes flagged with it); a byte-for-byte copy there, and the document check fails if the two differ (`raptor-port/docs/file-map.md`, the `.impeccable` row). Leaves for the archive once merged.
+**Astra's read (8 Nov 26, the morning after — D1743; the night's helper had run only the fresh Opus read):** no finding in the
+change — it measured the same 20 green runs (build 0:54 at most, unit 7:29, geometry 16:26, the smoke half 17:41, the smoke
+step 3:53), found every test job covered and each limit where GitHub reads it, and nothing else in the workflow changed; one
+older gap, filed as [TESTS-REQUIRED-ON-MAIN] (`raptor-port/docs/superpowers/briefs/2026-11-08-ci-smoke-timeout-read-astra.md`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([SHELL-SCRIPT-GUARD]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [SHELL-SCRIPT-GUARD] A guard that refuses a script typed into the shell — eighteen skill notes ask for it (filed 13 Oct 26 by the skill-notes review; his go to build it given the same day — D811)
+
+**What keeps happening.** On this PC a script handed to the shell inline (a here-document, `node -e`, `python -c`)
+loses its backslashes or fails on an apostrophe, often with no error: a regular expression arrives as a backspace
+character, a test asserts the wrong pattern, a file is written with real line breaks inside a string. The rule
+("write the script to a file with the file tool, then run the file") has been in memory since 28 Sep 26
+(`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`, `python-edits-crlf-trap`) and in several
+handoffs — and the same mistake was logged again in twelve later chats, three times in the chat after a note said
+"stop adding notes and build the guard" (observations 246, 259, 402, 411, 415, 469, 472, 495, 500, 512, 518, 526; in
+part 248, 311, 328). The same family: an in-place stream edit (`sed -i`) that rewrote a whole file's line endings
+(403, 460).
+
+**To build (small; no app code):** a check that runs before every shell command, as the background-command guard
+does (`.claude/hooks/bg-cwd-guard.mjs`, D162), and REFUSES, with the sentence "write the script with the Write tool
+and run the file": (1) a here-document, or an inline `-e` / `-c` script, whose body holds a backslash followed by a
+letter or an apostrophe and which writes or edits a file; (2) `sed -i` on a tracked file ("use the editor tool").
+**Conditions from two notes about writing such a guard:** it is wired `if …; then …; else exit 0; fi` — the
+`test && run || exit 0` form turns its own refusal into "allowed" (270) — and proved live with one refused and one
+allowed command; what it assumes about the harness is MEASURED first and written at its head, and its tests take the
+environment as an input (285). **A cheaper alternative, if he prefers no new guard:** one committed helper that
+applies a list of exact find-and-replace pairs read from a file, so no script is typed at all (469).
+**Place:** allowed by him (D811, "Approve all"). The agent's placing: a small job on its own branch, read by a fresh
+Opus reader, after the Calendar job unless he says sooner; it removes the commonest lost round trip of every chat.
+**Met again since it was filed (13–26 Oct 26 — observations 601, 609, 668):** about forty more times by the three notes'
+own count, five of them hangs of two to five minutes on overnight runs; every time the Write or Edit tool put it
+right.
+**Two more refusals for the guard:** a command that begins `cat >` (or `cat >>`) with no here-document or file of its own —
+it waits on input for ever and the tool moves it to the background after two minutes (609); and every script run from
+the shell gets `< /dev/null`, so anything that reads input ends at once. **Conditions from the two notes about writing a
+command-refusing hook (598, 626):** read the shell's real grammar before the rule — quotes and escapes per shell,
+here-document and here-string bodies, comments, `$( … )`, `bash -c` / `eval`, redirects, launcher words (`timeout`,
+`env`) — and judge only the word in command position (`grep vitest` is not vitest); write the everyday commands as tests
+first (a commit with a here-document message, a pull request body, a grep for the tool's own name); list every situation
+in which the platform fires the hook's event and refuse only in the one the rule is for, never twice on unchanged state.
+The cheaper helper's find-and-replace pairs match each spot's own line endings (694).
+**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged — a hook, his "merge live" in that chat):** `.claude/hooks/script-guard.mjs`, 20 tests written first, the everyday commands among them; what the shell does was measured before each refusal (the file's header) — so the "every script gets `< /dev/null`" point above was not taken: Python takes `/dev/null` for a keyboard and waits in its prompt, so the guard refuses that instead. The in-chat proof comes in the first chat started after the merge (the app reads hook settings when a chat starts). Readers owed: Astra and a fresh Opus reader (D811, D1761).
+**Read 8 Nov 26 (chat 27):** Astra and a fresh, blind Opus reader, one brief, blind to each other (`raptor-port/docs/superpowers/briefs/2026-11-08-chat19-checks-read-{brief,astra,opus}.md`). Every finding fixed red-first: here-strings, `--help`, single-quoted inline scripts, a quoted `<` and a message piped to `tee` no longer refused; `sed -e'…'`/`-f…` written on, launcher options with values (`env -u X`, `xargs -n 1`), reserved words (`then`, `do`, `!`) and a list git refuses whole no longer let through (24 tests); "checks passed" fails a first job that gave no answer, and its tests run in the Docs guard; the board test pins the 350 ms window both ways (shown red at 1 ms and 5 s); the rule check no longer counts a drawing's "Q11.5" as a test (Q11 back in its baseline); `shipping.md` names the right list. Also measured: in chat 27 the shell's input was `/dev/null`, not a pipe that never ends — the refusal message says both. **Tidiness, filed not fixed:** `nativePath` copied from push-guard, not imported; the `<`/`>` pattern written twice in `tokens()`, its comment about a digit before `>` not matching the code; docsize's comment says the gates skip `.impeccable/**`, untrue of the `raptor-port/` copy; `python -VV` refused; a quoted `<` mid-word in an option is still read as a redirect for cat, tee and the interpreters (rare); once private, the two new jobs bill about 2 minutes a run.
+**Live 8 Nov 26 (chat 27):** pull request 698 merged live; in chat 27, after its compaction loaded the hooks afresh, the guard refused a script typed into the command line that held a backslash and wrote a file — its first live refusal; the script was written to a file and run, as its message says. Leaves for the archive.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([DESIGN-CHECK-GOLD-DOT]). Forward facts: `raptor-port/docs/file-map.md`.*
+
+### [DESIGN-CHECK-GOLD-DOT] The design checker flags the gold history dot (filed 26 Oct 26 from the night of 21 Oct 26's handoff block)
+**Seen (21 Oct 26, the overnight run):** the design checker flags the gold history dot in `raptor-port/src/ui/scheduler/20-changes-quals.css` as a "grid background" — a false alarm. An ignore for that one file was added that night and taken out by job 5's helper; adding it needs his OK. **Place:** Checks and tooling — low, his word.
+**His OK, 8 Nov 26 (D1890, asked with a picture): built by chat 19 on `claude/chat19-checks`** — one scoped skip (rule `codex-grid-background`, that file only) in both copies of the checker's settings, its reason naming D1890. Leaves for the archive once merged.
 *Moved here 2026-11-08 by backlog-archive.mjs ([MED-ROOM-DRAGGED]). Forward facts: `raptor-port/src/ui/scheduler/16-medical.css`, `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`.*
 
 ### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)

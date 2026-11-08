@@ -54,6 +54,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 
 | # | Date | The rule |
 |---|---|---|
+| D1890 | 8 Nov 26 | The design checker skips the gold history dot in the History mode's style file: one gold dot in a box's corner is not a dotted grid pattern, so it is not flagged. |
 | D1800 | 8 Nov 26 | On his iPhone on its side, with the keys up, the Scheduler Board’s bar of buttons stays at the top, as D1780 rules, so D1780’s look on his iPhone is done and nothing more is built for it. |
 | D1780 | 8 Nov 26 | On a phone on its side the Scheduler Board's Calendar, title, day strip and search scroll away with the list, as any page does, while its bar of buttons stays at the top, so with the keys up the list gets about 151px and nothing jumps when the keys open. — changed by D1800 |
 | D1781 | 8 Nov 26 | On the desktop Scheduler Board from 821 to 1099 wide each jet's line puts its remarks on a row of their own and stacks R over B and TO over LD as a phone does, so every part of the line is in reach and the remarks get over 300px; wider, the times stay in one line. |
@@ -293,7 +294,7 @@ speed — `raptor-port/docs/performance.md`; what is stored — `raptor-port/doc
 | D481 | 1 Oct 26 | The Scheduler Board gets a way to open Insights. |
 | D479 | 1 Oct 26 | The amber "already on …" note stays: a drop that recreates a clash already hidden still says, once, to the scheduler doing it, that the man is already busy then — leave it. |
 | D478 | 1 Oct 26 | Insights counts each day's latest published version — the original, or the latest amendment (AL1, AL2 …) — and the working copy only for a day not yet published; changes waiting on a published day are not counted until they go out. — changed by D530 |
-| D475 | 1 Oct 26 | The hidden-warning mock-up is approved as drawn — the design of record for [WARN-HIDE-KEPT]: View-only Sched shows the struck-out line too, with no ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; the hidden line is struck out and grey, dashed-outlined on Edit Schedule, its ↺ at full strength. |
+| D475 | 1 Oct 26 | The hidden-warning mock-up is approved as drawn — the design of record for [WARN-HIDE-KEPT]: View-only Sched shows the struck-out line too, with no ↺; a day with every issue hidden keeps a quiet "✓ No issues" bar that opens the list; the hidden line is struck out and grey, dashed-outlined on Edit Schedule, its ↺ at full strength. — changed by D1792 |
 | D472 | 1 Oct 26 | A hidden warning is not counted: a day with 3 issues and one hidden reads "2 issues" — no "1 hidden" beside it; the hidden one is seen only by opening the day's issues list, where its line is struck through and darker. |
 | D471 | 1 Oct 26 | The hidden-warning change (D469) is built as its own job, on its own branch, after phase 7; a warning hidden on a day already published waits for the next amendment, like every other change to a published day; and the published and printed schedule drop the hidden item's flag too. |
 | D469 | 1 Oct 26 | A hidden warning stays hidden — for everyone, across a reload and a sign-in — until someone unhides it; while it is hidden the pucks carry no flag for that item, and its line in the day's warning list stays where it is, struck out and darker, one tap from being flagged again. — changed by D475, D472, D471 |
