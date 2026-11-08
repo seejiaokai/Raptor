@@ -156,11 +156,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 **Tracker**
 - [TRK-STANDALONE-LEFTOVERS] — built and checked 5 Nov 26 (pull request 637, `claude/tracker-standalone-tidy`); archive once live.
-- [TRK-KEPT-COPIES] — the Tracker's own glyph, pencil and colour copies, kept from the standalone app; merge them into the app's, checked by pictures (low, the agent's). BUILT 8 Nov 26 (chat 20, PR #696) but the magnifier: he ruled it matched to the app's (D1900) — to build.
 - [TRK-MARKS-LEFT] — typed marks still in four Tracker messages and hints, and the Tracker's Export / Import drawings unlike Admin's; for the consistency look (found by chat 20).
 - [TRK-MENU-KEYS] — the Tracker's course, syllabus and File menus wear the browser's white keyboard ring, not the app's cyan, and the arrow keys do not move through them, unlike the board's menus (found by chat 20's walk).
 - [TRK-COPIES-TIDY] — the code reads' tidiness notes on [TRK-KEPT-COPIES] (D489), filed not fixed.
-- [TRK-NOSTORE-SAVED] — in a browser that refuses storage the Tracker's corner says "● saved" though a reload loses the work, on every page; he chose a "Not kept" band under the top bar on every page (D1901) — to build.
 - *(The Tracker's database-step items are in that group below.)*
 
 **People, accounts and Quals**
