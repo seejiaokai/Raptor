@@ -839,8 +839,13 @@ function rulings(allow) {
     const generalPages = [...areas].filter(f => !RL.isScoped(readNow(f))).map(RL.stem).filter(s => pageOf.has(s))
     const sources = [...[...pageOf].map(([s, f]) => ({ f, text: readNow(f), homes: new Set([s]), area: s })), ...alwaysLoadedRules().map(f => ({ f, text: readNow(f), homes: new Set(generalPages) }))]
     for (const [, f] of pageOf) for (const p of RL.pageShapeProblems(readNow(f))) fails.push(`${f}, a page: ${p}`)
-    for (const x of RL.pageDebts(sources, live, archived)) fails.push(
-      x.kind === 'mark' ? `${x.f} line ${x.line} states ${x.d} but does not cite ${x.missing.join(', ')}, which ${x.missing.length > 1 ? 'change' : 'changes'} it (the mark in ${x.d}'s full row) — write the line as it stands since then and cite [${[x.d, ...x.missing].join(', ')}] on it`
+    /* D1941's trial: a ruling named on a trial page's "Built, held by tests" line is taken only when a test names it —
+       the one finder, shared with rulecheck.mjs (docsize-rulings.mjs testNamer) */
+    for (const x of RL.pageDebts(sources, live, archived, RL.testNamer(ROOT))) fails.push(
+      x.kind === 'built' ? (x.why === 'area'
+        ? `${x.f} line ${x.line} names ${x.d} on its "Built, held by tests" line, but ${x.d} is a ruling of another area — that line takes only this page's own rulings (D1941): point to it under "## From other areas" instead`
+        : `${x.f} line ${x.line} names ${x.d} on its "Built, held by tests" line, but no test names ${x.d} — a built ruling leaves the page only when a test that pins it names it (D1941): name it in that test, or state the rule on the page again and take ${x.d} off the line`)
+      : x.kind === 'mark' ? `${x.f} line ${x.line} states ${x.d} but does not cite ${x.missing.join(', ')}, which ${x.missing.length > 1 ? 'change' : 'changes'} it (the mark in ${x.d}'s full row) — write the line as it stands since then and cite [${[x.d, ...x.missing].join(', ')}] on it`
       : x.kind === 'stale' ? `${x.f} line ${x.line} cites ${x.d}, which ${x.by} replaced (${RULINGS_ARCHIVE}) — rewrite the line as it stands now and cite the ruling that holds it (D201)`
       : x.kind === 'none' ? `${x.f} line ${x.line} cites ${x.d}, which is no ruling — not in ${FULL_DIR}/ nor ${RULINGS_ARCHIVE}`
       : `${x.d} is a live ruling of ${pageOf.get(x.area)}, a page, and no statement states it${x.at ? ` — it is cited only at ${x.at}, ${x.why === 'elsewhere' ? 'a page or file that may only point to it' : 'which is a list or too short to state anything'}` : ''}: state the rule on its own page — a general ruling may be stated in an always-loaded rules file instead — and cite [${x.d}] after it (at least four words, two for each ruling cited); or, if it is spent or replaced, mark its full row and archive it (${DECISIONS}, step 2)`)

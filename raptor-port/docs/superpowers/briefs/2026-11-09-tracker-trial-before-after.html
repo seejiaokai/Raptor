@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tracker rules trial</title>
+<style>
+  :root {
+    --bg: #f7f7f5; --card: #ffffff; --ink: #1d1d1f; --muted: #5f6368; --line: #e3e3e0;
+    --left: #0b6b3a; --left-bg: #e7f4ec; --stay: #8a5a00; --stay-bg: #fdf3e0; --bar: #2f6fdf; --bar-old: #b9b9b4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+      --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --bar: #6f9cf0; --bar-old: #55555a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #151517; --card: #1f1f22; --ink: #ececec; --muted: #a4a4aa; --line: #333338;
+    --left: #6fd39c; --left-bg: #173325; --stay: #f2c46b; --stay-bg: #3a2e14; --bar: #6f9cf0; --bar-old: #55555a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 720px; margin: 0 auto; padding: 24px 16px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 32px 0 10px; }
+  p { margin: 0 0 12px; }
+  .sub { color: var(--muted); margin-bottom: 20px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 0 0 12px; }
+  .bars { display: grid; gap: 10px; }
+  .row { display: grid; grid-template-columns: 70px 1fr; align-items: center; gap: 10px; }
+  .track { background: var(--line); border-radius: 6px; height: 22px; overflow: hidden; }
+  .fill { height: 100%; border-radius: 6px; }
+  .num { font-variant-numeric: tabular-nums; color: var(--muted); font-size: .9rem; margin-top: 2px; }
+  .tag { display: inline-block; font-size: .8rem; font-weight: 600; border-radius: 999px; padding: 2px 10px; margin-bottom: 8px; }
+  .left .tag { color: var(--left); background: var(--left-bg); }
+  .stay .tag { color: var(--stay); background: var(--stay-bg); }
+  .said { font-style: italic; }
+  .why { color: var(--muted); margin: 6px 0 0; }
+  ul { padding-left: 20px; margin: 0 0 12px; }
+  li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>The Tracker's rules page: before and after</h1>
+  <p class="sub">The trial you approved: the page keeps your standing rules and what you like; what is already built and checked by the app's own tests leaves it. Nothing is deleted — your words stay in the full record.</p>
+
+  <div class="card">
+    <div class="bars">
+      <div>
+        <div class="row"><strong>Before</strong><div class="track"><div class="fill" style="width:100%;background:var(--bar-old)"></div></div></div>
+        <div class="num">20,007 characters — 73 of your Tracker rulings written out</div>
+      </div>
+      <div>
+        <div class="row"><strong>After</strong><div class="track"><div class="fill" style="width:53%;background:var(--bar)"></div></div></div>
+        <div class="num">10,631 characters — about half: 34 rulings still written out, 39 listed by number only</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>How a rule was judged</h2>
+  <p>One question for each: <strong>if this line were gone, would the next AI working on the Tracker likely get it wrong — and would nothing in the app's checks catch it?</strong></p>
+  <ul>
+    <li>If a check in the app fails the moment the thing breaks, the rule leaves the page and is listed by number at the bottom.</li>
+    <li>If no check catches it, or a check only covers part of it, the rule stays.</li>
+    <li>Your standing wishes, things you said to leave alone, and work not yet built always stay.</li>
+    <li>A new safety check stops anyone listing a rule as "held by tests" when no check actually names it. I tried it with a rule that has no check: it refused, naming the rule.</li>
+  </ul>
+
+  <h2>Four that left the page</h2>
+
+  <div class="card left">
+    <span class="tag">Left the page</span>
+    <p class="said">The import's refusal message must read, word for word: "Student marks not brought in: they belong to a chart this file doesn't carry…"</p>
+    <p class="why">A check compares the message on screen with your exact wording. Change one word and it fails.</p>
+  </div>
+
+  <div class="card left">
+    <span class="tag">Left the page</span>
+    <p class="said">Logging out with unsaved chart changes asks first: Save them, Discard them, or Stay.</p>
+    <p class="why">A check presses each of the three answers and confirms what happens, and another confirms nothing is asked when nothing is unsaved.</p>
+  </div>
+
+  <div class="card left">
+    <span class="tag">Left the page</span>
+    <p class="said">The Tracker uses Raptor's colours fully — backgrounds, text and the event colours, sim turned to amber.</p>
+    <p class="why">A check goes through every colour the Tracker draws and fails if one is not Raptor's, or if an old Tracker colour comes back.</p>
+  </div>
+
+  <div class="card left">
+    <span class="tag">Left the page</span>
+    <p class="said">Every control on the Tracker's top bar is as tall as its dropdowns — 30 on a computer, 26 on a phone.</p>
+    <p class="why">A check opens the real app at phone and computer sizes and measures each control's height.</p>
+  </div>
+
+  <h2>Two that stayed, and why</h2>
+
+  <div class="card stay">
+    <span class="tag">Stayed</span>
+    <p class="said">Your charts, syllabi and ball details are kept: nothing wipes them without putting them back, and you are told first so you can export a copy.</p>
+    <p class="why">"Tell him first" is something the AI must do, not something the app does — no check can catch it being skipped.</p>
+  </div>
+
+  <div class="card stay">
+    <span class="tag">Stayed</span>
+    <p class="said">On a phone a finger scroll glides — it speeds up with the finger and slows to a stop after you lift, never stopping dead.</p>
+    <p class="why">No check covers how the scroll feels, so without this line a later change could quietly make it stop dead.</p>
+  </div>
+
+  <h2>What is not settled yet</h2>
+  <ul>
+    <li>This is a trial on the Tracker alone. No other area's page has changed, and nothing is live.</li>
+    <li>One rule (fixing the stray scroll bars before two other jobs) is finished work, not a built feature. It sits on the "held by tests" list for now; moving it to the archive waits for your word.</li>
+    <li>Before any of this goes live, two readers still check that no rule's meaning changed.</li>
+  </ul>
+</main>
+</body>
+</html>
