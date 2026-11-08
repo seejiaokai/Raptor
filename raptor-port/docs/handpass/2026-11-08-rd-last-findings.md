@@ -226,3 +226,12 @@ third walker (§5, walker C). The rest, each with its reason (§7.0's rule on a 
 - **S06 and the J variants** — carried by tests (`people-settings-wire-real.test.ts` group 3), as the sizing said.
 
 ## 12. Gate counts
+
+GitHub's run of the pull request on `f624bfcb0` (the branch with `main` brought in, the last code-carrying push; D1086,
+the full check while the repo is public): **green** — the build, the code check, unit (raptor 6 / 6 groups, the Leave
+War 4 / 4), the browser tests (raptor 4 / 4, the Leave War desktop 2 / 2 and phone), the Tracker smoke 2 / 2, "checks
+passed"; the secrets scan and the docs guard green on the same commit. On his PC: the touched files' tests (197 / 197
+across chat 31's 9 files, 116 / 116 across chat 32's 8), `npm run lint:changed` no new finding (chat 32), the document
+check (chat 35). The commits after it change only notes.
+
+Walk: docs/handpass/2026-11-08-rd-last-findings.md · 980 pictures (A 440, B 428, C 112) + 2 the host's · 8 screen rows + 12 save-layer rows · 728 steps on both builds (the plain round, every editor closed every way, reload, a second tab, `?savefail`, a member) · MISSING: none (what was left, each with its reason in §11; 0 found by the walk, 0 defects by the reads, 1 older find filed)
