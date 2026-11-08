@@ -205,7 +205,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
-- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
+- [RD-LEFT-1108] — React Doctor's last 12 findings, in other areas' files (CutFields, DateCal, MedicalView, TypeLegend, SansCal, SansDay, interactions) — each with its area's next batch; the 13 import cycles and People & accounts' 6 went live 8 Nov 26 (pull request 702).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822); his go for the plan's three parts (D1930) — red team, then the build, in chat 33.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
@@ -322,6 +322,7 @@ that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `
 `ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
 lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
 D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
+**LIVE 8 Nov 26 (pull request 702, his "merge live" typed in chat 35):** (1) the 13 cycles broken and (2)'s People & accounts six (`UsersPanel.tsx` 3, `AdminPage.tsx` 2, `AccessScreen.tsx` 1) cleared — evidence `raptor-port/docs/handpass/2026-11-08-rd-last-findings.md`. **Left: the other 12 of (2)**, each with its area's batch.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
