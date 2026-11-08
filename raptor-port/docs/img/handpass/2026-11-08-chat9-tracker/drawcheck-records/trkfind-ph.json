@@ -1,0 +1,107 @@
+{
+ "state": "trkfind-ph",
+ "drawing": {
+  "script": "scripts/handpass/pr-marks.mjs",
+  "shot": "q-trkfind-ph-A-drawn"
+ },
+ "recorded": "2026-11-08T02:03:46.133Z",
+ "drawnOn": "main at 6e6c55667",
+ "checkout": "28c4c25e2",
+ "viewport": {
+  "w": 402,
+  "h": 874
+ },
+ "dpr": 2,
+ "scroll": {
+  "x": 0,
+  "y": 0
+ },
+ "parts": {
+  "tabs": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 0,
+    "y": 118.5,
+    "w": 402,
+    "h": 46
+   },
+   "ink": {
+    "x": 57.1,
+    "y": 134,
+    "w": 304,
+    "h": 14
+   },
+   "text": "Flow chart Info Show All",
+   "typed": false,
+   "look": {
+    "fill": "rgb(20, 24, 29)",
+    "image": "",
+    "edge": [
+     "0px none rgb(241, 244, 247)",
+     "0px none rgb(241, 244, 247)",
+     "1px solid rgb(42, 49, 58)",
+     "0px none rgb(241, 244, 247)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "start",
+    "justify": "normal",
+    "font": "400 13.5px",
+    "spacing": "-0.065px"
+   },
+   "tag": "div.viewtabs.zz-ring.zz-tb"
+  },
+  "panel": {
+   "found": false,
+   "count": 0,
+   "why": "no visible match (0 visible) for #hSearchPanel"
+  },
+  "btn": {
+   "found": true,
+   "count": 1,
+   "box": {
+    "x": 168.8,
+    "y": 86.3,
+    "w": 29,
+    "h": 26
+   },
+   "ink": null,
+   "text": "",
+   "typed": false,
+   "look": {
+    "fill": "rgb(26, 31, 38)",
+    "image": "",
+    "edge": [
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)",
+     "1px solid rgb(42, 49, 58)"
+    ],
+    "corners": [
+     "7px",
+     "7px",
+     "7px",
+     "7px"
+    ],
+    "shadow": "none",
+    "color": "rgb(241, 244, 247)",
+    "align": "center",
+    "justify": "normal",
+    "font": "400 11px",
+    "spacing": "normal"
+   },
+   "tag": "button.sm"
+  }
+ },
+ "approved": {
+  "picture": "q-trkfind-ph-A-drawn.png",
+  "identical": true
+ }
+}
