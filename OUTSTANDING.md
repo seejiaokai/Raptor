@@ -96,16 +96,21 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [KBD-PUCK] — a puck cannot be picked up, put down, swapped or taken off by keyboard — a job of its own, his questions first.
 - [REST-FIRST-CREW-HINT] — an empty formation gives no crew-rest hint for its first man — with caps and ops limits.
 - [EOD] — End-of-Day "record actuals": designed on paper, nothing built — his word.
+- [BOARD-DESKLAYOUT-DAYBAR-EDGE] — on a phone in the board's desktop layout, the day bar's Templates and OIL Earn stand off the right edge until he pans — older; his question with a picture.
 
 **Inputs and calendars**
 - [PRINT-FLYING-ONLY-ASK] — the printed page and the schedule's spreadsheet carry flying lines only, no Ground Programme row — his question, kept from [ALLAVAIL-CHECK-SEEN] (not walked again 3 Nov 26).
-- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT, bug-checked and LIVE on his "merge live" of 5 Nov 26 (pull request 643), with his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), drawn and approved ("Yes"); round 5 (the 👁 line, the Inputs ⤢) after.
+- [UI-CONSISTENCY-LOOK] — the whole app looked over for the same thing drawn differently (D1124): rounds 1–3 answered and live; round 4 (findings 12, 15, 17, 18; the gear and calendar drawn as ruled — D1509, D1508) ANSWERED 5 Nov 26 "all as recommended" (D1701–D1707, with D1700) — BUILT, bug-checked and LIVE on his "merge live" of 5 Nov 26 (pull request 643), with his answer to the one question, A (D1708 — where the Inputs row wraps, the filters and gear at the LEFT of the second line), drawn and approved ("Yes"); round 5 (the 👁 line, the Inputs ⤢) after — its (e), the phone day bar's marks (D1793), BUILT and bug-checked 8 Nov 26 by chat 5 (`claude/pr-oil-earn-ffbf07`, pull request 679).
 - [INPUTS-LIVE-LEFT] — what the Inputs pages' work left: readings he has not answered, his iPhone looks, three unconfirmed observations.
 - [SANS-PREVIOUS-REPORT-OFFER] — a previous evening's availability is not combined with the day's — his rule first; with caps and ops limits.
 
 **OIL**
-- [OIL-EARN-DAY-SWITCH-WORDS] — OIL Earn's "Nothing today earns" button reads like a status — new words are his, with a picture.
-- [OIL-INERT-TAP-SILENT] — in OIL Earn a tap on a puck that cannot earn says nothing — should it say why: his question.
+- [OIL-INERT-WHY-CX-INFO] — in OIL Earn a cancelled or ⓘ row with times says "This row gives him no working hours to count OIL from" (as D1783 ruled); a finer reason is his question.
+- [OIL-EARN-WORDS-LEFT] — two OIL Earn wordings not ruled: the switch's passing note "…and the marks underneath are back" and an item's hover "the day blanket is on" — his look.
+- [OIL-WINDOW-FOOT-SHAPE] — in OIL Earn the ALL AVAIL window's foot gives an inert man's reason as "<callsign> — <reason>", where the board now says "Nothing changed for <callsign>. <Reason>." — older; his question.
+- [OIL-ROSTER-TAP-SELECTS] — in OIL Earn a tap on a man in the board's crew list still picks him; D65's "no tap selects" read literally reaches it, D1783's "row" does not — his question.
+- [OIL-SWITCH-NOSAVE-SHOW] — "No OIL earned" is a box the browser ticks itself; a press that saves nothing would leave it showing the opposite of the day (not reachable today) — a one-line guard, with the database step's failed saves.
+- [OIL-EARN-BOARD-TIDY] — the three code reads' tidiness notes on the OIL Earn board change (D489), filed not fixed.
 
 **Leave War**
 - [PAGE-FAULT-BLANKS-APP] — a fault inside the Leave War or the Tracker (not a failed download, now caught — D1631) still blanks the whole app; a message for it is a new screen, drawn for him first.
@@ -170,6 +175,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LOGIC-IOS-REFOCUS] — on his iPhone, does the keyboard stay up when a Logic setting is saved by tapping the next box? (a check on his phone; found 21 Oct 26).
 - [BOARD-NARROW-DESKTOP-REMARKS] — the desktop board from 821 to about 1000 wide leaves the remarks 16px and each jet's line 189px tall (older; found 19 Oct 26).
 - [STACK-LEFTOVERS] — three small loose ends left (the Insights edges and the shared wording helper done 8 Nov 26): an old audit script's three checks (with its own job), a "back to last published" button (only if he raises it), one tidiness note — a line's callsign tidied in three places for the Blue/Red answer (with the next change to its role question).
+- [LOGIC-SWITCH-RING] — the Logic page's own switches wear the browser's keyboard ring, where the board's "No OIL earned" now wears the app's cyan one — to match, his look first.
 
 **Look, words and the phone (the whole app)**
 - [READONLY-WEEK-WORDS] — a week read-only because a row will not read still says "open it on the device that created it".
@@ -188,6 +194,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
+- [BOARDNAV-SCRUB-CLICK-TIMER] — the board's day-dots test "the click after a scrub does not snap back" leans on a real 350 ms window; it failed once in a crowded run (86 files) and passes alone — make the test wait on what it needs.
 - [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
 - [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
@@ -242,7 +249,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [POSTPASS-FIRSTWRITE-WHOLE-SEED] — this build only, out of the app's reach: the posting pass's first account write is checked row by row but never that the whole seeded list is there.
 - [DB-READINESS] — group A is live; group B and the lock's screens come after the app is connected.
 - [DB-SYNC-MODEL] — the sharing and day-lock design is done; five of its screen questions and the build wait.
-- [IT-QUESTIONS] — the IT side's written answers (licences, plug-ins, retention, the first admin).
+- [IT-QUESTIONS] — the IT side's written reply of 8 Nov 26 is in; five small points still to ask (their short code, what basic access allows, SharePoint, the audit's keeping, a role-based account), and the first admin.
 - [RESTRICTED-ENV-WORKFLOW] — a stand-in database and the working steps for the restricted environment.
 - [ARCH-STACK] — the root-cause stack's steps 5 and 6: the record storage door, then the old machinery retired.
 - [AMEND] — the amendment core's three missing parts, the saved content frozen with a publish among them.
@@ -269,6 +276,17 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 ---
 
 ## Items
+
+### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
+**What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
+snap back to where the drag started". After a drag along the board's day dots the browser fires a click naming the dot the finger went
+down on; `src/ui/board.ts` eats that one click for 350 ms (`setTimeout(…, 350)`). The test releases, then dispatches the click in a
+second `act` — on a crowded machine that gap passed 350 ms: in chat 5's run of 86 OIL, board and SANS files at once (8 Nov 26, branch
+`claude/pr-oil-earn-ffbf07` with `main` at `4d5b3828a` merged in) the test took 3009 ms and the click moved the day back (expected 6,
+got 2); alone it passed three times out of three. The code is untouched by that branch. The app is not wrong — a real click follows the
+release within a few milliseconds. **To do:** make the test hold the window open while it clicks (a fake timer around the release and
+the click), never widen the app's 350 ms. **Place:** Checks and tooling, small — with the next board-navigation change, or sooner if
+GitHub's run trips on it.
 
 ### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
 **What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code
@@ -358,6 +376,7 @@ app's failed-save band, D587). New words on screen, so a mock-up first (D1625). 
 `raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
 ### [DB-SECURITY-ROLES] The database's security roles, designed for the IT side (D1653, 5 Nov 26)
+**8 Nov 26 — the IT side's answers 3, 8, 9 (`[IT-QUESTIONS]`):** database-level rights are the PP CoE's — one user security group gives basic access, and who may do what is the app's own roles, controlled inside the app. So (1)–(3) below are not ours to set; put to him 8 Nov 26 (the day lock is settled: D1751).
 **What:** at the database step (D473) the agent writes the security-role design from `raptor-port/docs/data-model.md` §11
 (26 tables × admin, member, guest, pending): (1) each table's create / read / change / delete per role, at none, own rows or
 all rows; (2) row ownership — the app sets a person's account as owner of his rows when it makes them (his Person and
@@ -388,6 +407,7 @@ no-import shape kept so the Tracker could leave without Raptor, and the "a stand
 the Tracker's next batch (D490) — not inside [REACT-DOCTOR-CLEANUP].
 
 ### [AIRCRAFT-TYPE-SETTING] Each deployment set to its aircraft type by a setting (D1536, 31 Oct 26)
+**8 Nov 26 — the IT side's answer 7 (`[IT-QUESTIONS]`):** the PP CoE has one production environment for code apps, so a database per aircraft type cannot be three environments today; put to him the same day (D1101).
 **What:** one code base serves every aircraft type (D1100, D1101); each deployment — F-15, F-16, F-35, each with its own
 database — is set to its type by a setting, not by changing code. Today the app names the type in a few places as the bare
 "F-15" (D63); the setting would supply it, and anything else that differs by type. Built at the database step or hand-over,
@@ -414,6 +434,7 @@ red flags, its Vercel rule and its private-project rule are set aside (D1530).
 
 
 ### [MULTI-SQN-DESIGN] One app, one database, many squadrons (his D1695, 5 Nov 26)
+**8 Nov 26 — the IT side's answer 8 (`[IT-QUESTIONS]`):** manage it by app role — a column naming the squadron and the app's own rules stopping one squadron editing another's; database-level rights are the PP CoE's. The design uses the app's roles, not business units (`data-model.md` §Squadrons).
 **What:** his direction, the design open ("I'm not sure how should we design it"): each person's home squadron set when his account is made (Admin → Users); rights to view other squadrons read only; a permanent transfer on posting out (the Post out sheet's greyed "Transfer to Sqn" — D281); a day planned half in one squadron, half in another (D282, D1100 — a man lent). **Steps:** (1) the agent drafts the design — the person and his one day shared, each schedule a squadron's; crew rest and warnings read across both; who sees what — with pictures on the real app, put to him in rounds; (2) the table format for the IT side gains the squadron on each record and the security split (business units, roles — the IT side's to set up); (3) built at or after the database step (D473). Platform: doable on Dataverse (D1551). **Place:** a fresh chat of its own, before the database step.
 
 ### [NOTICE-UNDO-RETRACT] Undo retracts every bell line (his D1693, 5 Nov 26)
@@ -1050,6 +1071,8 @@ can sign in to check it). He, with his AI, writes the table format and schema fo
 is that list, kept up to date as each feature is added. What the platform offers today: `[IT-QUESTIONS]` (1 Oct 26). **2 Nov 26:** his IT colleague's advice on building the tables, checked against Microsoft's pages, and how the tables are built and handed over (D1570, D1571) — `raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md` §5.
 **Found 5 Nov 26 for the database step (the [PO-CHANGE-RETRACT] reads, `raptor-port/docs/handpass/parts/tb1105/read-pcr-fixes.md`):** a posting's own bell lines are told apart from an earlier posting's (same man, date and outcome after a Restore on its own day) by the moment one run of the posting pass stamps on them all (`leavewar/sync.ts postingLinesOf`); with one shared database and several devices' clocks, the posting record should carry the runs it made instead (the first read's `poRan` list).
 
+**Remove "Clear edit history…" (owner, D1752, 8 Nov 26 — replacing D351):** at this step Admin → Data's Clear edit history section goes, with its permission entry (`elog.sweep`) and its tests; nobody deletes change history by hand. The agent's reading, told to him: if room is ever short, history older than the IT side's audit period is dropped by the app itself — built only if needed.
+
 *(As written 29 Sep 26, replaced by D473:)* **STARTED 29 Sep 26 (D354):** the IT team is taking the app into Dataverse now; he means to keep working on the app beside it.
 
 
@@ -1306,6 +1329,7 @@ section folds are next touched. (Its first half — the wave show/hide toggle le
   the roles split, what each warning means in practice, the phone gestures.
 
 ### [DB-SYNC-MODEL] How the app shares and locks once it is in the database — his idea, to be designed now, built with the adapter (29 Sep 26)
+**8 Nov 26 — his D1751 replaces D450:** the day lock is a simple mark — who is editing the day — set when he starts and cleared once saved, held by the app; the database refuses nobody; no row ownership, free team or server check (`raptor-port/docs/data-model.md` §9). The code comments citing D450 for "only the day's holder saves a day" stay true (the app holds it — §9 rule 9); the few saying the database refuses are corrected with the lock's build.
 His idea, stated as "just an idea" (not a ruling yet): *"a refresh to update button for all members. And if a scheduler
 wants to edit a schedule for that particular day they have click edit for that day. This will block any other scheduler
 from editing the schedule until the initial schedule is out of edit mode and the other scheduler can also see who is
@@ -1500,6 +1524,9 @@ of the format he wants the tables written in (one table, his way), the publisher
 2,000 limit is.
 **Questions for the IT side on notifications (22 Oct 26, from the Leave War overhaul — D1208, D1214, D1219):** (1) may a Power Automate flow, triggered when a notice row is added in Dataverse, send a Teams message to ONE named person (a member told his leave was decided), and what does it need to find him — his work email on his person record? (2) may it post to a Teams group chat (every member told bidding opened or closed; the admins told of an access request — D216)? (3) can a Teams message carry a link that opens the app on the right page (the Leave War, that period in view — D1214)? (4) any daily limit on messages a flow may send? The app's own bell works without any of these; Teams is the push on top.
 **Answers from the IT side, 7 Nov 26 (his chat with them, shown to chat 1 — heard in chat, not a formal reply; written here, without names, on his D1748):** (1) *Plug-ins:* plug-ins and external connectors do not work — locked down, for security, to the Power Platform's own software. So the IT deployment kit's optional server add-on (a plug-in with one Custom API) cannot be used, and the day lock's firm check (D450) is designed without server code, as planned since 30 Sep 26. (2) *How the tables are built:* the person who builds them now creates tables by a script from a table schema we hand over, and will not take a solution file, because he cannot see inside one to scan it before deployment — so D1571's reading (1), a managed package handed over with the script beside it, no longer holds: we hand over the table schema (and the code, as agreed 29 Sep 26); `raptor-port/docs/handover-dataverse.md` §What happens next and the M365 move plan §5 still say otherwise, to be corrected when IT's answers are folded in (`HANDOFF.md`, chat 1's block). (3) *Testing:* he is fine with the owner using his own external test account for testing, and IT suggests getting the same script to build the tables the same way there (by hand is tedious and error-prone). His idea the same evening — deploy the app to that account, test it there, then hand over the schema — was put to him with its cost and a recommendation (chat 1); the questions still open went to him as a shorter list the same day.
+**The IT side's written reply to the 12 questions (version 2), 8 Nov 26 (pasted by him to chat 4 — written here without names, on D1748):** (1) *The table list:* "no issues" — they take a `tables.json` in their kit's format and build it with the same kit. (2) *Functions and flows with more rights* (pasted by him the same night): the AI's suggestion is a hard access lock, not needed since the app is used within the unit, not by strangers — a simple field saying who is updating, cleared once saved, so two people never edit at once by accident; the "service account" is a role-based account; too much complexity for a simple problem. He sent the same words as his answer: D1751, the day lock a simple mark. (3) *What his test account must match:* no outside connectors, only other M365 services such as Power Automate and Teams; their data-loss policies need not be known; access to the app is one user security group from the M365 directory (Entra), giving basic app access. (4) *Unique keys:* not sure; the tables are made again in the real environment anyway, so ours are for our own testing only, and theirs are built exactly from the `tables.json` we finally send — so no unique key can be counted on (the kit's format has no place for one), and the app keeps out a second copy itself (the agent's reading: a fixed id worked out from the natural key — a week's from its squadron and Monday — which the database refuses twice; to prove in the test account, D1749). (5) *Change tracking:* not sure, they think not ("a Dataverse feature", to look up); and great care with refreshing — a patchy connection, or code that downloads or uploads too much, causes problems. So the 30-second check (D356) does not rest on change tracking until it is proven in the test account; the fallback is an ordinary read of the change log for rows newer than the last one seen — still one small request when nothing changed (`data-model.md` §9). (6) *Documents:* Dataverse by default, but each environment has limited space — avoid large uploads; keep large files in SharePoint and save a link. Who may read them: not answered. (7) *Environments and short code:* the PP CoE has ONE production environment for code apps today; the short code (prefix) is theirs, set when they create the tables; our own tables are not carried over. So D1101's database per aircraft type cannot be three environments today (put to him 8 Nov 26), and the app's link to the tables is made again on their build, with their prefix (the agent's reading: ask the prefix early, so the test account uses the same one). (8) *Two squadrons in one database:* manage it by app role — a column naming the unit, and the app's own rules stopping one unit editing another's; not at database level, which is the PP CoE's and beyond our control. (9) *Giving and removing roles:* app roles, controlled inside the app — the squadron admin sets a person's role on Admin → Users (as built), not IT; access to the app at all is IT's security group. (10) *A run on a date with nobody signed in:* Power Automate runs by itself; the unit should have a role-based account — never one person — owning these flows, for continuity. (11) *Audit and history:* managed by the PP CoE; auditing is already on. (12) *The kit's role installer:* don't know — moot, since roles are the app's own (9) and access is the security group (3).
+**What it changes (chat 4, 8 Nov 26):** written into `raptor-port/docs/data-model.md` (head note, Attachment, Squadrons, §9's lock rule 8 and change log, §11, §12), `raptor-port/docs/handover-dataverse.md` (head note, what we need, the access constraint, what happens next) and the M365 move plan (`raptor-port/docs/superpowers/plans/2026-10-31-m365-move-plan.md` — its head, points 2, 19, 24, 35, 36, §4, §5 and §Platform flags). D450 (the firm day lock) is replaced by his D1751 (a simple mark the app holds); D1653 (the security roles per table, which IT would enter) rests on database rights too, which the IT side keeps — put to him 8 Nov 26. D1101 (a database per aircraft type) meets one environment: put to him the same day.
+**Still to ask the IT side, whenever convenient (no rush — D1745):** the short code they will use, so his test tables match (his test tables use "talon" for now — D1753); what their basic access lets a person do on the app's tables (read and write every row?); whether the app may save and open files in SharePoint, and who sets up the library and who may read it (every member, D211); how long the audit is kept (it sets how long the app keeps its own history — D1752); how the unit gets a role-based account. And, from before: the first admin of the empty tables (`data-model.md` §12 q11). A short version 3 of the questions, these points only, is kept with the package on his PC, not in this project.
 
 ### [TRK-ASYNC-STALE] Once storage is truly slow, a Tracker job must re-check its person and target after every wait (filed 28 Sep 26)
 **Place:** with `[DB-READINESS]` — it cannot happen before the shared database. Found by Astra's final read of the
@@ -1969,16 +1996,6 @@ before from 1100 to 1439 — `13-board-rows-responsive.css`). Picture `raptor-po
 let the remarks take a line of their own.
 **Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1781) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The board 821 to 1000 wide" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
 
-### [OIL-EARN-DAY-SWITCH-WORDS] OIL Earn's "Nothing today earns" button reads like a status — two walkers took it for one (found 6–7 Oct 26, the walks of `[OIL-WORK-START]`; OLD; LOW, words)
-On the Scheduler Board in OIL Earn mode the bar carries a button labelled "Nothing today earns". It is a SWITCH — pressed, it
-makes nothing on that day earn — and its label does not change with the day's state (only its tooltip does). With a man on the
-day plainly earning (his puck reads FO), the bar still says "Nothing today earns" beside it. Two walkers, on separate walks and
-without seeing each other's work, each reported it as the app contradicting itself (the first walk's W8; the D606 walk's E03 —
-picture `raptor-port/docs/img/handpass/2026-10-06-oil-work-start/E/dk-08-E03-oilearn-board.png`). **To build:** word the button
-as the action it is, and say the day's state apart from it — a product wording choice, so a picture and his word first.
-**Tier:** WALK (a control's label on the board, both sizes). **Place (the agent's line):** low — with the next change to OIL Earn.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1782) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "OIL Earn's day switch" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [START-CONTEXT-AUDIT] A new chat starts at about 30% of its context — measure what it loads, then cut it to what a job needs (owner, D602, 6 Oct 26)
 **DONE 7 Oct 26 under his ruling, on `claude/docs-tidy-7-oct` — options 1 to 6 (what each did and saved: the foot of the
 spec named below); 7 found nothing to do; the document check is green. Still open, why this item stays: step (4)'s check
@@ -2287,16 +2304,6 @@ Independent bounded cause/disposition: `raptor-port/docs/superpowers/plans/2026-
 ### [SANS-PREVIOUS-REPORT-OFFER] Prior-date availability is not combined across a previous-evening reporting window (characterized 3 Oct 26)
 Actual I2 walk on the Rally review-fix snapshot: Tuesday01:00–11:00 flying reportsMonday22:00, dekitTuesday11:30. Kraken's MondayPM Fly offer gives the actual armed picker "no availability filed for today"; accepted placement has no persistent SANS_AVAIL warning under the existing none-offer rule. Adding TuesdayAM Fly gives picker00:00–12:00-only and the same placed advisory: the target-day window cannot cover report−120 through690. The two date-specific offers are not combined. This characterizes the prior-date gap named unproven in Claude's small review; it does not assert cross-date support, invent coverage policy, or treat live writes as stored-demo harm. Evidence: `raptor-port/docs/handpass/2026-10-02-rally-workspan.md`, downstream07 results/pictures in this round's portable proof. **Place:** caps and ops limits with availability under D490/D495; owner policy/design and a scoped independently challenged plan precede any repair. No source change or owner acceptance here; the final Rally inspector judges this explicit scope.
 
-### [OIL-INERT-TAP-SILENT] In OIL Earn a tap on a puck that cannot earn says nothing (walk find, 1 Oct 26)
-Walker A's O1 (pictures `…/2026-10-01-dbr-phase7/a/A3r-phone-1.png`, `A3r-desk-1.png`). A puck with nothing to earn from its row
-(a row with no end time, a Personal request — and every other inert case) carries its reason as a hover title only; a tap
-selects it (blue) and says nothing, so on a phone the reason cannot be read on the row — only in the ALL AVAIL window's foot.
-The mode's general behaviour, older than phase 7. D31 says a seat with nothing to measure "says why instead"; D26 (leave the
-mode's phone tap targets as they are) is about the targets, not this silence. **To do, if he wants it:** a tap on an inert
-puck in the mode says its reason (the app's own message line), selecting nothing. **Place:** low — with the next OIL Earn change;
-a question for him first.
-**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1783) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "A tap on a puck that cannot earn" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
-
 ### [COUNT-CHIP-PHONE-TAP] A finger tap on an ALL AVAIL count on the phone's week — FIXED for Chromium 1 Oct 26; his iPhone look left
 Found by walker C of the `[DB-READINESS]` phase 7 walk (F1), pressed by Astra's final read (1), reproduced by the host on that
 build and on the build before the batch (`9191910b`) — older than phase 7. **What happened:** at 390 px a finger tap on the count
@@ -2334,3 +2341,64 @@ recommended red when any row turns red, a row a line, before → after. Not answ
 line's rows side by side and only amber or red (design lesson 50 names the bubble as a place it would apply), so it is redrawn
 with those in place before it is asked again (D1301's step 4). **Place:** after [LW-ROUND3-BUILD].
 
+### [OIL-INERT-WHY-CX-INFO] A cancelled or ⓘ row's reason in OIL Earn (walk find, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+W2's A21 (pictures `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w2/s21-*`): in OIL Earn a tap on a man on a cancelled (CX) or information-only (ⓘ) row says
+"Nothing changed for <callsign>. This row gives him no working hours to count OIL from." — while the row shows its times
+(09:00–11:00). As ruled: D1783's full row gives every "nothing measurable to earn from here" case that sentence, and a
+cancelled or ⓘ row gives him no working hours. **To do, if he wants it:** a reason of its own — recommended "This row is
+cancelled." / "This row is information only." (`ui/oilmode.ts inertWhy`). **Place:** low — his question with a picture,
+with the next OIL Earn change.
+
+### [OIL-EARN-WORDS-LEFT] Two OIL Earn wordings never put to him (seen building D1782, 8 Nov 26 — chat 5)
+(1) The passing note after "No OIL earned" is switched off: "This day can earn OIL again, and the marks underneath are
+back" — "the marks underneath" names nothing he sees by that name; recommended "This day can earn OIL again. Each man
+earns as he did before." (the bar's own note, D1782). The "on" note, "Nothing on this day earns OIL, including anything
+added later", reads plainly. (2) An event's OIL mark under the switch says, on hover, "the day blanket is on"
+(`ui/oilmode.ts` near the item's title) — "blanket" is the code's word; recommended "the day's No OIL earned switch is
+on". Pictures: `raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/W1.3-pc-slider-off-now.png`. **Place:** low — with the next words pass or OIL Earn change; his
+look first (D836's guide).
+
+### [LOGIC-SWITCH-RING] The Logic page's switches wear the browser's keyboard ring (seen 8 Nov 26 — chat 5)
+The board's "No OIL earned" borrows the Logic page's switch (`01-logic.css .lgmix`), which sets no keyboard ring; the
+board's was given the app's cyan one (D1646, walk find W1.4, `18-oil-board.css`), so the Logic page's own switches now
+differ from it under the keys. **To do:** the same `:focus-visible` ring on `.lgmix input` — a one-line match, shown to him
+with its picture first. **Place:** low — with the next Logic or consistency round.
+
+### [BOARD-DESKLAYOUT-DAYBAR-EDGE] On a phone, the desktop layout's day bar buttons stand off the right edge (walk find, 8 Nov 26 — chat 5)
+W1's A27 (`raptor-port/docs/img/handpass/2026-11-08-oil-earn-board/``w1/A27-phone-desktop-layout.png`): in the Scheduler Board's desktop layout on a phone (⋯ → desktop
+layout) the day bar spans the day's desktop width, so Templates and OIL Earn sit past the screen's right edge — measured
+on `main` at 650–818 on a 402-wide screen (this branch 616–818, the marks' width); the phone layout's bar has neither
+button, so in that layout they are reached only by panning sideways. Older than D1793. **To do, if he wants it:** keep the
+two buttons in view (at the bar's left, or stuck to the screen's right) — drawn for him first. **Place:** low — with the
+next phone-board change.
+
+### [OIL-WINDOW-FOOT-SHAPE] The ALL AVAIL window's foot keeps the old shape for an inert man (code read, 8 Nov 26 — chat 5, `claude/pr-oil-earn-ffbf07`)
+F6 of the fresh Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): in OIL Earn a tap on a man who cannot earn in the window's OIL half sets its foot to
+"<callsign> — <reason>" (`AvailWindow.tsx onBody`, from the seat's title); the board's own tap now says "Nothing changed for
+<callsign>. <Reason>." (D1783). D1783 is worded as carrying the rule to the board; Astra's scenario 3 saw the same and did not
+call it a fault. **To do, if he wants the window too:** set the foot from the seat's `data-oilsay`, the title as the fallback.
+**Place:** low — his question with a picture, with the next OIL Earn change.
+
+### [OIL-ROSTER-TAP-SELECTS] In OIL Earn the crew list still picks a man (code read, 8 Nov 26 — chat 5)
+The Opus read's negatives (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): a tap on a man in the board's crew list (`#sbRoster`) in the mode still picks him — the
+new placeholder guard leaves the list out on purpose. D65's "inside the mode no tap selects" read literally would reach it;
+D1783 speaks of a man's puck "on its row". **To do, if he wants it:** his answer first — the crew list is how a seat is
+planned, so picking there may be wanted in the mode. **Place:** low — his question.
+
+### [OIL-SWITCH-NOSAVE-SHOW] "No OIL earned" could show the opposite of the day after a press that saves nothing (code read, 8 Nov 26 — chat 5)
+F5 of the Opus read (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-opus.md`): the switch is a checkbox the browser ticks before the board's handler runs; the screen comes right
+only because the bar is drawn again. A press the handler drops before the switch's branch (a stale preview, not in edit mode),
+or a save the store refuses (`toastFail`, which never fires today), would leave the box showing the opposite of the day. Not
+reachable today. **To do:** `e.preventDefault()` as soon as `boardMbtn` finds the switch, so the box always shows the day
+after the redraw — with a test that a refused press leaves it as it was. **Place:** with the database step's failed-save work.
+
+### [OIL-EARN-BOARD-TIDY] The code reads' tidiness notes on the OIL Earn board change (D489 — filed, not fixed; 8 Nov 26 — chat 5)
+From the three reads (`raptor-port/docs/superpowers/briefs/2026-11-08-oil-earn-board-read-{astra,sol,opus}.md`): the inert
+wrap is built in two places (`oilInertWrap` and `oilSeatHTML`), and `oilSeatHTML` calls `inertWhy` twice for one puck;
+`EVENT_EARNS_NOBODY` is a constant in `board.ts` while `AvailWindow.tsx` keeps its own copy — one export beside
+`DAY_EARNS_NOTHING` would serve both; `.mbtn.daybtn` has two rules in `18-oil-board.css`; the placeholder's day-switch
+refusal is reached by two branches of `boardArmClick`; `sbInpRow`'s puck line nests two arrow functions called on the spot
+inside a ternary — a named `inner` would read straighter; the switch's keys put-back hand-rolls what `sheetfocus.ts`
+`locate` / `keysBack` do; `inert.dataset.oilsay || ''` would toast an empty note if the attribute were missing; `.mbtn.oilblank.on`
+and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
+before the database step (D486).

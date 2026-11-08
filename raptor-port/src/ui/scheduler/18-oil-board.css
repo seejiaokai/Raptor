@@ -77,11 +77,24 @@
 .mbtn.daybtn{padding:5px 10px;font-size:10.5px;color:var(--ink);
   background:color-mix(in srgb,var(--accent) 14%,transparent);border-color:var(--accent)}
 .mbtn.daybtn:hover{background:color-mix(in srgb,var(--accent) 24%,transparent)}
-/* the mode's own three: the way out is green, the day blanket amber while it is
-   ON — amber is "look at this", which a day switched off deserves */
+/* the mode's way out is green */
 .mbtn.daybtn.done{background:var(--oil);border-color:var(--oil);color:#04220f}
-.mbtn.daybtn.blank{background:color-mix(in srgb,var(--adv) 16%,transparent);border-color:var(--adv)}
-.mbtn.daybtn.blank.on{background:var(--adv);border-color:var(--adv);color:#12100a}
+/* THE PHONE BAR'S MARKS (owner D1793, 8 Nov 26 — notes-marks.md §4): the desktop's page of blocks and ticket before the
+   words, 12px beside the bar's 10.5px letters with a 5px gap, centred and taking no line height, so the buttons keep
+   their 23px */
+.mbtn.daybtn{display:inline-flex;align-items:center;gap:5px}
+.mbtn.daybtn>.btnglyph{width:12px;height:12px;margin:-2px 0;color:currentColor;flex:none}
+/* THE DAY'S "No OIL earned" SWITCH (owner D1782, 8 Nov 26 — the pictures round's Q3, A): the Logic page's slider
+   (01-logic.css .lgmix — grey off, the switch's cyan on), in the Logic page's own letters as drawn
+   (scripts/handpass/pr-board.mjs drawSwitch): inside the bar's heading row it would otherwise take the heading's
+   capitals and spacing. It replaces the amber "Nothing today earns" button; the guide's on/off chip look (D882) is set
+   aside for it by the same ruling. */
+.lgmix.daysw{margin-right:8px;font-family:'Inter Tight',system-ui,sans-serif;font-size:12px;font-weight:400;
+  text-transform:none;letter-spacing:-.065px;white-space:nowrap}
+/* Reached by the keys it wears the board's cyan keyboard ring, as every board control does (owner D1646, D1771 — "in
+   place of the browser's own"): `.lgmix` sets none, so the walk of 8 Nov 26 saw the browser's white ring here (W1.4).
+   The keys only — a finger or a mouse leaves no ring. */
+.lgmix.daysw input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .daybar-note{padding:6px 11px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--ink-2)}
 /* WHERE EACH PLACEMENT SHOWS. Phone: the bar is the whole control. Desktop: the
    way IN rides the board's action row, so the bar appears only inside the mode,

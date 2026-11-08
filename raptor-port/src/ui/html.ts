@@ -948,7 +948,9 @@ function sansCardTime(rec:any){
    — no group headers, because the letters already printed on each card say
    which group it is in. Array.prototype.sort is stable (ES2019+), so
    records that tie on both keys keep whatever order the caller handed in. */
-export function sansCardsHTML(rows:any[],di:any,ro?:any){
+/* wrapPk: the board's OIL Earn hands its inert wrap in here (a SANS offer earns no OIL, D1783 — the code read's finding
+   1, 8 Nov 26), so this grid stays free of OIL; the week passes none and draws exactly as before. */
+export function sansCardsHTML(rows:any[],di:any,ro?:any,wrapPk?:(inp:any,pk:string)=>string){
   if(!rows||!rows.length)return '';
   const ordered=rows.slice().sort((a:any,b:any)=>{
     const at=!a.allday, bt=!b.allday;
@@ -960,7 +962,7 @@ export function sansCardsHTML(rows:any[],di:any,ro?:any){
   return `<div class="sanscards">`+ordered.map((inp:any)=>{
     const pk=PEOPLE[inp.person]
       /* the seat's own four marks (D1013, D1017): a dotted or dashed ring here too, never a solid one of the card's own */
-      ? puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),dsh(di,inp.person),traceHit(di,inp.person))
+      ? (p=>wrapPk?wrapPk(inp,p):p)(puck(inp.person,sev(di,inp.person),true,chip(di,inp.person),dsh(di,inp.person),traceHit(di,inp.person)))
       : `<span class="itxt">${esc(inp.person)}</span>`;
     const letters=sansLetters(inp);
     const rmk=String(inp.remarks||'').trim();

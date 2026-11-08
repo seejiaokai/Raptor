@@ -57,6 +57,7 @@ import { VCONF } from '../engine/rules'
 import { whoArr } from '../engine/slots'
 import { isDraftVer } from '../engine/drafts'
 import { undoMark } from '../undo'
+import { glyphSvg, TICKET_INNER } from './glyphs'
 
 export { rowItemKey, groundItemKey, inputItemKey }
 
@@ -540,18 +541,25 @@ export function dayBarHTML(di: any, tplBtn: string, canEdit = true): string {
   const bl = oilBlanketOn(di)
   if (!oil && !tplBtn) return ''
   const head = on ? `<span class="daybar-h on">OIL EARN</span>` : `<span class="daybar-h">THIS DAY</span>`
+  /* THE PHONE BAR WEARS THE DESKTOP'S MARKS (owner D1793, 8 Nov 26): OIL's ticket before "OIL Earn", as the board's own
+     bar draws it on a desktop (D1704); the way out, "✓ OIL done", keeps none (notes-marks.md §4 (g)). */
   const oilBtn = !oil ? ''
     : on
       ? `<button class="mbtn daybtn done" data-oilmode="${di}" title="Leave OIL mode and edit the schedule again">✓ OIL done</button>`
-      : `<button class="mbtn daybtn" data-oilmode="${di}" title="Show who earns OIL on this day, and change it">OIL Earn</button>`
+      : `<button class="mbtn daybtn" data-oilmode="${di}" title="Show who earns OIL on this day, and change it">${glyphSvg(TICKET_INNER)}OIL Earn</button>`
+  /* THE DAY'S SWITCH IS A SWITCH (owner D1782, 8 Nov 26 — the pictures round's Q3, A). It was a button reading "Nothing
+     today earns" in both states, which read as the app saying nobody earned while a man plainly did; only its amber fill
+     told on from off, and a phone has no hover. Now the Logic page's own slider (01-logic.css .lgmix), off grey, on in the
+     switch's cyan, its words saying what on does. His refusal words stay (D845, DAY_EARNS_NOTHING above). A checkbox, so
+     Space works by the keys; the press is read in board.ts boardMbtn. */
   const blankBtn = on
-    ? `<button class="mbtn daybtn blank${bl ? ' on' : ''}" data-oilblank="${di}" title="${bl ? 'Let this day earn again' : 'Nothing today earns — covers anything added later too'}">Nothing today earns</button>`
+    ? `<label class="lgmix daysw" title="Anything added to this day later earns no OIL either."><input type="checkbox" role="switch" data-oilblank="${di}"${bl ? ' checked' : ''}>No OIL earned</label>`
     : ''
   return `<div class="sb-panel daybar${on ? ' oilon' : ''}">`
     + `<div class="sb-ph">${head}<span class="gctl">${on ? '' : tplBtn}${blankBtn}${oilBtn}</span></div>`
     + (on
       ? `<div class="daybar-note">${bl
-        ? 'Nothing on this day earns OIL. The marks underneath are kept — turn it off and they come back.'
+        ? 'Nothing on this day earns OIL. Turn off the switch and each man earns as he did before.'
         : 'Tap a puck to take a man off that event · tap an item to stop the whole item earning'}</div>`
       : '')
     + `</div>`
@@ -673,11 +681,51 @@ export function oilNoAskWhy(di: any, item: string): string {
   const req = (INPUTS as any[]).find(r => r && String(r.iid || '') === iid)
   const type = (g && g.srcType) || (req && req.type)
   if (!g || !type || oilAsks(type)) return ''
+  return inputEarnsNoOilWhy(type)
+}
+/** Why a request of a kind that never asks the OIL question earns nothing (D804, D778): leave and medical by their group,
+ *  the rest (Personal, SANS availability) by their own name — a medical kind's own name ("medically down — no flying, may
+ *  still work") does not read as a sentence. */
+export function inputEarnsNoOilWhy(type: any): string {
   const meta: any = inpMeta(type)
+  if (meta && meta.grp === 'leave') return 'leave earns no OIL'
+  if (meta && (meta.grp === 'med' || meta.grp === 'upchit')) return 'a medical request earns no OIL'
   return `a ${String((meta && meta.name) || type).trim()} request earns no OIL`
 }
+/** What a tap on a placeholder's body says in the mode (the host's reading 1, put to him at his look): it is nobody, and
+ *  the men behind it are switched in the window its count opens. */
+export const PLACEHOLDER_WHY = 'the people behind it are switched in the window its count opens'
+/** The placeholder's reason on its row (F3 of the Opus code read, 8 Nov 26): where nobody behind it can earn there, the
+ *  window switches nobody, so it says the row's own reason in words already ruled — D360's for a row with no end, the
+ *  kind's for a request that never asks (D804, D778) — and only otherwise where its men are switched. The day's switch
+ *  and an event switched off say their own refusals before this (board.ts boardArmClick). */
+export function placeholderWhy(di: any, item: string): string {
+  if (item && openEndRows(DAYS[+di] || {}).some(r => r.item === item)) return inertWhy(di, item)
+  return (item && oilNoAskWhy(di, item)) || PLACEHOLDER_WHY
+}
+/** A puck drawn elsewhere than oilSeatHTML that cannot earn on its row — a request that never asks (D804) — made inert
+ *  in the mode as oilSeatHTML's are (D1783, D65): the same markup, its own puck kept as drawn, so nothing it looks like
+ *  changes; only the tap now says why and picks nobody. */
+export function oilInertWrap(person: any, why: string, inner: string): string {
+  const p = (PEOPLE as any)[person]
+  if (!p) return inner
+  /* a placeholder here stands on a request that never asks, so nobody behind it earns: the kind's reason is true of it
+     too, where "switched in the window" sent him to a window that switches nobody (F3 of the Opus code read) */
+  const w = why
+  return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(w)}" data-oilsay="${esc(inertSays(p.cs, w))}">${inner}</span>`
+}
+/** What a tap on an inert puck says (owner D1783): what the tap did, the man its subject, then the reason as a sentence. */
+export function inertSays(cs: string, why: string): string {
+  const w = String(why).trim()
+  return `Nothing changed for ${cs}. ${w.charAt(0).toUpperCase()}${w.slice(1)}${/[.!?]$/.test(w) ? '' : '.'}`
+}
 export function inertWhy(di: any, item: string): string {
-  const plain = 'nothing measurable to earn from here'
+  /* (owner D1783, 8 Nov 26: "nothing measurable to earn from here" gave nothing to act on; it now says what is missing.
+     True of every case that reaches it: a man is drawn inert here only where the day's own rules give him no span of
+     work on this row — no written times, a cancelled or ⓘ row, a row not yet saved, or a request whose row no longer
+     counts — the kinds that earn only when switched on (D24) carry a switch instead, and a day that cannot earn offers
+     no OIL Earn at all.) */
+  const plain = 'this row gives him no working hours to count OIL from'
   /* a row with a start and no end ([ALLAVAIL-OPEN-ROW], D360 — Fable's final read F1): the men behind its placeholder say
      the row's own reason, as the window's footer and the row's switch do — a tap on one of them copies this into the
      footer, and it used to replace D360's sentence with the generic one above */
@@ -711,9 +759,14 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
      puck through here — so it came out as a man's switch: "ALL AVAIL earns nothing yet — tap to take him off this
      event". It is nobody, it is never credited (engine/oilev.ts oilEarnedWork), and a tap wrote a decision about
      nobody. Its puck is drawn; the men behind it are switched in the window its count opens. */
-  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — the people behind it are switched in the window its count opens">${pk(null)}</span>`
+  /* A TAP ON A PUCK THAT CANNOT EARN SAYS WHY AND PICKS NOTHING (owner D1783, 8 Nov 26 — the pictures round's Q4, A). The
+     reason used to live only in the hover title, so on a phone the tap picked the man and said nothing. Each inert puck
+     now carries what its tap says — "Nothing changed for <callsign>." then the reason — read by board.ts boardArmClick;
+     a puck under a mask carries which mask, the words being the refusals he already ruled (D845). */
+  const says = (why: string) => ` data-oilsay="${esc(inertSays(p.cs, why))}"`
+  if (isSpecial(person)) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${PLACEHOLDER_WHY}"${says(PLACEHOLDER_WHY)}>${pk(null)}</span>`
   const eligible = oilEligible(di, person, item)
-  if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}">${pk(null)}</span>`
+  if (!eligible) return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${esc(inertWhy(di, item))}"${says(inertWhy(di, item))}>${pk(null)}</span>`
   /* UNDER A MASK THE PUCK IS NOT A CONTROL. The old markup left it tappable and
      its title actively invited the tap — "tap to put him back on it" — while the
      tap could only destroy the decision the mask was hiding. It keeps the man's
@@ -721,7 +774,7 @@ export function oilSeatHTML(di: any, person: any, item: string, pk: (oil: any) =
      is the tap target and the lie. */
   if (oilItemMasked(di, item)) {
     const why = oilBlanketOn(di) ? 'nothing on this day earns' : 'this event earns nobody'
-    return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${why}, so this cannot be changed here">`
+    return `<span class="seat oilpk inert" title="${esc(p.cs)} — ${why}, so this cannot be changed here" data-oilmask="${oilBlanketOn(di) ? 'day' : 'event'}">`
       + pk({ on: false, amt: oilFigureFor(di, person, item) }) + `</span>`
   }
   const { on, amt } = oilPuck(di, person, item)
