@@ -325,8 +325,10 @@ export function pageDebts(sources, live, archived, namedByTest) {
         else stated.add(d)
       }
     } else for (const d of s.cites) {
-      if (s.states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
-      const why = s.states ? 'elsewhere' : 'short'
+      /* a "Built, held by tests" line outside the trial states nothing — only the trial's marker lets it stand for a rule */
+      const states = s.states && !(s.kind === 'bullet' && BUILT_LINE.test(s.text))
+      if (states && homes.has(live.get(d)?.area)) { stated.add(d); continue }
+      const why = states ? 'elsewhere' : 'short'
       if (!pointed.has(d) || (why === 'elsewhere' && pointed.get(d).why === 'short')) pointed.set(d, { at: `${f} line ${s.line}`, why })
     }
     if (s.states) for (const d of s.cites) {

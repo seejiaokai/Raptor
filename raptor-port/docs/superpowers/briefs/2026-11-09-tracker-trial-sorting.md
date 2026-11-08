@@ -109,3 +109,17 @@ The page: 20,007 bytes before → 10,631 after (hard limit 20,061). 39 rulings m
 - D1405 on the Built line: it is spent, not built; archiving its row is the honest end, left for his word.
 - Lines kept whole on the page whose rulings stay: Moving (the glide), Marking (the window's slide, kept as it was), the
   Find lines, D132's import line. Only the date-box line was shortened to its standing part (his fallback).
+
+## After the two blind reads (9 Nov 26, chat 36)
+
+Astra and a fresh Opus reader, blind to each other (their reports: `2026-11-09-tracker-trial-read-{astra,opus}.md`),
+read the tests themselves. Both found 20 of the 39 "pins" verdicts above were only partial: a named test holds part of the
+ruling and a condition or exception goes unchecked (for example D372's list of what is NOT undoable, which no test checks;
+D1170's "the bar no taller and nothing moving", never measured; D130's "Revert edits only", never exercised). D1405 is
+spent, its test naming it only in a comment. By the trial's own rule — a ruling leaves only when a test holds it whole —
+each went back on the page in its old words, under "Built, stated here: their tests hold only part": D64, D121 with D1014,
+D124 with D130, D372, D373, D374, D376, D922, D924, D980, D1003 with D1018, D1132, D1135, D1170, D1405 with D1406, D1705;
+the flight symbol's shape line (D566) and D474's enrolment condition came back to their own places; D1931's "none of it
+kept or extended" is marked the agent's reading. The Built line keeps 19: D122, D123, D126, D127, D128, D129, D157,
+D370, D371, D462, D463, D981, D982, D1002, D1004, D1006, D1007, D1015, D1860. The page: 15,593 bytes of its 20,061. The tests each restored ruling would need before it can leave are in the two
+reports; writing them is a job of its own, his to order.

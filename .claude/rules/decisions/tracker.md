@@ -15,7 +15,7 @@ paths:
 <!-- shape: page -->
 <!-- trial: built rulings by test -->
 
-Loads by itself with a Tracker file (the `paths:` above). It holds his standing rules, what he likes, and what a fresh model would get wrong if not told, each line's rulings after it. What is built lives in the app and its tests, listed by number on the "Built, held by tests" line, each named by a test.
+Loads by itself with a Tracker file (the `paths:` above). It holds his standing rules, what he likes, and what a fresh model would get wrong if not told, each line's rulings after it. What is built lives in the app and its tests, listed by number on the "Built, held by tests" line, each named by a test that holds it whole; one its tests hold only in part stays written out.
 
 His words, the agent's readings (never stated here as his rule) and the history are in the full rows, `.claude/decisions-full/tracker.md`: open the row before acting on a rule's detail or asking him about it. The architecture and the Tracker's documents: `.claude/rules/seams/tracker.md`; the map: `DECISIONS.md`.
 
@@ -23,19 +23,20 @@ His words, the agent's readings (never stated here as his rule) and the history 
 
 ## What it keeps
 - Never again exported as a standalone app: it lives in the app for good, as a tab [D1538].
-- A syllabus is one shared thing, one Syllabus row a chart: an edit reaches every course and student on it, never a copy per course (a variant: Duplicate); marks are the student's, never the chart's [D474].
+- A syllabus is one shared thing, one Syllabus row a chart: an edit reaches every course and student on it, never a copy per course (a variant: Duplicate); marks are the student's, filed under his enrolment (one student, course, chart) and the event's fixed code, so moving, redrawing or re-wording a ball keeps them, a new ball is ungraded, a deleted one loses them [D474, D124].
 - His charts, syllabi and ball details are kept: no change wipes them without putting them back, and he is told first so he can export a copy [D464, D120].
 - The database route is export, wipe, import, so a fault it removes is not a finding: today's stored data, the converters of older stored data and older file formats are out of every check; what the app would do again to new data is a finding [D120, D56].
 - Two faults wait for the database step, filed (`[TRK-IMPORT-ONE-GROUP]`, `[TRK-FIRST-ORDER-PLACE]`): an import saved as many groups, not one; a stale tab undoing the first save of the chart order [D983].
 
 ## Students
 - Every student is a man on the roster, picked from it, none added by a typed name, so his down days come from the Inputs and the typed "No. of Down Days" box is gone for everyone [D1931, D1005].
-- To build (`[TRK-NO-TYPED-STUDENT]`): + Add loses its "Or type a callsign" box, a search matching nobody adds nothing, with nobody on the roster to offer it adds nobody; until then the app still adds a typed name as a student linked to nobody, down days "—", none of it kept or extended [D1931].
+- To build (`[TRK-NO-TYPED-STUDENT]`): + Add loses its "Or type a callsign" box, a search matching nobody adds nothing, with nobody on the roster to offer it adds nobody; until then the app still adds a typed name as a student linked to nobody, down days "—", none of it kept or extended (the agent's reading) [D1931].
 - "Last flown currency" is typed by the member for a non-syllabus flight and moves only the IP requirement (landing currency) [D1005, D1931].
-- A half-typed day in Done on or Failed on is refused, never recorded as today, an empty box still meaning today [D377].
+- Each person reopens the Tracker on his own last course, chart and student, on that browser, never another's; someone new starts on the first course, its last-graded student, else the first; a half-typed day in Done on or Failed on is refused, never recorded as today, an empty box still meaning today [D376, D292, D377].
 
 ## Look
 - The flight balls' labels are made clearer, the reading goal kept; that alone approved no shape, size or palette; the blocky wide wing was rejected [D560, D564].
+- The flight symbol is the tapered wing: sloping leading edges, a curved lower wing, the nose and tail as they were, a clear blue backing behind the label [D566].
 - Ball and ring size, palette, his fonts, charts and details, and how a ball is marked and tapped stay unless he changes them [D566, D564].
 - The private pictures behind the symbol stay outside the repository; no student name, mark or date is copied from them [D560, D564, D566].
 
@@ -72,8 +73,24 @@ His words, the agent's readings (never stated here as his rule) and the history 
 - On his iPhone the student, course and year dropdowns draw their words whole: the cut words were the test browser's, nothing changed [D1564].
 - At about 1051–1200 wide the bar wraps onto two lines and may be 2 taller (87 to 89), as built, its lines not moved closer; at 1536, at 1050 and under and on a phone, unchanged [D1171].
 
+## Built, stated here: their tests hold only part
+- The event box's hint reads "e.g. Lecture, OFT/AMT, 2 x F-15"; the syllabus data and the smoke lines checking it stay outside every privacy sweep [D64, D62, D63].
+- A member can do everything an admin can, the File menu too: Import (a chart after its question, students and marks after one yes), Export (names and marks when ticked, the warning kept); only the flex settings are an admin's; the app's other roles are untouched [D121, D1014].
+- A course start is entered when a student is added (a date box atop "+ Add", today by default, above the list since a tap on a name adds him at once) and changed in the Info panel where the Upchit box was, no clear cross, no height added [D1003, D1004, D1005, D1018, D1931].
+- On a touch screen the chart draws no scroll bars yet scrolls, glides and pinches; the Info half, Show All and every window keep theirs; a desktop with a mouse keeps the chart's and the Info panel's; the stray bars were fixed first, before the iPhone keyboard fault and the Leave War overhaul's next step (its D1404), each pictured first, its place marked [D1406, D1405].
+- On a desktop one Tab stop (not one per event) takes the keys into the chart; → the next event along a line, ← the one it needs first, ↑ ↓ the one above or below, the event wearing the plain blue ring, no glow; Enter opens the pop-up, the keyboard inside; Escape returns to the same event; with two events to go to, the build chooses and says so [D980].
+- A day after today is refused in Done on, Failed on, Last Flown (Syllabus) and Last Flown (Currency): the box goes back to what it had, one line says the day cannot be after today, nothing saved, no undo step; the end dates A and B take any day [D374, D56].
+- Every control on the bar is as tall as its dropdowns, 30 on a desktop, 26 on a phone, the bar no taller (except where a narrow desktop wraps it, Settled) and nothing moving; with the gear and Legend added it stays two rows on a phone, one on a desktop [D1170, D1171, D487, D1018].
+- The bar's buttons, the menu items and the Students card wear the app's line icons (the pencils the one solid pencil; ⓘ, ☰ before Show All, ⇪ before File, the bar's ^, the phone's "Flow chart" tab's map; Reorder, Duplicate, Import and the empty Tracker's "Import a file…", Export, Delete, the × on each student), nothing moving, no button changing what it does; on a phone the Flow chart, Info and Show All tabs sit joined in one box [D1132, D1134, D919, D1135].
+- Each tool of Edit chart layout takes a drawn mark, as drawn: Move a hand, Select a dashed box, Select all a ticked box, Connect two joined points, Delete the bin, Line a line, Arrow a headed line, Edit lines a curve, Fit four corners, Reset layout a turning-back arrow, Edit events the list; Merge and Unmerge keep their words alone; the lull's Copy to… the copy mark, its × the drawn ✕; copy, bin, list and ✕ the Tracker's own, the rest new in the same style [D1705].
+- On a short screen (a phone on its side) Edit chart layout folds its tools into one row: the tool in use with its one-line hint, Fit and "Tools ▾", which opens the whole set over the chart (a tap outside closes it); the double-click note, hint line and Flow, Info and Show All tabs step aside; upright phones and computers keep the strip [D373].
+- Deleting a ball wipes its marks (a new ball with the same code starts ungraded, not counted in Overall) and its typed details, a built-in chart's shipped wording not being typed work; both at ✓ Save changes (and "Revert edits only", for the balls the edits had added); an undo before the save brings them back [D124, D130].
+- The reorder windows (courses, syllabi, crew) take a finger drag in the app's own look: the grip ⠿, not ☰, the carried row ringed, one landing line in the gap, never a box, the list scrolling at its edge; a mouse drag wears the same; the grip's touch area is bigger than it looks, as drawn [D922, D924].
+- "Drag a row, or use ▲/▼." is deleted from all three windows, each one's second sentence kept, "This sets the order of the Syllabus dropdown for every course." among them [D924].
+- A change to a student's pace, either end date or his lull periods is an undo step (↶ / Ctrl+Z, ↷ / Ctrl+Y) from the app's top bar, the Tracker's own pair gone; not undoable: adding, removing or renaming students, courses and syllabi; event details; Import [D372, D347, D348, D1538].
+
 ## Built, held by tests
-- Built, held by tests (each named by a test; the detail is in the app and its full row): D64, D121, D122, D123, D124, D126, D127, D128, D129, D130, D157, D370, D371, D372, D373, D374, D376, D462, D463, D922, D924, D980, D981, D982, D1002, D1003, D1004, D1006, D1007, D1014, D1015, D1018, D1132, D1135, D1170, D1405, D1406, D1705, D1860.
+- Built, held by tests (each named by a test; the detail is in the app and its full row): D122, D123, D126, D127, D128, D129, D157, D370, D371, D462, D463, D981, D982, D1002, D1004, D1006, D1007, D1015, D1860.
 
 ## From other areas (each stated on its own area's file)
 - The design file's (the screen rules the Tracker shares: bands, marks, menus, legends, search boxes, rings, drags, the gear): D1901, D1655, D1667, D347, D348, D672, D1706, D1703, D1793, D1700, D1792, D1704, D1701, D926, D1134, D1127, D1122, D1567, D1607, D1610, D1611, D1632, D1631, D1633, D1638, D1635, D876, D887, D1614, D895, D1509, D1707.

@@ -4602,3 +4602,30 @@ Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" wri
 **Issue:** The first guess was timing (a slower machine exposing a frame-late write), so the test was re-run slowed - still green. The real difference was the fonts: Linux's wider letters wrapped one page's top bar to two rows at the test's 1440 width, Windows' did not. Measuring the bar's height on both pages at a few widths found 1360 as the width where the PC wraps too, and the test went red at once.
 **Suggested improvement:** In the skill's "reproduce first" phase, for a layout-dependent browser test that fails only in CI: before slowing anything, measure the elements the failure depends on across a few viewport widths on the local machine, and run the test at the width where the local layout matches CI's; then make the test itself cover that width so it fails on any machine.
 **Principle:** A CI-only layout failure is often the fonts, not the clock: text metrics differ by operating system, so measure the layout across widths before reaching for throttling.
+
+
+### Observation 907: A helper that "completed" while waiting on its own runs can wake and write later
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** Chat 36's overnight run, job 2 (the Tracker trial), one helper at a time in one shared checkout (number past 905–906 held on other branches)
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — each job handed to one fresh helper; the coordinator checks each report
+
+**Issue:** The trial helper's completion notice said it "stopped with background work of its own still running" and had no report. The coordinator took that as finished, saved its tree as a commit and switched the checkout to another branch to fix a red check. The helper then woke and made one more commit on its branch; had it edited files, they would have landed in the other branch's working tree.
+**Suggested improvement:** In Part 2, add: a helper's notice that says it is waiting on its own background work is NOT a finished job — before switching the checkout's branch or writing into it, stop that helper (TaskStop) or wait for its real report; then read `git log` of its branch for commits made after the notice.
+**Principle:** A subagent paused on its own background work is still live; stop it before the shared workspace changes under it.
+
+### Observation 908: A change to a gate script runs that gate's own self-test before the push
+
+**Status:** OPEN
+**Date:** 9 Nov 26
+**Session context:** Chat 36's overnight job 1: a new hard-limit rule added to the document check
+**Skill:** overnight
+**Type:** open-source
+**Phase/Area:** Part 2 — "at every commit"
+
+**Issue:** The document check passed on the PC, but the pull request's documents guard ran the check's self-test, which builds practice files; the new rule failed 8 of its cases. The self-test was never run locally, so the red came back only from the remote run.
+**Suggested improvement:** Under "at every commit", add: a commit that changes a check's own script runs that check's self-test (the documents guard's: `node raptor-port/scripts/docsize-selftest.mjs`, about 10 minutes) before the push, and a new rule gets self-test cases of its own.
+**Principle:** A checker that has its own test harness must pass that harness, not only the real files, before its change ships.

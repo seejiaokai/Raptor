@@ -725,9 +725,10 @@ gitRulings('an old row this side moved and the other side marked keeps BOTH chan
     /* D3, stated nowhere else on the page, is also unstated: both debts name it */
     ['a number no test names fails, by name', say(debts(page('D2, D3'), ['D2'])), 'built:D3:untested,unstated:D3'],
     ['another area\'s number on the line fails', say(debts(page('D2, D3, D9'), ['D2', 'D3', 'D9'])), 'built:D9:area'],
-    /* three numbers, so the line's four words are fewer than two a ruling: a list, as the real line is (with two it
-       would state them by the ordinary rule) */
+    /* three numbers, so the line's four words are fewer than two a ruling: a list, as the real line is */
     ['without the trial marker the line states nothing', say(debts(page('D1, D2, D3', false), ['D1', 'D2', 'D3'])), 'unstated:D2:short,unstated:D3:short'],
+    /* …nor with two: words enough for the ordinary rule, but a "Built, held by tests" line outside the trial states nothing */
+    ['…nor with two numbers, words enough to state by the ordinary rule', say(debts(page('D2, D3', false), ['D2', 'D3'])), 'unstated:D2:short,unstated:D3:short'],
     ['the finder: a word, not a longer number or a drawing\'s path', [RLt.namesId('D12', 'see D12)'), RLt.namesId('D12', 'D123'), RLt.namesId('D12', 'M D12.5 3')].join(','), 'true,false,false'],
   ]
   for (const [name, got, want] of cases) { const ok = got === want; if (!ok) failed++; console.log(`${ok ? 'PASS' : 'MISS'}  trial: ${name} — expected [${want}], got [${got}]`) }
