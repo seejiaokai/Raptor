@@ -187,9 +187,14 @@ function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false }) {
   }
   /* a record that was the LAST of its file on some side often ends with no blank line; set before another record here,
      it would run into the next heading (the replay's first finding, 8 Nov 26) — so it gets the one blank line every
-     other record ends with */
+     other record ends with; one that ended with no line ending at all gets its line ending first, or its last line and
+     the next heading become one line (Astra 1 of the code read). The file's own last record keeps its ending as it is. */
   const lasts = new Set([B, O, T].map(s => s.length && s[s.length - 1].text))
-  for (let i = 0; i < out.length - 1; i++) if (lasts.has(out[i]) && out[i].endsWith('\n') && !/\n[ \t]*\r?\n$/.test(out[i]) && out[i + 1].trim()) out[i] += '\n'
+  for (let i = 0; i < out.length - 1; i++) {
+    const wasLast = lasts.has(out[i])
+    if (out[i] && !out[i].endsWith('\n')) out[i] += '\n'
+    if (wasLast && !/\n[ \t]*\r?\n$/.test(out[i]) && out[i + 1].trim()) out[i] += '\n'
+  }
   return { text: out.join(''), left, settled }
 }
 

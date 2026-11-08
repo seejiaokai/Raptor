@@ -215,6 +215,25 @@ test('skill log: notes both sides added after a last note with no blank line sta
   assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + obs(12, 'theirs', 't') + obs(11, 'ours', 'o').replace(/\n$/, ''))
 }))
 
+/* Astra 1 (the code read, 8 Nov 26): a note added as the file's last, with no line ending at all, ran straight into the
+   next note's heading ("theirs### Observation 11: ours") — zero, one and two endings, both headings and bodies whole */
+for (const [name, end] of [['no line ending', ''], ['one line ending', '\n'], ['two line endings', '\n\n']]) {
+  test(`skill log: notes both sides added as the last, with ${name}, stay whole and apart (Astra 1)`, withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+    c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + '### Observation 11: ours\n\nours' + end), x => x.edit('.claude/skill-observations/log.md', t => t + '### Observation 12: theirs\n\ntheirs' + end))
+    const r = c.run()
+    assert.equal(r.code, 0, r.out)
+    assert.equal(c.read('.claude/skill-observations/log.md'), LOG0 + '### Observation 12: theirs\n\ntheirs\n\n' + '### Observation 11: ours\n\nours' + end)
+  }))
+}
+/* the insertion-only files read git's own clash regions, and git ends every line of a region — so this one guards it
+   (green before the fix: git's region gave the file a last line ending, which is kept) */
+test('rulings archive: rows both sides added as the last line, with no line ending, stay on lines of their own (Astra 1)', withRepo({ 'DECISIONS-ARCHIVE.md': '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n' }, c => {
+  c.sides(x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D2 | ours |'), x => x.edit('DECISIONS-ARCHIVE.md', t => t + '| D3 | theirs |'))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('DECISIONS-ARCHIVE.md'), '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n| D2 | ours |\n| D3 | theirs |\n')
+}))
+
 test('skill log: with no other branch, the new number is past this branch\'s own higher notes', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours eleven', 'x') + obs(12, 'ours twelve', 'y')),
     x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'z')))
