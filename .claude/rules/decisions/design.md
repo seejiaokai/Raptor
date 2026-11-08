@@ -202,9 +202,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning
   sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the "Not saved" strip's
   look; the page moves down under it, and the Tracker's corner shows nothing while it is up; "Not saved" stays the
-  failed-save band's own words; its words measured to fit one line at his iPhone's width; built (chat 28) — a failed save
-  still shows "Not saved" in its place, and the address switch `?nostore` shows it on his own phone (the agent's reading,
-  beside D1666) [D1901, D1655, D1667, D1666].
+  failed-save band's own words; its words measured to fit one line at his iPhone's width; built (chat 28) [D1901,
+  D1655, D1667].
 - A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
   its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
 - The test switch `?savefail` on the app's address refuses every save in the one tab opened with it, so the band, its
