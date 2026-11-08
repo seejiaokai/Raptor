@@ -218,6 +218,38 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     expect(errs).toEqual([])
     await context.close()
   })
+  /* THE FRESH OPUS CODE READ OF 8 NOV 26 (chat 16), finding 1's Quals half: the pinch takes the copy off its showing step
+     (`.q-pinching`) and the lift makes it afresh — a step made in a frame is not applied in it. Read in every frame. */
+  test('at the lift of a pinch part-way down, the pinned heading shows in every frame (D1870)', async ({ browser, baseURL }) => {
+    const { context, page, errs, cdp } = await phone(browser, baseURL)
+    await go(page, 'quals'); await page.waitForSelector('#qtbl td.qname')
+    const y = await page.evaluate(() => {
+      const head = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.getBoundingClientRect()
+      return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom + 300)
+    })
+    await page.evaluate(y => window.scrollTo(0, y), y); await sleep(300)
+    await expectPinned(page, 'qsticky-head', true)
+    await page.evaluate(() => {
+      const w = window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }
+      w.__f = []
+      const tick = () => {
+        const el = document.querySelector<HTMLElement>('[data-testid="qsticky-head"]')
+        const th = (document.querySelector('#qtbl') as HTMLTableElement).tHead!.querySelector('th')!
+        const cs = el ? getComputedStyle(el) : null
+        w.__f.push({ pinching: !!el?.classList.contains('q-pinching'), shown: !!cs && Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under: th.getBoundingClientRect().top < document.querySelector('.topbar')!.getBoundingClientRect().bottom - 0.5 })
+        if (w.__f.length < 200) requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    })
+    await pinch(cdp, 200, 500, 200, 240)
+    await page.waitForFunction(() => (window as unknown as { __f: unknown[] }).__f.length >= 200, undefined, { timeout: 15000 })
+    const f = await page.evaluate(() => (window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }).__f)
+    const lift = f.findIndex((x, i) => i > 0 && f[i - 1]!.pinching && !x.pinching)
+    expect(lift, 'the pinch was seen in the frames').toBeGreaterThan(0)
+    expect(f.slice(lift).map((x, i) => (x.under && !x.shown ? `frame ${i} after the lift` : '')).filter(Boolean), 'no frame after the lift with the heading under the bar and no copy shown').toEqual([])
+    expect(errs).toEqual([])
+    await context.close()
+  })
   /* a pinch whose first finger lands on a heading in Edit quals lets the heading go (the code read, finding 3 —
      QualsPage cancelColDrag): the board's twin is pinned above; the finger's drag itself is pinned just below */
 

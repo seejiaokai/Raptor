@@ -2112,6 +2112,72 @@ test('while the fingers pinch part-way down, the pinned dates row shows by the p
   const after = await lwPin(page)
   expect(after && after.shown === after.under, 'and after the lift').toBe(true)
 })
+/* THE FRESH OPUS CODE READ OF 8 NOV 26 (chat 16 — [LW-PIN-LAST-FRAME]). A showing step the browser makes afresh is not
+   applied in the frame it is made in, so the copy would stand at its hidden opacity for that one frame though the row is
+   under the bar. Read in every frame, before each frame paints: from before the change to well after it. */
+const lwFrames = (page: Page, n: number) => page.evaluate(n => {
+  const w = window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }
+  w.__f = []
+  const tick = () => {
+    const el = document.querySelector<HTMLElement>('[data-testid="sticky-head"]')
+    const th = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead th')
+    const cs = el ? getComputedStyle(el) : null
+    const under = !!th && th.getBoundingClientRect().height > 0 && th.getBoundingClientRect().top < document.querySelector('.topbar')!.getBoundingClientRect().bottom - 0.5
+    w.__f.push({ pinching: !!el?.classList.contains('lw-pinching'), shown: !!cs && Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden', under })
+    if (w.__f.length < n) requestAnimationFrame(tick)
+  }
+  requestAnimationFrame(tick)
+}, n)
+const lwFramesRead = async (page: Page, n: number) => {
+  await page.waitForFunction(n => (window as unknown as { __f: unknown[] }).__f.length >= n, n, { timeout: 15000 })
+  return page.evaluate(() => (window as unknown as { __f: { pinching: boolean; shown: boolean; under: boolean }[] }).__f)
+}
+/* its finding 1: the pinch takes the copy off its showing step, and the lift makes the step afresh */
+test('at the lift of a zoom made part-way down, the pinned dates row shows in every frame (D1870)', async ({ page }) => {
+  const y = await page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom + 300) })
+  await page.evaluate(y => window.scrollTo(0, y), y)
+  await expectPinned(page, 'sticky-head', true)
+  await lwFrames(page, 240)
+  if (isPhone()) await lwPinch(page, 200, 520, 200, 240)
+  else await lwCtrlScroll(page, 600, 500, -Math.log(1.2) / 0.002)
+  const f = await lwFramesRead(page, 240)
+  const lift = f.findIndex((x, i) => i > 0 && f[i - 1]!.pinching && !x.pinching)
+  expect(lift, 'the zoom was seen in the frames').toBeGreaterThan(0)
+  const gaps = f.slice(lift).map((x, i) => (x.under && !x.shown ? `frame ${i} after the lift` : '')).filter(Boolean)
+  expect(gaps, 'no frame after the lift with the real row under the bar and no copy shown').toEqual([])
+})
+/* its finding 2: the grid is hidden while Balances is up, which ends the copy's steps, and coming back makes them afresh */
+test('back on the grid from Balances while scrolled down, the pinned dates row shows from the first frame (D1870)', async ({ page }) => {
+  await page.evaluate(() => window.scrollTo(0, 1400))
+  await expectPinned(page, 'sticky-head', true)
+  await page.locator('[data-testid="lw-tab-balances"]').click()
+  await expect(page.locator('#page-leavewar .lw-gridhost')).toBeHidden()
+  await page.waitForTimeout(300)
+  await page.evaluate(() => (document.querySelector('[data-testid="lw-tab-grid"]') as HTMLElement).click())
+  await lwFrames(page, 30)
+  const f = await lwFramesRead(page, 30)
+  expect(f.some(x => x.under), 'the grid came back scrolled down').toBe(true)
+  expect(f.map((x, i) => (x.under && !x.shown ? `frame ${i}` : '')).filter(Boolean), 'no frame with the row under the bar and no copy').toEqual([])
+})
+/* its question 1: a zoom changes the page's height with no scroll — is the turn-on point worked out again? One forced
+   re-measure with nothing moved first (a line at the page's foot), so the hundredth-off writes fall the unlucky way. */
+test('after a zoom the pinned dates row still turns on where the row meets the bar (D1870)', async ({ page }) => {
+  const meetAt = () => page.evaluate(() => { const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(window.scrollY + head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom) })
+  const check = async (what: string) => {
+    const m = await meetAt()
+    for (const d of [-15, -6, 6, 15]) {
+      await page.evaluate(y => window.scrollTo(0, y), m + d)
+      await expectPinned(page, 'sticky-head', d > 0, `${what}: ${d}px from where the row meets the bar`)
+    }
+  }
+  await check('before')
+  await page.evaluate(() => window.scrollTo(0, 0)); await page.waitForTimeout(200)
+  await page.evaluate(() => { const d = document.createElement('div'); d.style.height = '1px'; document.body.append(d) })
+  await page.waitForTimeout(300)
+  if (isPhone()) await lwPinch(page, 200, 520, 200, 280)
+  else await lwCtrlScroll(page, 600, 500, -Math.log(1.4) / 0.002)
+  await check('after zooming in')
+})
 
 // THE FROZEN BAR IS IN STEP THE MOMENT IT APPEARS, at both widths (owner's
 // video, 23 Sep 26 — "the frozen bar scrolling rapidly horizontally when they
