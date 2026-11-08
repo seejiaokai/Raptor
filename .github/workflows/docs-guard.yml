@@ -39,6 +39,10 @@ jobs:
           fetch-depth: 0   # the gate reads the base versions of the backlog with `git show`
       - name: Self-test — the gate still catches a destroyed record
         run: node raptor-port/scripts/docsize-selftest.mjs
+      # The "checks passed" script's own tests (chat 27, 8 Nov 26 — the Opus read): among them, its notes-only list
+      # held equal to deploy.yml's push list. Here because this job runs on every pull request, notes-only ones too.
+      - name: The "checks passed" script's tests
+        run: node --test raptor-port/scripts/ci/checks-passed.test.mjs
       - name: Inventory and ceilings against the base
         env:
           DOCSGUARD_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}

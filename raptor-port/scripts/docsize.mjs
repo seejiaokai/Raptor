@@ -938,8 +938,21 @@ function guidePairing() {
   }
   return fails
 }
+/* THE DESIGN CHECKER'S SETTINGS, TWO COPIES THAT MUST AGREE ([CI-SMOKE-TIMEOUT], chat 19, 8 Nov 26). The design skill's
+   hook reads `.impeccable/config.json` from the chat's CURRENT folder, never a folder above it — so a chat whose shell has
+   moved into raptor-port/ read no settings at all: every skip was lost (the engine, the tests) and the side stripes he
+   ruled to keep (D1025, D729) were flagged for removal (measured: silent from the top folder, flagged from raptor-port/).
+   So raptor-port/.impeccable/config.json is a byte-for-byte copy of the top one, its globs written to match from either
+   folder. This check lives here because the Docs guard runs on every pull request; the gates skip `.impeccable/**`. */
+const DESIGN_CFG = '.impeccable/config.json', DESIGN_CFG_COPY = 'raptor-port/.impeccable/config.json'
+function designCheckerCopies() {
+  const a = readNow(DESIGN_CFG), b = readNow(DESIGN_CFG_COPY)
+  if (!a && !b) return []
+  if (a !== b) return [`${DESIGN_CFG_COPY} must be the same as ${DESIGN_CFG}, byte for byte — the design checker reads the copy in whichever folder the chat is in; copy the changed one over the other`]
+  return []
+}
 function structure() {
-  const fails = [...guidePairing()], warns = []
+  const fails = [...guidePairing(), ...designCheckerCopies()], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)
