@@ -74,3 +74,15 @@ describe('D1771 — a ⋯ menu\'s item under the keys', () => {
     })
   }
 })
+
+describe('D1771, D1646 — the buttons that open the board\'s small menus, under the keys', () => {
+  const sel = '#schedBoard :is([data-dwadd],[data-sblkadd],[data-wvadd],.planselbtn,.stcfg,.mbtn.daybtn):focus-visible'
+  it('+ Block, + Wave, the plans selector, a jet\'s stores and the day bar\'s buttons wear the cyan ring, just outside them', () => {
+    /* one :is() list — the commas inside it are not a rule's selector list, so the rule is found by its whole text */
+    const css = read('10-board-history.css').replace(/\s+/g, ' ')
+    const at = css.indexOf(sel + '{'), b = at < 0 ? '' : css.slice(at + sel.length + 1, css.indexOf('}', at)).replace(/\s+/g, '')
+    expect(at, 'the rule is declared').toBeGreaterThanOrEqual(0)
+    expect(b).toContain('outline:2pxsolidvar(--accent)')
+    expect(b).toContain('outline-offset:2px')
+  })
+})

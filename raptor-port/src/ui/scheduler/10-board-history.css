@@ -410,6 +410,13 @@ body:not(.tdrag) .sb-slot.empty:hover{border-color:var(--accent);color:var(--acc
 .wavemenu button:focus{outline:none}
 .wavemenu button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
 .wavemenu button.wm:focus-visible{outline-offset:-2px;border-radius:8px}
+/* …and the buttons that OPEN the board's small menus wear it too, in place of the browser's own white ring (owner D1771,
+   8 Nov 26 — + Block and Templates, picture docs/img/handpass/2026-11-08-board-keys/walk/021-desktop-q2-block-button-under-keys.png;
+   + Wave, the plans selector and a jet's stores by D1646's own words, "with the app's cyan focus ring" — the ring probe
+   scripts/handpass/bl-rings.mjs found each wearing the browser's). The desktop bar's Templates is an .abtn, ringed already
+   (02-shell.css); the duty role box is a text box and wears the boxes' cyan edge. The board only (D1646); the keys only. */
+#schedBoard :is([data-dwadd],[data-sblkadd],[data-wvadd],.planselbtn,.stcfg,.mbtn.daybtn):focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px}
 .wavemenu button.wm.sa{border-color:rgba(178,77,234,.45);color:#DDA9F5}
 .wavemenu button.wm.sa:hover{border-color:var(--san);color:var(--san)}
 .wavemenu .wm-note{font-size:10.5px;color:var(--ink-3);line-height:1.4;margin:-4px 0 8px}

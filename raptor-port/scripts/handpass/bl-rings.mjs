@@ -31,7 +31,7 @@ const accent = await page.evaluate(() => { const d = document.createElement('i')
 const rows = []
 const judge = (r, where) => { const ok = r && r.vis && r.style === 'solid' && r.color === accent; rows.push({ where, ok, ...r }); return ok }
 
-await page.click('[data-pg="editsched"], #nav-editsched, button:has-text("Edit Schedule")').catch(() => {})
+await page.evaluate(() => (window).go('editsched')); await page.waitForFunction(() => (window).CURPAGE === 'editsched')
 await page.waitForSelector('#eWeek .day', { timeout: 8000 }).catch(() => {})
 const wkMore = page.locator('#page-editsched .schedule-morewrap > button:visible').first()
 if (await wkMore.count()) {
@@ -47,7 +47,7 @@ if (await wkMore.count()) {
 }
 
 /* the board */
-await page.locator('#eWeek [data-sbday="0"]:visible').first().click()
+await page.evaluate(() => (window).openScheduler(0))
 await page.waitForSelector('#schedBoard:not([hidden])')
 await page.waitForTimeout(300)
 await page.keyboard.press('Shift')   // the keys are the last input, so a focus() below is a keyboard focus
@@ -82,7 +82,8 @@ if (await more.count()) {
 }
 /* a cropped picture of each named control under the keys */
 const named = { 'block': '#schedBoard [data-dwadd]:visible', 'amt-block': '#schedBoard [data-sblkadd]:visible', 'wave': '#schedBoard [data-wvadd]:visible',
-  'plans': '#schedBoard .planselbtn:visible', 'templates-bar': '#schedBoard #sbTpl:visible', 'templates-day': '#schedBoard .daybtn:visible' }
+  'plans': '#schedBoard .planselbtn:visible', 'templates-bar': '#schedBoard #sbTpl:visible', 'templates-day': '#schedBoard .daybtn:visible',
+  'stores': '#schedBoard .stcfg:visible', 'role': '#schedBoard [data-rolepick]:visible', 'a-box': '#schedBoard .sb-line input:visible' }
 for (const [n, s] of Object.entries(named)) {
   const l = page.locator(s).first(); if (!(await l.count())) { rows.push({ where: n, ok: null, what: 'not on screen' }); continue }
   await l.scrollIntoViewIfNeeded(); await page.keyboard.press('Shift'); await l.focus(); await page.waitForTimeout(80)
