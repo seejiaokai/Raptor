@@ -250,9 +250,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Finished jobs that close together merge as one pull request, checked once, each keeping its own check and evidence,
   and the record files are to merge without clashing (`[MERGE-ONCE-RECORDS]`, open) [D822]. His go for all three parts
   of its plan — the add-only record files keep both sides, a step that settles the other record files by their shape,
-  one merge for jobs that close together — red-teamed first, then built and merged on his "merge live"; after the red team
-  the one settle step keeps both sides of the add-only files too, entry by entry, git's own "keep both sides" setting left
-  out (it doubles a record edited in place, and GitHub ignores it) — the agent's reading, told to him [D1930, D822].
+  one merge for jobs that close together — red-teamed first, then built and merged on his "merge live" [D1930, D822].
 - The backlog's priority list shows only what is open, one line an item, grouped by area; finished work leaves it for the
   archive, the stories staying in git, the evidence sheets and the archive [D1024].
 - The sized plan's fix nights come first and the pictures round after, each night's jobs still starting on his word —
