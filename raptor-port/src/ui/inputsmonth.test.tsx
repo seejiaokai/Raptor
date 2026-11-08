@@ -176,9 +176,19 @@ describe('⤢ shows every input in the month (D1386)', () => {
     const btn = () => $('[data-testid="ib-expand"]')!
     expect(btn().closest('.ib-sub'), 'on the "How this works" row').toBeTruthy()
     expect(btn().getAttribute('aria-pressed')).toBe('false')
+    /* its mark is DRAWN, never typed (owner D1792 (b), 8 Nov 26): arrows out while compact, arrows in while every input
+       shows — the two drawings of ui/glyphs.ts; its words stay its name and its hover */
+    const mark = () => btn().querySelector('svg.btnglyph')?.innerHTML ?? ''
+    const typed = () => btn().textContent!.trim()
+    expect(typed(), 'no typed ⤢').toBe('')
+    expect(mark(), 'arrows out').toContain('15 3 21 3 21 9')
+    expect(btn().getAttribute('aria-label')).toBe('Show every input')
     expect(shown()).toBe(7)
     await act(async () => { btn().click() })
     expect(btn().getAttribute('aria-pressed')).toBe('true')
+    expect(typed(), 'no typed ⤡').toBe('')
+    expect(mark(), 'arrows in').toContain('4 14 10 14 10 20')
+    expect(btn().getAttribute('aria-label')).toBe('Show the month compact')
     expect(shown()).toBe(9)
     expect($('[data-icmore="2026-10-21"]'), 'no "+N more"').toBeNull()
     /* remembered: the page drawn again opens expanded for the same person… */

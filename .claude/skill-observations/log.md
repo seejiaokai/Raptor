@@ -1329,6 +1329,8 @@ prove each by acting through it after the rollback, not by reading what it shows
 
 **Met again 20 Oct 26 ([STANDBY-WEEK-B]):** E2E_PORT=4191 — chosen as "another port" without checking — was held by a 17 Oct worktree's vite preview; 12 of 14 rally-box tests failed, old ones included; 4197 (proved free) passed 14/14. The third time: the guard above (refuse a server this checkout did not start) is now overdue.
 
+**Met again 8 Nov 26 (chat 7, D1843):** a background run under the checks lock left E2E_PORT unset, so 4173 — held by a vite preview started from the MAIN checkout — was reused: both the red and the green runs tested that bundle, nothing was built, and the drawing check and pictures that followed ran on a stale `dist` (10:52). Read from the green run's failures ("+ Input" 934px from the row's end, a change this branch built that morning). Guard taken in the run script: a fixed free port, refused if anything answers on it before each run, and the pictures stopped unless `dist` is newer than the run's start and carries the change. Proposed guard for the lock tool: `gatelock.mjs exec` sets a free E2E_PORT itself when none is given, as its port check already does for a port that IS given.
+
 ### Observation 645: A tap-to-fill handler fought the app's own focus-arrival refresh
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): SD Phase 4 step 4 (re-run the finder's script; instrument before a second guess)
@@ -4156,6 +4158,33 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Suggested improvement:** in the handoff skill's opening-line step and in any brief for a started session, give the number as "the next free number in the handoff on main when you start (was N at <time>)", and have the new chat confirm it against the main branch's handoff before using it.
 **Principle:** an identifier handed from one parallel worker to another is a hint, not a grant — the receiver checks it against the shared, newest record before acting on it.
 
+### Observation 864: A side session's auto-loaded rulings filled most of its context before the build began
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, a side session started from chat 3 to build one small Inputs-page group (D1787, D1792 b); numbered past 863, the highest on any branch
+**Skill:** New skill candidate: side-session-brief (or doc-budget §the every-chat layer)
+**Type:** internal
+**Phase/Area:** what a chat loads at its start, and the brief a parent session writes for a child
+
+**Issue:** Opening the first source files of the Inputs page loaded the inputs, scheduler and design rulings files, the seam file and the guides by themselves; with the brief, the plan and the drawings read, the chat stood at about 78% full before a line was built, and had to compact twice in a small job. The scheduler file alone is long and governs only its tail of rulings here.
+**Suggested improvement:** The rules diet's measure step counts what a small one-area job loads before its first edit; a brief from a parent session names the rulings the job needs by number, so the child can work from those full rows; the scheduler's page conversion goes ahead of the Inputs page's, as the larger cost.
+**Principle:** What loads by itself must be sized against the smallest job that triggers it, not the largest: a small job that pays the whole area's reading cost loses most of its room to it.
+
+### Observation 865: A browser test on today's clock found an empty list and failed its own setup
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, the Inputs list's new browser test for a dragged input window (D1787)
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing a browser test's setup
+
+**Issue:** The new test opened a row of the Inputs list to reopen the window. The list shows a date window starting today; the test ran on the real clock, whose fortnight held no demo inputs, so the row was missing and the test failed on its setup, not on the app. The first green run was lost to it. Earlier tests of the same file had widened the dates or set the clock; the new one copied a neighbour that did not need rows.
+**Suggested improvement:** In the skill's "write the failing test" step: before a test acts on rows of a date-windowed list, it fixes the dates (sets the clock, or widens the list's range) and asserts a row exists, so a red run means the app, not the fixture.
+**Principle:** A test whose setup depends on today's date is a different test every day; pin the date or widen the window, and assert the premise before the check.
+
+met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column's pills in the same "D1787 at <width>" test found no rows (today's clock, the demo fortnight in July) and failed its own setup; fixed by showing every date first. Guard proposed: a browser test that measures the list's rows asserts a row is visible before measuring, and the Inputs list's test helper opens on every date by default.
 ### Observation 873: Time stamps written into a handoff from the agent's sense of elapsed time ran up to two hours ahead of the clock
 
 **Status:** OPEN
@@ -4168,6 +4197,19 @@ Met again 8 Nov 26 (chat 5, the walk): a check that a window had opened looked f
 **Issue:** Each line the chat added to its handoff block carried a time ("~11:20", "~12:30", "~12:45"), written from a feel for how long the work had taken. After the sixth compaction the clock read 11:16 and the commits showed the lines had run ahead by 20 minutes to two hours. A later chat that orders events by these times, or a person told "merged at 12:45", is misled; the error grew with each compaction, since a compacted chat has no sense of the time that passed.
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
+### Observation 880: Red first for a style-only fix, in the same lock turn as the green run
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, the D1843 build (a line round the desktop Inputs list, "No document" inside its column) — a two-rule stylesheet change, its browser test to be shown failing on the old look first. Numbered past the open branches' 878.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — watching the test fail, when the build is shared and taken in turns
+
+**Issue:** the fix was already written and committed when the test was, and every browser run rebuilds the app under one lock shared with other chats; showing it red meant either two lock turns (revert, run, wait, restore, run) or skipping the red. One script taken under one lock turn did both: it reverse-applied ONLY the fix commit's own diff to the stylesheet (`git diff <fix>~1 <fix> -- <file>`, then `git apply -R` from the repo root — so whatever a merge of main brought into the same file stays), checked the file really changed, ran the new test (want failure), restored the file from a copy under a trap on exit and signals, then ran the new test with its neighbours (want pass), then the pictures on the build the green run left.
+**Suggested improvement:** in the skill's RED section, a short case: "code written before the test" — reverse-apply the fix's own diff to get the old behaviour, assert the file changed, run red, restore under a trap, run green, in one run of the shared resource."
+**Principle:** when the fix came first, recreate the old behaviour by taking back only the fix's own diff — never by checking out an older file — prove the take-back happened, and restore it by a trap, so the red run costs no second turn of a shared resource and cannot leave the old code behind.
+
 
 ### Observation 875: A drawing with recorded figures but no part list — measure the build with the drawing script's own measure
 
@@ -4240,9 +4282,23 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** the builder's account and the brief both searched the other areas for rulings that bear on the guide by the guide's own name; only two rulings named it. One reader, searching the same way, found nothing more; the other found the most serious gap of the step — a later ruling that changes what the guide pictures (full editing on another screen) and a second that sets a preferred order, neither naming the guide. The page had stated the old behaviour as current.
 **Suggested improvement:** in the brief template for a conformance read (a summary, a page, a port checked against its sources), add a line: "search related sources by the subject of each claim — the actions, screens and terms it names — not by the name of the document under review; a later rule that changes a subject rarely names every document that describes it."
 **Principle:** dependencies are found by topic, not by title — a check that searches only for references to the artefact misses the changes to what the artefact describes.
-### Observation 880: A change of what scrolls breaks every test that names the old scroller, not only its own spec
+
+### Observation 882: A new text-fit browser test was checked only in this PC's letters and went red on the CI's Linux machines — the trap of Observation 680 met again
 
 **Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** Chat 18 taking over chat 7's merge of the Inputs list's right-end line (D1843); GitHub's run of the pull request red on the new test. Numbered 882 because 881 is already taken on another branch.
+**Skill:** New skill candidate: none — the bug-check order (`raptor-port/docs/bug-check-order.md` §7.2) and `raptor-port/docs/gates-and-deploy.md` (§A geometry test red on GitHub's Linux machines only)
+**Type:** open-source
+**Phase/Area:** writing a browser test that measures text against a fixed width, before its first push
+
+**Issue:** A new browser test asserted that a short label ("No document") ends inside a fixed-width table column, with a 0.5px tolerance. It was written, proved red-then-green and pushed on a Windows PC only. On the CI's Linux machines, whose fallback sans-serif is much wider, the label overflowed the column by 3px at every width, so the test failed at all five widths and the merge stalled until the next chat diagnosed it. The same trap was met and documented on 23 Oct 26 (Observation 680, now ACTIONED: the gates guide says to rerun with wider letters forced from the first paint), and the repo already had a pattern for it — two tests pin Arial / Liberation Sans so a fit is measured in letters close to the owner's devices on every machine. The documented step was not taken, because nothing in the act of writing such a test calls for it.
+**Suggested improvement:** Make it a default rather than a judgement: in the bug-check order §8 (writing the tests) and the gates guide's trap, "a new browser test that asserts text fits a fixed width pins its letters from the first paint (Arial, Liberation Sans) unless the test is about the device's own letters; and before its first push it is run once with wide letters (Verdana) in that place, where it must fail only if the layout itself is too tight." A cheaper guard still: a unit check over `e2e/*.spec.ts` that flags a new `getBoundingClientRect` text-width assertion in a test with no pinned font — filed for the next review to weigh.
+**Principle:** When a system draws text in whatever font each machine has, every assertion about text width is an assertion about one machine's font. Pin the font the assertion is about, from the first paint, and prove the test both ways (fails on the old layout, passes on the new) in that font — otherwise the first other machine finds the gap.
+### Observation 883: A change of what scrolls breaks every test that names the old scroller, not only its own spec
+
+**Status:** OPEN
+**Renumbered:** 880 on `main` (chat 11, the board layout); renumbered 883 when chat 18 brought `main` into `claude/pr-inputs-add-right-5b2653`, which already held chat 7's 880 (881 is taken on another branch, 882 is chat 18's).
 **Date:** 8 Nov 26
 **Session context:** chat 11, the board layout (D1780: the sideways board scrolls as one page). Numbered past 878–879, held by other branches.
 **Skill:** New skill candidate: bug-check sizing (walk-ledger / the bug-check order §3)
