@@ -11,6 +11,7 @@
    Tracker's pair can never reach the one undo, nor the one undo's OIL Earn stop the Tracker (Astra's red team 3). */
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { notify } from '../state/store'
+import { useMoreBelow } from './morebelow'
 import { BELLLIST, BELLAT } from './pops'
 import { me } from '../state/perms'
 import { noticesFor, noticeWords, noticeAge } from '../state/notices'
@@ -78,19 +79,11 @@ export function BellList() {
     return holdPageScroll(n)
   }, [open, placed])
   /* A LONG LIST KEEPS ITS FOOT IN SIGHT AND SAYS WHAT IS BELOW (the walk's C-F4, 27 Oct 26): the lines scroll inside
-     the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — the Leave
-     War day panel's cue (D1295) — gone once the list is at its end */
+     the list, "Mark all read" stands under them, and "↓ 3 more" counts the lines not wholly in view below — gone once the
+     list is at its end. Since D1788 (8 Nov 26) the Leave War's day window says it the same way, with the same counter
+     (`ui/morebelow.ts`): not pressable, a hairline above, small grey words at the left. */
   const scroller = useRef<HTMLDivElement>(null)
-  const [below, setBelow] = useState(0)
-  const countBelow = () => {
-    const s = scroller.current
-    if (!s) return
-    const bottom = s.getBoundingClientRect().bottom + 1
-    let n = 0
-    for (const l of Array.from(s.querySelectorAll<HTMLElement>('.bl-line'))) if (l.getBoundingClientRect().bottom > bottom) n++
-    setBelow(n)
-  }
-  useLayoutEffect(() => { if (open && at) countBelow() })
+  const below = useMoreBelow(scroller, '.bl-line', open && !!at)
   if (!open) return null
   const mine = me()
   const list = noticesFor(mine)
@@ -101,7 +94,7 @@ export function BellList() {
   return (
     <div className={'bell-list' + (at && at.wide ? ' wide' : '')} ref={ref} role="menu" aria-label="Notifications" data-testid="bell-list"
       style={at ? (at.wide ? { top: at.top } : { top: at.top, right: at.right }) : { visibility: 'hidden' }}>
-      <div className="bl-scroll" ref={scroller} onScroll={countBelow}>
+      <div className="bl-scroll" ref={scroller}>
       {list.length === 0 && <div className="bl-empty" data-testid="bell-empty">Nothing new</div>}
       {list.map(n => {
         const w = noticeWords(n), fresh = isUnread(n, mine)

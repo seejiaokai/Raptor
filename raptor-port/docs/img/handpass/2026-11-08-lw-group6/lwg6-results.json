@@ -1,0 +1,445 @@
+{
+ "results": [
+  {
+   "sc": "1 long Away list, top",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "top: away 19, whole 17, cut 1, below 1, foot “↓ 2 more”; foot facts {\"text\":\"↓ 2 more\",\"top\":810,\"bottom\":839,\"left\":1093,\"right\":1507,\"h\":29,\"outsideBody\":true,\"straightAfterBody\":true,\"gapToBody\":0,\"fontSize\":\"12px\",\"color\":\"rgb(138, 150, 163)\",\"fontWeight\":\"400\",\"borderTop\":\"1px solid rgb(42, 49, 58)\",\"bg\":\"rgb(20, 24, 29)\",\"margin\":\"12px/12px\",\"padding\":\"6px 7px\",\"cursor\":\"auto\",\"tag\":\"DIV\",\"tabindex\":null,\"role\":null,\"focusableInside\":false,\"onclick\":\"object\",\"wordsLeftFromFoot\":7,\"inkInsideFoot\":true,\"oneLine\":true,\"footFromWinBottom\":1,\"footLeftFromWin\":13,\"winRightFromFoot\":13}; 80 Tabs: landed on the foot 0 times (first stops: BUTTON#lwday-prev > BUTTON#lwday-next > BUTTON#win-lwday-x > DIV > BUTTON#counts-toggle > BUTTON#undermanned > BUTTON#open-chip > BUTTON#legend-open); press on foot: nothing changed",
+   "pics": [
+    "pc-s1-day-top",
+    "pc-s1-day-after-foot-press"
+   ]
+  },
+  {
+   "sc": "2 part way",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "wheel; scrollTop 20; part way: away 19, whole 17, cut 1, below 1, foot “↓ 2 more”",
+   "pics": [
+    "pc-s2-part-way"
+   ]
+  },
+  {
+   "sc": "3 the end",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "end: away 19, whole 19, cut 0, below 0, foot none; last row whole true; scrolled back: back at top: away 19, whole 17, cut 1, below 1, foot “↓ 2 more”",
+   "pics": [
+    "pc-s3-end",
+    "pc-s3-back-top"
+   ]
+  },
+  {
+   "sc": "4 a day that fits; ✕; Escape",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "trail Tue 1 Dec: away 1, foot none, exp 0; stepped back 1 to “Mon 30 Nov” foot ↓ 2 more; ✕ closed true; reopened from 25 Nov true, its heading {\"cls\":\"day\",\"outline\":\"none 3px\",\"boxShadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\"}; Escape closed true",
+   "pics": [
+    "pc-s4-stepped-back"
+   ]
+  },
+  {
+   "sc": "5 window resized",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "the window has no resize handle; page 864->1100: win h 744->789, body 664->738, page 1100 tall: away 19, whole 19, cut 0, below 0, foot none; dragged lower: win h 500, window dragged 260 lower: away 19, whole 9, cut 0, below 10, foot “↓ 10 more”; dragged to the top: win h 789, window dragged to the top: away 19, whole 19, cut 0, below 0, foot none",
+   "pics": [
+    "pc-s5-page-taller",
+    "pc-s5-window-dragged-lower",
+    "pc-s5-window-dragged-top"
+   ]
+  },
+  {
+   "sc": "8 the bell",
+   "size": "pc",
+   "verdict": "RECORDED",
+   "note": "lines 0, not wholly in view 0, foot “null” more “null” (the list does not overflow in the demo: no \"more\" cue to compare); Mark all read pressed false",
+   "pics": [
+    "pc-s8-bell-open",
+    "pc-s8-bell-after-mark-all"
+   ]
+  },
+  {
+   "sc": "1 long Away list, top",
+   "size": "ph-chromium",
+   "verdict": "PASS",
+   "note": "top: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”; foot facts {\"text\":\"↓ 8 more\",\"top\":832,\"bottom\":861,\"left\":25,\"right\":377,\"h\":29,\"outsideBody\":true,\"straightAfterBody\":true,\"gapToBody\":0,\"fontSize\":\"12px\",\"color\":\"rgb(138, 150, 163)\",\"fontWeight\":\"400\",\"borderTop\":\"1px solid rgb(42, 49, 58)\",\"bg\":\"rgb(20, 24, 29)\",\"margin\":\"12px/12px\",\"padding\":\"6px 7px\",\"cursor\":\"auto\",\"tag\":\"DIV\",\"tabindex\":null,\"role\":null,\"focusableInside\":false,\"onclick\":\"object\",\"wordsLeftFromFoot\":7,\"inkInsideFoot\":true,\"oneLine\":true,\"footFromWinBottom\":1,\"footLeftFromWin\":13,\"winRightFromFoot\":13}; not tried on a phone; press on foot: nothing changed",
+   "pics": [
+    "ph-chromium-s1-day-top",
+    "ph-chromium-s1-day-after-foot-press"
+   ]
+  },
+  {
+   "sc": "2 part way",
+   "size": "ph-chromium",
+   "verdict": "PASS",
+   "note": "finger; scrollTop 95; part way: away 19, whole 14, cut 1, below 4, foot “↓ 5 more”",
+   "pics": [
+    "ph-chromium-s2-part-way"
+   ]
+  },
+  {
+   "sc": "3 the end",
+   "size": "ph-chromium",
+   "verdict": "PASS",
+   "note": "end: away 19, whole 19, cut 0, below 0, foot none; last row whole true; scrolled back: back at top: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”",
+   "pics": [
+    "ph-chromium-s3-end",
+    "ph-chromium-s3-back-top"
+   ]
+  },
+  {
+   "sc": "4 a day that fits; ✕; Escape",
+   "size": "ph-chromium",
+   "verdict": "PASS",
+   "note": "trail pic right after tap: ph-chromium-s4-right-after-tap-next | Tue 1 Dec: away 1, foot none, exp 0; stepped back 1 to “Mon 30 Nov” foot ↓ 8 more; ✕ closed true; reopened from 25 Nov true, its heading {\"cls\":\"day\",\"outline\":\"none 2.5px\",\"boxShadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\"}; Escape closed true",
+   "pics": [
+    "ph-chromium-s4-stepped-back"
+   ]
+  },
+  {
+   "sc": "5 two resting heights",
+   "size": "ph-chromium",
+   "verdict": "PASS",
+   "note": "first rest: win 577 (tall false), body 489, first rest: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”; other rest: win 854 (tall true), body 795, second rest: away 19, whole 19, cut 0, below 0, foot none; back: win 577, back to first rest: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”",
+   "pics": [
+    "ph-chromium-s5-rest-first",
+    "ph-chromium-s5-rest-toggle-right-after-tap",
+    "ph-chromium-s5-rest-second"
+   ]
+  },
+  {
+   "sc": "8 the bell",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "lines 0, not wholly in view 0, foot “null” more “null” (the list does not overflow in the demo: no \"more\" cue to compare); Mark all read pressed false",
+   "pics": [
+    "ph-chromium-s8-bell-open",
+    "ph-chromium-s8-bell-after-mark-all"
+   ]
+  },
+  {
+   "sc": "1 long Away list, top",
+   "size": "ph-webkit",
+   "verdict": "PASS",
+   "note": "top: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”; foot facts {\"text\":\"↓ 8 more\",\"top\":834,\"bottom\":861,\"left\":25,\"right\":377,\"h\":27,\"outsideBody\":true,\"straightAfterBody\":true,\"gapToBody\":0,\"fontSize\":\"12px\",\"color\":\"rgb(138, 150, 163)\",\"fontWeight\":\"400\",\"borderTop\":\"1px solid rgb(42, 49, 58)\",\"bg\":\"rgb(20, 24, 29)\",\"margin\":\"12px/12px\",\"padding\":\"6px 7px\",\"cursor\":\"auto\",\"tag\":\"DIV\",\"tabindex\":null,\"role\":null,\"focusableInside\":false,\"onclick\":\"object\",\"wordsLeftFromFoot\":7,\"inkInsideFoot\":true,\"oneLine\":true,\"footFromWinBottom\":1,\"footLeftFromWin\":13,\"winRightFromFoot\":13}; not tried on a phone; press on foot: nothing changed",
+   "pics": [
+    "ph-webkit-s1-day-top",
+    "ph-webkit-s1-day-after-foot-press"
+   ]
+  },
+  {
+   "sc": "2 part way",
+   "size": "ph-webkit",
+   "verdict": "PASS",
+   "note": "scrollTop set (WebKit: touch drives no browser scroll); scrollTop 110; part way: away 19, whole 15, cut 1, below 3, foot “↓ 4 more”",
+   "pics": [
+    "ph-webkit-s2-part-way"
+   ]
+  },
+  {
+   "sc": "3 the end",
+   "size": "ph-webkit",
+   "verdict": "PASS",
+   "note": "end: away 19, whole 19, cut 0, below 0, foot none; last row whole true; scrolled back: back at top: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”",
+   "pics": [
+    "ph-webkit-s3-end",
+    "ph-webkit-s3-back-top"
+   ]
+  },
+  {
+   "sc": "4 a day that fits; ✕; Escape",
+   "size": "ph-webkit",
+   "verdict": "PASS",
+   "note": "trail pic right after tap: ph-webkit-s4-right-after-tap-next | Tue 1 Dec: away 1, foot none, exp 0; stepped back 1 to “Mon 30 Nov” foot ↓ 8 more; ✕ closed true; reopened from 25 Nov true, its heading {\"cls\":\"day\",\"outline\":\"none 3px\",\"boxShadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\"}; Escape closed true",
+   "pics": [
+    "ph-webkit-s4-stepped-back"
+   ]
+  },
+  {
+   "sc": "5 two resting heights",
+   "size": "ph-webkit",
+   "verdict": "PASS",
+   "note": "first rest (the touch tap on the bar toggled nothing in this test browser; a mouse click on it did): win 577 (tall false), body 491, first rest: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”; other rest: win 854 (tall true), body 795, second rest: away 19, whole 19, cut 0, below 0, foot none; back: win 577, back to first rest: away 19, whole 11, cut 1, below 7, foot “↓ 8 more”",
+   "pics": [
+    "ph-webkit-s5-rest-first",
+    "ph-webkit-s5-rest-toggle-right-after-tap",
+    "ph-webkit-s5-rest-second"
+   ]
+  },
+  {
+   "sc": "8 the bell",
+   "size": "ph-webkit",
+   "verdict": "RECORDED",
+   "note": "lines 0, not wholly in view 0, foot “null” more “null” (the list does not overflow in the demo: no \"more\" cue to compare); Mark all read pressed false",
+   "pics": [
+    "ph-webkit-s8-bell-open",
+    "ph-webkit-s8-bell-after-mark-all"
+   ]
+  },
+  {
+   "sc": "7 drawing check (pc)",
+   "size": "pc dsf2",
+   "verdict": "PASS",
+   "note": "foot “↓ 2 more” [{\"what\":\"foot box height\",\"drawing\":29,\"build\":29,\"diff\":0,\"over2\":false},{\"what\":\"foot width\",\"drawing\":414,\"build\":414,\"diff\":0,\"over2\":false},{\"what\":\"foot left from window left\",\"drawing\":13,\"build\":13,\"diff\":0,\"over2\":false},{\"what\":\"foot top in the same frame\",\"drawing\":754,\"build\":754,\"diff\":0,\"over2\":false},{\"what\":\"foot bottom in the same frame\",\"drawing\":783,\"build\":783,\"diff\":0,\"over2\":false},{\"what\":\"words size\",\"drawing\":\"12px\",\"build\":\"12px\",\"over2\":false},{\"what\":\"words colour\",\"drawing\":\"rgb(138, 150, 163)\",\"build\":\"rgb(138, 150, 163)\",\"over2\":false},{\"what\":\"words ink left in the same frame\",\"drawing\":55,\"build\":54,\"diff\":1,\"over2\":false},{\"what\":\"hairline\",\"drawing\":\"1px solid var(--edge)\",\"build\":\"1px solid rgb(42, 49, 58)\",\"over2\":false}]",
+   "pics": [
+    "pc-draw-mine-top",
+    "pc-draw-sidebyside"
+   ]
+  },
+  {
+   "sc": "6 drawing check (ph)",
+   "size": "ph-chromium dsf2",
+   "verdict": "PASS",
+   "note": "foot “↓ 8 more” [{\"what\":\"foot box height\",\"drawing\":29,\"build\":29,\"diff\":0,\"over2\":false},{\"what\":\"foot width\",\"drawing\":352,\"build\":352,\"diff\":0,\"over2\":false},{\"what\":\"foot left from window left\",\"drawing\":13,\"build\":13,\"diff\":0,\"over2\":false},{\"what\":\"foot top in the same frame\",\"drawing\":611,\"build\":610.8,\"diff\":0.2,\"over2\":false},{\"what\":\"foot bottom in the same frame\",\"drawing\":640,\"build\":639.8,\"diff\":0.2,\"over2\":false},{\"what\":\"words size\",\"drawing\":\"12px\",\"build\":\"12px\",\"over2\":false},{\"what\":\"words colour\",\"drawing\":\"rgb(138, 150, 163)\",\"build\":\"rgb(138, 150, 163)\",\"over2\":false},{\"what\":\"words ink left in the same frame\",\"drawing\":37,\"build\":36,\"diff\":1,\"over2\":false},{\"what\":\"hairline\",\"drawing\":\"1px solid var(--edge)\",\"build\":\"1px solid rgb(42, 49, 58)\",\"over2\":false}]",
+   "pics": [
+    "ph-draw-mine-top",
+    "ph-draw-sidebyside"
+   ]
+  },
+  {
+   "sc": "10 pinned dates desktop",
+   "size": "pc",
+   "verdict": "NOT WALKED",
+   "note": "page.evaluate: TypeError: Cannot read properties of null (reading 'getBoundingClientRect') |     at eval (eval at evaluate (:311:30), <anonymous>:5:80) |     at UtilityScript.evaluate (<anonymous>:313:16)",
+   "pics": []
+  },
+  {
+   "sc": "10 pinned dates desktop zoomed out",
+   "size": "pc",
+   "verdict": "NOT WALKED",
+   "note": "page.evaluate: TypeError: Cannot read properties of null (reading 'getBoundingClientRect') |     at eval (eval at evaluate (:311:30), <anonymous>:5:80) |     at UtilityScript.evaluate (<anonymous>:313:16)",
+   "pics": []
+  },
+  {
+   "sc": "10 pinned dates desktop Rearrange",
+   "size": "pc",
+   "verdict": "NOT WALKED",
+   "note": "page.evaluate: TypeError: Cannot read properties of null (reading 'getBoundingClientRect') |     at eval (eval at evaluate (:311:30), <anonymous>:5:80) |     at UtilityScript.evaluate (<anonymous>:313:16)",
+   "pics": []
+  },
+  {
+   "sc": "9 no other window grows a foot",
+   "size": "pc",
+   "verdict": "RECORDED",
+   "note": "[{\"label\":\"changes window (History clock)\",\"windows\":[{\"id\":\"chgwin front\",\"hasWinBody\":true,\"afterBody\":[\"win-foot cw-foot\"],\"hasMoreCue\":false}]},{\"label\":\"ALL AVAIL window\",\"note\":\"no count chip found on the edit week\"},{\"label\":\"the Inputs calendar's day window (not in the brief's list; looked at too)\",\"windows\":[{\"id\":\"inputsday\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false}]},{\"label\":\"an input's own window (+ Input)\",\"windows\":[{\"id\":\"inputsday\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false},{\"id\":\"inputedit\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false}]},{\"label\":\"Leave War bid window (empty cell)\",\"windows\":[{\"id\":\"bid-picker\",\"hasWinBody\":false,\"afterBody\":null,\"hasMoreCue\":false}]},{\"label\":\"the day's list (a day with two entries)\",\"windows\":[{\"id\":\"daylist-sheet\",\"hasWinBody\":false,\"afterBody\":null,\"hasMoreCue\":false}]}]",
+   "pics": []
+  },
+  {
+   "sc": "9 no other window grows a foot",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "[{\"label\":\"changes window (History clock)\",\"windows\":[{\"id\":\"chgwin front\",\"hasWinBody\":true,\"afterBody\":[\"win-foot cw-foot\"],\"hasMoreCue\":false}]},{\"label\":\"ALL AVAIL window\",\"note\":\"no count chip found on the edit week\"},{\"label\":\"the Inputs calendar's day window (not in the brief's list; looked at too)\",\"windows\":[{\"id\":\"inputsday\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false}]},{\"label\":\"an input's own window (+ Input)\",\"windows\":[{\"id\":\"inputsday\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false},{\"id\":\"inputedit\",\"hasWinBody\":true,\"afterBody\":[],\"hasMoreCue\":false}]},{\"label\":\"Leave War bid window (empty cell)\",\"windows\":[{\"id\":\"bid-picker\",\"hasWinBody\":false,\"afterBody\":null,\"hasMoreCue\":false}]},{\"label\":\"the day's list (a day with two entries)\",\"windows\":[{\"id\":\"daylist-sheet\",\"hasWinBody\":false,\"afterBody\":null,\"hasMoreCue\":false}]}]",
+   "pics": []
+  },
+  {
+   "sc": "10 pinned dates row ",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "start {\"y\":0,\"realTop\":232,\"tb\":57}; wheel steps 14: verdicts real row below the bar / pinned row under the bar, bad 0; maxColDiff 0px; in-page frame logs (rAF, before paint): {\"wheel-0\":{\"frames\":68,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-1\":{\"frames\":67,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-2\":{\"frames\":65,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7}}; scrollbar (15px wide) drag moved page to y=311, states bad 0/10, frames {\"frames\":89,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=166 header\",\"y=176 frozen\",\"y=187 frozen\",\"y=187 frozen\"],\"medianFrameMs\":16.7}; wheel back up bad 0/16; painted-frames run {\"frames\":43,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7} with 9 frames on sheet; transition states [{\"y\":100,\"realTop\":132,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":200,\"realTop\":32,\"tb\":57,\"v\":\"pinned row under the bar\",\"pinnedTop\":57},{\"y\":125,\"realTop\":107,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":145,\"realTop\":87,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0}]",
+   "pics": [
+    "pc-s10-wheel-00",
+    "pc-s10-wheel-01",
+    "pc-s10-wheel-02",
+    "pc-s10-fine-00",
+    "pc-s10-fine-02",
+    "pc-s10-fine-04",
+    "pc-s10-painted-frames"
+   ]
+  },
+  {
+   "sc": "10 pinned dates row (zoomed out)",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "start {\"y\":0,\"realTop\":223,\"tb\":57}; wheel steps 23: verdicts real row below the bar / pinned row under the bar, bad 0; maxColDiff 0px; in-page frame logs (rAF, before paint): {\"wheel-0\":{\"frames\":66,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-1\":{\"frames\":67,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-2\":{\"frames\":66,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7}}; scrollbar (15px wide) drag moved page to y=166, states bad 0/10, frames {\"frames\":82,\"gapFrames\":0,\"gaps\":[],\"firstChange\":null,\"medianFrameMs\":16.7}; wheel back up bad 0/16; painted-frames run {\"frames\":43,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7} with 8 frames on sheet; transition states [{\"y\":100,\"realTop\":123,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":200,\"realTop\":23,\"tb\":57,\"v\":\"pinned row under the bar\",\"pinnedTop\":57},{\"y\":116,\"realTop\":107,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":136,\"realTop\":87,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0}]",
+   "pics": [
+    "pc-s10-zoomed-out-wheel-00",
+    "pc-s10-zoomed-out-wheel-01",
+    "pc-s10-zoomed-out-wheel-02",
+    "pc-s10-zoomed-out-wheel-03",
+    "pc-s10-zoomed-out-wheel-04",
+    "pc-s10-zoomed-out-wheel-05",
+    "pc-s10-zoomed-out-painted-frames"
+   ]
+  },
+  {
+   "sc": "10 pinned dates row (Rearrange on)",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "start {\"y\":0,\"realTop\":232,\"tb\":57}; wheel steps 14: verdicts real row below the bar / pinned row under the bar, bad 0; maxColDiff 0px; in-page frame logs (rAF, before paint): {\"wheel-0\":{\"frames\":63,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-1\":{\"frames\":64,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},\"wheel-2\":{\"frames\":66,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7}}; scrollbar (15px wide) drag moved page to y=310, states bad 0/10, frames {\"frames\":94,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=175 header\",\"y=186 frozen\",\"y=186 frozen\",\"y=196 frozen\"],\"medianFrameMs\":16.7}; wheel back up bad 0/16; painted-frames run {\"frames\":40,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7} with 9 frames on sheet; transition states [{\"y\":100,\"realTop\":132,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":200,\"realTop\":32,\"tb\":57,\"v\":\"pinned row under the bar\",\"pinnedTop\":57},{\"y\":125,\"realTop\":107,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0},{\"y\":145,\"realTop\":87,\"tb\":57,\"v\":\"real row below the bar\",\"pinnedTop\":0}]",
+   "pics": [
+    "pc-s10-rearrange-wheel-00",
+    "pc-s10-rearrange-wheel-01",
+    "pc-s10-rearrange-wheel-02",
+    "pc-s10-rearrange-fine-00",
+    "pc-s10-rearrange-fine-02",
+    "pc-s10-rearrange-fine-04",
+    "pc-s10-rearrange-painted-frames"
+   ]
+  },
+  {
+   "sc": "11 pinned dates row",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "start {\"y\":0,\"realTop\":229,\"tb\":49,\"verdict\":\"real row below the bar\"}; {\"slow-drag-0\":{\"frames\":267,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=177 header\",\"y=183 frozen\",\"y=183 frozen\",\"y=189 frozen\"],\"medianFrameMs\":16.7},\"slow-drag-0-settled\":{\"y\":489,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-260,\"tb\":49,\"pinnedTop\":49},\"slow-drag-1\":{\"frames\":273,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=177 header\",\"y=183 frozen\",\"y=183 frozen\",\"y=189 frozen\"],\"medianFrameMs\":16.7},\"slow-drag-1-settled\":{\"y\":489,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-260,\"tb\":49,\"pinnedTop\":49},\"flick-0\":{\"frames\":108,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=210 frozen\",\"y=210 frozen\",\"y=255 frozen\"],\"medianFrameMs\":16.7},\"flick-0-settled\":{\"y\":525,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-296,\"tb\":49,\"pinnedTop\":49},\"flick-1\":{\"frames\":106,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=210 frozen\",\"y=210 frozen\",\"y=255 frozen\"],\"medianFrameMs\":16.7},\"flick-1-settled\":{\"y\":525,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-296,\"tb\":49,\"pinnedTop\":49},\"push-0\":{\"frames\":148,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=185 frozen\",\"y=185 frozen\",\"y=205 frozen\"],\"medianFrameMs\":16.7},\"push-0-settled\":{\"y\":485,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-256,\"tb\":49,\"pinnedTop\":49},\"push-1\":{\"frames\":137,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=185 frozen\",\"y=185 frozen\",\"y=205 frozen\"],\"medianFrameMs\":16.7},\"push-1-settled\":{\"y\":485,\"v\":\"pinned row under the bar\",\"maxColDiff\":null,\"realTop\":-256,\"tb\":49,\"pinnedTop\":49},\"paintedRun\":{\"frames\":84,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=210 frozen\",\"y=210 frozen\",\"y=255 frozen\"],\"medianFrameMs\":16.7,\"screencastFrames\":14},\"afterPinchScroll\":{\"frames\":132,\"gapFrames\":0,\"gaps\":[],\"firstChange\":null,\"medianFrameMs\":16.7,\"zoomBefore\":\"0.8|none\",\"zoomAfter\":\"0.427|none\"},\"after-pinch-settled\":{\"y\":148,\"v\":\"real row below the bar\",\"maxColDiff\":null,\"realTop\":81,\"tb\":49,\"pinnedTop\":0}}; runs with a cut/missing dates row frame or state: none",
+   "pics": [
+    "ph-chromium-s11-slow-drag-right-after",
+    "ph-chromium-s11-slow-drag-settled",
+    "ph-chromium-s11-flick-right-after",
+    "ph-chromium-s11-flick-settled",
+    "ph-chromium-s11-push-right-after",
+    "ph-chromium-s11-push-settled",
+    "ph-chromium-s11-painted-frames",
+    "ph-chromium-s11-after-pinch",
+    "ph-chromium-s11-after-pinch-scrolled"
+   ]
+  },
+  {
+   "sc": "11 pinned dates row",
+   "size": "ph-webkit",
+   "verdict": "RECORDED",
+   "note": "start {\"y\":0,\"realTop\":230,\"tb\":49,\"verdict\":\"real row below the bar\"}; {\"step-0\":{\"y\":40,\"v\":\"real row below the bar\",\"maxColDiff\":null},\"step-1\":{\"y\":80,\"v\":\"real row below the bar\",\"maxColDiff\":null},\"step-2\":{\"y\":120,\"v\":\"real row below the bar\",\"maxColDiff\":null},\"step-3\":{\"y\":160,\"v\":\"real row below the bar\",\"maxColDiff\":null},\"step-4\":{\"y\":200,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-5\":{\"y\":240,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-6\":{\"y\":280,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-7\":{\"y\":320,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-8\":{\"y\":360,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-9\":{\"y\":400,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-10\":{\"y\":440,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"step-11\":{\"y\":480,\"v\":\"pinned row under the bar\",\"maxColDiff\":null},\"note\":\"WebKit: a finger push cannot be walked (touches drive no browser scroll); the page was stepped 40px at a time by script\"}; runs with a cut/missing dates row frame or state: none",
+   "pics": [
+    "ph-webkit-s11-scripted-scroll"
+   ]
+  },
+  {
+   "sc": "12 Quals heading",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "start {\"y\":0,\"realTop\":201,\"tb\":49,\"verdict\":\"real heading below the bar\"}; {\"slow-drag-0\":{\"frames\":267,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=147 header\",\"y=153 frozen\",\"y=153 frozen\",\"y=153 frozen\"],\"medianFrameMs\":16.7},\"slow-drag-0-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"slow-drag-1\":{\"frames\":260,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=147 header\",\"y=153 frozen\",\"y=153 frozen\",\"y=153 frozen\"],\"medianFrameMs\":16.7},\"slow-drag-1-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"flick-0\":{\"frames\":123,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=120 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=165 frozen\"],\"medianFrameMs\":16.7},\"flick-0-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"flick-1\":{\"frames\":109,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=120 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=165 frozen\"],\"medianFrameMs\":16.7},\"flick-1-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"push-0\":{\"frames\":155,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=145 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=165 frozen\"],\"medianFrameMs\":16.7},\"push-0-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"push-1\":{\"frames\":142,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=145 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=165 frozen\"],\"medianFrameMs\":16.7},\"push-1-settled\":{\"y\":434,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0,\"realTop\":-233,\"tb\":49,\"pinnedTop\":49},\"paintedRun\":{\"frames\":83,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=120 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=165 frozen\"],\"medianFrameMs\":16.7,\"screencastFrames\":12},\"afterPinchScroll\":{\"frames\":132,\"gapFrames\":0,\"gaps\":[],\"firstChange\":null,\"medianFrameMs\":16.7,\"zoomBefore\":\"1|none\",\"zoomAfter\":\"0.333333|none\"},\"after-pinch-settled\":{\"y\":0,\"v\":\"real heading below the bar\",\"maxColDiff\":null,\"realTop\":201,\"tb\":49,\"pinnedTop\":0}}; runs with a cut/missing heading frame or state: none",
+   "pics": [
+    "ph-chromium-s12-slow-drag-right-after",
+    "ph-chromium-s12-slow-drag-settled",
+    "ph-chromium-s12-flick-right-after",
+    "ph-chromium-s12-flick-settled",
+    "ph-chromium-s12-push-right-after",
+    "ph-chromium-s12-push-settled",
+    "ph-chromium-s12-painted-frames",
+    "ph-chromium-s12-after-pinch",
+    "ph-chromium-s12-after-pinch-scrolled"
+   ]
+  },
+  {
+   "sc": "12 Quals heading",
+   "size": "ph-webkit",
+   "verdict": "RECORDED",
+   "note": "start {\"y\":0,\"realTop\":201,\"tb\":49,\"verdict\":\"real heading below the bar\"}; {\"step-0\":{\"y\":40,\"v\":\"real heading below the bar\",\"maxColDiff\":null},\"step-1\":{\"y\":80,\"v\":\"real heading below the bar\",\"maxColDiff\":null},\"step-2\":{\"y\":120,\"v\":\"real heading below the bar\",\"maxColDiff\":null},\"step-3\":{\"y\":160,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-4\":{\"y\":200,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-5\":{\"y\":240,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-6\":{\"y\":280,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-7\":{\"y\":320,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-8\":{\"y\":360,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-9\":{\"y\":400,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-10\":{\"y\":440,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"step-11\":{\"y\":479,\"v\":\"pinned heading under the bar\",\"maxColDiff\":0},\"note\":\"WebKit: a finger push cannot be walked (touches drive no browser scroll); the page was stepped 40px at a time by script\"}; runs with a cut/missing heading frame or state: none",
+   "pics": [
+    "ph-webkit-s12-scripted-scroll"
+   ]
+  },
+  {
+   "sc": "12 Quals heading",
+   "size": "pc",
+   "verdict": "PASS",
+   "note": "start {\"y\":0,\"realTop\":171,\"tb\":57}; sideways, down and up: 25 states, verdicts real heading below the bar / pinned heading under the bar, bad 0; maxColDiff 0px; rAF frame logs [{\"frames\":70,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},{\"frames\":70,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7},{\"frames\":69,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=100 header\",\"y=200 frozen\",\"y=200 frozen\",\"y=200 frozen\"],\"medianFrameMs\":16.7}]",
+   "pics": [
+    "pc-s12-sideways",
+    "pc-s12-down-00",
+    "pc-s12-down-01"
+   ]
+  },
+  {
+   "sc": "11b painted flick lw-0",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "14 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":83,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=210 frozen\",\"y=210 frozen\",\"y=255 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-lw-flick-0"
+   ]
+  },
+  {
+   "sc": "11b painted flick lw-1",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "21 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":93,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=195 frozen\",\"y=195 frozen\",\"y=225 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-lw-flick-1"
+   ]
+  },
+  {
+   "sc": "11b painted flick lw-2",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "11 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":77,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=165 header\",\"y=225 frozen\",\"y=225 frozen\",\"y=285 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-lw-flick-2"
+   ]
+  },
+  {
+   "sc": "11b painted flick lw-3",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "16 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":88,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=175 header\",\"y=213 frozen\",\"y=213 frozen\",\"y=213 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-lw-flick-3"
+   ]
+  },
+  {
+   "sc": "11b painted flick qu-0",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "12 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":81,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=120 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=210 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-qu-flick-0"
+   ]
+  },
+  {
+   "sc": "11b painted flick qu-1",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "17 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":92,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=135 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=195 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-qu-flick-1"
+   ]
+  },
+  {
+   "sc": "11b painted flick qu-2",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "10 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":75,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=105 header\",\"y=165 frozen\",\"y=165 frozen\",\"y=225 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-qu-flick-2"
+   ]
+  },
+  {
+   "sc": "11b painted flick qu-3",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "14 painted frames (sheet: count a cut or missing dates row by eye); rAF log {\"frames\":86,\"gapFrames\":0,\"gaps\":[],\"firstChange\":[\"y=137 header\",\"y=175 frozen\",\"y=175 frozen\",\"y=213 frozen\"],\"medianFrameMs\":16.7}",
+   "pics": [
+    "ph-chromium-s11b-qu-flick-3"
+   ]
+  },
+  {
+   "sc": "13 plain-user round (admin)",
+   "size": "pc",
+   "verdict": "RECORDED",
+   "note": "date heading while its window is open: {\"cls\":\"day\",\"outline\":\"none 3px rgb(138, 150, 163)\",\"shadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\",\"childCls\":\"dow\"} || stepped to Sun 29 Nov || grid behind pressable: bid window true with the day window true (day window was open true) || ✕ closed true || Escape closed true || bell opened true, closed true || grid scrolled 0->500->0; at the bottom pinned row under the bar || cell tapped: bid window opened true, closed true || Quals down: pinned heading under the bar, back up: real heading below the bar",
+   "pics": []
+  },
+  {
+   "sc": "13 plain-user round (admin)",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "date heading while its window is open: {\"cls\":\"day\",\"outline\":\"none 2.5px rgb(138, 150, 163)\",\"shadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\",\"childCls\":\"dow\"} || stepped to Sun 29 Nov || grid behind pressable: bid window false with the day window true (day window was open true) || ✕ closed true || Escape closed true || bell opened true, closed true || grid scrolled 0->500->0; at the bottom pinned row under the bar || cell tapped: bid window opened true, closed true || Quals down: pinned heading under the bar, back up: real heading below the bar",
+   "pics": []
+  },
+  {
+   "sc": "13 plain-user round (member)",
+   "size": "pc",
+   "verdict": "RECORDED",
+   "note": "date heading while its window is open: {\"cls\":\"day\",\"outline\":\"none 3px rgb(138, 150, 163)\",\"shadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\",\"childCls\":\"dow\"} || stepped to Sun 29 Nov || grid behind pressable: bid window false with the day window true (day window was open true) || ✕ closed true || Escape closed true || bell opened true, closed true || grid scrolled 0->500->0; at the bottom pinned row under the bar || cell tapped: bid window opened false, closed true (a member: not his row / closed day: see picture) || Quals down: pinned heading under the bar, back up: real heading below the bar",
+   "pics": []
+  },
+  {
+   "sc": "13 plain-user round (member)",
+   "size": "ph-chromium",
+   "verdict": "RECORDED",
+   "note": "date heading while its window is open: {\"cls\":\"day\",\"outline\":\"none 2.5px rgb(138, 150, 163)\",\"shadow\":\"rgba(0, 0, 0, 0.9) 0px 24px 60px -34px\",\"childCls\":\"dow\"} || stepped to Sun 29 Nov || grid behind pressable: bid window false with the day window true (day window was open true) || ✕ closed true || Escape closed true || bell opened true, closed true || grid scrolled 0->500->0; at the bottom pinned row under the bar || cell tapped: bid window opened false, closed true (a member: not his row / closed day: see picture) || Quals down: pinned heading under the bar, back up: real heading below the bar",
+   "pics": []
+  }
+ ],
+ "errors": []
+}
