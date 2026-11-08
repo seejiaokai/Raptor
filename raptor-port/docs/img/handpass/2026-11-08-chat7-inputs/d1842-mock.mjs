@@ -74,6 +74,7 @@ for (const w of [821, 1024, 1536]) {
   const { ctx, page } = await open(browser, w)
   res.widths[w] = {}
   for (const [k, css] of Object.entries(OPTS)) {
+    // eslint-disable-next-line react-doctor/async-await-in-loop -- a drawing script lays one option on the page, measures and pictures it, then takes it off, in order
     const tag = css ? await page.addStyleTag({ content: css }) : null
     await page.mouse.move(2, 2); await page.waitForTimeout(250)
     const m = await measure(page)

@@ -1638,8 +1638,21 @@ async function strip(p: Page, x: number, y: number, w: number): Promise<number[]
 }
 const EDGE = [0x2a, 0x31, 0x3a]   // var(--edge), the rows' own lines
 const near = (a: number[], b: number[]) => a.every((v, i) => Math.abs(v - b[i]) <= 10)
+/* ARIAL'S LETTERS ON EVERY MACHINE (GitHub's first run of this test, 8 Nov 26): the app loads no font, so each machine
+   draws its own, and Linux's own letters set "No document" wider than this PC's Segoe UI — on GitHub it ended 3.25px
+   past its column's padding, 8.75px from the list's end, at every width, where this PC holds it about 14px in. Those
+   letters are no device of his. Arial is close to Apple's on his iPhone and the same on this PC and on GitHub's machines
+   (Liberation Sans, its metric twin), as the Leave War's whole-leave and input-range tests use; on the old look (the
+   controls' 11px side margins) it still fails every check of "No document". Laid on from the first paint
+   (docs/gates-and-deploy.md §A geometry test red on GitHub's Linux machines only). */
+const ARIAL_LIST = '#intbl, #intbl * { font-family: Arial, "Liberation Sans", sans-serif !important }'
 for (const [width, withWin] of [[2560, false], [1536, false], [1536, true], [1024, false], [821, false]] as const) {
   test(`D1843 at ${width} wide${withWin ? ', the input window open' : ''}: a line closes the list's right end; "No document" inside its column`, async ({ page }) => {
+    await page.addInitScript(css => {
+      const add = () => { const s = document.createElement('style'); s.textContent = css; document.head.appendChild(s) }
+      if (document.head) add()
+      else document.addEventListener('DOMContentLoaded', add)
+    }, ARIAL_LIST)
     await login(page)
     await listAt(page, width)
     /* every date shown, so the leaves and medicals with no document are on the list whatever today is */
