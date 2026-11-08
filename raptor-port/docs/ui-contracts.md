@@ -6970,7 +6970,7 @@ view and in reach (D1610, his "A").
 - **Moves only by sliding and fading**, so it keeps drawing while the page is busy building itself (walked: 91 screen
   frames, 46 changed, while the Leave War drew its grid on a phone slowed 4x).
 - Walked 3 Nov 26: `docs/handpass/2026-11-03-talon-pages.md` (61 checks, Chromium and WebKit).
-- *(To build — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
+- *(Built 4 Nov 26 — D1631, [LAZY-PAGE-LOAD-FAIL]:)* **a failed download touches only its own page.** Each of the two pages is
   caught on its own: its area shows a card copied from the Tracker's "No course yet" card — "Couldn't open the Leave War"
   (or the Tracker), "It didn't download. Check your signal, then retry.", Retry — the top bar staying; the desktop's hidden
   pre-warm that fails shows nothing until the page is opened, then the card. Retry reloads the app (D1633, narrowing
@@ -6991,7 +6991,7 @@ view and in reach (D1610, his "A").
   address (the SWiFT kit: a code app's address never changes) — `ui/pagedownload.ts noteReopen` / `takeReopen`, read by `ui/Login.tsx`. **D1636 (built 4 Nov 26):** after a Retry that did not bring
   the page, the keyboard is back on Retry, which wears the app's own cyan focus ring; the claw stands at least one full
   round, about 1.3 s. **D1637:** the card's words stay "It didn't download. Check your signal, then retry." **D1638:** with no signal, a file cut off or a save waiting, Retry does not reload — the card comes back, still signed in (narrowing D1633).
-- *(To build — D1632:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
+- *(Built 4 Nov 26 — D1632, `ui/pageclaw.ts`:)* **"Still loading…"** in grey under the claw once it has been up 8 s, going with it.
 
 ## The loading claw's neighbour, the sign-in mark (D1608, 3 Nov 26)
 

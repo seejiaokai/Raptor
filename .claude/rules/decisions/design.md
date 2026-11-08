@@ -35,10 +35,10 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 
 ## The top bar — Undo and Redo, sync, the bell
 - Every Undo / Redo pair sits in the app's top bar, in the same place, order and look as Edit Schedule's, on a desktop
-  and a phone, on every page where a change the one Undo takes back is made — Edit Schedule, the Leave War, Inputs,
-  Quals, Admin and Logic — and none on View-only Sched or Help, which change nothing; the Tracker's own pair sits there
-  too, still taking back only the Tracker's own changes; the Scheduler Board keeps a bar of its own (below) [D347,
-  D348].
+  and a phone, on every page where a change the one Undo takes back is made — the agent's reading, as built: Edit
+  Schedule, the Leave War, Inputs, Quals, Admin and Logic, and none on View-only Sched or Help, which change nothing; the
+  Tracker's own pair sits there too, still taking back only the Tracker's own changes; the Scheduler Board keeps a bar of
+  its own (below) [D347, D348].
 - The group runs in the desktop's order on a phone too — Undo · Redo · (the changes clock, Edit Schedule only) · the
   sync dot · the bell, the bell at the far right — together at the bar's right end, the menu button and the mark pinned
   at its left [D348, D347].
@@ -47,14 +47,15 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - On every page up to 1599 wide the top bar takes its compact look — Undo and Redo as their arrows only, their names on
   hover, the sync pill its dot alone — so Edit Schedule's bar, which carries the changes clock too, stays on one line at
   his PC's 1536 like every other page; every page's pair still looks the same [D1126, D347, D348].
-- Undo and Redo leave the screen where it is when what they change is already in view — for a row, wholly on screen,
-  clear of the top bar — and move to the change only when it is out of view, landing just under the top bar; the changed
-  row or day is still outlined; an Undo of a change on another page still takes him to that page; a save of an input on
-  the Inputs list follows the same rule [D672].
-- Page by page, the agent's readings told to him, as built: Edit Schedule's week steps sideways only to a changed day off
-  screen, the Scheduler Board changes day only for a change on another day, the Inputs calendar changes month only for
-  one in another month; the Inputs list and Quals move only when the changed row is not wholly on screen; the Tracker's
-  Undo moves nothing [D672].
+- Everywhere in the app Undo and Redo leave the screen where it is when what they change is already in view, and move to
+  the change only when it is out of view [D672].
+- The agent's readings, as built: "in view" for a row is wholly on screen, clear of the top bar, and a moved-to change
+  lands just under the bar; the changed row or day is still outlined; an Undo of a change on another page still takes him
+  to that page; a save of an input on the Inputs list follows the same rule [D672].
+- Page by page, the agent's readings, as built: Edit Schedule's week steps sideways only to a changed day off screen, the
+  Scheduler Board changes day only for a change on another day, the Inputs calendar changes month only for one in
+  another month; the Inputs list and Quals move only when the changed row is not wholly on screen; the Tracker's Undo
+  moves nothing [D672].
 - The top bar stays pressable over "Jump to a date", the day-details window and the document viewer, as over the Traffic
   window: the grey starts at the bar's foot, Undo and Redo work with the window open, any other bar button (a page name,
   the bell, ✓ Done) closes the window first, and Escape still closes it after an Undo; an input's own window, which holds
@@ -77,16 +78,21 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 
 ## The Scheduler Board's own bar
 - The board covers the top bar, so its own bar carries the same group laid out as Edit Schedule's — Undo · Redo ·
-  History · Sync · the bell — then one way out, ✓ Done, its ✕ Close gone since it did exactly what Done does; Escape and
-  a tap outside still close the board (the agent's reading) [D349, D481].
+  History · Sync · the bell — then one way out, ✓ Done, its ✕ Close gone since it did exactly what Done does; Done
+  raises no "Schedule updated" note, nothing in its place — the agent's reading that it kept the word gave way to the
+  Inputs pages' D854; Escape and a tap outside still close the board (the agent's reading) [D349, D854, D481].
 - On a desktop Sort all stays a button, before Undo, and Insights stands beside the bell; on a phone Sort all, the
   Phone / Desktop layout switch and Insights sit behind one ⋯ button in the bar's second row, beside the highlighter,
-  which still opens its own row; the ⋯ menu closes on a tap outside it (the agent's reading) [D349, D481].
+  which still opens its own row; the ⋯ menu closes on a tap outside it (the agent's reading) [D349, D481, D854].
 
 ## Icons and marks — one drawn icon for one thing
-- One thing has one icon throughout the app, drawn by the app so every device shows it alike — never a typed symbol or an
-  emoji his iPhone would draw in its own colours — each drawn icon in its button's own colour; the icons are line icons
-  but the one solid pencil (the agent's reading, told to him) [D1134, D1509, D1707].
+- One thing has one icon throughout the app — one pencil, one gear, one calendar — each drawn by the app in its button's
+  own colour, so every device shows it alike, never the emoji his iPhone would draw in its own colours for ✏, ⚙ or 📅;
+  the agent's reading, told to him: the app's other icons are line icons, the one solid pencil aside [D1134, D1509,
+  D1707, D1508].
+- Only the typed marks the rulings here name become drawn; the ✕, the ⇄ of Move and a ✎ inside help text stay typed, and
+  any other icon drawn two ways is put to him with pictures before it changes, in the rounds of the consistency look
+  (How we work's D1124) [D1703, D1793, D1792, D1134, D1124, D1508].
 - Every pencil is the one solid pencil of his picture — filled, eraser at the top left, tip at the bottom right — never
   the ✏ emoji, the line pencil included; only a ✎ inside a sentence of help text, or after an edited chart's name in the
   Tracker's Syllabus list, stays typed; its places are listed in the full row [D1134].
@@ -95,19 +101,22 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   white on the Inputs, SANS, Tracker, OIL tracker and board rows, grey on the Leave War — each keeping its button's size;
   the OIL tracker's 📅 becomes Edit Schedule's line calendar (How we work's D1508) [D1509, D1707, D1508].
 - On the Scheduler Board and the Leave War the typed marks are drawn line icons: every ⇅ (Sort all, Auto sort, Rearrange
-  the grid, Done) the Tracker's Reorder mark, Templates a page of blocks, Reset order an arrow turning back, the phone
+  the grid, Done) takes the Tracker's Reorder mark, Templates a page of blocks, Reset order an arrow turning back, the phone
   menu's layout switch a phone and a screen; ⇄ Move keeps its arrow, the board's Undo and Redo the top bar's arrows
   [D1703, D1793].
 - OIL has one mark of its own, a ticket — a day off held — on the board's OIL Earn and the Leave War's OIL tab, in place
   of ◧ and the plain clock, so a clock means only History; on a phone the board's day bar shows the desktop's marks
   before Templates and OIL Earn — the page of blocks and the ticket — on one row, the buttons keeping their height
   [D1704, D1703, D1793].
-- Four more typed marks take drawn line marks, as drawn (in the pictures round's build): the 👁 on a look at a published
-  version the wave templates window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in —
-  a departure named to him, today's ⤡ pointing out on the other slant; the Tracker's ↺ Restore and a hidden warning's ↺
-  the Reset arrow; the ✕ that hides a warning stays typed [D1792].
+- Four more typed marks take drawn line marks, as drawn: the 👁 on a look at a published version the wave templates
+  window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in — a departure named to him,
+  the old ⤡ pointing out on the other slant; the Tracker's ↺ Restore and a hidden warning's ↺ the Reset arrow; the ✕
+  that hides a warning stays typed [D1792].
+- As the code shows on 8 Nov 26: the Inputs calendar's pair and the Tracker's Restore are built; the 👁 and a hidden
+  warning's ↺ are built on the pictures round's schedule-marks branch, not yet live [D1792].
 - The board's OIL Earn wears no clock while History's clock stands on its bar; the agent's reading, lesson 70's other
-  half: a new mark a person could mistake for another on its bar or page is redrawn before it is built; the reset arrow
+  half: a new mark is set beside every mark on its bar and its page before it is proposed, and one a person could
+  mistake for another is redrawn, or one of the two takes its words alone, before it is built; the reset arrow
   (Reset order, Reset layout, a hidden warning) is History's arrow without the clock, meaning "put back" wherever it
   stands, kept — he tells it apart [D1700, D1704, D1792, D1793].
 - Every search box looks like the Edit Schedule week's — a grey line magnifier inside the box at its left, the box as tall
@@ -120,16 +129,18 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   words get the room their longest value needs, never a cut word (the agent's reading), so the arrow pressed again and
   again never moves — his standing rule that a control tapped again and again never moves under the finger; every ‹ ›
   pair was swept — the schedule, the Inputs, SANS and Medical calendars, the Calendar window, a document viewer, the
-  Leave War and the Tracker; the design guide's §3 and lesson 16 carry it [D1122].
+  Leave War and the Tracker [D1122].
+- The design guide's §3 and lesson 16 carry it — his "make this part of the design skill" read as the app's own design
+  guide, the outside design skill's files not edited (the agent's reading) [D1122].
 - A page's controls are one row, as the design guide's §3 words it: the buttons that belong to the page in view stand in
   the one row under the top bar and the page's tabs, at that row's button height, even when it holds one button; a fold
   is not a button; the places it named were the Medical tab, Quals' "Export to Excel" and Logic's "Edit rules" [D926].
 - The boxes and buttons whose font line the browser had dropped show the app's letters at the size and weight each line
   meant, as drawn — the board's cancel box and its reasons list, an input's own window (its boxes, a member's fixed name,
-  Several people, the groups' All), the opened day's note + and + people — the measured shifts (the cancel box 4px
-  taller on a desktop, the window's boxes 2px) part of what he approved [D1680].
-- The agent's readings of it, told to him: all nine such lines are written out, the ninth (the old day pop-up's boxes)
-  changing nothing seen, and a stylesheet check keeps a font line naming "inherit" from coming back [D1680].
+  Several people, the groups' All), the opened day's note + and + people [D1680].
+- The agent's readings of it: all nine such lines are written out, the ninth (the old day pop-up's boxes) changing
+  nothing seen; a stylesheet check keeps a font line naming "inherit" from coming back; the measured shifts (the cancel
+  box 4px taller on a desktop, the window's boxes 2px) are part of what he approved [D1680].
 
 ## Menus, the keyboard and focus
 - Every menu of actions takes the Scheduler Board's look, plain rows in one panel — the board's and Edit Schedule's ⋯,
@@ -142,14 +153,15 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   button; Tab stays inside the board while it is open, and Escape closes the Sort all box [D1646].
 - The keyboard's ring is the app's cyan focus ring, for the keys only, never after a click; under the keys an item of the
   board's or the week's ⋯ menu keeps its raised row and wears the cyan ring, and the board's + Block and Templates
-  buttons wear it in place of the browser's own — + Wave, the plans selector, a jet's stores and the duty role box checked
-  in the same job (in the pictures round's build) [D1646, D1771].
+  buttons wear it in place of the browser's own — built, + Wave, the plans selector and a jet's stores wearing it too by
+  D1646's own words, the duty role box, a text box, the boxes' cyan edge [D1646, D1771].
 
 ## Questions raised at the control
 - A question raised by pressing a control appears right at that control, a small card hanging from it and pointing at
-  it, because the hand is already there — never at the window's foot; one raised by a key with no control (Escape) hangs
-  from the control that does the same thing, the ✕; "similar" — a confirmation or choice put up because a control was
-  pressed — is the agent's reading [D1626, D1627, D1628].
+  it, because the hand is already there — never at the window's foot; the agent's readings: "similar" is a confirmation
+  or choice put up because a control was pressed — close, delete, discard, open another over unsaved work — and one
+  raised by a key with no control (Escape) hangs from the control that does the same thing, the ✕ [D1626, D1627,
+  D1628].
 - Built so, and only these, every other question staying as today (the "press again" buttons and the sheets among them):
   the input window's "Close it and lose them?" (its ✕ and Escape), "Open the other input and lose them?", "Delete this
   input for all N people?" and "Take yourself out of this input?"; the Delete key's "Delete this input for all N
@@ -158,19 +170,21 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The posting's delete hangs from its Delete chip, its PO from date and the Post out button in the one-day sheet and the
   drag sheet; it keeps its two steps — the press, then Delete in the card — the second the card "Delete <name>?" with
   Delete and Cancel, Cancel putting the outcome or the date back [D1627, D1628].
-- A question designed from now on follows the rule — the design guide's lesson 77 and the design skill's principle 7
-  (`raptor-port/docs/PRODUCT.md`) carry it; that the narrowing leaves new designs to it is the agent's reading [D1626,
-  D1627, D1628].
+- A question designed from now on follows the rule, his "This should be in the design skill" — the design guide's lesson
+  77 and the design skill's principle 7 (`raptor-port/docs/PRODUCT.md`) carry it; that the narrowing covers only the
+  questions already drawn, leaving new designs to the rule, is the agent's reading [D1626, D1627, D1628].
 
 ## Saving — the "Not saved" band
 - A failed save's warning is a band of its own along the bottom of the top bar — the page moves down one line, nothing is
   covered — in look 1, the strip: a drawn warning sign, "Not saved" in bold and "keep this page open" quieter, read from
   the left, and Retry a solid amber button at the right; the line under it is the band's own amber, never the top bar's
   cyan edge; the passing "Saving…" note stays as it is [D587, D841, D1655].
-- The same band sits under the bar of every full-screen surface that covers the top bar — the Scheduler Board and, the
-  agent's extension told to him, the Inputs calendar, the Medical view and the Leave War's full-screen OIL tracker, a
-  working surface; a window, a sheet or the phone's menu is a short visit and gets none, the bar's own band there when it
-  closes [D587, D841].
+- The same band sits under the bar of every full-screen surface that covers the top bar — the Scheduler Board, and the
+  Leave War's full-screen OIL tracker, its grid and its settings, a working surface whatever its kind; a window, a sheet
+  or the phone's menu is a short visit and gets none, the bar's own band there when it closes [D587, D841].
+- The Inputs calendar and the Medical view, first given the band by the agent's extension, told to him, are part of the
+  Inputs page since its calendar and its three tabs, under the top bar, so they carry none: the bar's own band shows
+  [D587, D841, D574, D620, D626].
 - The "Not saved" design is one design across the whole app: the band wears the strip wherever it shows — the top bar of
   every page, the guest bar, the board's bar, the OIL tracker, the sign-in and the access screens; the "OIL not
   answered" bar, one height with it (36, the buttons too), is restyled alike; a refusal of one change takes a look of its
@@ -182,9 +196,9 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - A window he has resized but never moved moves down below the band, as a window not yet placed does, so the band and
   its Retry are never covered; a window he has moved keeps its place [D1523, D587, D841].
 - The test switch `?savefail` on the app's address refuses every save in the one tab opened with it, so the band, its
-  Retry and the pass's "Not sent yet" can be seen on his iPhone; the agent's readings: reading still works, so the app
-  opens as usual, and Retry is refused again while it is on; without it the app saves as always and nobody else is
-  touched — opening the link without it ends the test, what that tab could not save lost [D1666].
+  Retry and the pass's "Not sent yet" can be seen on his iPhone; without it the app saves as always, and nobody else is
+  touched; the agent's readings: reading still works, so the app opens as usual, Retry is refused again while it is on,
+  and opening the link without it ends the test, what that tab could not save lost [D1666].
 
 ## Refusals — "Blocked:"
 - A refusal of one change is not a failed save: the schedule's refused change and its "not yours to make", a Leave War
@@ -253,7 +267,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   the top left laid over the whole card, thinning out across the tear, the pass and the foot one surface, the dashed tear
   the only divider [D1649, D1650, D1654, D1656].
 - Under it look A's foot: the three steps (request sent, an admin approves, you're on the schedule), the read-only line,
-  View the schedule and Sign out, "Signed in as …" small at the foot (the agent's reading, shown in the drawing); the
+  View the schedule and Sign out, "Signed in as …" small at the foot (first the agent's reading, then approved with the
+  drawing); the
   heading "Your request is with the admins", the strip of the week with his puck and "You'll be able to sign in…" are
   gone; what its buttons do is unchanged [D1650, D1656, D1649].
 - The drawing of record: `raptor-port/docs/mock/2026-11-05-access-wait/img/C-diag-phone.png`, with `C-phone.png` and
@@ -270,9 +285,10 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 
 ## Words on screen and feedback
 - The app's screens are not wordy: a label, a hint or a line of small print earns its place or goes — fewer words on
-  screen, the same information — though a sentence a person would say may cost a word or two (the writing guide's order,
-  the scheduler's D836) [D726, D836].
-- The agent's readings, told to him: it weighs on every screen's design; it is about words on screen, never removing what
+  screen, the same information — though a sentence a person would say may cost a word or two, by the writing guide's
+  order: every fact first, then a sentence a person would say, then as short as those two allow (the scheduler's D836)
+  [D726, D836].
+- The agent's readings: it weighs on every screen's design; it is about words on screen, never removing what
   a man needs in order not to make a mistake — such a word is shortened or moved behind the screen's "How this works"
   fold; nothing built is reworded on its strength alone — a change of wording is shown to him on a picture first [D726,
   D836].
@@ -286,21 +302,23 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 
 ## The design guide's standing rules
 - One mark, one look (the guide's §4): the just-added mark is the plain blue ring, no glow, for about six seconds, on the
-  edge of the thing added — a row's controls outside it; a line, row or wave ringed round itself; any table row one box; no other flash over
-  it; a new kind of mark his to rule; a taken suggested brief or rally wears it as a short flash, about a second (not
-  built), and on the Leave War a day brought into view wears the Leave War's cyan [D876, D1038, D1449].
+  edge of the thing added — a row's controls outside it; a line, row or wave ringed round itself; any table row one box;
+  no other flash over it; a new kind of mark his to rule; a taken suggested brief or rally wears it as a short flash,
+  about a second (built), and on the Leave War a day brought into view wears the Leave War's cyan [D876, D1038, D1449].
 - No mark in this app glows (the guide's §4): a ring, stripe, box, line, panel, dot or button is drawn as it is; a shadow
   in its own colour or a pale band round it (a halo) is a glow, a dark shadow under a window or a menu is depth; the
   balance bar's and move banner's band and the fast sync dot's and Admin → Users' dots' bands are gone; a new on/off
-  control takes the filter chip's "on" look unless he rules otherwise; a new glow is his to rule [D887, D1614].
+  control takes the filter chip's "on" look unless he rules otherwise, the app's other "on" looks staying as they are; a
+  new glow is his to rule [D887, D1614].
 - The app's own sign is not a mark: the sign-in logo keeps its light, as the loading claw does; the page's faint wash,
   once kept with it, is gone [D887, D1614].
 - Dragging (the guide's §5A): one drop, one landing line, in one place; a thing carried to the edge of what it sits in
   scrolls it, at the edge distance and speed the app already uses, on for a reader who asked for less motion [D895].
 - Nothing pinned leaks: a bar, or any part that stays put while what is under it scrolls, shows none of that content
   behind it or through a gap at its edges, at every zoom and every scroll position, since a pinned part reads as a solid
-  surface — on a phone and a desktop, a heading row included, each check of a screen with a pinned part made zoomed in and out and scrolled on his iPhone's engine (the
-  agent's reading); the desktop week's ‹ › arrows are its one exception (the scheduler's D1522) [D1518, D1522].
+  surface; the agent's reading: on a phone and a desktop, a heading row included, each check of a screen with a pinned
+  part made zoomed in and out and scrolled on his iPhone's engine; the desktop week's ‹ › arrows are its one exception
+  (the scheduler's D1522) [D1518, D1522].
 
 ## Settled — leave as they are
 - Tab and Shift+Tab out of a board menu, as built: the board's string-drawn menus close on a Tab past their end and give
@@ -308,8 +326,8 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   Shift+Tab from its first item back onto ⋯ leaves it open [D1772].
 - The keyboard batch's three details the mock-up did not draw, as built: the cyan ring on the board menus' small
   buttons; Enter on the calendar button with "Jump to a date" open closing and reopening it in place (a mouse click only
-  closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar — his "leave it", read as kept
-  as built [D1652].
+  closes it); after "Don't add" on the OIL question, the keys on "Answer OIL" in the bar — the agent's reading of his
+  "4 confirm leave it?", taken as his answer unless he says otherwise [D1652].
 - The app's four legends: Edit Schedule's "Legend" fold, alone on its row as built, the Leave War's and the Tracker's
   Legend buttons opening the same panel, and the Inputs and SANS calendars' colour key always in view — a long legend
   behind a button or the fold, a key of two or three colours in view [D1701, D926].
@@ -321,18 +339,20 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   him) [D1618].
 - The failed-download card's words, "It didn't download. Check your signal, then retry.", though an app update since the
   tab opened is the other cause — Retry cures that too; the cause-neutral "Retry to load it again" is not taken [D1637].
-- The Leave War figure box's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, opening to
-  the right so it covers no next row's arrow, still giving no reason, as built; the drawing's phone tag, 53px to the
-  right, is not kept, the drawing check's difference accepted [D1670].
+- The Leave War figure box's grey "Blocked" tag hangs from its own box's left edge on a phone as on a desktop, as built;
+  the approved drawing's phone tag, 53px to the right, is not kept, the drawing check's difference accepted with this
+  ruling [D1670].
 - The board's bar and every top bar's pair: the undo-topbar mock-up, `raptor-port/docs/mock/undo-topbar.html` (version
   4), approved as drawn, is the design of record — on a phone the sync pill its dot alone wherever the pair shows; a
-  changes button for each page an idea filed, not built (`[HIST-PER-PAGE]`) [D349, D481, D347, D348].
+  changes button for each page an idea filed, not built (`[HIST-PER-PAGE]`) [D349, D481, D854, D347, D348].
 - The band, look 1: `raptor-port/docs/mock/2026-11-05-save-band/img/look1-*.png`; the keyboard and windows batch:
   `raptor-port/docs/mock/2026-11-05-keys-windows/` [D1655, D1645, D1646].
 
 ## From other areas (each stated on its own area's file)
 - How we work's: every calendar icon is Edit Schedule's line calendar, drawn by the app, never 📅; button sizes never
   change without his word; anything new a person will see is drawn as a mock-up first [D1508, D487, D1625].
+- How we work's: the consistency look goes on in rounds, each thing drawn two ways put to him with pictures before it
+  changes; a standing test keeps a dense screen's controls from turning a pinned cell see-through [D1124, D1508, D1281].
 - The scheduler's: up to 1599 wide on a desktop the board's own bar draws Undo, Redo and History as icons, their names on
   hover, and sync as its dot, as every top bar does; wider, the words come back; the board on a phone is left as it is
   [D1130].
@@ -350,25 +370,36 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
 - The scheduler's: a picked answer with the keyboard on it shows one ring, the keyboard's on its own edge; the one date
   calendar's picked date is a plain disc, ringed only while a keyboard is on it [D842, D824].
 - The scheduler's: a week whose saved copy cannot be read refuses a change in the grey "Blocked:" note [D1785].
+- OIL's: in OIL Earn a tap on a puck that cannot earn picks nothing and says why in the plain passing note, "Nothing
+  changed for <callsign>." and the reason — not the grey "Blocked:" note [D1783].
 - The scheduler's: on Edit Schedule a man carried to the week's side moves it one day at a time, the drag rule taking a
-  day's step [D1529].
-- The Inputs pages': the "Schedule updated" note after the board's ✓ Done is gone, nothing in its place; "Input updated"
-  goes where the changed input is in view; a puck's drop raises no note [D854].
+  day's step, stopping at Monday and Sunday, never carried into another week [D1529, D1573].
+- The scheduler's: OIL Earn's day button is the app's own switch, as on the Logic page — a slider, "No OIL earned", lit
+  in the switch's cyan when on — not the filter chip's "on" look [D1782].
+- The scheduler's: on a phone the board's desktop layout pinches the day only, never its bar, and a puck carried to the
+  screen's edge scrolls the board [D1107, D1109].
+- The Inputs pages': the "Schedule updated" note after the board's ✓ Done is gone, nothing in its place; "Input added"
+  and "Input updated" go where the input is in view, its card wearing the just-added mark; a puck's drop raises no note
+  [D851, D854].
 - The Inputs pages': an input window's ✕ asks the same question as Escape when anything is not saved; Cancel still closes
   at once [D1622].
 - The Inputs pages': the title box's pencil sits inside the box at its right end, the app's one solid pencil [D919,
   D1134].
 - The Inputs pages': the settings icon reads as a gear, never like a Sun, which means day flying there; the Inputs
   calendar's filters and gear move as one group [D635, D1702, D1708].
-- The Inputs pages': four more drags follow the edge — the SANS calendar's pick across days, the Tracker's select box and
-  ⇅ Reorder list, the people picker [D900].
+- The Inputs pages': the drags that follow the edge — a note or puck in an opened day, Quals' column headings, the
+  month's pick turning the month, the SANS calendar's pick across days, the Tracker's select box and ⇅ Reorder list, the
+  people picker [D893, D897, D900].
+- The Leave War's: a row dragged in Rearrange scrolls the grid at the screen's edge [D892].
 - The Leave War's: undo and redo leave its grid where it is when the day they change is on screen [D670, D672].
 - The Leave War's: its Balances page, the first case of nothing pinned leaking, shows nothing of its rows behind or
-  through its bar; its pinned dates row and Quals' header take the row's place in the same frame [D1519, D1789, D1850].
+  through its bar; its pinned dates row and Quals' header take the row's place in the same frame, live with one painted
+  frame still cut on a quick scroll, a job of its own [D1519, D1789, D1850].
 - The Leave War's: a pinch zooms its grid only, the frozen dates and names growing with it, its OIL tab alike; no key
   zooms the grid on a desktop, where the browser's Ctrl + / − zooms the whole page [D1282, D1285, D1286].
 - The Leave War's: its glows gone — the open-bidding box, his own row's ring, today's card, a SANS stripe's and the
-  landing line's light; Rearrange and Show SANS "on" as the filter chip [D881, D882].
+  landing line's light; Rearrange "on" as the filter chip, the Show SANS switch since replaced by "+ SANS" [D881, D882,
+  D1221].
 - The Leave War's: in the "Open for bidding" window each open stretch carries a calendar icon, not a pencil [D1172].
 - The Tracker's: its typed marks are line icons — its bar's and menus', each tool of Edit chart layout, Merge and Unmerge
   in words, the lull's × the drawn ✕ — its pencils the app's one solid pencil [D1132, D1135, D1705, D1134].
