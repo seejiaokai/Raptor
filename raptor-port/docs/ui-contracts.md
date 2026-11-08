@@ -10283,7 +10283,9 @@ screen:
   (seat, then the category when there is one). Order is OCU first, pilots
   before WSOs, then callsign — the trainees the card is for come first. The
   search narrows by callsign as you type; Enter in the search picks a sole
-  match; a click picks. **A callsign typed into the search that matches
+  match; a click picks. *[8 Nov 26, D1931 (replaces D191): no student can be
+  added by a typed name — the typed adds below go when [TRK-NO-TYPED-STUDENT]
+  is built; until then they stand as described.]* **A callsign typed into the search that matches
   NOBODY, with "Or type a callsign" empty, is the name to add (D191, 25 Sep
   26):** the line under the search reads "Nobody on the roster matches “…”.
   OK adds them as a new crew member." while that is true, and OK — or Enter in
