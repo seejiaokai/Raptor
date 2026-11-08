@@ -92,6 +92,21 @@ FROZEN id, the row draws the live record: accept `it.now?.iid` too; one man spli
    mark; OIL Earn mode → no mark; Personal Inputs rows → no mark; an input untouched since publishing → no mark; a
    member's view (same as the Ground row). Each kind of PendItem above has one case.
 
+## Added after Astra's scenario design (`docs/handpass/parts/2026-11-08-sched-marks-scenarios.md` — read its "missing" list)
+- Job 2: **a man split out of a shared input keeps his mark** — required, not "if you can" (D1784 has no exception).
+- Job 2: **every input the pending list names wears the mark** — when a man moves between two inputs, the input he left
+  (still on the list for the others) as well as the one he joined; a test each.
+- Job 2: **OIL Earn mode** draws Unavailable names two ways (an OIL claim's cell and a plain name): mirror what the Ground
+  name does in OIL Earn mode for each kind, measured first, and test both.
+- Job 1: **every other surface that draws a stored week's days** — the desktop next-week preview, print, the CSV export —
+  find what each shows for an unreadable week; where it draws the seed or blames an older version, make it say the notice
+  through the same one function if that is small; otherwise report it, with its place, and the host files it.
+- Job 1: **every other refusal on a protected week** — the Leave War's approve, send back, delete and move, person
+  deletion's check, and any other found — list each with its words; one that blames an older version on an unreadable
+  week reads `lockedWeekNote()`; one with its own true reason stays and is reported.
+- Job 1: the refusal's words follow "any week unreadable", not the week the change touches — Astra contradicts this; it is
+  kept on D56 (its one counter-case needs an older-format week, which only stored data holds). Say so in the comment.
+
 ## Job 3 — D1792 (a) the 👁 → the app's line eye; (d) a hidden warning's ↺ → the Reset arrow
 (a) Add `EYE_INNER` to `ui/glyphs.ts` — the wave templates window's own eye (`ui/WaveTplModal.tsx` `EyeOn` ~43:
 `<path d="M1.5 12S5 5 12 5s10.5 7 10.5 7S19 19 12 19 1.5 12 1.5 12Z"/><circle cx="12" cy="12" r="3.2"/>`), and have
