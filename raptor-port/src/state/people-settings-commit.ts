@@ -51,14 +51,12 @@ import {
   secDefaultLoad, waveDefaultLoad,
 } from '../engine'
 import { mintOrd, byOrd } from '../command/ord'
-import { accountsLoad, ACCOUNT_TYPES } from './accounts'
-import { changesLoad, CHANGES_TYPES } from './changes'
-import { noticeSeenLoad, NOTICE_TYPES } from './noticeseen'
-import { APPRSEEN_TYPES } from './apprseen'
-import { LWSEEN_TYPES } from './lwseen'
 import { insightsLoad } from '../engine/insights-config'
-import { flyplanLoad } from './flyplan'
 import { FLY_TYPES, FLY_ROW_PREFIXES } from './flyplan-model'
+/* This file imports NONE of the files that save through it (accounts, changes, noticeseen, apprseen, lwseen, flyplan,
+   roster-add, memberfile): each imports its commit helpers from here, so importing them back made 13 import cycles
+   (React Doctor, [RD-LEFT-1108], 8 Nov 26). What it needs of them — their loaders and their command-type lists — is
+   handed in at registration by state/people-settings-wire.ts, the one file start-up calls. */
 
 /* ---- the SETTINGS EnlistableStore ---------------------------------------- */
 /* the 11 durable settings keys (design §3.1). `wavetpl` + `wavehide` are two
@@ -102,11 +100,19 @@ const settingsRowKeys = (): string[] => store.keys('').filter(isRowKey)
 function settingsRecordKeys(): string[] {
   return [...SETTINGS_KEYS, ...settingsRowKeys()]
 }
+/* the loaders of the four files that save through this layer and keep a copy in memory — the accounts, the change
+   history's and the bell's seen marks, the flying plan — handed in at registration (see the imports' note). Until then
+   none of their commands can run (each type is registered in the same call, and the registry refuses an unregistered
+   type), so no rollback needs them. */
+export interface ModuleLoaders { accounts: () => void; changes: () => void; noticeSeen: () => void; flyplan: () => void }
+const noLoad = () => {}
+let MODULE_LOADERS: ModuleLoaders = { accounts: noLoad, changes: noLoad, noticeSeen: noLoad, flyplan: noLoad }
 /* every xLoad(), run to rebuild the module CFGs from the (restored) store on a
-   rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). */
-const SETTINGS_LOADERS: Array<() => void> = [
+   rollback — deduped (waveTplLoad rebuilds both wavetpl + wavehide). In the order the list has always run. */
+const settingsLoaders = (): Array<() => void> => [
   rulesLoad, storesLoad, cxReasonsLoad, dayTplLoad, dutyTplLoad, waveTplLoad,
-  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad, accountsLoad, changesLoad, noticeSeenLoad, insightsLoad, flyplanLoad,
+  qualColsLoad, lookaheadLoad, secDefaultLoad, waveDefaultLoad,
+  MODULE_LOADERS.accounts, MODULE_LOADERS.changes, MODULE_LOADERS.noticeSeen, insightsLoad, MODULE_LOADERS.flyplan,
 ]
 function settingsRecords(): Map<string, RecordEntry> {
   const m = new Map<string, RecordEntry>()
@@ -132,7 +138,7 @@ function captureSettings(): string {
    target values here, so the loaders read the restored records. */
 function rehydrateSettings(): void {
   rulesResetMem()
-  for (const load of SETTINGS_LOADERS) load()
+  for (const load of settingsLoaders()) load()
 }
 /* rollback: restore each key's persisted value, then the reset-then-overlay
    re-derive. Writes go through the raw setter (the hook is inert while
@@ -321,21 +327,22 @@ export function commitPeopleEdit(fn: () => void, meta?: any): CommitResult {
   return commitPeople(PEOPLE_TYPES.edit, () => { fn(); advancePeople() }, meta)
 }
 
-/* ---- one-time registration (called from initStore, after the scheduler) --- */
+/* ---- one-time registration (called from initStore, after the scheduler, through state/people-settings-wire.ts) --- */
 let registered = false
-export function registerPeopleSettingsCommandLayer(): void {
+/* `loaders` — the four files' loaders (ModuleLoaders above); `moduleTypes` — the command types those files declare, in
+   the order the wire file lists them (the accounts', the change history's, the bell's, the Leave War's seen marks', the
+   Approvals' seen marks'), each declared here as it always was */
+export function registerPeopleSettingsCore(loaders: ModuleLoaders, moduleTypes: readonly string[]): void {
   if (registered) return
   registered = true
+  MODULE_LOADERS = loaders
   PEOPLE_BASELINE = JSON.stringify(PEOPLE)   // the seed/hydrated roster is the first baseline
   definePermission(PEOPLE_TYPES.edit, anyone)
   for (const k of SETTINGS_KEYS) definePermission(settingsType(k), anyone)
-  /* the account intents; `anyone` only DECLARES them — their authority is perms.ts
-     COMMAND_OPS through the resolver store.ts wireStore installs */
-  for (const t of ACCOUNT_TYPES) definePermission(t, anyone)
-  for (const t of CHANGES_TYPES) definePermission(t, anyone)
-  for (const t of NOTICE_TYPES) definePermission(t, anyone)    // own row only — perms.ts COMMAND_OPS decides
-  for (const t of LWSEEN_TYPES) definePermission(t, anyone)   // own row only — perms.ts decides (M5a)
-  for (const t of APPRSEEN_TYPES) definePermission(t, anyone) // own row only — perms.ts COMMAND_OPS decides
+  /* the account intents, the change history's and the bell's "seen" (own row only), the Leave War's and the Approvals'
+     "seen" (own row only — M5a); `anyone` only DECLARES them — their authority is perms.ts COMMAND_OPS through the
+     resolver store.ts wireStore installs */
+  for (const t of moduleTypes) definePermission(t, anyone)
   for (const t of FLY_TYPES) definePermission(t, anyone)   // the same: perms.ts COMMAND_OPS decides
   registerGuardedStore(peopleStore)
   registerGuardedStore(settingsStore)

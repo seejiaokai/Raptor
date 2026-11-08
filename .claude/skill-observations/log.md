@@ -4308,3 +4308,29 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The change moved a screen's scrolling from an inner pane to the whole surface. Its own new browser spec passed locally and the walk passed, but an older spec in another file set the inner pane's scroll and failed on CI; fixing that test then showed a real fault — the drag's edge band still measured from the old scroller's top, hidden under the newly pinned bar. The walker had held a drag at the foot and over the bar, never just under it.
 **Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
 **Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
+
+### Observation 889: A notes-only merge is overtaken again and again while many chats merge notes
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 21, the coordinator, merging chat 3's notes-only pull request 695 while five other chats were merging their own (first numbered 887; renumbered 889 on 8 Nov 26 because chat 13's branch had taken 887 and 888 meanwhile — a collision)
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the merge of a notes-only pull request (shipping's four merge-lock steps), and the handoff's own notes branch
+
+**Issue:** pull request 695 was level and green, but each time the merge lock was taken the level check said "behind": another chat's pull request (the Inputs page, then its records) had merged during the local document checks or the remote documents run (about four minutes). Each round meant bringing `main` in, the checks again, a push and another wait — and the coordinator's own handoff notes needed a second pull request on top, a third race.
+**Suggested improvement:** in the handoff skill's merge step, say: when a chat has more than one notes-only change waiting (an inherited notes pull request and its own handoff block), put them on one branch and merge once; and bring `main` in immediately before the push, not before the local checks, so the window between the level check and the merge is one remote run only.
+**Principle:** When many writers merge into one base, every separate pull request is another race against the level check; batch the small ones and shorten the gap between the last sync and the merge.
+
+### Observation 890: A tidy of the shared handoff file makes every open branch clash at once
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 21, the coordinator, removed eight finished chats' blocks from the shared handoff file in one notes-only pull request while four chats still had open branches carrying their own blocks in it
+**Skill:** session-handoff
+**Type:** open-source
+**Phase/Area:** the step that removes merged chats' blocks from the shared handoff file
+
+**Issue:** within minutes three open pull requests (the Leave War pinned row, the Tracker batch, the checks) went to "clashing with main", so GitHub stopped running checks on their new pushes, and each chat had to stop, bring `main` in and settle the handoff file before its merge. The removal itself was right (each block's work was live and its residue filed); its timing cost every open branch a round.
+**Suggested improvement:** in the handoff skill's "removes merged blocks" step, add: before removing other chats' blocks, list the open pull requests that change the handoff file; if any are open, remove only the blocks far from theirs, or wait until they have merged — and in either case message each open chat that its next push will need `main` brought in.
+**Principle:** A clean-up of a file that every parallel branch edits is a change to all of them; schedule it for a quiet moment or tell each writer before it lands.
