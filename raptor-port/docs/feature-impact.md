@@ -856,7 +856,8 @@ truth: a flying spare would be standing by on one screen and flying on another. 
   (20 Aug 26). Both answer "how long is this person at work", and until the
   work-hours section was built the answer existed only inside `validate()`'s
   long-day block. It is `validate.ts:workSpan` now — report (the published
-  in-time, else T/O − reportLead) through last landing + debrief, or start →
+  in-time, else T/O − reportLead — reached since D1786, 8 Nov 26, because a sortie's
+  event carries only the ENTERED report, the same start as OIL's `fltOilWin`) through last landing + debrief, or start →
   end for anything that is not flying — and BOTH read it: the note raises off
   one day's span, the panel sums the week out of `EVD`. Deliberately not a
   second copy: a week total that disagreed with the note calling a day long is
