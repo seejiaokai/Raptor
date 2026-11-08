@@ -59,7 +59,52 @@ SHOW = drawn as it should be · USABLE = the gesture works · PAINTED = what els
 
 ## 3. The five sizing lines (§7.0)
 
+Written by the host (Opus) on 8 Nov 26 after the roll-call and before any walker started; the walkers' brief:
+`docs/superpowers/briefs/2026-11-08-board-layout-walk.md`.
+
+1. **Type of change:** E (layout — two new layout bands on one surface), C (a new mode — on a phone on its side the board
+   scrolls as one page) and D (a mark drawn in several places, each by its own rule — the cyan ring on two ⋯ menus and six
+   buttons).
+2. **What only a walk can find:** the sideways board with a real finger and every part that rides on its scroll — the
+   jumps (a warning's tap, Undo, the changes window), the windows that open under the bar (D1106), the drag's edge scroll,
+   History's bubbles, the bands under the bar, the keys up, the day changed, the phone turned, the board closed and
+   reopened; the line at each width with each kind of row (flying, standby, in-time lines, a published look, History's
+   dots); each ring under the keys in its own menu or bar, and none under a mouse or a finger. The tests carry: the band's
+   geometry at the five widths and 1100, and the sideways at-rest / scrolled / keys-up geometry (`e2e/board-layout.spec.ts`,
+   through the browser's own layout, the board opened by the app's function, not its control); the rules themselves
+   (`src/ui/boardlayout-css.test.ts`, the stylesheet only); the drawing's figures (`scripts/handpass/bl-drawcheck.mjs`, §7).
+3. **What the ledger says:** layout (E) walks found a fault in four of ten, six in all — on layout his own look has found
+   what a walk did not (D536, D537, D564, D367); a mark drawn in several places (D) found something every time (ten of
+   ten); a new mode (C) about half.
+4. **The walk chosen:** three Sonnet walkers, side by side, each in its own browser world on the served build (port
+   4180), the host holding the checks lock: **A** a jet's line on the desktop board (A1–A9) at 821, 874, 900, 1000, 1099,
+   1100, 1536, once at his PC's 125% and once in WebKit; **B** the board on a phone held sideways (B1–B13) in WebKit and
+   Chromium at 874 × 402 and 844 × 390 with the keyboard stand-in, the phone turned, the board closed and reopened;
+   **C** the rings under the keys (C1–C6) at 1536 and 402, Chromium and WebKit. Each walker does its own plain-user round
+   (§7.0a). Sizes beyond phone and desktop: the band's five widths and 1100, the short screen (874 × 402, 844 × 390), a
+   tablet on its side. Carried by a test, not driven: the repeated widths' arithmetic beyond those walked (the e2e above —
+   the same rules, the same route); nothing else. The lessons of §7.11, each: 1 (the sideways board's states × what it
+   shows — B's table), 2 and 20 (scroll slow, a flick, again before it settles — B), 3 (a picture after each press — all),
+   4 (a window over the board, the board behind pressed — B5), 5 (the box raised for the keys and the row a jump lands,
+   checked against the bar over them — B2, B7), 6 and 21 (the real keyboard's rise and Safari's scrolling — his iPhone
+   look, named on his card), 7 (no frame-by-frame steering: the bar is the browser's own sticky — passed, its reason), 8
+   (the drawing check, §7, re-run after any fix), 9 (heading against box on each kind of row — A1, A2), 10 (the board
+   closed and reopened, the phone turned — B), 11 (fits-on-screen: his PC at 125% — A), 12 and 19 (each window closed by
+   each of its ways — A's and B's rounds), 13 (a pinch on the sideways board: Playwright cannot pinch in WebKit — his
+   iPhone, named on his card), 14 (C finds its controls by searching the code), 15 (the pinned bar's own fill, scrolled —
+   B1), 16 (no refusal changed — passed), 17 (OIL Earn, History, search change the top's height — B re-measures after
+   each), 18 (nothing printed — passed), 22 (rings checked by the cropped picture's pixels as well as the style — C), 23
+   (no tap changed what it opens — passed), the second 23 (side-by-side boxes one height — A1, B1).
+5. **After the walk:** its row in `docs/walk-ledger.md` — added at the close.
+
 ## 4. The door check
+
+The new mode is the sideways board's one-page scroll. Every action a person can take there, and the control that does it:
+scroll down and up — a finger on the list or the crew column; jump to a row — a warning's line in the day's issues, a line
+in the changes window, Undo / Redo in the top bar, a just-added ring; open a window — History (the changes window), an ALL
+AVAIL count, Insights; drag to the edge — a puck held at the foot or over the bar; type with the keys up — any box; change
+the day — the day chips (in the head, reached by scrolling up) and ‹ › where drawn; leave the mode — turn the phone, ⋯ →
+the desktop layout switch, ✓ Done. Each is walked by walker B (B1–B9, B13 and its round); no action has no door.
 
 ## 5. The orders walked
 
