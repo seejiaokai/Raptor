@@ -8314,3 +8314,47 @@ before the room's rules; a browser test that drags the window away first, red. *
 both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
 line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([TRK-KEPT-COPIES]). Forward facts: `raptor-port/docs/ui-contracts.md`, `raptor-port/docs/tracker/known-gaps.md`.*
+
+### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
+**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
+merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
+(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
+with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
+app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
+should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
+`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
+**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
+are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
+nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
+(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
+to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
+in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
+**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
+**Built and live 8 Nov 26 (chat 28, `claude/chat28-not-kept`, PR #706):** the Tracker's magnifier is the app's own
+(`Glyphs.jsx SrchGlyph` draws `SrchIcon`; `SrchGlyph.jsx` deleted), its handle 3.1 → 3.8px as on Edit Schedule;
+pictures before and after in `raptor-port/docs/handpass/2026-11-08-chat28-not-kept.md`; its tidiness notes stay filed
+under [TRK-COPIES-TIDY]. Where it lives now: `raptor-port/docs/ui-contracts.md` (D1900), `docs/tracker/known-gaps.md`.
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([TRK-NOSTORE-SAVED]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
+**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
+top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
+the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
+app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
+**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
+his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
+storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
+strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
+weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
+every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
+next Tracker / app job, with D1900's magnifier, one branch. Evidence:
+`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
+**Built and live 8 Nov 26 (chat 28, `claude/chat28-not-kept`, PR #706):** the "Not kept" band on every page, the sign-in,
+the access screens and the guest page, the page moved down under it, the Tracker's corner empty while it is up; the test
+switch `?nostore` (the agent's call beside D1666). WALK tier — evidence `raptor-port/docs/handpass/2026-11-08-chat28-not-kept.md`.
+Where it lives now: `raptor-port/docs/ui-contracts.md` (D1901), `.claude/rules/decisions/design.md` (D1901).
+

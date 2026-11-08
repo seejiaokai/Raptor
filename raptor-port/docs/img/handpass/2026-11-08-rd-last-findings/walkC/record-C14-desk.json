@@ -1,0 +1,397 @@
+{
+ "main": {
+  "c-S14-D-roster-cat": {
+   "id": "c-S14-D-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-cat.png"
+  },
+  "c-S14-D-roster-quals": {
+   "id": "c-S14-D-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "main-c-S14-D-roster-quals.png"
+  },
+  "c-S14-D-roster-search": {
+   "id": "c-S14-D-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-search.png"
+  },
+  "c-S14-D-roster-fold": {
+   "id": "c-S14-D-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-roster-fold.png"
+  },
+  "c-S14-D-arch-cat": {
+   "id": "c-S14-D-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-arch-cat.png"
+  },
+  "c-S14-D-arch-quals": {
+   "id": "c-S14-D-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    }
+   },
+   "pic": "main-c-S14-D-arch-quals.png"
+  },
+  "c-S14-D-arch-search": {
+   "id": "c-S14-D-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": false,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    },
+    "reopened": {
+     "listOpen": true,
+     "open": false,
+     "cs": null,
+     "del": null,
+     "restore": null
+    }
+   },
+   "pic": "main-c-S14-D-arch-search.png"
+  },
+  "c-S14-D-arch-fold": {
+   "id": "c-S14-D-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "RDARCH",
+     "del": "Delete",
+     "restore": "Restore"
+    },
+    "reopened": null
+   },
+   "pic": "main-c-S14-D-arch-fold.png"
+  },
+  "C14-D-errors": {
+   "id": "C14-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "c-S14-D-roster-cat": {
+   "id": "c-S14-D-roster-cat",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-cat.png"
+  },
+  "c-S14-D-roster-quals": {
+   "id": "c-S14-D-roster-quals",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": false,
+     "name": null,
+     "role": null,
+     "del": null,
+     "note": false
+    },
+    "reopened": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    }
+   },
+   "pic": "branch-c-S14-D-roster-quals.png"
+  },
+  "c-S14-D-roster-search": {
+   "id": "c-S14-D-roster-search",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": false
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "rdactive@example.test",
+     "role": "main",
+     "del": "Delete",
+     "note": false
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-search.png"
+  },
+  "c-S14-D-roster-fold": {
+   "id": "c-S14-D-roster-fold",
+   "scen": "S14",
+   "desc": "roster editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "v": {
+    "before": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "hiddenState": {
+     "rowThere": true
+    },
+    "afterReturn": {
+     "open": true,
+     "name": "unsaved@example.test",
+     "role": "main",
+     "del": "Tap again to delete RDACTIVE",
+     "note": true
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-roster-fold.png"
+  },
+  "c-S14-D-arch-cat": {
+   "id": "c-S14-D-arch-cat",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; change Admin category (Squadron config) and come back",
+   "v": {
+    "before": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "hiddenState": {
+     "listOpen": false
+    },
+    "afterReturn": {
+     "listOpen": true,
+     "open": true,
+     "cs": "DRAFTCS",
+     "del": "Tap again to delete RDARCH",
+     "restore": "Restore as DRAFTCS"
+    },
+    "reopened": null
+   },
+   "pic": "branch-c-S14-D-arch-cat.png"
+  },
+  "c-S14-D-arch-quals": {
+   "id": "c-S14-D-arch-quals",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; leave Admin for Quals and come back",
+   "err": "locator.count: Target crashed ",
+   "pic": null
+  },
+  "c-S14-D-arch-search": {
+   "id": "c-S14-D-arch-search",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; type in Users search (row hidden), then clear it",
+   "err": "locator.count: Target crashed ",
+   "pic": null
+  },
+  "c-S14-D-arch-fold": {
+   "id": "c-S14-D-arch-fold",
+   "scen": "S14",
+   "desc": "arch editor: unsaved text + Delete armed; fold Archived, unfold it",
+   "err": "locator.count: Target crashed ",
+   "pic": null
+  },
+  "C14-D-errors": {
+   "id": "C14-D-errors",
+   "v": []
+  }
+ }
+}

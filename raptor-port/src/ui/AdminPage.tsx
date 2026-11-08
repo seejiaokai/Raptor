@@ -88,7 +88,10 @@ export function ClearControl(props: {
       <DateBox id={id} label={lbl} value={v} onChange={x => { set(x); setB(''); setArmed(-1) }} /></div>
   )
   return (<div className="adm-clear">
-    <div className="mfield"><label>Period</label>
+    {/* each label names its box (React Doctor label-has-associated-control, 8 Nov 26): a press on "Period" puts the keys
+        on its list; "Dates" heads a calendar, not a box, so it is the label's look on a plain line that names the
+        calendar for a screen reader; nothing drawn changes */}
+    <div className="mfield"><label htmlFor={props.idp + 'Mode'}>Period</label>
       <select id={props.idp + 'Mode'} value={mode} aria-label="Which period to clear"
         onChange={e => {
           const m = e.target.value as ClearMode
@@ -101,8 +104,8 @@ export function ClearControl(props: {
         <option value="range">A date range</option>
       </select></div>
     {mode === 'range'
-      ? <div className="mfield"><label>Dates</label>
-          <div className="dcal-inline" id={props.idp + 'Run'} data-from={a} data-to={b}>
+      ? <div className="mfield"><span className="mfield-lbl" id={props.idp + 'RunLbl'}>Dates</span>
+          <div className="dcal-inline" id={props.idp + 'Run'} data-from={a} data-to={b} role="group" aria-labelledby={props.idp + 'RunLbl'}>
             <DateCal mode="run" tid={props.idp + 'Run'} from={a} to={b}
               onRun={(f, t) => { setA(f); setB(t); setArmed(-1) }}
               foot={!a ? 'Tap the first day, then the last.' : a === b || !b ? sayDateYY(a) : `${sayDateYY(a)} to ${sayDateYY(b)}`} />

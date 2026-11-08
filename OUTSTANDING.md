@@ -172,6 +172,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [QUALS-HEAD-FINGER-CAPTURE] — in Edit quals a finger pressed on a heading's words may never reach another column (the press stays held by the words) — a check on his phone, then a one-line fix. **BUILT the night of 6 Nov 26** (`claude/people-quals-1106`, his look and "merge live"; evidence `raptor-port/docs/handpass/2026-11-06-people-quals.md`) — close once live.
 - [QUALS-PINNED-HEAD-NO-DRAG] — in Edit quals, scrolled down, a heading in the pinned row under the top bar cannot start a column drag; the table's own heading row can (older; low, with the next Quals job).
 - [QUALS-OUTLINE-RESCROLL] — Quals' outline after "Check his quals" or an Undo is never cleared, so a later change with that row off screen may scroll the page back to it (found by a code read 6 Nov 26, not walked; low, with the next Quals job).
+- [USERS-ARCH-FOLD-DRAFT] — Admin → Users: folding the Archived group and opening it again keeps an archived man's editor open but puts its callsign box back to his name and disarms Delete — a typed rename lost with nothing said (older — `main` the same; found 8 Nov 26 by walker C; low, with the next People job).
 - [LINE-ICONS-ELSEWHERE-ASK] — a suggestion kept for him (D852): other lists whose lines open only by a tap may want D1512's edit and cross icons too.
 - [QUALS-COL-WAR-GROUP-ASK] — a question kept for him (D994): a member may tick his own Quals columns, so he can put himself in a Leave War group made from one (Management excepted, D1510).
 - [UNDO-POSTING-RECORD] — Undo for adding, archiving and restoring a person and for postings (D350) — his word.
@@ -206,7 +207,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
-- [RD-LEFT-1108] — React Doctor's findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 10 in other areas' files (the Inputs and Medical 8 settled by chat 29, 8 Nov 26) — each with its area's next batch.
+- [RD-LEFT-1108] — React Doctor's last 4 findings, in other areas' files (SansCal 1, SansDay 1, interactions 2) — each with its area's next batch; the 13 import cycles and People & accounts' 6 went live 8 Nov 26 (pull request 702), the Inputs and Medical 8 settled by chat 29 (pull request 707).
 - [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822); his go for the plan's three parts (D1930) — red team, then the build, in chat 33.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
@@ -281,6 +282,9 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 
 ## Items
 
+### [USERS-ARCH-FOLD-DRAFT] Folding Archived resets an open archived editor (found 8 Nov 26, walker C of pull request 702)
+**What:** on Admin → Users, with an archived man's editor open, a new callsign typed and Delete armed, folding the Archived group and unfolding it shows the editor still open, but its box reads his old callsign again and Delete is no longer armed; the roster's editors keep both through the same fold. The same on `main` and on pull request 702's branch (`raptor-port/docs/handpass/parts/2026-11-08-rd-last-findings-walkC.md`, S14 "Fold Archived, unfold — archived"). Nothing saved is wrong — only typing not yet saved is dropped, silently. **To do:** keep the archived editor's typing and armed Delete across the fold as the roster's are, or close it on the fold so it does not look kept; a test red first. **Place:** low, the agent's — with the next People and accounts job.
+
 ### [SCHED-MARKS-WALK-ODDS] Four small older things the schedule-marks walk saw (found 8 Nov 26, chat 13's walk)
 **What:** seen by the walk of chat 13's job (D1784, D1785, D1792 a, d — branch `claude/pr-sched-marks-3205d7`, evidence
 `raptor-port/docs/handpass/2026-11-08-sched-marks.md` §15), each older than that job, none losing anything: (1) the changes window's
@@ -322,6 +326,7 @@ D1534). **8 Nov 26, chat 29 (`claude/chat29-inputs-medical`, pull request 707):*
 `MedicalView.tsx` 2 and `TypeLegend.tsx` 2 settled — 5 fixed, 3 kept with written reasons (evidence
 `raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`). **Place:** the agent's, low — (1) with the next People and
 accounts change, (2) as listed.
+**LIVE 8 Nov 26 (pull request 702, his "merge live" typed in chat 35):** (1) the 13 cycles broken and (2)'s People & accounts six (`UsersPanel.tsx` 3, `AdminPage.tsx` 2, `AccessScreen.tsx` 1) cleared — evidence `raptor-port/docs/handpass/2026-11-08-rd-last-findings.md`. **Left: `SansCal.tsx` 1, `SansDay.tsx` 1, `interactions.ts` 2**, each with its area's batch.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -382,22 +387,6 @@ The 202 rules after the wrapper's close in the bid sheet's stylesheet (the count
 ### [PAGE-FAULT-BLANKS-APP] A fault inside the Leave War or the Tracker still blanks the whole app (found 4 Nov 26, the Leave War small fixes)
 **What:** since D1631 a failed DOWNLOAD of either page is caught on its own page, with Retry (`raptor-port/src/ui/pageload.tsx`); a fault in the page's own code while it draws is deliberately passed on, and with nothing above it to catch it the whole app goes blank, top bar included, as a failed download did before. Not seen happening; worked out from the code and pinned as passed on by `pageload.test.tsx`. **To do:** if wanted, a catch of its own with words that do not blame the signal ("Something went wrong opening the Leave War" — his to see first, D1625), and what it reports. **Place:** his to place; a look at the whole app's other pages with it.
 
-### [TRK-KEPT-COPIES] The Tracker's own copies of the app's glyphs, pencil and colours (filed 5 Nov 26 — the Tracker tidy's read, L2)
-**What:** three things the standalone Tracker carried for itself were kept on purpose by [TRK-STANDALONE-LEFTOVERS], since
-merging them could move a pixel if a copy has drifted: the Tracker's own drawings of the app's glyphs and pencil
-(`src/tracker/components/Glyphs.jsx`, `SrchGlyph.jsx`, held equal by `tracker.test.tsx`), and its own colour list for a page
-with no `:root` (`trk-palette.test.ts`). Today they live only in `docs/tracker/known-gaps.md`. **To do:** draw each from the
-app's one copy instead, with pictures of the Tracker before and after at a desktop and a phone size; nothing a person sees
-should change. **Place:** low, the agent's — with the Tracker's next batch (D490). Evidence:
-`raptor-port/docs/handpass/parts/trk1105/read-opus.md`.
-**Built 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, PR #696):** the pencil, Reorder, gear, Reset and list
-are the app's own icons; the page colours link to Raptor's tokens; pictures before (twice) and after, pixel-compared —
-nothing a person can see changed (`raptor-port/docs/handpass/2026-11-08-chat20-tracker.md`). **Left:** the magnifier
-(`SrchGlyph.jsx`) has drifted from the app's — its handle a fifth shorter — so matching it is a change he would see: put
-to him with a picture (D1625). **His answer, 8 Nov 26 (D1900): match the app's** — draw the app's magnifier (`ui/icons.tsx`)
-in place of `SrchGlyph.jsx`'s, checked by pictures before and after; archive this item once that is built and live.
-**Place:** with [TRK-NOSTORE-SAVED]'s build, one job.
-
 ### [TRK-MARKS-LEFT] Typed marks left in Tracker words, and its Export / Import drawings (filed 8 Nov 26 — chat 20)
 **What:** building D1860, more typed marks were found in words a message box or a hint carries, where the app cannot draw
 its marks: the built-in syllabus delete's "you can bring it back later from ⇅ Reorder" (`core.js`, about line 6276),
@@ -437,20 +426,6 @@ written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a 
 `SaveStatus.tsx` and its CSS describe only the failed band; the Tracker's new setter guards a call with no value.
 **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
-
-### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
-**What:** in a browser that refuses storage (a private or locked-down browser), the Tracker's corner says "● saved" and the
-top bar says nothing, yet nothing survives a reload: mark an event, reload, and the mark is gone. Older — the same before
-the tidy. **The case to put to him:** a line telling the person "This browser won't keep your work after a reload" (or the
-app's failed-save band, D587). New words on screen, so a mock-up first (D1625). **His answer, 5 Nov 26 (D1660): drawn with the Tracker's next batch, not now.**
-**Drawn 8 Nov 26 (chat 20's questions page, https://claude.ai/artifact/RL8hZp77xYhRYcBS1a8cay; `raptor-port/docs/mock/2026-11-08-chat20-tracker-questions.html`) —
-his answer the same day (D1901): option A.** **To build:** a band under the top bar on every page while the browser refuses
-storage — the drawn warning sign, **Not kept**, "this browser loses your work on a reload", no Retry, the "Not saved"
-strip's look (D1655), the page moved down under it as that band does (D587, D1657 for the screens without the top bar to
-weigh); the Tracker's corner empty while it is up. It touches the storage boot (how the app knows storage is refused),
-every page's top, and the Tracker's corner — a bug check of its own (saved data: the tier's question 3). **Place:** the
-next Tracker / app job, with D1900's magnifier, one branch. Evidence:
-`raptor-port/docs/handpass/2026-11-05-tracker-tidy.md`.
 
 ### [TRK-NO-TYPED-STUDENT] No Tracker student can be added by a typed name (his D1931, 8 Nov 26 — first filed the same day as a question, [TRK-TYPED-STUDENT-Q], by the rules diet's step 5a, both blind reads)
 **His answer (8 Nov 26, typed in chat 34): "Typed student can't be added" (D1931 — replaces D191, answers D1005).** **To

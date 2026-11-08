@@ -17,8 +17,9 @@ import { initStore } from './store'
 import { setSession } from './auth'
 import * as view from './view'
 import {
-  registerPeopleSettingsCommandLayer, resyncPeopleBaseline, settingsStore, peopleStore,
+  resyncPeopleBaseline, settingsStore, peopleStore,
 } from './people-settings-commit'
+import { registerPeopleSettingsCommandLayer } from './people-settings-wire'
 import { schedStore } from './sched-commit'
 import {
   initStore as lwInit, getState as lwGetState, subscribe as lwSubscribe, lwStore,

@@ -1,0 +1,460 @@
+{
+ "main": {
+  "G01-D-guest-on": {
+   "id": "G01-D-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G01-D-guest-on.png"
+  },
+  "G02-D-guest-undo": {
+   "id": "G02-D-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G02-D-guest-undo.png"
+  },
+  "G03-D-guest-reload": {
+   "id": "G03-D-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "main-G03-D-guest-reload.png"
+  },
+  "G04-D-secorder-open": {
+   "id": "G04-D-secorder-open",
+   "scen": "S10",
+   "desc": "Squadron config: default arrangement",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "main-G04-D-secorder-open.png"
+  },
+  "G05-D-secorder-down": {
+   "id": "G05-D-secorder-down",
+   "scen": "S10",
+   "desc": "move the first section down; Undo; Redo; reload",
+   "err": "pressing #admSecDefault .tnudge[aria-label$=\"down\"]: locator.click: Timeout 6000ms exceeded.",
+   "pic": "main-G05-D-secorder-down.png"
+  },
+  "G06-D-secorder-reset": {
+   "id": "G06-D-secorder-reset",
+   "scen": "S10",
+   "desc": "Reset to standard order",
+   "err": "pressing #admSecDefReset: locator.click: Timeout 6000ms exceeded.",
+   "pic": "main-G06-D-secorder-reset.png"
+  },
+  "G07-D-inputs-gear": {
+   "id": "G07-D-inputs-gear",
+   "scen": "S10",
+   "desc": "Inputs gear: member filing on, Save",
+   "v": {
+    "was": true,
+    "now": false,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — members filing for other people — off"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-G07-D-inputs-gear.png"
+  },
+  "G08-D-inputs-undo-reload": {
+   "id": "G08-D-inputs-undo-reload",
+   "scen": "S10",
+   "desc": "Undo, Redo, reload",
+   "v": {
+    "a": true,
+    "b": false,
+    "afterReload": false
+   },
+   "pic": "main-G08-D-inputs-undo-reload.png"
+  },
+  "G-D-errors": {
+   "id": "G-D-errors",
+   "v": []
+  },
+  "Q01-D-start": {
+   "id": "Q01-D-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-Q01-D-start.png"
+  },
+  "Q02-D-edit-flight": {
+   "id": "Q02-D-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "err": "locator.fill: Timeout 30000ms exceeded.",
+   "pic": "main-Q02-D-edit-flight.png"
+  },
+  "Q03-D-undo-redo": {
+   "id": "Q03-D-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "err": "pressing #undoBtn: locator.click: Timeout 6000ms exceeded.",
+   "pic": "main-Q03-D-undo-redo.png"
+  },
+  "Q04-D-rename": {
+   "id": "Q04-D-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "note": "no callsign box (only Management renames?)"
+   },
+   "pic": "main-Q04-D-rename.png"
+  },
+  "Q-D-errors": {
+   "id": "Q-D-errors",
+   "v": []
+  },
+  "V01-D-war-open": {
+   "id": "V01-D-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "main-V01-D-war-open.png"
+  },
+  "V02-D-approvals-first": {
+   "id": "V02-D-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "main-V02-D-approvals-first.png"
+  },
+  "V03-D-approvals-leave-return": {
+   "id": "V03-D-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "main-V03-D-approvals-leave-return.png"
+  },
+  "V04-D-my-leave": {
+   "id": "V04-D-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI"
+   },
+   "pic": "main-V04-D-my-leave.png"
+  },
+  "V-D-errors": {
+   "id": "V-D-errors",
+   "v": []
+  }
+ },
+ "branch": {
+  "G01-D-guest-on": {
+   "id": "G01-D-guest-on",
+   "scen": "S10",
+   "desc": "Guest view switch on",
+   "v": {
+    "on": true,
+    "toast": "People waiting can now view the schedule",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G01-D-guest-on.png"
+  },
+  "G02-D-guest-undo": {
+   "id": "G02-D-guest-undo",
+   "scen": "S10",
+   "desc": "Undo, Redo",
+   "v": {
+    "a": false,
+    "b": true,
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — the guest switch"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G02-D-guest-undo.png"
+  },
+  "G03-D-guest-reload": {
+   "id": "G03-D-guest-reload",
+   "scen": "S10",
+   "desc": "reload keeps it",
+   "v": {
+    "on": true
+   },
+   "pic": "branch-G03-D-guest-reload.png"
+  },
+  "G04-D-secorder-open": {
+   "id": "G04-D-secorder-open",
+   "scen": "S10",
+   "desc": "Squadron config: default arrangement",
+   "v": {
+    "order": [
+     "▲▼Overall notes1",
+     "▲▼Common Programme2",
+     "▲▼Flying waves3",
+     "▲▼Duties4",
+     "▲▼Sims5",
+     "▲▼Ground Programme6",
+     "▲▼Personal Inputs7",
+     "▲▼Available crew8"
+    ]
+   },
+   "pic": "branch-G04-D-secorder-open.png"
+  },
+  "G05-D-secorder-down": {
+   "id": "G05-D-secorder-down",
+   "scen": "S10",
+   "desc": "move the first section down; Undo; Redo; reload",
+   "err": "pressing #admSecDefault .tnudge[aria-label$=\"down\"]: locator.click: Timeout 6000ms exceeded.",
+   "pic": "branch-G05-D-secorder-down.png"
+  },
+  "G06-D-secorder-reset": {
+   "id": "G06-D-secorder-reset",
+   "scen": "S10",
+   "desc": "Reset to standard order",
+   "err": "pressing #admSecDefReset: locator.click: Timeout 6000ms exceeded.",
+   "pic": "branch-G06-D-secorder-reset.png"
+  },
+  "G07-D-inputs-gear": {
+   "id": "G07-D-inputs-gear",
+   "scen": "S10",
+   "desc": "Inputs gear: member filing on, Save",
+   "v": {
+    "was": true,
+    "now": false,
+    "toast": "",
+    "undo": {
+     "undo": {
+      "dis": false,
+      "t": "Undo — members filing for other people — off"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-G07-D-inputs-gear.png"
+  },
+  "G08-D-inputs-undo-reload": {
+   "id": "G08-D-inputs-undo-reload",
+   "scen": "S10",
+   "desc": "Undo, Redo, reload",
+   "v": {
+    "a": true,
+    "b": false,
+    "afterReload": false
+   },
+   "pic": "branch-G08-D-inputs-undo-reload.png"
+  },
+  "G-D-errors": {
+   "id": "G-D-errors",
+   "v": []
+  },
+  "Q01-D-start": {
+   "id": "Q01-D-start",
+   "scen": "S03",
+   "desc": "Quals open",
+   "v": {
+    "ace": " ¦ Ace AA ✓ ✓ ✓ ✓ ✓ ✓ A · 4-ship FL",
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-Q01-D-start.png"
+  },
+  "Q02-D-edit-flight": {
+   "id": "Q02-D-edit-flight",
+   "scen": "S03",
+   "desc": "Edit on, Ace flight set to \"ZZ\", Save",
+   "err": "locator.fill: Timeout 30000ms exceeded.",
+   "pic": "branch-Q02-D-edit-flight.png"
+  },
+  "Q03-D-undo-redo": {
+   "id": "Q03-D-undo-redo",
+   "scen": "S03",
+   "desc": "Undo, Redo",
+   "err": "pressing #undoBtn: locator.click: Timeout 6000ms exceeded.",
+   "pic": "branch-Q03-D-undo-redo.png"
+  },
+  "Q04-D-rename": {
+   "id": "Q04-D-rename",
+   "scen": "S03",
+   "desc": "rename Ace to AceX on Quals (callsign box), Save; reload",
+   "v": {
+    "note": "no callsign box (only Management renames?)"
+   },
+   "pic": "branch-Q04-D-rename.png"
+  },
+  "Q-D-errors": {
+   "id": "Q-D-errors",
+   "v": []
+  },
+  "V01-D-war-open": {
+   "id": "V01-D-war-open",
+   "scen": "S02",
+   "desc": "Leave War open: approvals count",
+   "v": {
+    "count": "13",
+    "seen": []
+   },
+   "pic": "branch-V01-D-war-open.png"
+  },
+  "V02-D-approvals-first": {
+   "id": "V02-D-approvals-first",
+   "scen": "S02",
+   "desc": "first visit to Approvals",
+   "v": {
+    "count": "13",
+    "seen": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "undo": {
+     "undo": {
+      "dis": true,
+      "t": "Undo"
+     },
+     "redo": {
+      "dis": true,
+      "t": "Redo"
+     }
+    }
+   },
+   "pic": "branch-V02-D-approvals-first.png"
+  },
+  "V03-D-approvals-leave-return": {
+   "id": "V03-D-approvals-leave-return",
+   "scen": "S02",
+   "desc": "back to the grid and again; reload",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "afterReload": [
+     "raptor:settings/apprseen:stiff"
+    ],
+    "count": "13"
+   },
+   "pic": "branch-V03-D-approvals-leave-return.png"
+  },
+  "V04-D-my-leave": {
+   "id": "V04-D-my-leave",
+   "scen": "S02",
+   "desc": "own window: My leave",
+   "v": {
+    "a": [
+     "raptor:settings/apprseen:stiff",
+     "raptor:settings/lwseen:stiff"
+    ],
+    "win": "142 TALON Edit Schedule View-only Sched Inputs Quals Logic Leave War Tracker Help Admin ↶ ↷ Insights Logout SABER · ADMI"
+   },
+   "pic": "branch-V04-D-my-leave.png"
+  },
+  "V-D-errors": {
+   "id": "V-D-errors",
+   "v": []
+  }
+ }
+}
