@@ -192,7 +192,14 @@ function replay(clone, m) {
   copyFileSync(join(HERE, 'docsize-rulings.mjs'), join(clone, 'raptor-port', 'scripts', 'docsize-rulings.mjs'))
   const unmerged = [...new Set((tryGit(clone, 'diff', '--name-only', '--diff-filter=U') || '').split('\n').filter(Boolean))]
   const r = spawnSync(process.execPath, ['raptor-port/scripts/records-merge.mjs', '--no-checks'], { cwd: clone, encoding: 'utf8', maxBuffer: 256 << 20 })
-  const out = r.stdout + r.stderr
+  const out = (r.stdout || '') + (r.stderr || '')
+  /* ROUND 4 (Astra r3-4): a separate failure flag — a launch error, a signal, no status, or any status but the step's
+     two outcomes, 0 (all settled) and 2 (something left) — and always a diagnostic that is not empty; a merge whose step
+     failed counts nothing as settled */
+  const failed = !!r.error || !!r.signal || r.status === null || (r.status !== 0 && r.status !== 2)
+  const said = out.trim().split('\n').slice(-3).join(' / ')
+  const crashed = failed ? [r.error ? `could not start: ${r.error.message}` : r.signal ? `killed by ${r.signal}` : r.status === null ? 'ended with no status' : `ended with status ${r.status}`, said].filter(Boolean).join(' — ') : null
+  if (failed) return { ...m, gitStatus: st.status, stepCode: r.status, unmerged, files: [], left: [], notRecord: [], rulings: [], renumbers: [], crashed }
   const settled = [...out.matchAll(/^ {2}settled: (\S+)( \(in part\))?$/gm)].map(x => ({ f: x[1], part: !!x[2] }))
   const left = new Set([...out.matchAll(/^ {2}LEFT for you in (\S+):$/gm)].map(x => x[1]))
   const notRecord = [...out.matchAll(/^ {2}not a record file — yours to settle: (\S+)$/gm)].map(x => x[1])
@@ -200,7 +207,7 @@ function replay(clone, m) {
   const renumbers = [...out.matchAll(/^ {2}renumbered in .*$/gm)].map(x => x[0].trim())
   const renumbered = new Set(renumbers.flatMap(x => { const n = /→ (\d+) /.exec(x); return n ? [`Observation ${n[1]}`] : [] }))
   const files = settled.map(({ f, part }) => compare(clone, m, f, part, renumbered))
-  return { ...m, gitStatus: st.status, stepCode: r.status, unmerged, files, left: [...left], notRecord, rulings, renumbers, crashed: r.status === 1 ? out.trim().split('\n').slice(-3).join(' / ') : null }
+  return { ...m, gitStatus: st.status, stepCode: r.status, unmerged, files, left: [...left], notRecord, rulings, renumbers, crashed: null }
 }
 
 /* ---------- the run ---------- */

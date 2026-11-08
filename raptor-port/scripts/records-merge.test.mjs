@@ -690,7 +690,7 @@ function replayOne(f, base, ours, theirs, chat, stepText, stepCode = 0) {
     const merge = c.git('rev-parse', 'HEAD').trim()
     c.write('raptor-port/scripts/records-merge-replay.mjs', readFileSync(join(HERE, 'records-merge-replay.mjs'), 'utf8'))
     c.write('raptor-port/scripts/records-merge-replay.json', JSON.stringify({ window: { since: '2026-11-08T00:00:00+08:00', until: '2099-01-01T00:00:00+08:00', by: 'a test' }, merges: [{ merge, p1, p2, committed: 'x', clashed: [f] }] }))
-    c.write('raptor-port/scripts/records-merge.mjs', stepCode === 1
+    c.write('raptor-port/scripts/records-merge.mjs', typeof stepCode === 'string' ? stepCode : stepCode === 1
       ? `console.error('records-merge: something broke'); process.exit(1)\n`
       : `import { writeFileSync } from 'node:fs'\nwriteFileSync(${JSON.stringify(f)}, ${JSON.stringify(stepText)})\nconsole.log('records-merge: 1 unmerged path(s)\\n  settled: ${f}')\n`)
     c.git('add', '-A'); c.git('commit', '-q', '-m', 'the replay and a stand-in step')
@@ -705,6 +705,15 @@ test('the replay fails when a replayed merge crashed (Astra re-read 3, Opus re-r
   assert.equal(r.code, 1, r.out)
   assert.match(r.out, /FAILED[\s\S]*stopped with an error/)
 })
+/* ROUND 4 (Astra r3-4, 9 Nov 26): only status 1 counted as a crash, and the diagnostic text itself was the flag — a
+   step ending with status 7 and no output, or killed by a signal, passed and was counted as everything settled */
+for (const [name, src] of [['status 7 and no output', 'process.exit(7)\n'], ['a signal', "process.kill(process.pid, 'SIGKILL')\n"]]) {
+  test(`the replay fails when the step ends with ${name}, never counting it settled (round 4 — Astra r3-4)`, () => {
+    const r = replayOne('raptor-port/docs/walk-ledger.md', LEDGER0, L2, L3, LBOTH, '', src)
+    assert.equal(r.code, 1, r.out)
+    assert.match(r.out, /FAILED[\s\S]*the step stopped with an error — \S/)
+  })
+}
 test('the replay fails on a doubled walk-ledger row (the ledger rows identity, restored — Opus re-read 6)', () => {
   const r = replayOne('raptor-port/docs/walk-ledger.md', LEDGER0, L2, L3, LBOTH, LBOTH.replace('<!-- /ledger', '| 8 Nov | ours | found 0 |\n<!-- /ledger'))
   assert.equal(r.code, 1, r.out)
