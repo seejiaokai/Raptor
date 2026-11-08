@@ -33,7 +33,7 @@
  *     and where the other goes, is a judgement (D1733; Astra 7). A block given a new marker is one removed and one added.
  *   The skill log — the head, each `## <day>` heading, each `### Observation N:` entry (to the next heading of either
  *     kind). Two different entries with one number, added on both sides since the base: this branch's is renumbered past
- *     the highest number on this branch, main, the log's archive and every remote branch (the skill notes' short form,
+ *     the highest number on this branch, main, the log's archive and every branch, local and remote (the skill notes' short form,
  *     step 1); in this branch's own new lines of the log, `Observation N` for a renumbered N is rewritten only where it
  *     surely means this branch's note — inside that note, or naming its title and not main's (Astra 3); any other is
  *     left as written and listed for the chat; each renumber is
@@ -223,11 +223,11 @@ function mergeRecords(B, O, T, { labels, first, alwaysLeave = () => false }) {
 }
 
 /* ---------- the skill log's numbers ---------- */
-let highestSeen = null // read once a run: each conflict style tried settles the log again
-function highestNumber(refs) {
-  if (highestSeen === null) highestSeen = readHighest(refs)
-  return highestSeen
-}
+/* read once a run (each conflict style tried settles the log again): the highest number on every branch, and the
+   titles each number heads there */
+let seen = null
+const branchNumbers = refs => (seen ??= readHighest(refs))
+const highestNumber = refs => branchNumbers(refs).max
 function readHighest(refs) {
   /* the short form's grep finds every copy of the log and its archive that holds a heading, over the two sides of the
      merge and every branch, in batches (a long ref list overflows a Windows command line); each distinct copy is then
@@ -238,7 +238,8 @@ function readHighest(refs) {
     const r = spawnSync('git', ['grep', '-l', '-E', '^### Observation [0-9]+', ...refs.slice(i, i + 60), '--', SKILL_LOG, SKILL_ARCHIVE], { cwd: REPO, encoding: 'utf8', maxBuffer: 256 << 20 })
     specs.push(...(r.stdout || '').split('\n').filter(Boolean))
   }
-  if (!specs.length) return 0
+  const titles = new Map()
+  if (!specs.length) return { max: 0, titles }
   const ids = spawnSync('git', ['cat-file', '--batch-check=%(objectname)'], { cwd: REPO, input: specs.join('\n') + '\n', encoding: 'utf8', maxBuffer: 256 << 20 })
   const oids = [...new Set((ids.stdout || '').split('\n').filter(l => /^[0-9a-f]{40,64}$/.test(l)))]
   const all = spawnSync('git', ['cat-file', '--batch'], { cwd: REPO, input: oids.join('\n') + '\n', maxBuffer: 1 << 30 })
@@ -247,18 +248,28 @@ function readHighest(refs) {
   while (at < buf.length) {
     const eol = buf.indexOf(10, at), head = buf.subarray(at, eol).toString('utf8').split(' ')
     const size = +head[2]; if (!(size >= 0)) break
-    for (const { n } of observationHeads(buf.subarray(eol + 1, eol + 1 + size).toString('utf8'))) max = Math.max(max, +n)
+    for (const { n, title } of observationHeads(buf.subarray(eol + 1, eol + 1 + size).toString('utf8'))) { max = Math.max(max, +n); titles.set(n, (titles.get(n) || new Set()).add(title)) }
     at = eol + 1 + size + 1
   }
-  return max
+  return { max, titles }
 }
 function renumber(B, O, T, ctx) {
   const bk = new Set(B.map(r => r.key)), mt = new Map(T.map(r => [r.key, r.text]))
   const clash = O.filter(r => r.key.startsWith('obs:') && !bk.has(r.key) && mt.has(r.key) && mt.get(r.key) !== r.text)
   if (!clash.length) return { O, map: new Map() }
-  let next = Math.max(highestNumber(ctx.refs), ...[...O, ...T, ...B].map(r => r.key.startsWith('obs:') ? +r.key.slice(4) : 0)) + 1
+  /* a number an earlier run of this step already gave the note — in the working copy, under the note's own title, and
+     no number either side holds, nor any branch under another title — is kept, so a run after a fetch that brought a
+     higher number writes the same file and is seen as that earlier run, not as a hand edit (Opus 5 of the code read) */
+  const used = new Set([...O, ...T, ...B].filter(r => r.key.startsWith('obs:')).map(r => r.key.slice(4)))
+  const onDisk = observationHeads(ctx.disk || ''), elsewhere = branchNumbers(ctx.refs).titles
   const map = new Map()
-  for (const r of clash) map.set(r.key.slice(4), String(next++))
+  for (const r of clash) {
+    const title = (OBS_HEAD.exec(r.text.split('\n')[0].replace(/\r$/, '')) || [, , ''])[2].trim()
+    const kept = onDisk.filter(h => h.title === title && !used.has(h.n) && ![...map.values()].includes(h.n) && [...(elsewhere.get(h.n) || [])].every(x => x === title))
+    if (kept.length === 1) map.set(r.key.slice(4), kept[0].n)
+  }
+  let next = Math.max(highestNumber(ctx.refs), ...[...used].map(Number), ...[...map.values()].map(Number)) + 1
+  for (const r of clash) if (!map.has(r.key.slice(4))) map.set(r.key.slice(4), String(next++))
   const baseLines = new Set(linesOf(B.map(r => r.text).join('')))
   const titleOf = text => (OBS_HEAD.exec(text.split('\n')[0].replace(/\r$/, '')) || [, , ''])[2].trim()
   const ourTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(r.text)])), mainTitle = new Map(clash.map(r => [r.key.slice(4), titleOf(mt.get(r.key))]))
@@ -378,7 +389,9 @@ const RECORD = f => f === HANDOFF || f === SKILL_LOG || INSERT_ONLY.includes(f)
 const stale = [...stages.keys()].filter(f => existsSync(join(REPO, f + TMP)))
 if (stale.length) die(`a temporary copy from an interrupted run is still here (${stale.map(f => f + TMP).join(', ')}) — compare it with its file, keep what you need, delete it, then run this again.`)
 
-const remotes = (tryGit('for-each-ref', '--format=%(refname)', 'refs/remotes') || '').split('\n').filter(r => r && !r.endsWith('/HEAD'))
+/* every branch: the remote ones, and the local ones too — the other chats on this PC work in worktrees of this same
+   repository, so their notes not yet pushed sit on local branches (Opus 6 of the code read) */
+const remotes = (tryGit('for-each-ref', '--format=%(refname)', 'refs/heads', 'refs/remotes') || '').split('\n').filter(r => r && !r.endsWith('/HEAD'))
 const ctx = { refs: [head, mergeHead, ...remotes], renumbers: [], cites: [], unsure: [] }
 const written = [], already = [], leftBy = new Map(), settledBy = new Map(), rulingsLeft = [], others = []
 const plan = []

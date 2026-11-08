@@ -276,6 +276,31 @@ test('rulings archive: rows both sides added as the last line, with no line endi
   assert.equal(c.read('DECISIONS-ARCHIVE.md'), '# Archive\n\n| # | ruling |\n|---|---|\n| D1 | one |\n| D2 | ours |\n| D3 | theirs |\n')
 }))
 
+/* Opus 5, 6 (the code read, 8 Nov 26): the other chats on this PC work in worktrees of the same repository, so their
+   unpushed notes are local branches — counted too; and a second run after a fetch that brought a higher number keeps
+   the number the first run chose, rather than calling its own file hand-edited */
+test('skill log: a local branch\'s number counts, and a run after a fetch keeps the number already chosen (Opus 5, 6)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.git('checkout', '-q', '-b', 'other'); c.edit('.claude/skill-observations/log.md', t => t + obs(15, 'fifteen', 'b')); c.commit('other'); c.git('checkout', '-q', 'main')
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours eleven', 'o')), x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'm')))
+  const r1 = c.run()
+  assert.equal(r1.code, 0, r1.out)
+  assert.match(r1.out, /Observation 11 → 16 "ours eleven"/)
+  const once = c.read('.claude/skill-observations/log.md')
+  /* a fetch brings a branch holding 30 */
+  const wt = c.dir + '-later'
+  c.git('worktree', 'add', '-q', '--detach', wt, 'main')
+  try {
+    const log = join(wt, '.claude/skill-observations/log.md')
+    writeFileSync(log, readFileSync(log, 'utf8') + obs(30, 'thirty', 'x'))
+    execFileSync('git', ['commit', '-q', '-am', 'later'], { cwd: wt })
+    c.git('update-ref', 'refs/remotes/origin/later', execFileSync('git', ['rev-parse', 'HEAD'], { cwd: wt, encoding: 'utf8' }).trim())
+  } finally { c.git('worktree', 'remove', '--force', wt) }
+  const r2 = c.run()
+  assert.equal(r2.code, 0, r2.out)
+  assert.match(r2.out, /already settled by an earlier run, unchanged: \.claude\/skill-observations\/log\.md/)
+  assert.equal(c.read('.claude/skill-observations/log.md'), once)
+}))
+
 test('skill log: with no other branch, the new number is past this branch\'s own higher notes', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours eleven', 'x') + obs(12, 'ours twelve', 'y')),
     x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'z')))
