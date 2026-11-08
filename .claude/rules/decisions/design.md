@@ -27,6 +27,7 @@ hides a long row). A "— changed by" tail names the later rulings that changed 
 
 | # | Date | The rule |
 |---|---|---|
+| D1901 | 8 Nov 26 | In a browser that refuses to store anything, every page shows a "Not kept" band under the top bar: the drawn warning sign, "Not kept" in bold, "this browser loses your work on a reload" quieter, no Retry, in the look of the "Not saved" strip (D1655); the page moves down under it, and the Tracker's corner shows nothing while it is up. |
 | D1771 | 8 Nov 26 | Under the keys, an item of the board's or the week's ⋯ menu and the board's + Block and Templates buttons wear the app's cyan keyboard ring in place of the browser's own; the ⋯ item keeps its raised row. |
 | D1772 | 8 Nov 26 | Tab and Shift+Tab out of a board menu stay exactly as built, each case listed in the full row — nothing to change. |
 | D1792 | 8 Nov 26 | Four typed marks become the app's drawn line marks, as drawn: the 👁 on a look at a published version takes the wave templates window's line eye; the Inputs calendar's ⤢ and ⤡ two new marks, arrows out and arrows in; the Tracker's ↺ Restore and a hidden warning's ↺ the Reset arrow; the ✕ stays typed. |
