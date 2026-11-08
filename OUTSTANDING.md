@@ -145,6 +145,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [MULTI-SQN-DESIGN] — one app, one database, many squadrons: home squadron at account creation, view-only rights to others, transfer on posting out, a day split between squadrons (his D1695, 5 Nov 26) — a design job of its own with pictures, before the database step.
 - [NOTICE-UNDO-RETRACT] — every bell line retracted by the undo of what made it: unread goes, read becomes "… taken back · <who>" (his D1693, 5 Nov 26) — step 1 (the posting line) LIVE 5 Nov 26; step 2 (the input lines, the holiday's OIL line) open, his to place. — the posting line first, on `claude/postout-bell-look`; draw the new words first (D1625).
 - [LW-FROZEN-BAR-GAP] — for one frame no dates header shows while the page scrolls — built (D1789; Quals too) on `claude/pr-leave-war-4988a8`, pull request 680; walked: halved, two painted frames to one, scrolling not slower; the last frame is [LW-PIN-LAST-FRAME]; reads and his look to come.
+- [TOPBAR-BAND-ANCHOR] — on a scrolled desktop page the "Not saved" band covers the page's first 36px (the old build too; not on his iPhone).
 - [TOPBAR-BOUNCE-AWAY] — on his iPhone, a flick to the foot of a page bounces it and the bounce carries the top bar off screen for a moment (every page, the live app too); the PC cannot show it — a trial on his iPhone, and his say on the page no longer bouncing.
 - [REDUCE-MOTION-SIDEWAYS] — with "reduce motion" switched on in the phone or computer, the pinned dates row (and Quals' heading) may stop following a sideways scroll — read in the code, not yet seen on screen.
 - [LW-WINDOWS-NONBLOCKING] — the war's other windows still block the grid behind them — which stay up is his choice.
@@ -1056,6 +1057,16 @@ under them: the pinned row would show its first columns' dates over the wrong co
 its own showing step (it moves nothing). **To do:** see it on screen first (reduce motion on, a wide grid, scroll
 sideways, then down until the row pins); if it shows, exempt the two sideways-follow animations the same way — they
 move the row with the finger, which is not the motion the setting is for. **Place:** with the Leave War's next batch.
+
+### [TOPBAR-BAND-ANCHOR] On a scrolled desktop page the "Not saved" band covers the page's first 36px (8 Nov 26)
+
+Found by the fresh, blind Opus read of the top bar's code (its I1 — `raptor-port/docs/superpowers/briefs/2026-11-08-topbar-bounce-code-read-opus.md`),
+present in the old build too: on a desktop Chromium page scrolled down, when the "Not saved" (or "Not kept") band comes,
+the page's room under the bar grows by the band's line but the browser's scroll anchoring moves the window with it, so
+the band covers the first 36px of what he was looking at; at the page's top, and on his iPhone (Safari has no scroll
+anchoring), nothing is covered. Not a fault of the D1873 change. With it, the read's minor notes: the stylesheet guard
+(`src/ui/topbar-css.test.ts`) misses `will-change: transform` and `filter` on the bar's ancestors; comments still call the
+bar "sticky". A job of its own, small; walk a scrolled desktop page with `?savefail`.
 
 ### [TOPBAR-BOUNCE-AWAY] A flick to a page's foot on his iPhone carries the top bar off screen (8 Nov 26)
 
@@ -2138,6 +2149,7 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 
 | The job | Who did read it | What it went without |
 |---|---|---|
+| The top bar held through the page's spring (D1873, [TOPBAR-BOUNCE-AWAY]) — Astra wrote the code (rounds 1 and 2) on `claude/lw-pin-last-frame`, pull request 694; the host's two fixes of the read's F1 and F2 (chat 39, 8 Nov 26) | the fresh, blind Opus read of the finished code (0 High, 0 Medium, 2 Low — both fixed) | Astra's read (he wrote it); Sol 6.1's second read |
 | The night of 5 Nov 26 (his "Go"): the keyboard and windows batch (D1645–D1648 — `claude/keyboard-windows-batch-5eff45`); [TRK-STANDALONE-LEFTOVERS] with the Tracker's React Doctor warnings (saved data: the Tracker's storage path); [MEMBER-EDITPAGE-CHECK] with [GUEST-SAVE-WARNING] (who may do what) | a fresh, blind Opus reader each (D790), and for the last a security read (D1411) | Astra and Sol 6.1 |
 | The Inputs batch [INPUTS-FIXES-1103] — the October finds and his answers (saved data: the LATE drop and Make public; the published record: To go out, Make public on a published day; D1594) — on `claude/inputs-small-fixes-2`, pull request 625 | a fresh, blind Opus reader (D790), its scenarios a fresh Opus reader's (D1594) | Astra's scenario design and code read; Sol 6.1's second read |
 | The night of 31 Oct 26 (D1531) — the M365 move plan page (`claude/m365-move-plan`); [SYSTEM-PASS-SAVES-ROSTER] with [LW-DELETED-RESTORE-OVERREFUSE] (saved data, who may write it — `claude/lw-roster-restore-fixes`); the secrets scan and scorecard (D1408, D1409 — `claude/secrets-scan-scorecard`); the pinch fixes (`claude/pinch-fixes-1031`) | each: one fresh, blind Opus reader (D790, D903); job 2 also the security read (D1411) | Astra's and Sol 6.1's reads (job 2's two, D590) |

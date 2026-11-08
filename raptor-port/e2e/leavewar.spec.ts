@@ -2570,7 +2570,14 @@ test('a page opened from the Leave War scrolled down opens at its own top, and t
     return row ? { id: row.dataset.testid!, top: Math.round(row.getBoundingClientRect().top) } : null
   })
   const at = (id: string) => page.evaluate(i => Math.round(document.querySelector(`[data-testid="${i}"]`)!.getBoundingClientRect().top), id)
-  for (const p of ['editsched', 'viewsched', 'logic', 'help', 'admin']) {
+  /* D1873's fixed bar (the fresh Opus read, F1): Edit Schedule's bar is a row taller than the war's where its changes
+     clock wraps it, so coming back the page's room under the bar must shrink before the war is painted, or the browser
+     keeps the row where it stood under the old room — 47px low. At 1440 that wrap shows only with Linux's wider
+     letters (GitHub's run), at 1360 with Windows' too, so the last pass repeats Edit Schedule there. */
+  const passes: [string, number][] = [['editsched', 0], ['viewsched', 0], ['logic', 0], ['help', 0], ['admin', 0]]
+  if (!isPhone()) passes.push(['editsched', 1360])
+  for (const [p, w] of passes) {
+    if (w) { await page.setViewportSize({ width: w, height: 900 }); await page.waitForTimeout(300) }
     await page.evaluate(() => window.scrollTo(0, 500))
     await page.waitForTimeout(300)
     expect(await winY(), 'the war scrolled down first').toBeGreaterThan(200)
@@ -2580,7 +2587,7 @@ test('a page opened from the Leave War scrolled down opens at its own top, and t
     expect(await winY(), `${p} opens at its own top`).toBe(0)
     await open('leavewar')
     const now = await at(was.id)
-    expect(Math.abs(now - was.top), `back on the war from ${p}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
+    expect(Math.abs(now - was.top), `back on the war from ${p}${w ? ` at ${w}` : ''}, ${was.id} where it stood (${was.top}, now ${now})`).toBeLessThanOrEqual(2)
   }
 })
 

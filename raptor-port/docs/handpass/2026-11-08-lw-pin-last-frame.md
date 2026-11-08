@@ -399,6 +399,28 @@ page error on a phone on its side, the OIL tab's paint), fixed in Astra's round 
 grid, OIL, Balances, sign-in and access at rest, the band's first frame on desktop and phone, every page on its side —
 all PASS but Balances' 17 px (kept); pictures in `walk/topbar/A/`, `B/`, `R2/`.
 
+### The fresh, blind Opus read of the bar's code, and its two fixes (8 Nov 26, chat 39)
+The read (`raptor-port/docs/superpowers/briefs/2026-11-08-topbar-bounce-code-read-opus.md`, at 6e8709abe): 0 High, 0
+Medium, 2 Low. Both fixed red-first; Astra wrote the code, so the job goes on `[NO-ASTRA-LIST]` (the fresh Opus read only).
+- **F1 — a page change wrote the room under the bar a frame late.** Only the bands wrote it before paint; a change of the
+  bar's height from the Shell's own drawing (a page change adding or dropping Undo / Redo or the changes clock, the role
+  switch, the Admin badge, the sync label) reached it a frame later, so the browser kept the war's rows where they stood
+  under the old room. GitHub's run of 64655d92a showed it: back on the war from Edit Schedule a row stood 47px low
+  (Edit Schedule's bar two rows at 1440 with Linux's letters, the war's one). **Red here:** the browser test at 1360 wide,
+  where this PC's letters wrap Edit Schedule's bar too (104 vs 57 measured), "306, now 353"; and a new unit test (a page
+  change moves the room before paint — "expected 57px to be 104px"). **Fix:** the Shell's before-paint write also runs on
+  the page, the role, the Undo pair, the waiting count, the changes clock, the badge, the switch and the sync mode — not
+  on the bar's memo list, which changes on every edit. The browser test now repeats Edit Schedule at 1360 on a desktop,
+  so it catches this on any machine. **Green:** the war's top-bar browser tests 22 / 22 (phone and desktop), the bar's
+  eight unit test files 108 / 108, no new code-check finding.
+- **F2 — the band test's Shell half could not fail.** The band's own resize notice let the bar's listener rewrite the room
+  inside the same step, so the check passed with or without the before-paint write. **Rewritten:** a listener added before
+  the Shell mounts records the room as it stood when that notice went out. **Red-first:** with the before-paint write
+  taken out it fails (`['58.375px', '94.375px']` for `['94.375px', '58.375px']`), with it in it passes.
+- **Not fixed here, filed:** I1 (the old build too) — on a scrolled desktop Chromium page the band covers the first 36px
+  (the browser's scroll anchoring), not on his iPhone — `[TOPBAR-BAND-ANCHOR]`. The read's minor notes (the stylesheet
+  guard misses `will-change: transform` / `filter`; comments still calling the bar "sticky") go with that item.
+
 ### What only his iPhone can show
 The spring at a page's foot and top, Safari's toolbar folding, the keyboard: the PC's Chromium and Playwright's WebKit do
 none of them (lesson 6) — his look on his iPhone before "merge live".
