@@ -46,6 +46,30 @@ test.describe('D1781 — 821 to 1099 wide: the remarks on a row of their own, th
       expect(m!.line.h, 'the line stays dense (the drawing: 111px)').toBeLessThan(125)
     })
   }
+  /* The headings and the line are two grids. From 821 to about 839 the line's buttons (CX, ■, +, ✕) need more room
+     than the back seat's half, which widened the line's last column alone and left the RCP heading up to 5px right of
+     its seat (walker A of the board-layout walk, 8 Nov 26). Each seat stands under its own heading. */
+  for (const w of [821, 830, 874]) {
+    test(`${w} wide: FCP and RCP stand under their headings`, async ({ page }) => {
+      await page.setViewportSize({ width: w, height: 800 })
+      await openBoard(page)
+      const d = await page.evaluate(() => {
+        const line = [...document.querySelectorAll<HTMLElement>('#schedBoard .sb-line')].find(l => l.offsetParent && l.querySelector('.sb-seatpair'))
+        if (!line) return null
+        /* the heading row of this line's own wave: the nearest .sb-lcols before it */
+        const all = [...document.querySelectorAll<HTMLElement>('#schedBoard .sb-lcols')].filter(h => h.offsetParent && (h.compareDocumentPosition(line) & Node.DOCUMENT_POSITION_FOLLOWING))
+        const head = all[all.length - 1]
+        if (!head) return null
+        const hd = (t: string) => [...head.children].find(c => (c.textContent || '').trim() === t)?.getBoundingClientRect().left
+        const seats = [...line.querySelectorAll<HTMLElement>('.sb-seatpair > *')].filter(e => e.offsetParent).map(e => e.getBoundingClientRect().left)
+        return { fcp: hd('FCP'), rcp: hd('RCP'), seats }
+      })
+      expect(d, 'a heading row and a flying line').not.toBeNull()
+      expect(d!.seats.length, 'both seats drawn').toBeGreaterThanOrEqual(2)
+      expect(Math.abs(d!.fcp! - d!.seats[0]!), 'FCP over the front seat').toBeLessThan(1.5)
+      expect(Math.abs(d!.rcp! - d!.seats[1]!), 'RCP over the back seat').toBeLessThan(1.5)
+    })
+  }
   test('1100 wide: the times stay in one line, the remarks beside them (D1029)', async ({ page }) => {
     await page.setViewportSize({ width: 1100, height: 800 })
     await openBoard(page)

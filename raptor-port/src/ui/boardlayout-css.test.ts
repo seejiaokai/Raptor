@@ -30,7 +30,10 @@ describe('D1781 — the desktop board 821 to 1099 wide', () => {
     for (const r of band) for (const s of r.sels) expect(s.startsWith('.schedboard:not(.sb-wide) '), s).toBe(true)
   })
   it('the line: grip, callsign, mission, R over B, TO over LD, the two seats', () => {
-    expect(bodyOf(band, '.schedboard:not(.sb-wide) .sb-line')).toContain('grid-template-columns:18px56px64px48px48px1fr1fr')
+    /* the back seat's column keeps a 94px floor, the room the line's CX ■ + ✕ need under it, in the headings too —
+       so the RCP heading stands over its seat at 821 (the board-layout walk, 8 Nov 26) */
+    expect(bodyOf(band, '.schedboard:not(.sb-wide) .sb-line')).toContain('grid-template-columns:18px56px64px48px48px1frminmax(94px,1fr)')
+    expect(bodyOf(band, '.schedboard:not(.sb-wide) .sb-lcols')).toContain('grid-template-columns:18px56px64px48px48px1frminmax(94px,1fr)')
     expect(bodyOf(band, '.schedboard:not(.sb-wide) .sb-line>.sb-rb')).toContain('flex-direction:column')
     expect(bodyOf(band, '.schedboard:not(.sb-wide) .sb-line>.sb-tl')).toContain('flex-direction:column')
   })
