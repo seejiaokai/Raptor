@@ -792,7 +792,7 @@ citing D851 and D860, which are the app's one blue — a wrong word in its row a
 the scheduler's D1038 row still says "Not built", though the code draws it — for the scheduler's page; D349's dated mark
 from D481 still calls the board's Insights door "proposed".
 
-### Step 5a — the Tracker as a page (8 Nov 26, chat 34, `claude/rules-diet-step-5a-tracker-de959c`, pull request 714 — waiting for his "merge live")
+### Step 5a — the Tracker as a page (8 Nov 26, chat 34, `claude/rules-diet-step-5a-tracker-de959c` — merged 8 Nov 26 on his "merge live", pull request 714)
 
 `.claude/rules/decisions/tracker.md` is a page, "The Tracker — how it works now" (`<!-- shape: page -->`, its `paths:`
 unchanged — the Tracker's own code, documents, scripts and walks, and the sign-out file): its 72 rulings (D64–D1900)
