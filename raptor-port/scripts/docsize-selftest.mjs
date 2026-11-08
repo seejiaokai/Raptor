@@ -491,6 +491,15 @@ scenario('HANDOFF.md: deleted', true, c => rmSync(join(c.dir, 'HANDOFF.md')), { 
 scenario('HANDOFF.md: a block rewritten, one added, one removed whole', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line, rewritten\n- and a second line\n').replace(/<!-- now:claude\/a -->[\s\S]*?<!-- \/now -->\n\n/, '').replace('## Next, in order', '<!-- now:claude/d -->\n### `claude/d` — new\n- d line\n<!-- /now -->\n\n## Next, in order')))
 scenario('HANDOFF.md: an example marker inside a code block is not a block', false, c => c.edit('HANDOFF.md', t => t.replace('- b line\n', '- b line\n~~~md\n<!-- now:claude/example -->\n## Next, in order\n~~~\n')))
 scenario('HANDOFF.md: damage already at the base is reported, not failed', false, c => { c.edit('HANDOFF.md', t => t.replace('- a line\n<!-- /now -->\n', '- a line\n')); c.commit('an older break, already on main') }, { base: 'HEAD', mustSay: '(already so at the base)' })
+/* THE SKILL LOG'S NOTE NUMBERS ([MERGE-ONCE-RECORDS] part 1, 8 Nov 26): two branches each give their next note the same
+   number; a merge that ends without a clash (or a hand merge that forgot the renumber) put both on main unseen. Each number
+   heads one entry, across the log and its archive folder. */
+const SKLOG = '.claude/skill-observations/log.md', SKARCH = '.claude/skill-observations/archive/log-2026-10-27.md'
+const obs = (n, t) => `### Observation ${n}: ${t}\n\nthe note's body\n\n`
+const SKLOG0 = '# Skill Observation Log\n\n' + obs(7, 'seven') + obs(8, 'eight')
+scenario('skill log: every note number once', false, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(3, 'three')) })
+scenario('skill log: one number heading two notes', true, c => c.write(SKLOG, SKLOG0 + obs(8, 'a different eight')), { mustSay: 'Observation 8 heads 2 entries' })
+scenario('skill log: a live number that also heads an archived note', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(7, 'an older seven')) }, { mustSay: 'Observation 7 heads an entry in the log and one in .claude/skill-observations/archive/log-2026-10-27.md' })
 scenario('a new top-level reference doc that no map names', true, c => c.write('raptor-port/docs/newref.md', '# new\n'), { mustSay: 'no map names' })
 scenario('a new top-level reference doc on the map', false, c => { c.write('raptor-port/docs/newref.md', '# new\n'); c.write('raptor-port/CLAUDE.md', '| the new reference | `docs/newref.md` |\n') })
 scenario('a design for one task, under superpowers/ (tier 3, no map needed)', false, c => c.write('raptor-port/docs/superpowers/specs/2026-09-24-x.md', '# x\n'))

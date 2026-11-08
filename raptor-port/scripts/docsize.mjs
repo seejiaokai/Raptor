@@ -951,8 +951,31 @@ function designCheckerCopies() {
   if (a !== b) return [`${DESIGN_CFG_COPY} must be the same as ${DESIGN_CFG}, byte for byte — the design checker reads the copy in whichever folder the chat is in; copy the changed one over the other`]
   return []
 }
+/* THE SKILL LOG'S NOTE NUMBERS ([MERGE-ONCE-RECORDS] part 1, 8 Nov 26 — his go, D1930). Each chat numbers its next note
+   past the highest it can see, so two branches routinely give two different notes the same number; on 8 Nov 26 the chat
+   renumbered by hand in 30 of the log's 34 clashes, and a merge that ends WITHOUT a clash (or a hand merge that forgot)
+   would have put both numbers on main with nothing going red — nothing here read the log. So: every `### Observation N:`
+   number heads exactly one entry in the log, and no number in the log also heads an entry in the archive folder (a note
+   archived on one branch and written anew under its number on another). The archive's own older history is not judged:
+   an archived number is never reused, but what was filed there before this check is the store as it stands (D56). The
+   log is read whole, fences included — the merge step (records-merge.mjs) cuts entries the same way. */
+const SKILL_LOG = '.claude/skill-observations/log.md', SKILL_ARCHIVE = '.claude/skill-observations/archive'
+const OBS_HEAD = /^### Observation (\d+):/
+function skillLogNumbers() {
+  const log = readNow(SKILL_LOG)
+  if (!log) return []
+  const fails = [], count = new Map()
+  for (const l of splitLines(log)) { const m = OBS_HEAD.exec(l); if (m) count.set(m[1], (count.get(m[1]) || 0) + 1) }
+  for (const [n, k] of count) if (k > 1) fails.push(`${SKILL_LOG}: Observation ${n} heads ${k} entries — each note has its own number; renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
+  const archived = [...new Set([...(tryGit('ls-files', '--', SKILL_ARCHIVE) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', SKILL_ARCHIVE) || '').split('\n')])].filter(a => a.endsWith('.md'))
+  for (const a of archived) for (const l of splitLines(readNow(a))) {
+    const m = OBS_HEAD.exec(l)
+    if (m && count.has(m[1])) fails.push(`${SKILL_LOG}: Observation ${m[1]} heads an entry in the log and one in ${a} — an archived number is never used again; renumber the live one past the highest on every branch`)
+  }
+  return fails
+}
 function structure() {
-  const fails = [...guidePairing(), ...designCheckerCopies()], warns = []
+  const fails = [...guidePairing(), ...designCheckerCopies(), ...skillLogNumbers()], warns = []
   const listed = [...new Set([...(tryGit('ls-files') || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard') || '').split('\n')])].filter(f => f && existsSync(join(REPO, f)))
   const atBase = new Set(BASE ? (tryGit('ls-tree', '-r', '--name-only', BASE) || '').split('\n').filter(Boolean) : [])
   const isNew = f => BASE && !atBase.has(f)
