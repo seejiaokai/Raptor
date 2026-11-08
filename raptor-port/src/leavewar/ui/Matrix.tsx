@@ -2126,7 +2126,7 @@ export function Matrix() {
     // and the pinned widths would be the wrong months'. `arranging` (6 Sep 26):
     // Rearrange widens the frozen name column (`.mx-arranging`), so a stuck
     // mirror pinned at the old width would sit a grip's width off the grid.
-  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging])
+  }, [period.id, drawnDates.length, colWin?.lo, colWin?.hi, zoom, visWindow, folded, arranging, pinSda])
 
   // ...and RE-PIN on any change that can widen a column while the bar is up
   // (Astra LW-102, 23 Sep 26): a wider chip or an event written by anyone, the

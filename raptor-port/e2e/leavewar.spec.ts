@@ -5505,7 +5505,7 @@ test('the grid reads counts, months, header, events, roster — top to bottom', 
   // and the order is PAINTED that way, not merely in the DOM
   const strip = (await page.locator('[data-testid="month-strip"]').boundingBox())!
   const counts = (await page.locator('[data-testid="count-sets"]').boundingBox())!
-  const head = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const head = (await page.locator('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')   /* the grid's own (the pinned copy stays in the page, D1870) */.boundingBox())!
   const event = (await page.locator('[data-testid="event-row-1"]').boundingBox())!
   const firstRow = (await page.locator('[data-testid="group-SXO"]').boundingBox())!
   expect(strip.y).toBeLessThan(head.y)
@@ -5606,7 +5606,7 @@ test('the month strip fits its wrapped rows and clears the bracket bar below', a
   for (const m of ['JAN', 'JUN', 'DEC']) await expect(page.locator(`[data-testid="month-${m}"]`)).toBeVisible()
   await expect(page.locator('[data-testid="month-bracket"]')).toHaveCount(0)
   const dec = (await page.locator('[data-testid="month-DEC"]').boundingBox())!
-  const dates = (await page.locator('.mx .mxhead th.who').boundingBox())!
+  const dates = (await page.locator('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')   /* the grid's own (the pinned copy stays in the page, D1870) */.boundingBox())!
   expect(dec.y + dec.height).toBeLessThanOrEqual(dates.y + 1)
 })
 
@@ -5962,9 +5962,11 @@ test.describe('the Leave War grid pinches on a phone (D1282)', () => {
        group heading or another pinned row's name cell — never a day cell of the grid showing through. */
     const namesShown = (yTo: number) => page.evaluate(yTo => {
       const wrapL = document.querySelector('#page-leavewar .mx-wrap')!.getBoundingClientRect().left
-      /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
+      /* (a frozen row kept but hidden — while the fingers are down, fix round 3, or at rest by its opacity where the
+         browser shows it itself, D1870 — counts as absent) */
       const fixedRow = document.querySelector('#page-leavewar [data-testid="sticky-head"]')
-      const sticky = fixedRow && getComputedStyle(fixedRow).visibility !== 'hidden' ? fixedRow.querySelector('.mxfixed-frozen') : null
+      const fcs = fixedRow && getComputedStyle(fixedRow)
+      const sticky = fixedRow && fcs && fcs.visibility !== 'hidden' && Number(fcs.opacity) > 0.5 ? fixedRow.querySelector('.mxfixed-frozen') : null
       const head = (sticky ?? document.querySelector('#page-leavewar .mx-wrap > table.mx > tbody.mxhead th.who')!).getBoundingClientRect().bottom
       const band = document.querySelector<HTMLElement>('#page-leavewar [data-testid="frozen-cols"]')!
       const was = band.style.pointerEvents

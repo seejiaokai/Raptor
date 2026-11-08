@@ -4517,8 +4517,11 @@ test.describe('the frozen callsign column', () => {
      jumping sideways each time the page scrolled down; this bar is the same
      mechanism and was placed the same one frame late — after its first paint, so
      a table scrolled sideways flashed its first columns. A check after a wait can
-     never see that, so this reads the bar in the task that inserts it (a
-     MutationObserver fires after the commit and before any paint). */
+     never see that, so this reads the bar the moment it first SHOWS: where the
+     browser shows it itself (D1870) it is already in the page, hidden, and its first
+     shown frame is read in that frame's animation callbacks; the old way mounts it,
+     read in the task that inserts it (a MutationObserver fires after the commit and
+     before any paint). */
   test('phone: the frozen header is in step with the table the moment it appears', async ({ page }) => {
     await page.setViewportSize(PHONE)
     await login(page)
@@ -4533,18 +4536,24 @@ test.describe('the frozen callsign column', () => {
     await page.evaluate(() => {
       const w = window as any
       w.__qAt = null
-      const mo = new MutationObserver(() => {
+      let seen = false
+      const look = (fromFrame: boolean) => {
         /* what is SEEN, not how it is moved: since D993 (18 Oct 26) the row is moved by the browser where it can (a
            scroll-driven transform — its own scrollLeft stays 0), else by its scrollLeft. Either way a pinned heading
-           must stand over its own column on the first frame. */
+           must stand over its own column on the first frame it shows. */
+        if (seen) return
         const bar = document.querySelector('[data-testid="qsticky-head"]') as HTMLElement | null
-        if (!bar) return
+        const cs = bar && getComputedStyle(bar)
+        if (!bar || !cs || Number(cs.opacity) <= 0.5 || cs.visibility === 'hidden') { if (fromFrame) requestAnimationFrame(() => look(true)); return }
+        seen = true
         mo.disconnect()
         const th = bar.querySelector('.qfixed-scroll th[data-sort="sxo"]') as HTMLElement
         const real = document.querySelector('#qtbl thead th[data-sort="sxo"]') as HTMLElement
         w.__qAt = { mirror: th.getBoundingClientRect().left, grid: real.getBoundingClientRect().left }
-      })
+      }
+      const mo = new MutationObserver(() => look(false))
       mo.observe(document.body, { childList: true, subtree: true })
+      requestAnimationFrame(() => look(true))
     })
     await page.evaluate(() => window.scrollTo(0, 700))   // slide the real header under the top bar
     await expectPinned(page, 'qsticky-head', true)

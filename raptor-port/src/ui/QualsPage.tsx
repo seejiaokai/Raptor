@@ -912,7 +912,7 @@ export function QualsPage() {
     /* re-measure (drop the stuck bar so the next scroll re-pins with fresh
        widths) whenever the column set, the view, the filter, or either edit mode
        could have changed a column's width or the header's own markup. */
-  }, [cols, qSeatView, qSearch, qEditing, qualsEdit, qzEff])
+  }, [cols, qSeatView, qSearch, qEditing, qualsEdit, qzEff, pinSda])
   /* the table drawn again (a change of the store, a sort, an armed delete) put new heading cells in place: the watch moves
      onto them ([QUALS-PINNED-COLS-REFLOW]). Declared after the effect that makes the watch, so on a first draw it exists. */
   useEffect(() => { watchCellsRef.current?.() }, [tableInner])

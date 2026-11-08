@@ -314,7 +314,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
   const bandUnderHeading = (page: Page, x: number, yTo: number) => page.evaluate(([x, yTo]) => {
     /* (a frozen row kept but hidden while the fingers are down — fix round 3 — counts as absent) */
     const m0 = document.querySelector('[data-testid="qsticky-head"]')
-    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' && Number(getComputedStyle(m0).opacity) > 0.5 ? m0 : null   /* hidden by its opacity at rest too (D1870) */
     const heads = [...(mirror ?? document.getElementById('qtbl')!.tHead!).querySelectorAll('th')].map(t => t.getBoundingClientRect()).filter(r => r.width > 0)
     const foot = Math.max(...heads.map(r => r.bottom))
     const bare: string[] = []
@@ -331,7 +331,7 @@ test.describe('Quals on a phone pinches (D1110)', () => {
     const names = [...document.querySelectorAll<HTMLElement>('#qtbl td.qname')].map(td => td.getBoundingClientRect()).filter(r => r.bottom > 60 && r.top < innerHeight)
     const off = names.filter(r => Math.abs(r.left - wrapL) > 1.5).map(r => Math.round(r.left))
     const m0 = document.querySelector('[data-testid="qsticky-head"]')
-    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' ? m0 : null
+    const mirror = m0 && getComputedStyle(m0).visibility !== 'hidden' && Number(getComputedStyle(m0).opacity) > 0.5 ? m0 : null   /* hidden by its opacity at rest too (D1870) */
     const head = (mirror?.querySelector('.qfixed-frozen th[data-sort="cs"]') ?? document.querySelector('#qtbl thead th[data-sort="cs"]'))!.getBoundingClientRect()
     return { wrapL, n: names.length, off, headL: head.left, headR: head.right, nameR: names[0]?.right ?? null, transformed: !!(document.getElementById('qtbl') as HTMLElement).style.transform }
   })
