@@ -403,8 +403,10 @@ export function buildDay(d:any,di:any,nextDt:any,prevDt:any,xweek?:any){
             /* D1786 (8 Nov 26): a sortie's event carries only the report ENTERED for it — its in-time or rally — and
                nothing (null) when none is, so the work span (validate.ts workSpan: the long day and Insights' hours)
                starts that day at take-off less the default rally, VCONF.reportLead, as OIL does — never at the step.
-               `fly` above keeps report-or-step for the SANS window, and crew rest reads `intime`; a shift is as before. */
-            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:intime,brief:briefM,label:lineLbl,
+               `fly` above keeps report-or-step for the SANS window, and crew rest reads `intime`; a shift is as before.
+               A sortie with no landing typed (ldM above borrows its take-off) is unfinished: NaN, so workSpan's own
+               guard counts it nowhere, as OIL counts it nothing (fltOilWin) — Astra's and Sol 6.1's reads. */
+            events.push({id,s:stepM,e:dekitM,to:toM,ld:ldM,report:shiftLine?report:(parseHM(f.ld)==null?NaN:intime),brief:briefM,label:lineLbl,
               kind:shiftLine?'shift':'fly',slot:`${di}.${gi}.${li}.${ai}.${seat==='FCP'?'p':'w'}`});
           });
         });

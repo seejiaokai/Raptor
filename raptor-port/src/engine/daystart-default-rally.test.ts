@@ -88,6 +88,32 @@ describe('D1786 a sortie with nothing entered starts the work span at take-off l
     expect(span([flyWave(['08:00 IN TIME'], [line({ to: '', ld: '' })])])).toBe(null)
   })
 
+  /* Astra's and Sol 6.1's reads: an unfinished line borrowed its take-off as its landing and, from the default rally,
+     stretched the day by 3h (05:00 take-off + a 14:00–15:00 ground row read 13h and a long-day note); OIL counts it nothing */
+  const ground = (str: string, end: string) => ({ prog: 'HANGAR', str, end, who: 'ignite' })
+  const spanWith = (waves: any[], g: any[]) => workSpan(evsOf(buildDay({ ...dayOf(waves), ground: g }, 4, 'Jul 18', 'Jul 16')))
+  it('a sortie with no landing typed counts nowhere — alone, or beside another commitment — as for OIL', () => {
+    for (const f of [line({ to: '05:00', ld: '' }), line({ to: '05:00', ld: undefined }), line({ to: '05:00', ld: 'TBD' })]) {
+      expect(span([flyWave([], [f])])).toBe(null)
+      expect(span([flyWave(['04:00 IN TIME'], [f])])).toBe(null)
+      expect(spanWith([flyWave([], [f])], [ground('1400', '1500')])!.span).toBe(60)
+      expect(fltOilWin(flyWave([], [f]), f, VCONF.reportLead, VCONF.debrief)).toBe(null)
+    }
+    expect(span([flyWave([], [line({ to: '05:00', ld: '05:00' })])])!.span).toBe(VCONF.reportLead + VCONF.debrief)   // D49: typed equal still counts
+  })
+
+  it('a sortie that measures nothing (both leads zero, take-off = landing) stretches no day', () => {
+    const was = [VCONF.reportLead, VCONF.debrief]
+    try {
+      VCONF.reportLead = 0; VCONF.debrief = 0
+      const f = line({ to: '12:00', ld: '12:00' })
+      expect(span([flyWave([], [f])])).toBe(null)
+      expect(spanWith([flyWave([], [f])], [ground('1500', '1600')])!.span).toBe(60)
+      expect(fltOilWin(flyWave([], [f]), f, 0, 0)).toBe(null)
+      expect(span([flyWave([], [line({ to: '12:00', ld: '12:30' })])])!.span).toBe(30)   // a real flight still counts
+    } finally { [VCONF.reportLead, VCONF.debrief] = was }
+  })
+
   it('only the event changes: day.fly keeps report-or-step (the SANS window) and intime null (crew rest)', () => {
     const b = built([flyWave([], [line()])])
     const fl = b.fly.find((e: any) => e.id === 'ignite')
