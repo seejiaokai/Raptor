@@ -26,7 +26,7 @@ let errors: ReturnType<typeof vi.spyOn>
 const realRect = Element.prototype.getBoundingClientRect
 const realMM = window.matchMedia
 const $ = (sel: string) => host.querySelector(sel) as HTMLElement | null
-const refusals = () => errors.mock.calls.filter(c => c.some(a => LIFECYCLE.test(String(a))))
+const refusals = () => errors.mock.calls.filter((c: unknown[]) => c.some((a: unknown) => LIFECYCLE.test(String(a))))
 const click = async (el: Element | null) => {
   expect(el, 'click target exists').toBeTruthy()
   await act(async () => { (el as HTMLElement).dispatchEvent(new MouseEvent('click', { bubbles: true })) })

@@ -37,7 +37,7 @@ beforeEach(() => {
 })
 afterEach(() => { for (const f of undo) f(); undo = [] })
 
-const refusals = () => errors.mock.calls.filter(c => c.some(a => LIFECYCLE.test(String(a))))
+const refusals = () => errors.mock.calls.filter((c: unknown[]) => c.some((a: unknown) => LIFECYCLE.test(String(a))))
 
 describe('the pinned dates row (D1789) is never flushed from an effect', () => {
   it('a grid set up with its dates row already under the top bar pins it, with no refusal from React', () => {

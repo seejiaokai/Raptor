@@ -2061,7 +2061,8 @@ export function Matrix() {
     window.addEventListener('resize', remeasure)
     window.addEventListener('orientationchange', remeasure)
     window.visualViewport?.addEventListener('resize', remeasure)
-    onScroll()
+    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
+    pin(false)
     return () => {
       repinRef.current = () => {}
       window.removeEventListener('scroll', onScroll)

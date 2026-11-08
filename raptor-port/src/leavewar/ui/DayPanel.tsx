@@ -13,7 +13,7 @@
    ITS OPEN STATE IS ITS OWN (performance.md §E): a small listener set here, never a field of the store the grid's rows
    read — opening it, stepping it, or a bid placed with it open repaints no month of the grid. */
 
-import { useRef, useSyncExternalStore } from 'react'
+import { useRef, useSyncExternalStore, type RefObject } from 'react'
 import { addDays } from '../engine'
 import { availRowNames, availVerdictAt, dayFacts, flyAnswer, reqRowNames, useWarFacts } from '../sync'
 import { dayPanelData } from '../state/daypanel'
@@ -34,6 +34,15 @@ export function DayPanelHost() {
   return iso ? <DayPanel iso={iso} /> : null
 }
 
+/* THE FOOT COUNTS FOR ITSELF (the fresh code read of 8 Nov 26, F1): held by the day window, the count drew the whole
+   window again at each change, and the window's own every-draw placing wiped a phone pull's height and place under the
+   held finger — the panel snapped back to its lower rest (a pull changes the body's height, which recounts). Here a
+   recount redraws the foot alone. */
+function MoreFoot({ scroller }: { scroller: RefObject<HTMLElement | null> }) {
+  const below = useMoreBelow(scroller, '.lwday-away .ll-row')
+  return below > 0 ? <div className="lwday-more" data-testid="lwday-more"><span className="bl-more">↓ {below} more</span></div> : null
+}
+
 function DayPanel({ iso }: { iso: string }) {
   useVersion()      // a bid placed, an Undo — the figures follow the store
   useWarFacts()     // the scheduler's half: the Required figures, the Available rows' names and points
@@ -50,7 +59,6 @@ function DayPanel({ iso }: { iso: string }) {
   const step = (n: number) => openDayPanel(addDays(iso, n))
   /* the list scrolls in the window's own body (`.win-body`), the parent of this panel's body */
   const scroller = useRef<HTMLElement | null>(null)
-  const below = useMoreBelow(scroller, '.lwday-away .ll-row')
   /* the year, two digits (D1096), where the date is not in the year the grid shows (C's F6 — stepped into 2027 it read
      "Fri 1 Jan" over a 2026 grid) */
   const shownYear = getState().period?.start.slice(0, 4)
@@ -59,7 +67,7 @@ function DayPanel({ iso }: { iso: string }) {
     /* AT THE LOWER OF ITS TWO HEIGHTS on a phone (M3's walk, C's F2): what it holds is short, and the grid above it is where
        he picks the next day — opened tall it covered the grid for 500px of nothing; its bar still pulls it up */
     <FloatWin id="lwday" title={title} testid="win-lwday" className="lwday" rests onClose={closeDayPanel}
-      foot={below > 0 ? <div className="lwday-more" data-testid="lwday-more"><span className="bl-more">↓ {below} more</span></div> : null}
+      foot={<MoreFoot scroller={scroller} />}
       tools={<>
         <button type="button" className="abtn win-step" data-testid="lwday-prev" aria-label="The day before" onClick={() => step(-1)}>‹</button>
         <button type="button" className="abtn win-step" data-testid="lwday-next" aria-label="The day after" onClick={() => step(1)}>›</button>

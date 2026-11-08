@@ -4061,3 +4061,30 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The new ruling changed one reviewer's role. Rewriting each line about "the reviewers", the writer re-stated the safeguards for the named reviewer only — "a job he could not read goes on the owed list" — and silently dropped the same safeguard for the other, unchanged one; it also left lines elsewhere that still described the old arrangement as current. Both blind readers caught it, in five files.
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
+
+### Observation 870: A blink counted "gone" by the page's own frame log was still there in the painted frames
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — measuring D1789's fix (the Leave War's pinned dates row and Quals' heading drawn in the same frame as the scroll) before and after; numbered past 865, the highest on any branch at 10:00, 866–869 left for the sibling chats writing tonight
+**Skill:** walk-scripts (project guide, not a skill file) — measuring a visual change's frames; verification-before-completion
+**Type:** open-source
+**Phase/Area:** measuring frames before and after a change to what is drawn while scrolling
+**Reference file:** raptor-port/docs/handpass/2026-11-08-lw-group6.md §The frames
+
+**Issue:** The speed helper counted the frames in which the pinned row was missing from a log the page's own code kept, read on each animation frame. Before the fix it counted 2, after it 0, and the evidence sheet and the speed ledger said "the blink is gone". The walker's painted-frame sheets (a screencast of what the browser actually painted) showed one frame still missing after the fix — the desktop wheel 2 → 1, a phone flick 1. The browser moves and paints a scroll before the page's code hears of it, so a log kept by that code can never see that frame. The walker itself also judged the desktop case a PASS; the host's own look at the painted frames overturned it.
+**Suggested improvement:** In the walk-scripts guide's part on measuring frames, say that a glitch tied to scrolling or the compositor is counted on PAINTED frames (a screencast or a recording), never only on a frame log kept by the page's own code; the page's log may stand beside it for timing, not for "is it on screen". Name the frame the decision rests on in the evidence sheet, and have the host open it.
+**Principle:** A measurement taken by the code under test can only see what that code sees. When what matters is what the screen showed, measure the screen's own output, and treat a count of zero from inside the page as unproven.
+
+### Observation 871: Code that runs only when a box has a size was never run by tests drawn without layout
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 8 — D1789's fix to the Leave War's pinned dates row and Quals' heading; Astra's code read found the setup path broken
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** writing the failing test for a change behind a layout guard
+
+**Issue:** The fix added an "instant" flag for calls from the scroll listener and a comment that the effect's own call keeps the old route. The effect's last line called the listener itself, so it took the instant route too, and React refused it on every setup. The unit tests never saw it: the test environment has no layout, every box measures 0, and the code returns early on a 0-height box — so the pinning code never ran in any unit test. Only the browser tests ran it, and they do not fail on a warning. A reader running the effect with given box sizes found it at once.
+**Suggested improvement:** In the skill's "write the failing test" step: when the changed code sits behind a layout or feature guard (a 0-size box, no matchMedia, no ResizeObserver), the test gives the sizes and the feature so the changed lines actually run, and it fails on the framework's own warnings for the path (a spy on console.error), not only on the result. Before writing, list every caller of a function whose behaviour now depends on a new flag, including callers through an alias.
+**Principle:** A test proves only the lines it runs. Code behind a guard that the test environment always trips needs the guard's conditions supplied, or the test passes without testing anything.

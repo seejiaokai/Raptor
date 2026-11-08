@@ -871,7 +871,8 @@ export function QualsPage() {
       if (wrapRef.current) ro.observe(wrapRef.current)
       watchCells()
     }
-    onScroll()
+    /* the setup's own pin takes the ordinary route: React refuses a flush inside an effect (Astra's code read of 8 Nov 26) */
+    pin(false)
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', remeasure)
