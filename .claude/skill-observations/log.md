@@ -694,6 +694,8 @@ Met again 7 Nov 26 (the rules diet's step 2, on `claude/rules-diet-step2`): a no
 
 **Met again 5 Nov 26 (`claude/ui-consistency-round4`, D1708's tests):** a node edit script through a quoted heredoc put new test code inside a JS template literal; every `\'` came out a bare apostrophe and broke five strings. Caught by reading the lines back, put right with sed. Met a second time the same job: a regex appended by a quoted heredoc reached the test file with its backslashes gone, and the new test failed on the fixed code too; put right with the Edit tool and `String.raw`. Same lesson: code goes in with the Edit tool.
 
+Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`): a bash here-document holding an apostrophe in an edit script's prose failed with "unexpected EOF"; redone as a script written by the Write tool. The guard proposed above still stands: no here-document for a script body — the Write tool, then run the file.
+
 ### Observation 602: A search for an old wording, cut to its first 40 lines, hid two tests that read it
 
 **Status:** ACTIONED (2026-10-27) — skill review of 27 Oct 26 (apply): BCO §6 wording roll-call (each old phrase alone, files, no cap)
@@ -3635,6 +3637,8 @@ format is a sufficient video tool, and a contact sheet of evenly spaced frames s
 **Suggested improvement:** When replacing a visible string, list FILES (not lines) containing the old string across every test kind — unit, browser, smoke scripts — with no filter, then read each hit. And for any layout move, press each moved control in the states the drawing shows (a window open), not only measure it.
 
 **Principle:** A filtered search is a guess about how tests are written; list every file that contains the old text, unfiltered, and read each. A drawing proves appearance, never reachability — press the moved control in the drawn state.
+
+Met again 8 Nov 26 (chat 20, `claude/chat20-tracker-small-batch`, [TRK-KEPT-COPIES]): turning the Tracker's copied colours into links, the job ran the tests it wrote and the ones named for the Tracker, but not the date box's look test, which also reads the Tracker's stylesheet and pinned one copied value; GitHub's full run found it. The TDD skill already says "every test that reads the stylesheets, for a style change" — a rule broken, so a guard: before the first push of a change to a file, list every test file that names it (`grep -rl "<file's base name>" src e2e scripts`) and run them all, a step in the push checklist, not a judgement each time.
 
 ### Observation 834: A geometric "letters fit" check needs the letters' own pixels, and must know which letters are hidden on purpose
 

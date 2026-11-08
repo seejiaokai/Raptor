@@ -1,5 +1,5 @@
 /* THE APP'S ONE PENCIL (owner D1134, 21 Oct 26 — "can u make sure u use the same icon designs i like this pencil
-   better"): every pencil a person presses is the one drawing in ui/pen.ts (the Tracker's copy in Glyphs.jsx), never a
+   better"): every pencil a person presses is the one drawing in ui/pen.ts (the Tracker's too, through PenIcon), never a
    typed ✎ or the ✏ emoji. Two places keep the typed ✎ on purpose — inside a sentence of help text and after an edited
    chart's name in the Tracker's Syllabus list (a list's option holds text only) — and neither sits right after a tag. */
 import { describe, it, expect } from 'vitest'
@@ -31,11 +31,15 @@ describe('one pencil (D1134)', () => {
       '../tracker/components/SidePanel.jsx', '../tracker/components/ArrangeTools.jsx', '../tracker/App.jsx'])
       expect(PRINTED.test(code(f)), f + ' prints no typed pencil').toBe(false)
   })
+  /* WAS a check that the Tracker's own copy of the pencil kept the same shapes; [TRK-KEPT-COPIES] (8 Nov 26) took the copy
+     away — it was kept for a standalone export, gone since D1538 — so the Tracker draws the app's PenIcon itself, and
+     this checks it keeps no drawing of its own to drift (its drawn screen: tracker.test.tsx, the bar's pencil) */
   it('the Tracker draws the same pencil as the rest of the app', () => {
     const shapes = (s: string) => [...s.matchAll(/<(rect|path)\b[^>]*?\/?>/g)].map(m => m[0].replace(/\s*\/?>$/, '').replace(/\s+/g, ' '))
     const glyphs = src('../tracker/components/Glyphs.jsx')
     const tracker = glyphs.slice(glyphs.indexOf('export const PenGlyph'), glyphs.indexOf('export const ReorderGlyph'))
-    expect(shapes(tracker)).toEqual(shapes(PEN_INNER))
-    expect(tracker).toContain('rotate(-45 12 12)')
+    expect(tracker, 'the app\'s own pencil, given the Tracker\'s class').toContain('<PenIcon solo={solo} className="trkglyph trkpen" />')
+    expect(shapes(tracker), 'no pencil drawing of its own').toEqual([])
+    expect(shapes(PEN_INNER).length, 'the one drawing has its three shapes').toBe(3)
   })
 })

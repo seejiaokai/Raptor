@@ -1,0 +1,147 @@
+[
+ {
+  "n": "d01-landing.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d02-course-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d03-syllabus-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d04-file-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d05-find-typed.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d06-show-all.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d07-show-all-filtered.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d08-marking-window.png",
+  "res": "DIFFERS",
+  "pixels": 6,
+  "box": [
+   317,
+   93,
+   633,
+   94
+  ]
+ },
+ {
+  "n": "d09-reorder-courses.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d10-reorder-syllabi.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d11-reorder-crew.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d12-edit-chart-layout.png",
+  "res": "DIFFERS",
+  "pixels": 67,
+  "box": [
+   317,
+   93,
+   1082,
+   96
+  ]
+ },
+ {
+  "n": "d13-flex-settings.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d14-legend.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d15-details-bubble.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d16-export-window.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "d17-hover-menu-row.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p01-landing.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p02-course-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p03-syllabus-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p04-file-menu.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p05-find-typed.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p06-info-tab.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p07-show-all-tab.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p08-marking-window.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p09-reorder-courses.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p10-reorder-syllabi.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p11-edit-chart-layout.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p12-flex-settings.png",
+  "res": "SAME (byte for byte)"
+ },
+ {
+  "n": "p13-legend.png",
+  "res": "DIFFERS",
+  "pixels": 5,
+  "box": [
+   159,
+   266,
+   282,
+   722
+  ]
+ },
+ {
+  "n": "p14-info-tab-lower.png",
+  "res": "SAME (byte for byte)"
+ }
+]
