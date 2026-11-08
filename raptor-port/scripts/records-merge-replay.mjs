@@ -117,7 +117,7 @@ const IDS = {
 const everyLine = t => t.split('\n').map(l => l.replace(/\r$/, '')).filter(l => l.trim())
 const tally = a => a.reduce((m, x) => m.set(x, (m.get(x) || 0) + 1), new Map())
 /* counts that differ from the chat's (listed), and counts above the chat's AND both parents' (a failure) */
-function identities(mine, chat, p1Text, p2Text, renumbered = new Set()) {
+function identities(mine, chat, p1Text, p2Text, renumbered = new Set(), baseText = '') {
   const differ = [], doubled = []
   for (const [name, f] of Object.entries(IDS)) {
     const a = tally(f(mine)), b = tally(f(chat)), x = tally(f(p1Text)), y = tally(f(p2Text)), diffs = []
@@ -130,12 +130,18 @@ function identities(mine, chat, p1Text, p2Text, renumbered = new Set()) {
     if (diffs.length) differ.push(`${name} — ${diffs.join('; ')}`)
   }
   {
-    const a = tally(everyLine(mine)), b = tally(everyLine(chat)), x = tally(everyLine(p1Text)), y = tally(everyLine(p2Text))
+    const a = tally(everyLine(mine)), b = tally(everyLine(chat)), x = tally(everyLine(p1Text)), y = tally(everyLine(p2Text)), z = tally(everyLine(baseText))
     /* exempt only the heading line of a note the step renumbered: it stands once, under a number no parent gave it */
     const renumberedHead = l => { const m = OBS_HEAD.exec(l); return !!m && renumbered.has(`Observation ${m[1]}`) }
+    /* bounded by the base (the host's option 2, 8 Nov 26): a line both sides added — a block's closing line when each side
+       adds a block — stands ours + theirs − base times in a correct merge, more than in either parent, and the chat's file
+       may hold fewer (0db7d583b, 8b54a2cd5). So a line fails only above the chat's count AND above the most of ours,
+       theirs and ours + theirs − base. Not caught by this: a row both sides added the SAME and the step wrote twice
+       (base 0, each side 1, the step 2 = ours + theirs − base). Round 3 never settles a region whose sides share a
+       non-blank line, so the step cannot write it; a doubled block or note is still caught by its identity above. */
     for (const [k, s] of a) {
-      const c = b.get(k) || 0
-      if (s > c && s > (x.get(k) || 0) && s > (y.get(k) || 0) && !renumberedHead(k)) doubled.push(`every line — "${k.slice(0, 120)}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
+      const c = b.get(k) || 0, ox = x.get(k) || 0, ty = y.get(k) || 0
+      if (s > c && s > Math.max(ox, ty, ox + ty - (z.get(k) || 0)) && !renumberedHead(k)) doubled.push(`every line — "${k.slice(0, 120)}" stands ${s} times in the step's file; the chat's ${c}, the first parent's ${x.get(k) || 0}, the second's ${y.get(k) || 0}`)
     }
   }
   return { differ, doubled }
@@ -161,7 +167,9 @@ function compare(clone, m, f, part, renumbered) {
   if (chat === null) return { f, part, gone: true, doubled: [] }
   const p1Text = tryGit(clone, 'cat-file', 'blob', `${m.p1}:${f}`) || '', p2Text = tryGit(clone, 'cat-file', 'blob', `${m.p2}:${f}`) || ''
   const settled = part ? withoutRegions(mine) : mine
-  const { differ, doubled } = identities(settled, chat, p1Text, p2Text, renumbered)
+  const mb = (tryGit(clone, 'merge-base', m.p1, m.p2) || '').trim()
+  const baseText = (mb && tryGit(clone, 'cat-file', 'blob', `${mb}:${f}`)) || ''
+  const { differ, doubled } = identities(settled, chat, p1Text, p2Text, renumbered, baseText)
   if (!part) return mine === chat ? { f, same: true, doubled } : { f, same: false, lines: lineDiff(mine, chat, p1Text, p2Text), ids: differ, doubled }
   /* in part: each record the step settled (free of marks) against the chat's record of the same name */
   const ours = records(mine), theirs = records(chat), recs = []

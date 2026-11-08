@@ -646,3 +646,15 @@ test('the replay fails on any doubled line, one with no identity among them — 
   assert.equal(r.code, 1, r.out)
   assert.match(r.out, /every line — "\| o\.ts \| o \|" stands 2 times in the step's file; the chat's 1, the first parent's 1, the second's 0/)
 })
+/* the host's ruling after round 3's replay (8 Nov 26, option 2): a line BOTH sides added — a handoff block's closing
+   line when each side adds a block — stands base + 2 times in a correct merge, more than in either parent; the chat's
+   file may hold fewer (0db7d583b lost a closer, 8b54a2cd5 dropped a merged branch's block). Bounded by the base, that
+   is no failure; a doubled row or block still is (the regressions above) */
+test('the replay does not fail on a line both sides added, standing base + 2 times (the host\'s option 2)', () => {
+  const ours = handoff([block('claude/n1', '- n1'), block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])
+  const theirs = handoff([block('claude/n2', '- n2'), block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])
+  const both = handoff([block('claude/n1', '- n1'), block('claude/n2', '- n2'), block('claude/a', '- a line'), block('claude/b', '- b line'), block('claude/merged', '- finished, merged')])
+  /* the chat kept only this branch's new block: its file holds the closing line base + 1 times, the step's base + 2 */
+  const r = replayOne('HANDOFF.md', H0, ours, theirs, ours, both)
+  assert.equal(r.code, 0, r.out)
+})
