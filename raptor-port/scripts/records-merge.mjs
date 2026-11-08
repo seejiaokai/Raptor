@@ -331,8 +331,8 @@ function settleInsertions(o, b, t, labels) {
      cannot be known — the region is LEFT (null). If only this branch's opens a new heading, main's goes before that
      heading, under the section both were writing in; otherwise main's simply follows this branch's;
    - at each seam a line ending is made whole, a table is never split by a blank line, and an entry is kept apart from a
-     following heading or paragraph by one blank line (two list items or table rows stay together). */
-const isHeading = l => /^## /.test(l), blank = l => !l.trim(), tableRow = l => /^\|/.test(l), listItem = l => /^\s*(?:[-*+]|\d+\.) /.test(l)
+     following heading by one blank line (lines of a paragraph, list items and table rows stay together). */
+const isHeading = l => /^## /.test(l), blank = l => !l.trim(), tableRow = l => /^\|/.test(l)
 function seam(a, b) {
   if (!a.length || !b.length) return [...a, ...b]
   a = [...a]
@@ -340,8 +340,8 @@ function seam(a, b) {
   let e = a.length; while (e > 0 && blank(a[e - 1])) e--
   /* rows on both sides of the seam: the table runs on, the blank lines that ended this side's go after the other's */
   if (e > 0 && tableRow(a[e - 1]) && tableRow(b[0])) return [...a.slice(0, e), ...b, ...(blank(b[b.length - 1]) ? [] : a.slice(e))]
-  const last = a[a.length - 1]
-  if (!blank(last) && !blank(b[0]) && !(tableRow(last) && tableRow(b[0])) && !(listItem(last) && listItem(b[0]))) return [...a, '\n', ...b]
+  /* only a heading is set apart: lines of a paragraph (the file map's notes), list items and rows stay together */
+  if (!blank(a[a.length - 1]) && /^#{1,6} /.test(b[0])) return [...a, '\n', ...b]
   return [...a, ...b]
 }
 function joinInsertions(o, t) {

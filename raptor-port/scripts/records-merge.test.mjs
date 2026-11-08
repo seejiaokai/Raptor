@@ -409,6 +409,15 @@ test('backlog archive: main\'s item after this branch\'s keeps a blank line befo
   assert.equal(r.code, 0, r.out)
   assert.equal(c.read('OUTSTANDING-ARCHIVE.md'), '# Archive\n\n## Moved 6 Nov 26\n\n### [A] a\n\nbody a\n\n## Moved 7 Nov 26\n\n### [B] b\n\nbody b\n\n### [C] c\n\nbody c\n')
 }))
+/* the replay's finding after the fixes (32e9b096d, 31ac0ebd8, 8b54a2cd5): the file map's notes at its head are lines of
+   one paragraph, one under the other — the seam must not part them with a blank line (only a heading is set apart) */
+test('file map: a note line each side added under the others stays one under the other, no blank line between', withRepo({ 'raptor-port/docs/file-map.md': '# File map\n\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n' }, c => {
+  c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t.replace('# File map\n\n', '# File map\n\n8 Nov 26 on `claude/ours` (x).\n')),
+    x => x.edit('raptor-port/docs/file-map.md', t => t.replace('# File map\n\n', '# File map\n\n8 Nov 26 on `claude/theirs` (y).\n')))
+  const r = c.run()
+  assert.equal(r.code, 0, r.out)
+  assert.equal(c.read('raptor-port/docs/file-map.md'), '# File map\n\n8 Nov 26 on `claude/ours` (x).\n8 Nov 26 on `claude/theirs` (y).\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n')
+}))
 test('file map: a row both sides added the same, first or last, is kept once (Opus 3)', withRepo({ 'raptor-port/docs/file-map.md': FMAP0 }, c => {
   c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| o.ts | o |\n| z.ts | z |\n'), x => x.edit('raptor-port/docs/file-map.md', t => t + '| shared.ts | same |\n| t.ts | t |\n| z.ts | z |\n'))
   const r = c.run()
