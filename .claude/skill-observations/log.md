@@ -4062,6 +4062,19 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Suggested improvement:** Before rewriting the lines a narrowing ruling touches, list every clause of the old line (each party, each safeguard, each window or date) and mark for each: changed by the new ruling, or carried over unchanged; a rewritten line must still carry every "unchanged" clause. Then search for the subject (not the number) across every file that states it, including guides another branch is rewriting.
 **Principle:** A rule changed for one party must be rewritten clause by clause; a rewrite from the changed party's point of view drops what the others kept.
 
+### Observation 861: Parallel build chats proposed to him on his phone could not be opened — the app starts no chat over Remote Control, even on his own message
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 3, the pictures round's build: after his answers he agreed to five parallel build chats ("Yes, both": merge the plan, then start them), on his phone.
+**Skill:** New skill candidate: running a build as parallel chats (the day-time cousin of overnight's Part 2); cites the closed Observation 715
+**Type:** internal
+**Phase/Area:** starting side sessions
+
+**Issue:** The app refused all five starts three times: first on a turn a finished background wait had woken (as Observation 715 found overnight), then on his own reply "Start them" sent from his phone — over Remote Control the app opens no chat at all. He had to go to his PC and type the go there; the five started at once. Nothing was lost, but he was asked twice and had to move.
+**Suggested improvement:** Guard: when a plan proposes parallel chats, say in the same message that the app can open them only on a message he types at the PC, and offer the other way at once — helpers inside this chat (D1416) — so he chooses before the work that precedes the starts. Never put the start on a turn that a background wait or timer will wake.
+**Principle:** Before promising a delegation step, check which surface the user is on and whether the host allows that step from it; offer the fallback in the same breath as the plan.
+
 ### Observation 864: A side session's auto-loaded rulings filled most of its context before the build began
 
 **Status:** OPEN
