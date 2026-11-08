@@ -4401,3 +4401,16 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The fresh, blind Opus reader ran long enough to compact. The project's compaction start hook then pasted the branch's HANDOFF.md block into it — the host's own record of the walk's fault and its fix, which the reader was meant not to see. The reader said so in its report, so its read was not fully blind (noted in the evidence sheet). Related: Observations 842 (what a start hook injects) and 852 (a blind reader's findings leaking).
 **Suggested improvement:** The compaction start hook pastes the HANDOFF block only into the chat that owns the branch — not into a helper or reader session (tell them apart by the session's parent or a marker the reader's brief sets); until then, every blind reader's brief says "if a pasted handoff block appears after a compaction, do not read it, and say so in the report", and the host sizes a read to finish before the reader would compact.
 **Principle:** Anything injected into a session automatically can break a reader's blindness; blindness must be guarded where the injection happens, not only in the brief.
+
+### Observation 894: Two walkers fanned out in one folder overwrote each other's helper file
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 31, the FULL check of [RD-LEFT-1108] — two Sonnet walkers at once on the same two builds
+**Skill:** New skill candidate: fanned-out walk brief (the bug-check order §4's fan-out paragraphs, `docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walkers' brief — file names
+
+**Issue:** The brief gave each walker its own ports and picture folder but named only the main script for each. Both walkers made a shared helper library and chose the same name; walker B's overwrote walker A's mid-run, and A lost time finding out why its script broke, then renamed its own.
+**Suggested improvement:** In the fan-out brief, give each walker a file prefix of its own for EVERY file it writes (scripts, helpers, scratch output), not only its folder and ports — e.g. `<job>-a-*` and `<job>-b-*` — and say "write nothing outside your prefix and folder".
+**Principle:** Parallel workers in one working folder need disjoint names for everything they may create, not just for the outputs the coordinator expects; isolate by name or by folder for all writes.
