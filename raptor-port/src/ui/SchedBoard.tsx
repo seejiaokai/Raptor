@@ -21,7 +21,7 @@ import { versionFaceWarn } from '../engine/validate'
 import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus, useEscClose, locate, pressedByKeys } from './sheetfocus'
+import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -95,7 +95,8 @@ export function SchedBoard() {
      the pick opens (Insights, the Sort all box) gives them back to ⋯ when it closes; the keys leaving it close it, as the
      week's ⋯ does (ScheduleInsightsMenu.tsx). Opened or picked by the mouse or a finger, nothing of this happens. */
   const moreKeys = useRef(false)
-  const moreItems = () => [...(moreRef.current?.querySelectorAll<HTMLButtonElement>('.sb-moremenu button') || [])].filter(b => !b.disabled)
+  /* the one list-maker the board's other menus use (sheetfocus.ts menuItems — the tidy-up filed with [BOARD-KEYS-LOOKS]) */
+  const moreItems = () => { const m = moreRef.current?.querySelector<HTMLElement>('.sb-moremenu'); return m ? menuItems(m) : [] }
   const moreBack = () => moreRef.current?.querySelector<HTMLElement>('#sbMore')?.focus({ preventScroll: true })
   useLayoutEffect(() => {
     if (!moreOpen || !moreKeys.current) return
