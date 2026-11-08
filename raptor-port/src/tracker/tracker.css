@@ -410,6 +410,10 @@ svg.perf .avail{filter:none;stroke-width:3.4}
 svg.perf .found{filter:none;stroke-width:3.2}
 svg.perf .ball:hover{filter:none}
 svg.perf .edgehit{pointer-events:none}
+/* the chart sliding under a marking window takes no press (Pop.jsx, D1790): every part of it, each event's invisible
+   press circle too, which carries its own pointer-events="all" — the chart's own "none" alone never reached it, and a
+   double-click's second click opened a window from mid-slide (chat 10, 8 Nov 26) */
+#board.is-sliding,#board.is-sliding *{pointer-events:none !important}
 #flowSvg.arrange{touch-action:none}
 /* no glow (owner D881, 15 Oct 26): the gold ring alone */
 /* The searched ball. Turquoise rather than the accent blue (--accent), which

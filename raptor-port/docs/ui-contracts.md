@@ -10269,7 +10269,10 @@ screen:
   ↓ ↑ move the ring and the light together; Enter still walks forward; a
   click on a row rings that event, keeps the typed text, shuts the list and
   drops focus (the phone's keyboard goes away); clicking back into the box
-  brings it back; Escape and ✕ clear it. The list is always in the DOM
+  brings it back; Escape and ✕ clear it. Where Find is the strip (a phone, or
+  any width up to 1050, tracker.css's own break), ✕ also puts the strip away,
+  as Escape does, and a pick from the list puts it away too (D1791, 8 Nov 26);
+  from the keyboard the keys then go back to 🔍. The list is always in the DOM
   (`.on` shows it). Pins: `tracker.test.tsx`, the smoke suite (desktop and
   phone, hit-tested).
 - **`+ Add` in the Students card offers the squadron roster (9 Sep 26).** The
@@ -10410,7 +10413,7 @@ screen:
     (D132). ↶ ↷ keep the chart's view. A lull period's × asks first;
     Copy to… has a Select all row.
   - **Courses and the session.** A deleted course waits in ⇅ Reorder courses
-    under "Deleted courses" with ↺ Restore — back under its own id, students and
+    under "Deleted courses" with Restore (its drawn Reset arrow since D1792) — back under its own id, students and
     marks intact (D128). Logout — the top bar's or the phone drawer's, ONE
     function (`src/ui/logout.ts`) — asks Save them / Discard them / Stay when
     chart edits are unsaved, over the Tracker tab, before the session ends (D129). Each
@@ -12443,8 +12446,33 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
+  **Built 8 Nov 26 (chat 9, `claude/pr-tracker-787259`):** the rule is `src/tracker/app/popPlace.js`, pure: the window
+  opens 4px under the event where it fits whole; else the chart slides the event up until its top is 22px under the
+  chart box's top (the tabs' foot on a phone, the Tracker bar's on a desktop), as drawn (232px for the drawing's ACG-09),
+  the chart's end allowed to stop it short while the window still fits; else, at the chart's end, nothing moves and the
+  window stands above the event (whole where it fits, else between the chart box's top and the event, scrolling inside);
+  a screen too short for it anywhere (a phone on its side) slides the event as high as it may and the window scrolls
+  inside — his ruling, D1861, as built. `components/Pop.jsx` measures, stops a finger's glide (D989), slides with the chart's own smooth scroll and
+  keeps the window unseen until the chart rests (at the target, 150ms still, or 1s), then opens it under the event; less
+  motion asked for, the chart jumps. The chart stays where it slid after Close and after a grade. Pins:
+  `src/tracker/trk-round-seen.test.ts`, the smoke suite's phone checks.
+  **While it slides the chart takes no press and no key but Escape and Tab** (the fresh Opus read's F1, F2): `#board`
+  wears `is-sliding`, and `tracker.css` turns presses off for it and everything inside it — the chart's own
+  `pointer-events:none` alone never reached each event's invisible press circle, drawn with `pointer-events="all"`, so a
+  double-click's second click still opened a window from mid-slide, another event's or the same one's in the wrong
+  place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
+- **D1860** — the Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅
+  marks ("Restore in Reorder courses brings it back…"), every other word kept; to build with the Tracker's next batch
+  ([TRK-POP-ASKED]).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
+  **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
+  own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words
+  "Clear the search and close Find"; pressed from the keyboard, the keys go back to 🔍; wider, ✕ clears and keeps the
+  box focused, its words "Clear the search", as before. A pick from the list puts the strip away. Pins: the smoke suite.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
   hidden warning's ↺; the ✕ stays typed. *(b) built 8 Nov 26 (chat 7):* `ui/glyphs.ts` `EXPAND_INNER` / `COMPACT_INNER`
   (`ui/icons.tsx` `ExpandIcon` / `CompactIcon`) on `ui/InputsCal.tsx`'s `ib-expand`, 16px; pin `ui/inputsmonth.test.tsx`.
+  **(c) built 8 Nov 26 (chat 9):** the Tracker's Restore — ⇅ Reorder courses' and syllabi's deleted lists — wears the
+  Tracker's own drawn Reset arrow (`components/Glyphs.jsx` `ResetGlyph`, the same paths as the app's `RESET_INNER`), at
+  the drawing's 15px; no shared icon set touched. Pins: `trk-round-seen.test.ts`, the smoke suite.
 - **D1793** — the phone's board day bar takes the page of blocks and the ticket before Templates and OIL Earn.
