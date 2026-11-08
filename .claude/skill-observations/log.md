@@ -4195,3 +4195,16 @@ met again 8 Nov 26: chat 7's D1840 follow-up — a new check of the Type column'
 **Issue:** Each line the chat added to its handoff block carried a time ("~11:20", "~12:30", "~12:45"), written from a feel for how long the work had taken. After the sixth compaction the clock read 11:16 and the commits showed the lines had run ahead by 20 minutes to two hours. A later chat that orders events by these times, or a person told "merged at 12:45", is misled; the error grew with each compaction, since a compacted chat has no sense of the time that passed.
 **Suggested improvement:** In the handoff step (and wherever a record takes a time): read the clock (`date`) or the commit's own time before writing a time, never estimate; where a time cannot be read, write none.
 **Principle:** An agent has no reliable sense of elapsed time, least of all across a context reset; any time written into a record is read from a clock or left out.
+### Observation 879: Red first for a style-only fix, in the same lock turn as the green run
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 7, the D1843 build (a line round the desktop Inputs list, "No document" inside its column) — a two-rule stylesheet change, its browser test to be shown failing on the old look first. Numbered past the open branches' 878.
+**Skill:** test-driven-development
+**Type:** open-source
+**Phase/Area:** RED — watching the test fail, when the build is shared and taken in turns
+
+**Issue:** the fix was already written and committed when the test was, and every browser run rebuilds the app under one lock shared with other chats; showing it red meant either two lock turns (revert, run, wait, restore, run) or skipping the red. One script taken under one lock turn did both: it reverse-applied ONLY the fix commit's own diff to the stylesheet (`git diff <fix>~1 <fix> -- <file>`, then `git apply -R` from the repo root — so whatever a merge of main brought into the same file stays), checked the file really changed, ran the new test (want failure), restored the file from a copy under a trap on exit and signals, then ran the new test with its neighbours (want pass), then the pictures on the build the green run left.
+**Suggested improvement:** in the skill's RED section, a short case: "code written before the test" — reverse-apply the fix's own diff to get the old behaviour, assert the file changed, run red, restore under a trap, run green, in one run of the shared resource."
+**Principle:** when the fix came first, recreate the old behaviour by taking back only the fix's own diff — never by checking out an older file — prove the take-back happened, and restore it by a trap, so the red run costs no second turn of a shared resource and cannot leave the old code behind.
+
