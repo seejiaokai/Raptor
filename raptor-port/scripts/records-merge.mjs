@@ -319,7 +319,9 @@ function settleInsertions(o, b, t, labels) {
     }
     const atEnd = i >= L.length - 1
     if (part.b.length === 0) {
-      const why = whyNotJoin(part.o, part.t, ragged && atEnd)
+      /* the line just above the region, as written so far (null at the start of the file) */
+      const above = out.length ? out[out.length - 1].split('\n').filter((l, j, a) => j < a.length - 1 || l).pop() ?? '' : null
+      const why = whyNotJoin(part.o, part.t, ragged && atEnd, above)
       if (!why) { out.push(...joinInsertions(part.o, part.t)); settled.push(`text both sides inserted at one place (${part.o.length} line(s) of this branch's, then ${part.t.length} of main's)`); continue }
       left.push(`a place where both sides inserted text — ${why}; which goes where is yours to judge; near: ${([...part.o, ...part.t].find(l => l.trim()) || '').trim().slice(0, 80)}`)
       out.push(renderConflict(part.o.join(''), '', part.t.join(''), labels)); continue
@@ -336,8 +338,13 @@ function settleInsertions(o, b, t, labels) {
    table's separator line, each is whole table rows or holds no table row at all, and neither ended without a line end.
    Anything else is left exactly as git marked it — fewer settled, never silently wrong. */
 const blank = l => !l.trim(), tableRow = l => /^\|/.test(l), tableRule = l => /^\|[\s:|-]*-[\s:|-]*$/.test(l.trim())
-function whyNotJoin(o, t, ragged) {
+function whyNotJoin(o, t, ragged, above) {
   if (ragged) return 'a side\'s text does not end at a line end'
+  /* ROUND 4 (Astra r3-1, Opus r3-2): only at an entry boundary — the line just above blank, a table row or the start of
+     the file — and neither side opening with an indented line; otherwise the region continues the entry above it (lines
+     appended to an existing item's body, a sub-bullet, a note's follow-up line) and joining would fuse or move them */
+  if (above !== null && !blank(above) && !tableRow(above)) return 'it is not at an entry\'s boundary (the line above it belongs to an entry), so the lines may continue that entry'
+  for (const s of [o, t]) { const first = s.find(l => !blank(l)); if (first && /^\s/.test(first)) return 'a side opens with an indented line, which continues the entry above it' }
   const words = new Set(o.filter(l => !blank(l)).map(l => l.trim()))
   if (t.some(l => !blank(l) && words.has(l.trim()))) return 'both hold a same line, so they may be two versions of one entry'
   if ([...o, ...t].some(l => /^#/.test(l))) return 'a heading is among them'

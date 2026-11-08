@@ -476,6 +476,27 @@ test('backlog: one new item added on both sides with different lines is never fu
   const before = c.read('OUTSTANDING.md')
   leftAsGitMarked(c, 'OUTSTANDING.md', c.run(), before)
 }))
+/* ROUND 4 (Astra r3-1, Opus r3-2, 9 Nov 26): the guard looked only inside the clash, so lines both sides appended to an
+   EXISTING item's body were joined into one item, and an indented line continuing the entry above the clash was moved
+   under the other side's new entry. A region is settled only at an entry boundary — the line just above it blank, a
+   table row or the start of the file — and neither side opening with an indented line */
+for (const f of ['OUTSTANDING.md', 'OUTSTANDING-ARCHIVE.md']) {
+  test(`${f}: lines both sides appended to an existing item's body are left, never joined (round 4 — Astra r3-1)`, withRepo({ [f]: '# Items\n\n### [A] a\n\nbody a\n\n### [X] the item\n\nFirst line.\n' }, c => {
+    c.sides(x => x.edit(f, t => t + 'Built and live 8 Nov 26 (PR 700).\n'), x => x.edit(f, t => t + 'Dropped on his word, 8 Nov 26.\n'))
+    const before = c.read(f)
+    leftAsGitMarked(c, f, c.run(), before)
+  }))
+}
+test('backlog: an indented sub-bullet main added under an entry never moves under this branch\'s new entry (round 4 — Opus r3-2)', withRepo({ 'OUTSTANDING.md': '# Outstanding\n\n## Priority list\n\n- **Night 1:** [A] first\n- **Night 2:** [B] second\n\n## Items\n' }, c => {
+  c.sides(x => x.edit('OUTSTANDING.md', t => t.replace('[B] second\n', '[B] second\n- **Night 3:** [C] ours\n')), x => x.edit('OUTSTANDING.md', t => t.replace('[B] second\n', '[B] second\n  - (b) of night 2: [D] theirs\n')))
+  const before = c.read('OUTSTANDING.md')
+  leftAsGitMarked(c, 'OUTSTANDING.md', c.run(), before)
+}))
+test('file map: an indented line continuing a note never moves under the other side\'s new note (round 4 — Opus r3-2)', withRepo({ 'raptor-port/docs/file-map.md': '# File map\n\n8 Nov 26 on `claude/old` (a note).\n\n| file | what |\n|---|---|\n' }, c => {
+  c.sides(x => x.edit('raptor-port/docs/file-map.md', t => t.replace('(a note).\n', '(a note).\n8 Nov 26 on `claude/ours` (x).\n')), x => x.edit('raptor-port/docs/file-map.md', t => t.replace('(a note).\n', '(a note).\n  and its follow-up (y).\n')))
+  const before = c.read('raptor-port/docs/file-map.md')
+  leftAsGitMarked(c, 'raptor-port/docs/file-map.md', c.run(), before)
+}))
 test('backlog archive: a last line both items share is never moved from one to the other (Opus re-read 2)', withRepo({ 'OUTSTANDING-ARCHIVE.md': '# Archive\n\n### [A] a\n\nbody a\n' }, c => {
   c.sides(x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [X] x\n\nbody x\nStatus: closed, live.\n'), x => x.edit('OUTSTANDING-ARCHIVE.md', t => t + '\n### [Y] y\n\nbody y\nStatus: closed, live.\n'))
   const before = c.read('OUTSTANDING-ARCHIVE.md')
