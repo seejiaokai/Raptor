@@ -11,6 +11,9 @@ blind to the other and to the walk. **Read-only: change no file, commit nothing.
   — five source files (`src/ui/SchedBoard.tsx`, `src/ui/sheetfocus.ts`, `src/ui/scheduler/09-week-responsive.css`,
   `10-board-history.css`, `13-board-rows-responsive.css`, `18-oil-board.css`) and two tests (`src/ui/boardlayout-css.test.ts`,
   `e2e/board-layout.spec.ts`). Read each changed file around its change, and its callers and readers, in the live tree.
+  Added since (8 Nov 26, before either read began): `src/ui/edgescroll.ts` (`shownTop` — a drag's edge band on the
+  sideways board begins under its pinned bar), its two callers `src/ui/drag.ts` and `src/ui/rowdrag.ts`, and
+  `e2e/boardside.spec.ts` (the sideways drag tests, now on the board's own scroller).
 - **The rules that govern it** (Codex loads none of these by itself — open each): `.claude/rules/decisions/scheduler.md`
   and `.claude/rules/decisions/design.md` (the rulings, one line each; a full row: `grep -h '^| D1780 |' .claude/decisions-full/*.md`),
   `.claude/rules/raptor-executor.md`, `.claude/rules/ui-design.md`, `raptor-port/CLAUDE.md`, and in
