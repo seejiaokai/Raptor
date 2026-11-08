@@ -1,0 +1,197 @@
+{
+ "821": {
+  "after": {
+   "cols": [
+    110,
+    140,
+    90,
+    124,
+    93,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -9
+   },
+   "brokenWords": [
+    "post-detachment",
+    "clean-up"
+   ],
+   "everyKind": {
+    "kinds": 26,
+    "worst": []
+   }
+  },
+  "before": {
+   "cols": [
+    110,
+    140,
+    90,
+    160,
+    57,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -45
+   },
+   "brokenWords": [
+    "Medical",
+    "Medically",
+    "approved,",
+    "post-detachment",
+    "Dental",
+    "Overseas",
+    "Overseas",
+    "exercise,",
+    "Medical",
+    "Medical",
+    "Medical",
+    "grounded",
+    "Hangar",
+    "clean-up"
+   ]
+  }
+ },
+ "900": {
+  "after": {
+   "cols": [
+    110,
+    140,
+    90,
+    124,
+    172,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -9
+   },
+   "brokenWords": [],
+   "everyKind": {
+    "kinds": 26,
+    "worst": []
+   }
+  },
+  "before": {
+   "cols": [
+    110,
+    140,
+    90,
+    160,
+    136,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -45
+   },
+   "brokenWords": [
+    "post-detachment",
+    "clean-up"
+   ]
+  }
+ },
+ "1024": {
+  "after": {
+   "cols": [
+    110,
+    140,
+    90,
+    124,
+    296,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -9
+   },
+   "brokenWords": [],
+   "everyKind": {
+    "kinds": 26,
+    "worst": []
+   }
+  },
+  "before": {
+   "cols": [
+    110,
+    140,
+    90,
+    160,
+    260,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -45
+   },
+   "brokenWords": [
+    "post-detachment"
+   ]
+  }
+ },
+ "1099": {
+  "after": {
+   "cols": [
+    110,
+    140,
+    90,
+    124,
+    371,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -9
+   },
+   "brokenWords": [],
+   "everyKind": {
+    "kinds": 26,
+    "worst": []
+   }
+  },
+  "before": {
+   "cols": [
+    110,
+    140,
+    90,
+    160,
+    335,
+    104,
+    96
+   ],
+   "rows": 19,
+   "pills": {
+    "n": 19,
+    "maxLines": 1,
+    "maxSpill": -45
+   },
+   "brokenWords": []
+  }
+ },
+ "phone": {
+  "tableShown": false
+ },
+ "errors": []
+}

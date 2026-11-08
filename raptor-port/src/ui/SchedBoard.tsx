@@ -22,7 +22,7 @@ import { isDraftVer, draftVerLabel } from '../engine/drafts'
 import { withDaySnap, withVersionFlags, refreshWaveReports } from './html'
 import { glyphSvg, EYE_INNER } from './glyphs'
 import { holdingPlace } from './dayswap'
-import { useSheetFocus, useEscClose, locate, pressedByKeys } from './sheetfocus'
+import { useSheetFocus, useEscClose, locate, pressedByKeys, menuItems } from './sheetfocus'
 import { wireBoardEscape } from './boardescape'
 import { reconcileMissionRoleOffer } from './mission-role-offer'
 import { notify } from '../state/store'
@@ -96,7 +96,8 @@ export function SchedBoard() {
      the pick opens (Insights, the Sort all box) gives them back to ⋯ when it closes; the keys leaving it close it, as the
      week's ⋯ does (ScheduleInsightsMenu.tsx). Opened or picked by the mouse or a finger, nothing of this happens. */
   const moreKeys = useRef(false)
-  const moreItems = () => [...(moreRef.current?.querySelectorAll<HTMLButtonElement>('.sb-moremenu button') || [])].filter(b => !b.disabled)
+  /* the one list-maker the board's other menus use (sheetfocus.ts menuItems — the tidy-up filed with [BOARD-KEYS-LOOKS]) */
+  const moreItems = () => { const m = moreRef.current?.querySelector<HTMLElement>('.sb-moremenu'); return m ? menuItems(m) : [] }
   const moreBack = () => moreRef.current?.querySelector<HTMLElement>('#sbMore')?.focus({ preventScroll: true })
   useLayoutEffect(() => {
     if (!moreOpen || !moreKeys.current) return
@@ -351,10 +352,20 @@ export function SchedBoard() {
   useEffect(() => {
     const root = rootRef.current, top = topRef.current
     if (!root || !top || typeof ResizeObserver === 'undefined') return
-    const publish = () => root.style.setProperty('--sb-topH', top.offsetHeight + 'px')
+    /* …and, for a phone on its side (owner D1780, 8 Nov 26 — 10-board-history.css), the head's height: the rows above the
+       bar's own line (Calendar, the title, the day strip, search), which scroll away there while the bar stays, less
+       the bar's 10px top padding, so the line keeps its padding once stuck; and the board's own height, which the crew
+       column under the bar is sized from. The bar's line is the highlighter chips and the action buttons — a hidden one
+       has no offsetParent and is left out. */
+    const publish = () => {
+      root.style.setProperty('--sb-topH', top.offsetHeight + 'px')
+      const line = [...top.querySelectorAll<HTMLElement>(':scope > .sb-hl, :scope > .sb-actions')].filter(el => el.offsetParent)
+      root.style.setProperty('--sb-headH', (line.length ? Math.max(0, Math.min(...line.map(el => el.offsetTop)) - 10) : 0) + 'px')
+      root.style.setProperty('--sb-boardH', root.clientHeight + 'px')
+    }
     publish()
     const ro = new ResizeObserver(publish)
-    ro.observe(top)
+    ro.observe(top); ro.observe(root)
     return () => ro.disconnect()
   }, [])
 

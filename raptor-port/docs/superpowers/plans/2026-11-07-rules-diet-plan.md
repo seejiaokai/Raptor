@@ -626,7 +626,7 @@ rulings D1794 and D1795, the page as first drafted:
 - **One slip of the trial's own:** the old route's first step writes the new full row into the area file's table (the
   command then moves it), not into the full-text file; written there first, the command refused, as it should.
 
-### Step 5a — the IT flow guide as a page (8 Nov 26, chat 15, `claude/rules-diet-step-5a-it-guide-8b561f`)
+### Step 5a — the IT flow guide as a page (8 Nov 26, chat 15, `claude/rules-diet-step-5a-it-guide-8b561f` — merged 8 Nov 26 on his "merge live", pull request 690)
 
 `.claude/rules/decisions/it-flow-guide.md` is a page, "The IT flow guide — how it works now" (`<!-- shape: page -->`, its
 `paths:` unchanged): its 9 rulings (D403, D410–D417) stated by topic — what the guide is, what it covers, when it is

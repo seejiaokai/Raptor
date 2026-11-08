@@ -244,7 +244,9 @@ if (typeof document !== 'undefined') {
   document.addEventListener('pointerdown', () => { keyOn = null }, true)
   document.addEventListener('mousedown', () => { keyOn = null }, true)
 }
-const menuItems = (box: HTMLElement) =>
+/** a menu's pickable items, in order: its buttons, less a disabled or hidden one — the board's string-drawn menus and
+ *  its ⋯ menu alike (SchedBoard.tsx moreItems, [BOARD-KEYS-LOOKS]'s tidy-up) */
+export const menuItems = (box: HTMLElement) =>
   [...box.querySelectorAll<HTMLElement>('button')].filter(b => !(b as HTMLButtonElement).disabled && !b.closest('[hidden]'))
 /** `box` hangs from `anchor`: the arrows move through its buttons, and opened by the keys the keys land on its first pick */
 export function menuKeys(box: HTMLElement, anchor: HTMLElement): void {

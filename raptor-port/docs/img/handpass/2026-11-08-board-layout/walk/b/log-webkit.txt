@@ -1,0 +1,166 @@
+--- b1 (webkit)
+PASS B-look — sideways query true in webkit
+rest {"sc":0,"max":4977,"topT":0,"topB":144,"actB":133,"actT":103,"titleB":37,"sideT":144,"sideB":495,"ih":402,"vvh":450,"pageSc":0}
+PASS B1 rest — top foot 144, title foot 37
+slow 150 {"sc":140,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+slow 250 {"sc":378,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+PASS B1 scrolled — scrollTop 378, bar foot 40 (actions) / 51 (top), title foot -56
+leak {"bg":"rgb(20, 24, 29)","n":200,"bad":[],"nbad":0}
+PASS B1 leak — 200 points, 0 not the bar, bg rgb(20, 24, 29)
+flick x2 {"sc":978,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+PASS B1 flick — bar foot during 40, settled 40, scrollTop 978
+foot {"sc":4977,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+PASS B1 leak foot — 0 of 200 points not the bar
+back up {"sc":3153,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+PASS B1 return — scrollTop 0, title foot 37, top foot 144; page errs 0
+--- b2 (webkit)
+before {"sc":1003,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":402,"pageSc":0} after {"sc":1194,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":202,"pageSc":0} box {"t":169,"b":193,"tag":"INPUT"}
+PASS B2 box above keys — focused INPUT foot 193, keys top 202
+PASS B2 bar stays — top foot 51 -> 51
+PASS B2 list above keys — list above the keys 151px (his figure 151 at 402 tall)
+B2 scrollTop before/after 1003 1194 side before/after {"t":51,"b":402,"l":554,"r":874} {"t":51,"b":402,"l":554,"r":874}
+high: before {"sc":1301,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":402,"pageSc":0} after {"sc":1301,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":202,"pageSc":0} 90 90
+PASS B2 high box nothing moves — scrollTop 1301 -> 1301, box top 90 -> 90
+--- b3 (webkit)
+rest side 144 495 ih 402
+PASS B3 under bar — column top 51 (bar foot 51), column foot 402 (screen 402)
+inner scrollers ["sb-warn|sbWarn|844/132","sb-roster|sbRoster|898/211"]
+FAIL B3 inner list scrolls by itself — inner scrollTop 0 -> 0, board scrollTop 294 -> 414 (WebKit: programmatic scroll only, a finger is not drivable)
+--- b9 (webkit)
+scrolled {"sc":392,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+PASS B9 chip — title "Tuesday Jul 14 · scheduler board", scrollTop 0, top foot 144
+NOT WALKED B9 next arrow: not found
+PASS B9 clean — scrollTop 0, top foot 144; page errs 0
+--- b5 (webkit)
+history x bar foot 51 window {"t":96,"b":378,"l":478,"r":858}
+PASS B5 history placed — window top 96, bar foot 51 (scrolled 448); bar still the bar: true
+PASS B5 history closes by x — window after: null; board scrollTop 448 -> 448
+history esc bar foot 51 window {"t":96,"b":378,"l":478,"r":858}
+FAIL B5 history closes by esc — window after: {"t":96,"b":378,"l":478,"r":858}; board scrollTop 448 -> 448
+history outside bar foot 51 window {"t":96,"b":378,"l":478,"r":858}
+FAIL B5 history closes by outside — window after: {"t":96,"b":378,"l":478,"r":858}; board scrollTop 448 -> 448
+ALL AVAIL chips on the day 1
+avail x bar foot 51 window {"t":96,"b":378,"l":646,"r":858}
+PASS B5 avail placed — window top 96, bar foot 51 (scrolled 400); bar still the bar: true
+PASS B5 avail closes by x — window after: null; board scrollTop 400 -> 355
+ALL AVAIL chips on the day 1
+avail esc bar foot 51 window {"t":96,"b":378,"l":646,"r":858}
+FAIL B5 avail closes by esc — window after: {"t":96,"b":378,"l":646,"r":858}; board scrollTop 400 -> 355
+ALL AVAIL chips on the day 1
+avail outside bar foot 51 window {"t":96,"b":378,"l":646,"r":858}
+FAIL B5 avail closes by outside — window after: {"t":96,"b":378,"l":646,"r":858}; board scrollTop 400 -> 355
+insights x bar foot 51 window {"t":32,"b":370,"l":137,"r":737}
+FAIL B5 insights placed — window top 32, bar foot 51 (scrolled 448); bar still the bar: false
+PASS B5 insights closes by x — window after: null; board scrollTop 448 -> 448
+insights esc bar foot 51 window {"t":32,"b":370,"l":137,"r":737}
+PASS B5 insights closes by esc — window after: null; board scrollTop 448 -> 448
+insights outside bar foot 51 window {"t":32,"b":370,"l":137,"r":737}
+PASS B5 insights closes by outside — window after: null; board scrollTop 448 -> 448
+--- p1 (webkit)
+scrolled {"sc":448,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":450,"pageSc":0}
+after hist click + 0 scrollTop 448
+after hist click + 100 scrollTop 448
+after hist click + 300 scrollTop 448
+after hist click + 800 scrollTop 448
+Mon 13 chips 0
+Tue 14 chips 0
+Wed 15 chips 0
+Thu 16 chips 0
+Fri 17 chips 0
+Sat 18 chips 0
+Sun 19 chips 0
+placeholders 
+--- p2 (webkit)
+{"p":"<span class=\"puck allavail sm\" tabindex=\"0\" data-person=\"allavail\" title=\"ALL AVAIL\"><span class=\"nm\">ALL AVAIL</span></span>","r":[567,308.375,74,15],"tg":["SPAN.seat[a:0.1.0] 542","SPAN.seat[a:0.2.0] 605","SPAN.seat[a:0.3.0] 668","SPAN.seat[a:0.4.0] 725","SPAN.seat[a:0.5.0] 782","SPAN.seat[a:0.6.0] 833","SPAN.seat[a:0.7.0] 890","DIV.sb-slot[] 1376","SPAN.seat[0.0.0.0.p] 1382","DIV.sb-slot[] 1376","SPAN.seat[0.0.0.0.w] 1382","DIV.sb-slot[] 1485"]}
+empty target null
+drag result {"ok":true,"from":{"x":604,"y":222.875},"to":{"x":299.25,"y":207.5}}
+chips 1 ALL AVAIL on rows 1
+--- b4 (webkit)
+at rest {"t":147,"b":183,"l":0,"r":874,"barB":184,"barT":0,"btn":["Retry@154-178"],"hit":"Retry"} {"sc":0,"max":5017,"topT":0,"topB":184,"actB":133,"actT":103,"titleB":37,"sideT":184,"sideB":495,"ih":402,"vvh":402,"pageSc":0}
+PASS B4 band shows — band {"t":147,"b":183,"l":0,"r":874,"barB":184,"barT":0,"btn":["Retry@154-178"],"hit":"Retry"}
+scrolled {"t":54,"b":90,"l":0,"r":874,"barB":91,"barT":-93,"btn":["Retry@61-85"],"hit":"Retry"} {"sc":392,"max":5017,"topT":-93,"topB":91,"actB":40,"actT":10,"titleB":-56,"sideT":91,"sideB":402,"ih":402,"vvh":402,"pageSc":0}
+PASS B4 band stays with the bar — band 54-90, bar foot 91, Retry hit by Retry
+PASS B4 band far down — band {"t":54,"b":90,"l":0,"r":874,"barB":91,"barT":-93,"btn":["Retry@61-85"],"hit":"Retry"}
+--- b6 (webkit)
+NOT WALKED B6 in WebKit: a finger drag needs touch events, which the test WebKit does not drive; walked in Chromium
+--- b7 (webkit)
+PASS B7 warning 0 lands below the bar — scrollTop 4900 -> 671, bar foot 51, marked: ["puck sm warn hard boxred wfoc @219-234","puck sm warn hard boxred wfoc @711-726","puck sm warn hard boxred wfoc @1365-1380","puck sm warn hard boxred wfoc @2701-2716"]
+PASS B7 warning 1 lands below the bar — scrollTop 4900 -> 1272, bar foot 51, marked: ["puck sm warn hard boxred wfoc @-667--652","puck sm warn hard boxred wfoc @219-234","puck sm warn hard boxred wfoc @2175-2190","puck sm warn hard boxred wfoc @3284-3299"]
+typed remark now 1B: BFM-6 u1
+FAIL B7 undo brings the row back below the bar — scrollTop 3000 -> 3000, box -1579--1555 bar foot 51, remark now "1B: BFM-6"
+redo {"sc":3000,"max":4977,"topT":-93,"topB":51,"actB":40,"actT":10,"titleB":-56,"sideT":51,"sideB":402,"ih":402,"vvh":402,"pageSc":0}
+--- p6 (webkit)
+sideways remark scroll positions before undo 3000/0/0/3000/0 after 2799/0/0/2799/0 value now 1B: BFM-6
+sideways time scroll positions before undo 3000/0/0/3000/0 after 2799/0/0/2799/0 value now 12:40
+upright remark scroll positions before undo 0/0/0/0/0 after 0/0/0/0/0 value now 1B: BFM-6
+upright time scroll positions before undo 0/0/0/0/0 after 0/0/0/0/0 value now 12:40
+desktop remark scroll positions before undo 0/3000/0/0/0 after 0/3000/0/0/0 value now 1B: BFM-6
+desktop time scroll positions before undo 0/3000/0/0/0 after 0/3000/0/0/0 value now 12:40
+--- p7 (webkit)
+sideways after x: buttons 
+sideways lines 7 -> 8 scroll before undo 3000/0 after 3000/0 first line on screen at -1643--1534 bar foot 51
+desktop after x: buttons 
+desktop lines 7 -> 8 scroll before undo 0/3000 after 0/3000 first line on screen at -1902--1839 bar foot 144
+--- b8 (webkit)
+gold-dot boxes ["ntx txed|15:50","tm|15:50"]
+dot box {"t":214,"b":238,"l":238,"r":286} bubble {"t":131,"b":206,"l":238,"r":345,"pos":"fixed"}
+PASS B8 bubble shows on a tap — bubble after a tap on the dot {"t":131,"b":206,"l":238,"r":345,"pos":"fixed"} (the tap path is for width up to 820; here it is NOT on)
+PASS B8 slow 60px — dot {"t":154,"b":178,"l":238,"r":286} (moved -60), bubble closed
+PASS B8 flick 120px — dot {"t":34,"b":58,"l":238,"r":286} (moved -180), bubble closed
+--- b10 (webkit)
+list scrolled: sb-main -> 700
+phone upright 402x874 rest {"q":false,"scrollers":[".sb-main 6622/799",".ros-body 908/418"],"topPos":"static","topFoot":75,"titleFoot":31,"wide":false} scrolled {"q":false,"scrollers":[".sb-main 6622/799",".ros-body 908/418"],"topPos":"static","topFoot":75,"titleFoot":31,"wide":false}
+PASS B10 phone upright 402x874 — sideways query false, the head stays (title foot 31, top foot 75 -> 75), the box that scrolls: .sb-main 6622/799,.ros-body 908/418
+--- b11 (webkit)
+list scrolled: sb-boardwrap -> 700
+desktop mouse 874x402 rest {"q":false,"scrollers":[".sb-boardwrap 5235/258","#sbRoster 898/153"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false} scrolled {"q":false,"scrollers":[".sb-boardwrap 5235/258","#sbRoster 898/153"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false}
+PASS B11 desktop mouse 874x402 — sideways query false, the head stays (title foot 37, top foot 144 -> 144), the box that scrolls: .sb-boardwrap 5235/258,#sbRoster 898/153
+--- b12 (webkit)
+list scrolled: sb-boardwrap -> 700
+tablet on its side 1180x820 rest {"q":false,"scrollers":[".sb-boardwrap 3702/676","#sbWarn 844/256","#sbRoster 898/412"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false} scrolled {"q":false,"scrollers":[".sb-boardwrap 3702/676","#sbWarn 844/256","#sbRoster 898/412"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false}
+PASS B12 tablet on its side 1180x820 — sideways query false, the head stays (title foot 37, top foot 144 -> 144), the box that scrolls: .sb-boardwrap 3702/676,#sbWarn 844/256,#sbRoster 898/412
+--- b11b (webkit)
+list scrolled: sb-boardwrap -> 700
+desktop mouse 1000x400 rest {"q":false,"scrollers":[".sb-boardwrap 4519/256","#sbRoster 898/152"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false} scrolled {"q":false,"scrollers":[".sb-boardwrap 4519/256","#sbRoster 898/152"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":false}
+PASS B11B desktop mouse 1000x400 — sideways query false, the head stays (title foot 37, top foot 144 -> 144), the box that scrolls: .sb-boardwrap 4519/256,#sbRoster 898/152
+--- p8 (webkit)
+items ["sbMoreInsights|sb-moreitem||Insights","sbMoreSort|sb-moreitem||Sort all","sbMoreWide|sb-moreitem||Desktop layout"]
+--- b13 (webkit)
+portrait, desktop layout on {"q":false,"scrollers":[".sb-boardwrap 4020/799","#sbWarn 827/303","#sbRoster 898/495"],"topPos":"sticky","topFoot":75,"titleFoot":31,"wide":true}
+turned sideways {"q":true,"scrollers":[".sb-boardwrap 3790/258","#sbRoster 898/153"],"topPos":"static","topFoot":144,"titleFoot":37,"wide":true}
+block check {"topPos":"static","boardOy":"hidden","wideAnywhere":["schedboard sb-wide"]}
+PASS B13 the desktop layout keeps its own scroller (head not scrolled away) — sideways query true, sb-wide classes ["schedboard sb-wide"], top position static, title foot after a scroll 37, scrollers .sb-boardwrap 3790/258,#sbRoster 898/153
+switched back {"q":false,"scrollers":[".sb-main 6622/799",".ros-body 908/418"],"topPos":"static","topFoot":75,"titleFoot":31,"wide":false}
+PASS B13 back to normal sideways — wide after switching back false; sideways again {"q":true,"scrollers":["#schedBoard 5379/402","#sbRoster 898/211"],"topPos":"sticky","topFoot":144,"titleFoot":37,"wide":false} {"sc":0,"max":4977,"topT":0,"topB":144,"actB":133,"actT":103,"titleB":37,"sideT":144,"sideB":495,"ih":402,"vvh":402,"pageSc":0}
+--- extra (webkit)
+rest top foot 144 scrollTop 0 title foot 37
+scrolled 1 top foot 51 scrollTop 392 title foot -56
+PASS X sideways first time — rest foot 144, scrolled foot 51
+upright {"q":false,"scrollers":[".sb-main 6622/799",".ros-body 908/418"],"topPos":"static","topFoot":75,"titleFoot":31,"wide":false}
+turned back top foot 51 scrollTop 392 title foot -56
+scrolled after turn top foot 51 scrollTop 392 title foot -56
+PASS X turned and back — scrolled foot 51 (after turn: rest foot 51)
+reopened top foot 144 scrollTop 0 title foot 37
+reopened scrolled top foot 51 scrollTop 392 title foot -56
+PASS X closed and reopened — rest foot 144, scrolled foot 51, page errs 0
+--- round (webkit)
+PASS R type a time, keys up — typed value 13:10, box foot 193 (keys top 202)
+PASS R type a remark, keys up — value "1B: BFM-6 walk", box foot 193
+  [after typing] scrollTop 1252 top foot 51 bar clean true errs 0
+PASS R + Line — lines 8 -> 9
+  [after + Line] scrollTop 1038 top foot 51 bar clean true errs 0
+PASS R x a line — lines 9 -> 8
+  [after x] scrollTop 1215 top foot 51 bar clean true errs 0
+PASS R Undo — lines 8 -> 9
+PASS R Redo — lines 9 -> 8
+  [after redo] scrollTop 1215 top foot 51 bar clean true errs 0
+the board bar has no ⋯ sideways: false
+  [+ Wave open] scrollTop 947 top foot 51 bar clean true errs 0
+templates opened; windows sbSide|sb-side|DIV|2 51,402,554,874 ; |wavemenu|DIV|3 45,168,301,591 bar clean true
+history opened; windows sbSide|sb-side|DIV|2 51,402,554,874 ; |chgwin front|DIV|3 96,378,478,858 bar clean true
+insights opened; windows |sb-top|DIV|2 -93,51,0,874 ; sbSide|sb-side|DIV|3 51,402,554,874 bar clean false
+PASS R Done closes the board — board hidden true, page errs 0 
+--- p3 (webkit)
+sideways at rest bar foot 144 chg window {"t":152,"b":392,"l":478,"r":858} after Escape {"t":152,"b":392,"l":478,"r":858}
+desktop-mouse-874x402 at rest bar foot 144 chg window {"t":152,"b":392,"l":478,"r":858} after Escape {"t":152,"b":392,"l":478,"r":858}
+tablet-1180x820 at rest bar foot 144 chg window {"t":152,"b":712,"l":784,"r":1164} after Escape {"t":152,"b":712,"l":784,"r":1164}

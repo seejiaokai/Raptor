@@ -1,0 +1,264 @@
+{
+ "out": [
+  {
+   "step": "1536 + Input: the room",
+   "expected": "room made, 110/140/90",
+   "saw": {
+    "winLeft": 1090,
+    "listRight": 1078,
+    "pad": "446px",
+    "room": true,
+    "placed": false,
+    "scrollbar": 0,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     346,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1536-1-room.png"
+  },
+  {
+   "step": "1536 dragged away",
+   "expected": "the room given back: the closed widths, the list full width",
+   "saw": {
+    "winLeft": 260,
+    "listRight": 1504,
+    "pad": "20px",
+    "room": true,
+    "placed": true,
+    "scrollbar": 0,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     597,
+     104,
+     96
+    ],
+    "closed": [
+     250,
+     150,
+     115,
+     160,
+     597,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1536-2-dragged.png"
+  },
+  {
+   "step": "1536 a row reopened where he left it",
+   "expected": "no room, the closed widths",
+   "saw": {
+    "winLeft": 260,
+    "listRight": 1504,
+    "pad": "20px",
+    "room": true,
+    "placed": true,
+    "scrollbar": 0,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     597,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1536-3-reopened.png"
+  },
+  {
+   "step": "1340 + Input: the room",
+   "expected": "room made, 110/140/90",
+   "saw": {
+    "winLeft": 894,
+    "listRight": 882,
+    "pad": "446px",
+    "room": true,
+    "placed": false,
+    "scrollbar": 0,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     150,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1340-1-room.png"
+  },
+  {
+   "step": "1340 dragged away",
+   "expected": "the room given back: the closed widths, the list full width",
+   "saw": {
+    "winLeft": 64,
+    "listRight": 1308,
+    "pad": "20px",
+    "room": true,
+    "placed": true,
+    "scrollbar": 0,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     401,
+     104,
+     96
+    ],
+    "closed": [
+     250,
+     150,
+     115,
+     160,
+     401,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1340-2-dragged.png"
+  },
+  {
+   "step": "1340 a row reopened where he left it",
+   "expected": "no room, the closed widths",
+   "saw": {
+    "winLeft": 64,
+    "listRight": 1308,
+    "pad": "20px",
+    "room": true,
+    "placed": true,
+    "scrollbar": 0,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     401,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1340-3-reopened.png"
+  },
+  {
+   "step": "1536 a click on the bar, no move",
+   "expected": "the room stays",
+   "saw": {
+    "winLeft": 1090,
+    "listRight": 1078,
+    "pad": "446px",
+    "room": true,
+    "placed": false,
+    "scrollbar": 0,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     346,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1536-4-barclick.png"
+  },
+  {
+   "step": "1536 window opened from the Calendar, then List",
+   "expected": "the window still open; the room made only if it stands where it opens",
+   "saw": {
+    "winLeft": null,
+    "listRight": 1504,
+    "pad": "20px",
+    "room": false,
+    "placed": false,
+    "scrollbar": 0,
+    "cols": [
+     250,
+     150,
+     115,
+     160,
+     597,
+     104,
+     96
+    ],
+    "win": false,
+    "hasAdd": false
+   },
+   "pass": true,
+   "pic": "host-1536-6-fromcal-list.png"
+  },
+  {
+   "step": "1536 Medical: + Medical makes its own room as before",
+   "expected": "med-room on",
+   "saw": {
+    "medRoom": true
+   },
+   "pass": true,
+   "pic": "host-1536-7-medical.png"
+  },
+  {
+   "step": "1536 with the scroll bar shown",
+   "expected": "Remarks still usable (about 15px less)",
+   "saw": {
+    "winLeft": 1075,
+    "listRight": 1063,
+    "pad": "446px",
+    "room": true,
+    "placed": false,
+    "scrollbar": 15,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     331,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1536-8-scrollbar.png"
+  },
+  {
+   "step": "1340 with the scroll bar shown",
+   "expected": "Remarks still usable (about 15px less)",
+   "saw": {
+    "winLeft": 879,
+    "listRight": 867,
+    "pad": "446px",
+    "room": true,
+    "placed": false,
+    "scrollbar": 15,
+    "cols": [
+     110,
+     140,
+     90,
+     160,
+     135,
+     104,
+     96
+    ]
+   },
+   "pass": true,
+   "pic": "host-1340-8-scrollbar.png"
+  }
+ ],
+ "errors": []
+}
