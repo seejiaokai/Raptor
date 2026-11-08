@@ -2413,3 +2413,4 @@ inside a ternary — a named `inner` would read straighter; the switch's keys pu
 `locate` / `keysBack` do; `inert.dataset.oilsay || ''` would toast an empty note if the attribute were missing; `.mbtn.oilblank.on`
 and `.mbtn.oilbtn.on` in `18-oil-board.css` have no user. **Place:** low — with the next OIL Earn change or the tidiness audit
 before the database step (D486).
+
