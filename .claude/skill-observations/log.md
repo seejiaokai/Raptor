@@ -4326,6 +4326,31 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** When a change alters which element scrolls, the sizing step greps every test and every scroll-reading function for the old scroller's selector and runs those specs before the first push; the walker's brief adds "hold a carried thing just inside each new edge of the visible area" (under a pinned bar, above a pinned foot).
 **Principle:** A layout change that moves the scroller invalidates every caller that measured the old one; find them by the selector, not by the files the change touched.
 
+### Observation 886: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 19 building [SHELL-SCRIPT-GUARD] (D811) — measuring the shell before writing the guard (numbered past 882, the highest on another open branch; renumbered 883 → 886 on bringing main in, where another chat's 883 had landed)
+**Skill:** New skill candidate: writing a command-refusing hook (the conditions of notes 270, 285, 598, 626)
+**Type:** open-source
+**Phase/Area:** measuring the harness; proving a hook live
+
+**Issue:** A filed note's advice for commands that wait on input was "give every script `< /dev/null`". Measured before building: right for `cat` and `node`, but Python on Windows takes `/dev/null` for a keyboard (`isatty()` True) and opens its interactive prompt, which loops until stopped — the measuring itself hung two minutes on it. Second: the hook settings file is read when a chat starts, so a hook added mid-chat does not run in that chat; a "proof live" there shows nothing.
+**Suggested improvement:** In the hook-writing conditions: measure each remedy a note proposes, per tool and interpreter, before a refusal message repeats it; prove a new hook by running the settings file's exact command on a refused and an allowed input (stdin JSON), and leave the in-chat proof to the next new chat, saying so in the handoff.
+**Principle:** A workaround recorded once is a claim like any other; measure the cure as well as the fault, in each environment the advice will reach.
+
+### Observation 885: A walk script kept in a scratch folder cannot import the project's browser library
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 19, a one-off picture for a question to him ([DESIGN-CHECK-GOLD-DOT]); numbered past 884, held by another open branch
+**Skill:** New skill candidate: walk scripts (`raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** writing a throwaway browser script outside the repo
+
+**Issue:** A one-off picture script written to the session's scratch folder failed at once with "module not found" for the browser library, though it was run from the project folder: an ES module resolves its imports from the script file's own folder, never from the folder it is run in. Two more runs were lost after it to guessed selectors (a button found by a word in its title matched a hidden tab first) before the script was steered by the real element read from the running page.
+**Suggested improvement:** In the walk-scripts guide: a script kept outside the project loads the library with `createRequire(process.cwd() + '/package.json')('playwright')`, run from the project folder; and find a control's selector by reading the running page first (its id at the point pressed), never by a word that may also sit in a hidden control's title.
+**Principle:** Module lookup follows the file, not the shell; and a selector guessed from a word is checked against the live page before a script relies on it.
 ### Observation 887: A pull request that clashes with main starts no checks, and nothing says so
 
 **Status:** OPEN
