@@ -4414,6 +4414,26 @@ await openTracker(pg); await pg.waitForSelector('#flowSvg .ball'); await pg.wait
         JSON.stringify({ keysOnACG09: k, windows: e1.pops, title: e1.pop && e1.pop.title, windowTopUnderTheEventsFoot: r1(gap), opened: say(e0, e1) }));
     }
 
+    /* 4. a double-click on ACG-09 — its second click about 80ms after the first, while the chart slides: the same, one
+       window, for ACG-09, just under it (the host's pin, 8 Nov 26 — the fresh Opus read's F1). Two faults seen: before
+       the chart took no press while it slid, the second click landed on the moving chart and opened whatever event was
+       then under the pointer (CFT-01, its window 89px from it); since, it lands on the box behind the chart, which the
+       Tracker reads as a press outside the window and closes it — no window at all. */
+    await closeIt(); await landByFind();
+    const d0 = await now();
+    const onBall = !!d0.ball && await dp.evaluate(p => { const e = document.elementFromPoint(p.x, p.y); const g = e && e.closest('.ball'); return !!g && g.dataset.id === 'ACG-09'; }, d0.ball || { x: 0, y: 0 });
+    if (onBall) {
+      await dp.mouse.move(d0.ball.x, d0.ball.y);
+      await dp.mouse.down({ clickCount: 1 }); await dp.mouse.up({ clickCount: 1 });
+      await dp.waitForTimeout(80);
+      await dp.mouse.down({ clickCount: 2 }); await dp.mouse.up({ clickCount: 2 });
+    }
+    const ds = onBall && await shownNow(); await still(); const d1 = await now();
+    const dgap = d1.pop && d1.foot != null ? d1.pop.t - d1.foot : null;
+    ok('desktop: a double-click on ACG-09, its second click about 80ms on while the chart slides, leaves one marking window, for ACG-09, just under it (D1790)',
+      onBall && ds && d1.st > d0.st && d1.pops === 1 && !!d1.pop && d1.pop.title.startsWith('ACG-09') && dgap != null && dgap >= 2 && dgap <= 6,
+      JSON.stringify({ pressedTheEvent: onBall, windows: d1.pops, title: d1.pop && d1.pop.title, windowTopUnderTheEventsFoot: r1(dgap), opened: say(d0, d1) }));
+
     /* 5. a grade pressed from the keyboard (→ to DCO, Enter) hands the keys back the same way: the chart stays. Last on
        this page — it marks ACG-09 */
     await closeIt(); await landByFind(); const keyed5 = await tabToChart();
