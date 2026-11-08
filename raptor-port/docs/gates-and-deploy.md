@@ -247,6 +247,10 @@ so the handoff every chat reads holds only the current baseline. The CURRENT cou
   there is no `merge=union` in `.gitattributes`:** "keep both sides" doubles a ledger row or a skill note edited in place,
   lets a clash in those files end as a clean merge that no step looks at, and GitHub's own merge ignores attributes
   anyway — a pull request still shows a clash, and runs no checks, until `main` is brought in on the PC.
+  **Trap (seen 9 Nov 26, chat 33):** before the merge is committed, `backlog-archive.mjs --rulings --merge` and
+  `docsize` measure against the branch's OLD fork point, so they list "hand work" that is only `main`'s own newer records
+  (an item it archived, a ruling it filed). Check with `DOCSGUARD_BASE=$(git rev-parse origin/main) node scripts/docsize.mjs`
+  (from `raptor-port/`); green there, commit the merge and run plain `docsize` again — it then measures from `main`.
 
 ## How the gates lie — moved whole from `HANDOFF.md` §Gate status (24 Sep 26)
 
