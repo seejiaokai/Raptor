@@ -2024,7 +2024,7 @@ export function Matrix() {
       /* THE BROWSER SHOWS IT (his D1870): the copy is measured and mounted wherever the row is, and told where the page's
          scroll turns it on (`placeY`); the browser shows it in the very frame it moves the page past that point */
       if (pinSda) {
-        placeY(mirrorRef.current?.parentElement ?? null, r.top, topEdge)
+        placeY(mirrorRef.current?.parentElement ?? null, r.top, topEdge, force)
         // eslint-disable-next-line react-doctor/no-impure-state-updater -- the same measure as `pinUp` below, only when the copy is not yet mounted or is forced
         setStuck(prev => {
           if (prev && !force) return prev
@@ -4759,10 +4759,18 @@ function barFoot() { return document.querySelector('.topbar')?.getBoundingClient
    and whether it is up now. `up` gives it taps and its shadow; while it is not up it is also `inert` — out of the focus
    order and of what a screen reader reads, since nobody can see it (the build's loose end 1). Written on the copy's own
    box only, never an ancestor (a custom property on the grid's ancestor restyles the whole grid), and only when it
-   changes. */
-function placeY(box: HTMLElement | null, rowTop: number, topEdge: number) {
+   changes.
+   A FORCED RE-MEASURE ALWAYS HANDS THE BROWSER A NEW POINT (the walk of 8 Nov 26, walker L's scenario 22): a desktop
+   window made narrower, or a phone turned sideways and back, and the copy showed about 37px early, over the buttons above
+   the grid, until a reload. The browser works the point out against the page as it stands when the value changes —
+   during a resize, a page still settling — and the re-measure 300 ms later, once it had settled, wrote the same value
+   again, which the browser takes as no change. So a forced re-measure (a resize, a turn, a height change) that finds
+   the value unchanged writes it a hundredth of a pixel off, and the next one writes it back: the browser works it out
+   afresh each time, and nobody can see a hundredth of a pixel. A scroll's own re-measure writes only a change. */
+function placeY(box: HTMLElement | null, rowTop: number, topEdge: number, force = false) {
   if (!box) return
-  const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+  const v = Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10)
+  const s = String(force && box.dataset.s === String(v) ? Math.round((v + 0.01) * 100) / 100 : v)
   if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
   const up = rowTop < topEdge
   box.classList.toggle('up', up)

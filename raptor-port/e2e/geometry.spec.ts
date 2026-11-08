@@ -4643,6 +4643,31 @@ test.describe('the frozen callsign column', () => {
     })
   }
 
+  /* THE WALK OF 8 NOV 26 (walker L's scenario 22, the Leave War's test of the same name): after the screen changes width
+     — a desktop window narrowed, a phone turned sideways and back — the copy must still wait for the heading to reach
+     the bar, never show early because the browser worked out its point while the page was settling. */
+  for (const size of [PHONE, { width: 1536, height: 864 }]) {
+    test(`after the screen changes width the Quals pinned heading shows only once the heading reaches the bar, ${size.width} wide (D1870)`, async ({ page }) => {
+      await page.setViewportSize(size)
+      await login(page)
+      await go(page, 'quals')
+      await page.waitForSelector('#qtbl td.qname')
+      const check = async (what: string) => {
+        await page.waitForTimeout(900)   // the page's own re-measure: two frames, then once more 300 ms later
+        const meet = await page.evaluate(() => { window.scrollTo(0, 0); const head = document.querySelector('#qtbl thead')!.getBoundingClientRect(); return Math.round(head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom) })
+        await page.evaluate(y => window.scrollTo(0, y), meet - 30)
+        await expectPinned(page, 'qsticky-head', false, `${what}: 30px before the heading meets the bar, no copy over the buttons`)
+        await page.evaluate(y => window.scrollTo(0, y), meet + 5)
+        await expectPinned(page, 'qsticky-head', true, `${what}: past it, the heading is pinned`)
+      }
+      const phone = size.width < 600
+      await page.setViewportSize(phone ? { width: size.height, height: size.width } : { width: 420, height: size.height })
+      await check(phone ? 'turned sideways' : 'made 420 wide')
+      await page.setViewportSize(size)
+      await check(phone ? 'turned back' : 'made wide again')
+    })
+  }
+
   /* REDUCE MOTION, AND A PAGE TOO SHORT TO SCROLL (his D1870 — Astra's scenarios 1 and 9), as the Leave War's: the copy
      stays on its step for a reader who asked for less motion, and with no scroll timeline (one man found) it stays hidden */
   for (const size of [PHONE, { width: 1536, height: 864 }]) {

@@ -2062,6 +2062,26 @@ test('the pinned dates row keeps its place when it is re-measured while the top 
   await expect.poll(gap, { message: 'the copy stands at the bar’s foot, not where the bar was carried' }).toBe(0)
   await expectPinned(page, 'sticky-head', true, 'and it is shown')
 })
+/* THE WALK OF 8 NOV 26 (chat 16's walker L, scenario 22 — [LW-PIN-LAST-FRAME]): a desktop window made narrower, or a phone
+   turned sideways and back, and the copy then showed about 37px before the real row reached the bar — over the month
+   buttons, two date rows on screen — until a reload. The browser had worked out where the page's scroll turns the copy
+   on while the page was still settling, and the page's later re-measure wrote the same value again, so it never worked
+   it out afresh. */
+test('after the screen changes width the pinned dates row shows only once the row reaches the bar (D1870)', async ({ page }) => {
+  const check = async (what: string) => {
+    await page.waitForTimeout(900)   // the page's own re-measure: two frames, then once more 300 ms later
+    const meet = await page.evaluate(() => { window.scrollTo(0, 0); const head = document.querySelector('#page-leavewar .mx-wrap tbody.mxhead')!.getBoundingClientRect(); return Math.round(head.top - document.querySelector('.topbar')!.getBoundingClientRect().bottom) })
+    await page.evaluate(y => window.scrollTo(0, y), meet - 30)
+    await expectPinned(page, 'sticky-head', false, `${what}: 30px before the row meets the bar, no copy over the month buttons`)
+    await page.evaluate(y => window.scrollTo(0, y), meet + 5)
+    await expectPinned(page, 'sticky-head', true, `${what}: past it, the row is pinned`)
+  }
+  const size = page.viewportSize()!
+  await page.setViewportSize(isPhone() ? { width: size.height, height: size.width } : { width: 420, height: size.height })
+  await check(isPhone() ? 'turned sideways' : 'made 420 wide')
+  await page.setViewportSize(size)
+  await check(isPhone() ? 'turned back' : 'made wide again')
+})
 test('while the fingers pinch part-way down, the pinned dates row shows by the pinch’s rule (D1870, D1287)', async ({ page }) => {
   test.skip(!isPhone(), 'a two-finger pinch')
   const y = await page.evaluate(() => {

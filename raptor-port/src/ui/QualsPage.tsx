@@ -820,7 +820,7 @@ export function QualsPage() {
          turns it on (`placeQ`); nothing flips here, so nothing is flushed */
       if (pinSda) {
         const box = document.querySelector<HTMLElement>('#page-quals .qfixed')
-        if (box) placeQ(box, r.top, topEdge)
+        if (box) placeQ(box, r.top, topEdge, force)
         now = false
       } else if (r.top >= topEdge) { unstick(now); return }
       /* measured here, in the listener, never inside a state updater; a plain scroll of a row already pinned measures nothing */
@@ -1159,9 +1159,17 @@ function barFoot() { return document.querySelector('.topbar')?.getBoundingClient
 /* — the pinned copy's two helpers (D1870), kept outside the component: they read only the page, so no effect depends on them — */
 /* where the page's scroll turns the copy on (`--lwy-s`) and whether it is up — `up` gives it taps and its shadow, and a
    copy not up is `inert`, out of the focus order and of what a screen reader reads (D1870's loose end 1); on the copy's
-   own box only, and only when it changes */
-function placeQ(box: HTMLElement, rowTop: number, topEdge: number) {
-  const s = String(Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10))
+   own box only, and only when it changes.
+   A FORCED RE-MEASURE ALWAYS HANDS THE BROWSER A NEW POINT (the walk of 8 Nov 26, walker L's scenario 22): a desktop
+   window made narrower, or a phone turned sideways and back, and the copy showed about 37px early, over the buttons above
+   the grid, until a reload. The browser works the point out against the page as it stands when the value changes —
+   during a resize, a page still settling — and the re-measure 300 ms later, once it had settled, wrote the same value
+   again, which the browser takes as no change. So a forced re-measure (a resize, a turn, a height change) that finds
+   the value unchanged writes it a hundredth of a pixel off, and the next one writes it back: the browser works it out
+   afresh each time, and nobody can see a hundredth of a pixel. A scroll's own re-measure writes only a change. */
+function placeQ(box: HTMLElement, rowTop: number, topEdge: number, force = false) {
+  const v = Math.max(0, Math.round((window.scrollY + rowTop - topEdge) * 10) / 10)
+  const s = String(force && box.dataset.s === String(v) ? Math.round((v + 0.01) * 100) / 100 : v)
   if (box.dataset.s !== s) { box.dataset.s = s; box.style.setProperty('--lwy-s', s) }
   const up = rowTop < topEdge
   box.classList.toggle('up', up)

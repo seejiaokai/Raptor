@@ -36,7 +36,9 @@ where the browser runs `animation-timeline: scroll(root block)` and `animation-r
 Quals' own place routine) shows it; the scroll listener sets `.up` (taps, shadow) and `inert` a frame late; while two
 fingers pinch the copy leaves the step and is shown by the pinch's own rule; a ResizeObserver on `document.body` and
 `.topbar` re-places it when a height changes without a scroll; where the browser cannot, the old way runs (the copy
-mounted and taken out by the page's code).
+mounted and taken out by the page's code). **Added after his find (8 Nov 26, his iPhone recording):** the copy's place
+is taken from the top bar's HEIGHT (`barFoot`), never from where the bar stands, so a bounce at the page's foot that
+carries the bar off screen for a moment cannot leave the copy up where the bar stood.
 
 ## The finder wording (use it)
 
@@ -55,14 +57,21 @@ the horizontal scroll that the copy must follow; reduce motion; a page too short
 the timeline and the partial case (one feature without the other); the effect's set-up and tear-down (listeners,
 observers, timers, the class and attributes left on the copy when the page or the tab changes).
 
-## A question for you, beside the findings
+## A question for you, beside the findings — answered by him since (D1871), kept for a cheaper way only
 
 The frame measure (the host's, 4× slow CPU, an emulated phone 402 wide, a scripted finger): on the Leave War the page's
 own animation frames skip one screen refresh in about 27% of frames after the change against 5% before (Quals 11%
 against 4%), while long pauses got fewer (the worst 283 → 67 ms) and the page's own work dropped by about a third.
 **From the code, why might the page's frames halve while its work drops, and can the always-present copy cost less
 without bringing back the blink?** Name what you would measure to tell. This is a question, not a finding, unless you
-can name the line that does it.
+can name the line that does it. **He has since answered the question of speed (D1871, 8 Nov 26): on his iPhone
+the build does not feel slow, so it is kept as built.** Answer it only as "a cheaper way, if there is one"; it blocks nothing.
+
+## One more check — the fresh Opus reader only (D138)
+
+D1871's short line in `.claude/rules/decisions/leave-war.md` against its full row (`grep -h '^| D1871 |'
+.claude/decisions-full/*.md`): does the short line say what the row means, nothing added and nothing lost? Answer yes,
+or the exact words that differ.
 
 ## What is NOT a finding (D56)
 

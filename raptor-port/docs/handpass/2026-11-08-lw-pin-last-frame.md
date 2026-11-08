@@ -27,19 +27,19 @@ The thing: the pinned copy of the heading (the Leave War's dates row, `[data-tes
 
 | Place it is drawn | SHOWS exactly when the real row is under the top bar | USABLE (a tap on the pinned copy) | PAINTED on the same pixels |
 |---|---|---|---|
-| Leave War grid, desktop 1536 | | | |
-| Leave War grid, phone 402 | | | |
-| Leave War's other tabs (Approvals, Balances, OIL, My Leave) — must not show | | | |
-| Leave War, a window over the grid (day, person, keypad, menus) | | | |
-| Leave War, mid-pinch (phone) | | | |
-| Quals, desktop 1536 | | | |
-| Quals, phone 402 | | | |
-| Quals, a page too short to scroll | | | |
-| Quals, mid-pinch (phone) | | | |
-| Both, with reduce motion on | | | |
-| Both, a browser without the scroll timeline (the old way) | | | |
-| Both, with the warning bands under the top bar | | | |
-| Both, member and admin | | | |
+| Leave War grid, desktop 1536 | has it — L1, L10, L12, L-plain, L-foot; after a narrowing it showed 37px early (L22), fixed red-first | has it — a date tapped on the copy opens that day (L13) | has it — the copy one height with the row (L-height), no seam (L11) |
+| Leave War grid, phone 402 | has it — L1, L10, L12, L-foot (Chromium and WebKit), L18 | has it — L13 | has it — L-height, L11 at scale 2 and 3, WebKit too |
+| Leave War's other tabs (Approvals, Balances, OIL, My Leave) — must not show | must not, because the copy belongs to the grid — none shown on any tab, scrolled (L19) | must not — nothing to tap (L19) | must not — nothing painted (L19) |
+| Leave War, a window over the grid (day, person, keypad, menus) | has it — the copy stays pinned under each window, and the window over it (L20) | must not, because the window is in front — a tap lands on the window (L20) | has it — the window drawn over the copy, no copy over the window (L20) |
+| Leave War, mid-pinch (phone) | has it — shown by the pinch's rule, every step (L4/L5, seven cases) | must not, because the fingers are down — nothing taps mid-pinch | has it — the copy stretched with the grid (L4/L5 mid pictures) |
+| Quals, desktop 1536 | has it — Q1, Q10, Q14, Q22b, Q-plain, Q-foot | has it — a heading tapped on the copy sorts as the real one (Q14) | has it — columns over columns (Q12, Q17); the box 1px taller than the heading (Q-height), the same on `main` |
+| Quals, phone 402 | has it — Q1, Q4, Q10, Q22a, Q-foot (Chromium and WebKit), Q18 | has it — Q14 | has it — Q11 at scale 2 and 3, Q12; Q-height as above |
+| Quals, a page too short to scroll | must not, because nothing passes under the bar — hidden, one man found (Q9) | must not — hidden (Q9) | must not — nothing painted (Q9) |
+| Quals, mid-pinch (phone) | has it — Q4, Q5 (pinch out, in, across the point, cancelled) | must not — fingers down | has it — the mid-pinch pictures (Q4, Q5) |
+| Both, with reduce motion on | has it — hidden at rest, shown once pinned (L1, Q1) | has it — L1, Q1 tapped pinned | has it — L1, Q1 pictures |
+| Both, a browser without the scroll timeline (the old way) | has it — the old way, full and partial stand-ins (L24, Q24) | has it — L24, Q24 | has it — L24, Q24 pictures; a stand-in, not a real other browser |
+| Both, with the warning bands under the top bar | has it — the copy at the band's foot, from the first frame (L6, Q6, `?savefail`) | has it — L6, Q6 | has it — L6, Q6 pictures |
+| Both, member and admin | has it — L23, Q23, and the plain-user rounds as both (L-plain, Q-plain) | has it — a member sorts Quals from the copy (Q23) | has it — L23, Q23 pictures |
 
 Rows by kind of change (§6): **a component with a second home on a page** — the copy kept in the page: every test's
 query scoped to its container (done in the build: the six older tests). **A new floating surface** — the copy is a fixed
