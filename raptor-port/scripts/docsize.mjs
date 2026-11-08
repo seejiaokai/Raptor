@@ -961,15 +961,29 @@ function designCheckerCopies() {
    heading is read by the one shared definition (docsize-rulings.mjs observationHeads — outside code blocks, Astra 5 of the
    code read): the merge step (records-merge.mjs) cuts entries and finds the next number the same way. */
 const SKILL_LOG = '.claude/skill-observations/log.md', SKILL_ARCHIVE = '.claude/skill-observations/archive'
+/* Astra 4 of the code read (8 Nov 26): each number is counted across the log AND every archive file together — inside one
+   archive, across two, and after both notes of a doubling left the log — and fails when it heads more entries now than it
+   did at the base. The base is the gate's own BASE (findBase: the pull request's base commit in CI, DOCSGUARD_BASE;
+   locally the fork point from origin/main, else main), read from git the way the backlog's checks read theirs, so a
+   doubling already filed before this check is the store as it stands (D56) and only a new one fails. */
 function skillLogNumbers() {
-  const log = readNow(SKILL_LOG)
-  if (!log) return []
-  const fails = [], count = new Map()
-  for (const { n } of RL.observationHeads(log)) count.set(n, (count.get(n) || 0) + 1)
-  for (const [n, k] of count) if (k > 1) fails.push(`${SKILL_LOG}: Observation ${n} heads ${k} entries — each note has its own number; renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
-  const archived = [...new Set([...(tryGit('ls-files', '--', SKILL_ARCHIVE) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', SKILL_ARCHIVE) || '').split('\n')])].filter(a => a.endsWith('.md'))
-  for (const a of archived) for (const { n } of RL.observationHeads(readNow(a))) {
-    if (count.has(n)) fails.push(`${SKILL_LOG}: Observation ${n} heads an entry in the log and one in ${a} — an archived number is never used again; renumber the live one past the highest on every branch`)
+  const filesNow = () => [SKILL_LOG, ...[...new Set([...(tryGit('ls-files', '--', SKILL_ARCHIVE) || '').split('\n'), ...(tryGit('ls-files', '--others', '--exclude-standard', '--', SKILL_ARCHIVE) || '').split('\n')])].filter(a => a.endsWith('.md') && existsSync(join(REPO, a))).sort()]
+  const filesBase = () => BASE ? [SKILL_LOG, ...(tryGit('ls-tree', '-r', '--name-only', BASE, '--', SKILL_ARCHIVE) || '').split('\n').filter(a => a.endsWith('.md'))] : []
+  /* number → { total, by: Map(file → count) } */
+  const tallyOf = (files, read) => {
+    const t = new Map()
+    for (const f of files) for (const { n } of RL.observationHeads(read(f))) {
+      if (!t.has(n)) t.set(n, { total: 0, by: new Map() })
+      const e = t.get(n); e.total++; e.by.set(f, (e.by.get(f) || 0) + 1)
+    }
+    return t
+  }
+  const now = tallyOf(filesNow(), readNow), base = tallyOf(filesBase(), readBase)
+  const fails = []
+  for (const [n, e] of now) {
+    if (e.total < 2 || e.total <= (base.get(n)?.total || 0)) continue
+    const where = [...e.by].map(([f, k]) => `${k} in ${f}`).join(', ')
+    fails.push(`${SKILL_LOG}: Observation ${n} heads ${e.total} entries — ${where}; each note has its own number, and an archived number is never used again: renumber the one your branch added past the highest on every branch (the skill notes' short form, step 1), and its citations in your own lines`)
   }
   return fails
 }
