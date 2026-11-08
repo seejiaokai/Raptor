@@ -8061,3 +8061,27 @@ to draw it is his: options to draw for him — letters a step smaller and closer
 entry as the "+1" corner when either code has three letters (narrowing D1167). Not built.
 **Overtaken 6 Nov 26 by D1727 (pull request 650):** two whole days stand side by side with their codes reading bottom to top, whole — checked by the pictures round on 8 Nov 26 (`raptor-port/docs/img/handpass/2026-11-07-pictures-round/q-twobox-ph-today-x4.png`); nothing to ask him. To archive.
 
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-MORE-BELOW-CUE]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-MORE-BELOW-CUE] The day panel says when more is below (his D1295, 24 Oct 26)
+**Seen (his iPhone, pull request 569):** Mon 30 Nov's panel reads "AWAY · 19" and shows nine; nothing says the rest are below. **To do:** a cue at the panel's foot, a down arrow and the count wholly out of view, gone at the list's end; a tap scrolls down; its look drawn for him first (D853); design lesson 46 names the other windows. **Place:** with the M3 follow-ups on `claude/lw-m3-placing-leave`.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1788) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "More names below" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
+
+*Moved here 2026-11-08 by backlog-archive.mjs ([LW-FROZEN-BAR-GAP]). Forward facts: `raptor-port/docs/ui-contracts.md`.*
+
+### [LW-FROZEN-BAR-GAP] For one frame no dates header shows while the page scrolls it away (23 Sep 26)
+
+Found by the frame-by-frame pictures of the frozen-bar fix (evidence sheet §11, frame 1 of
+`fixed-desktop-frozen-bar-first-frames.png`). When the page scrolls the real dates header up under the
+top bar, the frozen copy arrives ONE painted frame later — it is React state set in the window's scroll
+handler, so it renders on the next frame — and that frame has no header at all. **Pre-existing, and not
+the owner's "scrolling rapidly horizontally"** (that jump is fixed): a blink, not a slide. Fix direction:
+in `Matrix.tsx`'s stuck effect, commit the change of stuck-or-not synchronously (`flushSync`) — ONLY when
+it changes, never per scroll event, because the whole grid re-renders on it — or keep the bar mounted and
+show/hide it outside React; either needs a speed check (the re-render would land inside the scroll
+frame). The Quals page's frozen header has the same shape. **Place:** the next Leave War polish item,
+after `[HUMAN-RETEST]`; show him first — he may not see a one-frame blink at all.
+**Drawn 7–8 Nov 26; answered 8 Nov 26, "All as recommended" (D1789) — to build by `raptor-port/docs/superpowers/plans/2026-11-08-pictures-round-build.md`** — the pictures round's page https://claude.ai/artifact/WYuwD2itLGrt7e2Y1bLReJ, question "The dates row blink" (pictures, notes and script: `raptor-port/docs/img/handpass/2026-11-07-pictures-round/`).
+
