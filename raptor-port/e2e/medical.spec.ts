@@ -321,6 +321,38 @@ test.describe('the medical view renders and fits', () => {
       await expect(card, 'gone after six seconds').not.toHaveClass(/innew/)
     })
 
+  /* A WINDOW HE HAS MOVED TAKES ITS ROOM WITH IT ([MED-ROOM-DRAGGED] — both code reads of 8 Nov 26, Astra's and the fresh
+     Opus reader's): a window keeps the place it was dragged to for the session (winorder.ts), so sections that kept their
+     room at the right for it were squeezed AND covered. As the Inputs list's (D1787, 06-inputs.css): the room is made only
+     while the window stands where it opens, at 1536, at his PC's page (1229 × 600, 1536 at 125%) and at the D1300 test's 1500. */
+  for (const vp of [{ width: 1536, height: 864 }, { width: 1229, height: 600 }, DESK])
+    test(`[MED-ROOM-DRAGGED] the window of "+ Medical" dragged away gives the cards their room back, and reopened where he left it, makes none — ${vp.width}×${vp.height}`, async ({ page }) => {
+      await page.setViewportSize(vp)
+      await login(page)
+      await go(page, 'inputs')
+      await page.click('#inMedBtn')
+      await page.waitForSelector('#medView .medcard')
+      const pad = () => page.evaluate(() => getComputedStyle(document.querySelector('.med-body')!).paddingRight)
+      const closed = await pad()
+      await page.click('#medNew')
+      const win = page.locator('[data-testid="win-inputedit"]')
+      await expect(win).toBeVisible()
+      expect(await pad(), 'at its own place the room is made').toBe(`${Math.min(430, vp.width - 24) + 16}px`)
+      const t = (await win.locator('.win-ttl').boundingBox())!
+      await page.mouse.move(t.x + 10, t.y + t.height / 2); await page.mouse.down()
+      await page.mouse.move(t.x - 800, t.y + 150, { steps: 10 }); await page.mouse.up()
+      await expect.poll(pad, 'dragged away: the full width back').toBe(closed)
+      await page.keyboard.press('Escape')
+      await expect(win).toHaveCount(0)
+      /* a card opens the document viewer; its "Edit input" opens the input's window (Astra's read of this test) */
+      await page.locator('.medcard').first().click()
+      await page.locator('#docViewEdit').click()
+      await expect(win).toBeVisible()
+      expect(await pad(), 'reopened where he left it: no room').toBe(closed)
+      /* the window still stands where he left it, so this is the case the room must not be made for */
+      expect(await win.evaluate(e => e.hasAttribute('data-placed')), 'the window kept its place').toBe(true)
+    })
+
   /* "+ MEDICAL" (owner D963, D965 — 17 Oct 26): a filled button at the right end of the "as of" row, the row's 36 tall, a
      finger's 44 on a phone; it opens the Inputs tab's own window set to a medical kind — by mouse and by keyboard (Tab to
      it, Enter opens, Escape closes and the keyboard is back on the button) — for an admin and for a member. */

@@ -1467,7 +1467,9 @@ on the Thursday after the seed week) - `state/demostamps.test.ts`.
 `src/ui/InputsSettings.tsx` - THE INPUTS CALENDAR'S SETTINGS, the window behind its gear (`win-inputsset`, `pops.ts
 INPSET`; D639, D628, D654 / D655): "Calendar…", the late cut-off for inputs, and the members' switch - a draft until
 Save, each change one Undo step. `src/ui/CutFields.tsx` - the cut-off's fields and worked date, ONE body for this window
-and the SANS calendar's (`SansSettings.tsx`). The Logic page's rows for the two cut-offs and the switch carry a button
+and the SANS calendar's (`SansSettings.tsx`); `src/ui/cutdraft.ts` - the draft those fields hold while he types and its two
+readings (`cutDraftOf`, `cutRuleOf`), moved out of `CutFields.tsx` on 8 Nov 26 so that file exports only components
+(React Doctor, [RD-LEFT-1108]). The Logic page's rows for the two cut-offs and the switch carry a button
 that opens the same window — the value itself since D928 (`logic-html.ts` `kind:'door'`, `LogicPage.tsx` `[data-lgopen]`); nothing of a cut-off is typed on
 the Logic page. `inputssettings.test.tsx`, `logicdoors.test.tsx`.
 WHO PLACED IT is shown, by the one line of `placedline.ts`, on the List, at the editor's foot and in the document
