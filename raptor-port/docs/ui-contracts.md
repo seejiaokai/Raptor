@@ -12402,7 +12402,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   1340 wide, Name, Start and End narrowing first; narrower, the window covers it as today. The older narrow-list fault
   (below about 950 wide Remarks squeezed to a letter) is fixed by the same narrowing.
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
-- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME].
+- **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after. **D1850:** it went live with one painted frame left on a quick scroll (the browser's own frame); that last frame is a job of its own, [LW-PIN-LAST-FRAME]. **D1870:** he sees that frame on his iPhone and the trial cures it — the pinned row shown by the browser itself, on the page's own scroll (a scroll-driven fade where the row meets the top bar; today's way where a browser lacks it), is built for keeps, with the full check.
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
 - **D1792** — four typed marks drawn: the published-version 👁, the Inputs calendar's ⤢ / ⤡, the Tracker's ↺ Restore and a
