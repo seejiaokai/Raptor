@@ -12439,7 +12439,7 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   the chart's end allowed to stop it short while the window still fits; else, at the chart's end, nothing moves and the
   window stands above the event (whole where it fits, else between the chart box's top and the event, scrolling inside);
   a screen too short for it anywhere (a phone on its side) slides the event as high as it may and the window scrolls
-  inside. `components/Pop.jsx` measures, stops a finger's glide (D989), slides with the chart's own smooth scroll and
+  inside — his ruling, D1861, as built. `components/Pop.jsx` measures, stops a finger's glide (D989), slides with the chart's own smooth scroll and
   keeps the window unseen until the chart rests (at the target, 150ms still, or 1s), then opens it under the event; less
   motion asked for, the chart jumps. The chart stays where it slid after Close and after a grade. Pins:
   `src/tracker/trk-round-seen.test.ts`, the smoke suite's phone checks.
@@ -12448,6 +12448,9 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   `pointer-events:none` alone never reached each event's invisible press circle, drawn with `pointer-events="all"`, so a
   double-click's second click still opened a window from mid-slide, another event's or the same one's in the wrong
   place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
+- **D1860** — the Tracker's "Delete course" question and an import's note on a deleted course drop their typed ↺ and ⇅
+  marks ("Restore in Reorder courses brings it back…"), every other word kept; to build with the Tracker's next batch
+  ([TRK-POP-ASKED]).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
   **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
   own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words

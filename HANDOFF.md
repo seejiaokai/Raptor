@@ -23,8 +23,8 @@ the later merge keeps both (D78).
 <!-- now:claude/pr-tracker-787259 -->
 ### CHAT 10 (took over chat 9's job) — the pictures round's group 7, the Tracker — MERGED 8 Nov 26 (pull request 687, on his "merge live" typed in chat 10; chat 9's, passed on in a brief, was refused by the app's safety check — skill note 877)
 - **Live:** D1790 (the marking window: where it would not fit under the event, the chart slides the event up under the tabs and the window opens whole 4px under it; at the chart's end, where it cannot slide, the page's option B), D1791 (on a phone Find's ✕ empties the box and puts Find away; a pick puts it away), D1792 (c) (Restore wears the drawn Reset arrow); and chat 10's fix — while the chart slides, no part of it takes a press (each event's invisible press circle did, so a double-click opened a second window from mid-slide; `components/Pop.jsx`, `tracker.css`). Evidence `raptor-port/docs/handpass/2026-11-08-chat9-tracker.md`; the drawing check's one difference (the window 6.3px lower than drawn) and the phone-on-its-side placement were shown to him 8 Nov 26.
-- **Filed, open:** [TRK-POP-ASKED] (the two questions put to him 8 Nov 26 — the typed marks in two messages, F8, and the short-screen placement, Astra's reading 6), [TRK-KEPT-COPIES], [TRK-NOSTORE-SAVED].
-- **Rulings:** none (chats 9 and 10). Skill notes 876–878 (renumbered when `main` was brought in).
+- **Filed, open:** [TRK-POP-ASKED] (his answer to both questions, "Yes to both", recorded as D1860 and D1861 on `claude/chat10-tracker-rulings`; left to build: D1860, the two messages' typed marks, with the Tracker's next batch), [TRK-KEPT-COPIES], [TRK-NOSTORE-SAVED].
+- **Rulings:** D1860–D1861 (chat 10, after the merge; none before it). Skill notes 876–878 (renumbered when `main` was brought in).
 - **Remove this block at the next handoff** — nothing else is open from chat 10.
 <!-- /now -->
 <!-- now:claude/m365-it-answers -->
