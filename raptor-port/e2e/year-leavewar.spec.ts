@@ -8,7 +8,7 @@
    - A two-year period's twelve month buttons ("JAN 29") all stand in view on one line — on the iPhone they ran past
      the right edge, on a desktop MAY 29 and JUN 29 wrapped onto a second line. */
 import { expect, test, type Page } from '@playwright/test'
-import { openLeaveWar } from './app'
+import { openLeaveWar, expectPinned } from './app'
 
 const shownYears = (page: Page) => page.evaluate(() =>
   [...document.querySelectorAll('.lw-yr')].filter(e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.top >= 0 && r.top < innerHeight }).map(e => e.textContent))
@@ -65,7 +65,7 @@ test('the corner over the names carries the year, adds no height, and turns at 1
   /* SCROLLED DOWN, THE DATE ROW PINNED AT THE TOP (the normal state on a phone): the pinned bar draws its own copies of
      the corner, and every one of them turns with the dates (the fresh code read's finding 1, 2 Nov 26) */
   await page.evaluate(() => window.scrollBy(0, 1200))
-  await expect(page.locator('[data-testid="sticky-head"]')).toBeVisible()
+  await expectPinned(page, 'sticky-head', true)
   const allYears = () => page.evaluate(() => [...document.querySelectorAll('.lw-yr')].map(e => e.textContent))
   await gridTo(page, '2028-12-31', 6)
   expect(await allYears(), 'pinned, 31 Dec — every copy of the corner').toEqual(expect.arrayContaining(['2028']))

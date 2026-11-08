@@ -4376,6 +4376,38 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** The check began at 49% context (the always-loaded rules) and reached 76% before the walk: opening the area page, the order's sections, and editing one test and one evidence sheet loaded the scheduler and screen-design rulings by themselves (their paths match `src/` and the handpass folder), about 100k tokens the check never used. The walk and the four reads had to move to a fresh chat. (Number 892 is taken on another branch; this note numbers past it.)
 **Suggested improvement:** In the checklist's step 3 (telling him the plan), name the chats too: a FULL check whose chat starts past about 40% plans two chats from the start — chat A: tier, sheet, roll-call, break tests, scenario brief; chat B: walk, reads, fixes — and chat A hands the scenario designer's report into the repo before it ends.
 **Principle:** Count what a job will load by itself, not only what it reads on purpose, when deciding how many sessions it needs.
+
+### Observation 892: Times written into a handoff after a compaction came from the summary, not the clock
+
+*Numbered 881 on `claude/lw-pin-last-frame`; renumbered 892 when `main` was brought in on 8 Nov 26 — `main` holds its own 881.*
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 14, [LW-PIN-LAST-FRAME] — saving the state at 90% full, just after a compaction (numbered past 873, held on another branch; renumbered 874 → 881 when `main` was brought in, 8 Nov 26 — 874 is also used on another branch)
+**Skill:** session-handoff (writing the block's times)
+**Type:** open-source
+**Phase/Area:** the state written into the handoff block
+
+**Issue:** The block said the measure ran "~03:40–04:05Z" and the preview was looked for "at 04:06Z"; the clock read 03:36Z and the results files were written 03:29Z and 03:33Z. The times were carried from the compaction summary's guesses, and a next chat reading them would have mis-ordered the work against other chats' commits.
+**Suggested improvement:** In the handoff skill's block-writing step: every time or date written into the block is read from the clock (`date -u`) or from the file or commit it names, at the moment of writing, never carried from memory or a summary.
+**Principle:** After a compaction, a time is a fact to look up, not to remember; read it from the clock or the artifact it describes.
+Met again 2026-11-08, the same chat ten minutes later: "04:00Z" and "03:50Z" written from memory for what the clock and the files put at 03:45Z and 03:42Z — a guard is wanted (the block's writer reads `date -u` itself), not more care.
+
+### Observation 884: A frame count at a threshold hid the change; the raw intervals and a switch-off run told it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 16, [LW-PIN-LAST-FRAME] (D1870) — re-measuring a pinned row after a CSS scroll-timeline change (numbered past 883, held on another branch)
+**Skill:** New skill candidate: measuring-scroll-performance
+**Type:** open-source
+**Phase/Area:** the before/after frame measure
+
+**Issue:** The measure counted frames "over 33.4 ms" — the exact edge of two screen refreshes — so a frame landing a tenth of a millisecond either side flipped the count, and the before/after medians looked like noise (4 → 17). Pooling every run's raw intervals into buckets (under 20, one refresh skipped, 34.5–50, over 50) showed a fivefold rise in skipped refreshes; a second run with only the suspect style switched off (injected CSS) showed the cost was that one rule, and three cheaper variants were ruled out in minutes. One run's "the page works a third less" did not repeat.
+
+**Suggested improvement:** A frame measure records every raw interval, reports buckets around each refresh multiple rather than one threshold count, repeats the run before believing a total, and diagnoses by switching the suspect rule off for one run before any fix is written.
+
+**Principle:** A threshold placed on a quantised value measures rounding; bucket around the quanta, repeat the run, and isolate a suspected cause by removing it alone.
+
 ### Observation 886: The cure a note recommended for a hang was itself a hang for one interpreter; and a new hook cannot be proved live in the chat that adds it
 
 **Status:** OPEN
@@ -4516,3 +4548,44 @@ the same ruler on both sides removes a whole class of false differences.
 **Issue:** Both blind readers' first finding was the same clash (a later decision's rule sentence says every student is on the roster; an earlier one, still built, adds typed students). One proposed marking the earlier decision superseded; the other read the later decision's own interpretation as narrower and proposed putting the question to the owner. Handing both reports to a fix helper as they stood would have let it pick either fix.
 **Suggested improvement:** In "receiving-code-review", add a step: where two reviewers' fixes for one finding disagree, the host settles it first by the project's own conflict rule (here: the newer instruction wins only where it clearly covers the case, otherwise it goes to the owner) and writes that decision into the fixer's brief.
 **Principle:** Agreement on a finding is not agreement on its fix; the coordinator resolves divergent fixes by an explicit rule before delegating, never by letting the implementer choose.
+
+### Observation 900: Archiving a backlog item can strip a new ruling's only backlog mention
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 16, closing [LW-PIN-LAST-FRAME] (D1870, D1871) — numbered past 899, the highest on another open branch
+**Skill:** New skill candidate: closing a job's records (the backlog-archive step)
+**Type:** internal
+**Phase/Area:** archiving a finished backlog item, then the document check
+
+**Issue:** D1871's full row named the backlog as one of its homes, through the job's own item. Archiving that item, and dropping its priority line, removed every mention of D1871 from the backlog, so the document check failed on the ruling's home only after the archive, at the closing step.
+**Suggested improvement:** before archiving an item, grep the backlog for each ruling number the item carries; where the item is a ruling's last mention there and the ruling's row names the backlog as a home, write the number onto the item that stays (here the follow-up item), or have the archive script warn of it before it moves anything.
+**Principle:** a check that one record is mentioned in another breaks when the mentioning record is moved; run the check, or the search it does, before the move rather than after.
+
+### Observation 902: A test runner's output folder is emptied by its next run — never keep walk evidence or scripts there
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** A re-walk of a top-bar fix: two measuring scripts and a reviewer's evidence folder (pixel records, side-by-side pictures) sat in the browser-test runner's output folder; a test run started an hour later deleted all of it. (Numbered past 901, held by another open branch.)
+**Skill:** New skill candidate: walk-scripts (the project's walk-script guide)
+**Type:** open-source
+**Phase/Area:** Where a walk's scripts and evidence are written
+
+**Issue:** The folder looked like the natural home for test pictures, and nothing marks it as temporary; the loss showed only when the scripts failed with "cannot find module", and the reviewer's evidence could not be reopened afterwards.
+**Suggested improvement:** The walk-script guide's §5 now says it; a reviewer's or walker's brief names an output folder outside the runner's, and a check before a test run could warn when that folder holds files not written by the runner.
+**Principle:** A tool's output folder belongs to the tool, which may clear it at any run; keep anything meant to last in a folder no tool owns.
+
+### Observation 903: A fault seen only in the walker's own phone set-up is re-checked with its exact steps, not only with the test suite's phone
+
+*Numbered 891 on `claude/lw-pin-last-frame`; renumbered 903 when `main` was brought in on 8 Nov 26 — `main` holds its own 891.*
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** Chat 16, [LW-PIN-LAST-FRAME] (D1870): walker L found the pinned dates row shown early after a resize or a phone turn (L22). Numbered past 890, the highest on any branch at the write.
+**Skill:** New skill candidate: walk-scripts (raptor-port/docs/walk-scripts.md) / bug-check order §7 (re-walk after a fix)
+**Type:** open-source
+**Phase/Area:** turning a walker's finding into a red-first test, and the re-walk after the fix
+
+**Issue:** The walker saw the fault on a desktop narrowed to 420 and on a phone turned sideways and back (its phone: device scale 2, mobile, touch, 402x874). The red-first test reproduced the desktop case but passed on the suite's own phone project and on Quals at both sizes, so a green suite after the fix proved nothing for the phone. Only re-running the walker's exact steps (same context options, same sequence, measured at the same scroll offsets) on the walked build (wrong) and the fixed build (right) closed it.
+**Suggested improvement:** In the re-walk step, and in walk-scripts.md's "turning a finding into a test": when a red-first test does not go red for one of the cases a walker reported, keep the walker's exact steps as a small script and run it on the old build (must reproduce) and the fixed build (must not) before calling that case fixed; name in the evidence sheet which case is proved by a test and which by the script.
+**Principle:** A test that never went red for a case is not evidence that the fix cures that case; reproduce with the finder's own set-up before and after.

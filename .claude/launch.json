@@ -862,6 +862,40 @@
         "--strictPort"
       ],
       "port": 4176
+    },
+    {
+      "name": "lwpin-before",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "C:/Users/User/AppData/Local/Temp/claude/e5a9e348dc0d9712/04a73b70-b482-4ff0-ac91-bafde4c3a4e5/scratchpad/lwpin/dist-before",
+        "--port",
+        "4381",
+        "--strictPort"
+      ],
+      "port": 4381
+    },
+    {
+      "name": "lwpin-after",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "--prefix",
+        "raptor-port",
+        "vite",
+        "preview",
+        "raptor-port",
+        "--outDir",
+        "C:/Users/User/AppData/Local/Temp/claude/e5a9e348dc0d9712/04a73b70-b482-4ff0-ac91-bafde4c3a4e5/scratchpad/lwpin/dist-after",
+        "--port",
+        "4382",
+        "--strictPort"
+      ],
+      "port": 4382
     }
   ]
 }
