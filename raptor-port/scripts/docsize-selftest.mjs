@@ -502,8 +502,8 @@ scenario('skill log: one number heading two notes', true, c => c.write(SKLOG, SK
 scenario('skill log: a live number that also heads an archived note', true, c => { c.write(SKLOG, SKLOG0); c.write(SKARCH, '# archive\n\n' + obs(7, 'an older seven')) }, { mustSay: 'Observation 7 heads 2 entries — 1 in .claude/skill-observations/log.md, 1 in .claude/skill-observations/archive/log-2026-10-27.md' })
 /* Astra 5 (the code read, 8 Nov 26): a heading inside a code block is an example, not a note — backtick and tilde fences,
    their numbers colliding with real notes */
-const FENCED = obs(7, 'explaining a heading').replace("the note's body", "the note's body\n\n```md\n### Observation 7: an example\n```\n\n~~~\n### Observation 8: another\n~~~")
-scenario('skill log: a fenced example heading is not a note', false, c => c.write(SKLOG, '# Skill Observation Log\n\n' + FENCED + obs(8, 'eight')))
+const OBS_FENCED = obs(7, 'explaining a heading').replace("the note's body", "the note's body\n\n```md\n### Observation 7: an example\n```\n\n~~~\n### Observation 8: another\n~~~")
+scenario('skill log: a fenced example heading is not a note', false, c => c.write(SKLOG, '# Skill Observation Log\n\n' + OBS_FENCED + obs(8, 'eight')))
 /* Astra 4 (the code read, 8 Nov 26): every number counted across the log and EVERY archive file — within one archive,
    across two, and after both colliding notes left the log; only a doubling already at the base passes (D56) */
 const SKARCH2 = '.claude/skill-observations/archive/log-2026-11-01.md'
