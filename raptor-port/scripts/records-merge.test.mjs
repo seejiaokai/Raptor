@@ -278,15 +278,26 @@ test('skill log: a fenced example heading is text — not a note, not a number, 
 /* the narrow re-read (Opus re-read 3, 8 Nov 26): a lone "```" that never closes hid every later note heading — this
    branch's 12 sat "inside" the open fence, was not cut as a note, and the file ended with Observation 12 twice. Round 3:
    a fence still open at the end of the text is not a fence */
-test('skill log: a code block that never closes hides no later note — both doubled numbers renumbered (Opus re-read 3)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+/* ROUND 4 (Astra r3-3, 9 Nov 26): each side's stray fence read as text on its own, but joined, two strays close each
+   other across real notes and hide them. So a log whose base or either side holds a code block that never closes is
+   left whole (round 3 settled the one-sided case by renumbering both; the gate still names the stray fence) */
+const leftWholeForFence = r => {
+  assert.equal(r.code, 2, r.out)
+  assert.match(r.out, /LEFT for you in \.claude\/skill-observations\/log\.md:\n\s+- left whole — .*code block that never closes/)
+}
+test('skill log: a code block that never closes on one side leaves the log whole (round 4; was renumbered — Opus re-read 3)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
   c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours with a stray fence', 'before', '```', 'after') + obs(12, 'ours later', 'b')),
     x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main eleven', 'm') + obs(12, 'main twelve', 'm')))
-  const r = c.run()
-  assert.equal(r.code, 0, r.out)
-  const log = c.read('.claude/skill-observations/log.md')
-  const nums = [...log.matchAll(/^### Observation (\d+):/gm)].map(m => m[1])
-  assert.equal(new Set(nums).size, nums.length, `no number twice: ${nums}`)
-  assert.equal(log, LOG0 + obs(11, 'main eleven', 'm') + obs(12, 'main twelve', 'm') + obs(13, 'ours with a stray fence', 'before', '```', 'after') + obs(14, 'ours later', 'b'))
+  const before = c.read('.claude/skill-observations/log.md')
+  leftWholeForFence(c.run())
+  assert.equal(c.read('.claude/skill-observations/log.md'), before, 'git\'s own marks untouched')
+}))
+test('skill log: a stray fence on each side never pairs up across real notes — left whole (round 4 — Astra r3-3)', withRepo({ '.claude/skill-observations/log.md': LOG0 }, c => {
+  c.sides(x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'ours with a stray fence', '```') + obs(12, 'ours later', 'b')),
+    x => x.edit('.claude/skill-observations/log.md', t => t + obs(11, 'main with a stray fence', '```') + obs(12, 'main later', 'm')))
+  const before = c.read('.claude/skill-observations/log.md')
+  leftWholeForFence(c.run())
+  assert.equal(c.read('.claude/skill-observations/log.md'), before, 'no note turned into a fenced example')
 }))
 /* the replay's finding (7c3b3afe1 and its like): the log's last note ends with no blank line, so two notes added after it
    on both sides ran together, a heading straight under the other note's last line */

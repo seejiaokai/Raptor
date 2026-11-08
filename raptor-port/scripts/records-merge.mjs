@@ -72,7 +72,7 @@ import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { closedFencedFlags, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
+import { closedFencedFlags, unclosedFences, OBS_HEAD, observationHeads } from './docsize-rulings.mjs'
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
 const args = process.argv.slice(2)
@@ -362,6 +362,13 @@ function settle(f, st, labels, ctx) {
     return mergeRecords(B, O, T, { labels, first: 'ours', alwaysLeave: k => k === 'sec:## Gate baseline' })
   }
   if (f === SKILL_LOG) {
+    /* ROUND 4 (Astra r3-3): a code block that never closes is read as text in each input, but joined, a stray on each
+       side closes the other's across real notes and hides them — so any such block, in the base or either side, leaves
+       the whole log (the document check names it) */
+    for (const [side, x] of [['the base', b], ['this branch', o], ["main's side", t]]) {
+      const at = unclosedFences(x.split('\n'))
+      if (at.length) throw new Leave(`${side} holds a code block that never closes (its line ${at[0] + 1}) — joined with the other side, it could hide real notes; close it, then settle the log by hand`)
+    }
     const [B, O0, T] = [b, o, t].map(x => cut(x, notesKey, true))
     /* ROUND 3, then ROUND 4 (Astra re-read 2; Astra r3-2, Opus r3-1): a note can move under the wrong day whenever a side
        changes the day headings — adds one, removes one (a skill review archiving a whole day), rewords or moves one; the
