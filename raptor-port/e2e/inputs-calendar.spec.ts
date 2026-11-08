@@ -1568,9 +1568,21 @@ for (const width of [1536, 1340, 1280, 1024, 821]) {
     expect(btn.height, 'still 36 tall (D1139)').toBeGreaterThanOrEqual(35.5)
     /* no window: below 1100 Name, Start and End give up room so Remarks keeps some (the older fault) */
     const closed = await colW(page)
-    if (width < 1100) expect(closed.slice(0, 3), 'Name, Start, End narrowed').toEqual([110, 140, 90])
-    else expect(closed.slice(0, 3), 'the full widths').toEqual([250, 150, 115])
-    expect(closed[4], 'Remarks keeps a width (it was a letter)').toBeGreaterThanOrEqual(50)
+    /* and Type gives up 36 there too (owner D1840, 8 Nov 26), so at 821 Remarks keeps every word whole */
+    if (width < 1100) expect(closed.slice(0, 4), 'Name, Start, End and Type narrowed').toEqual([110, 140, 90, 124])
+    else expect(closed.slice(0, 4), 'the full widths').toEqual([250, 150, 115, 160])
+    expect(closed[4], 'Remarks keeps a width (it was a letter)').toBeGreaterThanOrEqual(90)
+    /* every kind's pill on one line in the narrowed Type, and inside its cell (a pill under a title never wraps, so it
+       would spill instead) — every date shown, since the test's own clock is today's and its fortnight may be empty */
+    await page.click('#inRangeBtn'); await page.click('#inRangeAll')
+    await expect(page.locator('#inBody tr .in-open').first()).toBeVisible()
+    const pills = await page.locator('#inBody td:nth-child(4) .intag').evaluateAll(els => els.map(e => {
+      const b = e.getBoundingClientRect(), td = e.closest('td')!, c = td.getBoundingClientRect()
+      return { h: Math.round(b.height), spill: Math.round(b.right - (c.right - parseFloat(getComputedStyle(td).paddingRight))) }
+    }))
+    expect(pills.length, 'the list shows inputs to measure').toBeGreaterThan(0)
+    expect(Math.max(...pills.map(p => p.h)) - Math.min(...pills.map(p => p.h)), 'no pill wraps').toBeLessThanOrEqual(1)
+    expect(Math.max(...pills.map(p => p.spill)), 'no pill spills out of its cell').toBeLessThanOrEqual(0)
     /* the window open */
     await page.locator('#inNew').click()
     const win = page.locator('[data-testid="win-inputedit"]')

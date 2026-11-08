@@ -1,0 +1,3889 @@
+{
+ "spec": "The Inputs page — \"+ Input\" at the right, the list making room, the calendar's drawn expand marks",
+ "dist": "C:\\Users\\User\\projects\\Raptor\\.claude\\worktrees\\pr-inputs-add-right-5b2653\\raptor-port\\dist",
+ "all": false,
+ "report": [
+  {
+   "state": "list-pc",
+   "title": "The desktop List, \"+ Input\" at the right (1536)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-addright-pc-list-A"
+   },
+   "approved": {
+    "picture": "q-addright-pc-list-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "inNew",
+     "label": "\"+ Input\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1458.3,
+        "y": 129,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 1471.3,
+        "y": 140,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1458.3,
+        "y": 129,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 1471.3,
+        "y": 140,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new"
+      }
+     }
+    },
+    {
+     "part": "range",
+     "label": "the dates button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 129,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 140,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 129,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 140,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      }
+     }
+    },
+    {
+     "part": "table",
+     "label": "the list",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 1472,
+        "h": 776.2
+       },
+       "ink": {
+        "x": 44,
+        "y": 189,
+        "w": 1456.1,
+        "h": 750.2
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 1472,
+        "h": 776.2
+       },
+       "ink": {
+        "x": 44,
+        "y": 189,
+        "w": 1456.1,
+        "h": 750.2
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "the Name column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 250,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 189.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 250,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 189.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "start",
+     "label": "the Start column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 180,
+        "w": 150,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 189,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 180,
+        "w": 150,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 189,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      }
+     }
+    },
+    {
+     "part": "end",
+     "label": "the End column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 432,
+        "y": 180,
+        "w": 115,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 444,
+        "y": 189.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 432,
+        "y": 180,
+        "w": 115,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 444,
+        "y": 189.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "type",
+     "label": "the Type column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 547,
+        "y": 180,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 559,
+        "y": 189.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 547,
+        "y": 180,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 559,
+        "y": 189.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "the Remarks column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 180,
+        "w": 597,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 719,
+        "y": 189.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 180,
+        "w": 597,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 719,
+        "y": 189.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "listopen-pc",
+   "title": "The desktop List with its window open, the list making room (1536)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-addright-pc-listopen-A"
+   },
+   "approved": {
+    "picture": "q-addright-pc-listopen-A.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "window",
+     "label": "the input's window",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1090,
+        "y": 96,
+        "w": 430,
+        "h": 744
+       },
+       "ink": {
+        "x": 1099,
+        "y": 108,
+        "w": 402.9,
+        "h": 763
+       },
+       "text": "⠿ New input ✕ Person Several people Type ? Duration All day AM PM Custom Document Document Remarks Dates July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 pick a start date Cancel Add",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.62) 0px 18px 44px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.floatwin.inpedwin.front.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1090,
+        "y": 96,
+        "w": 430,
+        "h": 744
+       },
+       "ink": {
+        "x": 1099,
+        "y": 108,
+        "w": 402.9,
+        "h": 763
+       },
+       "text": "⠿ New input ✕ Person Several people Type ? Duration All day AM PM Custom Document Document Remarks Dates July 2026 › 13 ‹ › MON TUE WED THU FRI SAT SUN 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 pick a start date Cancel Add",
+       "typed": false,
+       "look": {
+        "fill": "rgb(20, 24, 29)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "10px",
+         "10px",
+         "10px",
+         "10px"
+        ],
+        "shadow": "rgba(0, 0, 0, 0.62) 0px 18px 44px 0px",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 13px",
+        "spacing": "-0.065px"
+       },
+       "tag": "div.floatwin.inpedwin.front"
+      }
+     }
+    },
+    {
+     "part": "inNew",
+     "label": "\"+ Input\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1458.3,
+        "y": 129,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 1471.3,
+        "y": 140,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1458.3,
+        "y": 129,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 1471.3,
+        "y": 140,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new"
+      }
+     }
+    },
+    {
+     "part": "range",
+     "label": "the dates button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 129,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 140,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 129,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 140,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      }
+     }
+    },
+    {
+     "part": "table",
+     "label": "the list",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 1046,
+        "h": 842.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 189,
+        "w": 1030.1,
+        "h": 816.8
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 1046,
+        "h": 792.4
+       },
+       "ink": {
+        "x": 44,
+        "y": 189,
+        "w": 1030.1,
+        "h": 766.4
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "the Name column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "250",
+       "build": "110",
+       "by": "140px less",
+       "accepted": "D1787: while the window is open at 1536 the list narrows Name, Start and End (110 / 140 / 90) — the page's safety for smaller screens, his answer \"All as recommended\"; the drawing kept the full widths",
+       "counts": false
+      }
+     ],
+     "picture": "listopen-pc--name.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 250,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 189.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 180,
+        "w": 110,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 189.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "start",
+     "label": "the Start column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "150",
+       "build": "140",
+       "by": "10px less",
+       "accepted": "D1787: while the window is open at 1536 the list narrows Name, Start and End (110 / 140 / 90) — the page's safety for smaller screens, his answer \"All as recommended\"; the drawing kept the full widths",
+       "counts": false
+      }
+     ],
+     "picture": "listopen-pc--start.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 180,
+        "w": 150,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 189,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 142,
+        "y": 180,
+        "w": 140,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 154,
+        "y": 189,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      }
+     }
+    },
+    {
+     "part": "end",
+     "label": "the End column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "115",
+       "build": "90",
+       "by": "25px less",
+       "accepted": "D1787: while the window is open at 1536 the list narrows Name, Start and End (110 / 140 / 90) — the page's safety for smaller screens, his answer \"All as recommended\"; the drawing kept the full widths",
+       "counts": false
+      }
+     ],
+     "picture": "listopen-pc--end.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 432,
+        "y": 180,
+        "w": 115,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 444,
+        "y": 189.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 180,
+        "w": 90,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 189.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "type",
+     "label": "the Type column",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 547,
+        "y": 180,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 559,
+        "y": 189.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 372,
+        "y": 180,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 384,
+        "y": 189.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "the Remarks column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "171",
+       "build": "346",
+       "by": "175px more",
+       "accepted": "D1787: while the window is open at 1536 the list narrows Name, Start and End (110 / 140 / 90) — the page's safety for smaller screens, his answer \"All as recommended\"; the drawing kept the full widths",
+       "counts": false
+      }
+     ],
+     "picture": "listopen-pc--remarks.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 180,
+        "w": 171,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 719,
+        "y": 189.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 532,
+        "y": 180,
+        "w": 346,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 544,
+        "y": 189.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "safe-1024",
+   "title": "A small laptop, \"+ Input\" at the right, no room made (1024)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-addright-1024-A-safe"
+   },
+   "approved": {
+    "picture": "q-addright-1024-A-safe.png",
+    "identical": true
+   },
+   "size": "1024 × 768 at 2",
+   "parts": [
+    {
+     "part": "inNew",
+     "label": "\"+ Input\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 946.3,
+        "y": 219,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 959.3,
+        "y": 230,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 946.3,
+        "y": 219,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 959.3,
+        "y": 230,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new"
+      }
+     }
+    },
+    {
+     "part": "range",
+     "label": "the dates button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 219,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 230,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 219,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 230,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      }
+     }
+    },
+    {
+     "part": "table",
+     "label": "the list",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 270,
+        "w": 960,
+        "h": 1402.3
+       },
+       "ink": {
+        "x": 44,
+        "y": 279,
+        "w": 944.1,
+        "h": 1383.1
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 270,
+        "w": 960,
+        "h": 807.9
+       },
+       "ink": {
+        "x": 44,
+        "y": 279,
+        "w": 944.1,
+        "h": 781.9
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "the Name column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "250",
+       "build": "110",
+       "by": "140px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-1024--name.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 270,
+        "w": 250,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 279.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 270,
+        "w": 110,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 279.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "start",
+     "label": "the Start column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "150",
+       "build": "140",
+       "by": "10px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-1024--start.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 270,
+        "w": 150,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 279,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 142,
+        "y": 270,
+        "w": 140,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 154,
+        "y": 279,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      }
+     }
+    },
+    {
+     "part": "end",
+     "label": "the End column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "115",
+       "build": "90",
+       "by": "25px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-1024--end.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 432,
+        "y": 270,
+        "w": 115,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 444,
+        "y": 279.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 270,
+        "w": 90,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 279.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "type",
+     "label": "the Type column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "160",
+       "build": "124",
+       "by": "36px less",
+       "accepted": "D1840 (8 Nov 26, his \"all as recommended\" to chat 7's look, question 2): from 821 to 1099 wide with no window Type narrows to 124 as well, so Remarks keeps a readable width with every word whole; the drawing kept Type 160",
+       "counts": false
+      }
+     ],
+     "picture": "safe-1024--type.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 547,
+        "y": 270,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 559,
+        "y": 279.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 372,
+        "y": 270,
+        "w": 124,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 384,
+        "y": 279.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "the Remarks column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "85",
+       "build": "296",
+       "by": "211px more",
+       "accepted": "D1840: Type gives up 36 more here. D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-1024--remarks.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 707,
+        "y": 270,
+        "w": 85,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 719,
+        "y": 279.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 496,
+        "y": 270,
+        "w": 296,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 508,
+        "y": 279.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "safe-821",
+   "title": "The narrowest desktop, \"+ Input\" at the right, no room made (821)",
+   "drawing": {
+    "script": "scripts/handpass/pr-sched.mjs",
+    "shot": "q-addright-821-A-safe"
+   },
+   "approved": {
+    "picture": "q-addright-821-A-safe.png",
+    "identical": true
+   },
+   "size": "821 × 768 at 2",
+   "parts": [
+    {
+     "part": "inNew",
+     "label": "\"+ Input\"",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 743.3,
+        "y": 175,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 756.3,
+        "y": 186,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new.zz-ring"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 743.3,
+        "y": 175,
+        "w": 65.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 756.3,
+        "y": 186,
+        "w": 39.7,
+        "h": 14
+       },
+       "text": "+ Input",
+       "typed": false,
+       "look": {
+        "fill": "rgb(59, 198, 232)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(5, 42, 52)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.primary.in-new"
+      }
+     }
+    },
+    {
+     "part": "range",
+     "label": "the dates button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 175,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 186,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 12,
+        "y": 175,
+        "w": 133.7,
+        "h": 36
+       },
+       "ink": {
+        "x": 46,
+        "y": 186,
+        "w": 86.7,
+        "h": 14
+       },
+       "text": "13 Jul → 27 Jul",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 12px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn"
+      }
+     }
+    },
+    {
+     "part": "table",
+     "label": "the list",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "875",
+       "build": "757",
+       "by": "118px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide; the table is the six fixed columns and Remarks, so it is narrower by the same",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--table.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 226,
+        "w": 875,
+        "h": 6233.3
+       },
+       "ink": {
+        "x": 44,
+        "y": 235,
+        "w": 859.1,
+        "h": 6214.1
+       },
+       "text": "Name Start ▲ End Type Changed Vector 13 Jul OML 12 Jul 26 Grit 13 Jul 17 Jul ATT C 12 Jul 26 Gambit 13 Jul Attach 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE 6 Jul 26 Quill 14 Jul LL LATE 30 Jun 26 No document Wisp 14 Jul OIL LATE 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE 9 Jul 26 Cobra 15 Jul OL By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD 18 Jun 26 Gambit 15 Jul OIL 1 Jan 26 No document Gambit 16 Jul OIL 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event By Saber 26 Jun 26 Gambit 23 Jul OML 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting By Saber 25 Jun 26 Tally 24 Jul LL LATE By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 226,
+        "w": 757,
+        "h": 1261.5
+       },
+       "ink": {
+        "x": 44,
+        "y": 235,
+        "w": 741.1,
+        "h": 1242.4
+       },
+       "text": "Name Start ▲ End Type Remarks Changed Vector 13 Jul OML Medical leave 13 Jul till 13 Jul 12 Jul 26 Grit 13 Jul 17 Jul ATT C Medically down till 17 Jul 12 Jul 26 Gambit 13 Jul Attach Keen for any wave 20 Jun 26 Zenith 13 Jul 09:00–17:00 Meeting Desk / staff work By Saber 26 Jun 26 Bolt 13 Jul 10:00–11:00 Appoint ment LATE HSP blood panel 6 Jul 26 Quill 14 Jul LL LATE Local leave till 14 Jul 30 Jun 26 No document Wisp 14 Jul OIL LATE OIL — CO approved, post-detachment till 14 Jul 2 Jul 26 No document Saint 14 Jul 14:00–16:00 Appoint ment LATE Dental appt 9 Jul 26 Cobra 15 Jul OL Overseas leave — off island till 15 Jul By Saber 22 Jun 26 No document Nomad 15 Jul 17 Jul OD Overseas duty — exercise, off island till 17 Jul 18 Jun 26 Gambit 15 Jul OIL till 15 Jul 1 Jan 26 No document Gambit 16 Jul OIL till 16 Jul 1 Jan 26 No document Ranger 16 Jul 17:00–18:30 Appoint ment Medical / PHA 29 Jun 26 Vapor 20 Jul 10:00–12:00 Appoint ment Medical / PHA 6 Jul 26 ALL 22 Jul 15:00–17:00 Sports afternoon Event PT kit By Saber 26 Jun 26 Gambit 23 Jul OML Medical leave — grounded till 23 Jul 6 Jul 26 Drifter, Echo, Ranger, Saber 23 Jul 10:00–11:00 Meeting Flight safety brief By Saber 25 Jun 26 Tally 24 Jul LL LATE Local leave till 24 Jul By Saber 10 Jul 26 No document ALL AVAIL 25 Jul 09:00–12:00 Duty Hangar clean-up By Saber 26 Jun 26 OIL",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "start",
+        "justify": "normal",
+        "font": "400 12px",
+        "spacing": "-0.065px"
+       },
+       "tag": "table.intbl"
+      }
+     }
+    },
+    {
+     "part": "name",
+     "label": "the Name column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "250",
+       "build": "110",
+       "by": "140px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--name.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 226,
+        "w": 250,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 235.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 32,
+        "y": 226,
+        "w": 110,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 44,
+        "y": 235.1,
+        "w": 32.6,
+        "h": 12
+       },
+       "text": "Name",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "start",
+     "label": "the Start column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "150",
+       "build": "140",
+       "by": "10px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--start.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 226,
+        "w": 150,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 235,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 142,
+        "y": 226,
+        "w": 140,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 154,
+        "y": 235,
+        "w": 49.2,
+        "h": 12.3
+       },
+       "text": "Start ▲",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort.on"
+      }
+     }
+    },
+    {
+     "part": "end",
+     "label": "the End column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "115",
+       "build": "90",
+       "by": "25px less",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--end.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 432,
+        "y": 226,
+        "w": 115,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 444,
+        "y": 235.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 282,
+        "y": 226,
+        "w": 90,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 294,
+        "y": 235.1,
+        "w": 23.4,
+        "h": 12
+       },
+       "text": "End",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "type",
+     "label": "the Type column",
+     "diffs": [
+      {
+       "check": "width",
+       "what": "its width",
+       "drawing": "160",
+       "build": "124",
+       "by": "36px less",
+       "accepted": "D1840 (8 Nov 26, his \"all as recommended\" to chat 7's look, question 2): from 821 to 1099 wide with no window Type narrows to 124 as well, so Remarks keeps a readable width with every word whole; the drawing kept Type 160",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--type.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 547,
+        "y": 226,
+        "w": 160,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 559,
+        "y": 235.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 372,
+        "y": 226,
+        "w": 124,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 384,
+        "y": 235.1,
+        "w": 29.1,
+        "h": 12
+       },
+       "text": "Type",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    },
+    {
+     "part": "remarks",
+     "label": "the Remarks column",
+     "diffs": [
+      {
+       "check": "found",
+       "what": "the part itself",
+       "drawing": "not in the drawing",
+       "build": "built",
+       "by": "no visible match (0 visible) for #intbl thead th:nth-child(5)",
+       "accepted": "D1787's full row: below about 950 wide the desktop list squeezed Remarks to a letter or two with no window (the older fault, drawn so in the -safe drawings); the same narrowing fixes it, from 821 to 1099 wide: the drawing's Remarks had no width at all; built, 57px, then 93px once Type narrowed to 124 on his D1840 (put to him with its picture first)",
+       "counts": false
+      }
+     ],
+     "picture": "safe-821--remarks.png",
+     "measured": {
+      "drawing": {
+       "found": false,
+       "count": 0,
+       "why": "no visible match (0 visible) for #intbl thead th:nth-child(5)"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 496,
+        "y": 226,
+        "w": 93,
+        "h": 30.8
+       },
+       "ink": {
+        "x": 508,
+        "y": 235.1,
+        "w": 56,
+        "h": 12
+       },
+       "text": "Remarks",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "0px none rgb(182, 192, 203)",
+         "0px none rgb(182, 192, 203)",
+         "1px solid rgb(42, 49, 58)",
+         "0px none rgb(182, 192, 203)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(182, 192, 203)",
+        "align": "left",
+        "justify": "normal",
+        "font": "700 10.5px",
+        "spacing": "0.42px"
+       },
+       "tag": "th.insort"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "expand-compact-pc",
+   "title": "The Inputs calendar's expand button at rest, arrows out, desktop",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5b-pc-compact-drawn"
+   },
+   "approved": {
+    "picture": "q-r5b-pc-compact-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "expand",
+     "label": "the expand button",
+     "diffs": [
+      {
+       "check": "edge",
+       "what": "its top edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": "not a difference of the build: the drawing (pr-marks.mjs r5b) had just pressed the button and its mouse rested on it, so the drawing shows the hover edge (.abtn:hover, --edge-2); the phone's drawing, with no hover, matches (expand-compact-ph: 0 differ); this change did not touch the button's edge",
+       "counts": false
+      },
+      {
+       "check": "edge",
+       "what": "its right edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": "not a difference of the build: the drawing (pr-marks.mjs r5b) had just pressed the button and its mouse rested on it, so the drawing shows the hover edge (.abtn:hover, --edge-2); the phone's drawing, with no hover, matches (expand-compact-ph: 0 differ); this change did not touch the button's edge",
+       "counts": false
+      },
+      {
+       "check": "edge",
+       "what": "its bottom edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": "not a difference of the build: the drawing (pr-marks.mjs r5b) had just pressed the button and its mouse rested on it, so the drawing shows the hover edge (.abtn:hover, --edge-2); the phone's drawing, with no hover, matches (expand-compact-ph: 0 differ); this change did not touch the button's edge",
+       "counts": false
+      },
+      {
+       "check": "edge",
+       "what": "its left edge",
+       "drawing": "1px rgb(57, 66, 77)",
+       "build": "1px rgb(42, 49, 58)",
+       "by": "",
+       "accepted": "not a difference of the build: the drawing (pr-marks.mjs r5b) had just pressed the button and its mouse rested on it, so the drawing shows the hover edge (.abtn:hover, --edge-2); the phone's drawing, with no hover, matches (expand-compact-ph: 0 differ); this change did not touch the button's edge",
+       "counts": false
+      }
+     ],
+     "picture": "expand-compact-pc--expand.png",
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1490,
+        "y": 121,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)",
+         "1px solid rgb(57, 66, 77)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1490,
+        "y": 121,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand"
+      }
+     }
+    },
+    {
+     "part": "expand-mark",
+     "label": "the expand button: its drawn mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1499,
+        "y": 127.4,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1499,
+        "y": 127,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "expand-every-pc",
+   "title": "The Inputs calendar's expand button pressed, arrows in, desktop",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5b-pc-every-drawn"
+   },
+   "approved": {
+    "picture": "q-r5b-pc-every-drawn.png",
+    "identical": true
+   },
+   "size": "1536 × 864 at 2",
+   "parts": [
+    {
+     "part": "expand",
+     "label": "the expand button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1490,
+        "y": 121,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1490,
+        "y": 121,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand"
+      }
+     }
+    },
+    {
+     "part": "expand-mark",
+     "label": "the expand button: its drawn mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1499,
+        "y": 127.4,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 1499,
+        "y": 127,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "expand-compact-ph",
+   "title": "The Inputs calendar's expand button at rest, arrows out, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5b-ph-compact-drawn"
+   },
+   "approved": {
+    "picture": "q-r5b-ph-compact-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "expand",
+     "label": "the expand button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 144,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 144,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)",
+         "1px solid rgb(42, 49, 58)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand"
+      }
+     }
+    },
+    {
+     "part": "expand-mark",
+     "label": "the expand button: its drawn mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 369,
+        "y": 150.4,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 369,
+        "y": 150,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)",
+         "0px none rgb(241, 244, 247)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(241, 244, 247)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  },
+  {
+   "state": "expand-every-ph",
+   "title": "The Inputs calendar's expand button pressed, arrows in, iPhone",
+   "drawing": {
+    "script": "scripts/handpass/pr-marks.mjs",
+    "shot": "q-r5b-ph-every-drawn"
+   },
+   "approved": {
+    "picture": "q-r5b-ph-every-drawn.png",
+    "identical": true
+   },
+   "size": "402 × 874 at 2",
+   "parts": [
+    {
+     "part": "expand",
+     "label": "the expand button",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 144,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "7px",
+         "7px",
+         "7px",
+         "7px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand.zz-ring.zz-tb"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 360,
+        "y": 144,
+        "w": 34,
+        "h": 28
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgb(26, 31, 38)",
+        "image": "",
+        "edge": [
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)",
+         "1px solid rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "9px",
+         "9px",
+         "9px",
+         "9px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "center",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "button.abtn.ib-expand"
+      }
+     }
+    },
+    {
+     "part": "expand-mark",
+     "label": "the expand button: its drawn mark",
+     "diffs": [],
+     "picture": null,
+     "measured": {
+      "drawing": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 369,
+        "y": 150.4,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      },
+      "build": {
+       "found": true,
+       "count": 1,
+       "box": {
+        "x": 369,
+        "y": 150,
+        "w": 16,
+        "h": 16
+       },
+       "ink": null,
+       "text": "",
+       "typed": false,
+       "look": {
+        "fill": "rgba(0, 0, 0, 0)",
+        "image": "",
+        "edge": [
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)",
+         "0px none rgb(59, 198, 232)"
+        ],
+        "corners": [
+         "0px",
+         "0px",
+         "0px",
+         "0px"
+        ],
+        "shadow": "none",
+        "color": "rgb(59, 198, 232)",
+        "align": "center",
+        "justify": "normal",
+        "font": "600 16px",
+        "spacing": "normal"
+       },
+       "tag": "svg"
+      }
+     }
+    }
+   ]
+  }
+ ],
+ "errors": []
+}

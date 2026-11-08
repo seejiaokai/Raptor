@@ -12402,6 +12402,10 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   `in-room` on the page while any input's window is open on the desktop list, the room and the narrowing at 1340 and up
   (`scheduler/06-inputs.css`); the same three widths (Name 110, Start 140, End 90) with no window from 821 to 1099 wide —
   from 1100 the full widths leave Remarks 160 or more. Pins: `ui/inputs.test.tsx`, `e2e/inputs-calendar.spec.ts` "D1787".
+  **D1840** (8 Nov 26, his "all as recommended" to chat 7's look): from 821 to 1099 wide with no window Type narrows
+  to 124 as well, so Remarks keeps about 93 at 821 with every word whole; from 1100 Type keeps 160. **D1841**: the
+  safety for smaller screens is part of his D1787 answer (below 1340 the window covers the list, no room made), and
+  the window over "+ Input" while open stays as drawn, as over "+ Medical".
 - **D1788** — the Leave War day panel's "↓ N more" is the bell's grey foot, not pressable, counting lines not wholly in view.
 - **D1789** — the Leave War grid's pinned dates row, and Quals' header, arrive in the same frame; frames measured before and after.
 - **D1790** — the Tracker's marking window: the chart slides the event up under the tabs and the window opens whole below.
