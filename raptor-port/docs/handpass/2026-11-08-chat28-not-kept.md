@@ -144,6 +144,32 @@ button and its Find strip alike); after, 3.8px — the same as Edit Schedule's s
 
 ## Break tests
 
+- The room under the band on the sign-in (`ui/Login.tsx`) put back to no room: the new "Not kept" test and the old
+  failed-save test both fail; restored, all pass.
+- The boot's `?nostore` check left after the store is touched: the strengthened boot test fails on `?nostore&savefail`
+  (it chose the browser's store) — the red run before the fix.
+
+## The code reads (blind to each other, at commit `e67107e31`)
+
+- **Astra** (`docs/superpowers/briefs/2026-11-08-chat28-not-kept-read-astra.md`): P2 — `?nostore` beside `?savefail` chose
+  the browser's store and let start-up writes through, and `?nostore` alone read the store's length; P3 — `?nostore` still
+  reads and writes the few per-browser view choices (the Tracker's hidden bar, a panel's width). Tidiness: the pencil
+  comment.
+- **The fresh Opus reader** (`…-read-opus.md`): F1 low — the same as Astra's P2 and P3; F2 low — nothing guarded the room
+  made for "Not kept" on the sign-in, access, guest and app screens. Tidiness: three points (below).
+- **Dispositions (the host reproduced each first):** P2/F1 FIXED red-first — the switch is checked before the store is
+  touched and wins over `?savefail` (`storage/boot.ts`; the boot test now counts the length read and covers both
+  orders). P3 NARROWED, not widened: the switch replaces the store of records; the view choices still use the browser's
+  storage, as they fall back quietly where storage is truly refused — its note now says exactly that (widening it would
+  reach four areas for a test switch). F2 FIXED — three "Not kept" cases in `ui/accounts-ui.test.tsx` (the sign-in, the
+  access screens with the pass's ordinary words, the guest page and the app's bar), break-tested. The pencil comment
+  corrected. **Re-walked:** a fresh build, the route check 30/30, and `scripts/handpass/nk28-both.mjs` —
+  `?nostore&savefail` shows "Not kept", no "Not saved", no record in the browser's storage.
+- **Tidiness, filed not fixed (D489):** two "keeps nothing" flags set from one answer (the band's and the Tracker's); the
+  failed / not-kept class pair written out in four style rules; the test switches' address pattern written twice;
+  Shell's `saveFailed` now means "a band is up"; three head comments describe only the failed band; the Tracker's new
+  setter guards a call with no value — with [TRK-COPIES-TIDY].
+
 ## Errors seen
 
 None: no page error, console error or failed request in any run — the route check, W1, W2, the drawing check, the

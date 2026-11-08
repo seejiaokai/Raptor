@@ -92,6 +92,14 @@ export function chooseBackend(
   if (/[?&]fresh=1(&|$)/.test(search)) return new MemoryBackend()
   if (env.MODE === 'test' || env.VITE_STORAGE === 'memory') return new MemoryBackend()
   if (env.DEV && env.VITE_STORAGE !== 'browser') return new MemoryBackend()
+  /* THE TEST SWITCH `?nostore` (the agent's, 8 Nov 26, beside D1666's): a tab opened with it runs as a browser that
+     refuses its storage does — the memory store, the "Not kept" band (D1901) — so the band can be seen on a phone whose
+     browser keeps everything (an iPhone's private window keeps it too). Checked before the browser's store is touched, so
+     no record is read or written, and it wins over `?savefail` (Astra's read, chat 28). It replaces the store of records
+     only: the few view choices each screen keeps for its own browser (the Tracker's hidden bar, a panel's width) still use
+     the browser's storage, as they fall back quietly where storage is truly refused. The link without it ends the test;
+     nobody without it is touched. */
+  if (/[?&]nostore(=[^&]*)?(&|$)/.test(search)) { refused = true; return new MemoryBackend() }
   try {
     const store = ls ?? localStorage
     void store.length
@@ -100,11 +108,6 @@ export function chooseBackend(
        D1664) can be seen on a real phone. Reading still works, so the app opens on what is saved; Retry is refused again
        while the switch is on; the link without it ends the test. Like ?swdebug and ?kbdebug, nobody without it is touched. */
     if (/[?&]savefail(=[^&]*)?(&|$)/.test(search)) return new BrowserBackend(refusingWrites(store))
-    /* THE TEST SWITCH `?nostore` (the agent's, 8 Nov 26, beside D1666's): a tab opened with it runs as a browser that
-       refuses its storage does — the memory store, the "Not kept" band (D1901) — so the band can be seen on a phone whose
-       browser keeps everything (an iPhone's private window keeps it too). Nothing is read or written; the link without
-       it ends the test; nobody without it is touched. */
-    if (/[?&]nostore(=[^&]*)?(&|$)/.test(search)) { refused = true; return new MemoryBackend() }
     return new BrowserBackend(store)
   } catch (e) {
     refused = true

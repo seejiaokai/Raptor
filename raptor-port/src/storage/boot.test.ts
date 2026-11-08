@@ -193,8 +193,10 @@ describe('chooseBackend', () => {
       expect(storageRefused(), `${env.MODE} ${q}: memory on purpose`).toBe(false)
     }
     let touched = 0
-    const watched = { get length() { return 0 }, key: () => null, getItem: () => { touched++; return null }, setItem: () => { touched++ }, removeItem() {}, clear() {} } as unknown as Storage
-    for (const q of ['?nostore', '?nostore=1', '?x=1&nostore']) {
+    const watched = { get length() { touched++; return 0 }, key: () => { touched++; return null }, getItem: () => { touched++; return null }, setItem: () => { touched++ }, removeItem: () => { touched++ }, clear: () => { touched++ } } as unknown as Storage
+    /* Astra's read (chat 28): ?nostore beside ?savefail chose the browser's store, and even ?nostore alone read its length
+       — the switch now comes first, before the store is touched, and wins over ?savefail */
+    for (const q of ['?nostore', '?nostore=1', '?x=1&nostore', '?nostore&savefail', '?savefail&nostore']) {
       expect(chooseBackend({ MODE: 'production', DEV: false }, q, watched), q).toBeInstanceOf(MemoryBackend)
       expect(storageRefused(), q).toBe(true)
     }

@@ -448,7 +448,12 @@ written twice (`onepencil.test.ts`, `tracker.test.tsx`, older); (4) comments now
 "Sized by `.pen-ic`" (true of the app's pencil only), and, older, `tracker.css`'s header "The ONE rule outside the
 wrapper is #detailBubble". **(4) DONE 8 Nov 26 (chat 28, `claude/chat28-not-kept`)** — the four comments corrected,
 `Glyphs.jsx`'s header naming the magnifier among the app's own marks (D1900); (1)–(3) stay open: each reworks a
-test's recording or an icon's drawing, more than a band's branch should carry after its walk. **Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
+test's recording or an icon's drawing, more than a band's branch should carry after its walk. **Added 8 Nov 26 (chat 28's code reads, D489):** (5) two "keeps
+nothing" flags set from one answer (`ui/savestatus-source.ts setStorageKept`, `tracker/storage.js`); (6) the
+`.failed` / `.nokeep` pair written out in four rules of `17-save-status.css`; (7) the test switches' address pattern
+written twice in `storage/boot.ts`; (8) `Shell.tsx`'s `saveFailed` now means "a band is up"; three head comments of
+`SaveStatus.tsx` and its CSS describe only the failed band; the Tracker's new setter guards a call with no value.
+**Place:** low — with the Tracker's next batch ([TRK-MARKS-LEFT], the magnifier's answer) or
 the tidiness audit ([CODE-TIDY-AUDIT]).
 
 ### [TRK-NOSTORE-SAVED] "● saved" in a browser that keeps nothing (filed 5 Nov 26 — seen in passing by the Tracker tidy's check)
