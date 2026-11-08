@@ -55,7 +55,7 @@ the later merge keeps both (D78).
 - **Chat 2's overlap settled:** its pull request 671 merged 8 Nov 26, D1770's reader lines kept and D1760 marked NARROWED BY D1770.
 - **[BOARD-KEYS-LOOKS] answered 8 Nov 26 ("Ok all as recommended"):** D1771 — the ⋯ menu's item and the + Block and Templates buttons wear the cyan keyboard ring under the keys; D1772 — Tab out of a menu stays as built. D1771 is built inside the pictures round's build, its group 1 (his word; chat 3 asked to add it to its plan).
 - **Elsewhere:** chat 3's 14 questions (pull request 666) and chat 2's questions wait in their own chats.
-- **Chats (D1744):** the next new chat takes 10 — 5 went twice (chat 2's rules diet step 5a and chat 3's OIL Earn build), 6 to 9 are chat 3's builds. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26.
+- **Chats (D1744):** the next new chat takes 12 — 5 went twice (chat 2's rules diet step 5a and chat 3's OIL Earn build), 6 to 9 are chat 3's builds, and chat 3 holds 10 and 11 for its second wave. Rules diet step 3, chat 1 and chat 2 archived on his word, 8 Nov 26.
 - **Rulings:** D1770, D1771, D1772.
 <!-- /now -->
 
