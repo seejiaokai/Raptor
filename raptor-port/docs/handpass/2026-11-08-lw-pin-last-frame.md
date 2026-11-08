@@ -351,8 +351,25 @@ bar on every page; 5 a new gesture or mode — NO (nothing new to press; the spr
 | Phone on its side; the bar's own sideways scroll and its burger-and-mark lead | | | |
 | Sign-in, access and guest screens | | | |
 
-### The sizing lines
-(written when Astra's change is read — §7.0, the ledger's sizing step)
+### The sizing lines (Opus, 8 Nov 26, after reading Astra's change e7f20fef5)
+1. **Type:** E (layout — the one top bar, every page: shared styling makes it the whole app), with D (every reader of the
+   bar's height or edge draws by its own code).
+2. **Only a walk finds here:** a page whose content no longer starts where it did (the spacer and the bar disagree), a
+   bar that lets the page show through or under it while scrolled, a band ("Not saved") that covers instead of moving the
+   page down, a window or pinned row landing behind the bar, the folded or wrapped bar at a narrow desktop and a phone on
+   its side, the guest bar. The unit tests prove the measurement and the stylesheet's rule, not layout; Astra's browser
+   case covers four pages.
+3. **The ledger:** E walks done as a pixel check of frozen before-and-after builds (2026-11-08, React Doctor's shell: 19
+   screens at 1536 Chromium and 402 WebKit, the before build twice first for noise) found what changed and nothing else;
+   the D1870 walk (E, C) found F2 only on a re-walk of the routes back to the grid.
+4. **The walk chosen:** one Sonnet walker (brief `docs/superpowers/briefs/2026-11-08-topbar-bounce-walk.md`): A — the
+   pixel check at rest, before (b0968d50d, the app as ee4d36732) twice and after, every page at 1536 Chromium and 402
+   WebKit; B — 14 scenarios on the after build at 1536, 1024, 830, 402 and 874×402; C — the plain-user round on the bar's
+   own controls. Carried by tests, not walked: the measurement's arithmetic (`topbarvar.test.ts`, calls the writer
+   directly), the "OIL not answered" bar (the same route as the save band — the bar's padding grows and the observer
+   re-measures; `oilwait.test.tsx`), print's flow (Astra's browser case in `e2e/topbar-names.spec.ts`). Only his iPhone:
+   the spring, the toolbar folding, the keyboard.
+5. **The row:** added to the ledger after the walk.
 
 ### What only his iPhone can show
 The spring at a page's foot and top, Safari's toolbar folding, the keyboard: the PC's Chromium and Playwright's WebKit do
