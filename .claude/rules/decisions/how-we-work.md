@@ -125,6 +125,9 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
   and the ripple map are read by section from the checklists that name when, every section that applies a required read
   [D68, D1735].
+- A review of a day's merged work starts with a small handful of checks on the riskiest code — the app's own checks and a
+  few reads — and Fable reads nothing wider until that handful shows a fault and he says to go on; Astra's read and the
+  app's own checks are not Fable spend and run on [D1934, D790, D903, D1743, D1770].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
 - Walks run in the cloud instead of on his PC, adopted by every chat if a chat could start one on its own and it built
