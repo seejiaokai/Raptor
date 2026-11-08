@@ -110,8 +110,10 @@ export default function Pop() {
     core.stopGlide(bd);
     /* WHILE IT SLIDES the chart takes no tap and no key (the fresh Opus read's F1, F2, 8 Nov 26): a second tap or a
        double-click would land on the moving chart — no window, another event's, or one left far from its event — and an
-       arrow would move the ring off the event being marked. Given back at rest, or when the window closes first. */
-    const hold = on => { bd.style.pointerEvents = on ? 'none' : ''; core.setPopSliding(on); };
+       arrow would move the ring off the event being marked. Given back at rest, or when the window closes first. The
+       class reaches every part of the chart (tracker.css): each event's press circle takes presses of its own, which
+       the chart's own "none" never reached (chat 10, 8 Nov 26 — the Tracker smoke's double-click pin). */
+    const hold = on => { bd.style.pointerEvents = on ? 'none' : ''; bd.classList.toggle('is-sliding', on); core.setPopSliding(on); };
     const settle = () => { hold(false); setPosn(placePop(geo(0))); };
     let still = false;
     try { still = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { still = false; }

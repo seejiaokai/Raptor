@@ -4140,3 +4140,16 @@ Met again 7 Nov 26 (the same chat, after its compaction): one Edit of the ripple
 **Issue:** The drawing-check helper labelled its measured build "the branch at 7d750640e" and wrote that the app's code was unchanged between that commit and the tip, so it built from the working folder. Two commits since had changed the code, and the host's fixes were landing in the same folder while it built; its build matched neither commit. The numbers happened to hold (the fixes did not move what it measured), but the label was false. Separately, the check script can measure only a part that is drawn, so a part meant to be gone on both sides read as a red "not found".
 **Suggested improvement:** In the step that takes a helper's result: when a helper names the commit it measured, run `git diff --stat <its commit> HEAD -- <code folder>` and compare the build's time with the commits' times before quoting it; where the code moved under it, re-run the cheap part (build + check) on a fixed commit. In a helper's brief for any check that builds: "build from a named commit (a `git worktree` or `git archive`), never from the live folder while the host is editing".
 **Principle:** A measurement is only as good as the label on what was measured; a helper working beside an editing host must pin its input to a commit, and the host verifies the pin rather than the helper's word.
+
+### Observation 873: A pin that goes red or green by the machine's pace was handed over as "unexplained" — slow the processor to reproduce it
+
+**Status:** OPEN
+**Date:** 8 Nov 26
+**Session context:** chat 10, the Tracker's group 7 — fixing the one red browser check chat 9 left (a double-click during the chart's slide); 872 is taken on another branch, so this one is 873
+**Skill:** systematic-debugging
+**Type:** open-source
+**Phase/Area:** reproducing a timing-dependent fault before guessing at a cause
+
+**Issue:** The check was red in the previous chat's full run and green in this chat's first probes at every click gap tried, so it looked fixed or flaky. Slowing the page's processor to half speed (the browser's own CPU throttling) made it fail every time, and a per-frame log then showed the real cause in one run: a child element with its own "takes presses" setting ignored the parent's "no presses" — neither of the two suspects handed over. The suite's pace alone had decided whether the fault showed.
+**Suggested improvement:** In the reproduce phase: when a fault involves a press, key or frame during an animation or scroll and does not reproduce, re-run it at two or three slowed processor speeds before calling it flaky or fixed; once found, add a check that proves the cause whatever the pace (here, hit-testing every element mid-animation), beside the end-to-end check run at a slowed pace.
+**Principle:** A timing fault that a test catches only on some machines is still a fault; slow the clock down to make it certain, then pin the cause with a check that does not depend on timing.

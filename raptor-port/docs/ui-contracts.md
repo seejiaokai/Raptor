@@ -12417,6 +12417,11 @@ it (D1424, D1495); the groups, branches and readers: `raptor-port/docs/superpowe
   keeps the window unseen until the chart rests (at the target, 150ms still, or 1s), then opens it under the event; less
   motion asked for, the chart jumps. The chart stays where it slid after Close and after a grade. Pins:
   `src/tracker/trk-round-seen.test.ts`, the smoke suite's phone checks.
+  **While it slides the chart takes no press and no key but Escape and Tab** (the fresh Opus read's F1, F2): `#board`
+  wears `is-sliding`, and `tracker.css` turns presses off for it and everything inside it — the chart's own
+  `pointer-events:none` alone never reached each event's invisible press circle, drawn with `pointer-events="all"`, so a
+  double-click's second click still opened a window from mid-slide, another event's or the same one's in the wrong
+  place (chat 10, 8 Nov 26; the smoke's "no event on it takes a press" and the half-speed double-click pin it).
 - **D1791** — the Tracker's Find ✕ on a phone empties the box and puts Find away, as Escape does.
   **Built 8 Nov 26 (chat 9):** `components/Header.jsx` — wherever Find is the strip (`max-width:1050px`, tracker.css's
   own break) ✕ clears, closes the strip and blurs the box (the keyboard goes down, the tabs come back), its hover words
