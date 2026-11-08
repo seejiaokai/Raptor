@@ -4390,6 +4390,19 @@ the same ruler on both sides removes a whole class of false differences.
 **Suggested improvement:** In the skill's merge step: when the handoff file clashes, resolve by keeping both blocks whole, then count the opening and closing markers (`grep -c '<!-- now:'` must equal `grep -c '<!-- /now -->'`) before staging — or rebuild the region from each side's own block (`git show :2:HANDOFF.md`, `:3:`) instead of deleting conflict marks.
 **Principle:** When both sides of a conflict end in the same line, git keeps that line once, outside the conflict; "keep both" then needs that line added back to the first side — count paired markers after any such resolution.
 
+### Observation 896: A walker's failed runs leave pictures mixed into the cited range
+
+**Status:** OPEN
+**Date:** 2026-11-08
+**Session context:** chat 29, the Inputs and Medical walk (one Sonnet walker, several attempts at some scenarios)
+**Skill:** New skill candidate: walk-scripts (the walker's brief, `raptor-port/docs/walk-scripts.md`)
+**Type:** open-source
+**Phase/Area:** the walker's pictures and its hand-back
+
+**Issue:** The walker re-ran some scenarios after failed attempts, and each attempt wrote pictures into the same number range (101–200) under new names, so the folder held about 60 stale pictures beside the cited ones — some even sharing a number with a cited one (181-H1-1536 and 181-H1-phone). The walker listed which numbers it cited, and the host had to delete the rest by hand, guessing at the overlaps.
+**Suggested improvement:** In the walker's brief: each attempt writes to a fresh sub-folder or a fresh number range, and before hand-back the walker deletes its own failed attempts' pictures and states the final count; a picture number is never reused within one walk.
+**Principle:** Evidence produced by retries must be separable from the evidence that counts, by construction rather than by a list the reader has to apply.
+
 ### Observation 897: A walker's EXPECTED line written from the host's assumption produced two false FAILs
 
 **Status:** OPEN

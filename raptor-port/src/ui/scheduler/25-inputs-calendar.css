@@ -481,7 +481,11 @@ body.in-cal{padding-bottom:0}
    runs up to a thin strip at the top of the screen (owner D537 — no large gap above a tall window) and scrolls inside.
    The two questions it can put — unsaved changes, and a field changed both ways — sit at the head of the form.
    ============================================================================================================ */
-.floatwin.inpedwin{width:min(430px,calc(100vw - 24px))}
+/* ITS SIZE, ONCE ([INP-ROOM-TIDY], the fresh code read of 8 Nov 26): the window's width, and the room the Inputs list
+   (06-inputs.css) and the Medical tab (16-medical.css) make for it on a desktop — that width and its 16px from the
+   screen's edge — read from here, so the window and the two rooms cannot drift apart. */
+:root{--inpwin-w:min(430px,calc(100vw - 24px));--inpwin-room:calc(var(--inpwin-w) + 16px)}
+.floatwin.inpedwin{width:var(--inpwin-w)}
 .floatwin.inpedwin .win-body{padding:0}
 .inped-win{display:flex;flex-direction:column;min-height:0}
 /* ITS BUTTONS STAY IN SIGHT ([INPUT-LIST-AS-DAY-CARD], 10 Oct 26). An input is changed in this window now (the list's
@@ -689,7 +693,7 @@ body.in-cal{padding-bottom:0}
 
 /* ⤢ AT THE END OF THE "HOW THIS WORKS" ROW (his D1386, D1396 — drawn lw-m3n-draw.mjs d4): the month's own arrow button, the
    row's height; lit while every input is shown */
-.ib-sub .ib-expand{flex:none;width:34px;height:28px;min-width:0;padding:0;font-size:16px;line-height:1}
+.ib-sub .ib-expand{flex:none;width:34px;height:28px;min-width:0;padding:0}   /* its font size and line height went with the typed mark ([INP-ROOM-TIDY]): the drawn one is sized below */
 .ib-sub .ib-expand[aria-pressed="true"]{color:var(--accent);border-color:currentColor}
 /* ITS MARK IS DRAWN, NOT TYPED (owner D1792 (b), 8 Nov 26 — the pictures round's question 13; ui/glyphs.ts EXPAND_INNER,
    COMPACT_INNER): arrows out to the corners while the month is compact, arrows in while every input shows, at the 16px

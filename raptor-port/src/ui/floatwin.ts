@@ -267,14 +267,19 @@ export function useFloatWin(opts: {
     n.style.left = r.left + 'px'; n.style.top = r.top + 'px'
     n.style.right = 'auto'; n.style.bottom = 'auto'
     n.style.width = r.width + 'px'; n.style.height = r.height + 'px'
-    if (!phoneLayout()) n.setAttribute('data-placed', '')   // from the first moment of a drag it is where he puts it
     try { (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId) } catch { /* jsdom */ }
     e.preventDefault()
   }
   const onBarMove = (e: React.PointerEvent) => {
     const d = drag.current, n = el.current
     if (!d || !n) return
-    if (Math.abs(e.clientX - d.x0) > 3 || Math.abs(e.clientY - d.y0) > 3) d.moved = true
+    /* from the drag's first MOVEMENT it is where he puts it — not from the press: `data-placed` gives back the room a page
+       makes for a window at rest, and set at the press it made that page jump on a plain click of the bar (the fresh Opus
+       read of chat 29, 8 Nov 26). A tap that never moves ends in place(), as before. */
+    if (!d.moved && (Math.abs(e.clientX - d.x0) > 3 || Math.abs(e.clientY - d.y0) > 3)) {
+      d.moved = true
+      if (!phoneLayout()) n.setAttribute('data-placed', '')
+    }
     const x = Math.min(Math.max(0, e.clientX - d.dx), Math.max(0, window.innerWidth - d.w))
     /* never let the bar itself go off the bottom: a window dragged past the edge could not be grabbed again */
     const y = Math.min(Math.max(0, e.clientY - d.dy), Math.max(0, window.innerHeight - 42))

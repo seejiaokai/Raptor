@@ -72,7 +72,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
     [LW-FROZEN-BAR-GAP], round 5 of [UI-CONSISTENCY-LOOK]; his answers built in about one night.
   - **His two answers (5 Nov 26):** React Doctor skips the mock-up pages and the original app, the tests' and scripts'
     notes left (D1716 — the setting with job 7); fixes first, the pictures round after (D1717).
-  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page built, accounted and read blind by both, waiting for his "merge live" (chat 24, pull request 708) — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); next the Tracker, on his word, and a re-measure before 5b.
+  - **Started 7 Nov 26, on Opus (D1732):** [RULES-DIET] — the rules diet: plan v3 APPROVED 7 Nov 26, "As recommended" (D1735–D1738); steps 1 and 2 merged 7 Nov 26 (pull requests 656 and 657); step 3 (reading by section) merged 7 Nov 26, pull request 658 — about 7% of a job's read saved, not the plan's three quarters of the three reads; step 4 (the every-chat layer) merged 8 Nov 26, pull requests 663 and 665, his answers on it (D1760–D1762) pull request 671; step 5a (OIL as a page, the full trial) merged 8 Nov 26 on his "merge live", pull request 684, read blind by Astra and a fresh Opus reader; the IT guide as a page merged 8 Nov 26 on his "merge live" (chat 15, pull request 690), read blind by both; People & accounts as a page merged 8 Nov 26 on his "merge live" (chat 17, pull request 700), accounted and read blind by both — it loads with files most jobs open, so the re-measure counts it and narrowing its `paths:` is a question for him then; the scheduler's D212 stale clause (a member may tick SCHEDULER, since D1651) goes with the scheduler's page in 5b; the screen-design rulings as a page merged 8 Nov 26 on his "merge live" (chat 24, pull request 708), accounted and read blind by both — it loads with every file of the app's code, so the re-measure counts it; for 5b, the Inputs pages' D1300 "cyan ring" (the mark is the one blue) and the scheduler's D1038 row's "Not built" (it is drawn); next the Tracker, on his word, and a re-measure before 5b.
     Found by its step 3, low, the agent's: [BUGCHECK-LESSON-ORDER] — the bug-check order's list of missed faults has a second 23 outside it and 8 before 7.
     Found by its step 5a (People), medium, the agent's: [DOCSIZE-PATHS-OPEN] — a rules file whose `paths:` list is never closed passes the document check, its page checks skipped.
   - **Waiting on his look only:** pull requests 636, 637, 639, 641 (other chats' work).
@@ -135,8 +135,7 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [INP-HEAD-SORT-READER] — the Inputs List's column headings sort from the keys since 6 Nov 26, but a screen reader is not told a heading can be pressed; the fix, a button in each heading, changes its look — a picture first (low, with the keyboard sweep D807).
 - [QUALS-HEAD-SORT-KEYS] — the Quals table's headings sort by a click only; the keys cannot reach them (low, with the keyboard sweep D807).
 - [WALK-SCRIPT-UTF8] — a walk script saved partly in another letter coding made the code check fail (6 Nov 26); a line in the walkers' brief guide that scripts are saved as UTF-8 — a guide change, on his word.
-- [MED-ROOM-DRAGGED] — the Medical tab's room for its window (D1300) stays when the window is dragged away, so the cards are squeezed and covered; the Inputs list's fix of 8 Nov 26 applies as it is (low, found by both readers of chat 7).
-- [INP-ROOM-TIDY] — two tidy-ups the code read of 8 Nov 26 filed: the room's size written in two stylesheets, the calendar expand button's unused font size and line height (low, the agent's).
+- [INP-ROOM-TIDY-2] — four tidy-ups chat 29's code reads filed: the window-at-rest test written five times, a sentence in two files, a test's fixed sizes, a stale comment (low, the agent's).
 - [LW-MORE-BELOW-CUE] — the day panel says how many more are below its foot ("↓ 10 more") when its list runs past it (his D1295) — built as the bell's grey foot (D1788) on `claude/pr-leave-war-4988a8`, pull request 680; walk, reads and his look to come.
 - [LW-OVERHAUL] — the Leave War's overhaul (D1140): M1–M4 live (pull requests 566, 567, 569, 581; follow-ups 571–573, 582); M5 PLANNED 28 Oct 26 (`raptor-port/docs/superpowers/plans/2026-10-28-lw-m5-plan.md`) — its four rules and the split answered 28 Oct 26 (D1472–D1475: M5a, balances, then M5b); M5a's drawings all answered 28 Oct 26 (D1479–D1489); M5a built and FULL-checked the night of 28–29 Oct 26 and live on his "merge live" of 29 Oct 26 (pull request 586; his drawing picks D1493; left for his iPhone: a tapped box above the keys, no page zoom on a tap, the number keys' minus, the slide and pinch, My leave with three figures, the "Saving…" note); next, M5b in a fresh chat (D1475) — its drawings in the app's own design (D1496) and its build run through the drawing check (D1495, walk-scripts §10). **M5b round 1 drawn 29 Oct 26** on `claude/leave-war-m5b-iphone-balances-1402b7` (`full-m5b-draw.mjs`, pictures `full/m5b/`): the Settings window, the Events list, holidays by file with its preview, Management on Quals — four questions on https://claude.ai/artifact/F8PHq6k2bTBMS3ukL8qykH, **answered 29 Oct 26 "All as recommended" (D1499 Settings, D1500 the Events list, D1501 holidays by file — public holidays and Off days only, D1502 Management already on Quals)**; **M5b's build spec written and M5b built 29 Oct 26** (`raptor-port/docs/superpowers/plans/2026-10-29-lw-m5b-build-spec.md`; the drawing check green, 10 states); FULL-checked (`raptor-port/docs/handpass/2026-10-29-lw-m5b.md`); then D1510 and the Events list's split (D1512–D1517) built and checked (§10, §11); **all live on his "merge live" of 29 Oct 26 (pull request 588)**. All six of D1250's merges are live (M5b the last — D1475); the rulings files' tripwires raised 29 Oct 26 (D1262). Left: what his iPhone look owes M5a (above) and the overhaul's own leftover items in this list.
 - [LW-EVENTS-LANE] — parked: a better way to show the Leave War's events (round 21's study, B an events lane recommended) — not put to him until he raises it (D1259).
@@ -202,16 +201,11 @@ Every item was checked against git and the code on 18 Oct 26. **Re-order this li
 - [ADMIN-DISPLAY] — an Admin "Display" area of fold defaults — not built without his go-ahead (D161).
 
 **Checks and tooling**
-- [BOARDNAV-SCRUB-CLICK-TIMER] — the board's day-dots test "the click after a scrub does not snap back" leans on a real 350 ms window; it failed once in a crowded run (86 files) and passes alone — make the test wait on what it needs.
-- [TESTS-REQUIRED-ON-MAIN] — GitHub refuses a merge to main only when the secrets scan fails, not the tests; a summary job made required would close it (Astra, 8 Nov 26) — night 3, the setting his own click.
-- [CI-SMOKE-TIMEOUT] — the time limits on GitHub's test jobs live 8 Nov 26 (pull request 670); left: React Doctor to skip the records (D1716) and the design check's one false alarm (night 3, job 7).
 - [LW-ZOOM-TEST-SLOW] — the Leave War desktop browser test "a pinch (phone) or Ctrl+scroll (desktop) zooms the whole grid down and back" timed out twice in one GitHub run (3 Nov 26, at 31.8s and 32.0s) and passed on the next commit's run; watch it (D84).
 - [REVIEW-LAYERS] — his five rulings from the review-process page (D1407–D1411): the scorecard's baseline first, then notes-only pull requests merging by themselves, the secrets scan, the security read, the reader's test set. Steps 1 (the scorecard) and 4 (the secrets scan) built 31 Oct 26, not merged; two repository settings his to approve.
-- [DESIGN-CHECK-GOLD-DOT] — the design checker calls the gold history dot a "grid background" (a false alarm); an ignore for that one file needs his OK.
 - [ONE-RULE-LEFTOVERS] — the one-rule job's 55 behaviour ids are not yet checked by the rule check.
-- [RD-LEFT-1108] — React Doctor's 31 findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 18 in other areas' files — each with its area's next batch.
-- [SHELL-SCRIPT-GUARD] — a guard that refuses a script typed into the command line — his go given (D811).
-- [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822).
+- [RD-LEFT-1108] — React Doctor's findings left after the shell-and-state job: 13 import cycles through the people-settings save (a cycle cannot be kept with a reason) and 10 in other areas' files (the Inputs and Medical 8 settled by chat 29, 8 Nov 26) — each with its area's next batch.
+- [MERGE-ONCE-RECORDS] — finished jobs merged as one pull request, and record files that merge without clashing (D822); his go for the plan's three parts (D1930) — red team, then the build, in chat 33.
 - [MAIN-CHECKOUT-STALE] — step 2 left: a guide line to bring the main folder level after a merge that touches settings, hooks or skills.
 - [REPO-TIDY] — clear the old worktrees (47 today) and the 6 Nov night's three build folders after safety checks; moving the walk pictures out is his call.
 - [COMPACT-WHEN-MOD] — two of the compaction set-up's four checks still unseen — they need a chat that reaches 80%.
@@ -312,22 +306,6 @@ first only if it needs words of its own; (4) its own reason; (5) the war says wh
 weeks, or the database step's read of saved data.
 
 
-### [BOARDNAV-SCRUB-CLICK-TIMER] A day-dots test leans on a real 350 ms window (found 8 Nov 26, chat 5's wide run)
-**What:** `raptor-port/src/ui/boardnav.test.tsx`, "dragging along the day dots runs through the week › the click after a scrub does not
-snap back to where the drag started". After a drag along the board's day dots the browser fires a click naming the dot the finger went
-down on; `src/ui/board.ts` eats that one click for 350 ms (`setTimeout(…, 350)`). The test releases, then dispatches the click in a
-second `act` — on a crowded machine that gap passed 350 ms: in chat 5's run of 86 OIL, board and SANS files at once (8 Nov 26, branch
-`claude/pr-oil-earn-ffbf07` with `main` at `4d5b3828a` merged in) the test took 3009 ms and the click moved the day back (expected 6,
-got 2); alone it passed three times out of three. The code is untouched by that branch. The app is not wrong — a real click follows the
-release within a few milliseconds. **To do:** make the test hold the window open while it clicks (a fake timer around the release and
-the click), never widen the app's 350 ms. **Place:** Checks and tooling, small — with the next board-navigation change, or sooner if
-GitHub's run trips on it.
-**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the test's clock stands still from the release to the
-click (only `setTimeout` faked, restored in a `finally`); the app's 350 ms untouched. Red first: a real 400 ms wait put between
-the release and the click failed it exactly as chat 5 saw (expected 6, got 2); with the fake clock it passed with the wait still
-in; the wait then taken out — the file 41/41. Chats 11 and 13 asked first (D302): chat 11's work is merged and leaves the file
-alone, chat 13 confirmed by message that its branch changes `board.ts` in three other places only (the unreadable-week notice, its import, the hidden warning's Reset arrow). Leaves for the archive once merged.
-
 ### [RD-LEFT-1108] React Doctor's 31 findings left in the app after the shell-and-state job (found 8 Nov 26)
 **What:** after `claude/rd-shell-state` (evidence `raptor-port/docs/handpass/2026-11-08-rd-shell-state.md`), React Doctor 0.9.18 finds 31 in the app's own code
 (not the rules engine, not tests). **(1) 13 import cycles**, every one through `raptor-port/src/state/people-settings-commit.ts`
@@ -336,10 +314,12 @@ alone, chat 13 confirmed by message that its branch changes `board.ts` in three 
 test passes, so none reads a value before it is set today; the risk is a later import that does. **To do:** find which of
 its functions each importer takes, and move those to a file with no app imports, as the save indicator's source was moved
 to `ui/savestatus-source.ts` — a change to saved data's path, so its own check (tier WALK at least). **(2) 18 in files outside
-that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/CutFields.tsx` 2, `ui/DateCal.tsx` 2, `ui/MedicalView.tsx` 2,
-`ui/TypeLegend.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
+that job:** `ui/UsersPanel.tsx` 3, `ui/AdminPage.tsx` 2, `ui/AccessScreen.tsx` 1, `ui/SansCal.tsx` 1, `ui/SansDay.tsx` 1, and `ui/interactions.ts` 2 (a list
 lookup in a loop — a file of job 1's pull request 664, left alone that night). Each rides with its area's next batch (D490,
-D1534). **Place:** the agent's, low — (1) with the next People and accounts change, (2) as listed.
+D1534). **8 Nov 26, chat 29 (`claude/chat29-inputs-medical`, pull request 707):** `CutFields.tsx` 2, `DateCal.tsx` 2,
+`MedicalView.tsx` 2 and `TypeLegend.tsx` 2 settled — 5 fixed, 3 kept with written reasons (evidence
+`raptor-port/docs/handpass/2026-11-08-chat29-inputs-medical.md`). **Place:** the agent's, low — (1) with the next People and
+accounts change, (2) as listed.
 
 ### [BUGCHECK-LESSON-ORDER] The bug-check order's list of missed faults is out of order (found 7 Nov 26, the rules diet's step 3)
 **What:** in `raptor-port/docs/bug-check-order.md` §7.11 the lessons run 1–6, 8, 7, 9–23, and a second lesson numbered 23
@@ -711,10 +691,6 @@ what a tap opens, and whether it is built. The first entry: a reminder to attach
 starts (D1150). The bell's notices already built are listed in it too. Kept by the agent: any job that finds a place that
 needs one adds a line and names it in its closing report; he may strike any. **Where:** `raptor-port/docs/notifications-register.md`
 (its row in the project guide's map). **21 Oct 26:** written — 11 built, 1 ruled (D1142), 6 proposed by the full mock-up (P1–P6), put to him to strike; the item stays open while proposed lines wait.
-
-### [DESIGN-CHECK-GOLD-DOT] The design checker flags the gold history dot (filed 26 Oct 26 from the night of 21 Oct 26's handoff block)
-**Seen (21 Oct 26, the overnight run):** the design checker flags the gold history dot in `raptor-port/src/ui/scheduler/20-changes-quals.css` as a "grid background" — a false alarm. An ignore for that one file was added that night and taken out by job 5's helper; adding it needs his OK. **Place:** Checks and tooling — low, his word.
-**His OK, 8 Nov 26 (D1890, asked with a picture): built by chat 19 on `claude/chat19-checks`** — one scoped skip (rule `codex-grid-background`, that file only) in both copies of the checker's settings, its reason naming D1890. Leaves for the archive once merged.
 
 ### [CREW-REASON-TWICE] A crossed-out man's reason says each fact once (his D1121, 21 Oct 26; a later job)
 **His words** (to round 2 of [BOARD-SIDE-WIDTH], whose "checked and left" item showed Grit's reason): *"Yeah we shouldnt have the reason explained twice. we can do that job later too"*. **What is there:** with a place picked, a man struck for an absence reads the kind's meaning, then his own remark — "medically down — cannot report to work (ATT C) — Medically down till 17 Jul", "ordinary medical leave (OML) — Medical leave 13 Jul" (`raptor-port/src/engine/avail.ts` slotBar and `inputs.ts` offWord build it; the same sentence is the note a tap raises and the ALL AVAIL window's reason). Picture: `raptor-port/docs/img/handpass/2026-10-21-board-side-width/look/crop-reason-repeat.png`. **To do:** a wording that keeps the kind's fact where his remark does not say it ("cannot report to work") and drops the repeat; put to him before and after, read cold first (`design-practices.md` §1a); the design guide's lesson 15. **Place:** a job of its own after [BOARD-SIDE-WIDTH], or with the words pass ([UI-SLEEK-PASS], D808) — his to place.
@@ -1923,44 +1899,6 @@ waive owed reads or authorize a live merge.
 **Seen again 16 Oct 26 (pull request 519 merged with the overs deferred, D29):** How we work 40,313 bytes (marker 39,500), the Scheduler's 94,224 (92,000), the Inputs pages' 35,026 (32,000); and `plain-language.md` and `shipping.md` over their tripwires. All five markers RAISED the same day with their reasons (`raptor-port/scripts/docsize.mjs`), so documents-only changes pass again; the spent-row pass that brings them down is still this job.
 **Place:** the agent's — a documents-only chat; (b) is his.
 
-### [SHELL-SCRIPT-GUARD] A guard that refuses a script typed into the shell — eighteen skill notes ask for it (filed 13 Oct 26 by the skill-notes review; his go to build it given the same day — D811)
-
-**What keeps happening.** On this PC a script handed to the shell inline (a here-document, `node -e`, `python -c`)
-loses its backslashes or fails on an apostrophe, often with no error: a regular expression arrives as a backspace
-character, a test asserts the wrong pattern, a file is written with real line breaks inside a string. The rule
-("write the script to a file with the file tool, then run the file") has been in memory since 28 Sep 26
-(`bash-heredoc-apostrophes-fail`, `node-e-in-git-bash-mangles-escapes`, `python-edits-crlf-trap`) and in several
-handoffs — and the same mistake was logged again in twelve later chats, three times in the chat after a note said
-"stop adding notes and build the guard" (observations 246, 259, 402, 411, 415, 469, 472, 495, 500, 512, 518, 526; in
-part 248, 311, 328). The same family: an in-place stream edit (`sed -i`) that rewrote a whole file's line endings
-(403, 460).
-
-**To build (small; no app code):** a check that runs before every shell command, as the background-command guard
-does (`.claude/hooks/bg-cwd-guard.mjs`, D162), and REFUSES, with the sentence "write the script with the Write tool
-and run the file": (1) a here-document, or an inline `-e` / `-c` script, whose body holds a backslash followed by a
-letter or an apostrophe and which writes or edits a file; (2) `sed -i` on a tracked file ("use the editor tool").
-**Conditions from two notes about writing such a guard:** it is wired `if …; then …; else exit 0; fi` — the
-`test && run || exit 0` form turns its own refusal into "allowed" (270) — and proved live with one refused and one
-allowed command; what it assumes about the harness is MEASURED first and written at its head, and its tests take the
-environment as an input (285). **A cheaper alternative, if he prefers no new guard:** one committed helper that
-applies a list of exact find-and-replace pairs read from a file, so no script is typed at all (469).
-**Place:** allowed by him (D811, "Approve all"). The agent's placing: a small job on its own branch, read by a fresh
-Opus reader, after the Calendar job unless he says sooner; it removes the commonest lost round trip of every chat.
-**Met again since it was filed (13–26 Oct 26 — observations 601, 609, 668):** about forty more times by the three notes'
-own count, five of them hangs of two to five minutes on overnight runs; every time the Write or Edit tool put it
-right.
-**Two more refusals for the guard:** a command that begins `cat >` (or `cat >>`) with no here-document or file of its own —
-it waits on input for ever and the tool moves it to the background after two minutes (609); and every script run from
-the shell gets `< /dev/null`, so anything that reads input ends at once. **Conditions from the two notes about writing a
-command-refusing hook (598, 626):** read the shell's real grammar before the rule — quotes and escapes per shell,
-here-document and here-string bodies, comments, `$( … )`, `bash -c` / `eval`, redirects, launcher words (`timeout`,
-`env`) — and judge only the word in command position (`grep vitest` is not vitest); write the everyday commands as tests
-first (a commit with a here-document message, a pull request body, a grep for the tool's own name); list every situation
-in which the platform fires the hook's event and refuse only in the one the rule is for, never twice on unchanged state.
-The cheaper helper's find-and-replace pairs match each spot's own line endings (694).
-**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged — a hook, his "merge live" in that chat):** `.claude/hooks/script-guard.mjs`, 20 tests written first, the everyday commands among them; what the shell does was measured before each refusal (the file's header) — so the "every script gets `< /dev/null`" point above was not taken: Python takes `/dev/null` for a keyboard and waits in its prompt, so the guard refuses that instead. The in-chat proof comes in the first chat started after the merge (the app reads hook settings when a chat starts). Readers owed: Astra and a fresh Opus reader (D811, D1761).
-**Read 8 Nov 26 (chat 27):** Astra and a fresh, blind Opus reader, one brief, blind to each other (`raptor-port/docs/superpowers/briefs/2026-11-08-chat19-checks-read-{brief,astra,opus}.md`). Every finding fixed red-first: here-strings, `--help`, single-quoted inline scripts, a quoted `<` and a message piped to `tee` no longer refused; `sed -e'…'`/`-f…` written on, launcher options with values (`env -u X`, `xargs -n 1`), reserved words (`then`, `do`, `!`) and a list git refuses whole no longer let through (24 tests); "checks passed" fails a first job that gave no answer, and its tests run in the Docs guard; the board test pins the 350 ms window both ways (shown red at 1 ms and 5 s); the rule check no longer counts a drawing's "Q11.5" as a test (Q11 back in its baseline); `shipping.md` names the right list. Also measured: in chat 27 the shell's input was `/dev/null`, not a pipe that never ends — the refusal message says both. **Tidiness, filed not fixed:** `nativePath` copied from push-guard, not imported; the `<`/`>` pattern written twice in `tokens()`, its comment about a digit before `>` not matching the code; docsize's comment says the gates skip `.impeccable/**`, untrue of the `raptor-port/` copy; `python -VV` refused; a quoted `<` mid-word in an option is still read as a redirect for cat, tee and the interpreters (rare); once private, the two new jobs bill about 2 minutes a run.
-
 ### [CHECK-TOOLS-HARDEN] Small hardening of the checking tools, asked for by seventeen skill notes (filed 13 Oct 26 by the skill-notes review; none urgent)
 
 Each line is a place where a tool allowed a mistake that a guide now only warns about. Scripts under
@@ -2246,6 +2184,7 @@ that merged with PR #481 (`[STACK-MERGED-TIDY]`).
 **Why (13 Oct 26):** nine merges in one afternoon took about three hours. Two causes were fixed the same day (the slow unit check split in four, a settings change no longer starting the full run — D822). Two are left. **(1) Merge once.** When several jobs finish together (a night's run — D799), combine their branches on ONE branch, run the checks once, and merge once on his word — each job keeps its own check, evidence sheet and backlog item; D485's batch, applied to the merge. Never stack one pull request on another's branch: it runs no checks until pointed at `main` and pushed to. **(2) The records clash at every merge** — `HANDOFF.md` (every chat rewrites the top of `## Now` and the first line of the gate baseline), `OUTSTANDING.md` (the priority list and the list of jobs without a ChatGPT reader), the rulings files and `DECISIONS.md`'s map (every new ruling goes at the top of a table), `raptor-port/docs/walk-ledger.md` and the two archives (every job adds at one place). Thirteen such clashes were resolved by hand that afternoon, every one "keep both sides". **Ways to weigh (measure on a copy first):** git's own "keep both sides" setting for the add-only files (`.gitattributes` — the ledger, the archives, the skill log), and note Fable's finding CI-PATHS-001: a change to that file runs every check; the gate baseline's "latest" line kept as a list that only grows; the rulings map rebuilt by the script after every merge (`backlog-archive.mjs --rulings` already does it); one records-only pull request at the end of a batch instead of records in every job's. Whatever is chosen must keep the document check's guarantees (no ruling or item lost or doubled). Ruling: D822.
 
 **The plan (8 Nov 26, chat 27 — measured on a replay of that day's 113 merges, 66 of which clashed; put to him, nothing built before his go):** `raptor-port/docs/superpowers/plans/2026-11-08-merge-once-records-plan.md` — "keep both sides" only for the add-only files (it would have cleared 12 of the 66, and is wrong for the handoff and the map), a "settle the records" step for the rest, and one merge for jobs that finish together.
+**His go, 8 Nov 26 evening — "Go, all three" (D1930):** all three parts, in the plan's order. **Next, in a fresh chat (33):** the plan's red team (Astra, then a fresh, blind Opus reader — D1760, D1770); then the build on its own branch, the script replayed on the 66 merges before it is trusted; Astra's code read and a fresh, blind Opus read; part 3 read as a working-guide change; live on his "merge live".
 
 ### [SKILL-FUSION-WRITING] The writing guide — outside writing guides and skills read at the source, their best parts taken into our own guide (he asked, 13 Oct 26) — the guide is approved (D836) and the rechecked wordings with it (D837–D839); what is left here is D835's step: the guide for how the agent writes to him
 **He has answered (14 Oct 26 — "All approved as recommended"): the guide is approved (D836) and so are the rechecked wordings (D837, D838, D839). STEPS 1 TO 4 are done; STEP 5, the build, is next.** The guide goes live with this branch on his "merge live". **What is left of this item — D835's step, after the build or beside it, his to place:** the part of the guide that fits prose drafted into `.claude/rules/plain-language.md` for how the agent writes to him, read by the guide's readers, put to him (the tests that would go WRONG if copied across are listed at the foot of `raptor-port/docs/superpowers/briefs/2026-10-13-writing-guide-reads-2.md`). The paragraph below is the state before his answer.
@@ -2352,42 +2291,6 @@ reading from the code. A question kept for him (D994), not put until he says: sh
 phones too (fewer words on its buttons, or some behind the ⋯), drawn for him first (D1625)? Pictures:
 `raptor-port/docs/img/handpass/2026-11-08-board-layout/walk/b/chromium-844x390/`.
 
-### [CI-SMOKE-TIMEOUT] The checks job: time limits built 8 Nov 26; React Doctor's record skip and one design-check false alarm left (found 5 Nov 26, the round-4 merge; the agent's)
-**Seen:** on pull request 643's closing push (`2e37edb23`, notes only — the same app code had passed the same job on
-`4d13c06d8` half an hour before), `tracker (smoke 1/2)` ran 16 minutes with every other job finished; it was cancelled and
-re-run alone, and passed. `.github/workflows/deploy.yml` sets no `timeout-minutes` on that job (nor, by reading, on most
-others), so a hang waits for GitHub's default of 6 hours. **To do:** a `timeout-minutes` on each test job, set from its measured
-length on GitHub's machines with room to spare (the smoke halves about 3–4 min — measure first); if the smoke hangs again,
-find where (its own log), as D87 says. **The time limits: built 8 Nov 26 on `claude/ci-smoke-timeout`** (a workflow change —
-his "merge live"), from the 20 green runs before 8 Nov 26: build 10 minutes (0.9 at most), unit 20 (7.5), geometry 30
-(16.4), the Tracker smoke 30 a half (17.7) and the smoke's own step 12 (3.9 at most, over 40 halves). **Measured, not guessed: the 16 minutes
-of 5 Nov 26 were not a hang in the smoke** — that half's "Install Chromium" (the system packages it fetches) took 12.3 of
-them and the smoke 3.8; the same install took 8 to 16 minutes in 9 of the 20 green runs (10 jobs), while the browser tests
-themselves never passed 6.2. A slow install is the browser jobs' long tail, so their limits sit well above it. **Two real
-stalls did happen, both before the smoke, and only the job's limit catches them** (the fresh Opus read of the change):
-26 Oct 26, `claude/tracker-small-1021`, smoke 2/2's "Install Chromium" printed nothing for 62 minutes until cancelled; 5 Nov
-26, `claude/postout-bell-look`, smoke 2/2's Node set-up took 34 minutes and its install 9 more, cancelled. Each would now
-stop at 30 minutes. The smoke itself has never hung (4.0 minutes at most over about 1,000 halves, by that read's count). **Still open here:** the two points below, which are not workflow
-changes. **Also here (D1716):** React Doctor told to skip `docs/mock/`, `docs/img/` and `reference/` — records nobody edits — one setting, no file of them changed, the full run re-made after to confirm the count (about 400 today, about 215 once nights 1–2 are in). **And:** the design check's one false alarm on `src/tracker/trk-palette.test.ts`
-(a test's pattern that reads the Tracker's `borderLeft` text, flagged as a side stripe) — a narrow ignore with its reason, in
-`.impeccable/config.json`. **Place:** night 3, job 7 of the sizing plan; a workflow change — his "merge live".
-**Both points built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** React Doctor's three skips — its full check 421 findings → 236, none left in those folders. The design check's "false alarm" was not the test file: the checker reads its settings only from the chat's current folder, so a chat whose shell had moved into `raptor-port/` had no skip list at all (his ruled side stripes flagged with it); a byte-for-byte copy there, and the document check fails if the two differ (`raptor-port/docs/file-map.md`, the `.impeccable` row). Leaves for the archive once merged.
-**Astra's read (8 Nov 26, the morning after — D1743; the night's helper had run only the fresh Opus read):** no finding in the
-change — it measured the same 20 green runs (build 0:54 at most, unit 7:29, geometry 16:26, the smoke half 17:41, the smoke
-step 3:53), found every test job covered and each limit where GitHub reads it, and nothing else in the workflow changed; one
-older gap, filed as [TESTS-REQUIRED-ON-MAIN] (`raptor-port/docs/superpowers/briefs/2026-11-08-ci-smoke-timeout-read-astra.md`).
-
-### [TESTS-REQUIRED-ON-MAIN] GitHub requires only the secrets scan before a merge to main, not the tests (found 8 Nov 26 by Astra; the agent's)
-**Seen:** Astra's read of [CI-SMOKE-TIMEOUT]'s change; checked by the host the same morning — the one ruleset on `main`
-("main: secrets scan", D1540) requires only `secrets scan`, and `main` has no branch protection. So a pull request whose test
-jobs failed or timed out can still be merged on GitHub; today only the merge steps keep it out (D1746 step 3: "its last run
-green", read by hand). **The fix, as Astra gives it:** one summary job in `deploy.yml` that runs on every pull request, passes a
-notes-only one (the gates skip those by `paths-ignore`) and otherwise passes only when every test job of the run passed; that
-one job then made a required check on `main` in the same ruleset — never the path-filtered jobs themselves, or a notes-only pull
-request could never merge. **Place:** with the checks batch (night 3); the workflow job his "merge live", the ruleset setting
-his own click, as D1540's was — the steps put to him with the build.
-**Built 8 Nov 26 on `claude/chat19-checks` (chat 19, not yet merged):** the "checks passed" job and its script (8 tests). The notes-only skip for pull requests moved from the trigger into a first job, "what changed" — left on the trigger, a required check would never report on a notes-only pull request, which could then never merge (`raptor-port/docs/gates-and-deploy.md` §Now). **Left:** his click in the ruleset, once one notes-only pull request after the merge has shown "checks passed" green.
-
 ### [LW-ZOOM-TEST-SLOW] A Leave War desktop browser test timed out twice in one GitHub run (found 3 Nov 26; low, the agent's)
 On pull request 621 (`claude/week-swipe-pdf-print`, a branch that changes nothing in the Leave War), GitHub's run of commit
 `62556cdde` failed one job, `geometry (lw-desktop 2/2)`: `e2e/leavewar.spec.ts` "a pinch (phone) or Ctrl+scroll (desktop) zooms the
@@ -2439,17 +2342,13 @@ one (a measured layout — a picture first). **Place:** his look; then close, or
 
 **Delivered D566 combined branch preview,5Oct26:** https://raptor-q27mo3zqg-kai-e2f5.vercel.app (source7f0b78bf; completed VercelSUCCESS/Preview9ZKYvXmsMPbWpc3RkwppHcWKzqqN). All3interface fixes checked/fresh independent R1PASS; owner look/Claude reads/authorized merge remain outstanding. Shipping method/limits in current accepted-batch evidence; no live authority.
 
-### [MED-ROOM-DRAGGED] The Medical tab's room stays for a window dragged away (found 8 Nov 26)
-**Found by both code readers of chat 7** (Astra, `raptor-port/docs/superpowers/briefs/2026-11-08-chat7-inputs-read-astra.md` (1),
-and the fresh Opus reader): the Medical tab makes room for the input window (D1300, `.med-room`, `16-medical.css`), but a window
-he has dragged away keeps its place for the session, so the cards stay squeezed AND covered. **Fix:** as the Inputs list's of
-8 Nov 26 (`06-inputs.css`): the room only while the window stands where it opens — `body:has(.floatwin.inpedwin:not([data-placed]))`
-before the room's rules; a browser test that drags the window away first, red. **Place:** with the next Medical or Inputs batch.
-
-### [INP-ROOM-TIDY] Tidy-ups the code read of 8 Nov 26 filed
-**Filed by the fresh Opus reader of chat 7, not fixed (D489):** (1) the room's size (the window's 430px, its 16px) is written in
-both `06-inputs.css` and `16-medical.css` — one variable would keep them together; (2) `.ib-sub .ib-expand`'s font size and
-line height (`25-inputs-calendar.css`) styled the typed mark and now style nothing. **Place:** with [MED-ROOM-DRAGGED].
+### [INP-ROOM-TIDY-2] Tidy-ups chat 29's code reads filed (8 Nov 26)
+**Filed, not fixed (D489), by the fresh Opus readers of `claude/chat29-inputs-medical`:** (1) the test "the input window stands
+where it opens", `body:has(.floatwin.inpedwin:not([data-placed]))`, is written five times across `06-inputs.css` and
+`16-medical.css` — one class set on the page would keep them together; (2) the sentence on how a cut-off's draft is read is in
+both `ui/CutFields.tsx` and `ui/cutdraft.ts`; (3) the Medical browser test repeats the window's 430 and its 16 instead of
+reading `--inpwin-room`; (4) the comment above `dragging()` in `ui/floatwin.ts` names a caller that no longer exists (older
+than that job). **Place:** low, the agent's — with the next Inputs or Medical batch.
 ### [LW-READS-OWED-1024] Fresh reads owed from 24 Oct 26
 **25 Oct 26 (the night): the reader of D1305–D1355 and lessons 45–54 RAN** — `raptor-port/docs/handpass/parts/lw-1025/reads-1305-1355.md`; its short-line and full-row findings and lesson 54 fixed the same night. **Left:** lessons 49, 50 and 52 (each claims a little more than he said — the fix worded in that file), and D1297's sweep of earlier evidence sheets with its reader.
 One fresh, blind Opus reader of the short lines of D1305–D1334 against their full rows (D138) and of design lessons 45–53
