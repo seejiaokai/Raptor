@@ -1010,6 +1010,15 @@ the reader's instructions or model change, it is run on every case and a change 
    **Lesson:** before a walk asserts what a tap opens, search the rulings for what a tap on that kind of entry opens on an
    ordinary day, and walk the two side by side — the ruled window is the expected one, never the build's; and the sizing
    lines name, lesson by lesson, what covers this list (`scripts/handpass/lw-d1720-walk.mjs` step B, re-walked; his D1722).
+24. **A walk that never flicked to the page's foot on a phone (his iPhone recording, the Leave War, 8 Nov 26, 14:31).**
+   Every walk of the pinned dates row scrolled to set places and flicked in the middle of the page. On his iPhone a hard
+   flick to the page's foot bounced it, Safari folded its toolbar, and for a moment the bounce carried the top bar off
+   screen; the screen-size change Safari sends then re-measured the pinned row from where the bar stood, and the row
+   stayed up there, missing, until he scrolled back up. The PC's Chromium neither bounces nor folds a toolbar.
+   **Lesson:** a walk of anything placed against the top bar, or measured on a scroll or a screen-size change, flicks to
+   the page's very foot and back on a phone, and the walk's sizing names what the PC cannot show (the bounce, the folding
+   toolbar) as a look for his iPhone; a test stands the bar out of place for a moment and sends the screen-size change
+   (`e2e/leavewar.spec.ts` and `e2e/geometry.spec.ts`, "…carried off for a moment"; `[TOPBAR-BOUNCE-AWAY]`).
 
 ## 8. Making the checks FIND rather than CONFIRM
 

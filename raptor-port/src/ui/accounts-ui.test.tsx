@@ -63,6 +63,62 @@ afterAll(async () => {
 })
 beforeEach(async () => { await act(async () => { resetSession(null); notify() }) })
 
+describe('D1873 — the fixed bar reserves space in both app trees and leaves none at sign-in', () => {
+  it('measures the guest bar on entry, then the main bar, and clears the height on sign-out', async () => {
+    const rect = HTMLElement.prototype.getBoundingClientRect
+    const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('#guestApp > .topbar')) return { height: 52.375, top: 0, bottom: 52.375 } as DOMRect
+      if (this.matches('#shell > .topbar')) return { height: 86.375, top: 0, bottom: 86.375 } as DOMRect
+      return rect.call(this)
+    })
+    const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
+    try {
+      await signInAs('bar1873@mail'); ask('Bar1873')
+      await signInAs('ad', 'a'); setGuestView(true)
+      await signInAs('bar1873@mail')
+      expect($('#guestApp')).toBeTruthy()
+      expect(height()).toBe('52.375px')
+      await signInAs('ad', 'a')
+      expect($('#shell')).toBeTruthy()
+      expect(height()).toBe('86.375px')
+      await click($('#logout'))
+      expect($('#login')).toBeTruthy()
+      expect(height()).toBe('')
+    } finally {
+      measured.mockRestore()
+      await signInAs('ad', 'a'); setGuestView(false)
+      await act(async () => { resetSession(null); notify() })
+    }
+  })
+  /* The fresh Opus read of the bar's code, F1 (8 Nov 26): a page change can make the bar a row taller or shorter (Edit
+     Schedule's changes clock wraps it where the war's bar fits one row). The bar's own watch writes the room a frame late,
+     so the browser had already kept the war's rows where they stood under the old room — back on the war from Edit
+     Schedule they sat 47px low (GitHub's run of the browser test). jsdom has no resize watch, so only the Shell's
+     before-paint write can pass this. */
+  it('a page change that changes the bar\'s height moves the page\'s room before paint', async () => {
+    const rect = HTMLElement.prototype.getBoundingClientRect
+    const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('#shell > .topbar')) {
+        const h = this.classList.contains('editing') ? 104 : 57
+        return { height: h, top: 0, bottom: h } as DOMRect
+      }
+      return rect.call(this)
+    })
+    const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
+    try {
+      await signInAs('ad', 'a')
+      await act(async () => { setPage('editsched'); notify() })
+      expect(height(), 'Edit Schedule\'s taller bar').toBe('104px')
+      await act(async () => { setPage('viewsched'); notify() })
+      expect(height(), 'back to a one-row bar').toBe('57px')
+      await act(async () => { setPage('editsched'); notify() })
+      expect(height()).toBe('104px')
+    } finally {
+      measured.mockRestore()
+    }
+  })
+})
+
 /* D292 (27 Sep 26) REPLACED D166 (3)'s "no preview as a member": an admin's badge is the switch to the member view and
    back again (its tests: ui/memberview.test.tsx, PO11); "View as" another PERSON stays gone */
 describe('AC10 — no "View as"; the badge names the signed-in person (D166 (3), D292)', () => {
@@ -347,6 +403,53 @@ describe('D1657 — the failed-save band on the sign-in, the access screens and 
     expect(bar.classList.contains('save-failed')).toBe(false)
     expect($('#guestApp .savestat.failed')).toBeFalsy()
     await signInAs('ad', 'a'); setGuestView(false)
+  })
+  /* D1873 (round 2): the bar is fixed now, so the page moves down under the band only when --topbar-h changes. The bar's
+     own resize watch writes it a frame late (to stay out of the browser's resize-watch loop), so the band's coming and
+     going must write it before paint by itself, or for one frame the band covers the page's first line. jsdom has no
+     resize watch, so only that before-paint write can pass this. */
+  it('D1873 — the band moves the page in the same frame: the reserved height follows the bar as the band comes and goes', async () => {
+    const rect = HTMLElement.prototype.getBoundingClientRect
+    const measured = vi.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(function (this: HTMLElement) {
+      if (this.matches('#shell > .topbar, #guestApp > .topbar')) {
+        const h = this.classList.contains('save-failed') ? 94.375 : 58.375
+        return { height: h, top: 0, bottom: h } as DOMRect
+      }
+      return rect.call(this)
+    })
+    const height = () => document.documentElement.style.getPropertyValue('--topbar-h')
+    /* The fresh Opus read, F2: the Shell tells the page the band came with a resize notice, and the bar's own window-resize
+       listener rewrites the room on it — inside the same act, so a check after it passes with or without the before-paint
+       write. This listener, added before the Shell mounts, runs before the bar's and records the room as it stood when
+       that notice went out, after paint: only the before-paint write has it right by then. */
+    const atNotice: string[] = []
+    const onResize = (e: Event) => { if ((e as Event & { saveBand?: boolean }).saveBand) atNotice.push(height()) }
+    window.addEventListener('resize', onResize)
+    try {
+      await signInAs('ad', 'a')
+      expect(height()).toBe('58.375px')
+      await fail()
+      expect($('#shell > .topbar').classList.contains('save-failed')).toBe(true)
+      expect(height(), 'the page moved down with the band').toBe('94.375px')
+      await retry($('#shell > .topbar .savestat.failed'))
+      expect(height(), 'and back up when it went').toBe('58.375px')
+      expect(atNotice, 'the room was already right before the band was painted, both ways').toEqual(['94.375px', '58.375px'])
+      window.removeEventListener('resize', onResize)
+      await signInAs('band1873@mail'); ask('Band1873')
+      await signInAs('ad', 'a'); setGuestView(true)
+      await signInAs('band1873@mail')
+      expect($('#guestApp')).toBeTruthy()
+      expect(height()).toBe('58.375px')
+      await fail()
+      expect(height(), 'the guest page too').toBe('94.375px')
+      await retry($('#guestApp .topbar .savestat.failed'))
+      expect(height()).toBe('58.375px')
+    } finally {
+      window.removeEventListener('resize', onResize)
+      measured.mockRestore()
+      be.failNext(0)
+      await signInAs('ad', 'a'); setGuestView(false)
+    }
   })
 })
 

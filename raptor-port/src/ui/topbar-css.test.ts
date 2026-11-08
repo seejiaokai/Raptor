@@ -9,6 +9,29 @@ import { describe, it, expect } from 'vitest'
 
 const css = readSchedulerCss().replace(/\/\*[\s\S]*?\*\//g, '')
 
+describe('D1873 — the app bar holds to the screen through the page spring', () => {
+  it('fixes only the main and guest bars to the viewport, at their full width', () => {
+    const screen = css.match(/@media screen\s*\{([\s\S]*?)\n\}/)?.[1] ?? ''
+    const bar = screen.match(/#shell > \.topbar, #guestApp > \.topbar\{([^}]*)\}/)?.[1] ?? ''
+    expect(bar).toMatch(/position:fixed[;}]/)
+    expect(bar).toMatch(/top:0[;}]/)
+    expect(bar).toMatch(/left:0[;}]/)
+    expect(bar).toMatch(/right:0[;}]/)
+    // The Leave War's own .topbar must still scroll away. Print keeps the old flow.
+    expect(css).toMatch(/\.topbar\{position:sticky;/)
+  })
+
+  it('reserves the measured bar height in both page trees, only on screen', () => {
+    const screen = css.match(/@media screen\s*\{([\s\S]*?)\n\}/)?.[1] ?? ''
+    const space = screen.match(/#shell::before, #guestApp::before\{([^}]*)\}/)?.[1] ?? ''
+    expect(space).toContain('content:"";')
+    expect(space).toContain('display:block;')
+    expect(space).toContain('height:var(--topbar-h,0px)')
+    // No new scroller or containing block: the pinned rows still follow scroll(root block).
+    expect(screen).not.toMatch(/(?:overflow|transform|filter|contain|overscroll-behavior)\s*:/)
+  })
+})
+
 describe('the top bar: Edit Schedule’s tint and the phone’s sync dot are two classes', () => {
   it('.topbar.editing re-defines the tint — and nothing about the Sync pill', () => {
     expect(css).toMatch(/\.topbar\.editing\{[^}]*--topbar-a:#15384c/)

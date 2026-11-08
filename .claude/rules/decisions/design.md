@@ -62,6 +62,9 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   typing not saved, and the question boxes, which exist to stop a change until answered, keep the bar covered [D1645].
 - Help's and Admin's titles take the size and weight of Logic's page name — 18px, weight 700 on a desktop, 16px on a
   phone (the agent's reading) — and keep their place; the pages without a title stay without one [D1138].
+- On his iPhone the top bar stays on screen, on every page, when a flick reaches a page's foot and the page springs past
+  its end — the top bar fixed to the screen; built with the pinned row and live since 8 Nov 26, after his iPhone
+  look [D1873].
 
 ## The page names beside TALON
 - The page names, Edit Schedule to Admin, stand on the top bar's first row beside TALON wherever they all fit, the bar's
@@ -443,7 +446,7 @@ file; the map of every ruling, and how to record or retire one: `DECISIONS.md`.
   in words, the lull's × the drawn ✕, the × on each student a line icon — its pencils the app's one solid pencil [D1132,
   D1135, D1705, D1134].
 - The Tracker's: its "Delete course" question and an import's note drop their typed ↺ and ⇅ marks [D1860].
-- The Tracker's: on a phone its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791].
+- The Tracker's: on a phone, and on any window up to 1050 wide, its Find strip's ✕ empties the box and puts Find away, the ✕ staying in the box [D1791, D1935].
 - The Tracker's: its search magnifier becomes the app's own, its handle as long as every other search box's, in place
   of its own shorter one; built (chat 28) [D1900, D1127].
 - People and accounts': the waiting screen's "View the schedule", and its line that he can look read only meanwhile, show

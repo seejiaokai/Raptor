@@ -12,6 +12,18 @@
    hand-written colour there is how the two drift apart. */
 .topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:12px 20px;
   background:linear-gradient(180deg,var(--topbar-a),var(--topbar-b));border-bottom:1px solid var(--edge)}
+/* D1873: on his iPhone the page's spring carries the sticky bar away, while the fixed dates row stays put.
+   Hold the APP bar to the same viewport, keeping its measured border-box height in the page's flow. No wrapper,
+   transform or new scroller: the bands stay viewport-fixed and the dates still use scroll(root block). The Leave
+   War's own .topbar must scroll away, so these selectors name only the two app roots. Screen-only keeps print's
+   existing flow. The root height is supplied by wireTopbarVar, including wrapping and both bands. */
+@media screen {
+  /* Keep the bar's paint separate, as the sticky bar's was. At desktop scale 1.25, merging its paint into the
+     page changed the OIL filter text despite identical rectangles and fonts. The opacity hint restores that
+     paint without a transform or a containing block that would trap the fixed bands/windows. */
+  #shell > .topbar, #guestApp > .topbar{position:fixed;top:0;left:0;right:0;will-change:opacity;}
+  #shell::before, #guestApp::before{content:"";display:block;height:var(--topbar-h,0px)}
+}
 /* EDIT SCHEDULE wears a blue-tinted top bar so it reads instantly as a
    different mode from the near-identical View-only sched (owner, 22 Aug 26 —
    "make a nice light blue gradient … when we are viewing in edit schedule").

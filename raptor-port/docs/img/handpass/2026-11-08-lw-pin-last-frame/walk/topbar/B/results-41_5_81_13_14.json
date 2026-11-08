@@ -1,0 +1,210 @@
+{
+ "rows": [
+  {
+   "id": "S4.desk.band-up",
+   "verdict": "PASS",
+   "what": "no-switch page: bar 58, page top 58, first content 58. With ?savefail (band already up when the page opened: true) and after one saving change: band {\"top\":57,\"bottom\":93,\"h\":36,\"text\":\"Not saved — keep this page openRetry\"}; bar 94 (grew 36), page top moved 36, first content moved 36, first content minus bar bottom 0; --topbar-h 94px; bar height before my change 94",
+   "pic": "s4b-desk-2-band-up.png"
+  },
+  {
+   "id": "S4.desk.retry",
+   "verdict": "PASS",
+   "what": "Retry pressed with the switch still on (saves are refused again, so the band stays): bar 94",
+   "pic": "s4b-desk-3-after-retry.png"
+  },
+  {
+   "id": "S4.desk.band-gone",
+   "verdict": "PASS",
+   "what": "reopened without ?savefail: band present=false; bar 58 (baseline 58); first content at 58 (baseline 58)",
+   "pic": "s4b-desk-4-reopened-without-switch.png"
+  },
+  {
+   "id": "S4.phone.band-up",
+   "verdict": "PASS",
+   "what": "no-switch page: bar 49, page top 49, first content 49. With ?savefail (band already up when the page opened: true) and after one saving change: band {\"top\":48,\"bottom\":84,\"h\":36,\"text\":\"Not saved — keep this page openRetry\"}; bar 85 (grew 36), page top moved 36, first content moved 36, first content minus bar bottom 0; --topbar-h 85px; bar height before my change 85",
+   "pic": "s4b-phone-2-band-up.png"
+  },
+  {
+   "id": "S4.phone.retry",
+   "verdict": "PASS",
+   "what": "Retry pressed with the switch still on (saves are refused again, so the band stays): bar 85",
+   "pic": "s4b-phone-3-after-retry.png"
+  },
+  {
+   "id": "S4.phone.band-gone",
+   "verdict": "PASS",
+   "what": "reopened without ?savefail: band present=false; bar 49 (baseline 49); first content at 49 (baseline 49)",
+   "pic": "s4b-phone-4-reopened-without-switch.png"
+  },
+  {
+   "id": "S5.desk.lw-grid-dates@30%",
+   "verdict": "PASS",
+   "what": "scrollY 380; bar bottom 57; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":57,\"h\":45,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-desk-lwgrid-0.3.png"
+  },
+  {
+   "id": "S5.desk.lw-grid-dates@60%",
+   "verdict": "PASS",
+   "what": "scrollY 761; bar bottom 57; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":57,\"h\":45,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-desk-lwgrid-0.6.png"
+  },
+  {
+   "id": "S5.desk.quals-heading",
+   "verdict": "PASS",
+   "what": "scrollY 207; bar bottom 57; pinned heading(s) shown: [{\"cls\":\"qfixed q-psda up\",\"top\":57,\"h\":24.28,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}]",
+   "pic": "s5-desk-quals.png"
+  },
+  {
+   "id": "S5.desk.balances",
+   "verdict": "PASS",
+   "what": "scrollY 0 of room 2; bar bottom 57; pinned/sticky parts near the top: [{\"c\":\"l\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"span sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"span sep\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"\",\"pos\":\"sticky\",\"top\":193,\"h\":23},{\"c\":\"l\",\"pos\":\"sticky\",\"top\":216,\"h\":26},{\"c\":\"l\",\"pos\":\"sticky\",\"top\":216,\"h\":26},{\"c\":\"sep\",\"pos\":\"sticky\",\"top\":216,\"h\":26}]; of them behind the bar: []",
+   "pic": "s5-desk-balances.png"
+  },
+  {
+   "id": "S5.phone.lw-grid-dates@30%",
+   "verdict": "PASS",
+   "what": "scrollY 188; bar bottom 49; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":49,\"h\":43.84,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-phone-lwgrid-0.3.png"
+  },
+  {
+   "id": "S5.phone.lw-grid-dates@60%",
+   "verdict": "PASS",
+   "what": "scrollY 376; bar bottom 49; pinned dates row(s) shown: [{\"cls\":\"mxfixed up\",\"top\":49,\"h\":43.84,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}] (all copies 1)",
+   "pic": "s5-phone-lwgrid-0.6.png"
+  },
+  {
+   "id": "S5.phone.quals-heading",
+   "verdict": "PASS",
+   "what": "scrollY 234; bar bottom 49; pinned heading(s) shown: [{\"cls\":\"qfixed q-psda up\",\"top\":49,\"h\":23.58,\"op\":\"1\",\"vis\":\"visible\",\"disp\":\"block\"}]",
+   "pic": "s5-phone-quals.png"
+  },
+  {
+   "id": "S5.phone.balances",
+   "verdict": "PASS",
+   "what": "scrollY 0 of room 22; bar bottom 49; pinned/sticky parts near the top: [{\"c\":\"bp-cols\",\"pos\":\"sticky\",\"top\":193.8,\"h\":28},{\"c\":\"\",\"pos\":\"sticky\",\"top\":193.8,\"h\":27},{\"c\":\"gl\",\"pos\":\"sticky\",\"top\":221.8,\"h\":29},{\"c\":\"bp-who\",\"pos\":\"sticky\",\"top\":251.8,\"h\":49}]; of them behind the bar: []",
+   "pic": "s5-phone-balances.png"
+  },
+  {
+   "id": "S8.320.edit",
+   "verdict": "FAIL",
+   "what": "scroller topbar editing has-undo room 25; scrollLeft 0 -> 0; burger left 14 -> 14; mark left null -> null; Undo left 155.6 -> 155.6; bell left 296.6 -> 296.6; buttons moved=false; bar top 0, page scrollY 0",
+   "pic": "s8-320-edit-1-swiped.png"
+  },
+  {
+   "id": "S8.320.lw",
+   "verdict": "NOT REACHED",
+   "what": "no sideways-scrolling part in the bar at 320 wide (found {\"sc\":null,\"room\":0,\"sl\":0,\"burger\":14,\"undo\":167,\"bell\":272,\"mark\":null})",
+   "pic": "s8-320-lw-0.png"
+  },
+  {
+   "id": "R13.burger-open",
+   "verdict": "PASS",
+   "what": "menu open=true; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-burger-open-a.png , R13-burger-open-b.png"
+  },
+  {
+   "id": "R13.burger-close-by-x",
+   "verdict": "NOT REACHED",
+   "what": "the menu has no ✕ button (no close-looking button in the panel); not pressed",
+   "pic": ""
+  },
+  {
+   "id": "R13.burger-close-by-tap-outside",
+   "verdict": "PASS",
+   "what": "menu open after a tap on the shade=false; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-burger-close-outside-a.png , R13-burger-close-outside-b.png"
+  },
+  {
+   "id": "R13.burger-close-by-escape",
+   "verdict": "PASS",
+   "what": "menu open after Escape=false; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-burger-close-escape-a.png , R13-burger-close-escape-b.png"
+  },
+  {
+   "id": "R13.bell-open",
+   "verdict": "PASS",
+   "what": "bell list parts visible=1; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-bell-open-a.png , R13-bell-open-b.png"
+  },
+  {
+   "id": "R13.bell-close",
+   "verdict": "PASS",
+   "what": "bell list parts visible after second press=0; bar top 0, height 49, scrollY 1522",
+   "pic": "R13-bell-close-a.png , R13-bell-close-b.png"
+  },
+  {
+   "id": "R13.page-name",
+   "verdict": "PASS",
+   "what": "went to page-inputs; bar top 0, height 49, scrollY 0; page starts 0.00 below the bar foot",
+   "pic": "R13-pagename-a.png , R13-pagename-b.png"
+  },
+  {
+   "id": "R13.undo",
+   "verdict": "PASS",
+   "what": "Undo was enabled=true; after pressing it Redo enabled=true; bar top 0, height 49, scrollY 711",
+   "pic": "R13-undo-a.png , R13-undo-b.png"
+  },
+  {
+   "id": "R13.redo",
+   "verdict": "PASS",
+   "what": "Redo pressed; bar top 0, height 49, scrollY 711",
+   "pic": "R13-redo-a.png , R13-redo-b.png"
+  },
+  {
+   "id": "R14.burger-open",
+   "verdict": "PASS",
+   "what": "menu open=true; bar top 0, height 49, scrollY 314",
+   "pic": "R14-burger-open-a.png , R14-burger-open-b.png"
+  },
+  {
+   "id": "R14.burger-close-by-x",
+   "verdict": "NOT REACHED",
+   "what": "the menu has no ✕ button (no close-looking button in the panel); not pressed",
+   "pic": ""
+  },
+  {
+   "id": "R14.burger-close-by-tap-outside",
+   "verdict": "PASS",
+   "what": "menu open after a tap on the shade=false; bar top 0, height 49, scrollY 314",
+   "pic": "R14-burger-close-outside-a.png , R14-burger-close-outside-b.png"
+  },
+  {
+   "id": "R14.burger-close-by-escape",
+   "verdict": "PASS",
+   "what": "menu open after Escape=false; bar top 0, height 49, scrollY 314",
+   "pic": "R14-burger-close-escape-a.png , R14-burger-close-escape-b.png"
+  },
+  {
+   "id": "R14.bell-open",
+   "verdict": "PASS",
+   "what": "bell list parts visible=1; bar top 0, height 49, scrollY 314",
+   "pic": "R14-bell-open-a.png , R14-bell-open-b.png"
+  },
+  {
+   "id": "R14.bell-close",
+   "verdict": "PASS",
+   "what": "bell list parts visible after second press=0; bar top 0, height 49, scrollY 314",
+   "pic": "R14-bell-close-a.png , R14-bell-close-b.png"
+  },
+  {
+   "id": "R14.page-name",
+   "verdict": "PASS",
+   "what": "went to page-quals; bar top 0, height 49, scrollY 0; page starts 0.00 below the bar foot",
+   "pic": "R14-pagename-a.png , R14-pagename-b.png"
+  },
+  {
+   "id": "R14.undo-redo",
+   "verdict": "NOT REACHED",
+   "what": "no change made on the Leave War grid in this round (it needs a bid or entry); Undo present={\"exists\":true,\"disabled\":true}",
+   "pic": ""
+  }
+ ],
+ "errors": [],
+ "seconds": {
+  "5": 34,
+  "13": 22,
+  "14": 21,
+  "41": 38,
+  "81": 8
+ }
+}

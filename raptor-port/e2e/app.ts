@@ -107,6 +107,21 @@ export async function monthStill(page: Page) {
   if (!still) throw new Error('monthStill: the month was still sliding after 5 s')
 }
 
+/* THE PINNED COPY IS SHOWN, not merely there (his D1870, 8 Nov 26 — [LW-PIN-LAST-FRAME]). Where the browser shows the
+   pinned row itself (the Leave War's dates row, Quals' heading), the copy is always in the page and is hidden by its
+   opacity until the page's scroll reaches the point where the real row meets the top bar: Playwright's `toBeVisible`
+   counts a copy at opacity 0 as visible, and a count of copies is 1 whether it shows or not. Shown = in the page, its
+   opacity over a half and not hidden. Where the browser cannot (the old way), the copy is there only while it shows, and
+   this reads the same. `testid` is the copy's own: 'sticky-head' (the Leave War) or 'qsticky-head' (Quals). */
+export const pinShown = (page: Page, testid: 'sticky-head' | 'qsticky-head') => page.evaluate(id => {
+  const el = document.querySelector(`[data-testid="${id}"]`)
+  if (!el) return false
+  const cs = getComputedStyle(el)
+  return Number(cs.opacity) > 0.5 && cs.visibility !== 'hidden'
+}, testid)
+export const expectPinned = (page: Page, testid: 'sticky-head' | 'qsticky-head', shown: boolean, message?: string) =>
+  expect.poll(() => pinShown(page, testid), { message }).toBe(shown)
+
 /* .week carries scroll-behavior:smooth and panDays() asks for 'smooth' on
    purpose, so a read taken a fixed delay later can land mid-animation and
    report a position nothing ever settled at. Poll until it stops moving. */

@@ -1,0 +1,1860 @@
+{
+ "desk-view": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-edit": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "sticky",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "sticky",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "fixed",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-board": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "sticky",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "sticky",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 58,
+    "pos": "fixed",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-inputs-list": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-inputs-cal": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-quals": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-lw-grid": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 0.08043194444444444,
+   "pixels": 173733,
+   "where": [
+    40,
+    247,
+    1893,
+    1124
+   ],
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "DIFF"
+ },
+ "desk-lw-approvals": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-lw-balances": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 0.00000787037037037037,
+   "pixels": 17,
+   "where": [
+    1354,
+    31,
+    1416,
+    35
+   ],
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "DIFF"
+ },
+ "desk-lw-oil": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 0.00020277777777777777,
+   "pixels": 438,
+   "where": [
+    25,
+    102,
+    1833,
+    152
+   ],
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "DIFF"
+ },
+ "desk-tracker": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": false,
+   "share": 0.000638425925925926,
+   "pixels": 1379,
+   "where": [
+    1814,
+    79,
+    1894,
+    115
+   ],
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 0.000638425925925926,
+   "pixels": 1379,
+   "where": [
+    1814,
+    79,
+    1894,
+    115
+   ],
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "NOISE"
+ },
+ "desk-logic": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-admin": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "desk-help": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "sticky",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 57,
+    "pos": "fixed",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1920,
+    1125
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-view": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-viewsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-edit": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-editsched"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-board": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [],
+    "board": true
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-inputs-list": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-inputs-cal": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-inputs"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-quals": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-quals"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-lw-grid": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 0.03199708298072313,
+   "pixels": 101179,
+   "where": [
+    321,
+    691,
+    1167,
+    2598
+   ],
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "DIFF"
+ },
+ "phone-lw-approvals": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-lw-balances": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": false,
+   "share": 3.1624233270464355e-7,
+   "pixels": 1,
+   "where": [
+    513,
+    1572,
+    513,
+    1572
+   ],
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 3.1624233270464355e-7,
+   "pixels": 1,
+   "where": [
+    513,
+    1572,
+    513,
+    1572
+   ],
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "NOISE"
+ },
+ "phone-lw-oil": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-leavewar"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-tracker": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-tracker"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-logic": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-logic"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": false,
+   "share": 9.487269981139307e-7,
+   "pixels": 3,
+   "where": [
+    1072,
+    902,
+    1076,
+    910
+   ],
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": false,
+   "share": 9.487269981139307e-7,
+   "pixels": 3,
+   "where": [
+    1072,
+    902,
+    1076,
+    910
+   ],
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "NOISE"
+ },
+ "phone-admin": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-admin"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ },
+ "phone-help": {
+  "before": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "before-again": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "sticky",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "after": {
+   "reached": true,
+   "why": "",
+   "st": {
+    "barTop": 0,
+    "barH": 49,
+    "pos": "fixed",
+    "pages": [
+     "page-help"
+    ],
+    "board": false
+   },
+   "errors": []
+  },
+  "self": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "diff": {
+   "same": true,
+   "share": 0,
+   "pixels": 0,
+   "where": null,
+   "size": [
+    1206,
+    2622
+   ]
+  },
+  "verdict": "SAME"
+ }
+}

@@ -66,8 +66,8 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - From the 17 Oct start-size page: his own settings to switch off were listed for him, and switching one off stays his;
   every chat gets the skill-notes short form from the start hook in place of the full skill, which is invoked only for a
   review, a skill's creation or edit, its setup, or a case the short form misses [D969, D976, D1740].
-- The start-of-chat size job is closed: its last point, his documents connector, stays his own setting with nothing for
-  the agent to do; cutting what a chat reads goes on as the rules diet [D1741].
+- The start-of-chat size job is closed: his documents connector stays his own setting, nothing for the agent to do;
+  cutting what a chat reads goes on as the rules diet [D1741].
 - The handoff file keeps only the newest gate count; each older one moves whole to its archive file [D1733].
 
 ## Models and readers
@@ -125,11 +125,11 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - Correctness beats context economy: never skip or shrink a read to save context — the bug-check order, the design guide
   and the ripple map are read by section from the checklists that name when, every section that applies a required read
   [D68, D1735].
+- A review of a day's merged work starts with a handful of checks; Fable reads wider only on his word [D1934].
 
 ## Checking the running app (detail: `raptor-port/docs/bug-check-order.md`)
-- Walks run in the cloud instead of on his PC, adopted by every chat if a chat could start one on its own and it built
-  the app and left pictures, was tried on 8 Nov 26 and dropped: a helper sent to the cloud ran on his PC instead, and only
-  he can open a cloud chat, so each cloud walk would need him; walks stay on his PC, one at a time [D1797].
+- Walks stay on his PC, one at a time: cloud walks, tried on 8 Nov 26, were dropped — a helper sent there ran on
+  his PC, and only he can open a cloud chat, so each would need him [D1797].
 - Driving the running app is the bug test; a code review plus green tests is not one [D5]. All three kinds of check — a
   code read, automated tests, a hand pass — scaled by what the change touches; before a walk the agent says what type of
   change it is, Opus sizes the walk, and a record is kept of every walk — its type, size, cost and what it found — so the
@@ -137,6 +137,7 @@ In every report, OIL is earned leave — time off banked, never pay or money [D2
 - The bug-check order is the merged result of two independent proposals and replaced the three earlier methods — one
   method [D8, D10]; it adapts to any kind of work [D12]; it owns the running app, the readers the plan and the code, the
   walk before the final read [D11]. The old bug-testing list is retired: nothing adds to it, no handoff checks it [D72].
+  Its checklist is to route a walk to the order's §2a whole [D1937].
 - Every walk of a screen has a plain-user round: the area's everyday tasks end to end, every control that opens or closes
   pressed, every other place that should show the result looked at, with pictures — on top of the change's own
   scenarios, never instead of them [D1557]. On a phone, a picture right

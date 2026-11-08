@@ -179,6 +179,10 @@ traps of their own selectors are in `docs/handpass/README.md`. Written 13 Oct 26
   never an absolute path into a worktree: worktree folders are reused by other chats. Its logs and scratch files go to
   the session's scratchpad or a folder under the checkout, never a fixed name in the shell's `$TEMP`, which is one
   folder for every chat on the PC (16 Oct 26: a run's `$TEMP/after.txt` held another chat's list).
+- **Nothing a walk keeps goes under `raptor-port/test-results/`** — not a script, a picture or a record: every Playwright
+  run empties that folder before it starts. On 8 Nov 26 a browser-test run deleted a reviewer's whole evidence folder
+  (its pixel records and side-by-side pictures) and the host's two re-walk scripts, written there an hour before. A
+  script goes in `scripts/handpass/`, its evidence in the job's `docs/img/handpass/` folder or the scratchpad.
 - **On a phone, a tap gets a picture right after it (owner D1281):** within about 100 ms of the lift, the pointer left
   where it pressed, besides the settled picture — an iPhone keeps the tapped thing "hovered", the test browser does
   not, and a fault that lives in that state is otherwise never pictured (the bug-check order §7.10).
