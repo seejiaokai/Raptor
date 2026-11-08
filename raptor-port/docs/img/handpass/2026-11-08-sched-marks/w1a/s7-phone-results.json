@@ -1,0 +1,292 @@
+{
+ "fileA": {
+  "iid": "imriimiffbjmd1i",
+  "type": "Other",
+  "who": [
+   {
+    "p": "yeti",
+    "by": "stiff",
+    "at": 1783904407755
+   },
+   {
+    "p": "salsa",
+    "by": "stiff",
+    "at": 1783904407755
+   }
+  ]
+ },
+ "fileB": {
+  "iid": "imriimo2tve0ojb",
+  "type": "Other",
+  "who": [
+   {
+    "p": "prowler",
+    "by": "stiff",
+    "at": 1783904415077
+   },
+   {
+    "p": "pump",
+    "by": "stiff",
+    "at": 1783904415077
+   }
+  ]
+ },
+ "publish": {
+  "published": true,
+  "label": "Publish day",
+  "version": "ORIG",
+  "signSelects": 4
+ },
+ "clean": {
+  "pending": "7 changes",
+  "week": [
+   {
+    "name": "Other",
+    "who": "HunterIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "PistonIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": null
+ },
+ "A.removeBolt": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "HunterIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "PistonIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 8 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Bolt · Other Saber 13/7 09:00 taken out Tap a change to go to it."
+ },
+ "B.addBolt": {
+  "pending": "1 pending",
+  "week": [
+   {
+    "name": "Other",
+    "who": "HunterIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "PistonIP",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "CBoltC",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "who": "SaintB",
+    "aln": "1",
+    "deco": "underline dotted",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "who": "CobraIP",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "who": "GritC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "who": "CNomadC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "who": "CGambitC",
+    "aln": null,
+    "deco": "none solid",
+    "marked": false
+   }
+  ],
+  "ground": [],
+  "changes": "⠿ Changes · Wednesday 15/7 Published · 1 change waiting to go out as AL1 Hide ▾ ✕ History on: Tap a gold dot on the schedule New to you 0 All changes 9 To go out · AL1 1 Week Mon Tue Wed Thu Fri Sat Sun Waiting to go out as AL1 · 1 change Bolt Saber 13/7 09:00 Other → Other Tap a change to go to it."
+ },
+ "board": {
+  "sbPending": null,
+  "rows": [
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "HunterIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "PistonIP",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "CBoltC",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "Other",
+    "cls": "sbi-ty inpty ty-gp inpedit",
+    "who": "SaintB",
+    "aln": "1",
+    "outline": "dotted 1px",
+    "marked": true
+   },
+   {
+    "name": "OL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CobraIP",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "ATT C",
+    "cls": "sbi-ty inpty ty-dn inpedit",
+    "who": "GritC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OD",
+    "cls": "sbi-ty inpty ty-dt inpedit",
+    "who": "CNomadC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   },
+   {
+    "name": "OIL",
+    "cls": "sbi-ty inpty ty-lv inpedit",
+    "who": "CGambitC",
+    "aln": null,
+    "outline": "none 3px",
+    "marked": false
+   }
+  ]
+ },
+ "errs": []
+}
