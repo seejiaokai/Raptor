@@ -318,4 +318,19 @@ describe('a row closed and opened again starts from his saved values', () => {
     expect($('#accArDel').textContent).toBe('Delete')
     expect($('#accArDelNote')).toBeNull()
   })
+
+  /* the break test of chat 26's check (8 Nov 26): an archived row's editor exists only while the row is open — drawn on
+     a closed row, every archived man would show his callsign box and buttons in the folded list */
+  it('archived: a closed row shows no editor, before it is opened and after Cancel', async () => {
+    P('casper').archived = true; indexCallsigns()
+    await users()
+    await click($('#accArchToggle'))
+    expect($('#accArchList [data-person="casper"] [data-restoring]')).toBeNull()
+    expect($('#accArCs')).toBeNull()
+    await click($('#accArchList [data-person="casper"] .acc-tap'))
+    expect($('#accArchList [data-person="casper"] [data-restoring="casper"]')).toBeTruthy()
+    await click($('#accArCancel'))
+    expect($('#accArchList [data-person="casper"] [data-restoring]')).toBeNull()
+    expect($('#accArCs')).toBeNull()
+  })
 })
