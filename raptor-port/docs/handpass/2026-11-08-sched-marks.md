@@ -40,9 +40,58 @@ pictures of this check: `raptor-port/docs/img/handpass/2026-11-08-sched-marks/`.
 
 ## 3. The roll-call
 
+Columns: SHOWS the change (or must not, because…) · USABLE (the gesture there still works) · PAINTED WITH (what else sits
+on those pixels) · proved by. Every cell filled by the walk; a blank is a row nobody walked. Astra's map of objects and
+routes: `docs/handpass/parts/2026-11-08-sched-marks-scenarios.md` §Objects, surfaces and routes.
+
+| # | Thing · surface | Shows | Usable | Painted with | Proved by |
+|---|---|---|---|---|---|
+| 1 | Waiting mark · Edit Schedule, Unavailable name, desktop | | | | |
+| 2 | Waiting mark · Edit Schedule, phone | | | | |
+| 3 | Waiting mark · Scheduler Board, Unavailable panel, desktop | | | | |
+| 4 | Waiting mark · Scheduler Board, phone | | | | |
+| 5 | Waiting mark · board read-only (a member) | | | | |
+| 6 | Waiting mark · OIL Earn mode, both name kinds — must not, as the Ground name | | | | |
+| 7 | Waiting mark · View-only Sched — must not paint, as the Ground name | | | | |
+| 8 | Waiting mark · a look at a version or a plan — must not | | | | |
+| 9 | Waiting mark · Personal Inputs rows, SANS cards — must not | | | | |
+| 10 | Waiting mark · the day's "N pending", the changes window — agree | | | | |
+| 11 | Unreadable notice · Edit Schedule, every day, desktop and phone | | | | |
+| 12 | Unreadable notice · View-only Sched | | | | |
+| 13 | Unreadable notice · Scheduler Board | | | | |
+| 14 | Unreadable notice · next week's desktop preview | MISSING (builder: demo days, no notice) | | | |
+| 15 | Unreadable notice · print, the spreadsheet export | MISSING (builder: demo days) | | | |
+| 16 | Refusal · the input window: new, edit, medical (four doors), grey "Blocked:" | | | | |
+| 17 | Refusal · the store's backstop: drag, Accept, → Unavail, Goes to | | | | |
+| 18 | Refusal · Leave War approve / send back / delete / move — own words | | | | |
+| 19 | Refusal · deleting a person — own words | | | | |
+| 20 | Refusal · Publish / Publish AL on an unreadable week (board's sign strip) | | | | |
+| 21 | Older-version week · notice and grey refusal unchanged in words | | | | |
+| 22 | Drawn eye · plan selector, week and board, desktop and phone | | | | |
+| 23 | Drawn eye · look banner (issued and plan), week and board | | | | |
+| 24 | Drawn eye · wave templates window, unchanged | | | | |
+| 25 | Reset arrow · hidden warning, Edit Schedule, desktop and phone | | | | |
+| 26 | Reset arrow · hidden warning, Scheduler Board, desktop and phone | | | | |
+| 27 | Reset arrow · a member, a look — no ✕ / arrow | | | | |
+
 ## 4. The door check
 
 ## 5. The five sizing lines (§7.0)
+
+1. **Type:** D (a mark drawn by the week's and the board's own builders), G (the publish path — the mark lasts until the
+   amendment goes out; saved data — a week that will not read), E (two drawn marks in place of typed ones), F (words).
+2. **What only a walk finds:** each builder drawing the mark or not (rows 1–9), the mark beside the count after publish /
+   undo / redo / reload, each refusal door pressed for real on a damaged week, the eye and arrow at their drawn sizes at
+   both widths, the publish door on the board's sign strip. The tests carry each pending kind (`ui/unavmark.test.tsx`,
+   15) and the words to the letter (`engine/lockednote.test.ts`).
+3. **The ledger:** type D/G walks have found unwired surfaces most often (the record, 2 Nov – 8 Nov 26); the last board
+   job of this round (OIL Earn, 8 Nov) walked two Sonnet helpers plus the host's re-walk.
+4. **The walk chosen:** two Sonnet walkers in their own worlds — W1 the waiting mark and the drawn marks (Astra's S6–S9,
+   S17–S32 that touch them, rows 1–10, 22–27, the plain-user round on Edit Schedule and the board), W2 the unreadable and
+   older weeks (S1–S5, S10–S16, rows 11–21, the plain-user round on the Inputs page and the input window); desktop 1536 and
+   his iPhone's size; the host opens every deciding picture and reproduces every finding. Repeated pending kinds beyond one
+   each are carried by `ui/unavmark.test.tsx` (it calls the app's own commands, so each kind is also walked once).
+5. **After the walk:** its row goes into `docs/walk-ledger.md`.
 
 ## 6. The orders walked
 
